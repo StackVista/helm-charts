@@ -1,0 +1,13 @@
+remote: stackstate-helm
+target-branch: master
+chart-dirs:
+  - stable
+excluded-charts:
+  - common
+chart-repos:
+  - bitnami=https://charts.bitnami.com/
+  - gitlab=https://charts.gitlab.io/
+  - incubator=https://kubernetes-charts-incubator.storage.googleapis.com/
+  - jetstack=https://charts.jetstack.io/
+  - jfrog=https://charts.jfrog.io/
+helm-extra-args: --timeout 600

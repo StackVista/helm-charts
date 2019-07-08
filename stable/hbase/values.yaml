@@ -53,3 +53,7 @@ persistence:
 hbase:
   zookeeper:
     quorum: "myzk-zookeeper"
+
+zookeeper:
+  enabled: true
+  replicaCount: 1

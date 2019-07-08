@@ -28,7 +28,23 @@ data:
       </property>
       <property>
         <name>hbase.zookeeper.quorum</name>
+        {{- if .Values.zookeeper.enabled }}
+        {{- $replicaCount := int .Values.zookeeper.replicaCount }}
+        {{- $followerPort := int .Values.zookeeper.service.followerPort }}
+        {{- $electionPort := int .Values.zookeeper.service.electionPort }}
+        {{- $releaseNamespace := .Release.Namespace }}
+        {{- $zookeeperFullname := include "call-nested" (list . "zookeeper" "zookeeper.fullname") }}
+        {{- $zookeeperHeadlessServiceName := printf "%s-%s" $zookeeperFullname "headless" | trunc 63  }}
+        {{- $clusterDomain := .Values.zookeeper.clusterDomain }}
+        <value>
+        {{- range $i, $e := until $replicaCount -}}
+          {{- $tempIndex := $e | add1 -}}
+          {{ $zookeeperFullname }}-{{ $e }}.{{ $zookeeperHeadlessServiceName }}.{{ $releaseNamespace }}.svc.{{ $clusterDomain }}{{ if ne $tempIndex $replicaCount }},{{ end }}
+        {{- end -}}
+        </value>
+        {{- else }}
         <value>{{ .Values.hbase.zookeeper.quorum }}</value>
+        {{- end }}
       </property>
     </configuration>
 
