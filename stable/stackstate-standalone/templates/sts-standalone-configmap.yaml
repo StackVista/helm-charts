@@ -1,0 +1,128 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "stackstate-standalone.fullname" . }}
+  labels:
+{{ include "stackstate-standalone.labels" . | indent 4 }}
+data:
+  license.conf: |
+    {
+        "stackstate" : {
+            "license" : {
+                "key" : {{ .Values.stackstate.license.key | quote }}
+            }
+        }
+    }
+  application_stackstate.conf: |
+    stackgraph.vertex.cache.size = 8192
+    stackgraph.vertex.cache.sizeMB = 512
+    stackstate.webUIConfig.maxStackElementCount = 1000
+
+    # This is an example configuration for StackState. More settings can be found in doc/defaults.conf
+    stackstate {
+        api {
+            bindAddress = "0.0.0.0"
+            port = 7070
+            authentication {
+                enabled = true
+                authServer {
+                    authServerType = "stackstateAuthServer"
+
+                    stackstateAuthServer {
+                        # echo -n "topology-telemetry-time" | md5sum
+                        # Open http://www.md5.net/md5-generator/
+                        # Enter your password and press submit, you will get an MD5 Hash
+                        # Set the MD5 Hash into `auth.password`
+                        logins = [
+                            { username = "admin", password: "fa164545c9f31efebf1ddcf385c2dc07", roles = ${stackstate.api.authentication.adminGroups} }
+                            { username = "guest", password: "fa164545c9f31efebf1ddcf385c2dc07", roles = ${stackstate.api.authentication.guestGroups} }
+                        ]
+                    }
+                    ldapAuthServer {
+                        connection {
+                            host = sts-ldap
+                            port = 10389
+                            #ssl {
+                            #    sslType = ssl
+                            #    trustCertificatesPath = "/var/lib/ssl/sts-ldap.pem"
+                            #    trustStorePath = "/var/lib/ssl/cacerts"
+                            #}
+                        }
+                        userQuery {
+                            parameters = [
+                                { ou : employees }
+                                { dc : stackstate }
+                                { dc : com }
+                            ]
+                            usernameKey = cn
+                            emailKey = mail
+                        }
+                        groupQuery {
+                            parameters = [
+                                { ou : employees }
+                                { dc : stackstate }
+                                { dc : com }
+                            ]
+                            rolesKey = cn
+                            groupMemberKey = member
+                        }
+                    }
+                }
+                adminGroups = ["stackstate-admin"]
+                guestGroups = ["stackstate-guest"]
+            }
+
+            # A configurable link can be put here to which user will be redirected when they forgot their password
+            # authentication.forgotPasswordLink = "http://my.support.com/forgotPassword.html"
+            tls {
+                enabled = false
+                keystore {
+                    path = "/path/to/keystore.k12"
+                    password = "changeme"
+                }
+            }
+        }
+
+        adminApi {
+            bindAddress = "0.0.0.0"
+            port = 7071
+
+            authentication {
+                # The admin api uses the api authentication config. Only basic auth is supported
+                # Only admins can do operations on this API
+                enabled = false
+            }
+        }
+
+        receiver {
+            # Externally visible baseUrl of the stackstate endpoints
+            # If not providing the environment uncomment the following line and set it to
+            # a URL like `http://<stackstate-server>:7077`. By default StackState exposes the end point under a plain HTTP endpoint on port 7077
+            # baseUrl =
+            baseUrl = {{ .Values.stackstate.receiver.baseUrl | quote }}
+
+            # API key to be used by all stackstate agents.
+            apiKey = {{ .Values.stackstate.receiver.apiKey | quote }}
+        }
+
+        kafka {
+            # comma separated list of kafka brokers, e.g. 127.0.0.1:9092,...
+            brokerList = "127.0.0.1:9092"
+        }
+
+        elasticsearch {
+            uri = "elasticsearch://127.0.0.1:9200"
+            uri = ${?STACKSTATE_ELASTICSEARCH_URI}
+        }
+
+        zookeeper.quorum = "localhost"
+        zookeeper.quorum = ${?STACKSTATE_ZOOKEEPER_QUORUM}
+    }
+
+    stackgraph {
+        # Stackgraph nodes on which StackGraph's Zookeeper is running
+        zookeeper.nodes = "localhost"
+        zookeeper.nodes = ${?STACKGRAPH_ZOOKEEPER_QUORUM}
+    }
+
+    include "license.conf"

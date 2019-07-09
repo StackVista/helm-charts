@@ -17,7 +17,7 @@ spec:
       storage: {{ .Values.persistence.dataNode.size | quote }}
 {{- if .Values.persistence.dataNode.storageClass }}
 {{- if (eq "-" .Values.persistence.dataNode.storageClass) }}
-  storageClassName: ""
+  storageClassName: gp2
 {{- else }}
   storageClassName: "{{ .Values.persistence.dataNode.storageClass }}"
 {{- end }}

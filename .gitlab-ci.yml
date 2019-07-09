@@ -4,9 +4,6 @@ stages:
   - lint-charts
 
 run-helm-lint:
-  only:
-    refs:
-      - master
   image: gcr.io/kubernetes-charts-ci/test-image:v3.3.2
   stage: lint-charts
   script:

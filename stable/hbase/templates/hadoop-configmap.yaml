@@ -42,7 +42,7 @@ data:
     if [[ "${HOSTNAME}" =~ "hdfs-dn" ]]; then
       mkdir -p /root/hdfs/datanode
 
-      #  wait up to 30 seconds for namenode 
+      #  wait up to 30 seconds for namenode
       (while [[ $count -lt 15 && -z `curl -sf http://{{ template "hbase.name" . }}-hdfs-nn:50070` ]]; do ((count=count+1)) ; echo "Waiting for {{ template "hbase.name" . }}-hdfs-nn" ; sleep 2; done && [[ $count -lt 15 ]])
       [[ $? -ne 0 ]] && echo "Timeout waiting for hdfs-nn, exiting." && exit 1
 

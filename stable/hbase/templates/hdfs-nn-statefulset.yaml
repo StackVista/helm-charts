@@ -77,6 +77,6 @@ spec:
       {{- if .Values.persistence.nameNode.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "hbase.name" . }}-hdfs-nn
-      {{- else }}        
+      {{- else }}
         emptyDir: {}
       {{- end }}

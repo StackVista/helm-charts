@@ -15,4 +15,3 @@ spec:
       release: {{ .Release.Name }}
       component: hdfs-nn
   minAvailable: {{ .Values.hdfs.nameNode.pdbMinAvailable }}
-  

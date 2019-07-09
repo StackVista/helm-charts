@@ -1,0 +1,85 @@
+#####################
+# General variables #
+#####################
+
+image:
+  # image.repository -- Base container image registry.
+  repository: 508573134510.dkr.ecr.eu-west-1.amazonaws.com/stackstate
+  # image.tag -- Default container image tag.
+  tag: master
+  # image.pullPolicy -- Default container image pull policy.
+  pullPolicy: IfNotPresent
+
+# imagePullSecrets -- Extra secrets / credentials needed for container image registry.
+imagePullSecrets: []
+
+# nameOverride -- Override the name of the chart.
+nameOverride: ""
+# fullnameOverride -- Override the fullname of the chart.
+fullnameOverride: ""
+
+service:
+  ui:
+    # service.ui.port -- The default port for the StackState UI.
+    port: 7070
+  receiver:
+    # service.receiver.port -- The default port for the StackState Receiver.
+    port: 7077
+  administration:
+    # service.administration.port -- The default port for the StackState Administration area.
+    port: 7071
+  # service.type -- The Kubernetes 'Service' type to use.
+  type: ClusterIP
+
+ingress:
+  # ingress.enabled -- Enable use of ingress controllers.
+  enabled: false
+  # ingress.annotations -- Annotations for ingress objects.
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # ingress.hosts -- List of ingress hostnames
+  hosts: []
+    # - host: stackstate.local
+    #   paths: []
+
+  # ingress.tls -- List of ingress TLS certificates to use.
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - stackstate.local
+
+resources:
+  limits:
+    # resources.limits.cpu -- CPU resource limits.
+    cpu: 2
+    # resources.limits.memory -- Memory resource limits.
+    memory: 8Gi
+  requests:
+    # resources.requests.cpu -- CPU resource requests.
+    cpu: 1
+    # resources.requests.memory -- Memory resource requests.
+    memory: 2Gi
+
+# nodeSelector -- Node labels for pod assignment.
+nodeSelector: {}
+
+# tolerations -- Toleration labels for pod assignment.
+tolerations: []
+
+# affinity -- Affinity settings for pod assignment.
+affinity: {}
+
+########################
+# StackState variables #
+########################
+
+stackstate:
+  license:
+    # stackstate.license.key -- (string) **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server.
+    key:
+  receiver:
+    # stackstate.receiver.apiKey -- (string) **PROVIDE YOUR API KEY HERE** API key to be used by all StackState agents.
+    apiKey:
+    # stackstate.receiver.baseUrl -- (string) **PROVIDE YOUR BASEURL HERE** Externally visible baseUrl of the StackState endpoints.
+    baseUrl:

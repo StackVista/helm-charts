@@ -5,10 +5,10 @@
    kubectl exec -n {{ .Release.Namespace }} -it {{ template "hbase.name" . }}-yarn-rm-0 -- /usr/local/hadoop/bin/yarn node -list
 
 3. Create a port-forward to the yarn resource manager UI:
-   kubectl port-forward -n {{ .Release.Namespace }} {{ template "hbase.name" . }}-yarn-rm-0 8088:8088 
+   kubectl port-forward -n {{ .Release.Namespace }} {{ template "hbase.name" . }}-yarn-rm-0 8088:8088
 
    Then open the ui in your browser:
-   
+
    open http://localhost:8088
 
 4. You can run included hadoop tests like this:
