@@ -1,5 +1,8 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "stackstate-standalone.fullname" . -}}
+{{- $serviceAdminPort := .Values.service.admin.port -}}
+{{- $serviceReceiverPort := .Values.service.receiver.port -}}
+{{- $serviceUiPort := .Values.service.ui.port -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -26,11 +29,17 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
-        {{- range .paths }}
-          - path: {{ . }}
+          - path: /?(.*)
             backend:
               serviceName: {{ $fullName }}
-              servicePort: http
-        {{- end }}
+              servicePort: {{ $serviceUiPort }}
+          - path: /receiver/?(.*)
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $serviceReceiverPort }}
+          - path: /admin/?(.*)
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $serviceAdminPort }}
   {{- end }}
 {{- end }}

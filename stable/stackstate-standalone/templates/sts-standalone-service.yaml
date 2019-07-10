@@ -7,10 +7,18 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    - port: {{ .Values.service.ui.port }}
+      targetPort: ui
       protocol: TCP
-      name: http
+      name: ui
+    - port: {{ .Values.service.receiver.port }}
+      targetPort: receiver
+      protocol: TCP
+      name: receiver
+    - port: {{ .Values.service.admin.port }}
+      targetPort: admin
+      protocol: TCP
+      name: admin
   selector:
     app.kubernetes.io/name: {{ include "stackstate-standalone.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}

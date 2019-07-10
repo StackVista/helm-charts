@@ -1,18 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "stackstate-standalone.fullname" . }}
+  name: {{ include "stackstate-standalone.fullname" . }}-application
   labels:
 {{ include "stackstate-standalone.labels" . | indent 4 }}
 data:
-  license.conf: |
-    {
-        "stackstate" : {
-            "license" : {
-                "key" : {{ .Values.stackstate.license.key | quote }}
-            }
-        }
-    }
   application_stackstate.conf: |
     stackgraph.vertex.cache.size = 8192
     stackgraph.vertex.cache.sizeMB = 512
