@@ -3,26 +3,40 @@ image: alpine:latest
 stages:
   - lint-charts
 
+services:
+  - name: docker:dind
+    command: ["--experimental"]
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://localhost:2375/
+
 before_script:
   # APK
   - apk add --no-cache bash curl openssl
-  # Helm
-  - curl -fSL https://git.io/get_helm.sh | bash -
-  - helm init --client-only
-  - helm plugin install https://github.com/chartmuseum/helm-push
   # K3s
   - curl -fSL -o /usr/local/bin/k3s https://github.com/rancher/k3s/releases/download/v0.6.1/k3s
+  - curl -fSL -o /usr/local/bin/kind https://github.com/kubernetes-sigs/kind/releases/download/v0.4.0/kind-linux-amd64
   - chmod +x /usr/local/bin/k3s
+  - chmod +x /usr/local/bin/kind
   - echo "127.0.1.1  $(hostname)" >> /etc/hosts
-  - k3s server > k3s-server.log 2>&1 &
-  - mkdir -p ~/.kube
-  - until test -e /etc/rancher/k3s/k3s.yaml ; do sleep 1 ; done
-  - cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+  # - k3s server > k3s-server.log 2>&1 &
+  # - mkdir -p ~/.kube
+  # - until test -e /etc/rancher/k3s/k3s.yaml ; do sleep 1 ; done
+  # - cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
+  # - sleep 5
+  # # Helm
+  # - kubectl -n kube-system create sa tiller
+  # - kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+  # - curl -fSL https://git.io/get_helm.sh | bash -
+  # - helm init --service-account tiller --upgrade
+  # - helm plugin install https://github.com/chartmuseum/helm-push
 
 run-helm-lint:
   image: gcr.io/kubernetes-charts-ci/test-image:v3.3.2
   stage: lint-charts
   script:
+    - sleep 3600
     - git remote add stackstate-helm https://oauth2:$GITLAB_ACCESS_TOKEN@gitlab.com/stackvista/devops/helm-charts
     - git fetch stackstate-helm
     - ct lint-and-install --config test/ct.yaml
