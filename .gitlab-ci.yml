@@ -1,37 +1,21 @@
 image: alpine:latest
 
 stages:
-  - lint-charts
-
-services:
-  - name: docker:dind
-    command: ["--experimental"]
-
-variables:
-  DOCKER_DRIVER: overlay2
-  DOCKER_HOST: tcp://localhost:2375/
+  - test
 
 before_script:
   # APK
   - apk add --no-cache bash curl openssl
-  # Kind
-  - curl -fSL -o /usr/local/bin/kind https://github.com/kubernetes-sigs/kind/releases/download/v0.4.0/kind-linux-amd64
-  - chmod +x /usr/local/bin/kind
-  - echo "127.0.1.1  $(hostname)" >> /etc/hosts
-  # Helm Testing
-  - curl -fSL -O https://github.com/helm/chart-testing/releases/download/v2.3.3/chart-testing_2.3.3_linux_amd64.tar.gz
-  - tar -C /usr/local/bin -xvzf ./chart-testing_2.3.3_linux_amd64.tar.gz
   # Helm
   - curl -fSL https://git.io/get_helm.sh | bash -
-  # - helm init --service-account tiller --upgrade
-  # - helm plugin install https://github.com/chartmuseum/helm-push
+  - helm init --client-only
+  - helm plugin install https://github.com/chartmuseum/helm-push
+  - helm plugin install https://github.com/lrills/helm-unittest
 
-helm-lint-and-install:
-  image: docker:stable
-  # image: gcr.io/kubernetes-charts-ci/test-image:v3.3.2
-  stage: lint-charts
+helm-lint-charts:
+  image: gcr.io/kubernetes-charts-ci/test-image:v3.3.2
+  stage: test
   script:
-    - sleep 3600
     - git remote add stackstate-helm https://oauth2:$GITLAB_ACCESS_TOKEN@gitlab.com/stackvista/devops/helm-charts
     - git fetch stackstate-helm
     - ct lint --config test/ct.yaml
