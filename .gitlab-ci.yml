@@ -1,23 +1,35 @@
-image: alpine:latest
+image: gcr.io/kubernetes-charts-ci/test-image:v3.3.2
 
 stages:
   - test
+  - build
 
 before_script:
   # APK
-  - apk add --no-cache bash curl openssl
+  - apk add --no-cache awscli bash curl openssl
   # Helm
   - curl -fSL https://git.io/get_helm.sh | bash -
   - helm init --client-only
   - helm plugin install https://github.com/chartmuseum/helm-push
   - helm plugin install https://github.com/lrills/helm-unittest
 
-helm-lint-charts:
-  image: gcr.io/kubernetes-charts-ci/test-image:v3.3.2
-  stage: test
+validate:
   script:
-    - git remote add stackstate-helm https://oauth2:$GITLAB_ACCESS_TOKEN@gitlab.com/stackvista/devops/helm-charts
-    - git fetch stackstate-helm
+    - git remote add helm https://oauth2:$GITLAB_ACCESS_TOKEN@gitlab.com/stackvista/devops/helm-charts
+    - git fetch helm
     - ct lint --config test/ct.yaml
+  stage: test
+  tags:
+    - k8s-medium
+
+push:
+  dependencies:
+    - validate
+  only:
+    refs:
+      - master
+  script:
+    - bash test/sync-repo.sh
+  stage: build
   tags:
     - k8s-medium
