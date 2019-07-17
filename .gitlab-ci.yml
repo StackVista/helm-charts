@@ -3,9 +3,6 @@ image: alpine:latest
 stages:
   - lint-charts
 
-variables:
-  GITLAB_ACCESS_TOKEN: ${gitlab_access_token}
-
 before_script:
   # APK
   - apk add --no-cache curl
