@@ -5,9 +5,9 @@ stages:
 
 before_script:
   # APK
-  - apk add --no-cache curl
+  - apk add --no-cache bash curl openssl
   # Helm
-  - curl -fSL https://git.io/get_helm.sh | sh -
+  - curl -fSL https://git.io/get_helm.sh | bash -
   - helm init --client-only
   - helm plugin install https://github.com/chartmuseum/helm-push
   # K3s
