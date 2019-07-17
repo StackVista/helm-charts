@@ -1,7 +1,22 @@
-image: ubuntu:18.04
+image: alpine:latest
 
 stages:
   - lint-charts
+
+before_script:
+  # APK
+  - apk add --no-cache curl
+  # Helm
+  - helm init --client-only
+  - helm plugin install https://github.com/chartmuseum/helm-push
+  # K3s
+  - curl -fSL -o /usr/local/bin/k3s https://github.com/rancher/k3s/releases/download/v0.6.1/k3s
+  - chmod +x /usr/local/bin/k3s
+  - echo "127.0.1.1  $(hostname)" >> /etc/hosts
+  - k3s server > k3s-server.log 2>&1 &
+  - mkdir -p ~/.kube
+  - until test -e /etc/rancher/k3s/k3s.yaml ; do sleep 1 ; done
+  - cp /etc/rancher/k3s/k3s.yaml ~/.kube/config
 
 run-helm-lint:
   image: gcr.io/kubernetes-charts-ci/test-image:v3.3.2
@@ -9,4 +24,6 @@ run-helm-lint:
   script:
     - git remote add stackstate-helm https://oauth2:${GITLAB_ACCESS_TOKEN}@gitlab.com/stackvista/devops/helm-charts
     - git fetch stackstate-helm
-    - ct lint --config test/ct.yaml
+    - ct lint-and-install --config test/ct.yaml
+  tags:
+    - k8s-medium

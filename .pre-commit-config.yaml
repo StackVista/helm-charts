@@ -16,3 +16,7 @@ repos:
   rev: v0.0.9
   hooks:
     - id: helmlint
+- repo: git://github.com/kadrach/pre-commit-gitlabci-lint
+  rev: master
+  hooks:
+    - id: gitlabci-lint

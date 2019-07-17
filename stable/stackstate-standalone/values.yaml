@@ -4,7 +4,7 @@
 
 image:
   # image.repository -- Base container image registry.
-  repository: 508573134510.dkr.ecr.eu-west-1.amazonaws.com/stackstate
+  repository: stackstate/stackstate-standalone
   # image.tag -- Default container image tag.
   tag: master
   # image.pullPolicy -- Default container image pull policy.
