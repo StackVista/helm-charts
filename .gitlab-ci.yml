@@ -3,6 +3,9 @@ image: alpine:latest
 stages:
   - lint-charts
 
+variables:
+  GITLAB_ACCESS_TOKEN: ${gitlab_access_token}
+
 before_script:
   # APK
   - apk add --no-cache curl
@@ -22,7 +25,7 @@ run-helm-lint:
   image: gcr.io/kubernetes-charts-ci/test-image:v3.3.2
   stage: lint-charts
   script:
-    - git remote add stackstate-helm https://oauth2:$gitlab_access_token@gitlab.com/stackvista/devops/helm-charts
+    - git remote add stackstate-helm https://oauth2:$GITLAB_ACCESS_TOKEN@gitlab.com/stackvista/devops/helm-charts
     - git fetch stackstate-helm
     - ct lint-and-install --config test/ct.yaml
   tags:
