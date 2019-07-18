@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "stackstate-standalone.fullname" . }}
+  annotations:
+    checksum/application: {{ include (print $.Template.BasePath "/sts-standalone-configmap-application.yaml") . | sha256sum }}
+    checksum/license: {{ include (print $.Template.BasePath "/sts-standalone-configmap-license.yaml") . | sha256sum }}
+  labels:
+{{ include "stackstate-standalone.labels" . | indent 4 }}
+spec:
+  serviceName: {{ include "stackstate-standalone.fullname" . }}
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "stackstate-standalone.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "stackstate-standalone.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - args: ["start"]
+          name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: ui
+              containerPort: 7070
+              protocol: TCP
+            - name: receiver
+              containerPort: 7077
+              protocol: TCP
+            - name: admin
+              containerPort: 7071
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: ui
+              scheme: HTTP
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: ui
+              scheme: HTTP
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: application-stackstate-conf
+              mountPath: "/sts/stackstate/etc/application_stackstate.conf"
+              subPath: application_stackstate.conf
+            - name: license-conf
+              mountPath: "/sts/stackstate/etc/license.conf"
+              subPath: license.conf
+            {{- if .Values.persistence.enabled }}
+            - name: sts-stackstate
+              mountPath: "/sts/stackstate/var"
+            {{- end }}
+      volumes:
+        - name: application-stackstate-conf
+          configMap:
+            name: {{ include "stackstate-standalone.fullname" . }}-application
+        - name: license-conf
+          configMap:
+            name: {{ include "stackstate-standalone.fullname" . }}-license
+        {{- if .Values.persistence.enabled }}
+        - name: sts-stackstate
+          persistentVolumeClaim:
+            claimName: {{ include "stackstate-standalone.fullname" . }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

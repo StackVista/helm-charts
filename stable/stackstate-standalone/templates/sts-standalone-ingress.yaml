@@ -1,0 +1,45 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "stackstate-standalone.fullname" . -}}
+{{- $serviceAdminPort := .Values.service.admin.port -}}
+{{- $serviceReceiverPort := .Values.service.receiver.port -}}
+{{- $serviceUiPort := .Values.service.ui.port -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+{{ include "stackstate-standalone.labels" . | indent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if .Values.ingress.tls }}
+  tls:
+  {{- range .Values.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          - path: /?(.*)
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $serviceUiPort }}
+          - path: /receiver/?(.*)
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $serviceReceiverPort }}
+          - path: /admin/?(.*)
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $serviceAdminPort }}
+  {{- end }}
+{{- end }}

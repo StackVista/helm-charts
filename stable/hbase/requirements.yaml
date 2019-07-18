@@ -1,5 +1,0 @@
-dependencies:
-  - name: zookeeper
-    version: 3.0.6
-    repository: https://charts.bitnami.com
-    condition: zookeeper.enabled
