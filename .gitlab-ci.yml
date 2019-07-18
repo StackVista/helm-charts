@@ -16,8 +16,9 @@ before_script:
 
 validate:
   only:
-    refs:
-      - branches
+    - branches
+  except:
+    - master
   script:
     - git remote add helm https://oauth2:$GITLAB_ACCESS_TOKEN@gitlab.com/stackvista/devops/helm-charts
     - git fetch helm
@@ -30,8 +31,7 @@ push:
   dependencies:
     - validate
   only:
-    refs:
-      - master
+    - master
   script:
     - bash test/sync-repo.sh
   stage: build
