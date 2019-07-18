@@ -12,6 +12,7 @@ readonly STABLE_REPO_URL="https://helm.stackstate.io/"
 
 main() {
   setup_helm_client
+  setup_helm_repositories
 
   if ! sync_repo stable "$AWS_BUCKET_STABLE" "$STABLE_REPO_URL"; then
     log_error "Not all stable charts could be packaged and synced!"
