@@ -16,8 +16,8 @@ before_script:
 
 validate:
   only:
-    changes:
-      - stable/*
+    # changes:
+    #   - stable/*
     refs:
       - branches
   except:
