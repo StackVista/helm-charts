@@ -2,8 +2,28 @@ stackstate-standalone
 =====================
 Helm chart for StackState standlone -- all components running inside a single container.
 
-This chart's source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
+Current chart version is `0.1.0`
 
+Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
+
+
+
+## Required Values
+
+In order to successfully install this chart, you **must** provide the following variables:
+* `stackstate.license.key`
+* `stackstate.receiver.apiKey`
+* `stackstate.receiver.baseUrl`
+
+Install them on the command line on Helm with the following command:
+
+```shell
+helm install \
+--set stackstate.license.key=<your-license-key> \
+--set stackstate.receiver.apiKey=<your-api-key> \
+--set stackstate.receiver.baseUrl=<your-base-url> \
+stackstate/stackstate-standalone
+```
 
 ## Chart Values
 
