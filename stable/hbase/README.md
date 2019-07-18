@@ -1,6 +1,6 @@
 # HBase chart
 
-A chart to deploy Hbase with Hadoop using Kubernetes. Heavily inspired by the [Hadoop chart](https://github.com/kubernetes/charts/tree/master/stable/hadoop).
+A chart to deploy HBase with Hadoop using Kubernetes. Heavily inspired by the [Hadoop chart](https://github.com/kubernetes/charts/tree/master/stable/hadoop).
 
 ## How-to contribute
 
@@ -28,7 +28,7 @@ This chart is using several functionalities from Kubernetes.
   * Entrypoint for every component is the bash called `bootstrap.sh`, which is hold by the ConfigMap.
   * `bootstrap.sh` is copying the files in the ConfigMap to the right location, starting the daemon and tail the logs
 
-* [Headless Service](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services): In Kubernetes, every request to a pod a loadbalanced through a proxy by default. But Hbase is directly trying to connect to the RS, so by enabling headless mode, we can directly access the RS container.
+* [Headless Service](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services): In Kubernetes, every request to a pod a loadbalanced through a proxy by default. But HBase is directly trying to connect to the RS, so by enabling headless mode, we can directly access the RS container.
 
 * [StatefulSet](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/): it is used to deploy stateful applications to Kubernetes.
 
@@ -41,5 +41,5 @@ There's a YAML per role and per functionality. Binding is done through [Selector
 ## TODO
 
 * Namenode HA
-* Hbase Master HA
+* HBase Master HA
 * Include Zookeeper into the Charts
