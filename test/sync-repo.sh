@@ -4,10 +4,10 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-readonly HELM_URL=https://storage.googleapis.com/kubernetes-helm
-readonly HELM_TARBALL=helm-v2.14.2-linux-amd64.tar.gz
-readonly STABLE_REPO_URL=https://helm.stackstate.io/
-readonly AWS_BUCKET_STABLE=s3:///stseuw1-tooling-main-chartmuseum
+readonly AWS_BUCKET_STABLE="s3://stseuw1-tooling-main-chartmuseum"
+readonly HELM_TARBALL="helm-v2.14.2-linux-amd64.tar.gz"
+readonly HELM_URL="https://storage.googleapis.com/kubernetes-helm"
+readonly STABLE_REPO_URL="https://helm.stackstate.io/"
 
 main() {
     setup_helm_client
