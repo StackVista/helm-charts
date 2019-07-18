@@ -1,4 +1,4 @@
-remote: stackstate-helm
+remote: helm
 target-branch: master
 chart-dirs:
   - stable
