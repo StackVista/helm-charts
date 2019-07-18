@@ -29,6 +29,19 @@ setup_helm_client() {
   helm init --client-only
 }
 
+setup_helm_repositories() {
+  echo "Setting up Helm repositories..."
+
+  helm repo add bitnami https://charts.bitnami.com/
+  helm repo add gitlab https://charts.gitlab.io/
+  helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+  helm repo add jetstack https://charts.jetstack.io/
+  helm repo add jfrog https://charts.jfrog.io/
+
+  echo "Updating Helm repository indexes..."
+  helm repo update
+}
+
 sync_repo() {
   local repo_dir="${1?Specify repo dir}"
   local bucket="${2?Specify repo bucket}"
