@@ -2,7 +2,7 @@ apiVersion: v1
 description: HBase Helm to deploy the distributed versions of warp10
 name: hbase
 version: 1.0.4
-appVersion: 2.7.3
+appVersion: 0.0.9
 hbase.version: 1.4.2
 home: https://hadoop.apache.org/
 sources:
