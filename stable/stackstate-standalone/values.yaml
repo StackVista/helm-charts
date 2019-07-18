@@ -1,0 +1,121 @@
+#####################
+# General variables #
+#####################
+
+image:
+  # image.repository -- Base container image registry.
+  repository: stackstate/stackstate-standalone
+  # image.tag -- Default container image tag.
+  tag: master
+  # image.pullPolicy -- Default container image pull policy.
+  pullPolicy: IfNotPresent
+
+# imagePullSecrets -- Extra secrets / credentials needed for container image registry.
+imagePullSecrets: []
+
+# nameOverride -- Override the name of the chart.
+nameOverride: ""
+# fullnameOverride -- Override the fullname of the chart.
+fullnameOverride: ""
+
+ingress:
+  # ingress.annotations -- Annotations for ingress objects.
+  annotations: {}
+  # ingress.enabled -- Enable use of ingress controllers.
+  enabled: false
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # ingress.hosts -- List of ingress hostnames; the paths are fixed to StackState backend services
+  hosts: []
+    # - host: stackstate.local
+  # ingress.tls -- List of ingress TLS certificates to use.
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - stackstate.local
+
+livenessProbe:
+  # livenessProbe.enabled -- Enable use of livenessProbe check.
+  enabled: true
+  # livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
+  failureThreshold: 3
+  # livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
+  initialDelaySeconds: 120
+  # livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
+  periodSeconds: 10
+  # livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
+  successThreshold: 1
+  # livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
+  timeoutSeconds: 2
+
+readinessProbe:
+  # readinessProbe.enabled -- Enable use of readinessProbe check.
+  enabled: true
+  # readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
+  failureThreshold: 3
+  # readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
+  initialDelaySeconds: 120
+  # readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
+  periodSeconds: 10
+  # readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
+  successThreshold: 1
+  # readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
+  timeoutSeconds: 2
+
+persistence:
+  # persistence.accessMode -- Access mode of the persistent volume claim.
+  accessMode: ReadWriteOnce
+  # persistence.enabled -- Enable use of persistence.
+  enabled: false
+  # persistence.size -- Size (in GiB) of the persistent volume.
+  size: 8Gi
+  # persistence.storageClass -- Name of the storage class to use for the persistent volume.
+  storageClass: "-"
+
+resources:
+  limits:
+    # resources.limits.cpu -- CPU resource limits.
+    cpu: 2
+    # resources.limits.memory -- Memory resource limits.
+    memory: 8Gi
+  requests:
+    # resources.requests.cpu -- CPU resource requests.
+    cpu: 1
+    # resources.requests.memory -- Memory resource requests.
+    memory: 2Gi
+
+service:
+  ui:
+    # service.ui.port -- The default port for the StackState UI.
+    port: 7070
+  receiver:
+    # service.receiver.port -- The default port for the StackState Receiver.
+    port: 7077
+  admin:
+    # service.admin.port -- The default port for the StackState Administration area.
+    port: 7071
+  # service.type -- The Kubernetes 'Service' type to use.
+  type: ClusterIP
+
+# nodeSelector -- Node labels for pod assignment.
+nodeSelector: {}
+
+# tolerations -- Toleration labels for pod assignment.
+tolerations: []
+
+# affinity -- Affinity settings for pod assignment.
+affinity: {}
+
+########################
+# StackState variables #
+########################
+
+stackstate:
+  license:
+    # stackstate.license.key -- (string) **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server.
+    key:
+  receiver:
+    # stackstate.receiver.apiKey -- (string) **PROVIDE YOUR API KEY HERE** API key to be used by all StackState agents.
+    apiKey:
+    # stackstate.receiver.baseUrl -- (string) **PROVIDE YOUR BASEURL HERE** Externally visible baseUrl of the StackState endpoints.
+    baseUrl:
