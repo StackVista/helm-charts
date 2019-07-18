@@ -15,6 +15,9 @@ before_script:
   - helm plugin install https://github.com/lrills/helm-unittest
 
 validate:
+  only:
+    refs:
+      - branches
   script:
     - git remote add helm https://oauth2:$GITLAB_ACCESS_TOKEN@gitlab.com/stackvista/devops/helm-charts
     - git fetch helm
