@@ -1,5 +1,14 @@
 apiVersion: v1
-appVersion: "1.0"
-description: A Helm chart for Kubernetes
-name: stackstate-agent
+appVersion: 2.0.3
 version: 0.1.0
+description: StackState agent running in Kubernetes
+keywords:
+  - aiops
+  - monitoring
+  - stackstate
+home: https://gitlab.com/stackvista/devops/helm-charts.git
+icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
+maintainers:
+  - name: sc250024
+    email: scrooks@stackstate.com
+name: stackstate-agent
