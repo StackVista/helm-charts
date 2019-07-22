@@ -1,48 +1,22 @@
-# stackstate:
-#   license:
-#     key: 0000-0000-0000
-#   receiver:
-#     apiKey: aNjmeCuLqRrCtdPvbk3bV9zgzdCrhCxm
-#     baseUrl: https://some-test-url.stackstate.io
-# ingress:
-#   enabled: true
-#   hosts:
-#     - host: some-test-url.stackstate.io
-#     - host: alternative-url.stackstate.com
-#   tls:
-#     - secretName: some-test-url-stackstate-io-tls-secret
-#       hosts:
-#         - some-test-url.stackstate.io
-#     - secretName: alternative-url-stackstate-com-tls-secret
-#       hosts:
-#         - alternative-url.stackstate.com
-# persistence:
-#   enabled: true
-#   size: 20Gi
-#   storageClass: gp2
-
 stackstate:
   license:
-    key: 89B30-03X84-D33B3
+    key: 0000-0000-0000
   receiver:
     apiKey: aNjmeCuLqRrCtdPvbk3bV9zgzdCrhCxm
-    baseUrl: https://stackstate-standalone-test.stackstate.io
+    baseUrl: https://some-test-url.stackstate.io
 ingress:
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: "stackstate-standalone-test.stackstate.io,alternative-stackstate-standalone-test.stackstate.com"
-    kubernetes.io/ingress.class: ingress-nginx-external
   enabled: true
   hosts:
-    - host: stackstate-standalone-test.stackstate.io
-    - host: alternative-stackstate-standalone-test.stackstate.com
+    - host: some-test-url.stackstate.io
+    - host: alternative-url.stackstate.com
   tls:
-    - secretName: star-stackstate-io-tls
+    - secretName: some-test-url-stackstate-io-tls-secret
       hosts:
-        - stackstate-standalone-test.stackstate.io
-    - secretName: star-stackstate-com-tls
+        - some-test-url.stackstate.io
+    - secretName: alternative-url-stackstate-com-tls-secret
       hosts:
-        - alternative-stackstate-standalone-test.stackstate.com
+        - alternative-url.stackstate.com
 persistence:
-  enabled: false
+  enabled: true
   size: 20Gi
   storageClass: gp2
