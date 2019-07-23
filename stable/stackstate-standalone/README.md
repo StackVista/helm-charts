@@ -2,7 +2,7 @@ stackstate-standalone
 =====================
 Helm chart for StackState standlone -- all components running inside a single container.
 
-Current chart version is `0.1.0`
+Current chart version is `0.1.2`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -32,8 +32,8 @@ stackstate/stackstate-standalone
 | affinity | object | {} | Affinity settings for pod assignment. |
 | fullnameOverride | string | "" | Override the fullname of the chart. |
 | image.pullPolicy | string | "IfNotPresent" | Default container image pull policy. |
-| image.repository | string | "stackstate/stackstate-standalone" | Base container image registry. |
-| image.tag | string | "master" | Default container image tag. |
+| image.repository | string | "508573134510.dkr.ecr.eu-west-1.amazonaws.com/stackstate" | Base container image registry. |
+| image.tag | string | "sts-v1-14-9-1" | Default container image tag. |
 | imagePullSecrets | list | [] | Extra secrets / credentials needed for container image registry. |
 | ingress.annotations | object | {} | Annotations for ingress objects. |
 | ingress.enabled | bool | false | Enable use of ingress controllers. |
@@ -49,18 +49,18 @@ stackstate/stackstate-standalone
 | nodeSelector | object | {} | Node labels for pod assignment. |
 | persistence.accessMode | string | "ReadWriteOnce" | Access mode of the persistent volume claim. |
 | persistence.enabled | bool | false | Enable use of persistence. |
-| persistence.size | string | "8Gi" | Size (in GiB) of the persistent volume. |
-| persistence.storageClass | string | "-" | Name of the storage class to use for the persistent volume. |
+| persistence.size | string | "20Gi" | Size (in GiB) of the persistent volume. |
+| persistence.storageClass | string | "gp2" | Name of the storage class to use for the persistent volume. |
 | readinessProbe.enabled | bool | true | Enable use of readinessProbe check. |
 | readinessProbe.failureThreshold | int | 3 | `failureThreshold` for the readiness probe. |
 | readinessProbe.initialDelaySeconds | int | 120 | `initialDelaySeconds` for the readiness probe. |
 | readinessProbe.periodSeconds | int | 10 | `periodSeconds` for the readiness probe. |
 | readinessProbe.successThreshold | int | 1 | `successThreshold` for the readiness probe. |
 | readinessProbe.timeoutSeconds | int | 2 | `timeoutSeconds` for the readiness probe. |
-| resources.limits.cpu | int | 2 | CPU resource limits. |
+| resources.limits.cpu | string | "3" | CPU resource limits. |
 | resources.limits.memory | string | "8Gi" | Memory resource limits. |
-| resources.requests.cpu | int | 1 | CPU resource requests. |
-| resources.requests.memory | string | "2Gi" | Memory resource requests. |
+| resources.requests.cpu | string | "2" | CPU resource requests. |
+| resources.requests.memory | string | "4Gi" | Memory resource requests. |
 | service.admin.port | int | 7071 | The default port for the StackState Administration area. |
 | service.receiver.port | int | 7077 | The default port for the StackState Receiver. |
 | service.type | string | "ClusterIP" | The Kubernetes 'Service' type to use. |

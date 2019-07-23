@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ include "stackstate-standalone.fullname" . }}
   annotations:
@@ -8,7 +8,6 @@ metadata:
   labels:
 {{ include "stackstate-standalone.labels" . | indent 4 }}
 spec:
-  serviceName: {{ include "stackstate-standalone.fullname" . }}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
@@ -41,8 +40,8 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
-              port: ui
+              path: /health
+              port: admin
               scheme: HTTP
             failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
@@ -51,8 +50,8 @@ spec:
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           readinessProbe:
             httpGet:
-              path: /
-              port: ui
+              path: /health
+              port: admin
               scheme: HTTP
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
