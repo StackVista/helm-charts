@@ -33,13 +33,13 @@ spec:
             backend:
               serviceName: {{ $fullName }}
               servicePort: {{ $serviceUiPort }}
-          - path: /receiver/?(.*)
-            backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $serviceReceiverPort }}
           - path: /admin/?(.*)
             backend:
               serviceName: {{ $fullName }}
               servicePort: {{ $serviceAdminPort }}
+          - path: /receiver/?(.*)
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $serviceReceiverPort }}
   {{- end }}
 {{- end }}

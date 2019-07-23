@@ -4,9 +4,9 @@
 
 image:
   # image.repository -- Base container image registry.
-  repository: stackstate/stackstate-standalone
+  repository: 508573134510.dkr.ecr.eu-west-1.amazonaws.com/stackstate
   # image.tag -- Default container image tag.
-  tag: master
+  tag: sts-v1-14-9-1
   # image.pullPolicy -- Default container image pull policy.
   pullPolicy: IfNotPresent
 
@@ -68,21 +68,21 @@ persistence:
   # persistence.enabled -- Enable use of persistence.
   enabled: false
   # persistence.size -- Size (in GiB) of the persistent volume.
-  size: 8Gi
+  size: 20Gi
   # persistence.storageClass -- Name of the storage class to use for the persistent volume.
-  storageClass: "-"
+  storageClass: gp2
 
 resources:
   limits:
     # resources.limits.cpu -- CPU resource limits.
-    cpu: 2
+    cpu: "3"
     # resources.limits.memory -- Memory resource limits.
     memory: 8Gi
   requests:
     # resources.requests.cpu -- CPU resource requests.
-    cpu: 1
+    cpu: "2"
     # resources.requests.memory -- Memory resource requests.
-    memory: 2Gi
+    memory: 4Gi
 
 service:
   ui:
