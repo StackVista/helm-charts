@@ -43,3 +43,15 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
+
+{{/*
+GitLab annotations
+*/}}
+{{- define "gitlab.annotations" -}}
+{{- if .Values.gitlab.app }}
+app.gitlab.com/app: {{ .Values.gitlab.app | quote }}
+{{- end }}
+{{- if .Values.gitlab.env }}
+app.gitlab.com/env: {{ .Values.gitlab.env | quote }}
+{{- end }}
+{{- end -}}

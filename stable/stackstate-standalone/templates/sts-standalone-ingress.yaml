@@ -9,8 +9,9 @@ metadata:
   name: {{ $fullName }}
   labels:
 {{ include "stackstate-standalone.labels" . | indent 4 }}
-  {{- with .Values.ingress.annotations }}
   annotations:
+    {{ include "gitlab.annotations" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
