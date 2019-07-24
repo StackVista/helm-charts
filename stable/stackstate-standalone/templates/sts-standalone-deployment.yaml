@@ -34,6 +34,15 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+    {{- if .Values.persistence.enabled }}
+      initContainers:
+      - name: {{ .Chart.Name }}-volume-mount-fix
+        image: busybox
+        command: ["sh", "-c", "chown -R 1000:1000 /sts/stackstate/var"]
+        volumeMounts:
+        - name: sts-stackstate
+          mountPath: "/sts/stackstate/var"
+    {{- end }}
       containers:
         - args: ["start"]
           name: {{ .Chart.Name }}
