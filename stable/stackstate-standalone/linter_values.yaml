@@ -1,3 +1,6 @@
+gitlab:
+  app: stac-0000
+  env: test
 image:
   pullPolicy: Always
   repository: stackstate/stackstate-standalone

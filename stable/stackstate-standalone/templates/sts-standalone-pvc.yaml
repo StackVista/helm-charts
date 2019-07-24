@@ -3,8 +3,9 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ include "stackstate-standalone.fullname" . }}
-  {{- with .Values.persistence.annotations }}
   annotations:
+    {{ include "gitlab.annotations" . | nindent 4 }}
+  {{- with .Values.persistence.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:

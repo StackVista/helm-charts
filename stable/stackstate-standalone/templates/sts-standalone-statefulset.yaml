@@ -1,6 +1,6 @@
-{{- if not .Values.persistence.enabled }}
+{{- if .Values.persistence.enabled }}
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "stackstate-standalone.fullname" . }}
   annotations:
@@ -13,6 +13,7 @@ metadata:
   labels:
 {{ include "stackstate-standalone.labels" . | indent 4 }}
 spec:
+  serviceName: {{ include "stackstate-standalone.fullname" . }}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
@@ -33,6 +34,13 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+      initContainers:
+        - name: {{ .Chart.Name }}-volume-mount-fix
+          image: busybox
+          command: ["sh", "-c", "chown -R 1000:1000 /sts/stackstate/var"]
+          volumeMounts:
+          - name: sts-stackstate
+            mountPath: "/sts/stackstate/var"
       containers:
         - args: ["start"]
           name: {{ .Chart.Name }}
@@ -77,6 +85,8 @@ spec:
             - name: license-conf
               mountPath: "/sts/stackstate/etc/license.conf"
               subPath: license.conf
+            - name: sts-stackstate
+              mountPath: "/sts/stackstate/var"
       volumes:
         - name: application-stackstate-conf
           configMap:
@@ -84,6 +94,9 @@ spec:
         - name: license-conf
           configMap:
             name: {{ include "stackstate-standalone.fullname" . }}-license
+        - name: sts-stackstate
+          persistentVolumeClaim:
+            claimName: {{ include "stackstate-standalone.fullname" . }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

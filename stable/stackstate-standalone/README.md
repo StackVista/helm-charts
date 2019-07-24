@@ -2,7 +2,7 @@ stackstate-standalone
 =====================
 Helm chart for StackState standlone -- all components running inside a single container.
 
-Current chart version is `0.1.4`
+Current chart version is `0.2.0`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
