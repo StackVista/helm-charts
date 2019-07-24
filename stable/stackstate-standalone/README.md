@@ -2,7 +2,7 @@ stackstate-standalone
 =====================
 Helm chart for StackState standlone -- all components running inside a single container.
 
-Current chart version is `0.1.2`
+Current chart version is `0.1.3`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -30,7 +30,10 @@ stackstate/stackstate-standalone
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | {} | Affinity settings for pod assignment. |
+| deployment.annotations | object | {} | Annotations to attach to the `Deployment` object. |
 | fullnameOverride | string | "" | Override the fullname of the chart. |
+| gitlab.app | string | "" | If CI is GitLab, specify the `app` for annotations. |
+| gitlab.env | string | "" | If CI is GitLab, specify the `env` for annotations. |
 | image.pullPolicy | string | "IfNotPresent" | Default container image pull policy. |
 | image.repository | string | "508573134510.dkr.ecr.eu-west-1.amazonaws.com/stackstate" | Base container image registry. |
 | image.tag | string | "sts-v1-14-9-1" | Default container image tag. |
@@ -48,9 +51,11 @@ stackstate/stackstate-standalone
 | nameOverride | string | "" | Override the name of the chart. |
 | nodeSelector | object | {} | Node labels for pod assignment. |
 | persistence.accessMode | string | "ReadWriteOnce" | Access mode of the persistent volume claim. |
+| persistence.annotations | object | {} | Annotations to attach to the `PersistentVolumeClaim` object. |
 | persistence.enabled | bool | false | Enable use of persistence. |
 | persistence.size | string | "20Gi" | Size (in GiB) of the persistent volume. |
 | persistence.storageClass | string | "gp2" | Name of the storage class to use for the persistent volume. |
+| pod.annotations | object | {} | Annotations to attach to the `Pod` object(s). |
 | readinessProbe.enabled | bool | true | Enable use of readinessProbe check. |
 | readinessProbe.failureThreshold | int | 3 | `failureThreshold` for the readiness probe. |
 | readinessProbe.initialDelaySeconds | int | 120 | `initialDelaySeconds` for the readiness probe. |
@@ -62,6 +67,7 @@ stackstate/stackstate-standalone
 | resources.requests.cpu | string | "2" | CPU resource requests. |
 | resources.requests.memory | string | "4Gi" | Memory resource requests. |
 | service.admin.port | int | 7071 | The default port for the StackState Administration area. |
+| service.annotations | object | {} | Annotations to attach to the `Service` object. |
 | service.receiver.port | int | 7077 | The default port for the StackState Receiver. |
 | service.type | string | "ClusterIP" | The Kubernetes 'Service' type to use. |
 | service.ui.port | int | 7070 | The default port for the StackState UI. |

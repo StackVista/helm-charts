@@ -2,6 +2,16 @@
 # General variables #
 #####################
 
+deployment:
+  # deployment.annotations -- Annotations to attach to the `Deployment` object.
+  annotations: {}
+
+gitlab:
+  # gitlab.app -- If CI is GitLab, specify the `app` for annotations.
+  app: ""
+  # gitlab.env -- If CI is GitLab, specify the `env` for annotations.
+  env: ""
+
 image:
   # image.repository -- Base container image registry.
   repository: 508573134510.dkr.ecr.eu-west-1.amazonaws.com/stackstate
@@ -48,6 +58,10 @@ livenessProbe:
   # livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
   timeoutSeconds: 2
 
+pod:
+  # pod.annotations -- Annotations to attach to the `Pod` object(s).
+  annotations: {}
+
 readinessProbe:
   # readinessProbe.enabled -- Enable use of readinessProbe check.
   enabled: true
@@ -65,6 +79,8 @@ readinessProbe:
 persistence:
   # persistence.accessMode -- Access mode of the persistent volume claim.
   accessMode: ReadWriteOnce
+  # persistence.annotations -- Annotations to attach to the `PersistentVolumeClaim` object.
+  annotations: {}
   # persistence.enabled -- Enable use of persistence.
   enabled: false
   # persistence.size -- Size (in GiB) of the persistent volume.
@@ -85,6 +101,8 @@ resources:
     memory: 4Gi
 
 service:
+  # service.annotations -- Annotations to attach to the `Service` object.
+  annotations: {}
   ui:
     # service.ui.port -- The default port for the StackState UI.
     port: 7070

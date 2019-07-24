@@ -5,6 +5,11 @@ metadata:
   annotations:
     checksum/application: {{ include (print $.Template.BasePath "/sts-standalone-configmap-application.yaml") . | sha256sum }}
     checksum/license: {{ include (print $.Template.BasePath "/sts-standalone-configmap-license.yaml") . | sha256sum }}
+    {{ if .Values.gitlab.app }}app.gitlab.com/app: {{ .Values.gitlab.app | quote }}{{ end }}
+    {{ if .Values.gitlab.env }}app.gitlab.com/env: {{ .Values.gitlab.env | quote }}{{ end }}
+  {{- with .Values.deployment.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   labels:
 {{ include "stackstate-standalone.labels" . | indent 4 }}
 spec:
@@ -15,6 +20,12 @@ spec:
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
+      annotations:
+        {{ if .Values.gitlab.app }}app.gitlab.com/app: {{ .Values.gitlab.app | quote }}{{ end }}
+        {{ if .Values.gitlab.env }}app.gitlab.com/env: {{ .Values.gitlab.env | quote }}{{ end }}
+      {{- with .Values.pod.annotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
         app.kubernetes.io/name: {{ include "stackstate-standalone.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
