@@ -1,0 +1,28 @@
+{{ template "chart.header" . }}
+{{ template "chart.description" . }}
+
+{{ template "chart.versionLine" . }}
+
+{{ template "chart.sourceLinkLine" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+## Required Values
+
+In order to successfully install this chart, you **must** provide the following variables:
+
+* `stackstate.apiKey`
+* `stackstate.process.agent.url`
+* `stackstate.url`
+
+Install them on the command line on Helm with the following command:
+
+```shell
+helm install \
+--set stackstate.apiKey=<your-api-key> \
+--set stackstate.process.agent.url=<your-process-agent-url> \
+--set stackstate.url=<your-stackstate-url> \
+stackstate/agent
+```
+
+{{ template "chart.valuesSection" . }}
