@@ -1,0 +1,6 @@
+stackstate:
+  apiKey: ugWjTFNN7zLjnXtn9CvduPksqssPwpMa
+  process:
+    agent:
+      url: https://some-stackstate-installation.mycompany.com
+  url: https://some-stackstate-installation.mycompany.com
