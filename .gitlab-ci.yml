@@ -16,8 +16,8 @@ before_script:
 
 validate:
   only:
-    # changes:
-    #   - stable/*
+    changes:
+      - stable/*
     refs:
       - branches
   except:
@@ -35,6 +35,8 @@ push:
   dependencies:
     - validate
   only:
+    changes:
+      - stable/*
     refs:
       - master
   script:

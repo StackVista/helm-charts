@@ -1,1 +1,37 @@
-../linter_values.yaml
+gitlab:
+  app: stac-0000
+  env: test
+image:
+  pullPolicy: Always
+  repository: stackstate/stackstate-standalone
+  tag: master
+ingress:
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: some-test-url.stackstate.io
+    kubernetes.io/ingress.class: ingress-nginx-external
+    nginx.ingress.kubernetes.io/ingress.class: ingress-nginx-external
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  enabled: true
+  hosts:
+    - host: some-test-url.stackstate.io
+  tls:
+    - secretName: star-stackstate-io-tls
+      hosts:
+        - some-test-url.stackstate.io
+persistence:
+  enabled: false
+  size: 20Gi
+  storageClass: gp2
+resources:
+  limits:
+    cpu: "3"
+    memory: 8Gi
+  requests:
+    cpu: "2"
+    memory: 4Gi
+stackstate:
+  license:
+    key: 00000-00000-00000
+  receiver:
+    apiKey: aNjmeCuLqRrCtdPvbk3bV9zgzdCrhCxm
+    baseUrl: https://some-test-url.stackstate.io
