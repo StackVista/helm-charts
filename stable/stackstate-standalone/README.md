@@ -2,7 +2,7 @@ stackstate-standalone
 =====================
 Helm chart for StackState standlone -- all components running inside a single container.
 
-Current chart version is `0.2.0`
+Current chart version is `0.2.1`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -41,6 +41,9 @@ stackstate/stackstate-standalone
 | ingress.annotations | object | {} | Annotations for ingress objects. |
 | ingress.enabled | bool | false | Enable use of ingress controllers. |
 | ingress.hosts | list | [] | List of ingress hostnames; the paths are fixed to StackState backend services |
+| ingress.path.admin | string | "/admin/?(.*)" | Ingress path to the admin service. |
+| ingress.path.receiver | string | "/receiver/?(.*)" | Ingress path to the receiver service. |
+| ingress.path.ui | string | "/?(.*)" | Ingress path to the base UI. |
 | ingress.tls | list | [] | List of ingress TLS certificates to use. |
 | livenessProbe.enabled | bool | true | Enable use of livenessProbe check. |
 | livenessProbe.failureThreshold | int | 3 | `failureThreshold` for the liveness probe. |

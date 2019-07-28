@@ -38,6 +38,13 @@ ingress:
   # ingress.hosts -- List of ingress hostnames; the paths are fixed to StackState backend services
   hosts: []
     # - host: stackstate.local
+  path:
+    # ingress.path.admin -- Ingress path to the admin service.
+    admin: /admin/?(.*)
+    # ingress.path.receiver -- Ingress path to the receiver service.
+    receiver: /receiver/?(.*)
+    # ingress.path.ui -- Ingress path to the base UI.
+    ui: /?(.*)
   # ingress.tls -- List of ingress TLS certificates to use.
   tls: []
   #  - secretName: chart-example-tls
