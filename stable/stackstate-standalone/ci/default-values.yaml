@@ -30,6 +30,8 @@ resources:
     cpu: "2"
     memory: 4Gi
 stackstate:
+  demoData:
+    enabled: true
   license:
     key: 00000-00000-00000
   receiver:

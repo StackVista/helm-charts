@@ -55,3 +55,27 @@ app.gitlab.com/app: {{ .Values.gitlab.app | quote }}
 app.gitlab.com/env: {{ .Values.gitlab.env | quote }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Demo data lifecycle hook
+*/}}
+{{- define "stackstate-standalone.demoData.lifecycle" -}}
+{{- if .Values.stackstate.demoData.enabled }}
+lifecycle:
+  postStart:
+    exec:
+      command: ["/bin/bash", "/sts/stackstate/bin/branch-deploy.sh"]
+{{- end }}
+{{- end -}}
+
+{{/*
+StackState required environment variables
+*/}}
+{{- define "stackstate-standalone.requiredEnvVars" }}
+- name: STACKSTATE_LICENSE_KEY
+  value: {{ .Values.stackstate.license.key | quote }}
+- name: STACKSTATE_RECEIVER_API_KEY
+  value: {{ .Values.stackstate.receiver.apiKey | quote }}
+- name: STACKSTATE_RECEIVER_BASE_URL
+  value: {{ .Values.stackstate.receiver.baseUrl | quote }}
+{{- end }}
