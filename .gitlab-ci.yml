@@ -32,11 +32,7 @@ validate:
     - k8s-medium
 
 push:
-  dependencies:
-    - validate
   only:
-    changes:
-      - stable/*
     refs:
       - master
   script:

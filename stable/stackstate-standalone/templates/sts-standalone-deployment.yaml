@@ -4,9 +4,7 @@ kind: Deployment
 metadata:
   name: {{ include "stackstate-standalone.fullname" . }}
   annotations:
-    checksum/application: {{ include (print $.Template.BasePath "/sts-standalone-configmap-application.yaml") . | sha256sum }}
-    checksum/license: {{ include (print $.Template.BasePath "/sts-standalone-configmap-license.yaml") . | sha256sum }}
-    {{ include "gitlab.annotations" . | nindent 4 }}
+    {{- include "gitlab.annotations" . | nindent 4 }}
   {{- with .Values.deployment.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -21,7 +19,8 @@ spec:
   template:
     metadata:
       annotations:
-      {{ include "gitlab.annotations" . | nindent 6 }}
+      {{- include "gitlab.annotations" . | nindent 6 }}
+      {{- include "stackstate-standalone.checksum-configs" . | nindent 6 }}
       {{- with .Values.pod.annotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
