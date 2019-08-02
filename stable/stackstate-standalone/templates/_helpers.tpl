@@ -72,10 +72,23 @@ lifecycle:
 StackState required environment variables
 */}}
 {{- define "stackstate-standalone.requiredEnvVars" }}
-- name: STACKSTATE_LICENSE_KEY
-  value: {{ .Values.stackstate.license.key | quote }}
-- name: STACKSTATE_RECEIVER_API_KEY
-  value: {{ .Values.stackstate.receiver.apiKey | quote }}
-- name: STACKSTATE_RECEIVER_BASE_URL
+- name: API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "stackstate-standalone.fullname" . }}
+      key: sts-receiver-api-key
+- name: LICENSE_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "stackstate-standalone.fullname" . }}
+      key: sts-license-key
+- name: RECEIVER_BASE_URL
   value: {{ .Values.stackstate.receiver.baseUrl | quote }}
+{{- end }}
+
+{{/*
+Checksum annotations
+*/}}
+{{- define "stackstate-standalone.checksum-configs" }}
+checksum/config: {{ include (print $.Template.BasePath "/sts-standalone-secret.yaml") . | sha256sum }}
 {{- end }}
