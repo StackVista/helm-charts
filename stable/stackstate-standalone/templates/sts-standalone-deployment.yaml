@@ -72,20 +72,6 @@ spec:
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          volumeMounts:
-            - name: application-stackstate-conf
-              mountPath: "/sts/stackstate/etc/application_stackstate.conf"
-              subPath: application_stackstate.conf
-            - name: license-conf
-              mountPath: "/sts/stackstate/etc/license.conf"
-              subPath: license.conf
-      volumes:
-        - name: application-stackstate-conf
-          configMap:
-            name: {{ include "stackstate-standalone.fullname" . }}-application
-        - name: license-conf
-          configMap:
-            name: {{ include "stackstate-standalone.fullname" . }}-license
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
