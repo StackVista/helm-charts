@@ -1,0 +1,4 @@
+steward:
+  gitlab:
+    apiToken: some-gitlab-api-token
+  logLevel: debug

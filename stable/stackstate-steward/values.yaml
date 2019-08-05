@@ -1,0 +1,67 @@
+#####################
+# General variables #
+#####################
+
+# backoffLimit -- For failed jobs, how many times to retry.
+backoffLimit: 3
+# failedJobsHistoryLimit -- The number of failed CronJob executions that are saved.
+failedJobsHistoryLimit: 5
+# successfulJobsHistoryLimit -- The number of successful CronJob executions that are saved.
+successfulJobsHistoryLimit: 5
+# restartPolicy -- For failed jobs, how to handle restarts.
+restartPolicy: OnFailure
+# schedule -- Default schedule for this CronJob.
+schedule: "*/10 * * * *"
+
+image:
+  # image.repository -- Base container image registry.
+  repository: stackstate/steward
+  # image.tag -- Default container image tag.
+  tag: v0.1.0
+  # image.pullPolicy -- Default container image pull policy.
+  pullPolicy: Always
+
+# imagePullSecrets -- Extra secrets / credentials needed for container image registry.
+imagePullSecrets: []
+# nameOverride -- Override the name of the chart.
+nameOverride: ""
+# fullnameOverride -- Override the fullname of the chart.
+fullnameOverride: ""
+
+resources:
+  limits:
+    # resources.limits.cpu -- CPU resource limits.
+    cpu: "100m"
+    # resources.limits.memory -- Memory resource limits.
+    memory: "128Mi"
+  requests:
+    # resources.requests.cpu -- CPU resource requests.
+    cpu: "100m"
+    # resources.requests.memory -- Memory resource requests.
+    memory: "128Mi"
+
+# nodeSelector -- Node labels for pod assignment.
+nodeSelector: {}
+
+# tolerations -- Toleration labels for pod assignment.
+tolerations: []
+
+# affinity -- Affinity settings for pod assignment.
+affinity: {}
+
+########################
+# StackState variables #
+########################
+
+steward:
+  # steward.dryRun -- Show which environments *would be* stopped, but don't actually stop them.
+  dryRun: "False"
+  gitlab:
+    # steward.gitlab.apiToken -- (string) **REQUIRED** The GitLab API token.
+    apiToken:
+  # steward.logLevel -- The logging level of the application; one of 'debug', 'info', or 'warning'
+  logLevel: ""
+  # steward.maxDuration -- Amount of time (in days) before an environment is stopped.
+  maxDuration: 2
+  # stackstateProject -- The StackState project to scan for environments.
+  stackstateProject: stackstate
