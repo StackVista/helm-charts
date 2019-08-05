@@ -32,15 +32,15 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
-          - path: {{ $dot.Values.ingress.path.ui }}
+          - path: {{ $dot.Values.ingress.path.ui }}?(.*)
             backend:
               serviceName: {{ $fullName }}
               servicePort: {{ $serviceUiPort }}
-          - path: {{ $dot.Values.ingress.path.admin }}
+          - path: {{ $dot.Values.ingress.path.admin }}/?(.*)
             backend:
               serviceName: {{ $fullName }}
               servicePort: {{ $serviceAdminPort }}
-          - path: {{ $dot.Values.ingress.path.receiver }}
+          - path: {{ $dot.Values.ingress.path.receiver }}/?(.*)
             backend:
               serviceName: {{ $fullName }}
               servicePort: {{ $serviceReceiverPort }}
