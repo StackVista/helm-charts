@@ -40,11 +40,11 @@ ingress:
     # - host: stackstate.local
   path:
     # ingress.path.admin -- Ingress path to the admin service.
-    admin: /admin/?(.*)
+    admin: /admin
     # ingress.path.receiver -- Ingress path to the receiver service.
-    receiver: /receiver/?(.*)
+    receiver: /receiver
     # ingress.path.ui -- Ingress path to the base UI.
-    ui: /?(.*)
+    ui: /
   # ingress.tls -- List of ingress TLS certificates to use.
   tls: []
   #  - secretName: chart-example-tls
@@ -143,7 +143,7 @@ stackstate:
     # stackstate.license.key -- (string) **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server.
     key:
   receiver:
-    # stackstate.receiver.apiKey -- (string) **PROVIDE YOUR API KEY HERE** API key to be used by all StackState agents.
-    apiKey:
-    # stackstate.receiver.baseUrl -- (string) **PROVIDE YOUR BASEURL HERE** Externally visible baseUrl of the StackState endpoints.
+    # stackstate.receiver.apiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
+    apiKey: ""
+    # stackstate.receiver.baseUrl -- (string) **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of the StackState endpoints.
     baseUrl:

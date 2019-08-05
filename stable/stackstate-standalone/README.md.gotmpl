@@ -11,7 +11,6 @@
 
 In order to successfully install this chart, you **must** provide the following variables:
 * `stackstate.license.key`
-* `stackstate.receiver.apiKey`
 * `stackstate.receiver.baseUrl`
 
 Install them on the command line on Helm with the following command:
@@ -19,7 +18,6 @@ Install them on the command line on Helm with the following command:
 ```shell
 helm install \
 --set stackstate.license.key=<your-license-key> \
---set stackstate.receiver.apiKey=<your-api-key> \
 --set stackstate.receiver.baseUrl=<your-base-url> \
 stackstate/stackstate-standalone
 ```

@@ -3,7 +3,7 @@ gitlab:
   env: test
 image:
   pullPolicy: Always
-  repository: stackstate/stackstate-standalone
+  repository: 508573134510.dkr.ecr.eu-west-1.amazonaws.com/stackstate
   tag: master
 ingress:
   annotations:
@@ -35,5 +35,4 @@ stackstate:
   license:
     key: 00000-00000-00000
   receiver:
-    apiKey: aNjmeCuLqRrCtdPvbk3bV9zgzdCrhCxm
     baseUrl: https://some-test-url.stackstate.io

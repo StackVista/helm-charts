@@ -2,7 +2,7 @@ stackstate-standalone
 =====================
 Helm chart for StackState standlone -- all components running inside a single container.
 
-Current chart version is `0.3.1`
+Current chart version is `0.3.2`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -12,7 +12,6 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 
 In order to successfully install this chart, you **must** provide the following variables:
 * `stackstate.license.key`
-* `stackstate.receiver.apiKey`
 * `stackstate.receiver.baseUrl`
 
 Install them on the command line on Helm with the following command:
@@ -20,7 +19,6 @@ Install them on the command line on Helm with the following command:
 ```shell
 helm install \
 --set stackstate.license.key=<your-license-key> \
---set stackstate.receiver.apiKey=<your-api-key> \
 --set stackstate.receiver.baseUrl=<your-base-url> \
 stackstate/stackstate-standalone
 ```
@@ -41,9 +39,9 @@ stackstate/stackstate-standalone
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |
 | ingress.enabled | bool | `false` | Enable use of ingress controllers. |
 | ingress.hosts | list | `[]` | List of ingress hostnames; the paths are fixed to StackState backend services |
-| ingress.path.admin | string | `"/admin/?(.*)"` | Ingress path to the admin service. |
-| ingress.path.receiver | string | `"/receiver/?(.*)"` | Ingress path to the receiver service. |
-| ingress.path.ui | string | `"/?(.*)"` | Ingress path to the base UI. |
+| ingress.path.admin | string | `"/admin"` | Ingress path to the admin service. |
+| ingress.path.receiver | string | `"/receiver"` | Ingress path to the receiver service. |
+| ingress.path.ui | string | `"/"` | Ingress path to the base UI. |
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
 | livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
@@ -76,6 +74,6 @@ stackstate/stackstate-standalone
 | service.ui.port | int | `7070` | The default port for the StackState UI. |
 | stackstate.demoData.enabled | bool | `false` | Whether or not to enable demo data for branch deploys. |
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
-| stackstate.receiver.apiKey | string | `nil` | **PROVIDE YOUR API KEY HERE** API key to be used by all StackState agents. |
-| stackstate.receiver.baseUrl | string | `nil` | **PROVIDE YOUR BASEURL HERE** Externally visible baseUrl of the StackState endpoints. |
+| stackstate.receiver.apiKey | string | `""` | API key to be used by the Receiver; if no key is provided, a random one will be generated for you. |
+| stackstate.receiver.baseUrl | string | `nil` | **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of the StackState endpoints. |
 | tolerations | list | `[]` | Toleration labels for pod assignment. |
