@@ -72,6 +72,7 @@ lifecycle:
 StackState required environment variables
 */}}
 {{- define "stackstate-standalone.requiredEnvVars" }}
+{{- $dot := . }}
 - name: API_KEY
   valueFrom:
     secretKeyRef:
@@ -84,6 +85,21 @@ StackState required environment variables
       key: sts-license-key
 - name: RECEIVER_BASE_URL
   value: {{ .Values.stackstate.receiver.baseUrl | quote }}
+{{- if .Values.extraEnv.open }}
+  {{- range $key, $value := .Values.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.extraEnv.secret }}
+  {{- range $key, $value := .Values.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "stackstate-standalone.fullname" $dot }}
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
 {{- end }}
 
 {{/*
