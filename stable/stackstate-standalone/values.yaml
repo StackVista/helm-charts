@@ -6,6 +6,12 @@ deployment:
   # deployment.annotations -- Annotations to attach to the `Deployment` object.
   annotations: {}
 
+extraEnv:
+  # extraEnv.open -- Extra open environment variables to inject into pods.
+  open: {}
+  # extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+  secret: {}
+
 gitlab:
   # gitlab.app -- If CI is GitLab, specify the `app` for annotations.
   app: ""

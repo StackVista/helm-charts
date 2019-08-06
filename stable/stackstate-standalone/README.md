@@ -2,7 +2,7 @@ stackstate-standalone
 =====================
 Helm chart for StackState standlone -- all components running inside a single container.
 
-Current chart version is `0.3.2`
+Current chart version is `0.3.3`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -29,6 +29,8 @@ stackstate/stackstate-standalone
 |-----|------|---------|-------------|
 | affinity | object | `{}` | Affinity settings for pod assignment. |
 | deployment.annotations | object | `{}` | Annotations to attach to the `Deployment` object. |
+| extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | fullnameOverride | string | `""` | Override the fullname of the chart. |
 | gitlab.app | string | `""` | If CI is GitLab, specify the `app` for annotations. |
 | gitlab.env | string | `""` | If CI is GitLab, specify the `env` for annotations. |

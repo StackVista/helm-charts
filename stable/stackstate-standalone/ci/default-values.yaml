@@ -1,3 +1,8 @@
+extraEnv:
+  open:
+    SOME_KEY: some-value
+  secret:
+    SOME_SECRET_KEY: some-secret-value
 gitlab:
   app: stac-0000
   env: test
