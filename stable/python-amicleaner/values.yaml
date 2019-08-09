@@ -24,6 +24,9 @@ restartPolicy: OnFailure
 # schedule -- Default schedule for this CronJob.
 schedule: "*/10 * * * *"
 
+# podAnnotations -- Annotations for the `Job` pod.
+podAnnotations: {}
+
 image:
   # image.repository -- Base container image registry.
   repository: stackstate/python-amicleaner
