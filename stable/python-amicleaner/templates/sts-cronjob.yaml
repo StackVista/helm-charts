@@ -14,6 +14,9 @@ spec:
       template:
         metadata:
           annotations:
+          {{- with .Values.podAnnotations }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
             {{- include "python-amicleaner.checksum-configs" . | nindent 12 }}
           labels:
             app.kubernetes.io/instance: {{ .Release.Name }}
