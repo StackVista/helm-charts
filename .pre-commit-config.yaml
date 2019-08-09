@@ -20,3 +20,7 @@ repos:
   rev: ab984c60414b012e294a65166691473047ccce49
   hooks:
     - id: gitlabci-lint
+- repo: https://github.com/norwoodj/helm-docs
+  rev: master
+  hooks:
+    - id: helm_docs
