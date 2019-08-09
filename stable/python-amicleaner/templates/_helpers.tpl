@@ -50,8 +50,10 @@ StackState required environment variables
 {{- define "python-amicleaner.env-vars" -}}
 - name: AWS_CONFIG_FILE
   value: {{ .Values.aws.mountPath }}/config
+  {{- if .Values.aws.credentialsFile }}
 - name: AWS_SHARED_CREDENTIALS_FILE
   value: {{ .Values.aws.mountPath }}/credentials
+  {{- end }}
 {{- end -}}
 
 {{/*

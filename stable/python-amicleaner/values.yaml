@@ -8,8 +8,7 @@ aws:
   configFile: |-
     [default]
   # aws.credentialsFile -- The AWS credentials file contents.
-  credentialsFile: |-
-    [default]
+  credentialsFile: ""
   # aws.mountPath -- The mount path of the AWS config and credentials file.
   mountPath: /home/stackstate/.aws
 

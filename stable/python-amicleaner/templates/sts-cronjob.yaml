@@ -82,5 +82,7 @@ spec:
                 items:
                   - key: config
                     path: config
+                  {{- if .Values.aws.credentialsFile }}
                   - key: credentials
                     path: credentials
+                  {{- end }}

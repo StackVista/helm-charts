@@ -14,7 +14,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 |-----|------|---------|-------------|
 | affinity | object | `{}` | Affinity settings for pod assignment. |
 | aws.configFile | string | `"[default]"` | The AWS config file contents. |
-| aws.credentialsFile | string | `"[default]"` | The AWS credentials file contents. |
+| aws.credentialsFile | string | `""` | The AWS credentials file contents. |
 | aws.mountPath | string | `"/home/stackstate/.aws"` | The mount path of the AWS config and credentials file. |
 | backoffLimit | int | `3` | For failed jobs, how many times to retry. |
 | failedJobsHistoryLimit | int | `5` | The number of failed CronJob executions that are saved. |
