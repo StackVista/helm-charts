@@ -33,8 +33,10 @@ spec:
             imagePullPolicy: {{ .Values.image.pullPolicy }}
             args:
               - sh
-              - -c
+              - -xc
               - |
+                cp /aws-secret/config {{ .Values.aws.mountPath }}/config || true
+                cp /aws-secret/credentials {{ .Values.aws.mountPath }}/credentials || true
                 for account in demo preprod prod sandbox tooling trials; do
                   export AWS_PROFILE="stackstate-${account}"
                   echo "############### Using profile ${AWS_PROFILE} ############### "
@@ -60,7 +62,9 @@ spec:
               {{- toYaml .Values.resources | nindent 14 }}
             volumeMounts:
               - mountPath: {{ .Values.aws.mountPath }}
-                name: aws-folder
+                name: aws-volume
+              - mountPath: /aws-secret
+                name: aws-secret
                 readOnly: true
           restartPolicy: {{ .Values.restartPolicy }}
         {{- with .Values.nodeSelector }}
@@ -75,14 +79,12 @@ spec:
           tolerations:
             {{- toYaml . | nindent 12 }}
         {{- end }}
+          securityContext:
+            fsGroup: 1000
+            runAsUser: 1000
           volumes:
-            - name: aws-folder
+            - name: aws-secret
               secret:
                 secretName: {{ include "python-amicleaner.fullname" . }}
-                items:
-                  - key: config
-                    path: config
-                  {{- if .Values.aws.credentialsFile }}
-                  - key: credentials
-                    path: credentials
-                  {{- end }}
+            - name: aws-volume
+              emptyDir: {}

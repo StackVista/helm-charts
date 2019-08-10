@@ -31,6 +31,6 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | resources.requests.cpu | string | `"100m"` | CPU resource requests. |
 | resources.requests.memory | string | `"128Mi"` | Memory resource requests. |
 | restartPolicy | string | `"OnFailure"` | For failed jobs, how to handle restarts. |
-| schedule | string | `"*/10 * * * *"` | Default schedule for this CronJob. |
+| schedule | string | `"17 * * * *"` | Default schedule for this CronJob. |
 | successfulJobsHistoryLimit | int | `5` | The number of successful CronJob executions that are saved. |
 | tolerations | list | `[]` | Toleration labels for pod assignment. |

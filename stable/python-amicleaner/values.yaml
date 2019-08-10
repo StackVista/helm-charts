@@ -21,7 +21,7 @@ successfulJobsHistoryLimit: 5
 # restartPolicy -- For failed jobs, how to handle restarts.
 restartPolicy: OnFailure
 # schedule -- Default schedule for this CronJob.
-schedule: "*/10 * * * *"
+schedule: "17 * * * *"
 
 # podAnnotations -- Annotations for the `Job` pod.
 podAnnotations: {}
