@@ -2,7 +2,7 @@ stackstate-agent
 ================
 Helm chart for the StackState agent.
 
-Current chart version is `0.1.1`
+Current chart version is `0.1.2`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 

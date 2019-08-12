@@ -19,8 +19,8 @@ spec:
   template:
     metadata:
       annotations:
-      {{- include "gitlab.annotations" . | nindent 6 }}
-      {{- include "stackstate-standalone.checksum-configs" . | nindent 6 }}
+        {{- include "gitlab.annotations" . | nindent 8 }}
+        {{- include "stackstate-standalone.checksum-configs" . | nindent 8 }}
       {{- with .Values.pod.annotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}

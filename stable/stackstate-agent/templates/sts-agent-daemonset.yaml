@@ -16,6 +16,8 @@ spec:
 {{ toYaml .Values.updateStrategy | indent 4 }}
   template:
     metadata:
+      annotations:
+        {{- include "stackstate-agent.checksum-configs" . | nindent 8 }}
       labels:
         app.kubernetes.io/name: {{ include "stackstate-agent.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}

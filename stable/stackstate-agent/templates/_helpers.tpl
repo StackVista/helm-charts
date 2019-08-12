@@ -43,3 +43,10 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
+
+{{/*
+Checksum annotations
+*/}}
+{{- define "stackstate-agent.checksum-configs" }}
+checksum/config: {{ include (print $.Template.BasePath "/sts-agent-secret.yaml") . | sha256sum }}
+{{- end }}
