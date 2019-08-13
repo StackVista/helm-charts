@@ -2,7 +2,7 @@ stackstate-steward
 ==================
 Steward -- GitLab environment cleaner
 
-Current chart version is `0.1.1`
+Current chart version is `0.1.2`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -14,6 +14,8 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 |-----|------|---------|-------------|
 | affinity | object | `{}` | Affinity settings for pod assignment. |
 | backoffLimit | int | `3` | For failed jobs, how many times to retry. |
+| extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | failedJobsHistoryLimit | int | `5` | The number of failed CronJob executions that are saved. |
 | fullnameOverride | string | `""` | Override the fullname of the chart. |
 | image.pullPolicy | string | `"Always"` | Default container image pull policy. |

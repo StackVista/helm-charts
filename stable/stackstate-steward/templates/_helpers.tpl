@@ -55,12 +55,27 @@ Environment variables
     secretKeyRef:
       name: {{ include "stackstate-steward.fullname" . }}
       key: steward-gitlab-api-token
-{{- if .Values.steward.logLevel }}
+  {{- if .Values.steward.logLevel }}
 - name: STEWARD_LOG_LEVEL
   value: {{ .Values.steward.logLevel | quote }}
-{{- end }}
+  {{- end }}
 - name: STEWARD_MAX_DURATION
   value: {{ .Values.steward.maxDuration | quote }}
 - name: STEWARD_STACKSTATE_PROJECT
   value: {{ .Values.steward.stackstateProject | quote }}
+  {{- if .Values.extraEnv.open }}
+    {{- range $key, $value := .Values.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+    {{- end }}
+  {{- end }}
+  {{- if .Values.extraEnv.secret }}
+    {{- range $key, $value := .Values.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "stackstate-steward.fullname" $ }}
+      key: {{ $key }}
+    {{- end }}
+  {{- end }}
 {{- end }}
