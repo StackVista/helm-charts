@@ -142,9 +142,6 @@ affinity: {}
 ########################
 
 stackstate:
-  demoData:
-    # stackstate.demoData.enabled -- Whether or not to enable demo data for branch deploys.
-    enabled: false
   license:
     # stackstate.license.key -- (string) **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server.
     key:
