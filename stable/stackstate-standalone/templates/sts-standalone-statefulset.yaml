@@ -45,7 +45,6 @@ spec:
           name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{ include "stackstate-standalone.demoData.lifecycle" . | indent 10 }}
           env:
           {{ include "stackstate-standalone.requiredEnvVars" . | indent 10 }}
           ports:

@@ -57,18 +57,6 @@ app.gitlab.com/env: {{ .Values.gitlab.env | quote }}
 {{- end -}}
 
 {{/*
-Demo data lifecycle hook
-*/}}
-{{- define "stackstate-standalone.demoData.lifecycle" -}}
-{{- if .Values.stackstate.demoData.enabled }}
-lifecycle:
-  postStart:
-    exec:
-      command: ["/bin/bash", "/sts/stackstate/bin/branch-deploy.sh"]
-{{- end }}
-{{- end -}}
-
-{{/*
 StackState required environment variables
 */}}
 {{- define "stackstate-standalone.requiredEnvVars" }}
