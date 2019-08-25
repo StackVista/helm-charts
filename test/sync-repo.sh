@@ -1,33 +1,18 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 set -o errexit
 set -o nounset
-set -o pipefail
 set -x
 
 readonly AWS_BUCKET_STABLE="s3://helm.stackstate.io"
-readonly HELM_TARBALL="helm-v2.14.2-linux-amd64.tar.gz"
-readonly HELM_URL="https://storage.googleapis.com/kubernetes-helm"
 readonly STABLE_REPO_URL="https://helm.stackstate.io/"
 
 main() {
-  setup_helm_client
   setup_helm_repositories
 
   if ! sync_repo stable "$AWS_BUCKET_STABLE" "$STABLE_REPO_URL"; then
     log_error "Not all stable charts could be packaged and synced!"
   fi
-}
-
-setup_helm_client() {
-  echo "Setting up Helm client..."
-
-  curl --user-agent curl-ci-sync -sSL -o "$HELM_TARBALL" "$HELM_URL/$HELM_TARBALL"
-  tar xzfv "$HELM_TARBALL"
-
-  PATH="$(pwd)/linux-amd64/:$PATH"
-
-  helm init --client-only
 }
 
 setup_helm_repositories() {
@@ -44,11 +29,11 @@ setup_helm_repositories() {
 }
 
 sync_repo() {
-  local repo_dir="${1?Specify repo dir}"
-  local bucket="${2?Specify repo bucket}"
-  local repo_url="${3?Specify repo url}"
-  local sync_dir="${repo_dir}-sync"
-  local index_dir="${repo_dir}-index"
+  repo_dir="${1?Specify repo dir}"
+  bucket="${2?Specify repo bucket}"
+  repo_url="${3?Specify repo url}"
+  sync_dir="${repo_dir}-sync"
+  index_dir="${repo_dir}-index"
 
   echo "Syncing repo '$repo_dir'..."
 
@@ -58,7 +43,7 @@ sync_repo() {
     exit 1
   fi
 
-  local exit_code=0
+  exit_code=0
 
   for dir in "$repo_dir"/*; do
     if helm dependency build "$dir"; then

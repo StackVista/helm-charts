@@ -26,6 +26,7 @@ trap finish EXIT
 
 # Wait for proxy
 (while [[ $count -lt 5 && -z "$(curl -s localhost:8001/api/v1)" ]]; do ((count=count+1)) ; sleep 2; done && [[ $count -lt 5 ]])
+# shellcheck disable=SC2181
 [[ $? -ne 0 ]] && echo "ERROR: could not start kube proxy to fetch node stats summary" && exit 1
 
 declare -a NODE_STATS
@@ -33,7 +34,8 @@ declare -a AVAIL_CPU
 declare -a AVAIL_MEM
 i=0
 for NODE in ${NODES}; do
-    NODE_STATS[$i]=$(curl -sf localhost:8001/api/v1/proxy/nodes/${NODE}:10255/stats/summary)
+    NODE_STATS[$i]=$(curl -sf localhost:8001/api/v1/proxy/nodes/"${NODE}":10255/stats/summary)
+    # shellcheck disable=SC2181
     [[ $? -ne 0 ]] && echo "ERROR: Could not get stats summary for node: ${NODE}" && exit 1
 
     # Get available memory

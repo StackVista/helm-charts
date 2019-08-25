@@ -21,9 +21,9 @@ extraEnv:
 
 image:
   # image.repository -- Base container image registry.
-  repository: stackstate/steward
+  repository: stackstate/python-steward
   # image.tag -- Default container image tag.
-  tag: v0.1.0
+  tag: master
   # image.pullPolicy -- Default container image pull policy.
   pullPolicy: Always
 

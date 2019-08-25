@@ -1,9 +1,12 @@
-steward:
-  gitlab:
-    apiToken: some-gitlab-api-token
-  logLevel: debug
 extraEnv:
   open:
     STEWARD_EXCLUDE: "some-branch some-other-branch"
   secret:
     STEWARD_SECRET: "some secret values"
+imagePullSecrets:
+  - name: stackstate-dockerhub-pull-secret
+  - name: stackstate-quay-pull-secret
+steward:
+  gitlab:
+    apiToken: some-gitlab-api-token
+  logLevel: debug
