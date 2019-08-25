@@ -2,7 +2,8 @@
 
 set -o errexit
 set -o nounset
-set -x
+
+[ "${TRACE}" ] && set -x
 
 readonly AWS_BUCKET_STABLE="s3://helm.stackstate.io"
 readonly STABLE_REPO_URL="https://helm.stackstate.io/"
