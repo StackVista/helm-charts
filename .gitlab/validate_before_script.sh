@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-[ "${TRACE}" ] && set -x
+[ -n "${TRACE+x}" ] && set -x
 
 installDependencies() {
   apk -Uuv add bash curl groff less openssl

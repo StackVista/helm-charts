@@ -3,7 +3,7 @@
 set -o errexit
 set -o nounset
 
-[ "${TRACE}" ] && set -x
+[ -n "${TRACE+x}" ] && set -x
 
 readonly AWS_BUCKET_STABLE="s3://helm.stackstate.io"
 readonly STABLE_REPO_URL="https://helm.stackstate.io/"
