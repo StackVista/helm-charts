@@ -2,6 +2,8 @@
 
 [ -n "${TRACE+x}" ] && set -x
 
+set -e
+
 installDependencies() {
   apk -Uuv add bash curl groff less openssl
   curl -fSL https://git.io/get_helm.sh | bash -
@@ -9,7 +11,7 @@ installDependencies() {
 
 installGitRemotes() {
   # shellcheck disable=SC2154
-  git remote add helm https://oauth2:"${gitlab_api_scope_token}"@gitlab.com/stackvista/devops/helm-charts
+  git remote add helm "https://oauth2:${gitlab_api_scope_token}@gitlab.com/stackvista/devops/helm-charts"
   git fetch helm
 }
 
