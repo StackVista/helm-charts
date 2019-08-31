@@ -1,8 +1,8 @@
-stackstate-steward
-==================
+gitlab-steward
+==============
 Steward -- GitLab environment cleaner
 
-Current chart version is `0.1.3`
+Current chart version is `0.2.0`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -19,7 +19,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | failedJobsHistoryLimit | int | `5` | The number of failed CronJob executions that are saved. |
 | fullnameOverride | string | `""` | Override the fullname of the chart. |
 | image.pullPolicy | string | `"Always"` | Default container image pull policy. |
-| image.repository | string | `"stackstate/python-steward"` | Base container image registry. |
+| image.repository | string | `"quay.io/stackstate/python-steward"` | Base container image registry. |
 | image.tag | string | `"master"` | Default container image tag. |
 | imagePullSecrets | list | `[]` | Extra secrets / credentials needed for container image registry. |
 | nameOverride | string | `""` | Override the name of the chart. |

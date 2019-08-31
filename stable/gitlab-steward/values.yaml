@@ -2,16 +2,6 @@
 # General variables #
 #####################
 
-
-aws:
-  # aws.configFile -- The AWS config file contents.
-  configFile: |-
-    [default]
-  # aws.credentialsFile -- The AWS credentials file contents.
-  credentialsFile: ""
-  # aws.mountPath -- The mount path of the AWS config and credentials file.
-  mountPath: /home/stackstate/.aws
-
 # backoffLimit -- For failed jobs, how many times to retry.
 backoffLimit: 3
 # failedJobsHistoryLimit -- The number of failed CronJob executions that are saved.
@@ -21,16 +11,19 @@ successfulJobsHistoryLimit: 5
 # restartPolicy -- For failed jobs, how to handle restarts.
 restartPolicy: OnFailure
 # schedule -- Default schedule for this CronJob.
-schedule: "17 * * * *"
+schedule: "*/10 * * * *"
 
-# podAnnotations -- Annotations for the `Job` pod.
-podAnnotations: {}
+extraEnv:
+  # extraEnv.open -- Extra open environment variables to inject into pods.
+  open: {}
+  # extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+  secret: {}
 
 image:
   # image.repository -- Base container image registry.
-  repository: stackstate/python-amicleaner
+  repository: quay.io/stackstate/python-steward
   # image.tag -- Default container image tag.
-  tag: latest
+  tag: master
   # image.pullPolicy -- Default container image pull policy.
   pullPolicy: Always
 
@@ -61,3 +54,20 @@ tolerations: []
 
 # affinity -- Affinity settings for pod assignment.
 affinity: {}
+
+########################
+# StackState variables #
+########################
+
+steward:
+  # steward.dryRun -- Show which environments *would be* stopped, but don't actually stop them.
+  dryRun: "False"
+  gitlab:
+    # steward.gitlab.apiToken -- (string) **REQUIRED** The GitLab API token.
+    apiToken:
+  # steward.logLevel -- The logging level of the application; one of 'debug', 'info', or 'warning'
+  logLevel: ""
+  # steward.maxDuration -- Amount of time (in days) before an environment is stopped.
+  maxDuration: 2
+  # stackstateProject -- The StackState project to scan for environments.
+  stackstateProject: stackstate

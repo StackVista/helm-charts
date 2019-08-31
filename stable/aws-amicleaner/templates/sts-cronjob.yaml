@@ -1,10 +1,10 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ include "python-amicleaner.fullname" . }}
+  name: {{ include "aws-amicleaner.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-{{ include "python-amicleaner.labels" . | indent 4 }}
+{{ include "aws-amicleaner.labels" . | indent 4 }}
 spec:
   failedJobsHistoryLimit: {{ .Values.failedJobsHistoryLimit }}
   schedule: {{ .Values.schedule | quote }}
@@ -17,10 +17,10 @@ spec:
           {{- with .Values.podAnnotations }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-            {{- include "python-amicleaner.checksum-configs" . | nindent 12 }}
+            {{- include "aws-amicleaner.checksum-configs" . | nindent 12 }}
           labels:
             app.kubernetes.io/instance: {{ .Release.Name }}
-            app.kubernetes.io/name: {{ include "python-amicleaner.name" . }}
+            app.kubernetes.io/name: {{ include "aws-amicleaner.name" . }}
         spec:
           backoffLimit: {{ .Values.backoffLimit }}
         {{- with .Values.imagePullSecrets }}
@@ -57,7 +57,7 @@ spec:
                   done
                 done
             env:
-              {{- include "python-amicleaner.env-vars" . | nindent 14 }}
+              {{- include "aws-amicleaner.env-vars" . | nindent 14 }}
             resources:
               {{- toYaml .Values.resources | nindent 14 }}
             volumeMounts:
@@ -85,6 +85,6 @@ spec:
           volumes:
             - name: aws-secret
               secret:
-                secretName: {{ include "python-amicleaner.fullname" . }}
+                secretName: {{ include "aws-amicleaner.fullname" . }}
             - name: aws-volume
               emptyDir: {}

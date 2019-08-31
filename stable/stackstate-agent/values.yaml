@@ -12,9 +12,9 @@ extraEnv: {}
 
 image:
   # image.repository -- Base container image registry.
-  repository: stackstate/stackstate-agent-2
+  repository: docker.io/stackstate/stackstate-agent-2
   # image.tag -- Default container image tag.
-  tag: 2.0.3
+  tag: 2.0.4
   # image.pullPolicy -- Default container image pull policy.
   pullPolicy: IfNotPresent
 

@@ -1,10 +1,10 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ include "stackstate-steward.fullname" . }}
+  name: {{ include "gitlab-steward.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-{{ include "stackstate-steward.labels" . | indent 4 }}
+{{ include "gitlab-steward.labels" . | indent 4 }}
 spec:
   failedJobsHistoryLimit: {{ .Values.failedJobsHistoryLimit }}
   schedule: {{ .Values.schedule | quote }}
@@ -15,7 +15,7 @@ spec:
         metadata:
           labels:
             app.kubernetes.io/instance: {{ .Release.Name }}
-            app.kubernetes.io/name: {{ include "stackstate-steward.name" . }}
+            app.kubernetes.io/name: {{ include "gitlab-steward.name" . }}
         spec:
           backoffLimit: {{ .Values.backoffLimit }}
         {{- with .Values.imagePullSecrets }}
@@ -27,7 +27,7 @@ spec:
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
             imagePullPolicy: {{ .Values.image.pullPolicy }}
             env:
-            {{ include "stackstate-steward.envVars" . | indent 12 }}
+            {{ include "gitlab-steward.envVars" . | indent 12 }}
             resources:
               {{- toYaml .Values.resources | nindent 14 }}
           restartPolicy: {{ .Values.restartPolicy }}

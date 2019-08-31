@@ -2,7 +2,7 @@ stackstate-agent
 ================
 Helm chart for the StackState agent.
 
-Current chart version is `0.1.2`
+Current chart version is `0.2.0`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -39,8 +39,8 @@ stackstate/agent
 | extraEnv | object | `{}` | Extra environment variables to be injected into the `DaemonSet` object. |
 | fullnameOverride | string | `""` | Override the fullname of the chart. |
 | image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
-| image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image registry. |
-| image.tag | string | `"2.0.3"` | Default container image tag. |
+| image.repository | string | `"docker.io/stackstate/stackstate-agent-2"` | Base container image registry. |
+| image.tag | string | `"2.0.4"` | Default container image tag. |
 | imagePullSecrets | list | `[]` | Secrets / credentials needed for container image registry. |
 | livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |

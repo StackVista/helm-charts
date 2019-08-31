@@ -11,7 +11,7 @@ installDependencies() {
 
 installGitRemotes() {
   # shellcheck disable=SC2154
-  git remote add helm "https://oauth2:${gitlab_api_scope_token}@gitlab.com/stackvista/devops/helm-charts"
+  git remote add helm "https://oauth2:${gitlab_api_scope_token}@gitlab.com/stackvista/devops/helm-charts" || true
   git fetch helm
 }
 
@@ -33,6 +33,7 @@ configureKubectl() {
     --docker-server='docker.io' \
     --docker-username="${docker_user}"
 
+  # Install Quay image pull secrets
   # shellcheck disable=SC2154
   kubectl create secret docker-registry stackstate-quay-pull-secret \
     --docker-password="${quay_password}" \

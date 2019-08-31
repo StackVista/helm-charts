@@ -1,8 +1,8 @@
-python-amicleaner
-=================
+aws-amicleaner
+==============
 AMI cleaner -- Clean old AWS AMI images.
 
-Current chart version is `0.1.1`
+Current chart version is `0.2.0`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -20,8 +20,8 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | failedJobsHistoryLimit | int | `5` | The number of failed CronJob executions that are saved. |
 | fullnameOverride | string | `""` | Override the fullname of the chart. |
 | image.pullPolicy | string | `"Always"` | Default container image pull policy. |
-| image.repository | string | `"stackstate/python-amicleaner"` | Base container image registry. |
-| image.tag | string | `"latest"` | Default container image tag. |
+| image.repository | string | `"quay.io/stackstate/aws-amicleaner"` | Base container image registry. |
+| image.tag | string | `"master"` | Default container image tag. |
 | imagePullSecrets | list | `[]` | Extra secrets / credentials needed for container image registry. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | object | `{}` | Node labels for pod assignment. |
