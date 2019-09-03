@@ -43,7 +43,7 @@ spec:
       containers:
         - args: ["start"]
           name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           {{ include "stackstate-standalone.requiredEnvVars" . | indent 10 }}

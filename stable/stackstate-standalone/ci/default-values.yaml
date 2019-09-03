@@ -8,7 +8,8 @@ gitlab:
   env: test
 image:
   pullPolicy: Always
-  repository: quay.io/stackstate
+  registry: quay.io
+  repository: stackstate/stackstate
   tag: master
 ingress:
   annotations:

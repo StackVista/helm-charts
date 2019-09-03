@@ -19,10 +19,12 @@ gitlab:
   env: ""
 
 image:
-  # image.repository -- Base container image registry.
-  repository: quay.io/stackstate
+  # image.registry -- Base container image registry
+  registry: quay.io
+  # image.repository -- Base container image repository.
+  repository: stackstate/stackstate
   # image.tag -- Default container image tag.
-  tag: sts-v1-14-10-1
+  tag: master
   # image.pullPolicy -- Default container image pull policy.
   pullPolicy: IfNotPresent
 
