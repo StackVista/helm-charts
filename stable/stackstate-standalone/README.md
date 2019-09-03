@@ -2,7 +2,7 @@ stackstate-standalone
 =====================
 Helm chart for StackState standlone -- all components running inside a single container.
 
-Current chart version is `0.3.5`
+Current chart version is `0.4.0`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -35,7 +35,7 @@ stackstate/stackstate-standalone
 | gitlab.app | string | `""` | If CI is GitLab, specify the `app` for annotations. |
 | gitlab.env | string | `""` | If CI is GitLab, specify the `env` for annotations. |
 | image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
-| image.repository | string | `"508573134510.dkr.ecr.eu-west-1.amazonaws.com/stackstate"` | Base container image registry. |
+| image.repository | string | `"quay.io/stackstate"` | Base container image registry. |
 | image.tag | string | `"sts-v1-14-10-1"` | Default container image tag. |
 | imagePullSecrets | list | `[]` | Extra secrets / credentials needed for container image registry. |
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |

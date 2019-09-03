@@ -20,7 +20,7 @@ gitlab:
 
 image:
   # image.repository -- Base container image registry.
-  repository: 508573134510.dkr.ecr.eu-west-1.amazonaws.com/stackstate
+  repository: quay.io/stackstate
   # image.tag -- Default container image tag.
   tag: sts-v1-14-10-1
   # image.pullPolicy -- Default container image pull policy.
