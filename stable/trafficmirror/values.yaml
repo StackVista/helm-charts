@@ -9,6 +9,8 @@ ingress:
   enabled: false
 
 trafficmirror:
+  # trafficmirror.mainUrl -- The default URL for receiving the mirrored traffic.
+  mainUrl: ""
   # trafficmirror.password -- Basic auth password for the Trafficmirror service.
   password: ""
   # trafficmirror.username -- Basic auth username for the Trafficmirror service.

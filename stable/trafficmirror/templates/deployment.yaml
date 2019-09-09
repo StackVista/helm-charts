@@ -1,5 +1,9 @@
 {{- define "trafficmirror.deployment.container" -}}
 env:
+{{- if .Values.trafficmirror.mainUrl }}
+- name: MAIN
+  value: {{ .Values.trafficmirror.mainUrl | quote }}
+{{ end -}}
 - name: USERNAME
   valueFrom:
     secretKeyRef:
