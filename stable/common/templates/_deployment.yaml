@@ -34,36 +34,36 @@ spec:
       containers:
       -
 {{ include "common.container.tpl" . | indent 8 }}
-  {{- with .Values.deployment.nodeSelector }}
-    nodeSelector:
-      {{- toYaml . | nindent 6 }}
-  {{- end }}
-    affinity:
-    {{- if eq .Values.deployment.antiAffinity.strategy "hard" }}
-      podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          - topologyKey: {{ .Values.deployment.antiAffinity.topologyKey }}
-            labelSelector:
-              matchLabels:
-                app.kubernetes.io/instance: {{ .Release.Name | quote }}
-                app.kubernetes.io/name: {{ template "common.name" . }}
-    {{- else if eq .Values.deployment.antiAffinity.strategy "soft" }}
-      podAntiAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-        - weight: 1
-          podAffinityTerm:
-            topologyKey: {{ .Values.deployment.antiAffinity.topologyKey }}
-            labelSelector:
-              matchLabels:
-                app.kubernetes.io/instance: {{ .Release.Name | quote }}
-                app.kubernetes.io/name: {{ template "common.name" . }}
+    {{- with .Values.deployment.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      affinity:
+      {{- if eq .Values.deployment.antiAffinity.strategy "hard" }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: {{ .Values.deployment.antiAffinity.topologyKey }}
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: {{ .Release.Name | quote }}
+                  app.kubernetes.io/name: {{ template "common.name" . }}
+      {{- else if eq .Values.deployment.antiAffinity.strategy "soft" }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: {{ .Values.deployment.antiAffinity.topologyKey }}
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: {{ .Release.Name | quote }}
+                  app.kubernetes.io/name: {{ template "common.name" . }}
       {{- end }}
-    {{- with .Values.deployment.affinity }}
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
-    {{- with .Values.deployment.tolerations }}
-    tolerations:
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
+      {{- with .Values.deployment.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.deployment.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
 {{- end -}}
 {{- end -}}
