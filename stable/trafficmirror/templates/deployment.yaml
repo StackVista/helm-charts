@@ -1,0 +1,31 @@
+{{- define "trafficmirror.deployment.container" -}}
+env:
+- name: USERNAME
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname" . }}
+      key: username
+- name: PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname" . }}
+      key: password
+livenessProbe:
+  tcpSocket:
+    port: app
+readinessProbe:
+  tcpSocket:
+    port: app
+{{- end -}}
+
+{{- define "trafficmirror.deployment" -}}
+spec:
+  template:
+    spec:
+      containers:
+      - {{ template "common.container" (list . "trafficmirror.deployment.container") }}
+{{- end -}}
+
+{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $trafficmirrorDeployment := fromYaml (include "trafficmirror.deployment" .) -}}
+{{- toYaml (merge $trafficmirrorDeployment $commonDeployment) -}}

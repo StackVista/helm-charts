@@ -24,6 +24,7 @@ setup_helm_repositories() {
   helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
   helm repo add jetstack https://charts.jetstack.io/
   helm repo add jfrog https://charts.jfrog.io/
+  helm repo add stackstate https://helm.stackstate.io/
 
   echo "Updating Helm repository indexes..."
   helm repo update

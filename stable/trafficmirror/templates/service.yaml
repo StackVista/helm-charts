@@ -1,0 +1,3 @@
+{{- template "common.service" (list . "trafficmirror.service") -}}
+{{- define "trafficmirror.service" -}}
+{{- end -}}

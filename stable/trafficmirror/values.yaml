@@ -1,0 +1,15 @@
+image:
+  # image.repository -- Base container image repository.
+  repository: docker.io/stackstate/trafficmirror
+  # image.tag -- Default container image tag.
+  tag: 652621a6e6ace12819dbddfb43ff26cda45bda28
+
+ingress:
+  # ingress.enabled -- Enable use of ingress controllers.
+  enabled: false
+
+trafficmirror:
+  # trafficmirror.password -- Basic auth password for the Trafficmirror service.
+  password: ""
+  # trafficmirror.username -- Basic auth username for the Trafficmirror service.
+  username: ""

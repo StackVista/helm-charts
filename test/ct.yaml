@@ -10,5 +10,6 @@ chart-repos:
   - incubator=https://kubernetes-charts-incubator.storage.googleapis.com/
   - jetstack=https://charts.jetstack.io/
   - jfrog=https://charts.jfrog.io/
+  - stackstate=https://helm.stackstate.io/
 helm-extra-args: --timeout 600
 validate-maintainers: false
