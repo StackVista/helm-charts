@@ -2,7 +2,7 @@ trafficmirror
 =============
 Trafficmirror -- mirror traffic to various endpoints.
 
-Current chart version is `0.1.1`
+Current chart version is `0.1.2`
 
 Source code can be found [here](https://github.com/rb3ckers/trafficmirror)
 
@@ -10,7 +10,7 @@ Source code can be found [here](https://github.com/rb3ckers/trafficmirror)
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://helm.stackstate.io/ | common | 0.1.0 |
+| https://helm.stackstate.io/ | common | 0.1.1 |
 
 ## Chart Values
 
