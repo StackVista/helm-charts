@@ -2,7 +2,7 @@ stackstate-standalone
 =====================
 Helm chart for StackState standlone -- all components running inside a single container.
 
-Current chart version is `0.4.1`
+Current chart version is `0.4.2`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -37,7 +37,7 @@ stackstate/stackstate-standalone
 | image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | image.registry | string | `"quay.io"` | Base container image registry |
 | image.repository | string | `"stackstate/stackstate"` | Base container image repository. |
-| image.tag | string | `"master"` | Default container image tag. |
+| image.tag | string | `"sts-v1-14-13-1"` | Default container image tag. |
 | imagePullSecrets | list | `[]` | Extra secrets / credentials needed for container image registry. |
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |
 | ingress.enabled | bool | `false` | Enable use of ingress controllers. |
@@ -66,6 +66,7 @@ stackstate/stackstate-standalone
 | readinessProbe.periodSeconds | int | `10` | `periodSeconds` for the readiness probe. |
 | readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
 | readinessProbe.timeoutSeconds | int | `2` | `timeoutSeconds` for the readiness probe. |
+| replicaCount | int | `1` | Amount of replicas to create for the `Deployment` object. |
 | resources.limits.cpu | string | `"3"` | CPU resource limits. |
 | resources.limits.memory | string | `"8Gi"` | Memory resource limits. |
 | resources.requests.cpu | string | `"2"` | CPU resource requests. |

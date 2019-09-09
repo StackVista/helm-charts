@@ -1,0 +1,44 @@
+{{- define "common.ingress" -}}
+{{- if .Values.ingress.enabled -}}
+{{- $common := dict "Values" .Values.common -}}
+{{- $noCommon := omit .Values "common" -}}
+{{- $overrides := dict "Values" $noCommon -}}
+{{- $noValues := omit . "Values" -}}
+{{- with merge $noValues $overrides $common -}}
+apiVersion: {{ .Values.ingress.apiVersion }}
+kind: Ingress
+metadata:
+  annotations:
+    {{- include "common.annotations.gitlab" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  name: {{ template "common.fullname" . }}
+  labels:
+    {{- include "common.labels.standard" . | nindent 4 }}
+spec:
+{{- if .Values.ingress.tls }}
+  tls:
+  {{- range .Values.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+        {{- range .paths }}
+          - path: {{ . }}
+            backend:
+              serviceName: {{ template "common.fullname" $ }}
+              servicePort: app
+        {{- end }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+{{- end -}}

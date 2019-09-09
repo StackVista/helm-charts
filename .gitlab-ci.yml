@@ -17,11 +17,11 @@ validate:
     refs:
       - master
   script:
-    - ct lint-and-install --config test/ct.yaml
-  services:
-    - name: rancher/k3s:v0.8.1
-      alias: k3s-test
-      command: ["server", "--cluster-secret", "somesecret"]
+    - ct lint --config test/ct.yaml
+  # services:
+  #   - name: rancher/k3s:v0.8.1
+  #     alias: k3s-test
+  #     command: ["server", "--cluster-secret", "somesecret"]
   stage: test
 
 push:

@@ -24,7 +24,7 @@ image:
   # image.repository -- Base container image repository.
   repository: stackstate/stackstate
   # image.tag -- Default container image tag.
-  tag: master
+  tag: sts-v1-14-13-1
   # image.pullPolicy -- Default container image pull policy.
   pullPolicy: IfNotPresent
 
@@ -90,6 +90,9 @@ readinessProbe:
   successThreshold: 1
   # readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
   timeoutSeconds: 2
+
+# replicaCount -- Amount of replicas to create for the `Deployment` object.
+replicaCount: 1
 
 persistence:
   # persistence.accessMode -- Access mode of the persistent volume claim.

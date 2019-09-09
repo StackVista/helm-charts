@@ -1,0 +1,42 @@
+{{- define "common.container.tpl" -}}
+{{- $common := dict "Values" .Values.common -}}
+{{- $noCommon := omit .Values "common" -}}
+{{- $overrides := dict "Values" $noCommon -}}
+{{- $noValues := omit . "Values" -}}
+{{- with merge $noValues $overrides $common -}}
+env:
+  {{ include "common.extraenv.container" . | nindent 2 }}
+name: {{ .Chart.Name }}
+image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- if .Values.container.livenessProbe.enabled }}
+livenessProbe:
+  failureThreshold: {{ .Values.container.livenessProbe.failureThreshold }}
+  initialDelaySeconds: {{ .Values.container.livenessProbe.initialDelaySeconds }}
+  periodSeconds: {{ .Values.container.livenessProbe.periodSeconds }}
+  successThreshold: {{ .Values.container.livenessProbe.successThreshold }}
+  timeoutSeconds: {{ .Values.container.livenessProbe.timeoutSeconds }}
+{{- end }}
+{{- if .Values.container.readinessProbe.enabled }}
+readinessProbe:
+  failureThreshold: {{ .Values.container.readinessProbe.failureThreshold }}
+  initialDelaySeconds: {{ .Values.container.readinessProbe.initialDelaySeconds }}
+  periodSeconds: {{ .Values.container.readinessProbe.periodSeconds }}
+  successThreshold: {{ .Values.container.readinessProbe.successThreshold }}
+  timeoutSeconds: {{ .Values.container.readinessProbe.timeoutSeconds }}
+{{- end }}
+ports:
+- name: app
+  containerPort: 8080
+resources:
+{{- with .Values.container.resources }}
+  {{- toYaml . | nindent 2 }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "common.container" -}}
+{{- /* clear new line so indentation works correctly */ -}}
+{{- println "" -}}
+{{- include "common.util.merge" (append . "common.container.tpl") | indent 8 -}}
+{{- end -}}

@@ -73,5 +73,5 @@ EOF
 
 installDependencies
 installGitRemotes
-configureKubectl
-configureHelm
+# configureKubectl
+# configureHelm

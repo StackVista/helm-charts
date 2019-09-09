@@ -1,0 +1,54 @@
+{{- define "common.service.tpl" -}}
+{{- $common := dict "Values" .Values.common -}}
+{{- $noCommon := omit .Values "common" -}}
+{{- $overrides := dict "Values" $noCommon -}}
+{{- $noValues := omit . "Values" -}}
+{{- with merge $noValues $overrides $common -}}
+apiVersion: {{ .Values.service.apiVersion }}
+kind: Service
+metadata:
+  annotations:
+    {{- include "common.annotations.gitlab" . | nindent 4 }}
+  {{- with .Values.service.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  name: {{ template "common.fullname" . }}
+  labels:
+    {{- include "common.labels.standard" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  {{- if and .Values.service.clusterIP (eq .Values.service.type "ClusterIP") }}
+  clusterIP: {{ .Values.service.clusterIP }}
+  {{- end }}
+  {{- if .Values.service.externalIPs }}
+  externalIPs:
+    {{- range $value := .Values.service.externalIPs }}
+    - {{ $value }}
+    {{- end }}
+  {{- end }}
+  {{- if (or (eq .Values.service.type "LoadBalancer") (eq .Values.service.type "NodePort")) }}
+  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy | quote }}
+  {{- end }}
+  {{- if and .Values.service.loadBalancerIP (eq .Values.service.type "LoadBalancer") }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP | quote }}
+  {{- end }}
+  {{- if and .Values.service.loadBalancerSourceRanges (eq .Values.service.type "LoadBalancer") }}
+  loadBalancerSourceRanges:
+    {{- range $value := .Values.service.loadBalancerSourceRanges }}
+    - {{ $value }}
+    {{- end }}
+  {{- end }}
+  ports:
+  - name: app
+    port: 8080
+    protocol: TCP
+    targetPort: app
+  selector:
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/name: {{ template "common.name" . }}
+{{- end -}}
+{{- end -}}
+
+{{- define "common.service" -}}
+{{- template "common.util.merge" (append . "common.service.tpl") -}}
+{{- end -}}

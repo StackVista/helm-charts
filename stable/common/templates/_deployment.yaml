@@ -1,0 +1,69 @@
+{{- define "common.deployment" -}}
+{{- $common := dict "Values" .Values.common -}}
+{{- $noCommon := omit .Values "common" -}}
+{{- $overrides := dict "Values" $noCommon -}}
+{{- $noValues := omit . "Values" -}}
+{{- with merge $noValues $overrides $common -}}
+apiVersion: {{ .Values.deployment.apiVersion }}
+kind: Deployment
+metadata:
+  annotations:
+    {{- include "common.annotations.gitlab" . | nindent 4 }}
+  {{- with .Values.deployment.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  name: {{ template "common.fullname" . }}
+  labels:
+    {{- include "common.labels.standard" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      app.kubernetes.io/name: {{ template "common.name" . }}
+  template:
+    metadata:
+    {{- with .Values.pod.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        app.kubernetes.io/name: {{ template "common.name" . }}
+    spec:
+      containers:
+      -
+{{ include "common.container.tpl" . | indent 8 }}
+  {{- with .Values.deployment.nodeSelector }}
+    nodeSelector:
+      {{- toYaml . | nindent 6 }}
+  {{- end }}
+    affinity:
+    {{- if eq .Values.deployment.antiAffinity.strategy "hard" }}
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: {{ .Values.deployment.antiAffinity.topologyKey }}
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: {{ .Release.Name | quote }}
+                app.kubernetes.io/name: {{ template "common.name" . }}
+    {{- else if eq .Values.deployment.antiAffinity.strategy "soft" }}
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 1
+          podAffinityTerm:
+            topologyKey: {{ .Values.deployment.antiAffinity.topologyKey }}
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: {{ .Release.Name | quote }}
+                app.kubernetes.io/name: {{ template "common.name" . }}
+      {{- end }}
+    {{- with .Values.deployment.affinity }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.deployment.tolerations }}
+    tolerations:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+{{- end -}}
+{{- end -}}

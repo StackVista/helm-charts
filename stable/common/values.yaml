@@ -1,0 +1,145 @@
+# Default values for commons.
+
+configmap:
+  # configmap.annotations -- Annotations for `ConfigMap` objects.
+  annotations: {}
+  # configmap.apiVersion -- Kubernetes apiVersion to use with a `ConfigMap` object.
+  apiVersion: "v1"
+
+container:
+  livenessProbe:
+    # container.livenessProbe.enabled -- Enable use of livenessProbe check.
+    enabled: true
+    # container.livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
+    failureThreshold: 3
+    # container.livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
+    initialDelaySeconds: 10
+    # container.livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
+    periodSeconds: 10
+    # container.livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
+    successThreshold: 1
+    # container.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
+    timeoutSeconds: 2
+
+  readinessProbe:
+    # container.readinessProbe.enabled -- Enable use of readinessProbe check.
+    enabled: true
+    # container.readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
+    failureThreshold: 3
+    # container.readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
+    initialDelaySeconds: 10
+    # container.readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
+    periodSeconds: 10
+    # container.readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
+    successThreshold: 1
+    # container.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
+    timeoutSeconds: 2
+
+  # container.resources -- Container resource requests / limits.
+  resources: {}
+    # limits:
+    #   cpu: "200m"
+    #   memory: "256Mi"
+    # requests:
+    #   cpu: "100m"
+    #   memory: "128Mi"
+
+deployment:
+  # deployment.annotations -- Annotations for `Deployment` objects.
+  annotations: {}
+  # deployment.apiVersion -- Kubernetes apiVersion to use with a `Deployment` object.
+  apiVersion: apps/v1
+  # deployment.affinity -- Affinity settings for pod assignment.
+  affinity: {}
+  antiAffinity:
+    # deployment.antiAffinity.strategy -- Spread pods using simple `antiAffinity`; valid values are `hard` or `soft`.
+    strategy: ""
+    # deployment.antiAffinity.topologyKey -- The `topologyKey` to use for simple `antiAffinity` rule.
+    topologyKey: kubernetes.io/hostname
+  # deployment.replicaCount -- Amount of replicas to create for the `Deployment` object.
+  replicaCount: 1
+  # deployment.nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
+  # deployment.tolerations -- Toleration labels for pod assignment.
+  tolerations: []
+
+extraEnv:
+  # extraEnv.open -- Extra open environment variables to inject into pods.
+  open: {}
+  # extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+  secret: {}
+
+gitlab:
+  # gitlab.app -- If CI is GitLab, specify the `app` for annotations.
+  app: ""
+  # gitlab.env -- If CI is GitLab, specify the `env` for annotations.
+  env: ""
+
+global: {}
+
+image:
+  # image.pullPolicy -- The pull policy for the Docker image.
+  pullPolicy: Always
+  # image.repository -- (string) Repository of the Docker image.
+  repository: nginx
+  # image.tag -- (string) Tag of the Docker image.
+  tag: latest
+
+ingress:
+  # ingress.annotations -- Annotations for `Ingress` objects.
+  annotations: {}
+  # ingress.apiVersion -- Kubernetes apiVersion to use with an `Ingress` object.
+  apiVersion: extensions/v1beta1
+  # ingress.hosts -- List of ingress hostnames.
+  hosts: []
+  # - host: chart-example.local
+  #   paths: []
+  # ingress.tls -- List of ingress TLS certificates to use.
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+persistentvolumeclaim:
+  # persistentvolumeclaim.annotations -- Annotations for `PersistentVolumeClaim` objects.
+  annotations: {}
+  # persistentvolumeclaim.apiVersion -- Kubernetes apiVersion to use with a `PersistentVolumeClaim` object.
+  apiVersion: "v1"
+
+pod:
+  # pod.annotations -- Annotations for `Pod` objects.
+  annotations: {}
+
+secret:
+  # secret.annotations -- Annotations for `Secret` objects.
+  annotations: {}
+  # secret.apiVersion -- Kubernetes apiVersion to use with a `Secret` object.
+  apiVersion: "v1"
+
+service:
+  # service.annotations -- Annotations for `Service` objects.
+  annotations: {}
+  # service.apiVersion -- Kubernetes apiVersion to use with a `Service` object.
+  apiVersion: "v1"
+  # service.type -- Specify a cluster IP address instead of assigning a random value; only enabled when `service.type` is set to `ClusterIP`.
+  clusterIP: ""
+  # service.externalIPs -- List of external IP addresses to map to the `Service` object.
+  externalIPs: []
+  # service.externalTrafficPolicy -- Denotes if this Service desires to route external traffic to node-local or cluster-wide endpoints; only enabled when `service.type` is set to `LoadBalancer` or `NodePort`.
+  externalTrafficPolicy: Cluster
+  # service.loadBalancerIP -- Specify the load balancer IP addresses, if the cloud provider supports; only enabled when `service.type` is set to `LoadBalancer`.
+  loadBalancerIP: ""
+  # service.loadBalancerIP -- Specify the source IP range to allow traffic from; only enabled when `service.type` is set to `LoadBalancer`.
+  loadBalancerSourceRanges: []
+  # service.ports -- List of ports to apply to the `Service` object.
+  ports: []
+    # - name: http
+    #   protocol: TCP
+    #   port: 80
+    #   targetPort: 9376
+    # - name: https
+    #   protocol: TCP
+    #   port: 443
+    #   targetPort: 9377
+  # service.type -- Kubernetes 'Service' type to use.
+  type: ClusterIP

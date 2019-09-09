@@ -1,0 +1,12 @@
+{{- /*
+common.metadata creates a standard metadata header.
+It creates a 'metadata:' section with name and labels.
+*/ -}}
+{{ define "common.metadata" -}}
+metadata:
+  annotations:
+    {{- include "common.annotations.gitlab" . | nindent 4 }}
+  name: {{ template "common.fullname" . }}
+  labels:
+    {{- include "common.labels.standard" . | nindent 4 }}
+{{- end -}}
