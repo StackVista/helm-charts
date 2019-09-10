@@ -2,8 +2,6 @@ remote: helm
 target-branch: master
 chart-dirs:
   - stable
-excluded-charts:
-  - common
 chart-repos:
   - bitnami=https://charts.bitnami.com/
   - gitlab=https://charts.gitlab.io/

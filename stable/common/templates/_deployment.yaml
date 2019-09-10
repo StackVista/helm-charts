@@ -19,8 +19,7 @@ spec:
   replicas: {{ .Values.deployment.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ .Release.Name | quote }}
-      app.kubernetes.io/name: {{ template "common.name" . }}
+      {{- include "common.labels.selector" . | nindent 6 }}
   template:
     metadata:
     {{- with .Values.pod.annotations }}
@@ -28,8 +27,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       labels:
-        app.kubernetes.io/instance: {{ .Release.Name | quote }}
-        app.kubernetes.io/name: {{ template "common.name" . }}
+        {{- include "common.labels.selector" . | nindent 8 }}
     spec:
       containers:
       -
@@ -45,8 +43,7 @@ spec:
             - topologyKey: {{ .Values.deployment.antiAffinity.topologyKey }}
               labelSelector:
                 matchLabels:
-                  app.kubernetes.io/instance: {{ .Release.Name | quote }}
-                  app.kubernetes.io/name: {{ template "common.name" . }}
+                  {{- include "common.labels.selector" . | nindent 18 }}
       {{- else if eq .Values.deployment.antiAffinity.strategy "soft" }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -55,8 +52,7 @@ spec:
               topologyKey: {{ .Values.deployment.antiAffinity.topologyKey }}
               labelSelector:
                 matchLabels:
-                  app.kubernetes.io/instance: {{ .Release.Name | quote }}
-                  app.kubernetes.io/name: {{ template "common.name" . }}
+                  {{- include "common.labels.selector" . | nindent 18 }}
       {{- end }}
     {{- with .Values.deployment.affinity }}
         {{- toYaml . | nindent 8 }}

@@ -29,3 +29,13 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 helm.sh/chart: {{ template "common.chartref" . }}
 {{- end -}}
+
+{{- /*
+common.labels.selector prints the selector Helm labels.
+
+The selector labels are frequently used in specific pod, or component targeting.
+*/ -}}
+{{- define "common.labels.selector" -}}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
+app.kubernetes.io/name: {{ template "common.name" . }}
+{{- end -}}
