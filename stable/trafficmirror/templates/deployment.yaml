@@ -3,7 +3,7 @@ env:
 {{- if .Values.trafficmirror.mainUrl }}
 - name: MAIN
   value: {{ .Values.trafficmirror.mainUrl | quote }}
-{{ end -}}
+{{- end }}
 - name: USERNAME
   valueFrom:
     secretKeyRef:

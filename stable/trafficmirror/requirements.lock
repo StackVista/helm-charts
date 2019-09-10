@@ -3,4 +3,4 @@ dependencies:
   repository: https://helm.stackstate.io/
   version: 0.1.1
 digest: sha256:bf06b31e105a2a306b6208e912b7ca242945af54e984f415a68210871a22a361
-generated: "2019-09-09T20:42:56.161257+02:00"
+generated: "2019-09-10T10:46:25.777697+02:00"
