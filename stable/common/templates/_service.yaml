@@ -44,8 +44,7 @@ spec:
     protocol: TCP
     targetPort: app
   selector:
-    app.kubernetes.io/instance: {{ .Release.Name | quote }}
-    app.kubernetes.io/name: {{ template "common.name" . }}
+    {{- include "common.labels.selector" . | nindent 4 }}
 {{- end -}}
 {{- end -}}
 
