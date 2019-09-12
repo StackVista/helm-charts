@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://gitlab.com/gitlab-org/charts/gitlab-runner.git
+	branch = master
+	commit = 5cac2c761c6a44eb7559bcc4f1b2e1645505082f
+	parent = 2b64d91a88edcf1e2cc56832284d6255619c25f9
+	method = merge
+	cmdver = 0.4.0
