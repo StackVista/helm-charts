@@ -1,5 +1,5 @@
 repos:
-- repo: git://github.com/pre-commit/pre-commit-hooks
+- repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v2.3.0
   hooks:
     - id: check-added-large-files
@@ -17,7 +17,7 @@ repos:
   hooks:
     - id: helmlint
     - id: shellcheck
-- repo: git://github.com/kadrach/pre-commit-gitlabci-lint
+- repo: https://github.com/kadrach/pre-commit-gitlabci-lint
   rev: ab984c60414b012e294a65166691473047ccce49
   hooks:
     - id: gitlabci-lint

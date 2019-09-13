@@ -1,0 +1,54 @@
+{{- define "common.daemonset" -}}
+{{- $common := dict "Values" .Values.common -}}
+{{- $noCommon := omit .Values "common" -}}
+{{- $overrides := dict "Values" $noCommon -}}
+{{- $noValues := omit . "Values" -}}
+{{- with merge $noValues $overrides $common -}}
+apiVersion: {{ .Values.daemonset.apiVersion }}
+kind: DaemonSet
+metadata:
+  annotations:
+    {{- include "common.annotations.gitlab" . | nindent 4 }}
+  {{- with .Values.daemonset.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  name: {{ template "common.fullname" . }}
+  labels:
+    {{- include "common.labels.standard" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "common.labels.selector" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.pod.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "common.labels.selector" . | nindent 8 }}
+    spec:
+      containers:
+      -
+        {{ include "common.container.tpl" . | nindent 8 }}
+    {{- with .Values.daemonset.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      dnsPolicy: {{ .Values.daemonset.dnsPolicy }}
+      restartPolicy: {{ .Values.daemonset.restartPolicy }}
+    {{- with .Values.daemonset.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      terminationGracePeriodSeconds: {{ int .Values.daemonset.terminationGracePeriodSeconds }}
+    {{- with .Values.daemonset.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- with .Values.daemonset.updateStrategy }}
+  updateStrategy:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
+{{- end -}}
+{{- end -}}

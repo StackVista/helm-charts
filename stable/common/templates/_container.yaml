@@ -28,8 +28,12 @@ readinessProbe:
 ports:
 - name: app
   containerPort: 8080
-resources:
 {{- with .Values.container.resources }}
+resources:
+  {{- toYaml . | nindent 2 }}
+{{- end -}}
+{{- with .Values.container.securityContext }}
+securityContext:
   {{- toYaml . | nindent 2 }}
 {{- end -}}
 {{- end -}}

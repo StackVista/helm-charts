@@ -1,0 +1,62 @@
+{{- define "common.cronjob" -}}
+{{- $common := dict "Values" .Values.common -}}
+{{- $noCommon := omit .Values "common" -}}
+{{- $overrides := dict "Values" $noCommon -}}
+{{- $noValues := omit . "Values" -}}
+{{- with merge $noValues $overrides $common -}}
+apiVersion: {{ .Values.cronjob.apiVersion }}
+kind: CronJob
+metadata:
+  annotations:
+    {{- include "common.annotations.gitlab" . | nindent 4 }}
+  {{- with .Values.cronjob.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  name: {{ template "common.fullname" . }}
+  labels:
+    {{- include "common.labels.standard" . | nindent 4 }}
+spec:
+  concurrencyPolicy: {{ .Values.cronjob.concurrencyPolicy }}
+  failedJobsHistoryLimit: {{ int .Values.cronjob.failedJobsHistoryLimit }}
+  schedule: {{ .Values.cronjob.schedule }}
+  successfulJobsHistoryLimit: {{ int .Values.cronjob.successfulJobsHistoryLimit }}
+  suspend: {{ .Values.cronjob.suspend }}
+  jobTemplate:
+    metadata:
+      annotations:
+        {{- include "common.annotations.gitlab" . | nindent 8 }}
+      {{- with .Values.cronjob.jobTemplate.annotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "common.labels.standard" . | nindent 8 }}
+    spec:
+      template:
+        metadata:
+        {{- with .Values.pod.annotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+          labels:
+            {{- include "common.labels.selector" . | nindent 12 }}
+        spec:
+        {{- with .Values.cronjob.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+          dnsPolicy: {{ .Values.cronjob.dnsPolicy }}
+          containers:
+          -
+            {{ include "common.container.tpl" . | nindent 12 }}
+        {{- with .Values.cronjob.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+          terminationGracePeriodSeconds: {{ int .Values.cronjob.terminationGracePeriodSeconds }}
+        {{- with .Values.daemonset.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+          restartPolicy: {{ .Values.cronjob.restartPolicy }}
+{{- end -}}
+{{- end -}}
