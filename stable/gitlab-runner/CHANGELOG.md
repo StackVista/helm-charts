@@ -65,4 +65,3 @@
 - Track app version in Chart.yaml !74
 - Fix the error caused by unset 'locked' value !79
 - Bump used Runner version to 11.7.0 !82
-
