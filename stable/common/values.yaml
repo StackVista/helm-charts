@@ -20,7 +20,6 @@ container:
     successThreshold: 1
     # container.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
     timeoutSeconds: 2
-
   readinessProbe:
     # container.readinessProbe.enabled -- Enable use of readinessProbe check.
     enabled: true
@@ -34,7 +33,6 @@ container:
     successThreshold: 1
     # container.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
     timeoutSeconds: 2
-
   # container.resources -- Container resource requests / limits.
   resources: {}
     # limits:
@@ -43,24 +41,105 @@ container:
     # requests:
     #   cpu: "100m"
     #   memory: "128Mi"
+  securityContext:
+    # container.securityContext.allowPrivilegeEscalation -- Controls whether a process can gain more privileges than its parent process.
+    allowPrivilegeEscalation: false
+    capabilities:
+      # container.securityContext.capabilities.drop -- Drops all Linux capabilities by default.
+      drop:
+        - all
+    # container.securityContext.runAsNonRoot -- Controls whether a container is run as a non-root user. **NOTE** You must also specify a UID under `container.securityContext.runAsUser`.
+    runAsNonRoot: true
+    # container.securityContext.runAsUser -- Controls the should run the root process in the container.
+    runAsUser: 65534
+
+cronjob:
+  # cronjob.annotations -- Annotations for `CronJob` objects.
+  annotations: {}
+  # cronjob.apiVersion -- Kubernetes apiVersion to use with a `CronJob` object.
+  apiVersion: batch/v1beta1
+  # cronjob.concurrencyPolicy -- Specifies how to treat concurrent executions of a job that is created by this `CronJob` object.
+  concurrencyPolicy: Forbid
+  # cronjob.dnsPolicy -- DNS policy to apply to `Pod` objects.
+  dnsPolicy: ClusterFirst
+  # cronjob.failedJobsHistoryLimit -- Specifies how many failed `Job` objects created from a parent `CronJob` should be kept.
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    # cronjob.jobTemplate.annotations -- Annotations for `Job` objects created from a parent `CronJob` object.
+    annotations: {}
+  # cronjob.nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
+  # cronjob.restartPolicy -- Restart policy to apply to containers within a `Pod` object.
+  restartPolicy: OnFailure
+  # cronjob.successfulJobsHistoryLimit -- Specifies how many successful `Job` objects created from a parent `CronJob` should be kept.
+  successfulJobsHistoryLimit: 5
+  # cronjob.schedule -- A cron string, such as `0 * * * *` or `@hourly`, which specifies when `Job` objects are created and executed.
+  schedule: "0 0 * * *"
+  # cronjob.suspend -- If set to `true`, all subsequent executions are suspended; this setting does not apply to already started executions.
+  suspend: false
+  # cronjob.tolerations -- Toleration labels for `Pod` assignment.
+  tolerations: []
+
+daemonset:
+  # daemonset.annotations -- Annotations for `DaemonSet` objects.
+  annotations: {}
+  # daemonset.apiVersion -- Kubernetes apiVersion to use with a `DaemonSet` object.
+  apiVersion: extensions/v1beta1
+  # daemonset.dnsPolicy -- DNS policy to apply to `Pod` objects.
+  dnsPolicy: ClusterFirst
+  # daemonset.nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
+  # daemonset.restartPolicy -- Restart policy to apply to containers within a `Pod` object.
+  restartPolicy: Always
+  # daemonset.securityContext -- The security settings for all containers in a `Pod` object.
+  securityContext: {}
+    # runAsUser: 1000
+    # runAsGroup: 3000
+    # fsGroup: 2000
+  # daemonset.terminationGracePeriodSeconds -- Time (in seconds) to wait for a `Pod` object to shut down gracefully.
+  terminationGracePeriodSeconds: 30
+  # daemonset.tolerations -- Toleration labels for `Pod` assignment.
+  tolerations: []
+  # daemonset.updateStrategy -- Strategy to use for deploying `DaemonSet` objects.
+  updateStrategy:
+    type: RollingUpdate
 
 deployment:
+  # deployment.affinity -- Affinity settings for pod assignment.
+  affinity: {}
   # deployment.annotations -- Annotations for `Deployment` objects.
   annotations: {}
   # deployment.apiVersion -- Kubernetes apiVersion to use with a `Deployment` object.
   apiVersion: apps/v1
-  # deployment.affinity -- Affinity settings for pod assignment.
-  affinity: {}
   antiAffinity:
     # deployment.antiAffinity.strategy -- Spread pods using simple `antiAffinity`; valid values are `hard` or `soft`.
     strategy: ""
     # deployment.antiAffinity.topologyKey -- The `topologyKey` to use for simple `antiAffinity` rule.
-    topologyKey: kubernetes.io/hostname
-  # deployment.replicaCount -- Amount of replicas to create for the `Deployment` object.
-  replicaCount: 1
+    topologyKey: failure-domain.beta.kubernetes.io/zone
+  # deployment.dnsPolicy -- DNS policy to apply to `Pod` objects.
+  dnsPolicy: ClusterFirst
   # deployment.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}
-  # deployment.tolerations -- Toleration labels for pod assignment.
+  # deployment.progressDeadlineSeconds -- Denotes the number of seconds the `Deployment` controller waits before indicating (in the `Deployment` status) that the `Deployment` progress has stalled.
+  progressDeadlineSeconds: 600
+  # deployment.replicaCount -- Amount of replicas to create for the `Deployment` object.
+  replicaCount: 1
+  # deployment.restartPolicy -- Restart policy to apply to containers within a `Pod` object.
+  restartPolicy: Always
+  # deployment.securityContext -- The security settings for all containers in a `Pod` object.
+  securityContext: {}
+    # runAsUser: 1000
+    # runAsGroup: 3000
+    # fsGroup: 2000
+  # deployment.strategy -- Strategy to use for deploying `Deployment` objects.
+  strategy: {}
+    # rollingUpdate:
+    #   maxSurge: 25%
+    #   maxUnavailable: 25%
+    # type: RollingUpdate
+  # deployment.terminationGracePeriodSeconds -- Time (in seconds) to wait for a `Pod` object to shut down gracefully.
+  terminationGracePeriodSeconds: 30
+  # deployment.tolerations -- Toleration labels for `Pod` assignment.
   tolerations: []
 
 extraEnv:
@@ -143,3 +222,33 @@ service:
     #   targetPort: 9377
   # service.type -- Kubernetes 'Service' type to use.
   type: ClusterIP
+
+statefulset:
+  # statefulset.affinity -- Affinity settings for pod assignment.
+  affinity: {}
+  # statefulset.annotations -- Annotations for `StatefulSet` objects.
+  annotations: {}
+  # statefulset.apiVersion -- Kubernetes apiVersion to use with a `StatefulSet` object.
+  apiVersion: apps/v1
+  antiAffinity:
+    # statefulset.antiAffinity.strategy -- Spread pods using simple `antiAffinity`; valid values are `hard` or `soft`.
+    strategy: ""
+    # statefulset.antiAffinity.topologyKey -- The `topologyKey` to use for simple `antiAffinity` rule.
+    topologyKey: failure-domain.beta.kubernetes.io/zone
+  # statefulset.dnsPolicy -- DNS policy to apply to `Pod` objects.
+  dnsPolicy: ClusterFirst
+  # statefulset.nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
+  # statefulset.podManagementPolicy -- Policy to dictate how `StatefulSet` pods are updated; either `OrderedReady`, or `Parallel`.
+  podManagementPolicy: OrderedReady
+  # statefulset.replicaCount -- Amount of replicas to create for the `StatefulSet` object.
+  replicaCount: 1
+  # statefulset.restartPolicy -- Restart policy to apply to containers within a `Pod` object.
+  restartPolicy: Always
+  # statefulset.terminationGracePeriodSeconds -- Time (in seconds) to wait for a `Pod` object to shut down gracefully.
+  terminationGracePeriodSeconds: 30
+  # statefulset.tolerations -- Toleration labels for `Pod` assignment.
+  tolerations: []
+  # statefulset.updateStrategy -- Strategy to use for deploying `StatefulSet` objects.
+  updateStrategy:
+    type: RollingUpdate

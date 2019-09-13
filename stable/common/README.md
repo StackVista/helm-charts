@@ -2,7 +2,7 @@ common
 ======
 Common chartbuilding components and helpers
 
-Current chart version is `0.1.2`
+Current chart version is `0.1.3`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -27,14 +27,45 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | container.readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
 | container.readinessProbe.timeoutSeconds | int | `2` | `timeoutSeconds` for the readiness probe. |
 | container.resources | object | `{}` | Container resource requests / limits. |
+| container.securityContext.allowPrivilegeEscalation | bool | `false` | Controls whether a process can gain more privileges than its parent process. |
+| container.securityContext.capabilities.drop | list | `["all"]` | Drops all Linux capabilities by default. |
+| container.securityContext.runAsNonRoot | bool | `true` | Controls whether a container is run as a non-root user. **NOTE** You must also specify a UID under `container.securityContext.runAsUser`. |
+| container.securityContext.runAsUser | int | `65534` | Controls the should run the root process in the container. |
+| cronjob.annotations | object | `{}` | Annotations for `CronJob` objects. |
+| cronjob.apiVersion | string | `"batch/v1beta1"` | Kubernetes apiVersion to use with a `CronJob` object. |
+| cronjob.concurrencyPolicy | string | `"Forbid"` | Specifies how to treat concurrent executions of a job that is created by this `CronJob` object. |
+| cronjob.dnsPolicy | string | `"ClusterFirst"` | DNS policy to apply to `Pod` objects. |
+| cronjob.failedJobsHistoryLimit | int | `5` | Specifies how many failed `Job` objects created from a parent `CronJob` should be kept. |
+| cronjob.jobTemplate.annotations | object | `{}` | Annotations for `Job` objects created from a parent `CronJob` object. |
+| cronjob.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| cronjob.restartPolicy | string | `"OnFailure"` | Restart policy to apply to containers within a `Pod` object. |
+| cronjob.schedule | string | `"0 0 * * *"` | A cron string, such as `0 * * * *` or `@hourly`, which specifies when `Job` objects are created and executed. |
+| cronjob.successfulJobsHistoryLimit | int | `5` | Specifies how many successful `Job` objects created from a parent `CronJob` should be kept. |
+| cronjob.suspend | bool | `false` | If set to `true`, all subsequent executions are suspended; this setting does not apply to already started executions. |
+| cronjob.tolerations | list | `[]` | Toleration labels for `Pod` assignment. |
+| daemonset.annotations | object | `{}` | Annotations for `DaemonSet` objects. |
+| daemonset.apiVersion | string | `"extensions/v1beta1"` | Kubernetes apiVersion to use with a `DaemonSet` object. |
+| daemonset.dnsPolicy | string | `"ClusterFirst"` | DNS policy to apply to `Pod` objects. |
+| daemonset.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| daemonset.restartPolicy | string | `"Always"` | Restart policy to apply to containers within a `Pod` object. |
+| daemonset.securityContext | object | `{}` | The security settings for all containers in a `Pod` object. |
+| daemonset.terminationGracePeriodSeconds | int | `30` | Time (in seconds) to wait for a `Pod` object to shut down gracefully. |
+| daemonset.tolerations | list | `[]` | Toleration labels for `Pod` assignment. |
+| daemonset.updateStrategy | object | `{"type":"RollingUpdate"}` | Strategy to use for deploying `DaemonSet` objects. |
 | deployment.affinity | object | `{}` | Affinity settings for pod assignment. |
 | deployment.annotations | object | `{}` | Annotations for `Deployment` objects. |
 | deployment.antiAffinity.strategy | string | `""` | Spread pods using simple `antiAffinity`; valid values are `hard` or `soft`. |
-| deployment.antiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | The `topologyKey` to use for simple `antiAffinity` rule. |
+| deployment.antiAffinity.topologyKey | string | `"failure-domain.beta.kubernetes.io/zone"` | The `topologyKey` to use for simple `antiAffinity` rule. |
 | deployment.apiVersion | string | `"apps/v1"` | Kubernetes apiVersion to use with a `Deployment` object. |
+| deployment.dnsPolicy | string | `"ClusterFirst"` | DNS policy to apply to `Pod` objects. |
 | deployment.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| deployment.progressDeadlineSeconds | int | `600` | Denotes the number of seconds the `Deployment` controller waits before indicating (in the `Deployment` status) that the `Deployment` progress has stalled. |
 | deployment.replicaCount | int | `1` | Amount of replicas to create for the `Deployment` object. |
-| deployment.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| deployment.restartPolicy | string | `"Always"` | Restart policy to apply to containers within a `Pod` object. |
+| deployment.securityContext | object | `{}` | The security settings for all containers in a `Pod` object. |
+| deployment.strategy | object | `{}` | Strategy to use for deploying `Deployment` objects. |
+| deployment.terminationGracePeriodSeconds | int | `30` | Time (in seconds) to wait for a `Pod` object to shut down gracefully. |
+| deployment.tolerations | list | `[]` | Toleration labels for `Pod` assignment. |
 | extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | gitlab.app | string | `""` | If CI is GitLab, specify the `app` for annotations. |
@@ -61,3 +92,16 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | service.loadBalancerSourceRanges | list | `[]` |  |
 | service.ports | list | `[]` | List of ports to apply to the `Service` object. |
 | service.type | string | `"ClusterIP"` | Kubernetes 'Service' type to use. |
+| statefulset.affinity | object | `{}` | Affinity settings for pod assignment. |
+| statefulset.annotations | object | `{}` | Annotations for `StatefulSet` objects. |
+| statefulset.antiAffinity.strategy | string | `""` | Spread pods using simple `antiAffinity`; valid values are `hard` or `soft`. |
+| statefulset.antiAffinity.topologyKey | string | `"failure-domain.beta.kubernetes.io/zone"` | The `topologyKey` to use for simple `antiAffinity` rule. |
+| statefulset.apiVersion | string | `"apps/v1"` | Kubernetes apiVersion to use with a `StatefulSet` object. |
+| statefulset.dnsPolicy | string | `"ClusterFirst"` | DNS policy to apply to `Pod` objects. |
+| statefulset.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| statefulset.podManagementPolicy | string | `"OrderedReady"` | Policy to dictate how `StatefulSet` pods are updated; either `OrderedReady`, or `Parallel`. |
+| statefulset.replicaCount | int | `1` | Amount of replicas to create for the `StatefulSet` object. |
+| statefulset.restartPolicy | string | `"Always"` | Restart policy to apply to containers within a `Pod` object. |
+| statefulset.terminationGracePeriodSeconds | int | `30` | Time (in seconds) to wait for a `Pod` object to shut down gracefully. |
+| statefulset.tolerations | list | `[]` | Toleration labels for `Pod` assignment. |
+| statefulset.updateStrategy | object | `{"type":"RollingUpdate"}` | Strategy to use for deploying `StatefulSet` objects. |
