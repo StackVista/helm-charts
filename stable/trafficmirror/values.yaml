@@ -1,3 +1,11 @@
+container:
+  livenessProbeDefaults:
+    # container.livenessProbeDefaults.enabled -- Use defaults for the `livenessProbe` from the upstream `common` chart.
+    enabled: true
+  readinessProbeDefaults:
+    # container.readinessProbeDefaults.enabled -- Use defaults for the `readinessProbe` from the upstream `common` chart.
+    enabled: true
+
 image:
   # image.repository -- Base container image repository.
   repository: docker.io/stackstate/trafficmirror

@@ -2,7 +2,7 @@ trafficmirror
 =============
 Trafficmirror -- mirror traffic to various endpoints.
 
-Current chart version is `0.1.3`
+Current chart version is `0.1.4`
 
 Source code can be found [here](https://github.com/rb3ckers/trafficmirror)
 
@@ -10,12 +10,14 @@ Source code can be found [here](https://github.com/rb3ckers/trafficmirror)
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://helm.stackstate.io/ | common | 0.1.3 |
+| https://helm.stackstate.io/ | common | 0.1.4 |
 
 ## Chart Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| container.livenessProbeDefaults.enabled | bool | `true` | Use defaults for the `livenessProbe` from the upstream `common` chart. |
+| container.readinessProbeDefaults.enabled | bool | `true` | Use defaults for the `readinessProbe` from the upstream `common` chart. |
 | image.repository | string | `"docker.io/stackstate/trafficmirror"` | Base container image repository. |
 | image.tag | string | `"652621a6e6ace12819dbddfb43ff26cda45bda28"` | Default container image tag. |
 | ingress.enabled | bool | `false` | Enable use of ingress controllers. |
