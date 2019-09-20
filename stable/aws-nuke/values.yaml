@@ -1,0 +1,11 @@
+image:
+  # image.repository -- Base container image registry.
+  repository: quay.io/rebuy/aws-nuke@sha256
+  # image.tag -- Default container image tag.
+  tag: f77b1f248cd7a036411ee8205d928dee5ac4f9cb357b267da30931a4ae75cc37
+  # image.pullPolicy -- Default container image pull policy.
+  pullPolicy: Always
+
+awsNuke:
+  # awsNuke.config -- (string) **REQUIRED** AWS Nuke configuration file that will be used with the `--config` flag
+  config:

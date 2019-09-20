@@ -1,0 +1,9 @@
+{{- define "awsnuke.configmap" -}}
+data:
+  config.yaml: |-
+{{ .Values.awsNuke.config | indent 4 }}
+{{- end -}}
+
+{{- $commonConfigmap := fromYaml (include "common.configmap" .) -}}
+{{- $awsNukeConfigmap := fromYaml (include "awsnuke.configmap" .) -}}
+{{- toYaml (merge $awsNukeConfigmap $commonConfigmap) -}}
