@@ -14,6 +14,9 @@ env:
     secretKeyRef:
       name: {{ template "common.fullname" . }}
       key: password
+ports:
+- containerPort: 8080
+  name: app
 livenessProbe:
   tcpSocket:
     port: app
@@ -23,11 +26,14 @@ readinessProbe:
 {{- end -}}
 
 {{- define "trafficmirror.deployment" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "trafficmirror.deployment.container" .) -}}
+{{- $trafficmirrorContainer := (merge $overrideContainer $commonContainer) }}
 spec:
   template:
     spec:
       containers:
-      - {{ template "common.container" (list . "trafficmirror.deployment.container") }}
+      - {{ toYaml $trafficmirrorContainer | nindent 8 }}
 {{- end -}}
 
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}

@@ -1,0 +1,11 @@
+ingress:
+  enabled: true
+  hosts:
+  - host: some-trafficmirror.website.com
+    paths:
+      - /
+      - /another-path
+  tls:
+  - secretName: some-tls-secret
+    hosts:
+      - some-trafficmirror.website.com
