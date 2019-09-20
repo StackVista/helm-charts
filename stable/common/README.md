@@ -2,7 +2,7 @@ common
 ======
 Common chartbuilding components and helpers
 
-Current chart version is `0.1.3`
+Current chart version is `0.1.4`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -14,18 +14,18 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 |-----|------|---------|-------------|
 | configmap.annotations | object | `{}` | Annotations for `ConfigMap` objects. |
 | configmap.apiVersion | string | `"v1"` | Kubernetes apiVersion to use with a `ConfigMap` object. |
-| container.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
-| container.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
-| container.livenessProbe.initialDelaySeconds | int | `10` | `initialDelaySeconds` for the liveness probe. |
-| container.livenessProbe.periodSeconds | int | `10` | `periodSeconds` for the liveness probe. |
-| container.livenessProbe.successThreshold | int | `1` | `successThreshold` for the liveness probe. |
-| container.livenessProbe.timeoutSeconds | int | `2` | `timeoutSeconds` for the liveness probe. |
-| container.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
-| container.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
-| container.readinessProbe.initialDelaySeconds | int | `10` | `initialDelaySeconds` for the readiness probe. |
-| container.readinessProbe.periodSeconds | int | `10` | `periodSeconds` for the readiness probe. |
-| container.readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
-| container.readinessProbe.timeoutSeconds | int | `2` | `timeoutSeconds` for the readiness probe. |
+| container.livenessProbeDefaults.enabled | bool | `false` | Enable default options of `livenessProbe` check. |
+| container.livenessProbeDefaults.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
+| container.livenessProbeDefaults.initialDelaySeconds | int | `10` | `initialDelaySeconds` for the liveness probe. |
+| container.livenessProbeDefaults.periodSeconds | int | `10` | `periodSeconds` for the liveness probe. |
+| container.livenessProbeDefaults.successThreshold | int | `1` | `successThreshold` for the liveness probe. |
+| container.livenessProbeDefaults.timeoutSeconds | int | `2` | `timeoutSeconds` for the liveness probe. |
+| container.readinessProbeDefaults.enabled | bool | `false` | Enable default options of `readinessProbe` check. |
+| container.readinessProbeDefaults.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
+| container.readinessProbeDefaults.initialDelaySeconds | int | `10` | `initialDelaySeconds` for the readiness probe. |
+| container.readinessProbeDefaults.periodSeconds | int | `10` | `periodSeconds` for the readiness probe. |
+| container.readinessProbeDefaults.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
+| container.readinessProbeDefaults.timeoutSeconds | int | `2` | `timeoutSeconds` for the readiness probe. |
 | container.resources | object | `{}` | Container resource requests / limits. |
 | container.securityContext.allowPrivilegeEscalation | bool | `false` | Controls whether a process can gain more privileges than its parent process. |
 | container.securityContext.capabilities.drop | list | `["all"]` | Drops all Linux capabilities by default. |

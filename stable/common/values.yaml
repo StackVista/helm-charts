@@ -7,31 +7,31 @@ configmap:
   apiVersion: "v1"
 
 container:
-  livenessProbe:
-    # container.livenessProbe.enabled -- Enable use of livenessProbe check.
-    enabled: true
-    # container.livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
+  livenessProbeDefaults:
+    # container.livenessProbeDefaults.enabled -- Enable default options of `livenessProbe` check.
+    enabled: false
+    # container.livenessProbeDefaults.failureThreshold -- `failureThreshold` for the liveness probe.
     failureThreshold: 3
-    # container.livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
+    # container.livenessProbeDefaults.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
     initialDelaySeconds: 10
-    # container.livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
+    # container.livenessProbeDefaults.periodSeconds -- `periodSeconds` for the liveness probe.
     periodSeconds: 10
-    # container.livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
+    # container.livenessProbeDefaults.successThreshold -- `successThreshold` for the liveness probe.
     successThreshold: 1
-    # container.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
+    # container.livenessProbeDefaults.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
     timeoutSeconds: 2
-  readinessProbe:
-    # container.readinessProbe.enabled -- Enable use of readinessProbe check.
-    enabled: true
-    # container.readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
+  readinessProbeDefaults:
+    # container.readinessProbeDefaults.enabled -- Enable default options of `readinessProbe` check.
+    enabled: false
+    # container.readinessProbeDefaults.failureThreshold -- `failureThreshold` for the readiness probe.
     failureThreshold: 3
-    # container.readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
+    # container.readinessProbeDefaults.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
     initialDelaySeconds: 10
-    # container.readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
+    # container.readinessProbeDefaults.periodSeconds -- `periodSeconds` for the readiness probe.
     periodSeconds: 10
-    # container.readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
+    # container.readinessProbeDefaults.successThreshold -- `successThreshold` for the readiness probe.
     successThreshold: 1
-    # container.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
+    # container.readinessProbeDefaults.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
     timeoutSeconds: 2
   # container.resources -- Container resource requests / limits.
   resources: {}
