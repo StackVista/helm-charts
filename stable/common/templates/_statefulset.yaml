@@ -37,7 +37,7 @@ spec:
     spec:
       containers:
       -
-        {{ include "common.container.tpl" . | nindent 8 }}
+        {{ include "common.container" . | nindent 8 }}
     {{- with .Values.statefulset.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
