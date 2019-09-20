@@ -1,0 +1,32 @@
+{{- define "awsnuke.cronjob.container" -}}
+args:
+- --config
+- /etc/aws-nuke/config.yaml
+securityContext:
+  runAsUser: 1000
+volumeMounts:
+  - name: config-volume
+    mountPath: /etc/aws-nuke
+    readOnly: true
+{{- end -}}
+
+{{- define "awsnuke.cronjob" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "awsnuke.cronjob.container" .) -}}
+{{- $awsNukeContainer := (merge $overrideContainer $commonContainer) }}
+spec:
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - {{ toYaml $awsNukeContainer | nindent 12 }}
+          volumes:
+          - name: config-volume
+            configMap:
+              name: {{ template "common.fullname" . }}
+{{- end -}}
+
+{{- $commonCronjob := fromYaml (include "common.cronjob" .) -}}
+{{- $awsNukeCronjob := fromYaml (include "awsnuke.cronjob" .) -}}
+{{- toYaml (merge $awsNukeCronjob $commonCronjob) -}}

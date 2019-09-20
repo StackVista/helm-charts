@@ -1,0 +1,6 @@
+dependencies:
+- name: common
+  repository: https://helm.stackstate.io/
+  version: 0.1.4
+digest: sha256:c1235aaaa07f2945cced22fc9b0f636f50a16a80e5ee36be617a9319c488be8e
+generated: "2019-09-20T13:57:43.591658+02:00"
