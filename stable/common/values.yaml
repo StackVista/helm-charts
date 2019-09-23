@@ -189,6 +189,12 @@ pod:
   # pod.annotations -- Annotations for `Pod` objects.
   annotations: {}
 
+poddisruptionbudget:
+  # poddisruptionbudget.annotations -- Annotations for `PodDisruptionBudget` objects.
+  annotations: {}
+  # poddisruptionbudget.apiVersion -- Kubernetes apiVersion to use with a `PodDisruptionBudget` object.
+  apiVersion: "policy/v1beta1"
+
 secret:
   # secret.annotations -- Annotations for `Secret` objects.
   annotations: {}

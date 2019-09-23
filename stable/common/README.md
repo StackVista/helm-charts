@@ -2,7 +2,7 @@ common
 ======
 Common chartbuilding components and helpers
 
-Current chart version is `0.1.4`
+Current chart version is `0.1.5`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -81,6 +81,8 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | persistentvolumeclaim.annotations | object | `{}` | Annotations for `PersistentVolumeClaim` objects. |
 | persistentvolumeclaim.apiVersion | string | `"v1"` | Kubernetes apiVersion to use with a `PersistentVolumeClaim` object. |
 | pod.annotations | object | `{}` | Annotations for `Pod` objects. |
+| poddisruptionbudget.annotations | object | `{}` | Annotations for `PodDisruptionBudget` objects. |
+| poddisruptionbudget.apiVersion | string | `"policy/v1beta1"` | Kubernetes apiVersion to use with a `PodDisruptionBudget` object. |
 | secret.annotations | object | `{}` | Annotations for `Secret` objects. |
 | secret.apiVersion | string | `"v1"` | Kubernetes apiVersion to use with a `Secret` object. |
 | service.annotations | object | `{}` | Annotations for `Service` objects. |
