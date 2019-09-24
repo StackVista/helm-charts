@@ -48,10 +48,8 @@ container:
       # container.securityContext.capabilities.drop -- Drops all Linux capabilities by default.
       drop:
         - all
-    # container.securityContext.runAsNonRoot -- Controls whether a container is run as a non-root user. **NOTE** You must also specify a UID under `container.securityContext.runAsUser`.
-    runAsNonRoot: true
-    # container.securityContext.runAsUser -- Controls the should run the root process in the container.
-    runAsUser: 65534
+    # runAsNonRoot: true
+    # runAsUser: 65534
 
 cronjob:
   # cronjob.annotations -- Annotations for `CronJob` objects.
