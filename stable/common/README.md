@@ -2,7 +2,7 @@ common
 ======
 Common chartbuilding components and helpers
 
-Current chart version is `0.1.5`
+Current chart version is `0.1.6`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -29,8 +29,6 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | container.resources | object | `{}` | Container resource requests / limits. |
 | container.securityContext.allowPrivilegeEscalation | bool | `false` | Controls whether a process can gain more privileges than its parent process. |
 | container.securityContext.capabilities.drop | list | `["all"]` | Drops all Linux capabilities by default. |
-| container.securityContext.runAsNonRoot | bool | `true` | Controls whether a container is run as a non-root user. **NOTE** You must also specify a UID under `container.securityContext.runAsUser`. |
-| container.securityContext.runAsUser | int | `65534` | Controls the should run the root process in the container. |
 | cronjob.annotations | object | `{}` | Annotations for `CronJob` objects. |
 | cronjob.apiVersion | string | `"batch/v1beta1"` | Kubernetes apiVersion to use with a `CronJob` object. |
 | cronjob.concurrencyPolicy | string | `"Forbid"` | Specifies how to treat concurrent executions of a job that is created by this `CronJob` object. |
