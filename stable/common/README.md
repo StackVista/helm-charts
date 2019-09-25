@@ -2,7 +2,7 @@ common
 ======
 Common chartbuilding components and helpers
 
-Current chart version is `0.1.6`
+Current chart version is `0.1.7`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -76,8 +76,11 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | ingress.apiVersion | string | `"extensions/v1beta1"` | Kubernetes apiVersion to use with an `Ingress` object. |
 | ingress.hosts | list | `[]` | List of ingress hostnames. |
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
+| persistentvolumeclaim.accessMode | string | `"ReadWriteOnce"` | Default type of access for mounted volume. |
 | persistentvolumeclaim.annotations | object | `{}` | Annotations for `PersistentVolumeClaim` objects. |
 | persistentvolumeclaim.apiVersion | string | `"v1"` | Kubernetes apiVersion to use with a `PersistentVolumeClaim` object. |
+| persistentvolumeclaim.size | string | `"10Gi"` | Default size for `PersistentVolumeClaim` object. |
+| persistentvolumeclaim.storageClass | string | `"default"` | Default storage class for `PersistentVolumeClaim` object. |
 | pod.annotations | object | `{}` | Annotations for `Pod` objects. |
 | poddisruptionbudget.annotations | object | `{}` | Annotations for `PodDisruptionBudget` objects. |
 | poddisruptionbudget.apiVersion | string | `"policy/v1beta1"` | Kubernetes apiVersion to use with a `PodDisruptionBudget` object. |
