@@ -1,0 +1,52 @@
+{{- define "stackstate-hbase.hadoop.configmap" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-hadoop-config
+data:
+  bootstrap.sh: |
+    #!/bin/bash
+
+    : ${HADOOP_PREFIX:=/opt/hadoop}
+
+    source $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh
+
+    if [[ "${HOSTNAME}" =~ "hdfs-nn" ]]; then
+
+      if [[ ! -e "${HDFS_CONF_dfs_namenode_name_dir}/.formatted" ]]; then
+        echo "Formatting namenode on first start..."
+        ${HADOOP_PREFIX}/bin/hdfs namenode -format -force -nonInteractive
+        touch "${HDFS_CONF_dfs_namenode_name_dir}/.formatted"
+      fi
+
+      ${HADOOP_PREFIX}/sbin/hadoop-daemon.sh start namenode
+    fi
+
+    if [[ "${HOSTNAME}" =~ "hdfs-snn" ]]; then
+
+      if [[ ! -e "${HDFS_CONF_dfs_namenode_name_dir}/.formatted" ]]; then
+        echo "Formatting namenode on first start..."
+        ${HADOOP_PREFIX}/bin/hdfs secondarynamenode -format
+        touch "${HDFS_CONF_dfs_namenode_name_dir}/.formatted"
+      fi
+
+      ${HADOOP_PREFIX}/bin/hdfs secondarynamenode -format
+      ${HADOOP_PREFIX}/sbin/hadoop-daemon.sh start secondarynamenode
+    fi
+
+    if [[ "${HOSTNAME}" =~ "hdfs-dn" ]]; then
+      ${HADOOP_PREFIX}/sbin/hadoop-daemon.sh start datanode
+    fi
+
+    if [[ $1 == "-d" ]]; then
+      until find ${HADOOP_PREFIX}/logs -mmin -1 | egrep -q '.*'; echo "`date`: Waiting for logs..." ; do sleep 2 ; done
+      tail -F ${HADOOP_PREFIX}/logs/* &
+      while true; do sleep 1000; done
+    fi
+
+    if [[ $1 == "-bash" ]]; then
+      /bin/bash
+    fi
+{{- end -}}
+
+{{- $commonConfigmap := fromYaml (include "common.configmap" .) -}}
+{{- $stackstateHbaseHadoopConfigmap := fromYaml (include "stackstate-hbase.hadoop.configmap" .) -}}
+{{- toYaml (merge $stackstateHbaseHadoopConfigmap $commonConfigmap) -}}

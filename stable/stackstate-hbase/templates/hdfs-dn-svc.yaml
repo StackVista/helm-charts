@@ -1,0 +1,20 @@
+{{- define "stackstate-hbase.hdfs.datanode.service" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-hdfs-dn
+  labels:
+    app.kubernetes.io/component: hdfs-dn
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+  - port: 50010
+    name: dn
+  - port: 50075
+    name: dninfo
+  selector:
+    app.kubernetes.io/component: hdfs-dn
+{{- end -}}
+
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $stackstateHbaseHdfsDatanodeService := fromYaml (include "stackstate-hbase.hdfs.datanode.service" .) -}}
+{{- toYaml (merge $stackstateHbaseHdfsDatanodeService $commonService) -}}

@@ -1,0 +1,107 @@
+{{- define "stackstate-hbase.hdfs.datanode.container.init" -}}
+name: namenode-init
+image: "busybox:latest"
+command:
+- sh
+- -c
+- chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} /hadoop-data
+securityContext:
+  allowPrivilegeEscalation: true
+  privileged: true
+volumeMounts:
+- name: {{ template "common.fullname" . }}-hdfs-dn
+  mountPath: /hadoop-data
+{{- end -}}
+
+{{- define "stackstate-hbase.hdfs.datanode.container.main" -}}
+name: datanode
+image: "{{ .Values.hdfs.image.repository }}:{{ .Values.hdfs.image.tag }}"
+imagePullPolicy: {{ .Values.hdfs.image.pullPolicy }}
+args:
+- /entrypoint.sh
+- /bin/bash
+- /tmp/hadoop-config/bootstrap.sh
+- -d
+env:
+{{ include "stackstate-hbase.hdfs.commonEnv" . }}
+- name: SERVICE_PRECONDITION
+  value: "{{ template "common.fullname" . }}-hdfs-nn:9000"
+ports:
+- containerPort: 50010
+  name: dn
+- containerPort: 50075
+  name: dninfo
+livenessProbe:
+  httpGet:
+    path: /
+    port: dninfo
+readinessProbe:
+  httpGet:
+    path: /
+    port: dninfo
+{{- with .Values.hdfs.datanode.resources }}
+resources:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+securityContext:
+  runAsNonRoot: true
+  runAsGroup: {{ .Values.securityContext.runAsGroup }}
+  runAsUser: {{ .Values.securityContext.runAsUser }}
+volumeMounts:
+- name: hadoop-config
+  mountPath: /tmp/hadoop-config
+- name: {{ template "common.fullname" . }}-hdfs-dn
+  mountPath: /hadoop-data
+{{- end -}}
+
+{{- define "stackstate-hbase.hdfs.datanode.statefulset" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate-hbase.hdfs.datanode.container.main" .) -}}
+{{- $stackstateHbaseHdfsDatanodeContainer := (merge $overrideContainer $commonContainer) }}
+{{- $overrideContainer := fromYaml (include "stackstate-hbase.hdfs.datanode.container.init" .) -}}
+{{- $stackstateHbaseHdfsDatanodeInitContainer := (merge $overrideContainer $commonContainer) }}
+metadata:
+  labels:
+    app.kubernetes.io/component: hdfs-dn
+  name: {{ template "common.fullname" . }}-hdfs-dn
+spec:
+  serviceName: {{ template "common.fullname" . }}-hdfs-dn
+  replicas: {{ .Values.hdfs.datanode.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: hdfs-dn
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: hdfs-dn
+    spec:
+      initContainers:
+      -
+        {{ toYaml $stackstateHbaseHdfsDatanodeInitContainer | nindent 8 }}
+      containers:
+      -
+        {{ toYaml $stackstateHbaseHdfsDatanodeContainer | nindent 8 }}
+      volumes:
+      - name: hadoop-config
+        configMap:
+          name: {{ template "common.fullname" . }}-hadoop-config
+    {{- if not .Values.hdfs.datanode.persistence.enabled }}
+      - name: {{ template "common.fullname" . }}-hdfs-dn
+        emptyDir: {}
+    {{- end }}
+{{- if .Values.hdfs.datanode.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ template "common.fullname" . }}-hdfs-dn
+    spec:
+      accessModes: {{ .Values.hdfs.datanode.persistence.accessModes }}
+      resources:
+        requests:
+          storage: {{ .Values.hdfs.datanode.persistence.size }}
+      storageClassName: {{ .Values.hdfs.datanode.persistence.storageClass }}
+{{- end }}
+{{- end -}}
+
+{{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
+{{- $stackstateHbaseHdfsDatanodeStatefulSet := fromYaml (include "stackstate-hbase.hdfs.datanode.statefulset" .) -}}
+{{- toYaml (merge $stackstateHbaseHdfsDatanodeStatefulSet $commonStatefulSet) -}}

@@ -1,0 +1,18 @@
+{{- define "stackstate-hbase.tephra.service" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-tephra
+  labels:
+    app.kubernetes.io/component: tephra
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+  - port: 15165
+    name: tephra
+  selector:
+    app.kubernetes.io/component: tephra
+{{- end -}}
+
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $stackstateHbaseTephraService := fromYaml (include "stackstate-hbase.tephra.service" .) -}}
+{{- toYaml (merge $stackstateHbaseTephraService $commonService) -}}

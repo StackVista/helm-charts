@@ -1,0 +1,15 @@
+{{- define "stackstate-hbase.hbase.regionserver.poddisruptionbudget" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-hbase-rs
+  labels:
+    app.kubernetes.io/component: hbase-rs
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: hbase-rs
+  maxUnavailable: 1
+{{- end -}}
+
+{{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
+{{- $stackstateHbasePdb := fromYaml (include "stackstate-hbase.hbase.regionserver.poddisruptionbudget" .) -}}
+{{- toYaml (merge $stackstateHbasePdb $commonPdb) -}}

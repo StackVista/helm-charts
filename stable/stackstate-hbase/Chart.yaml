@@ -1,7 +1,7 @@
 apiVersion: v1
-appVersion: 2.7.3
+appVersion: 1.2.6
 version: 0.1.0
-description: HBase Helm to deploy the distributed versions of warp10
+description: Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 keywords:
   - aiops
   - monitoring
@@ -15,4 +15,4 @@ icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
 maintainers:
   - name: sc250024
     email: scrooks@stackstate.com
-name: hbase
+name: stackstate-hbase

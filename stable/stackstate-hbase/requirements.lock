@@ -1,0 +1,9 @@
+dependencies:
+- name: common
+  repository: https://helm.stackstate.io
+  version: 0.1.7
+- name: zookeeper
+  repository: https://charts.bitnami.com
+  version: 5.1.0
+digest: sha256:aacdcbc42298e7f40fd4f6db35998f9a1316f35a82a4015ab5fae1cbaab65644
+generated: "2019-10-29T14:11:45.915844+01:00"
