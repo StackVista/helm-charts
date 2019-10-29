@@ -1,0 +1,8 @@
+dependencies:
+- name: common
+  version: 0.1.7
+  repository: https://helm.stackstate.io
+- name: zookeeper
+  version: 5.1.X
+  repository: https://charts.bitnami.com
+  condition: zookeeper.enabled

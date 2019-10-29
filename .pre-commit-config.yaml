@@ -2,26 +2,26 @@ repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v2.3.0
   hooks:
-    - id: check-added-large-files
-    - id: check-case-conflict
-    - id: check-executables-have-shebangs
-    - id: check-merge-conflict
-    - id: detect-private-key
-    - id: end-of-file-fixer
-    - id: trailing-whitespace
-    - id: detect-aws-credentials
-      args:
-        - --allow-missing-credentials
+  - id: check-added-large-files
+  - id: check-case-conflict
+  - id: check-executables-have-shebangs
+  - id: check-merge-conflict
+  - id: detect-private-key
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+  - id: detect-aws-credentials
+    args:
+    - --allow-missing-credentials
 - repo: https://github.com/gruntwork-io/pre-commit
   rev: v0.0.9
   hooks:
-    - id: helmlint
-    - id: shellcheck
+  - id: helmlint
+  - id: shellcheck
 - repo: https://github.com/kadrach/pre-commit-gitlabci-lint
   rev: ab984c60414b012e294a65166691473047ccce49
   hooks:
-    - id: gitlabci-lint
+  - id: gitlabci-lint
 - repo: https://github.com/norwoodj/helm-docs
   rev: v0.8.0
   hooks:
-    - id: helm-docs
+  - id: helm-docs

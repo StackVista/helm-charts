@@ -1,0 +1,101 @@
+{{- define "stackstate-hbase.hdfs.secondarynamenode.container.init" -}}
+name: namenode-init
+image: "busybox:latest"
+command:
+- sh
+- -c
+- chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} /hadoop-data
+securityContext:
+  allowPrivilegeEscalation: true
+  privileged: true
+volumeMounts:
+- name: {{ template "common.fullname" . }}-hdfs-snn
+  mountPath: /hadoop-data
+{{- end -}}
+
+{{- define "stackstate-hbase.hdfs.secondarynamenode.container.main" -}}
+name: namenode
+image: "{{ .Values.hdfs.image.repository }}:{{ .Values.hdfs.image.tag }}"
+imagePullPolicy: {{ .Values.hdfs.image.pullPolicy }}
+args:
+- /entrypoint.sh
+- /bin/bash
+- /tmp/hadoop-config/bootstrap.sh
+- -d
+env:
+{{ include "stackstate-hbase.hdfs.commonEnv" . }}
+ports:
+- containerPort: 50090
+  name: snn
+livenessProbe:
+  tcpSocket:
+    port: snn
+readinessProbe:
+  tcpSocket:
+    port: snn
+{{- with .Values.hdfs.secondarynamenode.resources }}
+resources:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+securityContext:
+  runAsNonRoot: true
+  runAsGroup: {{ .Values.securityContext.runAsGroup }}
+  runAsUser: {{ .Values.securityContext.runAsUser }}
+volumeMounts:
+- name: hadoop-config
+  mountPath: /tmp/hadoop-config
+- name: {{ template "common.fullname" . }}-hdfs-snn
+  mountPath: /hadoop-data
+{{- end -}}
+
+{{- define "stackstate-hbase.hdfs.secondarynamenode.statefulset" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate-hbase.hdfs.secondarynamenode.container.main" .) -}}
+{{- $stackstateHbaseHdfsSecondaryNamenodeContainer := (merge $overrideContainer $commonContainer) }}
+{{- $overrideContainer := fromYaml (include "stackstate-hbase.hdfs.secondarynamenode.container.init" .) -}}
+{{- $stackstateHbaseHdfsSecondaryNamenodeInitContainer := (merge $overrideContainer $commonContainer) }}
+metadata:
+  labels:
+    app.kubernetes.io/component: hdfs-snn
+  name: {{ template "common.fullname" . }}-hdfs-snn
+spec:
+  serviceName: {{ template "common.fullname" . }}-hdfs-snn
+  replicas: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: hdfs-snn
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: hdfs-snn
+    spec:
+      containers:
+      -
+        {{ toYaml $stackstateHbaseHdfsSecondaryNamenodeContainer | nindent 8 }}
+      initContainers:
+      -
+        {{ toYaml $stackstateHbaseHdfsSecondaryNamenodeInitContainer | nindent 8 }}
+      volumes:
+      - name: hadoop-config
+        configMap:
+          name: {{ template "common.fullname" . }}-hadoop-config
+    {{- if not .Values.hdfs.secondarynamenode.persistence.enabled }}
+      - name: {{ template "common.fullname" . }}-hdfs-snn
+        emptyDir: {}
+    {{- end }}
+{{- if .Values.hdfs.secondarynamenode.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ template "common.fullname" . }}-hdfs-snn
+    spec:
+      accessModes: {{ .Values.hdfs.secondarynamenode.persistence.accessModes }}
+      resources:
+        requests:
+          storage: {{ .Values.hdfs.secondarynamenode.persistence.size }}
+      storageClassName: {{ .Values.hdfs.secondarynamenode.persistence.storageClass }}
+{{- end }}
+{{- end -}}
+
+{{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
+{{- $stackstateHbaseHdfsNamenodeStatefulSet := fromYaml (include "stackstate-hbase.hdfs.secondarynamenode.statefulset" .) -}}
+{{- toYaml (merge $stackstateHbaseHdfsNamenodeStatefulSet $commonStatefulSet) -}}

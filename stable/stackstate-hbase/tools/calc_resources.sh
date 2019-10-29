@@ -14,27 +14,12 @@ TOTAL_CPU=$(kubectl get nodes -o jsonpath='{.items[0].status.allocatable.cpu}')
 # Convert CPU to nanocores
 TOTAL_CPU=$(bc <<< "${TOTAL_CPU} * 1000000000")
 
-# Start kube proxy to get to node stats summary api
-kubectl proxy >/dev/null 2>&1 &
-export kproxy=%1
-
-# Cleanup kproxy on exit
-function finish {
-  kill $kproxy
-}
-trap finish EXIT
-
-# Wait for proxy
-(while [[ $count -lt 5 && -z "$(curl -s localhost:8001/api/v1)" ]]; do ((count=count+1)) ; sleep 2; done && [[ $count -lt 5 ]])
-# shellcheck disable=SC2181
-[[ $? -ne 0 ]] && echo "ERROR: could not start kube proxy to fetch node stats summary" && exit 1
-
 declare -a NODE_STATS
 declare -a AVAIL_CPU
 declare -a AVAIL_MEM
 i=0
 for NODE in ${NODES}; do
-    NODE_STATS[$i]=$(curl -sf localhost:8001/api/v1/proxy/nodes/"${NODE}":10255/stats/summary)
+    NODE_STATS[$i]=$(kubectl get --raw /api/v1/nodes/"${NODE}"/proxy/stats/summary)
     # shellcheck disable=SC2181
     [[ $? -ne 0 ]] && echo "ERROR: Could not get stats summary for node: ${NODE}" && exit 1
 
