@@ -1,0 +1,49 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "agent.fullname" . }}
+  labels:
+{{ include "agent.labels" . | indent 4 }}
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - services
+  - events
+  - endpoints
+  - pods
+  - nodes
+  - componentstatuses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  resourceNames:
+  - datadogtoken
+  - datadog-leader-election
+  verbs:
+  - get
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - create
+- nonResourceURLs:
+  - "/version"
+  - "/healthz"
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - nodes/metrics
+  - nodes/spec
+  - nodes/proxy
+  verbs:
+  - get

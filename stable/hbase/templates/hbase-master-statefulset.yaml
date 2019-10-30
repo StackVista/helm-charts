@@ -1,0 +1,59 @@
+{{- define "hbase.hbase.master.container.main" -}}
+name: master
+image: "{{ .Values.hbase.master.image.repository }}:{{ .Values.hbase.master.image.tag }}"
+imagePullPolicy: {{ .Values.hbase.master.image.pullPolicy }}
+env:
+{{ include "hbase.hdfs.commonEnv" . }}
+{{ include "hbase.hbase.commonEnv" . }}
+- name: SERVICE_PRECONDITION
+  value: "{{ .Release.Name }}-zookeeper-headless:2181 {{ template "common.fullname" . }}-hdfs-nn:9000"
+ports:
+- containerPort: 16000
+  name: master
+- containerPort: 16010
+  name: masterinfo
+livenessProbe:
+  httpGet:
+    path: /
+    port: masterinfo
+readinessProbe:
+  httpGet:
+    path: /
+    port: masterinfo
+{{- with .Values.hbase.master.resources }}
+resources:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+securityContext:
+  runAsNonRoot: true
+  runAsGroup: {{ .Values.securityContext.runAsGroup }}
+  runAsUser: {{ .Values.securityContext.runAsUser }}
+{{- end -}}
+
+{{- define "hbase.hbase.master.statefulset" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "hbase.hbase.master.container.main" .) -}}
+{{- $stackstateHbaseMasterContainer := (merge $overrideContainer $commonContainer) }}
+metadata:
+  labels:
+    app.kubernetes.io/component: hbase-master
+  name: {{ template "common.fullname" . }}-hbase-master
+spec:
+  serviceName: {{ template "common.fullname" . }}-hbase-master
+  replicas: {{ .Values.hbase.master.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: hbase-master
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: hbase-master
+    spec:
+      containers:
+      -
+        {{ toYaml $stackstateHbaseMasterContainer | nindent 8 }}
+{{- end -}}
+
+{{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
+{{- $stackstateHbaseMasterStatefulSet := fromYaml (include "hbase.hbase.master.statefulset" .) -}}
+{{- toYaml (merge $stackstateHbaseMasterStatefulSet $commonStatefulSet) -}}

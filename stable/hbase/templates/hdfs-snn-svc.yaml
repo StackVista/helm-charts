@@ -1,0 +1,18 @@
+{{- define "hbase.hdfs.secondarynamenode.service" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-hdfs-snn
+  labels:
+    app.kubernetes.io/component: hdfs-snn
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+  - port: 50090
+    name: snn
+  selector:
+    app.kubernetes.io/component: hdfs-snn
+{{- end -}}
+
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $stackstateHbaseHdfsDatanodeService := fromYaml (include "hbase.hdfs.secondarynamenode.service" .) -}}
+{{- toYaml (merge $stackstateHbaseHdfsDatanodeService $commonService) -}}

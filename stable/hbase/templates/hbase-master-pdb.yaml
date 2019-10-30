@@ -1,0 +1,15 @@
+{{- define "hbase.hbase.master.poddisruptionbudget" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-hbase-master
+  labels:
+    app.kubernetes.io/component: hbase-master
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: hbase-master
+  maxUnavailable: 1
+{{- end -}}
+
+{{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
+{{- $stackstateHbasePdb := fromYaml (include "hbase.hbase.master.poddisruptionbudget" .) -}}
+{{- toYaml (merge $stackstateHbasePdb $commonPdb) -}}
