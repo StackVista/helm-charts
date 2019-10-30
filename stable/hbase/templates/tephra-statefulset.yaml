@@ -1,0 +1,49 @@
+{{- define "hbase.tephra.container.main" -}}
+name: tephra
+image: "{{ .Values.tephra.image.repository }}:{{ .Values.tephra.image.tag }}"
+imagePullPolicy: {{ .Values.tephra.image.pullPolicy }}
+env:
+{{ include "hbase.hdfs.commonEnv" . }}
+{{ include "hbase.hbase.commonEnv" . }}
+- name: SERVICE_PRECONDITION
+  value: "{{ .Release.Name }}-zookeeper-headless:2181 {{ template "common.fullname" . }}-hdfs-nn:9000"
+ports:
+- containerPort: 15165
+  name: tephra
+{{- with .Values.tephra.resources }}
+resources:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+securityContext:
+  runAsNonRoot: true
+  runAsGroup: {{ .Values.securityContext.runAsGroup }}
+  runAsUser: {{ .Values.securityContext.runAsUser }}
+{{- end -}}
+
+{{- define "hbase.tephra.statefulset" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "hbase.tephra.container.main" .) -}}
+{{- $stackstateHbaseTephraContainer := (merge $overrideContainer $commonContainer) }}
+metadata:
+  labels:
+    app.kubernetes.io/component: tephra
+  name: {{ template "common.fullname" . }}-tephra
+spec:
+  serviceName: {{ template "common.fullname" . }}-tephra
+  replicas: {{ .Values.tephra.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: tephra
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: tephra
+    spec:
+      containers:
+      -
+        {{ toYaml $stackstateHbaseTephraContainer | nindent 8 }}
+{{- end -}}
+
+{{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
+{{- $stackstateHbaseTephraStatefulSet := fromYaml (include "hbase.tephra.statefulset" .) -}}
+{{- toYaml (merge $stackstateHbaseTephraStatefulSet $commonStatefulSet) -}}

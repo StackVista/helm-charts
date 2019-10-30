@@ -1,0 +1,15 @@
+{{- define "hbase.hdfs.secondarynamenode.poddisruptionbudget" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-hdfs-snn
+  labels:
+    app.kubernetes.io/component: hdfs-snn
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: hdfs-snn
+  maxUnavailable: 1
+{{- end -}}
+
+{{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
+{{- $stackstateHbaseHdfsNamenodePdb := fromYaml (include "hbase.hdfs.secondarynamenode.poddisruptionbudget" .) -}}
+{{- toYaml (merge $stackstateHbaseHdfsNamenodePdb $commonPdb) -}}

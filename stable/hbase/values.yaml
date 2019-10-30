@@ -1,0 +1,154 @@
+###########################
+# StackState HBase values #
+###########################
+
+hbase:
+  master:
+    image:
+      # hbase.master.image.pullPolicy -- Pull policy for HBase masters.
+      pullPolicy: IfNotPresent
+      # hbase.master.image.repository -- Base container image repository for HBase masters.
+      repository: quay.io/stackstate/hbase-master
+      # hbase.master.image.tag -- Default container image tag for HBase masters.
+      tag: master
+    # hbase.master.replicaCount -- Number of pods for HBase masters.
+    replicaCount: 2
+    # hbase.master.resources -- Resources to allocate for HBase masters.
+    resources:
+      limits:
+        cpu: "1"
+        memory: "3Gi"
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+  regionserver:
+    image:
+      # hbase.regionserver.image.pullPolicy -- Pull policy for HBase region servers.
+      pullPolicy: IfNotPresent
+      # hbase.regionserver.image.repository -- Base container image repository for HBase region servers.
+      repository: quay.io/stackstate/hbase-regionserver
+      # hbase.regionserver.image.tag -- Default container image tag for HBase region servers.
+      tag: master
+    # hbase.regionserver.replicaCount -- Number of HBase regionserver nodes.
+    replicaCount: 3
+    # hbase.regionserver.resources -- Resources to allocate for HBase region servers.
+    resources:
+      limits:
+        cpu: "1"
+        memory: "3Gi"
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+  zookeeper:
+    # hbase.zookeeper.quorum -- Zookeeper quorum used for single-node Zookeeper installations; not used if `zookeeper.replicaCount` is more than `1`.
+    quorum: hbase
+
+hdfs:
+  image:
+    # hdfs.image.pullPolicy -- Pull policy for HDFS datanode.
+    pullPolicy: IfNotPresent
+    # hdfs.image.repository -- Base container image repository for HDFS datanode.
+    repository: quay.io/stackstate/hadoop
+    # hdfs.image.tag -- Default container image tag for HDFS datanode.
+    tag: hadoop2.9.2-java8
+  datanode:
+    persistence:
+      # hdfs.datanode.persistence.accessModes -- Access mode for HDFS data nodes.
+      accessModes: ["ReadWriteOnce"]
+      # hdfs.datanode.persistence.enabled -- Enable persistence for HDFS data nodes.
+      enabled: true
+      # hdfs.datanode.persistence.size -- Size of volume for HDFS data nodes.
+      size: 250Gi
+      # hdfs.datanode.persistence.storageClass -- Storage class of the volume for HDFS data nodes.
+      storageClass: default
+    # hdfs.datanode.replicaCount -- Number of HDFS data nodes.
+    replicaCount: 3
+    # hdfs.datanode.resources -- Resources to allocate for HDFS data nodes.
+    resources:
+      limits:
+        cpu: "1"
+        memory: "3Gi"
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+  namenode:
+    persistence:
+      # hdfs.namenode.persistence.accessModes -- Access mode for HDFS name nodes.
+      accessModes: ["ReadWriteOnce"]
+      # hdfs.namenode.persistence.enabled -- Enable persistence for HDFS name nodes.
+      enabled: true
+      # hdfs.namenode.persistence.size -- Size of volume for HDFS name nodes.
+      size: 20Gi
+      # hdfs.namenode.persistence.storageClass -- Storage class of the volume for HDFS name nodes.
+      storageClass: default
+    # hdfs.namenode.resources -- Resources to allocate for HDFS name nodes.
+    resources:
+      limits:
+        cpu: "1"
+        memory: "3Gi"
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+  secondarynamenode:
+    persistence:
+      # hdfs.secondarynamenode.persistence.accessModes -- Access mode for HDFS secondary name nodes.
+      accessModes: ["ReadWriteOnce"]
+      # hdfs.secondarynamenode.persistence.enabled -- Enable persistence for HDFS secondary name nodes.
+      enabled: true
+      # hdfs.secondarynamenode.persistence.size -- Size of volume for HDFS secondary name nodes.
+      size: 20Gi
+      # hdfs.secondarynamenode.persistence.storageClass -- Storage class of the volume for HDFS secondary name nodes.
+      storageClass: default
+    # hdfs.secondarynamenode.resources -- Resources to allocate for HDFS secondary name nodes.
+    resources:
+      limits:
+        cpu: "1"
+        memory: "3Gi"
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+
+tephra:
+  image:
+    # tephra.image.pullPolicy -- Pull policy for Tephra pods.
+    pullPolicy: IfNotPresent
+    # tephra.image.repository -- Base container image repository for Tephra pods.
+    repository: quay.io/stackstate/tephra-server
+    # tephra.image.tag -- Default container image tag for Tephra pods.
+    tag: master
+  # tephra.replicaCount -- Number of pods for Tephra pods.
+  replicaCount: 2
+  # tephra.resources -- Resources to allocate for Tephra pods.
+  resources:
+    limits:
+      cpu: "1"
+      memory: "3Gi"
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+
+securityContext:
+  # securityContext.runAsGroup -- GID of the Linux group to use for all containers.
+  runAsGroup: 65534
+  # securityContext.runAsUser -- UID of the Linux user to use for all containers.
+  runAsUser: 65534
+
+##########################
+# Common chart overrides #
+##########################
+
+statefulset:
+  antiAffinity:
+    strategy: soft
+    topologyKey: kubernetes.io/hostname
+
+#############################
+# Zookeeper chart overrides #
+#############################
+
+zookeeper:
+  enabled: true
+  fourlwCommandsWhitelist: "mntr, ruok, stat, srvr"
+  metrics:
+    enabled: true
+  replicaCount: 3

@@ -1,0 +1,20 @@
+{{- define "hbase.hbase.master.service" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-hbase-master
+  labels:
+    app.kubernetes.io/component: hbase-master
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+  - port: 16000
+    name: master
+  - port: 16010
+    name: masterinfo
+  selector:
+    app.kubernetes.io/component: hbase-master
+{{- end -}}
+
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $stackstateHbaseMasterService := fromYaml (include "hbase.hbase.master.service" .) -}}
+{{- toYaml (merge $stackstateHbaseMasterService $commonService) -}}

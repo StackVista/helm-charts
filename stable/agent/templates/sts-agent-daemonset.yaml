@@ -1,0 +1,135 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "agent.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "agent.labels" . | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "agent.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  minReadySeconds: {{ .Values.minReadySeconds }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+  template:
+    metadata:
+      annotations:
+        {{- include "agent.checksum-configs" . | nindent 8 }}
+      labels:
+        app.kubernetes.io/name: {{ include "agent.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: AGENT_VERSION
+            value: {{ .Values.image.tag | quote }}
+          - name: HOST_PROC
+            value: "/host/proc"
+          - name: HOST_SYS
+            value: "/host/sys"
+          - name: KUBERNETES
+            value: "true"
+          - name: STS_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "agent.fullname" . }}
+                key: sts-api-key
+          - name: STS_KUBERNETES_KUBELET_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: STS_NETWORK_TRACING_ENABLED
+            value: {{ .Values.stackstate.networkTracing.enabled | quote }}
+          - name: STS_PROCESS_AGENT_ENABLED
+            value: {{ .Values.stackstate.process.agent.enabled | quote }}
+          - name: STS_PROCESS_AGENT_URL
+            value: {{ .Values.stackstate.process.agent.url | quote }}
+          - name: STS_SKIP_SSL_VALIDATION
+            value: {{ .Values.stackstate.skipSslValidation | quote }}
+          - name: STS_STS_URL
+            value: {{ .Values.stackstate.url | quote }}
+          {{- range $key, $value := .Values.extraEnv }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - /probe.sh
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.livenessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - /probe.sh
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.readinessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: cgroups
+              mountPath: /host/sys/fs/cgroup
+              readOnly: true
+            - name: dockersocket
+              mountPath: /var/run/docker.sock
+            - name: passwd
+              mountPath: /etc/passwd
+              readOnly: true
+            - name: procdir
+              mountPath: /host/proc
+              readOnly: true
+            - name: sys-kernel-debug
+              mountPath: /sys/kernel/debug
+          securityContext:
+            privileged: true
+      hostNetwork: true
+      hostPID: true
+      serviceAccountName: {{ include "agent.fullname" . }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+        - hostPath:
+            path: /sys/fs/cgroup
+          name: cgroups
+        - hostPath:
+            path: /var/run/docker.sock
+          name: dockersocket
+        - hostPath:
+            path: /etc/passwd
+          name: passwd
+        - hostPath:
+            path: /proc
+          name: procdir
+        - hostPath:
+            path: /sys/kernel/debug
+          name: sys-kernel-debug
