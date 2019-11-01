@@ -49,8 +49,9 @@ metadata:
     app.kubernetes.io/component: hbase-rs
   name: {{ template "common.fullname" . }}-hbase-rs
 spec:
-  serviceName: {{ template "common.fullname" . }}-hbase-rs
+  podManagementPolicy: Parallel
   replicas: {{ .Values.hbase.regionserver.replicaCount }}
+  serviceName: {{ template "common.fullname" . }}-hbase-rs
   selector:
     matchLabels:
       app.kubernetes.io/component: hbase-rs

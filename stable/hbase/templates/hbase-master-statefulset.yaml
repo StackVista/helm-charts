@@ -39,8 +39,9 @@ metadata:
     app.kubernetes.io/component: hbase-master
   name: {{ template "common.fullname" . }}-hbase-master
 spec:
-  serviceName: {{ template "common.fullname" . }}-hbase-master
+  podManagementPolicy: Parallel
   replicas: {{ .Values.hbase.master.replicaCount }}
+  serviceName: {{ template "common.fullname" . }}-hbase-master
   selector:
     matchLabels:
       app.kubernetes.io/component: hbase-master
