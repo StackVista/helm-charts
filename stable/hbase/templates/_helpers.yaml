@@ -42,6 +42,8 @@ Common environment variables for HDFS configuration.
   value: "true"
 - name: HDFS_CONF_dfs_datanode_use_datanode_hostname
   value: "false"
+- name: HDFS_CONF_dfs_namenode_checkpoint_dir
+  value: "/hadoop-data"
 - name: HDFS_CONF_dfs_namenode_datanode_registration_ip___hostname___check
   value: "false"
 - name: HDFS_CONF_dfs_namenode_http___bind___host
@@ -93,7 +95,7 @@ Common environment variables for HBase configuration.
 - name: HBASE_CONF_data_tx_snapshot_use_local
   value: "false"
 - name: HBASE_CONF_data_tx_zookeeper_quorum
-  value: "{{ .Release.Name }}-zookeeper-headless"
+  value: {{ include "hbase.zookeeper.endpoint" . | quote }}
 - name: HBASE_CONF_hbase_cluster_distributed
   value: "true"
 - name: HBASE_CONF_hbase_hregion_majorcompaction
@@ -115,7 +117,7 @@ Common environment variables for HBase configuration.
 - name: HBASE_CONF_hbase_rootdir
   value: "hdfs://{{ template "common.fullname" . }}-hdfs-nn:9000/hbase"
 - name: HBASE_CONF_hbase_zookeeper_quorum
-  value: "{{ .Release.Name }}-zookeeper-headless"
+  value: {{ include "hbase.zookeeper.endpoint" . | quote }}
 - name: HBASE_CONF_zookeeper_znode_parent
   value: "/hbase"
 {{- end }}

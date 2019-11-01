@@ -19,9 +19,8 @@ image: "{{ .Values.hdfs.image.repository }}:{{ .Values.hdfs.image.tag }}"
 imagePullPolicy: {{ .Values.hdfs.image.pullPolicy }}
 args:
 - /entrypoint.sh
-- /bin/bash
-- /tmp/hadoop-config/bootstrap.sh
-- -d
+- /run.sh
+- namenode
 env:
 {{ include "hbase.hdfs.commonEnv" . }}
 ports:
@@ -46,8 +45,6 @@ securityContext:
   runAsGroup: {{ .Values.securityContext.runAsGroup }}
   runAsUser: {{ .Values.securityContext.runAsUser }}
 volumeMounts:
-- name: hadoop-config
-  mountPath: /tmp/hadoop-config
 - name: {{ template "common.fullname" . }}-hdfs-nn
   mountPath: /hadoop-data
 {{- end -}}
@@ -80,9 +77,6 @@ spec:
       -
         {{ toYaml $stackstateHbaseHdfsNamenodeContainer | nindent 8 }}
       volumes:
-      - name: hadoop-config
-        configMap:
-          name: {{ template "common.fullname" . }}-hadoop-config
     {{- if not .Values.hdfs.namenode.persistence.enabled }}
       - name: {{ template "common.fullname" . }}-hdfs-nn
         emptyDir: {}

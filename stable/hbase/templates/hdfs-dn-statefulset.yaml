@@ -19,9 +19,8 @@ image: "{{ .Values.hdfs.image.repository }}:{{ .Values.hdfs.image.tag }}"
 imagePullPolicy: {{ .Values.hdfs.image.pullPolicy }}
 args:
 - /entrypoint.sh
-- /bin/bash
-- /tmp/hadoop-config/bootstrap.sh
-- -d
+- /run.sh
+- datanode
 env:
 {{ include "hbase.hdfs.commonEnv" . }}
 - name: SERVICE_PRECONDITION
@@ -48,8 +47,6 @@ securityContext:
   runAsGroup: {{ .Values.securityContext.runAsGroup }}
   runAsUser: {{ .Values.securityContext.runAsUser }}
 volumeMounts:
-- name: hadoop-config
-  mountPath: /tmp/hadoop-config
 - name: {{ template "common.fullname" . }}-hdfs-dn
   mountPath: /hadoop-data
 {{- end -}}
@@ -65,8 +62,9 @@ metadata:
     app.kubernetes.io/component: hdfs-dn
   name: {{ template "common.fullname" . }}-hdfs-dn
 spec:
-  serviceName: {{ template "common.fullname" . }}-hdfs-dn
+  podManagementPolicy: Parallel
   replicas: {{ .Values.hdfs.datanode.replicaCount }}
+  serviceName: {{ template "common.fullname" . }}-hdfs-dn
   selector:
     matchLabels:
       app.kubernetes.io/component: hdfs-dn
@@ -82,9 +80,6 @@ spec:
       -
         {{ toYaml $stackstateHbaseHdfsDatanodeContainer | nindent 8 }}
       volumes:
-      - name: hadoop-config
-        configMap:
-          name: {{ template "common.fullname" . }}-hadoop-config
     {{- if not .Values.hdfs.datanode.persistence.enabled }}
       - name: {{ template "common.fullname" . }}-hdfs-dn
         emptyDir: {}

@@ -2,7 +2,7 @@ hbase
 =====
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.0`
+Current chart version is `0.1.1`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -56,7 +56,10 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | tephra.image.tag | string | `"master"` | Default container image tag for Tephra pods. |
 | tephra.replicaCount | int | `2` | Number of pods for Tephra pods. |
 | tephra.resources | object | `{"limits":{"cpu":"1","memory":"3Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Resources to allocate for Tephra pods. |
-| zookeeper.enabled | bool | `true` |  |
-| zookeeper.fourlwCommandsWhitelist | string | `"mntr, ruok, stat, srvr"` |  |
-| zookeeper.metrics.enabled | bool | `true` |  |
-| zookeeper.replicaCount | int | `3` |  |
+| zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
+| zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |
+| zookeeper.fourlwCommandsWhitelist | string | `"mntr, ruok, stat, srvr"` | Zookeeper four-letter-word (FLW) commands that are enabled. |
+| zookeeper.metrics.enabled | bool | `true` | Enable / disable Zookeeper Prometheus metrics. |
+| zookeeper.metrics.serviceMonitor.enabled | bool | `true` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |
+| zookeeper.metrics.serviceMonitor.selector | object | `{"release":"prometheus-operator"}` | Default selector to use to target a certain Prometheus instance. |
+| zookeeper.replicaCount | int | `3` | Default amount of Zookeeper replicas to provision. |

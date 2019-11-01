@@ -29,8 +29,9 @@ metadata:
     app.kubernetes.io/component: tephra
   name: {{ template "common.fullname" . }}-tephra
 spec:
-  serviceName: {{ template "common.fullname" . }}-tephra
+  podManagementPolicy: Parallel
   replicas: {{ .Values.tephra.replicaCount }}
+  serviceName: {{ template "common.fullname" . }}-tephra
   selector:
     matchLabels:
       app.kubernetes.io/component: tephra
