@@ -13,5 +13,5 @@ for chartPath in $(ct list-changed --config test/ct.yaml); do
     valuesFile=""
   fi
 
-  helm template ${valuesFile} "${chartPath}" | kubeval -
+  helm template ${valuesFile} "${chartPath}" | kubeval --skip-kinds ServiceMonitor -
 done
