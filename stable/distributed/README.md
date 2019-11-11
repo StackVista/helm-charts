@@ -2,7 +2,7 @@ distributed
 ===========
 Helm chart for StackState distributed -- all components split into microservices.
 
-Current chart version is `0.1.1`
+Current chart version is `0.1.2`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -15,6 +15,21 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 | https://helm.elastic.co | elasticsearch | 7.4.X |
 | https://helm.stackstate.io | common | 0.1.X |
 | https://helm.stackstate.io | hbase | 0.1.X |
+
+## Required Values
+
+In order to successfully install this chart, you **must** provide the following variables:
+* `stackstate.license.key`
+* `stackstate.receiver.baseUrl`
+
+Install them on the command line on Helm with the following command:
+
+```shell
+helm install \
+--set stackstate.license.key=<your-license-key> \
+--set stackstate.receiver.baseUrl=<your-base-url> \
+stackstate/distributed
+```
 
 ## Chart Values
 
