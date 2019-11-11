@@ -6,7 +6,7 @@ env:
 {{ include "hbase.hdfs.commonEnv" . }}
 {{ include "hbase.hbase.commonEnv" . }}
 - name: SERVICE_PRECONDITION
-  value: "{{ .Release.Name }}-zookeeper-headless:2181 {{ template "common.fullname" . }}-hdfs-nn:9000"
+  value: "{{ include "hbase.zookeeper.endpoint" . }}:2181 {{ template "common.fullname" . }}-hdfs-nn:9000 {{ template "common.fullname" . }}-hdfs-dn:50010"
 ports:
 - containerPort: 15165
   name: tephra
@@ -43,6 +43,18 @@ spec:
       containers:
       -
         {{ toYaml $stackstateHbaseTephraContainer | nindent 8 }}
+    {{- with .Values.tephra.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tephra.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tephra.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
 {{- end -}}
 
 {{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}

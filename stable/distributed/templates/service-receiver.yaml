@@ -1,0 +1,20 @@
+{{- define "distributed.receiver.service" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-receiver
+spec:
+  ports:
+    - name: receiver
+      port: 7077
+      protocol: TCP
+      targetPort: receiver
+    - name: monitoring
+      port: 9404
+      protocol: TCP
+      targetPort: monitoring
+  selector:
+    app.kubernetes.io/component: receiver
+{{- end -}}
+
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $stsDistributedReceiverService := fromYaml (include "distributed.receiver.service" .) -}}
+{{- toYaml (merge $stsDistributedReceiverService $commonService) -}}

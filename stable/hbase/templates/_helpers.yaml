@@ -57,7 +57,7 @@ Common environment variables for HDFS configuration.
 - name: HDFS_CONF_dfs_namenode_servicerpc___bind___host
   value: "0.0.0.0"
 - name: HDFS_CONF_dfs_replication
-  value: "3"
+  value: "2"
 - name: HDFS_CONF_dfs_secondary_http_address
   value: "0.0.0.0:50090"
 {{- end }}

@@ -1,0 +1,17 @@
+stackstate:
+  license:
+    key: 00000-00000-00000
+  receiver:
+    apiKey: API_KEY
+    baseUrl: https://some-test.website.com/receiver
+ingress:
+  annotations:
+    kubernetes.io/ingress.class: ingress-nginx-external
+    nginx.ingress.kubernetes.io/ingress.class: ingress-nginx-external
+  enabled: true
+  hosts:
+  - host: some-test.website.com
+  tls:
+  - hosts:
+      - some-test.website.com
+    secretName: some-secret

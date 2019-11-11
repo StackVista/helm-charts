@@ -16,7 +16,7 @@ env:
 - name: HBASE_CONF_hbase_regionserver_hostname
   value: $(POD_NAME).{{ template "common.fullname" . }}-hbase-rs.$(POD_NAMESPACE).svc.cluster.local
 - name: SERVICE_PRECONDITION
-  value: "{{ .Release.Name }}-zookeeper-headless:2181 {{ template "common.fullname" . }}-hbase-master:16000"
+  value: "{{ include "hbase.zookeeper.endpoint" . }}:2181 {{ template "common.fullname" . }}-hbase-master:16000"
 ports:
 - containerPort: 16020
   name: rs
@@ -63,6 +63,18 @@ spec:
       containers:
       -
         {{ toYaml $stackstateHbaseRegionServerContainer | nindent 8 }}
+    {{- with .Values.hbase.master.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.hbase.master.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.hbase.master.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
 {{- end -}}
 
 {{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}

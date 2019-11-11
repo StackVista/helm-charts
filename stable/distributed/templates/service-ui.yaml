@@ -1,0 +1,20 @@
+{{- define "distributed.ui.service" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-ui
+spec:
+  ports:
+    - name: ui
+      port: 8080
+      protocol: TCP
+      targetPort: ui
+    - name: monitoring
+      port: 9113
+      protocol: TCP
+      targetPort: monitoring
+  selector:
+    app.kubernetes.io/component: ui
+{{- end -}}
+
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $stsDistributedUiService := fromYaml (include "distributed.ui.service" .) -}}
+{{- toYaml (merge $stsDistributedUiService $commonService) -}}

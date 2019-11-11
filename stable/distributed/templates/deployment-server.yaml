@@ -1,0 +1,105 @@
+{{- define "distributed.server.deployment.container" -}}
+args:
+- -J-Xmx6G
+- -start
+env:
+{{- include "distributed.common.envvars" . }}
+{{- include "distributed.server.envvars" . }}
+- name: API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname" . }}-receiver
+      key: sts-receiver-api-key
+- name: ELASTICSEARCH_URI
+  value: {{ include "distributed.es.endpoint" . | quote }}
+- name: KAFKA_BROKERS
+  value: {{ include "distributed.kafka.endpoint" . | quote }}
+- name: LICENSE_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname" . }}-server
+      key: sts-license-key
+- name: RECEIVER_BASE_URL
+  value: {{ .Values.stackstate.receiver.baseUrl | quote }}
+- name: ZOOKEEPER_QUORUM
+  value: {{ include "distributed.zookeeper.endpoint" . | quote }}
+image: "{{ .Values.stackstate.components.server.image.repository }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.server.image.tag }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
+livenessProbe:
+  httpGet:
+    path: /liveness
+    port: admin
+  initialDelaySeconds: 120
+  timeoutSeconds: 5
+name: server
+ports:
+- containerPort: 7070
+  name: api
+- containerPort: 7071
+  name: admin
+- containerPort: 9404
+  name: monitoring
+readinessProbe:
+  httpGet:
+    path: /api/server/readiness
+    port: api
+  initialDelaySeconds: 120
+  timeoutSeconds: 5
+resources:
+{{- with .Values.stackstate.components.server.resources }}
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+securityContext:
+  runAsGroup: 2
+  runAsNonRoot: true
+  runAsUser: 2
+{{- end -}}
+
+{{- define "distributed.server.deployment" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $stsDistributedServerMainContainer := fromYaml (include "distributed.server.deployment.container" .) }}
+metadata:
+  name: {{ template "common.fullname" . }}-server
+  labels:
+    app.kubernetes.io/component: server
+spec:
+  replicas: {{ .Values.stackstate.components.server.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: server
+  template:
+    metadata:
+      annotations:
+        {{- include "distributed.common.secret.checksum" . | nindent 8 }}
+        {{- include "distributed.server.secret.checksum" . | nindent 8 }}
+      labels:
+        app.kubernetes.io/component: server
+    spec:
+      containers:
+      - {{ toYaml (merge $stsDistributedServerMainContainer $commonContainer) | nindent 8 }}
+      nodeSelector:
+    {{- with .Values.stackstate.components.all.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.stackstate.components.server.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      affinity:
+    {{- with .Values.stackstate.components.all.affinity }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.stackstate.components.server.affinity }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      tolerations:
+    {{- with .Values.stackstate.components.all.tolerations }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.stackstate.components.server.tolerations }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- end -}}
+
+{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $serverDeployment := fromYaml (include "distributed.server.deployment" .) -}}
+{{- toYaml (merge $serverDeployment $commonDeployment) -}}

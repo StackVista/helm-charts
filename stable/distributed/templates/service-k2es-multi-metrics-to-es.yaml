@@ -1,0 +1,18 @@
+{{- define "distributed.k2es.service.multiMetricsToEs" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-mm2es
+spec:
+  clusterIP: None
+  ports:
+    - name: monitoring
+      port: 9404
+      protocol: TCP
+      targetPort: monitoring
+  selector:
+    app.kubernetes.io/component: mm2es
+  type: ClusterIP
+{{- end -}}
+
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $k2esMultiMetricsToEsService := fromYaml (include "distributed.k2es.service.multiMetricsToEs" .) -}}
+{{- toYaml (merge $k2esMultiMetricsToEsService $commonService) -}}

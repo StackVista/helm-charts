@@ -1,0 +1,18 @@
+{{- define "distributed.correlate.service" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-correlate
+spec:
+  clusterIP: None
+  ports:
+    - name: monitoring
+      port: 9404
+      protocol: TCP
+      targetPort: monitoring
+  selector:
+    app.kubernetes.io/component: correlate
+  type: ClusterIP
+{{- end -}}
+
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $stsDistributedCorrelateService := fromYaml (include "distributed.correlate.service" .) -}}
+{{- toYaml (merge $stsDistributedCorrelateService $commonService) -}}
