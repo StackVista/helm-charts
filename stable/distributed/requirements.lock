@@ -1,18 +1,18 @@
 dependencies:
 - name: common
-  repository: file://../common
+  repository: https://helm.stackstate.io
   version: 0.1.7
 - name: elasticsearch
   repository: https://helm.elastic.co
   version: 7.4.1
 - name: hbase
-  repository: file://../hbase
-  version: 0.1.1
+  repository: https://helm.stackstate.io
+  version: 0.1.2
 - name: kafka
   repository: https://charts.bitnami.com
   version: 6.1.6
 - name: zookeeper
   repository: https://charts.bitnami.com
   version: 5.1.0
-digest: sha256:1cdea917281c947f2a57b965e63dc14dee76572202f8f4c3bdfd2c5290cdcc50
-generated: "2019-11-01T13:46:38.076452+01:00"
+digest: sha256:7c74af0a2f50c9d3a041e54eb2f0fc271e4172464400f979ed2b155d1eda940f
+generated: "2019-11-11T10:21:59.683181+01:00"
