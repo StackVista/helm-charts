@@ -72,6 +72,18 @@ spec:
       initContainers:
       -
         {{ toYaml $stackstateHbaseHdfsSecondaryNamenodeInitContainer | nindent 8 }}
+    {{- with .Values.hdfs.secondarynamenode.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.hdfs.secondarynamenode.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.hdfs.secondarynamenode.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
       volumes:
     {{- if not .Values.hdfs.secondarynamenode.persistence.enabled }}
       - name: {{ template "common.fullname" . }}-hdfs-snn
@@ -90,6 +102,8 @@ spec:
 {{- end }}
 {{- end -}}
 
+{{- if .Values.hdfs.secondarynamenode.enabled -}}
 {{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
 {{- $stackstateHbaseHdfsNamenodeStatefulSet := fromYaml (include "hbase.hdfs.secondarynamenode.statefulset" .) -}}
 {{- toYaml (merge $stackstateHbaseHdfsNamenodeStatefulSet $commonStatefulSet) -}}
+{{- end -}}

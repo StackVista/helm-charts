@@ -1,0 +1,24 @@
+{{- define "distributed.server.service" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-server
+spec:
+  ports:
+    - name: api
+      port: 7070
+      protocol: TCP
+      targetPort: api
+    - name: admin
+      port: 7071
+      protocol: TCP
+      targetPort: admin
+    - name: monitoring
+      port: 9404
+      protocol: TCP
+      targetPort: monitoring
+  selector:
+    app.kubernetes.io/component: server
+{{- end -}}
+
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $stsDistributedServerService := fromYaml (include "distributed.server.service" .) -}}
+{{- toYaml (merge $stsDistributedServerService $commonService) -}}

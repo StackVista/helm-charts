@@ -6,7 +6,9 @@ set -e
 
 installDependencies() {
   apk -Uuv add bash curl groff less openssl
-  curl -fSL https://git.io/get_helm.sh | bash -
+  curl -fSL "https://git.io/get_helm.sh" | bash -
+  curl -fSL "https://github.com/instrumenta/kubeval/releases/download/0.14.0/kubeval-linux-amd64.tar.gz" | tar -C /usr/local/bin -xvz
+  chmod +x /usr/local/bin/kubeval
 }
 
 installGitRemotes() {

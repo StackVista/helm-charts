@@ -79,6 +79,18 @@ spec:
       containers:
       -
         {{ toYaml $stackstateHbaseHdfsDatanodeContainer | nindent 8 }}
+    {{- with .Values.hdfs.datanode.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.hdfs.datanode.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.hdfs.datanode.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
       volumes:
     {{- if not .Values.hdfs.datanode.persistence.enabled }}
       - name: {{ template "common.fullname" . }}-hdfs-dn

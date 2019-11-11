@@ -21,6 +21,12 @@ hbase:
       requests:
         cpu: "500m"
         memory: "1Gi"
+    # hbase.master.nodeSelector -- Node labels for pod assignment.
+    nodeSelector: {}
+    # hbase.master.tolerations -- Toleration labels for pod assignment.
+    tolerations: []
+    # hbase.master.affinity -- Affinity settings for pod assignment.
+    affinity: {}
   regionserver:
     image:
       # hbase.regionserver.image.pullPolicy -- Pull policy for HBase region servers.
@@ -39,6 +45,12 @@ hbase:
       requests:
         cpu: "500m"
         memory: "1Gi"
+    # hbase.regionserver.nodeSelector -- Node labels for pod assignment.
+    nodeSelector: {}
+    # hbase.regionserver.tolerations -- Toleration labels for pod assignment.
+    tolerations: []
+    # hbase.regionserver.affinity -- Affinity settings for pod assignment.
+    affinity: {}
   zookeeper:
     # hbase.zookeeper.quorum -- Zookeeper quorum used for single-node Zookeeper installations; not used if `zookeeper.replicaCount` is more than `1`.
     quorum: hbase
@@ -71,6 +83,12 @@ hdfs:
       requests:
         cpu: "500m"
         memory: "1Gi"
+    # hdfs.datanode.nodeSelector -- Node labels for pod assignment.
+    nodeSelector: {}
+    # hdfs.datanode.tolerations -- Toleration labels for pod assignment.
+    tolerations: []
+    # hdfs.datanode.affinity -- Affinity settings for pod assignment.
+    affinity: {}
   namenode:
     persistence:
       # hdfs.namenode.persistence.accessModes -- Access mode for HDFS name nodes.
@@ -89,7 +107,15 @@ hdfs:
       requests:
         cpu: "500m"
         memory: "1Gi"
+    # hdfs.namenode.nodeSelector -- Node labels for pod assignment.
+    nodeSelector: {}
+    # hdfs.namenode.tolerations -- Toleration labels for pod assignment.
+    tolerations: []
+    # hdfs.namenode.affinity -- Affinity settings for pod assignment.
+    affinity: {}
   secondarynamenode:
+    # hdfs.secondarynamenode.enabled -- Enable / disable secondary name nodes.
+    enabled: false
     persistence:
       # hdfs.secondarynamenode.persistence.accessModes -- Access mode for HDFS secondary name nodes.
       accessModes: ["ReadWriteOnce"]
@@ -107,6 +133,12 @@ hdfs:
       requests:
         cpu: "500m"
         memory: "1Gi"
+    # hdfs.secondarynamenode.nodeSelector -- Node labels for pod assignment.
+    nodeSelector: {}
+    # hdfs.secondarynamenode.tolerations -- Toleration labels for pod assignment.
+    tolerations: []
+    # hdfs.secondarynamenode.affinity -- Affinity settings for pod assignment.
+    affinity: {}
 
 tephra:
   image:
@@ -126,6 +158,12 @@ tephra:
     requests:
       cpu: "500m"
       memory: "1Gi"
+  # tephra.nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
+  # tephra.tolerations -- Toleration labels for pod assignment.
+  tolerations: []
+  # tephra.affinity -- Affinity settings for pod assignment.
+  affinity: {}
 
 securityContext:
   # securityContext.runAsGroup -- GID of the Linux group to use for all containers.
@@ -148,7 +186,7 @@ statefulset:
 
 zookeeper:
   # zookeeper.enabled -- Enable / disable chart-based Zookeeper.
-  enabled: true
+  enabled: false
   # zookeeper.externalServers -- If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead.
   externalServers: ""
   # zookeeper.fourlwCommandsWhitelist -- Zookeeper four-letter-word (FLW) commands that are enabled.

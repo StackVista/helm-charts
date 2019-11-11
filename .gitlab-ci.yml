@@ -17,7 +17,9 @@ validate:
     refs:
       - master
   script:
+    - ct list-changed --config test/ct.yaml
     - ct lint --config test/ct.yaml
+    - .gitlab/validate_kubeval.sh
   # services:
   #   - name: rancher/k3s:v0.8.1
   #     alias: k3s-test

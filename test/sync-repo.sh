@@ -20,6 +20,7 @@ setup_helm_repositories() {
   echo "Setting up Helm repositories..."
 
   helm repo add bitnami https://charts.bitnami.com/
+  helm repo add elastic https://helm.elastic.co/
   helm repo add gitlab https://charts.gitlab.io/
   helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
   helm repo add jetstack https://charts.jetstack.io/

@@ -1,0 +1,286 @@
+#################################
+# StackState Distributed values #
+#################################
+
+global:
+  # global.imagePullSecrets -- imagePullSecrets for all containers.
+  imagePullSecrets: []
+
+ingress:
+  # ingress.annotations -- Annotations for ingress objects.
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # ingress.enabled -- Enable use of ingress controllers.
+  enabled: false
+  # ingress.hosts -- List of ingress hostnames; the paths are fixed to StackState backend services
+  hosts: []
+    # - host: stackstate.local
+  # ingress.tls -- List of ingress TLS certificates to use.
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - stackstate.local
+
+stackstate:
+  components:
+    all:
+      extraEnv:
+        # stackstate.components.all.extraEnv.open -- Extra open environment variables to inject into pods for all components.
+        open: {}
+        # stackstate.components.all.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object for all components.
+        secret: {}
+      image:
+        # stackstate.components.all.image.pullPolicy -- The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below).
+        pullPolicy: IfNotPresent
+        # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
+        tag: master
+      # stackstate.components.all.elasticsearchEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster.
+      elasticsearchEndpoint: ""
+      # stackstate.components.all.kafkaEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker.
+      kafkaEndpoint: ""
+      # stackstate.components.all.zookeeperEndpoint -- **Required if `zookeeper.enabled` is `false`** Endpoint for shared Zookeeper nodes.
+      zookeeperEndpoint: ""
+      # stackstate.components.all.nodeSelector -- Node labels for pod assignment on all components.
+      nodeSelector: {}
+      # stackstate.components.all.tolerations -- Toleration labels for pod assignment on all components.
+      tolerations: []
+      # stackstate.components.all.affinity -- Affinity settings for pod assignment on all components.
+      affinity: {}
+    correlate:
+      extraEnv:
+        # stackstate.components.correlate.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.correlate.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.correlate.image.pullPolicy -- `pullPolicy` used for the `correlate` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.correlate.image.repository -- Repository of the correlate component Docker image.
+        repository: quay.io/stackstate/stackstate-correlate
+        # stackstate.components.correlate.image.tag -- Tag used for the `correlate` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.correlate.resources -- Resource allocation for `correlate` pods.
+      resources:
+        limits:
+          cpu: "500m"
+          memory: "1Gi"
+        requests:
+          cpu: "500m"
+          memory: "1Gi"
+      # stackstate.components.correlate.replicaCount -- Number of `correlate` replicas.
+      replicaCount: 1
+      # stackstate.components.correlate.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.correlate.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.correlate.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+    k2es:
+      extraEnv:
+        # stackstate.components.k2es.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.k2es.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.k2es.image.pullPolicy -- `pullPolicy` used for the `k2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.k2es.image.repository -- Repository of the k2es component Docker image.
+        repository: quay.io/stackstate/stackstate-kafka-to-es
+        # stackstate.components.k2es.image.tag -- Tag used for the `k2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.k2es.resources -- Resource allocation for `k2es` pods.
+      resources:
+        limits:
+          cpu: "500m"
+          memory: "1Gi"
+        requests:
+          cpu: "500m"
+          memory: "1Gi"
+      # stackstate.components.k2es.replicaCount -- Number of `k2es` replicas.
+      replicaCount: 1
+      # stackstate.components.k2es.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.k2es.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.k2es.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+    receiver:
+      extraEnv:
+        # stackstate.components.receiver.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.receiver.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.receiver.image.pullPolicy -- `pullPolicy` used for the `receiver` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.receiver.image.repository -- Repository of the receiver component Docker image.
+        repository: quay.io/stackstate/stackstate-receiver
+        # stackstate.components.receiver.image.tag -- Tag used for the `receiver` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.receiver.resources -- Resource allocation for `receiver` pods.
+      resources:
+        limits:
+          cpu: "1"
+          memory: "2Gi"
+        requests:
+          cpu: "1"
+          memory: "2Gi"
+      # stackstate.components.receiver.replicaCount -- Number of `receiver` replicas.
+      replicaCount: 1
+      # stackstate.components.receiver.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.receiver.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.receiver.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+    server:
+      extraEnv:
+        # stackstate.components.server.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.server.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.server.image.pullPolicy -- `pullPolicy` used for the `server` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.server.image.repository -- Repository of the server component Docker image.
+        repository: quay.io/stackstate/stackstate-server
+        # stackstate.components.server.image.tag -- Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.server.resources -- Resource allocation for `server` pods.
+      resources:
+        limits:
+          cpu: "3800m"
+          memory: "8Gi"
+        requests:
+          cpu: "3800m"
+          memory: "8Gi"
+      # stackstate.components.server.replicaCount -- Number of `server` replicas.
+      replicaCount: 1
+      # stackstate.components.server.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.server.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.server.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+    ui:
+      extraEnv:
+        # stackstate.components.ui.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.ui.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.ui.image.pullPolicy -- `pullPolicy` used for the `ui` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.ui.image.repository -- Repository of the ui component Docker image.
+        repository: quay.io/stackstate/stackstate-ui
+        # stackstate.components.ui.image.tag -- Tag used for the `ui` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.ui.resources -- Resource allocation for `ui` pods.
+      resources:
+        limits:
+          cpu: "50m"
+          memory: "64Mi"
+        requests:
+          cpu: "50m"
+          memory: "64Mi"
+      # stackstate.components.ui.replicaCount -- Number of `ui` replicas.
+      replicaCount: 1
+      # stackstate.components.ui.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.ui.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.ui.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+  license:
+    # stackstate.license.key -- (string) **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server.
+    key:
+  receiver:
+    # stackstate.receiver.apiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
+    apiKey: ""
+    # stackstate.receiver.baseUrl -- (string) **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of the StackState endpoints.
+    baseUrl:
+
+##############################
+# Dependency chart overrides #
+##############################
+
+elasticsearch:
+  # elasticsearch.clusterName -- Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
+  clusterName: distributed-elasticsearch
+  # elasticsearch.enabled -- Enable / disable chart-based Elasticsearch.
+  enabled: true
+  # elasticsearch.extraEnvs -- Extra settings that StackState uses for Elasticsearch.
+  extraEnvs:
+  - name: action.auto_create_index
+    value: "true"
+  - name: indices.query.bool.max_clause_count
+    value: "10000"
+  # elasticsearch.minimumMasterNodes -- Minimum number of Elasticsearch master nodes.
+  minimumMasterNodes: 2
+  # elasticsearch.replicas -- Number of Elasticsearch replicas.
+  replicas: 3
+
+hbase:
+  # hbase.enabled -- Enable / disable chart-based HBase.
+  enabled: true
+  hbase:
+    master:
+      # hbase.hbase.master.replicaCount -- Number of HBase master node replicas.
+      replicaCount: 2
+    regionserver:
+      # hbase.hbase.regionserver.replicaCount -- Number of HBase regionserver node replicas.
+      replicaCount: 3
+  hdfs:
+    datanode:
+      # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas.
+      replicaCount: 3
+  tephra:
+    # hbase.tephra.replicaCount -- Number of Tephra replicas.
+    replicaCount: 2
+  zookeeper:
+    # hbase.zookeeper.enabled -- Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**.
+    enabled: false
+    # hbase.zookeeper.externalServers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
+    externalServers: distributed-zookeeper-headless
+
+kafka:
+  externalZookeeper:
+    # kafka.externalZookeeper.servers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
+    servers: distributed-zookeeper-headless
+  # kafka.enabled -- Enable / disable chart-based Kafka.
+  enabled: true
+  # kafka.replicaCount -- Number of Kafka replicas.
+  replicaCount: 3
+  # kafka.resources -- Kafka resources per pods.
+  resources:
+    limits:
+      cpu: "500m"
+      memory: "2Gi"
+    requests:
+      cpu: "500m"
+      memory: "2Gi"
+  # kafka.zookeeper.enabled -- Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**.
+  zookeeper:
+    enabled: false
+
+zookeeper:
+  # zookeeper.enabled -- Enable / disable chart-based Zookeeper.
+  enabled: true
+  # zookeeper.externalServers -- If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead.
+  externalServers: ""
+  # zookeeper.fourlwCommandsWhitelist -- Zookeeper four-letter-word (FLW) commands that are enabled.
+  fourlwCommandsWhitelist: "mntr, ruok, stat, srvr"
+  # zookeeper.fullnameOverride -- Name override for Zookeeper child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
+  fullnameOverride: distributed-zookeeper
+  metrics:
+    # zookeeper.metrics.enabled -- Enable / disable Zookeeper Prometheus metrics.
+    enabled: true
+    serviceMonitor:
+      # zookeeper.metrics.serviceMonitor.enabled -- Enable creation of `ServiceMonitor` objects for Prometheus operator.
+      enabled: true
+      # zookeeper.metrics.serviceMonitor.selector -- Default selector to use to target a certain Prometheus instance.
+      selector:
+        release: prometheus-operator
+  # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
+  replicaCount: 3

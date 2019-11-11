@@ -6,6 +6,7 @@ excluded-charts:
   - gitlab-runner
 chart-repos:
   - bitnami=https://charts.bitnami.com/
+  - elastic=https://helm.elastic.co/
   - gitlab=https://charts.gitlab.io/
   - incubator=https://kubernetes-charts-incubator.storage.googleapis.com/
   - jetstack=https://charts.jetstack.io/
