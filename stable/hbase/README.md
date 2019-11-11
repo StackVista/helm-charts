@@ -2,7 +2,7 @@ hbase
 =====
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.2`
+Current chart version is `0.1.3`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -22,7 +22,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hbase.master.image.repository | string | `"quay.io/stackstate/hbase-master"` | Base container image repository for HBase masters. |
 | hbase.master.image.tag | string | `"master"` | Default container image tag for HBase masters. |
 | hbase.master.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| hbase.master.replicaCount | int | `2` | Number of pods for HBase masters. |
+| hbase.master.replicaCount | int | `1` | Number of pods for HBase masters. |
 | hbase.master.resources | object | `{"limits":{"cpu":"1","memory":"3Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Resources to allocate for HBase masters. |
 | hbase.master.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.regionserver.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -30,7 +30,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hbase.regionserver.image.repository | string | `"quay.io/stackstate/hbase-regionserver"` | Base container image repository for HBase region servers. |
 | hbase.regionserver.image.tag | string | `"master"` | Default container image tag for HBase region servers. |
 | hbase.regionserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| hbase.regionserver.replicaCount | int | `3` | Number of HBase regionserver nodes. |
+| hbase.regionserver.replicaCount | int | `1` | Number of HBase regionserver nodes. |
 | hbase.regionserver.resources | object | `{"limits":{"cpu":"1","memory":"3Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Resources to allocate for HBase region servers. |
 | hbase.regionserver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.zookeeper.quorum | string | `"hbase"` | Zookeeper quorum used for single-node Zookeeper installations; not used if `zookeeper.replicaCount` is more than `1`. |
@@ -40,7 +40,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hdfs.datanode.persistence.enabled | bool | `true` | Enable persistence for HDFS data nodes. |
 | hdfs.datanode.persistence.size | string | `"250Gi"` | Size of volume for HDFS data nodes. |
 | hdfs.datanode.persistence.storageClass | string | `"default"` | Storage class of the volume for HDFS data nodes. |
-| hdfs.datanode.replicaCount | int | `3` | Number of HDFS data nodes. |
+| hdfs.datanode.replicaCount | int | `1` | Number of HDFS data nodes. |
 | hdfs.datanode.resources | object | `{"limits":{"cpu":"1","memory":"3Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Resources to allocate for HDFS data nodes. |
 | hdfs.datanode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.image.pullPolicy | string | `"IfNotPresent"` | Pull policy for HDFS datanode. |
@@ -72,7 +72,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | tephra.image.repository | string | `"quay.io/stackstate/tephra-server"` | Base container image repository for Tephra pods. |
 | tephra.image.tag | string | `"master"` | Default container image tag for Tephra pods. |
 | tephra.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| tephra.replicaCount | int | `2` | Number of pods for Tephra pods. |
+| tephra.replicaCount | int | `1` | Number of pods for Tephra pods. |
 | tephra.resources | object | `{"limits":{"cpu":"1","memory":"3Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Resources to allocate for Tephra pods. |
 | tephra.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | zookeeper.enabled | bool | `false` | Enable / disable chart-based Zookeeper. |
@@ -81,4 +81,4 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | zookeeper.metrics.enabled | bool | `true` | Enable / disable Zookeeper Prometheus metrics. |
 | zookeeper.metrics.serviceMonitor.enabled | bool | `true` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |
 | zookeeper.metrics.serviceMonitor.selector | object | `{"release":"prometheus-operator"}` | Default selector to use to target a certain Prometheus instance. |
-| zookeeper.replicaCount | int | `3` | Default amount of Zookeeper replicas to provision. |
+| zookeeper.replicaCount | int | `1` | Default amount of Zookeeper replicas to provision. |

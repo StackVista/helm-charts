@@ -13,6 +13,8 @@ spec:
     app.kubernetes.io/component: hdfs-snn
 {{- end -}}
 
+{{- if .Values.hdfs.secondarynamenode.enabled -}}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $stackstateHbaseHdfsDatanodeService := fromYaml (include "hbase.hdfs.secondarynamenode.service" .) -}}
 {{- toYaml (merge $stackstateHbaseHdfsDatanodeService $commonService) -}}
+{{- end -}}
