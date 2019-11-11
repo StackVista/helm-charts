@@ -12,7 +12,7 @@ hbase:
       # hbase.master.image.tag -- Default container image tag for HBase masters.
       tag: master
     # hbase.master.replicaCount -- Number of pods for HBase masters.
-    replicaCount: 1
+    replicaCount: 2
     # hbase.master.resources -- Resources to allocate for HBase masters.
     resources:
       limits:
@@ -36,7 +36,7 @@ hbase:
       # hbase.regionserver.image.tag -- Default container image tag for HBase region servers.
       tag: master
     # hbase.regionserver.replicaCount -- Number of HBase regionserver nodes.
-    replicaCount: 1
+    replicaCount: 3
     # hbase.regionserver.resources -- Resources to allocate for HBase region servers.
     resources:
       limits:
@@ -74,7 +74,7 @@ hdfs:
       # hdfs.datanode.persistence.storageClass -- Storage class of the volume for HDFS data nodes.
       storageClass: default
     # hdfs.datanode.replicaCount -- Number of HDFS data nodes.
-    replicaCount: 1
+    replicaCount: 3
     # hdfs.datanode.resources -- Resources to allocate for HDFS data nodes.
     resources:
       limits:
@@ -115,7 +115,7 @@ hdfs:
     affinity: {}
   secondarynamenode:
     # hdfs.secondarynamenode.enabled -- Enable / disable secondary name nodes.
-    enabled: false
+    enabled: true
     persistence:
       # hdfs.secondarynamenode.persistence.accessModes -- Access mode for HDFS secondary name nodes.
       accessModes: ["ReadWriteOnce"]
@@ -149,7 +149,7 @@ tephra:
     # tephra.image.tag -- Default container image tag for Tephra pods.
     tag: master
   # tephra.replicaCount -- Number of pods for Tephra pods.
-  replicaCount: 1
+  replicaCount: 2
   # tephra.resources -- Resources to allocate for Tephra pods.
   resources:
     limits:
@@ -201,4 +201,4 @@ zookeeper:
       selector:
         release: prometheus-operator
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
-  replicaCount: 1
+  replicaCount: 3

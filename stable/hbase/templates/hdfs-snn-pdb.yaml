@@ -10,6 +10,8 @@ spec:
   maxUnavailable: 1
 {{- end -}}
 
+{{- if .Values.hdfs.secondarynamenode.enabled -}}
 {{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
 {{- $stackstateHbaseHdfsNamenodePdb := fromYaml (include "hbase.hdfs.secondarynamenode.poddisruptionbudget" .) -}}
 {{- toYaml (merge $stackstateHbaseHdfsNamenodePdb $commonPdb) -}}
+{{- end -}}
