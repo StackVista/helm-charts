@@ -37,7 +37,9 @@ Define the name of the secret containing the tokens
 Define the name of the s3 cache secret
 */}}
 {{- define "gitlab-runner.cache.secret" -}}
-{{- default "s3access" .Values.runners.cache.secretName | quote -}}
+{{- if .Values.runners.cache.secretName -}}
+{{- .Values.runners.cache.secretName | quote -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
@@ -58,6 +60,8 @@ Template runners.cache.s3ServerAddress in order to allow overrides from external
 Define the image, using .Chart.AppVersion and GitLab Runner image as a default value
 */}}
 {{- define "gitlab-runner.image" }}
-{{- $image := printf "gitlab/gitlab-runner:alpine-v%s" .Chart.AppVersion -}}
-{{- default $image .Values.image}}
+{{-   $appVersion := ternary "bleeding" (print "v" .Chart.AppVersion) (eq .Chart.AppVersion "bleeding") -}}
+{{-   $image := printf "gitlab/gitlab-runner:alpine-%s" $appVersion -}}
+{{-   default $image .Values.image }}
 {{- end -}}
+

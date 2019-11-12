@@ -1,6 +1,6 @@
 name: gitlab-runner
-version: 0.8.0
-appVersion: 12.2.0
+version: 0.10.1
+appVersion: 12.4.1
 description: GitLab Runner
 keywords:
 - git
@@ -13,5 +13,3 @@ icon: https://gitlab.com/uploads/-/system/project/avatar/250833/runner_logo.png
 maintainers:
 - name: GitLab Inc.
   email: support@gitlab.com
-- name: DJ Mountney
-  email: dj@gitlab.com

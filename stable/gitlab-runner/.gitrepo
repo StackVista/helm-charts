@@ -6,7 +6,7 @@
 [subrepo]
 	remote = https://gitlab.com/gitlab-org/charts/gitlab-runner.git
 	branch = v0.8.0
-	commit = 0d52363511958f438fea573b94653a7d54a73f57
+	commit = a7e2240aaee2b15456f06e00145756bd1d16522f
 	parent = ad919a4c676b69b32786e5d80c6d9a214707c63f
 	method = merge
 	cmdver = 0.4.0

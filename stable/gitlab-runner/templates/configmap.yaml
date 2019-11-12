@@ -50,6 +50,9 @@ data:
     concurrent = {{ .Values.concurrent }}
     check_interval = {{ .Values.checkInterval }}
     log_level = {{ default "info" .Values.logLevel | quote }}
+    {{- if .Values.logFormat }}
+    log_format = {{ .Values.logFormat | quote }}
+    {{- end }}
     {{- if .Values.metrics.enabled }}
     listen_address = '[::]:9252'
     {{- end }}
@@ -77,6 +80,9 @@ data:
         {{- end }}
         {{- range $key, $value := .Values.runners.env }}
         --env {{ $key | quote -}} = {{- $value | quote }} \
+        {{- end }}
+        {{- if and (hasKey .Values.runners "runUntagged") .Values.runners.runUntagged }}
+        --run-untagged=true \
         {{- end }}
         --non-interactive
 

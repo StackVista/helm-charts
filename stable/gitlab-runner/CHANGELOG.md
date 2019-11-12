@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## v0.10.1 (2019-10-28)
+
+- Update GitLab Runner to 12.4.1
+
+## v0.10.0 (2019-10-21)
+
+- Updated GitLab Runner to 12.4.0
+- Use updated project path to release helm chart !172
+- Update resources API to stable verson !167
+- Add support for specifying log format !170
+- Use the cache.secret template to check if the secretName is set !166
+- Drop need for helm force update for now !181
+- Fix image version detection for old helm versions !173
+
+## v0.9.0 (2019-09-20)
+
+- Use updated project path to release helm chart !172
+- Enabling horizontal pod auto-scaling based on custom metrics !127
+- Change base image used for CI jobs !156
+- Remove DJ as a listed chart maintainer !160
+- Release beta version on master using Bleeding Edge image !155
+- Update definition of 'release beta' CI jobs !164
+- Fix certs path in the comment in values file !148
+- Implement support for run-untagged option !140
+- Use new location for helm charts repo !162
+- Follow-up to adding run-untagged support !165
+
 ## v0.8.0 (2019-08-22)
 
 - Add suport for graceful stop !150
