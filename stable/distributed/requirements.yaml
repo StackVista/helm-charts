@@ -1,20 +1,20 @@
 dependencies:
 - name: common
-  repository: https://helm.stackstate.io
-  version: 0.1.X
+  repository: file://../common
+  version: 0.1.7
 - name: elasticsearch
   condition: elasticsearch.enabled
   repository: https://helm.elastic.co
-  version: 7.4.X
+  version: 7.4.1
 - name: hbase
   condition: hbase.enabled
-  repository: https://helm.stackstate.io
-  version: 0.1.X
+  repository: file://../hbase
+  version: 0.1.4
 - name: kafka
   condition: kafka.enabled
   repository: https://charts.bitnami.com
-  version: 6.1.X
+  version: 6.1.8
 - name: zookeeper
-  version: 5.1.X
+  version: 5.1.0
   repository: https://charts.bitnami.com
   condition: zookeeper.enabled

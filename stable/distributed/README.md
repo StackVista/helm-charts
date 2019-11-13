@@ -2,7 +2,7 @@ distributed
 ===========
 Helm chart for StackState distributed -- all components split into microservices.
 
-Current chart version is `0.1.2`
+Current chart version is `0.1.3`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -10,11 +10,11 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.bitnami.com | kafka | 6.1.X |
-| https://charts.bitnami.com | zookeeper | 5.1.X |
-| https://helm.elastic.co | elasticsearch | 7.4.X |
-| https://helm.stackstate.io | common | 0.1.X |
-| https://helm.stackstate.io | hbase | 0.1.X |
+| file://../common | common | 0.1.7 |
+| file://../hbase | hbase | 0.1.4 |
+| https://charts.bitnami.com | kafka | 6.1.8 |
+| https://charts.bitnami.com | zookeeper | 5.1.0 |
+| https://helm.elastic.co | elasticsearch | 7.4.1 |
 
 ## Required Values
 
