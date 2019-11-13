@@ -32,6 +32,10 @@ Common environment variables for HDFS configuration.
 {{- define "hbase.hdfs.commonEnv" }}
 - name: CORE_CONF_fs_defaultFS
   value: "hdfs://{{ template "common.fullname" . }}-hdfs-nn:9000/"
+- name: HDFS_CONF_dfs_client_retry_policy_enabled
+  value: "true"
+- name: HDFS_CONF_dfs_client_retry_policy_spec
+  value: "1000,6,2000,10"
 - name: HDFS_CONF_dfs_client_use_datanode_hostname
   value: "false"
 - name: HDFS_CONF_dfs_datanode_data_dir
