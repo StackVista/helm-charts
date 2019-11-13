@@ -2,7 +2,7 @@ hbase
 =====
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.4`
+Current chart version is `0.1.5`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -45,7 +45,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hdfs.datanode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.image.pullPolicy | string | `"IfNotPresent"` | Pull policy for HDFS datanode. |
 | hdfs.image.repository | string | `"quay.io/stackstate/hadoop"` | Base container image repository for HDFS datanode. |
-| hdfs.image.tag | string | `"hadoop2.9.2-java8"` | Default container image tag for HDFS datanode. |
+| hdfs.image.tag | string | `"hadoop2.9.2-java11"` | Default container image tag for HDFS datanode. |
 | hdfs.namenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.namenode.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hdfs.namenode.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for HDFS name nodes. |

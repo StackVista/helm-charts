@@ -62,7 +62,7 @@ hdfs:
     # hdfs.image.repository -- Base container image repository for HDFS datanode.
     repository: quay.io/stackstate/hadoop
     # hdfs.image.tag -- Default container image tag for HDFS datanode.
-    tag: hadoop2.9.2-java8
+    tag: hadoop2.9.2-java11
   datanode:
     persistence:
       # hdfs.datanode.persistence.accessModes -- Access mode for HDFS data nodes.
