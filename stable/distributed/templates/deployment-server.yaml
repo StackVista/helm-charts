@@ -23,6 +23,8 @@ env:
   value: {{ .Values.stackstate.receiver.baseUrl | quote }}
 - name: ZOOKEEPER_QUORUM
   value: {{ include "distributed.zookeeper.endpoint" . | quote }}
+- name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
+  value: "hdfs://{{ template "common.fullname" . }}-hdfs-nn:9000/stackpacks"
 image: "{{ .Values.stackstate.components.server.image.repository }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.server.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
 livenessProbe:
