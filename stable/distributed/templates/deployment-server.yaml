@@ -1,6 +1,5 @@
 {{- define "distributed.server.deployment.container" -}}
 args:
-- -J-Xmx6G
 - -start
 env:
 {{- include "distributed.common.envvars" . }}
@@ -24,7 +23,7 @@ env:
 - name: ZOOKEEPER_QUORUM
   value: {{ include "distributed.zookeeper.endpoint" . | quote }}
 - name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
-  value: "hdfs://{{ template "common.fullname" . }}-hdfs-nn:9000/stackpacks"
+  value: "hdfs://{{ .Release.Name }}-hbase-hdfs-nn:9000/stackpacks"
 image: "{{ .Values.stackstate.components.server.image.repository }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.server.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
 livenessProbe:
@@ -52,9 +51,9 @@ resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 securityContext:
-  runAsGroup: 2
+  runAsGroup: 65534
   runAsNonRoot: true
-  runAsUser: 2
+  runAsUser: 65534
 {{- end -}}
 
 {{- define "distributed.server.deployment" -}}

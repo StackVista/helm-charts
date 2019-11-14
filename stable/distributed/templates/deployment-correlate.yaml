@@ -1,10 +1,4 @@
 {{- define "distributed.correlate.deployment.container" -}}
-args:
-- -DconsoleLogging=true
-- -DconsumerOffsetStartAtEarliest=false
-- -J-Xms128M
-- -J-Xmx1G
-- -J-XX:+ExitOnOutOfMemoryError
 env:
 {{- include "distributed.common.envvars" . }}
 {{- include "distributed.correlate.envvars" . }}
@@ -35,9 +29,9 @@ resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 securityContext:
-  runAsGroup: 2
+  runAsGroup: 65534
   runAsNonRoot: true
-  runAsUser: 2
+  runAsUser: 65534
 {{- end -}}
 
 {{- define "distributed.correlate.deployment" -}}

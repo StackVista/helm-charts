@@ -2,7 +2,7 @@ distributed
 ===========
 Helm chart for StackState distributed -- all components split into microservices.
 
-Current chart version is `0.1.4`
+Current chart version is `0.1.5`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -76,7 +76,7 @@ stackstate/distributed
 | stackstate.components.correlate.image.tag | string | `""` | Tag used for the `correlate` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.correlate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.correlate.replicaCount | int | `1` | Number of `correlate` replicas. |
-| stackstate.components.correlate.resources | object | `{"limits":{"cpu":"500m","memory":"2Gi"},"requests":{"cpu":"500m","memory":"2Gi"}}` | Resource allocation for `correlate` pods. |
+| stackstate.components.correlate.resources | object | `{"limits":{"cpu":"500m","memory":"1Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Resource allocation for `correlate` pods. |
 | stackstate.components.correlate.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.k2es.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.k2es.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -96,7 +96,7 @@ stackstate/distributed
 | stackstate.components.receiver.image.tag | string | `""` | Tag used for the `receiver` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.receiver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.receiver.replicaCount | int | `1` | Number of `receiver` replicas. |
-| stackstate.components.receiver.resources | object | `{"limits":{"cpu":"1","memory":"2Gi"},"requests":{"cpu":"1","memory":"2Gi"}}` | Resource allocation for `receiver` pods. |
+| stackstate.components.receiver.resources | object | `{"limits":{"cpu":"1","memory":"1Gi"},"requests":{"cpu":"1","memory":"1Gi"}}` | Resource allocation for `receiver` pods. |
 | stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.server.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.server.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -106,7 +106,7 @@ stackstate/distributed
 | stackstate.components.server.image.tag | string | `""` | Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.server.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.server.replicaCount | int | `1` | Number of `server` replicas. |
-| stackstate.components.server.resources | object | `{"limits":{"cpu":"3800m","memory":"8Gi"},"requests":{"cpu":"3800m","memory":"8Gi"}}` | Resource allocation for `server` pods. |
+| stackstate.components.server.resources | object | `{"limits":{"cpu":"4","memory":"8Gi"},"requests":{"cpu":"4","memory":"8Gi"}}` | Resource allocation for `server` pods. |
 | stackstate.components.server.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.ui.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.ui.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
