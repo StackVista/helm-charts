@@ -64,10 +64,10 @@ stackstate:
       resources:
         limits:
           cpu: "500m"
-          memory: "2Gi"
+          memory: "1Gi"
         requests:
           cpu: "500m"
-          memory: "2Gi"
+          memory: "1Gi"
       # stackstate.components.correlate.replicaCount -- Number of `correlate` replicas.
       replicaCount: 1
       # stackstate.components.correlate.nodeSelector -- Node labels for pod assignment.
@@ -122,10 +122,10 @@ stackstate:
       resources:
         limits:
           cpu: "1"
-          memory: "2Gi"
+          memory: "1Gi"
         requests:
           cpu: "1"
-          memory: "2Gi"
+          memory: "1Gi"
       # stackstate.components.receiver.replicaCount -- Number of `receiver` replicas.
       replicaCount: 1
       # stackstate.components.receiver.nodeSelector -- Node labels for pod assignment.
@@ -150,10 +150,10 @@ stackstate:
       # stackstate.components.server.resources -- Resource allocation for `server` pods.
       resources:
         limits:
-          cpu: "3800m"
+          cpu: "4"
           memory: "8Gi"
         requests:
-          cpu: "3800m"
+          cpu: "4"
           memory: "8Gi"
       # stackstate.components.server.replicaCount -- Number of `server` replicas.
       replicaCount: 1

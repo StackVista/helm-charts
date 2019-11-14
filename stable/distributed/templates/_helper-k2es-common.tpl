@@ -43,7 +43,7 @@ resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 securityContext:
-  runAsGroup: 2
+  runAsGroup: 65534
   runAsNonRoot: true
-  runAsUser: 2
+  runAsUser: 65534
 {{- end -}}

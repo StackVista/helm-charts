@@ -93,10 +93,10 @@ stackstate:
       resources:
         limits:
           cpu: "500m"
-          memory: "1Gi"
+          memory: "500Mi"
         requests:
           cpu: "500m"
-          memory: "1Gi"
+          memory: "500Mi"
       # stackstate.components.k2es.replicaCount -- Number of `k2es` replicas.
       replicaCount: 1
       # stackstate.components.k2es.nodeSelector -- Node labels for pod assignment.
@@ -121,11 +121,11 @@ stackstate:
       # stackstate.components.receiver.resources -- Resource allocation for `receiver` pods.
       resources:
         limits:
-          cpu: "1"
-          memory: "2Gi"
+          cpu: "500m"
+          memory: "1Gi"
         requests:
-          cpu: "1"
-          memory: "2Gi"
+          cpu: "500m"
+          memory: "1Gi"
       # stackstate.components.receiver.replicaCount -- Number of `receiver` replicas.
       replicaCount: 1
       # stackstate.components.receiver.nodeSelector -- Node labels for pod assignment.
@@ -150,10 +150,10 @@ stackstate:
       # stackstate.components.server.resources -- Resource allocation for `server` pods.
       resources:
         limits:
-          cpu: "3800m"
+          cpu: "4"
           memory: "8Gi"
         requests:
-          cpu: "3800m"
+          cpu: "4"
           memory: "8Gi"
       # stackstate.components.server.replicaCount -- Number of `server` replicas.
       replicaCount: 1
