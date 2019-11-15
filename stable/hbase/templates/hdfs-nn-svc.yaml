@@ -4,8 +4,6 @@ metadata:
   labels:
     app.kubernetes.io/component: hdfs-nn
 spec:
-  clusterIP: None
-  publishNotReadyAddresses: true
   ports:
   - port: 9000
     name: nn
