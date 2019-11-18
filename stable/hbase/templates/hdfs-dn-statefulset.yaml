@@ -22,7 +22,9 @@ args:
 - /run.sh
 - datanode
 env:
-{{ include "hbase.hdfs.commonEnv" . }}
+{{- include "all.commonEnv" . }}
+{{- include "hdfs.datanode.commonEnv" . }}
+{{- include "hbase.hdfs.commonEnv" . }}
 - name: SERVICE_PRECONDITION
   value: "{{ template "common.fullname" . }}-hdfs-nn:9000"
 ports:
@@ -79,17 +81,32 @@ spec:
       containers:
       -
         {{ toYaml $stackstateHbaseHdfsDatanodeContainer | nindent 8 }}
-    {{- with .Values.hdfs.datanode.nodeSelector }}
+    {{- if or .Values.all.nodeSelector .Values.hdfs.datanode.nodeSelector }}
       nodeSelector:
+      {{- with .Values.all.nodeSelector }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.hdfs.datanode.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     {{- end }}
-    {{- with .Values.hdfs.datanode.affinity }}
+    {{- if or .Values.all.affinity .Values.hdfs.datanode.affinity }}
       affinity:
+      {{- with .Values.all.affinity }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.hdfs.datanode.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     {{- end }}
-    {{- with .Values.hdfs.datanode.tolerations }}
+    {{- if or .Values.all.tolerations .Values.hdfs.datanode.tolerations }}
       tolerations:
+      {{- with .Values.all.tolerations }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.hdfs.datanode.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     {{- end }}
       volumes:
     {{- if not .Values.hdfs.datanode.persistence.enabled }}

@@ -11,5 +11,5 @@ spec:
 {{- end -}}
 
 {{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
-{{- $stackstateHbasePdb := fromYaml (include "hbase.hbase.regionserver.poddisruptionbudget" .) -}}
-{{- toYaml (merge $stackstateHbasePdb $commonPdb) -}}
+{{- $stackstateHbaseRegionServerPdb := fromYaml (include "hbase.hbase.regionserver.poddisruptionbudget" .) -}}
+{{- toYaml (merge $stackstateHbaseRegionServerPdb $commonPdb) -}}

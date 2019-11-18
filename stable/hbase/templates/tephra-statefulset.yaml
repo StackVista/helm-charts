@@ -3,13 +3,27 @@ name: tephra
 image: "{{ .Values.tephra.image.repository }}:{{ .Values.tephra.image.tag }}"
 imagePullPolicy: {{ .Values.tephra.image.pullPolicy }}
 env:
-{{ include "hbase.hdfs.commonEnv" . }}
-{{ include "hbase.hbase.commonEnv" . }}
+{{- include "all.commonEnv" . }}
+{{- include "tephra.commonEnv" . }}
+{{- include "hbase.hdfs.commonEnv" . }}
+{{- include "hbase.hbase.commonEnv" . }}
 - name: SERVICE_PRECONDITION
   value: "{{ include "hbase.zookeeper.endpoint" . }}:2181 {{ template "common.fullname" . }}-hdfs-nn:9000 {{ template "common.fullname" . }}-hdfs-dn:50010"
+livenessProbe:
+  exec:
+    command:
+    - pgrep
+    - java
+  initialDelaySeconds: 10
 ports:
 - containerPort: 15165
   name: tephra
+readinessProbe:
+  exec:
+    command:
+    - pgrep
+    - java
+  initialDelaySeconds: 10
 {{- with .Values.tephra.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
@@ -43,17 +57,32 @@ spec:
       containers:
       -
         {{ toYaml $stackstateHbaseTephraContainer | nindent 8 }}
-    {{- with .Values.tephra.nodeSelector }}
+    {{- if or .Values.all.nodeSelector .Values.tephra.nodeSelector }}
       nodeSelector:
+      {{- with .Values.all.nodeSelector }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tephra.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     {{- end }}
-    {{- with .Values.tephra.affinity }}
+    {{- if or .Values.all.affinity .Values.tephra.affinity }}
       affinity:
+      {{- with .Values.all.affinity }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tephra.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     {{- end }}
-    {{- with .Values.tephra.tolerations }}
+    {{- if or .Values.all.tolerations .Values.tephra.tolerations }}
       tolerations:
+      {{- with .Values.all.tolerations }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tephra.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     {{- end }}
 {{- end -}}
 

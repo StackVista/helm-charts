@@ -2,10 +2,6 @@
 # StackState Distributed values #
 #################################
 
-global:
-  # global.imagePullSecrets -- imagePullSecrets for all containers.
-  imagePullSecrets: []
-
 ingress:
   # ingress.annotations -- Annotations for ingress objects.
   annotations: {}
@@ -32,7 +28,7 @@ stackstate:
         secret: {}
       image:
         # stackstate.components.all.image.pullPolicy -- The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below).
-        pullPolicy: IfNotPresent
+        pullPolicy: Always
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
         tag: master
       # stackstate.components.all.elasticsearchEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster.
@@ -63,10 +59,8 @@ stackstate:
       # stackstate.components.correlate.resources -- Resource allocation for `correlate` pods.
       resources:
         limits:
-          cpu: "500m"
           memory: "1Gi"
         requests:
-          cpu: "500m"
           memory: "1Gi"
       # stackstate.components.correlate.replicaCount -- Number of `correlate` replicas.
       replicaCount: 1
@@ -92,11 +86,9 @@ stackstate:
       # stackstate.components.k2es.resources -- Resource allocation for `k2es` pods.
       resources:
         limits:
-          cpu: "500m"
-          memory: "500Mi"
+          memory: "1Gi"
         requests:
-          cpu: "500m"
-          memory: "500Mi"
+          memory: "1Gi"
       # stackstate.components.k2es.replicaCount -- Number of `k2es` replicas.
       replicaCount: 1
       # stackstate.components.k2es.nodeSelector -- Node labels for pod assignment.
@@ -121,10 +113,8 @@ stackstate:
       # stackstate.components.receiver.resources -- Resource allocation for `receiver` pods.
       resources:
         limits:
-          cpu: "500m"
           memory: "1Gi"
         requests:
-          cpu: "500m"
           memory: "1Gi"
       # stackstate.components.receiver.replicaCount -- Number of `receiver` replicas.
       replicaCount: 1
@@ -150,10 +140,8 @@ stackstate:
       # stackstate.components.server.resources -- Resource allocation for `server` pods.
       resources:
         limits:
-          cpu: "4"
           memory: "8Gi"
         requests:
-          cpu: "4"
           memory: "8Gi"
       # stackstate.components.server.replicaCount -- Number of `server` replicas.
       replicaCount: 1
@@ -257,10 +245,8 @@ kafka:
   # kafka.resources -- Kafka resources per pods.
   resources:
     limits:
-      cpu: "500m"
       memory: "2Gi"
     requests:
-      cpu: "500m"
       memory: "2Gi"
   # kafka.zookeeper.enabled -- Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**.
   zookeeper:

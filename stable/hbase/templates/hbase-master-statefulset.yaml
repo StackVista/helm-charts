@@ -3,8 +3,10 @@ name: master
 image: "{{ .Values.hbase.master.image.repository }}:{{ .Values.hbase.master.image.tag }}"
 imagePullPolicy: {{ .Values.hbase.master.image.pullPolicy }}
 env:
-{{ include "hbase.hdfs.commonEnv" . }}
-{{ include "hbase.hbase.commonEnv" . }}
+{{- include "all.commonEnv" . }}
+{{- include "hbase.master.commonEnv" . }}
+{{- include "hbase.hdfs.commonEnv" . }}
+{{- include "hbase.hbase.commonEnv" . }}
 - name: SERVICE_PRECONDITION
   value: "{{ include "hbase.zookeeper.endpoint" . }}:2181 {{ template "common.fullname" . }}-hdfs-nn:9000"
 ports:
@@ -53,17 +55,32 @@ spec:
       containers:
       -
         {{ toYaml $stackstateHbaseMasterContainer | nindent 8 }}
-    {{- with .Values.hbase.master.nodeSelector }}
+    {{- if or .Values.all.nodeSelector .Values.hbase.master.nodeSelector }}
       nodeSelector:
+      {{- with .Values.all.nodeSelector }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.hbase.master.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     {{- end }}
-    {{- with .Values.hbase.master.affinity }}
+    {{- if or .Values.all.affinity .Values.hbase.master.affinity }}
       affinity:
+      {{- with .Values.all.affinity }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.hbase.master.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     {{- end }}
-    {{- with .Values.hbase.master.tolerations }}
+    {{- if or .Values.all.tolerations .Values.hbase.master.tolerations }}
       tolerations:
+      {{- with .Values.all.tolerations }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.hbase.master.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     {{- end }}
 {{- end -}}
 

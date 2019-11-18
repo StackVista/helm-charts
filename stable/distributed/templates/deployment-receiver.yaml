@@ -62,26 +62,32 @@ spec:
     spec:
       containers:
       - {{ toYaml (merge $stsDistributedReceiverMainContainer $commonContainer) | nindent 8 }}
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.receiver.nodeSelector }}
       nodeSelector:
-    {{- with .Values.stackstate.components.all.nodeSelector }}
+      {{- with .Values.stackstate.components.all.nodeSelector }}
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.stackstate.components.receiver.nodeSelector }}
+      {{- end }}
+      {{- with .Values.stackstate.components.receiver.nodeSelector }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
     {{- end }}
+    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.receiver.affinity }}
       affinity:
-    {{- with .Values.stackstate.components.all.affinity }}
+      {{- with .Values.stackstate.components.all.affinity }}
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.stackstate.components.receiver.affinity }}
+      {{- end }}
+      {{- with .Values.stackstate.components.receiver.affinity }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
     {{- end }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.receiver.tolerations }}
       tolerations:
-    {{- with .Values.stackstate.components.all.tolerations }}
+      {{- with .Values.stackstate.components.all.tolerations }}
         {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.stackstate.components.receiver.tolerations }}
+      {{- end }}
+      {{- with .Values.stackstate.components.receiver.tolerations }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
     {{- end }}
 {{- end -}}
 
