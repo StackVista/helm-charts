@@ -1,5 +1,5 @@
 {{- define "hbase.hdfs.secondarynamenode.container.init" -}}
-name: namenode-init
+name: snamenode-init
 image: "busybox:latest"
 command:
 - sh
@@ -22,7 +22,9 @@ args:
 - /run.sh
 - secondarynamenode
 env:
-{{ include "hbase.hdfs.commonEnv" . }}
+{{- include "all.commonEnv" . }}
+{{- include "hdfs.secondarynamenode.commonEnv" . }}
+{{- include "hbase.hdfs.commonEnv" . }}
 ports:
 - containerPort: 50090
   name: snn
@@ -72,17 +74,32 @@ spec:
       initContainers:
       -
         {{ toYaml $stackstateHbaseHdfsSecondaryNamenodeInitContainer | nindent 8 }}
-    {{- with .Values.hdfs.secondarynamenode.nodeSelector }}
+    {{- if or .Values.all.nodeSelector .Values.hdfs.secondarynamenode.nodeSelector }}
       nodeSelector:
+      {{- with .Values.all.nodeSelector }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.hdfs.secondarynamenode.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     {{- end }}
-    {{- with .Values.hdfs.secondarynamenode.affinity }}
+    {{- if or .Values.all.affinity .Values.hdfs.secondarynamenode.affinity }}
       affinity:
+      {{- with .Values.all.affinity }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.hdfs.secondarynamenode.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     {{- end }}
-    {{- with .Values.hdfs.secondarynamenode.tolerations }}
+    {{- if or .Values.all.tolerations .Values.hdfs.secondarynamenode.tolerations }}
       tolerations:
+      {{- with .Values.all.tolerations }}
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.hdfs.secondarynamenode.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     {{- end }}
       volumes:
     {{- if not .Values.hdfs.secondarynamenode.persistence.enabled }}
@@ -104,6 +121,6 @@ spec:
 
 {{- if .Values.hdfs.secondarynamenode.enabled -}}
 {{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
-{{- $stackstateHbaseHdfsNamenodeStatefulSet := fromYaml (include "hbase.hdfs.secondarynamenode.statefulset" .) -}}
-{{- toYaml (merge $stackstateHbaseHdfsNamenodeStatefulSet $commonStatefulSet) -}}
+{{- $stackstateHbaseHdfsSecondaryNamenodeStatefulSet := fromYaml (include "hbase.hdfs.secondarynamenode.statefulset" .) -}}
+{{- toYaml (merge $stackstateHbaseHdfsSecondaryNamenodeStatefulSet $commonStatefulSet) -}}
 {{- end -}}

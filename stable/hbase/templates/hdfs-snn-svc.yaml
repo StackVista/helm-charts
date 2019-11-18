@@ -15,6 +15,6 @@ spec:
 
 {{- if .Values.hdfs.secondarynamenode.enabled -}}
 {{- $commonService := fromYaml (include "common.service" .) -}}
-{{- $stackstateHbaseHdfsDatanodeService := fromYaml (include "hbase.hdfs.secondarynamenode.service" .) -}}
-{{- toYaml (merge $stackstateHbaseHdfsDatanodeService $commonService) -}}
+{{- $stackstateHbaseHdfsSecondaryNamenodeService := fromYaml (include "hbase.hdfs.secondarynamenode.service" .) -}}
+{{- toYaml (merge $stackstateHbaseHdfsSecondaryNamenodeService $commonService) -}}
 {{- end -}}

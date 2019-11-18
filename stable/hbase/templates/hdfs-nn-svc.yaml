@@ -14,5 +14,5 @@ spec:
 {{- end -}}
 
 {{- $commonService := fromYaml (include "common.service" .) -}}
-{{- $stackstateHbaseHdfsDatanodeService := fromYaml (include "hbase.hdfs.namenode.service" .) -}}
-{{- toYaml (merge $stackstateHbaseHdfsDatanodeService $commonService) -}}
+{{- $stackstateHbaseHdfsNamenodeService := fromYaml (include "hbase.hdfs.namenode.service" .) -}}
+{{- toYaml (merge $stackstateHbaseHdfsNamenodeService $commonService) -}}

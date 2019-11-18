@@ -2,7 +2,7 @@ distributed
 ===========
 Helm chart for StackState distributed -- all components split into microservices.
 
-Current chart version is `0.1.6`
+Current chart version is `0.1.7`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -11,7 +11,7 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common | common | 0.1.7 |
-| file://../hbase | hbase | 0.1.6 |
+| file://../hbase | hbase | 0.1.7 |
 | https://charts.bitnami.com | kafka | 6.1.8 |
 | https://charts.bitnami.com | zookeeper | 5.1.0 |
 | https://helm.elastic.co | elasticsearch | 7.4.1 |
@@ -40,7 +40,6 @@ stackstate/distributed
 | elasticsearch.extraEnvs | list | `[{"name":"action.auto_create_index","value":"true"},{"name":"indices.query.bool.max_clause_count","value":"10000"}]` | Extra settings that StackState uses for Elasticsearch. |
 | elasticsearch.minimumMasterNodes | int | `1` | Minimum number of Elasticsearch master nodes. |
 | elasticsearch.replicas | int | `1` | Number of Elasticsearch replicas. |
-| global.imagePullSecrets | list | `[]` | imagePullSecrets for all containers. |
 | hbase.enabled | bool | `true` | Enable / disable chart-based HBase. |
 | hbase.hbase.master.replicaCount | int | `1` | Number of HBase master node replicas. |
 | hbase.hbase.regionserver.replicaCount | int | `1` | Number of HBase regionserver node replicas. |
@@ -56,13 +55,13 @@ stackstate/distributed
 | kafka.externalZookeeper.servers | string | `"distributed-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
 | kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
 | kafka.replicaCount | int | `1` | Number of Kafka replicas. |
-| kafka.resources | object | `{"limits":{"cpu":"500m","memory":"2Gi"},"requests":{"cpu":"500m","memory":"2Gi"}}` | Kafka resources per pods. |
+| kafka.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"memory":"2Gi"}}` | Kafka resources per pods. |
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
 | stackstate.components.all.affinity | object | `{}` | Affinity settings for pod assignment on all components. |
 | stackstate.components.all.elasticsearchEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster. |
 | stackstate.components.all.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods for all components. |
 | stackstate.components.all.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object for all components. |
-| stackstate.components.all.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below). |
+| stackstate.components.all.image.pullPolicy | string | `"Always"` | The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below). |
 | stackstate.components.all.image.tag | string | `"master"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.nodeSelector | object | `{}` | Node labels for pod assignment on all components. |
@@ -76,7 +75,7 @@ stackstate/distributed
 | stackstate.components.correlate.image.tag | string | `""` | Tag used for the `correlate` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.correlate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.correlate.replicaCount | int | `1` | Number of `correlate` replicas. |
-| stackstate.components.correlate.resources | object | `{"limits":{"cpu":"500m","memory":"1Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Resource allocation for `correlate` pods. |
+| stackstate.components.correlate.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"1Gi"}}` | Resource allocation for `correlate` pods. |
 | stackstate.components.correlate.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.k2es.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.k2es.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -86,7 +85,7 @@ stackstate/distributed
 | stackstate.components.k2es.image.tag | string | `""` | Tag used for the `k2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.k2es.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.k2es.replicaCount | int | `1` | Number of `k2es` replicas. |
-| stackstate.components.k2es.resources | object | `{"limits":{"cpu":"500m","memory":"1Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Resource allocation for `k2es` pods. |
+| stackstate.components.k2es.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"1Gi"}}` | Resource allocation for `k2es` pods. |
 | stackstate.components.k2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.receiver.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.receiver.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -96,7 +95,7 @@ stackstate/distributed
 | stackstate.components.receiver.image.tag | string | `""` | Tag used for the `receiver` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.receiver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.receiver.replicaCount | int | `1` | Number of `receiver` replicas. |
-| stackstate.components.receiver.resources | object | `{"limits":{"cpu":"1","memory":"1Gi"},"requests":{"cpu":"1","memory":"1Gi"}}` | Resource allocation for `receiver` pods. |
+| stackstate.components.receiver.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"1Gi"}}` | Resource allocation for `receiver` pods. |
 | stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.server.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.server.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -106,7 +105,7 @@ stackstate/distributed
 | stackstate.components.server.image.tag | string | `""` | Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.server.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.server.replicaCount | int | `1` | Number of `server` replicas. |
-| stackstate.components.server.resources | object | `{"limits":{"cpu":"4","memory":"8Gi"},"requests":{"cpu":"4","memory":"8Gi"}}` | Resource allocation for `server` pods. |
+| stackstate.components.server.resources | object | `{"limits":{"memory":"8Gi"},"requests":{"memory":"8Gi"}}` | Resource allocation for `server` pods. |
 | stackstate.components.server.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.ui.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.ui.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |

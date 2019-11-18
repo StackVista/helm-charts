@@ -2,11 +2,29 @@
 # StackState HBase values #
 ###########################
 
+all:
+  extraEnv:
+    # all.extraEnv.open -- Extra open environment variables to inject into pods for all components.
+    open: {}
+    # all.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object for all components.
+    secret: {}
+  # all.nodeSelector -- Node labels for pod assignment on all components.
+  nodeSelector: {}
+  # all.tolerations -- Toleration labels for pod assignment on all components.
+  tolerations: []
+  # all.affinity -- Affinity settings for pod assignment on all components.
+  affinity: {}
+
 hbase:
   master:
+    extraEnv:
+      # hbase.master.extraEnv.open -- Extra open environment variables to inject into pods.
+      open: {}
+      # hbase.master.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+      secret: {}
     image:
       # hbase.master.image.pullPolicy -- Pull policy for HBase masters.
-      pullPolicy: IfNotPresent
+      pullPolicy: Always
       # hbase.master.image.repository -- Base container image repository for HBase masters.
       repository: quay.io/stackstate/hbase-master
       # hbase.master.image.tag -- Default container image tag for HBase masters.
@@ -16,10 +34,8 @@ hbase:
     # hbase.master.resources -- Resources to allocate for HBase masters.
     resources:
       limits:
-        cpu: "1"
-        memory: "3Gi"
+        memory: "1Gi"
       requests:
-        cpu: "500m"
         memory: "1Gi"
     # hbase.master.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
@@ -28,9 +44,14 @@ hbase:
     # hbase.master.affinity -- Affinity settings for pod assignment.
     affinity: {}
   regionserver:
+    extraEnv:
+      # hbase.regionserver.extraEnv.open -- Extra open environment variables to inject into pods.
+      open: {}
+      # hbase.regionserver.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+      secret: {}
     image:
       # hbase.regionserver.image.pullPolicy -- Pull policy for HBase region servers.
-      pullPolicy: IfNotPresent
+      pullPolicy: Always
       # hbase.regionserver.image.repository -- Base container image repository for HBase region servers.
       repository: quay.io/stackstate/hbase-regionserver
       # hbase.regionserver.image.tag -- Default container image tag for HBase region servers.
@@ -40,11 +61,9 @@ hbase:
     # hbase.regionserver.resources -- Resources to allocate for HBase region servers.
     resources:
       limits:
-        cpu: "1"
         memory: "3Gi"
       requests:
-        cpu: "500m"
-        memory: "1Gi"
+        memory: "2Gi"
     # hbase.regionserver.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hbase.regionserver.tolerations -- Toleration labels for pod assignment.
@@ -58,12 +77,17 @@ hbase:
 hdfs:
   image:
     # hdfs.image.pullPolicy -- Pull policy for HDFS datanode.
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     # hdfs.image.repository -- Base container image repository for HDFS datanode.
     repository: quay.io/stackstate/hadoop
     # hdfs.image.tag -- Default container image tag for HDFS datanode.
-    tag: hadoop2.9.2-java11
+    tag: 2.9.2-java11
   datanode:
+    extraEnv:
+      # hdfs.datanode.extraEnv.open -- Extra open environment variables to inject into pods.
+      open: {}
+      # hdfs.datanode.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+      secret: {}
     persistence:
       # hdfs.datanode.persistence.accessModes -- Access mode for HDFS data nodes.
       accessModes: ["ReadWriteOnce"]
@@ -78,11 +102,9 @@ hdfs:
     # hdfs.datanode.resources -- Resources to allocate for HDFS data nodes.
     resources:
       limits:
-        cpu: "1"
-        memory: "3Gi"
+        memory: "4Gi"
       requests:
-        cpu: "500m"
-        memory: "1Gi"
+        memory: "2Gi"
     # hdfs.datanode.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hdfs.datanode.tolerations -- Toleration labels for pod assignment.
@@ -90,6 +112,11 @@ hdfs:
     # hdfs.datanode.affinity -- Affinity settings for pod assignment.
     affinity: {}
   namenode:
+    extraEnv:
+      # hdfs.namenode.extraEnv.open -- Extra open environment variables to inject into pods.
+      open: {}
+      # hdfs.namenode.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+      secret: {}
     persistence:
       # hdfs.namenode.persistence.accessModes -- Access mode for HDFS name nodes.
       accessModes: ["ReadWriteOnce"]
@@ -102,10 +129,8 @@ hdfs:
     # hdfs.namenode.resources -- Resources to allocate for HDFS name nodes.
     resources:
       limits:
-        cpu: "1"
-        memory: "3Gi"
+        memory: "1Gi"
       requests:
-        cpu: "500m"
         memory: "1Gi"
     # hdfs.namenode.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
@@ -114,6 +139,11 @@ hdfs:
     # hdfs.namenode.affinity -- Affinity settings for pod assignment.
     affinity: {}
   secondarynamenode:
+    extraEnv:
+      # hdfs.secondarynamenode.extraEnv.open -- Extra open environment variables to inject into pods.
+      open: {}
+      # hdfs.secondarynamenode.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+      secret: {}
     # hdfs.secondarynamenode.enabled -- Enable / disable secondary name nodes.
     enabled: true
     persistence:
@@ -128,10 +158,8 @@ hdfs:
     # hdfs.secondarynamenode.resources -- Resources to allocate for HDFS secondary name nodes.
     resources:
       limits:
-        cpu: "1"
-        memory: "3Gi"
+        memory: "1Gi"
       requests:
-        cpu: "500m"
         memory: "1Gi"
     # hdfs.secondarynamenode.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
@@ -141,9 +169,14 @@ hdfs:
     affinity: {}
 
 tephra:
+  extraEnv:
+    # tephra.extraEnv.open -- Extra open environment variables to inject into pods.
+    open: {}
+    # tephra.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+    secret: {}
   image:
     # tephra.image.pullPolicy -- Pull policy for Tephra pods.
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     # tephra.image.repository -- Base container image repository for Tephra pods.
     repository: quay.io/stackstate/tephra-server
     # tephra.image.tag -- Default container image tag for Tephra pods.
@@ -153,11 +186,9 @@ tephra:
   # tephra.resources -- Resources to allocate for Tephra pods.
   resources:
     limits:
-      cpu: "1"
       memory: "3Gi"
     requests:
-      cpu: "500m"
-      memory: "1Gi"
+      memory: "2Gi"
   # tephra.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}
   # tephra.tolerations -- Toleration labels for pod assignment.
@@ -177,7 +208,9 @@ securityContext:
 
 statefulset:
   antiAffinity:
+    # statefulset.antiAffinity.strategy -- AntiAffinity strategy to use for all StatefulSets.
     strategy: soft
+    # statefulset.antiAffinity.topologyKey -- AntiAffinity topology key to use for all StatefulSets.
     topologyKey: kubernetes.io/hostname
 
 #############################

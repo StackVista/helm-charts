@@ -125,3 +125,150 @@ Common environment variables for HBase configuration.
 - name: HBASE_CONF_zookeeper_znode_parent
   value: "/hbase"
 {{- end }}
+
+{{/*
+Common extra environment variables for all processes inherited through `all.extraEnv`
+*/}}
+{{- define "all.commonEnv" -}}
+{{- if .Values.all.extraEnv.open }}
+  {{- range $key, $value := .Values.all.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.all.extraEnv.secret }}
+  {{- range $key, $value := .Values.all.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname" $ }}-common
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+HBase master extra environment variables for all processes inherited through `hbase.master.extraEnv`
+*/}}
+{{- define "hbase.master.commonEnv" -}}
+{{- if .Values.hbase.master.extraEnv.open }}
+  {{- range $key, $value := .Values.hbase.master.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.hbase.master.extraEnv.secret }}
+  {{- range $key, $value := .Values.hbase.master.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname" $ }}-hbase-master
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+HBase regionserver extra environment variables for all processes inherited through `hbase.regionserver.extraEnv`
+*/}}
+{{- define "hbase.regionserver.commonEnv" -}}
+{{- if .Values.hbase.regionserver.extraEnv.open }}
+  {{- range $key, $value := .Values.hbase.regionserver.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.hbase.regionserver.extraEnv.secret }}
+  {{- range $key, $value := .Values.hbase.regionserver.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname" $ }}-hbase-rs
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+HDFS datanode extra environment variables for all processes inherited through `hdfs.datanode.extraEnv`
+*/}}
+{{- define "hdfs.datanode.commonEnv" -}}
+{{- if .Values.hdfs.datanode.extraEnv.open }}
+  {{- range $key, $value := .Values.hdfs.datanode.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.hdfs.datanode.extraEnv.secret }}
+  {{- range $key, $value := .Values.hdfs.datanode.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname" $ }}-hdfs-dn
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+HDFS namenode extra environment variables for all processes inherited through `hdfs.namenode.extraEnv`
+*/}}
+{{- define "hdfs.namenode.commonEnv" -}}
+{{- if .Values.hdfs.namenode.extraEnv.open }}
+  {{- range $key, $value := .Values.hdfs.namenode.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.hdfs.namenode.extraEnv.secret }}
+  {{- range $key, $value := .Values.hdfs.namenode.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname" $ }}-hdfs-nn
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+HDFS secondarynamenode extra environment variables for all processes inherited through `hdfs.secondarynamenode.extraEnv`
+*/}}
+{{- define "hdfs.secondarynamenode.commonEnv" -}}
+{{- if .Values.hdfs.secondarynamenode.extraEnv.open }}
+  {{- range $key, $value := .Values.hdfs.secondarynamenode.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.hdfs.secondarynamenode.extraEnv.secret }}
+  {{- range $key, $value := .Values.hdfs.secondarynamenode.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname" $ }}-hdfs-snn
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Tephra extra environment variables for all processes inherited through `tephra.extraEnv`
+*/}}
+{{- define "tephra.commonEnv" -}}
+{{- if .Values.tephra.extraEnv.open }}
+  {{- range $key, $value := .Values.tephra.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.tephra.extraEnv.secret }}
+  {{- range $key, $value := .Values.tephra.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname" $ }}-tephra
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
