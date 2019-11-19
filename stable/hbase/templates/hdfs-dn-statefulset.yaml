@@ -1,10 +1,13 @@
 {{- define "hbase.hdfs.datanode.container.init" -}}
-name: namenode-init
-image: "busybox:latest"
+name: datanode-init
 command:
 - sh
 - -c
-- chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} /hadoop-data
+- |
+  /entrypoint -c {{ template "common.fullname" . }}-hdfs-nn:9000 -t 300
+  chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} /hadoop-data
+image: "docker.io/dokkupaas/wait:latest"
+imagePullPolicy: Always
 securityContext:
   allowPrivilegeEscalation: true
   privileged: true
@@ -25,8 +28,6 @@ env:
 {{- include "all.commonEnv" . }}
 {{- include "hdfs.datanode.commonEnv" . }}
 {{- include "hbase.hdfs.commonEnv" . }}
-- name: SERVICE_PRECONDITION
-  value: "{{ template "common.fullname" . }}-hdfs-nn:9000"
 ports:
 - containerPort: 50010
   name: dn
@@ -76,11 +77,9 @@ spec:
         app.kubernetes.io/component: hdfs-dn
     spec:
       initContainers:
-      -
-        {{ toYaml $stackstateHbaseHdfsDatanodeInitContainer | nindent 8 }}
+      - {{ toYaml $stackstateHbaseHdfsDatanodeInitContainer | nindent 8 }}
       containers:
-      -
-        {{ toYaml $stackstateHbaseHdfsDatanodeContainer | nindent 8 }}
+      - {{ toYaml $stackstateHbaseHdfsDatanodeContainer | nindent 8 }}
     {{- if or .Values.all.nodeSelector .Values.hdfs.datanode.nodeSelector }}
       nodeSelector:
       {{- with .Values.all.nodeSelector }}

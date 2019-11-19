@@ -1,4 +1,15 @@
-{{- define "distributed.server.deployment.container" -}}
+{{- define "distributed.server.deployment.container.init" -}}
+name: server-init
+command:
+- sh
+- -c
+- |
+  /entrypoint -c {{ include "distributed.es.endpoint" . }},{{ include "distributed.kafka.endpoint" . }},{{ include "distributed.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn:9000 -t 300
+image: "docker.io/dokkupaas/wait:latest"
+imagePullPolicy: Always
+{{- end -}}
+
+{{- define "distributed.server.deployment.container.main" -}}
 args:
 - -start
 env:
@@ -10,7 +21,7 @@ env:
       name: {{ template "common.fullname" . }}-receiver
       key: sts-receiver-api-key
 - name: ELASTICSEARCH_URI
-  value: {{ include "distributed.es.endpoint" . | quote }}
+  value: "http://{{ include "distributed.es.endpoint" . }}"
 - name: KAFKA_BROKERS
   value: {{ include "distributed.kafka.endpoint" . | quote }}
 - name: LICENSE_KEY
@@ -58,7 +69,10 @@ securityContext:
 
 {{- define "distributed.server.deployment" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $stsDistributedServerMainContainer := fromYaml (include "distributed.server.deployment.container" .) }}
+{{- $overrideContainer := fromYaml (include "distributed.server.deployment.container.main" .) -}}
+{{- $stsDistributedServerMainContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "distributed.server.deployment.container.init" .) -}}
+{{- $stsDistributedServerInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
   name: {{ template "common.fullname" . }}-server
   labels:
@@ -76,8 +90,10 @@ spec:
       labels:
         app.kubernetes.io/component: server
     spec:
+      initContainers:
+      - {{ toYaml $stsDistributedServerInitContainer | nindent 8 }}
       containers:
-      - {{ toYaml (merge $stsDistributedServerMainContainer $commonContainer) | nindent 8 }}
+      - {{ toYaml $stsDistributedServerMainContainer | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.server.nodeSelector }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}

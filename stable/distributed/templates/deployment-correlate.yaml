@@ -1,4 +1,15 @@
-{{- define "distributed.correlate.deployment.container" -}}
+{{- define "distributed.correlate.deployment.container.init" -}}
+name: correlate-init
+command:
+- sh
+- -c
+- |
+  /entrypoint -c {{ include "distributed.kafka.endpoint" . }} -t 300
+image: "docker.io/dokkupaas/wait:latest"
+imagePullPolicy: Always
+{{- end -}}
+
+{{- define "distributed.correlate.deployment.container.main" -}}
 env:
 {{- include "distributed.common.envvars" . }}
 {{- include "distributed.correlate.envvars" . }}
@@ -36,8 +47,10 @@ securityContext:
 
 {{- define "distributed.correlate.deployment" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $stsDistributedCorrelateMainContainer := fromYaml (include "distributed.correlate.deployment.container" .) }}
-
+{{- $overrideContainer := fromYaml (include "distributed.correlate.deployment.container.main" .) -}}
+{{- $stsDistributedCorrelateMainContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "distributed.correlate.deployment.container.init" .) -}}
+{{- $stsDistributedCorrelateInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
   name: {{ template "common.fullname" . }}-correlate
   labels:
@@ -55,8 +68,10 @@ spec:
       labels:
         app.kubernetes.io/component: correlate
     spec:
+      initContainers:
+      - {{ toYaml $stsDistributedCorrelateInitContainer | nindent 8 }}
       containers:
-      - {{ toYaml (merge $stsDistributedCorrelateMainContainer $commonContainer) | nindent 8 }}
+      - {{ toYaml $stsDistributedCorrelateMainContainer | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.correlate.nodeSelector }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}

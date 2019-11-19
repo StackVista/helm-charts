@@ -7,8 +7,8 @@ name: e2es
 {{- define "distributed.k2es.eventsToEs.deployment" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $commonKafkaToEsContainer := fromYaml (include "distributed.k2es.deployment.common.container" .) -}}
-{{- $eventsToEsContainer := fromYaml (include "distributed.k2es.deployment.eventsToEs.container" .) }}
-
+{{- $commonKafkaToEsInitContainer := fromYaml (include "distributed.k2es.deployment.common.initcontainer" .) -}}
+{{- $eventsToEsContainer := fromYaml (include "distributed.k2es.deployment.eventsToEs.container" .) -}}
 metadata:
   name: {{ template "common.fullname" . }}-e2es
   labels:
@@ -26,6 +26,8 @@ spec:
       labels:
         app.kubernetes.io/component: e2es
     spec:
+      initContainers:
+      - {{ toYaml (merge $commonKafkaToEsInitContainer $commonContainer) | nindent 8 }}
       containers:
       - {{ toYaml (merge $eventsToEsContainer $commonKafkaToEsContainer $commonContainer) | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.k2es.nodeSelector }}

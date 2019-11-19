@@ -1,4 +1,15 @@
-{{- define "distributed.receiver.deployment.container" -}}
+{{- define "distributed.receiver.deployment.container.init" -}}
+name: receiver-init
+command:
+- sh
+- -c
+- |
+  /entrypoint -c {{ include "distributed.kafka.endpoint" . }} -t 300
+image: "docker.io/dokkupaas/wait:latest"
+imagePullPolicy: Always
+{{- end -}}
+
+{{- define "distributed.receiver.deployment.container.main" -}}
 env:
 {{- include "distributed.common.envvars" . }}
 {{- include "distributed.receiver.envvars" . }}
@@ -41,8 +52,10 @@ securityContext:
 
 {{- define "distributed.receiver.deployment" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $stsDistributedReceiverMainContainer := fromYaml (include "distributed.receiver.deployment.container" .) }}
-
+{{- $overrideContainer := fromYaml (include "distributed.receiver.deployment.container.main" .) -}}
+{{- $stsDistributedReceiverMainContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "distributed.receiver.deployment.container.init" .) -}}
+{{- $stsDistributedReceiverInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
   name: {{ template "common.fullname" . }}-receiver
   labels:
@@ -60,8 +73,10 @@ spec:
       labels:
         app.kubernetes.io/component: receiver
     spec:
+      initContainers:
+      - {{ toYaml $stsDistributedReceiverInitContainer | nindent 8 }}
       containers:
-      - {{ toYaml (merge $stsDistributedReceiverMainContainer $commonContainer) | nindent 8 }}
+      - {{ toYaml $stsDistributedReceiverMainContainer | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.receiver.nodeSelector }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}

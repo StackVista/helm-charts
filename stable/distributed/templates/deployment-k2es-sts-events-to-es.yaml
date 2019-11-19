@@ -7,6 +7,7 @@ name: sts2es
 {{- define "distributed.k2es.stsEventsToEs.deployment" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $commonKafkaToEsContainer := fromYaml (include "distributed.k2es.deployment.common.container" .) -}}
+{{- $commonKafkaToEsInitContainer := fromYaml (include "distributed.k2es.deployment.common.initcontainer" .) -}}
 {{- $stsEventsToEsContainer := fromYaml (include "distributed.k2es.deployment.stsEventsToEs.container" .) }}
 
 metadata:
@@ -26,6 +27,8 @@ spec:
       labels:
         app.kubernetes.io/component: sts2es
     spec:
+      initContainers:
+      - {{ toYaml (merge $commonKafkaToEsInitContainer $commonContainer) | nindent 8 }}
       containers:
       - {{ toYaml (merge $stsEventsToEsContainer $commonKafkaToEsContainer $commonContainer) | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.k2es.nodeSelector }}

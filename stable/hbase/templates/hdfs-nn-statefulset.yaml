@@ -1,10 +1,12 @@
 {{- define "hbase.hdfs.namenode.container.init" -}}
 name: namenode-init
-image: "busybox:latest"
 command:
 - sh
 - -c
-- chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} /hadoop-data
+- |
+  chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} /hadoop-data
+image: "docker.io/dokkupaas/wait:latest"
+imagePullPolicy: Always
 securityContext:
   allowPrivilegeEscalation: true
   privileged: true
@@ -73,11 +75,9 @@ spec:
         app.kubernetes.io/component: hdfs-nn
     spec:
       initContainers:
-      -
-        {{ toYaml $stackstateHbaseHdfsNamenodeInitContainer | nindent 8 }}
+      - {{ toYaml $stackstateHbaseHdfsNamenodeInitContainer | nindent 8 }}
       containers:
-      -
-        {{ toYaml $stackstateHbaseHdfsNamenodeContainer | nindent 8 }}
+      - {{ toYaml $stackstateHbaseHdfsNamenodeContainer | nindent 8 }}
     {{- if or .Values.all.nodeSelector .Values.hdfs.namenode.nodeSelector }}
       nodeSelector:
       {{- with .Values.all.nodeSelector }}

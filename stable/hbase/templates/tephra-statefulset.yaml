@@ -1,3 +1,14 @@
+{{- define "hbase.tephra.container.init" -}}
+name: tephra-init
+command:
+- sh
+- -c
+- |
+  /entrypoint -c {{ include "hbase.zookeeper.endpoint" . }}:2181,{{ template "common.fullname" . }}-hdfs-nn:9000,{{ template "common.fullname" . }}-hdfs-dn:50010 -t 300
+image: "docker.io/dokkupaas/wait:latest"
+imagePullPolicy: Always
+{{- end -}}
+
 {{- define "hbase.tephra.container.main" -}}
 name: tephra
 image: "{{ .Values.tephra.image.repository }}:{{ .Values.tephra.image.tag }}"
@@ -7,8 +18,6 @@ env:
 {{- include "tephra.commonEnv" . }}
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "hbase.hbase.commonEnv" . }}
-- name: SERVICE_PRECONDITION
-  value: "{{ include "hbase.zookeeper.endpoint" . }}:2181 {{ template "common.fullname" . }}-hdfs-nn:9000 {{ template "common.fullname" . }}-hdfs-dn:50010"
 livenessProbe:
   exec:
     command:
@@ -37,7 +46,9 @@ securityContext:
 {{- define "hbase.tephra.statefulset" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $overrideContainer := fromYaml (include "hbase.tephra.container.main" .) -}}
-{{- $stackstateHbaseTephraContainer := (merge $overrideContainer $commonContainer) }}
+{{- $stackstateHbaseTephraContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "hbase.tephra.container.init" .) -}}
+{{- $stackstateHbaseTephraInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
   labels:
     app.kubernetes.io/component: tephra
@@ -54,9 +65,10 @@ spec:
       labels:
         app.kubernetes.io/component: tephra
     spec:
+      initContainers:
+      - {{ toYaml $stackstateHbaseTephraInitContainer | nindent 8 }}
       containers:
-      -
-        {{ toYaml $stackstateHbaseTephraContainer | nindent 8 }}
+      - {{ toYaml $stackstateHbaseTephraContainer | nindent 8 }}
     {{- if or .Values.all.nodeSelector .Values.tephra.nodeSelector }}
       nodeSelector:
       {{- with .Values.all.nodeSelector }}

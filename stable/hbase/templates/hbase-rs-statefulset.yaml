@@ -1,3 +1,14 @@
+{{- define "hbase.hbase.regionserver.container.init" -}}
+name: regionserver-init
+command:
+- sh
+- -c
+- |
+  /entrypoint -c {{ include "hbase.zookeeper.endpoint" . }}:2181,{{ template "common.fullname" . }}-hbase-master:16000 -t 300
+image: "docker.io/dokkupaas/wait:latest"
+imagePullPolicy: Always
+{{- end -}}
+
 {{- define "hbase.hbase.regionserver.container.main" -}}
 name: regionserver
 image: "{{ .Values.hbase.regionserver.image.repository }}:{{ .Values.hbase.regionserver.image.tag }}"
@@ -17,8 +28,6 @@ env:
       fieldPath: metadata.namespace
 - name: HBASE_CONF_hbase_regionserver_hostname
   value: $(POD_NAME).{{ template "common.fullname" . }}-hbase-rs.$(POD_NAMESPACE).svc.cluster.local
-- name: SERVICE_PRECONDITION
-  value: "{{ include "hbase.zookeeper.endpoint" . }}:2181 {{ template "common.fullname" . }}-hbase-master:16000"
 ports:
 - containerPort: 16020
   name: rs
@@ -45,7 +54,9 @@ securityContext:
 {{- define "hbase.hbase.regionserver.statefulset" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $overrideContainer := fromYaml (include "hbase.hbase.regionserver.container.main" .) -}}
-{{- $stackstateHbaseRegionServerContainer := (merge $overrideContainer $commonContainer) }}
+{{- $stackstateHbaseRegionServerContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "hbase.hbase.regionserver.container.init" .) -}}
+{{- $stackstateHbaseRegionServerInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
   labels:
     app.kubernetes.io/component: hbase-rs
@@ -62,9 +73,10 @@ spec:
       labels:
         app.kubernetes.io/component: hbase-rs
     spec:
+      initContainers:
+      - {{ toYaml $stackstateHbaseRegionServerInitContainer | nindent 8 }}
       containers:
-      -
-        {{ toYaml $stackstateHbaseRegionServerContainer | nindent 8 }}
+      - {{ toYaml $stackstateHbaseRegionServerContainer | nindent 8 }}
     {{- if or .Values.all.nodeSelector .Values.hbase.regionserver.nodeSelector }}
       nodeSelector:
       {{- with .Values.all.nodeSelector }}
