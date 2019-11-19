@@ -1,6 +1,17 @@
 {{/*
 Common container items for K2ES based deployments.
 */}}
+{{- define "distributed.k2es.deployment.common.initcontainer" -}}
+name: k2es-init
+command:
+- sh
+- -c
+- |
+  /entrypoint -c {{ include "distributed.kafka.endpoint" . }},{{ include "distributed.es.endpoint" . }} -t 300
+image: "docker.io/dokkupaas/wait:latest"
+imagePullPolicy: Always
+{{- end -}}
+
 {{- define "distributed.k2es.deployment.common.container" -}}
 env:
 {{- include "distributed.common.envvars" . }}
@@ -16,7 +27,7 @@ env:
 - name: CONFIG_FORCE_stackstate_kafkaToEs_healthEndpointsEnabled
   value: "true"
 - name: ELASTICSEARCH_URI
-  value: {{ include "distributed.es.endpoint" . | quote }}
+  value: "http://{{ include "distributed.es.endpoint" . }}"
 - name: KAFKA_BROKERS
   value: {{ include "distributed.kafka.endpoint" . | quote }}
 image: "{{ .Values.stackstate.components.k2es.image.repository }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.k2es.image.tag }}"

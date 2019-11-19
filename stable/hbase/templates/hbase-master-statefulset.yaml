@@ -1,3 +1,14 @@
+{{- define "hbase.hbase.master.container.init" -}}
+name: master-init
+command:
+- sh
+- -c
+- |
+  /entrypoint -c {{ include "hbase.zookeeper.endpoint" . }}:2181,{{ template "common.fullname" . }}-hdfs-nn:9000 -t 300
+image: "docker.io/dokkupaas/wait:latest"
+imagePullPolicy: Always
+{{- end -}}
+
 {{- define "hbase.hbase.master.container.main" -}}
 name: master
 image: "{{ .Values.hbase.master.image.repository }}:{{ .Values.hbase.master.image.tag }}"
@@ -7,8 +18,6 @@ env:
 {{- include "hbase.master.commonEnv" . }}
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "hbase.hbase.commonEnv" . }}
-- name: SERVICE_PRECONDITION
-  value: "{{ include "hbase.zookeeper.endpoint" . }}:2181 {{ template "common.fullname" . }}-hdfs-nn:9000"
 ports:
 - containerPort: 16000
   name: master
@@ -35,7 +44,9 @@ securityContext:
 {{- define "hbase.hbase.master.statefulset" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $overrideContainer := fromYaml (include "hbase.hbase.master.container.main" .) -}}
-{{- $stackstateHbaseMasterContainer := (merge $overrideContainer $commonContainer) }}
+{{- $stackstateHbaseMasterContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "hbase.hbase.master.container.init" .) -}}
+{{- $stackstateHbaseMasterInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
   labels:
     app.kubernetes.io/component: hbase-master
@@ -52,9 +63,10 @@ spec:
       labels:
         app.kubernetes.io/component: hbase-master
     spec:
+      initContainers:
+      - {{ toYaml $stackstateHbaseMasterInitContainer | nindent 8 }}
       containers:
-      -
-        {{ toYaml $stackstateHbaseMasterContainer | nindent 8 }}
+      - {{ toYaml $stackstateHbaseMasterContainer | nindent 8 }}
     {{- if or .Values.all.nodeSelector .Values.hbase.master.nodeSelector }}
       nodeSelector:
       {{- with .Values.all.nodeSelector }}

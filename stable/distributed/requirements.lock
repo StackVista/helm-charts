@@ -7,12 +7,12 @@ dependencies:
   version: 7.4.1
 - name: hbase
   repository: file://../hbase
-  version: 0.1.7
+  version: 0.1.8
 - name: kafka
   repository: https://charts.bitnami.com
   version: 6.1.8
 - name: zookeeper
   repository: https://charts.bitnami.com
   version: 5.1.0
-digest: sha256:ee62f0172641c34c3385c4bb37b164e37ebf66687c8e0de966ccd8787caf57ff
-generated: "2019-11-18T13:26:03.165239+01:00"
+digest: sha256:0b8249b778ae9f038d1c86e5d185cda23c7a1781ab44dcab0fe78abda105ee50
+generated: "2019-11-19T14:08:03.974746+01:00"

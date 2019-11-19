@@ -7,6 +7,7 @@ name: mm2es
 {{- define "distributed.k2es.multiMetricsToEs.deployment" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $commonKafkaToEsContainer := fromYaml (include "distributed.k2es.deployment.common.container" .) -}}
+{{- $commonKafkaToEsInitContainer := fromYaml (include "distributed.k2es.deployment.common.initcontainer" .) -}}
 {{- $multiMetricsToEsContainer := fromYaml (include "distributed.k2es.deployment.multiMetricsToEs.container" .) }}
 
 metadata:
@@ -26,6 +27,8 @@ spec:
       labels:
         app.kubernetes.io/component: mm2es
     spec:
+      initContainers:
+      - {{ toYaml (merge $commonKafkaToEsInitContainer $commonContainer) | nindent 8 }}
       containers:
       - {{ toYaml (merge $multiMetricsToEsContainer $commonKafkaToEsContainer $commonContainer) | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.k2es.nodeSelector }}
