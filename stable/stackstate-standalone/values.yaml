@@ -106,17 +106,14 @@ persistence:
   # persistence.storageClass -- Name of the storage class to use for the persistent volume.
   storageClass: gp2
 
-resources:
-  limits:
-    # resources.limits.cpu -- CPU resource limits.
-    cpu: "3"
-    # resources.limits.memory -- Memory resource limits.
-    memory: 8Gi
-  requests:
-    # resources.requests.cpu -- CPU resource requests.
-    cpu: "2"
-    # resources.requests.memory -- Memory resource requests.
-    memory: 4Gi
+# resources -- Resource requests / limits.
+resources: {}
+  # limits:
+  #   cpu: "3"
+  #   memory: 8Gi
+  # requests:
+  #   cpu: "2"
+  #   memory: 4Gi
 
 service:
   # service.annotations -- Annotations to attach to the `Service` object.
