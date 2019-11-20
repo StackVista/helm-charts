@@ -40,8 +40,8 @@ readinessProbe:
     port: receiver
   initialDelaySeconds: 60
   timeoutSeconds: 5
-resources:
 {{- with .Values.stackstate.components.receiver.resources }}
+resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 securityContext:

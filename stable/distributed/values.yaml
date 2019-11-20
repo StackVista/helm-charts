@@ -56,6 +56,9 @@ stackstate:
         repository: quay.io/stackstate/stackstate-correlate
         # stackstate.components.correlate.image.tag -- Tag used for the `correlate` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
+      # stackstate.components.correlate.poddisruptionbudget -- PodDisruptionBudget settings for `correlate` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
       # stackstate.components.correlate.resources -- Resource allocation for `correlate` pods.
       resources:
         limits:
@@ -83,6 +86,9 @@ stackstate:
         repository: quay.io/stackstate/stackstate-kafka-to-es
         # stackstate.components.k2es.image.tag -- Tag used for the `k2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
+      # stackstate.components.k2es.poddisruptionbudget -- PodDisruptionBudget settings for `k2es` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
       # stackstate.components.k2es.resources -- Resource allocation for `k2es` pods.
       resources:
         limits:
@@ -110,6 +116,9 @@ stackstate:
         repository: quay.io/stackstate/stackstate-receiver
         # stackstate.components.receiver.image.tag -- Tag used for the `receiver` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
+      # stackstate.components.receiver.poddisruptionbudget -- PodDisruptionBudget settings for `receiver` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
       # stackstate.components.receiver.resources -- Resource allocation for `receiver` pods.
       resources:
         limits:
@@ -124,6 +133,38 @@ stackstate:
       tolerations: []
       # stackstate.components.receiver.affinity -- Affinity settings for pod assignment.
       affinity: {}
+    router:
+      extraEnv:
+        # stackstate.components.router.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.router.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.router.image.pullPolicy -- `pullPolicy` used for the `router` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: Always
+        # stackstate.components.router.image.repository -- Repository of the router component Docker image.
+        repository: docker.io/envoyproxy/envoy-alpine
+        # stackstate.components.router.image.tag -- Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: v1.12.1
+      # stackstate.components.router.poddisruptionbudget -- PodDisruptionBudget settings for `router` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.router.resources -- Resource allocation for `router` pods.
+      resources:
+        limits:
+          cpu: "100m"
+          memory: "128Mi"
+        requests:
+          cpu: "100m"
+          memory: "128Mi"
+      # stackstate.components.router.replicaCount -- Number of `router` replicas.
+      replicaCount: 1
+      # stackstate.components.router.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.router.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.router.affinity -- Affinity settings for pod assignment.
+      affinity: {}
     server:
       extraEnv:
         # stackstate.components.server.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -137,6 +178,9 @@ stackstate:
         repository: quay.io/stackstate/stackstate-server
         # stackstate.components.server.image.tag -- Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
+      # stackstate.components.server.poddisruptionbudget -- PodDisruptionBudget settings for `server` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
       # stackstate.components.server.resources -- Resource allocation for `server` pods.
       resources:
         limits:
@@ -164,6 +208,9 @@ stackstate:
         repository: quay.io/stackstate/stackstate-ui
         # stackstate.components.ui.image.tag -- Tag used for the `ui` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
+      # stackstate.components.ui.poddisruptionbudget -- PodDisruptionBudget settings for `ui` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
       # stackstate.components.ui.resources -- Resource allocation for `ui` pods.
       resources:
         limits:

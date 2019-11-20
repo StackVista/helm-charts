@@ -2,7 +2,7 @@ distributed
 ===========
 Helm chart for StackState distributed -- all components split into microservices.
 
-Current chart version is `0.1.8`
+Current chart version is `0.1.9`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -74,6 +74,7 @@ stackstate/distributed
 | stackstate.components.correlate.image.repository | string | `"quay.io/stackstate/stackstate-correlate"` | Repository of the correlate component Docker image. |
 | stackstate.components.correlate.image.tag | string | `""` | Tag used for the `correlate` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.correlate.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.correlate.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `correlate` pods. |
 | stackstate.components.correlate.replicaCount | int | `1` | Number of `correlate` replicas. |
 | stackstate.components.correlate.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"1Gi"}}` | Resource allocation for `correlate` pods. |
 | stackstate.components.correlate.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -84,6 +85,7 @@ stackstate/distributed
 | stackstate.components.k2es.image.repository | string | `"quay.io/stackstate/stackstate-kafka-to-es"` | Repository of the k2es component Docker image. |
 | stackstate.components.k2es.image.tag | string | `""` | Tag used for the `k2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.k2es.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.k2es.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `k2es` pods. |
 | stackstate.components.k2es.replicaCount | int | `1` | Number of `k2es` replicas. |
 | stackstate.components.k2es.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"1Gi"}}` | Resource allocation for `k2es` pods. |
 | stackstate.components.k2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -94,9 +96,21 @@ stackstate/distributed
 | stackstate.components.receiver.image.repository | string | `"quay.io/stackstate/stackstate-receiver"` | Repository of the receiver component Docker image. |
 | stackstate.components.receiver.image.tag | string | `""` | Tag used for the `receiver` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.receiver.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.receiver.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `receiver` pods. |
 | stackstate.components.receiver.replicaCount | int | `1` | Number of `receiver` replicas. |
 | stackstate.components.receiver.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"1Gi"}}` | Resource allocation for `receiver` pods. |
 | stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.router.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.router.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| stackstate.components.router.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.router.image.pullPolicy | string | `"Always"` | `pullPolicy` used for the `router` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.components.router.image.repository | string | `"docker.io/envoyproxy/envoy-alpine"` | Repository of the router component Docker image. |
+| stackstate.components.router.image.tag | string | `"v1.12.1"` | Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.router.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.router.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `router` pods. |
+| stackstate.components.router.replicaCount | int | `1` | Number of `router` replicas. |
+| stackstate.components.router.resources | object | `{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Resource allocation for `router` pods. |
+| stackstate.components.router.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.server.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.server.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.server.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
@@ -104,6 +118,7 @@ stackstate/distributed
 | stackstate.components.server.image.repository | string | `"quay.io/stackstate/stackstate-server"` | Repository of the server component Docker image. |
 | stackstate.components.server.image.tag | string | `""` | Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.server.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.server.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `server` pods. |
 | stackstate.components.server.replicaCount | int | `1` | Number of `server` replicas. |
 | stackstate.components.server.resources | object | `{"limits":{"memory":"8Gi"},"requests":{"memory":"8Gi"}}` | Resource allocation for `server` pods. |
 | stackstate.components.server.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -114,6 +129,7 @@ stackstate/distributed
 | stackstate.components.ui.image.repository | string | `"quay.io/stackstate/stackstate-ui"` | Repository of the ui component Docker image. |
 | stackstate.components.ui.image.tag | string | `""` | Tag used for the `ui` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.ui.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.ui.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `ui` pods. |
 | stackstate.components.ui.replicaCount | int | `1` | Number of `ui` replicas. |
 | stackstate.components.ui.resources | object | `{"limits":{"cpu":"50m","memory":"64Mi"},"requests":{"cpu":"50m","memory":"64Mi"}}` | Resource allocation for `ui` pods. |
 | stackstate.components.ui.tolerations | list | `[]` | Toleration labels for pod assignment. |

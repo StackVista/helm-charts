@@ -1,0 +1,17 @@
+{{- define "distributed.correlate.poddisruptionbudget" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-correlate
+  labels:
+    app.kubernetes.io/component: correlate
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: correlate
+{{- with .Values.stackstate.components.correlate.poddisruptionbudget }}
+  {{ toYaml . | nindent 2 }}
+{{- end }}
+{{- end -}}
+
+{{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
+{{- $correlatePdb := fromYaml (include "distributed.correlate.poddisruptionbudget" .) -}}
+{{- toYaml (merge $correlatePdb $commonPdb) -}}

@@ -18,8 +18,8 @@ readinessProbe:
     path: /
     port: ui
   initialDelaySeconds: 5
-resources:
 {{- with .Values.stackstate.components.ui.resources }}
+resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 {{- end -}}
