@@ -96,6 +96,27 @@ Receiver extra environment variables for receiver pods inherited through `stacks
 {{- end -}}
 
 {{/*
+Router extra environment variables for ui pods inherited through `stackstate.components.router.extraEnv`
+*/}}
+{{- define "distributed.router.envvars" -}}
+{{- if .Values.stackstate.components.router.extraEnv.open }}
+  {{- range $key, $value := .Values.stackstate.components.router.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.stackstate.components.router.extraEnv.secret }}
+  {{- range $key, $value := .Values.stackstate.components.router.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname" $ }}-router
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Server extra environment variables for server pods inherited through `stackstate.components.server.extraEnv`
 */}}
 {{- define "distributed.server.envvars" -}}
@@ -185,4 +206,11 @@ UI secret checksum annotations
 {{- if .Values.stackstate.components.ui.extraEnv.secret }}
 checksum/ui-env: {{ include (print $.Template.BasePath "/secret-ui.yaml") . | sha256sum }}
 {{- end }}
+{{- end -}}
+
+{{/*
+Router configmap checksum annotations
+*/}}
+{{- define "distributed.router.configmap.checksum" -}}
+checksum/router-configmap: {{ include (print $.Template.BasePath "/configmap-router.yaml") . | sha256sum }}
 {{- end -}}

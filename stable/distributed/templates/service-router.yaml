@@ -1,0 +1,18 @@
+{{- define "distributed.router.service" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-router
+spec:
+  ports:
+    - name: router
+      port: 8080
+      protocol: TCP
+      targetPort: router
+  selector:
+    app.kubernetes.io/component: router
+{{- end -}}
+
+{{- if not .Values.ingress.enabled -}}
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $stsDistributedRouterService := fromYaml (include "distributed.router.service" .) -}}
+{{- toYaml (merge $stsDistributedRouterService $commonService) -}}
+{{- end -}}

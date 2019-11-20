@@ -49,8 +49,8 @@ readinessProbe:
     port: k2es
   initialDelaySeconds: 90
   timeoutSeconds: 5
-resources:
 {{- with .Values.stackstate.components.k2es.resources }}
+resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 securityContext:

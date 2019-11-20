@@ -57,8 +57,8 @@ readinessProbe:
     port: api
   initialDelaySeconds: 120
   timeoutSeconds: 5
-resources:
 {{- with .Values.stackstate.components.server.resources }}
+resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 securityContext:
