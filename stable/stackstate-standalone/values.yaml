@@ -65,13 +65,13 @@ livenessProbe:
   # livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
   failureThreshold: 3
   # livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
-  initialDelaySeconds: 120
+  initialDelaySeconds: 180
   # livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
   periodSeconds: 10
   # livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
   successThreshold: 1
   # livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
-  timeoutSeconds: 2
+  timeoutSeconds: 5
 
 pod:
   # pod.annotations -- Annotations to attach to the `Pod` object(s).
@@ -83,13 +83,13 @@ readinessProbe:
   # readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
   failureThreshold: 3
   # readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
-  initialDelaySeconds: 120
+  initialDelaySeconds: 180
   # readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
   periodSeconds: 10
   # readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
   successThreshold: 1
   # readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
-  timeoutSeconds: 2
+  timeoutSeconds: 5
 
 # replicaCount -- Amount of replicas to create for the `Deployment` object.
 replicaCount: 1
