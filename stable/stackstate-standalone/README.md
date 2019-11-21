@@ -2,7 +2,7 @@ stackstate-standalone
 =====================
 Helm chart for StackState standlone -- all components running inside a single container.
 
-Current chart version is `0.4.3`
+Current chart version is `0.4.4`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -48,10 +48,10 @@ stackstate/stackstate-standalone
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
 | livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
-| livenessProbe.initialDelaySeconds | int | `120` | `initialDelaySeconds` for the liveness probe. |
+| livenessProbe.initialDelaySeconds | int | `180` | `initialDelaySeconds` for the liveness probe. |
 | livenessProbe.periodSeconds | int | `10` | `periodSeconds` for the liveness probe. |
 | livenessProbe.successThreshold | int | `1` | `successThreshold` for the liveness probe. |
-| livenessProbe.timeoutSeconds | int | `2` | `timeoutSeconds` for the liveness probe. |
+| livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | object | `{}` | Node labels for pod assignment. |
 | persistence.accessMode | string | `"ReadWriteOnce"` | Access mode of the persistent volume claim. |
@@ -62,10 +62,10 @@ stackstate/stackstate-standalone
 | pod.annotations | object | `{}` | Annotations to attach to the `Pod` object(s). |
 | readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
 | readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
-| readinessProbe.initialDelaySeconds | int | `120` | `initialDelaySeconds` for the readiness probe. |
+| readinessProbe.initialDelaySeconds | int | `180` | `initialDelaySeconds` for the readiness probe. |
 | readinessProbe.periodSeconds | int | `10` | `periodSeconds` for the readiness probe. |
 | readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
-| readinessProbe.timeoutSeconds | int | `2` | `timeoutSeconds` for the readiness probe. |
+| readinessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the readiness probe. |
 | replicaCount | int | `1` | Amount of replicas to create for the `Deployment` object. |
 | resources | object | `{}` | Resource requests / limits. |
 | service.admin.port | int | `7071` | The default port for the StackState Administration area. |
