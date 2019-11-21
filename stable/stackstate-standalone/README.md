@@ -2,7 +2,7 @@ stackstate-standalone
 =====================
 Helm chart for StackState standlone -- all components running inside a single container.
 
-Current chart version is `0.4.4`
+Current chart version is `0.4.5`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -67,7 +67,7 @@ stackstate/stackstate-standalone
 | readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
 | readinessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the readiness probe. |
 | replicaCount | int | `1` | Amount of replicas to create for the `Deployment` object. |
-| resources | object | `{}` | Resource requests / limits. |
+| resources | object | `{"limits":{"memory":"15Gi"},"requests":{"memory":"15Gi"}}` | Resource requests / limits. |
 | service.admin.port | int | `7071` | The default port for the StackState Administration area. |
 | service.annotations | object | `{}` | Annotations to attach to the `Service` object. |
 | service.receiver.port | int | `7077` | The default port for the StackState Receiver. |
