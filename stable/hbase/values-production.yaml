@@ -8,6 +8,14 @@ all:
     open: {}
     # all.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object for all components.
     secret: {}
+  metrics:
+    # all.metrics.enabled -- Enable metrics port.
+    enabled: true
+    servicemonitor:
+      # all.metrics.servicemonitor.additionalLabels -- Additional labels for targeting Prometheus operator instances.
+      additionalLabels: {}
+      # all.metrics.servicemonitor.enabled -- Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled.
+      enabled: true
   # all.nodeSelector -- Node labels for pod assignment on all components.
   nodeSelector: {}
   # all.tolerations -- Toleration labels for pod assignment on all components.

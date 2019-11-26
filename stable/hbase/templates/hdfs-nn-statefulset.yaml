@@ -32,6 +32,10 @@ ports:
   name: nn
 - containerPort: 50070
   name: nninfo
+{{- if .Values.all.metrics.enabled }}
+- containerPort: 9404
+  name: metrics
+{{- end }}
 livenessProbe:
   httpGet:
     path: /

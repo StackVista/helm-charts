@@ -31,6 +31,14 @@ stackstate:
         pullPolicy: Always
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
         tag: master
+      metrics:
+        # stackstate.components.all.metrics.enabled -- Enable metrics port.
+        enabled: true
+        servicemonitor:
+          # stackstate.components.all.metrics.servicemonitor.additionalLabels -- Additional labels for targeting Prometheus operator instances.
+          additionalLabels: {}
+          # stackstate.components.all.metrics.servicemonitor.enabled -- Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled.
+          enabled: true
       # stackstate.components.all.elasticsearchEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster.
       elasticsearchEndpoint: ""
       # stackstate.components.all.kafkaEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker.
@@ -287,6 +295,20 @@ kafka:
   enabled: true
   # kafka.logRetentionHours -- The minimum age of a log file to be eligible for deletion due to age.
   logRetentionHours: 24
+  metrics:
+    kafka:
+      # kafka.metrics.kafka.enabled -- Whether or not to create a standalone Kafka exporter to expose Kafka metrics.
+      enabled: true
+    jmx:
+      # kafka.metrics.jmx.enabled -- Whether or not to expose JMX metrics to Prometheus.
+      enabled: true
+    serviceMonitor:
+      # kafka.metrics.serviceMonitor.enabled -- If `true`, creates a Prometheus Operator `ServiceMonitor` (also requires `kafka.metrics.kafka.enabled` or `kafka.metrics.jmx.enabled` to be `true`).
+      enabled: true
+      # kafka.metrics.serviceMonitor.interval -- How frequently to scrape metrics.
+      interval: 20s
+      # kafka.metrics.serviceMonitor.selector -- Selector to target Prometheus instance.
+      selector: {}
   # kafka.replicaCount -- Number of Kafka replicas.
   replicaCount: 3
   # kafka.resources -- Kafka resources per pods.
@@ -315,7 +337,6 @@ zookeeper:
       # zookeeper.metrics.serviceMonitor.enabled -- Enable creation of `ServiceMonitor` objects for Prometheus operator.
       enabled: true
       # zookeeper.metrics.serviceMonitor.selector -- Default selector to use to target a certain Prometheus instance.
-      selector:
-        release: prometheus-operator
+      selector: {}
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
   replicaCount: 3

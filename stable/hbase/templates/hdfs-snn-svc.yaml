@@ -9,6 +9,10 @@ spec:
   ports:
   - port: 50090
     name: snn
+{{- if .Values.all.metrics.enabled }}
+  - port: 9404
+    name: metrics
+{{- end }}
   selector:
     app.kubernetes.io/component: hdfs-snn
 {{- end -}}

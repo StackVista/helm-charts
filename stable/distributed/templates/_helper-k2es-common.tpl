@@ -39,10 +39,12 @@ livenessProbe:
   initialDelaySeconds: 90
   timeoutSeconds: 5
 ports:
-- containerPort: 9404
-  name: monitoring
 - containerPort: 7070
   name: k2es
+{{- if .Values.stackstate.components.all.metrics.enabled }}
+- containerPort: 9404
+  name: metrics
+{{- end }}
 readinessProbe:
   httpGet:
     path: /readiness

@@ -1,6 +1,8 @@
 {{- define "distributed.server.service" -}}
 metadata:
   name: {{ template "common.fullname" . }}-server
+  labels:
+    app.kubernetes.io/component: server
 spec:
   ports:
     - name: api
@@ -11,10 +13,12 @@ spec:
       port: 7071
       protocol: TCP
       targetPort: admin
-    - name: monitoring
+  {{- if .Values.stackstate.components.all.metrics.enabled }}
+    - name: metrics
       port: 9404
       protocol: TCP
-      targetPort: monitoring
+      targetPort: metrics
+  {{- end }}
   selector:
     app.kubernetes.io/component: server
 {{- end -}}

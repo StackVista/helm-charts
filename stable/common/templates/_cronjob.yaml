@@ -33,10 +33,10 @@ spec:
     spec:
       template:
         metadata:
-        {{- with .Values.pod.annotations }}
           annotations:
+          {{- with .Values.pod.annotations }}
             {{- toYaml . | nindent 12 }}
-        {{- end }}
+          {{- end }}
           labels:
             {{- include "common.labels.selector" . | nindent 12 }}
         spec:
@@ -53,7 +53,7 @@ spec:
             {{- toYaml . | nindent 12 }}
         {{- end }}
           terminationGracePeriodSeconds: {{ int .Values.cronjob.terminationGracePeriodSeconds }}
-        {{- with .Values.daemonset.tolerations }}
+        {{- with .Values.cronjob.tolerations }}
           tolerations:
             {{- toYaml . | nindent 12 }}
         {{- end }}

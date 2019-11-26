@@ -4,7 +4,7 @@ command:
 - sh
 - -c
 - |
-  /entrypoint -c {{ include "hbase.zookeeper.endpoint" . }}:2181,{{ template "common.fullname" . }}-hdfs-nn:9000 -t 300
+  /entrypoint -c {{ include "hbase.zookeeper.endpoint" . }}:2181,{{ template "common.fullname" . }}-hdfs-nn:9000,{{ template "common.fullname" . }}-hdfs-dn:50010 -t 300
 image: "docker.io/dokkupaas/wait:latest"
 imagePullPolicy: Always
 {{- end -}}
@@ -23,6 +23,10 @@ ports:
   name: master
 - containerPort: 16010
   name: masterinfo
+{{- if .Values.all.metrics.enabled }}
+- containerPort: 9404
+  name: metrics
+{{- end }}
 livenessProbe:
   httpGet:
     path: /

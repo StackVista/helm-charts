@@ -9,6 +9,10 @@ spec:
     name: nn
   - port: 50070
     name: nninfo
+{{- if .Values.all.metrics.enabled }}
+  - port: 9404
+    name: metrics
+{{- end }}
   selector:
     app.kubernetes.io/component: hdfs-nn
 {{- end -}}

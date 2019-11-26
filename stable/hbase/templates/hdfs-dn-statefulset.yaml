@@ -33,6 +33,10 @@ ports:
   name: dn
 - containerPort: 50075
   name: dninfo
+{{- if .Values.all.metrics.enabled }}
+- containerPort: 9404
+  name: metrics
+{{- end }}
 livenessProbe:
   httpGet:
     path: /

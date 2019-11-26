@@ -2,7 +2,7 @@ common
 ======
 Common chartbuilding components and helpers
 
-Current chart version is `0.1.7`
+Current chart version is `0.1.8`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -76,6 +76,15 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | ingress.apiVersion | string | `"extensions/v1beta1"` | Kubernetes apiVersion to use with an `Ingress` object. |
 | ingress.hosts | list | `[]` | List of ingress hostnames. |
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
+| job.annotations | object | `{}` | Annotations for `Job` objects. |
+| job.apiVersion | string | `"batch/v1"` | Kubernetes apiVersion to use with a `Job` object. |
+| job.backoffLimit | int | `5` | Number of retries before considering a `Job` as failed |
+| job.dnsPolicy | string | `"ClusterFirst"` | DNS policy to apply to `Pod` objects. |
+| job.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| job.restartPolicy | string | `"OnFailure"` | Restart policy to apply to containers within a `Pod` object. |
+| job.suspend | bool | `false` | If set to `true`, all subsequent executions are suspended; this setting does not apply to already started executions. |
+| job.tolerations | list | `[]` | Toleration labels for `Pod` assignment. |
+| job.ttlSecondsAfterFinished | int | `300` | TTL for completed jobs before they are deleted. |
 | persistentvolumeclaim.accessMode | string | `"ReadWriteOnce"` | Default type of access for mounted volume. |
 | persistentvolumeclaim.annotations | object | `{}` | Annotations for `PersistentVolumeClaim` objects. |
 | persistentvolumeclaim.apiVersion | string | `"v1"` | Kubernetes apiVersion to use with a `PersistentVolumeClaim` object. |
@@ -95,6 +104,12 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | service.loadBalancerSourceRanges | list | `[]` |  |
 | service.ports | list | `[]` | List of ports to apply to the `Service` object. |
 | service.type | string | `"ClusterIP"` | Kubernetes 'Service' type to use. |
+| servicemonitor.annotations | object | `{}` | Annotations for `ServiceMonitor` objects. |
+| servicemonitor.apiVersion | string | `"monitoring.coreos.com/v1"` | Kubernetes apiVersion to use with a `ServiceMonitor` object. |
+| servicemonitor.interval | string | `"20s"` | Default interval used on `Service` objects for monitoring through a `ServiceMonitor` object. |
+| servicemonitor.path | string | `"/metrics"` | Default path used on `Service` objects for monitoring through a `ServiceMonitor` object. |
+| servicemonitor.port | string | `"metrics"` | Default port used on `Service` objects for monitoring through a `ServiceMonitor` object. |
+| servicemonitor.scheme | string | `"http"` | Default scheme used on `Service` objects for monitoring through a `ServiceMonitor` object. |
 | statefulset.affinity | object | `{}` | Affinity settings for pod assignment. |
 | statefulset.annotations | object | `{}` | Annotations for `StatefulSet` objects. |
 | statefulset.antiAffinity.strategy | string | `""` | Spread pods using simple `antiAffinity`; valid values are `hard` or `soft`. |

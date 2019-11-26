@@ -49,8 +49,10 @@ ports:
   name: api
 - containerPort: 7071
   name: admin
+{{- if .Values.stackstate.components.all.metrics.enabled }}
 - containerPort: 9404
-  name: monitoring
+  name: metrics
+{{- end }}
 readinessProbe:
   httpGet:
     path: /api/server/readiness

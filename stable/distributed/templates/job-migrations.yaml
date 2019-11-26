@@ -1,0 +1,89 @@
+{{- define "distributed.migrations.job.container.main" -}}
+args:
+- -main
+- com.stackstate.domain.migration.MigrateLabels
+env:
+{{- include "distributed.common.envvars" . }}
+{{- include "distributed.server.envvars" . }}
+- name: API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname" . }}-receiver
+      key: sts-receiver-api-key
+- name: LICENSE_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname" . }}-server
+      key: sts-license-key
+- name: RECEIVER_BASE_URL
+  value: {{ .Values.stackstate.receiver.baseUrl | quote }}
+- name: ZOOKEEPER_QUORUM
+  value: {{ include "distributed.zookeeper.endpoint" . | quote }}
+image: "{{ .Values.stackstate.components.server.image.repository }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.server.image.tag }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
+name: migrations
+{{- with .Values.stackstate.components.server.resources }}
+resources:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+securityContext:
+  runAsGroup: 65534
+  runAsNonRoot: true
+  runAsUser: 65534
+{{- end -}}
+
+{{- define "distributed.migrations.job" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "distributed.migrations.job.container.main" .) -}}
+{{- $stsDistributedMigrationsMainContainer := (merge $overrideContainer $commonContainer) -}}
+metadata:
+  name: {{ template "common.fullname" . }}-migrate
+  annotations:
+    helm.sh/hook: pre-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation
+  labels:
+    app.kubernetes.io/component: migrate
+spec:
+  activeDeadlineSeconds: 1200
+  template:
+    metadata:
+      annotations:
+        {{- include "distributed.common.secret.checksum" . | nindent 8 }}
+        {{- include "distributed.server.secret.checksum" . | nindent 8 }}
+      labels:
+        app.kubernetes.io/component: migrate
+    spec:
+      containers:
+      - {{ toYaml $stsDistributedMigrationsMainContainer | nindent 8 }}
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.server.nodeSelector }}
+      nodeSelector:
+      {{- with .Values.stackstate.components.all.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.server.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.server.affinity }}
+      affinity:
+      {{- with .Values.stackstate.components.all.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.server.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.server.tolerations }}
+      tolerations:
+      {{- with .Values.stackstate.components.all.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.server.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+{{- end -}}
+
+{{- $commonJob := fromYaml (include "common.job" .) -}}
+{{- $migrationsJob := fromYaml (include "distributed.migrations.job" .) -}}
+{{- toYaml (merge $migrationsJob $commonJob) -}}

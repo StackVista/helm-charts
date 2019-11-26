@@ -31,6 +31,10 @@ env:
 ports:
 - containerPort: 50090
   name: snn
+{{- if .Values.all.metrics.enabled }}
+- containerPort: 9404
+  name: metrics
+{{- end }}
 livenessProbe:
   tcpSocket:
     port: snn
