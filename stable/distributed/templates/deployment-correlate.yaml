@@ -27,8 +27,10 @@ name: correlate
 ports:
 - containerPort: 7070
   name: correlate
+{{- if .Values.stackstate.components.all.metrics.enabled }}
 - containerPort: 9404
-  name: monitoring
+  name: metrics
+{{- end }}
 readinessProbe:
   httpGet:
     path: /readiness

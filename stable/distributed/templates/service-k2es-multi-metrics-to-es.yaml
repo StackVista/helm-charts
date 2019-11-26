@@ -1,13 +1,17 @@
 {{- define "distributed.k2es.service.multiMetricsToEs" -}}
 metadata:
   name: {{ template "common.fullname" . }}-mm2es
+  labels:
+    app.kubernetes.io/component: mm2es
 spec:
   clusterIP: None
+{{- if .Values.stackstate.components.all.metrics.enabled }}
   ports:
-    - name: monitoring
+    - name: metrics
       port: 9404
       protocol: TCP
-      targetPort: monitoring
+      targetPort: metrics
+{{- end }}
   selector:
     app.kubernetes.io/component: mm2es
   type: ClusterIP

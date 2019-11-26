@@ -2,7 +2,7 @@ distributed
 ===========
 Helm chart for StackState distributed -- all components split into microservices.
 
-Current chart version is `0.1.9`
+Current chart version is `0.2.0`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -10,10 +10,10 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.7 |
-| file://../hbase | hbase | 0.1.8 |
-| https://charts.bitnami.com | kafka | 6.1.8 |
-| https://charts.bitnami.com | zookeeper | 5.1.0 |
+| file://../common | common | 0.1.8 |
+| file://../hbase | hbase | 0.1.9 |
+| https://charts.bitnami.com | kafka | 7.0.3 |
+| https://charts.bitnami.com | zookeeper | 5.1.1 |
 | https://helm.elastic.co | elasticsearch | 7.4.1 |
 
 ## Required Values
@@ -54,6 +54,11 @@ stackstate/distributed
 | kafka.enabled | bool | `true` | Enable / disable chart-based Kafka. |
 | kafka.externalZookeeper.servers | string | `"distributed-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
 | kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
+| kafka.metrics.jmx.enabled | bool | `true` | Whether or not to expose JMX metrics to Prometheus. |
+| kafka.metrics.kafka.enabled | bool | `true` | Whether or not to create a standalone Kafka exporter to expose Kafka metrics. |
+| kafka.metrics.serviceMonitor.enabled | bool | `true` | If `true`, creates a Prometheus Operator `ServiceMonitor` (also requires `kafka.metrics.kafka.enabled` or `kafka.metrics.jmx.enabled` to be `true`). |
+| kafka.metrics.serviceMonitor.interval | string | `"20s"` | How frequently to scrape metrics. |
+| kafka.metrics.serviceMonitor.selector | object | `{}` | Selector to target Prometheus instance. |
 | kafka.replicaCount | int | `1` | Number of Kafka replicas. |
 | kafka.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"memory":"2Gi"}}` | Kafka resources per pods. |
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
@@ -64,6 +69,9 @@ stackstate/distributed
 | stackstate.components.all.image.pullPolicy | string | `"Always"` | The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below). |
 | stackstate.components.all.image.tag | string | `"master"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
+| stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
+| stackstate.components.all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
+| stackstate.components.all.metrics.servicemonitor.enabled | bool | `true` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
 | stackstate.components.all.nodeSelector | object | `{}` | Node labels for pod assignment on all components. |
 | stackstate.components.all.tolerations | list | `[]` | Toleration labels for pod assignment on all components. |
 | stackstate.components.all.zookeeperEndpoint | string | `""` | **Required if `zookeeper.enabled` is `false`** Endpoint for shared Zookeeper nodes. |
@@ -142,5 +150,5 @@ stackstate/distributed
 | zookeeper.fullnameOverride | string | `"distributed-zookeeper"` | Name override for Zookeeper child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | zookeeper.metrics.enabled | bool | `true` | Enable / disable Zookeeper Prometheus metrics. |
 | zookeeper.metrics.serviceMonitor.enabled | bool | `true` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |
-| zookeeper.metrics.serviceMonitor.selector | object | `{"release":"prometheus-operator"}` | Default selector to use to target a certain Prometheus instance. |
+| zookeeper.metrics.serviceMonitor.selector | object | `{}` | Default selector to use to target a certain Prometheus instance. |
 | zookeeper.replicaCount | int | `1` | Default amount of Zookeeper replicas to provision. |

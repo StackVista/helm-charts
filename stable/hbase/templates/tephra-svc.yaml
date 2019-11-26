@@ -9,6 +9,10 @@ spec:
   ports:
   - port: 15165
     name: tephra
+{{- if .Values.all.metrics.enabled }}
+  - port: 9404
+    name: metrics
+{{- end }}
   selector:
     app.kubernetes.io/component: tephra
 {{- end -}}

@@ -35,7 +35,7 @@ imagePullPolicy: Always
 name: exporter
 ports:
 - containerPort: 9113
-  name: monitoring
+  name: metrics
 livenessProbe:
   exec:
     command:
@@ -87,7 +87,9 @@ spec:
     spec:
       containers:
       - {{ toYaml (merge $stsDistributedUiMainContainer $commonContainer) | nindent 8 }}
+    {{- if .Values.stackstate.components.all.metrics.enabled }}
       - {{ toYaml (merge $stsDistributedUiMonitoringContainer $commonContainer) | nindent 8 }}
+    {{- end }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.ui.nodeSelector }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}

@@ -177,6 +177,26 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+job:
+  # job.annotations -- Annotations for `Job` objects.
+  annotations: {}
+  # job.apiVersion -- Kubernetes apiVersion to use with a `Job` object.
+  apiVersion: batch/v1
+  # job.backoffLimit -- Number of retries before considering a `Job` as failed
+  backoffLimit: 5
+  # job.dnsPolicy -- DNS policy to apply to `Pod` objects.
+  dnsPolicy: ClusterFirst
+  # job.nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
+  # job.restartPolicy -- Restart policy to apply to containers within a `Pod` object.
+  restartPolicy: OnFailure
+  # job.suspend -- If set to `true`, all subsequent executions are suspended; this setting does not apply to already started executions.
+  suspend: false
+  # job.tolerations -- Toleration labels for `Pod` assignment.
+  tolerations: []
+  # job.ttlSecondsAfterFinished -- TTL for completed jobs before they are deleted.
+  ttlSecondsAfterFinished: 300
+
 persistentvolumeclaim:
   # persistentvolumeclaim.accessMode -- Default type of access for mounted volume.
   accessMode: ReadWriteOnce
@@ -232,6 +252,20 @@ service:
     #   targetPort: 9377
   # service.type -- Kubernetes 'Service' type to use.
   type: ClusterIP
+
+servicemonitor:
+  # servicemonitor.annotations -- Annotations for `ServiceMonitor` objects.
+  annotations: {}
+  # servicemonitor.apiVersion -- Kubernetes apiVersion to use with a `ServiceMonitor` object.
+  apiVersion: "monitoring.coreos.com/v1"
+  # servicemonitor.interval -- Default interval used on `Service` objects for monitoring through a `ServiceMonitor` object.
+  interval: "20s"
+  # servicemonitor.port -- Default port used on `Service` objects for monitoring through a `ServiceMonitor` object.
+  port: metrics
+  # servicemonitor.path -- Default path used on `Service` objects for monitoring through a `ServiceMonitor` object.
+  path: /metrics
+  # servicemonitor.scheme -- Default scheme used on `Service` objects for monitoring through a `ServiceMonitor` object.
+  scheme: http
 
 statefulset:
   # statefulset.affinity -- Affinity settings for pod assignment.

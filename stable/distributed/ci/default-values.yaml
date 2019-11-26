@@ -15,3 +15,17 @@ ingress:
   - hosts:
       - some-test.website.com
     secretName: some-secret
+hbase:
+  hbase:
+    master:
+      metrics:
+        servicemonitor:
+          enabled: true
+    regionserver:
+      metrics:
+        servicemonitor:
+          enabled: true
+  tephra:
+    metrics:
+      servicemonitor:
+        enabled: true

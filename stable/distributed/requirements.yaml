@@ -1,7 +1,7 @@
 dependencies:
 - name: common
   repository: file://../common
-  version: 0.1.7
+  version: 0.1.8
 - name: elasticsearch
   condition: elasticsearch.enabled
   repository: https://helm.elastic.co
@@ -9,12 +9,12 @@ dependencies:
 - name: hbase
   condition: hbase.enabled
   repository: file://../hbase
-  version: 0.1.8
+  version: 0.1.9
 - name: kafka
   condition: kafka.enabled
   repository: https://charts.bitnami.com
-  version: 6.1.8
+  version: 7.0.3
 - name: zookeeper
-  version: 5.1.0
+  version: 5.1.1
   repository: https://charts.bitnami.com
   condition: zookeeper.enabled

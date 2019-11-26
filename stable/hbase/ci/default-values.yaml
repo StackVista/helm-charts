@@ -1,0 +1,13 @@
+hbase:
+  master:
+    metrics:
+      servicemonitor:
+        enabled: true
+  regionserver:
+    metrics:
+      servicemonitor:
+        enabled: true
+tephra:
+  metrics:
+    servicemonitor:
+      enabled: true

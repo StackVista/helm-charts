@@ -1,0 +1,35 @@
+{{- define "common.servicemonitor" -}}
+{{- $common := dict "Values" .Values.common -}}
+{{- $noCommon := omit .Values "common" -}}
+{{- $overrides := dict "Values" $noCommon -}}
+{{- $noValues := omit . "Values" -}}
+{{- with merge $noValues $overrides $common -}}
+apiVersion: {{ .Values.servicemonitor.apiVersion }}
+kind: ServiceMonitor
+metadata:
+  annotations:
+    {{- include "common.annotations.gitlab" . | nindent 4 }}
+  {{- with .Values.servicemonitor.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  name: {{ template "common.fullname" . }}
+  namespace: {{ default .Release.Namespace .Values.servicemonitor.namespace }}
+  labels:
+    {{- include "common.labels.standard" . | nindent 4 }}
+  {{- with .Values.servicemonitor.labels }}
+    {{ toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  endpoints:
+  - interval: {{ .Values.servicemonitor.interval }}
+    path: {{ .Values.servicemonitor.path }}
+    port: {{ .Values.servicemonitor.port }}
+    scheme: {{ .Values.servicemonitor.scheme }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      {{- include "common.labels.selector" . | nindent 6 }}
+{{- end -}}
+{{- end -}}

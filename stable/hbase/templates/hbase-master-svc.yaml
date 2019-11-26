@@ -11,6 +11,10 @@ spec:
     name: master
   - port: 16010
     name: masterinfo
+{{- if .Values.all.metrics.enabled }}
+  - port: 9404
+    name: metrics
+{{- end }}
   selector:
     app.kubernetes.io/component: hbase-master
 {{- end -}}

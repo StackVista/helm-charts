@@ -33,6 +33,10 @@ ports:
   name: rs
 - containerPort: 16030
   name: rsinfo
+{{- if .Values.all.metrics.enabled }}
+- containerPort: 9404
+  name: metrics
+{{- end }}
 livenessProbe:
   httpGet:
     path: /

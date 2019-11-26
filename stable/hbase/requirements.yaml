@@ -1,8 +1,8 @@
 dependencies:
 - name: common
-  version: 0.1.X
+  version: 0.1.8
   repository: file://../common
 - name: zookeeper
-  version: 5.1.X
+  version: 5.1.1
   repository: https://charts.bitnami.com
   condition: zookeeper.enabled

@@ -11,6 +11,10 @@ spec:
     name: dn
   - port: 50075
     name: dninfo
+{{- if .Values.all.metrics.enabled }}
+  - port: 9404
+    name: metrics
+{{- end }}
   selector:
     app.kubernetes.io/component: hdfs-dn
 {{- end -}}

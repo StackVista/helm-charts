@@ -1,0 +1,26 @@
+{{- define "distributed.router.servicemonitor" -}}
+metadata:
+  labels:
+    app.kubernetes.io/component: router
+  {{- with .Values.stackstate.components.all.metrics.servicemonitor.additionalLabels }}
+    {{ toYaml . | nindent 4 }}
+  {{- end }}
+  name: {{ template "common.fullname" . }}-router
+spec:
+  endpoints:
+  - interval: 20s
+    path: /stats/prometheus
+    port: admin
+    scheme: http
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: router
+{{- end -}}
+
+{{- if not .Values.ingress.enabled -}}
+{{- if and ( .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" ) ( .Values.stackstate.components.all.metrics.enabled ) ( .Values.stackstate.components.all.metrics.servicemonitor.enabled ) }}
+{{- $commonServiceMonitor := fromYaml (include "common.servicemonitor" .) -}}
+{{- $routerServiceMonitor := fromYaml (include "distributed.router.servicemonitor" .) -}}
+{{- toYaml (merge $routerServiceMonitor $commonServiceMonitor) -}}
+{{- end -}}
+{{- end -}}

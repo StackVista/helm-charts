@@ -26,8 +26,10 @@ name: receiver
 ports:
 - containerPort: 7077
   name: receiver
+{{- if .Values.stackstate.components.all.metrics.enabled }}
 - containerPort: 9404
-  name: monitoring
+  name: metrics
+{{- end }}
 livenessProbe:
   httpGet:
     path: /liveness

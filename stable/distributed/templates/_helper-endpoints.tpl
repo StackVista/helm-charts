@@ -3,7 +3,7 @@ Logic to determine ElasticSearch endpoint.
 */}}
 {{- define "distributed.es.endpoint" -}}
 {{- if .Values.elasticsearch.enabled -}}
-{{ include "call-nested" (list . "elasticsearch" "uname") }}-headless:9200
+{{ include "call-nested" (list . "elasticsearch" "uname") }}:9200
 {{- else -}}
 {{- .Values.stackstate.components.all.elasticsearchEndpoint -}}
 {{- end -}}

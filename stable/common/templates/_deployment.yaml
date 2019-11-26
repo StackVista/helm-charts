@@ -23,10 +23,10 @@ spec:
       {{- include "common.labels.selector" . | nindent 6 }}
   template:
     metadata:
-    {{- with .Values.pod.annotations }}
       annotations:
+      {{- with .Values.pod.annotations }}
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
       labels:
         {{- include "common.labels.selector" . | nindent 8 }}
     spec:

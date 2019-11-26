@@ -1,16 +1,20 @@
 {{- define "distributed.receiver.service" -}}
 metadata:
   name: {{ template "common.fullname" . }}-receiver
+  labels:
+    app.kubernetes.io/component: receiver
 spec:
   ports:
     - name: receiver
       port: 7077
       protocol: TCP
       targetPort: receiver
-    - name: monitoring
+  {{- if .Values.stackstate.components.all.metrics.enabled }}
+    - name: metrics
       port: 9404
       protocol: TCP
-      targetPort: monitoring
+      targetPort: metrics
+  {{- end }}
   selector:
     app.kubernetes.io/component: receiver
 {{- end -}}

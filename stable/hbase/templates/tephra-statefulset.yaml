@@ -27,6 +27,10 @@ livenessProbe:
 ports:
 - containerPort: 15165
   name: tephra
+{{- if .Values.all.metrics.enabled }}
+- containerPort: 9404
+  name: metrics
+{{- end }}
 readinessProbe:
   exec:
     command:

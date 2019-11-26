@@ -1,12 +1,20 @@
 {{- define "distributed.router.service" -}}
 metadata:
   name: {{ template "common.fullname" . }}-router
+  labels:
+    app.kubernetes.io/component: router
 spec:
   ports:
     - name: router
       port: 8080
       protocol: TCP
       targetPort: router
+  {{- if .Values.stackstate.components.all.metrics.enabled }}
+    - name: admin
+      port: 8001
+      protocol: TCP
+      targetPort: admin
+  {{- end }}
   selector:
     app.kubernetes.io/component: router
 {{- end -}}

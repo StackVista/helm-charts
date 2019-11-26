@@ -2,7 +2,7 @@ hbase
 =====
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.8`
+Current chart version is `0.1.9`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -10,8 +10,8 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.X |
-| https://charts.bitnami.com | zookeeper | 5.1.X |
+| file://../common | common | 0.1.8 |
+| https://charts.bitnami.com | zookeeper | 5.1.1 |
 
 ## Chart Values
 
@@ -20,6 +20,9 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | all.affinity | object | `{}` | Affinity settings for pod assignment on all components. |
 | all.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods for all components. |
 | all.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object for all components. |
+| all.metrics.enabled | bool | `true` | Enable metrics port. |
+| all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
+| all.metrics.servicemonitor.enabled | bool | `true` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
 | all.nodeSelector | object | `{}` | Node labels for pod assignment on all components. |
 | all.tolerations | list | `[]` | Toleration labels for pod assignment on all components. |
 | hbase.master.affinity | object | `{}` | Affinity settings for pod assignment. |

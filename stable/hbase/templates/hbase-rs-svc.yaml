@@ -11,6 +11,10 @@ spec:
     name: rs
   - port: 16030
     name: rsinfo
+{{- if .Values.all.metrics.enabled }}
+  - port: 9404
+    name: metrics
+{{- end }}
   selector:
     app.kubernetes.io/component: hbase-rs
 {{- end -}}
