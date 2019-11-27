@@ -41,7 +41,7 @@ livenessProbe:
   httpGet:
     path: /liveness
     port: admin
-  initialDelaySeconds: 120
+  initialDelaySeconds: 60
   timeoutSeconds: 5
 name: server
 ports:
@@ -57,7 +57,7 @@ readinessProbe:
   httpGet:
     path: /api/server/readiness
     port: api
-  initialDelaySeconds: 120
+  initialDelaySeconds: 60
   timeoutSeconds: 5
 {{- with .Values.stackstate.components.server.resources }}
 resources:
