@@ -142,6 +142,10 @@ affinity: {}
 ########################
 
 stackstate:
+  admin:
+    authentication:
+      # stackstate.admin.authentication.enabled -- Enable basic auth protection for the /admin endpoint.
+      enabled: true
   license:
     # stackstate.license.key -- (string) **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server.
     key:
