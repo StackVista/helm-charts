@@ -36,7 +36,7 @@ livenessProbe:
   httpGet:
     path: /liveness
     port: k2es
-  initialDelaySeconds: 90
+  initialDelaySeconds: 60
   timeoutSeconds: 5
 ports:
 - containerPort: 7070
@@ -49,7 +49,7 @@ readinessProbe:
   httpGet:
     path: /readiness
     port: k2es
-  initialDelaySeconds: 90
+  initialDelaySeconds: 60
   timeoutSeconds: 5
 {{- with .Values.stackstate.components.k2es.resources }}
 resources:
