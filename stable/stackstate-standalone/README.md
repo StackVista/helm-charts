@@ -2,7 +2,7 @@ stackstate-standalone
 =====================
 Helm chart for StackState standlone -- all components running inside a single container.
 
-Current chart version is `0.4.6`
+Current chart version is `0.4.7`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -73,6 +73,7 @@ stackstate/stackstate-standalone
 | service.receiver.port | int | `7077` | The default port for the StackState Receiver. |
 | service.type | string | `"ClusterIP"` | The Kubernetes 'Service' type to use. |
 | service.ui.port | int | `7070` | The default port for the StackState UI. |
+| stackstate.admin.authentication.enabled | bool | `true` | Enable basic auth protection for the /admin endpoint. |
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
 | stackstate.receiver.apiKey | string | `""` | API key to be used by the Receiver; if no key is provided, a random one will be generated for you. |
 | stackstate.receiver.baseUrl | string | `nil` | **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of the StackState endpoints. |

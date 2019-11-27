@@ -73,6 +73,10 @@ StackState required environment variables
       key: sts-license-key
 - name: RECEIVER_BASE_URL
   value: {{ .Values.stackstate.receiver.baseUrl | quote }}
+{{- if .Values.stackstate.admin.authentication.enabled }}
+- name: CONFIG_FORCE_stackstate_adminApi_authentication_enabled
+  value: "true"
+{{- end }}
 {{- if .Values.extraEnv.open }}
   {{- range $key, $value := .Values.extraEnv.open  }}
 - name: {{ $key }}
