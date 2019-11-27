@@ -44,11 +44,13 @@ imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .
 livenessProbe:
   httpGet:
     path: /liveness
-    port: admin
+    port: health
   initialDelaySeconds: 60
   timeoutSeconds: 5
 name: server
 ports:
+- containerPort: 1618
+  name: health
 - containerPort: 7070
   name: api
 - containerPort: 7071
@@ -59,8 +61,8 @@ ports:
 {{- end }}
 readinessProbe:
   httpGet:
-    path: /api/server/readiness
-    port: api
+    path: /readiness
+    port: health
   initialDelaySeconds: 60
   timeoutSeconds: 5
 {{- with .Values.stackstate.components.server.resources }}

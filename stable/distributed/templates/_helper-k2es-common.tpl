@@ -35,10 +35,12 @@ imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .
 livenessProbe:
   httpGet:
     path: /liveness
-    port: k2es
+    port: health
   initialDelaySeconds: 60
   timeoutSeconds: 5
 ports:
+- containerPort: 1618
+  name: health
 - containerPort: 7070
   name: k2es
 {{- if .Values.stackstate.components.all.metrics.enabled }}
@@ -48,7 +50,7 @@ ports:
 readinessProbe:
   httpGet:
     path: /readiness
-    port: k2es
+    port: health
   initialDelaySeconds: 60
   timeoutSeconds: 5
 {{- with .Values.stackstate.components.k2es.resources }}

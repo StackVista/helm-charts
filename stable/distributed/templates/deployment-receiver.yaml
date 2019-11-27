@@ -15,6 +15,8 @@ env:
 {{- include "distributed.receiver.envvars" . }}
 - name: KAFKA_BROKERS
   value: {{ include "distributed.kafka.endpoint" . | quote }}
+- name: CONFIG_FORCE_stackstate_adminApi_authentication_enabled
+  value: "true"
 - name: API_KEY
   valueFrom:
     secretKeyRef:
@@ -24,6 +26,8 @@ image: "{{ .Values.stackstate.components.receiver.image.repository }}:{{ default
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.receiver.image.pullPolicy | quote }}
 name: receiver
 ports:
+- containerPort: 1618
+  name: health
 - containerPort: 7077
   name: receiver
 {{- if .Values.stackstate.components.all.metrics.enabled }}
@@ -33,13 +37,13 @@ ports:
 livenessProbe:
   httpGet:
     path: /liveness
-    port: receiver
+    port: health
   initialDelaySeconds: 60
   timeoutSeconds: 5
 readinessProbe:
   httpGet:
     path: /readiness
-    port: receiver
+    port: health
   initialDelaySeconds: 60
   timeoutSeconds: 5
 {{- with .Values.stackstate.components.receiver.resources }}
