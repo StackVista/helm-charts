@@ -1,0 +1,195 @@
+#####################
+# General variables #
+#####################
+
+global:
+  extraEnv:
+    # global.extraEnv.open -- Extra open environment variables to inject into pods.
+    open: {}
+    # global.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+    secret: {}
+  # global.imagePullSecrets -- Secrets / credentials needed for container image registry.
+  imagePullSecrets: []
+
+dependencies:
+  kubeStateMetrics:
+    # dependencies.kubeStateMetrics.enabled -- Whether or not to install the `kube-state-metrics` Deployment along with the StackState cluster agent. Set to `false` if you have `kube-state-metrics` already installed on the cluster.
+    enabled: true
+
+# nameOverride -- Override the name of the chart.
+nameOverride: ""
+# fullnameOverride -- Override the fullname of the chart.
+fullnameOverride: ""
+
+agent:
+  apm:
+    # agent.apm.enabled -- Enable / disable the agent APM module.
+    enabled: true
+  networkTracing:
+    # agent.networkTracing.enabled -- Enable / disable the agent network tracing module.
+    enabled: true
+  processAgent:
+    # agent.processAgent.blacklistPatterns -- Patterns to ignore when sending processes to StackState.
+    blacklistPatterns: "^s6-,^/sbin/,^/usr/sbin,^/pause,^/usr/bin/dbus-daemon,^-bash,^su$,^/bin/bash,/lib/systemd/"
+    # agent.processAgent.enabled -- Enable / disable the agent process agent module.
+    enabled: true
+  # agent.skipSslValidation -- Set to true if self signed certificates are used.
+  skipSslValidation: false
+
+  image:
+    # agent.image.repository -- Base container image registry.
+    repository: docker.io/stackstate/stackstate-agent-2
+    # agent.image.tag -- Default container image tag.
+    tag: 2.0.5
+    # agent.image.pullPolicy -- Default container image pull policy.
+    pullPolicy: IfNotPresent
+
+  livenessProbe:
+    # agent.livenessProbe.enabled -- Enable use of livenessProbe check.
+    enabled: true
+    # agent.livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
+    failureThreshold: 3
+    # agent.livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
+    initialDelaySeconds: 15
+    # agent.livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
+    periodSeconds: 15
+    # agent.livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
+    successThreshold: 1
+    # agent.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
+    timeoutSeconds: 5
+
+  # agent.logLevel -- Logging level for agent processes.
+  logLevel: DEBUG
+
+  readinessProbe:
+    # agent.readinessProbe.enabled -- Enable use of readinessProbe check.
+    enabled: true
+    # agent.readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
+    failureThreshold: 3
+    # agent.readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
+    initialDelaySeconds: 15
+    # agent.readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
+    periodSeconds: 15
+    # agent.readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
+    successThreshold: 1
+    # agent.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
+    timeoutSeconds: 5
+
+  resources:
+    limits:
+      # agent.resources.limits.cpu -- CPU resource limits.
+      cpu: "200m"
+      # agent.resources.limits.memory -- Memory resource limits.
+      memory: 256Mi
+    requests:
+      # agent.resources.requests.cpu -- CPU resource requests.
+      cpu: "200m"
+      # agent.resources.requests.memory -- Memory resource requests.
+      memory: 256Mi
+
+  # agent.updateStrategy -- The update strategy for the DaemonSet object.
+  updateStrategy:
+    type: RollingUpdate
+    # rollingUpdate:
+    #   maxUnavailable: 1
+
+  # agent.nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
+
+  # agent.tolerations -- Toleration labels for pod assignment.
+  tolerations: []
+
+  # agent.affinity -- Affinity settings for pod assignment.
+  affinity: {}
+
+clusterAgent:
+  collection:
+    # clusterAgent.collection.kubernetesEvents -- Enable / disable the cluster agent events collection.
+    kubernetesEvents: true
+    # clusterAgent.collection.kubernetesMetrics -- Enable / disable the cluster agent metrics collection.
+    kubernetesMetrics: true
+    # clusterAgent.collection.kubernetesTimeout -- Default timeout (in seconds) when obtaining informaton from the Kubernetes API.
+    kubernetesTimeout: 10
+    # clusterAgent.collection.kubernetesTopology -- Enable / disable the cluster agent topology collection.
+    kubernetesTopology: true
+
+  # clusterAgent.enabled -- Enable / disable the cluster agent.
+  enabled: true
+
+  image:
+    # clusterAgent.image.repository -- Base container image registry.
+    repository: docker.io/stackstate/stackstate-cluster-agent
+    # clusterAgent.image.tag -- Default container image tag.
+    tag: 2.0.5
+    # clusterAgent.image.pullPolicy -- Default container image pull policy.
+    pullPolicy: IfNotPresent
+
+  livenessProbe:
+    # clusterAgent.livenessProbe.enabled -- Enable use of livenessProbe check.
+    enabled: true
+    # clusterAgent.livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
+    failureThreshold: 3
+    # clusterAgent.livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
+    initialDelaySeconds: 15
+    # clusterAgent.livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
+    periodSeconds: 15
+    # clusterAgent.livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
+    successThreshold: 1
+    # clusterAgent.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
+    timeoutSeconds: 5
+
+  # clusterAgent.logLevel -- Logging level for agent processes.
+  logLevel: DEBUG
+
+  readinessProbe:
+    # clusterAgent.readinessProbe.enabled -- Enable use of readinessProbe check.
+    enabled: true
+    # clusterAgent.readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
+    failureThreshold: 3
+    # clusterAgent.readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
+    initialDelaySeconds: 15
+    # clusterAgent.readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
+    periodSeconds: 15
+    # clusterAgent.readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
+    successThreshold: 1
+    # clusterAgent.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
+    timeoutSeconds: 5
+
+  # clusterAgent.replicaCount -- Number of replicas of the cluster agent to deploy.
+  replicaCount: 1
+
+  resources:
+    limits:
+      # clusterAgent.resources.limits.cpu -- CPU resource limits.
+      cpu: "50m"
+      # clusterAgent.resources.limits.memory -- Memory resource limits.
+      memory: "64Mi"
+    requests:
+      # clusterAgent.resources.requests.cpu -- CPU resource requests.
+      cpu: "50m"
+      # clusterAgent.resources.requests.memory -- Memory resource requests.
+      memory: "64Mi"
+
+  # clusterAgent.nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
+
+  # clusterAgent.tolerations -- Toleration labels for pod assignment.
+  tolerations: []
+
+  # clusterAgent.affinity -- Affinity settings for pod assignment.
+  affinity: {}
+
+########################
+# StackState variables #
+########################
+
+stackstate:
+  # stackstate.apiKey -- (string) **PROVIDE YOUR API KEY HERE** API key to be used by the StackState agent.
+  apiKey:
+  cluster:
+    # stackstate.cluster.name -- (string) **PROVIDE KUBERNETES CLUSTER NAME HERE** Name of the Kubernetes cluster where the agent will be installed.
+    name:
+    # stackstate.cluster.authToken -- Provide a token to enable secure communication between the agent and the cluster agent.
+    authToken: ""
+  # stackstate.url -- (string) **PROVIDE STACKSTATE URL HERE** URL of the StackState installation to receive data from the agent.
+  url:

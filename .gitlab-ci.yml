@@ -1,4 +1,4 @@
-image: gcr.io/kubernetes-charts-ci/test-image:v3.3.2
+image: gcr.io/kubernetes-charts-ci/test-image:v3.4.0
 
 stages:
   - test
@@ -20,10 +20,6 @@ validate:
     - ct list-changed --config test/ct.yaml
     - ct lint --config test/ct.yaml
     - .gitlab/validate_kubeval.sh
-  # services:
-  #   - name: rancher/k3s:v0.8.1
-  #     alias: k3s-test
-  #     command: ["server", "--cluster-secret", "somesecret"]
   stage: test
 
 push:
