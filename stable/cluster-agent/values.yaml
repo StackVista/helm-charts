@@ -75,17 +75,14 @@ agent:
     # agent.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
     timeoutSeconds: 5
 
-  resources:
-    limits:
-      # agent.resources.limits.cpu -- CPU resource limits.
-      cpu: "200m"
-      # agent.resources.limits.memory -- Memory resource limits.
-      memory: 256Mi
-    requests:
-      # agent.resources.requests.cpu -- CPU resource requests.
-      cpu: "200m"
-      # agent.resources.requests.memory -- Memory resource requests.
-      memory: 256Mi
+  # agent.resources -- Resources for agent pods.
+  resources: {}
+    # limits:
+    #   cpu: "200m"
+    #   memory: 256Mi
+    # requests:
+    #   cpu: "200m"
+    #   memory: 256Mi
 
   # agent.updateStrategy -- The update strategy for the DaemonSet object.
   updateStrategy:
