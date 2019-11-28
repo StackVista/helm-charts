@@ -24,8 +24,6 @@ env:
   value: "1"
 - name: CONFIG_FORCE_stackstate_kafkaStsEventsToES_elasticsearch_index_replicas
   value: "1"
-- name: CONFIG_FORCE_stackstate_kafkaToEs_healthEndpointsEnabled
-  value: "true"
 - name: ELASTICSEARCH_URI
   value: "http://{{ include "distributed.es.endpoint" . }}"
 - name: KAFKA_BROKERS
