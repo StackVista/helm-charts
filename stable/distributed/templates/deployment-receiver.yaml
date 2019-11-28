@@ -15,8 +15,6 @@ env:
 {{- include "distributed.receiver.envvars" . }}
 - name: KAFKA_BROKERS
   value: {{ include "distributed.kafka.endpoint" . | quote }}
-- name: CONFIG_FORCE_stackstate_adminApi_authentication_enabled
-  value: "true"
 - name: API_KEY
   valueFrom:
     secretKeyRef:
@@ -38,13 +36,13 @@ livenessProbe:
   httpGet:
     path: /liveness
     port: health
-  initialDelaySeconds: 60
+  initialDelaySeconds: 30
   timeoutSeconds: 5
 readinessProbe:
   httpGet:
     path: /readiness
     port: health
-  initialDelaySeconds: 60
+  initialDelaySeconds: 30
   timeoutSeconds: 5
 {{- with .Values.stackstate.components.receiver.resources }}
 resources:
