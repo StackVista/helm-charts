@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cluster-agent.fullname" . }}
+  labels:
+{{ include "cluster-agent.labels" . | indent 4 }}
+    app.kubernetes.io/component: cluster-agent
+spec:
+  replicas: {{ .Values.clusterAgent.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: cluster-agent
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "cluster-agent.name" . }}
+  template:
+    metadata:
+      annotations:
+        ad.stackstatehq.com/stackstate-cluster-agent.check_names: '["prometheus"]'
+        ad.stackstatehq.com/stackstate-cluster-agent.init_configs: '[{}]'
+        ad.stackstatehq.com/stackstate-cluster-agent.instances: '[{"prometheus_url": "http://%%host%%:5000/metrics","namespace": "stackstate.cluster_agent","metrics": ["go_goroutines","go_memstats_*","process_*","api_requests","stackstate_requests","external_metrics", "cluster_checks_*"]}]'
+        {{- include "cluster-agent.checksum-configs" . | nindent 8 }}
+      labels:
+        app.kubernetes.io/component: cluster-agent
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "cluster-agent.name" . }}
+    spec:
+    {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "cluster-agent.fullname" . }}
+      containers:
+        - name: cluster-agent
+          image: "{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
+          imagePullPolicy: "{{ .Values.clusterAgent.image.pullPolicy }}"
+          env:
+          - name: STS_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "cluster-agent.fullname" . }}
+                key: sts-api-key
+          - name: STS_CLUSTER_AGENT_AUTH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "cluster-agent.fullname" . }}
+                key: sts-cluster-auth-token
+          - name: LOG_LEVEL
+            value: {{ .Values.clusterAgent.logLevel | quote }}
+          - name: STS_CLUSTER_NAME
+            value: {{.Values.stackstate.cluster.name | quote }}
+          - name: STS_COLLECT_KUBERNETES_EVENTS
+            value: {{ .Values.clusterAgent.collection.kubernetesEvents | quote }}
+          - name: STS_COLLECT_KUBERNETES_METRICS
+            value: {{ .Values.clusterAgent.collection.kubernetesMetrics | quote }}
+          - name: STS_COLLECT_KUBERNETES_TIMEOUT
+            value: {{ .Values.clusterAgent.collection.kubernetesTimeout | quote }}
+          - name: STS_COLLECT_KUBERNETES_TOPOLOGY
+            value: {{ .Values.clusterAgent.collection.kubernetesTopology | quote }}
+          - name: STS_LEADER_ELECTION
+            value: "true"
+          - name: STS_LOG_LEVEL
+            value: {{ .Values.clusterAgent.logLevel | quote }}
+          - name: STS_STS_URL
+            value: {{ .Values.stackstate.url | quote }}
+          {{- range $key, $value := .Values.global.extraEnv.open }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{- range $key, $value := .Values.global.extraEnv.secret }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "cluster-agent.fullname" . }}
+                key: {{ $key }}
+          {{- end }}
+        {{- with .Values.clusterAgent.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+    {{- with .Values.clusterAgent.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.clusterAgent.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.clusterAgent.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

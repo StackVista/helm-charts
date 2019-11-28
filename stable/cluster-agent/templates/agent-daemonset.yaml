@@ -1,0 +1,173 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "cluster-agent.fullname" . }}-agent
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "cluster-agent.labels" . | indent 4 }}
+    app.kubernetes.io/component: agent
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: agent
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "cluster-agent.name" . }}
+{{- with .Values.agent.updateStrategy }}
+  updateStrategy:
+    {{ toYaml . | nindent 4 }}
+{{- end }}
+  template:
+    metadata:
+      annotations:
+        {{- include "cluster-agent.checksum-configs" . | nindent 8 }}
+      labels:
+        app.kubernetes.io/component: agent
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "cluster-agent.name" . }}
+    spec:
+    {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
+          imagePullPolicy: "{{ .Values.agent.image.pullPolicy }}"
+          env:
+          - name: STS_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "cluster-agent.fullname" . }}
+                key: sts-api-key
+          - name: STS_CLUSTER_AGENT_AUTH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "cluster-agent.fullname" . }}
+                key: sts-cluster-auth-token
+          - name: STS_KUBERNETES_KUBELET_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: AGENT_VERSION
+            value: {{ .Values.agent.image.tag | quote }}
+          - name: HOST_PROC
+            value: "/host/proc"
+          - name: HOST_SYS
+            value: "/host/sys"
+          - name: KUBERNETES
+            value: "true"
+          - name: LOG_LEVEL
+            value: {{ .Values.agent.logLevel | quote }}
+          - name: STS_APM_ENABLED
+            value: {{ .Values.agent.apm.enabled | quote }}
+          - name: STS_APM_URL
+            value: {{ .Values.stackstate.url | quote }}
+          - name: STS_CLUSTER_AGENT_ENABLED
+            value: {{ .Values.clusterAgent.enabled | quote }}
+          - name: STS_CLUSTER_NAME
+            value: {{ .Values.stackstate.cluster.name | quote }}
+          - name: STS_HEALTH_PORT
+            value: "5555"
+          - name: STS_LEADER_ELECTION
+            value: "false"
+          - name: STS_LOG_LEVEL
+            value: {{ .Values.agent.logLevel | quote }}
+          - name: STS_NETWORK_TRACING_ENABLED
+            value: {{ .Values.agent.networkTracing.enabled | quote }}
+          - name: STS_PROCESS_AGENT_ENABLED
+            value: {{ .Values.agent.processAgent.enabled | quote }}
+          - name: STS_PROCESS_AGENT_URL
+            value: {{ .Values.stackstate.url | quote }}
+          - name: STS_PROCESS_BLACKLIST_PATTERNS
+            value: {{ .Values.agent.processAgent.blacklistPatterns | quote }}
+          - name: STS_SKIP_SSL_VALIDATION
+            value: {{ .Values.agent.skipSslValidation | quote }}
+          - name: STS_STS_URL
+            value: {{ .Values.stackstate.url | quote }}
+          {{- range $key, $value := .Values.global.extraEnv.open }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{- range $key, $value := .Values.global.extraEnv.secret }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "cluster-agent.fullname" . }}
+                key: {{ $key }}
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: healthport
+            failureThreshold: {{ .Values.agent.livenessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.agent.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.agent.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.agent.livenessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.agent.livenessProbe.timeoutSeconds }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: healthport
+            failureThreshold: {{ .Values.agent.readinessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.agent.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.agent.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.agent.readinessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.agent.readinessProbe.timeoutSeconds }}
+          ports:
+          - containerPort: 8126
+            name: traceport
+            protocol: TCP
+          - containerPort: 5555
+            name: healthport
+            protocol: TCP
+        {{- with .Values.agent.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+          volumeMounts:
+          - name: sys-kernel-debug
+            mountPath: /sys/kernel/debug
+          - name: dockersocket
+            mountPath: /var/run/docker.sock
+          - name: procdir
+            mountPath: /host/proc
+            readOnly: true
+          - name: passwd
+            mountPath: /etc/passwd
+            readOnly: true
+          - name: cgroups
+            mountPath: /host/sys/fs/cgroup
+            readOnly: true
+          securityContext:
+            privileged: true
+      hostNetwork: true
+      hostPID: true
+      serviceAccountName: {{ include "cluster-agent.fullname" . }}-agent
+    {{- with .Values.agent.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.agent.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.agent.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+      - hostPath:
+          path: /sys/kernel/debug
+        name: sys-kernel-debug
+      - hostPath:
+          path: /var/run/docker.sock
+        name: dockersocket
+      - hostPath:
+          path: /proc
+        name: procdir
+      - hostPath:
+          path: /etc/passwd
+        name: passwd
+      - hostPath:
+          path: /sys/fs/cgroup
+        name: cgroups

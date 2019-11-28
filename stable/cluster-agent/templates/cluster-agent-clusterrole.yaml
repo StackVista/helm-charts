@@ -1,0 +1,74 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "cluster-agent.fullname" . }}
+  labels:
+{{ include "cluster-agent.labels" . | indent 4 }}
+    app.kubernetes.io/component: cluster-agent
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - componentstatuses
+  - configmaps
+  - endpoints
+  - events
+  - nodes
+  - persistentvolumeclaims
+  - persistentvolumes
+  - pods
+  - services
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - create
+  - get
+  - patch
+  - update
+- apiGroups:
+  - "storage.k8s.io"
+  resources:
+  - volumeattachments
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - "apps"
+  resources:
+  - daemonsets
+  - deployments
+  - replicasets
+  - statefulsets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - "extensions"
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - "batch"
+  resources:
+  - cronjobs
+  - jobs
+  verbs:
+  - get
+  - list
+  - watch
+- nonResourceURLs:
+  - "/healthz"
+  - "/version"
+  verbs:
+  - get
