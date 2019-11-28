@@ -2,7 +2,7 @@ cluster-agent
 =============
 Helm chart for the StackState cluster agent.
 
-Current chart version is `0.1.0`
+Current chart version is `0.1.1`
 
 Source code can be found [here](https://github.com/StackVista/stackstate-agent)
 
@@ -75,10 +75,7 @@ stackstate/cluster-agent
 | agent.readinessProbe.periodSeconds | int | `15` | `periodSeconds` for the readiness probe. |
 | agent.readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
 | agent.readinessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the readiness probe. |
-| agent.resources.limits.cpu | string | `"200m"` | CPU resource limits. |
-| agent.resources.limits.memory | string | `"256Mi"` | Memory resource limits. |
-| agent.resources.requests.cpu | string | `"200m"` | CPU resource requests. |
-| agent.resources.requests.memory | string | `"256Mi"` | Memory resource requests. |
+| agent.resources | object | `{}` | Resources for agent pods. |
 | agent.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
 | agent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | agent.updateStrategy | object | `{"type":"RollingUpdate"}` | The update strategy for the DaemonSet object. |
