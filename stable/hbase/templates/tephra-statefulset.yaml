@@ -18,25 +18,27 @@ env:
 {{- include "tephra.commonEnv" . }}
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "hbase.hbase.commonEnv" . }}
-livenessProbe:
-  exec:
-    command:
-    - pgrep
-    - java
-  initialDelaySeconds: 10
 ports:
 - containerPort: 15165
   name: tephra
+- containerPort: 1618
+  name: health
 {{- if .Values.all.metrics.enabled }}
 - containerPort: 9404
   name: metrics
 {{- end }}
+livenessProbe:
+  httpGet:
+    path: /liveness
+    port: health
+  initialDelaySeconds: 20
+  timeoutSeconds: 5
 readinessProbe:
-  exec:
-    command:
-    - pgrep
-    - java
-  initialDelaySeconds: 10
+  httpGet:
+    path: /readiness
+    port: health
+  initialDelaySeconds: 20
+  timeoutSeconds: 5
 {{- with .Values.tephra.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
