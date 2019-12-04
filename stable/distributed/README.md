@@ -2,7 +2,7 @@ distributed
 ===========
 Helm chart for StackState distributed -- all components split into microservices.
 
-Current chart version is `0.2.5`
+Current chart version is `0.2.6`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -107,7 +107,7 @@ stackstate/distributed
 | stackstate.components.receiver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.receiver.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `receiver` pods. |
 | stackstate.components.receiver.replicaCount | int | `1` | Number of `receiver` replicas. |
-| stackstate.components.receiver.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"1Gi"}}` | Resource allocation for `receiver` pods. |
+| stackstate.components.receiver.resources | object | `{"limits":{"memory":"1500Mi"},"requests":{"memory":"1500Mi"}}` | Resource allocation for `receiver` pods. |
 | stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.router.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.router.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
