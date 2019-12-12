@@ -1,6 +1,6 @@
 {{- define "distributed.k2es.deployment.multiMetricsToEs.container" -}}
 args:
-- /opt/docker/bin/kafka-multi-metrics-to-elasticsearch-app
+- multi-metrics
 name: mm2es
 {{- end -}}
 
