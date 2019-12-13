@@ -2,7 +2,7 @@ hbase
 =====
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.10`
+Current chart version is `0.1.11`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -25,6 +25,16 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | all.metrics.servicemonitor.enabled | bool | `true` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
 | all.nodeSelector | object | `{}` | Node labels for pod assignment on all components. |
 | all.tolerations | list | `[]` | Toleration labels for pod assignment on all components. |
+| console.affinity | object | `{}` | Affinity settings for pod assignment. |
+| console.enabled | bool | `true` | Enable / disable deployment of the stackgraph-console for debugging. |
+| console.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| console.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| console.image.pullPolicy | string | `"Always"` | Pull policy for Tephra pods. |
+| console.image.repository | string | `"quay.io/stackstate/stackgraph-console"` | Base container image repository for Tephra pods. |
+| console.image.tag | string | `"master-4012-1eb4e22"` | Default container image tag for Tephra pods. |
+| console.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| console.resources | object | `{}` | Resources to allocate for HDFS data nodes. |
+| console.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.master.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hbase.master.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hbase.master.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |

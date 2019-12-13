@@ -272,3 +272,24 @@ Tephra extra environment variables for all processes inherited through `tephra.e
   {{- end }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Console extra environment variables for all processes inherited through `console.extraEnv`
+*/}}
+{{- define "console.commonEnv" -}}
+{{- if .Values.console.extraEnv.open }}
+  {{- range $key, $value := .Values.console.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.console.extraEnv.secret }}
+  {{- range $key, $value := .Values.console.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname" $ }}-console
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}

@@ -23,6 +23,30 @@ all:
   # all.affinity -- Affinity settings for pod assignment on all components.
   affinity: {}
 
+console:
+  # console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
+  enabled: true
+  extraEnv:
+    # console.extraEnv.open -- Extra open environment variables to inject into pods.
+    open: {}
+    # console.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+    secret: {}
+  image:
+    # console.image.pullPolicy -- Pull policy for Tephra pods.
+    pullPolicy: Always
+    # console.image.repository -- Base container image repository for Tephra pods.
+    repository: quay.io/stackstate/stackgraph-console
+    # console.image.tag -- Default container image tag for Tephra pods.
+    tag: master-4012-1eb4e22
+  # console.resources -- Resources to allocate for HDFS data nodes.
+  resources: {}
+  # console.nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
+  # console.tolerations -- Toleration labels for pod assignment.
+  tolerations: []
+  # console.affinity -- Affinity settings for pod assignment.
+  affinity: {}
+
 hbase:
   master:
     extraEnv:
