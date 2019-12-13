@@ -1,0 +1,77 @@
+{{- define "hbase.console.container.main" -}}
+name: console
+image: "{{ .Values.console.image.repository }}:{{ .Values.console.image.tag }}"
+imagePullPolicy: {{ .Values.console.image.pullPolicy }}
+command:
+- /sbin/tini
+- --
+args:
+- /bin/bash
+- -c
+- while true; do sleep 10; done
+env:
+{{- include "all.commonEnv" . }}
+{{- include "console.commonEnv" . }}
+{{- with .Values.console.resources }}
+resources:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+securityContext:
+  runAsNonRoot: true
+  runAsGroup: {{ .Values.securityContext.runAsGroup }}
+  runAsUser: {{ .Values.securityContext.runAsUser }}
+{{- end -}}
+
+{{- define "hbase.console.deployment" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "hbase.console.container.main" .) -}}
+{{- $stackstateHbaseConsoleContainer := (merge $overrideContainer $commonContainer) }}
+metadata:
+  labels:
+    app.kubernetes.io/component: console
+  name: {{ template "common.fullname" . }}-console
+spec:
+  serviceName: {{ template "common.fullname" . }}-console
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: console
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: console
+    spec:
+      containers:
+      - {{ toYaml $stackstateHbaseConsoleContainer | nindent 8 }}
+    {{- if or .Values.all.nodeSelector .Values.console.nodeSelector }}
+      nodeSelector:
+      {{- with .Values.all.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.console.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.all.affinity .Values.console.affinity }}
+      affinity:
+      {{- with .Values.all.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.console.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.all.tolerations .Values.console.tolerations }}
+      tolerations:
+      {{- with .Values.all.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.console.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+{{- end -}}
+
+{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $stackstateHbaseConsoleDeployment := fromYaml (include "hbase.console.deployment" .) -}}
+{{- toYaml (merge $stackstateHbaseConsoleDeployment $commonDeployment) -}}
