@@ -2,7 +2,7 @@ hbase
 =====
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.11`
+Current chart version is `0.1.12`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -31,7 +31,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | console.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | console.image.pullPolicy | string | `"Always"` | Pull policy for Tephra pods. |
 | console.image.repository | string | `"quay.io/stackstate/stackgraph-console"` | Base container image repository for Tephra pods. |
-| console.image.tag | string | `"master-4012-1eb4e22"` | Default container image tag for Tephra pods. |
+| console.image.tag | string | `"master-4016-d50abc7"` | Default container image tag for Tephra pods. |
 | console.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | console.resources | object | `{}` | Resources to allocate for HDFS data nodes. |
 | console.tolerations | list | `[]` | Toleration labels for pod assignment. |

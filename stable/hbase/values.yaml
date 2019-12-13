@@ -37,7 +37,7 @@ console:
     # console.image.repository -- Base container image repository for Tephra pods.
     repository: quay.io/stackstate/stackgraph-console
     # console.image.tag -- Default container image tag for Tephra pods.
-    tag: master-4012-1eb4e22
+    tag: master-4016-d50abc7
   # console.resources -- Resources to allocate for HDFS data nodes.
   resources: {}
   # console.nodeSelector -- Node labels for pod assignment.
