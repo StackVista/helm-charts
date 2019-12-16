@@ -1,6 +1,6 @@
 {{- define "distributed.k2es.deployment.stsEventsToEs.container" -}}
 args:
-- /opt/docker/bin/kafka-sts-events-to-elasticsearch-app
+- sts-events
 name: sts2es
 {{- end -}}
 

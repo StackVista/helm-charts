@@ -1,0 +1,65 @@
+{{- define "distributed.kafkaTopicCreate.job.initContainer.main" -}}
+name: kafka-topic-create-init
+command:
+- sh
+- -c
+- |
+  /entrypoint -c {{ include "distributed.kafka.endpoint" . }} -t 300
+image: "docker.io/dokkupaas/wait:latest"
+imagePullPolicy: Always
+securityContext:
+  runAsGroup: 65534
+  runAsNonRoot: true
+  runAsUser: 65534
+{{- end }}
+
+{{- define "distributed.kafkaTopicCreate.job.container.main" -}}
+command:
+- bash
+- -c
+- |-
+  {{ .Files.Get "scripts/job-kafka-topic-create.sh" | nindent 2 }}
+env:
+- name: KAFKA_BROKERS
+  value: {{ include "distributed.kafka.endpoint" . | quote }}
+- name: ZOOKEEPER_QUORUM
+  value: {{ include "distributed.zookeeper.endpoint" . | quote }}
+image: "docker.io/bitnami/kafka"
+imagePullPolicy: Always
+name: kafka-topic-create
+securityContext:
+  runAsGroup: 1001
+  runAsNonRoot: true
+  runAsUser: 1001
+{{- end -}}
+
+{{- define "distributed.kafkaTopicCreate.job" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "distributed.kafkaTopicCreate.job.container.main" .) -}}
+{{- $stsDistributedKafkaTopicCreateMainContainer := (merge $overrideContainer $commonContainer) -}}
+metadata:
+  name: {{ template "common.fullname" . }}-topic-create
+  annotations:
+    helm.sh/hook: post-install
+    helm.sh/hook-delete-policy: "before-hook-creation,hook-succeeded"
+  labels:
+    app.kubernetes.io/component: topic-create
+spec:
+  activeDeadlineSeconds: 1200
+  template:
+    metadata:
+      annotations:
+        {{- include "distributed.common.secret.checksum" . | nindent 8 }}
+        {{- include "distributed.server.secret.checksum" . | nindent 8 }}
+      labels:
+        app.kubernetes.io/component: topic-create
+    spec:
+      initContainers:
+      - {{ include "distributed.kafkaTopicCreate.job.initContainer.main" . | nindent 8 }}
+      containers:
+      - {{ toYaml $stsDistributedKafkaTopicCreateMainContainer | nindent 8 }}
+{{- end -}}
+
+{{- $commonJob := fromYaml (include "common.job" .) -}}
+{{- $kafkaTopicCreateJob := fromYaml (include "distributed.kafkaTopicCreate.job" .) -}}
+{{- toYaml (merge $kafkaTopicCreateJob $commonJob) -}}
