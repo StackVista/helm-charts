@@ -37,7 +37,7 @@ spec:
               - |
                 cp /aws-secret/config {{ .Values.aws.mountPath }}/config || true
                 cp /aws-secret/credentials {{ .Values.aws.mountPath }}/credentials || true
-                for account in demo preprod prod sandbox tooling trials; do
+                for account in demo integrations preprod prod sandbox tooling trials; do
                   export AWS_PROFILE="stackstate-${account}"
                   echo "############### Using profile ${AWS_PROFILE} ############### "
                   ami_names="$(aws ec2 describe-images --owners self | jq -r '.Images[].Tags[]? | select(.Key == "Name") | .Value' | sort | uniq)"
