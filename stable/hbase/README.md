@@ -10,8 +10,8 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../common | common | 0.1.8 |
 | https://charts.bitnami.com | zookeeper | 5.1.1 |
+| https://helm.stackstate.io/ | common | 0.1.8 |
 
 ## Chart Values
 

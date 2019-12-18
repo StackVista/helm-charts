@@ -10,7 +10,7 @@ Source code can be found [here](https://github.com/rebuy-de/aws-nuke)
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://helm.stackstate.io/ | common | 0.1.4 |
+| https://helm.stackstate.io/ | common | 0.1.8 |
 
 ## Chart Values
 

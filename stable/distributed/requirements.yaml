@@ -1,6 +1,6 @@
 dependencies:
 - name: common
-  repository: file://../common
+  repository: https://helm.stackstate.io
   version: 0.1.8
 - name: elasticsearch
   condition: elasticsearch.enabled
@@ -8,7 +8,7 @@ dependencies:
   version: 7.4.1
 - name: hbase
   condition: hbase.enabled
-  repository: file://../hbase
+  repository: https://helm.stackstate.io
   version: 0.1.13
 - name: kafka
   condition: kafka.enabled
