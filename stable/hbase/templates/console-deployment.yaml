@@ -34,7 +34,6 @@ metadata:
     app.kubernetes.io/component: console
   name: {{ template "common.fullname" . }}-console
 spec:
-  serviceName: {{ template "common.fullname" . }}-console
   replicas: 1
   selector:
     matchLabels:
