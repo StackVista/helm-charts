@@ -38,7 +38,7 @@ stackstate:
           # stackstate.components.all.metrics.servicemonitor.additionalLabels -- Additional labels for targeting Prometheus operator instances.
           additionalLabels: {}
           # stackstate.components.all.metrics.servicemonitor.enabled -- Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled.
-          enabled: true
+          enabled: false
       # stackstate.components.all.elasticsearchEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster.
       elasticsearchEndpoint: ""
       # stackstate.components.all.kafkaEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker.
@@ -253,6 +253,8 @@ stackstate:
 ##############################
 
 elasticsearch:
+  # elasticsearch.clusterHealthCheckParams -- The Elasticsearch cluster health status params that will be used by readinessProbe command
+  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
   # elasticsearch.clusterName -- Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
   clusterName: distributed-elasticsearch
   # elasticsearch.enabled -- Enable / disable chart-based Elasticsearch.
@@ -308,7 +310,7 @@ kafka:
       enabled: true
     serviceMonitor:
       # kafka.metrics.serviceMonitor.enabled -- If `true`, creates a Prometheus Operator `ServiceMonitor` (also requires `kafka.metrics.kafka.enabled` or `kafka.metrics.jmx.enabled` to be `true`).
-      enabled: true
+      enabled: false
       # kafka.metrics.serviceMonitor.interval -- How frequently to scrape metrics.
       interval: 20s
       # kafka.metrics.serviceMonitor.selector -- Selector to target Prometheus instance.
@@ -339,7 +341,7 @@ zookeeper:
     enabled: true
     serviceMonitor:
       # zookeeper.metrics.serviceMonitor.enabled -- Enable creation of `ServiceMonitor` objects for Prometheus operator.
-      enabled: true
+      enabled: false
       # zookeeper.metrics.serviceMonitor.selector -- Default selector to use to target a certain Prometheus instance.
       selector: {}
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.

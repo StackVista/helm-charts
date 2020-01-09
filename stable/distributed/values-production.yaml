@@ -235,6 +235,10 @@ stackstate:
       tolerations: []
       # stackstate.components.ui.affinity -- Affinity settings for pod assignment.
       affinity: {}
+  admin:
+    authentication:
+      # stackstate.admin.authentication.enabled -- Enable basic auth protection for the /admin endpoint.
+      enabled: true
   license:
     # stackstate.license.key -- (string) **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server.
     key:
@@ -249,6 +253,8 @@ stackstate:
 ##############################
 
 elasticsearch:
+  # elasticsearch.clusterHealthCheckParams -- The Elasticsearch cluster health status params that will be used by readinessProbe command
+  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
   # elasticsearch.clusterName -- Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
   clusterName: distributed-elasticsearch
   # elasticsearch.enabled -- Enable / disable chart-based Elasticsearch.

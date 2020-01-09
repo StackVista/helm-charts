@@ -47,6 +47,10 @@ data:
                     route:
                       cluster: "{{ template "common.fullname" . }}-server-main"
                   - match:
+                      prefix: "/stsAgent"
+                    route:
+                      cluster: "{{ template "common.fullname" . }}-receiver"
+                  - match:
                       prefix: "/receiver/"
                     route:
                       cluster: "{{ template "common.fullname" . }}-receiver"
