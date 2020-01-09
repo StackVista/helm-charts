@@ -2,7 +2,7 @@ hbase
 =====
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.15`
+Current chart version is `0.1.16`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -20,9 +20,9 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | all.affinity | object | `{}` | Affinity settings for pod assignment on all components. |
 | all.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods for all components. |
 | all.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object for all components. |
-| all.metrics.enabled | bool | `true` | Enable metrics port. |
+| all.metrics.enabled | bool | `false` | Enable metrics port. |
 | all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
-| all.metrics.servicemonitor.enabled | bool | `true` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
+| all.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
 | all.nodeSelector | object | `{}` | Node labels for pod assignment on all components. |
 | all.tolerations | list | `[]` | Toleration labels for pod assignment on all components. |
 | console.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -109,6 +109,6 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |
 | zookeeper.fourlwCommandsWhitelist | string | `"mntr, ruok, stat, srvr"` | Zookeeper four-letter-word (FLW) commands that are enabled. |
 | zookeeper.metrics.enabled | bool | `true` | Enable / disable Zookeeper Prometheus metrics. |
-| zookeeper.metrics.serviceMonitor.enabled | bool | `true` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |
+| zookeeper.metrics.serviceMonitor.enabled | bool | `false` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |
 | zookeeper.metrics.serviceMonitor.selector | object | `{"release":"prometheus-operator"}` | Default selector to use to target a certain Prometheus instance. |
 | zookeeper.replicaCount | int | `1` | Default amount of Zookeeper replicas to provision. |

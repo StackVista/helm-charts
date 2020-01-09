@@ -10,12 +10,12 @@ all:
     secret: {}
   metrics:
     # all.metrics.enabled -- Enable metrics port.
-    enabled: true
+    enabled: false
     servicemonitor:
       # all.metrics.servicemonitor.additionalLabels -- Additional labels for targeting Prometheus operator instances.
       additionalLabels: {}
       # all.metrics.servicemonitor.enabled -- Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled.
-      enabled: true
+      enabled: false
   # all.nodeSelector -- Node labels for pod assignment on all components.
   nodeSelector: {}
   # all.tolerations -- Toleration labels for pod assignment on all components.
@@ -261,7 +261,7 @@ zookeeper:
     enabled: true
     serviceMonitor:
       # zookeeper.metrics.serviceMonitor.enabled -- Enable creation of `ServiceMonitor` objects for Prometheus operator.
-      enabled: true
+      enabled: false
       # zookeeper.metrics.serviceMonitor.selector -- Default selector to use to target a certain Prometheus instance.
       selector:
         release: prometheus-operator
