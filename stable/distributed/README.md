@@ -2,7 +2,7 @@ distributed
 ===========
 Helm chart for StackState distributed -- all components split into microservices.
 
-Current chart version is `0.3.3`
+Current chart version is `0.3.4`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -54,6 +54,7 @@ stackstate/distributed
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
 | kafka.enabled | bool | `true` | Enable / disable chart-based Kafka. |
 | kafka.externalZookeeper.servers | string | `"distributed-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
+| kafka.image.tag | string | `"2.3.1-debian-9-r41"` | Default tag used for Kafka. **Since StackState relies on this specific version, it's advised NOT to change this.** |
 | kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
 | kafka.metrics.jmx.enabled | bool | `true` | Whether or not to expose JMX metrics to Prometheus. |
 | kafka.metrics.kafka.enabled | bool | `true` | Whether or not to create a standalone Kafka exporter to expose Kafka metrics. |

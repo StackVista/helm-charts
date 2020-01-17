@@ -17,9 +17,11 @@ securityContext:
 command:
 - bash
 - -c
-- |-
+- |
   {{ .Files.Get "scripts/job-kafka-topic-create.sh" | nindent 2 }}
 env:
+- name: KAFKA_REPLICAS
+  value: {{ .Values.kafka.replicaCount | quote }}
 - name: KAFKA_BROKERS
   value: {{ include "distributed.kafka.endpoint" . | quote }}
 - name: ZOOKEEPER_QUORUM
