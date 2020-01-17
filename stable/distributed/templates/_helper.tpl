@@ -214,3 +214,75 @@ Router configmap checksum annotations
 {{- define "distributed.router.configmap.checksum" -}}
 checksum/router-configmap: {{ include (print $.Template.BasePath "/configmap-router.yaml") . | sha256sum }}
 {{- end -}}
+
+{{/*
+Ingress paths / routes
+*/}}
+{{- define "distributed.ingress.rules" -}}
+{{- if .Values.ingress.hosts }}
+  {{- range .Values.ingress.hosts }}
+- host: {{ .host | quote }}
+  http:
+    paths:
+      - backend:
+          serviceName: {{ include "common.fullname" $ }}-server
+          servicePort: 7071
+        path: /admin/?(.*)
+      - backend:
+          serviceName: {{ include "common.fullname" $ }}-server
+          servicePort: 7070
+        path: /?(api/.*)
+      - backend:
+          serviceName: {{ include "common.fullname" $ }}-server
+          servicePort: 7070
+        path: /?(loginCallback)
+      - backend:
+          serviceName: {{ include "common.fullname" $ }}-server
+          servicePort: 7070
+        path: /?(loginInfo)
+      - backend:
+          serviceName: {{ include "common.fullname" $ }}-server
+          servicePort: 7070
+        path: /?(logout)
+      - backend:
+          serviceName: {{ include "common.fullname" $ }}-receiver
+          servicePort: 7077
+        path: /receiver/?(.*)
+      - backend:
+          serviceName: {{ include "common.fullname" $ }}-ui
+          servicePort: 8080
+        path: /?(.*)
+  {{- end }}
+{{- else }}
+- http:
+    paths:
+      - backend:
+          serviceName: {{ include "common.fullname" . }}-server
+          servicePort: 7071
+        path: /admin/?(.*)
+      - backend:
+          serviceName: {{ include "common.fullname" . }}-server
+          servicePort: 7070
+        path: /?(api/.*)
+      - backend:
+          serviceName: {{ include "common.fullname" . }}-server
+          servicePort: 7070
+        path: /?(loginCallback)
+      - backend:
+          serviceName: {{ include "common.fullname" . }}-server
+          servicePort: 7070
+        path: /?(loginInfo)
+      - backend:
+          serviceName: {{ include "common.fullname" . }}-server
+          servicePort: 7070
+        path: /?(logout)
+      - backend:
+          serviceName: {{ include "common.fullname" . }}-receiver
+          servicePort: 7077
+        path: /receiver/?(.*)
+      - backend:
+          serviceName: {{ include "common.fullname" . }}-ui
+          servicePort: 8080
+        path: /?(.*)
+{{- end }}
+{{- end -}}

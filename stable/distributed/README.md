@@ -2,7 +2,7 @@ distributed
 ===========
 Helm chart for StackState distributed -- all components split into microservices.
 
-Current chart version is `0.3.2`
+Current chart version is `0.3.3`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
