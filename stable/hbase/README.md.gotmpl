@@ -1,0 +1,14 @@
+{{ template "chart.header" . }}
+{{ template "chart.description" . }}
+
+{{ template "chart.versionLine" . }}
+
+{{ template "chart.sourceLinkLine" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+## High-availability for Namenodes
+
+This chart uses the [HDFS High Availability Using the Quorum Journal Manager](http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html) feature to achieve high-availability for the HDFS name nodes. It is recommended that if you set `hdfs.namenode.highAvailability.enabled` to `true`, you also set `hdfs.namenode.replicaCount` to `3`.
+
+{{ template "chart.valuesSection" . }}

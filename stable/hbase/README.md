@@ -2,7 +2,7 @@ hbase
 =====
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.16`
+Current chart version is `0.2.0`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -12,6 +12,10 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 |------------|------|---------|
 | https://charts.bitnami.com | zookeeper | 5.1.1 |
 | https://helm.stackstate.io/ | common | 0.1.8 |
+
+## High-availability for Namenodes
+
+This chart uses the [HDFS High Availability Using the Quorum Journal Manager](http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html) feature to achieve high-availability for the HDFS name nodes. It is recommended that if you set `hdfs.namenode.highAvailability.enabled` to `true`, you also set `hdfs.namenode.replicaCount` to `3`.
 
 ## Chart Values
 
@@ -31,7 +35,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | console.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | console.image.pullPolicy | string | `"Always"` | Pull policy for Tephra pods. |
 | console.image.repository | string | `"quay.io/stackstate/stackgraph-console"` | Base container image repository for Tephra pods. |
-| console.image.tag | string | `"1.0.0"` | Default container image tag for Tephra pods. |
+| console.image.tag | string | `"1.2.1"` | Default container image tag for Tephra pods. |
 | console.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | console.resources | object | `{}` | Resources to allocate for HDFS data nodes. |
 | console.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -40,7 +44,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hbase.master.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | hbase.master.image.pullPolicy | string | `"Always"` | Pull policy for HBase masters. |
 | hbase.master.image.repository | string | `"quay.io/stackstate/hbase-master"` | Base container image repository for HBase masters. |
-| hbase.master.image.tag | string | `"1.0.0"` | Default container image tag for HBase masters. |
+| hbase.master.image.tag | string | `"1.2.1"` | Default container image tag for HBase masters. |
 | hbase.master.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hbase.master.replicaCount | int | `1` | Number of pods for HBase masters. |
 | hbase.master.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"1Gi"}}` | Resources to allocate for HBase masters. |
@@ -50,7 +54,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hbase.regionserver.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | hbase.regionserver.image.pullPolicy | string | `"Always"` | Pull policy for HBase region servers. |
 | hbase.regionserver.image.repository | string | `"quay.io/stackstate/hbase-regionserver"` | Base container image repository for HBase region servers. |
-| hbase.regionserver.image.tag | string | `"1.0.0"` | Default container image tag for HBase region servers. |
+| hbase.regionserver.image.tag | string | `"1.2.1"` | Default container image tag for HBase region servers. |
 | hbase.regionserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hbase.regionserver.replicaCount | int | `1` | Number of HBase regionserver nodes. |
 | hbase.regionserver.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"memory":"2Gi"}}` | Resources to allocate for HBase region servers. |
@@ -73,15 +77,17 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hdfs.namenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.namenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hdfs.namenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| hdfs.namenode.highAvailability.enabled | bool | `false` | Enable / disable high availability for name nodes. |
 | hdfs.namenode.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hdfs.namenode.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for HDFS name nodes. |
 | hdfs.namenode.persistence.enabled | bool | `true` | Enable persistence for HDFS name nodes. |
 | hdfs.namenode.persistence.size | string | `"20Gi"` | Size of volume for HDFS name nodes. |
 | hdfs.namenode.persistence.storageClass | string | `"default"` | Storage class of the volume for HDFS name nodes. |
+| hdfs.namenode.replicaCount | int | `1` | Number of HDFS name nodes. **NOTE** This is only considered if `hdfs.namenode.highAvailability.enabled` is set to `true`. |
 | hdfs.namenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"1Gi"}}` | Resources to allocate for HDFS name nodes. |
 | hdfs.namenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.secondarynamenode.affinity | object | `{}` | Affinity settings for pod assignment. |
-| hdfs.secondarynamenode.enabled | bool | `false` | Enable / disable secondary name nodes. |
+| hdfs.secondarynamenode.enabled | bool | `true` | Enable / disable secondary name nodes. **NOTE** Secondary name nodes are turned off completely if `hdfs.namenode.highAvailability.enabled` is set to `true`. See http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html#Hardware_resources for more information. |
 | hdfs.secondarynamenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hdfs.secondarynamenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | hdfs.secondarynamenode.nodeSelector | object | `{}` | Node labels for pod assignment. |
@@ -100,7 +106,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | tephra.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | tephra.image.pullPolicy | string | `"Always"` | Pull policy for Tephra pods. |
 | tephra.image.repository | string | `"quay.io/stackstate/tephra-server"` | Base container image repository for Tephra pods. |
-| tephra.image.tag | string | `"1.0.0"` | Default container image tag for Tephra pods. |
+| tephra.image.tag | string | `"1.2.1"` | Default container image tag for Tephra pods. |
 | tephra.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | tephra.replicaCount | int | `1` | Number of pods for Tephra pods. |
 | tephra.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"memory":"2Gi"}}` | Resources to allocate for Tephra pods. |

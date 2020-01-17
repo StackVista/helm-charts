@@ -37,7 +37,7 @@ console:
     # console.image.repository -- Base container image repository for Tephra pods.
     repository: quay.io/stackstate/stackgraph-console
     # console.image.tag -- Default container image tag for Tephra pods.
-    tag: "1.0.0"
+    tag: "1.2.1"
   # console.resources -- Resources to allocate for HDFS data nodes.
   resources: {}
   # console.nodeSelector -- Node labels for pod assignment.
@@ -60,7 +60,7 @@ hbase:
       # hbase.master.image.repository -- Base container image repository for HBase masters.
       repository: quay.io/stackstate/hbase-master
       # hbase.master.image.tag -- Default container image tag for HBase masters.
-      tag: "1.0.0"
+      tag: "1.2.1"
     # hbase.master.replicaCount -- Number of pods for HBase masters.
     replicaCount: 2
     # hbase.master.resources -- Resources to allocate for HBase masters.
@@ -87,7 +87,7 @@ hbase:
       # hbase.regionserver.image.repository -- Base container image repository for HBase region servers.
       repository: quay.io/stackstate/hbase-regionserver
       # hbase.regionserver.image.tag -- Default container image tag for HBase region servers.
-      tag: "1.0.0"
+      tag: "1.2.1"
     # hbase.regionserver.replicaCount -- Number of HBase regionserver nodes.
     replicaCount: 3
     # hbase.regionserver.resources -- Resources to allocate for HBase region servers.
@@ -149,6 +149,9 @@ hdfs:
       open: {}
       # hdfs.namenode.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
       secret: {}
+    highAvailability:
+      # hdfs.namenode.highAvailability.enabled -- Enable / disable high availability for name nodes.
+      enabled: true
     persistence:
       # hdfs.namenode.persistence.accessModes -- Access mode for HDFS name nodes.
       accessModes: ["ReadWriteOnce"]
@@ -158,6 +161,8 @@ hdfs:
       size: 20Gi
       # hdfs.namenode.persistence.storageClass -- Storage class of the volume for HDFS name nodes.
       storageClass: default
+    # hdfs.namenode.replicaCount -- Number of HDFS name nodes. **NOTE** This is only considered if `hdfs.namenode.highAvailability.enabled` is set to `true`.
+    replicaCount: 3
     # hdfs.namenode.resources -- Resources to allocate for HDFS name nodes.
     resources:
       limits:
@@ -176,8 +181,8 @@ hdfs:
       open: {}
       # hdfs.secondarynamenode.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
       secret: {}
-    # hdfs.secondarynamenode.enabled -- Enable / disable secondary name nodes.
-    enabled: true
+    # hdfs.secondarynamenode.enabled -- Enable / disable secondary name nodes. **NOTE** Secondary name nodes are turned off completely if `hdfs.namenode.highAvailability.enabled` is set to `true`. See http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-hdfs/HDFSHighAvailabilityWithQJM.html#Hardware_resources for more information.
+    enabled: false
     persistence:
       # hdfs.secondarynamenode.persistence.accessModes -- Access mode for HDFS secondary name nodes.
       accessModes: ["ReadWriteOnce"]
@@ -212,7 +217,7 @@ tephra:
     # tephra.image.repository -- Base container image repository for Tephra pods.
     repository: quay.io/stackstate/tephra-server
     # tephra.image.tag -- Default container image tag for Tephra pods.
-    tag: "1.0.0"
+    tag: "1.2.1"
   # tephra.replicaCount -- Number of pods for Tephra pods.
   replicaCount: 2
   # tephra.resources -- Resources to allocate for Tephra pods.
