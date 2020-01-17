@@ -124,7 +124,7 @@ spec:
 {{- end }}
 {{- end -}}
 
-{{- if .Values.hdfs.secondarynamenode.enabled -}}
+{{- if and (.Values.hdfs.secondarynamenode.enabled) (not .Values.hdfs.namenode.highAvailability.enabled) -}}
 {{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
 {{- $stackstateHbaseHdfsSecondaryNamenodeStatefulSet := fromYaml (include "hbase.hdfs.secondarynamenode.statefulset" .) -}}
 {{- toYaml (merge $stackstateHbaseHdfsSecondaryNamenodeStatefulSet $commonStatefulSet) -}}
