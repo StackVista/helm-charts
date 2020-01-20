@@ -293,3 +293,18 @@ Console extra environment variables for all processes inherited through `console
   {{- end }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Sidecar container block for namenode leader election
+*/}}
+{{- define "hbase.hdfs.namenode.container.sidecarLeaderElection" -}}
+name: leader-election
+image: k8s.gcr.io/leader-elector:0.5
+args:
+- --election={{ template "common.fullname" . }}-hdfs-nn
+- --http=0.0.0.0:4040
+imagePullPolicy: Always
+ports:
+- containerPort: 4040
+  name: leader
+{{- end -}}

@@ -41,9 +41,17 @@ livenessProbe:
     path: /
     port: nninfo
 readinessProbe:
+{{- if .Values.hdfs.namenode.highAvailability.enabled }}
+  exec:
+    command:
+    - /bin/sh
+    - -c
+    - curl --silent http://localhost:4040/ 2>&1 | grep $HOSTNAME
+{{- else }}
   httpGet:
     path: /
     port: nninfo
+{{- end }}
 {{- with .Values.hdfs.namenode.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
@@ -68,8 +76,11 @@ metadata:
     app.kubernetes.io/component: hdfs-nn
   name: {{ template "common.fullname" . }}-hdfs-nn
 spec:
+  podManagementPolicy: Parallel
   serviceName: {{ template "common.fullname" . }}-hdfs-nn
-  replicas: 1
+{{- if .Values.hdfs.namenode.highAvailability.enabled }}
+  replicas: {{ .Values.hdfs.namenode.replicaCount }}
+{{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/component: hdfs-nn
@@ -82,6 +93,9 @@ spec:
       - {{ toYaml $stackstateHbaseHdfsNamenodeInitContainer | nindent 8 }}
       containers:
       - {{ toYaml $stackstateHbaseHdfsNamenodeContainer | nindent 8 }}
+    {{- if .Values.hdfs.namenode.highAvailability.enabled }}
+      - {{ include "hbase.hdfs.namenode.container.sidecarLeaderElection" . | nindent 8 }}
+    {{- end }}
     {{- if or .Values.all.nodeSelector .Values.hdfs.namenode.nodeSelector }}
       nodeSelector:
       {{- with .Values.all.nodeSelector }}

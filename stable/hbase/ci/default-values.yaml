@@ -7,6 +7,10 @@ hbase:
     metrics:
       servicemonitor:
         enabled: true
+hdfs:
+  namenode:
+    highAvailability:
+      enabled: true
 tephra:
   metrics:
     servicemonitor:
