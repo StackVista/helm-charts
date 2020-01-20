@@ -1,3 +1,8 @@
+all:
+  metrics:
+    enabled: true
+  servicemonitor:
+    enabled: true
 hbase:
   master:
     metrics:
@@ -15,3 +20,5 @@ tephra:
   metrics:
     servicemonitor:
       enabled: true
+zookeeper:
+  enabled: true

@@ -30,8 +30,10 @@ parent chart.
 Common environment variables for HDFS configuration.
 */}}
 {{- define "hbase.hdfs.commonEnv" }}
+{{ $clusterName := include "common.fullname" . }}
+{{ $clusterNameNoDashes := include "common.fullname" . | replace "-" "" }}
 - name: CORE_CONF_fs_defaultFS
-  value: "hdfs://{{ template "common.fullname" . }}-hdfs-nn:9000/"
+  value: "hdfs://{{ $clusterName }}-hdfs-nn:9000/"
 - name: HDFS_CONF_dfs_client_retry_policy_enabled
   value: "true"
 - name: HDFS_CONF_dfs_client_retry_policy_spec
@@ -64,12 +66,33 @@ Common environment variables for HDFS configuration.
   value: "2"
 - name: HDFS_CONF_dfs_secondary_http_address
   value: "0.0.0.0:50090"
+{{- if .Values.hdfs.namenode.highAvailability.enabled }}
+- name: CORE_CONF_ha_zookeeper_quorum
+  value: "{{ include "hbase.zookeeper.endpoint" . }}:2181"
+- name: HDFS_CONF_dfs_ha_automatic___failover_enabled
+  value: "true"
+- name: HDFS_CONF_dfs_ha_fencing_methods
+  value: "shell(/bin/true)"
+- name: HDFS_CONF_dfs_ha_namenodes_{{ $clusterNameNoDashes }}
+  value: "{{ range $k, $v := until (int .Values.hdfs.namenode.replicaCount) }}{{ if $k }},{{ end }}nn{{ $v }}{{ end }}"
+- name: HDFS_CONF_dfs_journalnode_edits_dir
+  value: "/hadoop-data"
+  {{- range $k, $v := until (int .Values.hdfs.namenode.replicaCount) }}
+- name: HDFS_CONF_dfs_namenode_rpc___address_{{ $clusterNameNoDashes }}_nn{{ $v }}
+  value: "{{ $clusterName }}-hdfs-nn-{{ $v }}:9000"
+  {{- end }}
+- name: HDFS_CONF_dfs_nameservices
+  value: {{ $clusterNameNoDashes | quote }}
+- name: HDFS_CONF_dfs_namenode_shared_edits_dir
+  value: "qjournal://{{ range $k, $v := until (int .Values.hdfs.namenode.replicaCount) }}{{ if $k }};{{ end }}{{ $clusterName }}-hdfs-jn-{{ $v }}:8485{{ end }}/{{ $clusterNameNoDashes }}"
 {{- end }}
+{{- end -}}
 
 {{/*
 Common environment variables for HBase configuration.
 */}}
 {{- define "hbase.hbase.commonEnv" }}
+{{ $clusterName := include "common.fullname" . }}
 - name: HBASE_CONF_data_tx_bind_address
   value: "0.0.0.0"
 - name: HBASE_CONF_data_tx_bind_port
@@ -105,7 +128,7 @@ Common environment variables for HBase configuration.
 - name: HBASE_CONF_hbase_hregion_majorcompaction
   value: "86400000"
 - name: HBASE_CONF_hbase_master
-  value: "{{ template "common.fullname" . }}-hbase-master:16000"
+  value: "{{ $clusterName }}-hbase-master:16000"
 - name: HBASE_CONF_hbase_master_ipc_address
   value: "0.0.0.0"
 - name: HBASE_CONF_hbase_offpeak_end_hour
@@ -119,7 +142,7 @@ Common environment variables for HBase configuration.
 - name: HBASE_CONF_hbase_regionserver_ipc_address
   value: "0.0.0.0"
 - name: HBASE_CONF_hbase_rootdir
-  value: "hdfs://{{ template "common.fullname" . }}-hdfs-nn:9000/hbase"
+  value: "hdfs://{{ $clusterName }}-hdfs-nn:9000/hbase"
 - name: HBASE_CONF_hbase_zookeeper_quorum
   value: {{ include "hbase.zookeeper.endpoint" . | quote }}
 - name: HBASE_CONF_zookeeper_znode_parent
@@ -205,6 +228,27 @@ HDFS datanode extra environment variables for all processes inherited through `h
   valueFrom:
     secretKeyRef:
       name: {{ template "common.fullname" $ }}-hdfs-dn
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+HDFS journalnode extra environment variables for all processes inherited through `hdfs.journalnode.extraEnv`
+*/}}
+{{- define "hdfs.journalnode.commonEnv" -}}
+{{- if .Values.hdfs.journalnode.extraEnv.open }}
+  {{- range $key, $value := .Values.hdfs.journalnode.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.hdfs.journalnode.extraEnv.secret }}
+  {{- range $key, $value := .Values.hdfs.journalnode.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname" $ }}-hdfs-jn
       key: {{ $key }}
   {{- end }}
 {{- end }}

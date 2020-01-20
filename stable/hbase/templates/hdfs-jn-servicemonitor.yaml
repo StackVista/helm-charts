@@ -1,0 +1,19 @@
+{{- define "hbase.hdfs.journalnode.servicemonitor" -}}
+metadata:
+  labels:
+    app.kubernetes.io/component: hdfs-jn
+  {{- with .Values.all.metrics.servicemonitor.additionalLabels }}
+    {{ toYaml . | nindent 4 }}
+  {{- end }}
+  name: {{ template "common.fullname" . }}-hdfs-jn
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: hdfs-jn
+{{- end -}}
+
+{{- if and ( .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" ) (.Values.hdfs.namenode.highAvailability.enabled) ( .Values.all.metrics.enabled ) ( .Values.all.metrics.servicemonitor.enabled ) }}
+{{- $commonServiceMonitor := fromYaml (include "common.servicemonitor" .) -}}
+{{- $stackstateHbaseHdfsJournalnodeServceMonitor := fromYaml (include "hbase.hdfs.journalnode.servicemonitor" .) -}}
+{{- toYaml (merge $stackstateHbaseHdfsJournalnodeServceMonitor $commonServiceMonitor) -}}
+{{- end -}}

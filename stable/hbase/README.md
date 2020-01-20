@@ -74,6 +74,17 @@ This chart uses the [HDFS High Availability Using the Quorum Journal Manager](ht
 | hdfs.image.pullPolicy | string | `"Always"` | Pull policy for HDFS datanode. |
 | hdfs.image.repository | string | `"quay.io/stackstate/hadoop"` | Base container image repository for HDFS datanode. |
 | hdfs.image.tag | string | `"2.9.2-java11"` | Default container image tag for HDFS datanode. |
+| hdfs.journalnode.affinity | object | `{}` | Affinity settings for pod assignment. |
+| hdfs.journalnode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| hdfs.journalnode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| hdfs.journalnode.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| hdfs.journalnode.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for HDFS data nodes. |
+| hdfs.journalnode.persistence.enabled | bool | `true` | Enable persistence for HDFS data nodes. |
+| hdfs.journalnode.persistence.size | string | `"8Gi"` | Size of volume for HDFS data nodes. |
+| hdfs.journalnode.persistence.storageClass | string | `"default"` | Storage class of the volume for HDFS data nodes. |
+| hdfs.journalnode.replicaCount | int | `3` | Number of HDFS data nodes. |
+| hdfs.journalnode.resources | object | `{"limits":{"memory":"256Mi"},"requests":{"memory":"128Mi"}}` | Resources to allocate for HDFS data nodes. |
+| hdfs.journalnode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.namenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.namenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hdfs.namenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |

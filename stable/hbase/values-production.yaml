@@ -143,6 +143,35 @@ hdfs:
     tolerations: []
     # hdfs.datanode.affinity -- Affinity settings for pod assignment.
     affinity: {}
+  journalnode:
+    extraEnv:
+      # hdfs.journalnode.extraEnv.open -- Extra open environment variables to inject into pods.
+      open: {}
+      # hdfs.journalnode.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+      secret: {}
+    persistence:
+      # hdfs.journalnode.persistence.accessModes -- Access mode for HDFS data nodes.
+      accessModes: ["ReadWriteOnce"]
+      # hdfs.journalnode.persistence.enabled -- Enable persistence for HDFS data nodes.
+      enabled: true
+      # hdfs.journalnode.persistence.size -- Size of volume for HDFS data nodes.
+      size: 8Gi
+      # hdfs.journalnode.persistence.storageClass -- Storage class of the volume for HDFS data nodes.
+      storageClass: default
+    # hdfs.journalnode.replicaCount -- Number of HDFS data nodes.
+    replicaCount: 3
+    # hdfs.journalnode.resources -- Resources to allocate for HDFS data nodes.
+    resources:
+      limits:
+        memory: "256Mi"
+      requests:
+        memory: "128Mi"
+    # hdfs.journalnode.nodeSelector -- Node labels for pod assignment.
+    nodeSelector: {}
+    # hdfs.journalnode.tolerations -- Toleration labels for pod assignment.
+    tolerations: []
+    # hdfs.journalnode.affinity -- Affinity settings for pod assignment.
+    affinity: {}
   namenode:
     extraEnv:
       # hdfs.namenode.extraEnv.open -- Extra open environment variables to inject into pods.
