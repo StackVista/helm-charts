@@ -1,0 +1,27 @@
+{{- define "common.clusterrolebinding" -}}
+{{- $common := dict "Values" .Values.common -}}
+{{- $noCommon := omit .Values "common" -}}
+{{- $overrides := dict "Values" $noCommon -}}
+{{- $noValues := omit . "Values" -}}
+{{- with merge $noValues $overrides $common -}}
+apiVersion: {{ .Values.clusterrolebinding.apiVersion }}
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    {{- include "common.annotations.gitlab" . | nindent 4 }}
+  {{- with .Values.clusterrolebinding.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  name: {{ template "common.fullname" . }}
+  labels:
+    {{- include "common.labels.standard" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "common.fullname" . }}
+subjects:
+- name: {{ template "common.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  kind: ServiceAccount
+{{- end -}}
+{{- end -}}

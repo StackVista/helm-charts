@@ -1,5 +1,17 @@
 # Default values for commons.
 
+clusterrole:
+  # clusterrole.annotations -- Annotations for `ClusterRole` objects.
+  annotations: {}
+  # clusterrole.apiVersion -- Kubernetes apiVersion to use with a `ClusterRole` object.
+  apiVersion: "rbac.authorization.k8s.io/v1"
+
+clusterrolebinding:
+  # clusterrolebinding.annotations -- Annotations for `ClusterRoleBinding` objects.
+  annotations: {}
+  # clusterrolebinding.apiVersion -- Kubernetes apiVersion to use with a `ClusterRoleBinding` object.
+  apiVersion: "rbac.authorization.k8s.io/v1"
+
 configmap:
   # configmap.annotations -- Annotations for `ConfigMap` objects.
   annotations: {}
