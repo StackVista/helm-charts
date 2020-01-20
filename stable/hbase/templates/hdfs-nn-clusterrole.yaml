@@ -1,0 +1,14 @@
+{{- define "hbase.hdfs.namenode.clusterrole" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-hdfs-nn
+rules:
+- apiGroups: [""]
+  resources: ["endpoints"]
+  verbs: ["*"]
+{{- end -}}
+
+{{- if .Values.hdfs.namenode.highAvailability.enabled -}}
+{{- $commonClusterRole := fromYaml (include "common.clusterrole" .) -}}
+{{- $stackstateHbaseHdfsNamenodeClusterRole := fromYaml (include "hbase.hdfs.namenode.clusterrole" .) -}}
+{{- toYaml (merge $stackstateHbaseHdfsNamenodeClusterRole $commonClusterRole) -}}
+{{- end -}}

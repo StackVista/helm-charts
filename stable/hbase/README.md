@@ -11,7 +11,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.bitnami.com | zookeeper | 5.1.1 |
-| https://helm.stackstate.io/ | common | 0.2.0 |
+| https://helm.stackstate.io/ | common | 0.3.0 |
 
 ## High-availability for Namenodes
 

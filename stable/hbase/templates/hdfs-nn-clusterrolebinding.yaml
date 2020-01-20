@@ -1,0 +1,16 @@
+{{- define "hbase.hdfs.namenode.clusterrolebinding" -}}
+metadata:
+  name: {{ template "common.fullname" . }}-hdfs-nn
+roleRef:
+  name: {{ template "common.fullname" . }}-hdfs-nn
+subjects:
+- name: {{ template "common.fullname" . }}-hdfs-nn
+  namespace: {{ .Release.Namespace }}
+  kind: ServiceAccount
+{{- end -}}
+
+{{- if .Values.hdfs.namenode.highAvailability.enabled -}}
+{{- $commonClusterRoleBinding := fromYaml (include "common.clusterrolebinding" .) -}}
+{{- $stackstateHbaseHdfsNamenodeClusterRoleBinding := fromYaml (include "hbase.hdfs.namenode.clusterrolebinding" .) -}}
+{{- toYaml (merge $stackstateHbaseHdfsNamenodeClusterRoleBinding $commonClusterRoleBinding) -}}
+{{- end -}}
