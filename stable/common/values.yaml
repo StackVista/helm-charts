@@ -253,6 +253,12 @@ service:
   # service.type -- Kubernetes 'Service' type to use.
   type: ClusterIP
 
+serviceaccount:
+  # serviceaccount.annotations -- Annotations for `ServiceAccount` objects.
+  annotations: {}
+  # serviceaccount.apiVersion -- Kubernetes apiVersion to use with a `ServiceAccount` object.
+  apiVersion: "v1"
+
 servicemonitor:
   # servicemonitor.annotations -- Annotations for `ServiceMonitor` objects.
   annotations: {}

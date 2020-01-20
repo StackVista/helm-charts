@@ -10,4 +10,4 @@ maintainers:
 - name: sc250024
   email: scrooks@stackstate.com
 name: common
-version: 0.1.8
+version: 0.2.0
