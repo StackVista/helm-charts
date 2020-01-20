@@ -2,7 +2,7 @@ common
 ======
 Common chartbuilding components and helpers
 
-Current chart version is `0.1.8`
+Current chart version is `0.3.0`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -12,6 +12,10 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| clusterrole.annotations | object | `{}` | Annotations for `ClusterRole` objects. |
+| clusterrole.apiVersion | string | `"rbac.authorization.k8s.io/v1"` | Kubernetes apiVersion to use with a `ClusterRole` object. |
+| clusterrolebinding.annotations | object | `{}` | Annotations for `ClusterRoleBinding` objects. |
+| clusterrolebinding.apiVersion | string | `"rbac.authorization.k8s.io/v1"` | Kubernetes apiVersion to use with a `ClusterRoleBinding` object. |
 | configmap.annotations | object | `{}` | Annotations for `ConfigMap` objects. |
 | configmap.apiVersion | string | `"v1"` | Kubernetes apiVersion to use with a `ConfigMap` object. |
 | container.livenessProbeDefaults.enabled | bool | `false` | Enable default options of `livenessProbe` check. |
@@ -104,6 +108,8 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | service.loadBalancerSourceRanges | list | `[]` |  |
 | service.ports | list | `[]` | List of ports to apply to the `Service` object. |
 | service.type | string | `"ClusterIP"` | Kubernetes 'Service' type to use. |
+| serviceaccount.annotations | object | `{}` | Annotations for `ServiceAccount` objects. |
+| serviceaccount.apiVersion | string | `"v1"` | Kubernetes apiVersion to use with a `ServiceAccount` object. |
 | servicemonitor.annotations | object | `{}` | Annotations for `ServiceMonitor` objects. |
 | servicemonitor.apiVersion | string | `"monitoring.coreos.com/v1"` | Kubernetes apiVersion to use with a `ServiceMonitor` object. |
 | servicemonitor.interval | string | `"20s"` | Default interval used on `Service` objects for monitoring through a `ServiceMonitor` object. |
