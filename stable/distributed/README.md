@@ -2,7 +2,7 @@ distributed
 ===========
 Helm chart for StackState distributed -- all components split into microservices.
 
-Current chart version is `0.3.4`
+Current chart version is `0.3.5`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -87,7 +87,7 @@ stackstate/distributed
 | stackstate.components.correlate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.correlate.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `correlate` pods. |
 | stackstate.components.correlate.replicaCount | int | `1` | Number of `correlate` replicas. |
-| stackstate.components.correlate.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"1Gi"}}` | Resource allocation for `correlate` pods. |
+| stackstate.components.correlate.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"memory":"2Gi"}}` | Resource allocation for `correlate` pods. |
 | stackstate.components.correlate.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.k2es.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.k2es.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |

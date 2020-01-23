@@ -70,9 +70,9 @@ stackstate:
       # stackstate.components.correlate.resources -- Resource allocation for `correlate` pods.
       resources:
         limits:
-          memory: "1Gi"
+          memory: "2Gi"
         requests:
-          memory: "1Gi"
+          memory: "2Gi"
       # stackstate.components.correlate.replicaCount -- Number of `correlate` replicas.
       replicaCount: 1
       # stackstate.components.correlate.nodeSelector -- Node labels for pod assignment.

@@ -4,7 +4,7 @@ command:
 - sh
 - -c
 - |
-  /entrypoint -c {{ include "distributed.es.endpoint" . }},{{ include "distributed.kafka.endpoint" . }},{{ include "distributed.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn:9000 -t 300
+  /entrypoint -c {{ include "distributed.kafka.endpoint" . }},{{ include "distributed.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn:9000 -t 300
 image: "docker.io/dokkupaas/wait:latest"
 imagePullPolicy: Always
 {{- end -}}
