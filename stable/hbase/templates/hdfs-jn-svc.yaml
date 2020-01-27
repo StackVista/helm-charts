@@ -9,6 +9,8 @@ spec:
   ports:
   - port: 8485
     name: jn
+  - port: 8480
+    name: jninfo
 {{- if .Values.all.metrics.enabled }}
   - port: 9404
     name: metrics

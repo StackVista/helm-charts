@@ -67,7 +67,7 @@ This chart uses the [HDFS High Availability Using the Quorum Journal Manager](ht
 | hdfs.datanode.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for HDFS data nodes. |
 | hdfs.datanode.persistence.enabled | bool | `true` | Enable persistence for HDFS data nodes. |
 | hdfs.datanode.persistence.size | string | `"250Gi"` | Size of volume for HDFS data nodes. |
-| hdfs.datanode.persistence.storageClass | string | `""` | Storage class of the volume for HDFS data nodes. |
+| hdfs.datanode.persistence.storageClass | string | `"gp2"` | Storage class of the volume for HDFS data nodes. |
 | hdfs.datanode.replicaCount | int | `1` | Number of HDFS data nodes. |
 | hdfs.datanode.resources | object | `{"limits":{"memory":"4Gi"},"requests":{"memory":"2Gi"}}` | Resources to allocate for HDFS data nodes. |
 | hdfs.datanode.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -81,7 +81,7 @@ This chart uses the [HDFS High Availability Using the Quorum Journal Manager](ht
 | hdfs.journalnode.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for HDFS journal nodes. |
 | hdfs.journalnode.persistence.enabled | bool | `true` | Enable persistence for HDFS journal nodes. |
 | hdfs.journalnode.persistence.size | string | `"8Gi"` | Size of volume for HDFS journal nodes. |
-| hdfs.journalnode.persistence.storageClass | string | `""` | Storage class of the volume for HDFS journal nodes. |
+| hdfs.journalnode.persistence.storageClass | string | `"gp2"` | Storage class of the volume for HDFS journal nodes. |
 | hdfs.journalnode.replicaCount | int | `3` | Number of HDFS journal nodes. |
 | hdfs.journalnode.resources | object | `{"limits":{"memory":"256Mi"},"requests":{"memory":"128Mi"}}` | Resources to allocate for HDFS journal nodes. |
 | hdfs.journalnode.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -93,7 +93,7 @@ This chart uses the [HDFS High Availability Using the Quorum Journal Manager](ht
 | hdfs.namenode.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for HDFS name nodes. |
 | hdfs.namenode.persistence.enabled | bool | `true` | Enable persistence for HDFS name nodes. |
 | hdfs.namenode.persistence.size | string | `"20Gi"` | Size of volume for HDFS name nodes. |
-| hdfs.namenode.persistence.storageClass | string | `""` | Storage class of the volume for HDFS name nodes. |
+| hdfs.namenode.persistence.storageClass | string | `"gp2"` | Storage class of the volume for HDFS name nodes. |
 | hdfs.namenode.replicaCount | int | `1` | Number of HDFS name nodes. **NOTE** This is only considered if `hdfs.namenode.highAvailability.enabled` is set to `true`. |
 | hdfs.namenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"1Gi"}}` | Resources to allocate for HDFS name nodes. |
 | hdfs.namenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -105,7 +105,7 @@ This chart uses the [HDFS High Availability Using the Quorum Journal Manager](ht
 | hdfs.secondarynamenode.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.persistence.enabled | bool | `true` | Enable persistence for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.persistence.size | string | `"20Gi"` | Size of volume for HDFS secondary name nodes. |
-| hdfs.secondarynamenode.persistence.storageClass | string | `""` | Storage class of the volume for HDFS secondary name nodes. |
+| hdfs.secondarynamenode.persistence.storageClass | string | `"gp2"` | Storage class of the volume for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"1Gi"}}` | Resources to allocate for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all containers. |

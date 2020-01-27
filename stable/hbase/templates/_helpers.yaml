@@ -32,8 +32,13 @@ Common environment variables for HDFS configuration.
 {{- define "hbase.hdfs.commonEnv" }}
 {{ $clusterName := include "common.fullname" . }}
 {{ $clusterNameNoDashes := include "common.fullname" . | replace "-" "" }}
+{{ $namespace := .Release.Namespace }}
 - name: CORE_CONF_fs_defaultFS
+{{- if .Values.hdfs.namenode.highAvailability.enabled }}
+  value: "hdfs://{{ $clusterNameNoDashes }}"
+{{- else }}
   value: "hdfs://{{ $clusterName }}-hdfs-nn:9000/"
+{{- end }}
 - name: HDFS_CONF_dfs_client_retry_policy_enabled
   value: "true"
 - name: HDFS_CONF_dfs_client_retry_policy_spec
@@ -69,22 +74,24 @@ Common environment variables for HDFS configuration.
 {{- if .Values.hdfs.namenode.highAvailability.enabled }}
 - name: CORE_CONF_ha_zookeeper_quorum
   value: "{{ include "hbase.zookeeper.endpoint" . }}:2181"
-- name: HDFS_CONF_dfs_ha_automatic___failover_enabled
-  value: "true"
-- name: HDFS_CONF_dfs_ha_fencing_methods
-  value: "shell(/bin/true)"
+# - name: HDFS_CONF_dfs_ha_automatic___failover_enabled
+#   value: "true"
+# - name: HDFS_CONF_dfs_ha_fencing_methods
+#   value: "shell(/bin/true)"
 - name: HDFS_CONF_dfs_ha_namenodes_{{ $clusterNameNoDashes }}
   value: "{{ range $k, $v := until (int .Values.hdfs.namenode.replicaCount) }}{{ if $k }},{{ end }}nn{{ $v }}{{ end }}"
 - name: HDFS_CONF_dfs_journalnode_edits_dir
   value: "/hadoop-data"
   {{- range $k, $v := until (int .Values.hdfs.namenode.replicaCount) }}
 - name: HDFS_CONF_dfs_namenode_rpc___address_{{ $clusterNameNoDashes }}_nn{{ $v }}
-  value: "{{ $clusterName }}-hdfs-nn-{{ $v }}:9000"
+  value: "{{ $clusterName }}-hdfs-nn-{{ $v }}.{{ $clusterName }}-hdfs-nn.{{ $namespace }}.svc.cluster.local:9000"
+- name: HDFS_CONF_dfs_namenode_http___address_{{ $clusterNameNoDashes }}_nn{{ $v }}
+  value: "{{ $clusterName }}-hdfs-nn-{{ $v }}.{{ $clusterName }}-hdfs-nn.{{ $namespace }}.svc.cluster.local:50070"
   {{- end }}
 - name: HDFS_CONF_dfs_nameservices
   value: {{ $clusterNameNoDashes | quote }}
 - name: HDFS_CONF_dfs_namenode_shared_edits_dir
-  value: "qjournal://{{ range $k, $v := until (int .Values.hdfs.namenode.replicaCount) }}{{ if $k }};{{ end }}{{ $clusterName }}-hdfs-jn-{{ $v }}:8485{{ end }}/{{ $clusterNameNoDashes }}"
+  value: "qjournal://{{ range $k, $v := until (int .Values.hdfs.journalnode.replicaCount) }}{{ if $k }};{{ end }}{{ $clusterName }}-hdfs-jn-{{ $v }}.{{ $clusterName }}-hdfs-jn.{{ $namespace }}.svc.cluster.local:8485{{ end }}/{{ $clusterNameNoDashes }}"
 {{- end }}
 {{- end -}}
 

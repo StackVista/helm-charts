@@ -4,7 +4,6 @@ command:
 - sh
 - -c
 - |
-  /entrypoint -c {{ template "common.fullname" . }}-hdfs-nn:9000 -t 300
   chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} /hadoop-data
 image: "docker.io/dokkupaas/wait:latest"
 imagePullPolicy: Always
@@ -31,16 +30,24 @@ env:
 ports:
 - containerPort: 8485
   name: jn
+- containerPort: 8480
+  name: jninfo
 {{- if .Values.all.metrics.enabled }}
 - containerPort: 9404
   name: metrics
 {{- end }}
 livenessProbe:
-  tcpSocket:
-    port: jn
+  exec:
+    command:
+    - /bin/true
+  # tcpSocket:
+  #   port: jn
 readinessProbe:
-  tcpSocket:
-    port: jn
+  exec:
+    command:
+    - /bin/true
+  # tcpSocket:
+  #   port: jn
 {{- with .Values.hdfs.journalnode.resources }}
 resources:
   {{- toYaml . | nindent 2 }}

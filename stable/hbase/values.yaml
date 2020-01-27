@@ -128,7 +128,7 @@ hdfs:
       # hdfs.datanode.persistence.size -- Size of volume for HDFS data nodes.
       size: 250Gi
       # hdfs.datanode.persistence.storageClass -- Storage class of the volume for HDFS data nodes.
-      storageClass: ""
+      storageClass: "gp2"
     # hdfs.datanode.replicaCount -- Number of HDFS data nodes.
     replicaCount: 1
     # hdfs.datanode.resources -- Resources to allocate for HDFS data nodes.
@@ -157,7 +157,7 @@ hdfs:
       # hdfs.journalnode.persistence.size -- Size of volume for HDFS journal nodes.
       size: 8Gi
       # hdfs.journalnode.persistence.storageClass -- Storage class of the volume for HDFS journal nodes.
-      storageClass: ""
+      storageClass: "gp2"
     # hdfs.journalnode.replicaCount -- Number of HDFS journal nodes.
     replicaCount: 3
     # hdfs.journalnode.resources -- Resources to allocate for HDFS journal nodes.
@@ -189,7 +189,7 @@ hdfs:
       # hdfs.namenode.persistence.size -- Size of volume for HDFS name nodes.
       size: 20Gi
       # hdfs.namenode.persistence.storageClass -- Storage class of the volume for HDFS name nodes.
-      storageClass: ""
+      storageClass: "gp2"
     # hdfs.namenode.replicaCount -- Number of HDFS name nodes. **NOTE** This is only considered if `hdfs.namenode.highAvailability.enabled` is set to `true`.
     replicaCount: 1
     # hdfs.namenode.resources -- Resources to allocate for HDFS name nodes.
@@ -220,7 +220,7 @@ hdfs:
       # hdfs.secondarynamenode.persistence.size -- Size of volume for HDFS secondary name nodes.
       size: 20Gi
       # hdfs.secondarynamenode.persistence.storageClass -- Storage class of the volume for HDFS secondary name nodes.
-      storageClass: ""
+      storageClass: "gp2"
     # hdfs.secondarynamenode.resources -- Resources to allocate for HDFS secondary name nodes.
     resources:
       limits:
