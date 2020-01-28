@@ -299,6 +299,8 @@ kafka:
     servers: distributed-zookeeper-headless
   # kafka.enabled -- Enable / disable chart-based Kafka.
   enabled: true
+  # kafka.fullnameOverride -- Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
+  fullnameOverride: distributed-kafka
   image:
     # kafka.image.tag -- Default tag used for Kafka. **Since StackState relies on this specific version, it's advised NOT to change this.**
     tag: 2.3.1-debian-9-r41

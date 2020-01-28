@@ -2,7 +2,7 @@ distributed
 ===========
 Helm chart for StackState distributed -- all components split into microservices.
 
-Current chart version is `0.3.5`
+Current chart version is `0.3.6`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -10,9 +10,9 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.bitnami.com | kafka | 7.0.3 |
-| https://charts.bitnami.com | zookeeper | 5.1.1 |
-| https://helm.elastic.co | elasticsearch | 7.4.1 |
+| https://charts.bitnami.com | kafka | 7.1.3 |
+| https://charts.bitnami.com | zookeeper | 5.3.4 |
+| https://helm.elastic.co | elasticsearch | 7.5.2 |
 | https://helm.stackstate.io | common | 0.1.8 |
 | https://helm.stackstate.io | hbase | 0.1.16 |
 
@@ -54,6 +54,7 @@ stackstate/distributed
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
 | kafka.enabled | bool | `true` | Enable / disable chart-based Kafka. |
 | kafka.externalZookeeper.servers | string | `"distributed-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
+| kafka.fullnameOverride | string | `"distributed-kafka"` | Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | kafka.image.tag | string | `"2.3.1-debian-9-r41"` | Default tag used for Kafka. **Since StackState relies on this specific version, it's advised NOT to change this.** |
 | kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
 | kafka.metrics.jmx.enabled | bool | `true` | Whether or not to expose JMX metrics to Prometheus. |
