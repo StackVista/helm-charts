@@ -120,7 +120,13 @@ spec:
       resources:
         requests:
           storage: {{ .Values.hdfs.secondarynamenode.persistence.size }}
-      storageClassName: {{ .Values.hdfs.secondarynamenode.persistence.storageClass }}
+    {{- if .Values.hdfs.secondarynamenode.persistence.storageClass }}
+      {{- if (eq "-" .Values.hdfs.secondarynamenode.persistence.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: {{ .Values.hdfs.secondarynamenode.persistence.storageClass | quote }}
+      {{- end }}
+    {{- end }}
 {{- end }}
 {{- end -}}
 

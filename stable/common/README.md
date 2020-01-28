@@ -2,7 +2,7 @@ common
 ======
 Common chartbuilding components and helpers
 
-Current chart version is `0.3.0`
+Current chart version is `0.3.1`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -93,7 +93,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | persistentvolumeclaim.annotations | object | `{}` | Annotations for `PersistentVolumeClaim` objects. |
 | persistentvolumeclaim.apiVersion | string | `"v1"` | Kubernetes apiVersion to use with a `PersistentVolumeClaim` object. |
 | persistentvolumeclaim.size | string | `"10Gi"` | Default size for `PersistentVolumeClaim` object. |
-| persistentvolumeclaim.storageClass | string | `"default"` | Default storage class for `PersistentVolumeClaim` object. |
+| persistentvolumeclaim.storageClass | string | `nil` | Default storage class for `PersistentVolumeClaim` object. If left blank, then the default provisioner is used. If set to "-", then `storageClass: ""`, which disabled dynamic provisioning. |
 | pod.annotations | object | `{}` | Annotations for `Pod` objects. |
 | poddisruptionbudget.annotations | object | `{}` | Annotations for `PodDisruptionBudget` objects. |
 | poddisruptionbudget.apiVersion | string | `"policy/v1beta1"` | Kubernetes apiVersion to use with a `PodDisruptionBudget` object. |

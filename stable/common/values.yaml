@@ -218,8 +218,8 @@ persistentvolumeclaim:
   apiVersion: "v1"
   # persistentvolumeclaim.size -- Default size for `PersistentVolumeClaim` object.
   size: 10Gi
-  # persistentvolumeclaim.storageClass -- Default storage class for `PersistentVolumeClaim` object.
-  storageClass: default
+  # persistentvolumeclaim.storageClass -- Default storage class for `PersistentVolumeClaim` object. If left blank, then the default provisioner is used. If set to "-", then `storageClass: ""`, which disabled dynamic provisioning.
+  storageClass:
 
 pod:
   # pod.annotations -- Annotations for `Pod` objects.
