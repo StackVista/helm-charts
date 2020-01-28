@@ -2,7 +2,7 @@ distributed
 ===========
 Helm chart for StackState distributed -- all components split into microservices.
 
-Current chart version is `0.3.6`
+Current chart version is `0.3.7`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -13,8 +13,8 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 | https://charts.bitnami.com | kafka | 7.1.3 |
 | https://charts.bitnami.com | zookeeper | 5.3.4 |
 | https://helm.elastic.co | elasticsearch | 7.5.2 |
-| https://helm.stackstate.io | common | 0.1.8 |
-| https://helm.stackstate.io | hbase | 0.1.16 |
+| https://helm.stackstate.io | common | 0.3.1 |
+| https://helm.stackstate.io | hbase | 0.1.18 |
 
 ## Required Values
 
@@ -39,7 +39,9 @@ stackstate/distributed
 | elasticsearch.clusterName | string | `"distributed-elasticsearch"` | Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
 | elasticsearch.extraEnvs | list | `[{"name":"action.auto_create_index","value":"true"},{"name":"indices.query.bool.max_clause_count","value":"10000"}]` | Extra settings that StackState uses for Elasticsearch. |
+| elasticsearch.imageTag | string | `"7.4.1"` | Elasticsearch version. |
 | elasticsearch.minimumMasterNodes | int | `1` | Minimum number of Elasticsearch master nodes. |
+| elasticsearch.nodeGroup | string | `"master"` | Minimum number of Elasticsearch master nodes. |
 | elasticsearch.replicas | int | `1` | Number of Elasticsearch replicas. |
 | hbase.enabled | bool | `true` | Enable / disable chart-based HBase. |
 | hbase.hbase.master.replicaCount | int | `1` | Number of HBase master node replicas. |

@@ -3,7 +3,7 @@ Logic to determine ElasticSearch endpoint.
 */}}
 {{- define "distributed.es.endpoint" -}}
 {{- if .Values.elasticsearch.enabled -}}
-{{- .Values.elasticsearch.clusterName -}}-headless:9200
+{{- .Values.elasticsearch.clusterName -}}-{{ .Values.elasticsearch.nodeGroup }}-headless:9200
 {{- else -}}
 {{- .Values.stackstate.components.all.elasticsearchEndpoint -}}
 {{- end -}}

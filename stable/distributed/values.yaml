@@ -265,8 +265,12 @@ elasticsearch:
     value: "true"
   - name: indices.query.bool.max_clause_count
     value: "10000"
+  # elasticsearch.imageTag -- Elasticsearch version.
+  imageTag: "7.4.1"
   # elasticsearch.minimumMasterNodes -- Minimum number of Elasticsearch master nodes.
   minimumMasterNodes: 1
+  # elasticsearch.nodeGroup -- Minimum number of Elasticsearch master nodes.
+  nodeGroup: "master"
   # elasticsearch.replicas -- Number of Elasticsearch replicas.
   replicas: 1
 
