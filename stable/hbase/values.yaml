@@ -128,7 +128,7 @@ hdfs:
       # hdfs.datanode.persistence.size -- Size of volume for HDFS data nodes.
       size: 250Gi
       # hdfs.datanode.persistence.storageClass -- Storage class of the volume for HDFS data nodes.
-      storageClass: default
+      storageClass:
     # hdfs.datanode.replicaCount -- Number of HDFS data nodes.
     replicaCount: 1
     # hdfs.datanode.resources -- Resources to allocate for HDFS data nodes.
@@ -157,7 +157,7 @@ hdfs:
       # hdfs.namenode.persistence.size -- Size of volume for HDFS name nodes.
       size: 20Gi
       # hdfs.namenode.persistence.storageClass -- Storage class of the volume for HDFS name nodes.
-      storageClass: default
+      storageClass:
     # hdfs.namenode.resources -- Resources to allocate for HDFS name nodes.
     resources:
       limits:
@@ -186,7 +186,7 @@ hdfs:
       # hdfs.secondarynamenode.persistence.size -- Size of volume for HDFS secondary name nodes.
       size: 20Gi
       # hdfs.secondarynamenode.persistence.storageClass -- Storage class of the volume for HDFS secondary name nodes.
-      storageClass: default
+      storageClass:
     # hdfs.secondarynamenode.resources -- Resources to allocate for HDFS secondary name nodes.
     resources:
       limits:

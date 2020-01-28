@@ -2,7 +2,7 @@ hbase
 =====
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.18`
+Current chart version is `0.1.19`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -63,7 +63,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hdfs.datanode.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for HDFS data nodes. |
 | hdfs.datanode.persistence.enabled | bool | `true` | Enable persistence for HDFS data nodes. |
 | hdfs.datanode.persistence.size | string | `"250Gi"` | Size of volume for HDFS data nodes. |
-| hdfs.datanode.persistence.storageClass | string | `"default"` | Storage class of the volume for HDFS data nodes. |
+| hdfs.datanode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS data nodes. |
 | hdfs.datanode.replicaCount | int | `1` | Number of HDFS data nodes. |
 | hdfs.datanode.resources | object | `{"limits":{"memory":"4Gi"},"requests":{"memory":"2Gi"}}` | Resources to allocate for HDFS data nodes. |
 | hdfs.datanode.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -77,7 +77,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hdfs.namenode.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for HDFS name nodes. |
 | hdfs.namenode.persistence.enabled | bool | `true` | Enable persistence for HDFS name nodes. |
 | hdfs.namenode.persistence.size | string | `"20Gi"` | Size of volume for HDFS name nodes. |
-| hdfs.namenode.persistence.storageClass | string | `"default"` | Storage class of the volume for HDFS name nodes. |
+| hdfs.namenode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS name nodes. |
 | hdfs.namenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"1Gi"}}` | Resources to allocate for HDFS name nodes. |
 | hdfs.namenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.secondarynamenode.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -88,7 +88,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hdfs.secondarynamenode.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.persistence.enabled | bool | `true` | Enable persistence for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.persistence.size | string | `"20Gi"` | Size of volume for HDFS secondary name nodes. |
-| hdfs.secondarynamenode.persistence.storageClass | string | `"default"` | Storage class of the volume for HDFS secondary name nodes. |
+| hdfs.secondarynamenode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"1Gi"}}` | Resources to allocate for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all containers. |
