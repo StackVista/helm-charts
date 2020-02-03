@@ -273,3 +273,22 @@ Ingress paths / routes
         path: /?(.*)
 {{- end }}
 {{- end -}}
+{{- define "distributed.servicemonitor.extraLabels" -}}
+podTargetLabels:
+  - __meta_kubernetes_pod_label_app_kubernetes_io_name
+  - __meta_kubernetes_pod_label_app_kubernetes_io_component
+endpoints:
+  - interval: "20s"
+    path: /metrics
+    port: metrics
+    scheme: http
+    relabelings:
+    - sourceLabels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+      regex: (.+)
+      targetLabel: app_name
+      action: replace
+    - sourceLabels: [__meta_kubernetes_pod_label_app_kubernetes_io_component]
+      regex: (.+)
+      targetLabel: app_component
+      action: replace
+{{- end -}}
