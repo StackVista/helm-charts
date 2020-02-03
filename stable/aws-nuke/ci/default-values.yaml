@@ -1,5 +1,5 @@
 awsNuke:
-  config: |
+  config: |-
     regions:
     - eu-west-1
     - global
@@ -7,3 +7,4 @@ awsNuke:
     - "999999999999"
     accounts:
       "000000000000": {}
+  defaultRegion: eu-west-1

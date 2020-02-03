@@ -1,7 +1,7 @@
 {{- define "awsnuke.configmap" -}}
 data:
   config.yaml: |-
-{{ .Values.awsNuke.config | indent 4 }}
+    {{ required "A valid .Values.awsNuke.config entry required!" .Values.awsNuke.config | nindent 4 }}
 {{- end -}}
 
 {{- $commonConfigmap := fromYaml (include "common.configmap" .) -}}
