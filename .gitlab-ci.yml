@@ -1,30 +1,80 @@
+################################################################
+# THIS FILE WAS GENERATED AUTOMATICALLY! DO NOT EDIT MANUALLY! #
+################################################################
 image: quay.io/helmpack/chart-testing:v2.4.0
-
-stages:
-  - test
-  - build
-
-validate:
+push_stable_charts:
   before_script:
-    - .gitlab/validate_before_script.sh
+  - .gitlab/push_before_script.sh
+  - helm repo add aws https://aws.github.io/eks-charts
+  - helm repo add bitnami https://charts.bitnami.com/bitnami
+  - helm repo add elastic https://helm.elastic.co
+  - helm repo add emberstack https://emberstack.github.io/helm-charts
+  - helm repo add gitlab https://charts.gitlab.io
+  - helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com
+  - helm repo add jetstack https://charts.jetstack.io
+  - helm repo add jfrog https://charts.jfrog.io
+  - helm repo add kube-eagle https://raw.githubusercontent.com/cloudworkz/kube-eagle-helm-chart/master
+  - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+  - helm repo add stackstate https://helm.stackstate.io
+  - helm repo add stackstate-test https://helm-test.stackstate.io
+  - helm repo add stakater https://stakater.github.io/stakater-charts
+  - helm repo add vmware-tanzu https://vmware-tanzu.github.io/helm-charts
+  - helm repo update
   only:
     refs:
-      - branches
+    - master
+  script:
+  - sh test/sync-repo.sh
+  stage: build
+push_test_charts:
+  before_script:
+  - .gitlab/push_before_script.sh
+  - helm repo add aws https://aws.github.io/eks-charts
+  - helm repo add bitnami https://charts.bitnami.com/bitnami
+  - helm repo add elastic https://helm.elastic.co
+  - helm repo add emberstack https://emberstack.github.io/helm-charts
+  - helm repo add gitlab https://charts.gitlab.io
+  - helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com
+  - helm repo add jetstack https://charts.jetstack.io
+  - helm repo add jfrog https://charts.jfrog.io
+  - helm repo add kube-eagle https://raw.githubusercontent.com/cloudworkz/kube-eagle-helm-chart/master
+  - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+  - helm repo add stackstate https://helm.stackstate.io
+  - helm repo add stackstate-test https://helm-test.stackstate.io
+  - helm repo add stakater https://stakater.github.io/stakater-charts
+  - helm repo add vmware-tanzu https://vmware-tanzu.github.io/helm-charts
+  - helm repo update
   except:
     refs:
-      - master
-  script:
-    - ct list-changed --config test/ct.yaml
-    - ct lint --debug --config test/ct.yaml
-    - .gitlab/validate_kubeval.sh
-  stage: test
-
-push:
-  before_script:
-    - .gitlab/push_before_script.sh
+    - master
+  needs:
+  - validate_charts
   only:
     refs:
-      - master
+    - branches
   script:
-    - sh test/sync-repo.sh
+  - sh test/sync-repo.sh
   stage: build
+  variables:
+    AWS_BUCKET: s3://helm-test.stackstate.io
+    REPO_URL: https://helm-test.stackstate.io/
+stages:
+- test
+- build
+validate_charts:
+  before_script:
+  - .gitlab/validate_before_script.sh
+  environment: stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}
+  except:
+    refs:
+    - master
+  only:
+    refs:
+    - branches
+  script:
+  - ct list-changed --config test/ct.yaml
+  - ct lint --debug --config test/ct.yaml
+  - .gitlab/validate_kubeval.sh
+  stage: test
+variables:
+  HELM_VERSION: v2.16.1

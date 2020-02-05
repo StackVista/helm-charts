@@ -1,6 +1,6 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-[ -n "${TRACE+x}" ] && set -x
+[[ -n "${TRACE+x}" ]] && set -x
 
 set -e
 

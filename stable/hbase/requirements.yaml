@@ -4,5 +4,5 @@ dependencies:
   repository: https://helm.stackstate.io/
 - name: zookeeper
   version: 5.3.4
-  repository: https://charts.bitnami.com
+  repository: https://charts.bitnami.com/bitnami
   condition: zookeeper.enabled

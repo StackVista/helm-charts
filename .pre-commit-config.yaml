@@ -1,7 +1,7 @@
 exclude: 'gitlab-runner'
 repos:
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v2.4.0
+- repo: git@github.com:pre-commit/pre-commit-hooks
+  rev: v2.5.0
   hooks:
   - id: check-added-large-files
   - id: check-case-conflict
@@ -13,16 +13,21 @@ repos:
   - id: detect-aws-credentials
     args:
     - --allow-missing-credentials
-- repo: https://github.com/gruntwork-io/pre-commit
+- repo: git@github.com:gruntwork-io/pre-commit
   rev: v0.1.1
   hooks:
   - id: helmlint
   - id: shellcheck
-- repo: https://github.com/kadrach/pre-commit-gitlabci-lint
+- repo: git@github.com:kadrach/pre-commit-gitlabci-lint
   rev: ab984c60414b012e294a65166691473047ccce49
   hooks:
   - id: gitlabci-lint
-- repo: https://github.com/norwoodj/helm-docs
+- repo: git@github.com:norwoodj/helm-docs
   rev: v0.9.0
   hooks:
   - id: helm-docs
+- repo: git@gitlab.com:stackvista/devops/pre-commit-hooks.git
+  rev: v0.4.0
+  hooks:
+  - id: jsonnet_format
+  - id: jsonnet_to_yaml

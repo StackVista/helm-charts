@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/git-commands/git-subrepo#readme
+;
+[subrepo]
+	remote = https://gitlab.com/stackvista/devops/jsonnet-libs.git
+	branch = master
+	commit = 6e3bac91744b6f4629d54b7b562a26fc07d4ceca
+	parent = 8011b24661be980c49a85f8c0277c90e8ca4f7a5
+	method = merge
+	cmdver = 0.4.0

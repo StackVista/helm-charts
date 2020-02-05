@@ -1,0 +1,10 @@
+extraEnv:
+  open:
+    ICEMAN_EXCLUDE: some-branch some-other-branch
+  secret:
+    ICEMAN_SECRET: some secret values
+iceman:
+  logLevel: debug
+  s3Bucket: some-bucket
+  stackstatePassword: some-password
+  stackstateUsername: some-username
