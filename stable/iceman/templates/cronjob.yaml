@@ -26,6 +26,7 @@ spec:
           imagePullSecrets:
             {{- toYaml . | nindent 12 }}
         {{- end }}
+          serviceAccountName: {{ template "iceman.fullname" . }}
           containers:
           - name: {{ .Chart.Name }}
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

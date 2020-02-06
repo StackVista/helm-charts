@@ -27,6 +27,9 @@ image:
   # image.pullPolicy -- Default container image pull policy.
   pullPolicy: Always
 
+# podAnnotations -- Annotations to inject into `Job` pods.
+podAnnotations: {}
+
 # imagePullSecrets -- Extra secrets / credentials needed for container image registry.
 imagePullSecrets: []
 # nameOverride -- Override the name of the chart.
