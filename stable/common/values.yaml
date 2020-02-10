@@ -209,6 +209,12 @@ job:
   # job.ttlSecondsAfterFinished -- TTL for completed jobs before they are deleted.
   ttlSecondsAfterFinished: 300
 
+networkpolicy:
+  # networkpolicy.annotations -- Annotations for `NetworkPolicy` objects.
+  annotations: {}
+  # networkpolicy.apiVersion -- Kubernetes apiVersion to use with a `NetworkPolicy` object.
+  apiVersion: "networkpolicies.networking.k8s.io"
+
 persistentvolumeclaim:
   # persistentvolumeclaim.accessMode -- Default type of access for mounted volume.
   accessMode: ReadWriteOnce
