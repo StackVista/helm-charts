@@ -18,6 +18,19 @@ ingress:
   #    hosts:
   #      - stackstate.local
 
+networkPolicy:
+  # networkPolicy.enabled -- Enable creating of `NetworkPolicy` object and assosicated rules for StackState.
+  enabled: false
+  # networkPolicy.spec -- `NetworkPolicy` rules for StackState.
+  spec:
+    ingress:
+    - from:
+      - podSelector: {}
+    podSelector:
+      matchLabels: {}
+    policyTypes:
+    - Ingress
+
 stackstate:
   components:
     all:
