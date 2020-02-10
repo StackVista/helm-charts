@@ -213,7 +213,7 @@ networkpolicy:
   # networkpolicy.annotations -- Annotations for `NetworkPolicy` objects.
   annotations: {}
   # networkpolicy.apiVersion -- Kubernetes apiVersion to use with a `NetworkPolicy` object.
-  apiVersion: "networkpolicies.networking.k8s.io"
+  apiVersion: "networking.k8s.io/v1"
 
 persistentvolumeclaim:
   # persistentvolumeclaim.accessMode -- Default type of access for mounted volume.

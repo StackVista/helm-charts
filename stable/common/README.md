@@ -2,7 +2,7 @@ common
 ======
 Common chartbuilding components and helpers
 
-Current chart version is `0.4.0`
+Current chart version is `0.4.1`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -90,7 +90,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | job.tolerations | list | `[]` | Toleration labels for `Pod` assignment. |
 | job.ttlSecondsAfterFinished | int | `300` | TTL for completed jobs before they are deleted. |
 | networkpolicy.annotations | object | `{}` | Annotations for `NetworkPolicy` objects. |
-| networkpolicy.apiVersion | string | `"networkpolicies.networking.k8s.io"` | Kubernetes apiVersion to use with a `NetworkPolicy` object. |
+| networkpolicy.apiVersion | string | `"networking.k8s.io/v1"` | Kubernetes apiVersion to use with a `NetworkPolicy` object. |
 | persistentvolumeclaim.accessMode | string | `"ReadWriteOnce"` | Default type of access for mounted volume. |
 | persistentvolumeclaim.annotations | object | `{}` | Annotations for `PersistentVolumeClaim` objects. |
 | persistentvolumeclaim.apiVersion | string | `"v1"` | Kubernetes apiVersion to use with a `PersistentVolumeClaim` object. |
