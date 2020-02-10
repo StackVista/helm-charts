@@ -43,5 +43,6 @@ local push_charts_template = {
   },
   variables: {
     HELM_VERSION: 'v2.16.1',
+    KUBEVAL_SCHEMA_LOCATION: 'https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master',
   },
 }

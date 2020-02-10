@@ -60,3 +60,4 @@ validate_charts:
   stage: test
 variables:
   HELM_VERSION: v2.16.1
+  KUBEVAL_SCHEMA_LOCATION: https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master
