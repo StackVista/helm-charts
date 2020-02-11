@@ -3,7 +3,7 @@ Logic to determine ElasticSearch endpoint.
 */}}
 {{- define "distributed.es.endpoint" -}}
 {{- if .Values.elasticsearch.enabled -}}
-{{- .Values.elasticsearch.clusterName -}}-{{ .Values.elasticsearch.nodeGroup }}-headless:9200
+{{- .Values.elasticsearch.clusterName -}}-{{ .Values.elasticsearch.nodeGroup }}
 {{- else -}}
 {{- .Values.stackstate.components.all.elasticsearchEndpoint -}}
 {{- end -}}
@@ -14,10 +14,22 @@ Logic to determine Kafka endpoint.
 */}}
 {{- define "distributed.kafka.endpoint" -}}
 {{- if .Values.kafka.enabled -}}
-{{- .Values.kafka.fullnameOverride -}}-headless:9092
+{{- .Values.kafka.fullnameOverride -}}
 {{- else -}}
 {{- .Values.stackstate.components.all.kafkaEndpoint -}}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Logic to determine Kafka endpoints as a comma-separated list.
+*/}}
+{{- define "distributed.kafka.separateEndpoints" -}}
+{{- $clusterDomain := .Values.clusterDomain -}}
+{{- $replicaCount := int .Values.kafka.replicaCount -}}
+{{- $releaseNamespace := .Release.Namespace -}}
+{{- $kafkaEndpoint := include "distributed.kafka.endpoint" . -}}
+{{- $kafkaHeadlessServiceName := printf "%s-%s" $kafkaEndpoint "headless" | trunc 63 -}}
+{{ range $i, $e := until $replicaCount }}{{ if $i }},{{ end }}{{ $kafkaEndpoint }}-{{ $e }}.{{ $kafkaHeadlessServiceName }}.{{ $releaseNamespace }}.svc.{{ $clusterDomain }}:9092{{ end }}
 {{- end -}}
 
 {{/*
@@ -25,7 +37,7 @@ Logic to determine Zookeeper endpoint.
 */}}
 {{- define "distributed.zookeeper.endpoint" -}}
 {{- if .Values.zookeeper.enabled -}}
-{{- .Values.zookeeper.fullnameOverride -}}-headless:2181
+{{- .Values.zookeeper.fullnameOverride -}}
 {{- else -}}
 {{- .Values.stackstate.components.all.zookeeperEndpoint -}}
 {{- end -}}

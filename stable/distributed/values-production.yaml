@@ -2,6 +2,9 @@
 # StackState Distributed values #
 #################################
 
+# clusterDomain -- Default cluster domain to use for internal DNS.
+clusterDomain: "cluster.local"
+
 ingress:
   # ingress.annotations -- Annotations for ingress objects.
   annotations: {}

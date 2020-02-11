@@ -19,10 +19,10 @@ for topic in "${topics[@]}"; do
   printf -- "Creating topic '%s'...\n" "${topic}"
   # shellcheck disable=SC2046
   # shellcheck disable=SC2086
-  kafka-topics.sh ${commonFlags} --partitions 1 --topic "${topic}" 2>/dev/null || printf -- "Topic '%s' already exists, skipping...\n" "${topic}"
+  kafka-topics.sh ${commonFlags} --partitions 1 --topic "${topic}" || printf -- "Topic '%s' already exists, skipping...\n" "${topic}"
 done
 
 printf -- "Creating topic '%s'...\n" "sts_correlate_endpoints"
 # shellcheck disable=SC2046
 # shellcheck disable=SC2086
-kafka-topics.sh ${commonFlags} --partitions 10 --topic sts_correlate_endpoints 2>/dev/null || printf -- "Topic '%s' already exists, skipping...\n" "sts_correlate_endpoints"
+kafka-topics.sh ${commonFlags} --partitions 10 --topic sts_correlate_endpoints || printf -- "Topic '%s' already exists, skipping...\n" "sts_correlate_endpoints"

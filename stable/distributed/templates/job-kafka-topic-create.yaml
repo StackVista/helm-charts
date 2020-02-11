@@ -4,7 +4,7 @@ command:
 - sh
 - -c
 - |
-  /entrypoint -c {{ include "distributed.kafka.endpoint" . }} -t 300
+  /entrypoint -c {{ include "distributed.kafka.separateEndpoints" . }} -t 300
 image: "docker.io/dokkupaas/wait:latest"
 imagePullPolicy: Always
 securityContext:
@@ -23,7 +23,7 @@ env:
 - name: KAFKA_REPLICAS
   value: {{ .Values.kafka.replicaCount | quote }}
 - name: KAFKA_BROKERS
-  value: {{ include "distributed.kafka.endpoint" . | quote }}
+  value: "{{ include "distributed.kafka.endpoint" . }}-headless:9092"
 - name: ZOOKEEPER_QUORUM
   value: {{ include "distributed.zookeeper.endpoint" . | quote }}
 image: "docker.io/bitnami/kafka"

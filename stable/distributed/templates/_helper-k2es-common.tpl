@@ -7,7 +7,7 @@ command:
 - sh
 - -c
 - |
-  /entrypoint -c {{ include "distributed.kafka.endpoint" . }},{{ include "distributed.es.endpoint" . }} -t 300
+  /entrypoint -c {{ include "distributed.kafka.separateEndpoints" . }},{{ include "distributed.es.endpoint" . }}-headless:9200 -t 300
 image: "docker.io/dokkupaas/wait:latest"
 imagePullPolicy: Always
 {{- end -}}
@@ -25,9 +25,9 @@ env:
 - name: CONFIG_FORCE_stackstate_kafkaStsEventsToES_elasticsearch_index_replicas
   value: "1"
 - name: ELASTICSEARCH_URI
-  value: "http://{{ include "distributed.es.endpoint" . }}"
+  value: "http://{{ include "distributed.es.endpoint" . }}-headless:9200"
 - name: KAFKA_BROKERS
-  value: {{ include "distributed.kafka.endpoint" . | quote }}
+  value: "{{ include "distributed.kafka.endpoint" . }}-headless:9092"
 image: "{{ .Values.stackstate.components.k2es.image.repository }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.k2es.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.k2es.image.pullPolicy | quote }}
 livenessProbe:

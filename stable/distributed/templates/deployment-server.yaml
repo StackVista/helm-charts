@@ -4,7 +4,7 @@ command:
 - sh
 - -c
 - |
-  /entrypoint -c {{ include "distributed.kafka.endpoint" . }},{{ include "distributed.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn:9000 -t 300
+  /entrypoint -c {{ include "distributed.kafka.separateEndpoints" . }},{{ include "distributed.zookeeper.endpoint" . }}-headless:2181,{{ .Release.Name }}-hbase-hdfs-nn:9000 -t 300
 image: "docker.io/dokkupaas/wait:latest"
 imagePullPolicy: Always
 {{- end -}}
@@ -21,9 +21,9 @@ env:
       name: {{ template "common.fullname" . }}-receiver
       key: sts-receiver-api-key
 - name: ELASTICSEARCH_URI
-  value: "http://{{ include "distributed.es.endpoint" . }}"
+  value: "http://{{ include "distributed.es.endpoint" . }}-headless:9200"
 - name: KAFKA_BROKERS
-  value: {{ include "distributed.kafka.endpoint" . | quote }}
+  value: "{{ include "distributed.kafka.endpoint" . }}-headless:9092"
 - name: LICENSE_KEY
   valueFrom:
     secretKeyRef:

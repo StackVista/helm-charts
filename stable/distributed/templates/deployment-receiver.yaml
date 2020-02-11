@@ -4,7 +4,7 @@ command:
 - sh
 - -c
 - |
-  /entrypoint -c {{ include "distributed.kafka.endpoint" . }} -t 300
+  /entrypoint -c {{ include "distributed.kafka.separateEndpoints" . }} -t 300
 image: "docker.io/dokkupaas/wait:latest"
 imagePullPolicy: Always
 {{- end -}}
@@ -14,7 +14,7 @@ env:
 {{- include "distributed.common.envvars" . }}
 {{- include "distributed.receiver.envvars" . }}
 - name: KAFKA_BROKERS
-  value: {{ include "distributed.kafka.endpoint" . | quote }}
+  value: "{{ include "distributed.kafka.endpoint" . }}-headless:9092"
 - name: API_KEY
   valueFrom:
     secretKeyRef:
