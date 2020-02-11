@@ -22,7 +22,10 @@ networkPolicy:
   # networkPolicy.enabled -- Enable creating of `NetworkPolicy` object and assosicated rules for StackState.
   enabled: false
   # networkPolicy.spec -- `NetworkPolicy` rules for StackState.
+  # The spec below allows all traffic within the namespace
   spec:
+    egress:
+    - {}
     ingress:
     - from:
       - podSelector: {}

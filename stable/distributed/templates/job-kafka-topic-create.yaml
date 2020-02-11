@@ -41,9 +41,6 @@ securityContext:
 {{- $stsDistributedKafkaTopicCreateMainContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
   name: {{ template "common.fullname" . }}-topic-create
-  annotations:
-    helm.sh/hook: post-install
-    helm.sh/hook-delete-policy: "before-hook-creation,hook-succeeded"
   labels:
     app.kubernetes.io/component: topic-create
 spec:
@@ -62,6 +59,8 @@ spec:
       - {{ toYaml $stsDistributedKafkaTopicCreateMainContainer | nindent 8 }}
 {{- end -}}
 
+{{- if .Release.IsInstall -}}
 {{- $commonJob := fromYaml (include "common.job" .) -}}
 {{- $kafkaTopicCreateJob := fromYaml (include "distributed.kafkaTopicCreate.job" .) -}}
 {{- toYaml (merge $kafkaTopicCreateJob $commonJob) -}}
+{{- end -}}
