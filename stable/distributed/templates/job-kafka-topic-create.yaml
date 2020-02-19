@@ -42,7 +42,7 @@ securityContext:
 metadata:
   name: {{ template "common.fullname" . }}-topic-create
   annotations:
-    helm.sh/hook: post-install
+    helm.sh/hook: post-install,post-upgrade
     helm.sh/hook-delete-policy: "before-hook-creation,hook-succeeded"
   labels:
     app.kubernetes.io/component: topic-create
