@@ -2,7 +2,7 @@ cluster-agent
 =============
 Helm chart for the StackState cluster agent.
 
-Current chart version is `0.1.5`
+Current chart version is `0.2.0`
 
 Source code can be found [here](https://github.com/StackVista/stackstate-agent)
 
@@ -57,7 +57,7 @@ stackstate/cluster-agent
 | agent.apm.enabled | bool | `true` | Enable / disable the agent APM module. |
 | agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | agent.image.repository | string | `"docker.io/stackstate/stackstate-agent-2"` | Base container image registry. |
-| agent.image.tag | string | `"2.0.7"` | Default container image tag. |
+| agent.image.tag | string | `"2.1.0"` | Default container image tag. |
 | agent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | agent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | agent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -67,7 +67,6 @@ stackstate/cluster-agent
 | agent.logLevel | string | `"DEBUG"` | Logging level for agent processes. |
 | agent.networkTracing.enabled | bool | `true` | Enable / disable the agent network tracing module. |
 | agent.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| agent.processAgent.blacklistPatterns | string | `"^stress,^-bash,^-sh,^su$,^/lib/systemd/,^/usr/lib/systemd/,^pickup,^/sbin/,^/usr/sbin/,^qmgr,^sshd:,^/usr/bin/vi(?:m|m.basic)?\\s,^/usr/bin/tail,^\\(sd-pam\\),^/compose-controller\\s,^/api-server,^containerd-shim,^docker-container-shim,^docker-containerd,^docker-containerd-shim,^pause,^/pause,^/usr/lib/accountsservice/accounts-daemon,^/usr/sbin/acpid,^/adapter,^/sbin/agetty,^/bin/alertmanager*,^/usr/bin/amazon-ssm-agent,^/usr/lib/at-spi2-core/at-spi-bus-launcher,^/usr/lib/at-spi2-core/at-spi2-registryd,^atlantis,^avahi-daemon.,^awk,^/app/aws-k8s-agent,^bash,^/bin/bash,^/usr/bin/bash,^sh,^/bin/sh,^/usr/bin/sh,^/bin/busybox,^/usr/lib/bluetooth/bluetoothd,^/app/cmd/cainjector/cainjector,^calico-node,^calico-typha,^/bin/chaoskube,^./cluster-autoscaler,^/usr/lib/colord/colord,^/configmap-reload,^/usr/bin/containerd,^./controller,^/coredns,^/usr/sbin/cron,^crond,^/usr/sbin/cupsd,^/usr/bin/dbus-daemon,^/usr/lib/dconf/dconf-service,^/sbin/dhclient,^/usr/sbin/dnsmasq,^/usr/bin/dockerd,^dotnet,^.*dumb-init,^/usr/bin/exporter,^external-dns,^/usr/lib/x86_64-linux-gnu/fwupd/fwupd,^/usr/bin/ghostunnel,^/usr/lib/gvfs/gvfsd-fuse,^/usr/lib/gvfs/gvfsd,^.*indicator-application/indicator-application-service,^.*indicator-bluetooth/indicator-bluetooth-service,^.*indicator-datetime/indicator-datetime-service,^.*indicator-keyboard/indicator-keyboard-service,^.*indicator-messages/indicator-messages-service,^.*indicator-power/indicator-power-service,^.*indicator-session/indicator-session-service,^.indicator-sound/indicator-sound-service,^/bin/IngressMonitorController,^/sbin/init,^/usr/sbin/irqbalance,^/go/bin/kube-eagle,^kube-proxy,^/kube-state-metrics,^kube2iam,^lightdm,^/usr/bin/lsmd,^/sbin/lvmetad,^/usr/libexec/postfix/master,^/metrics-server,^/usr/sbin/ModemManager,^/usr/sbin/NetworkManager,^/nginx-ingress-controller,^nm-applet,^/usr/bin/kubelet,^/usr/sbin/lightdm,^/bin/node_exporter,^/usr/lib/x86_64-linux-gnu/notify-osd,^/bin/oauth2_proxy,^/usr/lib/policykit-1/polkitd,^/usr/bin/pulseaudio,^rescheduler,^/usr/sbin/rsyslogd,^/usr/lib/rtkit/rtkit-daemon,^ruby,^/usr/local/bin/ruby,^runsv,^/usr/bin/runsvdir,^/home/weave/runsvinit,^/bin/operator,^s6-format-filter,^s6-supervise,^s6-svscan,^s6-,^sleep,^/usr/sbin/sshd,^./lib/systemd/systemd-journald,^/lib/systemd/systemd-logind,^/lib/systemd/systemd-timesyncd,^./lib/systemd/systemd-udevd,^/lib/systemd/systemd,^tail,^/usr/sbin/thermald,^/tiller,^/usr/bin/tini,^tini,^/usr/lib/udisks2/udisksd,^/usr/sbin/unity-greeter,^.*unity-settings-daemon,^/usr/bin/unpigz,^/usr/lib/upower/upowerd,^upstart,^/app/cmd/webhook/webhook,^/usr/bin/whoopsie,^/sbin/wpa_supplicant,^/usr/lib/xorg/Xorg"` | Patterns to ignore when sending processes to StackState. |
 | agent.processAgent.enabled | bool | `true` | Enable / disable the agent process agent module. |
 | agent.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
 | agent.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
@@ -87,7 +86,7 @@ stackstate/cluster-agent
 | clusterAgent.enabled | bool | `true` | Enable / disable the cluster agent. |
 | clusterAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterAgent.image.repository | string | `"docker.io/stackstate/stackstate-cluster-agent"` | Base container image registry. |
-| clusterAgent.image.tag | string | `"2.0.7"` | Default container image tag. |
+| clusterAgent.image.tag | string | `"2.1.0"` | Default container image tag. |
 | clusterAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | clusterAgent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |

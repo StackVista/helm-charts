@@ -78,8 +78,6 @@ spec:
             value: {{ .Values.agent.processAgent.enabled | quote }}
           - name: STS_PROCESS_AGENT_URL
             value: {{ .Values.stackstate.url | quote }}
-          - name: STS_PROCESS_BLACKLIST_PATTERNS
-            value: {{ .Values.agent.processAgent.blacklistPatterns | quote }}
           - name: STS_SKIP_SSL_VALIDATION
             value: {{ .Values.agent.skipSslValidation | quote }}
           - name: STS_STS_URL
