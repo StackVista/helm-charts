@@ -2,7 +2,7 @@ iceman
 ======
 Iceman -- Export configuration for all StackState instances in a cluster to an S3 bucket as backup (i.e. freeze their configuration state).
 
-Current chart version is `0.1.2`
+Current chart version is `0.1.3`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/iceman.git)
 
@@ -37,5 +37,6 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/iceman.git)
 | resources.requests.memory | string | `"128Mi"` | Memory resource requests. |
 | restartPolicy | string | `"OnFailure"` | For failed jobs, how to handle restarts. |
 | schedule | string | `"0 */4 * * *"` | Default schedule for this CronJob. |
+| securityContext | object | `{"fsGroup":65534}` | Security context for the `CronJob` object. |
 | successfulJobsHistoryLimit | int | `5` | The number of successful CronJob executions that are saved. |
 | tolerations | list | `[]` | Toleration labels for pod assignment. |
