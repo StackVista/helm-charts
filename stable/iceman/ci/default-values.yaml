@@ -8,3 +8,6 @@ iceman:
   s3Bucket: some-bucket
   stackstatePassword: some-password
   stackstateUsername: some-username
+rbac:
+  serviceAccountAnnotations:
+    some-annotation-key: some-annotation-value

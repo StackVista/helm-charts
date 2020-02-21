@@ -37,6 +37,10 @@ nameOverride: ""
 # fullnameOverride -- Override the fullname of the chart.
 fullnameOverride: ""
 
+rbac:
+  # rbac.serviceAccountAnnotations -- Additional `ServiceAccount` annotations.
+  serviceAccountAnnotations: {}
+
 resources:
   limits:
     # resources.limits.cpu -- CPU resource limits.

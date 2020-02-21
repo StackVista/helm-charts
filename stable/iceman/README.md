@@ -2,7 +2,7 @@ iceman
 ======
 Iceman -- Export configuration for all StackState instances in a cluster to an S3 bucket as backup (i.e. freeze their configuration state).
 
-Current chart version is `0.1.1`
+Current chart version is `0.1.2`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/iceman.git)
 
@@ -30,6 +30,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/iceman.git)
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | object | `{}` | Node labels for pod assignment. |
 | podAnnotations | object | `{}` | Annotations to inject into `Job` pods. |
+| rbac.serviceAccountAnnotations | object | `{}` | Additional `ServiceAccount` annotations. |
 | resources.limits.cpu | string | `"100m"` | CPU resource limits. |
 | resources.limits.memory | string | `"128Mi"` | Memory resource limits. |
 | resources.requests.cpu | string | `"100m"` | CPU resource requests. |
