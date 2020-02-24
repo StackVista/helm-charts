@@ -2,7 +2,7 @@ hbase
 =====
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.20`
+Current chart version is `0.1.21`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -31,7 +31,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | console.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | console.image.pullPolicy | string | `"Always"` | Pull policy for Tephra pods. |
 | console.image.repository | string | `"quay.io/stackstate/stackgraph-console"` | Base container image repository for Tephra pods. |
-| console.image.tag | string | `"1.3.2"` | Default container image tag for Tephra pods. |
+| console.image.tag | string | `"1.5.0"` | Default container image tag for Tephra pods. |
 | console.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | console.resources | object | `{}` | Resources to allocate for HDFS data nodes. |
 | console.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -40,7 +40,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hbase.master.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | hbase.master.image.pullPolicy | string | `"Always"` | Pull policy for HBase masters. |
 | hbase.master.image.repository | string | `"quay.io/stackstate/hbase-master"` | Base container image repository for HBase masters. |
-| hbase.master.image.tag | string | `"1.3.2"` | Default container image tag for HBase masters. |
+| hbase.master.image.tag | string | `"1.5.0"` | Default container image tag for HBase masters. |
 | hbase.master.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hbase.master.replicaCount | int | `1` | Number of pods for HBase masters. |
 | hbase.master.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"1Gi"}}` | Resources to allocate for HBase masters. |
@@ -50,7 +50,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hbase.regionserver.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | hbase.regionserver.image.pullPolicy | string | `"Always"` | Pull policy for HBase region servers. |
 | hbase.regionserver.image.repository | string | `"quay.io/stackstate/hbase-regionserver"` | Base container image repository for HBase region servers. |
-| hbase.regionserver.image.tag | string | `"1.3.2"` | Default container image tag for HBase region servers. |
+| hbase.regionserver.image.tag | string | `"1.5.0"` | Default container image tag for HBase region servers. |
 | hbase.regionserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hbase.regionserver.replicaCount | int | `1` | Number of HBase regionserver nodes. |
 | hbase.regionserver.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"memory":"2Gi"}}` | Resources to allocate for HBase region servers. |
@@ -100,7 +100,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | tephra.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | tephra.image.pullPolicy | string | `"Always"` | Pull policy for Tephra pods. |
 | tephra.image.repository | string | `"quay.io/stackstate/tephra-server"` | Base container image repository for Tephra pods. |
-| tephra.image.tag | string | `"1.3.2"` | Default container image tag for Tephra pods. |
+| tephra.image.tag | string | `"1.5.0"` | Default container image tag for Tephra pods. |
 | tephra.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | tephra.replicaCount | int | `1` | Number of pods for Tephra pods. |
 | tephra.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"memory":"2Gi"}}` | Resources to allocate for Tephra pods. |
