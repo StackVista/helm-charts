@@ -2,7 +2,7 @@ distributed
 ===========
 Helm chart for StackState distributed -- all components split into microservices.
 
-Current chart version is `0.3.13`
+Current chart version is `0.3.14`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -43,10 +43,14 @@ stackstate/distributed
 | elasticsearch.minimumMasterNodes | int | `1` | Minimum number of Elasticsearch master nodes. |
 | elasticsearch.nodeGroup | string | `"master"` | Minimum number of Elasticsearch master nodes. |
 | elasticsearch.replicas | int | `1` | Number of Elasticsearch replicas. |
+| hbase.console.image.tag | string | `"1.5.3"` |  |
 | hbase.enabled | bool | `true` | Enable / disable chart-based HBase. |
+| hbase.hbase.master.image.tag | string | `"1.5.3"` |  |
 | hbase.hbase.master.replicaCount | int | `1` | Number of HBase master node replicas. |
+| hbase.hbase.regionserver.image.tag | string | `"1.5.3"` |  |
 | hbase.hbase.regionserver.replicaCount | int | `1` | Number of HBase regionserver node replicas. |
 | hbase.hdfs.datanode.replicaCount | int | `1` | Number of HDFS datanode replicas. |
+| hbase.tephra.image.tag | string | `"1.5.3"` |  |
 | hbase.tephra.replicaCount | int | `1` | Number of Tephra replicas. |
 | hbase.zookeeper.enabled | bool | `false` | Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**. |
 | hbase.zookeeper.externalServers | string | `"distributed-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |

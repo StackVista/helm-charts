@@ -277,13 +277,20 @@ elasticsearch:
 hbase:
   # hbase.enabled -- Enable / disable chart-based HBase.
   enabled: true
+  console:
+    image:
+      tag: "1.5.3"
   hbase:
     master:
       # hbase.hbase.master.replicaCount -- Number of HBase master node replicas.
       replicaCount: 1
+      image:
+        tag: "1.5.3"
     regionserver:
       # hbase.hbase.regionserver.replicaCount -- Number of HBase regionserver node replicas.
       replicaCount: 1
+      image:
+        tag: "1.5.3"
   hdfs:
     datanode:
       # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas.
@@ -291,6 +298,8 @@ hbase:
   tephra:
     # hbase.tephra.replicaCount -- Number of Tephra replicas.
     replicaCount: 1
+    image:
+      tag: "1.5.3"
   zookeeper:
     # hbase.zookeeper.enabled -- Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**.
     enabled: false
