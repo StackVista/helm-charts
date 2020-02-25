@@ -11,8 +11,8 @@ imagePullPolicy: Always
 
 {{- define "hbase.tephra.container.main" -}}
 name: tephra
-image: "{{ .Values.tephra.image.repository }}:{{ .Values.tephra.image.tag }}"
-imagePullPolicy: {{ .Values.tephra.image.pullPolicy }}
+image: "{{ .Values.tephra.image.repository }}:{{ default .Values.stackgraph.image.tag .Values.tephra.image.tag }}"
+imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.tephra.image.pullPolicy }}
 env:
 {{- include "all.commonEnv" . }}
 {{- include "tephra.commonEnv" . }}
