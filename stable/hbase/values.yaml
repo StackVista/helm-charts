@@ -22,7 +22,12 @@ all:
   tolerations: []
   # all.affinity -- Affinity settings for pod assignment on all components.
   affinity: {}
-
+stackgraph:
+  image:
+    # stackgraph.image.pullPolicy -- The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below).
+    pullPolicy: Always
+    # stackgraph.image.tag -- The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below).
+    tag: "1.5.3"
 console:
   # console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
   enabled: true
@@ -32,12 +37,12 @@ console:
     # console.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
     secret: {}
   image:
-    # console.image.pullPolicy -- Pull policy for Tephra pods.
-    pullPolicy: Always
-    # console.image.repository -- Base container image repository for Tephra pods.
+    # console.image.pullPolicy -- Pull policy for console pods, defaults to `stackgraph.image.pullPolicy`
+    pullPolicy:
+    # console.image.repository -- Base container image repository for console pods.
     repository: quay.io/stackstate/stackgraph-console
-    # console.image.tag -- Default container image tag for Tephra pods.
-    tag: "1.5.0"
+    # console.image.tag -- Container image tag for console pods, defaults to `stackgraph.image.tag`
+    tag:
   # console.resources -- Resources to allocate for HDFS data nodes.
   resources: {}
   # console.nodeSelector -- Node labels for pod assignment.
@@ -55,12 +60,12 @@ hbase:
       # hbase.master.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
       secret: {}
     image:
-      # hbase.master.image.pullPolicy -- Pull policy for HBase masters.
-      pullPolicy: Always
+      # hbase.master.image.pullPolicy -- Pull policy for HBase masters, defaults to `stackgraph.image.pullPolicy`
+      pullPolicy:
       # hbase.master.image.repository -- Base container image repository for HBase masters.
       repository: quay.io/stackstate/hbase-master
-      # hbase.master.image.tag -- Default container image tag for HBase masters.
-      tag: "1.5.0"
+      # hbase.master.image.tag -- Container image tag for HBase masters, defaults to `stackgraph.image.tag`
+      tag:
     # hbase.master.replicaCount -- Number of pods for HBase masters.
     replicaCount: 1
     # hbase.master.resources -- Resources to allocate for HBase masters.
@@ -82,12 +87,12 @@ hbase:
       # hbase.regionserver.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
       secret: {}
     image:
-      # hbase.regionserver.image.pullPolicy -- Pull policy for HBase region servers.
-      pullPolicy: Always
+      # hbase.regionserver.image.pullPolicy -- Pull policy for HBase region servers, defaults to `stackgraph.image.pullPolicy`
+      pullPolicy:
       # hbase.regionserver.image.repository -- Base container image repository for HBase region servers.
       repository: quay.io/stackstate/hbase-regionserver
-      # hbase.regionserver.image.tag -- Default container image tag for HBase region servers.
-      tag: "1.5.0"
+      # hbase.regionserver.image.tag -- Container image tag for HBase region servers, defaults to `stackgraph.image.tag`
+      tag:
     # hbase.regionserver.replicaCount -- Number of HBase regionserver nodes.
     replicaCount: 1
     # hbase.regionserver.resources -- Resources to allocate for HBase region servers.
@@ -207,12 +212,12 @@ tephra:
     # tephra.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
     secret: {}
   image:
-    # tephra.image.pullPolicy -- Pull policy for Tephra pods.
-    pullPolicy: Always
+    # tephra.image.pullPolicy -- Pull policy for Tephra pods, defaults to `stackgraph.image.pullPolicy`
+    pullPolicy:
     # tephra.image.repository -- Base container image repository for Tephra pods.
     repository: quay.io/stackstate/tephra-server
-    # tephra.image.tag -- Default container image tag for Tephra pods.
-    tag: "1.5.0"
+    # tephra.image.tag -- Container image tag for Tephra pods, defaults to `stackgraph.image.tag`
+    tag:
   # tephra.replicaCount -- Number of pods for Tephra pods.
   replicaCount: 1
   # tephra.resources -- Resources to allocate for Tephra pods.

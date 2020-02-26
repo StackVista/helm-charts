@@ -2,7 +2,7 @@ hbase
 =====
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.21`
+Current chart version is `0.1.22`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -29,18 +29,18 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | console.enabled | bool | `true` | Enable / disable deployment of the stackgraph-console for debugging. |
 | console.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | console.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| console.image.pullPolicy | string | `"Always"` | Pull policy for Tephra pods. |
-| console.image.repository | string | `"quay.io/stackstate/stackgraph-console"` | Base container image repository for Tephra pods. |
-| console.image.tag | string | `"1.5.0"` | Default container image tag for Tephra pods. |
+| console.image.pullPolicy | string | `nil` | Pull policy for console pods, defaults to `stackgraph.image.pullPolicy` |
+| console.image.repository | string | `"quay.io/stackstate/stackgraph-console"` | Base container image repository for console pods. |
+| console.image.tag | string | `nil` | Container image tag for console pods, defaults to `stackgraph.image.tag` |
 | console.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | console.resources | object | `{}` | Resources to allocate for HDFS data nodes. |
 | console.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.master.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hbase.master.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hbase.master.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| hbase.master.image.pullPolicy | string | `"Always"` | Pull policy for HBase masters. |
+| hbase.master.image.pullPolicy | string | `nil` | Pull policy for HBase masters, defaults to `stackgraph.image.pullPolicy` |
 | hbase.master.image.repository | string | `"quay.io/stackstate/hbase-master"` | Base container image repository for HBase masters. |
-| hbase.master.image.tag | string | `"1.5.0"` | Default container image tag for HBase masters. |
+| hbase.master.image.tag | string | `nil` | Container image tag for HBase masters, defaults to `stackgraph.image.tag` |
 | hbase.master.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hbase.master.replicaCount | int | `1` | Number of pods for HBase masters. |
 | hbase.master.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"1Gi"}}` | Resources to allocate for HBase masters. |
@@ -48,9 +48,9 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hbase.regionserver.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hbase.regionserver.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hbase.regionserver.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| hbase.regionserver.image.pullPolicy | string | `"Always"` | Pull policy for HBase region servers. |
+| hbase.regionserver.image.pullPolicy | string | `nil` | Pull policy for HBase region servers, defaults to `stackgraph.image.pullPolicy` |
 | hbase.regionserver.image.repository | string | `"quay.io/stackstate/hbase-regionserver"` | Base container image repository for HBase region servers. |
-| hbase.regionserver.image.tag | string | `"1.5.0"` | Default container image tag for HBase region servers. |
+| hbase.regionserver.image.tag | string | `nil` | Container image tag for HBase region servers, defaults to `stackgraph.image.tag` |
 | hbase.regionserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hbase.regionserver.replicaCount | int | `1` | Number of HBase regionserver nodes. |
 | hbase.regionserver.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"memory":"2Gi"}}` | Resources to allocate for HBase region servers. |
@@ -93,14 +93,16 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hdfs.secondarynamenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all containers. |
 | securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all containers. |
+| stackgraph.image.pullPolicy | string | `"Always"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below). |
+| stackgraph.image.tag | string | `"1.5.3"` | The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below). |
 | statefulset.antiAffinity.strategy | string | `"soft"` | AntiAffinity strategy to use for all StatefulSets. |
 | statefulset.antiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | AntiAffinity topology key to use for all StatefulSets. |
 | tephra.affinity | object | `{}` | Affinity settings for pod assignment. |
 | tephra.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | tephra.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| tephra.image.pullPolicy | string | `"Always"` | Pull policy for Tephra pods. |
+| tephra.image.pullPolicy | string | `nil` | Pull policy for Tephra pods, defaults to `stackgraph.image.pullPolicy` |
 | tephra.image.repository | string | `"quay.io/stackstate/tephra-server"` | Base container image repository for Tephra pods. |
-| tephra.image.tag | string | `"1.5.0"` | Default container image tag for Tephra pods. |
+| tephra.image.tag | string | `nil` | Container image tag for Tephra pods, defaults to `stackgraph.image.tag` |
 | tephra.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | tephra.replicaCount | int | `1` | Number of pods for Tephra pods. |
 | tephra.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"memory":"2Gi"}}` | Resources to allocate for Tephra pods. |

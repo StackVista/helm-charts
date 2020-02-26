@@ -1,7 +1,7 @@
 {{- define "hbase.console.container.main" -}}
 name: console
-image: "{{ .Values.console.image.repository }}:{{ .Values.console.image.tag }}"
-imagePullPolicy: {{ .Values.console.image.pullPolicy }}
+image: "{{ .Values.console.image.repository }}:{{ default .Values.stackgraph.image.tag .Values.console.image.tag }}"
+imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.console.image.pullPolicy }}
 command:
 - /sbin/tini
 - --
