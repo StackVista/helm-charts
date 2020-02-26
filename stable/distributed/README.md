@@ -10,11 +10,11 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.bitnami.com/bitnami | kafka | 7.1.3 |
-| https://charts.bitnami.com/bitnami | zookeeper | 5.3.4 |
-| https://helm.elastic.co | elasticsearch | 7.5.2 |
+| https://charts.bitnami.com/bitnami | kafka | 7.2.8 |
+| https://charts.bitnami.com/bitnami | zookeeper | 5.4.3 |
+| https://helm.elastic.co | elasticsearch | 7.6.0 |
 | https://helm.stackstate.io | common | 0.4.1 |
-| https://helm.stackstate.io | hbase | 0.1.21 |
+| https://helm.stackstate.io | hbase | 0.1.22 |
 
 ## Required Values
 
