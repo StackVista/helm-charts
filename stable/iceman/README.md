@@ -2,7 +2,7 @@ iceman
 ======
 Iceman -- Export configuration for all StackState instances in a cluster to an S3 bucket as backup (i.e. freeze their configuration state).
 
-Current chart version is `0.1.3`
+Current chart version is `0.1.4`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/iceman.git)
 

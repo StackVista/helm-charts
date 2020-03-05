@@ -11,6 +11,7 @@ spec:
   successfulJobsHistoryLimit: {{ .Values.successfulJobsHistoryLimit }}
   jobTemplate:
     spec:
+      backoffLimit: {{ .Values.backoffLimit }}
       template:
         metadata:
           {{- with .Values.podAnnotations }}
@@ -21,7 +22,6 @@ spec:
             app.kubernetes.io/instance: {{ .Release.Name }}
             app.kubernetes.io/name: {{ include "iceman.name" . }}
         spec:
-          backoffLimit: {{ .Values.backoffLimit }}
         {{- with .Values.imagePullSecrets }}
           imagePullSecrets:
             {{- toYaml . | nindent 12 }}
