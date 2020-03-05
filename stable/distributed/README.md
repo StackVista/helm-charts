@@ -2,7 +2,7 @@ distributed
 ===========
 Helm chart for StackState distributed -- all components split into microservices.
 
-Current chart version is `0.3.14`
+Current chart version is `0.4.0`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -10,10 +10,10 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.bitnami.com/bitnami | kafka | 7.1.3 |
-| https://charts.bitnami.com/bitnami | zookeeper | 5.3.4 |
-| https://helm.elastic.co | elasticsearch | 7.5.2 |
-| https://helm.stackstate.io | common | 0.3.1 |
+| https://charts.bitnami.com/bitnami | kafka | 7.2.9 |
+| https://charts.bitnami.com/bitnami | zookeeper | 5.4.3 |
+| https://helm.elastic.co | elasticsearch | 7.6.0 |
+| https://helm.stackstate.io | common | 0.4.1 |
 | https://helm.stackstate.io | hbase | 0.1.22 |
 
 ## Required Values
@@ -69,13 +69,15 @@ stackstate/distributed
 | kafka.replicaCount | int | `1` | Number of Kafka replicas. |
 | kafka.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"memory":"2Gi"}}` | Kafka resources per pods. |
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
+| networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
+| networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
 | stackstate.admin.authentication.enabled | bool | `true` | Enable basic auth protection for the /admin endpoint. |
 | stackstate.components.all.affinity | object | `{}` | Affinity settings for pod assignment on all components. |
 | stackstate.components.all.elasticsearchEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster. |
 | stackstate.components.all.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods for all components. |
 | stackstate.components.all.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object for all components. |
 | stackstate.components.all.image.pullPolicy | string | `"Always"` | The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below). |
-| stackstate.components.all.image.tag | string | `"sts-v1-15-5"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
+| stackstate.components.all.image.tag | string | `"sts-private-v1-16-0-delta"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
 | stackstate.components.all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |

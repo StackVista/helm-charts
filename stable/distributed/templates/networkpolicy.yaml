@@ -1,0 +1,12 @@
+{{- define "distributed.networkpolicy" -}}
+  {{- with .Values.networkPolicy.spec }}
+spec:
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+{{- end -}}
+
+{{- if .Values.networkPolicy.enabled -}}
+{{- $commonNetworkPolicy := fromYaml (include "common.networkpolicy" .) -}}
+{{- $distributedNetworkPolicy := fromYaml (include "distributed.networkpolicy" .) -}}
+{{- toYaml (merge $distributedNetworkPolicy $commonNetworkPolicy) -}}
+{{- end -}}

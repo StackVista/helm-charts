@@ -18,6 +18,19 @@ ingress:
   #    hosts:
   #      - stackstate.local
 
+networkPolicy:
+  # networkPolicy.enabled -- Enable creating of `NetworkPolicy` object and associated rules for StackState.
+  enabled: false
+  # networkPolicy.spec -- `NetworkPolicy` rules for StackState.
+  spec:
+    ingress:
+    - from:
+      - podSelector: {}
+    podSelector:
+      matchLabels: {}
+    policyTypes:
+    - Ingress
+
 stackstate:
   components:
     all:
@@ -30,7 +43,7 @@ stackstate:
         # stackstate.components.all.image.pullPolicy -- The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below).
         pullPolicy: Always
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: sts-v1-15-5
+        tag: sts-private-v1-16-0-delta
       metrics:
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
         enabled: true
