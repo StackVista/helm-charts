@@ -11,6 +11,7 @@ spec:
   successfulJobsHistoryLimit: {{ .Values.successfulJobsHistoryLimit }}
   jobTemplate:
     spec:
+      backoffLimit: {{ .Values.backoffLimit }}
       template:
         metadata:
           annotations:
@@ -22,7 +23,6 @@ spec:
             app.kubernetes.io/instance: {{ .Release.Name }}
             app.kubernetes.io/name: {{ include "aws-amicleaner.name" . }}
         spec:
-          backoffLimit: {{ .Values.backoffLimit }}
         {{- with .Values.imagePullSecrets }}
           imagePullSecrets:
             {{- toYaml . | nindent 12 }}

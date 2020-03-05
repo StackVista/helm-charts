@@ -11,13 +11,13 @@ spec:
   successfulJobsHistoryLimit: {{ .Values.successfulJobsHistoryLimit }}
   jobTemplate:
     spec:
+      backoffLimit: {{ .Values.backoffLimit }}
       template:
         metadata:
           labels:
             app.kubernetes.io/instance: {{ .Release.Name }}
             app.kubernetes.io/name: {{ include "gitlab-steward.name" . }}
         spec:
-          backoffLimit: {{ .Values.backoffLimit }}
         {{- with .Values.imagePullSecrets }}
           imagePullSecrets:
             {{- toYaml . | nindent 12 }}
