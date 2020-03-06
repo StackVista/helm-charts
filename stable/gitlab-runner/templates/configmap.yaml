@@ -8,11 +8,20 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:
+  template.toml: |
+    [[runners]]
+      [runners.kubernetes]
+        [runners.kubernetes.volumes]
+          [[runners.kubernetes.volumes.host_path]]
+            name = "docker"
+            mount_path = "/var/run/docker.sock"
+
   entrypoint: |
     #!/bin/bash
     set -e
     mkdir -p /home/gitlab-runner/.gitlab-runner/
     cp /scripts/config.toml /home/gitlab-runner/.gitlab-runner/
+    cp /scripts/template.toml /home/gitlab-runner/.gitlab-runner/
 
     # Register the runner
     if [[ -f /secrets/accesskey && -f /secrets/secretkey ]]; then
@@ -66,6 +75,7 @@ data:
     for i in $(seq 1 "${MAX_REGISTER_ATTEMPTS}"); do
       echo "Registration attempt ${i} of ${MAX_REGISTER_ATTEMPTS}"
       /entrypoint register \
+        --template-config /home/gitlab-runner/.gitlab-runner/template.toml \
         {{- range .Values.runners.imagePullSecrets }}
         --kubernetes-image-pull-secrets {{ . | quote }} \
         {{- end }}
