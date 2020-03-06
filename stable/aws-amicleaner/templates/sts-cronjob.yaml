@@ -67,6 +67,7 @@ spec:
                 name: aws-secret
                 readOnly: true
           restartPolicy: {{ .Values.restartPolicy }}
+          serviceAccountName: {{ include "aws-amicleaner.fullname" . }}
         {{- with .Values.nodeSelector }}
           nodeSelector:
             {{- toYaml . | nindent 12 }}

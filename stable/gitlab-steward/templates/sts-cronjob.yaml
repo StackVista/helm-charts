@@ -31,6 +31,7 @@ spec:
             resources:
               {{- toYaml .Values.resources | nindent 14 }}
           restartPolicy: {{ .Values.restartPolicy }}
+          serviceAccountName: {{ include "gitlab-steward.fullname" . }}
         {{- with .Values.nodeSelector }}
           nodeSelector:
             {{- toYaml . | nindent 12 }}

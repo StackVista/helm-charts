@@ -2,7 +2,7 @@ gitlab-steward
 ==============
 Steward -- GitLab environment cleaner
 
-Current chart version is `0.2.2`
+Current chart version is `0.2.3`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
