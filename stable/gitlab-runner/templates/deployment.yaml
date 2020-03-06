@@ -19,6 +19,9 @@ spec:
         chart: {{ include "gitlab-runner.chart" . }}
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
+        {{- range $key, $value := .Values.podLabels }}
+        {{   $key }}: {{ $value | quote }}
+        {{- end }}
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
@@ -31,8 +34,10 @@ spec:
         {{- end }}
     spec:
       securityContext:
-        runAsUser: 100
-        fsGroup: 65533
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        {{- if .Values.securityContext.fsGroup }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        {{- end}}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       initContainers:
       - name: configure
@@ -51,6 +56,11 @@ spec:
         - name: init-runner-secrets
           mountPath: /init-secrets
           readOnly: true
+        {{- if .Values.certsSecretName }}
+        - name: custom-certs
+          readOnly: true
+          mountPath: /home/gitlab-runner/.gitlab-runner/certs/
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ include "gitlab-runner.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}

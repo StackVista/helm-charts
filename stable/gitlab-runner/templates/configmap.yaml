@@ -84,6 +84,9 @@ data:
         {{- if and (hasKey .Values.runners "runUntagged") .Values.runners.runUntagged }}
         --run-untagged=true \
         {{- end }}
+        {{- if and (hasKey .Values.runners "protected") .Values.runners.protected }}
+        --access-level="ref_protected" \
+        {{- end }}
         --non-interactive
 
       retval=$?
@@ -94,7 +97,7 @@ data:
         exit 1
       fi
 
-      sleep 5
+      sleep 5 
     done
 
     exit 0

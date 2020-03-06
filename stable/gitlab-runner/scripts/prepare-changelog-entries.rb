@@ -51,3 +51,4 @@ puts
 merge_request_ids.each do |iid|
   puts "- #{merge_requests[iid]} !#{iid}"
 end
+

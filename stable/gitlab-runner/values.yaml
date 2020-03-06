@@ -134,6 +134,13 @@ runners:
   ##
   # runUntagged: true
 
+  ## Specify whether the runner should only run protected branches.
+  ## Defaults to False.
+  ##
+  ## ref: https://docs.gitlab.com/ee/ci/runners/#protected-runners
+  ##
+  # protected: true
+
   ## Run all containers with the privileged flag enabled
   ## This will allow the docker:dind image to run if you need to run Docker
   ## commands. Please read the docs before turning this on:
@@ -147,6 +154,15 @@ runners:
   ## Namespace to run Kubernetes jobs in (defaults to the same namespace of this release)
   ##
   # namespace:
+
+  ## The amount of time, in seconds, that needs to pass before the runner will
+  ## timeout attempting to connect to the container it has just created.
+  ## ref: https://docs.gitlab.com/runner/executors/kubernetes.html
+  pollTimeout: 180
+
+  ## Set maximum build log size in kilobytes, by default set to 4096 (4MB)
+  ## ref: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section
+  outputLimit: 4096
 
   ## Distributed runners caching
   ## ref: https://gitlab.com/gitlab-org/gitlab-runner/blob/master/docs/configuration/autoscale.md#distributed-runners-caching
@@ -259,6 +275,14 @@ runners:
   #   NAME: VALUE
 
 
+## Configure securitycontext
+## ref: http://kubernetes.io/docs/user-guide/security-context/
+##
+securityContext:
+  fsGroup: 65533
+  runAsUser: 100
+
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
@@ -318,6 +342,12 @@ hostAliases: []
 podAnnotations: {}
   # Example:
   # iam.amazonaws.com/role: <my_role_arn>
+
+## Labels to be added to manager pod
+##
+podLabels: {}
+  # Example:
+  # owner.team: <my_cool_team>
 
 ## HPA support for custom metrics:
 ## This section enables runners to autoscale based on defined custom metrics.

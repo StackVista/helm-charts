@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## v0.14.0 (2020-02-22)
+
+- Update GitLab Runner version to 12.8.0
+
+## v0.13.0 (2020-01-20)
+
+- Add podLabels to the deployment !198
+- Mount custom-certs in configure init container !202
+
+## v0.12.0 (2019-12-22)
+
+- Add `apiVersion: v1` to chart.yaml !195
+- Add documentation to protected Runners !193
+- Make securityContext configurable !199
+- Update GitLab Runner version to 12.6.0
+
+## v0.11.0 (2019-11-20)
+
+- Variables for RUNNER_OUTPUT_LIMIT, and KUBERNETES_POLL_TIMEOUT !50
+- Add support for register protected Runners !185
+
 ## v0.10.1 (2019-10-28)
 
 - Update GitLab Runner to 12.4.1
@@ -92,3 +113,4 @@
 - Track app version in Chart.yaml !74
 - Fix the error caused by unset 'locked' value !79
 - Bump used Runner version to 11.7.0 !82
+
