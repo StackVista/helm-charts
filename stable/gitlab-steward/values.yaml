@@ -46,6 +46,12 @@ resources:
     # resources.requests.memory -- Memory resource requests.
     memory: "128Mi"
 
+serviceAccount:
+  # serviceAccount.annotations -- Extra annotations for the `ServiceAccount` object.
+  annotations: {}
+  # serviceAccount.create -- Create the `ServiceAccount` object.
+  create: true
+
 # nodeSelector -- Node labels for pod assignment.
 nodeSelector: {}
 

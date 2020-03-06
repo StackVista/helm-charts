@@ -2,7 +2,7 @@ aws-amicleaner
 ==============
 AMI cleaner -- Clean old AWS AMI images.
 
-Current chart version is `0.2.2`
+Current chart version is `0.2.3`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -32,5 +32,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | resources.requests.memory | string | `"128Mi"` | Memory resource requests. |
 | restartPolicy | string | `"OnFailure"` | For failed jobs, how to handle restarts. |
 | schedule | string | `"17 * * * *"` | Default schedule for this CronJob. |
+| serviceAccount.annotations | object | `{}` | Extra annotations for the `ServiceAccount` object. |
+| serviceAccount.create | bool | `true` | Create the `ServiceAccount` object. |
 | successfulJobsHistoryLimit | int | `5` | The number of successful CronJob executions that are saved. |
 | tolerations | list | `[]` | Toleration labels for pod assignment. |

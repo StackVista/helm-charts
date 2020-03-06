@@ -2,7 +2,7 @@ gitlab-steward
 ==============
 Steward -- GitLab environment cleaner
 
-Current chart version is `0.2.1`
+Current chart version is `0.2.2`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -30,6 +30,8 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | resources.requests.memory | string | `"128Mi"` | Memory resource requests. |
 | restartPolicy | string | `"OnFailure"` | For failed jobs, how to handle restarts. |
 | schedule | string | `"*/10 * * * *"` | Default schedule for this CronJob. |
+| serviceAccount.annotations | object | `{}` | Extra annotations for the `ServiceAccount` object. |
+| serviceAccount.create | bool | `true` | Create the `ServiceAccount` object. |
 | steward.dryRun | string | `"False"` | Show which environments *would be* stopped, but don't actually stop them. |
 | steward.gitlab.apiToken | string | `nil` | **REQUIRED** The GitLab API token. |
 | steward.logLevel | string | `""` | The logging level of the application; one of 'debug', 'info', or 'warning' |

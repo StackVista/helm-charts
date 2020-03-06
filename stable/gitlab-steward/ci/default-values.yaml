@@ -6,6 +6,9 @@ extraEnv:
 imagePullSecrets:
   - name: stackstate-dockerhub-pull-secret
   - name: stackstate-quay-pull-secret
+serviceAccount:
+  annotations:
+    some-extra-annotation-key: some-extra-annotation-value
 steward:
   gitlab:
     apiToken: some-gitlab-api-token
