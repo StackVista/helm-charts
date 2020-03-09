@@ -13,8 +13,20 @@ data:
       [runners.kubernetes]
         [runners.kubernetes.volumes]
           [[runners.kubernetes.volumes.host_path]]
-            name = "docker"
+            host_path = "/var/lib/docker"
+            mount_path = "/var/lib/docker"
+            name = "dockerlib"
+            read_only = false
+          [[runners.kubernetes.volumes.host_path]]
+            host_path = "/var/run/docker.sock"
             mount_path = "/var/run/docker.sock"
+            name = "docker"
+            read_only = false
+          [[runners.kubernetes.volumes.host_path]]
+            host_path = "/dev/shm"
+            mount_path = "/dev/shm"
+            name = "shm"
+            read_only = false
 
   entrypoint: |
     #!/bin/bash
