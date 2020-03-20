@@ -1,0 +1,9 @@
+dependencies:
+- name: common
+  repository: https://helm.stackstate.io
+  version: 0.4.1
+- name: kafka
+  repository: https://charts.bitnami.com/bitnami
+  version: 7.2.9
+digest: sha256:fd9a45ce1c5610e052cfe5fd47326fe8493f120639c286ca0a38479992e21c6a
+generated: "2020-03-20T13:26:44.301312326+01:00"

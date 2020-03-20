@@ -1,0 +1,9 @@
+kafka:
+  enabled: true
+  fullnameOverride: distributed-kafka
+  zookeeper:
+    enabled: false
+  externalZookeeper:
+    servers: distributed-zookeeper-headless
+zookeeper:
+  fullnameOverride: distributed-zookeeper
