@@ -40,10 +40,7 @@ securityContext:
 {{- $overrideContainer := fromYaml (include "distributed.kafkaTopicCreate.job.container.main" .) -}}
 {{- $stsDistributedKafkaTopicCreateMainContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  name: {{ template "common.fullname" . }}-topic-create
-  annotations:
-    helm.sh/hook: post-install,post-upgrade
-    helm.sh/hook-delete-policy: "before-hook-creation,hook-succeeded"
+  name: {{ template "common.fullname" . }}-{{ now | date "20060102t150405" }}-topic-create
   labels:
     app.kubernetes.io/component: topic-create
 spec:
