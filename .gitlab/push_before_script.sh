@@ -10,9 +10,4 @@ installDependencies() {
   pip install awscli
 }
 
-configureHelm() {
-  helm init --client-only
-}
-
 installDependencies
-configureHelm

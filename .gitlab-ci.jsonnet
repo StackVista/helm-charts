@@ -17,7 +17,7 @@ local push_charts_template = {
 };
 
 {
-  image: 'quay.io/helmpack/chart-testing:v2.4.0',
+  image: 'quay.io/helmpack/chart-testing:v3.0.0-beta.2',
   stages: ['test', 'build'],
   push_stable_charts: push_charts_template { only: { refs: ['master'] } },
   push_test_charts: push_charts_template {
@@ -42,7 +42,7 @@ local push_charts_template = {
     stage: 'test',
   },
   variables: {
-    HELM_VERSION: 'v2.16.1',
+    HELM_VERSION: 'v3.1.2',
     KUBEVAL_SCHEMA_LOCATION: 'https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master',
   },
 }

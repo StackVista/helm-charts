@@ -2,7 +2,7 @@ trafficmirror
 =============
 Trafficmirror -- mirror traffic to various endpoints.
 
-Current chart version is `0.1.4`
+Current chart version is `0.1.5`
 
 Source code can be found [here](https://github.com/rb3ckers/trafficmirror)
 

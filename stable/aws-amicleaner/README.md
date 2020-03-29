@@ -2,7 +2,7 @@ aws-amicleaner
 ==============
 AMI cleaner -- Clean old AWS AMI images.
 
-Current chart version is `0.2.4`
+Current chart version is `0.2.5`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
