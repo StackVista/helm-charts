@@ -35,7 +35,7 @@ stackstate/distributed
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow\u0026timeout=1s"` | The Elasticsearch cluster health status params that will be used by readinessProbe command |
+| elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` | The Elasticsearch cluster health status params that will be used by readinessProbe command |
 | elasticsearch.clusterName | string | `"distributed-elasticsearch"` | Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
 | elasticsearch.extraEnvs | list | `[{"name":"action.auto_create_index","value":"true"},{"name":"indices.query.bool.max_clause_count","value":"10000"}]` | Extra settings that StackState uses for Elasticsearch. |
