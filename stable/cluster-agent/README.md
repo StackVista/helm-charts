@@ -57,7 +57,7 @@ stackstate/cluster-agent
 | agent.apm.enabled | bool | `true` | Enable / disable the agent APM module. |
 | agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | agent.image.repository | string | `"docker.io/stackstate/stackstate-agent-2"` | Base container image registry. |
-| agent.image.tag | string | `"2.1.0"` | Default container image tag. |
+| agent.image.tag | string | `"2.3.0"` | Default container image tag. |
 | agent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | agent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | agent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
