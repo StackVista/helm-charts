@@ -43,7 +43,7 @@ stackstate:
         # stackstate.components.all.image.pullPolicy -- The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below).
         pullPolicy: Always
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: sts-private-v1-16-0-delta
+        tag: sts-private-v1-16-0-echo
       metrics:
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
         enabled: true
