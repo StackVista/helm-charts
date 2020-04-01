@@ -3,6 +3,9 @@
 ###########################
 
 all:
+  image:
+    # all.image.pullSecret -- Image Pull Secret to use for all pods
+    pullSecret:
   extraEnv:
     # all.extraEnv.open -- Extra open environment variables to inject into pods for all components.
     open: {}

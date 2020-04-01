@@ -2,7 +2,7 @@ hbase
 =====
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.23`
+Current chart version is `0.1.24`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -20,6 +20,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | all.affinity | object | `{}` | Affinity settings for pod assignment on all components. |
 | all.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods for all components. |
 | all.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object for all components. |
+| all.image.pullSecret | string | `nil` | Image Pull Secret to use for all pods |
 | all.metrics.enabled | bool | `false` | Enable metrics port. |
 | all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
 | all.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |

@@ -78,6 +78,10 @@ spec:
       labels:
         app.kubernetes.io/component: hdfs-nn
     spec:
+    {{- if .Values.all.image.pullSecret }}
+      imagePullSecrets:
+      - name: '{{ .Values.all.image.pullSecret }}'
+    {{- end }}
       initContainers:
       - {{ toYaml $stackstateHbaseHdfsNamenodeInitContainer | nindent 8 }}
       containers:

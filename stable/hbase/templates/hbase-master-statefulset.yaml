@@ -67,6 +67,10 @@ spec:
       labels:
         app.kubernetes.io/component: hbase-master
     spec:
+    {{- if .Values.all.image.pullSecret }}
+      imagePullSecrets:
+      - name: '{{ .Values.all.image.pullSecret }}'
+    {{- end }}
       initContainers:
       - {{ toYaml $stackstateHbaseMasterInitContainer | nindent 8 }}
       containers:

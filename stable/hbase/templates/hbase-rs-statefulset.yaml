@@ -77,6 +77,10 @@ spec:
       labels:
         app.kubernetes.io/component: hbase-rs
     spec:
+    {{- if .Values.all.image.pullSecret }}
+      imagePullSecrets:
+      - name: '{{ .Values.all.image.pullSecret }}'
+    {{- end }}
       initContainers:
       - {{ toYaml $stackstateHbaseRegionServerInitContainer | nindent 8 }}
       containers:

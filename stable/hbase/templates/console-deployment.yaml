@@ -43,6 +43,10 @@ spec:
       labels:
         app.kubernetes.io/component: console
     spec:
+    {{- if .Values.all.image.pullSecret }}
+      imagePullSecrets:
+      - name: '{{ .Values.all.image.pullSecret }}'
+    {{- end }}
       containers:
       - {{ toYaml $stackstateHbaseConsoleContainer | nindent 8 }}
     {{- if or .Values.all.nodeSelector .Values.console.nodeSelector }}
