@@ -27,6 +27,10 @@ spec:
       labels:
         app.kubernetes.io/component: mm2es
     spec:
+    {{- if .Values.stackstate.components.all.image.pullSecret }}
+      imagePullSecrets:
+      - name: '{{ .Values.stackstate.components.all.image.pullSecret }}'
+    {{- end }}
       initContainers:
       - {{ toYaml (merge $commonKafkaToEsInitContainer $commonContainer) | nindent 8 }}
       containers:

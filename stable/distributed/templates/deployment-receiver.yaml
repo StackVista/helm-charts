@@ -77,6 +77,10 @@ spec:
       labels:
         app.kubernetes.io/component: receiver
     spec:
+    {{- if .Values.stackstate.components.all.image.pullSecret }}
+      imagePullSecrets:
+      - name: '{{ .Values.stackstate.components.all.image.pullSecret }}'
+    {{- end }}
       initContainers:
       - {{ toYaml $stsDistributedReceiverInitContainer | nindent 8 }}
       containers:

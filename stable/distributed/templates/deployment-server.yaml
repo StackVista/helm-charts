@@ -98,6 +98,10 @@ spec:
       labels:
         app.kubernetes.io/component: server
     spec:
+    {{- if .Values.stackstate.components.all.image.pullSecret }}
+      imagePullSecrets:
+      - name: '{{ .Values.stackstate.components.all.image.pullSecret }}'
+    {{- end }}
       initContainers:
       - {{ toYaml $stsDistributedServerInitContainer | nindent 8 }}
       containers:
