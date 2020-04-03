@@ -37,3 +37,27 @@ This takes the same parameters as common.fullname
 {{- define "common.fullname.unique" -}}
   {{ template "common.fullname" . }}-{{ randAlphaNum 7 | lower }}
 {{- end }}
+
+{{- /*
+common.fullname.short does not duplicate the release and chart
+names if they are the same
+
+This takes the same parameters as common.fullname
+
+*/ -}}
+
+{{- define "common.fullname.short"}}
+  {{- $global := default (dict) .Values.global -}}
+  {{- $base := .Chart.Name -}}
+  {{- if .Values.fullnameOverride -}}
+    {{- $base = .Values.fullnameOverride -}}
+  {{- else if ne $base .Release.Name -}}
+    {{- $base = (printf "%s-%s" .Release.Name .Chart.Name) -}}
+  {{- end -}}
+  {{- $gpre := default "" $global.fullnamePrefix -}}
+  {{- $pre := default "" .Values.fullnamePrefix -}}
+  {{- $suf := default "" .Values.fullnameSuffix -}}
+  {{- $gsuf := default "" $global.fullnameSuffix -}}
+  {{- $name := print $gpre $pre $base $suf $gsuf -}}
+  {{- $name | lower | trunc 54 | trimSuffix "-" -}}
+{{- end -}}
