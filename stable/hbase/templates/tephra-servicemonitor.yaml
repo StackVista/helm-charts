@@ -5,7 +5,7 @@ metadata:
   {{- with .Values.all.metrics.servicemonitor.additionalLabels }}
     {{ toYaml . | nindent 4 }}
   {{- end }}
-  name: {{ template "common.fullname" . }}-tephra
+  name: {{ template "common.fullname.short" . }}-tephra
 spec:
   selector:
     matchLabels:

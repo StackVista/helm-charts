@@ -1,6 +1,6 @@
 {{- define "hbase.hbase.regionserver.service" -}}
 metadata:
-  name: {{ template "common.fullname" . }}-hbase-rs
+  name: {{ template "common.fullname.short" . }}-hbase-rs
   labels:
     app.kubernetes.io/component: hbase-rs
 spec:

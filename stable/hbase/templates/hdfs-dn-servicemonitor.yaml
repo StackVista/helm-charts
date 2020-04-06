@@ -5,7 +5,7 @@ metadata:
   {{- with .Values.all.metrics.servicemonitor.additionalLabels }}
     {{ toYaml . | nindent 4 }}
   {{- end }}
-  name: {{ template "common.fullname" . }}-hdfs-dn
+  name: {{ template "common.fullname.short" . }}-hdfs-dn
 spec:
   selector:
     matchLabels:

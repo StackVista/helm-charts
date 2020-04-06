@@ -32,7 +32,7 @@ workingDir: /tmp
 metadata:
   labels:
     app.kubernetes.io/component: console
-  name: {{ template "common.fullname" . }}-console
+  name: {{ template "common.fullname.short" . }}-console
 spec:
   replicas: 1
   selector:

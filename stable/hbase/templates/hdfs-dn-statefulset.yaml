@@ -4,7 +4,7 @@ command:
 - sh
 - -c
 - |
-  /entrypoint -c {{ template "common.fullname" . }}-hdfs-nn:9000 -t 300
+  /entrypoint -c {{ template "common.fullname.short" . }}-hdfs-nn:9000 -t 300
   chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} /hadoop-data
 image: "docker.io/dokkupaas/wait:latest"
 imagePullPolicy: Always
@@ -12,7 +12,7 @@ securityContext:
   allowPrivilegeEscalation: true
   privileged: true
 volumeMounts:
-- name: {{ template "common.fullname" . }}-hdfs-dn
+- name: {{ template "common.fullname.short" . }}-hdfs-dn
   mountPath: /hadoop-data
 {{- end -}}
 
@@ -54,7 +54,7 @@ securityContext:
   runAsGroup: {{ .Values.securityContext.runAsGroup }}
   runAsUser: {{ .Values.securityContext.runAsUser }}
 volumeMounts:
-- name: {{ template "common.fullname" . }}-hdfs-dn
+- name: {{ template "common.fullname.short" . }}-hdfs-dn
   mountPath: /hadoop-data
 {{- end -}}
 
@@ -67,11 +67,11 @@ volumeMounts:
 metadata:
   labels:
     app.kubernetes.io/component: hdfs-dn
-  name: {{ template "common.fullname" . }}-hdfs-dn
+  name: {{ template "common.fullname.short" . }}-hdfs-dn
 spec:
   podManagementPolicy: Parallel
   replicas: {{ .Values.hdfs.datanode.replicaCount }}
-  serviceName: {{ template "common.fullname" . }}-hdfs-dn
+  serviceName: {{ template "common.fullname.short" . }}-hdfs-dn
   selector:
     matchLabels:
       app.kubernetes.io/component: hdfs-dn
@@ -117,13 +117,13 @@ spec:
     {{- end }}
       volumes:
     {{- if not .Values.hdfs.datanode.persistence.enabled }}
-      - name: {{ template "common.fullname" . }}-hdfs-dn
+      - name: {{ template "common.fullname.short" . }}-hdfs-dn
         emptyDir: {}
     {{- end }}
 {{- if .Values.hdfs.datanode.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
-      name: {{ template "common.fullname" . }}-hdfs-dn
+      name: data
     spec:
       accessModes: {{ .Values.hdfs.datanode.persistence.accessModes }}
       resources:

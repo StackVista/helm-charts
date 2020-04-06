@@ -1,6 +1,6 @@
 {{- define "hbase.tephra.service" -}}
 metadata:
-  name: {{ template "common.fullname" . }}-tephra
+  name: {{ template "common.fullname.short" . }}-tephra
   labels:
     app.kubernetes.io/component: tephra
 spec:

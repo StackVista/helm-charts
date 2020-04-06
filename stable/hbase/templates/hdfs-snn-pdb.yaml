@@ -1,6 +1,6 @@
 {{- define "hbase.hdfs.secondarynamenode.poddisruptionbudget" -}}
 metadata:
-  name: {{ template "common.fullname" . }}-hdfs-snn
+  name: {{ template "common.fullname.short" . }}-hdfs-snn
   labels:
     app.kubernetes.io/component: hdfs-snn
 spec:

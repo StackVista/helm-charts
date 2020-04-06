@@ -31,7 +31,7 @@ Common environment variables for HDFS configuration.
 */}}
 {{- define "hbase.hdfs.commonEnv" }}
 - name: CORE_CONF_fs_defaultFS
-  value: "hdfs://{{ template "common.fullname" . }}-hdfs-nn:9000/"
+  value: "hdfs://{{ template "common.fullname.short" . }}-hdfs-nn:9000/"
 - name: HDFS_CONF_dfs_client_retry_policy_enabled
   value: "true"
 - name: HDFS_CONF_dfs_client_retry_policy_spec
@@ -105,7 +105,7 @@ Common environment variables for HBase configuration.
 - name: HBASE_CONF_hbase_hregion_majorcompaction
   value: "86400000"
 - name: HBASE_CONF_hbase_master
-  value: "{{ template "common.fullname" . }}-hbase-master:16000"
+  value: "{{ template "common.fullname.short" . }}-hbase-master:16000"
 - name: HBASE_CONF_hbase_master_ipc_address
   value: "0.0.0.0"
 - name: HBASE_CONF_hbase_offpeak_end_hour
@@ -119,7 +119,7 @@ Common environment variables for HBase configuration.
 - name: HBASE_CONF_hbase_regionserver_ipc_address
   value: "0.0.0.0"
 - name: HBASE_CONF_hbase_rootdir
-  value: "hdfs://{{ template "common.fullname" . }}-hdfs-nn:9000/hbase"
+  value: "hdfs://{{ template "common.fullname.short" . }}-hdfs-nn:9000/hbase"
 - name: HBASE_CONF_hbase_zookeeper_quorum
   value: {{ include "hbase.zookeeper.endpoint" . | quote }}
 - name: HBASE_CONF_zookeeper_znode_parent
@@ -141,7 +141,7 @@ Common extra environment variables for all processes inherited through `all.extr
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "common.fullname" $ }}-common
+      name: {{ template "common.fullname.short" $ }}-common
       key: {{ $key }}
   {{- end }}
 {{- end }}
@@ -162,7 +162,7 @@ HBase master extra environment variables for all processes inherited through `hb
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "common.fullname" $ }}-hbase-master
+      name: {{ template "common.fullname.short" $ }}-hbase-master
       key: {{ $key }}
   {{- end }}
 {{- end }}
@@ -183,7 +183,7 @@ HBase regionserver extra environment variables for all processes inherited throu
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "common.fullname" $ }}-hbase-rs
+      name: {{ template "common.fullname.short" $ }}-hbase-rs
       key: {{ $key }}
   {{- end }}
 {{- end }}
@@ -204,7 +204,7 @@ HDFS datanode extra environment variables for all processes inherited through `h
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "common.fullname" $ }}-hdfs-dn
+      name: {{ template "common.fullname.short" $ }}-hdfs-dn
       key: {{ $key }}
   {{- end }}
 {{- end }}
@@ -225,7 +225,7 @@ HDFS namenode extra environment variables for all processes inherited through `h
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "common.fullname" $ }}-hdfs-nn
+      name: {{ template "common.fullname.short" $ }}-hdfs-nn
       key: {{ $key }}
   {{- end }}
 {{- end }}
@@ -246,7 +246,7 @@ HDFS secondarynamenode extra environment variables for all processes inherited t
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "common.fullname" $ }}-hdfs-snn
+      name: {{ template "common.fullname.short" $ }}-hdfs-snn
       key: {{ $key }}
   {{- end }}
 {{- end }}
@@ -267,7 +267,7 @@ Tephra extra environment variables for all processes inherited through `tephra.e
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "common.fullname" $ }}-tephra
+      name: {{ template "common.fullname.short" $ }}-tephra
       key: {{ $key }}
   {{- end }}
 {{- end }}
@@ -288,7 +288,7 @@ Console extra environment variables for all processes inherited through `console
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "common.fullname" $ }}-console
+      name: {{ template "common.fullname.short" $ }}-console
       key: {{ $key }}
   {{- end }}
 {{- end }}

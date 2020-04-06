@@ -1,6 +1,6 @@
 {{- define "hbase.hbase.master.service" -}}
 metadata:
-  name: {{ template "common.fullname" . }}-hbase-master
+  name: {{ template "common.fullname.short" . }}-hbase-master
   labels:
     app.kubernetes.io/component: hbase-master
 spec:

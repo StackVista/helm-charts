@@ -5,7 +5,7 @@ metadata:
   {{- with .Values.all.metrics.servicemonitor.additionalLabels }}
     {{ toYaml . | nindent 4 }}
   {{- end }}
-  name: {{ template "common.fullname" . }}-hbase-master
+  name: {{ template "common.fullname.short" . }}-hbase-master
 spec:
   selector:
     matchLabels:

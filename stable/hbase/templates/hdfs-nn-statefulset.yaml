@@ -11,7 +11,7 @@ securityContext:
   allowPrivilegeEscalation: true
   privileged: true
 volumeMounts:
-- name: {{ template "common.fullname" . }}-hdfs-nn
+- name: {{ template "common.fullname.short" . }}-hdfs-nn
   mountPath: /hadoop-data
 {{- end -}}
 
@@ -53,7 +53,7 @@ securityContext:
   runAsGroup: {{ .Values.securityContext.runAsGroup }}
   runAsUser: {{ .Values.securityContext.runAsUser }}
 volumeMounts:
-- name: {{ template "common.fullname" . }}-hdfs-nn
+- name: {{ template "common.fullname.short" . }}-hdfs-nn
   mountPath: /hadoop-data
 {{- end -}}
 
@@ -66,9 +66,9 @@ volumeMounts:
 metadata:
   labels:
     app.kubernetes.io/component: hdfs-nn
-  name: {{ template "common.fullname" . }}-hdfs-nn
+  name: {{ template "common.fullname.short" . }}-hdfs-nn
 spec:
-  serviceName: {{ template "common.fullname" . }}-hdfs-nn
+  serviceName: {{ template "common.fullname.short" . }}-hdfs-nn
   replicas: 1
   selector:
     matchLabels:
@@ -115,13 +115,13 @@ spec:
     {{- end }}
       volumes:
     {{- if not .Values.hdfs.namenode.persistence.enabled }}
-      - name: {{ template "common.fullname" . }}-hdfs-nn
+      - name: {{ template "common.fullname.short" . }}-hdfs-nn
         emptyDir: {}
     {{- end }}
 {{- if .Values.hdfs.namenode.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
-      name: {{ template "common.fullname" . }}-hdfs-nn
+      name: data
     spec:
       accessModes: {{ .Values.hdfs.namenode.persistence.accessModes }}
       resources:

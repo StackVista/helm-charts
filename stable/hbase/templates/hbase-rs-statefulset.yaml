@@ -4,7 +4,7 @@ command:
 - sh
 - -c
 - |
-  /entrypoint -c {{ include "hbase.zookeeper.endpoint" . }}:2181,{{ template "common.fullname" . }}-hbase-master:16000 -t 300
+  /entrypoint -c {{ include "hbase.zookeeper.endpoint" . }}:2181,{{ template "common.fullname.short" . }}-hbase-master:16000 -t 300
 image: "docker.io/dokkupaas/wait:latest"
 imagePullPolicy: Always
 {{- end -}}
@@ -27,7 +27,7 @@ env:
     fieldRef:
       fieldPath: metadata.namespace
 - name: HBASE_CONF_hbase_regionserver_hostname
-  value: $(POD_NAME).{{ template "common.fullname" . }}-hbase-rs.$(POD_NAMESPACE).svc.cluster.local
+  value: $(POD_NAME).{{ template "common.fullname.short" . }}-hbase-rs.$(POD_NAMESPACE).svc.cluster.local
 ports:
 - containerPort: 16020
   name: rs
@@ -64,11 +64,11 @@ securityContext:
 metadata:
   labels:
     app.kubernetes.io/component: hbase-rs
-  name: {{ template "common.fullname" . }}-hbase-rs
+  name: {{ template "common.fullname.short" . }}-hbase-rs
 spec:
   podManagementPolicy: Parallel
   replicas: {{ .Values.hbase.regionserver.replicaCount }}
-  serviceName: {{ template "common.fullname" . }}-hbase-rs
+  serviceName: {{ template "common.fullname.short" . }}-hbase-rs
   selector:
     matchLabels:
       app.kubernetes.io/component: hbase-rs

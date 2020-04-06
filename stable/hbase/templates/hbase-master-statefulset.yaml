@@ -4,7 +4,7 @@ command:
 - sh
 - -c
 - |
-  /entrypoint -c {{ include "hbase.zookeeper.endpoint" . }}:2181,{{ template "common.fullname" . }}-hdfs-nn:9000,{{ template "common.fullname" . }}-hdfs-dn:50010 -t 300
+  /entrypoint -c {{ include "hbase.zookeeper.endpoint" . }}:2181,{{ template "common.fullname.short" . }}-hdfs-nn:9000,{{ template "common.fullname.short" . }}-hdfs-dn:50010 -t 300
 image: "docker.io/dokkupaas/wait:latest"
 imagePullPolicy: Always
 {{- end -}}
@@ -54,11 +54,11 @@ securityContext:
 metadata:
   labels:
     app.kubernetes.io/component: hbase-master
-  name: {{ template "common.fullname" . }}-hbase-master
+  name: {{ template "common.fullname.short" . }}-hbase-master
 spec:
   podManagementPolicy: Parallel
   replicas: {{ .Values.hbase.master.replicaCount }}
-  serviceName: {{ template "common.fullname" . }}-hbase-master
+  serviceName: {{ template "common.fullname.short" . }}-hbase-master
   selector:
     matchLabels:
       app.kubernetes.io/component: hbase-master
