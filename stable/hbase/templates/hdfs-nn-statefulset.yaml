@@ -11,7 +11,7 @@ securityContext:
   allowPrivilegeEscalation: true
   privileged: true
 volumeMounts:
-- name: {{ template "common.fullname.short" . }}-hdfs-nn
+- name: data
   mountPath: /hadoop-data
 {{- end -}}
 
@@ -53,7 +53,7 @@ securityContext:
   runAsGroup: {{ .Values.securityContext.runAsGroup }}
   runAsUser: {{ .Values.securityContext.runAsUser }}
 volumeMounts:
-- name: {{ template "common.fullname.short" . }}-hdfs-nn
+- name: data
   mountPath: /hadoop-data
 {{- end -}}
 

@@ -12,7 +12,7 @@ securityContext:
   allowPrivilegeEscalation: true
   privileged: true
 volumeMounts:
-- name: {{ template "common.fullname.short" . }}-hdfs-dn
+- name: data
   mountPath: /hadoop-data
 {{- end -}}
 
@@ -54,7 +54,7 @@ securityContext:
   runAsGroup: {{ .Values.securityContext.runAsGroup }}
   runAsUser: {{ .Values.securityContext.runAsUser }}
 volumeMounts:
-- name: {{ template "common.fullname.short" . }}-hdfs-dn
+- name: data
   mountPath: /hadoop-data
 {{- end -}}
 
@@ -117,7 +117,7 @@ spec:
     {{- end }}
       volumes:
     {{- if not .Values.hdfs.datanode.persistence.enabled }}
-      - name: {{ template "common.fullname.short" . }}-hdfs-dn
+      - name: data
         emptyDir: {}
     {{- end }}
 {{- if .Values.hdfs.datanode.persistence.enabled }}
