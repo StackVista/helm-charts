@@ -1,0 +1,20 @@
+dependencies:
+- name: common
+  repository: https://helm.stackstate.io
+  version: 0.4.3
+- name: elasticsearch
+  condition: elasticsearch.enabled
+  repository: https://helm.stackstate.io
+  version: 7.6.2-stackstate.1
+- name: hbase
+  condition: hbase.enabled
+  repository: https://helm.stackstate.io
+  version: 0.1.26
+- name: kafka
+  condition: kafka.enabled
+  repository: https://charts.bitnami.com/bitnami
+  version: 7.2.9
+- name: zookeeper
+  version: 5.4.3
+  repository: https://charts.bitnami.com/bitnami
+  condition: zookeeper.enabled

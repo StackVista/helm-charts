@@ -1,0 +1,22 @@
+{{- define "stackstate.k2es.service.stsEventsToEs" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-sts2es
+  labels:
+    app.kubernetes.io/component: sts2es
+spec:
+  clusterIP: None
+{{- if .Values.stackstate.components.all.metrics.enabled }}
+  ports:
+    - name: metrics
+      port: 9404
+      protocol: TCP
+      targetPort: metrics
+{{- end }}
+  selector:
+    app.kubernetes.io/component: sts2es
+  type: ClusterIP
+{{- end -}}
+
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $k2esStsEventsToEsService := fromYaml (include "stackstate.k2es.service.stsEventsToEs" .) -}}
+{{- toYaml (merge $k2esStsEventsToEsService $commonService) -}}

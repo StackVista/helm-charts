@@ -1,0 +1,17 @@
+{{- define "stackstate.sts2es.poddisruptionbudget" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-sts2es
+  labels:
+    app.kubernetes.io/component: sts2es
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: sts2es
+{{- with .Values.stackstate.components.k2es.poddisruptionbudget }}
+  {{ toYaml . | nindent 2 }}
+{{- end }}
+{{- end -}}
+
+{{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
+{{- $sts2esPdb := fromYaml (include "stackstate.sts2es.poddisruptionbudget" .) -}}
+{{- toYaml (merge $sts2esPdb $commonPdb) -}}

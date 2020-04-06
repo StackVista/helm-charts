@@ -1,0 +1,28 @@
+{{- define "stackstate.server.service" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-server
+  labels:
+    app.kubernetes.io/component: server
+spec:
+  ports:
+    - name: api
+      port: 7070
+      protocol: TCP
+      targetPort: api
+    - name: admin
+      port: 7071
+      protocol: TCP
+      targetPort: admin
+  {{- if .Values.stackstate.components.all.metrics.enabled }}
+    - name: metrics
+      port: 9404
+      protocol: TCP
+      targetPort: metrics
+  {{- end }}
+  selector:
+    app.kubernetes.io/component: server
+{{- end -}}
+
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $stsstackstateServerService := fromYaml (include "stackstate.server.service" .) -}}
+{{- toYaml (merge $stsstackstateServerService $commonService) -}}

@@ -1,0 +1,18 @@
+dependencies:
+- name: common
+  repository: https://helm.stackstate.io
+  version: 0.4.3
+- name: elasticsearch
+  repository: https://helm.stackstate.io
+  version: 7.6.2-stackstate.1
+- name: hbase
+  repository: https://helm.stackstate.io
+  version: 0.1.26
+- name: kafka
+  repository: https://charts.bitnami.com/bitnami
+  version: 7.2.9
+- name: zookeeper
+  repository: https://charts.bitnami.com/bitnami
+  version: 5.4.3
+digest: sha256:405952ca5eca32a4b526bffee001564d37429746e9a6242895edd46f410326f0
+generated: "2020-04-06T17:00:27.311491+02:00"
