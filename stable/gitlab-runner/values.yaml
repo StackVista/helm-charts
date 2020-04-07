@@ -252,6 +252,12 @@ runners:
   ##
   # serviceAccountName:
 
+  # Create a service account for runners
+  serviceAccountCreate: false
+
+  # Annotations for the service account for runners
+  serviceAccountAnnotations: {}
+
   ## If Gitlab is not reachable through $CI_SERVER_URL
   ##
   # cloneUrl:
