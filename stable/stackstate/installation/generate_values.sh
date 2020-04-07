@@ -26,16 +26,17 @@ while getopts "i:l:s:u:p:v:h" opt; do
 done
 
 function check_args() {
-  error=false
+  [ -z "${license_key}" ] && read -r -p "Please provide the license key (-l): " license_key
+  [ -z "${license_key}" ] && echo "License key (-l) is a required argument." && exit 1
 
-  [ -z "${image_pull_secret}" ] && echo "image_pull_secret (-i) is a required argument." && error=true
-  [ -z "${license_key}" ] && echo "License key (-l) is a required argument." && error=true
-  [ -z "${url}" ] && echo "The base url (-u) is a required argument." && error=true
-  [ -z "${admin_password}" ] && echo "The administrator password (-p) is a required argument." && error=true
+  [ -z "${image_pull_secret}" ] && read -r -p "Please provide the imagePullSecret (-i): " image_pull_secret
+  [ -z "${image_pull_secret}" ] && echo "image_pull_secret (-i) is a required argument." && exit 1
 
-  if [ "$error" = true ]; then
-    exit 1
-  fi
+  [ -z "${url}" ] && read -r -p "Please provide the base URLfor StackState (-u): " url
+  [ -z "${url}" ] && echo "The base url (-u) is a required argument." && exit 1
+
+  [ -z "${admin_password}" ] && read -r -p "Please provide the administrator password (-p): " admin_password
+  [ -z "${admin_password}" ] && echo "The administrator password (-p) is a required argument." && exit 1
 
   return 0
 }
