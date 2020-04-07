@@ -39,7 +39,7 @@ imagePullPolicy: IfNotPresent
 ##
 unregisterRunners: true
 
-## When stopping ther runner, give it time to wait for it's jobs to terminate.
+## When stopping the runner, give it time to wait for its jobs to terminate.
 ##
 ## Updating the runner's chart version or configuration will cause the runner container
 ## to be terminated with a graceful stop request. terminationGracePeriodSeconds
@@ -88,6 +88,12 @@ rbac:
   ## Use the following Kubernetes Service Account name if RBAC is disabled in this Helm chart (see rbac.create)
   ##
   # serviceAccountName: default
+
+  ## Specify annotations for Service Accounts, useful for annotations such as eks.amazonaws.com/role-arn
+  ##
+  ## ref: https://docs.aws.amazon.com/eks/latest/userguide/specify-service-account-role.html
+  ##
+  # serviceAccountAnnotations: {}
 
 ## Configure integrated Prometheus metrics exporter
 ## ref: https://docs.gitlab.com/runner/monitoring/#configuration-of-the-metrics-http-server
@@ -186,7 +192,7 @@ runners:
   ## ref: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscachegcs-section
   ## You could configure
   ## $ kubectl create secret generic google-application-credentials \
-  ##   --from-file=gcs-applicaton-credentials-file=./path-to-your-google-application-credentials-file.json
+  ##   --from-file=gcs-application-credentials-file=./path-to-your-google-application-credentials-file.json
   ## ref: https://kubernetes.io/docs/concepts/configuration/secret/
   ##
   ## Access using access-id and private-key:

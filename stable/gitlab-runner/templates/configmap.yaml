@@ -43,6 +43,8 @@ data:
 
     if [[ -f /secrets/gcs-applicaton-credentials-file ]]; then
       export GOOGLE_APPLICATION_CREDENTIALS="/secrets/gcs-applicaton-credentials-file"
+    elif [[ -f /secrets/gcs-application-credentials-file ]]; then
+      export GOOGLE_APPLICATION_CREDENTIALS="/secrets/gcs-application-credentials-file"
     else
       if [[ -f /secrets/gcs-access-id && -f /secrets/gcs-private-key ]]; then
         export CACHE_GCS_ACCESS_ID=$(cat /secrets/gcs-access-id)
@@ -75,7 +77,7 @@ data:
     log_format = {{ .Values.logFormat | quote }}
     {{- end }}
     {{- if .Values.metrics.enabled }}
-    listen_address = '[::]:9252'
+    listen_address = ':9252'
     {{- end }}
   configure: |
     set -e
