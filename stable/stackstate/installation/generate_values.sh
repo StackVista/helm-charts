@@ -84,8 +84,8 @@ function generate_values() {
 stackstate:
   components:
     all:
-    image:
-      pullSecretDockerConfigJson: "${image_pull_secret_docker_config_json}"
+      image:
+        pullSecretDockerConfigJson: "${image_pull_secret_docker_config_json}"
     server:
       extraEnv:
         secret:
