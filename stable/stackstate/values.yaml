@@ -9,6 +9,7 @@ ingress:
     # kubernetes.io/tls-acme: "true"
   # ingress.enabled -- Enable use of ingress controllers.
   enabled: false
+  path: /
   # ingress.hosts -- List of ingress hostnames; the paths are fixed to StackState backend services
   hosts: []
     # - host: stackstate.local

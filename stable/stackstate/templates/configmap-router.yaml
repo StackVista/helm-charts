@@ -109,8 +109,6 @@ data:
 
 {{- end -}}
 
-{{- if not .Values.ingress.enabled -}}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $stackstateServerConfigMap := fromYaml (include "stackstate.router.configmap" .) -}}
 {{- toYaml (merge $stackstateServerConfigMap $commonConfigMap) -}}
-{{- end -}}

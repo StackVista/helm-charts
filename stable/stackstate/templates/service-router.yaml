@@ -19,8 +19,6 @@ spec:
     app.kubernetes.io/component: router
 {{- end -}}
 
-{{- if not .Values.ingress.enabled -}}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $stsstackstateRouterService := fromYaml (include "stackstate.router.service" .) -}}
 {{- toYaml (merge $stsstackstateRouterService $commonService) -}}
-{{- end -}}

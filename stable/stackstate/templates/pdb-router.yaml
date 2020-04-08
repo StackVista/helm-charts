@@ -12,8 +12,6 @@ spec:
 {{- end }}
 {{- end -}}
 
-{{- if not .Values.ingress.enabled -}}
 {{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
 {{- $routerPdb := fromYaml (include "stackstate.router.poddisruptionbudget" .) -}}
 {{- toYaml (merge $routerPdb $commonPdb) -}}
-{{- end -}}

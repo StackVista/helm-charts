@@ -95,8 +95,6 @@ spec:
     {{- end }}
 {{- end -}}
 
-{{- if not .Values.ingress.enabled -}}
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 {{- $routerDeployment := fromYaml (include "stackstate.router.deployment" .) -}}
 {{- toYaml (merge $routerDeployment $commonDeployment) -}}
-{{- end -}}

@@ -212,65 +212,17 @@ Ingress paths / routes
   http:
     paths:
       - backend:
-          serviceName: {{ include "common.fullname.short" $ }}-server
-          servicePort: 7071
-        path: /admin/?(.*)
-      - backend:
-          serviceName: {{ include "common.fullname.short" $ }}-server
-          servicePort: 7070
-        path: /?(api/.*)
-      - backend:
-          serviceName: {{ include "common.fullname.short" $ }}-server
-          servicePort: 7070
-        path: /?(loginCallback)
-      - backend:
-          serviceName: {{ include "common.fullname.short" $ }}-server
-          servicePort: 7070
-        path: /?(loginInfo)
-      - backend:
-          serviceName: {{ include "common.fullname.short" $ }}-server
-          servicePort: 7070
-        path: /?(logout)
-      - backend:
-          serviceName: {{ include "common.fullname.short" $ }}-receiver
-          servicePort: 7077
-        path: /receiver/?(.*)
-      - backend:
-          serviceName: {{ include "common.fullname.short" $ }}-ui
+          serviceName: {{ include "common.fullname.short" $ }}-router
           servicePort: 8080
-        path: /?(.*)
+        path: /
   {{- end }}
 {{- else }}
 - http:
     paths:
       - backend:
-          serviceName: {{ include "common.fullname.short" . }}-server
-          servicePort: 7071
-        path: /admin/?(.*)
-      - backend:
-          serviceName: {{ include "common.fullname.short" . }}-server
-          servicePort: 7070
-        path: /?(api/.*)
-      - backend:
-          serviceName: {{ include "common.fullname.short" . }}-server
-          servicePort: 7070
-        path: /?(loginCallback)
-      - backend:
-          serviceName: {{ include "common.fullname.short" . }}-server
-          servicePort: 7070
-        path: /?(loginInfo)
-      - backend:
-          serviceName: {{ include "common.fullname.short" . }}-server
-          servicePort: 7070
-        path: /?(logout)
-      - backend:
-          serviceName: {{ include "common.fullname.short" . }}-receiver
-          servicePort: 7077
-        path: /receiver/?(.*)
-      - backend:
-          serviceName: {{ include "common.fullname.short" . }}-ui
+          serviceName: {{ include "common.fullname.short" . }}-router
           servicePort: 8080
-        path: /?(.*)
+        path: /
 {{- end }}
 {{- end -}}
 {{- define "stackstate.servicemonitor.extraLabels" -}}
