@@ -16,8 +16,8 @@ If any of the required arguments are missing they will be asked interactively.
 Arguments:
     -i : Image pull secret .dockerConfigJson property (required)
     -l : StackState license key (required)
-    -u : StackState base URL, i.e. public (outside of the Kubernetes cluster) URL of StackState (required)
-         For example: https://my.stackstate.host
+    -u : StackState base URL, externally (outside of the Kubernetes cluster) visible url of the StackState endpoints (required)
+         The exact value depends on your ingress setup. An example: https://my.stackstate.host
     -p : Administrator password that will be set for StackState (required)
     -v : Name of generated values file (default: values.yaml)
     -h : Show this help text
