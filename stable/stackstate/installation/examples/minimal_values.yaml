@@ -1,0 +1,52 @@
+elasticsearch:
+  minimumMasterNodes: 1
+  replicas: 1
+  volumeClaimTemplate:
+    accessModes:
+      - "ReadWriteOnce"
+    resources:
+      requests:
+        storage: 10Gi
+
+hbase:
+  hbase:
+    master:
+      replicaCount: 1
+    regionserver:
+      replicaCount: 1
+  hdfs:
+    datanode:
+      persistence:
+        size: 10Gi
+      replicaCount: 1
+      resources:
+        limits:
+          memory: "1Gi"
+        requests:
+          memory: "1Gi"
+    namenode:
+      persistence:
+        size: 10Gi
+    secondarynamenode:
+      enabled: false
+  tephra:
+    replicaCount: 1
+
+kafka:
+  replicaCount: 1
+  persistence:
+    size: 10Gi
+
+stackstate:
+  components:
+    ui:
+      replicaCount: 1
+    server:
+      resources:
+        limits:
+          memory: "1Gi"
+        requests:
+          memory: "200Mi"
+
+zookeeper:
+  replicaCount: 1

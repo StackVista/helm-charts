@@ -1,0 +1,43 @@
+# The default values define a production setup
+# Use this file to override them for a smaller test environment (this is not an officially supported setup)
+# NOTE: This still requires the generated values.yaml containing license key, api key etc...
+elasticsearch:
+  minimumMasterNodes: 1
+  replicas: 1
+  volumeClaimTemplate:
+    accessModes:
+      - "ReadWriteOnce"
+    resources:
+      requests:
+        storage: 100Gi
+
+hbase:
+  hbase:
+    master:
+      replicaCount: 1
+    regionserver:
+      replicaCount: 1
+  hdfs:
+    datanode:
+      replicaCount: 1
+    secondarynamenode:
+      enabled: false
+  tephra:
+    replicaCount: 1
+
+kafka:
+  replicaCount: 1
+
+stackstate:
+  components:
+    ui:
+      replicaCount: 1
+    server:
+      resources:
+        limits:
+          memory: "6Gi"
+        requests:
+          memory: "3Gi"
+
+zookeeper:
+  replicaCount: 1
