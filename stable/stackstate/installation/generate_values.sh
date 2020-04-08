@@ -16,8 +16,9 @@ If any of the required arguments are missing they will be asked interactively.
 Arguments:
     -i : Image pull secret .dockerConfigJson property (required)
     -l : StackState license key (required)
-    -u : StackState base URL; i.e. public (outside of the Kubernetes cluster) URL of StackState (required)
-    -p : Administrator password (required)
+    -u : StackState base URL, i.e. public (outside of the Kubernetes cluster) URL of StackState (required)
+         For example: https://my.stackstate.host
+    -p : Administrator password that will be set for StackState (required)
     -v : Name of generated values file (default: values.yaml)
     -h : Show this help text
 EOF
@@ -47,11 +48,17 @@ function check_args() {
   [ -z "${image_pull_secret_docker_config_json}" ] && read -r -p "Please provide the image pull secret json (-i): " image_pull_secret_docker_config_json
   [ -z "${image_pull_secret_docker_config_json}" ] && echo -e "${red}image pul secret json (-i) is a required argument.${nc}" && exit 1
 
-  [ -z "${url}" ] && read -r -p "Please provide the base URLfor StackState (-u): " url
+  [ -z "${url}" ] && read -r -p "Please provide the base URL for StackState, for example https://my.stackstate.host (-u): " url
   [ -z "${url}" ] && echo -e "${red}The base url (-u) is a required argument.${nc}" && exit 1
 
-  [ -z "${admin_password}" ] && read -r -p "Please provide the administrator password (-p): " admin_password
-  [ -z "${admin_password}" ] && echo -e "${red}The administrator password (-p) is a required argument.${nc}" && exit 1
+  if [ -z "${admin_password}" ]; then
+    read -s -r -p "Please provide the administrator password that will be set for StackState (-p): " admin_password
+    [ -z "${admin_password}" ] && echo -e "${red}The administrator password (-p) is a required argument.${nc}" && exit 1
+    echo ""
+    read -s -r -p "Please repeat the password for confirmation: " admin_password_confirm
+    echo ""
+    [ "${admin_password}" != "${admin_password_confirm}" ] && echo -e "${red}Passwords mismatch.${nc}" && exit 1
+  fi
 
   return 0
 }
