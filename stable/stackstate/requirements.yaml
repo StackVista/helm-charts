@@ -9,7 +9,7 @@ dependencies:
 - name: hbase
   condition: hbase.enabled
   repository: https://helm.stackstate.io
-  version: 0.1.26
+  version: 0.1.27
 - name: kafka
   condition: kafka.enabled
   repository: https://charts.bitnami.com/bitnami
