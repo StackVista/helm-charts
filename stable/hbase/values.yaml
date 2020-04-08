@@ -4,8 +4,10 @@
 
 all:
   image:
-    # all.image.pullSecret -- Image Pull Secret to use for all pods
-    pullSecret:
+    # all.image.pullSecretName -- Name of ImagePullSecret to use for all pods.
+    pullSecretName:
+    # all.image.pullSecretDockerConfigJson -- Value of `.dockerconfigjson` of ImagePullSecret to use for all pods.
+    pullSecretDockerConfigJson:
   extraEnv:
     # all.extraEnv.open -- Extra open environment variables to inject into pods for all components.
     open: {}

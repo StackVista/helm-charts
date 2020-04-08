@@ -1,4 +1,14 @@
-# CHANGELOG
+## v0.15.0 (2020-03-20)
+
+### Maintenance
+
+- Update GitLab Runner version to 12.9.0
+- Update changelog generator configuration !212
+- Replace changelog entries generation script !209
+
+### Other changes
+
+- Fix values.yaml typo !210 (Brian Choy @bycEEE)
 
 ## v0.14.0 (2020-02-22)
 
