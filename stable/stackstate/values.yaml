@@ -41,6 +41,10 @@ stackstate:
         # stackstate.components.all.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object for all components.
         secret: {}
       image:
+        # stackstate.components.all.image.pullSecretName -- Name of ImagePullSecret to use for all pods.
+        pullSecretName:
+        # stackstate.components.all.image.pullSecretDockerConfigJson -- Value of `.dockerconfigjson` of ImagePullSecret to use for all pods.
+        pullSecretDockerConfigJson:
         # stackstate.components.all.image.pullPolicy -- The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below).
         pullPolicy: Always
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).

@@ -53,9 +53,12 @@ spec:
       labels:
         app.kubernetes.io/component: router
     spec:
-    {{- if .Values.stackstate.components.all.image.pullSecret }}
+    {{- if .Values.stackstate.components.all.image.pullSecretName }}
       imagePullSecrets:
-      - name: '{{ .Values.stackstate.components.all.image.pullSecret }}'
+      - name: '{{ .Values.stackstate.components.all.image.pullSecretName }}'
+    {{- else if .Values.stackstate.components.all.image.pullSecretDockerConfigJson }}
+      imagePullSecrets:
+      - name: '{{ template "common.fullname.short" . }}-pull-secret'
     {{- end }}
       containers:
       - {{ toYaml $stsstackstateRouterMainContainer | nindent 8 }}
