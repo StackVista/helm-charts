@@ -2,7 +2,7 @@ elasticsearch
 =============
 Official Elastic helm chart for Elasticsearch
 
-Current chart version is `7.6.2-stackstate.1`
+Current chart version is `7.6.2-stackstate.2`
 
 Source code can be found [here](https://github.com/elastic/helm-charts)
 
@@ -14,7 +14,7 @@ Source code can be found [here](https://github.com/elastic/helm-charts)
 |-----|------|---------|-------------|
 | antiAffinity | string | `"hard"` |  |
 | antiAffinityTopologyKey | string | `"kubernetes.io/hostname"` |  |
-| clusterHealthCheckParams | string | `"wait_for_status=green\u0026timeout=1s"` |  |
+| clusterHealthCheckParams | string | `"wait_for_status=green&timeout=1s"` |  |
 | clusterName | string | `"elasticsearch"` |  |
 | esConfig | object | `{}` |  |
 | esJavaOpts | string | `"-Xmx1g -Xms1g"` |  |

@@ -241,7 +241,7 @@ stackstate:
           cpu: "50m"
           memory: "64Mi"
       # stackstate.components.ui.replicaCount -- Number of `ui` replicas.
-      replicaCount: 1
+      replicaCount: 2
       # stackstate.components.ui.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.ui.tolerations -- Toleration labels for pod assignment.
@@ -281,29 +281,36 @@ elasticsearch:
   # elasticsearch.imageTag -- Elasticsearch version.
   imageTag: "7.4.1"
   # elasticsearch.minimumMasterNodes -- Minimum number of Elasticsearch master nodes.
-  minimumMasterNodes: 1
-  # elasticsearch.nodeGroup -- Minimum number of Elasticsearch master nodes.
+  minimumMasterNodes: 2
   nodeGroup: "master"
   # elasticsearch.replicas -- Number of Elasticsearch replicas.
-  replicas: 1
-
+  replicas: 3
+  # elasticsearch.volumeClaimTemplate -- PVC template defaulting to 250Gi default volumes
+  volumeClaimTemplate:
+    accessModes:
+      - "ReadWriteOnce"
+    resources:
+      requests:
+        storage: 250Gi
 hbase:
   # hbase.enabled -- Enable / disable chart-based HBase.
   enabled: true
   hbase:
     master:
       # hbase.hbase.master.replicaCount -- Number of HBase master node replicas.
-      replicaCount: 1
+      replicaCount: 2
     regionserver:
       # hbase.hbase.regionserver.replicaCount -- Number of HBase regionserver node replicas.
-      replicaCount: 1
+      replicaCount: 3
   hdfs:
     datanode:
       # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas.
-      replicaCount: 1
+      replicaCount: 3
+    secondarynamenode:
+      enabled: true
   tephra:
     # hbase.tephra.replicaCount -- Number of Tephra replicas.
-    replicaCount: 1
+    replicaCount: 2
   zookeeper:
     # hbase.zookeeper.enabled -- Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**.
     enabled: false
@@ -344,7 +351,10 @@ kafka:
     # kafka.readinessProbe.initialDelaySeconds -- Delay before readiness probe is initiated.
     initialDelaySeconds: 45
   # kafka.replicaCount -- Number of Kafka replicas.
-  replicaCount: 1
+  replicaCount: 3
+  persistence:
+    # kafka.persistence.size -- Size of persistent volume for each Kafka pod
+    size: 50Gi
   # kafka.resources -- Kafka resources per pods.
   resources:
     limits:
@@ -373,4 +383,4 @@ zookeeper:
       # zookeeper.metrics.serviceMonitor.selector -- Default selector to use to target a certain Prometheus instance.
       selector: {}
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
-  replicaCount: 1
+  replicaCount: 3

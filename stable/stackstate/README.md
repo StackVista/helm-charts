@@ -40,14 +40,16 @@ stackstate/stackstate
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
 | elasticsearch.extraEnvs | list | `[{"name":"action.auto_create_index","value":"true"},{"name":"indices.query.bool.max_clause_count","value":"10000"}]` | Extra settings that StackState uses for Elasticsearch. |
 | elasticsearch.imageTag | string | `"7.4.1"` | Elasticsearch version. |
-| elasticsearch.minimumMasterNodes | int | `1` | Minimum number of Elasticsearch master nodes. |
-| elasticsearch.nodeGroup | string | `"master"` | Minimum number of Elasticsearch master nodes. |
-| elasticsearch.replicas | int | `1` | Number of Elasticsearch replicas. |
+| elasticsearch.minimumMasterNodes | int | `2` | Minimum number of Elasticsearch master nodes. |
+| elasticsearch.nodeGroup | string | `"master"` |  |
+| elasticsearch.replicas | int | `3` | Number of Elasticsearch replicas. |
+| elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"250Gi"}}}` | PVC template defaulting to 250Gi default volumes |
 | hbase.enabled | bool | `true` | Enable / disable chart-based HBase. |
-| hbase.hbase.master.replicaCount | int | `1` | Number of HBase master node replicas. |
-| hbase.hbase.regionserver.replicaCount | int | `1` | Number of HBase regionserver node replicas. |
-| hbase.hdfs.datanode.replicaCount | int | `1` | Number of HDFS datanode replicas. |
-| hbase.tephra.replicaCount | int | `1` | Number of Tephra replicas. |
+| hbase.hbase.master.replicaCount | int | `2` | Number of HBase master node replicas. |
+| hbase.hbase.regionserver.replicaCount | int | `3` | Number of HBase regionserver node replicas. |
+| hbase.hdfs.datanode.replicaCount | int | `3` | Number of HDFS datanode replicas. |
+| hbase.hdfs.secondarynamenode.enabled | bool | `true` |  |
+| hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
 | hbase.zookeeper.enabled | bool | `false` | Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**. |
 | hbase.zookeeper.externalServers | string | `"stackstate-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |
@@ -65,8 +67,9 @@ stackstate/stackstate
 | kafka.metrics.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` (also requires `kafka.metrics.kafka.enabled` or `kafka.metrics.jmx.enabled` to be `true`). |
 | kafka.metrics.serviceMonitor.interval | string | `"20s"` | How frequently to scrape metrics. |
 | kafka.metrics.serviceMonitor.selector | object | `{}` | Selector to target Prometheus instance. |
+| kafka.persistence.size | string | `"50Gi"` | Size of persistent volume for each Kafka pod |
 | kafka.readinessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
-| kafka.replicaCount | int | `1` | Number of Kafka replicas. |
+| kafka.replicaCount | int | `3` | Number of Kafka replicas. |
 | kafka.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"memory":"2Gi"}}` | Kafka resources per pods. |
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
@@ -148,7 +151,7 @@ stackstate/stackstate
 | stackstate.components.ui.image.tag | string | `""` | Tag used for the `ui` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.ui.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.ui.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `ui` pods. |
-| stackstate.components.ui.replicaCount | int | `1` | Number of `ui` replicas. |
+| stackstate.components.ui.replicaCount | int | `2` | Number of `ui` replicas. |
 | stackstate.components.ui.resources | object | `{"limits":{"cpu":"50m","memory":"64Mi"},"requests":{"cpu":"50m","memory":"64Mi"}}` | Resource allocation for `ui` pods. |
 | stackstate.components.ui.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
@@ -161,4 +164,4 @@ stackstate/stackstate
 | zookeeper.metrics.enabled | bool | `true` | Enable / disable Zookeeper Prometheus metrics. |
 | zookeeper.metrics.serviceMonitor.enabled | bool | `false` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |
 | zookeeper.metrics.serviceMonitor.selector | object | `{}` | Default selector to use to target a certain Prometheus instance. |
-| zookeeper.replicaCount | int | `1` | Default amount of Zookeeper replicas to provision. |
+| zookeeper.replicaCount | int | `3` | Default amount of Zookeeper replicas to provision. |

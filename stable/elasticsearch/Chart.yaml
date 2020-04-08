@@ -5,7 +5,7 @@ maintainers:
 - email: helm-charts@elastic.co
   name: Elastic
 name: elasticsearch
-version: 7.6.2-stackstate.1
+version: 7.6.2-stackstate.2
 appVersion: 7.6.2
 sources:
   - https://github.com/elastic/elasticsearch
