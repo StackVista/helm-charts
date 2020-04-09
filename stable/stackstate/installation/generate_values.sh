@@ -96,10 +96,9 @@ stackstate:
   license:
     key: "${license_key}"
 hbase:
-  components:
-    all:
-      image:
-        pullSecretDockerConfigJson: "${image_pull_secret_docker_config_json}"
+  all:
+    image:
+      pullSecretDockerConfigJson: "${image_pull_secret_docker_config_json}"
 EOF
 }
 
