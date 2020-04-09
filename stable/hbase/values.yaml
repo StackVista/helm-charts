@@ -4,6 +4,8 @@
 
 all:
   image:
+    # all.image.registry -- Base container image registry for all containers, except for the wait container
+    registry: quay.io
     # all.image.pullSecretName -- Name of ImagePullSecret to use for all pods.
     pullSecretName:
     # all.image.pullSecretDockerConfigJson -- Value of `.dockerconfigjson` of ImagePullSecret to use for all pods.
@@ -45,7 +47,7 @@ console:
     # console.image.pullPolicy -- Pull policy for console pods, defaults to `stackgraph.image.pullPolicy`
     pullPolicy:
     # console.image.repository -- Base container image repository for console pods.
-    repository: quay.io/stackstate/stackgraph-console
+    repository: stackstate/stackgraph-console
     # console.image.tag -- Container image tag for console pods, defaults to `stackgraph.image.tag`
     tag:
   # console.resources -- Resources to allocate for HDFS data nodes.
@@ -56,6 +58,15 @@ console:
   tolerations: []
   # console.affinity -- Affinity settings for pod assignment.
   affinity: {}
+
+wait:
+  image:
+    # wait.image.registry -- Base container image registry for wait containers
+    registry: docker.io
+    # wait.image.repository -- Base container image repository for wait containers
+    repository: dokkupaas/wait
+    # wait.image.repository -- Container image tag for wait containers
+    tag: latest
 
 hbase:
   master:
@@ -68,7 +79,7 @@ hbase:
       # hbase.master.image.pullPolicy -- Pull policy for HBase masters, defaults to `stackgraph.image.pullPolicy`
       pullPolicy:
       # hbase.master.image.repository -- Base container image repository for HBase masters.
-      repository: quay.io/stackstate/hbase-master
+      repository: stackstate/hbase-master
       # hbase.master.image.tag -- Container image tag for HBase masters, defaults to `stackgraph.image.tag`
       tag:
     # hbase.master.replicaCount -- Number of pods for HBase masters.
@@ -95,7 +106,7 @@ hbase:
       # hbase.regionserver.image.pullPolicy -- Pull policy for HBase region servers, defaults to `stackgraph.image.pullPolicy`
       pullPolicy:
       # hbase.regionserver.image.repository -- Base container image repository for HBase region servers.
-      repository: quay.io/stackstate/hbase-regionserver
+      repository: stackstate/hbase-regionserver
       # hbase.regionserver.image.tag -- Container image tag for HBase region servers, defaults to `stackgraph.image.tag`
       tag:
     # hbase.regionserver.replicaCount -- Number of HBase regionserver nodes.
@@ -121,7 +132,7 @@ hdfs:
     # hdfs.image.pullPolicy -- Pull policy for HDFS datanode.
     pullPolicy: Always
     # hdfs.image.repository -- Base container image repository for HDFS datanode.
-    repository: quay.io/stackstate/hadoop
+    repository: stackstate/hadoop
     # hdfs.image.tag -- Default container image tag for HDFS datanode.
     tag: 2.9.2-java11
   datanode:
@@ -220,7 +231,7 @@ tephra:
     # tephra.image.pullPolicy -- Pull policy for Tephra pods, defaults to `stackgraph.image.pullPolicy`
     pullPolicy:
     # tephra.image.repository -- Base container image repository for Tephra pods.
-    repository: quay.io/stackstate/tephra-server
+    repository: stackstate/tephra-server
     # tephra.image.tag -- Container image tag for Tephra pods, defaults to `stackgraph.image.tag`
     tag:
   # tephra.replicaCount -- Number of pods for Tephra pods.

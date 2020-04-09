@@ -2,7 +2,7 @@ hbase
 =====
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.27`
+Current chart version is `0.1.28`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -22,6 +22,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | all.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object for all components. |
 | all.image.pullSecretDockerConfigJson | string | `nil` | Value of `.dockerconfigjson` of ImagePullSecret to use for all pods. |
 | all.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
+| all.image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
 | all.metrics.enabled | bool | `false` | Enable metrics port. |
 | all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
 | all.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
@@ -32,7 +33,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | console.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | console.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | console.image.pullPolicy | string | `nil` | Pull policy for console pods, defaults to `stackgraph.image.pullPolicy` |
-| console.image.repository | string | `"quay.io/stackstate/stackgraph-console"` | Base container image repository for console pods. |
+| console.image.repository | string | `"stackstate/stackgraph-console"` | Base container image repository for console pods. |
 | console.image.tag | string | `nil` | Container image tag for console pods, defaults to `stackgraph.image.tag` |
 | console.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | console.resources | object | `{}` | Resources to allocate for HDFS data nodes. |
@@ -41,7 +42,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hbase.master.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hbase.master.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | hbase.master.image.pullPolicy | string | `nil` | Pull policy for HBase masters, defaults to `stackgraph.image.pullPolicy` |
-| hbase.master.image.repository | string | `"quay.io/stackstate/hbase-master"` | Base container image repository for HBase masters. |
+| hbase.master.image.repository | string | `"stackstate/hbase-master"` | Base container image repository for HBase masters. |
 | hbase.master.image.tag | string | `nil` | Container image tag for HBase masters, defaults to `stackgraph.image.tag` |
 | hbase.master.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hbase.master.replicaCount | int | `1` | Number of pods for HBase masters. |
@@ -51,7 +52,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hbase.regionserver.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hbase.regionserver.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | hbase.regionserver.image.pullPolicy | string | `nil` | Pull policy for HBase region servers, defaults to `stackgraph.image.pullPolicy` |
-| hbase.regionserver.image.repository | string | `"quay.io/stackstate/hbase-regionserver"` | Base container image repository for HBase region servers. |
+| hbase.regionserver.image.repository | string | `"stackstate/hbase-regionserver"` | Base container image repository for HBase region servers. |
 | hbase.regionserver.image.tag | string | `nil` | Container image tag for HBase region servers, defaults to `stackgraph.image.tag` |
 | hbase.regionserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hbase.regionserver.replicaCount | int | `1` | Number of HBase regionserver nodes. |
@@ -70,7 +71,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hdfs.datanode.resources | object | `{"limits":{"memory":"4Gi"},"requests":{"memory":"2Gi"}}` | Resources to allocate for HDFS data nodes. |
 | hdfs.datanode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.image.pullPolicy | string | `"Always"` | Pull policy for HDFS datanode. |
-| hdfs.image.repository | string | `"quay.io/stackstate/hadoop"` | Base container image repository for HDFS datanode. |
+| hdfs.image.repository | string | `"stackstate/hadoop"` | Base container image repository for HDFS datanode. |
 | hdfs.image.tag | string | `"2.9.2-java11"` | Default container image tag for HDFS datanode. |
 | hdfs.namenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.namenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -103,12 +104,15 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | tephra.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | tephra.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | tephra.image.pullPolicy | string | `nil` | Pull policy for Tephra pods, defaults to `stackgraph.image.pullPolicy` |
-| tephra.image.repository | string | `"quay.io/stackstate/tephra-server"` | Base container image repository for Tephra pods. |
+| tephra.image.repository | string | `"stackstate/tephra-server"` | Base container image repository for Tephra pods. |
 | tephra.image.tag | string | `nil` | Container image tag for Tephra pods, defaults to `stackgraph.image.tag` |
 | tephra.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | tephra.replicaCount | int | `1` | Number of pods for Tephra pods. |
 | tephra.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"memory":"2Gi"}}` | Resources to allocate for Tephra pods. |
 | tephra.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| wait.image.registry | string | `"docker.io"` | Base container image registry for wait containers |
+| wait.image.repository | string | `"dokkupaas/wait"` | Container image tag for wait containers |
+| wait.image.tag | string | `"latest"` |  |
 | zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
 | zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |
 | zookeeper.fourlwCommandsWhitelist | string | `"mntr, ruok, stat, srvr"` | Zookeeper four-letter-word (FLW) commands that are enabled. |

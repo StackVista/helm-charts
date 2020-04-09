@@ -6,7 +6,7 @@ command:
 - |
   /entrypoint -c {{ template "common.fullname.short" . }}-hdfs-nn:9000 -t 300
   chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} /hadoop-data
-image: "docker.io/dokkupaas/wait:latest"
+image: "{{include "wait.image.registry" .}}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
 imagePullPolicy: Always
 securityContext:
   allowPrivilegeEscalation: true
@@ -18,7 +18,7 @@ volumeMounts:
 
 {{- define "hbase.hdfs.secondarynamenode.container.main" -}}
 name: namenode
-image: "{{ .Values.hdfs.image.repository }}:{{ .Values.hdfs.image.tag }}"
+image: "{{include "image.registry" .}}/{{ .Values.hdfs.image.repository }}:{{ .Values.hdfs.image.tag }}"
 imagePullPolicy: {{ .Values.hdfs.image.pullPolicy }}
 args:
 - /entrypoint.sh

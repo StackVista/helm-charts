@@ -14,6 +14,28 @@ Expand the name of the chart.
 {{- end -}}
 
 {{/*
+Return the image registry
+*/}}
+{{- define "image.registry" -}}
+  {{- if .Values.global }}
+    {{- default .Values.all.image.registry .Values.global.imageRegistry -}}
+  {{- else -}}
+    {{- .Values.all.image.registry -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Return the image registry for the wait container
+*/}}
+{{- define "wait.image.registry" -}}
+  {{- if .Values.global }}
+    {{- default .Values.wait.image.registry .Values.global.imageRegistry -}}
+  {{- else -}}
+    {{- .Values.wait.image.registry -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
 Get and use nested subchart templates with the proper context. The reason this is needed is because when pulling
 in a subchart (like ZooKeeper), the subchart will create objects based on it's own 'fullName' template. That 'fullName'
 template is often needed within a parent chart to reference a created Service / Secret / etc. objects for use in the
