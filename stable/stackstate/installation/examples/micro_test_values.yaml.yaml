@@ -1,3 +1,6 @@
+# The default values define a production setup
+# Use this file to override them for the smallest possible test environment (this is not an officially supported setup)
+# NOTE: This still requires the generated values.yaml containing license key, api key etc...
 elasticsearch:
   minimumMasterNodes: 1
   replicas: 1
