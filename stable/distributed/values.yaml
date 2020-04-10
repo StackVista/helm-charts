@@ -143,7 +143,7 @@ stackstate:
       # stackstate.components.receiver.resources -- Resource allocation for `receiver` pods.
       resources:
         limits:
-          memory: "1Gi"
+          memory: "2Gi"
         requests:
           memory: "1Gi"
       # stackstate.components.receiver.replicaCount -- Number of `receiver` replicas.

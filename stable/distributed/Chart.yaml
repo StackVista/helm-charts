@@ -1,6 +1,6 @@
 apiVersion: v1
 appVersion: 1.16.0-echo
-version: 0.4.5
+version: 0.4.6
 description: Helm chart for StackState distributed -- all components split into microservices.
 keywords:
   - aiops
