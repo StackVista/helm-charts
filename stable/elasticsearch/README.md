@@ -2,7 +2,7 @@ elasticsearch
 =============
 Official Elastic helm chart for Elasticsearch
 
-Current chart version is `7.6.2-stackstate.2`
+Current chart version is `7.6.2-stackstate.3`
 
 Source code can be found [here](https://github.com/elastic/helm-charts)
 
@@ -27,9 +27,10 @@ Source code can be found [here](https://github.com/elastic/helm-charts)
 | fsGroup | string | `""` |  |
 | fullnameOverride | string | `""` |  |
 | httpPort | int | `9200` |  |
-| image | string | `"docker.elastic.co/elasticsearch/elasticsearch"` |  |
 | imagePullPolicy | string | `"IfNotPresent"` |  |
 | imagePullSecrets | list | `[]` |  |
+| imageRegistry | string | `"docker.elastic.co"` |  |
+| imageRepository | string | `"elasticsearch/elasticsearch"` |  |
 | imageTag | string | `"7.6.2"` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.enabled | bool | `false` |  |

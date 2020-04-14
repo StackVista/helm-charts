@@ -140,7 +140,7 @@ spec:
         securityContext:
           runAsUser: 0
           privileged: true
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ include "elasticsearch.imageRegistry" . }}/{{ .Values.imageRepository }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         command: ["sysctl", "-w", "vm.max_map_count={{ .Values.sysctlVmMaxMapCount}}"]
         resources:
@@ -148,7 +148,7 @@ spec:
       {{- end }}
 {{ if .Values.keystore }}
       - name: keystore
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ include "elasticsearch.imageRegistry" . }}/{{ .Values.imageRepository }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         command:
         - sh
@@ -189,7 +189,7 @@ spec:
       - name: "{{ template "elasticsearch.name" . }}"
         securityContext:
 {{ toYaml .Values.securityContext | indent 10 }}
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ include "elasticsearch.imageRegistry" . }}/{{ .Values.imageRepository }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         readinessProbe:
           exec:
@@ -297,7 +297,7 @@ spec:
       # This sidecar will prevent slow master re-election
       # https://github.com/elastic/helm-charts/issues/63
       - name: elasticsearch-master-graceful-termination-handler
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ include "elasticsearch.imageRegistry" . }}/{{ .Values.imageRepository }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         command:
         - "sh"

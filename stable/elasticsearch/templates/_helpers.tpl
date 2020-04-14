@@ -27,6 +27,17 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 {{- end -}}
 
+{{/*
+Return the image registry
+*/}}
+{{- define "elasticsearch.imageRegistry" -}}
+  {{- if .Values.global }}
+    {{- default .Values.imageRegistry .Values.global.imageRegistry -}}
+  {{- else -}}
+    {{- .Values.imageRegistry -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "elasticsearch.masterService" -}}
 {{- if empty .Values.masterService -}}
 {{- if empty .Values.fullnameOverride -}}
@@ -56,7 +67,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{ .Values.esMajorVersion }}
 {{- else -}}
 {{- $version := int (index (.Values.imageTag | splitList ".") 0) -}}
-  {{- if and (contains "docker.elastic.co/elasticsearch/elasticsearch" .Values.image) (not (eq $version 0)) -}}
+  {{- if and (contains "elasticsearch/elasticsearch" .Values.imageRepository) (not (eq $version 0)) -}}
 {{ $version }}
   {{- else -}}
 7

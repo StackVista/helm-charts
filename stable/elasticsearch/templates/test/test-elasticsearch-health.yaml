@@ -8,7 +8,7 @@ metadata:
 spec:
   containers:
   - name: "{{ .Release.Name }}-{{ randAlpha 5 | lower }}-test"
-    image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+    image: "{{ include "elasticsearch.imageRegistry" . }}/{{ .Values.imageRepository }}:{{ .Values.imageTag }}"
     command:
       - "sh"
       - "-c"
