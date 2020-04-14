@@ -5,7 +5,7 @@ command:
 - -c
 - |
   /entrypoint -c {{ include "stackstate.kafka.endpoint" . }} -t 300
-image: "docker.io/dokkupaas/wait:latest"
+image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
 imagePullPolicy: Always
 {{- end -}}
 
@@ -20,7 +20,7 @@ env:
     secretKeyRef:
       name: {{ template "common.fullname.short" . }}-receiver
       key: sts-receiver-api-key
-image: "{{ .Values.stackstate.components.receiver.image.repository }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.receiver.image.tag }}"
+image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.receiver.image.repository }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.receiver.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.receiver.image.pullPolicy | quote }}
 name: receiver
 ports:

@@ -41,6 +41,8 @@ stackstate:
         # stackstate.components.all.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object for all components.
         secret: {}
       image:
+        # stackstate.components.all.image.registry -- Base container image registry for all containers, except for the wait container
+        registry: quay.io
         # stackstate.components.all.image.pullSecretName -- Name of ImagePullSecret to use for all pods.
         pullSecretName:
         # stackstate.components.all.image.pullSecretDockerConfigJson -- Value of `.dockerconfigjson` of ImagePullSecret to use for all pods.
@@ -79,7 +81,7 @@ stackstate:
         # stackstate.components.correlate.image.pullPolicy -- `pullPolicy` used for the `correlate` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.components.correlate.image.repository -- Repository of the correlate component Docker image.
-        repository: quay.io/stackstate/stackstate-correlate
+        repository: stackstate/stackstate-correlate
         # stackstate.components.correlate.image.tag -- Tag used for the `correlate` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
       # stackstate.components.correlate.poddisruptionbudget -- PodDisruptionBudget settings for `correlate` pods.
@@ -109,7 +111,7 @@ stackstate:
         # stackstate.components.k2es.image.pullPolicy -- `pullPolicy` used for the `k2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.components.k2es.image.repository -- Repository of the k2es component Docker image.
-        repository: quay.io/stackstate/stackstate-kafka-to-es
+        repository: stackstate/stackstate-kafka-to-es
         # stackstate.components.k2es.image.tag -- Tag used for the `k2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
       # stackstate.components.k2es.poddisruptionbudget -- PodDisruptionBudget settings for `k2es` pods.
@@ -139,7 +141,7 @@ stackstate:
         # stackstate.components.receiver.image.pullPolicy -- `pullPolicy` used for the `receiver` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.components.receiver.image.repository -- Repository of the receiver component Docker image.
-        repository: quay.io/stackstate/stackstate-receiver
+        repository: stackstate/stackstate-receiver
         # stackstate.components.receiver.image.tag -- Tag used for the `receiver` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
       # stackstate.components.receiver.poddisruptionbudget -- PodDisruptionBudget settings for `receiver` pods.
@@ -168,8 +170,10 @@ stackstate:
       image:
         # stackstate.components.router.image.pullPolicy -- `pullPolicy` used for the `router` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: Always
+        # stackstate.components.router.image.registry -- Registry of the router component Docker image.
+        registry: docker.io
         # stackstate.components.router.image.repository -- Repository of the router component Docker image.
-        repository: docker.io/envoyproxy/envoy-alpine
+        repository: envoyproxy/envoy-alpine
         # stackstate.components.router.image.tag -- Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: v1.12.1
       # stackstate.components.router.poddisruptionbudget -- PodDisruptionBudget settings for `router` pods.
@@ -201,7 +205,7 @@ stackstate:
         # stackstate.components.server.image.pullPolicy -- `pullPolicy` used for the `server` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.components.server.image.repository -- Repository of the server component Docker image.
-        repository: quay.io/stackstate/stackstate-server
+        repository: stackstate/stackstate-server
         # stackstate.components.server.image.tag -- Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
       # stackstate.components.server.poddisruptionbudget -- PodDisruptionBudget settings for `server` pods.
@@ -231,7 +235,7 @@ stackstate:
         # stackstate.components.ui.image.pullPolicy -- `pullPolicy` used for the `ui` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.components.ui.image.repository -- Repository of the ui component Docker image.
-        repository: quay.io/stackstate/stackstate-ui
+        repository: stackstate/stackstate-ui
         # stackstate.components.ui.image.tag -- Tag used for the `ui` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
       # stackstate.components.ui.poddisruptionbudget -- PodDisruptionBudget settings for `ui` pods.
@@ -253,6 +257,30 @@ stackstate:
       tolerations: []
       # stackstate.components.ui.affinity -- Affinity settings for pod assignment.
       affinity: {}
+    kafkaTopicCreate:
+      image:
+        # stackstate.components.kafkaTopicCreate.image.registry -- Base container image registry for kafka-topic-create containers.
+        registry: docker.io
+        # stackstate.components.kafkaTopicCreate.image.repository -- Base container image repository for kafka-topic-create containers.
+        repository: bitnami/kafka
+        # stackstate.components.kafkaTopicCreate.image.tag -- Container image tag for kafka-topic-create containers.
+        tag: latest
+    nginxPrometheusExporter:
+      image:
+        # stackstate.components.nginxPrometheusExporter.image.registry -- Base container image registry for nginx-prometheus-exporter containers.
+        registry: docker.io
+        # stackstate.components.nginxPrometheusExporter.image.repository -- Base container image repository for nginx-prometheus-exporter containers.
+        repository: nginx/nginx-prometheus-exporter
+        # stackstate.components.nginxPrometheusExporter.image.tag -- Container image tag for nginx-prometheus-exporter containers.
+        tag: 0.4.2
+    wait:
+      image:
+        # stackstate.components.wait.image.registry -- Base container image registry for wait containers.
+        registry: docker.io
+        # stackstate.components.wait.image.repository -- Base container image repository for wait containers.
+        repository: dokkupaas/wait
+        # stackstate.components.wait.image.tag -- Container image tag for wait containers.
+        tag: latest
   admin:
     authentication:
       # stackstate.admin.authentication.enabled -- Enable basic auth protection for the /admin endpoint.

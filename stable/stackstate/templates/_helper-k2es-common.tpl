@@ -8,7 +8,7 @@ command:
 - -c
 - |
   /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackstate.es.endpoint" . }} -t 300
-image: "docker.io/dokkupaas/wait:latest"
+image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
 imagePullPolicy: Always
 {{- end -}}
 
@@ -28,7 +28,7 @@ env:
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
-image: "{{ .Values.stackstate.components.k2es.image.repository }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.k2es.image.tag }}"
+image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.k2es.image.repository }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.k2es.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.k2es.image.pullPolicy | quote }}
 livenessProbe:
   httpGet:

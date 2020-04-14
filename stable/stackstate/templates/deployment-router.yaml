@@ -1,6 +1,6 @@
 {{- define "stackstate.router.deployment.container.main" -}}
 name: router
-image: "{{ .Values.stackstate.components.router.image.repository }}:{{ .Values.stackstate.components.router.image.tag }}"
+image: "{{ include "stackstate.router.image.registry" . }}/{{ .Values.stackstate.components.router.image.repository }}:{{ .Values.stackstate.components.router.image.tag }}"
 imagePullPolicy: {{ .Values.stackstate.components.router.image.pullPolicy | quote }}
 env:
 {{- include "stackstate.common.envvars" . }}

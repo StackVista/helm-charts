@@ -2,7 +2,7 @@ stackstate
 ==========
 Helm chart for StackState
 
-Current chart version is `0.4.9`
+Current chart version is `0.4.10`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -13,8 +13,8 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 | https://charts.bitnami.com/bitnami | kafka | 7.2.9 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.4.3 |
 | https://helm.stackstate.io | common | 0.4.3 |
-| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.1 |
-| https://helm.stackstate.io | hbase | 0.1.27 |
+| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.3 |
+| https://helm.stackstate.io | hbase | 0.1.28 |
 
 ## Required Values
 
@@ -83,6 +83,7 @@ stackstate/stackstate
 | stackstate.components.all.image.pullPolicy | string | `"Always"` | The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below). |
 | stackstate.components.all.image.pullSecretDockerConfigJson | string | `nil` | Value of `.dockerconfigjson` of ImagePullSecret to use for all pods. |
 | stackstate.components.all.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
+| stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
 | stackstate.components.all.image.tag | string | `"sts-private-v1-16-0-echo"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
@@ -95,7 +96,7 @@ stackstate/stackstate
 | stackstate.components.correlate.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.correlate.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.correlate.image.pullPolicy | string | `""` | `pullPolicy` used for the `correlate` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.correlate.image.repository | string | `"quay.io/stackstate/stackstate-correlate"` | Repository of the correlate component Docker image. |
+| stackstate.components.correlate.image.repository | string | `"stackstate/stackstate-correlate"` | Repository of the correlate component Docker image. |
 | stackstate.components.correlate.image.tag | string | `""` | Tag used for the `correlate` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.correlate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.correlate.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `correlate` pods. |
@@ -106,18 +107,24 @@ stackstate/stackstate
 | stackstate.components.k2es.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.k2es.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.k2es.image.pullPolicy | string | `""` | `pullPolicy` used for the `k2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.k2es.image.repository | string | `"quay.io/stackstate/stackstate-kafka-to-es"` | Repository of the k2es component Docker image. |
+| stackstate.components.k2es.image.repository | string | `"stackstate/stackstate-kafka-to-es"` | Repository of the k2es component Docker image. |
 | stackstate.components.k2es.image.tag | string | `""` | Tag used for the `k2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.k2es.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.k2es.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `k2es` pods. |
 | stackstate.components.k2es.replicaCount | int | `1` | Number of `k2es` replicas. |
 | stackstate.components.k2es.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"1Gi"}}` | Resource allocation for `k2es` pods. |
 | stackstate.components.k2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.kafkaTopicCreate.image.registry | string | `"docker.io"` | Base container image registry for kafka-topic-create containers. |
+| stackstate.components.kafkaTopicCreate.image.repository | string | `"bitnami/kafka"` | Base container image repository for kafka-topic-create containers. |
+| stackstate.components.kafkaTopicCreate.image.tag | string | `"latest"` | Container image tag for kafka-topic-create containers. |
+| stackstate.components.nginxPrometheusExporter.image.registry | string | `"docker.io"` | Base container image registry for nginx-prometheus-exporter containers. |
+| stackstate.components.nginxPrometheusExporter.image.repository | string | `"nginx/nginx-prometheus-exporter"` | Base container image repository for nginx-prometheus-exporter containers. |
+| stackstate.components.nginxPrometheusExporter.image.tag | string | `"0.4.2"` | Container image tag for nginx-prometheus-exporter containers. |
 | stackstate.components.receiver.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.receiver.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.receiver.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.receiver.image.pullPolicy | string | `""` | `pullPolicy` used for the `receiver` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.receiver.image.repository | string | `"quay.io/stackstate/stackstate-receiver"` | Repository of the receiver component Docker image. |
+| stackstate.components.receiver.image.repository | string | `"stackstate/stackstate-receiver"` | Repository of the receiver component Docker image. |
 | stackstate.components.receiver.image.tag | string | `""` | Tag used for the `receiver` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.receiver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.receiver.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `receiver` pods. |
@@ -128,7 +135,8 @@ stackstate/stackstate
 | stackstate.components.router.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.router.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.router.image.pullPolicy | string | `"Always"` | `pullPolicy` used for the `router` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.router.image.repository | string | `"docker.io/envoyproxy/envoy-alpine"` | Repository of the router component Docker image. |
+| stackstate.components.router.image.registry | string | `"docker.io"` | Registry of the router component Docker image. |
+| stackstate.components.router.image.repository | string | `"envoyproxy/envoy-alpine"` | Repository of the router component Docker image. |
 | stackstate.components.router.image.tag | string | `"v1.12.1"` | Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.router.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.router.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `router` pods. |
@@ -139,7 +147,7 @@ stackstate/stackstate
 | stackstate.components.server.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.server.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.server.image.pullPolicy | string | `""` | `pullPolicy` used for the `server` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.server.image.repository | string | `"quay.io/stackstate/stackstate-server"` | Repository of the server component Docker image. |
+| stackstate.components.server.image.repository | string | `"stackstate/stackstate-server"` | Repository of the server component Docker image. |
 | stackstate.components.server.image.tag | string | `""` | Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.server.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.server.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `server` pods. |
@@ -150,13 +158,16 @@ stackstate/stackstate
 | stackstate.components.ui.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.ui.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.ui.image.pullPolicy | string | `""` | `pullPolicy` used for the `ui` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.ui.image.repository | string | `"quay.io/stackstate/stackstate-ui"` | Repository of the ui component Docker image. |
+| stackstate.components.ui.image.repository | string | `"stackstate/stackstate-ui"` | Repository of the ui component Docker image. |
 | stackstate.components.ui.image.tag | string | `""` | Tag used for the `ui` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.ui.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.ui.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `ui` pods. |
 | stackstate.components.ui.replicaCount | int | `2` | Number of `ui` replicas. |
 | stackstate.components.ui.resources | object | `{"limits":{"cpu":"50m","memory":"64Mi"},"requests":{"cpu":"50m","memory":"64Mi"}}` | Resource allocation for `ui` pods. |
 | stackstate.components.ui.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.wait.image.registry | string | `"docker.io"` | Base container image registry for wait containers. |
+| stackstate.components.wait.image.repository | string | `"dokkupaas/wait"` | Base container image repository for wait containers. |
+| stackstate.components.wait.image.tag | string | `"latest"` | Container image tag for wait containers. |
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
 | stackstate.receiver.apiKey | string | `""` | API key to be used by the Receiver; if no key is provided, a random one will be generated for you. |
 | stackstate.receiver.baseUrl | string | `nil` | **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of the StackState endpoints. |

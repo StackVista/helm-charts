@@ -1,4 +1,59 @@
 {{/*
+Return the image registry
+*/}}
+{{- define "stackstate.image.registry" -}}
+  {{- if .Values.global }}
+    {{- default .Values.stackstate.components.all.image.registry .Values.global.imageRegistry -}}
+  {{- else -}}
+    {{- .Values.stackstate.components.all.image.registry -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Return the image registry for the kafka-topic-create container
+*/}}
+{{- define "stackstate.kafkaTopicCreate.image.registry" -}}
+  {{- if .Values.global }}
+    {{- default .Values.stackstate.components.kafkaTopicCreate.image.registry .Values.global.imageRegistry -}}
+  {{- else -}}
+    {{- .Values.stackstate.components.kafkaTopicCreate.image.registry -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Return the image registry for the nginx-prometheus-operator container
+*/}}
+{{- define "stackstate.nginxPrometheusExporter.image.registry" -}}
+  {{- if .Values.global }}
+    {{- default .Values.stackstate.components.nginxPrometheusExporter.image.registry .Values.global.imageRegistry -}}
+  {{- else -}}
+    {{- .Values.stackstate.components.nginxPrometheusExporter.image.registry -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Return the image registry for the router container
+*/}}
+{{- define "stackstate.router.image.registry" -}}
+  {{- if .Values.global }}
+    {{- default .Values.stackstate.components.router.image.registry .Values.global.imageRegistry -}}
+  {{- else -}}
+    {{- .Values.stackstate.components.router.image.registry -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Return the image registry for the wait containers
+*/}}
+{{- define "stackstate.wait.image.registry" -}}
+  {{- if .Values.global }}
+    {{- default .Values.stackstate.components.wait.image.registry .Values.global.imageRegistry -}}
+  {{- else -}}
+    {{- .Values.stackstate.components.wait.image.registry -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
 Common extra environment variables for all processes inherited through `stackstate.components.all.extraEnv`
 */}}
 {{- define "stackstate.common.envvars" -}}

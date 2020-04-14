@@ -5,11 +5,11 @@ dependencies:
 - name: elasticsearch
   condition: elasticsearch.enabled
   repository: https://helm.stackstate.io
-  version: 7.6.2-stackstate.1
+  version: 7.6.2-stackstate.3
 - name: hbase
   condition: hbase.enabled
   repository: https://helm.stackstate.io
-  version: 0.1.27
+  version: 0.1.28
 - name: kafka
   condition: kafka.enabled
   repository: https://charts.bitnami.com/bitnami

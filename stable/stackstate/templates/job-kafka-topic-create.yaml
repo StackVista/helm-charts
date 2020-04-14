@@ -5,7 +5,7 @@ command:
 - -c
 - |
   /entrypoint -c {{ include "stackstate.kafka.endpoint" . }} -t 300
-image: "docker.io/dokkupaas/wait:latest"
+image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
 imagePullPolicy: Always
 securityContext:
   runAsGroup: 65534
@@ -26,7 +26,7 @@ env:
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
-image: "docker.io/bitnami/kafka"
+image: "{{include "stackstate.kafkaTopicCreate.image.registry" .}}/{{ .Values.stackstate.components.kafkaTopicCreate.image.repository }}:{{ .Values.stackstate.components.kafkaTopicCreate.image.tag }}"
 imagePullPolicy: Always
 name: kafka-topic-create
 securityContext:

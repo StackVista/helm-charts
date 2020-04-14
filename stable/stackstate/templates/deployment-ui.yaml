@@ -2,7 +2,7 @@
 env:
 {{- include "stackstate.common.envvars" . }}
 {{- include "stackstate.ui.envvars" . }}
-image: "{{ .Values.stackstate.components.ui.image.repository }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.ui.image.tag }}"
+image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.ui.image.repository }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.ui.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.ui.image.pullPolicy | quote }}
 name: ui
 ports:
@@ -30,7 +30,7 @@ env:
   value: "20"
 - name: NGINX_RETRY_INTERVAL
   value: "3s"
-image: docker.io/nginx/nginx-prometheus-exporter:0.4.2
+image: "{{include "stackstate.nginxPrometheusExporter.image.registry" .}}/{{ .Values.stackstate.components.nginxPrometheusExporter.image.repository }}:{{ .Values.stackstate.components.nginxPrometheusExporter.image.tag }}"
 imagePullPolicy: Always
 name: exporter
 ports:
