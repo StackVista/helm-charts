@@ -6,7 +6,6 @@ metadata:
   labels:
     {{- include "common.labels.standard" . | nindent 4 }}
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
   {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
