@@ -43,6 +43,8 @@ stackstate:
       image:
         # stackstate.components.all.image.registry -- Base container image registry for all containers, except for the wait container
         registry: quay.io
+        # stackstate.components.all.image.repositorySuffix - String to append to repositories for StackState components
+        repositorySuffix: -stable
         # stackstate.components.all.image.pullSecretName -- Name of ImagePullSecret to use for all pods.
         pullSecretName:
         # stackstate.components.all.image.pullSecretDockerConfigJson -- Value of `.dockerconfigjson` of ImagePullSecret to use for all pods.
@@ -50,7 +52,7 @@ stackstate:
         # stackstate.components.all.image.pullPolicy -- The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below).
         pullPolicy: Always
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: sts-private-v1-16-0-echo
+        tag: sts-private-v1-16-0-foxtrot
       metrics:
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
         enabled: true

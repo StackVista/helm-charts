@@ -28,7 +28,7 @@ env:
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
-image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.k2es.image.repository }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.k2es.image.tag }}"
+image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.k2es.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.k2es.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.k2es.image.pullPolicy | quote }}
 livenessProbe:
   httpGet:
