@@ -118,7 +118,7 @@ spec:
     {{- end }}
       volumes:
     {{- if not .Values.hdfs.namenode.persistence.enabled }}
-      - name: {{ template "common.fullname.short" . }}-hdfs-nn
+      - name: data
         emptyDir: {}
     {{- end }}
 {{- if .Values.hdfs.namenode.persistence.enabled }}
