@@ -258,6 +258,13 @@ checksum/router-configmap: {{ include (print $.Template.BasePath "/configmap-rou
 {{- end -}}
 
 {{/*
+Server configmap checksum annotations
+*/}}
+{{- define "stackstate.server.configmap.checksum" -}}
+checksum/server-configmap: {{ include (print $.Template.BasePath "/configmap-server.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
 Ingress paths / routes
 */}}
 {{- define "stackstate.ingress.rules" -}}

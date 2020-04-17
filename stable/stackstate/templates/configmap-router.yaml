@@ -110,5 +110,5 @@ data:
 {{- end -}}
 
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
-{{- $stackstateServerConfigMap := fromYaml (include "stackstate.router.configmap" .) -}}
-{{- toYaml (merge $stackstateServerConfigMap $commonConfigMap) -}}
+{{- $stackstateRouterConfigMap := fromYaml (include "stackstate.router.configmap" .) -}}
+{{- toYaml (merge $stackstateRouterConfigMap $commonConfigMap) -}}

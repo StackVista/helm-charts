@@ -227,6 +227,8 @@ stackstate:
       tolerations: []
       # stackstate.components.server.affinity -- Affinity settings for pod assignment.
       affinity: {}
+      # stackstate.components.server.config -- Configuration file that takes precedence, only environment variables have higher precedence
+      config: ""
     ui:
       extraEnv:
         # stackstate.components.ui.extraEnv.open -- Extra open environment variables to inject into pods.
