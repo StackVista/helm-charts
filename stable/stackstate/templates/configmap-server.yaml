@@ -1,0 +1,13 @@
+{{- define "stackstate.server.configmap" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-server
+data:
+  application_stackstate.conf: |
+{{- .Values.stackstate.components.server.config | nindent 4 -}}
+{{- end -}}
+
+{{- if .Values.stackstate.components.server.config -}}
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $stackstateServerConfigMap := fromYaml (include "stackstate.server.configmap" .) -}}
+{{- toYaml (merge $stackstateServerConfigMap $commonConfigMap) -}}
+{{- end -}}

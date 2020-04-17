@@ -2,7 +2,7 @@ stackstate
 ==========
 Helm chart for StackState
 
-Current chart version is `0.4.11`
+Current chart version is `0.4.12`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -145,6 +145,7 @@ stackstate/stackstate
 | stackstate.components.router.resources | object | `{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Resource allocation for `router` pods. |
 | stackstate.components.router.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.server.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.server.config | string | `""` | Configuration file that takes precedence, only environment variables have higher precedence |
 | stackstate.components.server.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.server.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.server.image.pullPolicy | string | `""` | `pullPolicy` used for the `server` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
