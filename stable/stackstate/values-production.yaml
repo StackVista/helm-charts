@@ -374,3 +374,60 @@ zookeeper:
       selector: {}
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
   replicaCount: 3
+
+anomalyDetection:
+  # anomalyDetection.enabled -- enable anomaly detection
+  enabled: false
+  # anomalyDetection.image.tag -- spotlight image tag
+  imageTag: "latest"
+
+  stackstate:
+    # anomalyDetection.stackstate.instance -- Stackstate instance URL
+    instance:
+    # anomalyDetection.stackstate.receiverApiKey -- Receiver api key
+    receiverApiKey:
+    # anomalyDetection.stackstate.username -- Stackstate username
+    username:
+    # anomalyDetection.stackstate.password -- Stackstate password
+    password:
+  # anomalyDetection.elasticHost -- elastic search host
+  elasticHost: "distributed-elasticsearch-master"
+  # anomalyDetection.elasticPort -- elastic search port
+  elasticPort: 9200
+  # spotlight.threadWorkers -- the number of worker threads
+  threadWorkers: 5
+  # anomalyDetection.stqlQuery -- Stql query to do anomaly detection on, everything by default
+  stqlQuery: Type = "*"
+  cpu:
+    # anomalyDetection.cpu.limit -- CPU resource limit
+    limit: 3
+    # anomalyDetection.cpu.request -- CPU resource request
+    request: 3
+  memory:
+    # anomalyDetection.memory.limit -- Memory resource limit
+    limit: 6Gi
+    # anomalyDetection.memory.request -- Memory resource request
+    request: 6Gi
+  # anomalyDetection.ingress -- Status interface ingress
+  ingress:
+    # anomalyDetection.ingress.hostname -- Status interface hostname e.g. spotlight.local.domain
+    hostname:
+    # anomalyDetection.ingress.port - Status Interface port
+    port: 8090
+    # anomalyDetection.ingress.annotations - list of ingress configurations
+    annotations:
+    # e.g.
+    #     kubernetes.io/ingress.class: nginx
+    #     cert-manager.io/cluster-issuer: letsencrypt-prod
+    #     external-dns.alpha.kubernetes.io/hostname: spotlight.local.domain
+    #     nginx.ingress.kubernetes.io/ingress.class: nginx
+    #     nginx.ingress.kubernetes.io/proxy-body-size: 100m
+    #     nginx.ingress.kubernetes.io/rewrite-target: "/$1"
+    # anomalyDetection.ingress.hosts - Ingress hosts configuration
+    hosts: []
+    # - host: spotlight.local.domain
+
+    # anomalyDetection.ingress.tls - TLS hosts ingress configuration
+    tls:
+      # - hosts:
+      #     - spotlight.local.domain
