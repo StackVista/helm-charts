@@ -4,9 +4,20 @@ metadata:
 data:
   application_stackstate.conf: |
 {{- .Values.stackstate.components.server.config | nindent 4 -}}
+{{- if hasKey .Values "subscription" }}
+    stackstate {
+      tenant {
+        name = {{ .Values.subscription.tenantobj.name }}
+        identifier = {{ .Values.subscription.tenant }}
+        subscription {
+          expiryDate = {{ .Values.subscription.expiryDate }}
+          plan = Trial
+        }
+{{- end }}
 {{- end -}}
 
-{{- if .Values.stackstate.components.server.config -}}
+
+{{- if or (.Values.stackstate.components.server.config) (hasKey .Values "subscription") -}}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $stackstateServerConfigMap := fromYaml (include "stackstate.server.configmap" .) -}}
 {{- toYaml (merge $stackstateServerConfigMap $commonConfigMap) -}}
