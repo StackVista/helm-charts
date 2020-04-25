@@ -51,8 +51,9 @@ stackstate:
         pullSecretDockerConfigJson:
         # stackstate.components.all.image.pullPolicy -- The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below).
         pullPolicy: Always
+        # When changing this value make sure to also update hbase.stackgraph.image.tag to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: sts-private-v1-16-0-foxtrot
+        tag: sts-private-v1-16-0-golf
       metrics:
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
         enabled: true
@@ -332,6 +333,10 @@ elasticsearch:
 hbase:
   # hbase.enabled -- Enable / disable chart-based HBase.
   enabled: true
+  stackgraph:
+    image:
+      # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
+      tag: "1.5.7"
   hbase:
     master:
       # hbase.hbase.master.replicaCount -- Number of HBase master node replicas.
