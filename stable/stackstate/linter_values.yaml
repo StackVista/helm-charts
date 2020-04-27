@@ -31,3 +31,9 @@ hbase:
         enabled: true
 networkPolicy:
   enabled: true
+
+anomaly-detection:
+  enabled: true
+  stackstate:
+    username: "lintusername"
+    password: "lintpassword"

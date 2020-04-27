@@ -1,0 +1,13 @@
+{{/*
+Logic to determine receiver api key.
+*/}}
+{{- define "receiver.apiKey" -}}
+{{- $result := dict -}}
+{{- $context := . -}}
+{{- if $context.Values.stackstate.receiver.apiKey -}}
+{{$_ := set $result "apiKey" ($context.Values.stackstate.receiver.apiKey) -}}
+{{- else -}}
+{{$_ := set $result "apiKey" (randAlphaNum 32) -}}
+{{- end -}}
+{{- $result.apiKey -}}
+{{- end -}}

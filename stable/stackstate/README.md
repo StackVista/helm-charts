@@ -2,7 +2,7 @@ stackstate
 ==========
 Helm chart for StackState
 
-Current chart version is `0.4.14`
+Current chart version is `0.4.15`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -12,7 +12,7 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | kafka | 7.2.9 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.4.3 |
-| https://helm-test.stackstate.io | anomaly-detection | 1.16.0 |
+| https://helm-test.stackstate.io | anomaly-detection | 1.16.3 |
 | https://helm.stackstate.io | common | 0.4.3 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.3 |
 | https://helm.stackstate.io | hbase | 0.1.29 |
@@ -36,22 +36,13 @@ stackstate/stackstate
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| anomalyDetection.cpu.limit | int | `3` | CPU resource limit |
-| anomalyDetection.cpu.request | int | `3` | CPU resource request |
-| anomalyDetection.elasticHost | string | `"distributed-elasticsearch-master"` | elastic search host |
-| anomalyDetection.elasticPort | int | `9200` | elastic search port |
-| anomalyDetection.enabled | bool | `false` | enable anomaly detection |
-| anomalyDetection.imageTag | string | `"latest"` |  |
-| anomalyDetection.ingress | object | `{"annotations":null,"hostname":null,"hosts":[],"port":8090,"tls":null}` | Status interface ingress |
-| anomalyDetection.ingress.hostname | string | `nil` | Status interface hostname e.g. spotlight.local.domain |
-| anomalyDetection.memory.limit | string | `"6Gi"` | Memory resource limit |
-| anomalyDetection.memory.request | string | `"6Gi"` | Memory resource request |
-| anomalyDetection.stackstate.instance | string | `nil` | Stackstate instance URL |
-| anomalyDetection.stackstate.password | string | `nil` | Stackstate password |
-| anomalyDetection.stackstate.receiverApiKey | string | `nil` | Receiver api key |
-| anomalyDetection.stackstate.username | string | `nil` | Stackstate username |
-| anomalyDetection.stqlQuery | string | `"Type = \"*\""` | Stql query to do anomaly detection on, everything by default |
-| anomalyDetection.threadWorkers | int | `5` |  |
+| anomaly-detection.enabled | bool | `true` | enable anomaly detection |
+| anomaly-detection.imageTag | string | `"latest"` | image tag |
+| anomaly-detection.ingress | object | `{"annotations":{},"hostname":null,"hosts":[],"port":8090,"tls":null}` | Status interface ingress |
+| anomaly-detection.ingress.hostname | string | `nil` | Status interface hostname e.g. spotlight.local.domain |
+| anomaly-detection.stackstate | object | `{"password":null,"username":null}` | stackstate instance options |
+| anomaly-detection.stackstate.password | string | `nil` | Stackstate API password |
+| anomaly-detection.stackstate.username | string | `nil` | Stackstate API username |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` | The Elasticsearch cluster health status params that will be used by readinessProbe command |
 | elasticsearch.clusterName | string | `"stackstate-elasticsearch"` | Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
