@@ -31,3 +31,5 @@ hbase:
         enabled: true
 networkPolicy:
   enabled: true
+anomaly-detection:
+  enabled: false
