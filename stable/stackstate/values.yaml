@@ -32,6 +32,10 @@ networkPolicy:
     policyTypes:
     - Ingress
 
+global:
+  # global.receiverApiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
+  receiverApiKey: ""
+
 stackstate:
   components:
     all:
@@ -293,8 +297,6 @@ stackstate:
     # stackstate.license.key -- (string) **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server.
     key:
   receiver:
-    # stackstate.receiver.apiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
-    apiKey: ""
     # stackstate.receiver.baseUrl -- (string) **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of the StackState endpoints.
     baseUrl:
 
@@ -427,12 +429,16 @@ anomaly-detection:
   enabled: true
   # anomaly-detection.imageTag -- image tag
   imageTag: "latest"
-  # anomaly-detection.stackstate -- stackstate instance options
+
   stackstate:
+    # stackstate.instance -- Stackstate instance URL
+    instance: stackstate-server:7070
     # anomaly-detection.stackstate.username -- Stackstate API username
     username:
     # anomaly-detection.stackstate.password -- Stackstate API password
     password:
+    # anomaly-detection.stackstate.receiverApiKey -- Receiver api key
+    elasticSearchUri: stackstate-elasticsearch-master:9200
   # anomaly-detection.ingress -- Status interface ingress
   ingress:
     # anomaly-detection.ingress.hostname -- Status interface hostname e.g. spotlight.local.domain

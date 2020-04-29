@@ -31,6 +31,10 @@ networkPolicy:
     policyTypes:
     - Ingress
 
+global:
+  # global.receiverApiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
+  receiverApiKey: ""
+
 stackstate:
   components:
     all:

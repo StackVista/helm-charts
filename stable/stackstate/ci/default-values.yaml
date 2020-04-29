@@ -1,8 +1,9 @@
+global:
+  receiverApiKey: API_KEY
 stackstate:
   license:
     key: 00000-00000-00000
   receiver:
-    apiKey: API_KEY
     baseUrl: https://some-test-helm-render.stackstate.io/receiver
 ingress:
   annotations:
@@ -32,4 +33,9 @@ hbase:
 networkPolicy:
   enabled: true
 anomaly-detection:
-  enabled: false
+  enabled: true
+  stackstate:
+    instance: stackstate-server:7070
+    username: user
+    password: password
+    elasticSearchUri: stackstate-elasticsearch-master:9200
