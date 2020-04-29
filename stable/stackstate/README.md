@@ -59,6 +59,7 @@ stackstate/stackstate
 | hbase.hbase.regionserver.replicaCount | int | `3` | Number of HBase regionserver node replicas. |
 | hbase.hdfs.datanode.replicaCount | int | `3` | Number of HDFS datanode replicas. |
 | hbase.hdfs.secondarynamenode.enabled | bool | `true` |  |
+| hbase.stackgraph.image.tag | string | `"1.5.7"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
 | hbase.zookeeper.enabled | bool | `false` | Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**. |
 | hbase.zookeeper.externalServers | string | `"stackstate-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
@@ -95,7 +96,7 @@ stackstate/stackstate
 | stackstate.components.all.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
 | stackstate.components.all.image.repositorySuffix | string | `"-stable"` |  |
-| stackstate.components.all.image.tag | string | `"sts-private-v1-16-0-foxtrot"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
+| stackstate.components.all.image.tag | string | `"sts-private-v1-16-0-golf"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
 | stackstate.components.all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
