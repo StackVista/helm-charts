@@ -138,6 +138,7 @@ spec:
             readOnly: true
           securityContext:
             privileged: true
+      dnsPolicy: ClusterFirstWithHostNet
       hostNetwork: true
       hostPID: true
       serviceAccountName: {{ include "cluster-agent.fullname" . }}-agent
