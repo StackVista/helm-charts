@@ -81,6 +81,8 @@ function create_admin_password_hash() {
 
 function generate_values() {
   cat > "${values_file}" <<EOF
+global:
+  receiverApiKey: "$(generate_api_key)"
 stackstate:
   components:
     all:
@@ -92,7 +94,6 @@ stackstate:
           CONFIG_FORCE_stackstate_api_authentication_authServer_stackstateAuthServer_defaultPassword: "$(create_admin_password_hash)"
   receiver:
     baseUrl: "${url}"
-    apiKey: "$(generate_api_key)"
   license:
     key: "${license_key}"
 hbase:
