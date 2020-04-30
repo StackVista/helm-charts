@@ -431,7 +431,7 @@ zookeeper:
 
 anomaly-detection:
   # anomaly-detection.enabled -- enable anomaly detection
-  enabled: true
+  enabled: false
   # anomaly-detection.imageTag -- image tag
   imageTag: "latest"
 
