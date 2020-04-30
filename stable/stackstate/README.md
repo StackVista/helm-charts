@@ -2,7 +2,7 @@ stackstate
 ==========
 Helm chart for StackState
 
-Current chart version is `0.4.16`
+Current chart version is `0.4.17`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -35,6 +35,7 @@ stackstate/stackstate
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| caspr.enabled | bool | `false` | Enable CASPR compatible values. |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` | The Elasticsearch cluster health status params that will be used by readinessProbe command |
 | elasticsearch.clusterName | string | `"stackstate-elasticsearch"` | Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |

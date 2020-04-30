@@ -6,14 +6,14 @@ data:
 {{- if .Values.stackstate.components.server.config }}
 {{- .Values.stackstate.components.server.config | nindent 4 -}}
 {{- end }}
-{{- if hasKey .Values "subscription" }}
+{{- if .Values.caspr.enabled }}
     stackstate {
       tenantAware = true
       tenant {
-        name = "{{ .Values.subscription.tenantobj.name }}"
-        identifier = {{ .Values.subscription.tenant }}
+        identifier = {{ .Values.caspr.subscription.tenant }}
+        name = "{{ .Values.caspr.subscription.tenantobj.name }}"
         subscription {
-          expirationDate = {{ .Values.subscription.expiryDate }}
+          expirationDate = {{ .Values.caspr.subscription.expiryDate }}
           plan = TRIAL
         }
       }

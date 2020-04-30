@@ -22,4 +22,28 @@ spec:
 {{- end }}
   rules:
     {{- include "stackstate.ingress.rules" . | nindent 4 }}
+{{- else if .Values.caspr.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "common.fullname.short" . }}
+  labels:
+    {{- include "common.labels.standard" . | nindent 4 }}
+  annotations:
+    kubernetes.io/ingress.class: ingress-nginx-external
+    nginx.ingress.kubernetes.io/ingress.class: ingress-nginx-external
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+spec:
+  tls:
+    - hosts:
+        - {{ .Values.caspr.applicationInstance.url | quote }}
+      secretName: {{ .Values.caspr.cluster.clustergroup.data.kubernetes.ingresssecretname }}
+  rules:
+  - host: {{ .Values.caspr.applicationInstance.url | quote }}
+    http:
+      paths:
+        - backend:
+            serviceName: {{ include "common.fullname.short" $ }}-router
+            servicePort: 8080
+          path: /
 {{- end }}
