@@ -2,6 +2,10 @@
 # StackState values #
 #####################
 
+caspr:
+  # caspr.enabled -- Enable CASPR compatible values.
+  enabled: false
+
 ingress:
   # ingress.annotations -- Annotations for ingress objects.
   annotations: {}
