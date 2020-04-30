@@ -3,11 +3,25 @@ metadata:
   name: {{ template "common.fullname.short" . }}-server
 data:
   application_stackstate.conf: |
+{{- if .Values.stackstate.components.server.config }}
 {{- .Values.stackstate.components.server.config | nindent 4 -}}
+{{- end }}
+{{- if hasKey .Values "subscription" }}
+    stackstate {
+      tenantAware = true
+      tenant {
+        name = "{{ .Values.subscription.tenantobj.name }}"
+        identifier = {{ .Values.subscription.tenant }}
+        subscription {
+          expirationDate = {{ .Values.subscription.expiryDate }}
+          plan = TRIAL
+        }
+      }
+    }
+{{- end }}
 {{- end -}}
 
-{{- if .Values.stackstate.components.server.config -}}
+
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $stackstateServerConfigMap := fromYaml (include "stackstate.server.configmap" .) -}}
 {{- toYaml (merge $stackstateServerConfigMap $commonConfigMap) -}}
-{{- end -}}

@@ -73,12 +73,10 @@ securityContext:
   runAsGroup: 65534
   runAsNonRoot: true
   runAsUser: 65534
-{{- if .Values.stackstate.components.server.config }}
 volumeMounts:
 - name: config-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
-{{- end }}
 {{- end -}}
 
 {{- define "stackstate.server.deployment" -}}
@@ -143,12 +141,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if .Values.stackstate.components.server.config }}
       volumes:
         - name: config-volume
           configMap:
             name: {{ template "common.fullname.short" . }}-server
-    {{- end }}
 {{- end -}}
 
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
