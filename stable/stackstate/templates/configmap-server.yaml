@@ -10,11 +10,11 @@ data:
     stackstate {
       tenantAware = true
       tenant {
-        name = {{ .Values.subscription.tenantobj.name }}
+        name = "{{ .Values.subscription.tenantobj.name }}"
         identifier = {{ .Values.subscription.tenant }}
         subscription {
-          expiryDate = {{ .Values.subscription.expiryDate }}
-          plan = Trial
+          expirationDate = {{ .Values.subscription.expiryDate }}
+          plan = TRIAL
         }
       }
     }
