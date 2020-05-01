@@ -13,8 +13,10 @@ data:
         identifier = {{ .Values.caspr.subscription.tenant }}
         name = "{{ .Values.caspr.subscription.tenantobj.name }}"
         subscription {
-          expirationDate = {{ .Values.caspr.subscription.expiryDate }}
-          plan = TRIAL
+{{- if .Values.caspr.subscription.expirationDate }}
+          expirationDate = {{ .Values.caspr.subscription.expirationDate }}
+{{- end }}
+          plan = {{ .Values.caspr.subscription.planobj.name }}
         }
       }
     }
