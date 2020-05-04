@@ -19,6 +19,25 @@ data:
           plan = {{ .Values.caspr.subscription.planobj.name }}
         }
       }
+{{- if .Values.caspr.subscription.tenantobj.vendorobj.keycloak }}
+      api {
+        authentication {
+          authServer {
+            authServerType = "keycloakAuthServer"
+
+            keycloakAuthServer {
+              keycloakBaseUri = "{{ .Values.caspr.subscription.tenantobj.vendorobj.keycloak.url }}"
+              realm = "{{ .Values.caspr.subscription.tenantobj.vendorobj.keycloak.realm }}"
+              clientId = "{{ .Values.caspr.subscription.tenantobj.vendorobj.keycloak.client }}"
+              authenticationMethod = "client_secret_basic"
+              secret = "{{ .Values.caspr.subscription.tenantobj.vendorobj.keycloak.secret }}"
+              redirectUri = "https://{{ .Values.caspr.applicationInstance.url }}/loginCallback"
+              jwsAlgorithm = "RS256"
+            }
+          }
+        }
+      }
+{{- end }}
     }
 {{- end }}
 {{- end -}}
