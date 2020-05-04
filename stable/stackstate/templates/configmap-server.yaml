@@ -19,18 +19,18 @@ data:
           plan = {{ .Values.caspr.subscription.planobj.name }}
         }
       }
-{{- if .Values.caspr.subscription.tenantobj.vendorobj.keycloak }}
+{{- if .Values.caspr.keycloak }}
       api {
         authentication {
           authServer {
             authServerType = "keycloakAuthServer"
 
             keycloakAuthServer {
-              keycloakBaseUri = "{{ .Values.caspr.subscription.tenantobj.vendorobj.keycloak.url }}"
-              realm = "{{ .Values.caspr.subscription.tenantobj.vendorobj.keycloak.realm }}"
-              clientId = "{{ .Values.caspr.subscription.tenantobj.vendorobj.keycloak.client }}"
+              keycloakBaseUri = "{{ .Values.caspr.keycloak.url }}"
+              realm = "{{ .Values.caspr.keycloak.realm }}"
+              clientId = "{{ .Values.caspr.keycloak.client }}"
               authenticationMethod = "client_secret_basic"
-              secret = "{{ .Values.caspr.subscription.tenantobj.vendorobj.keycloak.secret }}"
+              secret = "{{ .Values.caspr.keycloak.secret }}"
               redirectUri = "https://{{ .Values.caspr.applicationInstance.url }}/loginCallback"
               jwsAlgorithm = "RS256"
             }
