@@ -31,6 +31,10 @@ networkPolicy:
     policyTypes:
     - Ingress
 
+global:
+  # global.receiverApiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
+  receiverApiKey: ""
+
 stackstate:
   components:
     all:
@@ -374,3 +378,7 @@ zookeeper:
       selector: {}
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
   replicaCount: 3
+
+anomaly-detection:
+  # enabled -- enable anomaly detection
+  enabled: false

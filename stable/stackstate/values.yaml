@@ -2,6 +2,10 @@
 # StackState values #
 #####################
 
+caspr:
+  # caspr.enabled -- Enable CASPR compatible values.
+  enabled: false
+
 ingress:
   # ingress.annotations -- Annotations for ingress objects.
   annotations: {}
@@ -31,6 +35,10 @@ networkPolicy:
       matchLabels: {}
     policyTypes:
     - Ingress
+
+global:
+  # global.receiverApiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
+  receiverApiKey: ""
 
 stackstate:
   components:
@@ -294,8 +302,6 @@ stackstate:
     # stackstate.license.key -- (string) **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server.
     key:
   receiver:
-    # stackstate.receiver.apiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
-    apiKey: ""
     # stackstate.receiver.baseUrl -- (string) **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of the StackState endpoints.
     baseUrl:
 
@@ -426,3 +432,42 @@ zookeeper:
       selector: {}
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
   replicaCount: 3
+
+anomaly-detection:
+  # anomaly-detection.enabled -- enable anomaly detection
+  enabled: false
+  # anomaly-detection.imageTag -- image tag
+  imageTag: "latest"
+
+  stackstate:
+    # stackstate.instance -- Stackstate instance URL
+    instance: stackstate-server:7070
+    # anomaly-detection.stackstate.username -- Stackstate API username
+    username:
+    # anomaly-detection.stackstate.password -- Stackstate API password
+    password:
+    # anomaly-detection.stackstate.receiverApiKey -- Receiver api key
+    elasticSearchUri: stackstate-elasticsearch-master:9200
+  # anomaly-detection.ingress -- Status interface ingress
+  ingress:
+    # anomaly-detection.ingress.hostname -- Status interface hostname e.g. spotlight.local.domain
+    hostname:
+    # anomaly-detection.ingress.port - Status Interface port
+    port: 8090
+    # anomaly-detection.ingress.annotations - list of ingress configurations
+    annotations: {}
+    # e.g.
+    #     kubernetes.io/ingress.class: nginx
+    #     cert-manager.io/cluster-issuer: letsencrypt-prod
+    #     external-dns.alpha.kubernetes.io/hostname: spotlight.local.domain
+    #     nginx.ingress.kubernetes.io/ingress.class: nginx
+    #     nginx.ingress.kubernetes.io/proxy-body-size: 100m
+    #     nginx.ingress.kubernetes.io/rewrite-target: "/$1"
+    # anomaly-detection.ingress.hosts - Ingress hosts configuration
+    hosts: []
+    # - host: spotlight.local.domain
+
+    # anomaly-detection.ingress.tls - TLS hosts ingress configuration
+    tls:
+      # - hosts:
+      #     - spotlight.local.domain

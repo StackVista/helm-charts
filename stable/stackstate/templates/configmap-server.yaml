@@ -3,11 +3,46 @@ metadata:
   name: {{ template "common.fullname.short" . }}-server
 data:
   application_stackstate.conf: |
+{{- if .Values.stackstate.components.server.config }}
 {{- .Values.stackstate.components.server.config | nindent 4 -}}
+{{- end }}
+{{- if .Values.caspr.enabled }}
+    stackstate {
+      tenantAware = true
+      tenant {
+        identifier = {{ .Values.caspr.subscription.tenant }}
+        name = "{{ .Values.caspr.subscription.tenantobj.name }}"
+        subscription {
+{{- if .Values.caspr.subscription.expirationDate }}
+          expirationDate = {{ .Values.caspr.subscription.expirationDate }}
+{{- end }}
+          plan = {{ .Values.caspr.subscription.planobj.name }}
+        }
+      }
+{{- if .Values.caspr.subscription.tenantobj.vendorobj.keycloak }}
+      api {
+        authentication {
+          authServer {
+            authServerType = "keycloakAuthServer"
+
+            keycloakAuthServer {
+              keycloakBaseUri = "{{ .Values.caspr.subscription.tenantobj.vendorobj.keycloak.url }}"
+              realm = "{{ .Values.caspr.subscription.tenantobj.vendorobj.keycloak.realm }}"
+              clientId = "{{ .Values.caspr.subscription.tenantobj.vendorobj.keycloak.client }}"
+              authenticationMethod = "client_secret_basic"
+              secret = "{{ .Values.caspr.subscription.tenantobj.vendorobj.keycloak.secret }}"
+              redirectUri = "https://{{ .Values.caspr.applicationInstance.url }}/loginCallback"
+              jwsAlgorithm = "RS256"
+            }
+          }
+        }
+      }
+{{- end }}
+    }
+{{- end }}
 {{- end -}}
 
-{{- if .Values.stackstate.components.server.config -}}
+
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $stackstateServerConfigMap := fromYaml (include "stackstate.server.configmap" .) -}}
 {{- toYaml (merge $stackstateServerConfigMap $commonConfigMap) -}}
-{{- end -}}

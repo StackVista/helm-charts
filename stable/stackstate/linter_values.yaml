@@ -1,8 +1,9 @@
+global:
+  receiverApiKey: API_KEY
 stackstate:
   license:
     key: 00000-00000-00000
   receiver:
-    apiKey: API_KEY
     baseUrl: https://some-test-helm-render.stackstate.io/receiver
 ingress:
   annotations:
@@ -31,3 +32,9 @@ hbase:
         enabled: true
 networkPolicy:
   enabled: true
+
+anomaly-detection:
+  enabled: true
+  stackstate:
+    username: "lintusername"
+    password: "lintpassword"
