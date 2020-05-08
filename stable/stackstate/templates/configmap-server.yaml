@@ -31,7 +31,7 @@ data:
               clientId = "{{ .Values.caspr.keycloak.client }}"
               authenticationMethod = "client_secret_basic"
               secret = "{{ .Values.caspr.keycloak.secret }}"
-              redirectUri = "https://{{ .Values.caspr.applicationInstance.url }}/loginCallback"
+              redirectUri = "https://{{ .Values.caspr.applicationInstance.host }}/loginCallback"
               jwsAlgorithm = "RS256"
             }
           }
