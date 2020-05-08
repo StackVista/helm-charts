@@ -36,10 +36,10 @@ metadata:
 spec:
   tls:
     - hosts:
-        - {{ .Values.caspr.applicationInstance.url | quote }}
+        - {{ .Values.caspr.applicationInstance.host | quote }}
       secretName: {{ .Values.caspr.cluster.clustergroup.data.kubernetes.ingresssecretname }}
   rules:
-  - host: {{ .Values.caspr.applicationInstance.url | quote }}
+  - host: {{ .Values.caspr.applicationInstance.host | quote }}
     http:
       paths:
         - backend:
