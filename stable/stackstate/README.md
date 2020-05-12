@@ -2,7 +2,7 @@ stackstate
 ==========
 Helm chart for StackState
 
-Current chart version is `0.4.23`
+Current chart version is `0.4.24`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -12,7 +12,7 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | kafka | 7.2.9 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.4.3 |
-| https://helm.stackstate.io | anomaly-detection | 1.16.5 |
+| https://helm-test.stackstate.io | anomaly-detection | 1.16.6 |
 | https://helm.stackstate.io | common | 0.4.3 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.3 |
 | https://helm.stackstate.io | hbase | 0.1.29 |
@@ -38,7 +38,8 @@ stackstate/stackstate
 |-----|------|---------|-------------|
 | anomaly-detection.enabled | bool | `false` | enable anomaly detection |
 | anomaly-detection.imageTag | string | `"latest"` | image tag |
-| anomaly-detection.ingress | object | `{"annotations":{},"hostname":null,"hosts":[],"port":8090,"tls":null}` | Status interface ingress |
+| anomaly-detection.ingress | object | `{"annotations":{},"enabled":false,"hostname":null,"hosts":[],"port":8090,"tls":null}` | Status interface ingress |
+| anomaly-detection.ingress.enabled | bool | `false` | enable anomaly detection ingress |
 | anomaly-detection.ingress.hostname | string | `nil` | Status interface hostname e.g. spotlight.local.domain |
 | anomaly-detection.stackstate.elasticSearchUri | string | `"stackstate-elasticsearch-master:9200"` |  |
 | anomaly-detection.stackstate.instance | string | `"stackstate-server:7070"` |  |

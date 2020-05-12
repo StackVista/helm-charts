@@ -450,6 +450,8 @@ anomaly-detection:
     elasticSearchUri: stackstate-elasticsearch-master:9200
   # anomaly-detection.ingress -- Status interface ingress
   ingress:
+    # anomaly-detection.ingress.enabled -- enable anomaly detection ingress
+    enabled: false
     # anomaly-detection.ingress.hostname -- Status interface hostname e.g. spotlight.local.domain
     hostname:
     # anomaly-detection.ingress.port - Status Interface port
