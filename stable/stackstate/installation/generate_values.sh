@@ -14,7 +14,8 @@ Generate a values.yaml for deploying StackState to Kubernetes with Helm 3.
 If any of the required arguments are missing they will be asked interactively.
 
 Arguments:
-    -i : Image pull secret .dockerConfigJson property (required)
+    -c : Username for Docker image pulling (required)
+    -s : Password for Docker image pulling (required)
     -l : StackState license key (required)
     -u : StackState base URL, externally (outside of the Kubernetes cluster) visible url of the StackState endpoints (required)
          The exact value depends on your ingress setup. An example: https://my.stackstate.host
@@ -27,9 +28,10 @@ EOF
 values_file="values.yaml"
 
 # Parse arguments
-while getopts "i:l:s:u:p:v:h" opt; do
+while getopts "c:s:l:u:p:v:h" opt; do
   case "$opt" in
-  i)  image_pull_secret_docker_config_json=$OPTARG ;;
+  c)  image_pull_credentials_username=$OPTARG ;;
+  s)  image_pull_credentials_password=$OPTARG ;;
   l)  license_key=$OPTARG ;;
   u)  url=$OPTARG ;;
   p)  admin_password=$OPTARG ;;
@@ -45,8 +47,17 @@ function check_args() {
   [ -z "${license_key}" ] && read -r -p "Please provide the license key (-l): " license_key
   [ -z "${license_key}" ] && echo -e "${red}License key (-l) is a required argument.${nc}" && exit 1
 
-  [ -z "${image_pull_secret_docker_config_json}" ] && read -r -p "Please provide the image pull secret json (-i): " image_pull_secret_docker_config_json
-  [ -z "${image_pull_secret_docker_config_json}" ] && echo -e "${red}image pul secret json (-i) is a required argument.${nc}" && exit 1
+  [ -z "${image_pull_credentials_username}" ] && read -r -p "Please provide the username for pulling StackState Docker images (-c): " image_pull_credentials_username
+  [ -z "${image_pull_credentials_username}" ] && echo -e "${red}Username for pulling StackState Docker images (-c) is a required argument.${nc}" && exit 1
+
+  if [ -z "${image_pull_credentials_password}" ]; then
+    read -sr -p "Please provide the password for pulling StackState Docker images (-s): " image_pull_credentials_password
+    [ -z "${image_pull_credentials_password}" ] && echo -e "${red}Password for pulling StackState Docker images (-s) is a required argument.${nc}" && exit 1
+    echo ""
+    read -s -r -p "Please repeat the password for confirmation: " image_pull_credentials_password_confirm
+    echo ""
+    [ "${image_pull_credentials_password}" != "${image_pull_credentials_password_confirm}" ] && echo -e "${red}Passwords mismatch.${nc}" && exit 1
+  fi
 
   [ -z "${url}" ] && read -r -p "Please provide the base URL for StackState, for example https://my.stackstate.host (-u): " url
   [ -z "${url}" ] && echo -e "${red}The base url (-u) is a required argument.${nc}" && exit 1
@@ -61,6 +72,25 @@ function check_args() {
   fi
 
   return 0
+}
+
+function create_docker_pull_hash() {
+  echo -n "${image_pull_credentials_username}:${image_pull_credentials_password}" | base64
+}
+
+function generate_image_pull_secret_json() {
+  secret=$(cat << EOF
+{
+  "auths": {
+    "quay.io": {
+      "auth": "$(create_docker_pull_hash)",
+      "email": ""
+    }
+  }
+}
+EOF
+)
+  echo -n "$secret" | base64
 }
 
 function check_helm() {
@@ -87,7 +117,7 @@ stackstate:
   components:
     all:
       image:
-        pullSecretDockerConfigJson: "${image_pull_secret_docker_config_json}"
+        pullSecretDockerConfigJson: "$(generate_image_pull_secret_json)"
     server:
       extraEnv:
         secret:
@@ -99,7 +129,7 @@ stackstate:
 hbase:
   all:
     image:
-      pullSecretDockerConfigJson: "${image_pull_secret_docker_config_json}"
+      pullSecretDockerConfigJson: "$(generate_image_pull_secret_json)"
 EOF
 }
 
