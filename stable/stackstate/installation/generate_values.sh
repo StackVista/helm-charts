@@ -74,25 +74,6 @@ function check_args() {
   return 0
 }
 
-function create_docker_pull_hash() {
-  echo -n "${image_pull_credentials_username}:${image_pull_credentials_password}" | base64
-}
-
-function generate_image_pull_secret_json() {
-  secret=$(cat << EOF
-{
-  "auths": {
-    "quay.io": {
-      "auth": "$(create_docker_pull_hash)",
-      "email": ""
-    }
-  }
-}
-EOF
-)
-  echo -n "$secret" | base64
-}
-
 function check_helm() {
   helm_version=$(helm version --short | cut -d. -f1)
   if [ "${helm_version}" != "v3" ]; then
@@ -117,7 +98,8 @@ stackstate:
   components:
     all:
       image:
-        pullSecretDockerConfigJson: "$(generate_image_pull_secret_json)"
+        pullSecretUsername: "${image_pull_credentials_username}"
+        pullSecretPassword: "${image_pull_credentials_password}"
     server:
       extraEnv:
         secret:

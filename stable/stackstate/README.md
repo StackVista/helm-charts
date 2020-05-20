@@ -96,6 +96,8 @@ stackstate/stackstate
 | stackstate.components.all.image.pullPolicy | string | `"Always"` | The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below). |
 | stackstate.components.all.image.pullSecretDockerConfigJson | string | `nil` | Value of `.dockerconfigjson` of ImagePullSecret to use for all pods. |
 | stackstate.components.all.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
+| stackstate.components.all.image.pullSecretPassword | string | `nil` |  |
+| stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
 | stackstate.components.all.image.repositorySuffix | string | `"-stable"` |  |
 | stackstate.components.all.image.tag | string | `"sts-private-v1-16-0-golf"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |

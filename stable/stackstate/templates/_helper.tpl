@@ -306,3 +306,13 @@ endpoints:
       targetLabel: app_component
       action: replace
 {{- end -}}
+
+{{- define "stackstate.image.pullSecret.name" -}}
+{{- if .Values.stackstate.components.all.image.pullSecretName }}
+imagePullSecrets:
+- name: '{{ .Values.stackstate.components.all.image.pullSecretName }}'
+{{- else if or .Values.stackstate.components.all.image.pullSecretDockerConfigJson .Values.stackstate.components.all.image.pullSecretUsername }}
+imagePullSecrets:
+- name: '{{ template "common.fullname.short" . }}-pull-secret'
+{{- end }}
+{{- end -}}

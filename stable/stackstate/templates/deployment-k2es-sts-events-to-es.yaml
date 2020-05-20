@@ -27,13 +27,7 @@ spec:
       labels:
         app.kubernetes.io/component: sts2es
     spec:
-    {{- if .Values.stackstate.components.all.image.pullSecretName }}
-      imagePullSecrets:
-      - name: '{{ .Values.stackstate.components.all.image.pullSecretName }}'
-    {{- else if .Values.stackstate.components.all.image.pullSecretDockerConfigJson }}
-      imagePullSecrets:
-      - name: '{{ template "common.fullname.short" . }}-pull-secret'
-    {{- end }}
+      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml (merge $commonKafkaToEsInitContainer $commonContainer) | nindent 8 }}
       containers:
