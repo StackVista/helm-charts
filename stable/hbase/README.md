@@ -20,7 +20,6 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | all.affinity | object | `{}` | Affinity settings for pod assignment on all components. |
 | all.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods for all components. |
 | all.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object for all components. |
-| all.image.pullSecretDockerConfigJson | string | `nil` | Value of `.dockerconfigjson` of ImagePullSecret to use for all pods. |
 | all.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
 | all.image.pullSecretPassword | string | `nil` | Password used to login to the registry to pull Docker images of all pods. |
 | all.image.pullSecretUsername | string | `nil` | Username used to login to the registry to pull Docker images of all pods. |

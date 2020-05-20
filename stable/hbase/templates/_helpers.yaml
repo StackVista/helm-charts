@@ -321,7 +321,7 @@ Console extra environment variables for all processes inherited through `console
 {{- if .Values.all.image.pullSecretName }}
 imagePullSecrets:
 - name: '{{ .Values.all.image.pullSecretName }}'
-{{- else if or .Values.all.image.pullSecretDockerConfigJson .Values.all.image.pullSecretUsername }}
+{{- else if .Values.all.image.pullSecretUsername }}
 imagePullSecrets:
 - name: '{{ template "common.fullname.short" . }}-pull-secret'
 {{- end }}
