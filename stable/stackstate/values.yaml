@@ -55,8 +55,6 @@ stackstate:
         repositorySuffix: -stable
         # stackstate.components.all.image.pullSecretName -- Name of ImagePullSecret to use for all pods.
         pullSecretName:
-        # stackstate.components.all.image.pullSecretDockerConfigJson -- Value of `.dockerconfigjson` of ImagePullSecret to use for all pods.
-        pullSecretDockerConfigJson:
         # all.image.pullSecretUsername -- Username used to login to the registry to pull Docker images of all pods.
         pullSecretUsername:
         # all.image.pullSecretPassword -- Password used to login to the registry to pull Docker images of all pods.

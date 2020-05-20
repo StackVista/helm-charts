@@ -14,12 +14,12 @@ Generate a values.yaml for deploying StackState to Kubernetes with Helm 3.
 If any of the required arguments are missing they will be asked interactively.
 
 Arguments:
-    -c : Username for Docker image pulling (required)
-    -s : Password for Docker image pulling (required)
+    -u : Username for Docker image pulling (required)
+    -p : Password for Docker image pulling (required)
     -l : StackState license key (required)
-    -u : StackState base URL, externally (outside of the Kubernetes cluster) visible url of the StackState endpoints (required)
+    -b : StackState base URL, externally (outside of the Kubernetes cluster) visible url of the StackState endpoints (required)
          The exact value depends on your ingress setup. An example: https://my.stackstate.host
-    -p : Administrator password that will be set for StackState (required)
+    -a : Administrator password that will be set for StackState (required)
     -v : Name of generated values file (default: values.yaml)
     -h : Show this help text
 EOF
@@ -28,13 +28,13 @@ EOF
 values_file="values.yaml"
 
 # Parse arguments
-while getopts "c:s:l:u:p:v:h" opt; do
+while getopts "u:p:l:b:a:v:h" opt; do
   case "$opt" in
-  c)  image_pull_credentials_username=$OPTARG ;;
-  s)  image_pull_credentials_password=$OPTARG ;;
+  u)  image_pull_credentials_username=$OPTARG ;;
+  p)  image_pull_credentials_password=$OPTARG ;;
   l)  license_key=$OPTARG ;;
-  u)  url=$OPTARG ;;
-  p)  admin_password=$OPTARG ;;
+  b)  url=$OPTARG ;;
+  a)  admin_password=$OPTARG ;;
   v)  values_file=$OPTARG ;;
   h)  usage; exit;;
   \?) echo "Unknown option: -$OPTARG" >&2; exit 1;;
