@@ -77,13 +77,7 @@ spec:
       labels:
         app.kubernetes.io/component: hbase-rs
     spec:
-    {{- if .Values.all.image.pullSecretName }}
-      imagePullSecrets:
-      - name: '{{ .Values.all.image.pullSecretName }}'
-    {{- else if .Values.all.image.pullSecretDockerConfigJson }}
-      imagePullSecrets:
-      - name: '{{ template "common.fullname.short" . }}-pull-secret'
-    {{- end }}
+      {{ include "image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml $stackstateHbaseRegionServerInitContainer | nindent 8 }}
       containers:
