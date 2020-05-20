@@ -10,6 +10,11 @@ all:
     pullSecretName:
     # all.image.pullSecretDockerConfigJson -- Value of `.dockerconfigjson` of ImagePullSecret to use for all pods.
     pullSecretDockerConfigJson:
+    # all.image.pullSecretUsername -- Username used to login to the registry to pull Docker images of all pods.
+    pullSecretUsername:
+    # all.image.pullSecretPassword -- Password used to login to the registry to pull Docker images of all pods.
+    pullSecretPassword:
+
   extraEnv:
     # all.extraEnv.open -- Extra open environment variables to inject into pods for all components.
     open: {}
