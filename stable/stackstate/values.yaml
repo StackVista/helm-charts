@@ -63,7 +63,7 @@ stackstate:
         pullPolicy: Always
         # When changing this value make sure to also update hbase.stackgraph.image.tag to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: sts-private-v1-16-0-golf
+        tag: sts-v4-0-0
       metrics:
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
         enabled: true
@@ -344,7 +344,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: "1.5.7"
+      tag: "1.7.0"
   hbase:
     master:
       # hbase.hbase.master.replicaCount -- Number of HBase master node replicas.
