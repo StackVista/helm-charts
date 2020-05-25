@@ -14,11 +14,12 @@ Generate a values.yaml for deploying StackState to Kubernetes with Helm 3.
 If any of the required arguments are missing they will be asked interactively.
 
 Arguments:
-    -i : Image pull secret .dockerConfigJson property (required)
+    -u : Username for Docker image pulling (required)
+    -p : Password for Docker image pulling (required)
     -l : StackState license key (required)
-    -u : StackState base URL, externally (outside of the Kubernetes cluster) visible url of the StackState endpoints (required)
+    -b : StackState base URL, externally (outside of the Kubernetes cluster) visible url of the StackState endpoints (required)
          The exact value depends on your ingress setup. An example: https://my.stackstate.host
-    -p : Administrator password that will be set for StackState (required)
+    -a : Administrator password that will be set for StackState (required)
     -v : Name of generated values file (default: values.yaml)
     -h : Show this help text
 EOF
@@ -27,12 +28,13 @@ EOF
 values_file="values.yaml"
 
 # Parse arguments
-while getopts "i:l:s:u:p:v:h" opt; do
+while getopts "u:p:l:b:a:v:h" opt; do
   case "$opt" in
-  i)  image_pull_secret_docker_config_json=$OPTARG ;;
+  u)  image_pull_credentials_username=$OPTARG ;;
+  p)  image_pull_credentials_password=$OPTARG ;;
   l)  license_key=$OPTARG ;;
-  u)  url=$OPTARG ;;
-  p)  admin_password=$OPTARG ;;
+  b)  url=$OPTARG ;;
+  a)  admin_password=$OPTARG ;;
   v)  values_file=$OPTARG ;;
   h)  usage; exit;;
   \?) echo "Unknown option: -$OPTARG" >&2; exit 1;;
@@ -45,8 +47,17 @@ function check_args() {
   [ -z "${license_key}" ] && read -r -p "Please provide the license key (-l): " license_key
   [ -z "${license_key}" ] && echo -e "${red}License key (-l) is a required argument.${nc}" && exit 1
 
-  [ -z "${image_pull_secret_docker_config_json}" ] && read -r -p "Please provide the image pull secret json (-i): " image_pull_secret_docker_config_json
-  [ -z "${image_pull_secret_docker_config_json}" ] && echo -e "${red}image pul secret json (-i) is a required argument.${nc}" && exit 1
+  [ -z "${image_pull_credentials_username}" ] && read -r -p "Please provide the username for pulling StackState Docker images (-c): " image_pull_credentials_username
+  [ -z "${image_pull_credentials_username}" ] && echo -e "${red}Username for pulling StackState Docker images (-c) is a required argument.${nc}" && exit 1
+
+  if [ -z "${image_pull_credentials_password}" ]; then
+    read -sr -p "Please provide the password for pulling StackState Docker images (-s): " image_pull_credentials_password
+    [ -z "${image_pull_credentials_password}" ] && echo -e "${red}Password for pulling StackState Docker images (-s) is a required argument.${nc}" && exit 1
+    echo ""
+    read -s -r -p "Please repeat the password for confirmation: " image_pull_credentials_password_confirm
+    echo ""
+    [ "${image_pull_credentials_password}" != "${image_pull_credentials_password_confirm}" ] && echo -e "${red}Passwords mismatch.${nc}" && exit 1
+  fi
 
   [ -z "${url}" ] && read -r -p "Please provide the base URL for StackState, for example https://my.stackstate.host (-u): " url
   [ -z "${url}" ] && echo -e "${red}The base url (-u) is a required argument.${nc}" && exit 1
@@ -87,7 +98,8 @@ stackstate:
   components:
     all:
       image:
-        pullSecretDockerConfigJson: "${image_pull_secret_docker_config_json}"
+        pullSecretUsername: "${image_pull_credentials_username}"
+        pullSecretPassword: "${image_pull_credentials_password}"
     server:
       extraEnv:
         secret:
@@ -103,7 +115,7 @@ stackstate:
 hbase:
   all:
     image:
-      pullSecretDockerConfigJson: "${image_pull_secret_docker_config_json}"
+      pullSecretDockerConfigJson: "$(generate_image_pull_secret_json)"
 EOF
 }
 

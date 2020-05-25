@@ -2,7 +2,7 @@ stackstate
 ==========
 Helm chart for StackState
 
-Current chart version is `0.4.24`
+Current chart version is `0.4.25`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -15,7 +15,7 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 | https://helm.stackstate.io | anomaly-detection | 1.16.6 |
 | https://helm.stackstate.io | common | 0.4.3 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.3 |
-| https://helm.stackstate.io | hbase | 0.1.29 |
+| https://helm.stackstate.io | hbase | 0.1.30 |
 
 ## Required Values
 
@@ -94,11 +94,12 @@ stackstate/stackstate
 | stackstate.components.all.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods for all components. |
 | stackstate.components.all.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object for all components. |
 | stackstate.components.all.image.pullPolicy | string | `"Always"` | The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below). |
-| stackstate.components.all.image.pullSecretDockerConfigJson | string | `nil` | Value of `.dockerconfigjson` of ImagePullSecret to use for all pods. |
 | stackstate.components.all.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
+| stackstate.components.all.image.pullSecretPassword | string | `nil` |  |
+| stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
 | stackstate.components.all.image.repositorySuffix | string | `"-stable"` |  |
-| stackstate.components.all.image.tag | string | `"sts-private-v1-16-0-golf"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
+| stackstate.components.all.image.tag | string | `"sts-v4-0-0"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
 | stackstate.components.all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |

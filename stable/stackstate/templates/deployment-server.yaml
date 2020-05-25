@@ -103,13 +103,7 @@ spec:
       labels:
         app.kubernetes.io/component: server
     spec:
-    {{- if .Values.stackstate.components.all.image.pullSecretName }}
-      imagePullSecrets:
-      - name: '{{ .Values.stackstate.components.all.image.pullSecretName }}'
-    {{- else if .Values.stackstate.components.all.image.pullSecretDockerConfigJson }}
-      imagePullSecrets:
-      - name: '{{ template "common.fullname.short" . }}-pull-secret'
-    {{- end }}
+    {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml $stsstackstateServerInitContainer | nindent 8 }}
       containers:
