@@ -15,7 +15,7 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 | https://helm.stackstate.io | anomaly-detection | 1.16.6 |
 | https://helm.stackstate.io | common | 0.4.3 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.3 |
-| https://helm.stackstate.io | hbase | 0.1.29 |
+| https://helm.stackstate.io | hbase | 0.1.30 |
 
 ## Required Values
 
