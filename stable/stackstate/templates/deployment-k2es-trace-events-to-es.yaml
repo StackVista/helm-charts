@@ -1,0 +1,74 @@
+{{- define "stackstate.k2es.deployment.traceEventsToEs.container" -}}
+args:
+- trace-events
+name: trace2es
+{{- end -}}
+
+{{- define "stackstate.k2es.traceEventsToEs.deployment" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $commonKafkaToEsContainer := fromYaml (include "stackstate.k2es.deployment.common.container" .) -}}
+{{- $commonKafkaToEsInitContainer := fromYaml (include "stackstate.k2es.deployment.common.initcontainer" .) -}}
+{{- $traceEventsToEsContainer := fromYaml (include "stackstate.k2es.deployment.traceEventsToEs.container" .) -}}
+
+metadata:
+  name: {{ template "common.fullname.short" . }}-trace2es
+  labels:
+    app.kubernetes.io/component: trace2es
+spec:
+  replicas: {{ .Values.stackstate.components.k2es.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: trace2es
+  template:
+    metadata:
+      annotations:
+        {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.k2es.secret.checksum" . | nindent 8 }}
+      labels:
+        app.kubernetes.io/component: trace2es
+    spec:
+    {{- if .Values.stackstate.components.all.image.pullSecretName }}
+      imagePullSecrets:
+      - name: '{{ .Values.stackstate.components.all.image.pullSecretName }}'
+    {{- else if .Values.stackstate.components.all.image.pullSecretDockerConfigJson }}
+      imagePullSecrets:
+      - name: '{{ template "common.fullname.short" . }}-pull-secret'
+    {{- end }}
+      initContainers:
+      - {{ toYaml (merge $commonKafkaToEsInitContainer $commonContainer) | nindent 8 }}
+      containers:
+      - {{ toYaml (merge $traceEventsToEsContainer $commonKafkaToEsContainer $commonContainer) | nindent 8 }}
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.k2es.nodeSelector }}
+      nodeSelector:
+      {{- with .Values.stackstate.components.all.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.k2es.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.k2es.affinity }}
+      affinity:
+      {{- with .Values.stackstate.components.all.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.k2es.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.k2es.tolerations }}
+      tolerations:
+      {{- with .Values.stackstate.components.all.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.k2es.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+{{- end -}}
+
+{{- if .Values.stackstate.components.k2es.traces.enabled }}
+{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $k2esTraceEventsToEsDeployment := fromYaml (include "stackstate.k2es.traceEventsToEs.deployment" .) -}}
+{{- toYaml (merge $k2esTraceEventsToEsDeployment $commonDeployment) -}}
+{{- end -}}
