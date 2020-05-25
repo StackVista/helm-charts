@@ -1,3 +1,6 @@
+{{- define "stackstate.router.api.name" -}}
+  {{- if .Values.stackstate.server.split }}api{{ else }}server{{ end }}
+{{- end -}}
 {{- define "stackstate.router.configmap" -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-router
@@ -28,24 +31,24 @@ data:
                   - match:
                       prefix: "/admin/"
                     route:
-                      cluster: "{{ template "common.fullname.short" . }}-server-admin"
+                      cluster: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-admin"
                       prefix_rewrite: "/"
                   - match:
                       prefix: "/api"
                     route:
-                      cluster: "{{ template "common.fullname.short" . }}-server-main"
+                      cluster: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
                   - match:
                       prefix: "/loginCallback"
                     route:
-                      cluster: "{{ template "common.fullname.short" . }}-server-main"
+                      cluster: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
                   - match:
                       prefix: "/loginInfo"
                     route:
-                      cluster: "{{ template "common.fullname.short" . }}-server-main"
+                      cluster: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
                   - match:
                       prefix: "/logout"
                     route:
-                      cluster: "{{ template "common.fullname.short" . }}-server-main"
+                      cluster: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
                   - match:
                       prefix: "/stsAgent"
                     route:
@@ -63,23 +66,23 @@ data:
               - name: envoy.router
                 typed_config: {}
       clusters:
-      - name: "{{ template "common.fullname.short" . }}-server-main"
+      - name: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
         type: STRICT_DNS
         lb_policy: LEAST_REQUEST
         http_protocol_options: {}
         connect_timeout: 2s
         hosts:
         - socket_address:
-            address: "{{ template "common.fullname.short" . }}-server"
+            address: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}"
             port_value: 7070
-      - name: "{{ template "common.fullname.short" . }}-server-admin"
+      - name: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-admin"
         type: STRICT_DNS
         lb_policy: LEAST_REQUEST
         http_protocol_options: {}
         connect_timeout: 2s
         hosts:
         - socket_address:
-            address: "{{ template "common.fullname.short" . }}-server"
+            address: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}"
             port_value: 7071
       - name: "{{ template "common.fullname.short" . }}-receiver"
         type: STRICT_DNS

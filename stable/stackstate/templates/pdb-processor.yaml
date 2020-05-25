@@ -1,0 +1,19 @@
+{{- define "stackstate.processor.poddisruptionbudget" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-processor
+  labels:
+    app.kubernetes.io/component: processor
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: processor
+{{- with .Values.stackstate.components.processor.poddisruptionbudget }}
+  {{ toYaml . | nindent 2 }}
+{{- end }}
+{{- end -}}
+
+{{- if .Values.stackstate.server.split }}
+{{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
+{{- $processorPdb := fromYaml (include "stackstate.processor.poddisruptionbudget" .) -}}
+{{- toYaml (merge $processorPdb $commonPdb) -}}
+{{- end }}

@@ -1,22 +1,22 @@
-{{- define "stackstate.server.servicemonitor" -}}
+{{- define "stackstate.processor.servicemonitor" -}}
 metadata:
   labels:
-    app.kubernetes.io/component: server
+    app.kubernetes.io/component: processor
   {{- with .Values.stackstate.components.all.metrics.servicemonitor.additionalLabels }}
     {{ toYaml . | nindent 4 }}
   {{- end }}
-  name: {{ template "common.fullname.short" . }}-server
+  name: {{ template "common.fullname.short" . }}-processor
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/component: server
+      app.kubernetes.io/component: processor
   {{ include "stackstate.servicemonitor.extraLabels" . | nindent 2 }}
 {{- end -}}
 
-{{- if not .Values.stackstate.server.split }}
+{{- if .Values.stackstate.server.split }}
 {{- if and ( .Values.stackstate.components.all.metrics.enabled ) ( .Values.stackstate.components.all.metrics.servicemonitor.enabled ) }}
 {{- $commonServiceMonitor := fromYaml (include "common.servicemonitor" .) -}}
-{{- $serverServiceMonitor := fromYaml (include "stackstate.server.servicemonitor" .) -}}
-{{- toYaml (merge $serverServiceMonitor $commonServiceMonitor) -}}
+{{- $processorServiceMonitor := fromYaml (include "stackstate.processor.servicemonitor" .) -}}
+{{- toYaml (merge $processorServiceMonitor $commonServiceMonitor) -}}
 {{- end -}}
 {{- end }}

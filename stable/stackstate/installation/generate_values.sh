@@ -92,6 +92,10 @@ stackstate:
       extraEnv:
         secret:
           CONFIG_FORCE_stackstate_api_authentication_authServer_stackstateAuthServer_defaultPassword: "$(create_admin_password_hash)"
+    api:
+      extraEnv:
+        secret:
+          CONFIG_FORCE_stackstate_api_authentication_authServer_stackstateAuthServer_defaultPassword: "$(create_admin_password_hash)"
   receiver:
     baseUrl: "${url}"
   license:

@@ -1,8 +1,8 @@
-{{- define "stackstate.server.service" -}}
+{{- define "stackstate.api.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-server
+  name: {{ template "common.fullname.short" . }}-api
   labels:
-    app.kubernetes.io/component: server
+    app.kubernetes.io/component: api
 spec:
   ports:
     - name: api
@@ -20,11 +20,11 @@ spec:
       targetPort: metrics
   {{- end }}
   selector:
-    app.kubernetes.io/component: server
+    app.kubernetes.io/component: api
 {{- end -}}
 
-{{- if not .Values.stackstate.server.split }}
+{{- if .Values.stackstate.server.split }}
 {{- $commonService := fromYaml (include "common.service" .) -}}
-{{- $stsstackstateServerService := fromYaml (include "stackstate.server.service" .) -}}
-{{- toYaml (merge $stsstackstateServerService $commonService) -}}
+{{- $stsStackstateApiService := fromYaml (include "stackstate.api.service" .) -}}
+{{- toYaml (merge $stsStackstateApiService $commonService) -}}
 {{- end }}

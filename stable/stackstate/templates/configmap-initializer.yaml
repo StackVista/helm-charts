@@ -1,0 +1,13 @@
+{{- define "stackstate.initializer.configmap" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-initializer
+data:
+  application_stackstate.conf: |
+{{- if .Values.stackstate.components.initializer.config }}
+{{- .Values.stackstate.components.initializer.config | nindent 4 -}}
+{{- end }}
+{{- end -}}
+
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $stackstateInitializerConfigMap := fromYaml (include "stackstate.initializer.configmap" .) -}}
+{{- toYaml (merge $stackstateInitializerConfigMap $commonConfigMap) -}}

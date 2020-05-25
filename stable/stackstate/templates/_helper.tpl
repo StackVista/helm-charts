@@ -180,6 +180,69 @@ Server extra environment variables for server pods inherited through `stackstate
 {{- end -}}
 
 {{/*
+Api extra environment variables for server pods inherited through `stackstate.components.api.extraEnv`
+*/}}
+{{- define "stackstate.api.envvars" -}}
+{{- if .Values.stackstate.components.api.extraEnv.open }}
+  {{- range $key, $value := .Values.stackstate.components.api.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.stackstate.components.api.extraEnv.secret }}
+  {{- range $key, $value := .Values.stackstate.components.api.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" $ }}-api
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Api extra environment variables for server pods inherited through `stackstate.components.api.extraEnv`
+*/}}
+{{- define "stackstate.initializer.envvars" -}}
+{{- if .Values.stackstate.components.initializer.extraEnv.open }}
+  {{- range $key, $value := .Values.stackstate.components.initializer.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.stackstate.components.initializer.extraEnv.secret }}
+  {{- range $key, $value := .Values.stackstate.components.initializer.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" $ }}-initializer
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Processor extra environment variables for server pods inherited through `stackstate.components.api.extraEnv`
+*/}}
+{{- define "stackstate.processor.envvars" -}}
+{{- if .Values.stackstate.components.processor.extraEnv.open }}
+  {{- range $key, $value := .Values.stackstate.components.processor.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.stackstate.components.processor.extraEnv.secret }}
+  {{- range $key, $value := .Values.stackstate.components.processor.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" $ }}-processor
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
 UI extra environment variables for ui pods inherited through `stackstate.components.ui.extraEnv`
 */}}
 {{- define "stackstate.ui.envvars" -}}
@@ -235,6 +298,34 @@ checksum/receiver-env: {{ include (print $.Template.BasePath "/secret-receiver.y
 {{- end -}}
 
 {{/*
+Api secret checksum annotations
+*/}}
+{{- define "stackstate.api.secret.checksum" -}}
+checksum/api-env: {{ include (print $.Template.BasePath "/secret-api.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+License secret checksum annotations
+*/}}
+{{- define "stackstate.license.secret.checksum" -}}
+checksum/license-env: {{ include (print $.Template.BasePath "/secret-license-key.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+Initializer secret checksum annotations
+*/}}
+{{- define "stackstate.initializer.secret.checksum" -}}
+checksum/initializer-env: {{ include (print $.Template.BasePath "/secret-initializer.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+Processor secret checksum annotations
+*/}}
+{{- define "stackstate.processor.secret.checksum" -}}
+checksum/processor-env: {{ include (print $.Template.BasePath "/secret-processor.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
 Server secret checksum annotations
 */}}
 {{- define "stackstate.server.secret.checksum" -}}
@@ -262,6 +353,27 @@ Server configmap checksum annotations
 */}}
 {{- define "stackstate.server.configmap.checksum" -}}
 checksum/server-configmap: {{ include (print $.Template.BasePath "/configmap-server.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+Api configmap checksum annotations
+*/}}
+{{- define "stackstate.api.configmap.checksum" -}}
+checksum/api-configmap: {{ include (print $.Template.BasePath "/configmap-api.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+Initializer configmap checksum annotations
+*/}}
+{{- define "stackstate.initializer.configmap.checksum" -}}
+checksum/initializer-configmap: {{ include (print $.Template.BasePath "/configmap-initializer.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+Processor configmap checksum annotations
+*/}}
+{{- define "stackstate.processor.configmap.checksum" -}}
+checksum/processor-configmap: {{ include (print $.Template.BasePath "/configmap-processor.yaml") . | sha256sum }}
 {{- end -}}
 
 {{/*

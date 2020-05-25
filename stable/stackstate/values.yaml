@@ -82,6 +82,38 @@ stackstate:
       tolerations: []
       # stackstate.components.all.affinity -- Affinity settings for pod assignment on all components.
       affinity: {}
+    api:
+      extraEnv:
+        # stackstate.components.api.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.api.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.api.image.pullPolicy -- `pullPolicy` used for the `server` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.api.image.repository -- Repository of the server component Docker image.
+        repository: stackstate/stackstate-server
+        # stackstate.components.api.image.tag -- Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.api.poddisruptionbudget -- PodDisruptionBudget settings for `server` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.api.resources -- Resource allocation for `server` pods.
+      resources:
+        limits:
+          memory: "2Gi"
+        requests:
+          memory: "1Gi"
+      # stackstate.components.api.replicaCount -- Number of `server` replicas.
+      replicaCount: 1
+      # stackstate.components.api.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.api.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.api.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.api.config -- Configuration file contents to customize the default StackState api configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
+      config: ""
     correlate:
       extraEnv:
         # stackstate.components.correlate.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -112,6 +144,38 @@ stackstate:
       tolerations: []
       # stackstate.components.correlate.affinity -- Affinity settings for pod assignment.
       affinity: {}
+    initializer:
+      extraEnv:
+        # stackstate.components.initializer.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.initializer.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.initializer.image.pullPolicy -- `pullPolicy` used for the `server` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.initializer.image.repository -- Repository of the server component Docker image.
+        repository: stackstate/stackstate-server
+        # stackstate.components.initializer.image.tag -- Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.initializer.poddisruptionbudget -- PodDisruptionBudget settings for `server` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.initializer.resources -- Resource allocation for `server` pods.
+      resources:
+        limits:
+          memory: "1Gi"
+        requests:
+          memory: "128Mi"
+      # stackstate.components.initializer.replicaCount -- Number of `server` replicas.
+      replicaCount: 1
+      # stackstate.components.initializer.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.initializer.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.initializer.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.initializer.config -- Configuration file contents to customize the default StackState api configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
+      config: ""
     k2es:
       extraEnv:
         # stackstate.components.k2es.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -142,6 +206,38 @@ stackstate:
       tolerations: []
       # stackstate.components.k2es.affinity -- Affinity settings for pod assignment.
       affinity: {}
+    processor:
+      extraEnv:
+        # stackstate.components.processor.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.processor.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.processor.image.pullPolicy -- `pullPolicy` used for the `server` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.processor.image.repository -- Repository of the server component Docker image.
+        repository: stackstate/stackstate-server
+        # stackstate.components.processor.image.tag -- Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.processor.poddisruptionbudget -- PodDisruptionBudget settings for `server` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.processor.resources -- Resource allocation for `server` pods.
+      resources:
+        limits:
+          memory: "6Gi"
+        requests:
+          memory: "6Gi"
+      # stackstate.components.processor.replicaCount -- Number of `server` replicas.
+      replicaCount: 1
+      # stackstate.components.processor.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.processor.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.processor.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.processor.config -- Configuration file contents to customize the default StackState api configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
+      config: ""
     receiver:
       extraEnv:
         # stackstate.components.receiver.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -304,6 +400,9 @@ stackstate:
   receiver:
     # stackstate.receiver.baseUrl -- (string) **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of the StackState endpoints.
     baseUrl:
+  server:
+    # stackstate.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
+    split: false
 
 ##############################
 # Dependency chart overrides #
@@ -342,7 +441,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: "1.5.7"
+      tag: "1.7.0"
   hbase:
     master:
       # hbase.hbase.master.replicaCount -- Number of HBase master node replicas.
