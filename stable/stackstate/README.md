@@ -111,13 +111,13 @@ stackstate/stackstate
 | stackstate.components.api.config | string | `""` | Configuration file contents to customize the default StackState api configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.api.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.api.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.api.image.pullPolicy | string | `""` | `pullPolicy` used for the `server` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.api.image.repository | string | `"stackstate/stackstate-server"` | Repository of the server component Docker image. |
-| stackstate.components.api.image.tag | string | `""` | Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.api.image.pullPolicy | string | `""` | `pullPolicy` used for the `api` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.components.api.image.repository | string | `"stackstate/stackstate-server"` | Repository of the api component Docker image. |
+| stackstate.components.api.image.tag | string | `""` | Tag used for the `api` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.api.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.api.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `server` pods. |
-| stackstate.components.api.replicaCount | int | `1` | Number of `server` replicas. |
-| stackstate.components.api.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"memory":"1Gi"}}` | Resource allocation for `server` pods. |
+| stackstate.components.api.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `api` pods. |
+| stackstate.components.api.replicaCount | int | `1` | Number of `api` replicas. |
+| stackstate.components.api.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"memory":"1Gi"}}` | Resource allocation for `api` pods. |
 | stackstate.components.api.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.correlate.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.correlate.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -131,16 +131,16 @@ stackstate/stackstate
 | stackstate.components.correlate.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"memory":"2Gi"}}` | Resource allocation for `correlate` pods. |
 | stackstate.components.correlate.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.initializer.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.initializer.config | string | `""` | Configuration file contents to customize the default StackState api configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
+| stackstate.components.initializer.config | string | `""` | Configuration file contents to customize the default StackState initializer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.initializer.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.initializer.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.initializer.image.pullPolicy | string | `""` | `pullPolicy` used for the `server` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.initializer.image.repository | string | `"stackstate/stackstate-server"` | Repository of the server component Docker image. |
-| stackstate.components.initializer.image.tag | string | `""` | Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.initializer.image.pullPolicy | string | `""` | `pullPolicy` used for the `initializer` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.components.initializer.image.repository | string | `"stackstate/stackstate-server"` | Repository of the initializer component Docker image. |
+| stackstate.components.initializer.image.tag | string | `""` | Tag used for the `initializer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.initializer.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.initializer.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `server` pods. |
-| stackstate.components.initializer.replicaCount | int | `1` | Number of `server` replicas. |
-| stackstate.components.initializer.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"128Mi"}}` | Resource allocation for `server` pods. |
+| stackstate.components.initializer.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `initializer` pods. |
+| stackstate.components.initializer.replicaCount | int | `1` | Number of `initializer` replicas. |
+| stackstate.components.initializer.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"memory":"128Mi"}}` | Resource allocation for `initializer` pods. |
 | stackstate.components.initializer.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.k2es.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.k2es.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -160,18 +160,6 @@ stackstate/stackstate
 | stackstate.components.nginxPrometheusExporter.image.registry | string | `"docker.io"` | Base container image registry for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.repository | string | `"nginx/nginx-prometheus-exporter"` | Base container image repository for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.tag | string | `"0.4.2"` | Container image tag for nginx-prometheus-exporter containers. |
-| stackstate.components.processor.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.processor.config | string | `""` | Configuration file contents to customize the default StackState api configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
-| stackstate.components.processor.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.processor.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.processor.image.pullPolicy | string | `""` | `pullPolicy` used for the `server` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.processor.image.repository | string | `"stackstate/stackstate-server"` | Repository of the server component Docker image. |
-| stackstate.components.processor.image.tag | string | `""` | Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.processor.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.processor.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `server` pods. |
-| stackstate.components.processor.replicaCount | int | `1` | Number of `server` replicas. |
-| stackstate.components.processor.resources | object | `{"limits":{"memory":"6Gi"},"requests":{"memory":"6Gi"}}` | Resource allocation for `server` pods. |
-| stackstate.components.processor.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.receiver.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.receiver.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.receiver.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
@@ -207,6 +195,30 @@ stackstate/stackstate
 | stackstate.components.server.replicaCount | int | `1` | Number of `server` replicas. |
 | stackstate.components.server.resources | object | `{"limits":{"memory":"8Gi"},"requests":{"memory":"8Gi"}}` | Resource allocation for `server` pods. |
 | stackstate.components.server.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.state.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.state.config | string | `""` | Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
+| stackstate.components.state.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| stackstate.components.state.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.state.image.pullPolicy | string | `""` | `pullPolicy` used for the `state` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.components.state.image.repository | string | `"stackstate/stackstate-server"` | Repository of the sync component Docker image. |
+| stackstate.components.state.image.tag | string | `""` | Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.state.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.state.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `state` pods. |
+| stackstate.components.state.replicaCount | int | `1` | Number of `state` replicas. |
+| stackstate.components.state.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"memory":"1Gi"}}` | Resource allocation for `state` pods. |
+| stackstate.components.state.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.sync.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.sync.config | string | `""` | Configuration file contents to customize the default StackState sync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
+| stackstate.components.sync.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| stackstate.components.sync.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.sync.image.pullPolicy | string | `""` | `pullPolicy` used for the `sync` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.components.sync.image.repository | string | `"stackstate/stackstate-server"` | Repository of the sync component Docker image. |
+| stackstate.components.sync.image.tag | string | `""` | Tag used for the `sync` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.sync.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.sync.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `sync` pods. |
+| stackstate.components.sync.replicaCount | int | `1` | Number of `sync` replicas. |
+| stackstate.components.sync.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"memory":"1Gi"}}` | Resource allocation for `sync` pods. |
+| stackstate.components.sync.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.ui.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.ui.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.ui.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
@@ -218,6 +230,18 @@ stackstate/stackstate
 | stackstate.components.ui.replicaCount | int | `2` | Number of `ui` replicas. |
 | stackstate.components.ui.resources | object | `{"limits":{"cpu":"50m","memory":"64Mi"},"requests":{"cpu":"50m","memory":"64Mi"}}` | Resource allocation for `ui` pods. |
 | stackstate.components.ui.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.viewHealth.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.viewHealth.config | string | `""` | Configuration file contents to customize the default StackState viewHealth configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
+| stackstate.components.viewHealth.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| stackstate.components.viewHealth.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.viewHealth.image.pullPolicy | string | `""` | `pullPolicy` used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.components.viewHealth.image.repository | string | `"stackstate/stackstate-server"` | Repository of the sync component Docker image. |
+| stackstate.components.viewHealth.image.tag | string | `""` | Tag used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.viewHealth.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.viewHealth.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `viewHealth` pods. |
+| stackstate.components.viewHealth.replicaCount | int | `1` | Number of `viewHealth` replicas. |
+| stackstate.components.viewHealth.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"memory":"1Gi"}}` | Resource allocation for `viewHealth` pods. |
+| stackstate.components.viewHealth.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.wait.image.registry | string | `"docker.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"dokkupaas/wait"` | Base container image repository for wait containers. |
 | stackstate.components.wait.image.tag | string | `"latest"` | Container image tag for wait containers. |
