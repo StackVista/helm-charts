@@ -76,7 +76,7 @@ spec:
         app.kubernetes.io/component: hdfs-snn
     spec:
       {{ include "image.pullSecret.name" . | nindent 6 }}
-     containers:
+      containers:
       - {{ toYaml $stackstateHbaseHdfsSecondaryNamenodeContainer | nindent 8 }}
       initContainers:
       - {{ toYaml $stackstateHbaseHdfsSecondaryNamenodeInitContainer | nindent 8 }}
