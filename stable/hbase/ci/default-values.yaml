@@ -7,6 +7,9 @@ hbase:
     metrics:
       servicemonitor:
         enabled: true
+hdfs:
+  secondarynamenode:
+    enabled: true
 tephra:
   metrics:
     servicemonitor:

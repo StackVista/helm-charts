@@ -7,7 +7,7 @@ dependencies:
   version: 7.6.2-stackstate.3
 - name: hbase
   repository: https://helm.stackstate.io
-  version: 0.1.30
+  version: 0.1.31
 - name: kafka
   repository: https://charts.bitnami.com/bitnami
   version: 7.2.9
@@ -17,5 +17,5 @@ dependencies:
 - name: anomaly-detection
   repository: https://helm.stackstate.io
   version: 1.16.6
-digest: sha256:0735f7a9a3bc2273e37bc15dc28d7adf6fc878805752ec041efff58fb7517fb0
-generated: "2020-05-25T16:13:56.768685+02:00"
+digest: sha256:03611882b813a5e231df3b33a858b76b4d77398874ddf067b461872363d22c17
+generated: "2020-05-26T09:25:20.553800535+02:00"

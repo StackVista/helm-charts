@@ -208,6 +208,9 @@ stackstate:
       tolerations: []
       # stackstate.components.k2es.affinity -- Affinity settings for pod assignment.
       affinity: {}
+      # stackstate.components.k2es.traces -- Trace-related `k2es` settings.
+      traces:
+        enabled: false
     processor:
       extraEnv:
         # stackstate.components.processor.extraEnv.open -- Extra open environment variables to inject into pods.
