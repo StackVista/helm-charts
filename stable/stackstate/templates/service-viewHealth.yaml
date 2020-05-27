@@ -2,7 +2,7 @@
 metadata:
   name: {{ template "common.fullname.short" . }}-view-health
   labels:
-    app.kubernetes.io/component: viewHealth
+    app.kubernetes.io/component: view-health
 spec:
   ports:
   {{- if .Values.stackstate.components.all.metrics.enabled }}
@@ -12,7 +12,7 @@ spec:
       targetPort: metrics
   {{- end }}
   selector:
-    app.kubernetes.io/component: viewHealth
+    app.kubernetes.io/component: view-health
 {{- end -}}
 
 {{- if .Values.stackstate.server.split }}

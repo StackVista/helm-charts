@@ -5,7 +5,7 @@ metadata:
   {{- with .Values.stackstate.components.all.metrics.servicemonitor.additionalLabels }}
     {{ toYaml . | nindent 4 }}
   {{- end }}
-  name: {{ template "common.fullname.short" . }}-viewHealth
+  name: {{ template "common.fullname.short" . }}-view-health
 spec:
   selector:
     matchLabels:
