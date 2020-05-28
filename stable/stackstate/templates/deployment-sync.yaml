@@ -89,10 +89,12 @@ metadata:
   labels:
     app.kubernetes.io/component: sync
 spec:
-  replicas: {{ .Values.stackstate.components.server.replicaCount }}
+{{/*  replicas: {{ .Values.stackstate.components.sync.replicaCount }}*/}}
   selector:
     matchLabels:
       app.kubernetes.io/component: sync
+  strategy:
+    type: Recreate
   template:
     metadata:
       annotations:

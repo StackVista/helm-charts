@@ -168,8 +168,6 @@ stackstate:
           memory: "1Gi"
         requests:
           memory: "128Mi"
-      # stackstate.components.initializer.replicaCount -- Number of `initializer` replicas.
-      replicaCount: 1
       # stackstate.components.initializer.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.initializer.tolerations -- Toleration labels for pod assignment.
@@ -329,8 +327,6 @@ stackstate:
           memory: "2Gi"
         requests:
           memory: "1Gi"
-      # stackstate.components.state.replicaCount -- Number of `state` replicas.
-      replicaCount: 1
       # stackstate.components.state.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.state.tolerations -- Toleration labels for pod assignment.
@@ -358,11 +354,9 @@ stackstate:
       # stackstate.components.sync.resources -- Resource allocation for `sync` pods.
       resources:
         limits:
-          memory: "2Gi"
+          memory: "3Gi"
         requests:
-          memory: "1Gi"
-      # stackstate.components.sync.replicaCount -- Number of `sync` replicas.
-      replicaCount: 1
+          memory: "2Gi"
       # stackstate.components.sync.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.sync.tolerations -- Toleration labels for pod assignment.
@@ -425,8 +419,6 @@ stackstate:
           memory: "2Gi"
         requests:
           memory: "1Gi"
-      # stackstate.components.viewHealth.replicaCount -- Number of `viewHealth` replicas.
-      replicaCount: 1
       # stackstate.components.viewHealth.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.viewHealth.tolerations -- Toleration labels for pod assignment.

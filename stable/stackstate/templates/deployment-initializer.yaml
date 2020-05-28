@@ -89,10 +89,12 @@ metadata:
   labels:
     app.kubernetes.io/component: initializer
 spec:
-  replicas: {{ .Values.stackstate.components.server.replicaCount }}
+{{/*  replicas: {{ .Values.stackstate.components.initializer.replicaCount }}*/}}
   selector:
     matchLabels:
       app.kubernetes.io/component: initializer
+  strategy:
+    type: Recreate
   template:
     metadata:
       annotations:
