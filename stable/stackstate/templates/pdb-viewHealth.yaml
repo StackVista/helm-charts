@@ -1,19 +1,19 @@
-{{- define "stackstate.viewHealth.poddisruptionbudget" -}}
-metadata:
-  name: {{ template "common.fullname.short" . }}-viewHealth
-  labels:
-    app.kubernetes.io/component: viewHealth
-spec:
-  selector:
-    matchLabels:
-      app.kubernetes.io/component: viewHealth
-{{- with .Values.stackstate.components.viewHealth.poddisruptionbudget }}
-  {{ toYaml . | nindent 2 }}
-{{- end }}
-{{- end -}}
+{{/*{{- define "stackstate.viewHealth.poddisruptionbudget" -}}*/}}
+{{/*metadata:*/}}
+{{/*  name: {{ template "common.fullname.short" . }}-viewHealth*/}}
+{{/*  labels:*/}}
+{{/*    app.kubernetes.io/component: viewHealth*/}}
+{{/*spec:*/}}
+{{/*  selector:*/}}
+{{/*    matchLabels:*/}}
+{{/*      app.kubernetes.io/component: viewHealth*/}}
+{{/*{{- with .Values.stackstate.components.viewHealth.poddisruptionbudget }}*/}}
+{{/*  {{ toYaml . | nindent 2 }}*/}}
+{{/*{{- end }}*/}}
+{{/*{{- end -}}*/}}
 
-{{- if .Values.stackstate.server.split }}
-{{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
-{{- $viewHealthPdb := fromYaml (include "stackstate.viewHealth.poddisruptionbudget" .) -}}
-{{- toYaml (merge $viewHealthPdb $commonPdb) -}}
-{{- end }}
+{{/*{{- if .Values.stackstate.server.split }}*/}}
+{{/*{{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}*/}}
+{{/*{{- $viewHealthPdb := fromYaml (include "stackstate.viewHealth.poddisruptionbudget" .) -}}*/}}
+{{/*{{- toYaml (merge $viewHealthPdb $commonPdb) -}}*/}}
+{{/*{{- end }}*/}}

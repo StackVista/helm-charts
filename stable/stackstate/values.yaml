@@ -320,7 +320,7 @@ stackstate:
         tag: ""
       # stackstate.components.state.poddisruptionbudget -- PodDisruptionBudget settings for `state` pods.
       poddisruptionbudget:
-        maxUnavailable: 1
+        maxUnavailable: 0
       # stackstate.components.state.resources -- Resource allocation for `state` pods.
       resources:
         limits:
@@ -350,7 +350,7 @@ stackstate:
         tag: ""
       # stackstate.components.sync.poddisruptionbudget -- PodDisruptionBudget settings for `sync` pods.
       poddisruptionbudget:
-        maxUnavailable: 1
+        maxUnavailable: 0
       # stackstate.components.sync.resources -- Resource allocation for `sync` pods.
       resources:
         limits:
@@ -412,7 +412,7 @@ stackstate:
         tag: ""
       # stackstate.components.viewHealth.poddisruptionbudget -- PodDisruptionBudget settings for `viewHealth` pods.
       poddisruptionbudget:
-        maxUnavailable: 1
+        maxUnavailable: 0
       # stackstate.components.viewHealth.resources -- Resource allocation for `viewHealth` pods.
       resources:
         limits:
