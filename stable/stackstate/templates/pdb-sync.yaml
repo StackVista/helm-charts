@@ -12,7 +12,7 @@
 {{/*{{- end }}*/}}
 {{/*{{- end -}}*/}}
 
-{{/*{{- if .Values.stackstate.server.split }}*/}}
+{{/*{{- if .Values.stackstate.experimental.server.split }}*/}}
 {{/*{{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}*/}}
 {{/*{{- $syncPdb := fromYaml (include "stackstate.sync.poddisruptionbudget" .) -}}*/}}
 {{/*{{- toYaml (merge $syncPdb $commonPdb) -}}*/}}

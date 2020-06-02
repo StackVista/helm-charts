@@ -1,5 +1,5 @@
 {{- define "stackstate.router.api.name" -}}
-  {{- if .Values.stackstate.server.split }}api{{ else }}server{{ end }}
+  {{- if .Values.stackstate.experimental.server.split }}api{{ else }}server{{ end }}
 {{- end -}}
 {{- define "stackstate.router.configmap" -}}
 metadata:

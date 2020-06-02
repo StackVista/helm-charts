@@ -103,9 +103,9 @@ stackstate:
       # stackstate.components.api.resources -- Resource allocation for `api` pods.
       resources:
         limits:
-          memory: "2Gi"
+          memory: "3Gi"
         requests:
-          memory: "1Gi"
+          memory: "3Gi"
       # stackstate.components.api.replicaCount -- Number of `api` replicas.
       replicaCount: 1
       # stackstate.components.api.nodeSelector -- Node labels for pod assignment.
@@ -354,9 +354,9 @@ stackstate:
       # stackstate.components.sync.resources -- Resource allocation for `sync` pods.
       resources:
         limits:
-          memory: "3Gi"
+          memory: "4Gi"
         requests:
-          memory: "2Gi"
+          memory: "4Gi"
       # stackstate.components.sync.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.sync.tolerations -- Toleration labels for pod assignment.
@@ -461,9 +461,10 @@ stackstate:
   receiver:
     # stackstate.receiver.baseUrl -- (string) **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of the StackState endpoints.
     baseUrl:
-  server:
-    # stackstate.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
-    split: false
+  experimental:
+     server:
+          # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
+       split: false
 
 ##############################
 # Dependency chart overrides #

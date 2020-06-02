@@ -149,7 +149,7 @@ spec:
             name: {{ template "common.fullname.short" . }}-api
 {{- end -}}
 
-{{- if .Values.stackstate.server.split }}
+{{- if .Values.stackstate.experimental.server.split }}
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 {{- $apiDeployment := fromYaml (include "stackstate.api.deployment" .) -}}
 {{- toYaml (merge $apiDeployment $commonDeployment) -}}

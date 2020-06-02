@@ -44,8 +44,8 @@ image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.compon
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.state.image.pullPolicy | quote }}
 livenessProbe:
   httpGet:
-    path: /liveness
-    port: health
+    path: /health
+    port: admin
   initialDelaySeconds: 60
   timeoutSeconds: 5
 name: state
@@ -149,7 +149,7 @@ spec:
             name: {{ template "common.fullname.short" . }}-state
 {{- end -}}
 
-{{- if .Values.stackstate.server.split }}
+{{- if .Values.stackstate.experimental.server.split }}
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 {{- $stateDeployment := fromYaml (include "stackstate.state.deployment" .) -}}
 {{- toYaml (merge $stateDeployment $commonDeployment) -}}

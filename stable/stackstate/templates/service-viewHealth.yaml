@@ -15,7 +15,7 @@ spec:
     app.kubernetes.io/component: view-health
 {{- end -}}
 
-{{- if .Values.stackstate.server.split }}
+{{- if .Values.stackstate.experimental.server.split }}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $stsStackstateViewHealthService := fromYaml (include "stackstate.viewHealth.service" .) -}}
 {{- toYaml (merge $stsStackstateViewHealthService $commonService) -}}

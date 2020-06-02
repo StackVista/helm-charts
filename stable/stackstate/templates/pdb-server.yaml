@@ -12,7 +12,7 @@ spec:
 {{- end }}
 {{- end -}}
 
-{{- if not .Values.stackstate.server.split }}
+{{- if not .Values.stackstate.experimental.server.split }}
 {{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
 {{- $serverPdb := fromYaml (include "stackstate.server.poddisruptionbudget" .) -}}
 {{- toYaml (merge $serverPdb $commonPdb) -}}

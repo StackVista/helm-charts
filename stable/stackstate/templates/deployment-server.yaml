@@ -141,7 +141,7 @@ spec:
             name: {{ template "common.fullname.short" . }}-server
 {{- end -}}
 
-{{- if not .Values.stackstate.server.split }}
+{{- if not .Values.stackstate.experimental.server.split }}
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 {{- $serverDeployment := fromYaml (include "stackstate.server.deployment" .) -}}
 {{- toYaml (merge $serverDeployment $commonDeployment) -}}
