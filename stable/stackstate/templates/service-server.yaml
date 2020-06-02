@@ -4,6 +4,7 @@ metadata:
   labels:
     app.kubernetes.io/component: server
 spec:
+  clusterIP: None
   ports:
     - name: api
       port: 7070

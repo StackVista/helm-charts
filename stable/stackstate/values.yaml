@@ -63,7 +63,7 @@ stackstate:
         pullPolicy: Always
         # When changing this value make sure to also update hbase.stackgraph.image.tag to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: sts-v4-0-0
+        tag: sts-v4-0-1
       metrics:
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
         enabled: true
@@ -233,8 +233,6 @@ stackstate:
           memory: "8Gi"
         requests:
           memory: "8Gi"
-      # stackstate.components.server.replicaCount -- Number of `server` replicas.
-      replicaCount: 1
       # stackstate.components.server.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.server.tolerations -- Toleration labels for pod assignment.
