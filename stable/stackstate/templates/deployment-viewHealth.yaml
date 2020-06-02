@@ -93,8 +93,6 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: viewHealth
-  strategy:
-    type: Recreate
   template:
     metadata:
       annotations:
@@ -150,7 +148,7 @@ spec:
 {{- end -}}
 
 {{- if .Values.stackstate.experimental.server.split }}
-{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $commonDeployment := fromYaml (include "common.statefulset" .) -}}
 {{- $viewHealthDeployment := fromYaml (include "stackstate.viewHealth.deployment" .) -}}
 {{- toYaml (merge $viewHealthDeployment $commonDeployment) -}}
 {{- end}}
