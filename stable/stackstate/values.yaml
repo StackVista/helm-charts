@@ -462,9 +462,9 @@ stackstate:
     # stackstate.receiver.baseUrl -- (string) **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of the StackState endpoints.
     baseUrl:
   experimental:
-     server:
-          # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
-       split: false
+    server:
+    # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
+      split: false
 
 ##############################
 # Dependency chart overrides #
