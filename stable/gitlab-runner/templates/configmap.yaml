@@ -11,9 +11,8 @@ data:
   template.toml: |
     [[runners]]
       [runners.kubernetes]
-        [runners.kubernetes.pod_security_context]
-          fs_group = 1000
         [runners.kubernetes.volumes]
+        {{- if .Values.runners.mountDockerSocket }}
           [[runners.kubernetes.volumes.host_path]]
             host_path = "/var/lib/docker"
             mount_path = "/var/lib/docker"
@@ -24,6 +23,7 @@ data:
             mount_path = "/var/run/docker.sock"
             name = "docker"
             read_only = false
+        {{- end }}
           [[runners.kubernetes.volumes.host_path]]
             host_path = "/dev/shm"
             mount_path = "/dev/shm"
