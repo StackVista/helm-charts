@@ -12,6 +12,7 @@ data:
     [[runners]]
       [runners.kubernetes]
         [runners.kubernetes.volumes]
+        {{- if .Values.runners.mountDockerSocket }}
           [[runners.kubernetes.volumes.host_path]]
             host_path = "/var/lib/docker"
             mount_path = "/var/lib/docker"
@@ -22,6 +23,7 @@ data:
             mount_path = "/var/run/docker.sock"
             name = "docker"
             read_only = false
+        {{- end }}
           [[runners.kubernetes.volumes.host_path]]
             host_path = "/dev/shm"
             mount_path = "/dev/shm"
