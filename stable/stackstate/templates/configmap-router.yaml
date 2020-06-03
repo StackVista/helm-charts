@@ -70,7 +70,7 @@ data:
         connect_timeout: 2s
         hosts:
         - socket_address:
-            address: "{{ template "common.fullname.short" . }}-server"
+            address: "{{ template "common.fullname.short" . }}-server-headless"
             port_value: 7070
       - name: "{{ template "common.fullname.short" . }}-server-admin"
         type: STRICT_DNS
@@ -79,7 +79,7 @@ data:
         connect_timeout: 2s
         hosts:
         - socket_address:
-            address: "{{ template "common.fullname.short" . }}-server"
+            address: "{{ template "common.fullname.short" . }}-server-headless"
             port_value: 7071
       - name: "{{ template "common.fullname.short" . }}-receiver"
         type: STRICT_DNS

@@ -1,6 +1,6 @@
 {{- define "stackstate.server.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-server
+  name: {{ template "common.fullname.short" . }}-server-headless
   labels:
     app.kubernetes.io/component: server
 spec:
