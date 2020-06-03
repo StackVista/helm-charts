@@ -39,8 +39,8 @@ stackstate/stackstate
 | anomaly-detection.defaultEtcConfig | bool | `true` | true if the default configuration of spotlight from etc/* folder is used, false - custom |
 | anomaly-detection.enabled | bool | `false` | enable anomaly detection |
 | anomaly-detection.imageTag | string | `"latest"` | image tag |
-| anomaly-detection.ingress | object | `{"annotations":{},"enabled":true,"hostname":null,"hosts":[],"port":8090,"tls":null}` | Status interface ingress |
-| anomaly-detection.ingress.enabled | bool | `true` | enable anomaly detection ingress |
+| anomaly-detection.ingress | object | `{"annotations":{},"enabled":false,"hostname":null,"hosts":[],"port":8090,"tls":null}` | Status interface ingress |
+| anomaly-detection.ingress.enabled | bool | `false` | enable anomaly detection ingress |
 | anomaly-detection.ingress.hostname | string | `nil` | Status interface hostname e.g. spotlight.local.domain |
 | anomaly-detection.stackstate.elasticSearchUri | string | `"stackstate-elasticsearch-master:9200"` |  |
 | anomaly-detection.stackstate.instance | string | `"stackstate-server:7070"` |  |
