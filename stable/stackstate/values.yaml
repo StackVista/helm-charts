@@ -443,7 +443,8 @@ anomaly-detection:
   enabled: false
   # anomaly-detection.imageTag -- image tag
   imageTag: "latest"
-
+  # anomaly-detection.defaultEtcConfig -- true if the default configuration of spotlight from etc/* folder is used, false - custom
+  defaultEtcConfig: true
   stackstate:
     # stackstate.instance -- Stackstate instance URL
     instance: stackstate-server:7070
@@ -456,7 +457,7 @@ anomaly-detection:
   # anomaly-detection.ingress -- Status interface ingress
   ingress:
     # anomaly-detection.ingress.enabled -- enable anomaly detection ingress
-    enabled: false
+    enabled: true
     # anomaly-detection.ingress.hostname -- Status interface hostname e.g. spotlight.local.domain
     hostname:
     # anomaly-detection.ingress.port - Status Interface port
