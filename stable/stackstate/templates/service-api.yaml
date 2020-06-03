@@ -1,9 +1,10 @@
 {{- define "stackstate.api.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-api
+  name: {{ template "common.fullname.short" . }}-api-headless
   labels:
     app.kubernetes.io/component: api
 spec:
+  clusterIP: None
   ports:
     - name: api
       port: 7070

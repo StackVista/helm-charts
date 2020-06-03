@@ -73,7 +73,7 @@ data:
         connect_timeout: 2s
         hosts:
         - socket_address:
-            address: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}"
+            address: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-headless"
             port_value: 7070
       - name: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-admin"
         type: STRICT_DNS
@@ -82,7 +82,7 @@ data:
         connect_timeout: 2s
         hosts:
         - socket_address:
-            address: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}"
+            address: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-headless"
             port_value: 7071
       - name: "{{ template "common.fullname.short" . }}-receiver"
         type: STRICT_DNS

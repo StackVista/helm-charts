@@ -1,4 +1,4 @@
-{{- define "stackstate.server.deployment.container.init" -}}
+{{- define "stackstate.server.statefulset.container.init" -}}
 name: server-init
 command:
 - sh
@@ -9,7 +9,7 @@ image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.com
 imagePullPolicy: Always
 {{- end -}}
 
-{{- define "stackstate.server.deployment.container.main" -}}
+{{- define "stackstate.server.statefulset.container.main" -}}
 args:
 - -start
 env:
@@ -79,18 +79,18 @@ volumeMounts:
   subPath: application_stackstate.conf
 {{- end -}}
 
-{{- define "stackstate.server.deployment" -}}
+{{- define "stackstate.server.statefulset" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.server.deployment.container.main" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.server.statefulset.container.main" .) -}}
 {{- $stsstackstateServerMainContainer := (merge $overrideContainer $commonContainer) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.server.deployment.container.init" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.server.statefulset.container.init" .) -}}
 {{- $stsstackstateServerInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-server
   labels:
     app.kubernetes.io/component: server
 spec:
-  replicas: {{ .Values.stackstate.components.server.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/component: server
@@ -142,7 +142,7 @@ spec:
 {{- end -}}
 
 {{- if not .Values.stackstate.experimental.server.split }}
-{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
-{{- $serverDeployment := fromYaml (include "stackstate.server.deployment" .) -}}
-{{- toYaml (merge $serverDeployment $commonDeployment) -}}
+{{- $commonStatefulset := fromYaml (include "common.statefulset" .) -}}
+{{- $serverStatefulset := fromYaml (include "stackstate.server.statefulset" .) -}}
+{{- toYaml (merge $serverStatefulset $commonStatefulset) -}}
 {{- end }}

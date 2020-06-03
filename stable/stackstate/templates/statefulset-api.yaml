@@ -1,4 +1,4 @@
-{{- define "stackstate.api.deployment.container.init" -}}
+{{- define "stackstate.api.statefulset.container.init" -}}
 name: server-init
 command:
 - sh
@@ -9,7 +9,7 @@ image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.com
 imagePullPolicy: Always
 {{- end -}}
 
-{{- define "stackstate.api.deployment.container.main" -}}
+{{- define "stackstate.api.statefulset.container.main" -}}
 args:
 - -startRole
 - api
@@ -80,11 +80,11 @@ volumeMounts:
   subPath: application_stackstate.conf
 {{- end -}}
 
-{{- define "stackstate.api.deployment" -}}
+{{- define "stackstate.api.statefulset" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.api.deployment.container.main" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.api.statefulset.container.main" .) -}}
 {{- $stsStackstateApiMainContainer := (merge $overrideContainer $commonContainer) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.api.deployment.container.init" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.api.statefulset.container.init" .) -}}
 {{- $stsStackstateApiInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-api
@@ -150,7 +150,7 @@ spec:
 {{- end -}}
 
 {{- if .Values.stackstate.experimental.server.split }}
-{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
-{{- $apiDeployment := fromYaml (include "stackstate.api.deployment" .) -}}
-{{- toYaml (merge $apiDeployment $commonDeployment) -}}
+{{- $commonStatefulset := fromYaml (include "common.statefulset" .) -}}
+{{- $apiStatefulset := fromYaml (include "stackstate.api.statefulset" .) -}}
+{{- toYaml (merge $apiStatefulset $commonStatefulset) -}}
 {{- end}}
