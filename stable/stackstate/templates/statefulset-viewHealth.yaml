@@ -1,4 +1,4 @@
-{{- define "stackstate.sync.statefulset.container.init" -}}
+{{- define "stackstate.viewHealth.statefulset.container.init" -}}
 name: server-init
 command:
 - sh
@@ -9,13 +9,13 @@ image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.com
 imagePullPolicy: Always
 {{- end -}}
 
-{{- define "stackstate.sync.statefulset.container.main" -}}
+{{- define "stackstate.viewHealth.statefulset.container.main" -}}
 args:
 - -startRole
-- sync
+- viewHealth
 env:
 {{- include "stackstate.common.envvars" . }}
-{{- include "stackstate.sync.envvars" . }}
+{{- include "stackstate.viewHealth.envvars" . }}
 - name: API_KEY
   valueFrom:
     secretKeyRef:
@@ -40,15 +40,15 @@ env:
 - name: CONFIG_FORCE_stackstate_adminApi_authentication_enabled
   value: "true"
 {{- end }}
-image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.sync.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.sync.image.tag }}"
-imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.sync.image.pullPolicy | quote }}
+image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.viewHealth.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.viewHealth.image.tag }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.viewHealth.image.pullPolicy | quote }}
 livenessProbe:
   httpGet:
     path: /health
     port: admin
   initialDelaySeconds: 60
   timeoutSeconds: 5
-name: sync
+name: view-health
 ports:
 - containerPort: 1618
   name: health
@@ -64,7 +64,7 @@ readinessProbe:
     port: health
   initialDelaySeconds: 60
   timeoutSeconds: 5
-{{- with .Values.stackstate.components.sync.resources }}
+{{- with .Values.stackstate.components.viewHealth.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -78,29 +78,29 @@ volumeMounts:
   subPath: application_stackstate.conf
 {{- end -}}
 
-{{- define "stackstate.sync.statefulset" -}}
+{{- define "stackstate.viewHealth.statefulset" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.sync.statefulset.container.main" .) -}}
-{{- $stsStackstateSyncMainContainer := (merge $overrideContainer $commonContainer) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.sync.statefulset.container.init" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.viewHealth.statefulset.container.main" .) -}}
+{{- $stsStackstateViewHealthMainContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.viewHealth.statefulset.container.init" .) -}}
 {{- $stsStackstateServerInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-sync
+  name: {{ template "common.fullname.short" . }}-view-health
   labels:
-    app.kubernetes.io/component: sync
+    app.kubernetes.io/component: viewHealth
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/component: sync
+      app.kubernetes.io/component: viewHealth
   template:
     metadata:
       annotations:
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
-        {{- include "stackstate.sync.secret.checksum" . | nindent 8 }}
-        {{- include "stackstate.sync.configmap.checksum" . | nindent 8 }}
+        {{- include "stackstate.viewHealth.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.viewHealth.configmap.checksum" . | nindent 8 }}
       labels:
-        app.kubernetes.io/component: sync
+        app.kubernetes.io/component: viewHealth
     spec:
     {{- if .Values.stackstate.components.all.image.pullSecretName }}
       imagePullSecrets:
@@ -112,42 +112,42 @@ spec:
       initContainers:
       - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
       containers:
-      - {{ toYaml $stsStackstateSyncMainContainer | nindent 8 }}
-    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.sync.nodeSelector }}
+      - {{ toYaml $stsStackstateViewHealthMainContainer | nindent 8 }}
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.state.nodeSelector }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.stackstate.components.sync.nodeSelector }}
+      {{- with .Values.stackstate.components.viewHealth.nodeSelector }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.sync.affinity }}
+    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.viewHealth.affinity }}
       affinity:
       {{- with .Values.stackstate.components.all.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.stackstate.components.sync.affinity }}
+      {{- with .Values.stackstate.components.viewHealth.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.sync.tolerations }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.viewHealth.tolerations }}
       tolerations:
       {{- with .Values.stackstate.components.all.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.stackstate.components.sync.tolerations }}
+      {{- with .Values.stackstate.components.viewHealth.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "common.fullname.short" . }}-sync
+            name: {{ template "common.fullname.short" . }}-view-health
 {{- end -}}
 
 {{- if .Values.stackstate.experimental.server.split }}
-{{- $commonstatefulset := fromYaml (include "common.statefulset" .) -}}
-{{- $syncstatefulset := fromYaml (include "stackstate.sync.statefulset" .) -}}
-{{- toYaml (merge $syncstatefulset $commonstatefulset) -}}
+{{- $commonStatefulset := fromYaml (include "common.statefulset" .) -}}
+{{- $viewHealthStatefulset := fromYaml (include "stackstate.viewHealth.statefulset" .) -}}
+{{- toYaml (merge $viewHealthStatefulset $commonStatefulset) -}}
 {{- end}}

@@ -147,7 +147,7 @@ spec:
 {{- end -}}
 
 {{- if .Values.stackstate.experimental.server.split }}
-{{- $commonstatefulset := fromYaml (include "common.statefulset" .) -}}
-{{- $statestatefulset := fromYaml (include "stackstate.state.statefulset" .) -}}
-{{- toYaml (merge $statestatefulset $commonstatefulset) -}}
+{{- $commonStatefulset := fromYaml (include "common.statefulset" .) -}}
+{{- $stateStatefulset := fromYaml (include "stackstate.state.statefulset" .) -}}
+{{- toYaml (merge $stateStatefulset $commonStatefulset) -}}
 {{- end}}

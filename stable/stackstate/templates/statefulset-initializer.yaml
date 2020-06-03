@@ -1,21 +1,21 @@
-{{- define "stackstate.viewHealth.deployment.container.init" -}}
+{{- define "stackstate.initializer.statefulset.container.init" -}}
 name: server-init
 command:
 - sh
 - -c
 - |
-  /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn:9000,{{ .Release.Name }}-initializer:7071 -t 300
+  /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn:9000 -t 300
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
 imagePullPolicy: Always
 {{- end -}}
 
-{{- define "stackstate.viewHealth.deployment.container.main" -}}
+{{- define "stackstate.initializer.statefulset.container.main" -}}
 args:
 - -startRole
-- viewHealth
+- initializer
 env:
 {{- include "stackstate.common.envvars" . }}
-{{- include "stackstate.viewHealth.envvars" . }}
+{{- include "stackstate.initializer.envvars" . }}
 - name: API_KEY
   valueFrom:
     secretKeyRef:
@@ -40,15 +40,15 @@ env:
 - name: CONFIG_FORCE_stackstate_adminApi_authentication_enabled
   value: "true"
 {{- end }}
-image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.viewHealth.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.viewHealth.image.tag }}"
-imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.viewHealth.image.pullPolicy | quote }}
+image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.initializer.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.initializer.image.tag }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.initializer.image.pullPolicy | quote }}
 livenessProbe:
   httpGet:
-    path: /health
-    port: admin
+    path: /liveness
+    port: health
   initialDelaySeconds: 60
   timeoutSeconds: 5
-name: view-health
+name: initializer
 ports:
 - containerPort: 1618
   name: health
@@ -64,7 +64,7 @@ readinessProbe:
     port: health
   initialDelaySeconds: 60
   timeoutSeconds: 5
-{{- with .Values.stackstate.components.viewHealth.resources }}
+{{- with .Values.stackstate.components.initializer.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -78,29 +78,29 @@ volumeMounts:
   subPath: application_stackstate.conf
 {{- end -}}
 
-{{- define "stackstate.viewHealth.deployment" -}}
+{{- define "stackstate.initializer.statefulset" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.viewHealth.deployment.container.main" .) -}}
-{{- $stsStackstateViewHealthMainContainer := (merge $overrideContainer $commonContainer) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.viewHealth.deployment.container.init" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.initializer.statefulset.container.main" .) -}}
+{{- $stsStackstateInitializerMainContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.initializer.statefulset.container.init" .) -}}
 {{- $stsStackstateServerInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-view-health
+  name: {{ template "common.fullname.short" . }}-initializer
   labels:
-    app.kubernetes.io/component: viewHealth
+    app.kubernetes.io/component: initializer
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/component: viewHealth
+      app.kubernetes.io/component: initializer
   template:
     metadata:
       annotations:
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
-        {{- include "stackstate.viewHealth.secret.checksum" . | nindent 8 }}
-        {{- include "stackstate.viewHealth.configmap.checksum" . | nindent 8 }}
+        {{- include "stackstate.initializer.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.initializer.configmap.checksum" . | nindent 8 }}
       labels:
-        app.kubernetes.io/component: viewHealth
+        app.kubernetes.io/component: initializer
     spec:
     {{- if .Values.stackstate.components.all.image.pullSecretName }}
       imagePullSecrets:
@@ -112,42 +112,42 @@ spec:
       initContainers:
       - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
       containers:
-      - {{ toYaml $stsStackstateViewHealthMainContainer | nindent 8 }}
-    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.state.nodeSelector }}
+      - {{ toYaml $stsStackstateInitializerMainContainer | nindent 8 }}
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.initializer.nodeSelector }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.stackstate.components.viewHealth.nodeSelector }}
+      {{- with .Values.stackstate.components.initializer.nodeSelector }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.viewHealth.affinity }}
+    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.initializer.affinity }}
       affinity:
       {{- with .Values.stackstate.components.all.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.stackstate.components.viewHealth.affinity }}
+      {{- with .Values.stackstate.components.initializer.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.viewHealth.tolerations }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.initializer.tolerations }}
       tolerations:
       {{- with .Values.stackstate.components.all.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.stackstate.components.viewHealth.tolerations }}
+      {{- with .Values.stackstate.components.initializer.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "common.fullname.short" . }}-view-health
+            name: {{ template "common.fullname.short" . }}-initializer
 {{- end -}}
 
 {{- if .Values.stackstate.experimental.server.split }}
-{{- $commonDeployment := fromYaml (include "common.statefulset" .) -}}
-{{- $viewHealthDeployment := fromYaml (include "stackstate.viewHealth.deployment" .) -}}
-{{- toYaml (merge $viewHealthDeployment $commonDeployment) -}}
+{{- $commonStatefulset := fromYaml (include "common.statefulset" .) -}}
+{{- $initializerStatefulset := fromYaml (include "stackstate.initializer.statefulset" .) -}}
+{{- toYaml (merge $initializerStatefulset $commonStatefulset) -}}
 {{- end}}
