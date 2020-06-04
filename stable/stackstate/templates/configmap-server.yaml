@@ -13,13 +13,13 @@ data:
         identifier = {{ .Values.caspr.subscription.tenant }}
         name = "{{ .Values.caspr.subscription.tenantobj.name }}"
         subscription {
-{{- if .Values.caspr.subscription.expirationDate }}
+  {{- if .Values.caspr.subscription.expirationDate }}
           expirationDate = {{ .Values.caspr.subscription.expirationDate }}
-{{- end }}
+  {{- end }}
           plan = {{ .Values.caspr.subscription.planobj.name }}
         }
       }
-{{- if .Values.caspr.keycloak }}
+  {{- if .Values.caspr.keycloak }}
       api {
         authentication {
           authServer {
@@ -37,8 +37,38 @@ data:
           }
         }
       }
-{{- end }}
+  {{- end }}
     }
+{{- else }}
+  {{- if or (hasKey .Values.stackstate.components.server.authentication.ldap "bind") (hasKey .Values.stackstate.components.server.authentication.ldap "ssl") }}
+    stackstate {
+      api {
+        authentication {
+          authServer {
+            ldapAuthServer {
+    {{- if hasKey .Values.stackstate.components.server.authentication.ldap "bind" }}
+              bind {
+                dn = "${LDAP_BIND_DN}"
+                password = "${LDAP_BIND_PASSWORD}"
+              }
+    {{- end }}
+    {{- if hasKey .Values.stackstate.components.server.authentication.ldap "ssl" }}
+              ssl {
+                sslType = {{ required "stackstate.components.server.authentication.ldap.ssl.type is required when configuring LDAP SSL" .Values.stackstate.components.server.authentication.ldap.ssl.type }}
+              {{- if .Values.stackstate.components.server.authentication.ldap.ssl.trustCertificates }}
+                trustCertificatesPath = "/opt/docker/secrets/ldap-certificates.pem"
+              {{- end }}
+              {{- if .Values.stackstate.components.server.authentication.ldap.ssl.trustStore }}
+                trustStorePath = "/opt/docker/secrets/ldap-cacerts"
+              {{- end }}
+             }
+    {{- end }}
+            }
+          }
+        }
+      }
+    }
+  {{- end }}
 {{- end }}
 {{- end -}}
 

@@ -39,6 +39,18 @@ env:
 - name: CONFIG_FORCE_stackstate_adminApi_authentication_enabled
   value: "true"
 {{- end }}
+{{- if hasKey .Values.stackstate.components.server.authentication.ldap "bind" }}
+- name: LDAP_BIND_DN
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" . }}-server
+      key: ldapBindDn
+- name: LDAP_BIND_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" . }}-server
+      key: ldapBindPassword
+{{- end }}
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.server.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
 livenessProbe:
@@ -77,6 +89,14 @@ volumeMounts:
 - name: config-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
+{{- if hasKey .Values.stackstate.components.server.authentication.ldap "ssl" }}
+  {{- with .Values.stackstate.components.server.authentication.ldap.ssl }}
+    {{- if or .trustCertificates .trustStore }}
+- name: secrets-volume
+  mountPath: /opt/docker/secrets
+    {{- end }}
+  {{- end }}
+{{- end }}
 {{- end -}}
 
 {{- define "stackstate.server.statefulset" -}}
@@ -136,9 +156,25 @@ spec:
       {{- end }}
     {{- end }}
       volumes:
-        - name: config-volume
-          configMap:
-            name: {{ template "common.fullname.short" . }}-server
+      - name: config-volume
+        configMap:
+          name: {{ template "common.fullname.short" . }}-server
+    {{- if hasKey .Values.stackstate.components.server.authentication.ldap "ssl" }}
+      {{- if or .Values.stackstate.components.server.authentication.ldap.ssl.trustCertificates .Values.stackstate.components.server.authentication.ldap.ssl.trustStore }}
+      - name: secrets-volume
+        secret:
+          secretName: {{ template "common.fullname.short" . }}-server
+          items:
+        {{- if .Values.stackstate.components.server.authentication.ldap.ssl.trustCertificates }}
+          - key: ldapTrustCertificates
+            path: ldap-certificates.pem
+        {{- end }}
+        {{- if .Values.stackstate.components.server.authentication.ldap.ssl.trustStore }}
+          - key: ldapTrustStore
+            path: ldap-cacerts
+        {{- end }}
+      {{- end }}
+    {{- end }}
 {{- end -}}
 
 {{- $commonStatefulset := fromYaml (include "common.statefulset" .) -}}
