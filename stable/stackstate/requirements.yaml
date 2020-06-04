@@ -19,6 +19,6 @@ dependencies:
   repository: https://charts.bitnami.com/bitnami
   condition: zookeeper.enabled
 - name: anomaly-detection
-  version: 1.16.7
+  version: 4.0.1
   repository: https://helm-test.stackstate.io
   condition: anomaly-detection.enabled

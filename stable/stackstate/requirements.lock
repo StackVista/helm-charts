@@ -16,6 +16,6 @@ dependencies:
   version: 5.4.3
 - name: anomaly-detection
   repository: https://helm-test.stackstate.io
-  version: 1.16.7
-digest: sha256:98970bcfdebae2bef05ed8a28b6be63f8eae1a42c289bfad84de97bf266548f3
-generated: "2020-06-03T13:26:56.8389802Z"
+  version: 4.0.1
+digest: sha256:40239d1a5659dd5b92f6fcaf024f4315c01a794c72fe51b57b3335824ed3dd55
+generated: "2020-06-04T08:09:37.9799158Z"
