@@ -441,8 +441,6 @@ anomaly-detection:
   enabled: false
   # anomaly-detection.imageTag -- image tag
   imageTag: "latest"
-  # anomaly-detection.defaultEtcConfig -- true if the default configuration of spotlight from etc/* folder is used, false - custom
-  defaultEtcConfig: true
   stackstate:
     # stackstate.instance -- Stackstate instance URL
     instance: stackstate-server:7070

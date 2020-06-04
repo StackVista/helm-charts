@@ -2,7 +2,7 @@ stackstate
 ==========
 Helm chart for StackState
 
-Current chart version is `0.4.31`
+Current chart version is `0.4.32`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -12,7 +12,7 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | kafka | 7.2.9 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.4.3 |
-| https://helm.stackstate.io | anomaly-detection | 4.0.1 |
+| https://helm-test.stackstate.io | anomaly-detection | 4.1.1 |
 | https://helm.stackstate.io | common | 0.4.3 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.3 |
 | https://helm.stackstate.io | hbase | 0.1.31 |
@@ -36,7 +36,6 @@ stackstate/stackstate
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| anomaly-detection.defaultEtcConfig | bool | `true` | true if the default configuration of spotlight from etc/* folder is used, false - custom |
 | anomaly-detection.enabled | bool | `false` | enable anomaly detection |
 | anomaly-detection.imageTag | string | `"latest"` | image tag |
 | anomaly-detection.ingress | object | `{"annotations":{},"enabled":false,"hostname":null,"hosts":[],"port":8090,"tls":null}` | Status interface ingress |
