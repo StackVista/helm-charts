@@ -160,6 +160,8 @@ stackstate/stackstate
 | stackstate.components.router.resources | object | `{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Resource allocation for `router` pods. |
 | stackstate.components.router.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.server.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.server.authentication | object | `{"ldap":{}}` | (Secret) authentication settings for StackState |
+| stackstate.components.server.authentication.ldap | object | `{}` | LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap) |
 | stackstate.components.server.config | string | `""` | Configuration file contents to customize the default StackState configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.server.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.server.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
@@ -194,3 +196,22 @@ stackstate/stackstate
 | zookeeper.metrics.serviceMonitor.enabled | bool | `false` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |
 | zookeeper.metrics.serviceMonitor.selector | object | `{}` | Default selector to use to target a certain Prometheus instance. |
 | zookeeper.replicaCount | int | `3` | Default amount of Zookeeper replicas to provision. |
+
+## Configuring LDAP
+
+When using LDAP, a number of (secret) values can be passed through the Helm values. You can provide the following values to configure LDAP:
+
+* `stackstate.components.server.authentication.ldap.bind.dn`: The bind DN to use to authenticate to LDAP
+* `stackstate.components.server.authentication.ldap.bind.password`: The bind password to use to authenticate to LDAP
+* `stackstate.components.server.authentication.ldap.ssl.type`: The SSL Connection type to use to connect to LDAP (Either `ssl` or `starttls`)
+* `stackstate.components.server.authentication.ldap.ssl.trustStore`: The Certificate Truststore to verify server certificates against
+* `stackstate.components.server.authentication.ldap.ssl.trustCertificates`: The client Certificate trusted by the server
+
+The `trustStore` and `trustCertificates` values need to be set from the command line, as they typically contain binary data. A sample command for this looks like:
+
+```shell
+helm install \
+--set-file stackstate.components.server.authentication.ldap.ssl.trustStore=./ldap-cacerts \
+--set-file stackstate.components.server.authentication.ldap.ssl.trustCertificates=./ldap-certificate.pem \
+... \
+stackstate/stackstate
