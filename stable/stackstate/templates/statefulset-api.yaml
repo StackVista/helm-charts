@@ -91,7 +91,6 @@ metadata:
   labels:
     app.kubernetes.io/component: api
 spec:
-  replicas: {{ .Values.stackstate.components.api.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/component: api

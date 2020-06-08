@@ -121,7 +121,6 @@ stackstate/stackstate
 | stackstate.components.api.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
 | stackstate.components.api.java.trustStorePassword | string | `nil` | Password to access the Java TrustStore (cacerts) file |
 | stackstate.components.api.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.api.replicaCount | int | `1` | Number of `api` replicas. |
 | stackstate.components.api.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"memory":"2Gi"}}` | Resource allocation for `api` pods. |
 | stackstate.components.api.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.correlate.affinity | object | `{}` | Affinity settings for pod assignment. |
