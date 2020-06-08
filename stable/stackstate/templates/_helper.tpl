@@ -180,6 +180,90 @@ Server extra environment variables for server pods inherited through `stackstate
 {{- end -}}
 
 {{/*
+Api extra environment variables for api pods inherited through `stackstate.components.api.extraEnv`
+*/}}
+{{- define "stackstate.api.envvars" -}}
+{{- if .Values.stackstate.components.api.extraEnv.open }}
+  {{- range $key, $value := .Values.stackstate.components.api.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.stackstate.components.api.extraEnv.secret }}
+  {{- range $key, $value := .Values.stackstate.components.api.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" $ }}-api
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Api extra environment variables for initializer pods inherited through `stackstate.components.api.extraEnv`
+*/}}
+{{- define "stackstate.initializer.envvars" -}}
+{{- if .Values.stackstate.components.initializer.extraEnv.open }}
+  {{- range $key, $value := .Values.stackstate.components.initializer.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.stackstate.components.initializer.extraEnv.secret }}
+  {{- range $key, $value := .Values.stackstate.components.initializer.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" $ }}-initializer
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Sync extra environment variables for sync pods inherited through `stackstate.components.sync.extraEnv`
+*/}}
+{{- define "stackstate.sync.envvars" -}}
+{{- if .Values.stackstate.components.sync.extraEnv.open }}
+  {{- range $key, $value := .Values.stackstate.components.sync.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.stackstate.components.sync.extraEnv.secret }}
+  {{- range $key, $value := .Values.stackstate.components.sync.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" $ }}-sync
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+State extra environment variables for state pods inherited through `stackstate.components.state.extraEnv`
+*/}}
+{{- define "stackstate.state.envvars" -}}
+{{- if .Values.stackstate.components.state.extraEnv.open }}
+  {{- range $key, $value := .Values.stackstate.components.state.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.stackstate.components.state.extraEnv.secret }}
+  {{- range $key, $value := .Values.stackstate.components.state.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" $ }}-state
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
 UI extra environment variables for ui pods inherited through `stackstate.components.ui.extraEnv`
 */}}
 {{- define "stackstate.ui.envvars" -}}
@@ -195,6 +279,28 @@ UI extra environment variables for ui pods inherited through `stackstate.compone
   valueFrom:
     secretKeyRef:
       name: {{ template "common.fullname.short" $ }}-ui
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+
+{{/*
+ViewHealth extra environment variables for viewHealth pods inherited through `stackstate.components.state.extraEnv`
+*/}}
+{{- define "stackstate.viewHealth.envvars" -}}
+{{- if .Values.stackstate.components.viewHealth.extraEnv.open }}
+  {{- range $key, $value := .Values.stackstate.components.viewHealth.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.stackstate.components.viewHealth.extraEnv.secret }}
+  {{- range $key, $value := .Values.stackstate.components.viewHealth.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" $ }}-viewHealth
       key: {{ $key }}
   {{- end }}
 {{- end }}
@@ -235,6 +341,41 @@ checksum/receiver-env: {{ include (print $.Template.BasePath "/secret-receiver.y
 {{- end -}}
 
 {{/*
+Api secret checksum annotations
+*/}}
+{{- define "stackstate.api.secret.checksum" -}}
+checksum/api-env: {{ include (print $.Template.BasePath "/secret-api.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+License secret checksum annotations
+*/}}
+{{- define "stackstate.license.secret.checksum" -}}
+checksum/license-env: {{ include (print $.Template.BasePath "/secret-license-key.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+Initializer secret checksum annotations
+*/}}
+{{- define "stackstate.initializer.secret.checksum" -}}
+checksum/initializer-env: {{ include (print $.Template.BasePath "/secret-initializer.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+Sync secret checksum annotations
+*/}}
+{{- define "stackstate.sync.secret.checksum" -}}
+checksum/sync-env: {{ include (print $.Template.BasePath "/secret-sync.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+State secret checksum annotations
+*/}}
+{{- define "stackstate.state.secret.checksum" -}}
+checksum/state-env: {{ include (print $.Template.BasePath "/secret-state.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
 Server secret checksum annotations
 */}}
 {{- define "stackstate.server.secret.checksum" -}}
@@ -251,6 +392,15 @@ checksum/ui-env: {{ include (print $.Template.BasePath "/secret-ui.yaml") . | sh
 {{- end -}}
 
 {{/*
+ViewHealth secret checksum annotations
+*/}}
+{{- define "stackstate.viewHealth.secret.checksum" -}}
+{{- if .Values.stackstate.components.viewHealth.extraEnv.secret }}
+checksum/viewHealth-env: {{ include (print $.Template.BasePath "/secret-viewHealth.yaml") . | sha256sum }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Router configmap checksum annotations
 */}}
 {{- define "stackstate.router.configmap.checksum" -}}
@@ -262,6 +412,41 @@ Server configmap checksum annotations
 */}}
 {{- define "stackstate.server.configmap.checksum" -}}
 checksum/server-configmap: {{ include (print $.Template.BasePath "/configmap-server.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+Api configmap checksum annotations
+*/}}
+{{- define "stackstate.api.configmap.checksum" -}}
+checksum/api-configmap: {{ include (print $.Template.BasePath "/configmap-api.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+Initializer configmap checksum annotations
+*/}}
+{{- define "stackstate.initializer.configmap.checksum" -}}
+checksum/initializer-configmap: {{ include (print $.Template.BasePath "/configmap-initializer.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+Sync configmap checksum annotations
+*/}}
+{{- define "stackstate.sync.configmap.checksum" -}}
+checksum/sync-configmap: {{ include (print $.Template.BasePath "/configmap-sync.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+State configmap checksum annotations
+*/}}
+{{- define "stackstate.state.configmap.checksum" -}}
+checksum/state-configmap: {{ include (print $.Template.BasePath "/configmap-state.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+ViewHealth configmap checksum annotations
+*/}}
+{{- define "stackstate.viewHealth.configmap.checksum" -}}
+checksum/viewHealth-configmap: {{ include (print $.Template.BasePath "/configmap-viewHealth.yaml") . | sha256sum }}
 {{- end -}}
 
 {{/*

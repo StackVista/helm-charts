@@ -1,0 +1,26 @@
+{{- define "stackstate.initializer.service" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-initializer
+  labels:
+    app.kubernetes.io/component: initializer
+spec:
+  ports:
+    - name: admin
+      port: 7071
+      protocol: TCP
+      targetPort: admin
+  {{- if .Values.stackstate.components.all.metrics.enabled }}
+    - name: metrics
+      port: 9404
+      protocol: TCP
+      targetPort: metrics
+  {{- end }}
+  selector:
+    app.kubernetes.io/component: initializer
+{{- end -}}
+
+{{- if .Values.stackstate.experimental.server.split }}
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $stsStackstateInitializerService := fromYaml (include "stackstate.initializer.service" .) -}}
+{{- toYaml (merge $stsStackstateInitializerService $commonService) -}}
+{{- end }}
