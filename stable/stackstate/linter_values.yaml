@@ -35,6 +35,7 @@ networkPolicy:
 
 anomaly-detection:
   enabled: true
+  defaultEtcConfig: true
   stackstate:
     username: "lintusername"
     password: "lintpassword"

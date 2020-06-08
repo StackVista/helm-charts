@@ -1,3 +1,19 @@
+{{- define "stackstate.server.mountsecrets" -}}
+{{- $mountSecrets := dict }}
+{{- if hasKey .Values.stackstate.components.server.authentication.ldap "ssl" }}
+  {{- if .Values.stackstate.components.server.authentication.ldap.ssl.trustCertificates }}
+    {{- $_ := set $mountSecrets "ldapTrustCertificates" "ldap-certificates.pem" }}
+  {{- end }}
+  {{- if .Values.stackstate.components.server.authentication.ldap.ssl.trustStore }}
+    {{- $_ := set $mountSecrets "ldapTrustStore" "ldap-cacerts" }}
+  {{- end }}
+{{- end }}
+{{- if .Values.stackstate.components.server.java.trustStore }}
+    {{- $_ := set $mountSecrets "javaTrustStore" "java-cacerts" }}
+{{- end }}
+{{ $mountSecrets | toYaml }}
+{{- end -}}
+
 {{- define "stackstate.server.statefulset.container.init" -}}
 name: server-init
 command:
@@ -10,7 +26,14 @@ imagePullPolicy: Always
 {{- end -}}
 
 {{- define "stackstate.server.statefulset.container.main" -}}
+{{- $mountSecrets := fromYaml (include "stackstate.server.mountsecrets" .) -}}
 args:
+{{- if .Values.stackstate.components.server.java.trustStore }}
+- -Djavax.net.ssl.trustStore=/opt/docker/secrets/java-trustStore
+{{- if .Values.stackstate.components.server.java.trustStorePassword }}
+- -Djavax.net.ssl.trustStorePassword=${JAVA_TRUSTSTORE_PASSWORD}
+{{- end }}
+{{- end }}
 - -start
 env:
 {{- include "stackstate.common.envvars" . }}
@@ -38,6 +61,25 @@ env:
 {{- if .Values.stackstate.admin.authentication.enabled }}
 - name: CONFIG_FORCE_stackstate_adminApi_authentication_enabled
   value: "true"
+{{- end }}
+{{- if hasKey .Values.stackstate.components.server.authentication.ldap "bind" }}
+- name: LDAP_BIND_DN
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" . }}-server
+      key: ldapBindDn
+- name: LDAP_BIND_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" . }}-server
+      key: ldapBindPassword
+{{- end }}
+{{- if .Values.stackstate.components.server.java.trustStorePassword }}
+- name: JAVA_TRUSTSTORE_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" . }}-server
+      key: javaTrustStorePassword
 {{- end }}
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.server.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
@@ -77,9 +119,14 @@ volumeMounts:
 - name: config-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
+{{- if $mountSecrets }}
+- name: secrets-volume
+  mountPath: /opt/docker/secrets
+{{- end }}
 {{- end -}}
 
 {{- define "stackstate.server.statefulset" -}}
+{{- $secrets := fromYaml (include "stackstate.server.mountsecrets" .) -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $overrideContainer := fromYaml (include "stackstate.server.statefulset.container.main" .) -}}
 {{- $stsstackstateServerMainContainer := (merge $overrideContainer $commonContainer) -}}
@@ -136,9 +183,20 @@ spec:
       {{- end }}
     {{- end }}
       volumes:
-        - name: config-volume
-          configMap:
-            name: {{ template "common.fullname.short" . }}-server
+      - name: config-volume
+        configMap:
+          name: {{ template "common.fullname.short" . }}-server
+    {{- if $secrets }}
+      - name: secrets-volume
+        secret:
+          secretName: {{ template "common.fullname.short" . }}-server
+          items:
+      {{- range $key, $val := $secrets }}
+          - key: {{ $key }}
+            path: {{ $val }}
+
+      {{- end }}
+    {{- end }}
 {{- end -}}
 
 {{- if not .Values.stackstate.experimental.server.split }}

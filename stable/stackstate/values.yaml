@@ -113,6 +113,16 @@ stackstate:
       affinity: {}
       # stackstate.components.api.config -- Configuration file contents to customize the default StackState api configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
       config: ""
+      # stackstate.components.api.authentication -- (Secret) authentication settings for StackState
+      authentication:
+        # stackstate.components.api.authentication.ldap -- LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap)
+        ldap: {}
+      # stackstate.components.api.java -- Extra Java configuration for StackState
+      java:
+        # stackstate.components.api.java.trustStore -- Java TrustStore (cacerts) file to use
+        trustStore:
+        # stackstate.components.api.java.trustStorePassword -- Password to access the Java TrustStore (cacerts) file
+        trustStorePassword:
     correlate:
       extraEnv:
         # stackstate.components.correlate.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -295,6 +305,16 @@ stackstate:
       tolerations: []
       # stackstate.components.server.affinity -- Affinity settings for pod assignment.
       affinity: {}
+      # stackstate.components.server.authentication -- (Secret) authentication settings for StackState
+      authentication:
+        # stackstate.components.server.authentication.ldap -- LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap)
+        ldap: {}
+      # stackstate.components.server.java -- Extra Java configuration for StackState
+      java:
+        # stackstate.components.server.java.trustStore -- Java TrustStore (cacerts) file to use
+        trustStore:
+        # stackstate.components.server.java.trustStorePassword -- Password to access the Java TrustStore (cacerts) file
+        trustStorePassword:
       # stackstate.components.server.config -- Configuration file contents to customize the default StackState configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
       config: ""
     state:
@@ -315,7 +335,7 @@ stackstate:
         limits:
           memory: "2Gi"
         requests:
-          memory: "1Gi"
+          memory: "2Gi"
       # stackstate.components.state.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.state.tolerations -- Toleration labels for pod assignment.
@@ -401,7 +421,7 @@ stackstate:
         limits:
           memory: "2Gi"
         requests:
-          memory: "1Gi"
+          memory: "2Gi"
       # stackstate.components.viewHealth.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.viewHealth.tolerations -- Toleration labels for pod assignment.
@@ -582,7 +602,8 @@ anomaly-detection:
   enabled: false
   # anomaly-detection.imageTag -- image tag
   imageTag: "latest"
-
+  # anomaly-detection.defaultEtcConfig -- true if the default configuration of spotlight from etc/* folder is used, false - custom
+  defaultEtcConfig: true
   stackstate:
     # stackstate.instance -- Stackstate instance URL
     instance: stackstate-server:7070
