@@ -243,6 +243,12 @@ stackstate:
       authentication:
         # stackstate.components.server.authentication.ldap -- LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap)
         ldap: {}
+      # stackstate.components.server.java -- Extra Java configuration for StackState
+      java:
+        # stackstate.components.server.java.trustStore -- Java TrustStore (cacerts) file to use
+        trustStore:
+        # stackstate.components.server.java.trustStorePassword -- Password to access the Java TrustStore (cacerts) file
+        trustStorePassword:
       # stackstate.components.server.config -- Configuration file contents to customize the default StackState configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
       config: ""
     ui:
