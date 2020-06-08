@@ -34,7 +34,6 @@ networkPolicy:
   enabled: true
 anomaly-detection:
   enabled: true
-  defaultEtcConfig: true
   stackstate:
     instance: stackstate-server:7070
     username: user
