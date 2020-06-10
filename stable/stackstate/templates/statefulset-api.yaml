@@ -4,7 +4,7 @@ command:
 - sh
 - -c
 - |
-  /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn:9000,{{ .Release.Name }}-initializer:7071 -t 300
+  /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn:9000,{{ template "common.fullname.short" . }}-initializer:7071 -t 300
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
 imagePullPolicy: Always
 {{- end -}}
