@@ -36,6 +36,4 @@ anomaly-detection:
   enabled: true
   stackstate:
     instance: stackstate-server:7070
-    username: user
-    password: password
     elasticSearchUri: stackstate-elasticsearch-master:9200

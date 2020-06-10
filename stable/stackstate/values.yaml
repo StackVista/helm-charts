@@ -603,10 +603,6 @@ anomaly-detection:
   stackstate:
     # stackstate.instance -- Stackstate instance URL
     instance: stackstate-server:7070
-    # anomaly-detection.stackstate.username -- Stackstate API username
-    username:
-    # anomaly-detection.stackstate.password -- Stackstate API password
-    password:
     # anomaly-detection.stackstate.receiverApiKey -- Receiver api key
     elasticSearchUri: stackstate-elasticsearch-master:9200
   # anomaly-detection.ingress -- Status interface ingress
