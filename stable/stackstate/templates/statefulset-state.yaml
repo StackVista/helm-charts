@@ -101,6 +101,7 @@ spec:
         {{- include "stackstate.state.configmap.checksum" . | nindent 8 }}
       labels:
         app.kubernetes.io/component: state
+        stackstate.io/app_role: state
     spec:
     {{- if .Values.stackstate.components.all.image.pullSecretName }}
       imagePullSecrets:

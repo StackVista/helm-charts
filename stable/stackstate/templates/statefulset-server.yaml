@@ -149,6 +149,7 @@ spec:
         {{- include "stackstate.server.configmap.checksum" . | nindent 8 }}
       labels:
         app.kubernetes.io/component: server
+        stackstate.io/app_role: server
     spec:
     {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
       initContainers:

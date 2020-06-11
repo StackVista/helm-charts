@@ -101,6 +101,7 @@ spec:
         {{- include "stackstate.viewHealth.configmap.checksum" . | nindent 8 }}
       labels:
         app.kubernetes.io/component: viewHealth
+        stackstate.io/app_role: viewHealth
     spec:
     {{- if .Values.stackstate.components.all.image.pullSecretName }}
       imagePullSecrets:
