@@ -10,12 +10,12 @@ dependencies:
   version: 0.1.31
 - name: kafka
   repository: https://charts.bitnami.com/bitnami
-  version: 7.2.9
+  version: 11.1.2
 - name: zookeeper
   repository: https://charts.bitnami.com/bitnami
-  version: 5.4.3
+  version: 5.16.0
 - name: anomaly-detection
   repository: https://helm.stackstate.io
   version: 4.1.1
-digest: sha256:1af73f0679014bd919b9aa6b1d95fda810db2c9aeafbb7204825ee35c45c3d9e
-generated: "2020-06-09T16:53:07.2611604Z"
+digest: sha256:8ba3843faa53abaaca30fe23322e6721755110c0d1934fb97986a7ae0855981d
+generated: "2020-06-12T10:23:25.564999795+02:00"

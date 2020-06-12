@@ -13,9 +13,9 @@ dependencies:
 - name: kafka
   condition: kafka.enabled
   repository: https://charts.bitnami.com/bitnami
-  version: 7.2.9
+  version: 11.1.2
 - name: zookeeper
-  version: 5.4.3
+  version: 5.16.0
   repository: https://charts.bitnami.com/bitnami
   condition: zookeeper.enabled
 - name: anomaly-detection
