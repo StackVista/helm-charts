@@ -5,10 +5,10 @@ metadata:
     app.kubernetes.io/component: initializer
 spec:
   ports:
-    - name: admin
-      port: 7071
+    - name: instance
+      port: 7080
       protocol: TCP
-      targetPort: admin
+      targetPort: instance
   {{- if .Values.stackstate.components.all.metrics.enabled }}
     - name: metrics
       port: 9404

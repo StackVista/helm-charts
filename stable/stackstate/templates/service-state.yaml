@@ -6,6 +6,10 @@ metadata:
 spec:
   clusterIP: None
   ports:
+    - name: instance
+      port: 7080
+      protocol: TCP
+      targetPort: instance
   {{- if .Values.stackstate.components.all.metrics.enabled }}
     - name: metrics
       port: 9404
