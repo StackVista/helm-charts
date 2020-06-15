@@ -29,7 +29,7 @@ imagePullPolicy: Always
 {{- $mountSecrets := fromYaml (include "stackstate.server.mountsecrets" .) -}}
 args:
 {{- if .Values.stackstate.components.server.java.trustStore }}
-- -Djavax.net.ssl.trustStore=/opt/docker/secrets/java-trustStore
+- -Djavax.net.ssl.trustStore=/opt/docker/secrets/java-cacerts
 {{- if .Values.stackstate.components.server.java.trustStorePassword }}
 - -Djavax.net.ssl.trustStorePassword=${JAVA_TRUSTSTORE_PASSWORD}
 {{- end }}
