@@ -5,10 +5,10 @@ metadata:
     app.kubernetes.io/component: initializer
 spec:
   ports:
-    - name: instance
-      port: 7080
+    - name: health
+      port: 1618
       protocol: TCP
-      targetPort: instance
+      targetPort: health
   {{- if .Values.stackstate.components.all.metrics.enabled }}
     - name: metrics
       port: 9404
