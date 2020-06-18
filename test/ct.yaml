@@ -2,15 +2,15 @@
 # THIS FILE WAS GENERATED AUTOMATICALLY! DO NOT EDIT MANUALLY! #
 ################################################################
 chart-dirs:
-- stable
+  - stable
 chart-repos:
-- bitnami=https://charts.bitnami.com/bitnami
-- elastic=https://helm.elastic.co
-- stable=https://kubernetes-charts.storage.googleapis.com
-- stackstate=https://helm.stackstate.io
-- stackstate-test=https://helm-test.stackstate.io
+  - bitnami=https://charts.bitnami.com/bitnami
+  - elastic=https://helm.elastic.co
+  - stable=https://kubernetes-charts.storage.googleapis.com
+  - stackstate=https://helm.stackstate.io
+  - stackstate-test=https://helm-test.stackstate.io
 excluded-charts:
-- gitlab-runner
+  - gitlab-runner
 helm-extra-args: --debug --kubeconfig ${KUBECONFIG} --timeout 1200
 remote: helm
 target-branch: master
