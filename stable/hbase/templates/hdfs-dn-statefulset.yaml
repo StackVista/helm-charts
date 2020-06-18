@@ -4,7 +4,7 @@ command:
 - sh
 - -c
 - |
-  /entrypoint -c {{ template "common.fullname.short" . }}-hdfs-nn:9000 -t 300
+  /entrypoint -c {{ template "common.fullname.short" . }}-hdfs-nn-headful:9000 -t 300
   chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} /hadoop-data
 image: "{{include "wait.image.registry" .}}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
 imagePullPolicy: Always

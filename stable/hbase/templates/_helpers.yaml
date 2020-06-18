@@ -53,7 +53,7 @@ Common environment variables for HDFS configuration.
 */}}
 {{- define "hbase.hdfs.commonEnv" }}
 - name: CORE_CONF_fs_defaultFS
-  value: "hdfs://{{ template "common.fullname.short" . }}-hdfs-nn:9000/"
+  value: "hdfs://{{ template "common.fullname.short" . }}-hdfs-nn-headful:9000/"
 - name: HDFS_CONF_dfs_client_retry_policy_enabled
   value: "true"
 - name: HDFS_CONF_dfs_client_retry_policy_spec
@@ -141,7 +141,7 @@ Common environment variables for HBase configuration.
 - name: HBASE_CONF_hbase_regionserver_ipc_address
   value: "0.0.0.0"
 - name: HBASE_CONF_hbase_rootdir
-  value: "hdfs://{{ template "common.fullname.short" . }}-hdfs-nn:9000/hbase"
+  value: "hdfs://{{ template "common.fullname.short" . }}-hdfs-nn-headful:9000/hbase"
 - name: HBASE_CONF_hbase_zookeeper_quorum
   value: {{ include "hbase.zookeeper.endpoint" . | quote }}
 - name: HBASE_CONF_zookeeper_znode_parent

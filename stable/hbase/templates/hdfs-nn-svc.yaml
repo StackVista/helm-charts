@@ -1,6 +1,6 @@
 {{- define "hbase.hdfs.namenode.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-hdfs-nn
+  name: {{ template "common.fullname.short" . }}-hdfs-nn-headful
   labels:
     app.kubernetes.io/component: hdfs-nn
 spec:
