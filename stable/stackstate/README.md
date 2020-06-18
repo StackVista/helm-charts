@@ -2,7 +2,7 @@ stackstate
 ==========
 Helm chart for StackState
 
-Current chart version is `0.4.43`
+Current chart version is `0.4.44`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -15,7 +15,7 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 | https://helm.stackstate.io | anomaly-detection | 4.1.1 |
 | https://helm.stackstate.io | common | 0.4.3 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.3 |
-| https://helm.stackstate.io | hbase | 0.1.31 |
+| https://helm.stackstate.io | hbase | 0.1.33 |
 
 ## Required Values
 
