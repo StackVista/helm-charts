@@ -42,12 +42,6 @@ env:
 {{- end }}
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.sync.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.sync.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.sync.image.pullPolicy | quote }}
-livenessProbe:
-  httpGet:
-    path: /health
-    port: admin
-  initialDelaySeconds: 60
-  timeoutSeconds: 5
 name: sync
 ports:
 - containerPort: 1618
@@ -58,6 +52,12 @@ ports:
 - containerPort: 9404
   name: metrics
 {{- end }}
+livenessProbe:
+  httpGet:
+    path: /liveness
+    port: health
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
 readinessProbe:
   httpGet:
     path: /readiness

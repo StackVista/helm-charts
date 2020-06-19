@@ -42,12 +42,6 @@ env:
 {{- end }}
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.state.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.state.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.state.image.pullPolicy | quote }}
-livenessProbe:
-  httpGet:
-    path: /health
-    port: admin
-  initialDelaySeconds: 60
-  timeoutSeconds: 5
 name: state
 ports:
 - containerPort: 1618
@@ -61,6 +55,12 @@ ports:
 readinessProbe:
   httpGet:
     path: /readiness
+    port: health
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
+livenessProbe:
+  httpGet:
+    path: /liveness
     port: health
   initialDelaySeconds: 60
   timeoutSeconds: 5
