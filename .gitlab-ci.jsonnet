@@ -19,7 +19,10 @@ local push_charts_template = {
 {
   image: 'quay.io/helmpack/chart-testing:v3.0.0-beta.2',
   stages: ['test', 'build'],
-  push_stable_charts: push_charts_template { only: { refs: ['master'] } },
+  push_stable_charts: push_charts_template {
+    only: { refs: ['master'] },
+    when: 'manual',
+  },
   push_test_charts: push_charts_template {
     except: { refs: ['master'] },
     needs: ['validate_charts'],

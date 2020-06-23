@@ -17,6 +17,7 @@ push_stable_charts:
   script:
     - sh test/sync-repo.sh
   stage: build
+  when: manual
 push_test_charts:
   before_script:
     - .gitlab/push_before_script.sh
