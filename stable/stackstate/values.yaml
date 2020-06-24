@@ -478,6 +478,8 @@ elasticsearch:
   clusterName: stackstate-elasticsearch
   # elasticsearch.enabled -- Enable / disable chart-based Elasticsearch.
   enabled: true
+  # elasticsearch.esJavaOpts -- JVM options
+  esJavaOpts: "-Xmx2g -Xms2g"
   # elasticsearch.extraEnvs -- Extra settings that StackState uses for Elasticsearch.
   extraEnvs:
   - name: action.auto_create_index
@@ -498,6 +500,13 @@ elasticsearch:
     resources:
       requests:
         storage: 250Gi
+  resources:
+    requests:
+      cpu: "2000m"
+      memory: "3Gi"
+    limits:
+      cpu: "2000m"
+      memory: "3Gi"
 hbase:
   # hbase.enabled -- Enable / disable chart-based HBase.
   enabled: true
