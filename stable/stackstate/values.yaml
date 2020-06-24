@@ -493,6 +493,14 @@ elasticsearch:
   nodeGroup: "master"
   # elasticsearch.replicas -- Number of Elasticsearch replicas.
   replicas: 3
+  # elasticsearch.resources -- Override Elasticsearch resources
+  resources:
+    requests:
+      cpu: "2000m"
+      memory: "3Gi"
+    limits:
+      cpu: "2000m"
+      memory: "3Gi"
   # elasticsearch.volumeClaimTemplate -- PVC template defaulting to 250Gi default volumes
   volumeClaimTemplate:
     accessModes:
@@ -500,11 +508,6 @@ elasticsearch:
     resources:
       requests:
         storage: 250Gi
-        cpu: "2000m"
-        memory: "3Gi"
-      limits:
-        cpu: "2000m"
-        memory: "3Gi"
 hbase:
   # hbase.enabled -- Enable / disable chart-based HBase.
   enabled: true
