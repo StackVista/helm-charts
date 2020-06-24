@@ -2,6 +2,36 @@
 # THIS FILE WAS GENERATED AUTOMATICALLY! DO NOT EDIT MANUALLY! #
 ################################################################
 image: quay.io/helmpack/chart-testing:v3.0.0-beta.2
+push_stable/hbase:
+  except:
+    refs:
+      - master
+  only:
+    changes:
+      - stable/hbase/**/*
+    refs:
+      - branches
+  script:
+    - helm plugin install https://github.com/chartmuseum/helm-push.git
+    - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: test
+  variables:
+    CHART: stable/hbase
+push_stable/stackstate:
+  except:
+    refs:
+      - master
+  only:
+    changes:
+      - stable/stackstate/**/*
+    refs:
+      - branches
+  script:
+    - helm plugin install https://github.com/chartmuseum/helm-push.git
+    - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: test
+  variables:
+    CHART: stable/stackstate
 push_stable_charts:
   before_script:
     - .gitlab/push_before_script.sh
