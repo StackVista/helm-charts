@@ -55,11 +55,7 @@ stackstate/stackstate
 | elasticsearch.minimumMasterNodes | int | `2` | Minimum number of Elasticsearch master nodes. |
 | elasticsearch.nodeGroup | string | `"master"` |  |
 | elasticsearch.replicas | int | `3` | Number of Elasticsearch replicas. |
-| elasticsearch.resources.limits.cpu | string | `"2000m"` |  |
-| elasticsearch.resources.limits.memory | string | `"3Gi"` |  |
-| elasticsearch.resources.requests.cpu | string | `"2000m"` |  |
-| elasticsearch.resources.requests.memory | string | `"3Gi"` |  |
-| elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"250Gi"}}}` | PVC template defaulting to 250Gi default volumes |
+| elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"limits":{"cpu":"2000m","memory":"3Gi"},"requests":{"cpu":"2000m","memory":"3Gi","storage":"250Gi"}}}` | PVC template defaulting to 250Gi default volumes |
 | global.receiverApiKey | string | `""` | API key to be used by the Receiver; if no key is provided, a random one will be generated for you. |
 | hbase.enabled | bool | `true` | Enable / disable chart-based HBase. |
 | hbase.hbase.master.replicaCount | int | `2` | Number of HBase master node replicas. |
