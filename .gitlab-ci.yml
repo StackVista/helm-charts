@@ -2,6 +2,126 @@
 # THIS FILE WAS GENERATED AUTOMATICALLY! DO NOT EDIT MANUALLY! #
 ################################################################
 image: quay.io/helmpack/chart-testing:v3.0.0-beta.2
+push_stable/aws-amicleaner:
+  except:
+    refs:
+      - master
+  only:
+    changes:
+      - stable/aws-amicleaner/**/*
+    refs:
+      - branches
+  script:
+    - helm plugin install https://github.com/chartmuseum/helm-push.git
+    - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: test
+  variables:
+    CHART: stable/aws-amicleaner
+push_stable/aws-nuke:
+  except:
+    refs:
+      - master
+  only:
+    changes:
+      - stable/aws-nuke/**/*
+    refs:
+      - branches
+  script:
+    - helm plugin install https://github.com/chartmuseum/helm-push.git
+    - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: test
+  variables:
+    CHART: stable/aws-nuke
+push_stable/cluster-agent:
+  except:
+    refs:
+      - master
+  only:
+    changes:
+      - stable/cluster-agent/**/*
+    refs:
+      - branches
+  script:
+    - helm plugin install https://github.com/chartmuseum/helm-push.git
+    - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: test
+  variables:
+    CHART: stable/cluster-agent
+push_stable/common:
+  except:
+    refs:
+      - master
+  only:
+    changes:
+      - stable/common/**/*
+    refs:
+      - branches
+  script:
+    - helm plugin install https://github.com/chartmuseum/helm-push.git
+    - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: test
+  variables:
+    CHART: stable/common
+push_stable/distributed:
+  except:
+    refs:
+      - master
+  only:
+    changes:
+      - stable/distributed/**/*
+    refs:
+      - branches
+  script:
+    - helm plugin install https://github.com/chartmuseum/helm-push.git
+    - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: test
+  variables:
+    CHART: stable/distributed
+push_stable/elasticsearch:
+  except:
+    refs:
+      - master
+  only:
+    changes:
+      - stable/elasticsearch/**/*
+    refs:
+      - branches
+  script:
+    - helm plugin install https://github.com/chartmuseum/helm-push.git
+    - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: test
+  variables:
+    CHART: stable/elasticsearch
+push_stable/gitlab-runner:
+  except:
+    refs:
+      - master
+  only:
+    changes:
+      - stable/gitlab-runner/**/*
+    refs:
+      - branches
+  script:
+    - helm plugin install https://github.com/chartmuseum/helm-push.git
+    - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: test
+  variables:
+    CHART: stable/gitlab-runner
+push_stable/gitlab-steward:
+  except:
+    refs:
+      - master
+  only:
+    changes:
+      - stable/gitlab-steward/**/*
+    refs:
+      - branches
+  script:
+    - helm plugin install https://github.com/chartmuseum/helm-push.git
+    - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: test
+  variables:
+    CHART: stable/gitlab-steward
 push_stable/hbase:
   except:
     refs:
@@ -17,6 +137,21 @@ push_stable/hbase:
   stage: test
   variables:
     CHART: stable/hbase
+push_stable/iceman:
+  except:
+    refs:
+      - master
+  only:
+    changes:
+      - stable/iceman/**/*
+    refs:
+      - branches
+  script:
+    - helm plugin install https://github.com/chartmuseum/helm-push.git
+    - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: test
+  variables:
+    CHART: stable/iceman
 push_stable/stackstate:
   except:
     refs:
@@ -32,6 +167,36 @@ push_stable/stackstate:
   stage: test
   variables:
     CHART: stable/stackstate
+push_stable/stackstate-standalone:
+  except:
+    refs:
+      - master
+  only:
+    changes:
+      - stable/stackstate-standalone/**/*
+    refs:
+      - branches
+  script:
+    - helm plugin install https://github.com/chartmuseum/helm-push.git
+    - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: test
+  variables:
+    CHART: stable/stackstate-standalone
+push_stable/trafficmirror:
+  except:
+    refs:
+      - master
+  only:
+    changes:
+      - stable/trafficmirror/**/*
+    refs:
+      - branches
+  script:
+    - helm plugin install https://github.com/chartmuseum/helm-push.git
+    - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: test
+  variables:
+    CHART: stable/trafficmirror
 push_stable_charts:
   before_script:
     - .gitlab/push_before_script.sh
