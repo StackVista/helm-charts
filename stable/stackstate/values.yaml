@@ -608,11 +608,25 @@ zookeeper:
 anomaly-detection:
   # anomaly-detection.enabled -- enable anomaly detection
   enabled: false
-  # anomaly-detection.imageTag -- image tag
-  imageTag: "latest"
+  image:
+    # anomaly-detection.image.tag -- image tag
+    tag: "latest"
+    # anomaly-detection.image.imagePullPolicy -- image pull policy
+    imagePullPolicy: Always
+    # anomaly-detection.image.pullSecretName -- the name of the secret holding the pull image credentials
+    pullSecretName:
+    pullCredentials:
+      # anomaly-detection.image.pullCredentials.registry -- the registry
+      registry: quay.io
+      # anomaly-detection.image.pullCredentials.username -- pull secret username
+      username:
+      # anomaly-detection.image.pullCredentials.password -- pull secret password
+      password:
   stackstate:
-    # stackstate.instance -- Stackstate instance URL
+    # anomaly-detection.stackstate.instance -- Stackstate instance URL
     instance: stackstate-server:7070
+    # anomaly-detection.stackstate.authRoleName -- Stackstate Role that used for authentication
+    authRoleName: stackstate-admin
     # anomaly-detection.stackstate.receiverApiKey -- Receiver api key
     elasticSearchUri: stackstate-elasticsearch-master:9200
   # anomaly-detection.ingress -- Status interface ingress
