@@ -3,7 +3,7 @@
 ################################################################
 image:
   entrypoint:
-  - ""
+    - ""
   name: docker.io/sparkprime/jsonnet:latest
 jsonnet_lint:
   script: .gitlab/jsonnet_lint.sh
@@ -11,12 +11,12 @@ jsonnet_lint:
 semver_release:
   image: docker.io/stackstate/stackstate-ci-images:stackstate-semver-release
   needs:
-  - jsonnet_lint
+    - jsonnet_lint
   only:
     refs:
-    - master
+      - master
   script:
-  - semantic-release --debug
+    - semantic-release --debug
   stage: tag
   variables:
     GITLAB_TOKEN: ${gitlab_api_scope_token}
@@ -25,5 +25,5 @@ semver_release:
     GIT_COMMITTER_EMAIL: sts-admin@stackstate.com
     GIT_COMMITTER_NAME: stackstate-system-user
 stages:
-- verify
-- tag
+  - verify
+  - tag

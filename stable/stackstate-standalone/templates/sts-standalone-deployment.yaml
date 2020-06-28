@@ -49,10 +49,16 @@ spec:
             - name: admin
               containerPort: 7071
               protocol: TCP
+            - name: instance
+              containerPort: 7080
+              protocol: TCP
+            - name: health
+              containerPort: 1618
+              protocol: TCP
           livenessProbe:
             httpGet:
-              path: /health
-              port: admin
+              path: /liveness
+              port: health
               scheme: HTTP
             failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
@@ -61,8 +67,8 @@ spec:
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           readinessProbe:
             httpGet:
-              path: /health
-              port: admin
+              path: /readiness
+              port: health
               scheme: HTTP
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}

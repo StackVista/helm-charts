@@ -7,15 +7,15 @@ dependencies:
   version: 7.6.2-stackstate.3
 - name: hbase
   repository: https://helm.stackstate.io
-  version: 0.1.31
+  version: 0.1.33
 - name: kafka
   repository: https://charts.bitnami.com/bitnami
   version: 7.2.9
 - name: zookeeper
   repository: https://charts.bitnami.com/bitnami
-  version: 5.4.3
+  version: 5.16.0
 - name: anomaly-detection
-  repository: https://helm-test.stackstate.io
-  version: 4.1.2
-digest: sha256:82908ee29f035d559f025f04ef3dff831076143c87ebb9095ae1c1c7d8b16604
-generated: "2020-06-10T18:26:30.041271Z"
+  repository: https://helm.stackstate.io
+  version: 4.1.1
+digest: sha256:d7ccadf69da8e2f48213b177d6c1bcb48783331479a64585dcc784a945ea22d4
+generated: "2020-06-18T16:48:01.823317+02:00"

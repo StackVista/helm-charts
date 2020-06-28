@@ -2,61 +2,92 @@
 # THIS FILE WAS GENERATED AUTOMATICALLY! DO NOT EDIT MANUALLY! #
 ################################################################
 image: quay.io/helmpack/chart-testing:v3.0.0-beta.2
-push_stable_charts:
-  before_script:
-  - .gitlab/push_before_script.sh
-  - helm repo add bitnami https://charts.bitnami.com/bitnami
-  - helm repo add elastic https://helm.elastic.co
-  - helm repo add stable https://kubernetes-charts.storage.googleapis.com
-  - helm repo add stackstate https://helm.stackstate.io
-  - helm repo add stackstate-test https://helm-test.stackstate.io
-  - helm repo update
-  only:
-    refs:
-    - master
-  script:
-  - sh test/sync-repo.sh
-  stage: build
-push_test_charts:
-  before_script:
-  - .gitlab/push_before_script.sh
-  - helm repo add bitnami https://charts.bitnami.com/bitnami
-  - helm repo add elastic https://helm.elastic.co
-  - helm repo add stable https://kubernetes-charts.storage.googleapis.com
-  - helm repo add stackstate https://helm.stackstate.io
-  - helm repo add stackstate-test https://helm-test.stackstate.io
-  - helm repo update
+push_stable/hbase:
   except:
     refs:
-    - master
-  needs:
-  - validate_charts
+      - master
+  only:
+    changes:
+      - stable/hbase/**/*
+    refs:
+      - branches
+  script:
+    - helm plugin install https://github.com/chartmuseum/helm-push.git
+    - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: test
+  variables:
+    CHART: stable/hbase
+push_stable/stackstate:
+  except:
+    refs:
+      - master
+  only:
+    changes:
+      - stable/stackstate/**/*
+    refs:
+      - branches
+  script:
+    - helm plugin install https://github.com/chartmuseum/helm-push.git
+    - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: test
+  variables:
+    CHART: stable/stackstate
+push_stable_charts:
+  before_script:
+    - .gitlab/push_before_script.sh
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
   only:
     refs:
-    - branches
+      - master
   script:
-  - sh test/sync-repo.sh
+    - sh test/sync-repo.sh
+  stage: build
+  when: manual
+push_test_charts:
+  before_script:
+    - .gitlab/push_before_script.sh
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+  except:
+    refs:
+      - master
+  needs:
+    - validate_charts
+  only:
+    refs:
+      - branches
+  script:
+    - sh test/sync-repo.sh
   stage: build
   variables:
     AWS_BUCKET: s3://helm-test.stackstate.io
     REPO_URL: https://helm-test.stackstate.io/
 stages:
-- test
-- build
+  - test
+  - build
 validate_charts:
   before_script:
-  - .gitlab/validate_before_script.sh
+    - .gitlab/validate_before_script.sh
   environment: stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}
   except:
     refs:
-    - master
+      - master
   only:
     refs:
-    - branches
+      - branches
   script:
-  - ct list-changed --config test/ct.yaml
-  - ct lint --debug --config test/ct.yaml
-  - .gitlab/validate_kubeval.sh
+    - ct list-changed --config test/ct.yaml
+    - ct lint --debug --config test/ct.yaml
+    - .gitlab/validate_kubeval.sh
   stage: test
 variables:
   HELM_VERSION: v3.1.2
