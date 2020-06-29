@@ -3,14 +3,11 @@
 ################################################################
 image: quay.io/helmpack/chart-testing:v3.0.0-beta.2
 push_stable/aws-amicleaner:
-  except:
-    refs:
-      - master
   only:
     changes:
       - stable/aws-amicleaner/**/*
     refs:
-      - branches
+      - merge_requests
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
@@ -18,14 +15,11 @@ push_stable/aws-amicleaner:
   variables:
     CHART: stable/aws-amicleaner
 push_stable/aws-nuke:
-  except:
-    refs:
-      - master
   only:
     changes:
       - stable/aws-nuke/**/*
     refs:
-      - branches
+      - merge_requests
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
@@ -33,14 +27,11 @@ push_stable/aws-nuke:
   variables:
     CHART: stable/aws-nuke
 push_stable/cluster-agent:
-  except:
-    refs:
-      - master
   only:
     changes:
       - stable/cluster-agent/**/*
     refs:
-      - branches
+      - merge_requests
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
@@ -48,14 +39,11 @@ push_stable/cluster-agent:
   variables:
     CHART: stable/cluster-agent
 push_stable/common:
-  except:
-    refs:
-      - master
   only:
     changes:
       - stable/common/**/*
     refs:
-      - branches
+      - merge_requests
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
@@ -63,14 +51,11 @@ push_stable/common:
   variables:
     CHART: stable/common
 push_stable/distributed:
-  except:
-    refs:
-      - master
   only:
     changes:
       - stable/distributed/**/*
     refs:
-      - branches
+      - merge_requests
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
@@ -78,14 +63,11 @@ push_stable/distributed:
   variables:
     CHART: stable/distributed
 push_stable/elasticsearch:
-  except:
-    refs:
-      - master
   only:
     changes:
       - stable/elasticsearch/**/*
     refs:
-      - branches
+      - merge_requests
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
@@ -93,14 +75,11 @@ push_stable/elasticsearch:
   variables:
     CHART: stable/elasticsearch
 push_stable/gitlab-runner:
-  except:
-    refs:
-      - master
   only:
     changes:
       - stable/gitlab-runner/**/*
     refs:
-      - branches
+      - merge_requests
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
@@ -108,14 +87,11 @@ push_stable/gitlab-runner:
   variables:
     CHART: stable/gitlab-runner
 push_stable/gitlab-steward:
-  except:
-    refs:
-      - master
   only:
     changes:
       - stable/gitlab-steward/**/*
     refs:
-      - branches
+      - merge_requests
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
@@ -123,14 +99,11 @@ push_stable/gitlab-steward:
   variables:
     CHART: stable/gitlab-steward
 push_stable/hbase:
-  except:
-    refs:
-      - master
   only:
     changes:
       - stable/hbase/**/*
     refs:
-      - branches
+      - merge_requests
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
@@ -138,14 +111,11 @@ push_stable/hbase:
   variables:
     CHART: stable/hbase
 push_stable/iceman:
-  except:
-    refs:
-      - master
   only:
     changes:
       - stable/iceman/**/*
     refs:
-      - branches
+      - merge_requests
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
@@ -153,14 +123,11 @@ push_stable/iceman:
   variables:
     CHART: stable/iceman
 push_stable/stackstate:
-  except:
-    refs:
-      - master
   only:
     changes:
       - stable/stackstate/**/*
     refs:
-      - branches
+      - merge_requests
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
@@ -168,14 +135,11 @@ push_stable/stackstate:
   variables:
     CHART: stable/stackstate
 push_stable/stackstate-standalone:
-  except:
-    refs:
-      - master
   only:
     changes:
       - stable/stackstate-standalone/**/*
     refs:
-      - branches
+      - merge_requests
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
@@ -183,14 +147,11 @@ push_stable/stackstate-standalone:
   variables:
     CHART: stable/stackstate-standalone
 push_stable/trafficmirror:
-  except:
-    refs:
-      - master
   only:
     changes:
       - stable/trafficmirror/**/*
     refs:
-      - branches
+      - merge_requests
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
