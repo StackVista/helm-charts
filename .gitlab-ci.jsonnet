@@ -34,8 +34,7 @@ local push_internal_chart_jobs = {
 '${CHARTMUSEUM_INTERNAL_USERNAME}',
 '${CHARTMUSEUM_INTERNAL_PASSWORD}') {
     stage: 'test',
-    except+: { refs: ['master'] },
-    only+: { refs: ['branches'] },
+    only+: { refs: ['merge_requests'] },
   })
   for chart in charts
 };
