@@ -5,7 +5,7 @@ image: quay.io/helmpack/chart-testing:v3.0.0-beta.2
 push_aws-amicleaner_to_internal:
   only:
     changes:
-      - aws-amicleaner/**/*
+      - stable/aws-amicleaner/**/*
     refs:
       - master
   script:
@@ -19,7 +19,7 @@ push_aws-amicleaner_to_public:
     - push_aws-amicleaner_to_internal
   only:
     changes:
-      - aws-amicleaner/**/*
+      - stable/aws-amicleaner/**/*
     refs:
       - master
   script:
@@ -32,7 +32,7 @@ push_aws-amicleaner_to_public:
 push_aws-nuke_to_internal:
   only:
     changes:
-      - aws-nuke/**/*
+      - stable/aws-nuke/**/*
     refs:
       - master
   script:
@@ -46,7 +46,7 @@ push_aws-nuke_to_public:
     - push_aws-nuke_to_internal
   only:
     changes:
-      - aws-nuke/**/*
+      - stable/aws-nuke/**/*
     refs:
       - master
   script:
@@ -59,7 +59,7 @@ push_aws-nuke_to_public:
 push_cluster-agent_to_internal:
   only:
     changes:
-      - cluster-agent/**/*
+      - stable/cluster-agent/**/*
     refs:
       - master
   script:
@@ -73,7 +73,7 @@ push_cluster-agent_to_public:
     - push_cluster-agent_to_internal
   only:
     changes:
-      - cluster-agent/**/*
+      - stable/cluster-agent/**/*
     refs:
       - master
   script:
@@ -86,7 +86,7 @@ push_cluster-agent_to_public:
 push_common_to_internal:
   only:
     changes:
-      - common/**/*
+      - stable/common/**/*
     refs:
       - master
   script:
@@ -100,7 +100,7 @@ push_common_to_public:
     - push_common_to_internal
   only:
     changes:
-      - common/**/*
+      - stable/common/**/*
     refs:
       - master
   script:
@@ -113,7 +113,7 @@ push_common_to_public:
 push_distributed_to_internal:
   only:
     changes:
-      - distributed/**/*
+      - stable/distributed/**/*
     refs:
       - master
   script:
@@ -127,7 +127,7 @@ push_distributed_to_public:
     - push_distributed_to_internal
   only:
     changes:
-      - distributed/**/*
+      - stable/distributed/**/*
     refs:
       - master
   script:
@@ -140,7 +140,7 @@ push_distributed_to_public:
 push_elasticsearch_to_internal:
   only:
     changes:
-      - elasticsearch/**/*
+      - stable/elasticsearch/**/*
     refs:
       - master
   script:
@@ -154,7 +154,7 @@ push_elasticsearch_to_public:
     - push_elasticsearch_to_internal
   only:
     changes:
-      - elasticsearch/**/*
+      - stable/elasticsearch/**/*
     refs:
       - master
   script:
@@ -167,7 +167,7 @@ push_elasticsearch_to_public:
 push_gitlab-runner_to_internal:
   only:
     changes:
-      - gitlab-runner/**/*
+      - stable/gitlab-runner/**/*
     refs:
       - master
   script:
@@ -181,7 +181,7 @@ push_gitlab-runner_to_public:
     - push_gitlab-runner_to_internal
   only:
     changes:
-      - gitlab-runner/**/*
+      - stable/gitlab-runner/**/*
     refs:
       - master
   script:
@@ -194,7 +194,7 @@ push_gitlab-runner_to_public:
 push_gitlab-steward_to_internal:
   only:
     changes:
-      - gitlab-steward/**/*
+      - stable/gitlab-steward/**/*
     refs:
       - master
   script:
@@ -208,7 +208,7 @@ push_gitlab-steward_to_public:
     - push_gitlab-steward_to_internal
   only:
     changes:
-      - gitlab-steward/**/*
+      - stable/gitlab-steward/**/*
     refs:
       - master
   script:
@@ -221,7 +221,7 @@ push_gitlab-steward_to_public:
 push_hbase_to_internal:
   only:
     changes:
-      - hbase/**/*
+      - stable/hbase/**/*
     refs:
       - master
   script:
@@ -235,7 +235,7 @@ push_hbase_to_public:
     - push_hbase_to_internal
   only:
     changes:
-      - hbase/**/*
+      - stable/hbase/**/*
     refs:
       - master
   script:
@@ -248,7 +248,7 @@ push_hbase_to_public:
 push_iceman_to_internal:
   only:
     changes:
-      - iceman/**/*
+      - stable/iceman/**/*
     refs:
       - master
   script:
@@ -262,7 +262,7 @@ push_iceman_to_public:
     - push_iceman_to_internal
   only:
     changes:
-      - iceman/**/*
+      - stable/iceman/**/*
     refs:
       - master
   script:
@@ -291,7 +291,7 @@ push_stable_charts:
 push_stackstate-standalone_to_internal:
   only:
     changes:
-      - stackstate-standalone/**/*
+      - stable/stackstate-standalone/**/*
     refs:
       - master
   script:
@@ -305,7 +305,7 @@ push_stackstate-standalone_to_public:
     - push_stackstate-standalone_to_internal
   only:
     changes:
-      - stackstate-standalone/**/*
+      - stable/stackstate-standalone/**/*
     refs:
       - master
   script:
@@ -318,7 +318,7 @@ push_stackstate-standalone_to_public:
 push_stackstate_to_internal:
   only:
     changes:
-      - stackstate/**/*
+      - stable/stackstate/**/*
     refs:
       - master
   script:
@@ -332,7 +332,7 @@ push_stackstate_to_public:
     - push_stackstate_to_internal
   only:
     changes:
-      - stackstate/**/*
+      - stable/stackstate/**/*
     refs:
       - master
   script:
@@ -368,7 +368,7 @@ push_test_charts:
 push_trafficmirror_to_internal:
   only:
     changes:
-      - trafficmirror/**/*
+      - stable/trafficmirror/**/*
     refs:
       - master
   script:
@@ -382,7 +382,7 @@ push_trafficmirror_to_public:
     - push_trafficmirror_to_internal
   only:
     changes:
-      - trafficmirror/**/*
+      - stable/trafficmirror/**/*
     refs:
       - master
   script:

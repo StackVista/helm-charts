@@ -22,7 +22,7 @@ local push_chart_job(chart, repository_url, repository_username, repository_pass
     'helm plugin install https://github.com/chartmuseum/helm-push.git',
     'helm push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
   ],
-  only: { changes: [chart + '/**/*'] },
+  only: { changes: ['stable/' + chart + '/**/*'] },
   variables: {
     CHART: 'stable/' + chart,
   },
