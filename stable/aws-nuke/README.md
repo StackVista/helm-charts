@@ -2,7 +2,7 @@ aws-nuke
 ========
 AWS Nuke -- Clean an entire AWS account
 
-Current chart version is `0.2.2`
+Current chart version is `0.2.3`
 
 Source code can be found [here](https://github.com/rebuy-de/aws-nuke)
 
