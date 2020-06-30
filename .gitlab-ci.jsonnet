@@ -5,7 +5,7 @@ local variables = import '.jsonnet-libs/extras/helm_chart_repo/variables.libsonn
 local repositories = variables.helm.repositories;
 local charts = variables.helm.charts;
 
-local push_charts_template = {
+local sync_charts_template = {
   before_script:
   ['.gitlab/push_before_script.sh'] +
   [
@@ -15,6 +15,30 @@ local push_charts_template = {
   ['helm repo update'],
   script: ['sh test/sync-repo.sh'],
   stage: 'build',
+};
+
+local validate_and_push_jobs = {
+  validate_charts: {
+    before_script: ['.gitlab/validate_before_script.sh'],
+    environment: 'stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}',
+    except: { refs: ['master'] },
+    only: { refs: ['branches'] },
+    script: [
+      'ct list-changed --config test/ct.yaml',
+      'ct lint --debug --config test/ct.yaml',
+      '.gitlab/validate_kubeval.sh',
+    ],
+    stage: 'test',
+  },
+  push_test_charts: sync_charts_template {
+    except: { refs: ['master'] },
+    only: { refs: ['branches'] },
+    needs: ['validate_charts'],
+    variables: {
+      AWS_BUCKET: 's3://helm-test.stackstate.io',
+      REPO_URL: 'https://helm-test.stackstate.io/',
+    },
+  },
 };
 
 local push_chart_job(chart, repository_url, repository_username, repository_password) = {
@@ -50,34 +74,6 @@ local push_charts_to_public_jobs = {
     when: 'manual',
   })
   for chart in charts
-};
-
-local validate_and_push_jobs = {
-  push_stable_charts: push_charts_template {
-    only: { refs: ['master'] },
-    when: 'manual',
-  },
-  push_test_charts: push_charts_template {
-    except: { refs: ['master'] },
-    needs: ['validate_charts'],
-    only: { refs: ['branches'] },
-    variables: {
-      AWS_BUCKET: 's3://helm-test.stackstate.io',
-      REPO_URL: 'https://helm-test.stackstate.io/',
-    },
-  },
-  validate_charts: {
-    before_script: ['.gitlab/validate_before_script.sh'],
-    environment: 'stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}',
-    except: { refs: ['master'] },
-    only: { refs: ['branches'] },
-    script: [
-      'ct list-changed --config test/ct.yaml',
-      'ct lint --debug --config test/ct.yaml',
-      '.gitlab/validate_kubeval.sh',
-    ],
-    stage: 'test',
-  },
 };
 
 // Main

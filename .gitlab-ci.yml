@@ -272,22 +272,6 @@ push_iceman_to_public:
   variables:
     CHART: stable/iceman
   when: manual
-push_stable_charts:
-  before_script:
-    - .gitlab/push_before_script.sh
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo update
-  only:
-    refs:
-      - master
-  script:
-    - sh test/sync-repo.sh
-  stage: build
-  when: manual
 push_stackstate-standalone_to_internal:
   only:
     changes:
