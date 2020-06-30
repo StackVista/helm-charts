@@ -35,13 +35,9 @@ env:
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
 - name: CONFIG_FORCE_stackgraph.vertex.cache.sizePercentage
-  value: 20
+  value: "20"
 - name: CONFIG_FORCE_stackstate_domainActorPool_fractionOfMemoryReservedForChecks
-  value: 0.70
-{{- if .Values.stackstate.admin.authentication.enabled }}
-- name: CONFIG_FORCE_stackstate_adminApi_authentication_enabled
-  value: "true"
-{{- end }}
+  value: "0.70"
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.checks.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.checks.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.checks.image.pullPolicy | quote }}
 name: checks
