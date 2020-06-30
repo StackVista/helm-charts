@@ -17,24 +17,37 @@ local push_charts_template = {
   stage: 'build',
 };
 
-local push_chart_template(chart, repository_url, repository_username, repository_password) = {
+local push_chart_job(chart, repository_url, repository_username, repository_password) = {
   script: [
     'helm plugin install https://github.com/chartmuseum/helm-push.git',
     'helm push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
   ],
   only: { changes: [chart + '/**/*'] },
   variables: {
-    CHART: chart,
+    CHART: 'stable/' + chart,
   },
 };
 
-local push_internal_chart_jobs = {
-  ['push_%s' % chart]: (push_chart_template(chart,
+local push_charts_to_internal_jobs = {
+  ['push_%s_to_internal' % chart]: (push_chart_job(chart,
       '${CHARTMUSEUM_INTERNAL_URL}',
 '${CHARTMUSEUM_INTERNAL_USERNAME}',
 '${CHARTMUSEUM_INTERNAL_PASSWORD}') {
-    stage: 'test',
-    only+: { refs: ['merge_requests'] },
+    stage: 'push-charts-to-internal',
+    only+: { refs: ['master'] },
+  })
+  for chart in charts
+};
+
+local push_charts_to_public_jobs = {
+  ['push_%s_to_public' % chart]: (push_chart_job(chart,
+      '${CHARTMUSEUM_URL}',
+'${CHARTMUSEUM_USERNAME}',
+'${CHARTMUSEUM_PASSWORD}') {
+    stage: 'push-charts-to-public',
+    only+: { refs: ['master'] },
+    needs: ['push_%s_to_internal' % chart],
+    when: 'manual',
   })
   for chart in charts
 };
@@ -70,12 +83,13 @@ local validate_and_push_jobs = {
 // Main
 {
   image: 'quay.io/helmpack/chart-testing:v3.0.0-beta.2',
-  stages: ['test', 'build'],
+  stages: ['test', 'build', 'push-charts-to-internal', 'push-charts-to-public'],
 
   variables: {
     HELM_VERSION: 'v3.1.2',
     KUBEVAL_SCHEMA_LOCATION: 'https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master',
   },
 }
-+ push_internal_chart_jobs
++ push_charts_to_internal_jobs
++ push_charts_to_public_jobs
 + validate_and_push_jobs
