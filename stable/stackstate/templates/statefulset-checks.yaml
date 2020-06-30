@@ -1,0 +1,155 @@
+{{- define "stackstate.checks.statefulset.container.init" -}}
+name: server-init
+command:
+- sh
+- -c
+- |
+  /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn-headful:9000,{{ template "common.fullname.short" . }}-initializer:1618 -t 300
+image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+imagePullPolicy: Always
+{{- end -}}
+
+{{- define "stackstate.checks.statefulset.container.main" -}}
+args:
+- -startRole
+- checks
+env:
+{{- include "stackstate.common.envvars" . }}
+{{- include "stackstate.checks.envvars" . }}
+- name: API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" . }}-receiver
+      key: sts-receiver-api-key
+- name: ELASTICSEARCH_URI
+  value: "http://{{ include "stackstate.es.endpoint" . }}"
+- name: KAFKA_BROKERS
+  value: {{ include "stackstate.kafka.endpoint" . | quote }}
+- name: LICENSE_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" . }}-license
+      key: sts-license-key
+- name: RECEIVER_BASE_URL
+  value: {{ printf "%s/%s" .Values.stackstate.receiver.baseUrl "receiver" | quote }}
+- name: ZOOKEEPER_QUORUM
+  value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
+- name: CONFIG_FORCE_stackgraph.vertex.cache.sizePercentage
+  value: 20
+- name: CONFIG_FORCE_stackstate_domainActorPool_fractionOfMemoryReservedForChecks
+  value: 0.70
+{{- if .Values.stackstate.admin.authentication.enabled }}
+- name: CONFIG_FORCE_stackstate_adminApi_authentication_enabled
+  value: "true"
+{{- end }}
+image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.checks.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.checks.image.tag }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.checks.image.pullPolicy | quote }}
+name: checks
+ports:
+- containerPort: 1618
+  name: health
+- containerPort: 7080
+  name: instance
+{{- if .Values.stackstate.components.all.metrics.enabled }}
+- containerPort: 9404
+  name: metrics
+{{- end }}
+readinessProbe:
+  httpGet:
+    path: /readiness
+    port: health
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
+livenessProbe:
+  httpGet:
+    path: /liveness
+    port: health
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
+{{- with .Values.stackstate.components.checks.resources }}
+resources:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+securityContext:
+  runAsGroup: 65534
+  runAsNonRoot: true
+  runAsUser: 65534
+volumeMounts:
+- name: config-volume
+  mountPath: /opt/docker/etc/application_stackstate.conf
+  subPath: application_stackstate.conf
+{{- end -}}
+
+{{- define "stackstate.checks.statefulset" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.checks.statefulset.container.main" .) -}}
+{{- $stsStackstateStateMainContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.checks.statefulset.container.init" .) -}}
+{{- $stsStackstateServerInitContainer := (merge $overrideContainer $commonContainer) -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-checks
+  labels:
+    app.kubernetes.io/component: checks
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: checks
+  template:
+    metadata:
+      annotations:
+        {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.checks.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.checks.configmap.checksum" . | nindent 8 }}
+      labels:
+        app.kubernetes.io/component: checks
+    spec:
+    {{- if .Values.stackstate.components.all.image.pullSecretName }}
+      imagePullSecrets:
+      - name: '{{ .Values.stackstate.components.all.image.pullSecretName }}'
+    {{- else if .Values.stackstate.components.all.image.pullSecretDockerConfigJson }}
+      imagePullSecrets:
+      - name: '{{ template "common.fullname.short" . }}-pull-secret'
+    {{- end }}
+      initContainers:
+      - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
+      containers:
+      - {{ toYaml $stsStackstateStateMainContainer | nindent 8 }}
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.checks.nodeSelector }}
+      nodeSelector:
+      {{- with .Values.stackstate.components.all.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.checks.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.checks.affinity }}
+      affinity:
+      {{- with .Values.stackstate.components.all.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.checks.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.checks.tolerations }}
+      tolerations:
+      {{- with .Values.stackstate.components.all.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.checks.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "common.fullname.short" . }}-checks
+{{- end -}}
+
+{{- if .Values.stackstate.experimental.server.split }}
+{{- $commonStatefulset := fromYaml (include "common.statefulset" .) -}}
+{{- $checksStatefulset := fromYaml (include "stackstate.checks.statefulset" .) -}}
+{{- toYaml (merge $checksStatefulset $commonStatefulset) -}}
+{{- end}}

@@ -201,6 +201,27 @@ Api extra environment variables for api pods inherited through `stackstate.compo
 {{- end -}}
 
 {{/*
+Checks extra environment variables for state pods inherited through `stackstate.components.checks.extraEnv`
+*/}}
+{{- define "stackstate.checks.envvars" -}}
+{{- if .Values.stackstate.components.checks.extraEnv.open }}
+  {{- range $key, $value := .Values.stackstate.components.checks.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.stackstate.components.checks.extraEnv.secret }}
+  {{- range $key, $value := .Values.stackstate.components.checks.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" $ }}-checks
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Api extra environment variables for initializer pods inherited through `stackstate.components.api.extraEnv`
 */}}
 {{- define "stackstate.initializer.envvars" -}}
@@ -348,6 +369,13 @@ checksum/api-env: {{ include (print $.Template.BasePath "/secret-api.yaml") . | 
 {{- end -}}
 
 {{/*
+Checks secret checksum annotations
+*/}}
+{{- define "stackstate.checks.secret.checksum" -}}
+checksum/checks-env: {{ include (print $.Template.BasePath "/secret-checks.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
 License secret checksum annotations
 */}}
 {{- define "stackstate.license.secret.checksum" -}}
@@ -419,6 +447,13 @@ Api configmap checksum annotations
 */}}
 {{- define "stackstate.api.configmap.checksum" -}}
 checksum/api-configmap: {{ include (print $.Template.BasePath "/configmap-api.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+Checks configmap checksum annotations
+*/}}
+{{- define "stackstate.checks.configmap.checksum" -}}
+checksum/checks-configmap: {{ include (print $.Template.BasePath "/configmap-checks.yaml") . | sha256sum }}
 {{- end -}}
 
 {{/*

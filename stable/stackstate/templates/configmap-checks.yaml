@@ -1,0 +1,13 @@
+{{- define "stackstate.checks.configmap" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-checks
+data:
+  application_stackstate.conf: |
+    {{- if .Values.stackstate.components.checks.config }}
+    {{- .Values.stackstate.components.checks.config | nindent 4 -}}
+    {{- end }}
+    {{- end -}}
+
+    {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+    {{- $stackstateChecksConfigMap := fromYaml (include "stackstate.checks.configmap" .) -}}
+    {{- toYaml (merge $stackstateChecksConfigMap $commonConfigMap) -}}

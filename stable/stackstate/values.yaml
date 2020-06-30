@@ -151,6 +151,33 @@ stackstate:
       tolerations: []
       # stackstate.components.correlate.affinity -- Affinity settings for pod assignment.
       affinity: {}
+    checks:
+      extraEnv:
+        # stackstate.components.checks.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.checks.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.checks.image.pullPolicy -- `pullPolicy` used for the `state` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.checks.image.repository -- Repository of the sync component Docker image.
+        repository: stackstate/stackstate-server
+        # stackstate.components.checks.image.tag -- Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.checks.resources -- Resource allocation for `state` pods.
+      resources:
+        limits:
+          memory: "3Gi"
+        requests:
+          memory: "3Gi"
+      # stackstate.components.checks.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.checks.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.checks.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.checks.config -- Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
+      config: ""
     initializer:
       extraEnv:
         # stackstate.components.initializer.extraEnv.open -- Extra open environment variables to inject into pods.
