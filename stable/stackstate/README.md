@@ -12,7 +12,7 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | kafka | 7.2.9 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
-| https://helm.stackstate.io | anomaly-detection | 4.1.2 |
+| https://helm-test.stackstate.io | anomaly-detection | 4.1.2 |
 | https://helm.stackstate.io | common | 0.4.3 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.3 |
 | https://helm.stackstate.io | hbase | 0.1.33 |
