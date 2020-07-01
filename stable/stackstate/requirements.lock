@@ -15,7 +15,7 @@ dependencies:
   repository: https://charts.bitnami.com/bitnami
   version: 5.16.0
 - name: anomaly-detection
-  repository: https://helm.stackstate.io
+  repository: https://helm-test.stackstate.io
   version: 4.1.2
-digest: sha256:1ebba875d83ac741626ad09ca5856be6052a26e567b084c3e7b07fed4930ad0f
-generated: "2020-06-28T12:22:19.1416573Z"
+digest: sha256:61a6ea63c08b666c41b1ec92d4066e001c2ef77af3c2b071eecf2a57e143b4a2
+generated: "2020-07-01T13:49:22.2130463Z"
