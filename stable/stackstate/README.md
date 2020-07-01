@@ -36,19 +36,21 @@ stackstate/stackstate
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| anomaly-detection.enabled | bool | `false` | enable anomaly detection |
-| anomaly-detection.image.imagePullPolicy | string | `"Always"` | image pull policy |
-| anomaly-detection.image.pullCredentials.password | string | `nil` | pull secret password |
-| anomaly-detection.image.pullCredentials.registry | string | `"quay.io"` | the registry |
-| anomaly-detection.image.pullCredentials.username | string | `nil` | pull secret username |
-| anomaly-detection.image.pullSecretName | string | `nil` | the name of the secret holding the pull image credentials |
-| anomaly-detection.image.tag | string | `"latest"` | image tag |
+| anomaly-detection.enabled | bool | `false` | Enables anomaly detection chart |
+| anomaly-detection.image.imagePullPolicy | string | `"Always"` | The default pullPolicy used for anomaly detection pods. |
+| anomaly-detection.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
+| anomaly-detection.image.pullSecretPassword | string | `nil` |  |
+| anomaly-detection.image.pullSecretUsername | string | `nil` | Password used to login to the registry to pull Docker images of all pods. |
+| anomaly-detection.image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
+| anomaly-detection.image.spotlightRepository | string | `"stackstate/spotlight"` | Repository of the spotlight Docker image. |
+| anomaly-detection.image.tag | string | `"latest"` | the chart image tag, e.g. 4.1.0-latest |
 | anomaly-detection.ingress | object | `{"annotations":{},"enabled":false,"hostname":null,"hosts":[],"port":8090,"tls":null}` | Status interface ingress |
-| anomaly-detection.ingress.enabled | bool | `false` | enable anomaly detection ingress |
+| anomaly-detection.ingress.enabled | bool | `false` | Enables ingress controller for status interface |
 | anomaly-detection.ingress.hostname | string | `nil` | Status interface hostname e.g. spotlight.local.domain |
-| anomaly-detection.stackstate.authRoleName | string | `"stackstate-admin"` | Stackstate Role that used for authentication |
-| anomaly-detection.stackstate.elasticSearchUri | string | `"stackstate-elasticsearch-master:9200"` |  |
-| anomaly-detection.stackstate.instance | string | `"stackstate-server:7070"` | Stackstate instance URL |
+| anomaly-detection.stackstate.authRoleName | string | `"stackstate-admin"` | Stackstate Role that used by spotlight for authentication, it is mapped to the stackstate role with the same name. |
+| anomaly-detection.stackstate.elasticSearchUri | string | `"stackstate-elasticsearch-master:9200"` | **Required endpoint for elastic search URI where annotations will be saved |
+| anomaly-detection.stackstate.instance | string | `"stackstate-server:7070"` | **Required Stackstate instance URL, e.g http://stackstate-headless:7070 |
+| anomaly-detection.threadWorkers | int | `5` | The number of worker threads. |
 | caspr.enabled | bool | `false` | Enable CASPR compatible values. |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` | The Elasticsearch cluster health status params that will be used by readinessProbe command |
 | elasticsearch.clusterName | string | `"stackstate-elasticsearch"` | Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |

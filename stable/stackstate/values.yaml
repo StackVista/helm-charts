@@ -606,38 +606,42 @@ zookeeper:
   replicaCount: 3
 
 anomaly-detection:
-  # anomaly-detection.enabled -- enable anomaly detection
+  # anomaly-detection.enabled -- Enables anomaly detection chart
   enabled: false
   image:
-    # anomaly-detection.image.tag -- image tag
+    # anomaly-detection.image.tag -- the chart image tag, e.g. 4.1.0-latest
     tag: "latest"
-    # anomaly-detection.image.imagePullPolicy -- image pull policy
+    # anomaly-detection.image.imagePullPolicy -- The default pullPolicy used for anomaly detection pods.
     imagePullPolicy: Always
-    # anomaly-detection.image.pullSecretName -- the name of the secret holding the pull image credentials
+    # anomaly-detection.image.pullSecretName -- Name of ImagePullSecret to use for all pods.
     pullSecretName:
-    pullCredentials:
-      # anomaly-detection.image.pullCredentials.registry -- the registry
-      registry: quay.io
-      # anomaly-detection.image.pullCredentials.username -- pull secret username
-      username:
-      # anomaly-detection.image.pullCredentials.password -- pull secret password
-      password:
+    # anomaly-detection.image.pullSecretUsername -- Username used to login to the registry to pull Docker images of all pods.
+    pullSecretUsername:
+    # anomaly-detection.image.pullSecretUsername -- Password used to login to the registry to pull Docker images of all pods.
+    pullSecretPassword:
+    # anomaly-detection.image.registry -- Base container image registry for all containers, except for the wait container
+    registry: quay.io
+    # anomaly-detection.image.spotlightRepository -- Repository of the spotlight Docker image.
+    spotlightRepository: stackstate/spotlight
   stackstate:
-    # anomaly-detection.stackstate.instance -- Stackstate instance URL
+    # anomaly-detection.stackstate.instance -- **Required Stackstate instance URL, e.g http://stackstate-headless:7070
     instance: stackstate-server:7070
-    # anomaly-detection.stackstate.authRoleName -- Stackstate Role that used for authentication
+    # anomaly-detection.stackstate.authRoleName -- Stackstate Role that used by spotlight for authentication, it is mapped to the stackstate role with the same name.
     authRoleName: stackstate-admin
-    # anomaly-detection.stackstate.receiverApiKey -- Receiver api key
+    # anomaly-detection.stackstate.elasticSearchUri -- **Required endpoint for elastic search URI where annotations will be saved
     elasticSearchUri: stackstate-elasticsearch-master:9200
+  # anomaly-detection.threadWorkers -- The number of worker threads.
+  threadWorkers: 5
+
   # anomaly-detection.ingress -- Status interface ingress
   ingress:
-    # anomaly-detection.ingress.enabled -- enable anomaly detection ingress
+    # anomaly-detection.ingress.enabled -- Enables ingress controller for status interface
     enabled: false
     # anomaly-detection.ingress.hostname -- Status interface hostname e.g. spotlight.local.domain
     hostname:
     # anomaly-detection.ingress.port - Status Interface port
     port: 8090
-    # anomaly-detection.ingress.annotations - list of ingress configurations
+    # anomaly-detection.ingress.annotations - Annotations for ingress objects.
     annotations: {}
     # e.g.
     #     kubernetes.io/ingress.class: nginx
@@ -646,11 +650,11 @@ anomaly-detection:
     #     nginx.ingress.kubernetes.io/ingress.class: nginx
     #     nginx.ingress.kubernetes.io/proxy-body-size: 100m
     #     nginx.ingress.kubernetes.io/rewrite-target: "/$1"
-    # anomaly-detection.ingress.hosts - Ingress hosts configuration
+    # anomaly-detection.ingress.hosts - List of ingress hostnames
     hosts: []
     # - host: spotlight.local.domain
 
-    # anomaly-detection.ingress.tls - TLS hosts ingress configuration
+    # anomaly-detection.ingress.tls - List of ingress TLS certificates to use.
     tls:
       # - hosts:
       #     - spotlight.local.domain
