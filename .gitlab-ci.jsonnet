@@ -25,7 +25,7 @@ local validate_and_push_jobs = {
     only: { refs: ['branches'] },
     script: [
       'ct list-changed --config test/ct.yaml',
-      'ct lint --debug --config test/ct.yaml',
+      'ct lint --debug --validate-maintainers=false --config test/ct.yaml',
       '.gitlab/validate_kubeval.sh',
     ],
     stage: 'test',
