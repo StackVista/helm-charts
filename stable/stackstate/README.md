@@ -2,7 +2,7 @@ stackstate
 ==========
 Helm chart for StackState
 
-Current chart version is `0.4.48-split-checks-1`
+Current chart version is `0.4.48-splitcheck.1`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
