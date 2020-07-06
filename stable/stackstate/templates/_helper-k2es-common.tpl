@@ -17,13 +17,15 @@ env:
 {{- include "stackstate.common.envvars" . }}
 {{- include "stackstate.k2es.envvars" . }}
 - name: CONFIG_FORCE_stackstate_kafkaGenericEventsToES_elasticsearch_index_replicas
-  value: "1"
+  value: "{{ ternary "1" "0" (gt .Values.elasticsearch.replicas 2.0)  }}"
 - name: CONFIG_FORCE_stackstate_kafkaMultiMetricsToES_elasticsearch_index_replicas
-  value: "1"
+  value: "{{ ternary "1" "0" (gt .Values.elasticsearch.replicas 2.0)  }}"
 - name: CONFIG_FORCE_stackstate_kafkaStateEventsToES_elasticsearch_index_replicas
-  value: "1"
+  value: "{{ ternary "1" "0" (gt .Values.elasticsearch.replicas 2.0)  }}"
 - name: CONFIG_FORCE_stackstate_kafkaStsEventsToES_elasticsearch_index_replicas
-  value: "1"
+  value: "{{ ternary "1" "0" (gt .Values.elasticsearch.replicas 2.0)  }}"
+- name: CONFIG_FORCE_stackstate_kafkaTraceToES_elasticsearch_index_replicas
+  value: "{{ ternary "1" "0" (gt .Values.elasticsearch.replicas 2.0)  }}"
 - name: ELASTICSEARCH_URI
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS
