@@ -31,3 +31,5 @@ repos:
   hooks:
   - id: jsonnet_format
   - id: jsonnet_to_yaml
+default_language_version:
+  python: python3
