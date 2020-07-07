@@ -44,6 +44,7 @@ local validate_and_push_jobs = {
 local push_chart_job(chart, repository_url, repository_username, repository_password) = {
   script: [
     'helm plugin install https://github.com/chartmuseum/helm-push.git',
+    'helm dependencies update ${CHART}',
     'helm push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
   ],
   only: { changes: ['stable/' + chart + '/**/*'] },
