@@ -5,6 +5,9 @@ stackstate:
     key: 00000-00000-00000
   receiver:
     baseUrl: https://some-test-helm-render.stackstate.io/receiver
+  admin:
+    authentication:
+      password: test
 ingress:
   annotations:
     kubernetes.io/ingress.class: ingress-nginx-external

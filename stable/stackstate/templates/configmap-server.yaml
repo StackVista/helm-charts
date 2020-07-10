@@ -40,31 +40,31 @@ data:
   {{- end }}
     }
 {{- else }}
-  {{- if or (hasKey .Values.stackstate.components.server.authentication.ldap "bind") (hasKey .Values.stackstate.components.server.authentication.ldap "ssl") }}
+  {{- if or (hasKey .Values.stackstate.authentication.ldap "bind") (hasKey .Values.stackstate.authentication.ldap "ssl") }}
     stackstate {
       api {
         authentication {
           authServer {
             ldapAuthServer {
               connection {
-    {{- if hasKey .Values.stackstate.components.server.authentication.ldap "bind" }}
+    {{- if hasKey .Values.stackstate.authentication.ldap "bind" }}
                 bindCredentials {
                   dn = ${LDAP_BIND_DN}
                   password = ${LDAP_BIND_PASSWORD}
                 }
     {{- end }}
-    {{- if hasKey .Values.stackstate.components.server.authentication.ldap "ssl" }}
+    {{- if hasKey .Values.stackstate.authentication.ldap "ssl" }}
                 ssl {
-                  sslType = {{ required "stackstate.components.server.authentication.ldap.ssl.type is required when configuring LDAP SSL" .Values.stackstate.components.server.authentication.ldap.ssl.type }}
-              {{- if .Values.stackstate.components.server.authentication.ldap.ssl.trustCertificates }}
+                  sslType = {{ required "stackstate.authentication.ldap.ssl.type is required when configuring LDAP SSL" .Values.stackstate.authentication.ldap.ssl.type }}
+              {{- if .Values.stackstate.authentication.ldap.ssl.trustCertificates }}
                   trustCertificatesPath = "/opt/docker/secrets/ldap-certificates.pem"
               {{- end }}
-              {{- if .Values.stackstate.components.server.authentication.ldap.ssl.trustStore }}
+              {{- if .Values.stackstate.authentication.ldap.ssl.trustStore }}
                   trustStorePath = "/opt/docker/secrets/ldap-cacerts"
               {{- end }}
                 }
-              }
     {{- end }}
+              }
             }
           }
         }

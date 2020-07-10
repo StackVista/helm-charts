@@ -10,12 +10,14 @@ imagePullPolicy: Always
 {{- end -}}
 
 {{- define "stackstate.api.statefulset.container.main" -}}
+{{- $mountSecrets := fromYaml (include "stackstate.mountsecrets" .) -}}
 args:
 - -startRole
 - api
 env:
 {{- include "stackstate.common.envvars" . }}
 {{- include "stackstate.api.envvars" . }}
+{{- include "stackstate.authentication.envvars" . }}
 - name: API_KEY
   valueFrom:
     secretKeyRef:
@@ -36,10 +38,6 @@ env:
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
 - name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
   value: "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
-{{- if .Values.stackstate.admin.authentication.enabled }}
-- name: CONFIG_FORCE_stackstate_adminApi_authentication_enabled
-  value: "true"
-{{- end }}
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.api.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.api.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.api.image.pullPolicy | quote }}
 name: api
@@ -80,9 +78,14 @@ volumeMounts:
 - name: config-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
+{{- if $mountSecrets }}
+- name: secrets-volume
+  mountPath: /opt/docker/secrets
+{{- end }}
 {{- end -}}
 
 {{- define "stackstate.api.statefulset" -}}
+{{- $secrets := fromYaml (include "stackstate.mountsecrets" .) -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $overrideContainer := fromYaml (include "stackstate.api.statefulset.container.main" .) -}}
 {{- $stsStackstateApiMainContainer := (merge $overrideContainer $commonContainer) -}}
@@ -148,6 +151,17 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "common.fullname.short" . }}-api
+      {{- if $secrets }}
+        - name: secrets-volume
+          secret:
+            secretName: {{ template "common.fullname.short" . }}-common
+            items:
+        {{- range $key, $val := $secrets }}
+            - key: {{ $key }}
+              path: {{ $val }}
+
+        {{- end }}
+      {{- end }}
 {{- end -}}
 
 {{- if .Values.stackstate.experimental.server.split }}

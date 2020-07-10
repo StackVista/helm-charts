@@ -264,6 +264,67 @@ Sync extra environment variables for sync pods inherited through `stackstate.com
 {{- end -}}
 
 {{/*
+Environment variables to enable authentication with safe defaults
+*/}}
+{{- define "stackstate.authentication.envvars" -}}
+{{- if or .Values.stackstate.authentication.adminPassword .Values.stackstate.components.server.extraEnv.secret.CONFIG_FORCE_stackstate_api_authentication_authServer_stackstateAuthServer_defaultPassword }}
+- name: CONFIG_FORCE_stackstate_adminApi_authentication_authServer_stackstateAuthServer_defaultPassword
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" $ }}-common
+      key: adminApiPassword
+{{- end }}
+- name: CONFIG_FORCE_stackstate_instanceApi_authentication_authServer_stackstateAuthServer_defaultPassword
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" $ }}-common
+      key: adminApiPassword
+- name: CONFIG_FORCE_stackstate_api_authentication_authServer_stackstateAuthServer_defaultPassword
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" $ }}-common
+      key: adminPassword
+{{- if hasKey .Values.stackstate.authentication.ldap "bind" }}
+- name: LDAP_BIND_DN
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" . }}-common
+      key: ldapBindDn
+- name: LDAP_BIND_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" . }}-common
+      key: ldapBindPassword
+{{- end }}
+{{- if .Values.stackstate.java.trustStorePassword }}
+- name: JAVA_TRUSTSTORE_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" . }}-common
+      key: javaTrustStorePassword
+{{- end }}
+{{- end -}}
+
+{{/*
+Mount secrets for custom certificates
+*/}}
+{{- define "stackstate.mountsecrets" -}}
+{{- $mountSecrets := dict }}
+{{- if hasKey .Values.stackstate.authentication.ldap "ssl" }}
+  {{- if .Values.stackstate.authentication.ldap.ssl.trustCertificates }}
+    {{- $_ := set $mountSecrets "ldapTrustCertificates" "ldap-certificates.pem" }}
+  {{- end }}
+  {{- if .Values.stackstate.authentication.ldap.ssl.trustStore }}
+    {{- $_ := set $mountSecrets "ldapTrustStore" "ldap-cacerts" }}
+  {{- end }}
+{{- end }}
+{{- if .Values.stackstate.java.trustStore }}
+    {{- $_ := set $mountSecrets "javaTrustStore" "java-cacerts" }}
+{{- end }}
+{{ $mountSecrets | toYaml }}
+{{- end -}}
+
+{{/*
 State extra environment variables for state pods inherited through `stackstate.components.state.extraEnv`
 */}}
 {{- define "stackstate.state.envvars" -}}

@@ -2,7 +2,7 @@ stackstate
 ==========
 Helm chart for StackState
 
-Current chart version is `0.4.54`
+Current chart version is `0.4.55`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -95,7 +95,9 @@ stackstate/stackstate
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
-| stackstate.admin.authentication.enabled | bool | `true` | Enable basic auth protection for the /admin endpoint. |
+| stackstate.admin.authentication.password | string | `nil` | Password used for maintenance "admin" api's (low-level tools) of the various services, username: admin |
+| stackstate.authentication | object | `{"adminPassword":null,"ldap":{}}` | (Secret) authentication settings for StackState |
+| stackstate.authentication.ldap | object | `{}` | LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap) |
 | stackstate.components.all.affinity | object | `{}` | Affinity settings for pod assignment on all components. |
 | stackstate.components.all.elasticsearchEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster. |
 | stackstate.components.all.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods for all components. |
@@ -115,17 +117,12 @@ stackstate/stackstate
 | stackstate.components.all.tolerations | list | `[]` | Toleration labels for pod assignment on all components. |
 | stackstate.components.all.zookeeperEndpoint | string | `""` | **Required if `zookeeper.enabled` is `false`** Endpoint for shared Zookeeper nodes. |
 | stackstate.components.api.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.api.authentication | object | `{"ldap":{}}` | (Secret) authentication settings for StackState |
-| stackstate.components.api.authentication.ldap | object | `{}` | LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap) |
 | stackstate.components.api.config | string | `""` | Configuration file contents to customize the default StackState api configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.api.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.api.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.api.image.pullPolicy | string | `""` | `pullPolicy` used for the `api` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.api.image.repository | string | `"stackstate/stackstate-server"` | Repository of the api component Docker image. |
 | stackstate.components.api.image.tag | string | `""` | Tag used for the `api` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.api.java | object | `{"trustStore":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
-| stackstate.components.api.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
-| stackstate.components.api.java.trustStorePassword | string | `nil` | Password to access the Java TrustStore (cacerts) file |
 | stackstate.components.api.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.api.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"memory":"2Gi"}}` | Resource allocation for `api` pods. |
 | stackstate.components.api.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -202,17 +199,12 @@ stackstate/stackstate
 | stackstate.components.router.resources | object | `{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Resource allocation for `router` pods. |
 | stackstate.components.router.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.server.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.server.authentication | object | `{"ldap":{}}` | (Secret) authentication settings for StackState |
-| stackstate.components.server.authentication.ldap | object | `{}` | LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap) |
 | stackstate.components.server.config | string | `""` | Configuration file contents to customize the default StackState configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.server.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.server.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.server.image.pullPolicy | string | `""` | `pullPolicy` used for the `server` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.server.image.repository | string | `"stackstate/stackstate-server"` | Repository of the server component Docker image. |
 | stackstate.components.server.image.tag | string | `""` | Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.server.java | object | `{"trustStore":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
-| stackstate.components.server.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
-| stackstate.components.server.java.trustStorePassword | string | `nil` | Password to access the Java TrustStore (cacerts) file |
 | stackstate.components.server.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.server.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `server` pods. |
 | stackstate.components.server.resources | object | `{"limits":{"memory":"8Gi"},"requests":{"memory":"8Gi"}}` | Resource allocation for `server` pods. |
@@ -262,6 +254,9 @@ stackstate/stackstate
 | stackstate.components.wait.image.repository | string | `"dokkupaas/wait"` | Base container image repository for wait containers. |
 | stackstate.components.wait.image.tag | string | `"latest"` | Container image tag for wait containers. |
 | stackstate.experimental.server.split | bool | `false` | (boolean) Run a single service server or split in multiple sub services as api, state .... |
+| stackstate.java | object | `{"trustStore":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
+| stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
+| stackstate.java.trustStorePassword | string | `nil` | Password to access the Java TrustStore (cacerts) file |
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
 | stackstate.receiver.baseUrl | string | `nil` | **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of the StackState endpoints. |
 | zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
@@ -277,17 +272,17 @@ stackstate/stackstate
 
 When using LDAP, a number of (secret) values can be passed through the Helm values. You can provide the following values to configure LDAP:
 
-* `stackstate.components.server.authentication.ldap.bind.dn`: The bind DN to use to authenticate to LDAP
-* `stackstate.components.server.authentication.ldap.bind.password`: The bind password to use to authenticate to LDAP
-* `stackstate.components.server.authentication.ldap.ssl.type`: The SSL Connection type to use to connect to LDAP (Either `ssl` or `starttls`)
-* `stackstate.components.server.authentication.ldap.ssl.trustStore`: The Certificate Truststore to verify server certificates against
-* `stackstate.components.server.authentication.ldap.ssl.trustCertificates`: The client Certificate trusted by the server
+* `stackstate.authentication.ldap.bind.dn`: The bind DN to use to authenticate to LDAP
+* `stackstate.authentication.ldap.bind.password`: The bind password to use to authenticate to LDAP
+* `stackstate.authentication.ldap.ssl.type`: The SSL Connection type to use to connect to LDAP (Either `ssl` or `starttls`)
+* `stackstate.authentication.ldap.ssl.trustStore`: The Certificate Truststore to verify server certificates against
+* `stackstate.authentication.ldap.ssl.trustCertificates`: The client Certificate trusted by the server
 
 The `trustStore` and `trustCertificates` values need to be set from the command line, as they typically contain binary data. A sample command for this looks like:
 
 ```shell
 helm install \
---set-file stackstate.components.server.authentication.ldap.ssl.trustStore=./ldap-cacerts \
---set-file stackstate.components.server.authentication.ldap.ssl.trustCertificates=./ldap-certificate.pem \
+--set-file stackstate.authentication.ldap.ssl.trustStore=./ldap-cacerts \
+--set-file stackstate.authentication.ldap.ssl.trustCertificates=./ldap-certificate.pem \
 ... \
 stackstate/stackstate

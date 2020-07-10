@@ -16,6 +16,7 @@ args:
 env:
 {{- include "stackstate.common.envvars" . }}
 {{- include "stackstate.viewHealth.envvars" . }}
+{{- include "stackstate.authentication.envvars" . }}
 - name: API_KEY
   valueFrom:
     secretKeyRef:
@@ -36,10 +37,6 @@ env:
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
 - name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
   value: "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
-{{- if .Values.stackstate.admin.authentication.enabled }}
-- name: CONFIG_FORCE_stackstate_adminApi_authentication_enabled
-  value: "true"
-{{- end }}
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.viewHealth.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.viewHealth.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.viewHealth.image.pullPolicy | quote }}
 name: view-health

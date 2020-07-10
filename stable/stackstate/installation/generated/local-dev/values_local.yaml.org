@@ -1,0 +1,36 @@
+global:
+  receiverApiKey: "e7817cb6a9f33152d16dd32946c66407"
+stackstate:
+  components:
+    all:
+      image:
+        repositorySuffix: ""
+        pullPolicy: IfNotPresent
+        pullSecretUsername: "rbeckers@stackstate.com"
+        pullSecretPassword: "crol3rish3YALT*ghet"
+    # server:
+    # extraEnv:
+      #   secret:
+      #     CONFIG_FORCE_stackstate_api_authentication_authServer_stackstateAuthServer_defaultPassword: "05a671c66aefea124cc08b76ea6d30bb"
+    # api:
+      # extraEnv:
+      #   secret:
+      #     CONFIG_FORCE_stackstate_api_authentication_authServer_stackstateAuthServer_defaultPassword: "05a671c66aefea124cc08b76ea6d30bb"
+  receiver:
+    baseUrl: "https://test-az.test.stackstate.io"
+  license:
+    key: "A872B-239FA-GAPO23"
+  authentication:
+    adminPassword: "05a671c66aefea124cc08b76ea6d30bb"
+    ldap:
+      bind:
+        dn: test
+        password: password
+  admin:
+    authentication:
+      password: "05a671c66aefea124cc08b76ea6d30bb"
+hbase:
+  all:
+    image:
+      pullSecretUsername: "rbeckers@stackstate.com"
+      pullSecretPassword: "crol3rish3YALT*ghet"

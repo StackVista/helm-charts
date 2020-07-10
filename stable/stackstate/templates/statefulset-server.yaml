@@ -1,19 +1,3 @@
-{{- define "stackstate.server.mountsecrets" -}}
-{{- $mountSecrets := dict }}
-{{- if hasKey .Values.stackstate.components.server.authentication.ldap "ssl" }}
-  {{- if .Values.stackstate.components.server.authentication.ldap.ssl.trustCertificates }}
-    {{- $_ := set $mountSecrets "ldapTrustCertificates" "ldap-certificates.pem" }}
-  {{- end }}
-  {{- if .Values.stackstate.components.server.authentication.ldap.ssl.trustStore }}
-    {{- $_ := set $mountSecrets "ldapTrustStore" "ldap-cacerts" }}
-  {{- end }}
-{{- end }}
-{{- if .Values.stackstate.components.server.java.trustStore }}
-    {{- $_ := set $mountSecrets "javaTrustStore" "java-cacerts" }}
-{{- end }}
-{{ $mountSecrets | toYaml }}
-{{- end -}}
-
 {{- define "stackstate.server.statefulset.container.init" -}}
 name: server-init
 command:
@@ -26,11 +10,11 @@ imagePullPolicy: Always
 {{- end -}}
 
 {{- define "stackstate.server.statefulset.container.main" -}}
-{{- $mountSecrets := fromYaml (include "stackstate.server.mountsecrets" .) -}}
+{{- $mountSecrets := fromYaml (include "stackstate.mountsecrets" .) -}}
 args:
-{{- if .Values.stackstate.components.server.java.trustStore }}
+{{- if .Values.stackstate.java.trustStore }}
 - -Djavax.net.ssl.trustStore=/opt/docker/secrets/java-cacerts
-{{- if .Values.stackstate.components.server.java.trustStorePassword }}
+{{- if .Values.stackstate.java.trustStorePassword }}
 - -Djavax.net.ssl.trustStorePassword=${JAVA_TRUSTSTORE_PASSWORD}
 {{- end }}
 {{- end }}
@@ -38,6 +22,7 @@ args:
 env:
 {{- include "stackstate.common.envvars" . }}
 {{- include "stackstate.server.envvars" . }}
+{{- include "stackstate.authentication.envvars" . }}
 - name: API_KEY
   valueFrom:
     secretKeyRef:
@@ -58,29 +43,6 @@ env:
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
 - name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
   value: "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
-{{- if .Values.stackstate.admin.authentication.enabled }}
-- name: CONFIG_FORCE_stackstate_adminApi_authentication_enabled
-  value: "true"
-{{- end }}
-{{- if hasKey .Values.stackstate.components.server.authentication.ldap "bind" }}
-- name: LDAP_BIND_DN
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" . }}-server
-      key: ldapBindDn
-- name: LDAP_BIND_PASSWORD
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" . }}-server
-      key: ldapBindPassword
-{{- end }}
-{{- if .Values.stackstate.components.server.java.trustStorePassword }}
-- name: JAVA_TRUSTSTORE_PASSWORD
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" . }}-server
-      key: javaTrustStorePassword
-{{- end }}
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.server.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
 livenessProbe:
@@ -128,7 +90,7 @@ volumeMounts:
 {{- end -}}
 
 {{- define "stackstate.server.statefulset" -}}
-{{- $secrets := fromYaml (include "stackstate.server.mountsecrets" .) -}}
+{{- $secrets := fromYaml (include "stackstate.mountsecrets" .) -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $overrideContainer := fromYaml (include "stackstate.server.statefulset.container.main" .) -}}
 {{- $stsstackstateServerMainContainer := (merge $overrideContainer $commonContainer) -}}
@@ -191,7 +153,7 @@ spec:
     {{- if $secrets }}
       - name: secrets-volume
         secret:
-          secretName: {{ template "common.fullname.short" . }}-server
+          secretName: {{ template "common.fullname.short" . }}-common
           items:
       {{- range $key, $val := $secrets }}
           - key: {{ $key }}
