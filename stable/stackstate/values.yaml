@@ -651,12 +651,10 @@ anomaly-detection:
     # anomaly-detection.image.spotlightRepository -- Repository of the spotlight Docker image.
     spotlightRepository: stackstate/spotlight
   stackstate:
-    # anomaly-detection.stackstate.instance -- **Required Stackstate instance URL, e.g http://stackstate-headless:7070
-    instance: stackstate-server:7070
+    # anomaly-detection.stackstate.instance -- **Required Stackstate instance URL, e.g http://stackstate-server-headless:7070
+    instance: http://stackstate-server-headless:7070
     # anomaly-detection.stackstate.authRoleName -- Stackstate Role that used by spotlight for authentication, it is mapped to the stackstate role with the same name.
     authRoleName: stackstate-admin
-    # anomaly-detection.stackstate.elasticSearchUri -- **Required endpoint for elastic search URI where annotations will be saved
-    elasticSearchUri: stackstate-elasticsearch-master:9200
   # anomaly-detection.threadWorkers -- The number of worker threads.
   threadWorkers: 5
 

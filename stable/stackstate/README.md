@@ -2,7 +2,7 @@ stackstate
 ==========
 Helm chart for StackState
 
-Current chart version is `0.4.53`
+Current chart version is `0.4.54`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -12,7 +12,7 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | kafka | 7.2.9 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
-| https://helm.stackstate.io | anomaly-detection | 4.1.5 |
+| https://helm-test.stackstate.io | anomaly-detection | 4.1.6 |
 | https://helm.stackstate.io | common | 0.4.3 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.3 |
 | https://helm.stackstate.io | hbase | 0.1.33 |
@@ -48,8 +48,7 @@ stackstate/stackstate
 | anomaly-detection.ingress.enabled | bool | `false` | Enables ingress controller for status interface |
 | anomaly-detection.ingress.hostname | string | `nil` | Status interface hostname e.g. spotlight.local.domain |
 | anomaly-detection.stackstate.authRoleName | string | `"stackstate-admin"` | Stackstate Role that used by spotlight for authentication, it is mapped to the stackstate role with the same name. |
-| anomaly-detection.stackstate.elasticSearchUri | string | `"stackstate-elasticsearch-master:9200"` | **Required endpoint for elastic search URI where annotations will be saved |
-| anomaly-detection.stackstate.instance | string | `"stackstate-server:7070"` | **Required Stackstate instance URL, e.g http://stackstate-headless:7070 |
+| anomaly-detection.stackstate.instance | string | `"http://stackstate-server-headless:7070"` | **Required Stackstate instance URL, e.g http://stackstate-server-headless:7070 |
 | anomaly-detection.threadWorkers | int | `5` | The number of worker threads. |
 | caspr.enabled | bool | `false` | Enable CASPR compatible values. |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` | The Elasticsearch cluster health status params that will be used by readinessProbe command |
