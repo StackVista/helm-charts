@@ -1,6 +1,6 @@
 dependencies:
 - name: common
-  version: 0.4.3
+  version: 0.4.4
   repository: https://helm.stackstate.io/
 - name: zookeeper
   version: 5.3.4
