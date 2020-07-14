@@ -535,6 +535,9 @@ hbase:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
       tag: "1.7.0"
+  console:
+    # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
+    enabled: false
   hbase:
     master:
       # hbase.hbase.master.replicaCount -- Number of HBase master node replicas.
@@ -624,7 +627,7 @@ kafka:
   metrics:
     kafka:
       # kafka.metrics.kafka.enabled -- Whether or not to create a standalone Kafka exporter to expose Kafka metrics.
-      enabled: true
+      enabled: false
     jmx:
       # kafka.metrics.jmx.enabled -- Whether or not to expose JMX metrics to Prometheus.
       enabled: true
@@ -643,6 +646,11 @@ kafka:
   persistence:
     # kafka.persistence.size -- Size of persistent volume for each Kafka pod
     size: 50Gi
+  # kafka.podAnnotations -- Kafka Pod annotations.
+  podAnnotations:
+    ad.stackstate.com/server.check_names: '["openmetrics"]'
+    ad.stackstate.com/server.init_configs: '[{}]'
+    ad.stackstate.com/server.instances: '[ { "prometheus_url": "http://%%host%%:5556/metrics", "namespace": "","metrics": ["*"] } ]'
   # kafka.resources -- Kafka resources per pods.
   resources:
     limits:
@@ -665,11 +673,17 @@ zookeeper:
   metrics:
     # zookeeper.metrics.enabled -- Enable / disable Zookeeper Prometheus metrics.
     enabled: true
+    # zookeeper.metrics.podAnnotations -- Annotations for ZooKeeper pod (for StackState agent to scrape metrics in openmetrics format)
     serviceMonitor:
       # zookeeper.metrics.serviceMonitor.enabled -- Enable creation of `ServiceMonitor` objects for Prometheus operator.
       enabled: false
       # zookeeper.metrics.serviceMonitor.selector -- Default selector to use to target a certain Prometheus instance.
       selector: {}
+  # zookeeper.podAnnotations -- Annotations for ZooKeeper pod.
+  podAnnotations:
+    ad.stackstate.com/server.check_names: '["openmetrics"]'
+    ad.stackstate.com/server.init_configs: '[{}]'
+    ad.stackstate.com/server.instances: '[ { "prometheus_url": "http://%%host%%:9141/metrics", "namespace": "","metrics": ["*"] } ]'
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
   replicaCount: 3
 
