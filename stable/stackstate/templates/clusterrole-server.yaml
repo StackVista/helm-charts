@@ -1,6 +1,6 @@
 {{- define "stackstate.server.clusterrole" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-server
+  name: {{ template "common.fullname" . }}-server
 rules:
 - apiGroups:
   - authentication.k8s.io

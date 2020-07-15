@@ -1,10 +1,10 @@
 {{- define "stackstate.server.clusterrolebinding" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-server
+  name: {{ template "common.fullname" . }}-server
 roleRef:
-  name: {{ template "common.fullname.short" . }}-server
+  name: {{ template "common.fullname" . }}-server
 subjects:
-- name: {{ template "common.fullname" . }}-server
+- name: {{ template "common.fullname.short" . }}-server
   namespace: {{ .Release.Namespace }}
   kind: ServiceAccount
 {{- end -}}
