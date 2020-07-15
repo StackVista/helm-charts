@@ -1,8 +1,10 @@
 {{- define "stackstate.server.configmap" -}}
+{{- $authTypes := list "k8sServiceAccountAuthServer" -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-server
 data:
   application_stackstate.conf: |
+    stackstate.api.authentication.authServer.k8sServiceAccountAuthServer {}
 {{- if .Values.stackstate.components.server.config }}
 {{- .Values.stackstate.components.server.config | nindent 4 -}}
 {{- end }}
@@ -20,11 +22,10 @@ data:
         }
       }
   {{- if .Values.caspr.keycloak }}
+      {{- $authTypes = append $authTypes "keycloakAuthServer" -}}
       api {
         authentication {
           authServer {
-            authServerType = "keycloakAuthServer"
-
             keycloakAuthServer {
               keycloakBaseUri = "{{ .Values.caspr.keycloak.url }}"
               realm = "{{ .Values.caspr.keycloak.realm }}"
@@ -41,6 +42,7 @@ data:
     }
 {{- else }}
   {{- if or (hasKey .Values.stackstate.authentication.ldap "bind") (hasKey .Values.stackstate.authentication.ldap "ssl") }}
+    {{ $authTypes = append $authTypes "ldapAuthServer" -}}
     stackstate {
       api {
         authentication {
@@ -70,7 +72,10 @@ data:
         }
       }
     }
+  {{- else }}
+    {{- $authTypes = append $authTypes "stackstateAuthServer" -}}
   {{- end }}
+    stackstate.api.authentication.authServer.authServerTypes = [ {{- $authTypes | join ", " -}} ]
 {{- end }}
 {{- end -}}
 

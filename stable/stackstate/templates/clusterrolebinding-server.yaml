@@ -1,0 +1,14 @@
+{{- define "stackstate.server.clusterrolebinding" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-server
+roleRef:
+  name: {{ template "common.fullname.short" . }}-server
+subjects:
+- name: {{ template "common.fullname" . }}-server
+  namespace: {{ .Release.Namespace }}
+  kind: ServiceAccount
+{{- end -}}
+
+{{- $commonCRB := fromYaml (include "common.clusterrolebinding" .) -}}
+{{- $stsstackstateServerCRB := fromYaml (include "stackstate.server.clusterrolebinding" .) -}}
+{{- toYaml (merge $stsstackstateServerCRB $commonCRB) -}}

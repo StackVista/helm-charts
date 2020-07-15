@@ -114,6 +114,7 @@ spec:
       labels:
         app.kubernetes.io/component: server
     spec:
+      serviceAccountName: {{ template "common.fullname.short" . }}-server
     {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml $stsstackstateServerInitContainer | nindent 8 }}
