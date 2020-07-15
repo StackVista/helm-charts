@@ -2,7 +2,7 @@ stackstate
 ==========
 Helm chart for StackState
 
-Current chart version is `0.4.61`
+Current chart version is `0.4.62`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -10,7 +10,7 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.bitnami.com/bitnami | kafka | 7.2.9 |
+| https://charts.bitnami.com/bitnami | kafka | 11.5.1 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
 | https://helm.stackstate.io | anomaly-detection | 4.1.6 |
 | https://helm.stackstate.io | cluster-agent | 0.4.1 |
@@ -82,6 +82,9 @@ stackstate/stackstate
 | ingress.hosts | list | `[]` | List of ingress hostnames; the paths are fixed to StackState backend services |
 | ingress.path | string | `"/"` |  |
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
+| kafka.command[0] | string | `"bash"` |  |
+| kafka.command[1] | string | `"-ec"` |  |
+| kafka.command[2] | string | `"KAFKA_CFG_BROKER_ID=\"${MY_POD_NAME#\"{{- include \"kafka.fullname\" . }}-\"}\"\nif [[ -f /bitnami/kafka/data/meta.properties ]] && ! grep -q -e \"^broker.id=${KAFKA_CFG_BROKER_ID}$\" /bitnami/kafka/data/meta.properties; then\n  echo \"Forcing broker.id in /bitnami/kafka/data/meta.properties to ${KAFKA_CFG_BROKER_ID}\"\n  sed -i \"s/^broker.id=.*$/broker.id=${KAFKA_CFG_BROKER_ID}/\" /bitnami/kafka/data/meta.properties\nfi\n/scripts/setup.sh\n"` |  |
 | kafka.enabled | bool | `true` | Enable / disable chart-based Kafka. |
 | kafka.externalZookeeper.servers | string | `"stackstate-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
 | kafka.fullnameOverride | string | `"stackstate-kafka"` | Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |

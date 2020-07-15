@@ -558,6 +558,16 @@ hbase:
     externalServers: stackstate-zookeeper-headless
 
 kafka:
+  command:
+  - bash
+  - -ec
+  - |
+      KAFKA_CFG_BROKER_ID="${MY_POD_NAME#"{{- include "kafka.fullname" . }}-"}"
+      if [[ -f /bitnami/kafka/data/meta.properties ]] && ! grep -q -e "^broker.id=${KAFKA_CFG_BROKER_ID}$" /bitnami/kafka/data/meta.properties; then
+        echo "Forcing broker.id in /bitnami/kafka/data/meta.properties to ${KAFKA_CFG_BROKER_ID}"
+        sed -i "s/^broker.id=.*$/broker.id=${KAFKA_CFG_BROKER_ID}/" /bitnami/kafka/data/meta.properties
+      fi
+      /scripts/setup.sh
   externalZookeeper:
     # kafka.externalZookeeper.servers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
     servers: stackstate-zookeeper-headless
