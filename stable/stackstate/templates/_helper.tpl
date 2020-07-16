@@ -268,22 +268,22 @@ Environment variables to enable authentication with safe defaults
 */}}
 {{- define "stackstate.authentication.envvars" -}}
 {{- if or .Values.stackstate.authentication.adminPassword .Values.stackstate.components.server.extraEnv.secret.CONFIG_FORCE_stackstate_api_authentication_authServer_stackstateAuthServer_defaultPassword }}
-- name: CONFIG_FORCE_stackstate_adminApi_authentication_authServer_stackstateAuthServer_defaultPassword
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-common
-      key: adminApiPassword
-{{- end }}
-- name: CONFIG_FORCE_stackstate_instanceApi_authentication_authServer_stackstateAuthServer_defaultPassword
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-common
-      key: adminApiPassword
 - name: CONFIG_FORCE_stackstate_api_authentication_authServer_stackstateAuthServer_defaultPassword
   valueFrom:
     secretKeyRef:
       name: {{ template "common.fullname.short" $ }}-common
       key: adminPassword
+{{- end }}
+- name: CONFIG_FORCE_stackstate_adminApi_authentication_authServer_stackstateAuthServer_defaultPassword
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" $ }}-common
+      key: adminApiPassword
+- name: CONFIG_FORCE_stackstate_instanceApi_authentication_authServer_stackstateAuthServer_defaultPassword
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" $ }}-common
+      key: adminApiPassword
 {{- if hasKey .Values.stackstate.authentication.ldap "bind" }}
 - name: LDAP_BIND_DN
   valueFrom:
