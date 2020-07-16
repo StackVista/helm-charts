@@ -13,6 +13,7 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 | https://charts.bitnami.com/bitnami | kafka | 7.2.9 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
 | https://helm.stackstate.io | anomaly-detection | 4.1.6 |
+| https://helm.stackstate.io | cluster-agent | 0.4.1 |
 | https://helm.stackstate.io | common | 0.4.3 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.3 |
 | https://helm.stackstate.io | hbase | 0.1.33 |
@@ -51,6 +52,10 @@ stackstate/stackstate
 | anomaly-detection.stackstate.instance | string | `"http://stackstate-server-headless:7070"` | **Required Stackstate instance URL, e.g http://stackstate-server-headless:7070 |
 | anomaly-detection.threadWorkers | int | `5` | The number of worker threads. |
 | caspr.enabled | bool | `false` | Enable CASPR compatible values. |
+| cluster-agent.enabled | bool | `false` |  |
+| cluster-agent.stackstate.cluster.authToken | string | `nil` |  |
+| cluster-agent.stackstate.cluster.name | string | `nil` |  |
+| cluster-agent.stackstate.url | string | `"http://stackstate-router:8080/receiver/stsAgent"` |  |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` | The Elasticsearch cluster health status params that will be used by readinessProbe command |
 | elasticsearch.clusterName | string | `"stackstate-elasticsearch"` | Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
