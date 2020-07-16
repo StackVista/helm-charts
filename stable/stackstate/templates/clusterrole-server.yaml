@@ -14,6 +14,12 @@ rules:
   - subjectaccessreviews
   verbs:
   - create
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings
+  verbs:
+  - list
 {{- end -}}
 
 {{- $commonClusterRole := fromYaml (include "common.clusterrole" .) -}}
