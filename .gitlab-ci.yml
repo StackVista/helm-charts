@@ -357,6 +357,7 @@ push_test_charts:
     - helm repo add elastic https://helm.elastic.co
     - helm repo add stable https://kubernetes-charts.storage.googleapis.com
     - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
   except:
