@@ -25,4 +25,4 @@ dependencies:
 - name: cluster-agent
   version: 0.4.1
   repository: https://helm.stackstate.io
-  condition: stackstate-agent.enabled
+  condition: cluster-agent.enabled
