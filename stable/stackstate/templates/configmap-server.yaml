@@ -75,7 +75,7 @@ data:
   {{- else }}
     {{- $authTypes = append $authTypes "stackstateAuthServer" -}}
   {{- end }}
-    stackstate.api.authentication.authServer.authServerTypes = [ {{- $authTypes | join ", " -}} ]
+    stackstate.api.authentication.authServer.authServerType = [ {{- $authTypes | join ", " -}} ]
 {{- end }}
 {{- end -}}
 
