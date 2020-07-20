@@ -2,7 +2,7 @@ stackstate
 ==========
 Helm chart for StackState
 
-Current chart version is `0.4.62`
+Current chart version is `0.4.63`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -82,11 +82,13 @@ stackstate/stackstate
 | ingress.hosts | list | `[]` | List of ingress hostnames; the paths are fixed to StackState backend services |
 | ingress.path | string | `"/"` |  |
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
-| kafka.command[0] | string | `"bash"` |  |
-| kafka.command[1] | string | `"-ec"` |  |
-| kafka.command[2] | string | `"KAFKA_CFG_BROKER_ID=\"${MY_POD_NAME#\"{{- include \"kafka.fullname\" . }}-\"}\"\nif [[ -f /bitnami/kafka/data/meta.properties ]] && ! grep -q -e \"^broker.id=${KAFKA_CFG_BROKER_ID}$\" /bitnami/kafka/data/meta.properties; then\n  echo \"Forcing broker.id in /bitnami/kafka/data/meta.properties to ${KAFKA_CFG_BROKER_ID}\"\n  sed -i \"s/^broker.id=.*$/broker.id=${KAFKA_CFG_BROKER_ID}/\" /bitnami/kafka/data/meta.properties\nfi\n/scripts/setup.sh\n"` |  |
+| kafka.command | list | `["/scripts/custom-setup.sh"]` | Override kafka container command. |
 | kafka.enabled | bool | `true` | Enable / disable chart-based Kafka. |
 | kafka.externalZookeeper.servers | string | `"stackstate-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
+| kafka.extraDeploy | string | `"- apiVersion: v1\n  kind: ConfigMap\n  metadata:\n   name: kafka-custom-scripts\n   labels: {{- include \"kafka.labels\" . | nindent 4 }}\n  data:\n    custom-setup.sh: |-\n      #!/bin/bash\n\n      if [[ -f /bitnami/kafka/data/meta.properties ]]; then\n        ID=`grep -e ^broker.id= /bitnami/kafka/data/meta.properties | sed 's/^broker.id=//'`\n        echo \"Retrieved broker ID $ID from /bitnami/kafka/data/meta.properties\"\n      else\n        ID=\"${MY_POD_NAME#\"{{ template \"kafka.fullname\" . }}-\"}\"\n        echo \"Calculated broker ID $ID based on podname\"\n      fi\n      export KAFKA_CFG_BROKER_ID=\"$ID\"\n\n      exec /entrypoint.sh /run.sh"` | Array of extra objects to deploy with the release |
+| kafka.extraEnvVars | list | `[{"name":"KAFKA_CFG_RESERVED_BROKER_MAX_ID","value":"2000"}]` | Extra environment variables to add to kafka pods. |
+| kafka.extraVolumeMounts | list | `[{"mountPath":"/scripts/custom-setup.sh","name":"kafka-custom-scripts","subPath":"custom-setup.sh"}]` | Extra volumeMount(s) to add to Kafka containers. |
+| kafka.extraVolumes | list | `[{"configMap":{"defaultMode":493,"name":"kafka-custom-scripts"},"name":"kafka-custom-scripts"}]` | Extra volume(s) to add to Kafka statefulset. |
 | kafka.fullnameOverride | string | `"stackstate-kafka"` | Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | kafka.image.tag | string | `"2.3.1-debian-9-r41"` | Default tag used for Kafka. **Since StackState relies on this specific version, it's advised NOT to change this.** |
 | kafka.livenessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |

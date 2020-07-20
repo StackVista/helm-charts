@@ -558,21 +558,50 @@ hbase:
     externalServers: stackstate-zookeeper-headless
 
 kafka:
+  # kafka.command -- Override kafka container command.
   command:
-  - bash
-  - -ec
-  - |
-      KAFKA_CFG_BROKER_ID="${MY_POD_NAME#"{{- include "kafka.fullname" . }}-"}"
-      if [[ -f /bitnami/kafka/data/meta.properties ]] && ! grep -q -e "^broker.id=${KAFKA_CFG_BROKER_ID}$" /bitnami/kafka/data/meta.properties; then
-        echo "Forcing broker.id in /bitnami/kafka/data/meta.properties to ${KAFKA_CFG_BROKER_ID}"
-        sed -i "s/^broker.id=.*$/broker.id=${KAFKA_CFG_BROKER_ID}/" /bitnami/kafka/data/meta.properties
-      fi
-      /scripts/setup.sh
+    - '/scripts/custom-setup.sh'
   externalZookeeper:
     # kafka.externalZookeeper.servers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
     servers: stackstate-zookeeper-headless
   # kafka.enabled -- Enable / disable chart-based Kafka.
   enabled: true
+  # kafka.extraDeploy -- Array of extra objects to deploy with the release
+  extraDeploy: |-
+    - apiVersion: v1
+      kind: ConfigMap
+      metadata:
+       name: kafka-custom-scripts
+       labels: {{- include "kafka.labels" . | nindent 4 }}
+      data:
+        custom-setup.sh: |-
+          #!/bin/bash
+
+          if [[ -f /bitnami/kafka/data/meta.properties ]]; then
+            ID=`grep -e ^broker.id= /bitnami/kafka/data/meta.properties | sed 's/^broker.id=//'`
+            echo "Retrieved broker ID $ID from /bitnami/kafka/data/meta.properties"
+          else
+            ID="${MY_POD_NAME#"{{ template "kafka.fullname" . }}-"}"
+            echo "Calculated broker ID $ID based on podname"
+          fi
+          export KAFKA_CFG_BROKER_ID="$ID"
+
+          exec /entrypoint.sh /run.sh
+  # kafka.extraEnvVars -- Extra environment variables to add to kafka pods.
+  extraEnvVars:
+    - name: KAFKA_CFG_RESERVED_BROKER_MAX_ID
+      value: "2000"
+  # kafka.extraVolumes -- Extra volume(s) to add to Kafka statefulset.
+  extraVolumes:
+    - name: kafka-custom-scripts
+      configMap:
+        name: kafka-custom-scripts
+        defaultMode: 493
+  # kafka.extraVolumeMounts -- Extra volumeMount(s) to add to Kafka containers.
+  extraVolumeMounts:
+    - name: kafka-custom-scripts
+      mountPath: /scripts/custom-setup.sh
+      subPath: custom-setup.sh
   # kafka.fullnameOverride -- Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
   fullnameOverride: stackstate-kafka
   image:
