@@ -577,13 +577,16 @@ kafka:
         custom-setup.sh: |-
           #!/bin/bash
 
-          if [[ -f /bitnami/kafka/data/meta.properties ]]; then
-            ID=`grep -e ^broker.id= /bitnami/kafka/data/meta.properties | sed 's/^broker.id=//'`
-            echo "Retrieved broker ID $ID from /bitnami/kafka/data/meta.properties"
-          else
-            ID="${MY_POD_NAME#"{{ template "kafka.fullname" . }}-"}"
-            echo "Calculated broker ID $ID based on podname"
+          ID="${MY_POD_NAME#"{{ template "kafka.fullname" . }}-"}"
+
+          KAFKA_META_PROPERTIES=/bitnami/kafka/data/meta.properties
+          if [[ -f ${KAFKA_META_PROPERTIES} ]]; then
+            ID=`grep -e ^broker.id= ${KAFKA_META_PROPERTIES} | sed 's/^broker.id=//'`
+            if [[ "${ID}" != "" ]] && [[ "${ID}" -gt 1000 ]]; then
+              echo "Using broker ID ${ID} from ${KAFKA_META_PROPERTIES} for compatibility (STAC-9614)"
+            fi
           fi
+
           export KAFKA_CFG_BROKER_ID="$ID"
 
           exec /entrypoint.sh /run.sh

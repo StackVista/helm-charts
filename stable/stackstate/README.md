@@ -2,7 +2,7 @@ stackstate
 ==========
 Helm chart for StackState
 
-Current chart version is `0.4.63`
+Current chart version is `0.4.64`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -85,7 +85,7 @@ stackstate/stackstate
 | kafka.command | list | `["/scripts/custom-setup.sh"]` | Override kafka container command. |
 | kafka.enabled | bool | `true` | Enable / disable chart-based Kafka. |
 | kafka.externalZookeeper.servers | string | `"stackstate-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
-| kafka.extraDeploy | string | `"- apiVersion: v1\n  kind: ConfigMap\n  metadata:\n   name: kafka-custom-scripts\n   labels: {{- include \"kafka.labels\" . | nindent 4 }}\n  data:\n    custom-setup.sh: |-\n      #!/bin/bash\n\n      if [[ -f /bitnami/kafka/data/meta.properties ]]; then\n        ID=`grep -e ^broker.id= /bitnami/kafka/data/meta.properties | sed 's/^broker.id=//'`\n        echo \"Retrieved broker ID $ID from /bitnami/kafka/data/meta.properties\"\n      else\n        ID=\"${MY_POD_NAME#\"{{ template \"kafka.fullname\" . }}-\"}\"\n        echo \"Calculated broker ID $ID based on podname\"\n      fi\n      export KAFKA_CFG_BROKER_ID=\"$ID\"\n\n      exec /entrypoint.sh /run.sh"` | Array of extra objects to deploy with the release |
+| kafka.extraDeploy | string | `"- apiVersion: v1\n  kind: ConfigMap\n  metadata:\n   name: kafka-custom-scripts\n   labels: {{- include \"kafka.labels\" . | nindent 4 }}\n  data:\n    custom-setup.sh: |-\n      #!/bin/bash\n\n      ID=\"${MY_POD_NAME#\"{{ template \"kafka.fullname\" . }}-\"}\"\n\n      KAFKA_META_PROPERTIES=/bitnami/kafka/data/meta.properties\n      if [[ -f ${KAFKA_META_PROPERTIES} ]]; then\n        ID=`grep -e ^broker.id= ${KAFKA_META_PROPERTIES} | sed 's/^broker.id=//'`\n        if [[ \"${ID}\" != \"\" ]] && [[ \"${ID}\" -gt 1000 ]]; then\n          echo \"Using broker ID ${ID} from ${KAFKA_META_PROPERTIES} for compatibility (STAC-9614)\"\n        fi\n      fi\n\n      export KAFKA_CFG_BROKER_ID=\"$ID\"\n\n      exec /entrypoint.sh /run.sh"` | Array of extra objects to deploy with the release |
 | kafka.extraEnvVars | list | `[{"name":"KAFKA_CFG_RESERVED_BROKER_MAX_ID","value":"2000"}]` | Extra environment variables to add to kafka pods. |
 | kafka.extraVolumeMounts | list | `[{"mountPath":"/scripts/custom-setup.sh","name":"kafka-custom-scripts","subPath":"custom-setup.sh"}]` | Extra volumeMount(s) to add to Kafka containers. |
 | kafka.extraVolumes | list | `[{"configMap":{"defaultMode":493,"name":"kafka-custom-scripts"},"name":"kafka-custom-scripts"}]` | Extra volume(s) to add to Kafka statefulset. |
