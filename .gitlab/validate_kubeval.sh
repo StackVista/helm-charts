@@ -5,13 +5,17 @@
 set -e
 
 for chartPath in $(ct list-changed --config test/ct.yaml); do
-  printf "\nRunning 'kubeval' on '%s'...\n" "${chartPath}"
-
-  if [ -e "${chartPath}/linter_values.yaml" ]; then
-    valuesFile="--values ${chartPath}/linter_values.yaml"
+  if [ "${chartPath}" == "stable/stackstate" ]; then
+    printf "\nNOT running 'kubeval' on '%s' because kubeval cannot validate v1/List objects...\n" "${chartPath}"
   else
-    valuesFile=""
-  fi
+    printf "\nRunning 'kubeval' on '%s'...\n" "${chartPath}"
 
-  helm template ${valuesFile} "${chartPath}" | kubeval --skip-kinds ServiceMonitor -
+    if [ -e "${chartPath}/linter_values.yaml" ]; then
+      valuesFile="--values ${chartPath}/linter_values.yaml"
+    else
+      valuesFile=""
+    fi
+
+    helm template "${valuesFile}" "${chartPath}" | kubeval --skip-kinds ServiceMonitor -
+  fi
 done
