@@ -566,6 +566,12 @@ kafka:
     servers: stackstate-zookeeper-headless
   # kafka.enabled -- Enable / disable chart-based Kafka.
   enabled: true
+  ## kafka.defaultReplicationFactor -- Default replication factors for automatically created topics
+  defaultReplicationFactor: 2
+  ## kafka.offsetTopicReplicationFactor --  The replication factor for the offsets topic
+  offsetsTopicReplicationFactor: 2
+  ## kafka.transactionStateLogReplicationFactor -- The replication factor for the transaction topic
+  transactionStateLogReplicationFactor: 2
   # kafka.extraDeploy -- Array of extra objects to deploy with the release
   extraDeploy: |-
     - apiVersion: v1

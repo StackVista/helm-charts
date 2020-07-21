@@ -37,6 +37,9 @@ hbase:
 
 kafka:
   replicaCount: 1
+  defaultReplicationFactor: 1
+  offsetsTopicReplicationFactor: 1
+  transactionStateLogReplicationFactor: 1
   persistence:
     size: 10Gi
 
