@@ -10,6 +10,7 @@ elasticsearch:
     resources:
       requests:
         storage: 10Gi
+        cpu: "2000m"
 
 hbase:
   hbase:
@@ -17,6 +18,9 @@ hbase:
       replicaCount: 1
     regionserver:
       replicaCount: 1
+      resources:
+        requests:
+          cpu: "500m"
   hdfs:
     datanode:
       persistence:
@@ -42,6 +46,9 @@ kafka:
   transactionStateLogReplicationFactor: 1
   persistence:
     size: 10Gi
+  resources:
+    requests:
+      cpu: "200m"
 
 stackstate:
   components:
@@ -50,9 +57,18 @@ stackstate:
     server:
       resources:
         limits:
-          memory: "1Gi"
+          memory: "3Gi"
         requests:
           memory: "200Mi"
+          cpu: "500m"
+    k2es:
+      resources:
+        requests:
+          cpu: "100m"
+    receiver:
+      resources:
+        requests:
+          cpu: "100m"
 
 zookeeper:
   replicaCount: 1
