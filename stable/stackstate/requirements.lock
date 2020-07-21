@@ -7,7 +7,7 @@ dependencies:
   version: 7.6.2-stackstate.3
 - name: hbase
   repository: https://helm.stackstate.io
-  version: 0.1.36
+  version: 0.1.37
 - name: kafka
   repository: https://charts.bitnami.com/bitnami
   version: 11.5.1
@@ -20,5 +20,5 @@ dependencies:
 - name: cluster-agent
   repository: https://helm.stackstate.io
   version: 0.4.1
-digest: sha256:980e6e9a7d46163cc9297a375e9000cc62a98cd781d878448fcb38bf3c125ffc
-generated: "2020-07-21T15:37:35.859182+02:00"
+digest: sha256:8d8f3932dbe4340e9fc9d78c99f1c62881ee67536b29f2158d37497b6594da9e
+generated: "2020-07-21T16:43:54.703517527+02:00"

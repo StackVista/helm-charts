@@ -16,7 +16,7 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 | https://helm.stackstate.io | cluster-agent | 0.4.1 |
 | https://helm.stackstate.io | common | 0.4.6 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.3 |
-| https://helm.stackstate.io | hbase | 0.1.36 |
+| https://helm.stackstate.io | hbase | 0.1.37 |
 
 ## Required Values
 
