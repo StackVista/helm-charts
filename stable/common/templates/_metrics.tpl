@@ -1,5 +1,5 @@
 {{- define "common.metrics.annotations" -}}
-{{- if .root.Values.all.metrics.enabled }}
+{{- if .metrics.enabled }}
 annotations:
   ad.stackstate.com/server.check_names: '["openmetrics"]'
   ad.stackstate.com/server.init_configs: '[{}]'
