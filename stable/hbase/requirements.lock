@@ -1,9 +1,9 @@
 dependencies:
 - name: common
   repository: https://helm.stackstate.io/
-  version: 0.4.4
+  version: 0.4.5
 - name: zookeeper
   repository: https://charts.bitnami.com/bitnami
   version: 5.3.4
-digest: sha256:41649833f7f3790038880318add77ba1ed7dacad64be8774e3b0e32a98987682
-generated: "2020-07-17T16:17:50.517293+02:00"
+digest: sha256:34a2339d8918306cd016bd1b7d0019b35974b04451b86280904204cee17eae30
+generated: "2020-07-21T14:18:06.993521+02:00"

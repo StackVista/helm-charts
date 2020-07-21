@@ -76,7 +76,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: hbase-rs
-      {{ include "common.metrics.annotations" (dict "root" . "port" "9404") | indent 6 }}
+      {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404") | indent 6 }}
     spec:
       {{ include "image.pullSecret.name" . | nindent 6 }}
       initContainers:
