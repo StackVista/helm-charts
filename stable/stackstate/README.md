@@ -2,7 +2,7 @@ stackstate
 ==========
 Helm chart for StackState
 
-Current chart version is `0.4.70`
+Current chart version is `0.4.71`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -14,9 +14,9 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
 | https://helm.stackstate.io | anomaly-detection | 4.1.6 |
 | https://helm.stackstate.io | cluster-agent | 0.4.1 |
-| https://helm.stackstate.io | common | 0.4.6 |
+| https://helm.stackstate.io | common | 0.4.7 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.3 |
-| https://helm.stackstate.io | hbase | 0.1.37 |
+| https://helm.stackstate.io | hbase | 0.1.38 |
 
 ## Required Values
 
@@ -68,6 +68,7 @@ stackstate/stackstate
 | elasticsearch.resources | object | `{"limits":{"cpu":"2000m","memory":"3Gi"},"requests":{"cpu":"2000m","memory":"3Gi"}}` | Override Elasticsearch resources |
 | elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"250Gi"}}}` | PVC template defaulting to 250Gi default volumes |
 | global.receiverApiKey | string | `""` | API key to be used by the Receiver; if no key is provided, a random one will be generated for you. |
+| hbase.all.metrics.enabled | bool | `true` |  |
 | hbase.console.enabled | bool | `false` | Enable / disable deployment of the stackgraph-console for debugging. |
 | hbase.enabled | bool | `true` | Enable / disable chart-based HBase. |
 | hbase.hbase.master.replicaCount | int | `2` | Number of HBase master node replicas. |
@@ -102,7 +103,7 @@ stackstate/stackstate
 | kafka.metrics.serviceMonitor.selector | object | `{}` | Selector to target Prometheus instance. |
 | kafka.offsetsTopicReplicationFactor | int | `2` |  |
 | kafka.persistence.size | string | `"50Gi"` | Size of persistent volume for each Kafka pod |
-| kafka.podAnnotations | object | `{"ad.stackstate.com/server.check_names":"[\"openmetrics\"]","ad.stackstate.com/server.init_configs":"[{}]","ad.stackstate.com/server.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"\",\"metrics\": [\"*\"] } ]"}` | Kafka Pod annotations. |
+| kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"stackstate\", \"labels_mapper\": { \"app.kubernetes.io/component\": \"app_component\", \"app.kubernetes.io/name\": \"app_name\", \"app.kubernetes.io/instance\": \"app_instance\" }, \"metrics\": [\"*\"] } ]"}` | Kafka Pod annotations. |
 | kafka.readinessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
 | kafka.replicaCount | int | `3` | Number of Kafka replicas. |
 | kafka.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"cpu":"1000m","memory":"2Gi"}}` | Kafka resources per pods. |
@@ -281,7 +282,7 @@ stackstate/stackstate
 | zookeeper.metrics.enabled | bool | `true` | Enable / disable Zookeeper Prometheus metrics. |
 | zookeeper.metrics.serviceMonitor.enabled | bool | `false` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |
 | zookeeper.metrics.serviceMonitor.selector | object | `{}` | Default selector to use to target a certain Prometheus instance. |
-| zookeeper.podAnnotations | object | `{"ad.stackstate.com/server.check_names":"[\"openmetrics\"]","ad.stackstate.com/server.init_configs":"[{}]","ad.stackstate.com/server.instances":"[ { \"prometheus_url\": \"http://%%host%%:9141/metrics\", \"namespace\": \"\",\"metrics\": [\"*\"] } ]"}` | Annotations for ZooKeeper pod. |
+| zookeeper.podAnnotations | object | `{"ad.stackstate.com/zookeeper.check_names":"[\"openmetrics\"]","ad.stackstate.com/zookeeper.init_configs":"[{}]","ad.stackstate.com/zookeeper.instances":"[ { \"prometheus_url\": \"http://%%host%%:9141/metrics\", \"namespace\": \"stackstate\", \"labels_mapper\": { \"app.kubernetes.io/component\": \"app_component\", \"app.kubernetes.io/name\": \"app_name\", \"app.kubernetes.io/instance\": \"app_instance\" }, \"metrics\": [\"*\"] } ]"}` | Annotations for ZooKeeper pod. |
 | zookeeper.replicaCount | int | `3` | Default amount of Zookeeper replicas to provision. |
 
 ## Configuring LDAP
