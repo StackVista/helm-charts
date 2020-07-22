@@ -78,7 +78,7 @@ spec:
       labels:
         app.kubernetes.io/component: hdfs-nn
       annotations:
-      {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404") | indent 8 }}
+      {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404" "container_name" "namenode") | indent 8 }}
     spec:
       {{ include "image.pullSecret.name" . | nindent 6 }}
       initContainers:

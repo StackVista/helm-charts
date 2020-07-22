@@ -14,3 +14,6 @@ tephra:
   metrics:
     servicemonitor:
       enabled: true
+all:
+  metrics:
+    enabled: true
