@@ -2,7 +2,7 @@
 Shared settings in configmap for server and api
 */}}
 {{- define "stackstate.configmap.server-and-api" }}
-{{- $authTypes := list "k8sServiceAccountAuthServer" -}}
+{{- $authTypes := list -}}
 stackstate.api.authentication.authServer.k8sServiceAccountAuthServer {}
 {{- if .Values.caspr.enabled }}
 stackstate {
@@ -71,7 +71,8 @@ stackstate {
 {{- else }}
 {{- $authTypes = append $authTypes "stackstateAuthServer" -}}
 {{- end }}
-stackstate.api.authentication.authServer.authServerType = [ {{- $authTypes | join ", " -}} ]
+{{- $authTypes = append $authTypes "k8sServiceAccountAuthServer" }}
+stackstate.api.authentication.authServer.authServerType = [ {{- $authTypes | compact | join ", " -}} ]
 {{- end }}
 {{- with index .Values "cluster-agent" -}}
 {{- if .enabled }}
