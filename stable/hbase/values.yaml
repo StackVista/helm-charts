@@ -93,6 +93,7 @@ hbase:
         memory: "1Gi"
       requests:
         memory: "1Gi"
+        cpu: "200m"
     # hbase.master.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hbase.master.tolerations -- Toleration labels for pod assignment.
@@ -120,6 +121,7 @@ hbase:
         memory: "3Gi"
       requests:
         memory: "2Gi"
+        cpu: "2500m"
     # hbase.regionserver.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hbase.regionserver.tolerations -- Toleration labels for pod assignment.
@@ -161,6 +163,7 @@ hdfs:
         memory: "4Gi"
       requests:
         memory: "2Gi"
+        cpu: "500m"
     # hdfs.datanode.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hdfs.datanode.tolerations -- Toleration labels for pod assignment.
@@ -188,6 +191,7 @@ hdfs:
         memory: "1Gi"
       requests:
         memory: "1Gi"
+        cpu: "250m"
     # hdfs.namenode.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hdfs.namenode.tolerations -- Toleration labels for pod assignment.
@@ -217,6 +221,7 @@ hdfs:
         memory: "1Gi"
       requests:
         memory: "1Gi"
+        cpu: "100m"
     # hdfs.secondarynamenode.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hdfs.secondarynamenode.tolerations -- Toleration labels for pod assignment.

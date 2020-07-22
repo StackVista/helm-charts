@@ -92,6 +92,7 @@ spec:
   template:
     metadata:
       annotations:
+        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404") | indent 8 }}
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.initializer.secret.checksum" . | nindent 8 }}

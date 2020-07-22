@@ -103,6 +103,7 @@ stackstate:
           memory: "2Gi"
         requests:
           memory: "2Gi"
+          cpu: "1000m"
       # stackstate.components.api.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.api.tolerations -- Toleration labels for pod assignment.
@@ -133,6 +134,7 @@ stackstate:
           memory: "2Gi"
         requests:
           memory: "2Gi"
+          cpu: "250m"
       # stackstate.components.correlate.replicaCount -- Number of `correlate` replicas.
       replicaCount: 1
       # stackstate.components.correlate.nodeSelector -- Node labels for pod assignment.
@@ -160,6 +162,7 @@ stackstate:
           memory: "3Gi"
         requests:
           memory: "3Gi"
+          cpu: "500m"
       # stackstate.components.checks.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.checks.tolerations -- Toleration labels for pod assignment.
@@ -187,6 +190,7 @@ stackstate:
           memory: "1Gi"
         requests:
           memory: "128Mi"
+          cpu: "50m"
       # stackstate.components.initializer.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.initializer.tolerations -- Toleration labels for pod assignment.
@@ -217,6 +221,7 @@ stackstate:
           memory: "1Gi"
         requests:
           memory: "1Gi"
+          cpu: "300m"
       # stackstate.components.k2es.replicaCount -- Number of `k2es` replicas.
       replicaCount: 1
       # stackstate.components.k2es.nodeSelector -- Node labels for pod assignment.
@@ -250,6 +255,7 @@ stackstate:
           memory: "2Gi"
         requests:
           memory: "1Gi"
+          cpu: "700m"
       # stackstate.components.receiver.replicaCount -- Number of `receiver` replicas.
       replicaCount: 1
       # stackstate.components.receiver.nodeSelector -- Node labels for pod assignment.
@@ -314,6 +320,7 @@ stackstate:
           memory: "8Gi"
         requests:
           memory: "8Gi"
+          cpu: "3000m"
       # stackstate.components.server.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.server.tolerations -- Toleration labels for pod assignment.
@@ -341,6 +348,7 @@ stackstate:
           memory: "2Gi"
         requests:
           memory: "2Gi"
+          cpu: "500m"
       # stackstate.components.state.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.state.tolerations -- Toleration labels for pod assignment.
@@ -368,6 +376,7 @@ stackstate:
           memory: "4Gi"
         requests:
           memory: "4Gi"
+          cpu: "1000m"
       # stackstate.components.sync.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.sync.tolerations -- Toleration labels for pod assignment.
@@ -427,6 +436,7 @@ stackstate:
           memory: "2Gi"
         requests:
           memory: "2Gi"
+          cpu: "500m"
       # stackstate.components.viewHealth.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.viewHealth.tolerations -- Toleration labels for pod assignment.
@@ -535,6 +545,9 @@ hbase:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
       tag: "1.7.0"
+  console:
+    # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
+    enabled: false
   hbase:
     master:
       # hbase.hbase.master.replicaCount -- Number of HBase master node replicas.
@@ -558,21 +571,59 @@ hbase:
     externalServers: stackstate-zookeeper-headless
 
 kafka:
+  # kafka.command -- Override kafka container command.
   command:
-  - bash
-  - -ec
-  - |
-      KAFKA_CFG_BROKER_ID="${MY_POD_NAME#"{{- include "kafka.fullname" . }}-"}"
-      if [[ -f /bitnami/kafka/data/meta.properties ]] && ! grep -q -e "^broker.id=${KAFKA_CFG_BROKER_ID}$" /bitnami/kafka/data/meta.properties; then
-        echo "Forcing broker.id in /bitnami/kafka/data/meta.properties to ${KAFKA_CFG_BROKER_ID}"
-        sed -i "s/^broker.id=.*$/broker.id=${KAFKA_CFG_BROKER_ID}/" /bitnami/kafka/data/meta.properties
-      fi
-      /scripts/setup.sh
+    - '/scripts/custom-setup.sh'
   externalZookeeper:
     # kafka.externalZookeeper.servers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
     servers: stackstate-zookeeper-headless
   # kafka.enabled -- Enable / disable chart-based Kafka.
   enabled: true
+  ## kafka.defaultReplicationFactor -- Default replication factors for automatically created topics
+  defaultReplicationFactor: 2
+  ## kafka.offsetTopicReplicationFactor --  The replication factor for the offsets topic
+  offsetsTopicReplicationFactor: 2
+  ## kafka.transactionStateLogReplicationFactor -- The replication factor for the transaction topic
+  transactionStateLogReplicationFactor: 2
+  # kafka.extraDeploy -- Array of extra objects to deploy with the release
+  extraDeploy: |-
+    - apiVersion: v1
+      kind: ConfigMap
+      metadata:
+       name: kafka-custom-scripts
+       labels: {{- include "kafka.labels" . | nindent 4 }}
+      data:
+        custom-setup.sh: |-
+          #!/bin/bash
+
+          ID="${MY_POD_NAME#"{{ template "kafka.fullname" . }}-"}"
+
+          KAFKA_META_PROPERTIES=/bitnami/kafka/data/meta.properties
+          if [[ -f ${KAFKA_META_PROPERTIES} ]]; then
+            ID=`grep -e ^broker.id= ${KAFKA_META_PROPERTIES} | sed 's/^broker.id=//'`
+            if [[ "${ID}" != "" ]] && [[ "${ID}" -gt 1000 ]]; then
+              echo "Using broker ID ${ID} from ${KAFKA_META_PROPERTIES} for compatibility (STAC-9614)"
+            fi
+          fi
+
+          export KAFKA_CFG_BROKER_ID="$ID"
+
+          exec /entrypoint.sh /run.sh
+  # kafka.extraEnvVars -- Extra environment variables to add to kafka pods.
+  extraEnvVars:
+    - name: KAFKA_CFG_RESERVED_BROKER_MAX_ID
+      value: "2000"
+  # kafka.extraVolumes -- Extra volume(s) to add to Kafka statefulset.
+  extraVolumes:
+    - name: kafka-custom-scripts
+      configMap:
+        name: kafka-custom-scripts
+        defaultMode: 493
+  # kafka.extraVolumeMounts -- Extra volumeMount(s) to add to Kafka containers.
+  extraVolumeMounts:
+    - name: kafka-custom-scripts
+      mountPath: /scripts/custom-setup.sh
+      subPath: custom-setup.sh
   # kafka.fullnameOverride -- Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
   fullnameOverride: stackstate-kafka
   image:
@@ -586,7 +637,7 @@ kafka:
   metrics:
     kafka:
       # kafka.metrics.kafka.enabled -- Whether or not to create a standalone Kafka exporter to expose Kafka metrics.
-      enabled: true
+      enabled: false
     jmx:
       # kafka.metrics.jmx.enabled -- Whether or not to expose JMX metrics to Prometheus.
       enabled: true
@@ -605,12 +656,18 @@ kafka:
   persistence:
     # kafka.persistence.size -- Size of persistent volume for each Kafka pod
     size: 50Gi
+  # kafka.podAnnotations -- Kafka Pod annotations.
+  podAnnotations:
+    ad.stackstate.com/server.check_names: '["openmetrics"]'
+    ad.stackstate.com/server.init_configs: '[{}]'
+    ad.stackstate.com/server.instances: '[ { "prometheus_url": "http://%%host%%:5556/metrics", "namespace": "","metrics": ["*"] } ]'
   # kafka.resources -- Kafka resources per pods.
   resources:
     limits:
       memory: "2Gi"
     requests:
       memory: "2Gi"
+      cpu: "1000m"
   # kafka.zookeeper.enabled -- Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**.
   zookeeper:
     enabled: false
@@ -627,11 +684,17 @@ zookeeper:
   metrics:
     # zookeeper.metrics.enabled -- Enable / disable Zookeeper Prometheus metrics.
     enabled: true
+    # zookeeper.metrics.podAnnotations -- Annotations for ZooKeeper pod (for StackState agent to scrape metrics in openmetrics format)
     serviceMonitor:
       # zookeeper.metrics.serviceMonitor.enabled -- Enable creation of `ServiceMonitor` objects for Prometheus operator.
       enabled: false
       # zookeeper.metrics.serviceMonitor.selector -- Default selector to use to target a certain Prometheus instance.
       selector: {}
+  # zookeeper.podAnnotations -- Annotations for ZooKeeper pod.
+  podAnnotations:
+    ad.stackstate.com/server.check_names: '["openmetrics"]'
+    ad.stackstate.com/server.init_configs: '[{}]'
+    ad.stackstate.com/server.instances: '[ { "prometheus_url": "http://%%host%%:9141/metrics", "namespace": "","metrics": ["*"] } ]'
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
   replicaCount: 3
 
