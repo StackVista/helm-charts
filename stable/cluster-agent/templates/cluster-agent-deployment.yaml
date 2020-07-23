@@ -15,9 +15,9 @@ spec:
   template:
     metadata:
       annotations:
-        ad.stackstatehq.com/stackstate-cluster-agent.check_names: '["prometheus"]'
-        ad.stackstatehq.com/stackstate-cluster-agent.init_configs: '[{}]'
-        ad.stackstatehq.com/stackstate-cluster-agent.instances: '[{"prometheus_url": "http://%%host%%:5000/metrics","namespace": "stackstate.cluster_agent","metrics": ["go_goroutines","go_memstats_*","process_*","api_requests","stackstate_requests","external_metrics", "cluster_checks_*"]}]'
+        ad.stackstate.com/stackstate-cluster-agent.check_names: '["openmetrics"]'
+        ad.stackstate.com/stackstate-cluster-agent.init_configs: '[{}]'
+        ad.stackstate.com/stackstate-cluster-agent.instances: '[{"prometheus_url": "http://%%host%%:5000/metrics","namespace": "stackstate.cluster_agent","metrics": ["go_goroutines","go_memstats_*","process_*","api_requests","stackstate_requests","external_metrics", "cluster_checks_*"]}]'
         {{- include "cluster-agent.checksum-configs" . | nindent 8 }}
       labels:
         app.kubernetes.io/component: cluster-agent

@@ -2,7 +2,7 @@ cluster-agent
 =============
 Helm chart for the StackState cluster agent.
 
-Current chart version is `0.4.1`
+Current chart version is `0.4.2`
 
 Source code can be found [here](https://github.com/StackVista/stackstate-agent)
 
@@ -55,6 +55,7 @@ stackstate/cluster-agent
 |-----|------|---------|-------------|
 | agent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | agent.apm.enabled | bool | `true` | Enable / disable the agent APM module. |
+| agent.checksTagCardinality | string | `"orchestrator"` | low, orchestrator or high. Orchestrator level adds pod_name, high adds display_container_name |
 | agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | agent.image.repository | string | `"docker.io/stackstate/stackstate-agent-2"` | Base container image registry. |
 | agent.image.tag | string | `"2.6.0"` | Default container image tag. |
