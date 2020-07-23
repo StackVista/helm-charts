@@ -103,7 +103,7 @@ stackstate:
           memory: "2Gi"
         requests:
           memory: "2Gi"
-          cpu: "1000m"
+          cpu: "500m"
       # stackstate.components.api.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.api.tolerations -- Toleration labels for pod assignment.
@@ -134,7 +134,7 @@ stackstate:
           memory: "2Gi"
         requests:
           memory: "2Gi"
-          cpu: "250m"
+          cpu: "150m"
       # stackstate.components.correlate.replicaCount -- Number of `correlate` replicas.
       replicaCount: 1
       # stackstate.components.correlate.nodeSelector -- Node labels for pod assignment.
@@ -221,7 +221,7 @@ stackstate:
           memory: "1Gi"
         requests:
           memory: "1Gi"
-          cpu: "300m"
+          cpu: "250m"
       # stackstate.components.k2es.replicaCount -- Number of `k2es` replicas.
       replicaCount: 1
       # stackstate.components.k2es.nodeSelector -- Node labels for pod assignment.
@@ -255,7 +255,7 @@ stackstate:
           memory: "2Gi"
         requests:
           memory: "1Gi"
-          cpu: "700m"
+          cpu: "500m"
       # stackstate.components.receiver.replicaCount -- Number of `receiver` replicas.
       replicaCount: 1
       # stackstate.components.receiver.nodeSelector -- Node labels for pod assignment.
@@ -320,7 +320,7 @@ stackstate:
           memory: "8Gi"
         requests:
           memory: "8Gi"
-          cpu: "3000m"
+          cpu: "2000m"
       # stackstate.components.server.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.server.tolerations -- Toleration labels for pod assignment.
@@ -348,7 +348,7 @@ stackstate:
           memory: "2Gi"
         requests:
           memory: "2Gi"
-          cpu: "500m"
+          cpu: "200m"
       # stackstate.components.state.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.state.tolerations -- Toleration labels for pod assignment.
@@ -376,7 +376,7 @@ stackstate:
           memory: "4Gi"
         requests:
           memory: "4Gi"
-          cpu: "1000m"
+          cpu: "500m"
       # stackstate.components.sync.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.sync.tolerations -- Toleration labels for pod assignment.
@@ -436,7 +436,7 @@ stackstate:
           memory: "2Gi"
         requests:
           memory: "2Gi"
-          cpu: "500m"
+          cpu: "300m"
       # stackstate.components.viewHealth.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.viewHealth.tolerations -- Toleration labels for pod assignment.
@@ -526,7 +526,7 @@ elasticsearch:
   # elasticsearch.resources -- Override Elasticsearch resources
   resources:
     requests:
-      cpu: "2000m"
+      cpu: "1000m"
       memory: "3Gi"
     limits:
       cpu: "2000m"
@@ -670,7 +670,7 @@ kafka:
       memory: "2Gi"
     requests:
       memory: "2Gi"
-      cpu: "1000m"
+      cpu: "300m"
   # kafka.zookeeper.enabled -- Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**.
   zookeeper:
     enabled: false
