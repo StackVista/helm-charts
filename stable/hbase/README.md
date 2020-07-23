@@ -2,7 +2,7 @@ hbase
 =====
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.38`
+Current chart version is `0.1.39`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -47,7 +47,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hbase.master.image.tag | string | `nil` | Container image tag for HBase masters, defaults to `stackgraph.image.tag` |
 | hbase.master.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hbase.master.replicaCount | int | `1` | Number of pods for HBase masters. |
-| hbase.master.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"200m","memory":"1Gi"}}` | Resources to allocate for HBase masters. |
+| hbase.master.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HBase masters. |
 | hbase.master.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.regionserver.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hbase.regionserver.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -57,7 +57,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hbase.regionserver.image.tag | string | `nil` | Container image tag for HBase region servers, defaults to `stackgraph.image.tag` |
 | hbase.regionserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hbase.regionserver.replicaCount | int | `1` | Number of HBase regionserver nodes. |
-| hbase.regionserver.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"2500m","memory":"2Gi"}}` | Resources to allocate for HBase region servers. |
+| hbase.regionserver.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"750m","memory":"2Gi"}}` | Resources to allocate for HBase region servers. |
 | hbase.regionserver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.zookeeper.quorum | string | `"hbase"` | Zookeeper quorum used for single-node Zookeeper installations; not used if `zookeeper.replicaCount` is more than `1`. |
 | hdfs.datanode.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -69,7 +69,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hdfs.datanode.persistence.size | string | `"250Gi"` | Size of volume for HDFS data nodes. |
 | hdfs.datanode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS data nodes. |
 | hdfs.datanode.replicaCount | int | `1` | Number of HDFS data nodes. |
-| hdfs.datanode.resources | object | `{"limits":{"memory":"4Gi"},"requests":{"cpu":"500m","memory":"2Gi"}}` | Resources to allocate for HDFS data nodes. |
+| hdfs.datanode.resources | object | `{"limits":{"memory":"4Gi"},"requests":{"cpu":"50m","memory":"2Gi"}}` | Resources to allocate for HDFS data nodes. |
 | hdfs.datanode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.image.pullPolicy | string | `"Always"` | Pull policy for HDFS datanode. |
 | hdfs.image.repository | string | `"stackstate/hadoop"` | Base container image repository for HDFS datanode. |
@@ -82,7 +82,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hdfs.namenode.persistence.enabled | bool | `true` | Enable persistence for HDFS name nodes. |
 | hdfs.namenode.persistence.size | string | `"20Gi"` | Size of volume for HDFS name nodes. |
 | hdfs.namenode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS name nodes. |
-| hdfs.namenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"250m","memory":"1Gi"}}` | Resources to allocate for HDFS name nodes. |
+| hdfs.namenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HDFS name nodes. |
 | hdfs.namenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.secondarynamenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.secondarynamenode.enabled | bool | `false` | Enable / disable secondary name nodes. |
@@ -93,7 +93,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | hdfs.secondarynamenode.persistence.enabled | bool | `true` | Enable persistence for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.persistence.size | string | `"20Gi"` | Size of volume for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS secondary name nodes. |
-| hdfs.secondarynamenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"100m","memory":"1Gi"}}` | Resources to allocate for HDFS secondary name nodes. |
+| hdfs.secondarynamenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all containers. |
 | securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all containers. |
@@ -109,7 +109,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | tephra.image.tag | string | `nil` | Container image tag for Tephra pods, defaults to `stackgraph.image.tag` |
 | tephra.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | tephra.replicaCount | int | `1` | Number of pods for Tephra pods. |
-| tephra.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"memory":"2Gi"}}` | Resources to allocate for Tephra pods. |
+| tephra.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"50m","memory":"2Gi"}}` | Resources to allocate for Tephra pods. |
 | tephra.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | wait.image.registry | string | `"docker.io"` | Base container image registry for wait containers |
 | wait.image.repository | string | `"dokkupaas/wait"` | Container image tag for wait containers |
