@@ -66,6 +66,8 @@ spec:
             value: {{ .Values.clusterAgent.enabled | quote }}
           - name: STS_CLUSTER_NAME
             value: {{ .Values.stackstate.cluster.name | quote }}
+          - name: STS_CHECKS_TAG_CARDINALITY
+            value: {{ .Values.agent.checksTagCardinality | quote }}
           - name: STS_HEALTH_PORT
             value: "5555"
           - name: STS_LEADER_ELECTION

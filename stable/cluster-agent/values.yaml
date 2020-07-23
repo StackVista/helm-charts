@@ -34,6 +34,9 @@ agent:
   # agent.skipSslValidation -- Set to true if self signed certificates are used.
   skipSslValidation: false
 
+  # agent.checksTagCardinality -- low, orchestrator or high. Orchestrator level adds pod_name, high adds display_container_name
+  checksTagCardinality: orchestrator
+
   image:
     # agent.image.repository -- Base container image registry.
     repository: docker.io/stackstate/stackstate-agent-2
