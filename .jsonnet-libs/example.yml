@@ -19,7 +19,7 @@ helm_add_custom_repo: helm repo add --password='!QAZxsw2@' --username='user' cus
 helm_delete: helm delete --purge some-other-chart
 helm_init: helm init --client-only
 helm_install: helm install --debug --force --namespace test    --timeout 600  --version 1.2.3 --verify  stackstate/hbase
-helm_upgrade: helm upgrade --force --install --recreate-pods    --timeout 600  --wait some-test-chart stackstate/distributed
+helm_upgrade: helm upgrade --force --install --recreate-pods    --timeout 600  --wait some-test-chart stackstate/stackstate
 semver_release:
   image: docker.io/stackstate/stackstate-ci-images:stackstate-semver-release
   only:

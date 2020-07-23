@@ -15,7 +15,6 @@
       'aws-nuke',
       'cluster-agent',
       'common',
-      'distributed',
       'elasticsearch',
       'gitlab-runner',
       'gitlab-steward',

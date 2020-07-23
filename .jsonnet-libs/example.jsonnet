@@ -16,5 +16,5 @@ local docker_tags = ['some-tag', 'some-other-tag'];
   helm_delete: master.helm.delete(name='some-other-chart'),
   helm_init: master.helm.init(extra_opts=['--client-only']),
   helm_install: master.helm.install(repo='stackstate/hbase', debug=true, version='1.2.3', upgrade=false, namespace='test', extra_opts=['--verify']),
-  helm_upgrade: master.helm.install(repo='stackstate/distributed', name='some-test-chart', recreate_pods=true, wait=true),
+  helm_upgrade: master.helm.install(repo='stackstate/stackstate', name='some-test-chart', recreate_pods=true, wait=true),
 }

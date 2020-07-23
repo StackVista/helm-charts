@@ -118,35 +118,6 @@ push_common_to_public:
   variables:
     CHART: stable/common
   when: manual
-push_distributed_to_internal:
-  only:
-    changes:
-      - stable/distributed/**/*
-    refs:
-      - master
-  script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
-    - helm dependencies update ${CHART}
-    - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/distributed
-push_distributed_to_public:
-  needs:
-    - push_distributed_to_internal
-  only:
-    changes:
-      - stable/distributed/**/*
-    refs:
-      - master
-  script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
-    - helm dependencies update ${CHART}
-    - helm push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
-  stage: push-charts-to-public
-  variables:
-    CHART: stable/distributed
-  when: manual
 push_elasticsearch_to_internal:
   only:
     changes:
