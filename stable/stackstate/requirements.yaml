@@ -9,7 +9,7 @@ dependencies:
 - name: hbase
   condition: hbase.enabled
   repository: https://helm.stackstate.io
-  version: 0.1.38
+  version: 0.1.39
 - name: kafka
   condition: kafka.enabled
   repository: https://charts.bitnami.com/bitnami
@@ -23,6 +23,6 @@ dependencies:
   repository: https://helm.stackstate.io
   condition: anomaly-detection.enabled
 - name: cluster-agent
-  version: 0.4.1
+  version: 0.4.2
   repository: https://helm.stackstate.io
   condition: cluster-agent.enabled
