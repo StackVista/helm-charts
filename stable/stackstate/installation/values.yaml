@@ -1,0 +1,29 @@
+global:
+  receiverApiKey: ""
+stackstate:
+  components:
+    all:
+      image:
+        pullSecretUsername: "stackstate+k8snodes"
+        pullSecretPassword: "H03Q2JUQYJ6MFM9L3Q8K09AM3V4D4P5D3SQ19IHQCSWFHGNZ7HE27VCLIOTDB0BG"
+    server:
+      java:
+        trustStorePassword: "230i4032fji9439(#$(%#"
+      authentication:
+        ldap:
+          bind:
+            dn: ou=acme,dc=com
+            password: foobar
+          ssl:
+            type: ssl
+            trustStore: 2934u092rfji920349234i9239i492
+      extraEnv:
+        secret:
+          CONFIG_FORCE_stackstate_api_authentication_authServer_stackstateAuthServer_defaultPassword: ""
+  receiver:
+    baseUrl: "http://localhost:7077"
+  license:
+    key: "api01"
+hbase:
+  all:
+    image:
