@@ -42,7 +42,7 @@ local validate_and_push_jobs = {
 };
 
 local test_chart_job(chart) = {
-  image: 'golang:1.14-alpine',
+  image: 'stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526',
   script: [
     'go test ./stable/' + chart + '/...',
   ],

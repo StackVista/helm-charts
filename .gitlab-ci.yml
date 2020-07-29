@@ -405,7 +405,7 @@ stages:
   - push-charts-to-internal
   - push-charts-to-public
 test_aws-amicleaner:
-  image: golang:1.14-alpine
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
         - stable/aws-amicleaner/**/*
@@ -417,7 +417,7 @@ test_aws-amicleaner:
   variables:
     CGO_ENABLED: 0
 test_aws-nuke:
-  image: golang:1.14-alpine
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
         - stable/aws-nuke/**/*
@@ -429,7 +429,7 @@ test_aws-nuke:
   variables:
     CGO_ENABLED: 0
 test_cluster-agent:
-  image: golang:1.14-alpine
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
         - stable/cluster-agent/**/*
@@ -441,7 +441,7 @@ test_cluster-agent:
   variables:
     CGO_ENABLED: 0
 test_common:
-  image: golang:1.14-alpine
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
         - stable/common/**/*
@@ -453,7 +453,7 @@ test_common:
   variables:
     CGO_ENABLED: 0
 test_elasticsearch:
-  image: golang:1.14-alpine
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
         - stable/elasticsearch/**/*
@@ -465,7 +465,7 @@ test_elasticsearch:
   variables:
     CGO_ENABLED: 0
 test_gitlab-runner:
-  image: golang:1.14-alpine
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
         - stable/gitlab-runner/**/*
@@ -477,7 +477,7 @@ test_gitlab-runner:
   variables:
     CGO_ENABLED: 0
 test_gitlab-steward:
-  image: golang:1.14-alpine
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
         - stable/gitlab-steward/**/*
@@ -489,7 +489,7 @@ test_gitlab-steward:
   variables:
     CGO_ENABLED: 0
 test_hbase:
-  image: golang:1.14-alpine
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
         - stable/hbase/**/*
@@ -501,7 +501,7 @@ test_hbase:
   variables:
     CGO_ENABLED: 0
 test_iceman:
-  image: golang:1.14-alpine
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
         - stable/iceman/**/*
@@ -513,7 +513,7 @@ test_iceman:
   variables:
     CGO_ENABLED: 0
 test_stackstate:
-  image: golang:1.14-alpine
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
         - stable/stackstate/**/*
@@ -525,7 +525,7 @@ test_stackstate:
   variables:
     CGO_ENABLED: 0
 test_stackstate-standalone:
-  image: golang:1.14-alpine
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
         - stable/stackstate-standalone/**/*
@@ -537,7 +537,7 @@ test_stackstate-standalone:
   variables:
     CGO_ENABLED: 0
 test_trafficmirror:
-  image: golang:1.14-alpine
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
         - stable/trafficmirror/**/*
