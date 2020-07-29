@@ -57,7 +57,7 @@ local test_chart_job(chart) = {
   stage: 'test',
   rules: [
     {
-      changes: ['stable/' + chart + '/**/*'],
+      // changes: ['stable/' + chart + '/**/*'],
       exists: ['stable/' + chart + '/test/*.go'],
     },
   ],

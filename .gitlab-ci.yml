@@ -416,9 +416,7 @@ test_aws-amicleaner:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - changes:
-        - stable/aws-amicleaner/**/*
-      exists:
+    - exists:
         - stable/aws-amicleaner/test/*.go
   script:
     - go test ./stable/aws-amicleaner/...
@@ -438,9 +436,7 @@ test_aws-nuke:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - changes:
-        - stable/aws-nuke/**/*
-      exists:
+    - exists:
         - stable/aws-nuke/test/*.go
   script:
     - go test ./stable/aws-nuke/...
@@ -460,9 +456,7 @@ test_cluster-agent:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - changes:
-        - stable/cluster-agent/**/*
-      exists:
+    - exists:
         - stable/cluster-agent/test/*.go
   script:
     - go test ./stable/cluster-agent/...
@@ -482,9 +476,7 @@ test_common:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - changes:
-        - stable/common/**/*
-      exists:
+    - exists:
         - stable/common/test/*.go
   script:
     - go test ./stable/common/...
@@ -504,9 +496,7 @@ test_elasticsearch:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - changes:
-        - stable/elasticsearch/**/*
-      exists:
+    - exists:
         - stable/elasticsearch/test/*.go
   script:
     - go test ./stable/elasticsearch/...
@@ -526,9 +516,7 @@ test_gitlab-runner:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - changes:
-        - stable/gitlab-runner/**/*
-      exists:
+    - exists:
         - stable/gitlab-runner/test/*.go
   script:
     - go test ./stable/gitlab-runner/...
@@ -548,9 +536,7 @@ test_gitlab-steward:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - changes:
-        - stable/gitlab-steward/**/*
-      exists:
+    - exists:
         - stable/gitlab-steward/test/*.go
   script:
     - go test ./stable/gitlab-steward/...
@@ -570,9 +556,7 @@ test_hbase:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - changes:
-        - stable/hbase/**/*
-      exists:
+    - exists:
         - stable/hbase/test/*.go
   script:
     - go test ./stable/hbase/...
@@ -592,9 +576,7 @@ test_iceman:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - changes:
-        - stable/iceman/**/*
-      exists:
+    - exists:
         - stable/iceman/test/*.go
   script:
     - go test ./stable/iceman/...
@@ -614,9 +596,7 @@ test_stackstate:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - changes:
-        - stable/stackstate/**/*
-      exists:
+    - exists:
         - stable/stackstate/test/*.go
   script:
     - go test ./stable/stackstate/...
@@ -636,9 +616,7 @@ test_stackstate-standalone:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - changes:
-        - stable/stackstate-standalone/**/*
-      exists:
+    - exists:
         - stable/stackstate-standalone/test/*.go
   script:
     - go test ./stable/stackstate-standalone/...
@@ -658,9 +636,7 @@ test_trafficmirror:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - changes:
-        - stable/trafficmirror/**/*
-      exists:
+    - exists:
         - stable/trafficmirror/test/*.go
   script:
     - go test ./stable/trafficmirror/...
