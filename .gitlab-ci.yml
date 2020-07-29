@@ -406,11 +406,9 @@ stages:
   - push-charts-to-public
 test_aws-amicleaner:
   image: golang:1.14-alpine
-  only:
-    changes:
-      - stable/aws-amicleaner/**/*
-    refs:
-      - merge_requests
+  rules:
+    - changes:
+        - stable/aws-amicleaner/**/*
   script:
     - go test ./stable/aws-amicleaner/...
   stage: test
@@ -418,11 +416,9 @@ test_aws-amicleaner:
     CGO_ENABLED: 0
 test_aws-nuke:
   image: golang:1.14-alpine
-  only:
-    changes:
-      - stable/aws-nuke/**/*
-    refs:
-      - merge_requests
+  rules:
+    - changes:
+        - stable/aws-nuke/**/*
   script:
     - go test ./stable/aws-nuke/...
   stage: test
@@ -430,11 +426,9 @@ test_aws-nuke:
     CGO_ENABLED: 0
 test_cluster-agent:
   image: golang:1.14-alpine
-  only:
-    changes:
-      - stable/cluster-agent/**/*
-    refs:
-      - merge_requests
+  rules:
+    - changes:
+        - stable/cluster-agent/**/*
   script:
     - go test ./stable/cluster-agent/...
   stage: test
@@ -442,11 +436,9 @@ test_cluster-agent:
     CGO_ENABLED: 0
 test_common:
   image: golang:1.14-alpine
-  only:
-    changes:
-      - stable/common/**/*
-    refs:
-      - merge_requests
+  rules:
+    - changes:
+        - stable/common/**/*
   script:
     - go test ./stable/common/...
   stage: test
@@ -454,11 +446,9 @@ test_common:
     CGO_ENABLED: 0
 test_elasticsearch:
   image: golang:1.14-alpine
-  only:
-    changes:
-      - stable/elasticsearch/**/*
-    refs:
-      - merge_requests
+  rules:
+    - changes:
+        - stable/elasticsearch/**/*
   script:
     - go test ./stable/elasticsearch/...
   stage: test
@@ -466,11 +456,9 @@ test_elasticsearch:
     CGO_ENABLED: 0
 test_gitlab-runner:
   image: golang:1.14-alpine
-  only:
-    changes:
-      - stable/gitlab-runner/**/*
-    refs:
-      - merge_requests
+  rules:
+    - changes:
+        - stable/gitlab-runner/**/*
   script:
     - go test ./stable/gitlab-runner/...
   stage: test
@@ -478,11 +466,9 @@ test_gitlab-runner:
     CGO_ENABLED: 0
 test_gitlab-steward:
   image: golang:1.14-alpine
-  only:
-    changes:
-      - stable/gitlab-steward/**/*
-    refs:
-      - merge_requests
+  rules:
+    - changes:
+        - stable/gitlab-steward/**/*
   script:
     - go test ./stable/gitlab-steward/...
   stage: test
@@ -490,11 +476,9 @@ test_gitlab-steward:
     CGO_ENABLED: 0
 test_hbase:
   image: golang:1.14-alpine
-  only:
-    changes:
-      - stable/hbase/**/*
-    refs:
-      - merge_requests
+  rules:
+    - changes:
+        - stable/hbase/**/*
   script:
     - go test ./stable/hbase/...
   stage: test
@@ -502,11 +486,9 @@ test_hbase:
     CGO_ENABLED: 0
 test_iceman:
   image: golang:1.14-alpine
-  only:
-    changes:
-      - stable/iceman/**/*
-    refs:
-      - merge_requests
+  rules:
+    - changes:
+        - stable/iceman/**/*
   script:
     - go test ./stable/iceman/...
   stage: test
@@ -514,11 +496,9 @@ test_iceman:
     CGO_ENABLED: 0
 test_stackstate:
   image: golang:1.14-alpine
-  only:
-    changes:
-      - stable/stackstate/**/*
-    refs:
-      - merge_requests
+  rules:
+    - changes:
+        - stable/stackstate/**/*
   script:
     - go test ./stable/stackstate/...
   stage: test
@@ -526,11 +506,9 @@ test_stackstate:
     CGO_ENABLED: 0
 test_stackstate-standalone:
   image: golang:1.14-alpine
-  only:
-    changes:
-      - stable/stackstate-standalone/**/*
-    refs:
-      - merge_requests
+  rules:
+    - changes:
+        - stable/stackstate-standalone/**/*
   script:
     - go test ./stable/stackstate-standalone/...
   stage: test
@@ -538,11 +516,9 @@ test_stackstate-standalone:
     CGO_ENABLED: 0
 test_trafficmirror:
   image: golang:1.14-alpine
-  only:
-    changes:
-      - stable/trafficmirror/**/*
-    refs:
-      - merge_requests
+  rules:
+    - changes:
+        - stable/trafficmirror/**/*
   script:
     - go test ./stable/trafficmirror/...
   stage: test

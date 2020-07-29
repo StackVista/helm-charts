@@ -47,10 +47,9 @@ local test_chart_job(chart) = {
     'go test ./stable/' + chart + '/...',
   ],
   stage: 'test',
-  only: {
-    changes: ['stable/' + chart + '/**/*'],
-    refs: ['merge_requests'],
-  },
+  rules: [
+    { changes: ['stable/' + chart + '/**/*'] },
+  ],
   variables: {
     CGO_ENABLED: 0,
   },
