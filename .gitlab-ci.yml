@@ -414,6 +414,8 @@ test_aws-amicleaner:
   script:
     - go test ./stable/aws-amicleaner/...
   stage: test
+  variables:
+    CGO_ENABLED: 0
 test_aws-nuke:
   image: golang:1.14-alpine
   needs:
@@ -424,6 +426,8 @@ test_aws-nuke:
   script:
     - go test ./stable/aws-nuke/...
   stage: test
+  variables:
+    CGO_ENABLED: 0
 test_cluster-agent:
   image: golang:1.14-alpine
   needs:
@@ -434,6 +438,8 @@ test_cluster-agent:
   script:
     - go test ./stable/cluster-agent/...
   stage: test
+  variables:
+    CGO_ENABLED: 0
 test_common:
   image: golang:1.14-alpine
   needs:
@@ -444,6 +450,8 @@ test_common:
   script:
     - go test ./stable/common/...
   stage: test
+  variables:
+    CGO_ENABLED: 0
 test_elasticsearch:
   image: golang:1.14-alpine
   needs:
@@ -454,6 +462,8 @@ test_elasticsearch:
   script:
     - go test ./stable/elasticsearch/...
   stage: test
+  variables:
+    CGO_ENABLED: 0
 test_gitlab-runner:
   image: golang:1.14-alpine
   needs:
@@ -464,6 +474,8 @@ test_gitlab-runner:
   script:
     - go test ./stable/gitlab-runner/...
   stage: test
+  variables:
+    CGO_ENABLED: 0
 test_gitlab-steward:
   image: golang:1.14-alpine
   needs:
@@ -474,6 +486,8 @@ test_gitlab-steward:
   script:
     - go test ./stable/gitlab-steward/...
   stage: test
+  variables:
+    CGO_ENABLED: 0
 test_hbase:
   image: golang:1.14-alpine
   needs:
@@ -484,6 +498,8 @@ test_hbase:
   script:
     - go test ./stable/hbase/...
   stage: test
+  variables:
+    CGO_ENABLED: 0
 test_iceman:
   image: golang:1.14-alpine
   needs:
@@ -494,6 +510,8 @@ test_iceman:
   script:
     - go test ./stable/iceman/...
   stage: test
+  variables:
+    CGO_ENABLED: 0
 test_stackstate:
   image: golang:1.14-alpine
   needs:
@@ -504,6 +522,8 @@ test_stackstate:
   script:
     - go test ./stable/stackstate/...
   stage: test
+  variables:
+    CGO_ENABLED: 0
 test_stackstate-standalone:
   image: golang:1.14-alpine
   needs:
@@ -514,6 +534,8 @@ test_stackstate-standalone:
   script:
     - go test ./stable/stackstate-standalone/...
   stage: test
+  variables:
+    CGO_ENABLED: 0
 test_trafficmirror:
   image: golang:1.14-alpine
   needs:
@@ -524,6 +546,8 @@ test_trafficmirror:
   script:
     - go test ./stable/trafficmirror/...
   stage: test
+  variables:
+    CGO_ENABLED: 0
 validate_charts:
   before_script:
     - .gitlab/validate_before_script.sh

@@ -49,6 +49,9 @@ local test_chart_job(chart) = {
   stage: 'test',
   only: { changes: ['stable/' + chart + '/**/*'] },
   needs: ['validate_charts'],
+  variables: {
+    CGO_ENABLED: 0,
+  },
 };
 
 local push_chart_job(chart, repository_url, repository_username, repository_password) = {
