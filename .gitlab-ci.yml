@@ -405,6 +405,7 @@ stages:
   - push-charts-to-internal
   - push-charts-to-public
 test_aws-amicleaner:
+  image: golang:1.14-alpine
   needs:
     - validate_charts
   only:
@@ -414,6 +415,7 @@ test_aws-amicleaner:
     - go test ./stable/aws-amicleaner/...
   stage: test
 test_aws-nuke:
+  image: golang:1.14-alpine
   needs:
     - validate_charts
   only:
@@ -423,6 +425,7 @@ test_aws-nuke:
     - go test ./stable/aws-nuke/...
   stage: test
 test_cluster-agent:
+  image: golang:1.14-alpine
   needs:
     - validate_charts
   only:
@@ -432,6 +435,7 @@ test_cluster-agent:
     - go test ./stable/cluster-agent/...
   stage: test
 test_common:
+  image: golang:1.14-alpine
   needs:
     - validate_charts
   only:
@@ -441,6 +445,7 @@ test_common:
     - go test ./stable/common/...
   stage: test
 test_elasticsearch:
+  image: golang:1.14-alpine
   needs:
     - validate_charts
   only:
@@ -450,6 +455,7 @@ test_elasticsearch:
     - go test ./stable/elasticsearch/...
   stage: test
 test_gitlab-runner:
+  image: golang:1.14-alpine
   needs:
     - validate_charts
   only:
@@ -459,6 +465,7 @@ test_gitlab-runner:
     - go test ./stable/gitlab-runner/...
   stage: test
 test_gitlab-steward:
+  image: golang:1.14-alpine
   needs:
     - validate_charts
   only:
@@ -468,6 +475,7 @@ test_gitlab-steward:
     - go test ./stable/gitlab-steward/...
   stage: test
 test_hbase:
+  image: golang:1.14-alpine
   needs:
     - validate_charts
   only:
@@ -477,6 +485,7 @@ test_hbase:
     - go test ./stable/hbase/...
   stage: test
 test_iceman:
+  image: golang:1.14-alpine
   needs:
     - validate_charts
   only:
@@ -486,6 +495,7 @@ test_iceman:
     - go test ./stable/iceman/...
   stage: test
 test_stackstate:
+  image: golang:1.14-alpine
   needs:
     - validate_charts
   only:
@@ -495,6 +505,7 @@ test_stackstate:
     - go test ./stable/stackstate/...
   stage: test
 test_stackstate-standalone:
+  image: golang:1.14-alpine
   needs:
     - validate_charts
   only:
@@ -504,6 +515,7 @@ test_stackstate-standalone:
     - go test ./stable/stackstate-standalone/...
   stage: test
 test_trafficmirror:
+  image: golang:1.14-alpine
   needs:
     - validate_charts
   only:

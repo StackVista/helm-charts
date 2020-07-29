@@ -42,6 +42,7 @@ local validate_and_push_jobs = {
 };
 
 local test_chart_job(chart) = {
+  image: 'golang:1.14-alpine',
   script: [
     'go test ./stable/' + chart + '/...',
   ],
