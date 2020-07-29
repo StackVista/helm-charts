@@ -409,7 +409,7 @@ test_aws-amicleaner:
   rules:
     - changes:
         - stable/aws-amicleaner/**/*
-    - exists:
+      exists:
         - stable/aws-amicleaner/test/*.go
   script:
     - go test ./stable/aws-amicleaner/...
@@ -421,7 +421,7 @@ test_aws-nuke:
   rules:
     - changes:
         - stable/aws-nuke/**/*
-    - exists:
+      exists:
         - stable/aws-nuke/test/*.go
   script:
     - go test ./stable/aws-nuke/...
@@ -433,7 +433,7 @@ test_cluster-agent:
   rules:
     - changes:
         - stable/cluster-agent/**/*
-    - exists:
+      exists:
         - stable/cluster-agent/test/*.go
   script:
     - go test ./stable/cluster-agent/...
@@ -445,7 +445,7 @@ test_common:
   rules:
     - changes:
         - stable/common/**/*
-    - exists:
+      exists:
         - stable/common/test/*.go
   script:
     - go test ./stable/common/...
@@ -457,7 +457,7 @@ test_elasticsearch:
   rules:
     - changes:
         - stable/elasticsearch/**/*
-    - exists:
+      exists:
         - stable/elasticsearch/test/*.go
   script:
     - go test ./stable/elasticsearch/...
@@ -469,7 +469,7 @@ test_gitlab-runner:
   rules:
     - changes:
         - stable/gitlab-runner/**/*
-    - exists:
+      exists:
         - stable/gitlab-runner/test/*.go
   script:
     - go test ./stable/gitlab-runner/...
@@ -481,7 +481,7 @@ test_gitlab-steward:
   rules:
     - changes:
         - stable/gitlab-steward/**/*
-    - exists:
+      exists:
         - stable/gitlab-steward/test/*.go
   script:
     - go test ./stable/gitlab-steward/...
@@ -493,7 +493,7 @@ test_hbase:
   rules:
     - changes:
         - stable/hbase/**/*
-    - exists:
+      exists:
         - stable/hbase/test/*.go
   script:
     - go test ./stable/hbase/...
@@ -505,7 +505,7 @@ test_iceman:
   rules:
     - changes:
         - stable/iceman/**/*
-    - exists:
+      exists:
         - stable/iceman/test/*.go
   script:
     - go test ./stable/iceman/...
@@ -517,7 +517,7 @@ test_stackstate:
   rules:
     - changes:
         - stable/stackstate/**/*
-    - exists:
+      exists:
         - stable/stackstate/test/*.go
   script:
     - go test ./stable/stackstate/...
@@ -529,7 +529,7 @@ test_stackstate-standalone:
   rules:
     - changes:
         - stable/stackstate-standalone/**/*
-    - exists:
+      exists:
         - stable/stackstate-standalone/test/*.go
   script:
     - go test ./stable/stackstate-standalone/...
@@ -541,7 +541,7 @@ test_trafficmirror:
   rules:
     - changes:
         - stable/trafficmirror/**/*
-    - exists:
+      exists:
         - stable/trafficmirror/test/*.go
   script:
     - go test ./stable/trafficmirror/...
