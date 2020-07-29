@@ -51,7 +51,6 @@ local test_chart_job(chart) = {
     changes: ['stable/' + chart + '/**/*'],
     refs: ['merge_requests'],
   },
-  needs: ['validate_charts'],
   variables: {
     CGO_ENABLED: 0,
   },
