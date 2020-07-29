@@ -43,6 +43,14 @@ local validate_and_push_jobs = {
 
 local test_chart_job(chart) = {
   image: 'stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526',
+  before_script: [
+    'helm repo add %s %s' % ['%s' % std.strReplace(name, '_', '-'), repositories[name]]
+    for name in std.objectFields(repositories)
+  ] +
+  [
+    'helm repo update',
+    'helm dependencies update ${CHART}',
+  ],
   script: [
     'go test ./stable/' + chart + '/...',
   ],
@@ -54,6 +62,7 @@ local test_chart_job(chart) = {
     },
   ],
   variables: {
+    CHART: 'stable/' + chart,
     CGO_ENABLED: 0,
   },
 };

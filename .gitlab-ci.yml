@@ -405,6 +405,15 @@ stages:
   - push-charts-to-internal
   - push-charts-to-public
 test_aws-amicleaner:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
@@ -416,7 +425,17 @@ test_aws-amicleaner:
   stage: test
   variables:
     CGO_ENABLED: 0
+    CHART: stable/aws-amicleaner
 test_aws-nuke:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
@@ -428,7 +447,17 @@ test_aws-nuke:
   stage: test
   variables:
     CGO_ENABLED: 0
+    CHART: stable/aws-nuke
 test_cluster-agent:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
@@ -440,7 +469,17 @@ test_cluster-agent:
   stage: test
   variables:
     CGO_ENABLED: 0
+    CHART: stable/cluster-agent
 test_common:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
@@ -452,7 +491,17 @@ test_common:
   stage: test
   variables:
     CGO_ENABLED: 0
+    CHART: stable/common
 test_elasticsearch:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
@@ -464,7 +513,17 @@ test_elasticsearch:
   stage: test
   variables:
     CGO_ENABLED: 0
+    CHART: stable/elasticsearch
 test_gitlab-runner:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
@@ -476,7 +535,17 @@ test_gitlab-runner:
   stage: test
   variables:
     CGO_ENABLED: 0
+    CHART: stable/gitlab-runner
 test_gitlab-steward:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
@@ -488,7 +557,17 @@ test_gitlab-steward:
   stage: test
   variables:
     CGO_ENABLED: 0
+    CHART: stable/gitlab-steward
 test_hbase:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
@@ -500,7 +579,17 @@ test_hbase:
   stage: test
   variables:
     CGO_ENABLED: 0
+    CHART: stable/hbase
 test_iceman:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
@@ -512,7 +601,17 @@ test_iceman:
   stage: test
   variables:
     CGO_ENABLED: 0
+    CHART: stable/iceman
 test_stackstate:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
@@ -524,7 +623,17 @@ test_stackstate:
   stage: test
   variables:
     CGO_ENABLED: 0
+    CHART: stable/stackstate
 test_stackstate-standalone:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
@@ -536,7 +645,17 @@ test_stackstate-standalone:
   stage: test
   variables:
     CGO_ENABLED: 0
+    CHART: stable/stackstate-standalone
 test_trafficmirror:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - changes:
@@ -548,6 +667,7 @@ test_trafficmirror:
   stage: test
   variables:
     CGO_ENABLED: 0
+    CHART: stable/trafficmirror
 validate_charts:
   before_script:
     - .gitlab/validate_before_script.sh
