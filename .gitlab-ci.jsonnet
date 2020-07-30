@@ -112,6 +112,14 @@ local push_charts_to_public_jobs = {
 
 // Main
 {
+  // Only run for merge requests, tags, or the default (master) branch
+  workflow: {
+    rules: [
+      { @'if': '$CI_MERGE_REQUEST_IID' },
+      { @'if': '$CI_COMMIT_TAG' },
+      { @'if': '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH' },
+    ],
+  },
   image: 'quay.io/helmpack/chart-testing:v3.0.0-beta.2',
   stages: ['validate', 'test', 'build', 'push-charts-to-internal', 'push-charts-to-public'],
 

@@ -698,3 +698,8 @@ validate_charts:
 variables:
   HELM_VERSION: v3.1.2
   KUBEVAL_SCHEMA_LOCATION: https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
