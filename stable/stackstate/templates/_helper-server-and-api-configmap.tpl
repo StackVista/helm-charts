@@ -40,7 +40,7 @@ stackstate {
 {{- if or (hasKey .Values.stackstate.authentication.ldap "bind") (hasKey .Values.stackstate.authentication.ldap "ssl") }}
 {{ $authTypes = append $authTypes "ldapAuthServer" -}}
 stackstate {
-  # api {
+  api {
     authentication {
       authServer {
         ldapAuthServer {
