@@ -21,8 +21,13 @@ local validate_and_push_jobs = {
   validate_charts: {
     before_script: ['.gitlab/validate_before_script.sh'],
     environment: 'stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}',
-    except: { refs: ['master'] },
-    only: { refs: ['branches'] },
+    rules: [
+      {
+        @'if': '$CI_COMMIT_BRANCH == "master"',
+        when: 'never',
+      },
+      { when: 'always' },
+    ],
     script: [
       'ct list-changed --config test/ct.yaml',
       'ct lint --debug --validate-maintainers=false --config test/ct.yaml',
@@ -31,8 +36,13 @@ local validate_and_push_jobs = {
     stage: 'validate',
   },
   push_test_charts: sync_charts_template {
-    except: { refs: ['master'] },
-    only: { refs: ['branches'] },
+    rules: [
+      {
+        @'if': '$CI_COMMIT_BRANCH == "master"',
+        when: 'never',
+      },
+      { when: 'always' },
+    ],
     needs: ['validate_charts'],
     variables: {
       AWS_BUCKET: 's3://helm-test.stackstate.io',
