@@ -416,8 +416,11 @@ test_aws-amicleaner:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - exists:
+    - changes:
+        - stable/aws-amicleaner/**/*
+      exists:
         - stable/aws-amicleaner/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - go test ./stable/aws-amicleaner/...
   stage: test
@@ -436,8 +439,11 @@ test_aws-nuke:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - exists:
+    - changes:
+        - stable/aws-nuke/**/*
+      exists:
         - stable/aws-nuke/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - go test ./stable/aws-nuke/...
   stage: test
@@ -456,8 +462,11 @@ test_cluster-agent:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - exists:
+    - changes:
+        - stable/cluster-agent/**/*
+      exists:
         - stable/cluster-agent/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - go test ./stable/cluster-agent/...
   stage: test
@@ -476,8 +485,11 @@ test_common:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - exists:
+    - changes:
+        - stable/common/**/*
+      exists:
         - stable/common/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - go test ./stable/common/...
   stage: test
@@ -496,8 +508,11 @@ test_elasticsearch:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - exists:
+    - changes:
+        - stable/elasticsearch/**/*
+      exists:
         - stable/elasticsearch/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - go test ./stable/elasticsearch/...
   stage: test
@@ -516,8 +531,11 @@ test_gitlab-runner:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - exists:
+    - changes:
+        - stable/gitlab-runner/**/*
+      exists:
         - stable/gitlab-runner/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - go test ./stable/gitlab-runner/...
   stage: test
@@ -536,8 +554,11 @@ test_gitlab-steward:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - exists:
+    - changes:
+        - stable/gitlab-steward/**/*
+      exists:
         - stable/gitlab-steward/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - go test ./stable/gitlab-steward/...
   stage: test
@@ -556,8 +577,11 @@ test_hbase:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - exists:
+    - changes:
+        - stable/hbase/**/*
+      exists:
         - stable/hbase/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - go test ./stable/hbase/...
   stage: test
@@ -576,8 +600,11 @@ test_iceman:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - exists:
+    - changes:
+        - stable/iceman/**/*
+      exists:
         - stable/iceman/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - go test ./stable/iceman/...
   stage: test
@@ -596,8 +623,11 @@ test_stackstate:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - exists:
+    - changes:
+        - stable/stackstate/**/*
+      exists:
         - stable/stackstate/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - go test ./stable/stackstate/...
   stage: test
@@ -616,8 +646,11 @@ test_stackstate-standalone:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - exists:
+    - changes:
+        - stable/stackstate-standalone/**/*
+      exists:
         - stable/stackstate-standalone/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - go test ./stable/stackstate-standalone/...
   stage: test
@@ -636,8 +669,11 @@ test_trafficmirror:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
-    - exists:
+    - changes:
+        - stable/trafficmirror/**/*
+      exists:
         - stable/trafficmirror/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - go test ./stable/trafficmirror/...
   stage: test

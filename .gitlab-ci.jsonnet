@@ -57,7 +57,8 @@ local test_chart_job(chart) = {
   stage: 'test',
   rules: [
     {
-      // changes: ['stable/' + chart + '/**/*'],
+      @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
+      changes: ['stable/' + chart + '/**/*'],
       exists: ['stable/' + chart + '/test/*.go'],
     },
   ],
