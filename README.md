@@ -35,3 +35,15 @@ The pre-commit hooks themselves call binaries under the hood; they can be instal
 $ brew install helm shellcheck
 $ brew install norwoodj/tap/helm-docs
 ```
+
+## Testing the Helm charts
+
+The Helm chart repository supports testing Helm charts using the [Terratest](https://terratest.gruntwork.io/) library. In order to run tests for a chart, you can invoke the following command from the root of the repository:
+
+```shell
+$ go test ./stable/<chart>/...
+```
+
+The test-set for a chart is in the `stable/<chart>/test` directory.
+
+You are encouraged to adding more tests when working on the Helm charts ;).
