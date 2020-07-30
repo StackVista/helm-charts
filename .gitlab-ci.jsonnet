@@ -54,7 +54,7 @@ local validate_and_push_jobs = {
 local test_chart_job(chart) = {
   image: 'stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526',
   before_script: [
-    'helm repo add %s %s' % ['%s' % std.strReplace(name, '_', '-'), repositories[name]]
+    'helm repo add %s %s' % [std.strReplace(name, '_', '-'), repositories[name]]
     for name in std.objectFields(repositories)
   ] +
   [
@@ -84,8 +84,6 @@ local push_chart_job(chart, repository_url, repository_username, repository_pass
     'helm dependencies update ${CHART}',
     'helm push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
   ],
-  only: { changes: ['stable/' + chart + '/**/*'] },
-  needs: ['test_' + chart],
   variables: {
     CHART: 'stable/' + chart,
   },
@@ -102,7 +100,12 @@ local push_charts_to_internal_jobs = {
 '${CHARTMUSEUM_INTERNAL_USERNAME}',
 '${CHARTMUSEUM_INTERNAL_PASSWORD}') {
     stage: 'push-charts-to-internal',
-    only+: { refs: ['master'] },
+    rules: [
+      {
+        @'if': '$CI_COMMIT_BRANCH == "master"',
+        changes: ['stable/' + chart + '/**/*'],
+      },
+    ],
   })
   for chart in charts
 };
@@ -113,9 +116,14 @@ local push_charts_to_public_jobs = {
 '${CHARTMUSEUM_USERNAME}',
 '${CHARTMUSEUM_PASSWORD}') {
     stage: 'push-charts-to-public',
-    only+: { refs: ['master'] },
+    rules: [
+      {
+        @'if': '$CI_COMMIT_BRANCH == "master"',
+        changes: ['stable/' + chart + '/**/*'],
+        when: 'manual',
+      },
+    ],
     needs: ['push_%s_to_internal' % chart],
-    when: 'manual',
   })
   for chart in charts
 };

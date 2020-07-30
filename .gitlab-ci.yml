@@ -3,13 +3,10 @@
 ################################################################
 image: quay.io/helmpack/chart-testing:v3.0.0-beta.2
 push_aws-amicleaner_to_internal:
-  needs:
-    - test_aws-amicleaner
-  only:
-    changes:
-      - stable/aws-amicleaner/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/aws-amicleaner/**/*
+      if: $CI_COMMIT_BRANCH == "master"
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -20,11 +17,11 @@ push_aws-amicleaner_to_internal:
 push_aws-amicleaner_to_public:
   needs:
     - push_aws-amicleaner_to_internal
-  only:
-    changes:
-      - stable/aws-amicleaner/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/aws-amicleaner/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -32,15 +29,11 @@ push_aws-amicleaner_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/aws-amicleaner
-  when: manual
 push_aws-nuke_to_internal:
-  needs:
-    - test_aws-nuke
-  only:
-    changes:
-      - stable/aws-nuke/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/aws-nuke/**/*
+      if: $CI_COMMIT_BRANCH == "master"
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -51,11 +44,11 @@ push_aws-nuke_to_internal:
 push_aws-nuke_to_public:
   needs:
     - push_aws-nuke_to_internal
-  only:
-    changes:
-      - stable/aws-nuke/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/aws-nuke/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -63,15 +56,11 @@ push_aws-nuke_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/aws-nuke
-  when: manual
 push_cluster-agent_to_internal:
-  needs:
-    - test_cluster-agent
-  only:
-    changes:
-      - stable/cluster-agent/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/cluster-agent/**/*
+      if: $CI_COMMIT_BRANCH == "master"
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -82,11 +71,11 @@ push_cluster-agent_to_internal:
 push_cluster-agent_to_public:
   needs:
     - push_cluster-agent_to_internal
-  only:
-    changes:
-      - stable/cluster-agent/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/cluster-agent/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -94,15 +83,11 @@ push_cluster-agent_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/cluster-agent
-  when: manual
 push_common_to_internal:
-  needs:
-    - test_common
-  only:
-    changes:
-      - stable/common/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/common/**/*
+      if: $CI_COMMIT_BRANCH == "master"
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -113,11 +98,11 @@ push_common_to_internal:
 push_common_to_public:
   needs:
     - push_common_to_internal
-  only:
-    changes:
-      - stable/common/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/common/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -125,15 +110,11 @@ push_common_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/common
-  when: manual
 push_elasticsearch_to_internal:
-  needs:
-    - test_elasticsearch
-  only:
-    changes:
-      - stable/elasticsearch/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/elasticsearch/**/*
+      if: $CI_COMMIT_BRANCH == "master"
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -144,11 +125,11 @@ push_elasticsearch_to_internal:
 push_elasticsearch_to_public:
   needs:
     - push_elasticsearch_to_internal
-  only:
-    changes:
-      - stable/elasticsearch/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/elasticsearch/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -156,15 +137,11 @@ push_elasticsearch_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/elasticsearch
-  when: manual
 push_gitlab-runner_to_internal:
-  needs:
-    - test_gitlab-runner
-  only:
-    changes:
-      - stable/gitlab-runner/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/gitlab-runner/**/*
+      if: $CI_COMMIT_BRANCH == "master"
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -175,11 +152,11 @@ push_gitlab-runner_to_internal:
 push_gitlab-runner_to_public:
   needs:
     - push_gitlab-runner_to_internal
-  only:
-    changes:
-      - stable/gitlab-runner/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/gitlab-runner/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -187,15 +164,11 @@ push_gitlab-runner_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/gitlab-runner
-  when: manual
 push_gitlab-steward_to_internal:
-  needs:
-    - test_gitlab-steward
-  only:
-    changes:
-      - stable/gitlab-steward/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/gitlab-steward/**/*
+      if: $CI_COMMIT_BRANCH == "master"
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -206,11 +179,11 @@ push_gitlab-steward_to_internal:
 push_gitlab-steward_to_public:
   needs:
     - push_gitlab-steward_to_internal
-  only:
-    changes:
-      - stable/gitlab-steward/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/gitlab-steward/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -218,15 +191,11 @@ push_gitlab-steward_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/gitlab-steward
-  when: manual
 push_hbase_to_internal:
-  needs:
-    - test_hbase
-  only:
-    changes:
-      - stable/hbase/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/hbase/**/*
+      if: $CI_COMMIT_BRANCH == "master"
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -237,11 +206,11 @@ push_hbase_to_internal:
 push_hbase_to_public:
   needs:
     - push_hbase_to_internal
-  only:
-    changes:
-      - stable/hbase/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/hbase/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -249,15 +218,11 @@ push_hbase_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/hbase
-  when: manual
 push_iceman_to_internal:
-  needs:
-    - test_iceman
-  only:
-    changes:
-      - stable/iceman/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/iceman/**/*
+      if: $CI_COMMIT_BRANCH == "master"
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -268,11 +233,11 @@ push_iceman_to_internal:
 push_iceman_to_public:
   needs:
     - push_iceman_to_internal
-  only:
-    changes:
-      - stable/iceman/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/iceman/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -280,15 +245,11 @@ push_iceman_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/iceman
-  when: manual
 push_stackstate-standalone_to_internal:
-  needs:
-    - test_stackstate-standalone
-  only:
-    changes:
-      - stable/stackstate-standalone/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/stackstate-standalone/**/*
+      if: $CI_COMMIT_BRANCH == "master"
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -299,11 +260,11 @@ push_stackstate-standalone_to_internal:
 push_stackstate-standalone_to_public:
   needs:
     - push_stackstate-standalone_to_internal
-  only:
-    changes:
-      - stable/stackstate-standalone/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/stackstate-standalone/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -311,15 +272,11 @@ push_stackstate-standalone_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/stackstate-standalone
-  when: manual
 push_stackstate_to_internal:
-  needs:
-    - test_stackstate
-  only:
-    changes:
-      - stable/stackstate/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/stackstate/**/*
+      if: $CI_COMMIT_BRANCH == "master"
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -330,11 +287,11 @@ push_stackstate_to_internal:
 push_stackstate_to_public:
   needs:
     - push_stackstate_to_internal
-  only:
-    changes:
-      - stable/stackstate/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/stackstate/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -342,7 +299,6 @@ push_stackstate_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/stackstate
-  when: manual
 push_test_charts:
   before_script:
     - .gitlab/push_before_script.sh
@@ -366,13 +322,10 @@ push_test_charts:
     AWS_BUCKET: s3://helm-test.stackstate.io
     REPO_URL: https://helm-test.stackstate.io/
 push_trafficmirror_to_internal:
-  needs:
-    - test_trafficmirror
-  only:
-    changes:
-      - stable/trafficmirror/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/trafficmirror/**/*
+      if: $CI_COMMIT_BRANCH == "master"
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -383,11 +336,11 @@ push_trafficmirror_to_internal:
 push_trafficmirror_to_public:
   needs:
     - push_trafficmirror_to_internal
-  only:
-    changes:
-      - stable/trafficmirror/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/trafficmirror/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -395,7 +348,6 @@ push_trafficmirror_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/trafficmirror
-  when: manual
 stages:
   - validate
   - test
