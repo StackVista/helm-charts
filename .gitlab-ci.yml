@@ -309,8 +309,6 @@ push_test_charts:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-  needs:
-    - validate_charts
   rules:
     - if: $CI_COMMIT_BRANCH == "master"
       when: never

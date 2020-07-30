@@ -43,7 +43,6 @@ local validate_and_push_jobs = {
       },
       { when: 'always' },
     ],
-    needs: ['validate_charts'],
     variables: {
       AWS_BUCKET: 's3://helm-test.stackstate.io',
       REPO_URL: 'https://helm-test.stackstate.io/',
