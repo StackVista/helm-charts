@@ -32,5 +32,6 @@ $ pre-commit install-hooks
 The pre-commit hooks themselves call binaries under the hood; they can be installed via the following command:
 
 ```shell
-$ brew install helm helm-docs shellcheck
+$ brew install helm shellcheck
+$ brew install norwoodj/tap/helm-docs
 ```

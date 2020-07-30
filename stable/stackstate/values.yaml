@@ -509,7 +509,7 @@ elasticsearch:
   # elasticsearch.enabled -- Enable / disable chart-based Elasticsearch.
   enabled: true
   # elasticsearch.esJavaOpts -- JVM options
-  esJavaOpts: "-Xmx2g -Xms2g"
+  esJavaOpts: "-Xmx3g -Xms3g"
   # elasticsearch.extraEnvs -- Extra settings that StackState uses for Elasticsearch.
   extraEnvs:
   - name: action.auto_create_index
@@ -527,10 +527,10 @@ elasticsearch:
   resources:
     requests:
       cpu: "1000m"
-      memory: "3Gi"
+      memory: "4Gi"
     limits:
       cpu: "2000m"
-      memory: "3Gi"
+      memory: "4Gi"
   # elasticsearch.volumeClaimTemplate -- PVC template defaulting to 250Gi default volumes
   volumeClaimTemplate:
     accessModes:
