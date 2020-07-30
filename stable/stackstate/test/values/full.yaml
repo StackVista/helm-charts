@@ -1,0 +1,29 @@
+global:
+  receiverApiKey: ""
+stackstate:
+  components:
+    all:
+      image:
+        pullSecretUsername: "test"
+        pullSecretPassword: "secret"
+    server:
+      java:
+        trustStorePassword: "secretTrustStorePassword"
+      authentication:
+        ldap:
+          bind:
+            dn: ou=acme,dc=com
+            password: foobar
+          ssl:
+            type: ssl
+            trustStore: 2934u092rfji920349234i9239i492
+      extraEnv:
+        secret:
+          CONFIG_FORCE_stackstate_api_authentication_authServer_stackstateAuthServer_defaultPassword: ""
+  receiver:
+    baseUrl: "http://localhost:7077"
+  license:
+    key: "api01"
+hbase:
+  all:
+    image:

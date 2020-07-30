@@ -3,11 +3,11 @@
 ################################################################
 image: quay.io/helmpack/chart-testing:v3.0.0-beta.2
 push_aws-amicleaner_to_internal:
-  only:
-    changes:
-      - stable/aws-amicleaner/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/aws-amicleaner/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: always
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -18,11 +18,11 @@ push_aws-amicleaner_to_internal:
 push_aws-amicleaner_to_public:
   needs:
     - push_aws-amicleaner_to_internal
-  only:
-    changes:
-      - stable/aws-amicleaner/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/aws-amicleaner/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -30,13 +30,12 @@ push_aws-amicleaner_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/aws-amicleaner
-  when: manual
 push_aws-nuke_to_internal:
-  only:
-    changes:
-      - stable/aws-nuke/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/aws-nuke/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: always
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -47,11 +46,11 @@ push_aws-nuke_to_internal:
 push_aws-nuke_to_public:
   needs:
     - push_aws-nuke_to_internal
-  only:
-    changes:
-      - stable/aws-nuke/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/aws-nuke/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -59,13 +58,12 @@ push_aws-nuke_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/aws-nuke
-  when: manual
 push_cluster-agent_to_internal:
-  only:
-    changes:
-      - stable/cluster-agent/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/cluster-agent/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: always
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -76,11 +74,11 @@ push_cluster-agent_to_internal:
 push_cluster-agent_to_public:
   needs:
     - push_cluster-agent_to_internal
-  only:
-    changes:
-      - stable/cluster-agent/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/cluster-agent/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -88,13 +86,12 @@ push_cluster-agent_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/cluster-agent
-  when: manual
 push_common_to_internal:
-  only:
-    changes:
-      - stable/common/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/common/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: always
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -105,11 +102,11 @@ push_common_to_internal:
 push_common_to_public:
   needs:
     - push_common_to_internal
-  only:
-    changes:
-      - stable/common/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/common/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -117,13 +114,12 @@ push_common_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/common
-  when: manual
 push_elasticsearch_to_internal:
-  only:
-    changes:
-      - stable/elasticsearch/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/elasticsearch/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: always
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -134,11 +130,11 @@ push_elasticsearch_to_internal:
 push_elasticsearch_to_public:
   needs:
     - push_elasticsearch_to_internal
-  only:
-    changes:
-      - stable/elasticsearch/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/elasticsearch/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -146,13 +142,12 @@ push_elasticsearch_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/elasticsearch
-  when: manual
 push_gitlab-runner_to_internal:
-  only:
-    changes:
-      - stable/gitlab-runner/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/gitlab-runner/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: always
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -163,11 +158,11 @@ push_gitlab-runner_to_internal:
 push_gitlab-runner_to_public:
   needs:
     - push_gitlab-runner_to_internal
-  only:
-    changes:
-      - stable/gitlab-runner/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/gitlab-runner/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -175,13 +170,12 @@ push_gitlab-runner_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/gitlab-runner
-  when: manual
 push_gitlab-steward_to_internal:
-  only:
-    changes:
-      - stable/gitlab-steward/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/gitlab-steward/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: always
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -192,11 +186,11 @@ push_gitlab-steward_to_internal:
 push_gitlab-steward_to_public:
   needs:
     - push_gitlab-steward_to_internal
-  only:
-    changes:
-      - stable/gitlab-steward/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/gitlab-steward/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -204,13 +198,12 @@ push_gitlab-steward_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/gitlab-steward
-  when: manual
 push_hbase_to_internal:
-  only:
-    changes:
-      - stable/hbase/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/hbase/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: always
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -221,11 +214,11 @@ push_hbase_to_internal:
 push_hbase_to_public:
   needs:
     - push_hbase_to_internal
-  only:
-    changes:
-      - stable/hbase/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/hbase/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -233,13 +226,12 @@ push_hbase_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/hbase
-  when: manual
 push_iceman_to_internal:
-  only:
-    changes:
-      - stable/iceman/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/iceman/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: always
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -250,11 +242,11 @@ push_iceman_to_internal:
 push_iceman_to_public:
   needs:
     - push_iceman_to_internal
-  only:
-    changes:
-      - stable/iceman/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/iceman/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -262,13 +254,12 @@ push_iceman_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/iceman
-  when: manual
 push_stackstate-standalone_to_internal:
-  only:
-    changes:
-      - stable/stackstate-standalone/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/stackstate-standalone/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: always
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -279,11 +270,11 @@ push_stackstate-standalone_to_internal:
 push_stackstate-standalone_to_public:
   needs:
     - push_stackstate-standalone_to_internal
-  only:
-    changes:
-      - stable/stackstate-standalone/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/stackstate-standalone/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -291,13 +282,12 @@ push_stackstate-standalone_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/stackstate-standalone
-  when: manual
 push_stackstate_to_internal:
-  only:
-    changes:
-      - stable/stackstate/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/stackstate/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: always
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -308,11 +298,11 @@ push_stackstate_to_internal:
 push_stackstate_to_public:
   needs:
     - push_stackstate_to_internal
-  only:
-    changes:
-      - stable/stackstate/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/stackstate/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -320,7 +310,6 @@ push_stackstate_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/stackstate
-  when: manual
 push_test_charts:
   before_script:
     - .gitlab/push_before_script.sh
@@ -331,14 +320,10 @@ push_test_charts:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-  except:
-    refs:
-      - master
-  needs:
-    - validate_charts
-  only:
-    refs:
-      - branches
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: never
+    - when: always
   script:
     - sh test/sync-repo.sh
   stage: build
@@ -346,11 +331,11 @@ push_test_charts:
     AWS_BUCKET: s3://helm-test.stackstate.io
     REPO_URL: https://helm-test.stackstate.io/
 push_trafficmirror_to_internal:
-  only:
-    changes:
-      - stable/trafficmirror/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/trafficmirror/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: always
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -361,11 +346,11 @@ push_trafficmirror_to_internal:
 push_trafficmirror_to_public:
   needs:
     - push_trafficmirror_to_internal
-  only:
-    changes:
-      - stable/trafficmirror/**/*
-    refs:
-      - master
+  rules:
+    - changes:
+        - stable/trafficmirror/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
@@ -373,27 +358,306 @@ push_trafficmirror_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/trafficmirror
-  when: manual
 stages:
+  - validate
   - test
   - build
   - push-charts-to-internal
   - push-charts-to-public
+test_aws-amicleaner:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  rules:
+    - changes:
+        - stable/aws-amicleaner/**/*
+      exists:
+        - stable/aws-amicleaner/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/aws-amicleaner/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/aws-amicleaner
+test_aws-nuke:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  rules:
+    - changes:
+        - stable/aws-nuke/**/*
+      exists:
+        - stable/aws-nuke/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/aws-nuke/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/aws-nuke
+test_cluster-agent:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  rules:
+    - changes:
+        - stable/cluster-agent/**/*
+      exists:
+        - stable/cluster-agent/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/cluster-agent/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/cluster-agent
+test_common:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  rules:
+    - changes:
+        - stable/common/**/*
+      exists:
+        - stable/common/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/common/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/common
+test_elasticsearch:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  rules:
+    - changes:
+        - stable/elasticsearch/**/*
+      exists:
+        - stable/elasticsearch/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/elasticsearch/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/elasticsearch
+test_gitlab-runner:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  rules:
+    - changes:
+        - stable/gitlab-runner/**/*
+      exists:
+        - stable/gitlab-runner/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/gitlab-runner/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/gitlab-runner
+test_gitlab-steward:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  rules:
+    - changes:
+        - stable/gitlab-steward/**/*
+      exists:
+        - stable/gitlab-steward/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/gitlab-steward/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/gitlab-steward
+test_hbase:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  rules:
+    - changes:
+        - stable/hbase/**/*
+      exists:
+        - stable/hbase/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/hbase/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/hbase
+test_iceman:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  rules:
+    - changes:
+        - stable/iceman/**/*
+      exists:
+        - stable/iceman/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/iceman/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/iceman
+test_stackstate:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  rules:
+    - changes:
+        - stable/stackstate/**/*
+      exists:
+        - stable/stackstate/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/stackstate/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/stackstate
+test_stackstate-standalone:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  rules:
+    - changes:
+        - stable/stackstate-standalone/**/*
+      exists:
+        - stable/stackstate-standalone/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/stackstate-standalone/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/stackstate-standalone
+test_trafficmirror:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  rules:
+    - changes:
+        - stable/trafficmirror/**/*
+      exists:
+        - stable/trafficmirror/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/trafficmirror/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/trafficmirror
 validate_charts:
   before_script:
     - .gitlab/validate_before_script.sh
   environment: stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}
-  except:
-    refs:
-      - master
-  only:
-    refs:
-      - branches
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: never
+    - when: always
   script:
     - ct list-changed --config test/ct.yaml
     - ct lint --debug --validate-maintainers=false --config test/ct.yaml
     - .gitlab/validate_kubeval.sh
-  stage: test
+  stage: validate
 variables:
   HELM_VERSION: v3.1.2
   KUBEVAL_SCHEMA_LOCATION: https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
