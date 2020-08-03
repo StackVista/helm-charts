@@ -2,7 +2,7 @@ common
 ======
 Common chartbuilding components and helpers
 
-Current chart version is `0.4.7`
+Current chart version is `0.4.8`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
