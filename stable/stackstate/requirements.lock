@@ -16,9 +16,9 @@ dependencies:
   version: 5.16.0
 - name: anomaly-detection
   repository: https://helm.stackstate.io
-  version: 4.1.7
+  version: 4.1.8
 - name: cluster-agent
   repository: https://helm.stackstate.io
   version: 0.4.2
-digest: sha256:05a0b557b7070fe9af5fb80576ccec993405597f816b412ab3eb9618fa7bda4d
-generated: "2020-07-29T08:44:05.5735215Z"
+digest: sha256:d18d30fbf0fab1b904f01376ddaa8e18ed43af48e51757e4f8534c28b53e658f
+generated: "2020-08-03T11:09:09.04878Z"
