@@ -15,6 +15,7 @@ metadata:
   name: {{ template "common.fullname" . }}
   labels:
     {{- include "common.labels.standard" . | nindent 4 }}
+    {{- include "common.labelize" .Values.labels | nindent 4 }}
 spec:
   podManagementPolicy: {{ .Values.statefulset.podManagementPolicy }}
   replicas: {{ int .Values.statefulset.replicaCount }}
