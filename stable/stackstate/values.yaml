@@ -510,6 +510,9 @@ elasticsearch:
   enabled: true
   # elasticsearch.esJavaOpts -- JVM options
   esJavaOpts: "-Xmx3g -Xms3g"
+  # elasticsearch.labels -- Add additional labels to all resources created for elasticsearch
+  labels:
+    app.kubernetes.io/part-of: stackstate
   # elasticsearch.extraEnvs -- Extra settings that StackState uses for Elasticsearch.
   extraEnvs:
   - name: action.auto_create_index
@@ -544,6 +547,9 @@ hbase:
   all:
     metrics:
       enabled: true
+    # hbase.all.commonLabels -- Add additional labels to all resources created for all hbase resources
+    commonLabels:
+      app.kubernetes.io/part-of: stackstate
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
@@ -659,6 +665,9 @@ kafka:
   persistence:
     # kafka.persistence.size -- Size of persistent volume for each Kafka pod
     size: 50Gi
+  # kafka.commonLabels -- Add additional labels to all resources created for kafka
+  commonLabels:
+    app.kubernetes.io/part-of: stackstate
   # kafka.podAnnotations -- Kafka Pod annotations.
   podAnnotations:
     ad.stackstate.com/jmx-exporter.check_names: '["openmetrics"]'
@@ -693,6 +702,9 @@ zookeeper:
       enabled: false
       # zookeeper.metrics.serviceMonitor.selector -- Default selector to use to target a certain Prometheus instance.
       selector: {}
+  # zookeeper.commonLabels -- Add additional labels to all resources created for zookeeper
+  commonLabels:
+    app.kubernetes.io/part-of: stackstate
   # zookeeper.podAnnotations -- Annotations for ZooKeeper pod.
   podAnnotations:
     ad.stackstate.com/zookeeper.check_names: '["openmetrics"]'
