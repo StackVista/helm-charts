@@ -40,6 +40,9 @@ global:
   # global.receiverApiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
   receiverApiKey: ""
 
+# commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
+commonLabels: {}
+
 stackstate:
   components:
     all:
@@ -511,7 +514,7 @@ elasticsearch:
   # elasticsearch.esJavaOpts -- JVM options
   esJavaOpts: "-Xmx3g -Xms3g"
   # elasticsearch.labels -- Add additional labels to all resources created for elasticsearch
-  labels:
+  commonLabels:
     app.kubernetes.io/part-of: stackstate
   # elasticsearch.extraEnvs -- Extra settings that StackState uses for Elasticsearch.
   extraEnvs:
@@ -544,12 +547,12 @@ elasticsearch:
 hbase:
   # hbase.enabled -- Enable / disable chart-based HBase.
   enabled: true
+  # hbase.commonLabels -- Add additional labels to all resources created for all hbase resources
+  commonLabels:
+    app.kubernetes.io/part-of: stackstate
   all:
     metrics:
       enabled: true
-    # hbase.all.commonLabels -- Add additional labels to all resources created for all hbase resources
-    commonLabels:
-      app.kubernetes.io/part-of: stackstate
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
@@ -666,8 +669,11 @@ kafka:
     # kafka.persistence.size -- Size of persistent volume for each Kafka pod
     size: 50Gi
   # kafka.commonLabels -- Add additional labels to all resources created for kafka
-  commonLabels:
-    app.kubernetes.io/part-of: stackstate
+  # Disabled for now because the kafka chart has a bug
+  # commonLabels:
+  #  app.kubernetes.io/part-of: stackstate
+  podLabels:
+    app.kubernetes.io/part-of: stackstate-pod
   # kafka.podAnnotations -- Kafka Pod annotations.
   podAnnotations:
     ad.stackstate.com/jmx-exporter.check_names: '["openmetrics"]'
