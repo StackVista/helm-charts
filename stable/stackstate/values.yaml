@@ -499,6 +499,9 @@ stackstate:
     server:
     # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
       split: false
+  stackpacks:
+    # stackstate.stackpacks.installed -- Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks)
+    installed: []
 
 ##############################
 # Dependency chart overrides #
