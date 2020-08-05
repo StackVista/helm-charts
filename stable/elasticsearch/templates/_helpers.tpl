@@ -96,3 +96,25 @@ Return the appropriate apiVersion for ingress.
 {{- print "networking.k8s.io/v1beta1" -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Standard labels
+*/}}
+{{- define "elasticsearch.labels.standard" -}}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
+app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+app.kubernetes.io/name: {{ template "elasticsearch.name" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+{{- end -}}
+
+{{/*
+Common labels
+*/}}
+{{- define "elasticsearch.labels.common" -}}
+{{- range $key, $value := .Values.commonLabels -}}
+{{ $key }}: {{ $value | quote }}
+{{- end -}}
+{{- end -}}

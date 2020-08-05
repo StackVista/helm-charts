@@ -8,10 +8,9 @@ metadata:
   name: {{ template "elasticsearch.uname" . }}
 {{- end }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}"
-    app: "{{ template "elasticsearch.uname" . }}"
+    {{- include "elasticsearch.labels.standard" . | nindent 4 }}
+    {{- include "elasticsearch.labels.common" . | nindent 4 }}
+    app.kubernetes.io/component: {{ .Values.nodeGroup }}
 {{- if .Values.service.labels }}
 {{ toYaml .Values.service.labels | indent 4}}
 {{- end }}
@@ -51,10 +50,9 @@ metadata:
   name: {{ template "elasticsearch.uname" . }}-headless
 {{- end }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}"
-    app: "{{ template "elasticsearch.uname" . }}"
+    {{- include "elasticsearch.labels.standard" . | nindent 4 }}
+    {{- include "elasticsearch.labels.common" . | nindent 4 }}
+    app.kubernetes.io/component: {{ .Values.nodeGroup }}
 {{- if .Values.service.labelsHeadless }}
 {{ toYaml .Values.service.labelsHeadless | indent 4 }}
 {{- end }}
