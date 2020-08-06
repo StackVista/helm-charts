@@ -16,6 +16,7 @@ metadata:
   namespace: {{ default .Release.Namespace .Values.servicemonitor.namespace }}
   labels:
     {{- include "common.labels.standard" . | nindent 4 }}
+    {{- include "common.labels.custom" . | nindent 4 }}
   {{- with .Values.servicemonitor.labels }}
     {{ toYaml . | nindent 4 }}
   {{- end }}

@@ -15,6 +15,7 @@ metadata:
   name: {{ template "common.fullname" . }}
   labels:
     {{- include "common.labels.standard" . | nindent 4 }}
+    {{- include "common.labels.custom" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
@@ -27,6 +28,7 @@ spec:
       {{- end }}
       labels:
         {{- include "common.labels.selector" . | nindent 8 }}
+        {{- include "common.labels.custom" . | nindent 8 }}
     spec:
       containers:
       -

@@ -2,7 +2,7 @@ hbase
 =====
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.39`
+Current chart version is `0.1.40`
 
 Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
 
@@ -11,7 +11,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | zookeeper | 5.3.4 |
-| https://helm.stackstate.io/ | common | 0.4.7 |
+| https://helm.stackstate.io/ | common | 0.4.8 |
 
 ## Chart Values
 
@@ -29,6 +29,7 @@ Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts
 | all.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
 | all.nodeSelector | object | `{}` | Node labels for pod assignment on all components. |
 | all.tolerations | list | `[]` | Toleration labels for pod assignment on all components. |
+| commonLabels | object | `{}` | Labels that will be applied to all resources created by this helm chart |
 | console.affinity | object | `{}` | Affinity settings for pod assignment. |
 | console.enabled | bool | `true` | Enable / disable deployment of the stackgraph-console for debugging. |
 | console.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |

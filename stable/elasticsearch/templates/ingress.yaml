@@ -7,9 +7,8 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app: {{ .Chart.Name }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    {{- include "elasticsearch.labels.recommended" . | nindent 4 }}
+    {{- include "elasticsearch.labels.common" . | nindent 4 }}
 {{- with .Values.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}

@@ -39,3 +39,12 @@ The selector labels are frequently used in specific pod, or component targeting.
 app.kubernetes.io/instance: {{ .Release.Name | quote }}
 app.kubernetes.io/name: {{ template "common.name" . }}
 {{- end -}}
+
+{{- /*
+common.labels.custom prints the custom common Helm labels.
+
+Allow users of helm charts to specify custom common labels via .Values.commonLabels
+*/ -}}
+{{- define "common.labels.custom" -}}
+{{- include "common.labelize" .Values.commonLabels }}
+{{- end -}}

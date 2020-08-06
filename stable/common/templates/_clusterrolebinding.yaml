@@ -15,6 +15,7 @@ metadata:
   name: {{ template "common.fullname" . }}
   labels:
     {{- include "common.labels.standard" . | nindent 4 }}
+    {{- include "common.labels.custom" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
