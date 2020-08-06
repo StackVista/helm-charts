@@ -516,7 +516,7 @@ elasticsearch:
   enabled: true
   # elasticsearch.esJavaOpts -- JVM options
   esJavaOpts: "-Xmx3g -Xms3g"
-  # elasticsearch.labels -- Add additional labels to all resources created for elasticsearch
+  # elasticsearch.commonLabels -- Add additional labels to all resources created for elasticsearch
   commonLabels:
     app.kubernetes.io/part-of: stackstate
   # elasticsearch.extraEnvs -- Extra settings that StackState uses for Elasticsearch.
@@ -675,8 +675,6 @@ kafka:
   # Disabled for now because the kafka chart has a bug
   # commonLabels:
   #  app.kubernetes.io/part-of: stackstate
-  podLabels:
-    app.kubernetes.io/part-of: stackstate-pod
   # kafka.podAnnotations -- Kafka Pod annotations.
   podAnnotations:
     ad.stackstate.com/jmx-exporter.check_names: '["openmetrics"]'
@@ -705,13 +703,12 @@ zookeeper:
   metrics:
     # zookeeper.metrics.enabled -- Enable / disable Zookeeper Prometheus metrics.
     enabled: true
-    # zookeeper.metrics.podAnnotations -- Annotations for ZooKeeper pod (for StackState agent to scrape metrics in openmetrics format)
+    # zookeeper.metrics.serviceMonitor --
     serviceMonitor:
       # zookeeper.metrics.serviceMonitor.enabled -- Enable creation of `ServiceMonitor` objects for Prometheus operator.
       enabled: false
       # zookeeper.metrics.serviceMonitor.selector -- Default selector to use to target a certain Prometheus instance.
       selector: {}
-  # zookeeper.commonLabels -- Add additional labels to all resources created for zookeeper
   commonLabels:
     app.kubernetes.io/part-of: stackstate
   # zookeeper.podAnnotations -- Annotations for ZooKeeper pod.

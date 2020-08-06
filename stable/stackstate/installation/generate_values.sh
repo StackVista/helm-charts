@@ -174,7 +174,7 @@ cluster-agent:
       authToken: "$(create_agent_auth_token)"
 stackstate:
   stackpacks:
-    installed
+    installed:
       - name: kubernetes
         configuration:
           kubernetes_cluster_name: "${k8s_cluster_name}"
