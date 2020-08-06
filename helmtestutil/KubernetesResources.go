@@ -98,7 +98,7 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 		case "List":
 			// Skip for now
 		default:
-			t.Error("Found unknown kind " + metadata.Kind)
+			t.Error("Found unknown kind " + metadata.Kind + ". Ths can be caused by an incorrect k8s resource type in the helm template or when using a custom resource type.")
 		}
 	}
 
