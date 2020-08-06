@@ -100,7 +100,7 @@ Return the appropriate apiVersion for ingress.
 {{/*
 Standard labels
 */}}
-{{- define "elasticsearch.labels.standard" -}}
+{{- define "elasticsearch.labels.recommended" -}}
 app.kubernetes.io/instance: {{ .Release.Name | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
 app.kubernetes.io/name: {{ template "elasticsearch.name" . }}

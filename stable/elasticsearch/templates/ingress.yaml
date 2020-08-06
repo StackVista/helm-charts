@@ -7,7 +7,7 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "elasticsearch.labels.standard" . | nindent 4 }}
+    {{- include "elasticsearch.labels.recommended" . | nindent 4 }}
     {{- include "elasticsearch.labels.common" . | nindent 4 }}
 {{- with .Values.ingress.annotations }}
   annotations:

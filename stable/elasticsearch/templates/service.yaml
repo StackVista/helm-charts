@@ -8,7 +8,7 @@ metadata:
   name: {{ template "elasticsearch.uname" . }}
 {{- end }}
   labels:
-    {{- include "elasticsearch.labels.standard" . | nindent 4 }}
+    {{- include "elasticsearch.labels.recommended" . | nindent 4 }}
     {{- include "elasticsearch.labels.common" . | nindent 4 }}
     app.kubernetes.io/component: {{ .Values.nodeGroup }}
 {{- if .Values.service.labels }}
@@ -50,7 +50,7 @@ metadata:
   name: {{ template "elasticsearch.uname" . }}-headless
 {{- end }}
   labels:
-    {{- include "elasticsearch.labels.standard" . | nindent 4 }}
+    {{- include "elasticsearch.labels.recommended" . | nindent 4 }}
     {{- include "elasticsearch.labels.common" . | nindent 4 }}
     app.kubernetes.io/component: {{ .Values.nodeGroup }}
 {{- if .Values.service.labelsHeadless }}
