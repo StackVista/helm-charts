@@ -1,16 +1,16 @@
 dependencies:
 - name: common
-  repository: https://helm-test.stackstate.io
+  repository: https://helm.stackstate.io
   version: 0.4.8
 - name: elasticsearch
-  repository: https://helm-test.stackstate.io
+  repository: https://helm.stackstate.io
   version: 7.6.2-stackstate.4
 - name: hbase
-  repository: https://helm-test.stackstate.io
+  repository: https://helm.stackstate.io
   version: 0.1.40
 - name: kafka
   repository: https://charts.bitnami.com/bitnami
-  version: 11.6.5
+  version: 11.7.0
 - name: zookeeper
   repository: https://charts.bitnami.com/bitnami
   version: 5.16.0
@@ -20,5 +20,5 @@ dependencies:
 - name: cluster-agent
   repository: https://helm.stackstate.io
   version: 0.4.2
-digest: sha256:c358e9dd83248b3a2aef7c82521b8de2d8c2b9c6c34c1a7ecaee51de051f9794
-generated: "2020-08-05T09:33:34.500046918+02:00"
+digest: sha256:bb22d8cbd0031a0370dd3e23d694f53f13b82479031d84b877ca9f21c579f722
+generated: "2020-08-06T11:47:52.719908889+02:00"
