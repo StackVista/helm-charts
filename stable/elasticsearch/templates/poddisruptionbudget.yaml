@@ -4,6 +4,10 @@ apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   name: "{{ template "elasticsearch.uname" . }}-pdb"
+  labels:
+    {{- include "elasticsearch.labels.recommended" . | nindent 4 }}
+    {{- include "elasticsearch.labels.common" . | nindent 4 }}
+    app.kubernetes.io/component: {{ .Values.nodeGroup }}
 spec:
   maxUnavailable: {{ .Values.maxUnavailable }}
   selector:
