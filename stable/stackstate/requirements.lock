@@ -10,7 +10,7 @@ dependencies:
   version: 0.1.40
 - name: kafka
   repository: https://charts.bitnami.com/bitnami
-  version: 11.7.0
+  version: 11.7.1
 - name: zookeeper
   repository: https://charts.bitnami.com/bitnami
   version: 5.16.0
@@ -20,5 +20,5 @@ dependencies:
 - name: cluster-agent
   repository: https://helm.stackstate.io
   version: 0.4.2
-digest: sha256:bb22d8cbd0031a0370dd3e23d694f53f13b82479031d84b877ca9f21c579f722
-generated: "2020-08-06T11:47:52.719908889+02:00"
+digest: sha256:cfd15ae7297f06e65100c4ae98807100430e7880fa2788271ca65fc03764516e
+generated: "2020-08-06T17:02:39.387814478+02:00"

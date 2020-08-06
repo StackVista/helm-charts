@@ -13,7 +13,7 @@ dependencies:
 - name: kafka
   condition: kafka.enabled
   repository: https://charts.bitnami.com/bitnami
-  version: 11.7.0
+  version: 11.7.1
 - name: zookeeper
   version: 5.16.0
   repository: https://charts.bitnami.com/bitnami

@@ -672,9 +672,8 @@ kafka:
     # kafka.persistence.size -- Size of persistent volume for each Kafka pod
     size: 50Gi
   # kafka.commonLabels -- Add additional labels to all resources created for kafka
-  # Disabled for now because the kafka chart has a bug
-  # commonLabels:
-  #  app.kubernetes.io/part-of: stackstate
+  commonLabels:
+    app.kubernetes.io/part-of: stackstate
   # kafka.podAnnotations -- Kafka Pod annotations.
   podAnnotations:
     ad.stackstate.com/jmx-exporter.check_names: '["openmetrics"]'
