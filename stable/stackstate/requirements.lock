@@ -3,8 +3,8 @@ dependencies:
   repository: https://helm.stackstate.io
   version: 0.4.8
 - name: elasticsearch
-  repository: https://helm.stackstate.io
-  version: 7.6.2-stackstate.4
+  repository: https://helm-test.stackstate.io
+  version: 7.6.2-stackstate.5
 - name: hbase
   repository: https://helm.stackstate.io
   version: 0.1.40
@@ -20,5 +20,5 @@ dependencies:
 - name: cluster-agent
   repository: https://helm.stackstate.io
   version: 0.4.2
-digest: sha256:cfd15ae7297f06e65100c4ae98807100430e7880fa2788271ca65fc03764516e
-generated: "2020-08-06T17:02:39.387814478+02:00"
+digest: sha256:354566fdf38d6359a70aeb0e4f516410810f508af2bd3d85b59c1e397d23615a
+generated: "2020-08-06T17:47:37.857853731+02:00"
