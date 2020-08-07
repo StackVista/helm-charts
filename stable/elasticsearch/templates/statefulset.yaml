@@ -16,8 +16,8 @@ spec:
   serviceName: {{ template "elasticsearch.uname" . }}-headless
   selector:
     matchLabels:
-      {{- include "elasticsearch.labels.selector" . | nindent 6 }}
-      app.kubernetes.io/component: {{ .Values.nodeGroup }}
+        {{/* Only kept for backwards compatible in upgrades, selector cannot be updated */}}
+        app: "{{ template "elasticsearch.uname" . }}"
   replicas: {{ .Values.replicas }}
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   updateStrategy:
@@ -37,6 +37,8 @@ spec:
     metadata:
       name: "{{ template "elasticsearch.uname" . }}"
       labels:
+        {{/* Only kept for backwards compatible in upgrades */}}
+        app: "{{ template "elasticsearch.uname" . }}"
         {{- include "elasticsearch.labels.selector" . | nindent 8 }}
         {{- include "elasticsearch.labels.common" . | nindent 8 }}
         app.kubernetes.io/component: {{ .Values.nodeGroup }}
