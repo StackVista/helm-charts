@@ -98,7 +98,7 @@ Return the appropriate apiVersion for ingress.
 {{- end -}}
 
 {{/*
-Standard labels
+Recommended labels
 */}}
 {{- define "elasticsearch.labels.recommended" -}}
 app.kubernetes.io/instance: {{ .Release.Name | quote }}
@@ -109,6 +109,15 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 {{- end -}}
+
+{{/*
+Selector labels
+*/}}
+{{- define "elasticsearch.labels.selector" -}}
+app.kubernetes.io/instance: {{ .Release.Name | quote }}
+app.kubernetes.io/name: {{ template "elasticsearch.name" . }}
+{{- end -}}
+
 
 {{/*
 Common labels
