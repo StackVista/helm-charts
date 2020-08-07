@@ -42,3 +42,15 @@ helm install \
 --set-file stackstate.authentication.ldap.ssl.trustCertificates=./ldap-certificate.pem \
 ... \
 stackstate/stackstate
+```
+
+## Auto-installing StackPacks
+It can be useful to have some StackPacks always installed in StackState. For example the Kuberentes StackPack configured for the cluster running StackState. For that purpose the value `stackstate.stackpacks.installed` can be used to specify the StackPacks that should be installed (by name) and their (required) configuration. As an example here the Kubernetes StackPack will be pre-installed:
+```
+stackstate:
+  stackpacks:
+    installed:
+      - name: kubernetes
+        configuration:
+          kubernetes_cluster_name: test
+```

@@ -40,6 +40,9 @@ global:
   # global.receiverApiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
   receiverApiKey: ""
 
+# commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
+commonLabels: {}
+
 stackstate:
   components:
     all:
@@ -496,6 +499,9 @@ stackstate:
     server:
     # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
       split: false
+  stackpacks:
+    # stackstate.stackpacks.installed -- Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks)
+    installed: []
 
 ##############################
 # Dependency chart overrides #
@@ -510,6 +516,9 @@ elasticsearch:
   enabled: true
   # elasticsearch.esJavaOpts -- JVM options
   esJavaOpts: "-Xmx3g -Xms3g"
+  # elasticsearch.commonLabels -- Add additional labels to all resources created for elasticsearch
+  commonLabels:
+    app.kubernetes.io/part-of: stackstate
   # elasticsearch.extraEnvs -- Extra settings that StackState uses for Elasticsearch.
   extraEnvs:
   - name: action.auto_create_index
@@ -541,6 +550,9 @@ elasticsearch:
 hbase:
   # hbase.enabled -- Enable / disable chart-based HBase.
   enabled: true
+  # hbase.commonLabels -- Add additional labels to all resources created for all hbase resources
+  commonLabels:
+    app.kubernetes.io/part-of: stackstate
   all:
     metrics:
       enabled: true
@@ -659,6 +671,9 @@ kafka:
   persistence:
     # kafka.persistence.size -- Size of persistent volume for each Kafka pod
     size: 50Gi
+  # kafka.commonLabels -- Add additional labels to all resources created for kafka
+  commonLabels:
+    app.kubernetes.io/part-of: stackstate
   # kafka.podAnnotations -- Kafka Pod annotations.
   podAnnotations:
     ad.stackstate.com/jmx-exporter.check_names: '["openmetrics"]'
@@ -687,12 +702,14 @@ zookeeper:
   metrics:
     # zookeeper.metrics.enabled -- Enable / disable Zookeeper Prometheus metrics.
     enabled: true
-    # zookeeper.metrics.podAnnotations -- Annotations for ZooKeeper pod (for StackState agent to scrape metrics in openmetrics format)
+    # zookeeper.metrics.serviceMonitor --
     serviceMonitor:
       # zookeeper.metrics.serviceMonitor.enabled -- Enable creation of `ServiceMonitor` objects for Prometheus operator.
       enabled: false
       # zookeeper.metrics.serviceMonitor.selector -- Default selector to use to target a certain Prometheus instance.
       selector: {}
+  commonLabels:
+    app.kubernetes.io/part-of: stackstate
   # zookeeper.podAnnotations -- Annotations for ZooKeeper pod.
   podAnnotations:
     ad.stackstate.com/zookeeper.check_names: '["openmetrics"]'

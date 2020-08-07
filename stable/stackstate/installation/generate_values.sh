@@ -142,6 +142,11 @@ function generate_values() {
   cat > "${values_file}" <<EOF
 global:
   receiverApiKey: "$(generate_api_key)"
+hbase:
+  all:
+    image:
+      pullSecretUsername: "${image_pull_credentials_username}"
+      pullSecretPassword: "${image_pull_credentials_password}"
 stackstate:
   components:
     all:
@@ -157,15 +162,15 @@ stackstate:
   admin:
     authentication:
       password: "$(create_admin_api_password_hash)"
-hbase:
-  all:
-    image:
-      pullSecretUsername: "${image_pull_credentials_username}"
-      pullSecretPassword: "${image_pull_credentials_password}"
 EOF
 
   if ${stackstate_cluster_agent_enabled}; then
   cat >> "${values_file}" <<EOF
+  stackpacks:
+    installed:
+      - name: kubernetes
+        configuration:
+          kubernetes_cluster_name: "${k8s_cluster_name}"
 cluster-agent:
   enabled: true
   stackstate:

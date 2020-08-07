@@ -74,15 +74,18 @@ stackstate {
 {{- $authTypes = append $authTypes "k8sServiceAccountAuthServer" }}
 stackstate.api.authentication.authServer.authServerType = [ {{- $authTypes | compact | join ", " -}} ]
 {{- end }}
-{{- with index .Values "cluster-agent" -}}
-{{- if .enabled }}
+{{- with .Values.stackstate.stackpacks.installed }}
+
 stackstate.stackPacks {
-  installOnStartUp += "kubernetes"
+  {{- range . }}
+  installOnStartUp += {{ .name | quote }}
+  {{- end }}
 
   installOnStartUpConfig {
-    kubernetes.kubernetes_cluster_name = {{ .stackstate.cluster.name | quote }}
+    {{- range . }}
+    {{ .name }} = {{- toPrettyJson .configuration | indent 4 }}
+    {{- end }}
   }
 }
-{{- end -}}
 {{- end }}
 {{- end -}}
