@@ -41,11 +41,6 @@ Source code can be found [here](https://github.com/elastic/helm-charts)
 | keystore | list | `[]` |  |
 | labels | object | `{}` |  |
 | lifecycle | object | `{}` |  |
-| livenessProbe.failureThreshold | int | `5` |  |
-| livenessProbe.initialDelaySeconds | int | `10` |  |
-| livenessProbe.periodSeconds | int | `10` |  |
-| livenessProbe.successThreshold | int | `3` |  |
-| livenessProbe.timeoutSeconds | int | `5` |  |
 | masterService | string | `""` |  |
 | masterTerminationFix | bool | `false` |  |
 | maxUnavailable | int | `1` |  |
