@@ -12,10 +12,10 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | kafka | 11.7.1 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
-| https://helm-test.stackstate.io | elasticsearch | 7.6.2-stackstate.7 |
 | https://helm.stackstate.io | anomaly-detection | 4.1.9 |
 | https://helm.stackstate.io | cluster-agent | 0.4.2 |
 | https://helm.stackstate.io | common | 0.4.8 |
+| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.7 |
 | https://helm.stackstate.io | hbase | 0.1.40 |
 
 ## Required Values
@@ -62,9 +62,9 @@ stackstate/stackstate
 | elasticsearch.commonLabels | object | `{"app.kubernetes.io/part-of":"stackstate"}` | Add additional labels to all resources created for elasticsearch |
 | elasticsearch.elasticsearch-exporter.enabled | bool | `true` |  |
 | elasticsearch.elasticsearch-exporter.es.uri | string | `"http://stackstate-elasticsearch-master:9200"` |  |
-| elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/jmx-exporter.check_names" | string | `"[\"openmetrics\"]"` |  |
-| elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/jmx-exporter.init_configs" | string | `"[{}]"` |  |
-| elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/jmx-exporter.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:9108/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
+| elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/elasticsearch-exporter.check_names" | string | `"[\"openmetrics\"]"` |  |
+| elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/elasticsearch-exporter.init_configs" | string | `"[{}]"` |  |
+| elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/elasticsearch-exporter.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:9108/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
 | elasticsearch.elasticsearch-exporter.servicemonitor.enabled | bool | `true` |  |
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
 | elasticsearch.esJavaOpts | string | `"-Xmx3g -Xms3g"` | JVM options |

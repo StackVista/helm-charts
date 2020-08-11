@@ -4,7 +4,7 @@ dependencies:
   version: 0.4.8
 - name: elasticsearch
   condition: elasticsearch.enabled
-  repository: https://helm-test.stackstate.io
+  repository: https://helm.stackstate.io
   version: 7.6.2-stackstate.7
 - name: hbase
   condition: hbase.enabled

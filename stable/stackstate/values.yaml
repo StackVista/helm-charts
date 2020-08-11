@@ -552,9 +552,9 @@ elasticsearch:
     servicemonitor:
       enabled: true
     podAnnotations:
-      ad.stackstate.com/jmx-exporter.check_names: '["openmetrics"]'
-      ad.stackstate.com/jmx-exporter.init_configs: '[{}]'
-      ad.stackstate.com/jmx-exporter.instances: '[ { "prometheus_url": "http://%%host%%:9108/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
+      ad.stackstate.com/elasticsearch-exporter.check_names: '["openmetrics"]'
+      ad.stackstate.com/elasticsearch-exporter.init_configs: '[{}]'
+      ad.stackstate.com/elasticsearch-exporter.instances: '[ { "prometheus_url": "http://%%host%%:9108/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
     es:
       uri: http://stackstate-elasticsearch-master:9200
 hbase:
