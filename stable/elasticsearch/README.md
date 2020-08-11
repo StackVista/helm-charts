@@ -6,7 +6,11 @@ Current chart version is `7.6.2-stackstate.7`
 
 Source code can be found [here](https://github.com/elastic/helm-charts)
 
+## Chart Requirements
 
+| Repository | Name | Version |
+|------------|------|---------|
+| https://kubernetes-charts.storage.googleapis.com | elasticsearch-exporter | 3.7.0 |
 
 ## Chart Values
 
