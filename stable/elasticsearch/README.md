@@ -2,7 +2,7 @@ elasticsearch
 =============
 Official Elastic helm chart for Elasticsearch
 
-Current chart version is `7.6.2-stackstate.5`
+Current chart version is `7.6.2-stackstate.6`
 
 Source code can be found [here](https://github.com/elastic/helm-charts)
 
@@ -14,7 +14,6 @@ Source code can be found [here](https://github.com/elastic/helm-charts)
 |-----|------|---------|-------------|
 | antiAffinity | string | `"hard"` |  |
 | antiAffinityTopologyKey | string | `"kubernetes.io/hostname"` |  |
-| clusterHealthCheckParams | string | `"wait_for_status=green&timeout=1s"` |  |
 | clusterName | string | `"elasticsearch"` |  |
 | commonLabels | object | `{}` |  |
 | esConfig | object | `{}` |  |
@@ -71,7 +70,7 @@ Source code can be found [here](https://github.com/elastic/helm-charts)
 | protocol | string | `"http"` |  |
 | rbac.create | bool | `false` |  |
 | rbac.serviceAccountName | string | `""` |  |
-| readinessProbe.failureThreshold | int | `3` |  |
+| readinessProbe.failureThreshold | int | `5` |  |
 | readinessProbe.initialDelaySeconds | int | `10` |  |
 | readinessProbe.periodSeconds | int | `10` |  |
 | readinessProbe.successThreshold | int | `3` |  |
