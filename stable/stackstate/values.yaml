@@ -547,6 +547,16 @@ elasticsearch:
     resources:
       requests:
         storage: 250Gi
+  elasticsearch-exporter:
+    enabled: true
+    servicemonitor:
+      enabled: true
+    podAnnotations:
+      ad.stackstate.com/jmx-exporter.check_names: '["openmetrics"]'
+      ad.stackstate.com/jmx-exporter.init_configs: '[{}]'
+      ad.stackstate.com/jmx-exporter.instances: '[ { "prometheus_url": "http://%%host%%:9108/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
+    es:
+      uri: http://stackstate-elasticsearch-master:9200
 hbase:
   # hbase.enabled -- Enable / disable chart-based HBase.
   enabled: true
@@ -678,7 +688,7 @@ kafka:
   podAnnotations:
     ad.stackstate.com/jmx-exporter.check_names: '["openmetrics"]'
     ad.stackstate.com/jmx-exporter.init_configs: '[{}]'
-    ad.stackstate.com/jmx-exporter.instances: '[ { "prometheus_url": "http://%%host%%:5556/metrics", "namespace": "stackstate", "labels_mapper": { "app.kubernetes.io/component": "app_component", "app.kubernetes.io/name": "app_name", "app.kubernetes.io/instance": "app_instance" }, "metrics": ["*"] } ]'
+    ad.stackstate.com/jmx-exporter.instances: '[ { "prometheus_url": "http://%%host%%:5556/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
   # kafka.resources -- Kafka resources per pods.
   resources:
     limits:
@@ -714,7 +724,7 @@ zookeeper:
   podAnnotations:
     ad.stackstate.com/zookeeper.check_names: '["openmetrics"]'
     ad.stackstate.com/zookeeper.init_configs: '[{}]'
-    ad.stackstate.com/zookeeper.instances: '[ { "prometheus_url": "http://%%host%%:9141/metrics", "namespace": "stackstate", "labels_mapper": { "app.kubernetes.io/component": "app_component", "app.kubernetes.io/name": "app_name", "app.kubernetes.io/instance": "app_instance" }, "metrics": ["*"] } ]'
+    ad.stackstate.com/zookeeper.instances: '[ { "prometheus_url": "http://%%host%%:9141/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
   replicaCount: 3
 

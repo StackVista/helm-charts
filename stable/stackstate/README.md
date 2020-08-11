@@ -2,7 +2,7 @@ stackstate
 ==========
 Helm chart for StackState
 
-Current chart version is `0.4.78`
+Current chart version is `0.4.79`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -12,10 +12,10 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | kafka | 11.7.1 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
+| https://helm-test.stackstate.io | elasticsearch | 7.6.2-stackstate.7 |
 | https://helm.stackstate.io | anomaly-detection | 4.1.9 |
 | https://helm.stackstate.io | cluster-agent | 0.4.2 |
 | https://helm.stackstate.io | common | 0.4.8 |
-| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.5 |
 | https://helm.stackstate.io | hbase | 0.1.40 |
 
 ## Required Values
@@ -60,6 +60,12 @@ stackstate/stackstate
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` | The Elasticsearch cluster health status params that will be used by readinessProbe command |
 | elasticsearch.clusterName | string | `"stackstate-elasticsearch"` | Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | elasticsearch.commonLabels | object | `{"app.kubernetes.io/part-of":"stackstate"}` | Add additional labels to all resources created for elasticsearch |
+| elasticsearch.elasticsearch-exporter.enabled | bool | `true` |  |
+| elasticsearch.elasticsearch-exporter.es.uri | string | `"http://stackstate-elasticsearch-master:9200"` |  |
+| elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/jmx-exporter.check_names" | string | `"[\"openmetrics\"]"` |  |
+| elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/jmx-exporter.init_configs" | string | `"[{}]"` |  |
+| elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/jmx-exporter.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:9108/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
+| elasticsearch.elasticsearch-exporter.servicemonitor.enabled | bool | `true` |  |
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
 | elasticsearch.esJavaOpts | string | `"-Xmx3g -Xms3g"` | JVM options |
 | elasticsearch.extraEnvs | list | `[{"name":"action.auto_create_index","value":"true"},{"name":"indices.query.bool.max_clause_count","value":"10000"}]` | Extra settings that StackState uses for Elasticsearch. |
@@ -107,7 +113,7 @@ stackstate/stackstate
 | kafka.metrics.serviceMonitor.selector | object | `{}` | Selector to target Prometheus instance. |
 | kafka.offsetsTopicReplicationFactor | int | `2` |  |
 | kafka.persistence.size | string | `"50Gi"` | Size of persistent volume for each Kafka pod |
-| kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"stackstate\", \"labels_mapper\": { \"app.kubernetes.io/component\": \"app_component\", \"app.kubernetes.io/name\": \"app_name\", \"app.kubernetes.io/instance\": \"app_instance\" }, \"metrics\": [\"*\"] } ]"}` | Kafka Pod annotations. |
+| kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Kafka Pod annotations. |
 | kafka.readinessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
 | kafka.replicaCount | int | `3` | Number of Kafka replicas. |
 | kafka.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"cpu":"300m","memory":"2Gi"}}` | Kafka resources per pods. |
@@ -288,7 +294,7 @@ stackstate/stackstate
 | zookeeper.metrics.enabled | bool | `true` | Enable / disable Zookeeper Prometheus metrics. |
 | zookeeper.metrics.serviceMonitor.enabled | bool | `false` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |
 | zookeeper.metrics.serviceMonitor.selector | object | `{}` | Default selector to use to target a certain Prometheus instance. |
-| zookeeper.podAnnotations | object | `{"ad.stackstate.com/zookeeper.check_names":"[\"openmetrics\"]","ad.stackstate.com/zookeeper.init_configs":"[{}]","ad.stackstate.com/zookeeper.instances":"[ { \"prometheus_url\": \"http://%%host%%:9141/metrics\", \"namespace\": \"stackstate\", \"labels_mapper\": { \"app.kubernetes.io/component\": \"app_component\", \"app.kubernetes.io/name\": \"app_name\", \"app.kubernetes.io/instance\": \"app_instance\" }, \"metrics\": [\"*\"] } ]"}` | Annotations for ZooKeeper pod. |
+| zookeeper.podAnnotations | object | `{"ad.stackstate.com/zookeeper.check_names":"[\"openmetrics\"]","ad.stackstate.com/zookeeper.init_configs":"[{}]","ad.stackstate.com/zookeeper.instances":"[ { \"prometheus_url\": \"http://%%host%%:9141/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Annotations for ZooKeeper pod. |
 | zookeeper.replicaCount | int | `3` | Default amount of Zookeeper replicas to provision. |
 
 ## Configuring LDAP
