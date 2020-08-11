@@ -1,12 +1,18 @@
-apiVersion: v1
+apiVersion: v2
+type: application
 description: Official Elastic helm chart for Elasticsearch
 home: https://github.com/elastic/helm-charts
 maintainers:
 - email: helm-charts@elastic.co
   name: Elastic
 name: elasticsearch
-version: 7.6.2-stackstate.6
+version: 7.6.2-stackstate.7
 appVersion: 7.6.2
 sources:
   - https://github.com/elastic/elasticsearch
 icon: https://helm.elastic.co/icons/elasticsearch.png
+dependencies:
+  - name: elasticsearch-exporter
+    condition: elasticsearch-exporter.enabled
+    repository: https://kubernetes-charts.storage.googleapis.com
+    version: 3.7.0

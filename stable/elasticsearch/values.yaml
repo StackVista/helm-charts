@@ -259,3 +259,15 @@ sysctlInitContainer:
   enabled: true
 
 keystore: []
+
+elasticsearch-exporter:
+  # Enable to expose prometheus metrics
+  enabled: false
+  # enable to create a servicemonitor for prometheus operator
+  servicemonitor:
+    enabled: false
+  # custom annotations on the pod
+  podAnnotations: {}
+  es:
+    # URI of Elasticsearch to monitor, override when changing clusterName or nodeGroup (format is <protocol>://<clusterName>-<nodegroup>:<httpPort>)
+    uri: http://elasticsearch-master:9200
