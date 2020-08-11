@@ -11,6 +11,7 @@ elasticsearch:
       requests:
         storage: 10Gi
         cpu: "2000m"
+        memory: "2Gi"
 
 hbase:
   hbase:
