@@ -550,7 +550,7 @@ elasticsearch:
   elasticsearch-exporter:
     enabled: true
     servicemonitor:
-      enabled: true
+      enabled: false
     podAnnotations:
       ad.stackstate.com/elasticsearch-exporter.check_names: '["openmetrics"]'
       ad.stackstate.com/elasticsearch-exporter.init_configs: '[{}]'
