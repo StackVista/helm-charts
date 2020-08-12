@@ -2,7 +2,7 @@ elasticsearch
 =============
 Official Elastic helm chart for Elasticsearch
 
-Current chart version is `7.6.2-stackstate.7`
+Current chart version is `7.6.2-stackstate.8`
 
 Source code can be found [here](https://github.com/elastic/helm-charts)
 
