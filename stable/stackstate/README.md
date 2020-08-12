@@ -2,7 +2,7 @@ stackstate
 ==========
 Helm chart for StackState
 
-Current chart version is `0.4.79`
+Current chart version is `0.4.80`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -15,7 +15,7 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 | https://helm.stackstate.io | anomaly-detection | 4.1.9 |
 | https://helm.stackstate.io | cluster-agent | 0.4.2 |
 | https://helm.stackstate.io | common | 0.4.8 |
-| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.7 |
+| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.8 |
 | https://helm.stackstate.io | hbase | 0.1.40 |
 
 ## Required Values
@@ -65,7 +65,7 @@ stackstate/stackstate
 | elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/elasticsearch-exporter.check_names" | string | `"[\"openmetrics\"]"` |  |
 | elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/elasticsearch-exporter.init_configs" | string | `"[{}]"` |  |
 | elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/elasticsearch-exporter.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:9108/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
-| elasticsearch.elasticsearch-exporter.servicemonitor.enabled | bool | `true` |  |
+| elasticsearch.elasticsearch-exporter.servicemonitor.enabled | bool | `false` |  |
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
 | elasticsearch.esJavaOpts | string | `"-Xmx3g -Xms3g"` | JVM options |
 | elasticsearch.extraEnvs | list | `[{"name":"action.auto_create_index","value":"true"},{"name":"indices.query.bool.max_clause_count","value":"10000"}]` | Extra settings that StackState uses for Elasticsearch. |
