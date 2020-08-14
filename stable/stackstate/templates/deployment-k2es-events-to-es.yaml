@@ -1,6 +1,6 @@
 {{- define "stackstate.k2es.deployment.eventsToEs.container" -}}
 args:
-- sts-events
+- state-events
 - generic-events
 name: e2es
 {{- end -}}
