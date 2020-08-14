@@ -16,6 +16,11 @@ imagePullPolicy: Always
 env:
 {{- include "stackstate.common.envvars" . }}
 {{- include "stackstate.k2es.envvars" . }}
+{{/*
+    Currently we use a single replicationFactor config for all indices on ES, that works fine with calculating the available disk space
+    and on the STS processes assigning diskSpaceWeights to each process. But if in the future we have need to configure different
+    replicationFactors per index we will need to revisit and adapt the diskSpaceWeights login on STS
+*/}}
 {{ $replicationFactor := ternary "1" "0" (gt .Values.elasticsearch.replicas 2.0) }}
 - name: CONFIG_FORCE_stackstate_kafkaGenericEventsToES_elasticsearch_index_replicas
   value: "{{ $replicationFactor  }}"
