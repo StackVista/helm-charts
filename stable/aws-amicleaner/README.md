@@ -1,14 +1,18 @@
-aws-amicleaner
-==============
+# aws-amicleaner
+
+![Version: 0.2.5](https://img.shields.io/badge/Version-0.2.5-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+
 AMI cleaner -- Clean old AWS AMI images.
 
-Current chart version is `0.2.5`
+**Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
-Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
+## Maintainers
 
+| Name | Email | Url |
+| ---- | ------ | --- |
+| sc250024 | scrooks@stackstate.com |  |
 
-
-## Chart Values
+## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|

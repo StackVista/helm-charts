@@ -36,6 +36,8 @@ $ brew install helm shellcheck
 $ brew install norwoodj/tap/helm-docs
 ```
 
+NOTE: The templates for README generation are only compatible with helm-docs 0.15+.
+
 ## Testing the Helm charts
 
 The Helm chart repository supports testing Helm charts using the [Terratest](https://terratest.gruntwork.io/) library. In order to run tests for a chart, you can invoke the following command from the root of the repository:

@@ -1,19 +1,31 @@
-hbase
-=====
+# hbase
+
+![Version: 0.1.40](https://img.shields.io/badge/Version-0.1.40-informational?style=flat-square) ![AppVersion: 1.2.6](https://img.shields.io/badge/AppVersion-1.2.6-informational?style=flat-square)
+
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.40`
+**Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
-Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
+## Maintainers
 
-## Chart Requirements
+| Name | Email | Url |
+| ---- | ------ | --- |
+| Jeroen van Erp | jvanerp@stackstate.com |  |
+| Remco Beckers | rbeckers@stackstate.com |  |
+| Vincent Partington | vpartington@stackstate.com |  |
+
+## Source Code
+
+* <https://github.com/apache/hadoop>
+
+## Requirements
 
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | zookeeper | 5.3.4 |
 | https://helm.stackstate.io/ | common | 0.4.8 |
 
-## Chart Values
+## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|

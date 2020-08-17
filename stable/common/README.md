@@ -1,14 +1,20 @@
-common
-======
+# common
+
+![Version: 0.4.8](https://img.shields.io/badge/Version-0.4.8-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+
 Common chartbuilding components and helpers
 
-Current chart version is `0.4.8`
+**Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
-Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
+## Maintainers
 
+| Name | Email | Url |
+| ---- | ------ | --- |
+| Jeroen van Erp | jvanerp@stackstate.com |  |
+| Remco Beckers | rbeckers@stackstate.com |  |
+| Vincent Partington | vpartington@stackstate.com |  |
 
-
-## Chart Values
+## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|

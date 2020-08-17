@@ -1,18 +1,24 @@
-aws-nuke
-========
+# aws-nuke
+
+![Version: 0.2.4](https://img.shields.io/badge/Version-0.2.4-informational?style=flat-square) ![AppVersion: v2.14.0](https://img.shields.io/badge/AppVersion-v2.14.0-informational?style=flat-square)
+
 AWS Nuke -- Clean an entire AWS account
 
-Current chart version is `0.2.3`
+**Homepage:** <https://github.com/rebuy-de/aws-nuke>
 
-Source code can be found [here](https://github.com/rebuy-de/aws-nuke)
+## Maintainers
 
-## Chart Requirements
+| Name | Email | Url |
+| ---- | ------ | --- |
+| sc250024 | scrooks@stackstate.com |  |
+
+## Requirements
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://helm.stackstate.io/ | common | 0.3.0 |
+| https://helm.stackstate.io/ | common | 0.4.8 |
 
-## Chart Values
+## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|

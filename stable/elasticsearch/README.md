@@ -1,18 +1,28 @@
-elasticsearch
-=============
+# elasticsearch
+
+![Version: 7.6.2-stackstate.8](https://img.shields.io/badge/Version-7.6.2-stackstate.8-informational?style=flat-square) ![AppVersion: 7.6.2](https://img.shields.io/badge/AppVersion-7.6.2-informational?style=flat-square)
+
 Official Elastic helm chart for Elasticsearch
 
-Current chart version is `7.6.2-stackstate.8`
+**Homepage:** <https://github.com/elastic/helm-charts>
 
-Source code can be found [here](https://github.com/elastic/helm-charts)
+## Maintainers
 
-## Chart Requirements
+| Name | Email | Url |
+| ---- | ------ | --- |
+| Elastic | helm-charts@elastic.co |  |
+
+## Source Code
+
+* <https://github.com/elastic/elasticsearch>
+
+## Requirements
 
 | Repository | Name | Version |
 |------------|------|---------|
 | https://kubernetes-charts.storage.googleapis.com | elasticsearch-exporter | 3.7.0 |
 
-## Chart Values
+## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
