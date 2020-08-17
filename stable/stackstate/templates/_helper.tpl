@@ -597,3 +597,29 @@ imagePullSecrets:
 - name: '{{ template "common.fullname.short" . }}-pull-secret'
 {{- end }}
 {{- end -}}
+
+
+{{- define "stackstate.storage.to.megabytes" -}}
+{{- if hasSuffix "Ti" . -}}
+    {{- $ti := trimSuffix "Ti" . | int -}}
+    {{- mul $ti 1100000 -}}
+{{- else if hasSuffix "T" . -}}
+    {{- $t := trimSuffix "T" . | int -}}
+    {{- mul $t 1000000 -}}
+{{- else if hasSuffix "Gi" . -}}
+    {{- $gi := trimSuffix "Gi" . | int -}}
+    {{- mul $gi 1074 -}}
+{{- else if hasSuffix "G" . -}}
+    {{- $g := trimSuffix "G" . | int -}}
+    {{- mul $g 1000 -}}
+{{- else if hasSuffix "Mi" . -}}
+    {{- $mi := trimSuffix "Mi" . | int -}}
+    {{- mul $mi 1.049 -}}
+{{- else if hasSuffix "M" . -}}
+    {{- trimSuffix "M" . | int -}}
+{{- else -}}
+    {{- if regexMatch "^[0-9]*$" . -}}
+        {{ . }} | int
+    {{- end -}}
+{{- end -}}
+{{- end -}}

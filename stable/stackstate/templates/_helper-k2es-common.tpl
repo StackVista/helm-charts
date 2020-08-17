@@ -16,16 +16,27 @@ imagePullPolicy: Always
 env:
 {{- include "stackstate.common.envvars" . }}
 {{- include "stackstate.k2es.envvars" . }}
+{{/*
+    Currently we use a single replicationFactor config for all indices on ES, that works fine with calculating the available disk space
+    and on the STS processes assigning diskSpaceWeights to each process. But if in the future we have need to configure different
+    replicationFactors per index we will need to revisit and adapt the diskSpaceWeights login on STS
+*/}}
+{{ $replicationFactor := ternary "1" "0" (gt .Values.elasticsearch.replicas 2.0) }}
 - name: CONFIG_FORCE_stackstate_kafkaGenericEventsToES_elasticsearch_index_replicas
-  value: "{{ ternary "1" "0" (gt .Values.elasticsearch.replicas 2.0)  }}"
+  value: "{{ $replicationFactor  }}"
 - name: CONFIG_FORCE_stackstate_kafkaMultiMetricsToES_elasticsearch_index_replicas
-  value: "{{ ternary "1" "0" (gt .Values.elasticsearch.replicas 2.0)  }}"
+  value: "{{ $replicationFactor  }}"
 - name: CONFIG_FORCE_stackstate_kafkaStateEventsToES_elasticsearch_index_replicas
-  value: "{{ ternary "1" "0" (gt .Values.elasticsearch.replicas 2.0)  }}"
+  value: "{{ $replicationFactor  }}"
 - name: CONFIG_FORCE_stackstate_kafkaStsEventsToES_elasticsearch_index_replicas
-  value: "{{ ternary "1" "0" (gt .Values.elasticsearch.replicas 2.0)  }}"
+  value: "{{ $replicationFactor  }}"
 - name: CONFIG_FORCE_stackstate_kafkaTraceToES_elasticsearch_index_replicas
-  value: "{{ ternary "1" "0" (gt .Values.elasticsearch.replicas 2.0)  }}"
+  value: "{{ $replicationFactor  }}"
+{{ $diskSpaceMB := (include "stackstate.storage.to.megabytes" .Values.elasticsearch.volumeClaimTemplate.resources.requests.storage) }}
+{{ if $diskSpaceMB  }}
+- name: CONFIG_FORCE_stackstate_elasticsearchDiskSpaceMB
+  value: "{{ div (mul $diskSpaceMB .Values.elasticsearch.replicas) (add1 $replicationFactor) }}"
+{{ end }}
 - name: ELASTICSEARCH_URI
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS
