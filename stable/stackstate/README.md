@@ -2,7 +2,7 @@ stackstate
 ==========
 Helm chart for StackState
 
-Current chart version is `0.4.82`
+Current chart version is `0.4.84`
 
 Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 
@@ -12,7 +12,7 @@ Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | kafka | 11.7.1 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
-| https://helm.stackstate.io | anomaly-detection | 4.1.9 |
+| https://helm.stackstate.io | anomaly-detection | 4.1.11 |
 | https://helm.stackstate.io | cluster-agent | 0.4.2 |
 | https://helm.stackstate.io | common | 0.4.8 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.8 |
@@ -194,7 +194,7 @@ stackstate/stackstate
 | stackstate.components.k2es.replicaCount | int | `1` | Number of `k2es` replicas. |
 | stackstate.components.k2es.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"250m","memory":"1Gi"}}` | Resource allocation for `k2es` pods. |
 | stackstate.components.k2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| stackstate.components.k2es.traces | object | `{"enabled":false}` | Trace-related `k2es` settings. |
+| stackstate.components.k2es.traces | object | `{"enabled":true}` | Trace-related `k2es` settings. |
 | stackstate.components.kafkaTopicCreate.image.registry | string | `"docker.io"` | Base container image registry for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.repository | string | `"bitnami/kafka"` | Base container image repository for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.tag | string | `"latest"` | Container image tag for kafka-topic-create containers. |

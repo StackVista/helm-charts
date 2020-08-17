@@ -39,4 +39,3 @@ anomaly-detection:
   enabled: true
   stackstate:
     instance: stackstate-server:7070
-    elasticSearchUri: stackstate-elasticsearch-master:9200
