@@ -1,6 +1,6 @@
 # aws-amicleaner
 
-![Version: 0.2.5](https://img.shields.io/badge/Version-0.2.5-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: 0.2.6](https://img.shields.io/badge/Version-0.2.6-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 
 AMI cleaner -- Clean old AWS AMI images.
 
@@ -10,7 +10,9 @@ AMI cleaner -- Clean old AWS AMI images.
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| sc250024 | scrooks@stackstate.com |  |
+| Jeroen van Erp | jvanerp@stackstate.com |  |
+| Remco Beckers | rbeckers@stackstate.com |  |
+| Vincent Partington | vpartington@stackstate.com |  |
 
 ## Values
 

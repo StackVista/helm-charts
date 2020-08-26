@@ -1,6 +1,6 @@
 # elasticsearch
 
-![Version: 7.6.2-stackstate.8](https://img.shields.io/badge/Version-7.6.2-stackstate.8-informational?style=flat-square) ![AppVersion: 7.6.2](https://img.shields.io/badge/AppVersion-7.6.2-informational?style=flat-square)
+![Version: 7.6.2-stackstate.9](https://img.shields.io/badge/Version-7.6.2-stackstate.9-informational?style=flat-square) ![AppVersion: 7.6.2](https://img.shields.io/badge/AppVersion-7.6.2-informational?style=flat-square)
 
 Official Elastic helm chart for Elasticsearch
 
@@ -10,7 +10,9 @@ Official Elastic helm chart for Elasticsearch
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Elastic | helm-charts@elastic.co |  |
+| Jeroen van Erp | jvanerp@stackstate.com |  |
+| Remco Beckers | rbeckers@stackstate.com |  |
+| Vincent Partington | vpartington@stackstate.com |  |
 
 ## Source Code
 

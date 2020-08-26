@@ -10,7 +10,9 @@ Trafficmirror -- mirror traffic to various endpoints.
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| sc250024 | scrooks@stackstate.com |  |
+| Jeroen van Erp | jvanerp@stackstate.com |  |
+| Remco Beckers | rbeckers@stackstate.com |  |
+| Vincent Partington | vpartington@stackstate.com |  |
 
 ## Requirements
 
