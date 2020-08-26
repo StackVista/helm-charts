@@ -94,7 +94,7 @@ daemonset:
   # daemonset.annotations -- Annotations for `DaemonSet` objects.
   annotations: {}
   # daemonset.apiVersion -- Kubernetes apiVersion to use with a `DaemonSet` object.
-  apiVersion: extensions/v1beta1
+  apiVersion: apps/v1
   # daemonset.dnsPolicy -- DNS policy to apply to `Pod` objects.
   dnsPolicy: ClusterFirst
   # daemonset.nodeSelector -- Node labels for pod assignment.
@@ -178,7 +178,7 @@ ingress:
   # ingress.annotations -- Annotations for `Ingress` objects.
   annotations: {}
   # ingress.apiVersion -- Kubernetes apiVersion to use with an `Ingress` object.
-  apiVersion: extensions/v1beta1
+  apiVersion: networking.k8s.io/v1beta1
   # ingress.hosts -- List of ingress hostnames.
   hosts: []
   # - host: chart-example.local

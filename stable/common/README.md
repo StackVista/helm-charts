@@ -1,6 +1,6 @@
 # common
 
-![Version: 0.4.9](https://img.shields.io/badge/Version-0.4.9-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: 0.4.10](https://img.shields.io/badge/Version-0.4.10-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 
 Common chartbuilding components and helpers
 
@@ -52,7 +52,7 @@ Common chartbuilding components and helpers
 | cronjob.suspend | bool | `false` | If set to `true`, all subsequent executions are suspended; this setting does not apply to already started executions. |
 | cronjob.tolerations | list | `[]` | Toleration labels for `Pod` assignment. |
 | daemonset.annotations | object | `{}` | Annotations for `DaemonSet` objects. |
-| daemonset.apiVersion | string | `"extensions/v1beta1"` | Kubernetes apiVersion to use with a `DaemonSet` object. |
+| daemonset.apiVersion | string | `"apps/v1"` | Kubernetes apiVersion to use with a `DaemonSet` object. |
 | daemonset.dnsPolicy | string | `"ClusterFirst"` | DNS policy to apply to `Pod` objects. |
 | daemonset.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | daemonset.restartPolicy | string | `"Always"` | Restart policy to apply to containers within a `Pod` object. |
@@ -83,7 +83,7 @@ Common chartbuilding components and helpers
 | image.repository | string | `"nginx"` | (string) Repository of the Docker image. |
 | image.tag | string | `"latest"` | (string) Tag of the Docker image. |
 | ingress.annotations | object | `{}` | Annotations for `Ingress` objects. |
-| ingress.apiVersion | string | `"extensions/v1beta1"` | Kubernetes apiVersion to use with an `Ingress` object. |
+| ingress.apiVersion | string | `"networking.k8s.io/v1beta1"` | Kubernetes apiVersion to use with an `Ingress` object. |
 | ingress.hosts | list | `[]` | List of ingress hostnames. |
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
 | job.annotations | object | `{}` | Annotations for `Job` objects. |
