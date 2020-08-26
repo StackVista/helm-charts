@@ -1,14 +1,20 @@
-gitlab-steward
-==============
+# gitlab-steward
+
+![Version: 0.2.5](https://img.shields.io/badge/Version-0.2.5-informational?style=flat-square) ![AppVersion: 0.2.0](https://img.shields.io/badge/AppVersion-0.2.0-informational?style=flat-square)
+
 Steward -- GitLab environment cleaner
 
-Current chart version is `0.2.4`
+**Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
-Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
+## Maintainers
 
+| Name | Email | Url |
+| ---- | ------ | --- |
+| Jeroen van Erp | jvanerp@stackstate.com |  |
+| Remco Beckers | rbeckers@stackstate.com |  |
+| Vincent Partington | vpartington@stackstate.com |  |
 
-
-## Chart Values
+## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|

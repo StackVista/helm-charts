@@ -1,12 +1,12 @@
-stackstate
-==========
+# stackstate
+
 Helm chart for StackState
 
-Current chart version is `0.4.85`
+Current chart version is `0.4.86`
 
-Source code can be found [here](https://gitlab.com/stackvista/stackstate.git)
+**Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
-## Chart Requirements
+## Requirements
 
 | Repository | Name | Version |
 |------------|------|---------|
@@ -33,7 +33,7 @@ helm install \
 stackstate/stackstate
 ```
 
-## Chart Values
+## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|

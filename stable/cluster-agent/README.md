@@ -1,12 +1,12 @@
-cluster-agent
-=============
+# cluster-agent
+
 Helm chart for the StackState cluster agent.
 
-Current chart version is `0.4.3`
+Current chart version is `0.4.4`
 
-Source code can be found [here](https://github.com/StackVista/stackstate-agent)
+**Homepage:** <https://github.com/StackVista/stackstate-agent>
 
-## Chart Requirements
+## Requirements
 
 | Repository | Name | Version |
 |------------|------|---------|
@@ -49,7 +49,7 @@ helm install \
 stackstate/cluster-agent
 ```
 
-## Chart Values
+## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|

@@ -1,12 +1,10 @@
-stackstate-standalone
-=====================
+# stackstate-standalone
+
 Helm chart for StackState standlone -- all components running inside a single container.
 
-Current chart version is `0.4.10`
+Current chart version is `0.4.11`
 
-Source code can be found [here](https://gitlab.com/stackvista/devops/helm-charts.git)
-
-
+**Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
 ## Required Values
 
@@ -23,7 +21,7 @@ helm install \
 stackstate/stackstate-standalone
 ```
 
-## Chart Values
+## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|

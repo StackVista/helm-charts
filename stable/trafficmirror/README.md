@@ -1,18 +1,26 @@
-trafficmirror
-=============
+# trafficmirror
+
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+
 Trafficmirror -- mirror traffic to various endpoints.
 
-Current chart version is `0.1.5`
+**Homepage:** <https://github.com/rb3ckers/trafficmirror>
 
-Source code can be found [here](https://github.com/rb3ckers/trafficmirror)
+## Maintainers
 
-## Chart Requirements
+| Name | Email | Url |
+| ---- | ------ | --- |
+| Jeroen van Erp | jvanerp@stackstate.com |  |
+| Remco Beckers | rbeckers@stackstate.com |  |
+| Vincent Partington | vpartington@stackstate.com |  |
+
+## Requirements
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://helm.stackstate.io/ | common | 0.1.8 |
+| https://helm.stackstate.io/ | common | 0.4.8 |
 
-## Chart Values
+## Values
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|

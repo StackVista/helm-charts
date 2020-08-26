@@ -1,12 +1,16 @@
 apiVersion: v1
 description: Official Elastic helm chart for Elasticsearch
 home: https://github.com/elastic/helm-charts
-maintainers:
-- email: helm-charts@elastic.co
-  name: Elastic
 name: elasticsearch
-version: 7.6.2-stackstate.8
+version: 7.6.2-stackstate.9
 appVersion: 7.6.2
 sources:
   - https://github.com/elastic/elasticsearch
 icon: https://helm.elastic.co/icons/elasticsearch.png
+maintainers:
+  - name: Jeroen van Erp
+    email: jvanerp@stackstate.com
+  - name: Remco Beckers
+    email: rbeckers@stackstate.com
+  - name: Vincent Partington
+    email: vpartington@stackstate.com

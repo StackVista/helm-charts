@@ -1,6 +1,6 @@
 apiVersion: v1
 appVersion: 0.1.0
-version: 0.1.5
+version: 0.1.6
 description: Trafficmirror -- mirror traffic to various endpoints.
 keywords:
   - mirror
@@ -10,6 +10,10 @@ keywords:
 home: https://github.com/rb3ckers/trafficmirror
 icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
 maintainers:
-  - name: sc250024
-    email: scrooks@stackstate.com
+  - name: Jeroen van Erp
+    email: jvanerp@stackstate.com
+  - name: Remco Beckers
+    email: rbeckers@stackstate.com
+  - name: Vincent Partington
+    email: vpartington@stackstate.com
 name: trafficmirror
