@@ -1,7 +1,7 @@
 {{- define "stackstate.viewHealth.servicemonitor" -}}
 metadata:
   labels:
-    app.kubernetes.io/component: viewHealth
+    app.kubernetes.io/component: view-health
   {{- with .Values.stackstate.components.all.metrics.servicemonitor.additionalLabels }}
     {{ toYaml . | nindent 4 }}
   {{- end }}
@@ -9,7 +9,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/component: viewHealth
+      app.kubernetes.io/component: view-health
   {{ include "stackstate.servicemonitor.extraLabels" . | nindent 2 }}
 {{- end -}}
 
