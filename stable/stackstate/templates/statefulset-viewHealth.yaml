@@ -84,11 +84,11 @@ volumeMounts:
 metadata:
   name: {{ template "common.fullname.short" . }}-view-health
   labels:
-    app.kubernetes.io/component: viewHealth
+    app.kubernetes.io/component: view-health
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/component: viewHealth
+      app.kubernetes.io/component: view-health
   template:
     metadata:
       annotations:
@@ -98,7 +98,7 @@ spec:
         {{- include "stackstate.viewHealth.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.viewHealth.configmap.checksum" . | nindent 8 }}
       labels:
-        app.kubernetes.io/component: viewHealth
+        app.kubernetes.io/component: view-health
     spec:
     {{- if .Values.stackstate.components.all.image.pullSecretName }}
       imagePullSecrets:
