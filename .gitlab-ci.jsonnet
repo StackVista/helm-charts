@@ -74,21 +74,70 @@ local test_chart_job(chart) = {
   },
 };
 
-local push_chart_job(chart, repository_url, repository_username, repository_password, when) = {
+local push_chart_job_if(chart, repository_url, repository_username, repository_password, rules) = {
   script: [
     'helm plugin install https://github.com/chartmuseum/helm-push.git',
     'helm dependencies update ${CHART}',
     'helm push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
   ],
-  rules: [
-    {
-      @'if': '$CI_COMMIT_BRANCH == "master"',
-      changes: ['stable/' + chart + '/**/*'],
-      when: when,
-    },
-  ],
+  rules: rules,
   variables: {
     CHART: 'stable/' + chart,
+  },
+};
+
+local push_chart_job(chart, repository_url, repository_username, repository_password, when) =
+  push_chart_job_if(
+    chart,
+    repository_url,
+    repository_username,
+    repository_password,
+    [
+      {
+        @'if': '$CI_COMMIT_BRANCH == "master"',
+        changes: ['stable/' + chart + '/**/*'],
+        when: when,
+      },
+    ]
+  );
+
+local push_stackstate_chart_releases =
+{
+ push_stackstate_release_to_internal: push_chart_job_if(
+    'stackstate',
+    '${CHARTMUSEUM_INTERNAL_URL}',
+    '${CHARTMUSEUM_INTERNAL_USERNAME}',
+    '${CHARTMUSEUM_INTERNAL_PASSWORD}',
+    [
+          {
+            @'if': '$CI_COMMIT_TAG =~ "^release-\\d+\\.\\d+\\.\\d+(-.+)?\\+rc\\d+$"',
+            when: 'on_success',
+          },
+          {
+            @'if': '$CI_COMMIT_TAG =~ "^sts-private-v\\d+\\.\\d+\\.\\d+-[a-z]+$"',
+            when: 'on_success',
+          },
+          {
+            @'if': '$CI_COMMIT_TAG =~ "^sts-v\\d+\\.\\d+\\.\\d+$"',
+            when: 'on_success',
+          },
+        ]
+    ) {
+    stage: 'push-charts-to-internal',
+  },
+  push_stackstate_release_to_public: push_chart_job_if(
+    'stackstate',
+    '${CHARTMUSEUM_URL}',
+    '${CHARTMUSEUM_USERNAME}',
+    '${CHARTMUSEUM_PASSWORD}',
+    [
+          {
+            @'if': '$CI_COMMIT_TAG =~ "^sts-v\\d+\\.\\d+\\.\\d+$"',
+            when: 'on_success',
+          },
+        ]
+    ) {
+    stage: 'push-charts-to-public',
   },
 };
 
@@ -102,7 +151,7 @@ local push_charts_to_internal_jobs = {
       '${CHARTMUSEUM_INTERNAL_URL}',
 '${CHARTMUSEUM_INTERNAL_USERNAME}',
 '${CHARTMUSEUM_INTERNAL_PASSWORD}',
-'always') {
+'on_success') {
     stage: 'push-charts-to-internal',
   })
   for chart in charts
@@ -143,3 +192,4 @@ local push_charts_to_public_jobs = {
 + push_charts_to_internal_jobs
 + push_charts_to_public_jobs
 + validate_and_push_jobs
++ push_stackstate_chart_releases
