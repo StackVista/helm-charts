@@ -131,15 +131,15 @@ local push_stackstate_chart_releases =
     '${CHARTMUSEUM_INTERNAL_PASSWORD}',
     [
           {
-            @'if': '$CI_COMMIT_TAG =~ "^release-\\d+\\.\\d+\\.\\d+(-.+)?\\+rc\\d+$"',
+            @'if': '$CI_COMMIT_TAG =~ /^release-\\d+\\.\\d+\\.\\d+(-.+)?\\+rc\\d+$/',
             when: 'on_success',
           },
           {
-            @'if': '$CI_COMMIT_TAG =~ "^sts-private-v\\d+\\.\\d+\\.\\d+-[a-z]+$"',
+            @'if': '$CI_COMMIT_TAG =~ /^sts-private-v\\d+\\.\\d+\\.\\d+-[a-z]+$/',
             when: 'on_success',
           },
           {
-            @'if': '$CI_COMMIT_TAG =~ "^sts-v\\d+\\.\\d+\\.\\d+$"',
+            @'if': '$CI_COMMIT_TAG =~ /^sts-v\\d+\\.\\d+\\.\\d+$/',
             when: 'on_success',
           },
         ]
@@ -153,7 +153,7 @@ local push_stackstate_chart_releases =
     '${CHARTMUSEUM_PASSWORD}',
     [
           {
-            @'if': '$CI_COMMIT_TAG =~ "^sts-v\\d+\\.\\d+\\.\\d+$"',
+            @'if': '$CI_COMMIT_TAG =~ /^sts-v\\d+\\.\\d+\\.\\d+$/',
             when: 'on_success',
           },
         ]
