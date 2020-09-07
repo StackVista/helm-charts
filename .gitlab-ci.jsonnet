@@ -44,6 +44,10 @@ local validate_and_push_jobs = {
         @'if': '$CI_COMMIT_BRANCH == "master"',
         when: 'never',
       },
+      {
+        @'if': '$CI_COMMIT_TAG',
+        when: 'never',
+      },
       { when: 'always' },
     ],
     variables: {
