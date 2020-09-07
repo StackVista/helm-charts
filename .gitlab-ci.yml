@@ -307,11 +307,11 @@ push_stackstate-standalone_to_public:
     CHART: stable/stackstate-standalone
 push_stackstate_release_to_internal:
   rules:
-    - if: $CI_COMMIT_TAG =~ "^release-\d+\.\d+\.\d+(-.+)?\+rc\d+$"
+    - if: $CI_COMMIT_TAG =~ /^release-\d+\.\d+\.\d+(-.+)?\+rc\d+$/
       when: on_success
-    - if: $CI_COMMIT_TAG =~ "^sts-private-v\d+\.\d+\.\d+-[a-z]+$"
+    - if: $CI_COMMIT_TAG =~ /^sts-private-v\d+\.\d+\.\d+-[a-z]+$/
       when: on_success
-    - if: $CI_COMMIT_TAG =~ "^sts-v\d+\.\d+\.\d+$"
+    - if: $CI_COMMIT_TAG =~ /^sts-v\d+\.\d+\.\d+$/
       when: on_success
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
@@ -322,7 +322,7 @@ push_stackstate_release_to_internal:
     CHART: stable/stackstate
 push_stackstate_release_to_public:
   rules:
-    - if: $CI_COMMIT_TAG =~ "^sts-v\d+\.\d+\.\d+$"
+    - if: $CI_COMMIT_TAG =~ /^sts-v\d+\.\d+\.\d+$/
       when: on_success
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
