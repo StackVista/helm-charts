@@ -2,6 +2,29 @@
 # THIS FILE WAS GENERATED AUTOMATICALLY! DO NOT EDIT MANUALLY! #
 ################################################################
 image: quay.io/helmpack/chart-testing:v3.0.0-beta.2
+integration_test_stackstate:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add stable https://kubernetes-charts.storage.googleapis.com
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  rules:
+    - changes:
+        - stable/stackstate/**/*
+      exists:
+        - stable/stackstate/itest/*.go
+      if: $CI_COMMIT_TAG
+  script:
+    - go test ./stable/stackstate/itest/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/stackstate
 push_aws-amicleaner_to_internal:
   rules:
     - changes:
@@ -408,7 +431,7 @@ test_aws-amicleaner:
         - stable/aws-amicleaner/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - go test ./stable/aws-amicleaner/...
+    - go test ./stable/aws-amicleaner/test/...
   stage: test
   variables:
     CGO_ENABLED: 0
@@ -431,7 +454,7 @@ test_aws-nuke:
         - stable/aws-nuke/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - go test ./stable/aws-nuke/...
+    - go test ./stable/aws-nuke/test/...
   stage: test
   variables:
     CGO_ENABLED: 0
@@ -454,7 +477,7 @@ test_cluster-agent:
         - stable/cluster-agent/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - go test ./stable/cluster-agent/...
+    - go test ./stable/cluster-agent/test/...
   stage: test
   variables:
     CGO_ENABLED: 0
@@ -477,7 +500,7 @@ test_common:
         - stable/common/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - go test ./stable/common/...
+    - go test ./stable/common/test/...
   stage: test
   variables:
     CGO_ENABLED: 0
@@ -500,7 +523,7 @@ test_elasticsearch:
         - stable/elasticsearch/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - go test ./stable/elasticsearch/...
+    - go test ./stable/elasticsearch/test/...
   stage: test
   variables:
     CGO_ENABLED: 0
@@ -523,7 +546,7 @@ test_gitlab-runner:
         - stable/gitlab-runner/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - go test ./stable/gitlab-runner/...
+    - go test ./stable/gitlab-runner/test/...
   stage: test
   variables:
     CGO_ENABLED: 0
@@ -546,7 +569,7 @@ test_gitlab-steward:
         - stable/gitlab-steward/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - go test ./stable/gitlab-steward/...
+    - go test ./stable/gitlab-steward/test/...
   stage: test
   variables:
     CGO_ENABLED: 0
@@ -569,7 +592,7 @@ test_hbase:
         - stable/hbase/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - go test ./stable/hbase/...
+    - go test ./stable/hbase/test/...
   stage: test
   variables:
     CGO_ENABLED: 0
@@ -592,7 +615,7 @@ test_iceman:
         - stable/iceman/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - go test ./stable/iceman/...
+    - go test ./stable/iceman/test/...
   stage: test
   variables:
     CGO_ENABLED: 0
@@ -615,7 +638,7 @@ test_stackstate:
         - stable/stackstate/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - go test ./stable/stackstate/...
+    - go test ./stable/stackstate/test/...
   stage: test
   variables:
     CGO_ENABLED: 0
@@ -638,7 +661,7 @@ test_stackstate-standalone:
         - stable/stackstate-standalone/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - go test ./stable/stackstate-standalone/...
+    - go test ./stable/stackstate-standalone/test/...
   stage: test
   variables:
     CGO_ENABLED: 0
@@ -661,7 +684,7 @@ test_trafficmirror:
         - stable/trafficmirror/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - go test ./stable/trafficmirror/...
+    - go test ./stable/trafficmirror/test/...
   stage: test
   variables:
     CGO_ENABLED: 0

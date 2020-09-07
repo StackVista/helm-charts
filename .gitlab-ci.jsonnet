@@ -58,7 +58,7 @@ local test_chart_job(chart) = {
   before_script: helm_fetch_dependencies +
   ['helm dependencies update ${CHART}'],
   script: [
-    'go test ./stable/' + chart + '/...',
+    'go test ./stable/' + chart + '/test/...',
   ],
   stage: 'test',
   rules: [
@@ -66,6 +66,27 @@ local test_chart_job(chart) = {
       @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
       changes: ['stable/' + chart + '/**/*'],
       exists: ['stable/' + chart + '/test/*.go'],
+    },
+  ],
+  variables: {
+    CHART: 'stable/' + chart,
+    CGO_ENABLED: 0,
+  },
+};
+
+local itest_chart_job(chart) = {
+  image: 'stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526',
+  before_script: helm_fetch_dependencies +
+  ['helm dependencies update ${CHART}'],
+  script: [
+    'go test ./stable/' + chart + '/itest/...',
+  ],
+  stage: 'test',
+  rules: [
+    {
+      @'if': '$CI_COMMIT_TAG',
+      changes: ['stable/' + chart + '/**/*'],
+      exists: ['stable/' + chart + '/itest/*.go'],
     },
   ],
   variables: {
@@ -146,6 +167,10 @@ local test_chart_jobs = {
   for chart in charts
 };
 
+local itest_stackstate = {
+  integration_test_stackstate: itest_chart_job('stackstate'),
+};
+
 local push_charts_to_internal_jobs = {
   ['push_%s_to_internal' % chart]: (push_chart_job(chart,
       '${CHARTMUSEUM_INTERNAL_URL}',
@@ -193,3 +218,4 @@ local push_charts_to_public_jobs = {
 + push_charts_to_public_jobs
 + validate_and_push_jobs
 + push_stackstate_chart_releases
++ itest_stackstate
