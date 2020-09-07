@@ -5,44 +5,39 @@
 caspr:
   # caspr.enabled -- Enable CASPR compatible values.
   enabled: false
-
 ingress:
   # ingress.annotations -- Annotations for ingress objects.
   annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
   # ingress.enabled -- Enable use of ingress controllers.
   enabled: false
   path: /
   # ingress.hosts -- List of ingress hostnames; the paths are fixed to StackState backend services
   hosts: []
-    # - host: stackstate.local
+  # - host: stackstate.local
   # ingress.tls -- List of ingress TLS certificates to use.
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - stackstate.local
-
 networkPolicy:
   # networkPolicy.enabled -- Enable creating of `NetworkPolicy` object and associated rules for StackState.
   enabled: false
   # networkPolicy.spec -- `NetworkPolicy` rules for StackState.
   spec:
     ingress:
-    - from:
-      - podSelector: {}
+      - from:
+          - podSelector: {}
     podSelector:
       matchLabels: {}
     policyTypes:
-    - Ingress
-
+      - Ingress
 global:
   # global.receiverApiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
   receiverApiKey: ""
-
 # commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
 commonLabels: {}
-
 stackstate:
   components:
     all:
@@ -66,7 +61,7 @@ stackstate:
         pullPolicy: Always
         # When changing this value make sure to also update hbase.stackgraph.image.tag to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: sts-v4-0-1
+        tag: release-4.1.0-rc1
       metrics:
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
         enabled: true
@@ -494,19 +489,16 @@ stackstate:
   receiver:
     # stackstate.receiver.baseUrl -- (string) **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of the StackState endpoints.
     baseUrl:
-
   experimental:
     server:
-    # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
+      # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
       split: false
   stackpacks:
     # stackstate.stackpacks.installed -- Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks)
     installed: []
-
 ##############################
 # Dependency chart overrides #
 ##############################
-
 elasticsearch:
   # elasticsearch.clusterHealthCheckParams -- The Elasticsearch cluster health status params that will be used by readinessProbe command
   clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
@@ -521,10 +513,10 @@ elasticsearch:
     app.kubernetes.io/part-of: stackstate
   # elasticsearch.extraEnvs -- Extra settings that StackState uses for Elasticsearch.
   extraEnvs:
-  - name: action.auto_create_index
-    value: "true"
-  - name: indices.query.bool.max_clause_count
-    value: "10000"
+    - name: action.auto_create_index
+      value: "true"
+    - name: indices.query.bool.max_clause_count
+      value: "10000"
   # elasticsearch.imageTag -- Elasticsearch version.
   imageTag: "7.4.1"
   # elasticsearch.minimumMasterNodes -- Minimum number of Elasticsearch master nodes.
@@ -569,7 +561,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: "1.7.0"
+      tag: 2.6.2
   console:
     # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
     enabled: false
@@ -594,7 +586,6 @@ hbase:
     enabled: false
     # hbase.zookeeper.externalServers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
     externalServers: stackstate-zookeeper-headless
-
 kafka:
   # kafka.command -- Override kafka container command.
   command:
@@ -699,7 +690,6 @@ kafka:
   # kafka.zookeeper.enabled -- Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**.
   zookeeper:
     enabled: false
-
 zookeeper:
   # zookeeper.enabled -- Enable / disable chart-based Zookeeper.
   enabled: true
@@ -727,7 +717,6 @@ zookeeper:
     ad.stackstate.com/zookeeper.instances: '[ { "prometheus_url": "http://%%host%%:9141/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
   replicaCount: 3
-
 anomaly-detection:
   # anomaly-detection.enabled -- Enables anomaly detection chart
   enabled: false
@@ -753,7 +742,6 @@ anomaly-detection:
     authRoleName: stackstate-admin
   # anomaly-detection.threadWorkers -- The number of worker threads.
   threadWorkers: 5
-
   # anomaly-detection.ingress -- Status interface ingress
   ingress:
     # anomaly-detection.ingress.enabled -- Enables ingress controller for status interface
@@ -777,9 +765,8 @@ anomaly-detection:
 
     # anomaly-detection.ingress.tls - List of ingress TLS certificates to use.
     tls:
-      # - hosts:
-      #     - spotlight.local.domain
-
+    # - hosts:
+    #     - spotlight.local.domain
 cluster-agent:
   # stackstate-agent.enabled -- Deploy the StackState Kubernetes Agent so StackState can monitor the cluster it runs in
   enabled: false
