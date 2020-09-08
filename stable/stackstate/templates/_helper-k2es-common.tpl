@@ -68,8 +68,4 @@ readinessProbe:
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
-securityContext:
-  runAsGroup: 65534
-  runAsNonRoot: true
-  runAsUser: 65534
 {{- end -}}

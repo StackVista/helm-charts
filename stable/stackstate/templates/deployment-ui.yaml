@@ -58,9 +58,7 @@ resources:
     cpu: "20m"
     memory: "32Mi"
 securityContext:
-  runAsGroup: 101
   runAsNonRoot: true
-  runAsUser: 101
 {{- end -}}
 
 {{- define "stackstate.ui.deployment" -}}
