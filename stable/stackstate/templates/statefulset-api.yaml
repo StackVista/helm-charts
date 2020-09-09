@@ -27,6 +27,8 @@ env:
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
+- name: HADOOP_USER_NAME
+  value: nobody
 - name: LICENSE_KEY
   valueFrom:
     secretKeyRef:
