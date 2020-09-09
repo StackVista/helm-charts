@@ -22,6 +22,8 @@ readinessProbe:
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
+securityContext:
+  runAsNonRoot: true
 {{- end -}}
 
 {{- define "stackstate.ui.deployment.monitoring.container" -}}
@@ -58,7 +60,9 @@ resources:
     cpu: "20m"
     memory: "32Mi"
 securityContext:
+  runAsGroup: 101
   runAsNonRoot: true
+  runAsUser: 101
 {{- end -}}
 
 {{- define "stackstate.ui.deployment" -}}
