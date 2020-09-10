@@ -32,6 +32,8 @@ env:
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
+- name: HADOOP_USER_NAME
+  value: nobody
 - name: LICENSE_KEY
   valueFrom:
     secretKeyRef:
@@ -76,9 +78,7 @@ resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 securityContext:
-  runAsGroup: 65534
   runAsNonRoot: true
-  runAsUser: 65534
 volumeMounts:
 - name: config-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
