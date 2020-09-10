@@ -146,6 +146,8 @@ Common environment variables for HBase configuration.
   value: {{ include "hbase.zookeeper.endpoint" . | quote }}
 - name: HBASE_CONF_zookeeper_znode_parent
   value: "/hbase"
+- name: HBASE_CONF_hbase_regionserver_flush_policy
+  value: "org.apache.hadoop.hbase.regionserver.FlushAllStoresPolicy"
 {{- end }}
 
 {{/*
