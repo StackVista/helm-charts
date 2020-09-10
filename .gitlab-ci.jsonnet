@@ -33,7 +33,7 @@ local validate_and_push_jobs = {
     ],
     script: [
       'ct list-changed --config test/ct.yaml',
-      'ct lint --debug --validate-maintainers=false --config test/ct.yaml',
+      'ct lint --debug --validate-maintainers=false --check-version-increment=false --config test/ct.yaml',
       '.gitlab/validate_kubeval.sh',
     ],
     stage: 'validate',
