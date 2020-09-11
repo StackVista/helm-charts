@@ -92,62 +92,14 @@ Common environment variables for HDFS configuration.
 Common environment variables for HBase configuration.
 */}}
 {{- define "hbase.hbase.commonEnv" }}
-- name: HBASE_CONF_data_tx_bind_address
-  value: "0.0.0.0"
-- name: HBASE_CONF_data_tx_bind_port
-  value: "15165"
-- name: HBASE_CONF_data_tx_grace_period
-  value: "60"
-- name: HBASE_CONF_data_tx_log_sync
-  value: "false"
-- name: HBASE_CONF_data_tx_max_lifetime
-  value: "600"
-- name: HBASE_CONF_data_tx_max_timeout
-  value: "600"
-- name: HBASE_CONF_data_tx_prune_enable
-  value: "true"
-- name: HBASE_CONF_data_tx_prune_flush_interval
-  value: "600"
-- name: HBASE_CONF_data_tx_prune_interval
-  value: "600"
-- name: HBASE_CONF_data_tx_retention_default_window
-  value: "691200"
-- name: HBASE_CONF_data_tx_retention_filterfactory
-  value: "com.stackvista.graph.tephra.retention.StackGraphRetentionFilterFactory"
-- name: HBASE_CONF_data_tx_snapshot_dir
-  value: "/tx"
-- name: HBASE_CONF_data_tx_snapshot_interval
-  value: "600"
-- name: HBASE_CONF_data_tx_snapshot_use_local
-  value: "false"
 - name: HBASE_CONF_data_tx_zookeeper_quorum
   value: {{ include "hbase.zookeeper.endpoint" . | quote }}
-- name: HBASE_CONF_hbase_cluster_distributed
-  value: "true"
-- name: HBASE_CONF_hbase_hregion_majorcompaction
-  value: "86400000"
 - name: HBASE_CONF_hbase_master
   value: "{{ template "common.fullname.short" . }}-hbase-master:16000"
-- name: HBASE_CONF_hbase_master_ipc_address
-  value: "0.0.0.0"
-- name: HBASE_CONF_hbase_offpeak_end_hour
-  value: "4"
-- name: HBASE_CONF_hbase_offpeak_start_hour
-  value: "1"
-- name: HBASE_CONF_hbase_procedure_store_wal_use_hsync
-  value: "true"
-- name: HBASE_CONF_hbase_regionserver_info_bindAddress
-  value: "0.0.0.0"
-- name: HBASE_CONF_hbase_regionserver_ipc_address
-  value: "0.0.0.0"
 - name: HBASE_CONF_hbase_rootdir
   value: "hdfs://{{ template "common.fullname.short" . }}-hdfs-nn-headful:9000/hbase"
 - name: HBASE_CONF_hbase_zookeeper_quorum
   value: {{ include "hbase.zookeeper.endpoint" . | quote }}
-- name: HBASE_CONF_zookeeper_znode_parent
-  value: "/hbase"
-- name: HBASE_CONF_hbase_regionserver_flush_policy
-  value: "org.apache.hadoop.hbase.regionserver.FlushAllStoresPolicy"
 {{- end }}
 
 {{/*
