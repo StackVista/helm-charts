@@ -123,7 +123,7 @@ hbase:
         memory: "3Gi"
       requests:
         memory: "2Gi"
-        cpu: "750m"
+        cpu: "2000m"
     # hbase.regionserver.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hbase.regionserver.tolerations -- Toleration labels for pod assignment.
