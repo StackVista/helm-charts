@@ -1,6 +1,6 @@
 # hbase
 
-![Version: 0.1.42](https://img.shields.io/badge/Version-0.1.42-informational?style=flat-square) ![AppVersion: 1.2.6](https://img.shields.io/badge/AppVersion-1.2.6-informational?style=flat-square)
+![Version: 0.1.43](https://img.shields.io/badge/Version-0.1.43-informational?style=flat-square) ![AppVersion: 1.2.6](https://img.shields.io/badge/AppVersion-1.2.6-informational?style=flat-square)
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
@@ -70,7 +70,7 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | hbase.regionserver.image.tag | string | `nil` | Container image tag for HBase region servers, defaults to `stackgraph.image.tag` |
 | hbase.regionserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hbase.regionserver.replicaCount | int | `1` | Number of HBase regionserver nodes. |
-| hbase.regionserver.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"750m","memory":"2Gi"}}` | Resources to allocate for HBase region servers. |
+| hbase.regionserver.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"2000m","memory":"2Gi"}}` | Resources to allocate for HBase region servers. |
 | hbase.regionserver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.zookeeper.quorum | string | `"hbase"` | Zookeeper quorum used for single-node Zookeeper installations; not used if `zookeeper.replicaCount` is more than `1`. |
 | hdfs.datanode.affinity | object | `{}` | Affinity settings for pod assignment. |
