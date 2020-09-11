@@ -572,6 +572,9 @@ hbase:
     regionserver:
       # hbase.hbase.regionserver.replicaCount -- Number of HBase regionserver node replicas.
       replicaCount: 3
+      resources:
+        requests:
+          cpu: "2000m"
   hdfs:
     datanode:
       # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas.
