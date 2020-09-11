@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.2.0-snapshot.3`
+Current chart version is `4.2.0-snapshot.4`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -16,7 +16,7 @@ Current chart version is `4.2.0-snapshot.3`
 | https://helm.stackstate.io | cluster-agent | 0.4.2 |
 | https://helm.stackstate.io | common | 0.4.8 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.8 |
-| https://helm.stackstate.io | hbase | 0.1.42 |
+| https://helm.stackstate.io | hbase | 0.1.44 |
 
 ## Required Values
 
