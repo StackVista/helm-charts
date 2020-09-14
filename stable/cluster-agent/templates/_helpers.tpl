@@ -57,17 +57,3 @@ StackState URL function
 {{- define "cluster-agent.stackstate.url" -}}
 {{ tpl .Values.stackstate.url . | quote }}
 {{- end }}
-
-{{- define "cluster-agent.stackstate.hostname" -}}
-  {{- $global := default (dict) .Values.global -}}
-  {{- $base := "stackstate" -}}
-  {{- if ne $base .Release.Name -}}
-    {{- $base = (printf "%s-%s" .Release.Name $base) -}}
-  {{- end -}}
-  {{- $gpre := default "" $global.fullnamePrefix -}}
-  {{- $pre := default "" .Values.fullnamePrefix -}}
-  {{- $suf := default "" .Values.fullnameSuffix -}}
-  {{- $gsuf := default "" $global.fullnameSuffix -}}
-  {{- $name := print $gpre $pre $base $suf $gsuf -}}
-  {{- $name | lower | trunc 54 | trimSuffix "-" -}}
-{{- end -}}
