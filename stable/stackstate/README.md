@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.2.0-snapshot.4`
+Current chart version is `4.2.0-snapshot.5`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -13,7 +13,7 @@ Current chart version is `4.2.0-snapshot.4`
 | https://charts.bitnami.com/bitnami | kafka | 11.7.1 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
 | https://helm.stackstate.io | anomaly-detection | 4.1.14 |
-| https://helm.stackstate.io | cluster-agent | 0.4.2 |
+| https://helm.stackstate.io | cluster-agent | 0.4.5 |
 | https://helm.stackstate.io | common | 0.4.8 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.8 |
 | https://helm.stackstate.io | hbase | 0.1.44 |
@@ -55,7 +55,7 @@ stackstate/stackstate
 | cluster-agent.enabled | bool | `false` |  |
 | cluster-agent.stackstate.cluster.authToken | string | `nil` |  |
 | cluster-agent.stackstate.cluster.name | string | `nil` |  |
-| cluster-agent.stackstate.url | string | `"http://stackstate-router:8080/receiver/stsAgent"` |  |
+| cluster-agent.stackstate.url | string | `"http://{{ include \"stackstate.hostname.prefix\" . }}-router:8080/receiver/stsAgent"` |  |
 | commonLabels | object | `{}` | Labels that will be added to all resources created by the stackstate chart (not the subcharts though) |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` | The Elasticsearch cluster health status params that will be used by readinessProbe command |
 | elasticsearch.clusterName | string | `"stackstate-elasticsearch"` | Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |

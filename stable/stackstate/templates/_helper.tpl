@@ -623,3 +623,21 @@ imagePullSecrets:
     {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Determines the hostname prefix for the different stackstate services.
+Based on the `common.fullname.short` function
+*/}}
+{{- define "stackstate.hostname.prefix" -}}
+  {{- $global := default (dict) .Values.global -}}
+  {{- $base := "stackstate" -}}
+  {{- if ne $base .Release.Name -}}
+    {{- $base = (printf "%s-%s" .Release.Name $base) -}}
+  {{- end -}}
+  {{- $gpre := default "" $global.fullnamePrefix -}}
+  {{- $pre := default "" .Values.fullnamePrefix -}}
+  {{- $suf := default "" .Values.fullnameSuffix -}}
+  {{- $gsuf := default "" $global.fullnameSuffix -}}
+  {{- $name := print $gpre $pre $base $suf $gsuf -}}
+  {{- $name | lower | trunc 54 | trimSuffix "-" -}}
+{{- end -}}
