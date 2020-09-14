@@ -790,4 +790,4 @@ cluster-agent:
       # stackstate.cluster.authToken -- Provide a token to enable secure communication between the agent and the cluster agent.
       authToken:
     # stackstate.url -- (string) **PROVIDE STACKSTATE URL HERE** URL of the StackState installation to receive data from the agent.
-    url: "http://stackstate-router:8080/receiver/stsAgent"
+    url: "http://{{ include \"stackstate.hostname.prefix\" . }}-router:8080/receiver/stsAgent"
