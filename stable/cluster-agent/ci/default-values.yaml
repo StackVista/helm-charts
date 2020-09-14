@@ -6,5 +6,5 @@ stackstate:
   cluster:
     name: some-k8s-cluster
     token: some-token
-  url: https://some-stackstate-installation.mycompany.com
+  url: https://{{ .Values.stackstate.cluster.name }}.mycompany.com
 fullnameOverride: some-installation

@@ -50,3 +50,10 @@ Cluster agent checksum annotations
 {{- define "cluster-agent.checksum-configs" }}
 checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
 {{- end }}
+
+{{/*
+StackState URL function
+*/}}
+{{- define "cluster-agent.stackstate.url" -}}
+{{ tpl .Values.stackstate.url . | quote }}
+{{- end }}
