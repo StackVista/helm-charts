@@ -13,12 +13,19 @@ local helm_fetch_dependencies = [
     'helm repo update',
   ];
 
+local default_job = {
+  rules: super.rules + [{
+    @'if': '$UPDATE_STACKGRAPH_VERSION',
+    when: 'never',
+  }],
+};
+
 local sync_charts_template = {
   before_script:
   ['.gitlab/push_before_script.sh'] + helm_fetch_dependencies,
   script: ['sh test/sync-repo.sh'],
   stage: 'build',
-};
+} + default_job;
 
 local validate_and_push_jobs = {
   validate_charts: {
@@ -29,7 +36,6 @@ local validate_and_push_jobs = {
         @'if': '$CI_COMMIT_BRANCH == "master"',
         when: 'never',
       },
-      { when: 'always' },
     ],
     script: [
       'ct list-changed --config test/ct.yaml',
@@ -37,7 +43,7 @@ local validate_and_push_jobs = {
       '.gitlab/validate_kubeval.sh',
     ],
     stage: 'validate',
-  },
+  } + default_job,
   push_test_charts: sync_charts_template {
     rules: [
       {
@@ -48,7 +54,6 @@ local validate_and_push_jobs = {
         @'if': '$CI_COMMIT_TAG',
         when: 'never',
       },
-      { when: 'always' },
     ],
     variables: {
       AWS_BUCKET: 's3://helm-test.stackstate.io',
@@ -76,7 +81,7 @@ local test_chart_job(chart) = {
     CHART: 'stable/' + chart,
     CGO_ENABLED: 0,
   },
-};
+} + default_job;
 
 local itest_chart_job(chart) = {
   image: 'stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526',
@@ -97,7 +102,7 @@ local itest_chart_job(chart) = {
     CHART: 'stable/' + chart,
     CGO_ENABLED: 0,
   },
-};
+} + default_job;
 
 local push_chart_job_if(chart, repository_url, repository_username, repository_password, rules) = {
   script: [
@@ -109,7 +114,7 @@ local push_chart_job_if(chart, repository_url, repository_username, repository_p
   variables: {
     CHART: 'stable/' + chart,
   },
-};
+} + default_job;
 
 local push_chart_job(chart, repository_url, repository_username, repository_password, when) =
   push_chart_job_if(
@@ -199,6 +204,38 @@ local push_charts_to_public_jobs = {
   for chart in charts
 };
 
+local update_sg_version = {
+  update_stackgraph_version: {
+    image: 'ubuntu:18.04',
+    stage: 'update',
+    variables: {
+      GIT_AUTHOR_EMAIL: 'sts-admin@stackstate.com',
+      GIT_AUTHOR_NAME: 'stackstate-system-user',
+      GIT_COMMITTER_EMAIL: 'sts-admin@stackstate.com',
+      GIT_COMMITTER_NAME: 'stackstate-system-user',
+    },
+    before_script: [
+        'apt update && apt install -y curl git gawk',
+        'YQ_VERSION="3.3.2"',
+        'curl -L https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_386 --output /tmp/yq_linux_386',
+        'cp /tmp/yq_linux_386 /usr/bin/yq',
+        'chmod +x /usr/bin/yq',
+        'rm -f /tmp/yq_linux_386',
+      ],
+    rules: [
+      {
+        @'if': '$UPDATE_STACKGRAPH_VERSION',
+        when: 'always',
+      },
+    ],
+    script: [
+      '.gitlab/update_sg_version.sh stable/stackstate "hbase."',
+      '.gitlab/update_sg_version.sh stable/hbase ""',
+      '.gitlab/commit_changes_and_push.sh',
+    ],
+  },
+};
+
 // Main
 {
   // Only run for merge requests, tags, or the default (master) branch
@@ -210,7 +247,7 @@ local push_charts_to_public_jobs = {
     ],
   },
   image: 'quay.io/helmpack/chart-testing:v3.0.0-beta.2',
-  stages: ['validate', 'test', 'build', 'push-charts-to-internal', 'push-charts-to-public'],
+  stages: ['validate', 'test', 'update', 'build', 'push-charts-to-internal', 'push-charts-to-public'],
 
   variables: {
     HELM_VERSION: 'v3.1.2',
@@ -223,3 +260,4 @@ local push_charts_to_public_jobs = {
 + validate_and_push_jobs
 + push_stackstate_chart_releases
 + itest_stackstate
++ update_sg_version
