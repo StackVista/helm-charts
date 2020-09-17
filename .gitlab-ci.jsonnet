@@ -13,7 +13,7 @@ local helm_fetch_dependencies = [
     'helm repo update',
   ];
 
-local default_job = {
+local skip_when_sg_upgrade = {
   rules: super.rules + [{
     @'if': '$UPDATE_STACKGRAPH_VERSION',
     when: 'never',
@@ -25,7 +25,7 @@ local sync_charts_template = {
   ['.gitlab/push_before_script.sh'] + helm_fetch_dependencies,
   script: ['sh test/sync-repo.sh'],
   stage: 'build',
-} + default_job;
+} + skip_when_sg_upgrade;
 
 local validate_and_push_jobs = {
   validate_charts: {
@@ -43,7 +43,7 @@ local validate_and_push_jobs = {
       '.gitlab/validate_kubeval.sh',
     ],
     stage: 'validate',
-  } + default_job,
+  } + skip_when_sg_upgrade,
   push_test_charts: sync_charts_template {
     rules: [
       {
@@ -81,7 +81,7 @@ local test_chart_job(chart) = {
     CHART: 'stable/' + chart,
     CGO_ENABLED: 0,
   },
-} + default_job;
+} + skip_when_sg_upgrade;
 
 local itest_chart_job(chart) = {
   image: 'stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526',
@@ -102,7 +102,7 @@ local itest_chart_job(chart) = {
     CHART: 'stable/' + chart,
     CGO_ENABLED: 0,
   },
-} + default_job;
+} + skip_when_sg_upgrade;
 
 local push_chart_job_if(chart, repository_url, repository_username, repository_password, rules) = {
   script: [
@@ -114,7 +114,7 @@ local push_chart_job_if(chart, repository_url, repository_username, repository_p
   variables: {
     CHART: 'stable/' + chart,
   },
-} + default_job;
+} + skip_when_sg_upgrade;
 
 local push_chart_job(chart, repository_url, repository_username, repository_password, when) =
   push_chart_job_if(
