@@ -2,7 +2,7 @@
 
 set -euxo pipefail
 
-sg_version=$(eval "${UPDATE_STACKGRAPH_VERSION}")
+sg_version="${UPDATE_STACKGRAPH_VERSION}"
 
 if git diff --cached --exit-code; then
   echo "No changes, not committing anything"

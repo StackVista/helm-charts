@@ -5,7 +5,7 @@ set -euxo pipefail
 chart_path=$1
 tag_path_prefix=$2
 
-sg_version=$(eval "${UPDATE_STACKGRAPH_VERSION}")
+sg_version="${UPDATE_STACKGRAPH_VERSION}"
 values="${chart_path}/values.yaml"
 
 # Check if version changed
@@ -31,7 +31,7 @@ else
   chart="${chart_path}/Chart.yaml"
   updated_chart=".chart.yaml"
 
-  awk 'match($0,/(version: .*\.)([0-9]+)$/,a) && a[2]>0{a[2]++; $0=a[1] a[2]} 1' "${chart}" > "${updated_chart}"
+  awk 'match($0,/(version: .*\.)([0-9]+)$/,a) {a[2]++; $0=a[1] a[2]} { print }' "${chart}" > "${updated_chart}"
   mv -f "${updated_chart}" "${chart}"
 
   # update Readme
