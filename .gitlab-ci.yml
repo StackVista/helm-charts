@@ -14,6 +14,8 @@ integration_test_stackstate:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/stackstate/**/*
       exists:
@@ -27,6 +29,8 @@ integration_test_stackstate:
     CHART: stable/stackstate
 push_aws-amicleaner_to_internal:
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/aws-amicleaner/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -42,6 +46,8 @@ push_aws-amicleaner_to_public:
   needs:
     - push_aws-amicleaner_to_internal
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/aws-amicleaner/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -55,6 +61,8 @@ push_aws-amicleaner_to_public:
     CHART: stable/aws-amicleaner
 push_aws-nuke_to_internal:
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/aws-nuke/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -70,6 +78,8 @@ push_aws-nuke_to_public:
   needs:
     - push_aws-nuke_to_internal
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/aws-nuke/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -83,6 +93,8 @@ push_aws-nuke_to_public:
     CHART: stable/aws-nuke
 push_cluster-agent_to_internal:
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/cluster-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -98,6 +110,8 @@ push_cluster-agent_to_public:
   needs:
     - push_cluster-agent_to_internal
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/cluster-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -111,6 +125,8 @@ push_cluster-agent_to_public:
     CHART: stable/cluster-agent
 push_common_to_internal:
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/common/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -126,6 +142,8 @@ push_common_to_public:
   needs:
     - push_common_to_internal
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/common/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -139,6 +157,8 @@ push_common_to_public:
     CHART: stable/common
 push_elasticsearch_to_internal:
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/elasticsearch/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -154,6 +174,8 @@ push_elasticsearch_to_public:
   needs:
     - push_elasticsearch_to_internal
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/elasticsearch/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -167,6 +189,8 @@ push_elasticsearch_to_public:
     CHART: stable/elasticsearch
 push_gitlab-runner_to_internal:
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/gitlab-runner/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -182,6 +206,8 @@ push_gitlab-runner_to_public:
   needs:
     - push_gitlab-runner_to_internal
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/gitlab-runner/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -195,6 +221,8 @@ push_gitlab-runner_to_public:
     CHART: stable/gitlab-runner
 push_gitlab-steward_to_internal:
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/gitlab-steward/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -210,6 +238,8 @@ push_gitlab-steward_to_public:
   needs:
     - push_gitlab-steward_to_internal
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/gitlab-steward/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -223,6 +253,8 @@ push_gitlab-steward_to_public:
     CHART: stable/gitlab-steward
 push_hbase_to_internal:
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/hbase/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -238,6 +270,8 @@ push_hbase_to_public:
   needs:
     - push_hbase_to_internal
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/hbase/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -251,6 +285,8 @@ push_hbase_to_public:
     CHART: stable/hbase
 push_iceman_to_internal:
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/iceman/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -266,6 +302,8 @@ push_iceman_to_public:
   needs:
     - push_iceman_to_internal
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/iceman/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -279,6 +317,8 @@ push_iceman_to_public:
     CHART: stable/iceman
 push_stackstate-standalone_to_internal:
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/stackstate-standalone/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -294,6 +334,8 @@ push_stackstate-standalone_to_public:
   needs:
     - push_stackstate-standalone_to_internal
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/stackstate-standalone/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -307,6 +349,8 @@ push_stackstate-standalone_to_public:
     CHART: stable/stackstate-standalone
 push_stackstate_release_to_internal:
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - if: $CI_COMMIT_TAG =~ /^release-\d+\.\d+\.\d+(-.+)?\+rc\d+$/
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^sts-private-v\d+\.\d+\.\d+-[a-z]+$/
@@ -322,6 +366,8 @@ push_stackstate_release_to_internal:
     CHART: stable/stackstate
 push_stackstate_release_to_public:
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - if: $CI_COMMIT_TAG =~ /^sts-v\d+\.\d+\.\d+$/
       when: on_success
   script:
@@ -333,6 +379,8 @@ push_stackstate_release_to_public:
     CHART: stable/stackstate
 push_stackstate_to_internal:
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/stackstate/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -348,6 +396,8 @@ push_stackstate_to_public:
   needs:
     - push_stackstate_to_internal
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/stackstate/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -383,6 +433,8 @@ push_test_charts:
     REPO_URL: https://helm-test.stackstate.io/
 push_trafficmirror_to_internal:
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/trafficmirror/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -398,6 +450,8 @@ push_trafficmirror_to_public:
   needs:
     - push_trafficmirror_to_internal
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/trafficmirror/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -412,6 +466,7 @@ push_trafficmirror_to_public:
 stages:
   - validate
   - test
+  - update
   - build
   - push-charts-to-internal
   - push-charts-to-public
@@ -427,6 +482,8 @@ test_aws-amicleaner:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/aws-amicleaner/**/*
       exists:
@@ -450,6 +507,8 @@ test_aws-nuke:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/aws-nuke/**/*
       exists:
@@ -473,6 +532,8 @@ test_cluster-agent:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/cluster-agent/**/*
       exists:
@@ -496,6 +557,8 @@ test_common:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/common/**/*
       exists:
@@ -519,6 +582,8 @@ test_elasticsearch:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/elasticsearch/**/*
       exists:
@@ -542,6 +607,8 @@ test_gitlab-runner:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/gitlab-runner/**/*
       exists:
@@ -565,6 +632,8 @@ test_gitlab-steward:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/gitlab-steward/**/*
       exists:
@@ -588,6 +657,8 @@ test_hbase:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/hbase/**/*
       exists:
@@ -611,6 +682,8 @@ test_iceman:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/iceman/**/*
       exists:
@@ -634,6 +707,8 @@ test_stackstate:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/stackstate/**/*
       exists:
@@ -657,6 +732,8 @@ test_stackstate-standalone:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/stackstate-standalone/**/*
       exists:
@@ -680,6 +757,8 @@ test_trafficmirror:
     - helm dependencies update ${CHART}
   image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - changes:
         - stable/trafficmirror/**/*
       exists:
@@ -691,11 +770,35 @@ test_trafficmirror:
   variables:
     CGO_ENABLED: 0
     CHART: stable/trafficmirror
+update_stackgraph_version:
+  before_script:
+    - apt update && apt install -y curl git gawk
+    - YQ_VERSION="3.3.2"
+    - curl -L https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_386 --output /tmp/yq_linux_386
+    - cp /tmp/yq_linux_386 /usr/bin/yq
+    - chmod +x /usr/bin/yq
+    - rm -f /tmp/yq_linux_386
+  image: ubuntu:18.04
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: always
+  script:
+    - .gitlab/update_sg_version.sh stable/stackstate "hbase."
+    - .gitlab/update_sg_version.sh stable/hbase ""
+    - .gitlab/commit_changes_and_push.sh
+  stage: update
+  variables:
+    GIT_AUTHOR_EMAIL: sts-admin@stackstate.com
+    GIT_AUTHOR_NAME: stackstate-system-user
+    GIT_COMMITTER_EMAIL: sts-admin@stackstate.com
+    GIT_COMMITTER_NAME: stackstate-system-user
 validate_charts:
   before_script:
     - .gitlab/validate_before_script.sh
   environment: stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}
   rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
     - if: $CI_COMMIT_BRANCH == "master"
       when: never
     - when: always

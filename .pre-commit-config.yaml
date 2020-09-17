@@ -1,7 +1,7 @@
 exclude: 'gitlab-runner'
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v3.1.0
+  rev: v3.2.0
   hooks:
   - id: check-added-large-files
   - id: check-case-conflict
@@ -14,7 +14,7 @@ repos:
     args:
     - --allow-missing-credentials
 - repo: https://github.com/gruntwork-io/pre-commit
-  rev: v0.1.9
+  rev: v0.1.10
   hooks:
   - id: helmlint
   - id: shellcheck
@@ -23,7 +23,7 @@ repos:
   hooks:
   - id: gitlabci-lint
 - repo: https://github.com/norwoodj/helm-docs
-  rev: v0.13.0
+  rev: v0.15.0
   hooks:
   - id: helm-docs
 - repo: git@gitlab.com:stackvista/devops/pre-commit-hooks.git
