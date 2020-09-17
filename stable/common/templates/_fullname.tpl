@@ -61,3 +61,30 @@ This takes the same parameters as common.fullname
   {{- $name := print $gpre $pre $base $suf $gsuf -}}
   {{- $name | lower | trunc 54 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+'common.fullname.cluster.unique' creates a cluster-wide unique name for resources that need it,
+such as ClusterRole, ClusterRoleBinding, and other non-namespaced resources.
+Only if the namespace is different from the Chart name
+*/}}
+{{- define "common.fullname.cluster.unique" -}}
+  {{- $global := default (dict) .Values.global -}}
+  {{- $base := .Chart.Name -}}
+  {{- if .Values.fullnameOverride -}}
+    {{- $base = .Values.fullnameOverride -}}
+  {{- else -}}
+    {{- if ne $base .Release.Name -}}
+      {{- $base = (printf "%s-%s" .Release.Name .Chart.Name) -}}
+    {{- end -}}
+    {{- if ne $base .Release.Namespace -}}
+      {{- $base = (printf "%s-%s" .Release.Namespace $base) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $gpre := default "" $global.fullnamePrefix -}}
+  {{- $pre := default "" .Values.fullnamePrefix -}}
+  {{- $suf := default "" .Values.fullnameSuffix -}}
+  {{- $gsuf := default "" $global.fullnameSuffix -}}
+  {{- $name := print $gpre $pre $base $suf $gsuf -}}
+  {{- $name | lower | trunc 54 | trimSuffix "-" -}}
+
+{{- end -}}
