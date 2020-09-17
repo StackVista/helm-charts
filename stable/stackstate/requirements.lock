@@ -1,7 +1,7 @@
 dependencies:
 - name: common
   repository: https://helm.stackstate.io
-  version: 0.4.8
+  version: 0.4.11
 - name: elasticsearch
   repository: https://helm.stackstate.io
   version: 7.6.2-stackstate.8
@@ -20,5 +20,5 @@ dependencies:
 - name: cluster-agent
   repository: https://helm.stackstate.io
   version: 0.4.5
-digest: sha256:38fe315d71ede4235981c16b35b6dba1d7ca39e77362098dea6a6f46e370cee6
-generated: "2020-09-15T13:49:49.2345963Z"
+digest: sha256:8ab91982a7c2e71afddb21aeb8defd10aff0987f7be6a8e44077f045a86e9e1f
+generated: "2020-09-17T14:30:56.706241+02:00"

@@ -1,7 +1,7 @@
 dependencies:
 - name: common
   repository: https://helm.stackstate.io
-  version: 0.4.8
+  version: 0.4.11
 - name: elasticsearch
   condition: elasticsearch.enabled
   repository: https://helm.stackstate.io
