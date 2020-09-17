@@ -14,10 +14,10 @@ local helm_fetch_dependencies = [
   ];
 
 local skip_when_sg_upgrade = {
-  rules: super.rules + [{
+  rules: [{
     @'if': '$UPDATE_STACKGRAPH_VERSION',
     when: 'never',
-  }],
+  }] + super.rules,
 };
 
 local sync_charts_template = {
@@ -36,6 +36,7 @@ local validate_and_push_jobs = {
         @'if': '$CI_COMMIT_BRANCH == "master"',
         when: 'never',
       },
+      { when: 'always' },
     ],
     script: [
       'ct list-changed --config test/ct.yaml',
@@ -54,6 +55,7 @@ local validate_and_push_jobs = {
         @'if': '$CI_COMMIT_TAG',
         when: 'never',
       },
+      { when: 'always' },
     ],
     variables: {
       AWS_BUCKET: 's3://helm-test.stackstate.io',
