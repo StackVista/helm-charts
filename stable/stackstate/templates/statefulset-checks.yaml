@@ -1,4 +1,4 @@
-{{- define "stackstate.checks.statefulset.container.init" -}}
+{{- define "stackstate.checks.deployment.container.init" -}}
 name: server-init
 command:
 - sh
@@ -9,7 +9,7 @@ image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.com
 imagePullPolicy: Always
 {{- end -}}
 
-{{- define "stackstate.checks.statefulset.container.main" -}}
+{{- define "stackstate.checks.deployment.container.main" -}}
 args:
 - -startRole
 - checks
@@ -77,11 +77,11 @@ volumeMounts:
   subPath: application_stackstate.conf
 {{- end -}}
 
-{{- define "stackstate.checks.statefulset" -}}
+{{- define "stackstate.checks.deployment" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.checks.statefulset.container.main" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.checks.deployment.container.main" .) -}}
 {{- $stsStackstateStateMainContainer := (merge $overrideContainer $commonContainer) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.checks.statefulset.container.init" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.checks.deployment.container.init" .) -}}
 {{- $stsStackstateServerInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-checks
@@ -109,6 +109,7 @@ spec:
       imagePullSecrets:
       - name: '{{ template "common.fullname.short" . }}-pull-secret'
     {{- end }}
+      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
       containers:
@@ -147,7 +148,7 @@ spec:
 {{- end -}}
 
 {{- if .Values.stackstate.experimental.server.split }}
-{{- $commonStatefulset := fromYaml (include "common.statefulset" .) -}}
-{{- $checksStatefulset := fromYaml (include "stackstate.checks.statefulset" .) -}}
-{{- toYaml (merge $checksStatefulset $commonStatefulset) -}}
+{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $checksDeployment := fromYaml (include "stackstate.checks.deployment" .) -}}
+{{- toYaml (merge $checksDeployment $commonDeployment) -}}
 {{- end}}

@@ -1,4 +1,4 @@
-{{- define "stackstate.sync.statefulset.container.init" -}}
+{{- define "stackstate.sync.deployment.container.init" -}}
 name: server-init
 command:
 - sh
@@ -9,7 +9,7 @@ image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.com
 imagePullPolicy: Always
 {{- end -}}
 
-{{- define "stackstate.sync.statefulset.container.main" -}}
+{{- define "stackstate.sync.deployment.container.main" -}}
 args:
 - -startRole
 - sync
@@ -75,11 +75,11 @@ volumeMounts:
   subPath: application_stackstate.conf
 {{- end -}}
 
-{{- define "stackstate.sync.statefulset" -}}
+{{- define "stackstate.sync.deployment" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.sync.statefulset.container.main" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.sync.deployment.container.main" .) -}}
 {{- $stsStackstateSyncMainContainer := (merge $overrideContainer $commonContainer) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.sync.statefulset.container.init" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.sync.deployment.container.init" .) -}}
 {{- $stsStackstateServerInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-sync
@@ -107,6 +107,7 @@ spec:
       imagePullSecrets:
       - name: '{{ template "common.fullname.short" . }}-pull-secret'
     {{- end }}
+      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
       containers:
@@ -145,7 +146,7 @@ spec:
 {{- end -}}
 
 {{- if .Values.stackstate.experimental.server.split }}
-{{- $commonStatefulset := fromYaml (include "common.statefulset" .) -}}
-{{- $syncStatefulset := fromYaml (include "stackstate.sync.statefulset" .) -}}
-{{- toYaml (merge $syncStatefulset $commonStatefulset) -}}
+{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $syncDeployment := fromYaml (include "stackstate.sync.deployment" .) -}}
+{{- toYaml (merge $syncDeployment $commonDeployment) -}}
 {{- end}}

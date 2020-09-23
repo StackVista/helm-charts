@@ -1,4 +1,4 @@
-{{- define "stackstate.viewHealth.statefulset.container.init" -}}
+{{- define "stackstate.viewHealth.deployment.container.init" -}}
 name: server-init
 command:
 - sh
@@ -9,7 +9,7 @@ image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.com
 imagePullPolicy: Always
 {{- end -}}
 
-{{- define "stackstate.viewHealth.statefulset.container.main" -}}
+{{- define "stackstate.viewHealth.deployment.container.main" -}}
 args:
 - -startRole
 - viewHealth
@@ -75,11 +75,11 @@ volumeMounts:
   subPath: application_stackstate.conf
 {{- end -}}
 
-{{- define "stackstate.viewHealth.statefulset" -}}
+{{- define "stackstate.viewHealth.deployment" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.viewHealth.statefulset.container.main" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.viewHealth.deployment.container.main" .) -}}
 {{- $stsStackstateViewHealthMainContainer := (merge $overrideContainer $commonContainer) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.viewHealth.statefulset.container.init" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.viewHealth.deployment.container.init" .) -}}
 {{- $stsStackstateServerInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-view-health
@@ -107,6 +107,7 @@ spec:
       imagePullSecrets:
       - name: '{{ template "common.fullname.short" . }}-pull-secret'
     {{- end }}
+      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
       containers:
@@ -145,7 +146,7 @@ spec:
 {{- end -}}
 
 {{- if .Values.stackstate.experimental.server.split }}
-{{- $commonStatefulset := fromYaml (include "common.statefulset" .) -}}
-{{- $viewHealthStatefulset := fromYaml (include "stackstate.viewHealth.statefulset" .) -}}
-{{- toYaml (merge $viewHealthStatefulset $commonStatefulset) -}}
+{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $viewHealthDeployment := fromYaml (include "stackstate.viewHealth.deployment" .) -}}
+{{- toYaml (merge $viewHealthDeployment $commonDeployment) -}}
 {{- end}}

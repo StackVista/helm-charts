@@ -1,4 +1,4 @@
-{{- define "stackstate.initializer.statefulset.container.init" -}}
+{{- define "stackstate.initializer.deployment.container.init" -}}
 name: server-init
 command:
 - sh
@@ -9,7 +9,7 @@ image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.com
 imagePullPolicy: Always
 {{- end -}}
 
-{{- define "stackstate.initializer.statefulset.container.main" -}}
+{{- define "stackstate.initializer.deployment.container.main" -}}
 args:
 - -startRole
 - initializer
@@ -75,17 +75,18 @@ volumeMounts:
   subPath: application_stackstate.conf
 {{- end -}}
 
-{{- define "stackstate.initializer.statefulset" -}}
+{{- define "stackstate.initializer.deployment" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.initializer.statefulset.container.main" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.initializer.deployment.container.main" .) -}}
 {{- $stsStackstateInitializerMainContainer := (merge $overrideContainer $commonContainer) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.initializer.statefulset.container.init" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.initializer.deployment.container.init" .) -}}
 {{- $stsStackstateServerInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-initializer
   labels:
     app.kubernetes.io/component: initializer
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/component: initializer
@@ -107,6 +108,7 @@ spec:
       imagePullSecrets:
       - name: '{{ template "common.fullname.short" . }}-pull-secret'
     {{- end }}
+      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
       containers:
@@ -145,7 +147,7 @@ spec:
 {{- end -}}
 
 {{- if .Values.stackstate.experimental.server.split }}
-{{- $commonStatefulset := fromYaml (include "common.statefulset" .) -}}
-{{- $initializerStatefulset := fromYaml (include "stackstate.initializer.statefulset" .) -}}
-{{- toYaml (merge $initializerStatefulset $commonStatefulset) -}}
+{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $initializerDeployment := fromYaml (include "stackstate.initializer.deployment" .) -}}
+{{- toYaml (merge $initializerDeployment $commonDeployment) -}}
 {{- end}}
