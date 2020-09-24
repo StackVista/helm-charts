@@ -72,6 +72,8 @@ Common extra environment variables for all processes inherited through `stacksta
       key: {{ $key }}
   {{- end }}
 {{- end }}
+- name: CONFIG_FORCE_stackstate_misc_releaseRevision
+  value: {{ .Release.Revision | quote }}
 {{- end -}}
 
 {{/*

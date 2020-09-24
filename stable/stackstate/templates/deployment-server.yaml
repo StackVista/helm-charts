@@ -1,4 +1,4 @@
-{{- define "stackstate.server.statefulset.container.init" -}}
+{{- define "stackstate.server.deployment.container.init" -}}
 name: server-init
 command:
 - sh
@@ -9,7 +9,7 @@ image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.com
 imagePullPolicy: Always
 {{- end -}}
 
-{{- define "stackstate.server.statefulset.container.main" -}}
+{{- define "stackstate.server.deployment.container.main" -}}
 {{- $mountSecrets := fromYaml (include "stackstate.mountsecrets" .) -}}
 args:
 {{- if .Values.stackstate.java.trustStore }}
@@ -23,6 +23,8 @@ env:
 {{- include "stackstate.common.envvars" . }}
 {{- include "stackstate.server.envvars" . }}
 {{- include "stackstate.authentication.envvars" . }}
+- name: CONFIG_FORCE_stackgraph.vertex.cache.expireAfterSeconds
+  value: "86400"
 - name: API_KEY
   valueFrom:
     secretKeyRef:
@@ -89,12 +91,12 @@ volumeMounts:
 {{- end }}
 {{- end -}}
 
-{{- define "stackstate.server.statefulset" -}}
+{{- define "stackstate.server.deployment" -}}
 {{- $secrets := fromYaml (include "stackstate.mountsecrets" .) -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.server.statefulset.container.main" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.server.deployment.container.main" .) -}}
 {{- $stsstackstateServerMainContainer := (merge $overrideContainer $commonContainer) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.server.statefulset.container.init" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.server.deployment.container.init" .) -}}
 {{- $stsstackstateServerInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-server
@@ -166,7 +168,7 @@ spec:
 {{- end -}}
 
 {{- if not .Values.stackstate.experimental.server.split }}
-{{- $commonStatefulset := fromYaml (include "common.statefulset" .) -}}
-{{- $serverStatefulset := fromYaml (include "stackstate.server.statefulset" .) -}}
-{{- toYaml (merge $serverStatefulset $commonStatefulset) -}}
+{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $serverDeployment := fromYaml (include "stackstate.server.deployment" .) -}}
+{{- toYaml (merge $serverDeployment $commonDeployment) -}}
 {{- end }}
