@@ -15,33 +15,35 @@ import (
 
 // KubernetesResources parsed from a multi-document template string
 type KubernetesResources struct {
-	ConfigMaps          []corev1.ConfigMap
-	Pdbs                []policyv1.PodDisruptionBudget
-	ServiceAccounts     []corev1.ServiceAccount
-	Secrets             []corev1.Secret
 	ClusterRoles        []rbacv1.ClusterRole
 	ClusterRoleBindings []rbacv1.ClusterRoleBinding
-	Services            []corev1.Service
+	ConfigMaps          []corev1.ConfigMap
 	Deployments         []appsv1.Deployment
-	Statefulsets        []appsv1.StatefulSet
 	Jobs                []batchv1.Job
 	Pods                []corev1.Pod
+	Pdbs                []policyv1.PodDisruptionBudget
+	RoleBindings        []rbacv1.RoleBinding
+	Secrets             []corev1.Secret
+	Services            []corev1.Service
+	ServiceAccounts     []corev1.ServiceAccount
+	Statefulsets        []appsv1.StatefulSet
 }
 
 // NewKubernetesResources creates a new instance of KubernetesResources by parsing the helmOutput and
 // loading the data into the correct types resulting in some (limited) type checks on the data as well
 func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources {
-	configMaps := make([]corev1.ConfigMap, 0)
-	pdbs := make([]policyv1.PodDisruptionBudget, 0)
-	serviceAccounts := make([]corev1.ServiceAccount, 0)
-	secrets := make([]corev1.Secret, 0)
 	clusterRoles := make([]rbacv1.ClusterRole, 0)
 	clusterRoleBindings := make([]rbacv1.ClusterRoleBinding, 0)
-	services := make([]corev1.Service, 0)
+	configMaps := make([]corev1.ConfigMap, 0)
 	deployments := make([]appsv1.Deployment, 0)
-	statefulsets := make([]appsv1.StatefulSet, 0)
 	jobs := make([]batchv1.Job, 0)
 	pods := make([]corev1.Pod, 0)
+	pdbs := make([]policyv1.PodDisruptionBudget, 0)
+	roleBindings := make([]rbacv1.RoleBinding, 0)
+	secrets := make([]corev1.Secret, 0)
+	services := make([]corev1.Service, 0)
+	serviceAccounts := make([]corev1.ServiceAccount, 0)
+	statefulsets := make([]appsv1.StatefulSet, 0)
 
 	// The K8S unmarshalling only can do a single document
 	// So we split them first by the yaml document separator
@@ -51,22 +53,6 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 		var metadata metav1.TypeMeta
 		helm.UnmarshalK8SYaml(t, v, &metadata)
 		switch metadata.Kind {
-		case "ConfigMap":
-			var configMap corev1.ConfigMap
-			helm.UnmarshalK8SYaml(t, v, &configMap)
-			configMaps = append(configMaps, configMap)
-		case "PodDisruptionBudget":
-			var resource policyv1.PodDisruptionBudget
-			helm.UnmarshalK8SYaml(t, v, &resource)
-			pdbs = append(pdbs, resource)
-		case "ServiceAccount":
-			var resource corev1.ServiceAccount
-			helm.UnmarshalK8SYaml(t, v, &resource)
-			serviceAccounts = append(serviceAccounts, resource)
-		case "Secret":
-			var resource corev1.Secret
-			helm.UnmarshalK8SYaml(t, v, &resource)
-			secrets = append(secrets, resource)
 		case "ClusterRole":
 			var resource rbacv1.ClusterRole
 			helm.UnmarshalK8SYaml(t, v, &resource)
@@ -75,44 +61,65 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 			var resource rbacv1.ClusterRoleBinding
 			helm.UnmarshalK8SYaml(t, v, &resource)
 			clusterRoleBindings = append(clusterRoleBindings, resource)
-		case "Service":
-			var resource corev1.Service
-			helm.UnmarshalK8SYaml(t, v, &resource)
-			services = append(services, resource)
+		case "ConfigMap":
+			var configMap corev1.ConfigMap
+			helm.UnmarshalK8SYaml(t, v, &configMap)
+			configMaps = append(configMaps, configMap)
 		case "Deployment":
 			var resource appsv1.Deployment
 			helm.UnmarshalK8SYaml(t, v, &resource)
 			deployments = append(deployments, resource)
-		case "StatefulSet":
-			var resource appsv1.StatefulSet
-			helm.UnmarshalK8SYaml(t, v, &resource)
-			statefulsets = append(statefulsets, resource)
 		case "Job":
 			var resource batchv1.Job
 			helm.UnmarshalK8SYaml(t, v, &resource)
 			jobs = append(jobs, resource)
+		case "List":
+			// Skip for now
 		case "Pod":
 			var resource corev1.Pod
 			helm.UnmarshalK8SYaml(t, v, &resource)
 			pods = append(pods, resource)
-		case "List":
-			// Skip for now
+		case "PodDisruptionBudget":
+			var resource policyv1.PodDisruptionBudget
+			helm.UnmarshalK8SYaml(t, v, &resource)
+			pdbs = append(pdbs, resource)
+		case "RoleBinding":
+			var resource rbacv1.RoleBinding
+			helm.UnmarshalK8SYaml(t, v, &resource)
+			roleBindings = append(roleBindings, resource)
+		case "Secret":
+			var resource corev1.Secret
+			helm.UnmarshalK8SYaml(t, v, &resource)
+			secrets = append(secrets, resource)
+		case "Service":
+			var resource corev1.Service
+			helm.UnmarshalK8SYaml(t, v, &resource)
+			services = append(services, resource)
+		case "ServiceAccount":
+			var resource corev1.ServiceAccount
+			helm.UnmarshalK8SYaml(t, v, &resource)
+			serviceAccounts = append(serviceAccounts, resource)
+		case "StatefulSet":
+			var resource appsv1.StatefulSet
+			helm.UnmarshalK8SYaml(t, v, &resource)
+			statefulsets = append(statefulsets, resource)
 		default:
 			t.Error("Found unknown kind " + metadata.Kind + ". Ths can be caused by an incorrect k8s resource type in the helm template or when using a custom resource type.")
 		}
 	}
 
 	return KubernetesResources{
-		ConfigMaps:          configMaps,
-		Pdbs:                pdbs,
-		ServiceAccounts:     serviceAccounts,
-		Secrets:             secrets,
 		ClusterRoles:        clusterRoles,
 		ClusterRoleBindings: clusterRoleBindings,
-		Services:            services,
+		ConfigMaps:          configMaps,
 		Deployments:         deployments,
-		Statefulsets:        statefulsets,
 		Jobs:                jobs,
 		Pods:                pods,
+		Pdbs:                pdbs,
+		RoleBindings:        roleBindings,
+		Secrets:             secrets,
+		Services:            services,
+		ServiceAccounts:     serviceAccounts,
+		Statefulsets:        statefulsets,
 	}
 }
