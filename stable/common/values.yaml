@@ -237,6 +237,12 @@ poddisruptionbudget:
   # poddisruptionbudget.apiVersion -- Kubernetes apiVersion to use with a `PodDisruptionBudget` object.
   apiVersion: "policy/v1beta1"
 
+rolebinding:
+  # rolebinding.annotations -- Annotations for `RoleBinding` objects.
+  annotations: {}
+  # rolebinding.apiVersion -- Kubernetes apiVersion to use with a `RoleBinding` object.
+  apiVersion: "rbac.authorization.k8s.io/v1"
+
 secret:
   # secret.annotations -- Annotations for `Secret` objects.
   annotations: {}
