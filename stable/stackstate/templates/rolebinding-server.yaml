@@ -1,0 +1,16 @@
+{{- define "stackstate.server.rolebinding" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-server
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  name: 'system:auth-delegator'
+  kind: ClusterRole
+subjects:
+- name: {{ template "common.fullname.short" . }}-server
+  namespace: {{ .Release.Namespace }}
+  kind: ServiceAccount
+{{- end -}}
+
+{{- $commonRB := fromYaml (include "common.rolebinding" .) -}}
+{{- $stackstateServerRB := fromYaml (include "stackstate.server.rolebinding" .) -}}
+{{- toYaml (merge $stackstateServerRB $commonRB) -}}

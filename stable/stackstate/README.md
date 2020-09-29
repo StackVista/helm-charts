@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.2.0-snapshot.9`
+Current chart version is `4.2.0-snapshot.10`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -14,7 +14,7 @@ Current chart version is `4.2.0-snapshot.9`
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
 | https://helm.stackstate.io | anomaly-detection | 4.1.16 |
 | https://helm.stackstate.io | cluster-agent | 0.4.5 |
-| https://helm.stackstate.io | common | 0.4.11 |
+| https://helm.stackstate.io | common | 0.4.12 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.8 |
 | https://helm.stackstate.io | hbase | 0.1.44 |
 
