@@ -1,17 +1,2 @@
-{{- define "stackstate.ui.poddisruptionbudget" -}}
-metadata:
-  name: {{ template "common.fullname.short" . }}-ui
-  labels:
-    app.kubernetes.io/component: ui
-spec:
-  selector:
-    matchLabels:
-      app.kubernetes.io/component: ui
-{{- with .Values.stackstate.components.ui.poddisruptionbudget }}
-  {{ toYaml . | nindent 2 }}
-{{- end }}
-{{- end -}}
-
-{{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
-{{- $uiPdb := fromYaml (include "stackstate.ui.poddisruptionbudget" .) -}}
-{{- toYaml (merge $uiPdb $commonPdb) -}}
+{{- $valuesPdb := dict "PdbName" "ui" "PdbBudget" .Values.stackstate.components.ui.poddisruptionbudget -}}
+{{- (include "stackstate.service.poddisruptionbudget" (merge $valuesPdb .)) -}}

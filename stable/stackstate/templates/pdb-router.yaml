@@ -1,17 +1,2 @@
-{{- define "stackstate.router.poddisruptionbudget" -}}
-metadata:
-  name: {{ template "common.fullname.short" . }}-router
-  labels:
-    app.kubernetes.io/component: router
-spec:
-  selector:
-    matchLabels:
-      app.kubernetes.io/component: router
-{{- with .Values.stackstate.components.router.poddisruptionbudget }}
-  {{ toYaml . | nindent 2 }}
-{{- end }}
-{{- end -}}
-
-{{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
-{{- $routerPdb := fromYaml (include "stackstate.router.poddisruptionbudget" .) -}}
-{{- toYaml (merge $routerPdb $commonPdb) -}}
+{{- $valuesPdb := dict "PdbName" "router" "PdbBudget" .Values.stackstate.components.router.poddisruptionbudget -}}
+{{- (include "stackstate.service.poddisruptionbudget" (merge $valuesPdb .)) -}}

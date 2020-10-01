@@ -600,6 +600,25 @@ imagePullSecrets:
 {{- end }}
 {{- end -}}
 
+{{- define "stackstate.service.spec.poddisruptionbudget" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-{{ .PdbName }}
+  labels:
+    app.kubernetes.io/component: {{ .PdbName }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: {{ .PdbName }}
+{{- with .PdbBudget }}
+  {{ toYaml . | nindent 2 }}
+{{- end }}
+{{- end -}}
+
+{{- define "stackstate.service.poddisruptionbudget" -}}
+{{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
+{{- $sserviceSpecPdb := fromYaml (include "stackstate.service.spec.poddisruptionbudget" .) -}}
+{{- toYaml (merge $sserviceSpecPdb $commonPdb) -}}
+{{- end -}}
 
 {{- define "stackstate.storage.to.megabytes" -}}
 {{- if hasSuffix "Ti" . -}}

@@ -1,19 +1,4 @@
-{{- define "stackstate.viewHealth.poddisruptionbudget" -}}
-metadata:
-  name: {{ template "common.fullname.short" . }}-view-health
-  labels:
-    app.kubernetes.io/component: view-health
-spec:
-  selector:
-    matchLabels:
-      app.kubernetes.io/component: view-health
-{{- with .Values.stackstate.components.viewHealth.poddisruptionbudget }}
-  {{ toYaml . | nindent 2 }}
-{{- end }}
-{{- end -}}
-
 {{- if .Values.stackstate.experimental.server.split }}
-{{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
-{{- $viewHealthPdb := fromYaml (include "stackstate.viewHealth.poddisruptionbudget" .) -}}
-{{- toYaml (merge $viewHealthPdb $commonPdb) -}}
+{{- $valuesPdb := dict "PdbName" "view-health" "PdbBudget" .Values.stackstate.components.viewHealth.poddisruptionbudget -}}
+{{- (include "stackstate.service.poddisruptionbudget" (merge $valuesPdb .)) -}}
 {{- end }}
