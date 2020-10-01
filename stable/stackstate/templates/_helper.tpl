@@ -266,6 +266,27 @@ Sync extra environment variables for sync pods inherited through `stackstate.com
 {{- end -}}
 
 {{/*
+Slicing extra environment variables for slicing pods inherited through `stackstate.components.slicing.extraEnv`
+*/}}
+{{- define "stackstate.slicing.envvars" -}}
+{{- if .Values.stackstate.components.slicing.extraEnv.open }}
+  {{- range $key, $value := .Values.stackstate.components.slicing.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.stackstate.components.slicing.extraEnv.secret }}
+  {{- range $key, $value := .Values.stackstate.components.slicing.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" $ }}-slicing
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Environment variables to enable authentication with safe defaults
 */}}
 {{- define "stackstate.authentication.envvars" -}}
@@ -460,6 +481,13 @@ checksum/sync-env: {{ include (print $.Template.BasePath "/secret-sync.yaml") . 
 {{- end -}}
 
 {{/*
+Slicing secret checksum annotations
+*/}}
+{{- define "stackstate.slicing.secret.checksum" -}}
+checksum/slicing-env: {{ include (print $.Template.BasePath "/secret-slicing.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
 State secret checksum annotations
 */}}
 {{- define "stackstate.state.secret.checksum" -}}
@@ -531,6 +559,13 @@ Sync configmap checksum annotations
 */}}
 {{- define "stackstate.sync.configmap.checksum" -}}
 checksum/sync-configmap: {{ include (print $.Template.BasePath "/configmap-sync.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+Slicing configmap checksum annotations
+*/}}
+{{- define "stackstate.slicing.configmap.checksum" -}}
+checksum/slicing-configmap: {{ include (print $.Template.BasePath "/configmap-slicing.yaml") . | sha256sum }}
 {{- end -}}
 
 {{/*

@@ -1,0 +1,152 @@
+{{- define "stackstate.slicing.deployment.container.init" -}}
+name: server-init
+command:
+- sh
+- -c
+- |
+  /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn-headful:9000,{{ template "common.fullname.short" . }}-initializer:1618 -t 300
+image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+imagePullPolicy: Always
+{{- end -}}
+
+{{- define "stackstate.slicing.deployment.container.main" -}}
+args:
+- -startRole
+- slicing
+env:
+{{- include "stackstate.common.envvars" . }}
+{{- include "stackstate.slicing.envvars" . }}
+{{- include "stackstate.authentication.envvars" . }}
+- name: API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" . }}-receiver
+      key: sts-receiver-api-key
+- name: ELASTICSEARCH_URI
+  value: "http://{{ include "stackstate.es.endpoint" . }}"
+- name: KAFKA_BROKERS
+  value: {{ include "stackstate.kafka.endpoint" . | quote }}
+- name: HADOOP_USER_NAME
+  value: nobody
+- name: LICENSE_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "common.fullname.short" . }}-license
+      key: sts-license-key
+- name: RECEIVER_BASE_URL
+  value: {{ printf "%s/%s" .Values.stackstate.receiver.baseUrl "receiver" | quote }}
+- name: ZOOKEEPER_QUORUM
+  value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
+- name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
+  value: "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
+image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.slicing.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.slicing.image.tag }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.slicing.image.pullPolicy | quote }}
+name: slicing
+ports:
+- containerPort: 1618
+  name: health
+- containerPort: 7080
+  name: instance
+{{- if .Values.stackstate.components.all.metrics.enabled }}
+- containerPort: 9404
+  name: metrics
+{{- end }}
+livenessProbe:
+  httpGet:
+    path: /liveness
+    port: health
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
+readinessProbe:
+  httpGet:
+    path: /readiness
+    port: health
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
+{{- with .Values.stackstate.components.slicing.resources }}
+resources:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+securityContext:
+  runAsNonRoot: true
+volumeMounts:
+- name: config-volume
+  mountPath: /opt/docker/etc/application_stackstate.conf
+  subPath: application_stackstate.conf
+{{- end -}}
+
+{{- define "stackstate.slicing.deployment" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.slicing.deployment.container.main" .) -}}
+{{- $stsStackstateSlicingMainContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.slicing.deployment.container.init" .) -}}
+{{- $stsStackstateServerInitContainer := (merge $overrideContainer $commonContainer) -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-slicing
+  labels:
+    app.kubernetes.io/component: slicing
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: slicing
+  template:
+    metadata:
+      annotations:
+        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "slicing") | indent 8 }}
+        {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.slicing.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.slicing.configmap.checksum" . | nindent 8 }}
+      labels:
+        app.kubernetes.io/component: slicing
+    spec:
+    {{- if .Values.stackstate.components.all.image.pullSecretName }}
+      imagePullSecrets:
+      - name: '{{ .Values.stackstate.components.all.image.pullSecretName }}'
+    {{- else if .Values.stackstate.components.all.image.pullSecretDockerConfigJson }}
+      imagePullSecrets:
+      - name: '{{ template "common.fullname.short" . }}-pull-secret'
+    {{- end }}
+      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      initContainers:
+      - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
+      containers:
+      - {{ toYaml $stsStackstateSlicingMainContainer | nindent 8 }}
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.slicing.nodeSelector }}
+      nodeSelector:
+      {{- with .Values.stackstate.components.all.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.slicing.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.slicing.affinity }}
+      affinity:
+      {{- with .Values.stackstate.components.all.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.slicing.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.slicing.tolerations }}
+      tolerations:
+      {{- with .Values.stackstate.components.all.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.slicing.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "common.fullname.short" . }}-slicing
+{{- end -}}
+
+{{- if .Values.stackstate.experimental.server.split }}
+{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $slicingDeployment := fromYaml (include "stackstate.slicing.deployment" .) -}}
+{{- toYaml (merge $slicingDeployment $commonDeployment) -}}
+{{- end}}
