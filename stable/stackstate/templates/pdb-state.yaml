@@ -1,0 +1,19 @@
+{{- define "stackstate.state.poddisruptionbudget" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-state
+  labels:
+    app.kubernetes.io/component: state
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: state
+{{- with .Values.stackstate.components.state.poddisruptionbudget }}
+  {{ toYaml . | nindent 2 }}
+{{- end }}
+{{- end -}}
+
+{{- if .Values.stackstate.experimental.server.split }}
+{{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
+{{- $statePdb := fromYaml (include "stackstate.state.poddisruptionbudget" .) -}}
+{{- toYaml (merge $statePdb $commonPdb) -}}
+{{- end }}

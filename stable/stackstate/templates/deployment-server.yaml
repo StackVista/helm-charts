@@ -23,8 +23,6 @@ env:
 {{- include "stackstate.common.envvars" . }}
 {{- include "stackstate.server.envvars" . }}
 {{- include "stackstate.authentication.envvars" . }}
-- name: CONFIG_FORCE_stackgraph.vertex.cache.expireAfterSeconds
-  value: "86400"
 - name: API_KEY
   valueFrom:
     secretKeyRef:

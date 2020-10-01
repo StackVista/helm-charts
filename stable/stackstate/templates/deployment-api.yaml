@@ -12,6 +12,12 @@ imagePullPolicy: Always
 {{- define "stackstate.api.deployment.container.main" -}}
 {{- $mountSecrets := fromYaml (include "stackstate.mountsecrets" .) -}}
 args:
+{{- if .Values.stackstate.java.trustStore }}
+- -Djavax.net.ssl.trustStore=/opt/docker/secrets/java-cacerts
+{{- if .Values.stackstate.java.trustStorePassword }}
+- -Djavax.net.ssl.trustStorePassword=${JAVA_TRUSTSTORE_PASSWORD}
+  {{- end }}
+  {{- end }}
 - -startRole
 - api
 env:
@@ -96,6 +102,7 @@ metadata:
   labels:
     app.kubernetes.io/component: api
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/component: api
@@ -104,19 +111,12 @@ spec:
       annotations:
         {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "api") | indent 8 }}
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
-        {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.api.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.server.configmap.checksum" . | nindent 8 }}
       labels:
         app.kubernetes.io/component: api
     spec:
-    {{- if .Values.stackstate.components.all.image.pullSecretName }}
-      imagePullSecrets:
-      - name: '{{ .Values.stackstate.components.all.image.pullSecretName }}'
-    {{- else if .Values.stackstate.components.all.image.pullSecretDockerConfigJson }}
-      imagePullSecrets:
-      - name: '{{ template "common.fullname.short" . }}-pull-secret'
-    {{- end }}
+      serviceAccountName: {{ template "common.fullname.short" . }}-api
       {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml $stsStackstateApiInitContainer | nindent 8 }}
