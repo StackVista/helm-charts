@@ -1,17 +1,2 @@
-{{- define "stackstate.receiver.poddisruptionbudget" -}}
-metadata:
-  name: {{ template "common.fullname.short" . }}-receiver
-  labels:
-    app.kubernetes.io/component: receiver
-spec:
-  selector:
-    matchLabels:
-      app.kubernetes.io/component: receiver
-{{- with .Values.stackstate.components.receiver.poddisruptionbudget }}
-  {{ toYaml . | nindent 2 }}
-{{- end }}
-{{- end -}}
-
-{{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
-{{- $receiverPdb := fromYaml (include "stackstate.receiver.poddisruptionbudget" .) -}}
-{{- toYaml (merge $receiverPdb $commonPdb) -}}
+{{- $valuesPdb := dict "PdbName" "receiver" "PdbBudget" .Values.stackstate.components.receiver.poddisruptionbudget -}}
+{{- (include "stackstate.service.poddisruptionbudget" (merge $valuesPdb .)) -}}

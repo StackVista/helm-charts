@@ -100,6 +100,9 @@ stackstate:
         repository: stackstate/stackstate-server
         # stackstate.components.api.image.tag -- Tag used for the `api` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
+      # stackstate.components.api.poddisruptionbudget -- PodDisruptionBudget settings for `api` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
       # stackstate.components.api.resources -- Resource allocation for `api` pods.
       resources:
         limits:
@@ -159,6 +162,9 @@ stackstate:
         repository: stackstate/stackstate-server
         # stackstate.components.checks.image.tag -- Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
+      # stackstate.components.checks.poddisruptionbudget -- PodDisruptionBudget settings for `checks` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
       # stackstate.components.checks.resources -- Resource allocation for `state` pods.
       resources:
         limits:
@@ -345,6 +351,9 @@ stackstate:
         repository: stackstate/stackstate-server
         # stackstate.components.state.image.tag -- Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
+      # stackstate.components.state.poddisruptionbudget -- PodDisruptionBudget settings for `state` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
       # stackstate.components.state.resources -- Resource allocation for `state` pods.
       resources:
         limits:
@@ -373,6 +382,9 @@ stackstate:
         repository: stackstate/stackstate-server
         # stackstate.components.sync.image.tag -- Tag used for the `sync` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
+      # stackstate.components.sync.poddisruptionbudget -- PodDisruptionBudget settings for `sync` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
       # stackstate.components.sync.resources -- Resource allocation for `sync` pods.
       resources:
         limits:
@@ -433,6 +445,9 @@ stackstate:
         repository: stackstate/stackstate-server
         # stackstate.components.viewHealth.image.tag -- Tag used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
+      # stackstate.components.viewHealth.poddisruptionbudget -- PodDisruptionBudget settings for `viewHealth` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
       # stackstate.components.viewHealth.resources -- Resource allocation for `viewHealth` pods.
       resources:
         limits:

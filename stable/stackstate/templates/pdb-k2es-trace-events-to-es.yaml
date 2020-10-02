@@ -1,19 +1,4 @@
-{{- define "stackstate.trace2es.poddisruptionbudget" -}}
-metadata:
-  name: {{ template "common.fullname.short" . }}-trace2es
-  labels:
-    app.kubernetes.io/component: trace2es
-spec:
-  selector:
-    matchLabels:
-      app.kubernetes.io/component: trace2es
-{{- with .Values.stackstate.components.k2es.poddisruptionbudget }}
-  {{ toYaml . | nindent 2 }}
-{{- end }}
-{{- end -}}
-
 {{- if .Values.stackstate.components.k2es.traces.enabled }}
-{{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
-{{- $trace2esPdb := fromYaml (include "stackstate.trace2es.poddisruptionbudget" .) -}}
-{{- toYaml (merge $trace2esPdb $commonPdb) -}}
+  {{- $valuesPdb := dict "PdbName" "trace2es" "PdbBudget" .Values.stackstate.components.k2es.poddisruptionbudget -}}
+  {{- (include "stackstate.service.poddisruptionbudget" (merge $valuesPdb .)) -}}
 {{- end -}}
