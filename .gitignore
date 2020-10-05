@@ -2,3 +2,4 @@
 # Chart dependencies
 **/charts/*.tgz
 .idea/*
+*.swp
