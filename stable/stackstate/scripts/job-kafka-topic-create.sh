@@ -1,8 +1,6 @@
 #!/bin/bash
 
-[[ -n "${TRACE+x}" ]] && set -x
-
-set -e
+set -euxo pipefail
 
 KAFKA_REPLICAS="${KAFKA_REPLICAS:-1}"
 
