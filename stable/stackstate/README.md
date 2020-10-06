@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.2.0-snapshot.12`
+Current chart version is `4.2.0-snapshot.13`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -12,7 +12,7 @@ Current chart version is `4.2.0-snapshot.12`
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | kafka | 11.7.1 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
-| https://helm.stackstate.io | anomaly-detection | 4.1.16 |
+| https://helm.stackstate.io | anomaly-detection | 4.1.17 |
 | https://helm.stackstate.io | cluster-agent | 0.4.5 |
 | https://helm.stackstate.io | common | 0.4.12 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.8 |
@@ -48,8 +48,11 @@ stackstate/stackstate
 | anomaly-detection.ingress | object | `{"annotations":{},"enabled":false,"hostname":null,"hosts":[],"port":8090,"tls":null}` | Status interface ingress |
 | anomaly-detection.ingress.enabled | bool | `false` | Enables ingress controller for status interface |
 | anomaly-detection.ingress.hostname | string | `nil` | Status interface hostname e.g. spotlight.local.domain |
-| anomaly-detection.stackstate.authRoleName | string | `"stackstate-admin"` | Stackstate Role that used by spotlight for authentication, it is mapped to the stackstate role with the same name. |
+| anomaly-detection.stackstate.authRoleName | string | `"stackstate-admin"` | Stackstate Role used by spotlight for authentication, it is mapped to the stackstate role with the same name.  It is expected to be set only in case if authType = "token" |
+| anomaly-detection.stackstate.authType | string | `"token"` | Type of authentication. There are two options 1) "token" - with service account token (default), 2) "cookie" - username, password based auth. |
 | anomaly-detection.stackstate.instance | string | `"http://stackstate-server-headless:7070"` | **Required Stackstate instance URL, e.g http://stackstate-server-headless:7070 |
+| anomaly-detection.stackstate.password | string | `nil` | Stackstate Password used by spotlight for authentication, it is expected to be set only in case if authType = "cookie" |
+| anomaly-detection.stackstate.username | string | `nil` | Stackstate Username used by spotlight for authentication, it is expected to be set only in case if authType = "cookie" |
 | anomaly-detection.threadWorkers | int | `5` | The number of worker threads. |
 | caspr.enabled | bool | `false` | Enable CASPR compatible values. |
 | cluster-agent.enabled | bool | `false` |  |
