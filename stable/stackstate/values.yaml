@@ -792,8 +792,14 @@ anomaly-detection:
   stackstate:
     # anomaly-detection.stackstate.instance -- **Required Stackstate instance URL, e.g http://stackstate-server-headless:7070
     instance: http://stackstate-server-headless:7070
-    # anomaly-detection.stackstate.authRoleName -- Stackstate Role that used by spotlight for authentication, it is mapped to the stackstate role with the same name.
+    # anomaly-detection.stackstate.authType -- Type of authentication. There are two options 1) "token" - with service account token (default), 2) "cookie" - username, password based auth.
+    authType: token
+    # anomaly-detection.stackstate.authRoleName -- Stackstate Role used by spotlight for authentication, it is mapped to the stackstate role with the same name.  It is expected to be set only in case if authType = "token"
     authRoleName: stackstate-admin
+    # anomaly-detection.stackstate.username -- Stackstate Username used by spotlight for authentication, it is expected to be set only in case if authType = "cookie"
+    username:
+    # anomaly-detection.stackstate.password -- Stackstate Password used by spotlight for authentication, it is expected to be set only in case if authType = "cookie"
+    password:
   # anomaly-detection.threadWorkers -- The number of worker threads.
   threadWorkers: 5
 
