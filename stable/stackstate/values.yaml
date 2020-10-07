@@ -416,10 +416,10 @@ stackstate:
       # stackstate.components.slicing.resources -- Resource allocation for `slicing` pods.
       resources:
         limits:
-          memory: "500Mi"
+          memory: "2Gi"
         requests:
-          memory: "500Mi"
-          cpu: "500m"
+          memory: "2Gi"
+          cpu: "750m"
       # stackstate.components.slicing.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.slicing.tolerations -- Toleration labels for pod assignment.
