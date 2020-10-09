@@ -1,0 +1,27 @@
+{{- define "stackstate.server.clusterrole" -}}
+metadata:
+  name: {{ template "common.fullname.cluster.unique" . }}-server
+rules:
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings
+  verbs:
+  - list
+{{- end -}}
+
+{{- $commonClusterRole := fromYaml (include "common.clusterrole" .) -}}
+{{- $stsstackstateServerClusterRole := fromYaml (include "stackstate.server.clusterrole" .) -}}
+{{- toYaml (merge $stsstackstateServerClusterRole $commonClusterRole) -}}
