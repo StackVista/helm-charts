@@ -1,6 +1,6 @@
-{{- define "stackstate.server.clusterrole" -}}
+{{- define "stackstate.authdelegator.clusterrole" -}}
 metadata:
-  name: {{ template "common.fullname.cluster.unique" . }}-server
+  name: {{ template "common.fullname.cluster.unique" . }}-auth-delegator
 rules:
 - apiGroups:
   - authentication.k8s.io
@@ -23,5 +23,5 @@ rules:
 {{- end -}}
 
 {{- $commonClusterRole := fromYaml (include "common.clusterrole" .) -}}
-{{- $stsstackstateServerClusterRole := fromYaml (include "stackstate.server.clusterrole" .) -}}
-{{- toYaml (merge $stsstackstateServerClusterRole $commonClusterRole) -}}
+{{- $stsstackstateAuthDelegatorClusterRole := fromYaml (include "stackstate.authdelegator.clusterrole" .) -}}
+{{- toYaml (merge $stsstackstateAuthDelegatorClusterRole $commonClusterRole) -}}
