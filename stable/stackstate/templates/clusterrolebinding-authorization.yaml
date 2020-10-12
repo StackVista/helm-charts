@@ -1,0 +1,17 @@
+{{- define "stackstate.authorization.clusterrolebinding" -}}
+metadata:
+  name: {{ template "common.fullname.cluster.unique" . }}-authorization
+roleRef:
+  name: {{ template "common.fullname.cluster.unique" . }}-authorization
+subjects:
+- name: {{ template "common.fullname.short" . }}-server
+  namespace: {{ .Release.Namespace }}
+  kind: ServiceAccount
+- name: {{ template "common.fullname.short" . }}-api
+  namespace: {{ .Release.Namespace }}
+  kind: ServiceAccount
+{{- end -}}
+
+{{- $commonRB := fromYaml (include "common.clusterrolebinding" .) -}}
+{{- $stackstateAuthorizationRB := fromYaml (include "stackstate.authorization.clusterrolebinding" .) -}}
+{{- toYaml (merge $stackstateAuthorizationRB $commonRB) -}}
