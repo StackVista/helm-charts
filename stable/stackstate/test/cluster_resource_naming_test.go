@@ -21,10 +21,11 @@ func TestClusterRoleDeployedToSameNamespaceAsChartName(t *testing.T) {
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	require.Equal(t, len(resources.ClusterRoleBindings), 1)
-	require.Equal(t, resources.ClusterRoleBindings[0].Name, "stackstate-server")
-	require.Equal(t, len(resources.ClusterRoles), 1)
-	require.Equal(t, resources.ClusterRoles[0].Name, "stackstate-server")
+	require.Equal(t, 2, len(resources.ClusterRoleBindings))
+	require.Equal(t, "stackstate-authentication", resources.ClusterRoleBindings[0].Name)
+	require.Equal(t, "stackstate-authorization", resources.ClusterRoleBindings[1].Name)
+	require.Equal(t, 1, len(resources.ClusterRoles))
+	require.Equal(t, "stackstate-authorization", resources.ClusterRoles[0].Name)
 }
 func TestClusterRoleDeployedToDifferentNamespaceAsChartName(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOpts(t, "stackstate", &helm.Options{
@@ -38,11 +39,13 @@ func TestClusterRoleDeployedToDifferentNamespaceAsChartName(t *testing.T) {
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	require.Equal(t, len(resources.ClusterRoleBindings), 1)
-	require.Equal(t, resources.ClusterRoleBindings[0].Name, "devver-stackstate-server")
-	require.Equal(t, len(resources.ClusterRoles), 1)
-	require.Equal(t, resources.ClusterRoles[0].Name, "devver-stackstate-server")
+	require.Equal(t, 2, len(resources.ClusterRoleBindings))
+	require.Equal(t, "devver-stackstate-authentication", resources.ClusterRoleBindings[0].Name)
+	require.Equal(t, "devver-stackstate-authorization", resources.ClusterRoleBindings[1].Name)
+	require.Equal(t, 1, len(resources.ClusterRoles))
+	require.Equal(t, "devver-stackstate-authorization", resources.ClusterRoles[0].Name)
 }
+
 func TestClusterRoleNameWhenNamespaceReleaseNameAndChartNameAllDifferent(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOpts(t, "stacky", &helm.Options{
 		ValuesFiles: []string{
@@ -55,8 +58,9 @@ func TestClusterRoleNameWhenNamespaceReleaseNameAndChartNameAllDifferent(t *test
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	require.Equal(t, len(resources.ClusterRoleBindings), 1)
-	require.Equal(t, resources.ClusterRoleBindings[0].Name, "devver-stacky-stackstate-server")
-	require.Equal(t, len(resources.ClusterRoles), 1)
-	require.Equal(t, resources.ClusterRoles[0].Name, "devver-stacky-stackstate-server")
+	require.Equal(t, 2, len(resources.ClusterRoleBindings))
+	require.Equal(t, "devver-stacky-stackstate-authentication", resources.ClusterRoleBindings[0].Name)
+	require.Equal(t, "devver-stacky-stackstate-authorization", resources.ClusterRoleBindings[1].Name)
+	require.Equal(t, 1, len(resources.ClusterRoles))
+	require.Equal(t, "devver-stacky-stackstate-authorization", resources.ClusterRoles[0].Name)
 }
