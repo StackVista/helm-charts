@@ -22,6 +22,7 @@ type KubernetesResources struct {
 	Jobs                []batchv1.Job
 	Pods                []corev1.Pod
 	Pdbs                []policyv1.PodDisruptionBudget
+	Roles               []rbacv1.Role
 	RoleBindings        []rbacv1.RoleBinding
 	Secrets             []corev1.Secret
 	Services            []corev1.Service
@@ -39,6 +40,7 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 	jobs := make([]batchv1.Job, 0)
 	pods := make([]corev1.Pod, 0)
 	pdbs := make([]policyv1.PodDisruptionBudget, 0)
+	roles := make([]rbacv1.Role, 0)
 	roleBindings := make([]rbacv1.RoleBinding, 0)
 	secrets := make([]corev1.Secret, 0)
 	services := make([]corev1.Service, 0)
@@ -83,6 +85,10 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 			var resource policyv1.PodDisruptionBudget
 			helm.UnmarshalK8SYaml(t, v, &resource)
 			pdbs = append(pdbs, resource)
+		case "Role":
+			var resource rbacv1.Role
+			helm.UnmarshalK8SYaml(t, v, &resource)
+			roles = append(roles, resource)
 		case "RoleBinding":
 			var resource rbacv1.RoleBinding
 			helm.UnmarshalK8SYaml(t, v, &resource)
@@ -116,6 +122,7 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 		Jobs:                jobs,
 		Pods:                pods,
 		Pdbs:                pdbs,
+		Roles:               roles,
 		RoleBindings:        roleBindings,
 		Secrets:             secrets,
 		Services:            services,
