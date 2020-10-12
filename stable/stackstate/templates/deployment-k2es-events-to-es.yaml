@@ -2,6 +2,7 @@
 args:
 - state-events
 - generic-events
+- topology-events
 name: e2es
 {{- end -}}
 
