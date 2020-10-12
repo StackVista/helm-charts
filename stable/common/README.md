@@ -1,6 +1,6 @@
 # common
 
-![Version: 0.4.12](https://img.shields.io/badge/Version-0.4.12-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: 0.4.13](https://img.shields.io/badge/Version-0.4.13-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 
 Common chartbuilding components and helpers
 
@@ -18,8 +18,8 @@ Common chartbuilding components and helpers
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| clusterrole.annotations | object | `{}` | Annotations for `ClusterRole` objects. |
-| clusterrole.apiVersion | string | `"rbac.authorization.k8s.io/v1"` | Kubernetes apiVersion to use with a `ClusterRole` object. |
+| clusterrole.annotations | object | `{}` | Annotations for `Role` objects. |
+| clusterrole.apiVersion | string | `"rbac.authorization.k8s.io/v1"` | Kubernetes apiVersion to use with a `Role` object. |
 | clusterrolebinding.annotations | object | `{}` | Annotations for `ClusterRoleBinding` objects. |
 | clusterrolebinding.apiVersion | string | `"rbac.authorization.k8s.io/v1"` | Kubernetes apiVersion to use with a `ClusterRoleBinding` object. |
 | configmap.annotations | object | `{}` | Annotations for `ConfigMap` objects. |
@@ -105,6 +105,8 @@ Common chartbuilding components and helpers
 | pod.annotations | object | `{}` | Annotations for `Pod` objects. |
 | poddisruptionbudget.annotations | object | `{}` | Annotations for `PodDisruptionBudget` objects. |
 | poddisruptionbudget.apiVersion | string | `"policy/v1beta1"` | Kubernetes apiVersion to use with a `PodDisruptionBudget` object. |
+| role.annotations | object | `{}` |  |
+| role.apiVersion | string | `"rbac.authorization.k8s.io/v1"` |  |
 | rolebinding.annotations | object | `{}` | Annotations for `RoleBinding` objects. |
 | rolebinding.apiVersion | string | `"rbac.authorization.k8s.io/v1"` | Kubernetes apiVersion to use with a `RoleBinding` object. |
 | secret.annotations | object | `{}` | Annotations for `Secret` objects. |
