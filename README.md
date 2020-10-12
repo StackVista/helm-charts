@@ -43,9 +43,14 @@ NOTE: The templates for README generation are only compatible with helm-docs 0.1
 The Helm chart repository supports testing Helm charts using the [Terratest](https://terratest.gruntwork.io/) library. In order to run tests for a chart, you can invoke the following command from the root of the repository:
 
 ```shell
-$ go test ./stable/<chart>/...
+$ go test ./stable/<chart>/test/...
 ```
 
-The test-set for a chart is in the `stable/<chart>/test` directory.
+To run integration tests put them in an `itest` directory and run:
+```shell
+$ go test ./stable/<chart>/test/...
+```
+
+The test-set for a chart is in the `stable/<chart>/itest` directory.
 
 You are encouraged to adding more tests when working on the Helm charts ;).
