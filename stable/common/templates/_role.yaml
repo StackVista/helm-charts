@@ -1,0 +1,21 @@
+{{- define "common.role" -}}
+{{- $common := dict "Values" .Values.common -}}
+{{- $noCommon := omit .Values "common" -}}
+{{- $overrides := dict "Values" $noCommon -}}
+{{- $noValues := omit . "Values" -}}
+{{- with merge $noValues $overrides $common -}}
+apiVersion: {{ .Values.role.apiVersion }}
+kind: Role
+metadata:
+  annotations:
+    {{- include "common.annotations.gitlab" . | nindent 4 }}
+  {{- with .Values.role.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  name: {{ template "common.fullname" . }}
+  labels:
+    {{- include "common.labels.standard" . | nindent 4 }}
+    {{- include "common.labels.custom" . | nindent 4 }}
+rules: []
+{{- end -}}
+{{- end -}}

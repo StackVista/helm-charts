@@ -237,6 +237,12 @@ poddisruptionbudget:
   # poddisruptionbudget.apiVersion -- Kubernetes apiVersion to use with a `PodDisruptionBudget` object.
   apiVersion: "policy/v1beta1"
 
+role:
+  # clusterrole.annotations -- Annotations for `Role` objects.
+  annotations: {}
+  # clusterrole.apiVersion -- Kubernetes apiVersion to use with a `Role` object.
+  apiVersion: "rbac.authorization.k8s.io/v1"
+
 rolebinding:
   # rolebinding.annotations -- Annotations for `RoleBinding` objects.
   annotations: {}
