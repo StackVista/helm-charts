@@ -1,0 +1,15 @@
+{{- define "stackstate.authorizationcheck.role" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-authorizationcheck
+rules:
+- apiGroups:
+  - rbac.authorization.k8s.io
+  resources:
+  - rolebindings
+  verbs:
+  - list
+{{- end -}}
+
+{{- $commonRole := fromYaml (include "common.role" .) -}}
+{{- $stsstackstateAuthorizationCheckRole := fromYaml (include "stackstate.authorizationcheck.role" .) -}}
+{{- toYaml (merge $stsstackstateAuthorizationCheckRole $commonRole) -}}

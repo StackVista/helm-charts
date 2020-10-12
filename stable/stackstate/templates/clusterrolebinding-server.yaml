@@ -2,7 +2,7 @@
 metadata:
   name: {{ template "common.fullname.cluster.unique" . }}-server
 roleRef:
-  name: {{ template "common.fullname.cluster.unique" . }}-auth-delegator
+  name: 'system:auth-delegator'
 subjects:
 - name: {{ template "common.fullname.short" . }}-server
   namespace: {{ .Release.Namespace }}
