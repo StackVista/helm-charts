@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash 
 
 set -e
 
@@ -114,6 +114,15 @@ function check_args() {
   return 0
 }
 
+function check_md5() {
+  # Check if md5sum is installed as default on OSX its called md5
+  if [ ! -z "$(command -v md5sum 2>/dev/null)" ] ; then
+     md5sum_command=$(command -v md5sum)
+  else
+     md5sum_command=$(command -v md5)
+  fi
+}
+
 function check_helm() {
   helm_version=$(helm version --short | cut -d. -f1)
   if [ "${helm_version}" != "v3" ]; then
@@ -123,19 +132,19 @@ function check_helm() {
 }
 
 function generate_api_key() {
-  head -c32 < /dev/urandom | md5sum | cut -c-32
+  head -c32 < /dev/urandom | $md5sum_command | cut -c-32
 }
 
 function create_admin_api_password_hash() {
-  echo -n "${admin_api_password}" | md5sum | cut -c-32
+  echo -n "${admin_api_password}" | $md5sum_command | cut -c-32
 }
 
 function create_default_admin_password_hash() {
-  echo -n "${default_admin_password}" | md5sum | cut -c-32
+  echo -n "${default_admin_password}" | $md5sum_command  | cut -c-32
 }
 
 function create_agent_auth_token() {
-  head -c32 < /dev/urandom | md5sum | cut -c-32
+  head -c32 < /dev/urandom | $md5sum_command  | cut -c-32
 }
 
 function generate_values() {
@@ -199,6 +208,7 @@ function print_helm_command() {
   echo -e ""
 }
 
+check_md5
 check_helm
 check_args
 generate_values
