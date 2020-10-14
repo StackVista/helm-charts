@@ -14,7 +14,6 @@ all:
     pullSecretUsername:
     # all.image.pullSecretPassword -- Password used to login to the registry to pull Docker images of all pods.
     pullSecretPassword:
-
   extraEnv:
     # all.extraEnv.open -- Extra open environment variables to inject into pods for all components.
     open: {}
@@ -39,7 +38,7 @@ stackgraph:
     # stackgraph.image.pullPolicy -- The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below).
     pullPolicy: Always
     # stackgraph.image.tag -- The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below).
-    tag: "3.0.3"
+    tag: 3.2.1
 console:
   # console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
   enabled: true
@@ -63,7 +62,6 @@ console:
   tolerations: []
   # console.affinity -- Affinity settings for pod assignment.
   affinity: {}
-
 wait:
   image:
     # wait.image.registry -- Base container image registry for wait containers
@@ -72,7 +70,6 @@ wait:
     repository: dokkupaas/wait
     # wait.image.repository -- Container image tag for wait containers
     tag: latest
-
 hbase:
   master:
     extraEnv:
@@ -133,7 +130,6 @@ hbase:
   zookeeper:
     # hbase.zookeeper.quorum -- Zookeeper quorum used for single-node Zookeeper installations; not used if `zookeeper.replicaCount` is more than `1`.
     quorum: hbase
-
 hdfs:
   image:
     # hdfs.image.pullPolicy -- Pull policy for HDFS datanode.
@@ -230,7 +226,6 @@ hdfs:
     tolerations: []
     # hdfs.secondarynamenode.affinity -- Affinity settings for pod assignment.
     affinity: {}
-
 tephra:
   extraEnv:
     # tephra.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -259,28 +254,23 @@ tephra:
   tolerations: []
   # tephra.affinity -- Affinity settings for pod assignment.
   affinity: {}
-
 securityContext:
   # securityContext.runAsGroup -- GID of the Linux group to use for all containers.
   runAsGroup: 65534
   # securityContext.runAsUser -- UID of the Linux user to use for all containers.
   runAsUser: 65534
-
 ##########################
 # Common chart overrides #
 ##########################
-
 statefulset:
   antiAffinity:
     # statefulset.antiAffinity.strategy -- AntiAffinity strategy to use for all StatefulSets.
     strategy: soft
     # statefulset.antiAffinity.topologyKey -- AntiAffinity topology key to use for all StatefulSets.
     topologyKey: kubernetes.io/hostname
-
 #############################
 # Zookeeper chart overrides #
 #############################
-
 zookeeper:
   # zookeeper.enabled -- Enable / disable chart-based Zookeeper.
   enabled: true
