@@ -391,38 +391,6 @@ UI extra environment variables for ui pods inherited through `stackstate.compone
 
 
 {{/*
-ViewHealth extra environment variables for viewHealth pods inherited through `stackstate.components.viewHealth.extraEnv`
-*/}}
-{{- define "stackstate.viewHealth.envvars" -}}
-{{- $xmx := include "stackstate.server.memory.resource" .Values.stackstate.components.viewHealth.resources.limits.memory }}
-{{- $xms := include "stackstate.server.memory.resource" .Values.stackstate.components.viewHealth.resources.requests.memory }}
-{{- if not .Values.stackstate.components.viewHealth.extraEnv.open.JAVA_OPTS }}
-- name: "JAVA_OPTS"
-  value: -Xmx {{ $xmx }} -Xms {{ $xms }}
-{{- end}}
-{{- if .Values.stackstate.components.viewHealth.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.viewHealth.extraEnv.open  }}
-  {{- if eq $key "JAVA_OPTS" }}
-- name: {{ $key }}
-  value: "{{ $value }} -Xmx {{ $xmx }} -Xms {{ $xms }}"
-  {{- else }}
-- name: {{ $key }}
-  value: {{ $value | quote }}
-  {{- end }}
-  {{- end }}
-{{- end }}
-{{- if .Values.stackstate.components.viewHealth.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.viewHealth.extraEnv.secret  }}
-- name: {{ $key }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-viewHealth
-      key: {{ $key }}
-  {{- end }}
-{{- end }}
-{{- end -}}
-
-{{/*
 Common secret checksum annotations
 */}}
 {{- define "stackstate.common.secret.checksum" -}}
