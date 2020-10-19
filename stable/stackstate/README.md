@@ -155,6 +155,8 @@ stackstate/stackstate
 | stackstate.components.api.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.api.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `api` pods. |
 | stackstate.components.api.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"cpu":"500m","memory":"2Gi"}}` | Resource allocation for `api` pods. |
+| stackstate.components.api.sizing.baseMemoryConsumption | string | `"380Mi"` |  |
+| stackstate.components.api.sizing.javaHeapMemoryFraction | string | `"75"` |  |
 | stackstate.components.api.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.checks.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.checks.config | string | `""` | Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
@@ -166,6 +168,8 @@ stackstate/stackstate
 | stackstate.components.checks.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.checks.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `checks` pods. |
 | stackstate.components.checks.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"500m","memory":"3Gi"}}` | Resource allocation for `state` pods. |
+| stackstate.components.checks.sizing.baseMemoryConsumption | string | `"380Mi"` |  |
+| stackstate.components.checks.sizing.javaHeapMemoryFraction | string | `"75"` |  |
 | stackstate.components.checks.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.correlate.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.correlate.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -187,6 +191,8 @@ stackstate/stackstate
 | stackstate.components.initializer.image.tag | string | `""` | Tag used for the `initializer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.initializer.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.initializer.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"128Mi"}}` | Resource allocation for `initializer` pods. |
+| stackstate.components.initializer.sizing.baseMemoryConsumption | string | `"380Mi"` |  |
+| stackstate.components.initializer.sizing.javaHeapMemoryFraction | string | `"75"` |  |
 | stackstate.components.initializer.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.k2es.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.k2es.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -239,6 +245,8 @@ stackstate/stackstate
 | stackstate.components.server.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.server.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `server` pods. |
 | stackstate.components.server.resources | object | `{"limits":{"memory":"8Gi"},"requests":{"cpu":"2000m","memory":"8Gi"}}` | Resource allocation for `server` pods. |
+| stackstate.components.server.sizing.baseMemoryConsumption | string | `"380Mi"` |  |
+| stackstate.components.server.sizing.javaHeapMemoryFraction | string | `"75"` |  |
 | stackstate.components.server.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.slicing.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.slicing.config | string | `""` | Configuration file contents to customize the default StackState slicing configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
@@ -249,6 +257,8 @@ stackstate/stackstate
 | stackstate.components.slicing.image.tag | string | `""` | Tag used for the `slicing` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.slicing.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.slicing.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"cpu":"750m","memory":"2Gi"}}` | Resource allocation for `slicing` pods. |
+| stackstate.components.slicing.sizing.baseMemoryConsumption | string | `"380Mi"` |  |
+| stackstate.components.slicing.sizing.javaHeapMemoryFraction | string | `"75"` |  |
 | stackstate.components.slicing.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.state.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.state.config | string | `""` | Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
@@ -259,7 +269,9 @@ stackstate/stackstate
 | stackstate.components.state.image.tag | string | `""` | Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.state.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.state.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `state` pods. |
-| stackstate.components.state.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"cpu":"200m","memory":"2Gi"}}` | Resource allocation for `state` pods. |
+| stackstate.components.state.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"cpu":"500m","memory":"2Gi"}}` | Resource allocation for `state` pods. |
+| stackstate.components.state.sizing.baseMemoryConsumption | string | `"380Mi"` |  |
+| stackstate.components.state.sizing.javaHeapMemoryFraction | string | `"75"` |  |
 | stackstate.components.state.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.sync.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.sync.config | string | `""` | Configuration file contents to customize the default StackState sync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
@@ -271,6 +283,8 @@ stackstate/stackstate
 | stackstate.components.sync.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.sync.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `sync` pods. |
 | stackstate.components.sync.resources | object | `{"limits":{"memory":"4Gi"},"requests":{"cpu":"500m","memory":"4Gi"}}` | Resource allocation for `sync` pods. |
+| stackstate.components.sync.sizing.baseMemoryConsumption | string | `"380Mi"` |  |
+| stackstate.components.sync.sizing.javaHeapMemoryFraction | string | `"75"` |  |
 | stackstate.components.sync.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.ui.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.ui.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -292,7 +306,9 @@ stackstate/stackstate
 | stackstate.components.viewHealth.image.tag | string | `""` | Tag used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.viewHealth.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.viewHealth.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `viewHealth` pods. |
-| stackstate.components.viewHealth.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"cpu":"300m","memory":"2Gi"}}` | Resource allocation for `viewHealth` pods. |
+| stackstate.components.viewHealth.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"cpu":"1000m","memory":"2Gi"}}` | Resource allocation for `viewHealth` pods. |
+| stackstate.components.viewHealth.sizing.baseMemoryConsumption | string | `"380Mi"` |  |
+| stackstate.components.viewHealth.sizing.javaHeapMemoryFraction | string | `"75"` |  |
 | stackstate.components.viewHealth.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.wait.image.registry | string | `"docker.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"dokkupaas/wait"` | Base container image repository for wait containers. |

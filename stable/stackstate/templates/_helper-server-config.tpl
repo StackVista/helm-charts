@@ -1,19 +1,19 @@
 {{- define "stackstate.server.memory.resource" -}}
-{{- $baseMemoryConsumption := "380Mi" -}}
-{{- $javaHeapMemoryFraction := 75 -}}
-{{- $podMemoryLimitMB := (include "stackstate.storage.to.megabytes" .) -}}
-{{- $baseMemoryConsumptionMB := (include "stackstate.storage.to.megabytes" $baseMemoryConsumption) -}}
-{{- $javaHeapMemory := (sub $podMemoryLimitMB  $baseMemoryConsumptionMB) | int -}}
-{{- $jjj := (div (mul $javaHeapMemory $javaHeapMemoryFraction) 100) | int -}}
-{{- max $jjj 0 -}}
+{{- $podMemoryLimitMB := (include "stackstate.storage.to.megabytes" .Mem) -}}
+{{- $baseMemoryConsumptionMB := (include "stackstate.storage.to.megabytes" .BaseMem) -}}
+{{- $grossMemoryLimit := (sub $podMemoryLimitMB  $baseMemoryConsumptionMB) | int -}}
+{{- $javaHeapMemory := (div (mul $grossMemoryLimit (.JavaHeapFraction | int)) 100) | int -}}
+{{- max $javaHeapMemory 0 -}}
 {{- end -}}
 
 {{/*
     Extra environment variables for pods inherited through `stackstate.components.*.extraEnv`
 */}}
 {{- define "stackstate.server.based.envvars" -}}
-{{- $xmx := (include "stackstate.server.memory.resource" .ServiceConfig.resources.limits.memory) | int }}
-{{- $xms := include "stackstate.server.memory.resource" .ServiceConfig.resources.requests.memory | int }}
+{{- $xmxConfig := dict "Mem" .ServiceConfig.resources.limits.memory "BaseMem" .ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
+{{- $xmx := (include "stackstate.server.memory.resource" $xmxConfig) | int }}
+{{- $xmsConfig := dict "Mem" .ServiceConfig.resources.requests.memory "BaseMem" .ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
+{{- $xms := include "stackstate.server.memory.resource" $xmsConfig | int }}
 {{- $xmxParam := ( (gt $xmx 0) | ternary (printf "-Xmx %dm" $xmx) "") }}
 {{- $xmsParam := ( (gt $xms 0) | ternary (printf "-Xms %dm" $xms) "") }}
 {{- if not .ServiceConfig.extraEnv.open.JAVA_OPTS }}

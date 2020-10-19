@@ -105,6 +105,9 @@ stackstate:
         requests:
           memory: "2Gi"
           cpu: "500m"
+      sizing:
+        baseMemoryConsumption: "380Mi"
+        javaHeapMemoryFraction: "75"
       # stackstate.components.api.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.api.tolerations -- Toleration labels for pod assignment.
@@ -167,6 +170,9 @@ stackstate:
         requests:
           memory: "3Gi"
           cpu: "500m"
+      sizing:
+        baseMemoryConsumption: "380Mi"
+        javaHeapMemoryFraction: "75"
       # stackstate.components.checks.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.checks.tolerations -- Toleration labels for pod assignment.
@@ -195,6 +201,9 @@ stackstate:
         requests:
           memory: "128Mi"
           cpu: "50m"
+      sizing:
+        baseMemoryConsumption: "380Mi"
+        javaHeapMemoryFraction: "75"
       # stackstate.components.initializer.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.initializer.tolerations -- Toleration labels for pod assignment.
@@ -325,6 +334,9 @@ stackstate:
         requests:
           memory: "8Gi"
           cpu: "2000m"
+      sizing:
+        baseMemoryConsumption: "380Mi"
+        javaHeapMemoryFraction: "75"
       # stackstate.components.server.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.server.tolerations -- Toleration labels for pod assignment.
@@ -355,7 +367,10 @@ stackstate:
           memory: "2Gi"
         requests:
           memory: "2Gi"
-          cpu: "200m"
+          cpu: "500m"
+      sizing:
+        baseMemoryConsumption: "380Mi"
+        javaHeapMemoryFraction: "75"
       # stackstate.components.state.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.state.tolerations -- Toleration labels for pod assignment.
@@ -387,6 +402,9 @@ stackstate:
         requests:
           memory: "4Gi"
           cpu: "500m"
+      sizing:
+        baseMemoryConsumption: "380Mi"
+        javaHeapMemoryFraction: "75"
       # stackstate.components.sync.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.sync.tolerations -- Toleration labels for pod assignment.
@@ -415,6 +433,9 @@ stackstate:
         requests:
           memory: "2Gi"
           cpu: "750m"
+      sizing:
+        baseMemoryConsumption: "380Mi"
+        javaHeapMemoryFraction: "75"
       # stackstate.components.slicing.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.slicing.tolerations -- Toleration labels for pod assignment.
@@ -477,7 +498,10 @@ stackstate:
           memory: "2Gi"
         requests:
           memory: "2Gi"
-          cpu: "300m"
+          cpu: "1000m"
+      sizing:
+        baseMemoryConsumption: "380Mi"
+        javaHeapMemoryFraction: "75"
       # stackstate.components.viewHealth.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.viewHealth.tolerations -- Toleration labels for pod assignment.
