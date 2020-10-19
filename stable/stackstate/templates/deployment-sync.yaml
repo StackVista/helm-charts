@@ -15,7 +15,8 @@ args:
 - sync
 env:
 {{- include "stackstate.common.envvars" . }}
-{{- include "stackstate.sync.envvars" . }}
+  {{- $serviceConfig := dict "ServiceName" "sync" "ServiceConfig" .Values.stackstate.components.sync "AllConfig" .Values.stackstate.components.all }}
+  {{- include "stackstate.server.based.envvars" $serviceConfig }}
 {{- include "stackstate.authentication.envvars" . }}
 - name: API_KEY
   valueFrom:

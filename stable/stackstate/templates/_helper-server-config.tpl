@@ -17,12 +17,12 @@
 {{- $xmxParam := ( (gt $xmx 0) | ternary (printf "-Xmx %dm" $xmx) "") }}
 {{- $xmsParam := ( (gt $xms 0) | ternary (printf "-Xms %dm" $xms) "") }}
 {{- if not .ServiceConfig.extraEnv.open.JAVA_OPTS }}
-{{- if not .AllConfig.extraEnv.open.JAVA_OPTS }}
+{{- if not .Values.stackstate.components.all.extraEnv.open.JAVA_OPTS }}
 - name: "JAVA_OPTS"
   value: {{ $xmxParam }} {{ $xmsParam }}
 {{- else }}
 - name: "JAVA_OPTS"
-  value: {{ $xmxParam }} {{ $xmsParam }} {{ .AllConfig.extraEnv.open.JAVA_OPTS }}
+  value: {{ $xmxParam }} {{ $xmsParam }} {{ .Values.stackstate.components.all.extraEnv.open.JAVA_OPTS }}
 {{- end }}
 {{- end }}
 {{- if .ServiceConfig.extraEnv.open }}
@@ -41,7 +41,7 @@
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-{{ .ServiceName }}
+      name: {{ template "common.fullname.short" $ }}-{{ $.ServiceName }}
       key: {{ $key }}
   {{- end }}
 {{- end }}

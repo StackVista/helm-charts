@@ -15,7 +15,8 @@ args:
 - slicing
 env:
 {{- include "stackstate.common.envvars" . }}
-{{- include "stackstate.slicing.envvars" . }}
+{{- $serviceConfig := dict "ServiceName" "slicing" "ServiceConfig" .Values.stackstate.components.slicing "AllConfig" .Values.stackstate.components.all }}
+{{- include "stackstate.server.based.envvars" $serviceConfig }}
 {{- include "stackstate.authentication.envvars" . }}
 - name: API_KEY
   valueFrom:

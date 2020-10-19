@@ -15,7 +15,8 @@ args:
 - checks
 env:
 {{- include "stackstate.common.envvars" . }}
-{{- include "stackstate.checks.envvars" . }}
+{{- $serviceConfig := dict "ServiceName" "checks" "ServiceConfig" .Values.stackstate.components.checks "AllConfig" .Values.stackstate.components.all }}
+{{- include "stackstate.server.based.envvars" $serviceConfig }}
 {{- include "stackstate.authentication.envvars" . }}
 - name: API_KEY
   valueFrom:

@@ -15,7 +15,8 @@ args:
 - initializer
 env:
 {{- include "stackstate.common.envvars" . }}
-{{- include "stackstate.initializer.envvars" . }}
+{{- $serviceConfig := dict "ServiceName" "initializer" "ServiceConfig" .Values.stackstate.components.initializer "AllConfig" .Values.stackstate.components.all }}
+{{- include "stackstate.server.based.envvars" $serviceConfig }}
 {{- include "stackstate.authentication.envvars" . }}
 - name: API_KEY
   valueFrom:
