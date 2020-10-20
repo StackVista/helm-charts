@@ -586,9 +586,10 @@ checksum/viewHealth-configmap: {{ include (print $.Template.BasePath "/configmap
 Ingress paths / routes
 */}}
 {{- define "stackstate.ingress.rules" -}}
+{{- $ctx := . }}
 {{- if .Values.ingress.hosts }}
   {{- range .Values.ingress.hosts }}
-- host: {{ .host | quote }}
+- host: {{ tpl .host $ctx | quote }}
   http:
     paths:
       - backend:

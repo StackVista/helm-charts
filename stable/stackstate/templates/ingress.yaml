@@ -11,11 +11,12 @@ metadata:
   {{- end }}
 spec:
 {{- if .Values.ingress.tls }}
+  {{- $ctx := . }}
   tls:
   {{- range .Values.ingress.tls }}
     - hosts:
       {{- range .hosts }}
-        - {{ . | quote }}
+        - {{ tpl . $ctx | quote }}
       {{- end }}
       secretName: {{ .secretName }}
   {{- end }}
