@@ -180,7 +180,9 @@ stackstate/stackstate
 | stackstate.components.correlate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.correlate.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `correlate` pods. |
 | stackstate.components.correlate.replicaCount | int | `1` | Number of `correlate` replicas. |
-| stackstate.components.correlate.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"cpu":"150m","memory":"2Gi"}}` | Resource allocation for `correlate` pods. |
+| stackstate.components.correlate.resources | object | `{"limits":{"memory":"1500Mi"},"requests":{"cpu":"150m","memory":"1500Mi"}}` | Resource allocation for `correlate` pods. |
+| stackstate.components.correlate.sizing.baseMemoryConsumption | string | `"475Mi"` |  |
+| stackstate.components.correlate.sizing.javaHeapMemoryFraction | string | `"78"` |  |
 | stackstate.components.correlate.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.initializer.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.initializer.config | string | `""` | Configuration file contents to customize the default StackState initializer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
@@ -204,6 +206,8 @@ stackstate/stackstate
 | stackstate.components.k2es.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `k2es` pods. |
 | stackstate.components.k2es.replicaCount | int | `1` | Number of `k2es` replicas. |
 | stackstate.components.k2es.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"250m","memory":"1Gi"}}` | Resource allocation for `k2es` pods. |
+| stackstate.components.k2es.sizing.baseMemoryConsumption | string | `"600Mi"` |  |
+| stackstate.components.k2es.sizing.javaHeapMemoryFraction | string | `"85"` |  |
 | stackstate.components.k2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.k2es.traces | object | `{"enabled":true}` | Trace-related `k2es` settings. |
 | stackstate.components.kafkaTopicCreate.image.registry | string | `"docker.io"` | Base container image registry for kafka-topic-create containers. |
@@ -222,6 +226,8 @@ stackstate/stackstate
 | stackstate.components.receiver.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `receiver` pods. |
 | stackstate.components.receiver.replicaCount | int | `1` | Number of `receiver` replicas. |
 | stackstate.components.receiver.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Resource allocation for `receiver` pods. |
+| stackstate.components.receiver.sizing.baseMemoryConsumption | string | `"700Mi"` |  |
+| stackstate.components.receiver.sizing.javaHeapMemoryFraction | string | `"75"` |  |
 | stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.router.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.router.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -306,9 +312,9 @@ stackstate/stackstate
 | stackstate.components.viewHealth.image.tag | string | `""` | Tag used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.viewHealth.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.viewHealth.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `viewHealth` pods. |
-| stackstate.components.viewHealth.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"cpu":"1000m","memory":"2Gi"}}` | Resource allocation for `viewHealth` pods. |
+| stackstate.components.viewHealth.resources | object | `{"limits":{"memory":"2300Mi"},"requests":{"cpu":"1000m","memory":"2300Mi"}}` | Resource allocation for `viewHealth` pods. |
 | stackstate.components.viewHealth.sizing.baseMemoryConsumption | string | `"860Mi"` |  |
-| stackstate.components.viewHealth.sizing.javaHeapMemoryFraction | string | `"86"` |  |
+| stackstate.components.viewHealth.sizing.javaHeapMemoryFraction | string | `"78"` |  |
 | stackstate.components.viewHealth.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.wait.image.registry | string | `"docker.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"dokkupaas/wait"` | Base container image repository for wait containers. |

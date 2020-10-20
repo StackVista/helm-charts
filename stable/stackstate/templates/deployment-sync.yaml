@@ -14,7 +14,6 @@ args:
 - -startRole
 - sync
 env:
-{{- include "stackstate.common.envvars" . }}
 {{- $serviceConfig := dict "ServiceName" "sync" "ServiceConfig" .Values.stackstate.components.sync }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.authentication.envvars" . }}

@@ -72,71 +72,11 @@ Common extra environment variables for all processes inherited through `stacksta
       key: {{ $key }}
   {{- end }}
 {{- end }}
+{{- end -}}
+
+{{- define "stackstate.common.revision.envvars" -}}
 - name: CONFIG_FORCE_stackstate_misc_releaseRevision
   value: {{ .Release.Revision | quote }}
-{{- end -}}
-
-{{/*
-Correlate extra environment variables for correlate pods inherited through `stackstate.components.correlate.extraEnv`
-*/}}
-{{- define "stackstate.correlate.envvars" -}}
-{{- if .Values.stackstate.components.correlate.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.correlate.extraEnv.open  }}
-- name: {{ $key }}
-  value: {{ $value | quote }}
-  {{- end }}
-{{- end }}
-{{- if .Values.stackstate.components.correlate.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.correlate.extraEnv.secret  }}
-- name: {{ $key }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-correlate
-      key: {{ $key }}
-  {{- end }}
-{{- end }}
-{{- end -}}
-
-{{/*
-K2ES extra environment variables for k2es pods inherited through `stackstate.components.k2es.extraEnv`
-*/}}
-{{- define "stackstate.k2es.envvars" -}}
-{{- if .Values.stackstate.components.k2es.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.k2es.extraEnv.open  }}
-- name: {{ $key }}
-  value: {{ $value | quote }}
-  {{- end }}
-{{- end }}
-{{- if .Values.stackstate.components.k2es.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.k2es.extraEnv.secret  }}
-- name: {{ $key }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-k2es
-      key: {{ $key }}
-  {{- end }}
-{{- end }}
-{{- end -}}
-
-{{/*
-Receiver extra environment variables for receiver pods inherited through `stackstate.components.receiver.extraEnv`
-*/}}
-{{- define "stackstate.receiver.envvars" -}}
-{{- if .Values.stackstate.components.receiver.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.receiver.extraEnv.open  }}
-- name: {{ $key }}
-  value: {{ $value | quote }}
-  {{- end }}
-{{- end }}
-{{- if .Values.stackstate.components.receiver.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.receiver.extraEnv.secret  }}
-- name: {{ $key }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-receiver
-      key: {{ $key }}
-  {{- end }}
-{{- end }}
 {{- end -}}
 
 {{/*

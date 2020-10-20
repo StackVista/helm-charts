@@ -11,8 +11,8 @@ imagePullPolicy: Always
 
 {{- define "stackstate.receiver.deployment.container.main" -}}
 env:
-{{- include "stackstate.common.envvars" . }}
-{{- include "stackstate.receiver.envvars" . }}
+{{- $serviceConfig := dict "ServiceName" "receiver" "ServiceConfig" .Values.stackstate.components.receiver }}
+{{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
 - name: API_KEY

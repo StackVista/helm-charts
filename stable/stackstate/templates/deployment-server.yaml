@@ -20,7 +20,6 @@ args:
 {{- end }}
 - -start
 env:
-{{- include "stackstate.common.envvars" . }}
 {{- $serviceConfig := dict "ServiceName" "server" "ServiceConfig" .Values.stackstate.components.server }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.authentication.envvars" . }}

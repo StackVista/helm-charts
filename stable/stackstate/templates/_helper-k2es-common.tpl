@@ -14,8 +14,8 @@ imagePullPolicy: Always
 
 {{- define "stackstate.k2es.deployment.common.container" -}}
 env:
-{{- include "stackstate.common.envvars" . }}
-{{- include "stackstate.k2es.envvars" . }}
+{{- $serviceConfig := dict "ServiceName" "k2es" "ServiceConfig" .Values.stackstate.components.k2es }}
+{{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{/*
     Currently we use a single replicationFactor config for all indices on ES, that works fine with calculating the available disk space
     and on the STS processes assigning diskSpaceWeights to each process. But if in the future we have need to configure different

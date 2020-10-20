@@ -135,10 +135,13 @@ stackstate:
       # stackstate.components.correlate.resources -- Resource allocation for `correlate` pods.
       resources:
         limits:
-          memory: "2Gi"
+          memory: "1500Mi"
         requests:
-          memory: "2Gi"
+          memory: "1500Mi"
           cpu: "150m"
+      sizing:
+        baseMemoryConsumption: "475Mi"
+        javaHeapMemoryFraction: "78"
       # stackstate.components.correlate.replicaCount -- Number of `correlate` replicas.
       replicaCount: 1
       # stackstate.components.correlate.nodeSelector -- Node labels for pod assignment.
@@ -235,6 +238,9 @@ stackstate:
         requests:
           memory: "1Gi"
           cpu: "250m"
+      sizing:
+        baseMemoryConsumption: "600Mi"
+        javaHeapMemoryFraction: "85"
       # stackstate.components.k2es.replicaCount -- Number of `k2es` replicas.
       replicaCount: 1
       # stackstate.components.k2es.nodeSelector -- Node labels for pod assignment.
@@ -269,6 +275,9 @@ stackstate:
         requests:
           memory: "1Gi"
           cpu: "500m"
+      sizing:
+        baseMemoryConsumption: "700Mi"
+        javaHeapMemoryFraction: "75"
       # stackstate.components.receiver.replicaCount -- Number of `receiver` replicas.
       replicaCount: 1
       # stackstate.components.receiver.nodeSelector -- Node labels for pod assignment.
@@ -495,13 +504,13 @@ stackstate:
       # stackstate.components.viewHealth.resources -- Resource allocation for `viewHealth` pods.
       resources:
         limits:
-          memory: "2Gi"
+          memory: "2300Mi"
         requests:
-          memory: "2Gi"
+          memory: "2300Mi"
           cpu: "1000m"
       sizing:
         baseMemoryConsumption: "860Mi"
-        javaHeapMemoryFraction: "86"
+        javaHeapMemoryFraction: "78"
       # stackstate.components.viewHealth.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.viewHealth.tolerations -- Toleration labels for pod assignment.
