@@ -9,21 +9,17 @@
 {{/*
     Extra environment variables for pods inherited through `stackstate.components.*.extraEnv`
 */}}
-{{- define "stackstate.server.based.envvars" -}}
+{{- define "stackstate.service.envvars" -}}
 {{- $xmxConfig := dict "Mem" .ServiceConfig.resources.limits.memory "BaseMem" .ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
 {{- $xmx := (include "stackstate.server.memory.resource" $xmxConfig) | int }}
 {{- $xmsConfig := dict "Mem" .ServiceConfig.resources.requests.memory "BaseMem" .ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
 {{- $xms := include "stackstate.server.memory.resource" $xmsConfig | int }}
-{{- $xmxParam := ( (gt $xmx 0) | ternary (printf "-Xmx %dm" $xmx) "") }}
-{{- $xmsParam := ( (gt $xms 0) | ternary (printf "-Xms %dm" $xms) "") }}
+{{- $xmxParam := ( (gt $xmx 0) | ternary (printf "-Xmx%dm" $xmx) "") }}
+{{- $xmsParam := ( (gt $xms 0) | ternary (printf "-Xms%dm" $xms) "") }}
+{{- $commonJAVA_OPTS := .Values.stackstate.components.all.extraEnv.open.JAVA_OPTS }}
 {{- if not .ServiceConfig.extraEnv.open.JAVA_OPTS }}
-{{- if not .Values.stackstate.components.all.extraEnv.open.JAVA_OPTS }}
 - name: "JAVA_OPTS"
-  value: {{ $xmxParam }} {{ $xmsParam }}
-{{- else }}
-- name: "JAVA_OPTS"
-  value: {{ $xmxParam }} {{ $xmsParam }} {{ .Values.stackstate.components.all.extraEnv.open.JAVA_OPTS }}
-{{- end }}
+  value: {{ $xmxParam }} {{ $xmsParam }} {{ $commonJAVA_OPTS }}
 {{- end }}
 {{- if .ServiceConfig.extraEnv.open }}
   {{- range $key, $value := .ServiceConfig.extraEnv.open  }}
