@@ -13,37 +13,25 @@ func TestServerJavaHeapRender(t *testing.T) {
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	var stsServerDeployment appsv1.Deployment
-	var stsReceiverDeployment appsv1.Deployment
-	var stsCorrelateDeployment appsv1.Deployment
-	var stsMm2EsDeployment appsv1.Deployment
+	var expectedDeployments = make(map[string]v1.EnvVar)
+	expectedDeployments["stackstate-server"] =  v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx5858m -Xms5858m"}
+	expectedDeployments["stackstate-receiver"] =  v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1086m -Xms280m"}
+	expectedDeployments["stackstate-correlate"] =  v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx799m -Xms799m"}
+	expectedDeployments["stackstate-mm2es"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx402m -Xms402m"}
+
+	var foundDeployments = make(map[string]appsv1.Deployment)
 
 	for _, deployment := range resources.Deployments {
-		if deployment.Name == "stackstate-server" {
-			stsServerDeployment = deployment
-		}
-		if deployment.Name == "stackstate-receiver" {
-			stsReceiverDeployment = deployment
-		}
-		if deployment.Name == "stackstate-correlate" {
-			stsCorrelateDeployment = deployment
-		}
-		if deployment.Name == "stackstate-mm2es" {
-			stsMm2EsDeployment = deployment
+		if _, ok := expectedDeployments[deployment.Name]; ok {
+			foundDeployments[deployment.Name] = deployment
 		}
 	}
 
-	require.NotNil(t, stsServerDeployment, stsReceiverDeployment, stsCorrelateDeployment, stsMm2EsDeployment)
+	require.Equal(t, len(expectedDeployments), len(foundDeployments))
 
-	expectedServerJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx5858m -Xms5858m"}
-	expectedReceiverJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1086m -Xms280m"}
-	expectedCorrelateJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx799m -Xms799m"}
-	expectedMm2EsJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx402m -Xms402m"}
-
-	AssertJavaOpts(t, stsServerDeployment.Spec.Template.Spec.Containers[0].Env, expectedServerJavaOpts)
-	AssertJavaOpts(t, stsReceiverDeployment.Spec.Template.Spec.Containers[0].Env, expectedReceiverJavaOpts)
-	AssertJavaOpts(t, stsCorrelateDeployment.Spec.Template.Spec.Containers[0].Env, expectedCorrelateJavaOpts)
-	AssertJavaOpts(t, stsMm2EsDeployment.Spec.Template.Spec.Containers[0].Env, expectedMm2EsJavaOpts)
+	for deploymentName, expectedJavaOpts := range expectedDeployments {
+		AssertJavaOpts(t, foundDeployments[deploymentName].Spec.Template.Spec.Containers[0].Env, expectedJavaOpts)
+	}
 }
 
 func TestSplitServicesJavaHeapRender(t *testing.T) {
@@ -51,49 +39,27 @@ func TestSplitServicesJavaHeapRender(t *testing.T) {
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	var stsApiDeployment appsv1.Deployment
-	var stsChecksDeployment appsv1.Deployment
-	var stsStateDeployment appsv1.Deployment
-	var stsSyncDeployment appsv1.Deployment
-	var stsSlicingDeployment appsv1.Deployment
-	var stsViewHealthDeployment appsv1.Deployment
+	var expectedDeployments = make(map[string]v1.EnvVar)
+	expectedDeployments["stackstate-api"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx510m -Xms510m"}
+	expectedDeployments["stackstate-checks"] =  v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1620m -Xms1620m"}
+	expectedDeployments["stackstate-state"] =  v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx950m -Xms950m"}
+	expectedDeployments["stackstate-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx2336m -Xms2336m"}
+	expectedDeployments["stackstate-slicing"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1000m -Xms1000m"}
+	expectedDeployments["stackstate-view-health"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1123m -Xms1123m"}
+
+	var foundDeployments = make(map[string]appsv1.Deployment)
 
 	for _, deployment := range resources.Deployments {
-		if deployment.Name == "stackstate-api" {
-			stsApiDeployment = deployment
-		}
-		if deployment.Name == "stackstate-checks" {
-			stsChecksDeployment = deployment
-		}
-		if deployment.Name == "stackstate-state" {
-			stsStateDeployment = deployment
-		}
-		if deployment.Name == "stackstate-sync" {
-			stsSyncDeployment = deployment
-		}
-		if deployment.Name == "stackstate-slicing" {
-			stsSlicingDeployment = deployment
-		}
-		if deployment.Name == "stackstate-view-health" {
-			stsViewHealthDeployment = deployment
+		if _, ok := expectedDeployments[deployment.Name]; ok {
+			foundDeployments[deployment.Name] = deployment
 		}
 	}
 
-	require.NotNil(t, stsApiDeployment, stsChecksDeployment, stsStateDeployment, stsSyncDeployment, stsSlicingDeployment, stsViewHealthDeployment)
+	require.Equal(t, len(expectedDeployments), len(foundDeployments))
 
-	expectedApiJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx510m -Xms510m"}
-	expectedChecksJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1620m -Xms1620m"}
-	expectedStateJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx950m -Xms950m"}
-	expectedSyncJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx2336m -Xms2336m"}
-	expectedSlicingJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1000m -Xms1000m"}
-	expectedViewHealthJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1123m -Xms1123m"}
-
-	AssertJavaOpts(t, stsApiDeployment.Spec.Template.Spec.Containers[0].Env, expectedApiJavaOpts)
-	AssertJavaOpts(t, stsChecksDeployment.Spec.Template.Spec.Containers[0].Env, expectedChecksJavaOpts)
-	AssertJavaOpts(t, stsStateDeployment.Spec.Template.Spec.Containers[0].Env, expectedStateJavaOpts)
-	AssertJavaOpts(t, stsSyncDeployment.Spec.Template.Spec.Containers[0].Env, expectedSyncJavaOpts)
-	AssertJavaOpts(t, stsSlicingDeployment.Spec.Template.Spec.Containers[0].Env, expectedSlicingJavaOpts)
-	AssertJavaOpts(t, stsViewHealthDeployment.Spec.Template.Spec.Containers[0].Env, expectedViewHealthJavaOpts)
+	for deploymentName, expectedJavaOpts := range expectedDeployments {
+		AssertJavaOpts(t, foundDeployments[deploymentName].Spec.Template.Spec.Containers[0].Env, expectedJavaOpts)
+	}
 }
 
 func TestServerJavaHeapRenderWithAllJavaOptsOverride(t *testing.T) {

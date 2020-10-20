@@ -74,11 +74,6 @@ Common extra environment variables for all processes inherited through `stacksta
 {{- end }}
 {{- end -}}
 
-{{- define "stackstate.common.revision.envvars" -}}
-- name: CONFIG_FORCE_stackstate_misc_releaseRevision
-  value: {{ .Release.Revision | quote }}
-{{- end -}}
-
 {{/*
 Router extra environment variables for ui pods inherited through `stackstate.components.router.extraEnv`
 */}}
