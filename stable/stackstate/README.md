@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.2.0-snapshot.17`
+Current chart version is `4.2.0-snapshot.18`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -87,7 +87,7 @@ stackstate/stackstate
 | hbase.hbase.regionserver.replicaCount | int | `3` | Number of HBase regionserver node replicas. |
 | hbase.hdfs.datanode.replicaCount | int | `3` | Number of HDFS datanode replicas. |
 | hbase.hdfs.secondarynamenode.enabled | bool | `true` |  |
-| hbase.stackgraph.image.tag | string | `"3.2.1"` | The StackGraph server version, must be compatible with the StackState version |
+| hbase.stackgraph.image.tag | string | `"3.5.0"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
 | hbase.zookeeper.enabled | bool | `false` | Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**. |
 | hbase.zookeeper.externalServers | string | `"stackstate-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
