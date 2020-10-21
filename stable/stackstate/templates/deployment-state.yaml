@@ -14,8 +14,8 @@ args:
 - -startRole
 - state
 env:
-{{- include "stackstate.common.envvars" . }}
-{{- include "stackstate.state.envvars" . }}
+{{- $serviceConfig := dict "ServiceName" "state" "ServiceConfig" .Values.stackstate.components.state }}
+{{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.authentication.envvars" . }}
 - name: API_KEY
   valueFrom:

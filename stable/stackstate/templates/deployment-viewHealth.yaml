@@ -14,8 +14,8 @@ args:
 - -startRole
 - viewHealth
 env:
-{{- include "stackstate.common.envvars" . }}
-{{- include "stackstate.viewHealth.envvars" . }}
+{{- $serviceConfig := dict "ServiceName" "view-health" "ServiceConfig" .Values.stackstate.components.viewHealth }}
+{{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.authentication.envvars" . }}
 - name: API_KEY
   valueFrom:

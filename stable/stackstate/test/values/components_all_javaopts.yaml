@@ -1,0 +1,6 @@
+stackstate:
+  components:
+    all:
+      extraEnv:
+        open:
+          JAVA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"

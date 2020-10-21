@@ -72,71 +72,6 @@ Common extra environment variables for all processes inherited through `stacksta
       key: {{ $key }}
   {{- end }}
 {{- end }}
-- name: CONFIG_FORCE_stackstate_misc_releaseRevision
-  value: {{ .Release.Revision | quote }}
-{{- end -}}
-
-{{/*
-Correlate extra environment variables for correlate pods inherited through `stackstate.components.correlate.extraEnv`
-*/}}
-{{- define "stackstate.correlate.envvars" -}}
-{{- if .Values.stackstate.components.correlate.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.correlate.extraEnv.open  }}
-- name: {{ $key }}
-  value: {{ $value | quote }}
-  {{- end }}
-{{- end }}
-{{- if .Values.stackstate.components.correlate.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.correlate.extraEnv.secret  }}
-- name: {{ $key }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-correlate
-      key: {{ $key }}
-  {{- end }}
-{{- end }}
-{{- end -}}
-
-{{/*
-K2ES extra environment variables for k2es pods inherited through `stackstate.components.k2es.extraEnv`
-*/}}
-{{- define "stackstate.k2es.envvars" -}}
-{{- if .Values.stackstate.components.k2es.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.k2es.extraEnv.open  }}
-- name: {{ $key }}
-  value: {{ $value | quote }}
-  {{- end }}
-{{- end }}
-{{- if .Values.stackstate.components.k2es.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.k2es.extraEnv.secret  }}
-- name: {{ $key }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-k2es
-      key: {{ $key }}
-  {{- end }}
-{{- end }}
-{{- end -}}
-
-{{/*
-Receiver extra environment variables for receiver pods inherited through `stackstate.components.receiver.extraEnv`
-*/}}
-{{- define "stackstate.receiver.envvars" -}}
-{{- if .Values.stackstate.components.receiver.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.receiver.extraEnv.open  }}
-- name: {{ $key }}
-  value: {{ $value | quote }}
-  {{- end }}
-{{- end }}
-{{- if .Values.stackstate.components.receiver.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.receiver.extraEnv.secret  }}
-- name: {{ $key }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-receiver
-      key: {{ $key }}
-  {{- end }}
-{{- end }}
 {{- end -}}
 
 {{/*
@@ -155,132 +90,6 @@ Router extra environment variables for ui pods inherited through `stackstate.com
   valueFrom:
     secretKeyRef:
       name: {{ template "common.fullname.short" $ }}-router
-      key: {{ $key }}
-  {{- end }}
-{{- end }}
-{{- end -}}
-
-{{/*
-Server extra environment variables for server pods inherited through `stackstate.components.server.extraEnv`
-*/}}
-{{- define "stackstate.server.envvars" -}}
-{{- if .Values.stackstate.components.server.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.server.extraEnv.open  }}
-- name: {{ $key }}
-  value: {{ $value | quote }}
-  {{- end }}
-{{- end }}
-{{- if .Values.stackstate.components.server.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.server.extraEnv.secret  }}
-- name: {{ $key }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-server
-      key: {{ $key }}
-  {{- end }}
-{{- end }}
-{{- end -}}
-
-{{/*
-Api extra environment variables for api pods inherited through `stackstate.components.api.extraEnv`
-*/}}
-{{- define "stackstate.api.envvars" -}}
-{{- if .Values.stackstate.components.api.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.api.extraEnv.open  }}
-- name: {{ $key }}
-  value: {{ $value | quote }}
-  {{- end }}
-{{- end }}
-{{- if .Values.stackstate.components.api.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.api.extraEnv.secret  }}
-- name: {{ $key }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-api
-      key: {{ $key }}
-  {{- end }}
-{{- end }}
-{{- end -}}
-
-{{/*
-Checks extra environment variables for state pods inherited through `stackstate.components.checks.extraEnv`
-*/}}
-{{- define "stackstate.checks.envvars" -}}
-{{- if .Values.stackstate.components.checks.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.checks.extraEnv.open  }}
-- name: {{ $key }}
-  value: {{ $value | quote }}
-  {{- end }}
-{{- end }}
-{{- if .Values.stackstate.components.checks.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.checks.extraEnv.secret  }}
-- name: {{ $key }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-checks
-      key: {{ $key }}
-  {{- end }}
-{{- end }}
-{{- end -}}
-
-{{/*
-Api extra environment variables for initializer pods inherited through `stackstate.components.api.extraEnv`
-*/}}
-{{- define "stackstate.initializer.envvars" -}}
-{{- if .Values.stackstate.components.initializer.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.initializer.extraEnv.open  }}
-- name: {{ $key }}
-  value: {{ $value | quote }}
-  {{- end }}
-{{- end }}
-{{- if .Values.stackstate.components.initializer.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.initializer.extraEnv.secret  }}
-- name: {{ $key }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-initializer
-      key: {{ $key }}
-  {{- end }}
-{{- end }}
-{{- end -}}
-
-{{/*
-Sync extra environment variables for sync pods inherited through `stackstate.components.sync.extraEnv`
-*/}}
-{{- define "stackstate.sync.envvars" -}}
-{{- if .Values.stackstate.components.sync.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.sync.extraEnv.open  }}
-- name: {{ $key }}
-  value: {{ $value | quote }}
-  {{- end }}
-{{- end }}
-{{- if .Values.stackstate.components.sync.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.sync.extraEnv.secret  }}
-- name: {{ $key }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-sync
-      key: {{ $key }}
-  {{- end }}
-{{- end }}
-{{- end -}}
-
-{{/*
-Slicing extra environment variables for slicing pods inherited through `stackstate.components.slicing.extraEnv`
-*/}}
-{{- define "stackstate.slicing.envvars" -}}
-{{- if .Values.stackstate.components.slicing.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.slicing.extraEnv.open  }}
-- name: {{ $key }}
-  value: {{ $value | quote }}
-  {{- end }}
-{{- end }}
-{{- if .Values.stackstate.components.slicing.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.slicing.extraEnv.secret  }}
-- name: {{ $key }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-slicing
       key: {{ $key }}
   {{- end }}
 {{- end }}
@@ -348,27 +157,6 @@ Mount secrets for custom certificates
 {{- end -}}
 
 {{/*
-State extra environment variables for state pods inherited through `stackstate.components.state.extraEnv`
-*/}}
-{{- define "stackstate.state.envvars" -}}
-{{- if .Values.stackstate.components.state.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.state.extraEnv.open  }}
-- name: {{ $key }}
-  value: {{ $value | quote }}
-  {{- end }}
-{{- end }}
-{{- if .Values.stackstate.components.state.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.state.extraEnv.secret  }}
-- name: {{ $key }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-state
-      key: {{ $key }}
-  {{- end }}
-{{- end }}
-{{- end -}}
-
-{{/*
 UI extra environment variables for ui pods inherited through `stackstate.components.ui.extraEnv`
 */}}
 {{- define "stackstate.ui.envvars" -}}
@@ -389,27 +177,6 @@ UI extra environment variables for ui pods inherited through `stackstate.compone
 {{- end }}
 {{- end -}}
 
-
-{{/*
-ViewHealth extra environment variables for viewHealth pods inherited through `stackstate.components.state.extraEnv`
-*/}}
-{{- define "stackstate.viewHealth.envvars" -}}
-{{- if .Values.stackstate.components.viewHealth.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.viewHealth.extraEnv.open  }}
-- name: {{ $key }}
-  value: {{ $value | quote }}
-  {{- end }}
-{{- end }}
-{{- if .Values.stackstate.components.viewHealth.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.viewHealth.extraEnv.secret  }}
-- name: {{ $key }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-viewHealth
-      key: {{ $key }}
-  {{- end }}
-{{- end }}
-{{- end -}}
 
 {{/*
 Common secret checksum annotations

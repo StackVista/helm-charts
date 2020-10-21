@@ -11,8 +11,8 @@ imagePullPolicy: Always
 
 {{- define "stackstate.correlate.deployment.container.main" -}}
 env:
-{{- include "stackstate.common.envvars" . }}
-{{- include "stackstate.correlate.envvars" . }}
+{{- $serviceConfig := dict "ServiceName" "correlate" "ServiceConfig" .Values.stackstate.components.correlate }}
+{{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.correlate.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.correlate.image.tag }}"
