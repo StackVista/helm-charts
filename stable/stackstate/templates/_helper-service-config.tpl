@@ -13,7 +13,7 @@
 {{- define "stackstate.service.envvars" -}}
 {{- $openEnvVars := merge .ServiceConfig.extraEnv.open .Values.stackstate.components.all.extraEnv.open }}
 {{- $secretEnvVars := merge .ServiceConfig.extraEnv.secret .Values.stackstate.components.all.extraEnv.secret }}
-{{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_misc_releaseRevision" .Release.Revision }}
+{{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_singleWriter_releaseRevision" .Release.Revision }}
 {{- $xmxConfig := dict "Mem" .ServiceConfig.resources.limits.memory "BaseMem" .ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
 {{- $xmx := (include "stackstate.server.memory.resource" $xmxConfig) | int }}
 {{- $xmsConfig := dict "Mem" .ServiceConfig.resources.requests.memory "BaseMem" .ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
