@@ -101,13 +101,13 @@ stackstate:
       # stackstate.components.api.resources -- Resource allocation for `api` pods.
       resources:
         limits:
-          memory: "1500Mi"
+          memory: "4000Mi"
         requests:
-          memory: "1500Mi"
+          memory: "4000Mi"
           cpu: "500m"
       sizing:
-        baseMemoryConsumption: "900Mi"
-        javaHeapMemoryFraction: "85"
+        baseMemoryConsumption: "500Mi"
+        javaHeapMemoryFraction: "50"
       # stackstate.components.api.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.api.tolerations -- Toleration labels for pod assignment.
@@ -169,13 +169,13 @@ stackstate:
       # stackstate.components.checks.resources -- Resource allocation for `state` pods.
       resources:
         limits:
-          memory: "3000Mi"
+          memory: "4000Mi"
         requests:
-          memory: "3000Mi"
+          memory: "4000Mi"
           cpu: "500m"
       sizing:
-        baseMemoryConsumption: "1200Mi"
-        javaHeapMemoryFraction: "90"
+        baseMemoryConsumption: "500Mi"
+        javaHeapMemoryFraction: "70"
       # stackstate.components.checks.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.checks.tolerations -- Toleration labels for pod assignment.
@@ -373,13 +373,13 @@ stackstate:
       # stackstate.components.state.resources -- Resource allocation for `state` pods.
       resources:
         limits:
-          memory: "1800Mi"
+          memory: "2000Mi"
         requests:
-          memory: "1800Mi"
+          memory: "2000Mi"
           cpu: "500m"
       sizing:
-        baseMemoryConsumption: "720Mi"
-        javaHeapMemoryFraction: "88"
+        baseMemoryConsumption: "500Mi"
+        javaHeapMemoryFraction: "80"
       # stackstate.components.state.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.state.tolerations -- Toleration labels for pod assignment.
@@ -407,13 +407,13 @@ stackstate:
       # stackstate.components.sync.resources -- Resource allocation for `sync` pods.
       resources:
         limits:
-          memory: "4Gi"
+          memory: "1800Mi"
         requests:
-          memory: "4Gi"
+          memory: "1800Mi"
           cpu: "500m"
       sizing:
-        baseMemoryConsumption: "1700Mi"
-        javaHeapMemoryFraction: "90"
+        baseMemoryConsumption: "500Mi"
+        javaHeapMemoryFraction: "70"
       # stackstate.components.sync.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.sync.tolerations -- Toleration labels for pod assignment.
@@ -438,13 +438,13 @@ stackstate:
       # stackstate.components.slicing.resources -- Resource allocation for `slicing` pods.
       resources:
         limits:
-          memory: "2000Mi"
+          memory: "1500Mi"
         requests:
-          memory: "2000Mi"
+          memory: "1500Mi"
           cpu: "750m"
       sizing:
-        baseMemoryConsumption: "780Mi"
-        javaHeapMemoryFraction: "82"
+        baseMemoryConsumption: "500Mi"
+        javaHeapMemoryFraction: "80"
       # stackstate.components.slicing.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.slicing.tolerations -- Toleration labels for pod assignment.
@@ -504,13 +504,13 @@ stackstate:
       # stackstate.components.viewHealth.resources -- Resource allocation for `viewHealth` pods.
       resources:
         limits:
-          memory: "2300Mi"
+          memory: "2700Mi"
         requests:
-          memory: "2300Mi"
+          memory: "2700Mi"
           cpu: "1000m"
       sizing:
-        baseMemoryConsumption: "860Mi"
-        javaHeapMemoryFraction: "78"
+        baseMemoryConsumption: "500Mi"
+        javaHeapMemoryFraction: "55"
       # stackstate.components.viewHealth.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.viewHealth.tolerations -- Toleration labels for pod assignment.
