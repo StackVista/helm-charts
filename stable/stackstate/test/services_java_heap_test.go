@@ -40,12 +40,12 @@ func TestSplitServicesJavaHeapRender(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
-	expectedDeployments["stackstate-api"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx510m -Xms510m"}
-	expectedDeployments["stackstate-checks"] =  v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1620m -Xms1620m"}
-	expectedDeployments["stackstate-state"] =  v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx950m -Xms950m"}
-	expectedDeployments["stackstate-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx2336m -Xms2336m"}
-	expectedDeployments["stackstate-slicing"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1000m -Xms1000m"}
-	expectedDeployments["stackstate-view-health"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1123m -Xms1123m"}
+	expectedDeployments["stackstate-api"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1750m -Xms1750m"}
+	expectedDeployments["stackstate-checks"] =  v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx2450m -Xms2450m"}
+	expectedDeployments["stackstate-state"] =  v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1200m -Xms1200m"}
+	expectedDeployments["stackstate-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx910m -Xms910m"}
+	expectedDeployments["stackstate-slicing"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1200m -Xms1200m"}
+	expectedDeployments["stackstate-view-health"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1100m -Xms1100m"}
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 
