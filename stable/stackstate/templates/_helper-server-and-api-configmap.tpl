@@ -75,7 +75,7 @@ stackstate {
     authentication {
       authServer {
         stackstateAuthServer {
-          defaultPassword = {{ .Values.stackstate.authentication.adminPassword | quote }}
+          defaultPassword = {{ required "stackstate.authentication.adminPassword is required when not configuring ldap/oidc authentication" .Values.stackstate.authentication.adminPassword | quote }}
         }
       }
     }
@@ -85,7 +85,7 @@ stackstate {
     authentication {
       authServer {
         stackstateAuthServer {
-          defaultPassword = {{ .Values.stackstate.admin.authentication.password | quote }}
+          defaultPassword = {{ {{ required "stackstate.admin.authentication.adminPassword is required when not configuring ldap/oidc authentication" .Values.stackstate.admin.authentication.password | quote }}
         }
       }
     }
