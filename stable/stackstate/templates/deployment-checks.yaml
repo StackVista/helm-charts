@@ -37,10 +37,13 @@ env:
   value: {{ printf "%s/%s" .Values.stackstate.receiver.baseUrl "receiver" | quote }}
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
+  # No need to keep cached items for a long time
+- name: CONFIG_FORCE_stackgraph.vertex.cache.expireAfterSeconds
+  value: "600"
 - name: CONFIG_FORCE_stackgraph.vertex.cache.sizePercentage
-  value: "20"
+  value: "10"
 - name: CONFIG_FORCE_stackstate_domainActorPool_fractionOfMemoryReservedForChecks
-  value: "0.70"
+  value: "0.80"
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.checks.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.checks.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.checks.image.pullPolicy | quote }}
 name: checks

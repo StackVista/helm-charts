@@ -39,6 +39,10 @@ env:
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
 - name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
   value: "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
+  # No need to keep data for a long time, data is very ephemeral.
+  # Only stuff that is used often is cached
+- name: CONFIG_FORCE_stackgraph.vertex.cache.expireAfterSeconds
+  value: "600"
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.sync.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.sync.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.sync.image.pullPolicy | quote }}
 name: sync
