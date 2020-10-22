@@ -438,9 +438,9 @@ stackstate:
       # stackstate.components.slicing.resources -- Resource allocation for `slicing` pods.
       resources:
         limits:
-          memory: "2000Mi"
+          memory: "1500Mi"
         requests:
-          memory: "2000Mi"
+          memory: "1500Mi"
           cpu: "750m"
       sizing:
         baseMemoryConsumption: "500Mi"
@@ -504,9 +504,9 @@ stackstate:
       # stackstate.components.viewHealth.resources -- Resource allocation for `viewHealth` pods.
       resources:
         limits:
-          memory: "2500Mi"
+          memory: "2700Mi"
         requests:
-          memory: "2500Mi"
+          memory: "2700Mi"
           cpu: "1000m"
       sizing:
         baseMemoryConsumption: "500Mi"
