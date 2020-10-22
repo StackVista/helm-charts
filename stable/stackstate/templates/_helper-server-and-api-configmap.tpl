@@ -38,7 +38,7 @@ stackstate {
 }
 {{- else }}
 {{- if or (hasKey .Values.stackstate.authentication.ldap "bind") (hasKey .Values.stackstate.authentication.ldap "ssl") }}
-{{ $authTypes = append $authTypes "ldapAuthServer" -}}
+{{ $authTypes = append $authTypes "ldapAuthServer" }}
 stackstate {
   api {
     authentication {
@@ -69,7 +69,29 @@ stackstate {
   }
 }
 {{- else }}
-{{- $authTypes = append $authTypes "stackstateAuthServer" -}}
+{{- $authTypes = append $authTypes "stackstateAuthServer" }}
+stackstate {
+  api {
+    authentication {
+      authServer {
+        stackstateAuthServer {
+          defaultPassword = {{ .Values.stackstate.authentication.adminPassword | quote }}
+        }
+      }
+    }
+  }
+
+  adminApi {
+    authentication {
+      authServer {
+        stackstateAuthServer {
+          defaultPassword = {{ .Values.stackstate.admin.authentication.password | quote }}
+        }
+      }
+    }
+  }
+}
+
 {{- end }}
 {{- $authTypes = append $authTypes "k8sServiceAccountAuthServer" }}
 stackstate.api.authentication.authServer.authServerType = [ {{- $authTypes | compact | join ", " -}} ]
