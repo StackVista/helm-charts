@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.2.0-snapshot.22`
+Current chart version is `4.2.0-snapshot.23`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
