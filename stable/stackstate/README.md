@@ -288,7 +288,7 @@ stackstate/stackstate
 | stackstate.components.sync.image.tag | string | `""` | Tag used for the `sync` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.sync.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.sync.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `sync` pods. |
-| stackstate.components.sync.resources | object | `{"limits":{"memory":"2100Mi"},"requests":{"cpu":"500m","memory":"2100Mi"}}` | Resource allocation for `sync` pods. |
+| stackstate.components.sync.resources | object | `{"limits":{"memory":"2500Mi"},"requests":{"cpu":"500m","memory":"2500Mi"}}` | Resource allocation for `sync` pods. |
 | stackstate.components.sync.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.sync.sizing.javaHeapMemoryFraction | string | `"60"` |  |
 | stackstate.components.sync.tolerations | list | `[]` | Toleration labels for pod assignment. |

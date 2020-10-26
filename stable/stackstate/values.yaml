@@ -407,9 +407,9 @@ stackstate:
       # stackstate.components.sync.resources -- Resource allocation for `sync` pods.
       resources:
         limits:
-          memory: "2100Mi"
+          memory: "2500Mi"
         requests:
-          memory: "2100Mi"
+          memory: "2500Mi"
           cpu: "500m"
       sizing:
         baseMemoryConsumption: "500Mi"
