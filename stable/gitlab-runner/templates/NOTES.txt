@@ -10,5 +10,5 @@ GitLab instance is reachable at:
 
     helm upgrade {{ .Release.Name }} \
         --set gitlabUrl=http://gitlab.your-domain.com,runnerRegistrationToken=your-registration-token \
-        stable/gitlab-runner
+        gitlab/gitlab-runner
 {{- end -}}

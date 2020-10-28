@@ -1,4 +1,10 @@
-image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+default:
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+  tags:
+  - gitlab-org
+
+variables:
+  GIT_CLONE_PATH: $CI_BUILDS_DIR/gitlab-runner
 
 stages:
 - test
@@ -46,8 +52,6 @@ release beta:
   - 'echo "To install repository run: helm repo add gitlab-runner-beta ${REPO_URL} && helm repo update"'
   only:
   - master@gitlab-org/charts/gitlab-runner
-  tags:
-  - release
 
 release stable:
   stage: release
@@ -58,5 +62,6 @@ release stable:
          --form "variables[CHART_NAME]=$CI_PROJECT_NAME"
          --form "variables[RELEASE_REF]=$CI_COMMIT_REF_NAME"
          https://gitlab.com/api/v4/projects/2860651/trigger/pipeline
-  only:
-  - /\Av[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?\Z/@gitlab-org/charts/gitlab-runner
+  rules:
+  - if: '$CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?$/ && $CI_PROJECT_URL == "https://gitlab.com/gitlab-org/charts/gitlab-runner"'
+  - if: '$CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?$/ && $CI_PROJECT_URL == "https://gitlab.com/gitlab-org/security/charts/gitlab-runner"'

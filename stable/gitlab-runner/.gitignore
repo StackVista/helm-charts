@@ -1,3 +1,4 @@
 gitlab-runner*.tgz
 charts/*
 public/
+.tmp/

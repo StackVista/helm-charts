@@ -9,6 +9,13 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 rules:
+{{- if .Values.rbac.podSecurityPolicy.enabled }}
+- apiGroups: ['policy']
+  resources: ['podsecuritypolicies']
+  verbs:     ['use']
+  resourceNames:
+{{ toYaml .Values.rbac.podSecurityPolicy.resourceNames | indent 2 }}
+{{- end }}
 - apiGroups: [""]
   {{- if .Values.rbac.resources }}
   resources: [{{ join ", " .Values.rbac.resources }}]

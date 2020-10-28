@@ -12,18 +12,6 @@ data:
     [[runners]]
       [runners.kubernetes]
         [runners.kubernetes.volumes]
-        {{- if .Values.runners.mountDockerSocket }}
-          [[runners.kubernetes.volumes.host_path]]
-            host_path = "/var/lib/docker"
-            mount_path = "/var/lib/docker"
-            name = "dockerlib"
-            read_only = false
-          [[runners.kubernetes.volumes.host_path]]
-            host_path = "/var/run/docker.sock"
-            mount_path = "/var/run/docker.sock"
-            name = "docker"
-            read_only = false
-        {{- end }}
           [[runners.kubernetes.volumes.host_path]]
             host_path = "/dev/shm"
             mount_path = "/dev/shm"
@@ -67,6 +55,11 @@ data:
       exit 1
     fi
 
+    # Run pre-entrypoint-script
+    if ! bash /scripts/pre-entrypoint-script; then
+      exit 1
+    fi
+
     # Start the runner
     exec /entrypoint run --user=gitlab-runner \
       --working-directory=/home/gitlab-runner
@@ -80,6 +73,9 @@ data:
     {{- end }}
     {{- if .Values.metrics.enabled }}
     listen_address = ':9252'
+    {{- end }}
+    {{- if .Values.sentryDsn }}
+    sentry_dsn = "{{ .Values.sentryDsn }}"
     {{- end }}
   configure: |
     set -e
@@ -98,6 +94,13 @@ data:
         {{- range $key, $val := .Values.runners.nodeSelector }}
         --kubernetes-node-selector {{ $key | quote }}:{{ $val | quote }} \
         {{- end }}
+        {{- range .Values.runners.nodeTolerations }}
+        {{-   $keyValue := .key }}
+        {{-   if eq (.operator | default "Equal") "Equal"  }}
+        {{-     $keyValue = print $keyValue "=" (.value | default "" ) }}
+        {{-   end }}
+        --kubernetes-node-tolerations {{ $keyValue }}:{{ .effect | quote }} \
+        {{- end }}
         {{- range $key, $value := .Values.runners.podLabels }}
         --kubernetes-pod-labels {{ $key | quote }}:{{ $value | quote }} \
         {{- end }}
@@ -113,6 +116,13 @@ data:
         {{- if and (hasKey .Values.runners "protected") .Values.runners.protected }}
         --access-level="ref_protected" \
         {{- end }}
+        {{- if .Values.runners.pod_security_context }}
+        {{-   if .Values.runners.pod_security_context.supplemental_groups }}
+        {{-     range $gid := .Values.runners.pod_security_context.supplemental_groups }}
+        --kubernetes-pod-security-context-supplemental-groups {{ $gid | quote }} \
+        {{-     end }}
+        {{-   end }}
+        {{- end }}
         --non-interactive
 
       retval=$?
@@ -123,7 +133,7 @@ data:
         exit 1
       fi
 
-      sleep 5 
+      sleep 5
     done
 
     exit 0
@@ -137,3 +147,6 @@ data:
     else
       exit 1
     fi
+
+  pre-entrypoint-script: |
+{{ .Values.preEntrypointScript | default "" | indent 4 }}

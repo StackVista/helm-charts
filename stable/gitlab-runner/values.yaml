@@ -5,11 +5,15 @@
 ##
 ## ref: https://hub.docker.com/r/gitlab/gitlab-runner/tags/
 ##
+## Note: If you change the image to the ubuntu release
+##       don't forget to change the securityContext;
+##       these images run on different user IDs.
+##
 # image: gitlab/gitlab-runner:alpine-v11.6.0
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
-## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
 ##
 imagePullPolicy: IfNotPresent
 
@@ -74,6 +78,17 @@ checkInterval: 30
 ##
 # logFormat:
 
+## Configure GitLab Runner's Sentry DSN.
+## ref https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section
+##
+# sentryDsn:
+
+## A custom bash script that will be executed prior to the invocation
+## gitlab-runner process
+#
+#preEntrypointScript: |
+#  echo "hello"
+
 ## For RBAC support:
 rbac:
   create: false
@@ -95,6 +110,19 @@ rbac:
   ##
   # serviceAccountAnnotations: {}
 
+  ## Use podSecurity Policy
+  ## ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+  podSecurityPolicy:
+    enabled: false
+    resourceNames:
+    - gitlab-runner
+
+  ## Specify one or more imagePullSecrets used for pulling the runner image
+  ##
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#add-imagepullsecrets-to-a-service-account
+  ##
+  # imagePullSecrets: []
+
 ## Configure integrated Prometheus metrics exporter
 ## ref: https://docs.gitlab.com/runner/monitoring/#configuration-of-the-metrics-http-server
 metrics:
@@ -107,8 +135,6 @@ runners:
   ##
   image: ubuntu:16.04
 
-  # Whether or not to mount docker the docker socket and /var/lib/docker into the executors
-  mountDockerSocket: false
   ## Specify one or more imagePullSecrets
   ##
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
@@ -130,7 +156,7 @@ runners:
 
   ## Specify the tags associated with the runner. Comma-separated list of tags.
   ##
-  ## ref: https://docs.gitlab.com/ce/ci/runners/#using-tags
+  ## ref: https://docs.gitlab.com/ce/ci/runners/#use-tags-to-limit-the-number-of-jobs-using-the-runner
   ##
   # tags: ""
 
@@ -138,21 +164,21 @@ runners:
   ## If not specified, Runner will default to true if no tags were specified. In other case it will
   ## default to false.
   ##
-  ## ref: https://docs.gitlab.com/ce/ci/runners/#allowing-runners-with-tags-to-pick-jobs-without-tags
+  ## ref: https://docs.gitlab.com/ce/ci/runners/#runner-is-allowed-to-run-untagged-jobs
   ##
   # runUntagged: true
 
   ## Specify whether the runner should only run protected branches.
   ## Defaults to False.
   ##
-  ## ref: https://docs.gitlab.com/ee/ci/runners/#protected-runners
+  ## ref: https://docs.gitlab.com/ee/ci/runners/#prevent-runners-from-revealing-sensitive-information
   ##
   # protected: true
 
   ## Run all containers with the privileged flag enabled
   ## This will allow the docker:dind image to run if you need to run Docker
   ## commands. Please read the docs before turning this on:
-  ## ref: https://docs.gitlab.com/runner/executors/kubernetes.html#using-docker-dind
+  ## ref: https://docs.gitlab.com/runner/executors/kubernetes.html#using-dockerdind
   ##
   privileged: false
 
@@ -173,7 +199,7 @@ runners:
   outputLimit: 4096
 
   ## Distributed runners caching
-  ## ref: https://gitlab.com/gitlab-org/gitlab-runner/blob/master/docs/configuration/autoscale.md#distributed-runners-caching
+  ## ref: https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching
   ##
   ## If you want to use s3 based distributing caching:
   ## First of all you need to uncomment General settings and S3 settings sections.
@@ -199,7 +225,7 @@ runners:
   ##
   ## Access using access-id and private-key:
   ## Create a secret 'gcsaccess' containing 'gcs-access-id' & 'gcs-private-key'.
-  ## ref: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-cache-gcs-section
+  ## ref: https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscachegcs-section
   ## You could configure
   ## $ kubectl create secret generic gcsaccess \
   ##   --from-literal=gcs-access-id="YourAccessID" \
@@ -229,9 +255,13 @@ runners:
   ##
   builds: {}
     # cpuLimit: 200m
+    # cpuLimitOverwriteMaxAllowed: 400m
     # memoryLimit: 256Mi
+    # memoryLimitOverwriteMaxAllowed: 512Mi
     # cpuRequests: 100m
+    # cpuRequestsOverwriteMaxAllowed: 200m
     # memoryRequests: 128Mi
+    # memoryRequestsOverwriteMaxAllowed: 256Mi
 
   ## Service Container specific configuration
   ##
@@ -248,7 +278,16 @@ runners:
     # memoryLimit: 256Mi
     # cpuRequests: 100m
     # memoryRequests: 128Mi
-    # image: gitlab/gitlab-runner-helper:x86_64-latest
+    # image: "gitlab/gitlab-runner-helper:x86_64-${CI_RUNNER_REVISION}"
+
+  ## Helper container security context configuration
+  ## Refer to https://docs.gitlab.com/runner/executors/kubernetes.html#using-security-context
+  # pod_security_context:
+  #   run_as_non_root: true
+  #   run_as_user: 100
+  #   run_as_group: 100
+  #   fs_group: 65533
+  #   supplemental_groups: [101, 102]
 
   ## Service Account to be used for runners
   ##
@@ -268,6 +307,11 @@ runners:
   ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
   # nodeSelector: {}
+
+  ## Specify node tolerations for CI job pods assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  # nodeTolerations: {}
 
   ## Specify pod labels for CI job pods
   ##
@@ -295,7 +339,9 @@ runners:
 securityContext:
   fsGroup: 65533
   runAsUser: 100
-
+  ## Note: values for the ubuntu image:
+  # fsGroup: 999
+  # runAsUser: 999
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
