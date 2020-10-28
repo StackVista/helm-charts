@@ -44,6 +44,8 @@ spec:
         command: ['sh', '/config/configure']
         image: {{ include "gitlab-runner.image" . }}
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        securityContext:
+          allowPrivilegeEscalation: false
         env:
         {{ include "gitlab-runner.runner-env-vars" . | indent 8 }}
         volumeMounts:
@@ -68,12 +70,9 @@ spec:
       - name: {{ include "gitlab-runner.fullname" . }}
         image: {{ include "gitlab-runner.image" . }}
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
-        {{- if and .Values.unregisterRunners .Values.runnerRegistrationToken }}
-        lifecycle:
-          preStop:
-            exec:
-              command: ["/entrypoint", "unregister", "--all-runners"]
-        {{- end }}
+        securityContext:
+          allowPrivilegeEscalation: false
+        {{- include "gitlab-runner.unregisterRunners" . | nindent 8 }}
         command: ["/bin/bash", "/scripts/entrypoint"]
         env:
         {{ include "gitlab-runner.runner-env-vars" . | indent 8 }}

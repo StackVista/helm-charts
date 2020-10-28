@@ -65,3 +65,14 @@ Define the image, using .Chart.AppVersion and GitLab Runner image as a default v
 {{-   default $image .Values.image }}
 {{- end -}}
 
+{{/*
+Unregister runners on pod stop
+*/}}
+{{- define "gitlab-runner.unregisterRunners" -}}
+{{- if or (and (hasKey .Values "unregisterRunners") .Values.unregisterRunners) (and (not (hasKey .Values "unregisterRunners")) .Values.runnerRegistrationToken) -}}
+lifecycle:
+  preStop:
+    exec:
+      command: ["/entrypoint", "unregister", "--all-runners"]
+{{- end -}}
+{{- end -}}

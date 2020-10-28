@@ -1,3 +1,103 @@
+## v0.22.0 (2020-10-20)
+
+### New features
+
+- Update GitLab Runner version to 13.5.0
+- Add pull secrets to service account for runner image !241 (Horatiu Eugen Vlad @hvlad)
+
+### Maintenance
+
+- Set allowPrivilegeEscalation to false for gitlab-runner pod !243 (Horatiu Eugen Vlad @hvlad)
+
+### Documentation changes
+
+- Add comment on ubuntu image & securityContext !260
+
+## v0.21.0 (2020-09-21)
+
+### Maintenance
+
+- Update GitLab Runner version to 13.4.0
+- Fix changelog generator config to catch all maintenance related labels !255
+
+### Other changes
+
+- Add scripts/security-harness script !258
+
+## v0.20.0 (2020-08-20)
+
+### New features
+
+- Update GitLab Runner version to 13.3.0
+- Enable custom commands !250
+
+### Maintenance
+
+- Add `release stable` job for security fork !252
+- Update changelog generator to accept new labels !249
+
+## v0.19.0 (2020-07-20)
+
+### New features
+
+- Allow user to define PodSecurityPolicy !184 (Paweł Kalemba @pkalemba)
+- Update GitLab Runner version to 13.2.0
+
+### Documentation changes
+
+- Fix external links within values.yaml !248 (Alexandre Jardin @alexandre.jardin)
+
+## v0.18.0 (2020-06-19)
+
+### Maintenance
+
+- Update GitLab Runner version to 13.1.0
+
+### Other changes
+
+- Fix unregister when using token secret !231 (Bernd @arabus)
+- Support specifying pod security context. !219 (Chen Yufei @cyfdecyf)
+
+## v0.17.1 (2020-06-01)
+
+### Maintenance
+
+- Update GitLab Runner version to 13.0.1
+
+## v0.17.0 (2020-05-20)
+
+### New features
+
+- Expose settings for kubernetes resource limits and requests overwrites !220 (Alexander Petermann @lexxxel)
+- Add support for setting Node Tolerations !188 (Zeyu Ye @Shuliyey)
+
+### Maintenance
+
+- Update GitLab Runner version to 13.0.0
+- Update package name in note !234
+- Pin CI jobs to gitlab-org runners !222
+
+## v0.16.0 (2020-04-22)
+
+### New features
+
+- Add Service Account annotation support !211 (David Rosson @davidrosson)
+
+### Bug fixes
+
+- Support correct spelling of GCS secret !214 (Arthur Wiebe @arthur65)
+
+### Maintenance
+
+- Remove dependency of `gitlab-runner-builder` runner !221
+- Fix linting for forks with a different name than "gitlab-runner" !218
+- Install gitlab-changelog installation !217
+
+### Other changes
+
+- Update GitLab Runner version to 12.10.1
+- Change listen address to not force IPv6 !213 (Fábio Matavelli @fabiomatavelli)
+
 ## v0.15.0 (2020-03-20)
 
 ### Maintenance
