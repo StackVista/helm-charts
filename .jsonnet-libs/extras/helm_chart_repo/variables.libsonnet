@@ -20,6 +20,7 @@
       'gitlab-steward',
       'hbase',
       'iceman',
+      'sandbox-operator',
       'stackstate',
       'stackstate-standalone',
       'trafficmirror',
