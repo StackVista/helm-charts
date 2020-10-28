@@ -135,8 +135,6 @@ runners:
   ##
   image: ubuntu:16.04
 
-  # Whether or not to mount docker the docker socket and /var/lib/docker into the executors
-  mountDockerSocket: false
   ## Specify one or more imagePullSecrets
   ##
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
