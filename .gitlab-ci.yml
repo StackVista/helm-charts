@@ -351,11 +351,13 @@ push_stackstate_release_to_internal:
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
-    - if: $CI_COMMIT_TAG =~ /^release-\d+\.\d+\.\d+(-.+)?\+rc\d+$/
+    - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)-pre\.(\d+)\.rc\.(\d+)$/
       when: on_success
-    - if: $CI_COMMIT_TAG =~ /^sts-private-v\d+\.\d+\.\d+-[a-z]+$/
+    - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)-rc\.(\d+)$/
       when: on_success
-    - if: $CI_COMMIT_TAG =~ /^sts-v\d+\.\d+\.\d+$/
+    - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)$/
+      when: on_success
+    - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)-pre\.(\d+)$/
       when: on_success
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
@@ -368,7 +370,7 @@ push_stackstate_release_to_public:
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
-    - if: $CI_COMMIT_TAG =~ /^sts-v\d+\.\d+\.\d+$/
+    - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)$/
       when: on_success
   script:
     - helm plugin install https://github.com/chartmuseum/helm-push.git
