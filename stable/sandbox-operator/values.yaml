@@ -31,8 +31,8 @@ reaper:
   slack:
     # reaper.slack.apiKey -- Slack API token
     apiKey: ""
-    # reaper.slack.channelID -- Slack Channel ID to post in (can be an ID or the channel name prefixed with a '#')
-    channelID: ""
+    # reaper.slack.channelId -- Slack Channel ID to post in (can be an ID or the channel name prefixed with a '#')
+    channelId: ""
   # nodeSelector:
   #   node.kubernetes.io/purpose-core: "yes"
   resources:

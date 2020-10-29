@@ -1,6 +1,6 @@
 # sandbox-operator
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 
 The StackState Sandboxer
 
@@ -29,7 +29,7 @@ The StackState Sandboxer
 | reaper.resources.requests.memory | string | `"32Mi"` |  |
 | reaper.schedule | string | `"0 0 * * *"` | Cron schedule for the reaper, once per day at midnight |
 | reaper.slack.apiKey | string | `""` | Slack API token |
-| reaper.slack.channelID | string | `""` | Slack Channel ID to post in (can be an ID or the channel name prefixed with a '#') |
+| reaper.slack.channelId | string | `""` | Slack Channel ID to post in (can be an ID or the channel name prefixed with a '#') |
 | reaper.warningInterval | string | `"24h"` | Interval between 2 warnings that the sandbox will expire (default: 24 hours = 1 day) |
 | sandboxer.image | string | `"ghcr.io/stackvista/sandboxer:latest"` | Image for the sandbox operator |
 | sandboxer.resources.limits.cpu | string | `"50m"` |  |

@@ -33,7 +33,7 @@ spec:
                   name: {{ include "fullname.short" . }}-reaper-secret
                   key: slackApiKey
             - name: SLACK_CHANNEL_ID
-              value: {{ .Values.reaper.slack.channelID }}
+              value: {{ .Values.reaper.slack.channelId | quote }}
             resources:
 {{ toYaml .Values.reaper.resources | indent 14 }}
           restartPolicy: OnFailure
