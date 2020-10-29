@@ -50,7 +50,7 @@ stackstate:
         # stackstate.components.all.image.registry -- Base container image registry for all containers, except for the wait container
         registry: quay.io
         # stackstate.components.all.image.repositorySuffix - String to append to repositories for StackState components
-        repositorySuffix: ""
+        repositorySuffix: -stable
         # stackstate.components.all.image.pullSecretName -- Name of ImagePullSecret to use for all pods.
         pullSecretName:
         # all.image.pullSecretUsername -- Username used to login to the registry to pull Docker images of all pods.
