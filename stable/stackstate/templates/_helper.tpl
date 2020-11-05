@@ -465,3 +465,20 @@ Based on the `common.fullname.short` function
   {{- $name := print $gpre $pre $base $suf $gsuf -}}
   {{- $name | lower | trunc 54 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Ensure pods created by the StatefulSet that was responsible for the server pods in the 4.1.0 release
+StackState are no longer running.
+
+N.B.: The first invocation of kubectl get pod is not a mistake. It is there to cause the pod to fail
+if that command fails because of a misconfiguration error. The while loop would just exit succesfully
+in that case.
+*/}}
+{{- define "stackstate.initContainer.ensure.no.server.statefulset.pod.are.running" -}}
+name: ensure-no-server-statefulset-pod-are-running
+image: vpartington/container-tools:latest
+command:
+- '/bin/bash'
+- '-c'
+- 'kubectl get pod {{ template "common.fullname.short" . }}-server-0 --ignore-not-found && while (kubectl get pod {{ template "common.fullname.short" . }}-server-0 ) ; do echo "Waiting for {{ template "common.fullname.short" . }}-server-0 pod to terminate"; sleep 1; done'
+{{- end -}}

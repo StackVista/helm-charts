@@ -119,6 +119,7 @@ spec:
     {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml $stsstackstateServerInitContainer | nindent 8 }}
+      - {{ include "stackstate.initContainer.ensure.no.server.statefulset.pod.are.running" . | nindent 8 }}
       containers:
       - {{ toYaml $stsstackstateServerMainContainer | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.server.nodeSelector }}
