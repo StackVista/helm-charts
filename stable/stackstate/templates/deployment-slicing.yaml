@@ -100,6 +100,7 @@ spec:
       labels:
         app.kubernetes.io/component: slicing
     spec:
+      serviceAccountName: {{ template "common.fullname.short" . }}-slicing
     {{- if .Values.stackstate.components.all.image.pullSecretName }}
       imagePullSecrets:
       - name: '{{ .Values.stackstate.components.all.image.pullSecretName }}'
@@ -110,6 +111,7 @@ spec:
       {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
+      - {{ include "stackstate.initContainer.ensure.no.server.statefulset.pod.are.running" . | nindent 8 }}
       containers:
       - {{ toYaml $stsStackstateSlicingMainContainer | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.slicing.nodeSelector }}

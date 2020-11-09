@@ -4,12 +4,15 @@ metadata:
 roleRef:
   name: 'system:auth-delegator'
 subjects:
-- name: {{ template "common.fullname.short" . }}-server
-  namespace: {{ .Release.Namespace }}
-  kind: ServiceAccount
+{{- if .Values.stackstate.experimental.server.split }}
 - name: {{ template "common.fullname.short" . }}-api
   namespace: {{ .Release.Namespace }}
   kind: ServiceAccount
+{{- else }}
+- name: {{ template "common.fullname.short" . }}-server
+  namespace: {{ .Release.Namespace }}
+  kind: ServiceAccount
+{{- end -}}
 {{- end -}}
 
 {{- $commonCRB := fromYaml (include "common.clusterrolebinding" .) -}}
