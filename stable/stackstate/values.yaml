@@ -444,7 +444,7 @@ stackstate:
           cpu: "750m"
       sizing:
         baseMemoryConsumption: "500Mi"
-        javaHeapMemoryFraction: "80"
+        javaHeapMemoryFraction: "75"
       # stackstate.components.slicing.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.slicing.tolerations -- Toleration labels for pod assignment.

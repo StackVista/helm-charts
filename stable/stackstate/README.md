@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.2.0-snapshot.27`
+Current chart version is `4.2.0-snapshot.28`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -264,7 +264,7 @@ stackstate/stackstate
 | stackstate.components.slicing.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.slicing.resources | object | `{"limits":{"memory":"1500Mi"},"requests":{"cpu":"750m","memory":"1500Mi"}}` | Resource allocation for `slicing` pods. |
 | stackstate.components.slicing.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
-| stackstate.components.slicing.sizing.javaHeapMemoryFraction | string | `"80"` |  |
+| stackstate.components.slicing.sizing.javaHeapMemoryFraction | string | `"75"` |  |
 | stackstate.components.slicing.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.state.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.state.config | string | `""` | Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
@@ -332,7 +332,6 @@ stackstate/stackstate
 | zookeeper.fourlwCommandsWhitelist | string | `"mntr, ruok, stat, srvr"` | Zookeeper four-letter-word (FLW) commands that are enabled. |
 | zookeeper.fullnameOverride | string | `"stackstate-zookeeper"` | Name override for Zookeeper child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | zookeeper.metrics.enabled | bool | `true` | Enable / disable Zookeeper Prometheus metrics. |
-| zookeeper.metrics.serviceMonitor | object | `{"enabled":false,"selector":{}}` |  |
 | zookeeper.metrics.serviceMonitor.enabled | bool | `false` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |
 | zookeeper.metrics.serviceMonitor.selector | object | `{}` | Default selector to use to target a certain Prometheus instance. |
 | zookeeper.podAnnotations | object | `{"ad.stackstate.com/zookeeper.check_names":"[\"openmetrics\"]","ad.stackstate.com/zookeeper.init_configs":"[{}]","ad.stackstate.com/zookeeper.instances":"[ { \"prometheus_url\": \"http://%%host%%:9141/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Annotations for ZooKeeper pod. |
