@@ -1,0 +1,10 @@
+{{- define "stackstate.viewHealth.configmap-log" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-view-health-log
+data:
+  logback.groovy: |
+{{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "WARN") .) | nindent 4 -}}
+{{- end -}}
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $stackstateViewHealthLogConfigMap := fromYaml (include "stackstate.viewHealth.configmap-log" .) -}}
+{{- toYaml (merge $stackstateViewHealthLogConfigMap $commonConfigMap) -}}

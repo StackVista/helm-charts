@@ -24,6 +24,11 @@ livenessProbe:
   initialDelaySeconds: 60
   timeoutSeconds: 5
 name: correlate
+args:
+- -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy
+volumeMounts:
+- name: config-volume-log
+  mountPath: /opt/docker/etc_log
 ports:
 - containerPort: 1618
   name: health
@@ -76,6 +81,10 @@ spec:
       - {{ toYaml $stsstackstateCorrelateInitContainer | nindent 8 }}
       containers:
       - {{ toYaml $stsstackstateCorrelateMainContainer | nindent 8 }}
+      volumes:
+        - name: config-volume-log
+          configMap:
+            name: {{ template "common.fullname.short" . }}-correlate-log
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.correlate.nodeSelector }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}

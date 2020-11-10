@@ -23,6 +23,11 @@ env:
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.receiver.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.receiver.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.receiver.image.pullPolicy | quote }}
 name: receiver
+args:
+- -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy
+volumeMounts:
+- name: config-volume-log
+  mountPath: /opt/docker/etc_log
 ports:
 - containerPort: 1618
   name: health
@@ -81,6 +86,10 @@ spec:
       - {{ toYaml $stsstackstateReceiverInitContainer | nindent 8 }}
       containers:
       - {{ toYaml $stsstackstateReceiverMainContainer | nindent 8 }}
+      volumes:
+        - name: config-volume-log
+          configMap:
+            name: {{ template "common.fullname.short" . }}-receiver-log
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.receiver.nodeSelector }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}
