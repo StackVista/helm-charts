@@ -438,13 +438,13 @@ stackstate:
       # stackstate.components.slicing.resources -- Resource allocation for `slicing` pods.
       resources:
         limits:
-          memory: "1500Mi"
+          memory: "1600Mi"
         requests:
-          memory: "1500Mi"
+          memory: "1600Mi"
           cpu: "750m"
       sizing:
         baseMemoryConsumption: "500Mi"
-        javaHeapMemoryFraction: "75"
+        javaHeapMemoryFraction: "70"
       # stackstate.components.slicing.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.slicing.tolerations -- Toleration labels for pod assignment.
