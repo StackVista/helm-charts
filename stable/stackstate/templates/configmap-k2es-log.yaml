@@ -3,7 +3,7 @@ metadata:
   name: {{ template "common.fullname.short" . }}-k2es-log
 data:
   logback.groovy: |
-{{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "INFO") .) | nindent 4 -}}
+{{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "INFO" "AdditionalLogging" .Values.stackstate.components.k2es.additionalLogging) .) | nindent 4 -}}
 {{- end -}}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $stackstateK2ESLogConfigMap := fromYaml (include "stackstate.k2es.configmap-log" .) -}}

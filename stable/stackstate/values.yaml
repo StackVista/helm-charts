@@ -116,6 +116,8 @@ stackstate:
       affinity: {}
       # stackstate.components.api.config -- Configuration file contents to customize the default StackState api configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
       config: ""
+      # stackstate.components.api.additionalLogging -- Additional logback config
+      additionalLogging: ""
     correlate:
       extraEnv:
         # stackstate.components.correlate.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -150,6 +152,8 @@ stackstate:
       tolerations: []
       # stackstate.components.correlate.affinity -- Affinity settings for pod assignment.
       affinity: {}
+      # stackstate.components.correlate.additionalLogging -- Additional logback config
+      additionalLogging: ""
     checks:
       extraEnv:
         # stackstate.components.checks.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -184,6 +188,8 @@ stackstate:
       affinity: {}
       # stackstate.components.checks.config -- Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
       config: ""
+      # stackstate.components.checks.additionalLogging -- Additional logback config
+      additionalLogging: ""
     initializer:
       extraEnv:
         # stackstate.components.initializer.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -215,6 +221,8 @@ stackstate:
       affinity: {}
       # stackstate.components.initializer.config -- Configuration file contents to customize the default StackState initializer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
       config: ""
+      # stackstate.components.initializer.additionalLogging -- Additional logback config
+      additionalLogging: ""
     k2es:
       extraEnv:
         # stackstate.components.k2es.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -252,6 +260,8 @@ stackstate:
       # stackstate.components.k2es.traces -- Trace-related `k2es` settings.
       traces:
         enabled: true
+      # stackstate.components.k2es.additionalLogging -- Additional logback config
+      additionalLogging: ""
     receiver:
       extraEnv:
         # stackstate.components.receiver.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -286,6 +296,8 @@ stackstate:
       tolerations: []
       # stackstate.components.receiver.affinity -- Affinity settings for pod assignment.
       affinity: {}
+      # stackstate.components.receiver.additionalLogging -- Additional logback config
+      additionalLogging: ""
     router:
       extraEnv:
         # stackstate.components.router.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -354,6 +366,8 @@ stackstate:
       affinity: {}
       # stackstate.components.server.config -- Configuration file contents to customize the default StackState configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
       config: ""
+      # stackstate.components.server.additionalLogging -- Additional logback config
+      additionalLogging: ""
     state:
       extraEnv:
         # stackstate.components.state.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -388,6 +402,8 @@ stackstate:
       affinity: {}
       # stackstate.components.state.config -- Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
       config: ""
+      # stackstate.components.state.additionalLogging -- Additional logback config
+      additionalLogging: ""
     sync:
       extraEnv:
         # stackstate.components.sync.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -422,6 +438,8 @@ stackstate:
       affinity: {}
       # stackstate.components.sync.config -- Configuration file contents to customize the default StackState sync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
       config: ""
+      # stackstate.components.sync.additionalLogging -- Additional logback config
+      additionalLogging: ""
     slicing:
       extraEnv:
         # stackstate.components.slicing.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -453,6 +471,8 @@ stackstate:
       affinity: {}
       # stackstate.components.slicing.config -- Configuration file contents to customize the default StackState slicing configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
       config: ""
+      # stackstate.components.slicing.additionalLogging -- Additional logback config
+      additionalLogging: ""
     ui:
       extraEnv:
         # stackstate.components.ui.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -519,6 +539,8 @@ stackstate:
       affinity: {}
       # stackstate.components.viewHealth.config -- Configuration file contents to customize the default StackState viewHealth configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
       config: ""
+      # stackstate.components.viewHealth.additionalLogging -- Additional logback config
+      additionalLogging: ""
     kafkaTopicCreate:
       image:
         # stackstate.components.kafkaTopicCreate.image.registry -- Base container image registry for kafka-topic-create containers.

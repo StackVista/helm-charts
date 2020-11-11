@@ -25,5 +25,8 @@ appender("Console", ConsoleAppender) {
 
 root({{- .RootLevel -}}, ["Console"])
 
+// Logging from values.yaml
+{{ .AdditionalLogging }}
+
 // Custom logging configuration goes here
 {{- end -}}
