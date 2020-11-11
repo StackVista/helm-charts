@@ -1,0 +1,10 @@
+{{- define "stackstate.slicing.configmap-log" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-slicing-log
+data:
+  logback.groovy: |
+{{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "WARN" "AdditionalLogging" .Values.stackstate.components.slicing.additionalLogging) .) | nindent 4 -}}
+{{- end -}}
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $stackstateSlicingLogConfigMap := fromYaml (include "stackstate.slicing.configmap-log" .) -}}
+{{- toYaml (merge $stackstateSlicingLogConfigMap $commonConfigMap) -}}

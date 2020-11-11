@@ -18,6 +18,7 @@ args:
 - -Djavax.net.ssl.trustStorePassword=${JAVA_TRUSTSTORE_PASSWORD}
   {{- end }}
   {{- end }}
+- -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy
 - -startRole
 - api
 env:
@@ -87,6 +88,8 @@ volumeMounts:
 - name: config-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
+- name: config-volume-log
+  mountPath: /opt/docker/etc_log
 {{- if $mountSecrets }}
 - name: secrets-volume
   mountPath: /opt/docker/secrets
@@ -156,6 +159,9 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "common.fullname.short" . }}-api
+        - name: config-volume-log
+          configMap:
+            name: {{ template "common.fullname.short" . }}-api-log
       {{- if $secrets }}
         - name: secrets-volume
           secret:

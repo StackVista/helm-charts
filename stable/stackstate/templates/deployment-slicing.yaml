@@ -11,6 +11,7 @@ imagePullPolicy: Always
 
 {{- define "stackstate.slicing.deployment.container.main" -}}
 args:
+- -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy
 - -startRole
 - slicing
 env:
@@ -73,6 +74,8 @@ volumeMounts:
 - name: config-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
+- name: config-volume-log
+  mountPath: /opt/docker/etc_log
 {{- end -}}
 
 {{- define "stackstate.slicing.deployment" -}}
@@ -145,6 +148,9 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "common.fullname.short" . }}-slicing
+        - name: config-volume-log
+          configMap:
+            name: {{ template "common.fullname.short" . }}-slicing-log
 {{- end -}}
 
 {{- if .Values.stackstate.experimental.server.split }}

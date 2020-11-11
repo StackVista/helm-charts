@@ -1,0 +1,10 @@
+{{- define "stackstate.sync.configmap-log" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-sync-log
+data:
+  logback.groovy: |
+{{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "WARN" "AdditionalLogging" .Values.stackstate.components.sync.additionalLogging) .) | nindent 4 -}}
+{{- end -}}
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $stackstateSyncLogConfigMap := fromYaml (include "stackstate.sync.configmap-log" .) -}}
+{{- toYaml (merge $stackstateSyncLogConfigMap $commonConfigMap) -}}
