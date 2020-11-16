@@ -1,7 +1,5 @@
 # chartmuseum
 
-> **:exclamation: This Helm Chart is deprecated!**
-
 ![Version: 2.14.2](https://img.shields.io/badge/Version-2.14.2-informational?style=flat-square) ![AppVersion: 0.12.0](https://img.shields.io/badge/AppVersion-0.12.0-informational?style=flat-square)
 
 DEPRECATED Host your own Helm Chart Repository
