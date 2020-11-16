@@ -1,0 +1,136 @@
+# chartmuseum
+
+> **:exclamation: This Helm Chart is deprecated!**
+
+![Version: 2.14.2](https://img.shields.io/badge/Version-2.14.2-informational?style=flat-square) ![AppVersion: 0.12.0](https://img.shields.io/badge/AppVersion-0.12.0-informational?style=flat-square)
+
+DEPRECATED Host your own Helm Chart Repository
+
+**Homepage:** <https://github.com/helm/chartmuseum>
+
+## Values
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| affinity | object | `{}` |  |
+| bearerAuth.secret.enabled | bool | `false` |  |
+| bearerAuth.secret.publicKeySecret | string | `"chartmuseum-public-key"` |  |
+| containerSecurityContext | object | `{}` |  |
+| deployment.annotations | object | `{}` |  |
+| deployment.labels | object | `{}` |  |
+| deployment.matchlabels | object | `{}` |  |
+| deployment.schedulerName | string | `""` |  |
+| env.existingSecret | string | `nil` |  |
+| env.existingSecretMappings.BASIC_AUTH_PASS | string | `nil` |  |
+| env.existingSecretMappings.BASIC_AUTH_USER | string | `nil` |  |
+| env.existingSecretMappings.CACHE_REDIS_PASSWORD | string | `nil` |  |
+| env.existingSecretMappings.GOOGLE_CREDENTIALS_JSON | string | `nil` |  |
+| env.field | string | `nil` |  |
+| env.open.ALLOW_OVERWRITE | bool | `false` |  |
+| env.open.AUTH_ANONYMOUS_GET | bool | `false` |  |
+| env.open.AUTH_REALM | string | `nil` |  |
+| env.open.AUTH_SERVICE | string | `nil` |  |
+| env.open.BEARER_AUTH | bool | `false` |  |
+| env.open.CACHE | string | `nil` |  |
+| env.open.CACHE_REDIS_ADDR | string | `nil` |  |
+| env.open.CACHE_REDIS_DB | int | `0` |  |
+| env.open.CHART_POST_FORM_FIELD_NAME | string | `"chart"` |  |
+| env.open.CHART_URL | string | `nil` |  |
+| env.open.CONTEXT_PATH | string | `nil` |  |
+| env.open.DEBUG | bool | `false` |  |
+| env.open.DEPTH | int | `0` |  |
+| env.open.DISABLE_API | bool | `true` |  |
+| env.open.DISABLE_METRICS | bool | `true` |  |
+| env.open.DISABLE_STATEFILES | bool | `false` |  |
+| env.open.INDEX_LIMIT | int | `0` |  |
+| env.open.LOG_JSON | bool | `true` |  |
+| env.open.PROV_POST_FORM_FIELD_NAME | string | `"prov"` |  |
+| env.open.STORAGE | string | `"local"` |  |
+| env.open.STORAGE_ALIBABA_BUCKET | string | `nil` |  |
+| env.open.STORAGE_ALIBABA_ENDPOINT | string | `nil` |  |
+| env.open.STORAGE_ALIBABA_PREFIX | string | `nil` |  |
+| env.open.STORAGE_ALIBABA_SSE | string | `nil` |  |
+| env.open.STORAGE_AMAZON_BUCKET | string | `nil` |  |
+| env.open.STORAGE_AMAZON_ENDPOINT | string | `nil` |  |
+| env.open.STORAGE_AMAZON_PREFIX | string | `nil` |  |
+| env.open.STORAGE_AMAZON_REGION | string | `nil` |  |
+| env.open.STORAGE_AMAZON_SSE | string | `nil` |  |
+| env.open.STORAGE_GOOGLE_BUCKET | string | `nil` |  |
+| env.open.STORAGE_GOOGLE_PREFIX | string | `nil` |  |
+| env.open.STORAGE_MICROSOFT_CONTAINER | string | `nil` |  |
+| env.open.STORAGE_MICROSOFT_PREFIX | string | `nil` |  |
+| env.open.STORAGE_OPENSTACK_CACERT | string | `nil` |  |
+| env.open.STORAGE_OPENSTACK_CONTAINER | string | `nil` |  |
+| env.open.STORAGE_OPENSTACK_PREFIX | string | `nil` |  |
+| env.open.STORAGE_OPENSTACK_REGION | string | `nil` |  |
+| env.open.STORAGE_ORACLE_BUCKET | string | `nil` |  |
+| env.open.STORAGE_ORACLE_COMPARTMENTID | string | `nil` |  |
+| env.open.STORAGE_ORACLE_PREFIX | string | `nil` |  |
+| env.secret.BASIC_AUTH_PASS | string | `nil` |  |
+| env.secret.BASIC_AUTH_USER | string | `nil` |  |
+| env.secret.CACHE_REDIS_PASSWORD | string | `nil` |  |
+| env.secret.GOOGLE_CREDENTIALS_JSON | string | `nil` |  |
+| extraArgs | string | `nil` |  |
+| gcp.secret.enabled | bool | `false` |  |
+| gcp.secret.key | string | `"credentials.json"` |  |
+| gcp.secret.name | string | `nil` |  |
+| image.pullPolicy | string | `"IfNotPresent"` |  |
+| image.repository | string | `"chartmuseum/chartmuseum"` |  |
+| image.tag | string | `"v0.12.0"` |  |
+| ingress.enabled | bool | `false` |  |
+| nodeSelector | object | `{}` |  |
+| oracle.secret.config | string | `"config"` |  |
+| oracle.secret.enabled | bool | `false` |  |
+| oracle.secret.key_file | string | `"key_file"` |  |
+| oracle.secret.name | string | `nil` |  |
+| persistence.accessMode | string | `"ReadWriteOnce"` |  |
+| persistence.enabled | bool | `false` |  |
+| persistence.labels | object | `{}` |  |
+| persistence.path | string | `"/storage"` |  |
+| persistence.pv.accessMode | string | `"ReadWriteOnce"` |  |
+| persistence.pv.capacity.storage | string | `"8Gi"` |  |
+| persistence.pv.enabled | bool | `false` |  |
+| persistence.pv.nfs.path | string | `nil` |  |
+| persistence.pv.nfs.server | string | `nil` |  |
+| persistence.pv.pvname | string | `nil` |  |
+| persistence.size | string | `"8Gi"` |  |
+| priorityClassName | string | `""` |  |
+| probes.liveness.failureThreshold | int | `3` |  |
+| probes.liveness.initialDelaySeconds | int | `5` |  |
+| probes.liveness.periodSeconds | int | `10` |  |
+| probes.liveness.successThreshold | int | `1` |  |
+| probes.liveness.timeoutSeconds | int | `1` |  |
+| probes.readiness.failureThreshold | int | `3` |  |
+| probes.readiness.initialDelaySeconds | int | `5` |  |
+| probes.readiness.periodSeconds | int | `10` |  |
+| probes.readiness.successThreshold | int | `1` |  |
+| probes.readiness.timeoutSeconds | int | `1` |  |
+| replica.annotations | object | `{}` |  |
+| replicaCount | int | `1` |  |
+| resources | object | `{}` |  |
+| secret.labels | object | `{}` |  |
+| securityContext.enabled | bool | `true` |  |
+| securityContext.fsGroup | int | `1000` |  |
+| service.annotations | object | `{}` |  |
+| service.externalPort | int | `8080` |  |
+| service.externalTrafficPolicy | string | `"Local"` |  |
+| service.labels | object | `{}` |  |
+| service.loadBalancerSourceRanges | list | `[]` |  |
+| service.nodePort | string | `nil` |  |
+| service.servicename | string | `nil` |  |
+| service.type | string | `"ClusterIP"` |  |
+| serviceAccount.annotations | object | `{}` |  |
+| serviceAccount.create | bool | `false` |  |
+| serviceMonitor.enabled | bool | `false` |  |
+| serviceMonitor.labels | object | `{}` |  |
+| serviceMonitor.metricsPath | string | `"/metrics"` |  |
+| strategy.rollingUpdate.maxUnavailable | int | `0` |  |
+| strategy.type | string | `"RollingUpdate"` |  |
+| tolerations | list | `[]` |  |
+| volumePermissions.image.pullPolicy | string | `"Always"` |  |
+| volumePermissions.image.registry | string | `"docker.io"` |  |
+| volumePermissions.image.repository | string | `"bitnami/minideb"` |  |
+| volumePermissions.image.tag | string | `"buster"` |  |
+
+----------------------------------------------
+Autogenerated from chart metadata using [helm-docs v1.4.0](https://github.com/norwoodj/helm-docs/releases/v1.4.0)
