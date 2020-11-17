@@ -34,6 +34,8 @@ env:
     secretKeyRef:
       name: {{ template "common.fullname.short" . }}-license
       key: sts-license-key
+- name: STACKSTATE_BASE_URL
+  value: {{ .Values.stackstate.web.baseUrl | quote }}
 - name: RECEIVER_BASE_URL
   value: {{ printf "%s/%s" .Values.stackstate.receiver.baseUrl "receiver" | quote }}
 - name: ZOOKEEPER_QUORUM

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash 
+#!/usr/bin/env bash
 
 set -e
 
@@ -116,7 +116,7 @@ function check_args() {
 
 function check_md5() {
   # Check if md5sum is installed as default on OSX its called md5
-  if [ ! -z "$(command -v md5sum 2>/dev/null)" ] ; then
+  if [ -n "$(command -v md5sum 2>/dev/null)" ] ; then
      md5sum_command=$(command -v md5sum)
   else
      md5sum_command=$(command -v md5)
@@ -162,6 +162,8 @@ stackstate:
       image:
         pullSecretUsername: "${image_pull_credentials_username}"
         pullSecretPassword: "${image_pull_credentials_password}"
+  web:
+    baseUrl: "${url}"
   receiver:
     baseUrl: "${url}"
   license:
