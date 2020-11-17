@@ -13,6 +13,7 @@
     charts: [
       'aws-amicleaner',
       'aws-nuke',
+      'chartmuseum',
       'cluster-agent',
       'common',
       'elasticsearch',
