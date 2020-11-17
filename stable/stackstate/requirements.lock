@@ -19,6 +19,6 @@ dependencies:
   version: 4.1.23
 - name: cluster-agent
   repository: https://helm.stackstate.io
-  version: 0.4.5
-digest: sha256:39eabec102ef4abeab59e97c84b4c4e0f54c438f0d08126052cc0bc9d35d790b
-generated: "2020-11-17T13:00:22.353238944Z"
+  version: 0.4.6
+digest: sha256:89d223c59561fa42b82e8d0c7f963baa0f3c08404a02223a75f522ca1eb0f326
+generated: "2020-11-17T16:06:13.044726211+01:00"
