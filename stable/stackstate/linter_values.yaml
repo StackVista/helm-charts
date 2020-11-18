@@ -3,10 +3,7 @@ global:
 stackstate:
   license:
     key: 00000-00000-00000
-  web:
-    baseUrl: https://some-test-helm-render.stackstate.io
-  receiver:
-    baseUrl: https://some-test-helm-render.stackstate.io/receiver
+  baseUrl: https://some-test-helm-render.stackstate.io
   admin:
     authentication:
       password: test

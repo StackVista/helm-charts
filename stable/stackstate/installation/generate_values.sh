@@ -162,10 +162,7 @@ stackstate:
       image:
         pullSecretUsername: "${image_pull_credentials_username}"
         pullSecretPassword: "${image_pull_credentials_password}"
-  web:
-    baseUrl: "${url}"
-  receiver:
-    baseUrl: "${url}"
+  baseUrl: "${url}"
   license:
     key: "${license_key}"
   authentication:

@@ -3,10 +3,7 @@ global:
 stackstate:
   license:
     key: 00000-00000-00000
-  web:
-    baseUrl: https://some-test-helm-render.stackstate.io
-  receiver:
-    baseUrl: https://some-test-helm-render.stackstate.io/receiver
+  baseUrl: https://some-test-helm-render.stackstate.io
   admin:
     authentication:
       password: test
@@ -16,11 +13,11 @@ ingress:
     nginx.ingress.kubernetes.io/ingress.class: ingress-nginx-external
   enabled: true
   hosts:
-  - host: some-test-helm-render.stackstate.io
+    - host: some-test-helm-render.stackstate.io
   tls:
-  - hosts:
-      - some-test-helm-render.stackstate.io
-    secretName: some-secret
+    - hosts:
+        - some-test-helm-render.stackstate.io
+      secretName: some-secret
 hbase:
   hbase:
     master:
