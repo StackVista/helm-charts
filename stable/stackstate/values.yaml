@@ -584,8 +584,10 @@ stackstate:
   license:
     # stackstate.license.key -- (string) **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server.
     key:
+  # stackstate.web.baseUrl -- (string) **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of StackState.
+  baseUrl:
   receiver:
-    # stackstate.receiver.baseUrl -- (string) **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of the StackState endpoints.
+    # stackstate.receiver.baseUrl -- (string) **DEPRECATED** Use stackstate.baseUrl instead
     baseUrl:
   experimental:
     server:
@@ -643,7 +645,7 @@ elasticsearch:
       enabled: false
     podAnnotations:
       ad.stackstate.com/elasticsearch-exporter.check_names: '["openmetrics"]'
-      ad.stackstate.com/elasticsearch-exporter.init_configs: '[{}]'
+      ad.stackstate.com/elasticsearch-exporter.init_configs: "[{}]"
       ad.stackstate.com/elasticsearch-exporter.instances: '[ { "prometheus_url": "http://%%host%%:9108/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
     es:
       uri: http://stackstate-elasticsearch-master:9200
@@ -687,7 +689,7 @@ hbase:
 kafka:
   # kafka.command -- Override kafka container command.
   command:
-    - '/scripts/custom-setup.sh'
+    - "/scripts/custom-setup.sh"
   externalZookeeper:
     # kafka.externalZookeeper.servers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
     servers: stackstate-zookeeper-headless
@@ -776,7 +778,7 @@ kafka:
   # kafka.podAnnotations -- Kafka Pod annotations.
   podAnnotations:
     ad.stackstate.com/jmx-exporter.check_names: '["openmetrics"]'
-    ad.stackstate.com/jmx-exporter.init_configs: '[{}]'
+    ad.stackstate.com/jmx-exporter.init_configs: "[{}]"
     ad.stackstate.com/jmx-exporter.instances: '[ { "prometheus_url": "http://%%host%%:5556/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
   # kafka.resources -- Kafka resources per pods.
   resources:
@@ -811,7 +813,7 @@ zookeeper:
   # zookeeper.podAnnotations -- Annotations for ZooKeeper pod.
   podAnnotations:
     ad.stackstate.com/zookeeper.check_names: '["openmetrics"]'
-    ad.stackstate.com/zookeeper.init_configs: '[{}]'
+    ad.stackstate.com/zookeeper.init_configs: "[{}]"
     ad.stackstate.com/zookeeper.instances: '[ { "prometheus_url": "http://%%host%%:9141/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
   replicaCount: 3
@@ -881,4 +883,4 @@ cluster-agent:
       # stackstate.cluster.authToken -- Provide a token to enable secure communication between the agent and the cluster agent.
       authToken:
     # stackstate.url -- (string) **PROVIDE STACKSTATE URL HERE** URL of the StackState installation to receive data from the agent.
-    url: "http://{{ include \"stackstate.hostname.prefix\" . }}-router:8080/receiver/stsAgent"
+    url: 'http://{{ include "stackstate.hostname.prefix" . }}-router:8080/receiver/stsAgent'
