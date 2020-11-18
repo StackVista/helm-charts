@@ -586,8 +586,8 @@ stackstate:
     key:
   # stackstate.web.baseUrl -- (string) **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of StackState.
   baseUrl:
-  # **DEPRECATED** Use stackstate.baseUrl instead
   receiver:
+    # stackstate.receiver.baseUrl -- (string) **DEPRECATED** Use stackstate.baseUrl instead
     baseUrl:
   experimental:
     server:
