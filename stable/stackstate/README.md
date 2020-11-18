@@ -22,16 +22,14 @@ Current chart version is `4.2.0-snapshot.33`
 
 In order to successfully install this chart, you **must** provide the following variables:
 * `stackstate.license.key`
-* `stackstate.web.baseUrl`
-* `stackstate.receiver.baseUrl`
+* `stackstate.baseUrl`
 
 Install them on the command line on Helm with the following command:
 
 ```shell
 helm install \
 --set stackstate.license.key=<your-license-key> \
---set stackstate.web.baseUrl=<your-base-url> \
---set stackstate.receiver.baseUrl=<your-receiver-base-url> \
+--set stackstate.baseUrl=<your-base-url> \
 stackstate/stackstate
 ```
 
@@ -129,6 +127,7 @@ stackstate/stackstate
 | stackstate.admin.authentication.password | string | `nil` | Password used for maintenance "admin" api's (low-level tools) of the various services, username: admin |
 | stackstate.authentication | object | `{"adminPassword":null,"ldap":{}}` | (Secret) authentication settings for StackState |
 | stackstate.authentication.ldap | object | `{}` | LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap) |
+| stackstate.baseUrl | string | `nil` |  |
 | stackstate.components.all.affinity | object | `{}` | Affinity settings for pod assignment on all components. |
 | stackstate.components.all.elasticsearchEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster. |
 | stackstate.components.all.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods for all components. |
@@ -337,9 +336,8 @@ stackstate/stackstate
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
 | stackstate.java.trustStorePassword | string | `nil` | Password to access the Java TrustStore (cacerts) file |
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
-| stackstate.receiver.baseUrl | string | `nil` | **PROVIDE YOUR RECEIVER BASE URL HERE** Externally visible baseUrl of the StackState endpoints. |
+| stackstate.receiver.baseUrl | string | `nil` |  |
 | stackstate.stackpacks.installed | list | `[]` | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) |
-| stackstate.web.baseUrl | string | `nil` | **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of StackState. |
 | zookeeper.commonLabels."app.kubernetes.io/part-of" | string | `"stackstate"` |  |
 | zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
 | zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |

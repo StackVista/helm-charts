@@ -20,10 +20,7 @@ stackstate:
       ssl:
         type: ssl
         trustStore: 2934u092rfji920349234i9239i492
-  web:
-    baseUrl: "http://localhost:7070"
-  receiver:
-    baseUrl: "http://localhost:7077"
+  baseUrl: "http://localhost"
   license:
     key: "api01"
 hbase:

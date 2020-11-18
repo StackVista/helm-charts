@@ -586,6 +586,9 @@ stackstate:
     key:
   # stackstate.web.baseUrl -- (string) **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of StackState.
   baseUrl:
+  # **DEPRECATED** Use stackstate.baseUrl instead
+  receiver:
+    baseUrl:
   experimental:
     server:
       # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
