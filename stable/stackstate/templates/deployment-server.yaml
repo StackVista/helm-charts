@@ -41,7 +41,7 @@ env:
       name: {{ template "common.fullname.short" . }}-license
       key: sts-license-key
 - name: STACKSTATE_BASE_URL
-  value: {{ .Values.stackstate.baseUrl | quote }}
+  value: {{ .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | required "stackstate.baseUrl is required" | quote }}
 - name: RECEIVER_BASE_URL
   value: {{ printf "%s/%s" ( .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | required "stackstate.baseUrl is required" ) "receiver" | quote }}
 - name: ZOOKEEPER_QUORUM

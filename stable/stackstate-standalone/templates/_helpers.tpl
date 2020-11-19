@@ -71,8 +71,10 @@ StackState required environment variables
     secretKeyRef:
       name: {{ include "stackstate-standalone.fullname" . }}
       key: sts-license-key
+- name: STACKSTATE_BASE_URL
+  value: {{ .Values.stackstate.baseUrl | quote }}
 - name: RECEIVER_BASE_URL
-  value: {{ .Values.stackstate.receiver.baseUrl | quote }}
+  value: {{ printf "%s/%s" ( .Values.stackstate.baseUrl | required "stackstate.baseUrl is required" ) "receiver" | quote }}
 {{- if .Values.stackstate.admin.authentication.enabled }}
 - name: CONFIG_FORCE_stackstate_adminApi_authentication_enabled
   value: "true"
