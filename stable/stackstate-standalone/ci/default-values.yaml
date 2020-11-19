@@ -38,5 +38,4 @@ resources:
 stackstate:
   license:
     key: 00000-00000-00000
-  receiver:
-    baseUrl: https://some-test-url.stackstate.io
+  baseUrl: https://some-test-url.stackstate.io
