@@ -60,7 +60,7 @@ agent:
     timeoutSeconds: 5
 
   # agent.logLevel -- Logging level for agent processes.
-  logLevel: DEBUG
+  logLevel: INFO
 
   readinessProbe:
     # agent.readinessProbe.enabled -- Enable use of readinessProbe check.
