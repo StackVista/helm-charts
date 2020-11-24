@@ -592,12 +592,28 @@ stackstate:
         repository: dokkupaas/wait
         # stackstate.components.wait.image.tag -- Container image tag for wait containers.
         tag: latest
-  # stackstate.authentication -- (Secret) authentication settings for StackState
+  # stackstate.authentication -- Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error.
   authentication:
-    # stackstate.authentication.ldap -- LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap)
+    # stackstate.authentication.keycloak -- Use Keycloak as authentication provider. See [Configuring Keycloak](#configuring-keycloak).
+    keycloak: {}
+    # stackstate.authentication.ldap -- LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap).
     ldap: {}
-    # stackstate.adminPassword -- Password for the 'admin' user that StackState creates by default
+    # stackstate.authentication.oidc -- Use an OpenId Connect provider for authentication. See [Configuring OpenId Connect](#configuring-openid-connect).
+    oidc: {}
+    # stackstate.authentication.file -- Configure users, their passwords and roles from (config) file
+    file: {}
+    # stackstate.authentication.adminPassword -- Password for the 'admin' user that StackState creates by default
     adminPassword:
+    # stackstate.authentication.sessionLifetime -- Amount of time to keep a session when a user does not log in
+    sessionLifetime: 7d
+    # stackstate.authentication.roles -- Override the default role names in StackState
+    roles:
+      # stackstate.authentication.roles.admin -- Override the role names that have admin permissions (default: 'stackstate-admin')
+      admin: []
+      # stackstate.authentication.roles.powerUser -- Override the role names that have power user permissions (default: 'stackstate-power-user')
+      powerUser: []
+      # stackstate.authentication.roles.guest -- Override the role names that have guest permissions (default: 'stackstate-guest')
+      guest: []
   admin:
     authentication:
       # stackstate.admin.authentication.password -- Password used for maintenance "admin" api's (low-level tools) of the various services, username: admin
