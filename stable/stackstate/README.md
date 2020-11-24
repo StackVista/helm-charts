@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.2.2-developing.1`
+Current chart version is `4.2.2-1`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -125,8 +125,17 @@ stackstate/stackstate
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
 | stackstate.admin.authentication.password | string | `nil` | Password used for maintenance "admin" api's (low-level tools) of the various services, username: admin |
-| stackstate.authentication | object | `{"adminPassword":null,"ldap":{}}` | (Secret) authentication settings for StackState |
-| stackstate.authentication.ldap | object | `{}` | LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap) |
+| stackstate.authentication | object | `{"adminPassword":null,"file":{},"keycloak":{},"ldap":{},"oidc":{},"roles":{"admin":[],"guest":[],"powerUser":[]},"sessionLifetime":"7d"}` | Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error. |
+| stackstate.authentication.adminPassword | string | `nil` | Password for the 'admin' user that StackState creates by default |
+| stackstate.authentication.file | object | `{}` | Configure users, their passwords and roles from (config) file |
+| stackstate.authentication.keycloak | object | `{}` | Use Keycloak as authentication provider. See [Configuring Keycloak](#configuring-keycloak). |
+| stackstate.authentication.ldap | object | `{}` | LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap). |
+| stackstate.authentication.oidc | object | `{}` | Use an OpenId Connect provider for authentication. See [Configuring OpenId Connect](#configuring-openid-connect). |
+| stackstate.authentication.roles | object | `{"admin":[],"guest":[],"powerUser":[]}` | Override the default role names in StackState |
+| stackstate.authentication.roles.admin | list | `[]` | Override the role names that have admin permissions (default: 'stackstate-admin') |
+| stackstate.authentication.roles.guest | list | `[]` | Override the role names that have guest permissions (default: 'stackstate-guest') |
+| stackstate.authentication.roles.powerUser | list | `[]` | Override the role names that have power user permissions (default: 'stackstate-power-user') |
+| stackstate.authentication.sessionLifetime | string | `"7d"` | Amount of time to keep a session when a user does not log in |
 | stackstate.baseUrl | string | `nil` |  |
 | stackstate.components.all.affinity | object | `{}` | Affinity settings for pod assignment on all components. |
 | stackstate.components.all.elasticsearchEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster. |
@@ -138,7 +147,7 @@ stackstate/stackstate
 | stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
 | stackstate.components.all.image.repositorySuffix | string | `"-stable"` |  |
-| stackstate.components.all.image.tag | string | `"4.2.1"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
+| stackstate.components.all.image.tag | string | `"4.2.2"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
 | stackstate.components.all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
@@ -362,15 +371,118 @@ stackstate/stackstate
 | zookeeper.podAnnotations | object | `{"ad.stackstate.com/zookeeper.check_names":"[\"openmetrics\"]","ad.stackstate.com/zookeeper.init_configs":"[{}]","ad.stackstate.com/zookeeper.instances":"[ { \"prometheus_url\": \"http://%%host%%:9141/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Annotations for ZooKeeper pod. |
 | zookeeper.replicaCount | int | `3` | Default amount of Zookeeper replicas to provision. |
 
-## Configuring LDAP
+## Authentication
 
-When using LDAP, a number of (secret) values can be passed through the Helm values. You can provide the following values to configure LDAP:
+For more details on configuring authentication please refer to the [StackState documentation](https://docs.stackstate.com).
 
-* `stackstate.authentication.ldap.bind.dn`: The bind DN to use to authenticate to LDAP
-* `stackstate.authentication.ldap.bind.password`: The bind password to use to authenticate to LDAP
-* `stackstate.authentication.ldap.ssl.type`: The SSL Connection type to use to connect to LDAP (Either `ssl` or `starttls`)
+### Configuring OpenId connect
+
+Create a `oidc_values.yaml similar to the example below and add it as an additional argument to the installation:
+
+```
+helm install \
+  --values oidc_values.yaml \
+  ... \
+stackstate/stackstate
+```
+
+Example:
+
+```yaml
+stackstate:
+  authentication:
+    oidc:
+      clientId: stackstate-client-id
+      secret: "some-secret"
+      discoveryUri: http://oidc-provider/.well-known/openid-configuration
+      authenticationMethod: client_secret_basic
+      jwsAlgorithm: RS256
+      scope: ["email", "fullname"]
+      jwtClaims:
+        usernameField: email
+        groupsField: groups
+```
+
+### Configuring Keycloak
+
+Create a `keycloak_values.yaml similar to the example below and add it as an additional argument to the installation:
+
+```
+helm install \
+  --values keycloak_values.yaml \
+  ... \
+stackstate/stackstate
+```
+
+Example:
+```yaml
+stackstate:
+  authentication:
+    keycloak:
+      url: http://keycloak-server/auth
+      realm: test
+      clientId: stackstate-client-id
+      secret: "some-secret"
+      authenticationMethod: client_secret_basic
+      jwsAlgorithm: RS256
+```
+
+If the defaults of Keycloak don't suit your needs you can extend the yaml to select a different field as username and add groups/roles from fields other than the `roles` in keycloak:
+```
+stackstate:
+  authentication:
+    keycloak:
+      jwtClaims:
+        usernameField: email
+        groupsField: groups
+```
+
+### Configuring LDAP
+
+To use LDAP create a ldap_values.yaml similar to the example below (update for your LDAP configuration of course). Next to these keys there are 2 optional values that can be set but usually need to be read from a file so you'd specify them on the helm command line (see below):
 * `stackstate.authentication.ldap.ssl.trustStore`: The Certificate Truststore to verify server certificates against
-* `stackstate.authentication.ldap.ssl.trustCertificates`: The client Certificate trusted by the server
+* `stackstate.authentication.ldap.ssl.trustCertificates`: The client Certificate trusted by the server (supports PEM, DER and PKCS7 formats)
+
+Only one of `trustCertificates` or `trustStore` will be used, `trustCertificates` takes precedence over `trustStore`.
+
+In order to search the groups that a user belongs to and from those get the roles the user can have in StackState we need to config values `rolesKey` and `groupMemberKey`.
+
+Those values in the end will be used to form a filter (and extract the relevant attribute) that looks like:
+```({groupMemberKey}=email=admin@sts.com,ou=employees,dc=stackstate,dc=com)```
+
+This returns an entry similar to this:
+```dn: {rolesKey}=stackstate-admin,ou=Group,ou=employee,o=stackstate,cn=people,dc=stackstate,dc=com```
+
+Via the {rolesKey} we will get `stackstate-admin` as the role.
+
+Note that the order of the parameters is of importance.
+
+```yaml
+stackstate:
+  authentication:
+    ldap:
+      host: ldap-server
+      port: 10636 # Standard LDAP SSL port, 10398 for plain LDAP
+      bind:
+        dn: ou=acme,dc=com # The bind DN to use to authenticate to LDAP
+        password: foobar   # The bind password to use to authenticate to LDAP
+      ssl:
+        type: ssl          # Optional: The SSL Connection type to use to connect to LDAP (Either `ssl` or `starttls`)
+      userQuery:
+        emailKey: email
+        usernameKey: cn
+        parameters:
+          - ou: employees
+          - dc: stackstate
+          - dc: com
+      groupQuery:
+        groupMemberKey: member
+        rolesKey: cn
+        parameters:
+          - ou: groups
+          - dc: stackstate
+          - dc: com
+```
 
 The `trustStore` and `trustCertificates` values need to be set from the command line, as they typically contain binary data. A sample command for this looks like:
 
@@ -378,8 +490,42 @@ The `trustStore` and `trustCertificates` values need to be set from the command 
 helm install \
 --set-file stackstate.authentication.ldap.ssl.trustStore=./ldap-cacerts \
 --set-file stackstate.authentication.ldap.ssl.trustCertificates=./ldap-certificate.pem \
+--values ldap_values.yaml \
 ... \
 stackstate/stackstate
+```
+
+### Configuring file based authentication
+
+If you don't have an external identity provider you can configure users and there roles directly in StackState via a configuration file (a change will result in a restart of the API).
+
+To use this create a `file_auth_values.yaml similar to the example below and add it as an additional argument to the installation:
+
+```
+helm install \
+  --values file_auth_values.yaml \
+  ... \
+stackstate/stackstate
+```
+
+Example that creates 4 different users with the standard roles provided by Stackstate (see our [docs](https://docs.stackstate.com)):
+```
+stackstate:
+  authentication:
+    file:
+      logins:
+        - username: administrator
+          passwordMd5: 098f6bcd4621d373cade4e832627b4f6
+          roles: [stackstate-admin]
+        - username: guest1
+          passwordMd5: 098f6bcd4621d373cade4e832627b4f6
+          roles: [stackstate-guest]
+        - username: guest2
+          passwordMd5: 098f6bcd4621d373cade4e832627b4f6
+          roles: [ stackstate-guest ]
+        - username: maintainer
+          passwordMd5: 098f6bcd4621d373cade4e832627b4f6
+          roles: [stackstate-power-user, stackstate-guest]
 ```
 
 ## Auto-installing StackPacks

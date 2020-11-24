@@ -2,27 +2,9 @@ package test
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/require"
-	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
-	corev1 "k8s.io/api/core/v1"
 )
 
-func TestStackPackConfigRendering(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/stackpack_config.yaml")
-
-	resources := helmtestutil.NewKubernetesResources(t, output)
-
-	var stackstateServerConfigMap corev1.ConfigMap
-
-	for _, configMap := range resources.ConfigMaps {
-		if configMap.Name == "stackstate-server" {
-			stackstateServerConfigMap = configMap
-		}
-	}
-	require.NotNil(t, stackstateServerConfigMap)
-
-	expectedConfig := `stackstate.stackPacks {
+const expectedStackPackConfig = `stackstate.stackPacks {
   installOnStartUp += "test-stackpack-1"
 
   installOnStartUpConfig {
@@ -33,5 +15,11 @@ func TestStackPackConfigRendering(t *testing.T) {
     }
   }
 }`
-	require.Contains(t, stackstateServerConfigMap.Data["application_stackstate.conf"], expectedConfig)
+
+func TestStackPackConfigRenderingApi(t *testing.T) {
+	RunSecretsConfigTest(t, "stackstate-api", []string{"values/stackpack_config.yaml"}, expectedStackPackConfig)
+}
+
+func TestStackPackConfigRenderingServer(t *testing.T) {
+	RunSecretsConfigTest(t, "stackstate-server", []string{"values/stackpack_config.yaml", "values/split_disabled.yaml"}, expectedStackPackConfig)
 }

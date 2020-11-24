@@ -9,17 +9,11 @@ stackstate:
     server:
       java:
         trustStorePassword: "secretTrustStorePassword"
-      extraEnv:
-        secret:
-          CONFIG_FORCE_stackstate_api_authentication_authServer_stackstateAuthServer_defaultPassword: ""
   authentication:
-    ldap:
-      bind:
-        dn: ou=acme,dc=com
-        password: foobar
-      ssl:
-        type: ssl
-        trustStore: 2934u092rfji920349234i9239i492
+    adminPassword: 098f6bcd4621d373cade4e832627b4f6
+  admin:
+    authentication:
+      password: 5a4961367d65d570e20d2d69156581b4
   baseUrl: "http://localhost"
   license:
     key: "api01"

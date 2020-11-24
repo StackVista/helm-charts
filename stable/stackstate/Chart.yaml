@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 4.2.2
-version: 4.2.2
+version: 4.2.2-1
 description: Helm chart for StackState
 keywords:
   - aiops

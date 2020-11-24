@@ -1,11 +1,12 @@
 package test
 
 import (
+	"testing"
+
 	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
-	"testing"
 )
 
 func TestServerJavaHeapRender(t *testing.T) {
@@ -14,9 +15,9 @@ func TestServerJavaHeapRender(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
-	expectedDeployments["stackstate-server"] =  v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx5858m -Xms5858m"}
-	expectedDeployments["stackstate-receiver"] =  v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1086m -Xms280m"}
-	expectedDeployments["stackstate-correlate"] =  v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx799m -Xms799m"}
+	expectedDeployments["stackstate-server"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx5858m -Xms5858m"}
+	expectedDeployments["stackstate-receiver"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1086m -Xms280m"}
+	expectedDeployments["stackstate-correlate"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx799m -Xms799m"}
 	expectedDeployments["stackstate-mm2es"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx402m -Xms402m"}
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
@@ -41,8 +42,8 @@ func TestSplitServicesJavaHeapRender(t *testing.T) {
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
 	expectedDeployments["stackstate-api"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1750m -Xms1750m"}
-	expectedDeployments["stackstate-checks"] =  v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx2450m -Xms2450m"}
-	expectedDeployments["stackstate-state"] =  v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1200m -Xms1200m"}
+	expectedDeployments["stackstate-checks"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx2450m -Xms2450m"}
+	expectedDeployments["stackstate-state"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1200m -Xms1200m"}
 	expectedDeployments["stackstate-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1200m -Xms1200m"}
 	expectedDeployments["stackstate-slicing"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx770m -Xms770m"}
 	expectedDeployments["stackstate-view-health"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1210m -Xms1210m"}
@@ -89,9 +90,9 @@ func TestServerJavaHeapRenderWithServerJavaOptsOverride(t *testing.T) {
 
 	var stsServerDeployment appsv1.Deployment
 
-	for _, deploymentK2ES := range resources.Deployments {
-		if deploymentK2ES.Name == "stackstate-server" {
-			stsServerDeployment = deploymentK2ES
+	for _, deployment := range resources.Deployments {
+		if deployment.Name == "stackstate-server" {
+			stsServerDeployment = deployment
 		}
 	}
 
@@ -109,9 +110,9 @@ func TestServerJavaHeapRenderWithBothJavaOptsOverride(t *testing.T) {
 
 	var stsServerDeployment appsv1.Deployment
 
-	for _, deploymentK2ES := range resources.Deployments {
-		if deploymentK2ES.Name == "stackstate-server" {
-			stsServerDeployment = deploymentK2ES
+	for _, deployment := range resources.Deployments {
+		if deployment.Name == "stackstate-server" {
+			stsServerDeployment = deployment
 		}
 	}
 

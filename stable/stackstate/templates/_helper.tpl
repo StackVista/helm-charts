@@ -98,14 +98,7 @@ Router extra environment variables for ui pods inherited through `stackstate.com
 {{/*
 Environment variables to enable authentication with safe defaults
 */}}
-{{- define "stackstate.authentication.envvars" -}}
-{{- if or .Values.stackstate.authentication.adminPassword .Values.stackstate.components.server.extraEnv.secret.CONFIG_FORCE_stackstate_api_authentication_authServer_stackstateAuthServer_defaultPassword }}
-- name: CONFIG_FORCE_stackstate_api_authentication_authServer_stackstateAuthServer_defaultPassword
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-common
-      key: adminPassword
-{{- end }}
+{{- define "stackstate.authentication.envvars" }}
 - name: CONFIG_FORCE_stackstate_adminApi_authentication_authServer_stackstateAuthServer_defaultPassword
   valueFrom:
     secretKeyRef:
@@ -116,18 +109,6 @@ Environment variables to enable authentication with safe defaults
     secretKeyRef:
       name: {{ template "common.fullname.short" $ }}-common
       key: adminApiPassword
-{{- if hasKey .Values.stackstate.authentication.ldap "bind" }}
-- name: LDAP_BIND_DN
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" . }}-common
-      key: ldapBindDn
-- name: LDAP_BIND_PASSWORD
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" . }}-common
-      key: ldapBindPassword
-{{- end }}
 {{- if .Values.stackstate.java.trustStorePassword }}
 - name: JAVA_TRUSTSTORE_PASSWORD
   valueFrom:

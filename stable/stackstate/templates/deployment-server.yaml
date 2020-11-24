@@ -84,13 +84,13 @@ resources:
 securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 2 }}
 {{- end }}
 volumeMounts:
-- name: config-volume
+- name: config-secrets-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
 - name: config-volume-log
   mountPath: /opt/docker/etc_log
 {{- if $mountSecrets }}
-- name: secrets-volume
+- name: common-secrets-volume
   mountPath: /opt/docker/secrets
 {{- end }}
 {{- end -}}
@@ -116,8 +116,8 @@ spec:
       annotations:
         {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "server") | indent 8 }}
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.server.secret.checksum" . | nindent 8 }}
-        {{- include "stackstate.server.configmap.checksum" . | nindent 8 }}
       labels:
         app.kubernetes.io/component: server
     spec:
@@ -156,21 +156,20 @@ spec:
       {{- end }}
     {{- end }}
       volumes:
-      - name: config-volume
-        configMap:
-          name: {{ template "common.fullname.short" . }}-server
+      - name: config-secrets-volume
+        secret:
+          secretName: {{ template "common.fullname.short" . }}-server
       - name: config-volume-log
         configMap:
           name: {{ template "common.fullname.short" . }}-server-log
     {{- if $secrets }}
-      - name: secrets-volume
+      - name: common-secrets-volume
         secret:
           secretName: {{ template "common.fullname.short" . }}-common
           items:
       {{- range $key, $val := $secrets }}
           - key: {{ $key }}
             path: {{ $val }}
-
       {{- end }}
     {{- end }}
 {{- end -}}

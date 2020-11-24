@@ -1,0 +1,9 @@
+stackstate:
+  authentication:
+    roles:
+      # stackstate.authentication.roles.admin -- Override the role names that have admin permissions (default: 'stackstate-admin')
+      admin: ["extra-admin"]
+      # stackstate.authentication.roles.powerUser -- Override the role names that have power user permissions (default: 'stackstate-power-user')
+      powerUser: ["extra-power"]
+      # stackstate.authentication.roles.guest -- Override the role names that have guest permissions (default: 'stackstate-guest')
+      guest: ["guest1", "guest2"]
