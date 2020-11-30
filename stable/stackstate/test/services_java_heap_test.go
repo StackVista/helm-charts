@@ -9,7 +9,7 @@ import (
 )
 
 func TestServerJavaHeapRender(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -35,7 +35,7 @@ func TestServerJavaHeapRender(t *testing.T) {
 }
 
 func TestSplitServicesJavaHeapRender(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/split_enabled.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -63,7 +63,7 @@ func TestSplitServicesJavaHeapRender(t *testing.T) {
 }
 
 func TestServerJavaHeapRenderWithAllJavaOptsOverride(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/components_all_javaopts.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/components_all_javaopts.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -83,7 +83,7 @@ func TestServerJavaHeapRenderWithAllJavaOptsOverride(t *testing.T) {
 }
 
 func TestServerJavaHeapRenderWithServerJavaOptsOverride(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/components_server_javaopts.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/components_server_javaopts.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -103,7 +103,7 @@ func TestServerJavaHeapRenderWithServerJavaOptsOverride(t *testing.T) {
 }
 
 func TestServerJavaHeapRenderWithBothJavaOptsOverride(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/components_all_javaopts.yaml", "values/components_server_javaopts.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/components_all_javaopts.yaml", "values/components_server_javaopts.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 

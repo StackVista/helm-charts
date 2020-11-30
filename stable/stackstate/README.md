@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.2.0-snapshot.38`
+Current chart version is `4.2.0-snapshot.39`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -331,7 +331,7 @@ stackstate/stackstate
 | stackstate.components.wait.image.registry | string | `"docker.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"dokkupaas/wait"` | Base container image repository for wait containers. |
 | stackstate.components.wait.image.tag | string | `"latest"` | Container image tag for wait containers. |
-| stackstate.experimental.server.split | bool | `false` | (boolean) Run a single service server or split in multiple sub services as api, state .... |
+| stackstate.experimental.server.split | bool | `true` | (boolean) Run a single service server or split in multiple sub services as api, state .... |
 | stackstate.java | object | `{"trustStore":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
 | stackstate.java.trustStorePassword | string | `nil` | Password to access the Java TrustStore (cacerts) file |

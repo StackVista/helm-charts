@@ -1,4 +1,4 @@
 stackstate:
   experimental:
     server:
-      split: true
+      split: false
