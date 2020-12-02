@@ -111,7 +111,7 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all containers. |
 | securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all containers. |
 | stackgraph.image.pullPolicy | string | `"Always"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below). |
-| stackgraph.image.tag | string | `"3.6.13"` | The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below). |
+| stackgraph.image.tag | string | `"3.6.14"` | The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below). |
 | statefulset.antiAffinity.strategy | string | `"soft"` | AntiAffinity strategy to use for all StatefulSets. |
 | statefulset.antiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | AntiAffinity topology key to use for all StatefulSets. |
 | tephra.affinity | object | `{}` | Affinity settings for pod assignment. |
