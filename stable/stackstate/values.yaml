@@ -821,8 +821,11 @@ anomaly-detection:
   # anomaly-detection.enabled -- Enables anomaly detection chart
   enabled: false
   image:
-    # anomaly-detection.image.tag -- the chart image tag, e.g. 4.1.0-latest
-    tag: "latest"
+    # 'tag' is commented here since we take the latest image tag compatible with stackstate chart from anomaly-detection sub-chart
+    # It is still possible to override it here.
+    # anomaly-detection.image.tag -- the chart image tag, e.g. 4.1.3-latest
+    # tag:
+
     # anomaly-detection.image.imagePullPolicy -- The default pullPolicy used for anomaly detection pods.
     imagePullPolicy: Always
     # anomaly-detection.image.pullSecretName -- Name of ImagePullSecret to use for all pods.
