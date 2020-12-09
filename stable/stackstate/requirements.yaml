@@ -19,7 +19,7 @@ dependencies:
   repository: https://charts.bitnami.com/bitnami
   condition: zookeeper.enabled
 - name: anomaly-detection
-  version: 4.1.25
+  version: 4.1.26
   repository: https://helm.stackstate.io
   condition: anomaly-detection.enabled
 - name: cluster-agent
