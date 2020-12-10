@@ -5,12 +5,14 @@ command:
 - -c
 - |
   /entrypoint -c {{ template "common.fullname.short" . }}-hdfs-nn-headful:9000 -t 300
+{{- if .Values.volumePermissions.enabled }}
   chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} /hadoop-data
+{{- end }}
 image: "{{include "wait.image.registry" .}}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
 imagePullPolicy: Always
 securityContext:
-  allowPrivilegeEscalation: true
-  privileged: true
+  allowPrivilegeEscalation: {{ .Values.volumePermissions.enabled }}
+  privileged:  {{ .Values.volumePermissions.enabled }}
 volumeMounts:
 - name: data
   mountPath: /hadoop-data
@@ -47,8 +49,10 @@ resources:
 {{- end }}
 securityContext:
   runAsNonRoot: true
+{{- if .Values.securityContext.enabled }}
   runAsGroup: {{ .Values.securityContext.runAsGroup }}
   runAsUser: {{ .Values.securityContext.runAsUser }}
+{{- end }}
 volumeMounts:
 - name: data
   mountPath: /hadoop-data

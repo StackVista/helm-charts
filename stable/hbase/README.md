@@ -73,6 +73,8 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | hbase.regionserver.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"2000m","memory":"2Gi"}}` | Resources to allocate for HBase region servers. |
 | hbase.regionserver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.zookeeper.quorum | string | `"hbase"` | Zookeeper quorum used for single-node Zookeeper installations; not used if `zookeeper.replicaCount` is more than `1`. |
+| hdfs.all.securityContext.allowPrivilegeEscalation | bool | `true` | Whether the init container processes can run setuid binaries |
+| hdfs.all.securityContext.privileged | bool | `true` | Whether the init container processes can request privileged mode |
 | hdfs.datanode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.datanode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hdfs.datanode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
@@ -108,6 +110,7 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | hdfs.secondarynamenode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the container. |
 | securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all containers. |
 | securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all containers. |
 | stackgraph.image.pullPolicy | string | `"Always"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below). |
@@ -124,6 +127,7 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | tephra.replicaCount | int | `1` | Number of pods for Tephra pods. |
 | tephra.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"50m","memory":"2Gi"}}` | Resources to allocate for Tephra pods. |
 | tephra.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| volumePermissions.enabled | bool | `true` | Whether to explicitly change the volume permissions for the data/name nodes |
 | wait.image.registry | string | `"docker.io"` | Base container image registry for wait containers |
 | wait.image.repository | string | `"dokkupaas/wait"` | Container image tag for wait containers |
 | wait.image.tag | string | `"latest"` |  |

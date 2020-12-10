@@ -20,8 +20,10 @@ resources:
 {{- end }}
 securityContext:
   runAsNonRoot: true
+{{- if .Values.securityContext.enabled }}
   runAsGroup: {{ .Values.securityContext.runAsGroup }}
   runAsUser: {{ .Values.securityContext.runAsUser }}
+{{- end }}
 workingDir: /tmp
 {{- end -}}
 

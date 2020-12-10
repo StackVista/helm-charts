@@ -131,6 +131,12 @@ hbase:
     # hbase.zookeeper.quorum -- Zookeeper quorum used for single-node Zookeeper installations; not used if `zookeeper.replicaCount` is more than `1`.
     quorum: hbase
 hdfs:
+  all:
+    securityContext:
+      # hdfs.all.securityContext.privileged -- Whether the init container processes can request privileged mode
+      privileged: true
+      # hdfs.all.securityContext.allowPrivilegeEscalation -- Whether the init container processes can run setuid binaries
+      allowPrivilegeEscalation: true
   image:
     # hdfs.image.pullPolicy -- Pull policy for HDFS datanode.
     pullPolicy: Always
@@ -255,10 +261,17 @@ tephra:
   # tephra.affinity -- Affinity settings for pod assignment.
   affinity: {}
 securityContext:
+  # securityContext.enabled -- Whether to explicitly set the UID/GID of the container.
+  enabled: true
   # securityContext.runAsGroup -- GID of the Linux group to use for all containers.
   runAsGroup: 65534
   # securityContext.runAsUser -- UID of the Linux user to use for all containers.
   runAsUser: 65534
+
+volumePermissions:
+  # volumePermissions.enabled -- Whether to explicitly change the volume permissions for the data/name nodes
+  enabled: true
+
 ##########################
 # Common chart overrides #
 ##########################
