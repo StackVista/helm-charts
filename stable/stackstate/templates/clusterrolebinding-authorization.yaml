@@ -15,6 +15,8 @@ subjects:
 {{- end -}}
 {{- end -}}
 
+{{- if (index .Values "anomaly-detection" "enabled") -}}
 {{- $commonRB := fromYaml (include "common.clusterrolebinding" .) -}}
 {{- $stackstateAuthorizationRB := fromYaml (include "stackstate.authorization.clusterrolebinding" .) -}}
 {{- toYaml (merge $stackstateAuthorizationRB $commonRB) -}}
+{{- end -}}
