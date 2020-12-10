@@ -57,11 +57,13 @@ spec:
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
+      {{- if .Values.securityContext.enabled }}
       securityContext:
 {{ toYaml .Values.podSecurityContext | indent 8 }}
         {{- if .Values.fsGroup }}
         fsGroup: {{ .Values.fsGroup }} # Deprecated value, please use .Values.podSecurityContext.fsGroup
         {{- end }}
+      {{- end }}
       {{- if .Values.rbac.create }}
       serviceAccountName: "{{ template "elasticsearch.uname" . }}"
       {{- else if not (eq .Values.rbac.serviceAccountName "") }}
@@ -188,8 +190,10 @@ spec:
       {{- end }}
       containers:
       - name: "{{ template "elasticsearch.name" . }}"
+      {{- if .Values.securityContext.enabled }}
         securityContext:
-{{ toYaml .Values.securityContext | indent 10 }}
+{{ toYaml .Values.containerSecurityContext | indent 10 }}
+      {{- end }}
         image: "{{ include "elasticsearch.imageRegistry" . }}/{{ .Values.imageRepository }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         readinessProbe:
