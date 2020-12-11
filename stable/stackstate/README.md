@@ -12,7 +12,7 @@ Current chart version is `4.2.0-snapshot.45`
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | kafka | 11.7.1 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
-| https://helm.stackstate.io | anomaly-detection | 4.1.26 |
+| https://helm.stackstate.io | anomaly-detection | 4.1.27 |
 | https://helm.stackstate.io | cluster-agent | 0.4.5 |
 | https://helm.stackstate.io | common | 0.4.13 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.8 |
