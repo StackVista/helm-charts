@@ -88,6 +88,7 @@ Apache Kafka is a distributed streaming platform.
 | logPersistence.accessModes[0] | string | `"ReadWriteOnce"` |  |
 | logPersistence.annotations | object | `{}` |  |
 | logPersistence.enabled | bool | `false` |  |
+| logPersistence.mountPath | string | `"/opt/bitnami/kafka/logs"` |  |
 | logPersistence.size | string | `"8Gi"` |  |
 | logRetentionBytes | string | `"_1073741824"` |  |
 | logRetentionCheckIntervalMs | int | `300000` |  |
@@ -147,6 +148,7 @@ Apache Kafka is a distributed streaming platform.
 | persistence.accessModes[0] | string | `"ReadWriteOnce"` |  |
 | persistence.annotations | object | `{}` |  |
 | persistence.enabled | bool | `true` |  |
+| persistence.mountPath | string | `"/bitnami/kafka"` |  |
 | persistence.size | string | `"8Gi"` |  |
 | podAffinityPreset | string | `""` |  |
 | podAnnotations | object | `{}` |  |
@@ -180,7 +182,7 @@ Apache Kafka is a distributed streaming platform.
 | transactionStateLogMinIsr | int | `1` |  |
 | transactionStateLogReplicationFactor | int | `1` |  |
 | updateStrategy | string | `"RollingUpdate"` |  |
-| volumePermissions.enabled | bool | `false` |  |
+| volumePermissions.enabled | bool | `true` |  |
 | volumePermissions.image.pullPolicy | string | `"Always"` |  |
 | volumePermissions.image.pullSecrets | list | `[]` |  |
 | volumePermissions.image.registry | string | `"docker.io"` |  |
@@ -188,6 +190,7 @@ Apache Kafka is a distributed streaming platform.
 | volumePermissions.image.tag | string | `"buster"` |  |
 | volumePermissions.resources.limits | object | `{}` |  |
 | volumePermissions.resources.requests | object | `{}` |  |
+| volumePermissions.securityContext.runAsUser | int | `0` |  |
 | zookeeper.auth.enabled | bool | `false` |  |
 | zookeeper.enabled | bool | `true` |  |
 | zookeeperConnectionTimeoutMs | int | `6000` |  |
