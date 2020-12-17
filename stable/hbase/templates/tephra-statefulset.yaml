@@ -45,10 +45,6 @@ resources:
 {{- end }}
 securityContext:
   runAsNonRoot: true
-{{- if .Values.securityContext.enabled }}
-  runAsGroup: {{ .Values.securityContext.runAsGroup }}
-  runAsUser: {{ .Values.securityContext.runAsUser }}
-{{- end }}
 {{- end -}}
 
 {{- define "hbase.tephra.statefulset" -}}
@@ -75,7 +71,13 @@ spec:
       annotations:
       {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404" "container_name" "tephra") | indent 8 }}
     spec:
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ template "common.fullname.short" . }}-tephra
+      {{- end }}
       {{ include "image.pullSecret.name" . | nindent 6 }}
+      {{- if .Values.tephra.securityContext.enabled }}
+      securityContext: {{- omit .Values.tephra.securityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
       initContainers:
       - {{ toYaml $stackstateHbaseTephraInitContainer | nindent 8 }}
       containers:

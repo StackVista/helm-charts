@@ -5,14 +5,14 @@ command:
 - -c
 - |
   /entrypoint -c {{ template "common.fullname.short" . }}-hdfs-nn-headful:9000 -t 300
-{{- if .Values.volumePermissions.enabled }}
-  chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} /hadoop-data
+{{- if .Values.hdfs.volumePermissions.enabled }}
+  chown -R {{ .Values.hdfs.securityContext.runAsUser }}:{{ .Values.hdfs.securityContext.runAsGroup }} /hadoop-data
 {{- end }}
-image: "{{include "wait.image.registry" .}}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
+image: "{{ include "wait.image.registry" .}}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
 imagePullPolicy: Always
-securityContext:
-  allowPrivilegeEscalation: {{ .Values.volumePermissions.enabled }}
-  privileged:  {{ .Values.volumePermissions.enabled }}
+{{- if .Values.hdfs.volumePermissions.securityContext.enabled }}
+securityContext: {{- omit .Values.hdfs.volumePermissions.securityContext "enabled" | toYaml | nindent 2 }}
+{{- end }}
 volumeMounts:
 - name: data
   mountPath: /hadoop-data
@@ -54,10 +54,6 @@ resources:
 {{- end }}
 securityContext:
   runAsNonRoot: true
-{{- if .Values.securityContext.enabled }}
-  runAsGroup: {{ .Values.securityContext.runAsGroup }}
-  runAsUser: {{ .Values.securityContext.runAsUser }}
-{{- end }}
 volumeMounts:
 - name: data
   mountPath: /hadoop-data
@@ -87,6 +83,13 @@ spec:
       annotations:
       {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404" "container_name" "datanode") | indent 8 }}
     spec:
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ template "common.fullname.short" . }}-hdfs
+      {{- end }}
+      {{- if .Values.hdfs.securityContext.enabled }}
+      securityContext: {{- omit .Values.hdfs.securityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+
       {{ include "image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml $stackstateHbaseHdfsDatanodeInitContainer | nindent 8 }}
