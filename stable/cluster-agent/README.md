@@ -10,7 +10,7 @@ Current chart version is `0.4.9`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.helm.sh/stable | kube-state-metrics | 2.X.X |
+| https://charts.bitnami.com/bitnami | kube-state-metrics | 1.1.2 |
 
 If you already have the `kube-state-metrics` application installed in your Kubernetes cluster, set `dependencies.kubeStateMetrics.enabled` to `false` to disable installation via this Helm chart.
 
