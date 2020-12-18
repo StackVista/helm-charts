@@ -1,5 +1,886 @@
+#####################
+# StackState values #
+#####################
+
+caspr:
+  # caspr.enabled -- Enable CASPR compatible values.
+  enabled: false
+ingress:
+  # ingress.annotations -- Annotations for ingress objects.
+  annotations: {}
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
+  # ingress.enabled -- Enable use of ingress controllers.
+  enabled: false
+  path: /
+  # ingress.hosts -- List of ingress hostnames; the paths are fixed to StackState backend services
+  hosts: []
+  # - host: stackstate.local
+  # ingress.tls -- List of ingress TLS certificates to use.
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - stackstate.local
+networkPolicy:
+  # networkPolicy.enabled -- Enable creating of `NetworkPolicy` object and associated rules for StackState.
+  enabled: false
+  # networkPolicy.spec -- `NetworkPolicy` rules for StackState.
+  spec:
+    ingress:
+      - from:
+          - podSelector: {}
+    podSelector:
+      matchLabels: {}
+    policyTypes:
+      - Ingress
+global:
+  # global.receiverApiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
+  receiverApiKey: ""
+# commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
+commonLabels: {}
 stackstate:
   components:
     all:
+      extraEnv:
+        # stackstate.components.all.extraEnv.open -- Extra open environment variables to inject into pods for all components.
+        open: {}
+        # stackstate.components.all.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object for all components.
+        secret: {}
       image:
-        repositorySuffix: -stable
+        # stackstate.components.all.image.registry -- Base container image registry for all containers, except for the wait container
+        registry: quay.io
+        # stackstate.components.all.image.repositorySuffix - String to append to repositories for StackState components
+        repositorySuffix: ""
+        # stackstate.components.all.image.pullSecretName -- Name of ImagePullSecret to use for all pods.
+        pullSecretName:
+        # all.image.pullSecretUsername -- Username used to login to the registry to pull Docker images of all pods.
+        pullSecretUsername:
+        # all.image.pullSecretPassword -- Password used to login to the registry to pull Docker images of all pods.
+        pullSecretPassword:
+        # stackstate.components.all.image.pullPolicy -- The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below).
+        pullPolicy: Always
+        # When changing this value make sure to also update hbase.stackgraph.image.tag to the matching StackGraph version
+        # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
+        tag: 4.2.0-rc.9
+      metrics:
+        # stackstate.components.all.metrics.enabled -- Enable metrics port.
+        enabled: true
+        servicemonitor:
+          # stackstate.components.all.metrics.servicemonitor.additionalLabels -- Additional labels for targeting Prometheus operator instances.
+          additionalLabels: {}
+          # stackstate.components.all.metrics.servicemonitor.enabled -- Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled.
+          enabled: false
+      # stackstate.components.all.elasticsearchEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster.
+      elasticsearchEndpoint: ""
+      # stackstate.components.all.kafkaEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker.
+      kafkaEndpoint: ""
+      # stackstate.components.all.zookeeperEndpoint -- **Required if `zookeeper.enabled` is `false`** Endpoint for shared Zookeeper nodes.
+      zookeeperEndpoint: ""
+      # stackstate.components.all.nodeSelector -- Node labels for pod assignment on all components.
+      nodeSelector: {}
+      # stackstate.components.all.tolerations -- Toleration labels for pod assignment on all components.
+      tolerations: []
+      # stackstate.components.all.affinity -- Affinity settings for pod assignment on all components.
+      affinity: {}
+    api:
+      extraEnv:
+        # stackstate.components.api.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.api.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.api.image.pullPolicy -- `pullPolicy` used for the `api` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.api.image.repository -- Repository of the api component Docker image.
+        repository: stackstate/stackstate-server
+        # stackstate.components.api.image.tag -- Tag used for the `api` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.api.poddisruptionbudget -- PodDisruptionBudget settings for `api` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.api.resources -- Resource allocation for `api` pods.
+      resources:
+        limits:
+          memory: "4000Mi"
+        requests:
+          memory: "4000Mi"
+          cpu: "500m"
+      sizing:
+        baseMemoryConsumption: "500Mi"
+        javaHeapMemoryFraction: "50"
+      # stackstate.components.api.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.api.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.api.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.api.config -- Configuration file contents to customize the default StackState api configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
+      config: ""
+      # stackstate.components.api.additionalLogging -- Additional logback config
+      additionalLogging: ""
+    correlate:
+      extraEnv:
+        # stackstate.components.correlate.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.correlate.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.correlate.image.pullPolicy -- `pullPolicy` used for the `correlate` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.correlate.image.repository -- Repository of the correlate component Docker image.
+        repository: stackstate/stackstate-correlate
+        # stackstate.components.correlate.image.tag -- Tag used for the `correlate` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.correlate.poddisruptionbudget -- PodDisruptionBudget settings for `correlate` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.correlate.resources -- Resource allocation for `correlate` pods.
+      resources:
+        limits:
+          memory: "1500Mi"
+        requests:
+          memory: "1500Mi"
+          cpu: "150m"
+      sizing:
+        baseMemoryConsumption: "475Mi"
+        javaHeapMemoryFraction: "78"
+      # stackstate.components.correlate.replicaCount -- Number of `correlate` replicas.
+      replicaCount: 1
+      # stackstate.components.correlate.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.correlate.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.correlate.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.correlate.additionalLogging -- Additional logback config
+      additionalLogging: ""
+    checks:
+      extraEnv:
+        # stackstate.components.checks.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.checks.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.checks.image.pullPolicy -- `pullPolicy` used for the `state` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.checks.image.repository -- Repository of the sync component Docker image.
+        repository: stackstate/stackstate-server
+        # stackstate.components.checks.image.tag -- Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.checks.poddisruptionbudget -- PodDisruptionBudget settings for `checks` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.checks.resources -- Resource allocation for `state` pods.
+      resources:
+        limits:
+          memory: "4000Mi"
+        requests:
+          memory: "4000Mi"
+          cpu: "500m"
+      sizing:
+        baseMemoryConsumption: "500Mi"
+        javaHeapMemoryFraction: "70"
+      # stackstate.components.checks.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.checks.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.checks.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.checks.config -- Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
+      config: ""
+      # stackstate.components.checks.additionalLogging -- Additional logback config
+      additionalLogging: ""
+    initializer:
+      extraEnv:
+        # stackstate.components.initializer.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.initializer.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.initializer.image.pullPolicy -- `pullPolicy` used for the `initializer` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.initializer.image.repository -- Repository of the initializer component Docker image.
+        repository: stackstate/stackstate-server
+        # stackstate.components.initializer.image.tag -- Tag used for the `initializer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.initializer.resources -- Resource allocation for `initializer` pods.
+      resources:
+        limits:
+          memory: "700Mi"
+        requests:
+          memory: "128Mi"
+          cpu: "50m"
+      sizing:
+        baseMemoryConsumption: "460Mi"
+        javaHeapMemoryFraction: "65"
+      # stackstate.components.initializer.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.initializer.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.initializer.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.initializer.config -- Configuration file contents to customize the default StackState initializer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
+      config: ""
+      # stackstate.components.initializer.additionalLogging -- Additional logback config
+      additionalLogging: ""
+    k2es:
+      extraEnv:
+        # stackstate.components.k2es.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.k2es.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.k2es.image.pullPolicy -- `pullPolicy` used for the `k2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.k2es.image.repository -- Repository of the k2es component Docker image.
+        repository: stackstate/stackstate-kafka-to-es
+        # stackstate.components.k2es.image.tag -- Tag used for the `k2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.k2es.poddisruptionbudget -- PodDisruptionBudget settings for `k2es` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.k2es.resources -- Resource allocation for `k2es` pods.
+      resources:
+        limits:
+          memory: "1Gi"
+        requests:
+          memory: "1Gi"
+          cpu: "250m"
+      sizing:
+        baseMemoryConsumption: "600Mi"
+        javaHeapMemoryFraction: "85"
+      # stackstate.components.k2es.replicaCount -- Number of `k2es` replicas.
+      replicaCount: 1
+      # stackstate.components.k2es.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.k2es.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.k2es.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.k2es.traces -- Trace-related `k2es` settings.
+      traces:
+        enabled: true
+      # stackstate.components.k2es.additionalLogging -- Additional logback config
+      additionalLogging: ""
+    receiver:
+      extraEnv:
+        # stackstate.components.receiver.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.receiver.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.receiver.image.pullPolicy -- `pullPolicy` used for the `receiver` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.receiver.image.repository -- Repository of the receiver component Docker image.
+        repository: stackstate/stackstate-receiver
+        # stackstate.components.receiver.image.tag -- Tag used for the `receiver` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.receiver.poddisruptionbudget -- PodDisruptionBudget settings for `receiver` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.receiver.resources -- Resource allocation for `receiver` pods.
+      resources:
+        limits:
+          memory: "2Gi"
+        requests:
+          memory: "1Gi"
+          cpu: "500m"
+      sizing:
+        baseMemoryConsumption: "700Mi"
+        javaHeapMemoryFraction: "75"
+      # stackstate.components.receiver.replicaCount -- Number of `receiver` replicas.
+      replicaCount: 1
+      # stackstate.components.receiver.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.receiver.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.receiver.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.receiver.additionalLogging -- Additional logback config
+      additionalLogging: ""
+    router:
+      extraEnv:
+        # stackstate.components.router.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.router.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.router.image.pullPolicy -- `pullPolicy` used for the `router` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: Always
+        # stackstate.components.router.image.registry -- Registry of the router component Docker image.
+        registry: docker.io
+        # stackstate.components.router.image.repository -- Repository of the router component Docker image.
+        repository: envoyproxy/envoy-alpine
+        # stackstate.components.router.image.tag -- Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: v1.12.1
+      # stackstate.components.router.poddisruptionbudget -- PodDisruptionBudget settings for `router` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.router.resources -- Resource allocation for `router` pods.
+      resources:
+        limits:
+          cpu: "100m"
+          memory: "128Mi"
+        requests:
+          cpu: "100m"
+          memory: "128Mi"
+      # stackstate.components.router.replicaCount -- Number of `router` replicas.
+      replicaCount: 1
+      # stackstate.components.router.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.router.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.router.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+    server:
+      extraEnv:
+        # stackstate.components.server.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.server.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.server.image.pullPolicy -- `pullPolicy` used for the `server` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.server.image.repository -- Repository of the server component Docker image.
+        repository: stackstate/stackstate-server
+        # stackstate.components.server.image.tag -- Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.server.poddisruptionbudget -- PodDisruptionBudget settings for `server` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.server.resources -- Resource allocation for `server` pods.
+      resources:
+        limits:
+          memory: "8Gi"
+        requests:
+          memory: "8Gi"
+          cpu: "2000m"
+      sizing:
+        baseMemoryConsumption: "1700Mi"
+        javaHeapMemoryFraction: "85"
+      # stackstate.components.server.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.server.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.server.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.server.config -- Configuration file contents to customize the default StackState configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
+      config: ""
+      # stackstate.components.server.additionalLogging -- Additional logback config
+      additionalLogging: ""
+    state:
+      extraEnv:
+        # stackstate.components.state.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.state.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.state.image.pullPolicy -- `pullPolicy` used for the `state` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.state.image.repository -- Repository of the sync component Docker image.
+        repository: stackstate/stackstate-server
+        # stackstate.components.state.image.tag -- Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.state.poddisruptionbudget -- PodDisruptionBudget settings for `state` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.state.resources -- Resource allocation for `state` pods.
+      resources:
+        limits:
+          memory: "2000Mi"
+        requests:
+          memory: "2000Mi"
+          cpu: "500m"
+      sizing:
+        baseMemoryConsumption: "500Mi"
+        javaHeapMemoryFraction: "80"
+      # stackstate.components.state.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.state.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.state.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.state.config -- Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
+      config: ""
+      # stackstate.components.state.additionalLogging -- Additional logback config
+      additionalLogging: ""
+    sync:
+      extraEnv:
+        # stackstate.components.sync.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.sync.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.sync.image.pullPolicy -- `pullPolicy` used for the `sync` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.sync.image.repository -- Repository of the sync component Docker image.
+        repository: stackstate/stackstate-server
+        # stackstate.components.sync.image.tag -- Tag used for the `sync` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.sync.poddisruptionbudget -- PodDisruptionBudget settings for `sync` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.sync.resources -- Resource allocation for `sync` pods.
+      resources:
+        limits:
+          memory: "2500Mi"
+        requests:
+          memory: "2500Mi"
+          cpu: "500m"
+      sizing:
+        baseMemoryConsumption: "500Mi"
+        javaHeapMemoryFraction: "60"
+      # stackstate.components.sync.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.sync.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.sync.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.sync.config -- Configuration file contents to customize the default StackState sync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
+      config: ""
+      # stackstate.components.sync.additionalLogging -- Additional logback config
+      additionalLogging: ""
+    slicing:
+      extraEnv:
+        # stackstate.components.slicing.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.slicing.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.slicing.image.pullPolicy -- `pullPolicy` used for the `slicing` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.slicing.image.repository -- Repository of the slicing component Docker image.
+        repository: stackstate/stackstate-server
+        # stackstate.components.slicing.image.tag -- Tag used for the `slicing` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.slicing.resources -- Resource allocation for `slicing` pods.
+      resources:
+        limits:
+          memory: "1600Mi"
+        requests:
+          memory: "1600Mi"
+          cpu: "750m"
+      sizing:
+        baseMemoryConsumption: "500Mi"
+        javaHeapMemoryFraction: "70"
+      # stackstate.components.slicing.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.slicing.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.slicing.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.slicing.config -- Configuration file contents to customize the default StackState slicing configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
+      config: ""
+      # stackstate.components.slicing.additionalLogging -- Additional logback config
+      additionalLogging: ""
+    ui:
+      extraEnv:
+        # stackstate.components.ui.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.ui.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.ui.image.pullPolicy -- `pullPolicy` used for the `ui` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.ui.image.repository -- Repository of the ui component Docker image.
+        repository: stackstate/stackstate-ui
+        # stackstate.components.ui.image.tag -- Tag used for the `ui` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.ui.poddisruptionbudget -- PodDisruptionBudget settings for `ui` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.ui.resources -- Resource allocation for `ui` pods.
+      resources:
+        limits:
+          cpu: "50m"
+          memory: "64Mi"
+        requests:
+          cpu: "50m"
+          memory: "64Mi"
+      # stackstate.components.ui.replicaCount -- Number of `ui` replicas.
+      replicaCount: 2
+      # stackstate.components.ui.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.ui.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.ui.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+    viewHealth:
+      extraEnv:
+        # stackstate.components.viewHealth.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.viewHealth.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.viewHealth.image.pullPolicy -- `pullPolicy` used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.viewHealth.image.repository -- Repository of the viewHealth component Docker image.
+        repository: stackstate/stackstate-server
+        # stackstate.components.viewHealth.image.tag -- Tag used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.viewHealth.poddisruptionbudget -- PodDisruptionBudget settings for `viewHealth` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.viewHealth.resources -- Resource allocation for `viewHealth` pods.
+      resources:
+        limits:
+          memory: "2700Mi"
+        requests:
+          memory: "2700Mi"
+          cpu: "1000m"
+      sizing:
+        baseMemoryConsumption: "500Mi"
+        javaHeapMemoryFraction: "55"
+      # stackstate.components.viewHealth.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.viewHealth.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.viewHealth.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.viewHealth.config -- Configuration file contents to customize the default StackState viewHealth configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
+      config: ""
+      # stackstate.components.viewHealth.additionalLogging -- Additional logback config
+      additionalLogging: ""
+    kafkaTopicCreate:
+      image:
+        # stackstate.components.kafkaTopicCreate.image.registry -- Base container image registry for kafka-topic-create containers.
+        registry: docker.io
+        # stackstate.components.kafkaTopicCreate.image.repository -- Base container image repository for kafka-topic-create containers.
+        repository: bitnami/kafka
+        # stackstate.components.kafkaTopicCreate.image.tag -- Container image tag for kafka-topic-create containers.
+        tag: latest
+    nginxPrometheusExporter:
+      image:
+        # stackstate.components.nginxPrometheusExporter.image.registry -- Base container image registry for nginx-prometheus-exporter containers.
+        registry: docker.io
+        # stackstate.components.nginxPrometheusExporter.image.repository -- Base container image repository for nginx-prometheus-exporter containers.
+        repository: nginx/nginx-prometheus-exporter
+        # stackstate.components.nginxPrometheusExporter.image.tag -- Container image tag for nginx-prometheus-exporter containers.
+        tag: 0.4.2
+    wait:
+      image:
+        # stackstate.components.wait.image.registry -- Base container image registry for wait containers.
+        registry: docker.io
+        # stackstate.components.wait.image.repository -- Base container image repository for wait containers.
+        repository: dokkupaas/wait
+        # stackstate.components.wait.image.tag -- Container image tag for wait containers.
+        tag: latest
+  # stackstate.authentication -- (Secret) authentication settings for StackState
+  authentication:
+    # stackstate.authentication.ldap -- LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap)
+    ldap: {}
+    # stackstate.adminPassword -- Password for the 'admin' user that StackState creates by default
+    adminPassword:
+  admin:
+    authentication:
+      # stackstate.admin.authentication.password -- Password used for maintenance "admin" api's (low-level tools) of the various services, username: admin
+      password:
+  # stackstate.java -- Extra Java configuration for StackState
+  java:
+    # stackstate.java.trustStore -- Java TrustStore (cacerts) file to use
+    trustStore:
+    # stackstate.java.trustStorePassword -- Password to access the Java TrustStore (cacerts) file
+    trustStorePassword:
+  license:
+    # stackstate.license.key -- (string) **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server.
+    key:
+  # stackstate.web.baseUrl -- (string) **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of StackState.
+  baseUrl:
+  receiver:
+    # stackstate.receiver.baseUrl -- (string) **DEPRECATED** Use stackstate.baseUrl instead
+    baseUrl:
+  experimental:
+    server:
+      # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
+      split: true
+  stackpacks:
+    # stackstate.stackpacks.installed -- Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks)
+    installed: []
+##############################
+# Dependency chart overrides #
+##############################
+elasticsearch:
+  # elasticsearch.clusterHealthCheckParams -- The Elasticsearch cluster health status params that will be used by readinessProbe command
+  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
+  # elasticsearch.clusterName -- Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
+  clusterName: stackstate-elasticsearch
+  # elasticsearch.enabled -- Enable / disable chart-based Elasticsearch.
+  enabled: true
+  # elasticsearch.esJavaOpts -- JVM options
+  esJavaOpts: "-Xmx3g -Xms3g"
+  # elasticsearch.commonLabels -- Add additional labels to all resources created for elasticsearch
+  commonLabels:
+    app.kubernetes.io/part-of: stackstate
+  # elasticsearch.extraEnvs -- Extra settings that StackState uses for Elasticsearch.
+  extraEnvs:
+    - name: action.auto_create_index
+      value: "true"
+    - name: indices.query.bool.max_clause_count
+      value: "10000"
+  # elasticsearch.imageTag -- Elasticsearch version.
+  imageTag: "7.4.1"
+  # elasticsearch.minimumMasterNodes -- Minimum number of Elasticsearch master nodes.
+  minimumMasterNodes: 2
+  nodeGroup: "master"
+  # elasticsearch.replicas -- Number of Elasticsearch replicas.
+  replicas: 3
+  # elasticsearch.resources -- Override Elasticsearch resources
+  resources:
+    requests:
+      cpu: "1000m"
+      memory: "4Gi"
+    limits:
+      cpu: "2000m"
+      memory: "4Gi"
+  # elasticsearch.volumeClaimTemplate -- PVC template defaulting to 250Gi default volumes
+  volumeClaimTemplate:
+    accessModes:
+      - "ReadWriteOnce"
+    resources:
+      requests:
+        storage: 250Gi
+  elasticsearch-exporter:
+    enabled: true
+    servicemonitor:
+      enabled: false
+    podAnnotations:
+      ad.stackstate.com/elasticsearch-exporter.check_names: '["openmetrics"]'
+      ad.stackstate.com/elasticsearch-exporter.init_configs: "[{}]"
+      ad.stackstate.com/elasticsearch-exporter.instances: '[ { "prometheus_url": "http://%%host%%:9108/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
+    es:
+      uri: http://stackstate-elasticsearch-master:9200
+hbase:
+  # hbase.enabled -- Enable / disable chart-based HBase.
+  enabled: true
+  # hbase.commonLabels -- Add additional labels to all resources created for all hbase resources
+  commonLabels:
+    app.kubernetes.io/part-of: stackstate
+  all:
+    metrics:
+      enabled: true
+  stackgraph:
+    image:
+      # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
+      tag: 3.6.14
+  console:
+    # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
+    enabled: false
+  hbase:
+    master:
+      # hbase.hbase.master.replicaCount -- Number of HBase master node replicas.
+      replicaCount: 2
+    regionserver:
+      # hbase.hbase.regionserver.replicaCount -- Number of HBase regionserver node replicas.
+      replicaCount: 3
+  hdfs:
+    datanode:
+      # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas.
+      replicaCount: 3
+    secondarynamenode:
+      enabled: true
+  tephra:
+    # hbase.tephra.replicaCount -- Number of Tephra replicas.
+    replicaCount: 2
+  zookeeper:
+    # hbase.zookeeper.enabled -- Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**.
+    enabled: false
+    # hbase.zookeeper.externalServers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
+    externalServers: stackstate-zookeeper-headless
+kafka:
+  # kafka.command -- Override kafka container command.
+  command:
+    - "/scripts/custom-setup.sh"
+  externalZookeeper:
+    # kafka.externalZookeeper.servers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
+    servers: stackstate-zookeeper-headless
+  # kafka.enabled -- Enable / disable chart-based Kafka.
+  enabled: true
+  ## kafka.defaultReplicationFactor -- Default replication factors for automatically created topics
+  defaultReplicationFactor: 2
+  ## kafka.offsetTopicReplicationFactor --  The replication factor for the offsets topic
+  offsetsTopicReplicationFactor: 2
+  ## kafka.transactionStateLogReplicationFactor -- The replication factor for the transaction topic
+  transactionStateLogReplicationFactor: 2
+  # kafka.extraDeploy -- Array of extra objects to deploy with the release
+  extraDeploy: |-
+    - apiVersion: v1
+      kind: ConfigMap
+      metadata:
+       name: kafka-custom-scripts
+       labels: {{- include "kafka.labels" . | nindent 4 }}
+      data:
+        custom-setup.sh: |-
+          #!/bin/bash
+
+          ID="${MY_POD_NAME#"{{ template "kafka.fullname" . }}-"}"
+
+          KAFKA_META_PROPERTIES=/bitnami/kafka/data/meta.properties
+          if [[ -f ${KAFKA_META_PROPERTIES} ]]; then
+            ID=`grep -e ^broker.id= ${KAFKA_META_PROPERTIES} | sed 's/^broker.id=//'`
+            if [[ "${ID}" != "" ]] && [[ "${ID}" -gt 1000 ]]; then
+              echo "Using broker ID ${ID} from ${KAFKA_META_PROPERTIES} for compatibility (STAC-9614)"
+            fi
+          fi
+
+          export KAFKA_CFG_BROKER_ID="$ID"
+
+          exec /entrypoint.sh /run.sh
+  # kafka.extraEnvVars -- Extra environment variables to add to kafka pods.
+  extraEnvVars:
+    - name: KAFKA_CFG_RESERVED_BROKER_MAX_ID
+      value: "2000"
+  # kafka.extraVolumes -- Extra volume(s) to add to Kafka statefulset.
+  extraVolumes:
+    - name: kafka-custom-scripts
+      configMap:
+        name: kafka-custom-scripts
+        defaultMode: 493
+  # kafka.extraVolumeMounts -- Extra volumeMount(s) to add to Kafka containers.
+  extraVolumeMounts:
+    - name: kafka-custom-scripts
+      mountPath: /scripts/custom-setup.sh
+      subPath: custom-setup.sh
+  # kafka.fullnameOverride -- Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
+  fullnameOverride: stackstate-kafka
+  image:
+    # kafka.image.tag -- Default tag used for Kafka. **Since StackState relies on this specific version, it's advised NOT to change this.**
+    tag: 2.3.1-debian-9-r41
+  livenessProbe:
+    # kafka.livenessProbe.initialDelaySeconds -- Delay before readiness probe is initiated.
+    initialDelaySeconds: 45
+  # kafka.logRetentionHours -- The minimum age of a log file to be eligible for deletion due to age.
+  logRetentionHours: 24
+  metrics:
+    kafka:
+      # kafka.metrics.kafka.enabled -- Whether or not to create a standalone Kafka exporter to expose Kafka metrics.
+      enabled: false
+    jmx:
+      # kafka.metrics.jmx.enabled -- Whether or not to expose JMX metrics to Prometheus.
+      enabled: true
+    serviceMonitor:
+      # kafka.metrics.serviceMonitor.enabled -- If `true`, creates a Prometheus Operator `ServiceMonitor` (also requires `kafka.metrics.kafka.enabled` or `kafka.metrics.jmx.enabled` to be `true`).
+      enabled: false
+      # kafka.metrics.serviceMonitor.interval -- How frequently to scrape metrics.
+      interval: 20s
+      # kafka.metrics.serviceMonitor.selector -- Selector to target Prometheus instance.
+      selector: {}
+  readinessProbe:
+    # kafka.readinessProbe.initialDelaySeconds -- Delay before readiness probe is initiated.
+    initialDelaySeconds: 45
+  # kafka.replicaCount -- Number of Kafka replicas.
+  replicaCount: 3
+  persistence:
+    # kafka.persistence.size -- Size of persistent volume for each Kafka pod
+    size: 50Gi
+  # kafka.commonLabels -- Add additional labels to all resources created for kafka
+  commonLabels:
+    app.kubernetes.io/part-of: stackstate
+  # kafka.podAnnotations -- Kafka Pod annotations.
+  podAnnotations:
+    ad.stackstate.com/jmx-exporter.check_names: '["openmetrics"]'
+    ad.stackstate.com/jmx-exporter.init_configs: "[{}]"
+    ad.stackstate.com/jmx-exporter.instances: '[ { "prometheus_url": "http://%%host%%:5556/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
+  # kafka.resources -- Kafka resources per pods.
+  resources:
+    limits:
+      memory: "2Gi"
+    requests:
+      memory: "2Gi"
+      cpu: "300m"
+  # kafka.zookeeper.enabled -- Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**.
+  zookeeper:
+    enabled: false
+zookeeper:
+  # zookeeper.enabled -- Enable / disable chart-based Zookeeper.
+  enabled: true
+  # zookeeper.externalServers -- If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead.
+  externalServers: ""
+  # zookeeper.fourlwCommandsWhitelist -- Zookeeper four-letter-word (FLW) commands that are enabled.
+  fourlwCommandsWhitelist: "mntr, ruok, stat, srvr"
+  # zookeeper.fullnameOverride -- Name override for Zookeeper child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
+  fullnameOverride: stackstate-zookeeper
+  metrics:
+    # zookeeper.metrics.enabled -- Enable / disable Zookeeper Prometheus metrics.
+    enabled: true
+    # zookeeper.metrics.serviceMonitor --
+    serviceMonitor:
+      # zookeeper.metrics.serviceMonitor.enabled -- Enable creation of `ServiceMonitor` objects for Prometheus operator.
+      enabled: false
+      # zookeeper.metrics.serviceMonitor.selector -- Default selector to use to target a certain Prometheus instance.
+      selector: {}
+  commonLabels:
+    app.kubernetes.io/part-of: stackstate
+  # zookeeper.podAnnotations -- Annotations for ZooKeeper pod.
+  podAnnotations:
+    ad.stackstate.com/zookeeper.check_names: '["openmetrics"]'
+    ad.stackstate.com/zookeeper.init_configs: "[{}]"
+    ad.stackstate.com/zookeeper.instances: '[ { "prometheus_url": "http://%%host%%:9141/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
+  # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
+  replicaCount: 3
+anomaly-detection:
+  # anomaly-detection.enabled -- Enables anomaly detection chart
+  enabled: false
+  image:
+    # anomaly-detection.image.tag -- the chart image tag, e.g. 4.1.0-latest
+    tag: "latest"
+    # anomaly-detection.image.imagePullPolicy -- The default pullPolicy used for anomaly detection pods.
+    imagePullPolicy: Always
+    # anomaly-detection.image.pullSecretName -- Name of ImagePullSecret to use for all pods.
+    pullSecretName:
+    # anomaly-detection.image.pullSecretUsername -- Username used to login to the registry to pull Docker images of all pods.
+    pullSecretUsername:
+    # anomaly-detection.image.pullSecretUsername -- Password used to login to the registry to pull Docker images of all pods.
+    pullSecretPassword:
+    # anomaly-detection.image.registry -- Base container image registry for all containers, except for the wait container
+    registry: quay.io
+    # anomaly-detection.image.spotlightRepository -- Repository of the spotlight Docker image.
+    spotlightRepository: stackstate/spotlight
+  stackstate:
+    # anomaly-detection.stackstate.instance -- **Required Stackstate instance URL, e.g http://stackstate-server-headless:7070
+    instance: http://stackstate-server-headless:7070
+    # anomaly-detection.stackstate.authType -- Type of authentication. There are two options 1) "token" - with service account token (default), 2) "cookie" - username, password based auth.
+    authType: token
+    # anomaly-detection.stackstate.authRoleName -- Stackstate Role used by spotlight for authentication, it is mapped to the stackstate role with the same name.  It is expected to be set only in case if authType = "token"
+    authRoleName: stackstate-admin
+    # anomaly-detection.stackstate.username -- Stackstate Username used by spotlight for authentication, it is expected to be set only in case if authType = "cookie"
+    username:
+    # anomaly-detection.stackstate.password -- Stackstate Password used by spotlight for authentication, it is expected to be set only in case if authType = "cookie"
+    password:
+  # anomaly-detection.threadWorkers -- The number of worker threads.
+  threadWorkers: 5
+  # anomaly-detection.ingress -- Status interface ingress
+  ingress:
+    # anomaly-detection.ingress.enabled -- Enables ingress controller for status interface
+    enabled: false
+    # anomaly-detection.ingress.hostname -- Status interface hostname e.g. spotlight.local.domain
+    hostname:
+    # anomaly-detection.ingress.port - Status Interface port
+    port: 8090
+    # anomaly-detection.ingress.annotations - Annotations for ingress objects.
+    annotations: {}
+    # e.g.
+    #     kubernetes.io/ingress.class: nginx
+    #     cert-manager.io/cluster-issuer: letsencrypt-prod
+    #     external-dns.alpha.kubernetes.io/hostname: spotlight.local.domain
+    #     nginx.ingress.kubernetes.io/ingress.class: nginx
+    #     nginx.ingress.kubernetes.io/proxy-body-size: 100m
+    #     nginx.ingress.kubernetes.io/rewrite-target: "/$1"
+    # anomaly-detection.ingress.hosts - List of ingress hostnames
+    hosts: []
+    # - host: spotlight.local.domain
+
+    # anomaly-detection.ingress.tls - List of ingress TLS certificates to use.
+    tls:
+    # - hosts:
+    #     - spotlight.local.domain
+cluster-agent:
+  # stackstate-agent.enabled -- Deploy the StackState Kubernetes Agent so StackState can monitor the cluster it runs in
+  enabled: false
+  stackstate:
+    cluster:
+      # stackstate.cluster.name -- (string) **PROVIDE KUBERNETES CLUSTER NAME HERE** Name of the Kubernetes cluster where the agent will be installed.
+      name:
+      # stackstate.cluster.authToken -- Provide a token to enable secure communication between the agent and the cluster agent.
+      authToken:
+    # stackstate.url -- (string) **PROVIDE STACKSTATE URL HERE** URL of the StackState installation to receive data from the agent.
+    url: 'http://{{ include "stackstate.hostname.prefix" . }}-router:8080/receiver/stsAgent'
