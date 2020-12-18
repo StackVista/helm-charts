@@ -77,6 +77,9 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
         {{- end }}
+          volumeMounts:
+          - name: logs
+            mountPath: /var/log/stackstate-agent
     {{- with .Values.clusterAgent.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -89,3 +92,6 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+      volumes:
+        - name: logs
+          emptyDir: {}
