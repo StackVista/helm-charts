@@ -76,13 +76,14 @@ stackstate/cluster-agent
 | agent.readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
 | agent.readinessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the readiness probe. |
 | agent.resources | object | `{}` | Resources for agent pods. |
+| agent.scc.enabled | bool | `false` | Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift |
 | agent.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
 | agent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | agent.updateStrategy | object | `{"type":"RollingUpdate"}` | The update strategy for the DaemonSet object. |
 | clusterAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | clusterAgent.collection.kubernetesEvents | bool | `true` | Enable / disable the cluster agent events collection. |
 | clusterAgent.collection.kubernetesMetrics | bool | `true` | Enable / disable the cluster agent metrics collection. |
-| clusterAgent.collection.kubernetesTimeout | int | `10` | Default timeout (in seconds) when obtaining informaton from the Kubernetes API. |
+| clusterAgent.collection.kubernetesTimeout | int | `10` | Default timeout (in seconds) when obtaining information from the Kubernetes API. |
 | clusterAgent.collection.kubernetesTopology | bool | `true` | Enable / disable the cluster agent topology collection. |
 | clusterAgent.enabled | bool | `true` | Enable / disable the cluster agent. |
 | clusterAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |

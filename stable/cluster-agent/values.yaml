@@ -22,6 +22,9 @@ nameOverride: ""
 fullnameOverride: ""
 
 agent:
+  scc:
+    # agent.scc.enabled -- Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift
+    enabled: false
   apm:
     # agent.apm.enabled -- Enable / disable the agent APM module.
     enabled: true
@@ -106,7 +109,7 @@ clusterAgent:
     kubernetesEvents: true
     # clusterAgent.collection.kubernetesMetrics -- Enable / disable the cluster agent metrics collection.
     kubernetesMetrics: true
-    # clusterAgent.collection.kubernetesTimeout -- Default timeout (in seconds) when obtaining informaton from the Kubernetes API.
+    # clusterAgent.collection.kubernetesTimeout -- Default timeout (in seconds) when obtaining information from the Kubernetes API.
     kubernetesTimeout: 10
     # clusterAgent.collection.kubernetesTopology -- Enable / disable the cluster agent topology collection.
     kubernetesTopology: true
