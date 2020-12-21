@@ -32,9 +32,6 @@ Official Elastic helm chart for Elasticsearch
 | antiAffinityTopologyKey | string | `"kubernetes.io/hostname"` |  |
 | clusterName | string | `"elasticsearch"` |  |
 | commonLabels | object | `{}` |  |
-| containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |
-| containerSecurityContext.runAsNonRoot | bool | `true` |  |
-| containerSecurityContext.runAsUser | int | `1000` |  |
 | elasticsearch-exporter.enabled | bool | `false` |  |
 | elasticsearch-exporter.es.uri | string | `"http://elasticsearch-master:9200"` |  |
 | elasticsearch-exporter.podAnnotations | object | `{}` |  |
@@ -108,7 +105,10 @@ Official Elastic helm chart for Elasticsearch
 | roles.master | string | `"true"` |  |
 | schedulerName | string | `""` |  |
 | secretMounts | list | `[]` |  |
+| securityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | securityContext.enabled | bool | `true` |  |
+| securityContext.runAsNonRoot | bool | `true` |  |
+| securityContext.runAsUser | int | `1000` |  |
 | service.annotations | object | `{}` |  |
 | service.httpPortName | string | `"http"` |  |
 | service.labels | object | `{}` |  |
