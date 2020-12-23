@@ -5,7 +5,7 @@
     repositories: {
       bitnami: 'https://charts.bitnami.com/bitnami',
       elastic: 'https://helm.elastic.co',
-      stable: 'https://kubernetes-charts.storage.googleapis.com',
+      stable: 'https://charts.helm.sh/stable',
       stackstate: 'https://helm.stackstate.io',
       stackstate_internal: 'https://helm-internal.stackstate.io',
       stackstate_test: 'https://helm-test.stackstate.io',
