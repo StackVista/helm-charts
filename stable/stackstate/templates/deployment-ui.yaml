@@ -59,10 +59,9 @@ resources:
   requests:
     cpu: "20m"
     memory: "32Mi"
-securityContext:
-  runAsGroup: 101
-  runAsNonRoot: true
-  runAsUser: 101
+{{- if .Values.stackstate.components.all.securityContext.enabled }}
+securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 2 }}
+{{- end }}
 {{- end -}}
 
 {{- define "stackstate.ui.deployment" -}}

@@ -7,10 +7,9 @@ command:
   /entrypoint -c {{ include "stackstate.kafka.endpoint" . }} -t 300
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
 imagePullPolicy: Always
-securityContext:
-  runAsGroup: 65534
-  runAsNonRoot: true
-  runAsUser: 65534
+{{- if .Values.stackstate.components.all.securityContext.enabled }}
+securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 2 }}
+{{- end }}
 {{- end }}
 
 {{- define "stackstate.kafkaTopicCreate.job.container.main" -}}
@@ -29,10 +28,9 @@ env:
 image: "{{include "stackstate.kafkaTopicCreate.image.registry" .}}/{{ .Values.stackstate.components.kafkaTopicCreate.image.repository }}:{{ .Values.stackstate.components.kafkaTopicCreate.image.tag }}"
 imagePullPolicy: Always
 name: kafka-topic-create
-securityContext:
-  runAsGroup: 1001
-  runAsNonRoot: true
-  runAsUser: 1001
+{{- if .Values.stackstate.components.kafkaTopicCreate.securityContext.enabled }}
+securityContext: {{- omit .Values.stackstate.components.kafkaTopicCreate.securityContext "enabled" | toYaml | nindent 2 }}
+{{- end }}
 {{- end -}}
 
 {{- define "stackstate.kafkaTopicCreate.job" -}}

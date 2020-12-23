@@ -84,8 +84,9 @@ livenessProbe:
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
-securityContext:
-  runAsNonRoot: true
+{{- if .Values.stackstate.components.all.securityContext.enabled }}
+securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 2 }}
+{{- end }}
 volumeMounts:
 - name: config-volume
   mountPath: /opt/docker/etc/application_stackstate.conf

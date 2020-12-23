@@ -21,4 +21,4 @@ dependencies:
   repository: https://helm.stackstate.io
   version: 0.4.9
 digest: sha256:3000eee057edb6ded6bb1239445c2e698bf7254309b330703675d80562d53730
-generated: "2020-12-21T17:07:12.65288295+01:00"
+generated: "2020-12-23T23:12:39.724526+01:00"
