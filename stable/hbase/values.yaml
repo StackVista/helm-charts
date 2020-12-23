@@ -145,6 +145,9 @@ hbase:
     # hbase.zookeeper.quorum -- Zookeeper quorum used for single-node Zookeeper installations; not used if `zookeeper.replicaCount` is more than `1`.
     quorum: hbase
 hdfs:
+  scc:
+    # hdfs.scc.enabled -- Whether to create an OpenShift SecurityContextConfiguration (required when running on OpenShift)
+    enabled: false
   image:
     # hdfs.image.pullPolicy -- Pull policy for HDFS datanode.
     pullPolicy: Always
@@ -164,9 +167,6 @@ hdfs:
     enabled: true
     securityContext:
       enabled: true
-      privileged: true
-      allowPrivilegeEscalation: true
-      runAsUser: 0
   datanode:
     extraEnv:
       # hdfs.datanode.extraEnv.open -- Extra open environment variables to inject into pods.

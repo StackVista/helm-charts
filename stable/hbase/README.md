@@ -103,6 +103,7 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | hdfs.namenode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS name nodes. |
 | hdfs.namenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HDFS name nodes. |
 | hdfs.namenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| hdfs.scc.enabled | bool | `false` | Whether to create an OpenShift SecurityContextConfiguration (required when running on OpenShift) |
 | hdfs.secondarynamenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.secondarynamenode.enabled | bool | `false` | Enable / disable secondary name nodes. |
 | hdfs.secondarynamenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -118,10 +119,7 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | hdfs.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | hdfs.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
 | hdfs.volumePermissions.enabled | bool | `true` | Whether to explicitly change the volume permissions for the data/name nodes |
-| hdfs.volumePermissions.securityContext.allowPrivilegeEscalation | bool | `true` |  |
 | hdfs.volumePermissions.securityContext.enabled | bool | `true` |  |
-| hdfs.volumePermissions.securityContext.privileged | bool | `true` |  |
-| hdfs.volumePermissions.securityContext.runAsUser | int | `0` |  |
 | serviceAccount.create | bool | `true` | Whether to create serviceAccounts and run the statefulsets under them |
 | stackgraph.image.pullPolicy | string | `"Always"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below). |
 | stackgraph.image.tag | string | `"3.6.13"` | The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below). |
