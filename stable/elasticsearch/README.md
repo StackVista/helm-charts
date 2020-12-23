@@ -22,7 +22,7 @@ Official Elastic helm chart for Elasticsearch
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://kubernetes-charts.storage.googleapis.com | elasticsearch-exporter | 3.7.0 |
+| https://charts.helm.sh/stable | elasticsearch-exporter | 3.7.0 |
 
 ## Values
 
