@@ -131,12 +131,9 @@ hbase:
     # hbase.zookeeper.quorum -- Zookeeper quorum used for single-node Zookeeper installations; not used if `zookeeper.replicaCount` is more than `1`.
     quorum: hbase
 hdfs:
-  all:
-    securityContext:
-      # hdfs.all.securityContext.privileged -- Whether the init container processes can request privileged mode
-      privileged: true
-      # hdfs.all.securityContext.allowPrivilegeEscalation -- Whether the init container processes can run setuid binaries
-      allowPrivilegeEscalation: true
+  scc:
+    # hdfs.scc.enabled -- Whether to create an OpenShift SecurityContextConfiguration (required when running on OpenShift)
+    enabled: false
   image:
     # hdfs.image.pullPolicy -- Pull policy for HDFS datanode.
     pullPolicy: Always
@@ -144,6 +141,18 @@ hdfs:
     repository: stackstate/hadoop
     # hdfs.image.tag -- Default container image tag for HDFS datanode.
     tag: 2.9.2-java11
+  securityContext:
+    # hdfs.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.
+    enabled: true
+    # hdfs.securityContext.runAsGroup -- GID of the Linux group to use for all pod.
+    runAsGroup: 65534
+    # hdfs.securityContext.runAsUser -- UID of the Linux user to use for all pod.
+    runAsUser: 65534
+  volumePermissions:
+    # hdfs.volumePermissions.enabled -- Whether to explicitly change the volume permissions for the data/name nodes
+    enabled: true
+    securityContext:
+      enabled: true
   datanode:
     extraEnv:
       # hdfs.datanode.extraEnv.open -- Extra open environment variables to inject into pods.

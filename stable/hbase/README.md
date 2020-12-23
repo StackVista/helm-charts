@@ -73,8 +73,6 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | hbase.regionserver.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"2000m","memory":"2Gi"}}` | Resources to allocate for HBase region servers. |
 | hbase.regionserver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.zookeeper.quorum | string | `"hbase"` | Zookeeper quorum used for single-node Zookeeper installations; not used if `zookeeper.replicaCount` is more than `1`. |
-| hdfs.all.securityContext.allowPrivilegeEscalation | bool | `true` | Whether the init container processes can run setuid binaries |
-| hdfs.all.securityContext.privileged | bool | `true` | Whether the init container processes can request privileged mode |
 | hdfs.datanode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.datanode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hdfs.datanode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
@@ -99,6 +97,7 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | hdfs.namenode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS name nodes. |
 | hdfs.namenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HDFS name nodes. |
 | hdfs.namenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| hdfs.scc.enabled | bool | `false` | Whether to create an OpenShift SecurityContextConfiguration (required when running on OpenShift) |
 | hdfs.secondarynamenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.secondarynamenode.enabled | bool | `false` | Enable / disable secondary name nodes. |
 | hdfs.secondarynamenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -110,6 +109,11 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | hdfs.secondarynamenode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| hdfs.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
+| hdfs.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
+| hdfs.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
+| hdfs.volumePermissions.enabled | bool | `true` | Whether to explicitly change the volume permissions for the data/name nodes |
+| hdfs.volumePermissions.securityContext.enabled | bool | `true` |  |
 | securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the container. |
 | securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all containers. |
 | securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all containers. |

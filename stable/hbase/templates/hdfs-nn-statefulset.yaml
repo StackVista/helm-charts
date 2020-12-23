@@ -7,9 +7,13 @@ command:
   chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} /hadoop-data
 image: "{{include "wait.image.registry" .}}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
 imagePullPolicy: Always
+{{- if .Values.hdfs.volumePermissions.securityContext.enabled }}
 securityContext:
+  privileged: false
   allowPrivilegeEscalation: true
-  privileged: true
+  runAsNonRoot: false
+  runAsUser: 0
+{{- end }}
 volumeMounts:
 - name: data
   mountPath: /hadoop-data
