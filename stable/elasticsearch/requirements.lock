@@ -1,0 +1,6 @@
+dependencies:
+- name: elasticsearch-exporter
+  repository: https://charts.helm.sh/stable
+  version: 3.7.0
+digest: sha256:88234ac4e044f1770b9877740dfef03c3eff39ed86231c273a5acb9c44a4ec65
+generated: "2020-12-23T10:09:02.656449+01:00"

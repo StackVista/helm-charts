@@ -10,7 +10,7 @@ local common_repos = {
   incubator: 'https://kubernetes-charts-incubator.storage.googleapis.com',
   jetstack: 'https://charts.jetstack.io',
   jfrog: 'https://charts.jfrog.io',
-  stable: 'https://kubernetes-charts.storage.googleapis.com',
+  stable: 'https://charts.helm.sh/stable',
   stackstate: 'https://helm.stackstate.io',
 };
 
