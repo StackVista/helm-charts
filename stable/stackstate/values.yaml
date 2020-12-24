@@ -61,7 +61,7 @@ stackstate:
         pullPolicy: Always
         # When changing this value make sure to also update hbase.stackgraph.image.tag to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: 4.2.0
+        tag: 4.2.1-rc.2
       metrics:
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
         enabled: true
@@ -515,7 +515,6 @@ stackstate:
         runAsGroup: 101
         # stackstate.components.ui.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
         runAsUser: 101
-
       # stackstate.components.ui.replicaCount -- Number of `ui` replicas.
       replicaCount: 2
       # stackstate.components.ui.nodeSelector -- Node labels for pod assignment.
