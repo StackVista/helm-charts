@@ -2,6 +2,8 @@
 
 [Kafka](https://kafka.apache.org/) is a distributed streaming platform used for building real-time data pipelines and streaming apps. It is horizontally scalable, fault-tolerant, wicked fast, and runs in production in thousands of companies.
 
+This is a temporary StackState fork to make use of some additional features for OpenShift support.
+
 ## TL;DR
 
 ```console
