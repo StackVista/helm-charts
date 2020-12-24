@@ -1,6 +1,6 @@
 # hbase
 
-![Version: 0.1.61](https://img.shields.io/badge/Version-0.1.61-informational?style=flat-square) ![AppVersion: 1.2.6](https://img.shields.io/badge/AppVersion-1.2.6-informational?style=flat-square)
+![Version: 0.1.62](https://img.shields.io/badge/Version-0.1.62-informational?style=flat-square) ![AppVersion: 1.2.6](https://img.shields.io/badge/AppVersion-1.2.6-informational?style=flat-square)
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
@@ -51,6 +51,9 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | console.image.tag | string | `nil` | Container image tag for console pods, defaults to `stackgraph.image.tag` |
 | console.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | console.resources | object | `{}` | Resources to allocate for HDFS data nodes. |
+| console.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
+| console.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
+| console.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
 | console.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.master.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hbase.master.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -72,6 +75,9 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | hbase.regionserver.replicaCount | int | `1` | Number of HBase regionserver nodes. |
 | hbase.regionserver.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"2000m","memory":"2Gi"}}` | Resources to allocate for HBase region servers. |
 | hbase.regionserver.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| hbase.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
+| hbase.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
+| hbase.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
 | hbase.zookeeper.quorum | string | `"hbase"` | Zookeeper quorum used for single-node Zookeeper installations; not used if `zookeeper.replicaCount` is more than `1`. |
 | hdfs.datanode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.datanode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -118,9 +124,7 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | hdfs.volumePermissions.securityContext.privileged | bool | `true` | Run the volumePermissions init container in privileged mode (required for plain K8s, not for OpenShift) |
 | hdfs.volumePermissions.securityContext.runAsNonRoot | bool | `false` | Run the volumePermissions init container in non-root required mode (Do not change unless instructed) |
 | hdfs.volumePermissions.securityContext.runAsUser | int | `0` | Run the volumePermissions init container with the specified UID (Do not change unless instructed) |
-| securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the container. |
-| securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all containers. |
-| securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all containers. |
+| serviceAccount.create | bool | `true` | Whether to create serviceAccounts and run the statefulsets under them |
 | stackgraph.image.pullPolicy | string | `"Always"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below). |
 | stackgraph.image.tag | string | `"3.6.16"` | The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below). |
 | statefulset.antiAffinity.strategy | string | `"soft"` | AntiAffinity strategy to use for all StatefulSets. |
@@ -134,6 +138,9 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | tephra.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | tephra.replicaCount | int | `1` | Number of pods for Tephra pods. |
 | tephra.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"50m","memory":"2Gi"}}` | Resources to allocate for Tephra pods. |
+| tephra.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
+| tephra.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
+| tephra.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
 | tephra.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | volumePermissions.enabled | bool | `true` | Whether to explicitly change the volume permissions for the data/name nodes |
 | wait.image.registry | string | `"docker.io"` | Base container image registry for wait containers |

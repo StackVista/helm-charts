@@ -20,10 +20,6 @@ resources:
 {{- end }}
 securityContext:
   runAsNonRoot: true
-{{- if .Values.securityContext.enabled }}
-  runAsGroup: {{ .Values.securityContext.runAsGroup }}
-  runAsUser: {{ .Values.securityContext.runAsUser }}
-{{- end }}
 workingDir: /tmp
 {{- end -}}
 
@@ -46,6 +42,13 @@ spec:
         app.kubernetes.io/component: console
     spec:
       {{ include "image.pullSecret.name" . | nindent 6 }}
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ template "common.fullname.short" . }}-console
+      {{- end }}
+      {{ include "image.pullSecret.name" . | nindent 6 }}
+      {{- if .Values.console.securityContext.enabled }}
+      securityContext: {{- omit .Values.console.securityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
       containers:
       - {{ toYaml $stackstateHbaseConsoleContainer | nindent 8 }}
     {{- if or .Values.all.nodeSelector .Values.console.nodeSelector }}

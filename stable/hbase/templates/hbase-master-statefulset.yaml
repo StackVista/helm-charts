@@ -41,10 +41,6 @@ resources:
 {{- end }}
 securityContext:
   runAsNonRoot: true
-{{- if .Values.securityContext.enabled }}
-  runAsGroup: {{ .Values.securityContext.runAsGroup }}
-  runAsUser: {{ .Values.securityContext.runAsUser }}
-{{- end }}
 {{- end -}}
 
 {{- define "hbase.hbase.master.statefulset" -}}
@@ -72,6 +68,14 @@ spec:
       {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404" "container_name" "master") | indent 8 }}
     spec:
       {{ include "image.pullSecret.name" . | nindent 6 }}
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ template "common.fullname.short" . }}-hbase
+      {{- end }}
+      {{ include "image.pullSecret.name" . | nindent 6 }}
+      {{- if .Values.hbase.securityContext.enabled }}
+      securityContext: {{- omit .Values.hbase.securityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+
       initContainers:
       - {{ toYaml $stackstateHbaseMasterInitContainer | nindent 8 }}
       containers:

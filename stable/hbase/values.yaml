@@ -42,6 +42,13 @@ stackgraph:
 console:
   # console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
   enabled: true
+  securityContext:
+    # console.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.
+    enabled: true
+    # console.securityContext.runAsGroup -- GID of the Linux group to use for all pod.
+    runAsGroup: 65534
+    # console.securityContext.runAsUser -- UID of the Linux user to use for all pod.
+    runAsUser: 65534
   extraEnv:
     # console.extraEnv.open -- Extra open environment variables to inject into pods.
     open: {}
@@ -71,6 +78,14 @@ wait:
     # wait.image.repository -- Container image tag for wait containers
     tag: latest
 hbase:
+  securityContext:
+    # hbase.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.
+    enabled: true
+    # hbase.securityContext.runAsGroup -- GID of the Linux group to use for all pod.
+    runAsGroup: 65534
+    # hbase.securityContext.runAsUser -- UID of the Linux user to use for all pod.
+    runAsUser: 65534
+
   master:
     extraEnv:
       # hbase.master.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -251,6 +266,13 @@ hdfs:
     # hdfs.secondarynamenode.affinity -- Affinity settings for pod assignment.
     affinity: {}
 tephra:
+  securityContext:
+    # tephra.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.
+    enabled: true
+    # tephra.securityContext.runAsGroup -- GID of the Linux group to use for all pod.
+    runAsGroup: 65534
+    # tephra.securityContext.runAsUser -- UID of the Linux user to use for all pod.
+    runAsUser: 65534
   extraEnv:
     # tephra.extraEnv.open -- Extra open environment variables to inject into pods.
     open: {}
@@ -278,13 +300,10 @@ tephra:
   tolerations: []
   # tephra.affinity -- Affinity settings for pod assignment.
   affinity: {}
-securityContext:
-  # securityContext.enabled -- Whether to explicitly set the UID/GID of the container.
-  enabled: true
-  # securityContext.runAsGroup -- GID of the Linux group to use for all containers.
-  runAsGroup: 65534
-  # securityContext.runAsUser -- UID of the Linux user to use for all containers.
-  runAsUser: 65534
+
+serviceAccount:
+  # serviceAccount.create -- Whether to create serviceAccounts and run the statefulsets under them
+  create: true
 
 volumePermissions:
   # volumePermissions.enabled -- Whether to explicitly change the volume permissions for the data/name nodes
