@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.2.1-developing.3`
+Current chart version is `4.2.1-developing.4`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -15,7 +15,7 @@ Current chart version is `4.2.1-developing.3`
 | https://helm.stackstate.io | cluster-agent | 0.4.11 |
 | https://helm.stackstate.io | common | 0.4.13 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.10 |
-| https://helm.stackstate.io | hbase | 0.1.61 |
+| https://helm.stackstate.io | hbase | 0.1.62 |
 | https://helm.stackstate.io | kafka | 12.2.5-stackstate.0 |
 
 ## Required Values
@@ -138,7 +138,7 @@ stackstate/stackstate
 | stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
 | stackstate.components.all.image.repositorySuffix | string | `"-stable"` |  |
-| stackstate.components.all.image.tag | string | `"4.2.0"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
+| stackstate.components.all.image.tag | string | `"4.2.1-rc.2"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
 | stackstate.components.all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
