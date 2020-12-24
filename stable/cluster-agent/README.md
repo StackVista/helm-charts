@@ -2,15 +2,9 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `0.4.10`
+Current chart version is `0.4.11`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
-
-## Requirements
-
-| Repository | Name | Version |
-|------------|------|---------|
-| https://charts.bitnami.com/bitnami | kube-state-metrics | 1.1.2 |
 
 If you already have the `kube-state-metrics` application installed in your Kubernetes cluster, set `dependencies.kubeStateMetrics.enabled` to `false` to disable installation via this Helm chart.
 
