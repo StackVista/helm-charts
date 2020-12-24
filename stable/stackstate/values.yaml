@@ -78,7 +78,7 @@ stackstate:
         # stackstate.components.all.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
         runAsGroup: 65534
         # stackstate.components.all.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
-        runAsUser:  65534
+        runAsUser: 65534
       # stackstate.components.all.elasticsearchEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster.
       elasticsearchEndpoint: ""
       # stackstate.components.all.kafkaEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker.
@@ -514,7 +514,7 @@ stackstate:
         # stackstate.components.ui.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
         runAsGroup: 101
         # stackstate.components.ui.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
-        runAsUser:  101
+        runAsUser: 101
 
       # stackstate.components.ui.replicaCount -- Number of `ui` replicas.
       replicaCount: 2
