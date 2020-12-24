@@ -3,26 +3,22 @@ dependencies:
   repository: https://helm.stackstate.io
   version: 0.4.13
 - name: elasticsearch
-  condition: elasticsearch.enabled
   repository: https://helm.stackstate.io
-  version: 7.6.2-stackstate.8
+  version: 7.6.2-stackstate.10
 - name: hbase
-  condition: hbase.enabled
   repository: https://helm.stackstate.io
-  version: 0.1.44
+  version: 0.1.60
 - name: kafka
-  condition: kafka.enabled
-  repository: https://charts.bitnami.com/bitnami
-  version: 11.7.1
+  repository: https://helm.stackstate.io
+  version: 12.2.5-stackstate.0
 - name: zookeeper
-  version: 5.16.0
   repository: https://charts.bitnami.com/bitnami
-  condition: zookeeper.enabled
+  version: 5.16.0
 - name: anomaly-detection
+  repository: https://helm.stackstate.io
   version: 4.1.23
-  repository: https://helm.stackstate.io
-  condition: anomaly-detection.enabled
 - name: cluster-agent
-  version: 0.4.9
   repository: https://helm.stackstate.io
-  condition: cluster-agent.enabled
+  version: 0.4.11
+digest: sha256:59a0dd71397ce4d58b8591ff828f0c99727d506cf846f53864a725a1c11ee766
+generated: "2020-12-24T10:00:50.042778+01:00"

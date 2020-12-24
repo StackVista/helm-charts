@@ -20,7 +20,7 @@ elasticsearch:
   sysctlInitContainer:
     enabled: false
 kafka:
-  securityContext:
+  podSecurityContext:
     enabled: false
   volumePermissions:
     enabled: false

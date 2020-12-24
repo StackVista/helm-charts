@@ -59,8 +59,8 @@ resources:
   requests:
     cpu: "20m"
     memory: "32Mi"
-{{- if .Values.stackstate.components.all.securityContext.enabled }}
-securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 2 }}
+{{- if .Values.stackstate.components.ui.securityContext.enabled }}
+securityContext: {{- omit .Values.stackstate.components.ui.securityContext "enabled" | toYaml | nindent 2 }}
 {{- end }}
 {{- end -}}
 
