@@ -21,6 +21,7 @@
       'gitlab-steward',
       'hbase',
       'iceman',
+      'kafka',
       'sandbox-operator',
       'stackstate',
       'stackstate-standalone',
