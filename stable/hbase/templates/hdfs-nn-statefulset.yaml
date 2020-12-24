@@ -8,11 +8,7 @@ command:
 image: "{{include "wait.image.registry" .}}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
 imagePullPolicy: Always
 {{- if .Values.hdfs.volumePermissions.securityContext.enabled }}
-securityContext:
-  privileged: false
-  allowPrivilegeEscalation: true
-  runAsNonRoot: false
-  runAsUser: 0
+securityContext: {{- omit .Values.hdfs.volumePermissions.securityContext "enabled" | toYaml | nindent 2 }}
 {{- end }}
 volumeMounts:
 - name: data
