@@ -131,6 +131,9 @@ hbase:
     # hbase.zookeeper.quorum -- Zookeeper quorum used for single-node Zookeeper installations; not used if `zookeeper.replicaCount` is more than `1`.
     quorum: hbase
 hdfs:
+  scc:
+    # hdfs.scc.enabled -- Whether to create an OpenShift SecurityContextConfiguration (required when running on OpenShift)
+    enabled: false
   image:
     # hdfs.image.pullPolicy -- Pull policy for HDFS datanode.
     pullPolicy: Always
@@ -138,6 +141,18 @@ hdfs:
     repository: stackstate/hadoop
     # hdfs.image.tag -- Default container image tag for HDFS datanode.
     tag: 2.9.2-java11
+  securityContext:
+    # hdfs.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.
+    enabled: true
+    # hdfs.securityContext.runAsGroup -- GID of the Linux group to use for all pod.
+    runAsGroup: 65534
+    # hdfs.securityContext.runAsUser -- UID of the Linux user to use for all pod.
+    runAsUser: 65534
+  volumePermissions:
+    # hdfs.volumePermissions.enabled -- Whether to explicitly change the volume permissions for the data/name nodes
+    enabled: true
+    securityContext:
+      enabled: true
   datanode:
     extraEnv:
       # hdfs.datanode.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -255,10 +270,17 @@ tephra:
   # tephra.affinity -- Affinity settings for pod assignment.
   affinity: {}
 securityContext:
+  # securityContext.enabled -- Whether to explicitly set the UID/GID of the container.
+  enabled: true
   # securityContext.runAsGroup -- GID of the Linux group to use for all containers.
   runAsGroup: 65534
   # securityContext.runAsUser -- UID of the Linux user to use for all containers.
   runAsUser: 65534
+
+volumePermissions:
+  # volumePermissions.enabled -- Whether to explicitly change the volume permissions for the data/name nodes
+  enabled: true
+
 ##########################
 # Common chart overrides #
 ##########################

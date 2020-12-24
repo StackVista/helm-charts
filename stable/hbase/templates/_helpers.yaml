@@ -121,6 +121,8 @@ Common extra environment variables for all processes inherited through `all.extr
       key: {{ $key }}
   {{- end }}
 {{- end }}
+- name: HADOOP_USER_NAME
+  value: nobody
 {{- end -}}
 
 {{/*

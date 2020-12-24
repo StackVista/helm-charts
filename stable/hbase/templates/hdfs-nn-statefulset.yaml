@@ -7,9 +7,13 @@ command:
   chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} /hadoop-data
 image: "{{include "wait.image.registry" .}}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
 imagePullPolicy: Always
+{{- if .Values.hdfs.volumePermissions.securityContext.enabled }}
 securityContext:
+  privileged: false
   allowPrivilegeEscalation: true
-  privileged: true
+  runAsNonRoot: false
+  runAsUser: 0
+{{- end }}
 volumeMounts:
 - name: data
   mountPath: /hadoop-data
@@ -50,8 +54,10 @@ resources:
 {{- end }}
 securityContext:
   runAsNonRoot: true
+{{- if .Values.securityContext.enabled }}
   runAsGroup: {{ .Values.securityContext.runAsGroup }}
   runAsUser: {{ .Values.securityContext.runAsUser }}
+{{- end }}
 volumeMounts:
 - name: data
   mountPath: /hadoop-data
@@ -81,8 +87,10 @@ spec:
       {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404" "container_name" "namenode") | indent 8 }}
     spec:
       {{ include "image.pullSecret.name" . | nindent 6 }}
+      {{- if .Values.volumePermissions.enabled }}
       initContainers:
       - {{ toYaml $stackstateHbaseHdfsNamenodeInitContainer | nindent 8 }}
+      {{- end }}
       containers:
       - {{ toYaml $stackstateHbaseHdfsNamenodeContainer | nindent 8 }}
     {{- if or .Values.all.nodeSelector .Values.hdfs.namenode.nodeSelector }}

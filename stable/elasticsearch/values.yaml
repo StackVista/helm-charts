@@ -186,6 +186,7 @@ podSecurityContext:
 fsGroup: ""
 
 securityContext:
+  enabled: true
   capabilities:
     drop:
     - ALL

@@ -1,6 +1,6 @@
 # hbase
 
-![Version: 0.1.59](https://img.shields.io/badge/Version-0.1.59-informational?style=flat-square) ![AppVersion: 1.2.6](https://img.shields.io/badge/AppVersion-1.2.6-informational?style=flat-square)
+![Version: 0.1.60](https://img.shields.io/badge/Version-0.1.60-informational?style=flat-square) ![AppVersion: 1.2.6](https://img.shields.io/badge/AppVersion-1.2.6-informational?style=flat-square)
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
@@ -97,6 +97,7 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | hdfs.namenode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS name nodes. |
 | hdfs.namenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HDFS name nodes. |
 | hdfs.namenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| hdfs.scc.enabled | bool | `false` | Whether to create an OpenShift SecurityContextConfiguration (required when running on OpenShift) |
 | hdfs.secondarynamenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.secondarynamenode.enabled | bool | `false` | Enable / disable secondary name nodes. |
 | hdfs.secondarynamenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -108,6 +109,12 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | hdfs.secondarynamenode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| hdfs.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
+| hdfs.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
+| hdfs.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
+| hdfs.volumePermissions.enabled | bool | `true` | Whether to explicitly change the volume permissions for the data/name nodes |
+| hdfs.volumePermissions.securityContext.enabled | bool | `true` |  |
+| securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the container. |
 | securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all containers. |
 | securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all containers. |
 | stackgraph.image.pullPolicy | string | `"Always"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below). |
@@ -124,6 +131,7 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | tephra.replicaCount | int | `1` | Number of pods for Tephra pods. |
 | tephra.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"50m","memory":"2Gi"}}` | Resources to allocate for Tephra pods. |
 | tephra.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| volumePermissions.enabled | bool | `true` | Whether to explicitly change the volume permissions for the data/name nodes |
 | wait.image.registry | string | `"docker.io"` | Base container image registry for wait containers |
 | wait.image.repository | string | `"dokkupaas/wait"` | Container image tag for wait containers |
 | wait.image.tag | string | `"latest"` |  |

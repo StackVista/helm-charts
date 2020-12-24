@@ -1,6 +1,6 @@
 # elasticsearch
 
-![Version: 7.6.2-stackstate.9](https://img.shields.io/badge/Version-7.6.2--stackstate.9-informational?style=flat-square) ![AppVersion: 7.6.2](https://img.shields.io/badge/AppVersion-7.6.2-informational?style=flat-square)
+![Version: 7.6.2-stackstate.10](https://img.shields.io/badge/Version-7.6.2--stackstate.10-informational?style=flat-square) ![AppVersion: 7.6.2](https://img.shields.io/badge/AppVersion-7.6.2-informational?style=flat-square)
 
 Official Elastic helm chart for Elasticsearch
 
@@ -22,7 +22,7 @@ Official Elastic helm chart for Elasticsearch
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://kubernetes-charts.storage.googleapis.com | elasticsearch-exporter | 3.7.0 |
+| https://charts.helm.sh/stable | elasticsearch-exporter | 3.7.0 |
 
 ## Values
 
@@ -106,6 +106,7 @@ Official Elastic helm chart for Elasticsearch
 | schedulerName | string | `""` |  |
 | secretMounts | list | `[]` |  |
 | securityContext.capabilities.drop[0] | string | `"ALL"` |  |
+| securityContext.enabled | bool | `true` |  |
 | securityContext.runAsNonRoot | bool | `true` |  |
 | securityContext.runAsUser | int | `1000` |  |
 | service.annotations | object | `{}` |  |
