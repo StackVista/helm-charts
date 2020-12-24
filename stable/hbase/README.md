@@ -1,6 +1,6 @@
 # hbase
 
-![Version: 0.1.60](https://img.shields.io/badge/Version-0.1.60-informational?style=flat-square) ![AppVersion: 1.2.6](https://img.shields.io/badge/AppVersion-1.2.6-informational?style=flat-square)
+![Version: 0.1.61](https://img.shields.io/badge/Version-0.1.61-informational?style=flat-square) ![AppVersion: 1.2.6](https://img.shields.io/badge/AppVersion-1.2.6-informational?style=flat-square)
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
@@ -113,7 +113,11 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | hdfs.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | hdfs.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
 | hdfs.volumePermissions.enabled | bool | `true` | Whether to explicitly change the volume permissions for the data/name nodes |
-| hdfs.volumePermissions.securityContext.enabled | bool | `true` |  |
+| hdfs.volumePermissions.securityContext.allowPrivilegeEscalation | bool | `true` | Run the volumePermissions init container with privilege escalation mode (Do not change unless instructed) |
+| hdfs.volumePermissions.securityContext.enabled | bool | `true` | Whether to add a securityContext to the volumePermissions init container |
+| hdfs.volumePermissions.securityContext.privileged | bool | `true` | Run the volumePermissions init container in privileged mode (required for plain K8s, not for OpenShift) |
+| hdfs.volumePermissions.securityContext.runAsNonRoot | bool | `false` | Run the volumePermissions init container in non-root required mode (Do not change unless instructed) |
+| hdfs.volumePermissions.securityContext.runAsUser | int | `0` | Run the volumePermissions init container with the specified UID (Do not change unless instructed) |
 | securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the container. |
 | securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all containers. |
 | securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all containers. |

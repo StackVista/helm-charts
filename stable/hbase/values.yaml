@@ -152,7 +152,16 @@ hdfs:
     # hdfs.volumePermissions.enabled -- Whether to explicitly change the volume permissions for the data/name nodes
     enabled: true
     securityContext:
+      # hdfs.volumePermissions.securityContext.enabled -- Whether to add a securityContext to the volumePermissions init container
       enabled: true
+      # hdfs.volumePermissions.securityContext.privileged -- Run the volumePermissions init container in privileged mode (required for plain K8s, not for OpenShift)
+      privileged: true
+      # hdfs.volumePermissions.securityContext.allowPrivilegeEscalation -- Run the volumePermissions init container with privilege escalation mode (Do not change unless instructed)
+      allowPrivilegeEscalation: true
+      # hdfs.volumePermissions.securityContext.runAsNonRoot -- Run the volumePermissions init container in non-root required mode (Do not change unless instructed)
+      runAsNonRoot: false
+      # hdfs.volumePermissions.securityContext.runAsUser -- Run the volumePermissions init container with the specified UID (Do not change unless instructed)
+      runAsUser: 0
   datanode:
     extraEnv:
       # hdfs.datanode.extraEnv.open -- Extra open environment variables to inject into pods.
