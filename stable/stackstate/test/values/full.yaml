@@ -26,3 +26,5 @@ stackstate:
 hbase:
   all:
     image:
+anomaly-detection:
+  enabled: true
