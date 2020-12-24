@@ -1,6 +1,6 @@
 # kafka
 
-![Version: 12.2.4](https://img.shields.io/badge/Version-12.2.4-informational?style=flat-square) ![AppVersion: 2.6.0](https://img.shields.io/badge/AppVersion-2.6.0-informational?style=flat-square)
+![Version: 12.2.5-stackstate.0](https://img.shields.io/badge/Version-12.2.5--stackstate.0-informational?style=flat-square) ![AppVersion: 2.6.0](https://img.shields.io/badge/AppVersion-2.6.0-informational?style=flat-square)
 
 Apache Kafka is a distributed streaming platform.
 
@@ -154,6 +154,7 @@ Apache Kafka is a distributed streaming platform.
 | podAnnotations | object | `{}` |  |
 | podAntiAffinityPreset | string | `"soft"` |  |
 | podLabels | object | `{}` |  |
+| podSecurityContext.enabled | bool | `true` |  |
 | podSecurityContext.fsGroup | int | `1001` |  |
 | podSecurityContext.runAsUser | int | `1001` |  |
 | priorityClassName | string | `""` |  |
