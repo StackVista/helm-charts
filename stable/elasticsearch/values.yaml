@@ -45,8 +45,8 @@ secretMounts: []
 #    secretName: elastic-certificates
 #    path: /usr/share/elasticsearch/config/certs
 
-imageRegistry: "docker.elastic.co"
-imageRepository: "elasticsearch/elasticsearch"
+imageRegistry: "docker.io"
+imageRepository: "stackstate/elasticsearch"
 imageTag: "7.6.2"
 imagePullPolicy: "IfNotPresent"
 
