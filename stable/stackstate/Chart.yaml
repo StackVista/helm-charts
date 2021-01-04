@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 4.2.1
-version: 4.2.1
+version: 4.2.2-developing.1
 description: Helm chart for StackState
 keywords:
   - aiops
@@ -37,7 +37,7 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     condition: zookeeper.enabled
   - name: anomaly-detection
-    version: 4.1.23
+    version: 4.1.27
     repository: https://helm.stackstate.io
     condition: anomaly-detection.enabled
   - name: cluster-agent
