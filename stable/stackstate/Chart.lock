@@ -7,10 +7,10 @@ dependencies:
   version: 7.6.2-stackstate.11
 - name: hbase
   repository: https://helm.stackstate.io
-  version: 0.1.44
+  version: 0.1.62
 - name: kafka
-  repository: https://charts.bitnami.com/bitnami
-  version: 11.7.1
+  repository: https://helm.stackstate.io
+  version: 12.2.5-stackstate.0
 - name: zookeeper
   repository: https://charts.bitnami.com/bitnami
   version: 5.16.0
@@ -19,6 +19,6 @@ dependencies:
   version: 4.1.27
 - name: cluster-agent
   repository: https://helm.stackstate.io
-  version: 0.4.9
-digest: sha256:e0c51907045f646d44a20e64ef88ad469baa843d3182f7b76950658b2295ec46
-generated: "2021-01-04T14:27:56.398434+01:00"
+  version: 0.4.11
+digest: sha256:17513d4b63cdd0fbde6804cb52c0845d1e69074fd3c2cd9e445f3714217ae5f0
+generated: "2021-01-05T12:39:45.362019+01:00"

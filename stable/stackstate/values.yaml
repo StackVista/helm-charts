@@ -70,6 +70,15 @@ stackstate:
           additionalLabels: {}
           # stackstate.components.all.metrics.servicemonitor.enabled -- Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled.
           enabled: false
+      securityContext:
+        # stackstate.components.all.securityContext.enabled -- Whether or not to enable the securityContext
+        enabled: true
+        # stackstate.components.all.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
+        runAsNonRoot: true
+        # stackstate.components.all.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
+        runAsGroup: 65534
+        # stackstate.components.all.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
+        runAsUser: 65534
       # stackstate.components.all.elasticsearchEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster.
       elasticsearchEndpoint: ""
       # stackstate.components.all.kafkaEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker.
@@ -497,6 +506,15 @@ stackstate:
         requests:
           cpu: "50m"
           memory: "64Mi"
+      securityContext:
+        # stackstate.components.ui.securityContext.enabled -- Whether or not to enable the securityContext
+        enabled: true
+        # stackstate.components.ui.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
+        runAsNonRoot: true
+        # stackstate.components.ui.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
+        runAsGroup: 101
+        # stackstate.components.ui.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
+        runAsUser: 101
       # stackstate.components.ui.replicaCount -- Number of `ui` replicas.
       replicaCount: 2
       # stackstate.components.ui.nodeSelector -- Node labels for pod assignment.
@@ -549,6 +567,15 @@ stackstate:
         repository: bitnami/kafka
         # stackstate.components.kafkaTopicCreate.image.tag -- Container image tag for kafka-topic-create containers.
         tag: latest
+      securityContext:
+        # stackstate.components.kafkaTopicCreate.securityContext.enabled -- Whether or not to enable the securityContext
+        enabled: true
+        # stackstate.components.kafkaTopicCreate.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
+        runAsNonRoot: true
+        # stackstate.components.kafkaTopicCreate.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
+        runAsGroup: 1001
+        # stackstate.components.kafkaTopicCreate.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
+        runAsUser: 1001
     nginxPrometheusExporter:
       image:
         # stackstate.components.nginxPrometheusExporter.image.registry -- Base container image registry for nginx-prometheus-exporter containers.
@@ -702,12 +729,11 @@ kafka:
   ## kafka.transactionStateLogReplicationFactor -- The replication factor for the transaction topic
   transactionStateLogReplicationFactor: 2
   # kafka.extraDeploy -- Array of extra objects to deploy with the release
-  extraDeploy: |-
+  extraDeploy:
     - apiVersion: v1
       kind: ConfigMap
       metadata:
-       name: kafka-custom-scripts
-       labels: {{- include "kafka.labels" . | nindent 4 }}
+        name: kafka-custom-scripts
       data:
         custom-setup.sh: |-
           #!/bin/bash
