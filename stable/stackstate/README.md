@@ -6,6 +6,18 @@ Current chart version is `4.3.0-snapshot.1`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
+| https://helm.stackstate.io | anomaly-detection | 4.1.27 |
+| https://helm.stackstate.io | cluster-agent | 0.4.11 |
+| https://helm.stackstate.io | common | 0.4.13 |
+| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.11 |
+| https://helm.stackstate.io | hbase | 0.1.62 |
+| https://helm.stackstate.io | kafka | 12.2.5-stackstate.0 |
+
 ## Required Values
 
 In order to successfully install this chart, you **must** provide the following variables:
