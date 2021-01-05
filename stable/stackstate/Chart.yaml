@@ -17,6 +17,14 @@ maintainers:
     email: vpartington@stackstate.com
 name: stackstate
 dependencies:
+  - name: anomaly-detection
+    version: 4.3.0-pre.1
+    repository: https://helm.stackstate.io
+    condition: anomaly-detection.enabled
+  - name: cluster-agent
+    version: 0.4.11
+    repository: https://helm.stackstate.io
+    condition: cluster-agent.enabled
   - name: common
     repository: https://helm.stackstate.io
     version: 0.4.13
@@ -32,6 +40,10 @@ dependencies:
     condition: kafka.enabled
     repository: https://helm.stackstate.io
     version: 12.2.5-stackstate.0
+  - name: minio
+    repository: https://helm.min.io/
+    version: 8.0.8
+    condition: minio.enabled
   - name: zookeeper
     version: 5.16.0
     repository: https://charts.bitnami.com/bitnami
@@ -40,7 +52,3 @@ dependencies:
     version: 4.1.27
     repository: https://helm.stackstate.io
     condition: anomaly-detection.enabled
-  - name: cluster-agent
-    version: 0.4.11
-    repository: https://helm.stackstate.io
-    condition: cluster-agent.enabled

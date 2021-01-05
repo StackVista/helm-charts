@@ -2,6 +2,48 @@
 # StackState values #
 #####################
 
+global:
+  # global.receiverApiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
+  receiverApiKey: ""
+# commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
+commonLabels: {}
+backup:
+  elasticSearch:
+    # backup.elasticSearch.enabled -- Enable automatic ElasticSearch backups.
+    enabled: false
+    # backup.elasticSearch.schedule -- Cron schedule for automatic ElasticSearch backups.
+    schedule: '0 3 * * *'
+    # backup.elasticSearch.bucketName -- Name of the MinIO bucket to store ElasticSearch snapshots.
+    bucketName: 'sts-elasticsearch-backup'
+    # backup.elasticSearch.indices -- ElasticSearch indeces to snapshot (in JSON list format).
+    indices: '["*"]'
+    # backup.elasticSearch.snapshotRepositoryName -- Name for the ElasticSearch snapshot repository.
+    snapshotRepositoryName: 'sts-backup'
+    # backup.elasticSearch.snapshotPolicyName -- Name for the ElasticSearch snapshot policy.
+    snapshotPolicyName: 'auto-sts-backup'
+    # backup.elasticSearch.snapshotNameTemplate -- Template for the ElasticSearch snapshot name.
+    snapshotNameTemplate: "<sts-backup-{now{yyyyMMdd-HHmm}}>"
+    # backup.elasticSearch.snapshotRetentionExpireAfter -- Number of days to keep ElasticSearch snapshots. *Note:* By default, the retention task itself runs daily at 1:30 AM UTC, see https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule
+    snapshotRetentionExpireAfter: "30d"
+    # backup.elasticSearch.snapshotRetentionMinCount -- Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself runs daily at 1:30 AM UTC, see https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule
+    snapshotRetentionMinCount: "5"
+    # backup.elasticSearch.snapshotRetentionMaxCount -- Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself runs daily at 1:30 AM UTC, see https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule
+    snapshotRetentionMaxCount: "30"
+  stackGraph:
+    # backup.stackGraph.enabled -- Enable automatic StackGraph backups.
+    enabled: false
+    # backup.stackGraph.schedule -- Cron schedule for automatic StackGraph backups.
+    schedule: '0 0 3 * * ?'
+    # backup.stackGraph.bucketName -- Name of the MinIO bucket to store StackGraph backups.
+    bucketName: 'sts-stackgraph-backup'
+    # backup.stackGraph.backupNameTemplate -- Template for the StackGraph backup name.
+    backupNameTemplate: 'sts-backup-$(date +%Y%m%d-%H%M).graph'
+    # backup.stackGraph.backupNameParseRegexp -- Regular expression to retrieve date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`.
+    backupNameParseRegexp: 'sts-backup-([0-9]*-[0-9]*).graph'
+    # backup.stackGraph.backupDatetimeParseFormat -- Format to parse date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`.
+    backupDatetimeParseFormat: '%Y%m%d-%H%M'
+    # backup.stackGraph.backupRetentionTimeDelta -- Time to keep StackGraph backups in [Python timedelta format](https://docs.python.org/3/library/datetime.html#timedelta-objects).
+    backupRetentionTimeDelta: 'days = 30'
 caspr:
   # caspr.enabled -- Enable CASPR compatible values.
   enabled: false
@@ -33,11 +75,6 @@ networkPolicy:
       matchLabels: {}
     policyTypes:
       - Ingress
-global:
-  # global.receiverApiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
-  receiverApiKey: ""
-# commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
-commonLabels: {}
 stackstate:
   components:
     all:
@@ -83,6 +120,10 @@ stackstate:
       elasticsearchEndpoint: ""
       # stackstate.components.all.kafkaEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker.
       kafkaEndpoint: ""
+      # stackstate.components.all.minoEndpoint -- **Required if `minio.enabled` is `false`** Endpoint for shared MinIO cluster.
+      minioEndpoint: ""
+      # stackstate.components.all.minoEndpoint -- **Required if `minio.enabled` is `false`** Name of Secret that contains MinIO keys.
+      minioKeys: ""
       # stackstate.components.all.zookeeperEndpoint -- **Required if `zookeeper.enabled` is `false`** Endpoint for shared Zookeeper nodes.
       zookeeperEndpoint: ""
       # stackstate.components.all.nodeSelector -- Node labels for pod assignment on all components.
@@ -760,8 +801,14 @@ elasticsearch:
       value: "true"
     - name: indices.query.bool.max_clause_count
       value: "10000"
-  # elasticsearch.imageTag -- Elasticsearch version.
-  imageTag: "7.4.1"
+  # elasticsearch.keystore -- ElasticSearch keystore for access to Minio. Remove this if you set `minio.enabled` to `false`
+  keystore:
+    - secretName: stackstate-minio
+      items:
+        - key: accesskey
+          path: s3.client.minio.access_key
+        - key: secretkey
+          path: s3.client.minio.secret_key
   # elasticsearch.minimumMasterNodes -- Minimum number of Elasticsearch master nodes.
   minimumMasterNodes: 2
   nodeGroup: "master"
@@ -992,6 +1039,15 @@ kafka:
   # kafka.zookeeper.enabled -- Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**.
   zookeeper:
     enabled: false
+minio:
+  # minio.accessKey -- Access key for Minio. Default is set to an invalid value that will cause Minio to not start up to ensure users of this Helm chart set an explicit value.
+  accessKey: setme
+  # minio.enabled -- Enables Minio for local backups. If you disable Minio, also override `elasticsearch.keystore` to not load the Minio keys into the ElasticSearch configuration
+  enabled: true
+  # minio.fullnameOverride -- **N.B.: Do not change this value!** The fullname override for Minio subchart is hardcoded so that this chart can refer to its components.
+  fullnameOverride: stackstate-minio
+  # minio.accessKey - Secret key for Minio. Default is set to an invalid value that will cause Minio to not start up to ensure users of this Helm chart set an explicit value.
+  secretKey: setme
 zookeeper:
   # zookeeper.enabled -- Enable / disable chart-based Zookeeper.
   enabled: true

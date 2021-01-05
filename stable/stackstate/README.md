@@ -11,7 +11,9 @@ Current chart version is `4.2.3`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
+| https://helm.min.io/ | minio | 8.0.8 |
 | https://helm.stackstate.io | anomaly-detection | 4.1.27 |
+| https://helm.stackstate.io | anomaly-detection | 4.3.0-pre.1 |
 | https://helm.stackstate.io | cluster-agent | 0.4.11 |
 | https://helm.stackstate.io | common | 0.4.13 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.10 |
@@ -58,6 +60,23 @@ stackstate/stackstate
 | anomaly-detection.stackstate.password | string | `nil` | Stackstate Password used by spotlight for authentication, it is expected to be set only in case if authType = "cookie" |
 | anomaly-detection.stackstate.username | string | `nil` | Stackstate Username used by spotlight for authentication, it is expected to be set only in case if authType = "cookie" |
 | anomaly-detection.threadWorkers | int | `5` | The number of worker threads. |
+| backup.elasticSearch.bucketName | string | `"sts-elasticsearch-backup"` | Name of the MinIO bucket to store ElasticSearch snapshots. |
+| backup.elasticSearch.enabled | bool | `false` | Enable automatic ElasticSearch backups. |
+| backup.elasticSearch.indices | string | `"[\"*\"]"` | ElasticSearch indeces to snapshot (in JSON list format). |
+| backup.elasticSearch.schedule | string | `"0 3 * * *"` | Cron schedule for automatic ElasticSearch backups. |
+| backup.elasticSearch.snapshotNameTemplate | string | `"<sts-backup-{now{yyyyMMdd-HHmm}}>"` | Template for the ElasticSearch snapshot name. |
+| backup.elasticSearch.snapshotPolicyName | string | `"auto-sts-backup"` | Name for the ElasticSearch snapshot policy. |
+| backup.elasticSearch.snapshotRepositoryName | string | `"sts-backup"` | Name for the ElasticSearch snapshot repository. |
+| backup.elasticSearch.snapshotRetentionExpireAfter | string | `"30d"` | Number of days to keep ElasticSearch snapshots. *Note:* By default, the retention task itself runs daily at 1:30 AM UTC, see https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule |
+| backup.elasticSearch.snapshotRetentionMaxCount | string | `"30"` | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself runs daily at 1:30 AM UTC, see https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule |
+| backup.elasticSearch.snapshotRetentionMinCount | string | `"5"` | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself runs daily at 1:30 AM UTC, see https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule |
+| backup.stackGraph.backupDatetimeParseFormat | string | `"%Y%m%d-%H%M"` | Format to parse date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`. |
+| backup.stackGraph.backupNameParseRegexp | string | `"sts-backup-([0-9]*-[0-9]*).graph"` | Regular expression to retrieve date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`. |
+| backup.stackGraph.backupNameTemplate | string | `"sts-backup-$(date +%Y%m%d-%H%M).graph"` | Template for the StackGraph backup name. |
+| backup.stackGraph.backupRetentionTimeDelta | string | `"days = 30"` | Time to keep StackGraph backups in [Python timedelta format](https://docs.python.org/3/library/datetime.html#timedelta-objects). |
+| backup.stackGraph.bucketName | string | `"sts-stackgraph-backup"` | Name of the MinIO bucket to store StackGraph backups. |
+| backup.stackGraph.enabled | bool | `false` | Enable automatic StackGraph backups. |
+| backup.stackGraph.schedule | string | `"0 0 3 * * ?"` | Cron schedule for automatic StackGraph backups. |
 | caspr.enabled | bool | `false` | Enable CASPR compatible values. |
 | cluster-agent.enabled | bool | `false` | Deploy the StackState Kubernetes Agent so StackState can monitor the cluster it runs in |
 | cluster-agent.stackstate.cluster.authToken | string | `nil` |  |
@@ -81,7 +100,7 @@ stackstate/stackstate
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
 | elasticsearch.esJavaOpts | string | `"-Xmx3g -Xms3g"` | JVM options |
 | elasticsearch.extraEnvs | list | `[{"name":"action.auto_create_index","value":"true"},{"name":"indices.query.bool.max_clause_count","value":"10000"}]` | Extra settings that StackState uses for Elasticsearch. |
-| elasticsearch.imageTag | string | `"7.4.1"` | Elasticsearch version. |
+| elasticsearch.keystore | list | `[{"items":[{"key":"accesskey","path":"s3.client.minio.access_key"},{"key":"secretkey","path":"s3.client.minio.secret_key"}],"secretName":"stackstate-minio"}]` | ElasticSearch keystore for access to Minio. Remove this if you set `minio.enabled` to `false` |
 | elasticsearch.minimumMasterNodes | int | `2` | Minimum number of Elasticsearch master nodes. |
 | elasticsearch.nodeGroup | string | `"master"` |  |
 | elasticsearch.replicas | int | `3` | Number of Elasticsearch replicas. |
@@ -160,6 +179,10 @@ stackstate/stackstate
 | kafka.transactionStateLogReplicationFactor | int | `2` |  |
 | kafka.volumePermissions.enabled | bool | `false` |  |
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
+| minio.accessKey | string | `"setme"` | Access key for Minio. Default is set to an invalid value that will cause Minio to not start up to ensure users of this Helm chart set an explicit value. |
+| minio.enabled | bool | `true` | Enables Minio for local backups. If you disable Minio, also override `elasticsearch.keystore` to not load the Minio keys into the ElasticSearch configuration |
+| minio.fullnameOverride | string | `"stackstate-minio"` | **N.B.: Do not change this value!** The fullname override for Minio subchart is hardcoded so that this chart can refer to its components. |
+| minio.secretKey | string | `"setme"` |  |
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
 | stackstate.admin.authentication.password | string | `nil` | Password used for maintenance "admin" api's (low-level tools) of the various services, username: admin |
@@ -190,6 +213,8 @@ stackstate/stackstate
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
 | stackstate.components.all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
 | stackstate.components.all.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
+| stackstate.components.all.minioEndpoint | string | `""` |  |
+| stackstate.components.all.minioKeys | string | `""` |  |
 | stackstate.components.all.nodeSelector | object | `{}` | Node labels for pod assignment on all components. |
 | stackstate.components.all.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
 | stackstate.components.all.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
