@@ -6,6 +6,7 @@ integration_test_stackstate:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
@@ -512,6 +513,7 @@ push_test_charts:
     - .gitlab/push_before_script.sh
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
@@ -572,6 +574,7 @@ test_aws-amicleaner:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
@@ -597,6 +600,7 @@ test_aws-nuke:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
@@ -622,6 +626,7 @@ test_chartmuseum:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
@@ -647,6 +652,7 @@ test_cluster-agent:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
@@ -672,6 +678,7 @@ test_common:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
@@ -697,6 +704,7 @@ test_elasticsearch:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
@@ -722,6 +730,7 @@ test_gitlab-runner:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
@@ -747,6 +756,7 @@ test_gitlab-steward:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
@@ -772,6 +782,7 @@ test_hbase:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
@@ -797,6 +808,7 @@ test_iceman:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
@@ -822,6 +834,7 @@ test_kafka:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
@@ -847,6 +860,7 @@ test_sandbox-operator:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
@@ -872,6 +886,7 @@ test_stackstate:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
@@ -897,6 +912,7 @@ test_stackstate-standalone:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
@@ -922,6 +938,7 @@ test_trafficmirror:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io

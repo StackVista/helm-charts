@@ -1,0 +1,40 @@
+{{- if .Values.backup.stackGraph.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ template "common.fullname.short" . }}-backup-stackgraph
+spec:
+  concurrencyPolicy: Forbid
+  schedule: {{ .Values.backup.stackGraph.schedule | quote }}
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      ttlSecondsAfterFinished: 600
+      template:
+        spec:
+          initContainers:
+            - name: wait
+              command:
+                - sh
+                - -c
+                - |
+                  /entrypoint -c {{ include "stackstate.es.endpoint" . }},{{ include "stackstate.minio.endpoint" . }},{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn-headful:9000,{{ template "common.fullname.short" . }}-initializer:1618 -t 300
+              image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+              imagePullPolicy: Always
+          containers:
+            - name: backup-stackgraph
+              image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.server.image.tag }}"
+              imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
+              command:
+                - '/backup-restore-scripts/backup-stackgraph.sh'
+              env:
+                {{- include "stackstate.backup.envvars" . | nindent 16 }}
+                - name: ZOOKEEPER_QUORUM
+                  value: stackstate-zookeeper-headless:2181
+              volumeMounts:
+                {{- include "stackstate.backup.volumeMounts" . | nindent 16 }}
+          {{ include "stackstate.image.pullSecret.name" . | nindent 10 }}
+          volumes:
+            {{- include "stackstate.backup.volumes" . | nindent 12 }}
+          restartPolicy: Never
+{{- end }}
