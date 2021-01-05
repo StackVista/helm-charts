@@ -68,4 +68,7 @@ readinessProbe:
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
+{{- if .Values.stackstate.components.all.securityContext.enabled }}
+securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 2 }}
+{{- end }}
 {{- end -}}
