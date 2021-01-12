@@ -153,9 +153,9 @@ hdfs:
     # hdfs.image.pullPolicy -- Pull policy for HDFS datanode.
     pullPolicy: Always
     # hdfs.image.repository -- Base container image repository for HDFS datanode.
-    repository: stackstate/hadoop
+    repository: stackstate/hadoop-test
     # hdfs.image.tag -- Default container image tag for HDFS datanode.
-    tag: 2.9.2-java11
+    tag: datadir-2.9.2-java11
   securityContext:
     # hdfs.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.
     enabled: true
@@ -163,20 +163,7 @@ hdfs:
     runAsGroup: 65534
     # hdfs.securityContext.runAsUser -- UID of the Linux user to use for all pod.
     runAsUser: 65534
-  volumePermissions:
-    # hdfs.volumePermissions.enabled -- Whether to explicitly change the volume permissions for the data/name nodes
-    enabled: true
-    securityContext:
-      # hdfs.volumePermissions.securityContext.enabled -- Whether to add a securityContext to the volumePermissions init container
-      enabled: true
-      # hdfs.volumePermissions.securityContext.privileged -- Run the volumePermissions init container in privileged mode (required for plain K8s, not for OpenShift)
-      privileged: true
-      # hdfs.volumePermissions.securityContext.allowPrivilegeEscalation -- Run the volumePermissions init container with privilege escalation mode (Do not change unless instructed)
-      allowPrivilegeEscalation: true
-      # hdfs.volumePermissions.securityContext.runAsNonRoot -- Run the volumePermissions init container in non-root required mode (Do not change unless instructed)
-      runAsNonRoot: false
-      # hdfs.volumePermissions.securityContext.runAsUser -- Run the volumePermissions init container with the specified UID (Do not change unless instructed)
-      runAsUser: 0
+    fsGroup: 65534
   datanode:
     extraEnv:
       # hdfs.datanode.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -304,10 +291,6 @@ tephra:
 serviceAccount:
   # serviceAccount.create -- Whether to create serviceAccounts and run the statefulsets under them
   create: true
-
-volumePermissions:
-  # volumePermissions.enabled -- Whether to explicitly change the volume permissions for the data/name nodes
-  enabled: true
 
 ##########################
 # Common chart overrides #

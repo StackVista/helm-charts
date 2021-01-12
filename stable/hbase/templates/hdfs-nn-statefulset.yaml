@@ -1,15 +1,17 @@
 {{- define "hbase.hdfs.namenode.container.init" -}}
 name: namenode-init
 command:
-- sh
+- bash
 - -c
 - |
-  chown -R {{ .Values.hdfs.securityContext.runAsUser }}:{{ .Values.hdfs.securityContext.runAsGroup }} /hadoop-data
+  mkdir -p /hadoop-data/data
+  # migrate old data directory location
+  if [ -e /hadoop-data/current ]; then
+    GLOBIGNORE=data
+    mv /hadoop-data/* /hadoop-data/data/
+  fi
 image: "{{include "wait.image.registry" .}}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
 imagePullPolicy: Always
-{{- if .Values.hdfs.volumePermissions.securityContext.enabled }}
-securityContext: {{- omit .Values.hdfs.volumePermissions.securityContext "enabled" | toYaml | nindent 2 }}
-{{- end }}
 volumeMounts:
 - name: data
   mountPath: /hadoop-data
@@ -85,10 +87,8 @@ spec:
       {{- if .Values.hdfs.securityContext.enabled }}
       securityContext: {{- omit .Values.hdfs.securityContext "enabled" | toYaml | nindent 8 }}
       {{- end }}
-      {{- if .Values.volumePermissions.enabled }}
       initContainers:
       - {{ toYaml $stackstateHbaseHdfsNamenodeInitContainer | nindent 8 }}
-      {{- end }}
       containers:
       - {{ toYaml $stackstateHbaseHdfsNamenodeContainer | nindent 8 }}
     {{- if or .Values.all.nodeSelector .Values.hdfs.namenode.nodeSelector }}
