@@ -6,8 +6,6 @@ data:
 {{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "WARN" "AdditionalLogging" .Values.stackstate.components.receiver.additionalLogging) .) | nindent 4 -}}
 {{- end -}}
 
-{{- if .Values.stackstate.experimental.server.split }}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $stackstateReceiverLogConfigMap := fromYaml (include "stackstate.receiver.configmap-log" .) -}}
 {{- toYaml (merge $stackstateReceiverLogConfigMap $commonConfigMap) -}}
-{{- end -}}
