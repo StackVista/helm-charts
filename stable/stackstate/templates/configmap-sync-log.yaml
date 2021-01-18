@@ -5,6 +5,9 @@ data:
   logback.groovy: |
 {{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "WARN" "AdditionalLogging" .Values.stackstate.components.sync.additionalLogging) .) | nindent 4 -}}
 {{- end -}}
+
+{{- if .Values.stackstate.experimental.server.split }}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $stackstateSyncLogConfigMap := fromYaml (include "stackstate.sync.configmap-log" .) -}}
 {{- toYaml (merge $stackstateSyncLogConfigMap $commonConfigMap) -}}
+{{- end -}}

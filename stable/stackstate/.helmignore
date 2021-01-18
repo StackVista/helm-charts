@@ -20,3 +20,8 @@
 .idea/
 *.tmproj
 .vscode/
+test/
+itest/
+installation/
+ci/
+auth-demo/

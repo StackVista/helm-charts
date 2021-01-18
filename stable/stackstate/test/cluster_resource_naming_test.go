@@ -10,7 +10,7 @@ import (
 )
 
 func TestClusterRoleDeployedToSameNamespaceAsChartName(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplateOpts(t, "stackstate", &helm.Options{
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "stackstate", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
 		},
@@ -28,7 +28,7 @@ func TestClusterRoleDeployedToSameNamespaceAsChartName(t *testing.T) {
 	require.Equal(t, "stackstate-authorization", resources.ClusterRoles[0].Name)
 }
 func TestClusterRoleDeployedToDifferentNamespaceAsChartName(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplateOpts(t, "stackstate", &helm.Options{
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "stackstate", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
 		},
@@ -47,7 +47,7 @@ func TestClusterRoleDeployedToDifferentNamespaceAsChartName(t *testing.T) {
 }
 
 func TestClusterRoleNameWhenNamespaceReleaseNameAndChartNameAllDifferent(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplateOpts(t, "stacky", &helm.Options{
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "stacky", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
 		},

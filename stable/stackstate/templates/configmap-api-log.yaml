@@ -3,8 +3,11 @@ metadata:
   name: {{ template "common.fullname.short" . }}-api-log
 data:
   logback.groovy: |
-{{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "WARN") .) | nindent 4 -}}
+{{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "WARN" "AdditionalLogging" .Values.stackstate.components.api.additionalLogging) .) | nindent 4 -}}
 {{- end -}}
+
+{{- if .Values.stackstate.experimental.server.split }}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $stackstateApiLogConfigMap := fromYaml (include "stackstate.api.configmap-log" .) -}}
 {{- toYaml (merge $stackstateApiLogConfigMap $commonConfigMap) -}}
+{{- end -}}

@@ -77,7 +77,7 @@ resources:
 securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 2 }}
 {{- end }}
 volumeMounts:
-- name: config-volume
+- name: config-secrets-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
 - name: config-volume-log
@@ -105,7 +105,6 @@ spec:
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.viewHealth.secret.checksum" . | nindent 8 }}
-        {{- include "stackstate.viewHealth.configmap.checksum" . | nindent 8 }}
       labels:
         app.kubernetes.io/component: view-health
     spec:
@@ -151,9 +150,9 @@ spec:
       {{- end }}
     {{- end }}
       volumes:
-        - name: config-volume
-          configMap:
-            name: {{ template "common.fullname.short" . }}-view-health
+        - name: config-secrets-volume
+          secret:
+            secretName: {{ template "common.fullname.short" . }}-view-health
         - name: config-volume-log
           configMap:
             name: {{ template "common.fullname.short" . }}-view-health-log
