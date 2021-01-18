@@ -172,7 +172,7 @@ stackstate.api.authentication.authServer.stackstateAuthServer {
 
 {{- if gt (len $authTypes) 1 -}}
 {{- fail "More than 1 authentication mechanism specified. Please configure only one from: keycloak, oidc or ldap. If none are configured the default admin user will be made available with the stackstate.authentication.adminPassword." -}}
-{{- end -}}
+{{- end }}
 
 stackstate.api.authentication.sessionLifetime =  {{ .Values.stackstate.authentication.sessionLifetime | toJson }}
 
