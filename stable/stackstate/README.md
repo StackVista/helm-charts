@@ -146,7 +146,7 @@ stackstate/stackstate
 | stackstate.components.all.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
 | stackstate.components.all.image.pullSecretPassword | string | `nil` |  |
 | stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
-| stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
+| stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
 | stackstate.components.all.image.repositorySuffix | string | `"-stable"` |  |
 | stackstate.components.all.image.tag | string | `"4.2.2"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
@@ -188,6 +188,9 @@ stackstate/stackstate
 | stackstate.components.checks.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.checks.sizing.javaHeapMemoryFraction | string | `"70"` |  |
 | stackstate.components.checks.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.containerTools.image.registry | string | `"quay.io"` | Base container image registry for container-tools containers. |
+| stackstate.components.containerTools.image.repository | string | `"stackstate/container-tools"` | Base container image repository for container-tools containers. |
+| stackstate.components.containerTools.image.tag | string | `"1.0.0"` | Container image tag for container-tools containers. |
 | stackstate.components.correlate.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.correlate.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.correlate.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
