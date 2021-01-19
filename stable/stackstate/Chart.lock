@@ -6,8 +6,8 @@ dependencies:
   repository: https://helm.stackstate.io
   version: 7.6.2-stackstate.10
 - name: hbase
-  repository: https://helm.stackstate.io
-  version: 0.1.62
+  repository: https://helm-test.stackstate.io
+  version: 0.1.63-1
 - name: kafka
   repository: https://helm.stackstate.io
   version: 12.2.5-stackstate.0
@@ -20,5 +20,5 @@ dependencies:
 - name: cluster-agent
   repository: https://helm.stackstate.io
   version: 0.4.11
-digest: sha256:7046368405549f584aeb17067a970cd7b76e82ff89b147cf1d5a094d834f446f
-generated: "2021-01-04T08:58:36.7665015Z"
+digest: sha256:96a1a103827f2fa5acdd6f450da900e805b60bf2e2fe7ee692ad67d2e07b8855
+generated: "2021-01-19T10:43:38.088233667+01:00"
