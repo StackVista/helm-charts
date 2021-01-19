@@ -8,7 +8,7 @@ command:
   mkdir -p /hadoop-data/data
   # migrate old data directory location
   if [ -e /hadoop-data/current ]; then
-    GLOBIGNORE=data
+    GLOBIGNORE=data:lost+found
     mv /hadoop-data/* /hadoop-data/data/
   fi
   {{- if .Values.hdfs.volumePermissions.enabled }}
