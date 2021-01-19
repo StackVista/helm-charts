@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 4.2.2
-version: 4.2.2-1
+version: 4.2.2-2
 description: Helm chart for StackState
 keywords:
   - aiops
@@ -26,8 +26,8 @@ dependencies:
     version: 7.6.2-stackstate.10
   - name: hbase
     condition: hbase.enabled
-    repository: https://helm.stackstate.io
-    version: 0.1.62
+    repository: https://helm-test.stackstate.io
+    version: 0.1.63
   - name: kafka
     condition: kafka.enabled
     repository: https://helm.stackstate.io
