@@ -738,6 +738,8 @@ kafka:
     servers: stackstate-zookeeper-headless
   # kafka.enabled -- Enable / disable chart-based Kafka.
   enabled: true
+  volumePermissions:
+    enabled: false
   ## kafka.defaultReplicationFactor -- Default replication factors for automatically created topics
   defaultReplicationFactor: 2
   ## kafka.offsetTopicReplicationFactor --  The replication factor for the offsets topic
