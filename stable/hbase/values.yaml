@@ -153,9 +153,9 @@ hdfs:
     # hdfs.image.pullPolicy -- Pull policy for HDFS datanode.
     pullPolicy: Always
     # hdfs.image.repository -- Base container image repository for HDFS datanode.
-    repository: stackstate/hadoop-test
+    repository: stackstate/hadoop
     # hdfs.image.tag -- Default container image tag for HDFS datanode.
-    tag: datadir-2.9.2-java11
+    tag: 2.9.2-java11-1
   securityContext:
     # hdfs.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.
     enabled: true

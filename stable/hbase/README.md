@@ -1,6 +1,6 @@
 # hbase
 
-![Version: 0.1.62](https://img.shields.io/badge/Version-0.1.62-informational?style=flat-square) ![AppVersion: 1.2.6](https://img.shields.io/badge/AppVersion-1.2.6-informational?style=flat-square)
+![Version: 0.1.63](https://img.shields.io/badge/Version-0.1.63-informational?style=flat-square) ![AppVersion: 1.2.6](https://img.shields.io/badge/AppVersion-1.2.6-informational?style=flat-square)
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
@@ -91,8 +91,8 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | hdfs.datanode.resources | object | `{"limits":{"memory":"4Gi"},"requests":{"cpu":"50m","memory":"2Gi"}}` | Resources to allocate for HDFS data nodes. |
 | hdfs.datanode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.image.pullPolicy | string | `"Always"` | Pull policy for HDFS datanode. |
-| hdfs.image.repository | string | `"stackstate/hadoop-test"` | Base container image repository for HDFS datanode. |
-| hdfs.image.tag | string | `"datadir-2.9.2-java11"` | Default container image tag for HDFS datanode. |
+| hdfs.image.repository | string | `"stackstate/hadoop"` | Base container image repository for HDFS datanode. |
+| hdfs.image.tag | string | `"2.9.2-java11-1"` | Default container image tag for HDFS datanode. |
 | hdfs.namenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.namenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hdfs.namenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
