@@ -156,6 +156,21 @@ hdfs:
     repository: stackstate/hadoop
     # hdfs.image.tag -- Default container image tag for HDFS datanode.
     tag: 2.9.2-java11-1
+  # hdfs.volumePermissions -- If permissions on volume mounts are not correct for whatever reason this can be used to set them properly
+  volumePermissions:
+    # hdfs.volumePermissions.enabled -- Whether to explicitly change the volume permissions for the data/name nodes, usually also requires enabling the securityContext because root user is required
+    enabled: false
+    securityContext:
+      # hdfs.volumePermissions.securityContext.enabled -- Whether to add a securityContext to the volumePermissions init container
+      enabled: false
+      # hdfs.volumePermissions.securityContext.privileged -- Run the volumePermissions init container in privileged mode (required for plain K8s, not for OpenShift)
+      privileged: true
+      # hdfs.volumePermissions.securityContext.allowPrivilegeEscalation -- Run the volumePermissions init container with privilege escalation mode (Do not change unless instructed)
+      allowPrivilegeEscalation: true
+      # hdfs.volumePermissions.securityContext.runAsNonRoot -- Run the volumePermissions init container in non-root required mode (Do not change unless instructed)
+      runAsNonRoot: false
+      # hdfs.volumePermissions.securityContext.runAsUser -- Run the volumePermissions init container with the specified UID (Do not change unless instructed)
+      runAsUser: 0
   securityContext:
     # hdfs.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.
     enabled: true

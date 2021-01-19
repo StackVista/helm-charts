@@ -11,8 +11,14 @@ command:
     GLOBIGNORE=data
     mv /hadoop-data/* /hadoop-data/data/
   fi
+  {{- if .Values.hdfs.volumePermissions.enabled }}
+  chown -R {{ .Values.hdfs.securityContext.runAsUser }}:{{ .Values.hdfs.securityContext.runAsGroup }} /hadoop-data
+  {{- end }}
 image: "{{include "wait.image.registry" .}}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
 imagePullPolicy: Always
+{{- if .Values.hdfs.volumePermissions.securityContext.enabled }}
+securityContext: {{- omit .Values.hdfs.volumePermissions.securityContext "enabled" | toYaml | nindent 2 }}
+{{- end }}
 volumeMounts:
 - name: data
   mountPath: /hadoop-data
