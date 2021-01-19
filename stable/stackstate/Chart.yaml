@@ -26,8 +26,8 @@ dependencies:
     version: 7.6.2-stackstate.11
   - name: hbase
     condition: hbase.enabled
-    repository: https://helm.stackstate.io
-    version: 0.1.62
+    repository: https://helm-test.stackstate.io
+    version: 0.1.63
   - name: kafka
     condition: kafka.enabled
     repository: https://helm.stackstate.io
