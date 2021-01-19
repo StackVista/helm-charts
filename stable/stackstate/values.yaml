@@ -47,7 +47,7 @@ stackstate:
         # stackstate.components.all.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object for all components.
         secret: {}
       image:
-        # stackstate.components.all.image.registry -- Base container image registry for all containers, except for the wait container
+        # stackstate.components.all.image.registry -- Base container image registry for all StackState containers, except for the wait container and the container-tools container
         registry: quay.io
         # stackstate.components.all.image.repositorySuffix - String to append to repositories for StackState components
         repositorySuffix: ""
@@ -584,6 +584,14 @@ stackstate:
         repository: nginx/nginx-prometheus-exporter
         # stackstate.components.nginxPrometheusExporter.image.tag -- Container image tag for nginx-prometheus-exporter containers.
         tag: 0.4.2
+    containerTools:
+      image:
+        # stackstate.components.containerTools.image.registry -- Base container image registry for container-tools containers.
+        registry: quay.io
+        # stackstate.components.containerTools.image.repository -- Base container image repository for container-tools containers.
+        repository: stackstate/container-tools
+        # stackstate.components.containerTools.image.tag -- Container image tag for container-tools containers.
+        tag: 1.0.0
     wait:
       image:
         # stackstate.components.wait.image.registry -- Base container image registry for wait containers.

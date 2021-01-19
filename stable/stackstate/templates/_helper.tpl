@@ -43,6 +43,17 @@ Return the image registry for the router container
 {{- end -}}
 
 {{/*
+Return the image registry for the container-tools containers
+*/}}
+{{- define "stackstate.containerTools.image.registry" -}}
+  {{- if .Values.global }}
+    {{- default .Values.stackstate.components.containerTools.image.registry .Values.global.imageRegistry -}}
+  {{- else -}}
+    {{- .Values.stackstate.components.containerTools.image.registry -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
 Return the image registry for the wait containers
 */}}
 {{- define "stackstate.wait.image.registry" -}}
@@ -457,7 +468,7 @@ in that case.
 */}}
 {{- define "stackstate.initContainer.ensure.no.server.statefulset.pod.are.running" -}}
 name: ensure-no-server-statefulset-pod-are-running
-image: vpartington/container-tools:latest
+image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
 command:
 - '/bin/bash'
 - '-c'
