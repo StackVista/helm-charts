@@ -11,7 +11,7 @@ Current chart version is `4.2.2-2`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
-| https://helm-test.stackstate.io | hbase | 0.1.63 |
+| https://helm-test.stackstate.io | hbase | 0.1.63-1 |
 | https://helm.stackstate.io | anomaly-detection | 4.1.27 |
 | https://helm.stackstate.io | cluster-agent | 0.4.11 |
 | https://helm.stackstate.io | common | 0.4.13 |
