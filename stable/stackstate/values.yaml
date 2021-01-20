@@ -2,6 +2,29 @@
 # StackState values #
 #####################
 
+global:
+  # global.receiverApiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
+  receiverApiKey: ""
+# commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
+commonLabels: {}
+backup:
+  # backup.schedule -- Cron schedule for automatic backups.
+  schedule: '0 3 * * *'
+  elasticSearch:
+    # backup.elasticSearch.enabled -- Enable automatic ElasticSearch backups.
+    enabled: true
+    # backup.elasticSearch.serviceName -- **N.B.: Do not change this value!** Name of the elasticsearch master service.
+    serviceName: "stackstate-elasticsearch-master"
+  stackGraph:
+    # backup.stackGraph.enabled -- Enable automatic StackGraph backups.
+    enabled: true
+  minio:
+    # backup.minio.serviceName -- **N.B.: Do not change this value!** Name of the Minio service.
+    serviceName: "stackstate-minio"
+    # backup.minio.secretName -- **N.B.: Do not change this value!** Name of the Minio secret.
+    secretName: "stackstate-minio"
+  zookeeper:
+    serviceName: ""
 caspr:
   # caspr.enabled -- Enable CASPR compatible values.
   enabled: false
@@ -33,11 +56,6 @@ networkPolicy:
       matchLabels: {}
     policyTypes:
       - Ingress
-global:
-  # global.receiverApiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
-  receiverApiKey: ""
-# commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
-commonLabels: {}
 stackstate:
   components:
     all:
@@ -47,7 +65,7 @@ stackstate:
         # stackstate.components.all.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object for all components.
         secret: {}
       image:
-        # stackstate.components.all.image.registry -- Base container image registry for all containers, except for the wait container
+        # stackstate.components.all.image.registry -- Base container image registry for all containers
         registry: quay.io
         # stackstate.components.all.image.repositorySuffix - String to append to repositories for StackState components
         repositorySuffix: ""
@@ -58,7 +76,7 @@ stackstate:
         # all.image.pullSecretPassword -- Password used to login to the registry to pull Docker images of all pods.
         pullSecretPassword:
         # stackstate.components.all.image.pullPolicy -- The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below).
-        pullPolicy: Always
+        pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.image.tag to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
         tag: master
@@ -315,7 +333,7 @@ stackstate:
         secret: {}
       image:
         # stackstate.components.router.image.pullPolicy -- `pullPolicy` used for the `router` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
-        pullPolicy: Always
+        pullPolicy: IfNotPresent
         # stackstate.components.router.image.registry -- Registry of the router component Docker image.
         registry: docker.io
         # stackstate.components.router.image.repository -- Repository of the router component Docker image.
@@ -587,33 +605,17 @@ stackstate:
     wait:
       image:
         # stackstate.components.wait.image.registry -- Base container image registry for wait containers.
-        registry: docker.io
+        registry: quay.io
         # stackstate.components.wait.image.repository -- Base container image repository for wait containers.
-        repository: dokkupaas/wait
+        repository: stackstate/wait
         # stackstate.components.wait.image.tag -- Container image tag for wait containers.
-        tag: latest
-  # stackstate.authentication -- Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error.
+        tag: v1.0
+  # stackstate.authentication -- (Secret) authentication settings for StackState
   authentication:
-    # stackstate.authentication.keycloak -- Use Keycloak as authentication provider. See [Configuring Keycloak](#configuring-keycloak).
-    keycloak: {}
-    # stackstate.authentication.ldap -- LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap).
+    # stackstate.authentication.ldap -- LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap)
     ldap: {}
-    # stackstate.authentication.oidc -- Use an OpenId Connect provider for authentication. See [Configuring OpenId Connect](#configuring-openid-connect).
-    oidc: {}
-    # stackstate.authentication.file -- Configure users, their passwords and roles from (config) file
-    file: {}
-    # stackstate.authentication.adminPassword -- Password for the 'admin' user that StackState creates by default
+    # stackstate.adminPassword -- Password for the 'admin' user that StackState creates by default
     adminPassword:
-    # stackstate.authentication.sessionLifetime -- Amount of time to keep a session when a user does not log in
-    sessionLifetime: 7d
-    # stackstate.authentication.roles -- Override the default role names in StackState
-    roles:
-      # stackstate.authentication.roles.admin -- Override the role names that have admin permissions (default: 'stackstate-admin')
-      admin: []
-      # stackstate.authentication.roles.powerUser -- Override the role names that have power user permissions (default: 'stackstate-power-user')
-      powerUser: []
-      # stackstate.authentication.roles.guest -- Override the role names that have guest permissions (default: 'stackstate-guest')
-      guest: []
   admin:
     authentication:
       # stackstate.admin.authentication.password -- Password used for maintenance "admin" api's (low-level tools) of the various services, username: admin
@@ -662,6 +664,18 @@ elasticsearch:
       value: "10000"
   # elasticsearch.imageTag -- Elasticsearch version.
   imageTag: "7.4.1"
+  # elasticsearch.keystore -- ElasticSearch keystore for access to Minio. Remove this if you set `minio.enabled` to `false`
+  keystore:
+    - secretName: stackstate-minio
+      items:
+        - key: accesskey
+          path: s3.client.minio.access_key
+        - key: secretkey
+          path: s3.client.minio.secret_key
+        - key: accesskey
+          path: s3.client.default.access_key
+        - key: secretkey
+          path: s3.client.default.secret_key  
   # elasticsearch.minimumMasterNodes -- Minimum number of Elasticsearch master nodes.
   minimumMasterNodes: 2
   nodeGroup: "master"
@@ -832,6 +846,15 @@ kafka:
   # kafka.zookeeper.enabled -- Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**.
   zookeeper:
     enabled: false
+minio:
+  # minio.accessKey -- Access key for Minio. Default is set to an invalid value that will cause Minio to not start up to ensure users of this Helm chart set an explicit value.
+  accessKey: setme
+  # minio.enabled -- Enables Minio for local backups. If you disable Minio, also override `elasticsearch.keystore` to not load the Minio keys into the ElasticSearch configuration
+  enabled: true
+  # minio.fullnameOverride -- **N.B.: Do not change this value!** The fullame override for Minio subchart is hardcoded so that this chart can refer to its components.
+  fullnameOverride: stackstate-minio
+  # minio.accessKey - Secret key for Minio. Default is set to an invalid value that will cause Minio to not start up to ensure users of this Helm chart set an explicit value.
+  secretKey: setme
 zookeeper:
   # zookeeper.enabled -- Enable / disable chart-based Zookeeper.
   enabled: true
@@ -864,7 +887,7 @@ anomaly-detection:
   enabled: false
   image:
     # anomaly-detection.image.imagePullPolicy -- The default pullPolicy used for anomaly detection pods.
-    imagePullPolicy: Always
+    imagePullPolicy: IfNotPresent
     # 'tag' is commented here since we take the latest image tag compatible with stackstate chart from anomaly-detection sub-chart
     # It is still possible to override it here.
     # anomaly-detection.image.tag -- the chart image tag, e.g. 4.1.3-latest
