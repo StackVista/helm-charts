@@ -1,6 +1,6 @@
 # hbase
 
-![Version: 0.1.63](https://img.shields.io/badge/Version-0.1.63-informational?style=flat-square) ![AppVersion: 1.2.6](https://img.shields.io/badge/AppVersion-1.2.6-informational?style=flat-square)
+![Version: 0.1.64](https://img.shields.io/badge/Version-0.1.64-informational?style=flat-square) ![AppVersion: 1.2.6](https://img.shields.io/badge/AppVersion-1.2.6-informational?style=flat-square)
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
@@ -143,9 +143,9 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | tephra.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | tephra.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
 | tephra.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| wait.image.registry | string | `"docker.io"` | Base container image registry for wait containers |
-| wait.image.repository | string | `"dokkupaas/wait"` | Container image tag for wait containers |
-| wait.image.tag | string | `"latest"` |  |
+| wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers |
+| wait.image.repository | string | `"stackstate/wait"` | Container image tag for wait containers |
+| wait.image.tag | string | `"1.0.0"` |  |
 | zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
 | zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |
 | zookeeper.fourlwCommandsWhitelist | string | `"mntr, ruok, stat, srvr"` | Zookeeper four-letter-word (FLW) commands that are enabled. |

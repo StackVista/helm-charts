@@ -6,7 +6,6 @@ command:
 - |
   /entrypoint -c {{ include "hbase.zookeeper.endpoint" . }}:2181,{{ template "common.fullname.short" . }}-hdfs-nn-headful:9000,{{ template "common.fullname.short" . }}-hdfs-dn:50010 -t 300
 image: "{{include "wait.image.registry" .}}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
-imagePullPolicy: Always
 {{- end -}}
 
 {{- define "hbase.tephra.container.main" -}}

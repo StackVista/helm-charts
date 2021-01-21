@@ -6,7 +6,6 @@ command:
 - |
   /entrypoint -c {{ include "hbase.zookeeper.endpoint" . }}:2181,{{ template "common.fullname.short" . }}-hbase-master:16000 -t 300
 image: "{{include "wait.image.registry" .}}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
-imagePullPolicy: Always
 {{- end -}}
 
 {{- define "hbase.hbase.regionserver.container.main" -}}
