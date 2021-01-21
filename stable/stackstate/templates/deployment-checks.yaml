@@ -6,7 +6,6 @@ command:
 - |
   /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn-headful:9000,{{ template "common.fullname.short" . }}-initializer:1618 -t 300
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-imagePullPolicy: Always
 {{- end -}}
 
 {{- define "stackstate.checks.deployment.container.main" -}}

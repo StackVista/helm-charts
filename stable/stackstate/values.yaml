@@ -595,11 +595,11 @@ stackstate:
     wait:
       image:
         # stackstate.components.wait.image.registry -- Base container image registry for wait containers.
-        registry: docker.io
+        registry: quay.io
         # stackstate.components.wait.image.repository -- Base container image repository for wait containers.
-        repository: dokkupaas/wait
+        repository: stackstate/wait
         # stackstate.components.wait.image.tag -- Container image tag for wait containers.
-        tag: latest
+        tag: 1.0.0
   # stackstate.authentication -- Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error.
   authentication:
     # stackstate.authentication.keycloak -- Use Keycloak as authentication provider. See [Configuring Keycloak](#configuring-keycloak).
