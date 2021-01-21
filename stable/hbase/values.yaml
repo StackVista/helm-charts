@@ -72,11 +72,11 @@ console:
 wait:
   image:
     # wait.image.registry -- Base container image registry for wait containers
-    registry: docker.io
+    registry: quay.io
     # wait.image.repository -- Base container image repository for wait containers
-    repository: dokkupaas/wait
+    repository: stackstate/wait
     # wait.image.repository -- Container image tag for wait containers
-    tag: latest
+    tag: 1.0.0
 hbase:
   securityContext:
     # hbase.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.
