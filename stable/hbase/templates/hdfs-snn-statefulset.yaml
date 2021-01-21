@@ -1,13 +1,19 @@
 {{- define "hbase.hdfs.secondarynamenode.container.init" -}}
 name: snamenode-init
 command:
-- sh
+- bash
 - -c
 - |
   /entrypoint -c {{ template "common.fullname.short" . }}-hdfs-nn-headful:9000 -t 300
-{{- if .Values.volumePermissions.enabled }}
+  mkdir -p /hadoop-data/data
+  # migrate old data directory location
+  if [ -e /hadoop-data/current ]; then
+    GLOBIGNORE=data:lost+found
+    mv /hadoop-data/* /hadoop-data/data/
+  fi
+  {{- if .Values.hdfs.volumePermissions.enabled }}
   chown -R {{ .Values.hdfs.securityContext.runAsUser }}:{{ .Values.hdfs.securityContext.runAsGroup }} /hadoop-data
-{{- end }}
+  {{- end }}
 image: "{{include "wait.image.registry" .}}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
 imagePullPolicy: Always
 {{- if .Values.hdfs.volumePermissions.securityContext.enabled }}

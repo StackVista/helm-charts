@@ -155,20 +155,13 @@ hdfs:
     # hdfs.image.repository -- Base container image repository for HDFS datanode.
     repository: stackstate/hadoop
     # hdfs.image.tag -- Default container image tag for HDFS datanode.
-    tag: 2.9.2-java11
-  securityContext:
-    # hdfs.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.
-    enabled: true
-    # hdfs.securityContext.runAsGroup -- GID of the Linux group to use for all pod.
-    runAsGroup: 65534
-    # hdfs.securityContext.runAsUser -- UID of the Linux user to use for all pod.
-    runAsUser: 65534
+    tag: 2.9.2-java11-1
   volumePermissions:
-    # hdfs.volumePermissions.enabled -- Whether to explicitly change the volume permissions for the data/name nodes
-    enabled: true
+    # hdfs.volumePermissions.enabled -- Whether to explicitly change the volume permissions for the data/name nodes. If permissions on volume mounts are not correct for whatever reason this can be used to set them properly. Usually also requires enabling the securityContext because root user is required.
+    enabled: false
     securityContext:
       # hdfs.volumePermissions.securityContext.enabled -- Whether to add a securityContext to the volumePermissions init container
-      enabled: true
+      enabled: false
       # hdfs.volumePermissions.securityContext.privileged -- Run the volumePermissions init container in privileged mode (required for plain K8s, not for OpenShift)
       privileged: true
       # hdfs.volumePermissions.securityContext.allowPrivilegeEscalation -- Run the volumePermissions init container with privilege escalation mode (Do not change unless instructed)
@@ -177,6 +170,14 @@ hdfs:
       runAsNonRoot: false
       # hdfs.volumePermissions.securityContext.runAsUser -- Run the volumePermissions init container with the specified UID (Do not change unless instructed)
       runAsUser: 0
+  securityContext:
+    # hdfs.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.
+    enabled: true
+    # hdfs.securityContext.runAsGroup -- GID of the Linux group to use for all pod.
+    runAsGroup: 65534
+    # hdfs.securityContext.runAsUser -- UID of the Linux user to use for all pod.
+    runAsUser: 65534
+    fsGroup: 65534
   datanode:
     extraEnv:
       # hdfs.datanode.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -304,10 +305,6 @@ tephra:
 serviceAccount:
   # serviceAccount.create -- Whether to create serviceAccounts and run the statefulsets under them
   create: true
-
-volumePermissions:
-  # volumePermissions.enabled -- Whether to explicitly change the volume permissions for the data/name nodes
-  enabled: true
 
 ##########################
 # Common chart overrides #
