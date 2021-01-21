@@ -119,8 +119,7 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | hdfs.securityContext.fsGroup | int | `65534` |  |
 | hdfs.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | hdfs.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
-| hdfs.volumePermissions | object | `{"enabled":false,"securityContext":{"allowPrivilegeEscalation":true,"enabled":false,"privileged":true,"runAsNonRoot":false,"runAsUser":0}}` | If permissions on volume mounts are not correct for whatever reason this can be used to set them properly |
-| hdfs.volumePermissions.enabled | bool | `false` | Whether to explicitly change the volume permissions for the data/name nodes, usually also requires enabling the securityContext because root user is required |
+| hdfs.volumePermissions.enabled | bool | `false` | Whether to explicitly change the volume permissions for the data/name nodes. If permissions on volume mounts are not correct for whatever reason this can be used to set them properly. Usually also requires enabling the securityContext because root user is required. |
 | hdfs.volumePermissions.securityContext.allowPrivilegeEscalation | bool | `true` | Run the volumePermissions init container with privilege escalation mode (Do not change unless instructed) |
 | hdfs.volumePermissions.securityContext.enabled | bool | `false` | Whether to add a securityContext to the volumePermissions init container |
 | hdfs.volumePermissions.securityContext.privileged | bool | `true` | Run the volumePermissions init container in privileged mode (required for plain K8s, not for OpenShift) |
