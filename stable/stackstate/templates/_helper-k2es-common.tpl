@@ -9,7 +9,6 @@ command:
 - |
   /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackstate.es.endpoint" . }} -t 300
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-imagePullPolicy: Always
 {{- end -}}
 
 {{- define "stackstate.k2es.deployment.common.container" -}}

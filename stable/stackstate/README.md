@@ -15,7 +15,7 @@ Current chart version is `4.3.0-snapshot.6`
 | https://helm.stackstate.io | cluster-agent | 0.4.11 |
 | https://helm.stackstate.io | common | 0.4.13 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.11 |
-| https://helm.stackstate.io | hbase | 0.1.63 |
+| https://helm.stackstate.io | hbase | 0.1.64 |
 | https://helm.stackstate.io | kafka | 12.2.5-stackstate.0 |
 
 ## Required Values
@@ -352,9 +352,9 @@ stackstate/stackstate
 | stackstate.components.viewHealth.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.viewHealth.sizing.javaHeapMemoryFraction | string | `"55"` |  |
 | stackstate.components.viewHealth.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| stackstate.components.wait.image.registry | string | `"docker.io"` | Base container image registry for wait containers. |
-| stackstate.components.wait.image.repository | string | `"dokkupaas/wait"` | Base container image repository for wait containers. |
-| stackstate.components.wait.image.tag | string | `"latest"` | Container image tag for wait containers. |
+| stackstate.components.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
+| stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
+| stackstate.components.wait.image.tag | string | `"1.0.0"` | Container image tag for wait containers. |
 | stackstate.experimental.server.split | bool | `true` | (boolean) Run a single service server or split in multiple sub services as api, state .... |
 | stackstate.java | object | `{"trustStore":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
