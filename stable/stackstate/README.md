@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.2.2-1`
+Current chart version is `4.2.2-2`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -15,7 +15,7 @@ Current chart version is `4.2.2-1`
 | https://helm.stackstate.io | cluster-agent | 0.4.11 |
 | https://helm.stackstate.io | common | 0.4.13 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.10 |
-| https://helm.stackstate.io | hbase | 0.1.62 |
+| https://helm.stackstate.io | hbase | 0.1.63 |
 | https://helm.stackstate.io | kafka | 12.2.5-stackstate.0 |
 
 ## Required Values
@@ -121,6 +121,7 @@ stackstate/stackstate
 | kafka.replicaCount | int | `3` | Number of Kafka replicas. |
 | kafka.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"cpu":"300m","memory":"2Gi"}}` | Kafka resources per pods. |
 | kafka.transactionStateLogReplicationFactor | int | `2` |  |
+| kafka.volumePermissions.enabled | bool | `false` |  |
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
