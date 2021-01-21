@@ -6,7 +6,6 @@ command:
 - |
   /entrypoint -c {{ include "stackstate.kafka.endpoint" . }} -t 300
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-imagePullPolicy: Always
 {{- if .Values.stackstate.components.all.securityContext.enabled }}
 securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 2 }}
 {{- end }}

@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.3.0-snapshot.6`
+Current chart version is `4.3.0-snapshot.7`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -15,7 +15,7 @@ Current chart version is `4.3.0-snapshot.6`
 | https://helm.stackstate.io | cluster-agent | 0.4.11 |
 | https://helm.stackstate.io | common | 0.4.13 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.11 |
-| https://helm.stackstate.io | hbase | 0.1.63 |
+| https://helm.stackstate.io | hbase | 0.1.64 |
 | https://helm.stackstate.io | kafka | 12.2.5-stackstate.0 |
 
 ## Required Values
@@ -145,7 +145,7 @@ stackstate/stackstate
 | stackstate.components.all.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
 | stackstate.components.all.image.pullSecretPassword | string | `nil` |  |
 | stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
-| stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
+| stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
 | stackstate.components.all.image.tag | string | `"master"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
@@ -187,6 +187,9 @@ stackstate/stackstate
 | stackstate.components.checks.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.checks.sizing.javaHeapMemoryFraction | string | `"70"` |  |
 | stackstate.components.checks.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.containerTools.image.registry | string | `"quay.io"` | Base container image registry for container-tools containers. |
+| stackstate.components.containerTools.image.repository | string | `"stackstate/container-tools"` | Base container image repository for container-tools containers. |
+| stackstate.components.containerTools.image.tag | string | `"1.0.0"` | Container image tag for container-tools containers. |
 | stackstate.components.correlate.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.correlate.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.correlate.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -349,9 +352,9 @@ stackstate/stackstate
 | stackstate.components.viewHealth.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.viewHealth.sizing.javaHeapMemoryFraction | string | `"55"` |  |
 | stackstate.components.viewHealth.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| stackstate.components.wait.image.registry | string | `"docker.io"` | Base container image registry for wait containers. |
-| stackstate.components.wait.image.repository | string | `"dokkupaas/wait"` | Base container image repository for wait containers. |
-| stackstate.components.wait.image.tag | string | `"latest"` | Container image tag for wait containers. |
+| stackstate.components.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
+| stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
+| stackstate.components.wait.image.tag | string | `"1.0.0"` | Container image tag for wait containers. |
 | stackstate.experimental.server.split | bool | `true` | (boolean) Run a single service server or split in multiple sub services as api, state .... |
 | stackstate.java | object | `{"trustStore":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
