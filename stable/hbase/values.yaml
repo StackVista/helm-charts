@@ -38,7 +38,7 @@ stackgraph:
     # stackgraph.image.pullPolicy -- The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below).
     pullPolicy: Always
     # stackgraph.image.tag -- The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below).
-    tag: 3.6.16
+    tag: 3.7.1
 console:
   # console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
   enabled: true
@@ -85,7 +85,6 @@ hbase:
     runAsGroup: 65534
     # hbase.securityContext.runAsUser -- UID of the Linux user to use for all pod.
     runAsUser: 65534
-
   master:
     extraEnv:
       # hbase.master.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -301,11 +300,9 @@ tephra:
   tolerations: []
   # tephra.affinity -- Affinity settings for pod assignment.
   affinity: {}
-
 serviceAccount:
   # serviceAccount.create -- Whether to create serviceAccounts and run the statefulsets under them
   create: true
-
 ##########################
 # Common chart overrides #
 ##########################
