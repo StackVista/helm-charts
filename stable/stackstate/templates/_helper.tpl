@@ -473,4 +473,5 @@ command:
 - '/bin/bash'
 - '-c'
 - 'kubectl get pod {{ template "common.fullname.short" . }}-server-0 --ignore-not-found && while (kubectl get pod {{ template "common.fullname.short" . }}-server-0 ) ; do echo "Waiting for {{ template "common.fullname.short" . }}-server-0 pod to terminate"; sleep 1; done'
+imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
 {{- end -}}
