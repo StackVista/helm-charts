@@ -1,6 +1,6 @@
 # hbase
 
-![Version: 0.1.65](https://img.shields.io/badge/Version-0.1.65-informational?style=flat-square) ![AppVersion: 1.2.6](https://img.shields.io/badge/AppVersion-1.2.6-informational?style=flat-square)
+![Version: 0.1.66](https://img.shields.io/badge/Version-0.1.66-informational?style=flat-square) ![AppVersion: 1.2.6](https://img.shields.io/badge/AppVersion-1.2.6-informational?style=flat-square)
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
@@ -23,7 +23,7 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | zookeeper | 5.3.4 |
-| https://helm.stackstate.io/ | common | 0.4.8 |
+| https://helm.stackstate.io/ | common | 0.4.14 |
 
 ## Values
 
@@ -90,7 +90,7 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | hdfs.datanode.replicaCount | int | `1` | Number of HDFS data nodes. |
 | hdfs.datanode.resources | object | `{"limits":{"memory":"4Gi"},"requests":{"cpu":"50m","memory":"2Gi"}}` | Resources to allocate for HDFS data nodes. |
 | hdfs.datanode.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| hdfs.image.pullPolicy | string | `"Always"` | Pull policy for HDFS datanode. |
+| hdfs.image.pullPolicy | string | `"IfNotPresent"` | Pull policy for HDFS datanode. |
 | hdfs.image.repository | string | `"stackstate/hadoop"` | Base container image repository for HDFS datanode. |
 | hdfs.image.tag | string | `"2.9.2-java11-1"` | Default container image tag for HDFS datanode. |
 | hdfs.namenode.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -126,7 +126,7 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | hdfs.volumePermissions.securityContext.runAsNonRoot | bool | `false` | Run the volumePermissions init container in non-root required mode (Do not change unless instructed) |
 | hdfs.volumePermissions.securityContext.runAsUser | int | `0` | Run the volumePermissions init container with the specified UID (Do not change unless instructed) |
 | serviceAccount.create | bool | `true` | Whether to create serviceAccounts and run the statefulsets under them |
-| stackgraph.image.pullPolicy | string | `"Always"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below). |
+| stackgraph.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below). |
 | stackgraph.image.tag | string | `"3.7.1"` | The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below). |
 | statefulset.antiAffinity.strategy | string | `"soft"` | AntiAffinity strategy to use for all StatefulSets. |
 | statefulset.antiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | AntiAffinity topology key to use for all StatefulSets. |
@@ -143,8 +143,9 @@ Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent
 | tephra.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | tephra.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
 | tephra.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers |
-| wait.image.repository | string | `"stackstate/wait"` | Container image tag for wait containers |
+| wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
+| wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
+| wait.image.repository | string | `"stackstate/wait"` | Container image tag for wait containers. |
 | wait.image.tag | string | `"1.0.0"` |  |
 | zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
 | zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |
