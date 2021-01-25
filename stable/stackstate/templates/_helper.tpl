@@ -120,32 +120,6 @@ Environment variables to enable authentication with safe defaults
     secretKeyRef:
       name: {{ template "common.fullname.short" $ }}-common
       key: adminApiPassword
-{{- if .Values.stackstate.java.trustStorePassword }}
-- name: JAVA_TRUSTSTORE_PASSWORD
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" . }}-common
-      key: javaTrustStorePassword
-{{- end }}
-{{- end -}}
-
-{{/*
-Mount secrets for custom certificates
-*/}}
-{{- define "stackstate.mountsecrets" -}}
-{{- $mountSecrets := dict }}
-{{- if hasKey .Values.stackstate.authentication.ldap "ssl" }}
-  {{- if .Values.stackstate.authentication.ldap.ssl.trustCertificates }}
-    {{- $_ := set $mountSecrets "ldapTrustCertificates" "ldap-certificates.pem" }}
-  {{- end }}
-  {{- if .Values.stackstate.authentication.ldap.ssl.trustStore }}
-    {{- $_ := set $mountSecrets "ldapTrustStore" "ldap-cacerts" }}
-  {{- end }}
-{{- end }}
-{{- if .Values.stackstate.java.trustStore }}
-    {{- $_ := set $mountSecrets "javaTrustStore" "java-cacerts" }}
-{{- end }}
-{{ $mountSecrets | toYaml }}
 {{- end -}}
 
 {{/*
