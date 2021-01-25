@@ -15,6 +15,7 @@ command:
   chown -R {{ .Values.hdfs.securityContext.runAsUser }}:{{ .Values.hdfs.securityContext.runAsGroup }} /hadoop-data
   {{- end }}
 image: "{{include "wait.image.registry" .}}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
+imagePullPolicy: {{ .Values.wait.image.pullPolicy | quote }}
 {{- if .Values.hdfs.volumePermissions.securityContext.enabled }}
 securityContext: {{- omit .Values.hdfs.volumePermissions.securityContext "enabled" | toYaml | nindent 2 }}
 {{- end }}
@@ -26,7 +27,7 @@ volumeMounts:
 {{- define "hbase.hdfs.secondarynamenode.container.main" -}}
 name: namenode
 image: "{{include "image.registry" .}}/{{ .Values.hdfs.image.repository }}:{{ .Values.hdfs.image.tag }}"
-imagePullPolicy: {{ .Values.hdfs.image.pullPolicy }}
+imagePullPolicy: {{ .Values.hdfs.image.pullPolicy | quote  }}
 args:
 - /entrypoint.sh
 - /run.sh

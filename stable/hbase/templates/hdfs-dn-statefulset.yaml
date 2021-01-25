@@ -15,6 +15,7 @@ command:
   chown -R {{ .Values.hdfs.securityContext.runAsUser }}:{{ .Values.hdfs.securityContext.runAsGroup }} /hadoop-data
   {{- end }}
 image: "{{include "wait.image.registry" .}}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
+imagePullPolicy: {{ .Values.wait.image.pullPolicy | quote }}
 {{- if .Values.hdfs.volumePermissions.securityContext.enabled }}
 securityContext: {{- omit .Values.hdfs.volumePermissions.securityContext "enabled" | toYaml | nindent 2 }}
 {{- end }}

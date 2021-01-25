@@ -36,7 +36,7 @@ all:
 stackgraph:
   image:
     # stackgraph.image.pullPolicy -- The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below).
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     # stackgraph.image.tag -- The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below).
     tag: 3.7.1
 console:
@@ -71,12 +71,14 @@ console:
   affinity: {}
 wait:
   image:
-    # wait.image.registry -- Base container image registry for wait containers
+    # wait.image.registry -- Base container image registry for wait containers.
     registry: quay.io
-    # wait.image.repository -- Base container image repository for wait containers
+    # wait.image.repository -- Base container image repository for wait containers.
     repository: stackstate/wait
-    # wait.image.repository -- Container image tag for wait containers
+    # wait.image.repository -- Container image tag for wait containers.
     tag: 1.0.0
+    # wait.image.pullPolicy -- Image pull policy for wait containers.
+    pullPolicy: IfNotPresent
 hbase:
   securityContext:
     # hbase.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.
@@ -150,7 +152,7 @@ hdfs:
     enabled: false
   image:
     # hdfs.image.pullPolicy -- Pull policy for HDFS datanode.
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     # hdfs.image.repository -- Base container image repository for HDFS datanode.
     repository: stackstate/hadoop
     # hdfs.image.tag -- Default container image tag for HDFS datanode.

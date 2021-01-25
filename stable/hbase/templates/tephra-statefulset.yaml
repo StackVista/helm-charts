@@ -6,12 +6,13 @@ command:
 - |
   /entrypoint -c {{ include "hbase.zookeeper.endpoint" . }}:2181,{{ template "common.fullname.short" . }}-hdfs-nn-headful:9000,{{ template "common.fullname.short" . }}-hdfs-dn:50010 -t 300
 image: "{{include "wait.image.registry" .}}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
+imagePullPolicy: {{ .Values.wait.image.pullPolicy | quote }}
 {{- end -}}
 
 {{- define "hbase.tephra.container.main" -}}
 name: tephra
 image: "{{include "image.registry" .}}/{{ .Values.tephra.image.repository }}:{{ default .Values.stackgraph.image.tag .Values.tephra.image.tag }}"
-imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.tephra.image.pullPolicy }}
+imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.tephra.image.pullPolicy | quote  }}
 env:
 {{- include "all.commonEnv" . }}
 {{- include "tephra.commonEnv" . }}
