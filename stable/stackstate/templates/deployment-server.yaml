@@ -10,7 +10,7 @@ imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote 
 {{- end -}}
 
 {{- define "stackstate.server.deployment.container.main" -}}
-{{- $mountSecrets := fromYaml (include "stackstate.mountsecrets" .) -}}
+{{- $mountSecrets := fromYaml (include "stackstate.service.mountsecrets" .) -}}
 args:
 {{- if .Values.stackstate.java.trustStore }}
 - -Djavax.net.ssl.trustStore=/opt/docker/secrets/java-cacerts
@@ -96,7 +96,7 @@ volumeMounts:
 {{- end -}}
 
 {{- define "stackstate.server.deployment" -}}
-{{- $secrets := fromYaml (include "stackstate.mountsecrets" .) -}}
+{{- $secrets := fromYaml (include "stackstate.service.mountsecrets" .) -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $overrideContainer := fromYaml (include "stackstate.server.deployment.container.main" .) -}}
 {{- $stsstackstateServerMainContainer := (merge $overrideContainer $commonContainer) -}}
