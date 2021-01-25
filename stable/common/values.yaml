@@ -168,7 +168,7 @@ global: {}
 
 image:
   # image.pullPolicy -- The pull policy for the Docker image.
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   # image.repository -- (string) Repository of the Docker image.
   repository: nginx
   # image.tag -- (string) Tag of the Docker image.

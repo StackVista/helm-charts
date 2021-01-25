@@ -1,6 +1,6 @@
 # common
 
-![Version: 0.4.13](https://img.shields.io/badge/Version-0.4.13-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: 0.4.14](https://img.shields.io/badge/Version-0.4.14-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 
 Common chartbuilding components and helpers
 
@@ -79,7 +79,7 @@ Common chartbuilding components and helpers
 | gitlab.app | string | `""` | If CI is GitLab, specify the `app` for annotations. |
 | gitlab.env | string | `""` | If CI is GitLab, specify the `env` for annotations. |
 | global | object | `{}` |  |
-| image.pullPolicy | string | `"Always"` | The pull policy for the Docker image. |
+| image.pullPolicy | string | `"IfNotPresent"` | The pull policy for the Docker image. |
 | image.repository | string | `"nginx"` | (string) Repository of the Docker image. |
 | image.tag | string | `"latest"` | (string) Tag of the Docker image. |
 | ingress.annotations | object | `{}` | Annotations for `Ingress` objects. |
