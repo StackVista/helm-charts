@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.2.2-2`
+Current chart version is `4.2.3`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -55,10 +55,11 @@ stackstate/stackstate
 | anomaly-detection.stackstate.username | string | `nil` | Stackstate Username used by spotlight for authentication, it is expected to be set only in case if authType = "cookie" |
 | anomaly-detection.threadWorkers | int | `5` | The number of worker threads. |
 | caspr.enabled | bool | `false` | Enable CASPR compatible values. |
-| cluster-agent.enabled | bool | `false` |  |
+| cluster-agent.enabled | bool | `false` | Deploy the StackState Kubernetes Agent so StackState can monitor the cluster it runs in |
 | cluster-agent.stackstate.cluster.authToken | string | `nil` |  |
 | cluster-agent.stackstate.cluster.name | string | `nil` |  |
 | cluster-agent.stackstate.url | string | `"http://{{ include \"stackstate.hostname.prefix\" . }}-router:8080/receiver/stsAgent"` |  |
+| cluster-role.enabled | bool | `true` | Deploy the ClusterRole(s) and ClusterRoleBinding(s) together with the chart. Can be disabled if these need to be installed by an administrator of the Kubernetes cluster. |
 | commonLabels | object | `{}` | Labels that will be added to all resources created by the stackstate chart (not the subcharts though) |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` | The Elasticsearch cluster health status params that will be used by readinessProbe command |
 | elasticsearch.clusterName | string | `"stackstate-elasticsearch"` | Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
@@ -148,7 +149,7 @@ stackstate/stackstate
 | stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
 | stackstate.components.all.image.repositorySuffix | string | `"-stable"` |  |
-| stackstate.components.all.image.tag | string | `"4.2.2"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
+| stackstate.components.all.image.tag | string | `"4.2.3"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
 | stackstate.components.all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
