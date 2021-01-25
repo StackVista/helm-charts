@@ -10,7 +10,7 @@ image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.com
 
 {{- define "stackstate.sync.deployment.container.main" -}}
 args:
-- -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy
+{{- include "stackstate.service.args" . }}
 - -startRole
 - sync
 env:
@@ -80,8 +80,7 @@ volumeMounts:
 - name: config-secrets-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
-- name: config-volume-log
-  mountPath: /opt/docker/etc_log
+{{- include "stackstate.service.container.volumes" . }}
 {{- end -}}
 
 {{- define "stackstate.sync.deployment" -}}
@@ -153,9 +152,7 @@ spec:
         - name: config-secrets-volume
           secret:
             secretName: {{ template "common.fullname.short" . }}-sync
-        - name: config-volume-log
-          configMap:
-            name: {{ template "common.fullname.short" . }}-sync-log
+        {{- include "stackstate.service.pod.volumes" (dict "pod_name" "sync" "root" . ) | nindent 8 }}
 {{- end -}}
 
 {{- if .Values.stackstate.experimental.server.split }}

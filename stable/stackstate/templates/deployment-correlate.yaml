@@ -24,13 +24,12 @@ livenessProbe:
   timeoutSeconds: 5
 name: correlate
 args:
-- -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy
+{{- include "stackstate.service.args" . }}
 volumeMounts:
 - name: config-secrets-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
-- name: config-volume-log
-  mountPath: /opt/docker/etc_logg
+{{- include "stackstate.service.container.volumes" . }}
 ports:
 - containerPort: 1618
   name: health
@@ -89,9 +88,7 @@ spec:
         - name: config-secrets-volume
           secret:
             secretName: {{ template "common.fullname.short" . }}-correlate
-        - name: config-volume-log
-          configMap:
-            name: {{ template "common.fullname.short" . }}-correlate-log
+        {{- include "stackstate.service.pod.volumes" (dict "pod_name" "correlate" "root" . ) | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.correlate.nodeSelector }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}
