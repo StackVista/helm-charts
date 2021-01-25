@@ -24,10 +24,9 @@ image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.compon
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.receiver.image.pullPolicy | quote }}
 name: receiver
 args:
-- -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy
+{{- include "stackstate.service.args" . }}
 volumeMounts:
-- name: config-volume-log
-  mountPath: /opt/docker/etc_log
+{{- include "stackstate.service.container.volumes" . }}
 ports:
 - containerPort: 1618
   name: health
@@ -88,9 +87,7 @@ spec:
       containers:
       - {{ toYaml $stsstackstateReceiverMainContainer | nindent 8 }}
       volumes:
-        - name: config-volume-log
-          configMap:
-            name: {{ template "common.fullname.short" . }}-receiver-log
+        {{- include "stackstate.service.pod.volumes" (dict "pod_name" "receiver" "root" . ) | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.receiver.nodeSelector }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}

@@ -1,13 +1,12 @@
 {{- define "stackstate.k2es.deployment.eventsToEs.container" -}}
 args:
-- -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy
+{{- include "stackstate.service.args" . }}
 - state-events
 - generic-events
 - topology-events
 name: e2es
 volumeMounts:
-- name: config-volume-log
-  mountPath: /opt/docker/etc_log
+{{- include "stackstate.service.container.volumes" . }}
 {{- end -}}
 
 {{- define "stackstate.k2es.eventsToEs.deployment" -}}
@@ -39,9 +38,7 @@ spec:
       containers:
       - {{ toYaml (merge $eventsToEsContainer $commonKafkaToEsContainer $commonContainer) | nindent 8 }}
       volumes:
-        - name: config-volume-log
-          configMap:
-            name: {{ template "common.fullname.short" . }}-k2es-log
+        {{- include "stackstate.service.pod.volumes" (dict "pod_name" "k2es" "root" . ) | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.k2es.nodeSelector }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}

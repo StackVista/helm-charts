@@ -10,15 +10,8 @@ imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote 
 {{- end -}}
 
 {{- define "stackstate.server.deployment.container.main" -}}
-{{- $mountSecrets := fromYaml (include "stackstate.service.mountsecrets" .) -}}
 args:
-{{- if .Values.stackstate.java.trustStore }}
-- -Djavax.net.ssl.trustStore=/opt/docker/secrets/java-cacerts
-{{- if .Values.stackstate.java.trustStorePassword }}
-- -Djavax.net.ssl.trustStorePassword=${JAVA_TRUSTSTORE_PASSWORD}
-{{- end }}
-{{- end }}
-- -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy
+{{- include "stackstate.service.args" . }}
 - -start
 env:
 {{- $serviceConfig := dict "ServiceName" "server" "ServiceConfig" .Values.stackstate.components.server }}
@@ -87,16 +80,10 @@ volumeMounts:
 - name: config-secrets-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
-- name: config-volume-log
-  mountPath: /opt/docker/etc_log
-{{- if $mountSecrets }}
-- name: common-secrets-volume
-  mountPath: /opt/docker/secrets
-{{- end }}
+{{- include "stackstate.service.container.volumes" . }}
 {{- end -}}
 
 {{- define "stackstate.server.deployment" -}}
-{{- $secrets := fromYaml (include "stackstate.service.mountsecrets" .) -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $overrideContainer := fromYaml (include "stackstate.server.deployment.container.main" .) -}}
 {{- $stsstackstateServerMainContainer := (merge $overrideContainer $commonContainer) -}}
@@ -159,19 +146,7 @@ spec:
       - name: config-secrets-volume
         secret:
           secretName: {{ template "common.fullname.short" . }}-server
-      - name: config-volume-log
-        configMap:
-          name: {{ template "common.fullname.short" . }}-server-log
-    {{- if $secrets }}
-      - name: common-secrets-volume
-        secret:
-          secretName: {{ template "common.fullname.short" . }}-common
-          items:
-      {{- range $key, $val := $secrets }}
-          - key: {{ $key }}
-            path: {{ $val }}
-      {{- end }}
-    {{- end }}
+      {{- include "stackstate.service.pod.volumes" (dict "pod_name" "server" "root" . ) | nindent 6 }}
 {{- end -}}
 
 {{- if not .Values.stackstate.experimental.server.split }}
