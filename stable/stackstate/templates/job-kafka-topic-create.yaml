@@ -6,6 +6,7 @@ command:
 - |
   /entrypoint -c {{ include "stackstate.kafka.endpoint" . }} -t 300
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
 {{- if .Values.stackstate.components.all.securityContext.enabled }}
 securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 2 }}
 {{- end }}
@@ -25,7 +26,7 @@ env:
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
 image: "{{include "stackstate.kafkaTopicCreate.image.registry" .}}/{{ .Values.stackstate.components.kafkaTopicCreate.image.repository }}:{{ .Values.stackstate.components.kafkaTopicCreate.image.tag }}"
-imagePullPolicy: Always
+imagePullPolicy: {{ .Values.stackstate.components.kafkaTopicCreate.image.pullPolicy | quote }}
 name: kafka-topic-create
 {{- if .Values.stackstate.components.kafkaTopicCreate.securityContext.enabled }}
 securityContext: {{- omit .Values.stackstate.components.kafkaTopicCreate.securityContext "enabled" | toYaml | nindent 2 }}

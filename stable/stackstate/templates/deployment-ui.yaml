@@ -33,7 +33,7 @@ env:
 - name: NGINX_RETRY_INTERVAL
   value: "3s"
 image: "{{include "stackstate.nginxPrometheusExporter.image.registry" .}}/{{ .Values.stackstate.components.nginxPrometheusExporter.image.repository }}:{{ .Values.stackstate.components.nginxPrometheusExporter.image.tag }}"
-imagePullPolicy: Always
+imagePullPolicy: {{ .Values.stackstate.components.nginxPrometheusExporter.image.pullPolicy | quote }}
 name: exporter
 ports:
 - containerPort: 9113
