@@ -114,8 +114,9 @@ does not expand variables within the JAVA_OPTS anymore
 {{- define "stackstate.service.args" -}}
 {{- if .Values.stackstate.java.trustStore }}
 - -Djavax.net.ssl.trustStore=/opt/docker/secrets/java-cacerts
+- -Djavax.net.ssl.trustStoreType=jks
 {{- if .Values.stackstate.java.trustStorePassword }}
-- -Djavax.net.ssl.trustStorePassword=${JAVA_TRUSTSTORE_PASSWORD}
+- -Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD)
 {{- end }}
 {{- end }}
 - -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy
