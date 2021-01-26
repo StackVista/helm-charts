@@ -40,7 +40,8 @@ func assertTrustStoreOnPods(t *testing.T, resources helmtestutil.KubernetesResou
 		}
 		if podName != "" {
 			assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Args, "-Djavax.net.ssl.trustStore=/opt/docker/secrets/java-cacerts")
-			assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Args, "-Djavax.net.ssl.trustStorePassword=${JAVA_TRUSTSTORE_PASSWORD}")
+			assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Args, "-Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD)")
+			assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Args, "-Djavax.net.ssl.trustStoreType=jks")
 			assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Args, "-Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy")
 
 			var logVolumePath string
