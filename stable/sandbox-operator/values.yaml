@@ -1,6 +1,6 @@
 sandboxer:
   # sandboxer.image -- Image for the sandbox operator
-  image: ghcr.io/stackvista/sandboxer:latest
+  image: ghcr.io/stackvista/sandboxer:v0.4.0
   # nodeSelector:
   #   node.kubernetes.io/purpose-core: "yes"
   resources:
