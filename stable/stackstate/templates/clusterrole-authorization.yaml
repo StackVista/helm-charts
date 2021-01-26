@@ -10,7 +10,7 @@ rules:
   - list
 {{- end -}}
 
-{{- if (index .Values "anomaly-detection" "enabled") -}}
+{{- if (index .Values "cluster-role" "enabled") -}}
 {{- $commonRole := fromYaml (include "common.clusterrole" .) -}}
 {{- $stsstackstateAuthorizationRole := fromYaml (include "stackstate.authorization.clusterrole" .) -}}
 {{- toYaml (merge $stsstackstateAuthorizationRole $commonRole) -}}
