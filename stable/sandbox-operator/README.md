@@ -31,7 +31,7 @@ The StackState Sandboxer
 | reaper.slack.apiKey | string | `""` | Slack API token |
 | reaper.slack.channelId | string | `""` | Slack Channel ID to post in (can be an ID or the channel name prefixed with a '#') |
 | reaper.warningInterval | string | `"24h"` | Interval between 2 warnings that the sandbox will expire (default: 24 hours = 1 day) |
-| sandboxer.image | string | `"ghcr.io/stackvista/sandboxer:latest"` | Image for the sandbox operator |
+| sandboxer.image | string | `"ghcr.io/stackvista/sandboxer:v0.4.0"` | Image for the sandbox operator |
 | sandboxer.resources.limits.cpu | string | `"50m"` |  |
 | sandboxer.resources.limits.memory | string | `"64Mi"` |  |
 | sandboxer.resources.requests.cpu | string | `"25m"` |  |
