@@ -1,6 +1,6 @@
 sandboxer:
   # sandboxer.image -- Image for the sandbox operator
-  image: ghcr.io/stackvista/sandboxer:v0.4.0
+  image: ghcr.io/stackvista/sandboxer:0.5.0
   # nodeSelector:
   #   node.kubernetes.io/purpose-core: "yes"
   resources:
@@ -15,7 +15,7 @@ sandboxer:
   #   operator: Exists
 reaper:
   # reaper.image -- Image for the reaper job
-  image: ghcr.io/stackvista/sandboxer:latest
+  image: ghcr.io/stackvista/sandboxer:0.5.0
   # reaper.schedule -- Cron schedule for the reaper, once per day at midnight
   schedule: 0 0 * * *
   # reaper.defaultTTL -- Default TTL for a Sandbox (default: 168 hours = 1 week)
