@@ -61,7 +61,7 @@ readinessProbe:
   httpGet:
     path: /readiness
     port: health
-  initialDelaySeconds: 60
+  initialDelaySeconds: 10
   timeoutSeconds: 5
 livenessProbe:
   httpGet:
