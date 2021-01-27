@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/assert"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
@@ -16,7 +16,7 @@ func TestServerJavaHeapRender(t *testing.T) {
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
 	expectedDeployments["stackstate-server"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx5858m -Xms5858m"}
-	expectedDeployments["stackstate-receiver"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1086m -Xms280m"}
+	expectedDeployments["stackstate-receiver"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1891m -Xms280m"}
 	expectedDeployments["stackstate-correlate"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx799m -Xms799m"}
 	expectedDeployments["stackstate-mm2es"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx402m -Xms402m"}
 
@@ -28,7 +28,7 @@ func TestServerJavaHeapRender(t *testing.T) {
 		}
 	}
 
-	require.Equal(t, len(expectedDeployments), len(foundDeployments))
+	assert.Equal(t, len(expectedDeployments), len(foundDeployments))
 
 	for deploymentName, expectedJavaOpts := range expectedDeployments {
 		AssertJavaOpts(t, foundDeployments[deploymentName].Spec.Template.Spec.Containers[0].Env, expectedJavaOpts)
@@ -56,7 +56,7 @@ func TestSplitServicesJavaHeapRender(t *testing.T) {
 		}
 	}
 
-	require.Equal(t, len(expectedDeployments), len(foundDeployments))
+	assert.Equal(t, len(expectedDeployments), len(foundDeployments))
 
 	for deploymentName, expectedJavaOpts := range expectedDeployments {
 		AssertJavaOpts(t, foundDeployments[deploymentName].Spec.Template.Spec.Containers[0].Env, expectedJavaOpts)
@@ -76,7 +76,7 @@ func TestServerJavaHeapRenderWithAllJavaOptsOverride(t *testing.T) {
 		}
 	}
 
-	require.NotNil(t, stsServerDeployment)
+	assert.NotNil(t, stsServerDeployment)
 
 	expectedServerJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx5858m -Xms5858m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"}
 
@@ -96,7 +96,7 @@ func TestServerJavaHeapRenderWithServerJavaOptsOverride(t *testing.T) {
 		}
 	}
 
-	require.NotNil(t, stsServerDeployment)
+	assert.NotNil(t, stsServerDeployment)
 
 	expectedServerJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx5858m -Xms5858m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5000"}
 
@@ -116,7 +116,7 @@ func TestServerJavaHeapRenderWithBothJavaOptsOverride(t *testing.T) {
 		}
 	}
 
-	require.NotNil(t, stsServerDeployment)
+	assert.NotNil(t, stsServerDeployment)
 
 	// The service specific overrides the common JAVA_OPTS
 	expectedServerJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx5858m -Xms5858m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5000"}
@@ -125,5 +125,5 @@ func TestServerJavaHeapRenderWithBothJavaOptsOverride(t *testing.T) {
 }
 
 func AssertJavaOpts(t *testing.T, env []v1.EnvVar, expectedVar v1.EnvVar) {
-	require.Contains(t, env, expectedVar)
+	assert.Contains(t, env, expectedVar)
 }

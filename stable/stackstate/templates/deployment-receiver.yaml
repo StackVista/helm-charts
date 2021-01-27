@@ -40,13 +40,13 @@ livenessProbe:
   httpGet:
     path: /liveness
     port: health
-  initialDelaySeconds: 30
+  initialDelaySeconds: 60
   timeoutSeconds: 5
 readinessProbe:
   httpGet:
     path: /readiness
     port: health
-  initialDelaySeconds: 30
+  initialDelaySeconds: 10
   timeoutSeconds: 5
 {{- with .Values.stackstate.components.receiver.resources }}
 resources:
