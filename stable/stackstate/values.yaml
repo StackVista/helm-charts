@@ -151,7 +151,7 @@ stackstate:
           cpu: "600m"
         requests:
           memory: "1500Mi"
-          cpu: "600mm"
+          cpu: "600m"
       sizing:
         baseMemoryConsumption: "475Mi"
         javaHeapMemoryFraction: "78"
@@ -236,45 +236,118 @@ stackstate:
       config: ""
       # stackstate.components.initializer.additionalLogging -- Additional logback config
       additionalLogging: ""
-    k2es:
+    mm2es:
       extraEnv:
-        # stackstate.components.k2es.extraEnv.open -- Extra open environment variables to inject into pods.
+        # stackstate.components.mm2es.extraEnv.open -- Extra open environment variables to inject into pods.
         open: {}
-        # stackstate.components.k2es.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        # stackstate.components.mm2es.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
         secret: {}
       image:
-        # stackstate.components.k2es.image.pullPolicy -- `pullPolicy` used for the `k2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        # stackstate.components.mm2es.image.pullPolicy -- `pullPolicy` used for the `mm2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
-        # stackstate.components.k2es.image.repository -- Repository of the k2es component Docker image.
+        # stackstate.components.mm2es.image.repository -- Repository of the mm2es component Docker image.
         repository: stackstate/stackstate-kafka-to-es
-        # stackstate.components.k2es.image.tag -- Tag used for the `k2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        # stackstate.components.mm2es.image.tag -- Tag used for the `mm2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
-      # stackstate.components.k2es.poddisruptionbudget -- PodDisruptionBudget settings for `k2es` pods.
+      # stackstate.components.mm2es.poddisruptionbudget -- PodDisruptionBudget settings for `mm2es` pods.
       poddisruptionbudget:
         maxUnavailable: 1
-      # stackstate.components.k2es.resources -- Resource allocation for `k2es` pods.
+      # stackstate.components.mm2es.resources -- Resource allocation for `mm2es` pods.
       resources:
         limits:
           memory: "1Gi"
-          cpu: "1000m" # needs to be 1000 for mm2es but for the others < 250m :(
+          cpu: "1000m"
         requests:
           memory: "1Gi"
           cpu: "1000m"
       sizing:
         baseMemoryConsumption: "600Mi"
         javaHeapMemoryFraction: "85"
-      # stackstate.components.k2es.replicaCount -- Number of `k2es` replicas.
+      # stackstate.components.mm2es.replicaCount -- Number of `mm2es` replicas.
       replicaCount: 1
-      # stackstate.components.k2es.nodeSelector -- Node labels for pod assignment.
+      # stackstate.components.mm2es.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
-      # stackstate.components.k2es.tolerations -- Toleration labels for pod assignment.
+      # stackstate.components.mm2es.tolerations -- Toleration labels for pod assignment.
       tolerations: []
-      # stackstate.components.k2es.affinity -- Affinity settings for pod assignment.
+      # stackstate.components.mm2es.affinity -- Affinity settings for pod assignment.
       affinity: {}
-      # stackstate.components.k2es.traces -- Trace-related `k2es` settings.
-      traces:
-        enabled: true
-      # stackstate.components.k2es.additionalLogging -- Additional logback config
+      # stackstate.components.mm2es.additionalLogging -- Additional logback config
+      additionalLogging: ""
+    e2es:
+      extraEnv:
+        # stackstate.components.e2es.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.e2es.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.e2es.image.pullPolicy -- `pullPolicy` used for the `e2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.e2es.image.repository -- Repository of the e2es component Docker image.
+        repository: stackstate/stackstate-kafka-to-es
+        # stackstate.components.e2es.image.tag -- Tag used for the `e2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.e2es.poddisruptionbudget -- PodDisruptionBudget settings for `e2es` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.e2es.resources -- Resource allocation for `e2es` pods.
+      resources:
+        limits:
+          memory: "1500Mi"
+          cpu: "500m"
+        requests:
+          memory: "1500Mi"
+          cpu: "500m"
+      sizing:
+        baseMemoryConsumption: "600Mi"
+        javaHeapMemoryFraction: "85"
+      # stackstate.components.e2es.replicaCount -- Number of `e2es` replicas.
+      replicaCount: 1
+      # stackstate.components.e2es.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.e2es.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.e2es.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.e2es.additionalLogging -- Additional logback config
+      additionalLogging: ""
+    trace2es:
+      extraEnv:
+        # stackstate.components.trace2es.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.trace2es.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.trace2es.image.pullPolicy -- `pullPolicy` used for the `trace2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.trace2es.image.repository -- Repository of the trace2es component Docker image.
+        repository: stackstate/stackstate-kafka-to-es
+        # stackstate.components.trace2es.image.tag -- Tag used for the `trace2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.trace2es.poddisruptionbudget -- PodDisruptionBudget settings for `trace2es` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.trace2es.resources -- Resource allocation for `trace2es` pods.
+      resources:
+        limits:
+          memory: "1Gi"
+          cpu: "500m"
+        requests:
+          memory: "1Gi"
+          cpu: "500m"
+      sizing:
+        baseMemoryConsumption: "600Mi"
+        javaHeapMemoryFraction: "85"
+      # stackstate.components.trace2es.replicaCount -- Number of `trace2es` replicas.
+      replicaCount: 1
+      # stackstate.components.trace2es.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.trace2es.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.trace2es.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.trace2es.enabled -- Enable/disable the trace2es service
+      enabled: true
+      # stackstate.components.trace2es.additionalLogging -- Additional logback config
       additionalLogging: ""
     receiver:
       extraEnv:

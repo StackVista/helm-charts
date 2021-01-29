@@ -163,11 +163,29 @@ checksum/correlate-env: {{ include (print $.Template.BasePath "/secret-correlate
 {{- end -}}
 
 {{/*
-K2ES secret checksum annotations
+MM2ES secret checksum annotations
 */}}
-{{- define "stackstate.k2es.secret.checksum" -}}
-{{- if .Values.stackstate.components.k2es.extraEnv.secret }}
-checksum/k2es-env: {{ include (print $.Template.BasePath "/secret-k2es.yaml") . | sha256sum }}
+{{- define "stackstate.mm2es.secret.checksum" -}}
+{{- if .Values.stackstate.components.mm2es.extraEnv.secret }}
+checksum/mm2es-env: {{ include (print $.Template.BasePath "/secret-mm2es.yaml") . | sha256sum }}
+{{- end }}
+{{- end -}}
+
+{{/*
+E2ES secret checksum annotations
+*/}}
+{{- define "stackstate.e2es.secret.checksum" -}}
+{{- if .Values.stackstate.components.e2es.extraEnv.secret }}
+checksum/e2es-env: {{ include (print $.Template.BasePath "/secret-e2es.yaml") . | sha256sum }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Trace2ES secret checksum annotations
+*/}}
+{{- define "stackstate.trace2es.secret.checksum" -}}
+{{- if .Values.stackstate.components.trace2es.extraEnv.secret }}
+checksum/trace2es-env: {{ include (print $.Template.BasePath "/secret-trace2es.yaml") . | sha256sum }}
 {{- end }}
 {{- end -}}
 
