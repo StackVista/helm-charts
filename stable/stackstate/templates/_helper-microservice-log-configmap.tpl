@@ -15,7 +15,7 @@ try {
     println "Error including groovy base file " + e.toString()
 }
 
-def defaultLogPattern = "%date [%thread] %-5level %logger{60} - %msg%n"
+def defaultLogPattern = "%date %-5level %logger{60} - %msg%n"
 
 appender("Console", ConsoleAppender) {
     encoder(PatternLayoutEncoder) {
