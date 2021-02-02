@@ -1,6 +1,6 @@
 # sandbox-operator
 
-![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![AppVersion: 0.5.0](https://img.shields.io/badge/AppVersion-0.5.0-informational?style=flat-square)
 
 The StackState Sandboxer
 
@@ -19,7 +19,7 @@ The StackState Sandboxer
 |-----|------|---------|-------------|
 | reaper.defaultTTL | string | `"168h"` | Default TTL for a Sandbox (default: 168 hours = 1 week) |
 | reaper.firstExpirationWarning | string | `"72h"` | How long in advance to warn the user that his sandbox will expire (default: 72 hours = 3 days) |
-| reaper.image | string | `"ghcr.io/stackvista/sandboxer:latest"` | Image for the reaper job |
+| reaper.image | string | `"ghcr.io/stackvista/sandboxer:0.5.0"` | Image for the reaper job |
 | reaper.messages.expirationOverdue | string | `"<@{{ .Sandbox.Spec.SlackID }}>: Your sandbox `{{ .Sandbox.Name }}` cannot be automatically expired and has been running a long time, consider cleaning it up."` |  |
 | reaper.messages.expirationWarning | string | `"<@{{ .Sandbox.Spec.SlackID }}>: Your sandbox `{{ .Sandbox.Name }}` will expire on {{ .ExpirationDate }}"` |  |
 | reaper.messages.reapMessage | string | `"<@{{ .Sandbox.Spec.SlackID }}>: Your sandbox `\\{\\{ .Sandbox.Name }}` has been reaped..."` |  |
@@ -31,7 +31,7 @@ The StackState Sandboxer
 | reaper.slack.apiKey | string | `""` | Slack API token |
 | reaper.slack.channelId | string | `""` | Slack Channel ID to post in (can be an ID or the channel name prefixed with a '#') |
 | reaper.warningInterval | string | `"24h"` | Interval between 2 warnings that the sandbox will expire (default: 24 hours = 1 day) |
-| sandboxer.image | string | `"ghcr.io/stackvista/sandboxer:latest"` | Image for the sandbox operator |
+| sandboxer.image | string | `"ghcr.io/stackvista/sandboxer:0.5.0"` | Image for the sandbox operator |
 | sandboxer.resources.limits.cpu | string | `"50m"` |  |
 | sandboxer.resources.limits.memory | string | `"64Mi"` |  |
 | sandboxer.resources.requests.cpu | string | `"25m"` |  |
