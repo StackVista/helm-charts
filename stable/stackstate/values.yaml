@@ -111,9 +111,10 @@ stackstate:
       resources:
         limits:
           memory: "4000Mi"
+          cpu: "1500m"
         requests:
           memory: "4000Mi"
-          cpu: "500m"
+          cpu: "1000m"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "50"
@@ -147,9 +148,10 @@ stackstate:
       resources:
         limits:
           memory: "1500Mi"
+          cpu: "600m"
         requests:
           memory: "1500Mi"
-          cpu: "150m"
+          cpu: "600m"
       sizing:
         baseMemoryConsumption: "475Mi"
         javaHeapMemoryFraction: "78"
@@ -183,9 +185,10 @@ stackstate:
       resources:
         limits:
           memory: "4000Mi"
+          cpu: "1000m"
         requests:
           memory: "4000Mi"
-          cpu: "500m"
+          cpu: "1000m"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "70"
@@ -216,9 +219,10 @@ stackstate:
       resources:
         limits:
           memory: "700Mi"
+          cpu: "500m"
         requests:
           memory: "128Mi"
-          cpu: "50m"
+          cpu: "500m"
       sizing:
         baseMemoryConsumption: "460Mi"
         javaHeapMemoryFraction: "65"
@@ -232,44 +236,118 @@ stackstate:
       config: ""
       # stackstate.components.initializer.additionalLogging -- Additional logback config
       additionalLogging: ""
-    k2es:
+    mm2es:
       extraEnv:
-        # stackstate.components.k2es.extraEnv.open -- Extra open environment variables to inject into pods.
+        # stackstate.components.mm2es.extraEnv.open -- Extra open environment variables to inject into pods.
         open: {}
-        # stackstate.components.k2es.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        # stackstate.components.mm2es.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
         secret: {}
       image:
-        # stackstate.components.k2es.image.pullPolicy -- `pullPolicy` used for the `k2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        # stackstate.components.mm2es.image.pullPolicy -- `pullPolicy` used for the `mm2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
-        # stackstate.components.k2es.image.repository -- Repository of the k2es component Docker image.
+        # stackstate.components.mm2es.image.repository -- Repository of the mm2es component Docker image.
         repository: stackstate/stackstate-kafka-to-es
-        # stackstate.components.k2es.image.tag -- Tag used for the `k2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        # stackstate.components.mm2es.image.tag -- Tag used for the `mm2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
-      # stackstate.components.k2es.poddisruptionbudget -- PodDisruptionBudget settings for `k2es` pods.
+      # stackstate.components.mm2es.poddisruptionbudget -- PodDisruptionBudget settings for `mm2es` pods.
       poddisruptionbudget:
         maxUnavailable: 1
-      # stackstate.components.k2es.resources -- Resource allocation for `k2es` pods.
+      # stackstate.components.mm2es.resources -- Resource allocation for `mm2es` pods.
       resources:
         limits:
           memory: "1Gi"
+          cpu: "1000m"
         requests:
           memory: "1Gi"
-          cpu: "250m"
+          cpu: "1000m"
       sizing:
         baseMemoryConsumption: "600Mi"
         javaHeapMemoryFraction: "85"
-      # stackstate.components.k2es.replicaCount -- Number of `k2es` replicas.
+      # stackstate.components.mm2es.replicaCount -- Number of `mm2es` replicas.
       replicaCount: 1
-      # stackstate.components.k2es.nodeSelector -- Node labels for pod assignment.
+      # stackstate.components.mm2es.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
-      # stackstate.components.k2es.tolerations -- Toleration labels for pod assignment.
+      # stackstate.components.mm2es.tolerations -- Toleration labels for pod assignment.
       tolerations: []
-      # stackstate.components.k2es.affinity -- Affinity settings for pod assignment.
+      # stackstate.components.mm2es.affinity -- Affinity settings for pod assignment.
       affinity: {}
-      # stackstate.components.k2es.traces -- Trace-related `k2es` settings.
-      traces:
-        enabled: true
-      # stackstate.components.k2es.additionalLogging -- Additional logback config
+      # stackstate.components.mm2es.additionalLogging -- Additional logback config
+      additionalLogging: ""
+    e2es:
+      extraEnv:
+        # stackstate.components.e2es.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.e2es.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.e2es.image.pullPolicy -- `pullPolicy` used for the `e2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.e2es.image.repository -- Repository of the e2es component Docker image.
+        repository: stackstate/stackstate-kafka-to-es
+        # stackstate.components.e2es.image.tag -- Tag used for the `e2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.e2es.poddisruptionbudget -- PodDisruptionBudget settings for `e2es` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.e2es.resources -- Resource allocation for `e2es` pods.
+      resources:
+        limits:
+          memory: "1500Mi"
+          cpu: "500m"
+        requests:
+          memory: "1500Mi"
+          cpu: "500m"
+      sizing:
+        baseMemoryConsumption: "600Mi"
+        javaHeapMemoryFraction: "85"
+      # stackstate.components.e2es.replicaCount -- Number of `e2es` replicas.
+      replicaCount: 1
+      # stackstate.components.e2es.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.e2es.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.e2es.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.e2es.additionalLogging -- Additional logback config
+      additionalLogging: ""
+    trace2es:
+      extraEnv:
+        # stackstate.components.trace2es.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.trace2es.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.trace2es.image.pullPolicy -- `pullPolicy` used for the `trace2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.trace2es.image.repository -- Repository of the trace2es component Docker image.
+        repository: stackstate/stackstate-kafka-to-es
+        # stackstate.components.trace2es.image.tag -- Tag used for the `trace2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.trace2es.poddisruptionbudget -- PodDisruptionBudget settings for `trace2es` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.trace2es.resources -- Resource allocation for `trace2es` pods.
+      resources:
+        limits:
+          memory: "1Gi"
+          cpu: "500m"
+        requests:
+          memory: "1Gi"
+          cpu: "500m"
+      sizing:
+        baseMemoryConsumption: "600Mi"
+        javaHeapMemoryFraction: "85"
+      # stackstate.components.trace2es.replicaCount -- Number of `trace2es` replicas.
+      replicaCount: 1
+      # stackstate.components.trace2es.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.trace2es.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.trace2es.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.trace2es.enabled -- Enable/disable the trace2es service
+      enabled: true
+      # stackstate.components.trace2es.additionalLogging -- Additional logback config
       additionalLogging: ""
     receiver:
       extraEnv:
@@ -290,7 +368,8 @@ stackstate:
       # stackstate.components.receiver.resources -- Resource allocation for `receiver` pods.
       resources:
         limits:
-          memory: "2Gi"
+          memory: "3Gi"
+          cpu: "500m"
         requests:
           memory: "1Gi"
           cpu: "500m"
@@ -361,6 +440,7 @@ stackstate:
       resources:
         limits:
           memory: "8Gi"
+          cpu: "4000m"
         requests:
           memory: "8Gi"
           cpu: "2000m"
@@ -396,10 +476,11 @@ stackstate:
       # stackstate.components.state.resources -- Resource allocation for `state` pods.
       resources:
         limits:
+          cpu: "1000m"
           memory: "2000Mi"
         requests:
           memory: "2000Mi"
-          cpu: "500m"
+          cpu: "1000m"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "80"
@@ -433,9 +514,10 @@ stackstate:
       resources:
         limits:
           memory: "2500Mi"
+          cpu: "2000m"
         requests:
           memory: "2500Mi"
-          cpu: "500m"
+          cpu: "2000m"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "60"
@@ -465,10 +547,11 @@ stackstate:
       # stackstate.components.slicing.resources -- Resource allocation for `slicing` pods.
       resources:
         limits:
+          cpu: "500"
           memory: "1800Mi"
         requests:
           memory: "1800Mi"
-          cpu: "750m"
+          cpu: "250m"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "60"
@@ -543,9 +626,10 @@ stackstate:
       resources:
         limits:
           memory: "2700Mi"
+          cpu: "2000m"
         requests:
           memory: "2700Mi"
-          cpu: "1000m"
+          cpu: "2000m"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "55"
@@ -686,7 +770,7 @@ elasticsearch:
   # elasticsearch.resources -- Override Elasticsearch resources
   resources:
     requests:
-      cpu: "1000m"
+      cpu: "2000m"
       memory: "4Gi"
     limits:
       cpu: "2000m"
@@ -706,6 +790,13 @@ elasticsearch:
       ad.stackstate.com/elasticsearch-exporter.check_names: '["openmetrics"]'
       ad.stackstate.com/elasticsearch-exporter.init_configs: "[{}]"
       ad.stackstate.com/elasticsearch-exporter.instances: '[ { "prometheus_url": "http://%%host%%:9108/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
+    resources:
+      limits:
+        cpu: "50m"
+        memory: "100Mi"
+      requests:
+        cpu: "50m"
+        memory: "100Mi"
     es:
       uri: http://stackstate-elasticsearch-master:9200
 hbase:
@@ -728,18 +819,61 @@ hbase:
     master:
       # hbase.hbase.master.replicaCount -- Number of HBase master node replicas.
       replicaCount: 2
+      resources:
+        limits:
+          memory: "1Gi"
+          cpu: "500m"
+        requests:
+          memory: "1Gi"
+          cpu: "50m"
     regionserver:
       # hbase.hbase.regionserver.replicaCount -- Number of HBase regionserver node replicas.
       replicaCount: 3
+      resources:
+        limits:
+          memory: "3Gi"
+          cpu: "1250m"
+        requests:
+          memory: "2Gi"
+          cpu: "1250m"
   hdfs:
     datanode:
       # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas.
       replicaCount: 3
+      resources:
+        limits:
+          memory: "4Gi"
+          cpu: "400m"
+        requests:
+          memory: "2Gi"
+          cpu: "400m"
+    namenode:
+      resources:
+        limits:
+          memory: "1Gi"
+          cpu: "500m"
+        requests:
+          memory: "1Gi"
+          cpu: "100m"
     secondarynamenode:
       enabled: true
+      resources:
+        limits:
+          memory: "1Gi"
+          cpu: "500m"
+        requests:
+          memory: "1Gi"
+          cpu: "50m"
   tephra:
     # hbase.tephra.replicaCount -- Number of Tephra replicas.
     replicaCount: 2
+    resources:
+      limits:
+        memory: "3Gi"
+        cpu: "500m"
+      requests:
+        memory: "2Gi"
+        cpu: "250m"
   zookeeper:
     # hbase.zookeeper.enabled -- Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**.
     enabled: false
@@ -824,6 +958,13 @@ kafka:
       interval: 20s
       # kafka.metrics.serviceMonitor.selector -- Selector to target Prometheus instance.
       selector: {}
+    resources:
+      limits:
+        cpu: "200m"
+        memory: "300Mi"
+      requests:
+        cpu: "200m"
+        memory: "300Mi"
   readinessProbe:
     # kafka.readinessProbe.initialDelaySeconds -- Delay before readiness probe is initiated.
     initialDelaySeconds: 45
@@ -844,9 +985,10 @@ kafka:
   resources:
     limits:
       memory: "2Gi"
+      cpu: "1000m"
     requests:
       memory: "2Gi"
-      cpu: "300m"
+      cpu: "1000m"
   # kafka.zookeeper.enabled -- Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**.
   zookeeper:
     enabled: false
@@ -870,6 +1012,13 @@ zookeeper:
       selector: {}
   commonLabels:
     app.kubernetes.io/part-of: stackstate
+  resources:
+    limits:
+      memory: "512Mi"
+      cpu: "250m"
+    requests:
+      memory: "512Mi"
+      cpu: "100m"
   # zookeeper.podAnnotations -- Annotations for ZooKeeper pod.
   podAnnotations:
     ad.stackstate.com/zookeeper.check_names: '["openmetrics"]'
@@ -880,6 +1029,16 @@ zookeeper:
 anomaly-detection:
   # anomaly-detection.enabled -- Enables anomaly detection chart
   enabled: false
+  cpu:
+    # cpu.limit -- CPU resource limit
+    limit: 4
+    # cpu.request -- CPU resource request
+    request: 4
+  memory:
+    # memory.limit -- Memory resource limit
+    limit: 6Gi
+    # memory.request -- Memory resource request
+    request: 6Gi
   image:
     # anomaly-detection.image.imagePullPolicy -- The default pullPolicy used for anomaly detection pods.
     imagePullPolicy: IfNotPresent

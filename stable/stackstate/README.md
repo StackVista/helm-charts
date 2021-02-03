@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.3.0-snapshot.11`
+Current chart version is `4.3.0-snapshot.12`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -37,6 +37,8 @@ stackstate/stackstate
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| anomaly-detection.cpu.limit | int | `4` |  |
+| anomaly-detection.cpu.request | int | `4` |  |
 | anomaly-detection.enabled | bool | `false` | Enables anomaly detection chart |
 | anomaly-detection.image.imagePullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for anomaly detection pods. |
 | anomaly-detection.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
@@ -47,6 +49,8 @@ stackstate/stackstate
 | anomaly-detection.ingress | object | `{"annotations":{},"enabled":false,"hostname":null,"hosts":[],"port":8090,"tls":null}` | Status interface ingress |
 | anomaly-detection.ingress.enabled | bool | `false` | Enables ingress controller for status interface |
 | anomaly-detection.ingress.hostname | string | `nil` | Status interface hostname e.g. spotlight.local.domain |
+| anomaly-detection.memory.limit | string | `"6Gi"` |  |
+| anomaly-detection.memory.request | string | `"6Gi"` |  |
 | anomaly-detection.stackstate.authRoleName | string | `"stackstate-admin"` | Stackstate Role used by spotlight for authentication, it is mapped to the stackstate role with the same name.  It is expected to be set only in case if authType = "token" |
 | anomaly-detection.stackstate.authType | string | `"token"` | Type of authentication. There are two options 1) "token" - with service account token (default), 2) "cookie" - username, password based auth. |
 | anomaly-detection.stackstate.instance | string | `"http://stackstate-server-headless:7070"` | **Required Stackstate instance URL, e.g http://stackstate-server-headless:7070 |
@@ -68,6 +72,10 @@ stackstate/stackstate
 | elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/elasticsearch-exporter.check_names" | string | `"[\"openmetrics\"]"` |  |
 | elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/elasticsearch-exporter.init_configs" | string | `"[{}]"` |  |
 | elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/elasticsearch-exporter.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:9108/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
+| elasticsearch.elasticsearch-exporter.resources.limits.cpu | string | `"50m"` |  |
+| elasticsearch.elasticsearch-exporter.resources.limits.memory | string | `"100Mi"` |  |
+| elasticsearch.elasticsearch-exporter.resources.requests.cpu | string | `"50m"` |  |
+| elasticsearch.elasticsearch-exporter.resources.requests.memory | string | `"100Mi"` |  |
 | elasticsearch.elasticsearch-exporter.servicemonitor.enabled | bool | `false` |  |
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
 | elasticsearch.esJavaOpts | string | `"-Xmx3g -Xms3g"` | JVM options |
@@ -76,7 +84,7 @@ stackstate/stackstate
 | elasticsearch.minimumMasterNodes | int | `2` | Minimum number of Elasticsearch master nodes. |
 | elasticsearch.nodeGroup | string | `"master"` |  |
 | elasticsearch.replicas | int | `3` | Number of Elasticsearch replicas. |
-| elasticsearch.resources | object | `{"limits":{"cpu":"2000m","memory":"4Gi"},"requests":{"cpu":"1000m","memory":"4Gi"}}` | Override Elasticsearch resources |
+| elasticsearch.resources | object | `{"limits":{"cpu":"2000m","memory":"4Gi"},"requests":{"cpu":"2000m","memory":"4Gi"}}` | Override Elasticsearch resources |
 | elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"250Gi"}}}` | PVC template defaulting to 250Gi default volumes |
 | global.receiverApiKey | string | `""` | API key to be used by the Receiver; if no key is provided, a random one will be generated for you. |
 | hbase.all.metrics.enabled | bool | `true` |  |
@@ -84,11 +92,35 @@ stackstate/stackstate
 | hbase.console.enabled | bool | `false` | Enable / disable deployment of the stackgraph-console for debugging. |
 | hbase.enabled | bool | `true` | Enable / disable chart-based HBase. |
 | hbase.hbase.master.replicaCount | int | `2` | Number of HBase master node replicas. |
+| hbase.hbase.master.resources.limits.cpu | string | `"500m"` |  |
+| hbase.hbase.master.resources.limits.memory | string | `"1Gi"` |  |
+| hbase.hbase.master.resources.requests.cpu | string | `"50m"` |  |
+| hbase.hbase.master.resources.requests.memory | string | `"1Gi"` |  |
 | hbase.hbase.regionserver.replicaCount | int | `3` | Number of HBase regionserver node replicas. |
+| hbase.hbase.regionserver.resources.limits.cpu | string | `"1250m"` |  |
+| hbase.hbase.regionserver.resources.limits.memory | string | `"3Gi"` |  |
+| hbase.hbase.regionserver.resources.requests.cpu | string | `"1250m"` |  |
+| hbase.hbase.regionserver.resources.requests.memory | string | `"2Gi"` |  |
 | hbase.hdfs.datanode.replicaCount | int | `3` | Number of HDFS datanode replicas. |
+| hbase.hdfs.datanode.resources.limits.cpu | string | `"400m"` |  |
+| hbase.hdfs.datanode.resources.limits.memory | string | `"4Gi"` |  |
+| hbase.hdfs.datanode.resources.requests.cpu | string | `"400m"` |  |
+| hbase.hdfs.datanode.resources.requests.memory | string | `"2Gi"` |  |
+| hbase.hdfs.namenode.resources.limits.cpu | string | `"500m"` |  |
+| hbase.hdfs.namenode.resources.limits.memory | string | `"1Gi"` |  |
+| hbase.hdfs.namenode.resources.requests.cpu | string | `"100m"` |  |
+| hbase.hdfs.namenode.resources.requests.memory | string | `"1Gi"` |  |
 | hbase.hdfs.secondarynamenode.enabled | bool | `true` |  |
+| hbase.hdfs.secondarynamenode.resources.limits.cpu | string | `"500m"` |  |
+| hbase.hdfs.secondarynamenode.resources.limits.memory | string | `"1Gi"` |  |
+| hbase.hdfs.secondarynamenode.resources.requests.cpu | string | `"50m"` |  |
+| hbase.hdfs.secondarynamenode.resources.requests.memory | string | `"1Gi"` |  |
 | hbase.stackgraph.image.tag | string | `"3.7.1"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
+| hbase.tephra.resources.limits.cpu | string | `"500m"` |  |
+| hbase.tephra.resources.limits.memory | string | `"3Gi"` |  |
+| hbase.tephra.resources.requests.cpu | string | `"250m"` |  |
+| hbase.tephra.resources.requests.memory | string | `"2Gi"` |  |
 | hbase.zookeeper.enabled | bool | `false` | Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**. |
 | hbase.zookeeper.externalServers | string | `"stackstate-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |
@@ -111,6 +143,10 @@ stackstate/stackstate
 | kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
 | kafka.metrics.jmx.enabled | bool | `true` | Whether or not to expose JMX metrics to Prometheus. |
 | kafka.metrics.kafka.enabled | bool | `false` | Whether or not to create a standalone Kafka exporter to expose Kafka metrics. |
+| kafka.metrics.resources.limits.cpu | string | `"200m"` |  |
+| kafka.metrics.resources.limits.memory | string | `"300Mi"` |  |
+| kafka.metrics.resources.requests.cpu | string | `"200m"` |  |
+| kafka.metrics.resources.requests.memory | string | `"300Mi"` |  |
 | kafka.metrics.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` (also requires `kafka.metrics.kafka.enabled` or `kafka.metrics.jmx.enabled` to be `true`). |
 | kafka.metrics.serviceMonitor.interval | string | `"20s"` | How frequently to scrape metrics. |
 | kafka.metrics.serviceMonitor.selector | object | `{}` | Selector to target Prometheus instance. |
@@ -119,7 +155,7 @@ stackstate/stackstate
 | kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Kafka Pod annotations. |
 | kafka.readinessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
 | kafka.replicaCount | int | `3` | Number of Kafka replicas. |
-| kafka.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"cpu":"300m","memory":"2Gi"}}` | Kafka resources per pods. |
+| kafka.resources | object | `{"limits":{"cpu":"1000m","memory":"2Gi"},"requests":{"cpu":"1000m","memory":"2Gi"}}` | Kafka resources per pods. |
 | kafka.transactionStateLogReplicationFactor | int | `2` |  |
 | kafka.volumePermissions.enabled | bool | `false` |  |
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
@@ -170,7 +206,7 @@ stackstate/stackstate
 | stackstate.components.api.image.tag | string | `""` | Tag used for the `api` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.api.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.api.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `api` pods. |
-| stackstate.components.api.resources | object | `{"limits":{"memory":"4000Mi"},"requests":{"cpu":"500m","memory":"4000Mi"}}` | Resource allocation for `api` pods. |
+| stackstate.components.api.resources | object | `{"limits":{"cpu":"1500m","memory":"4000Mi"},"requests":{"cpu":"1000m","memory":"4000Mi"}}` | Resource allocation for `api` pods. |
 | stackstate.components.api.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.api.sizing.javaHeapMemoryFraction | string | `"50"` |  |
 | stackstate.components.api.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -184,7 +220,7 @@ stackstate/stackstate
 | stackstate.components.checks.image.tag | string | `""` | Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.checks.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.checks.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `checks` pods. |
-| stackstate.components.checks.resources | object | `{"limits":{"memory":"4000Mi"},"requests":{"cpu":"500m","memory":"4000Mi"}}` | Resource allocation for `state` pods. |
+| stackstate.components.checks.resources | object | `{"limits":{"cpu":"1000m","memory":"4000Mi"},"requests":{"cpu":"1000m","memory":"4000Mi"}}` | Resource allocation for `state` pods. |
 | stackstate.components.checks.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.checks.sizing.javaHeapMemoryFraction | string | `"70"` |  |
 | stackstate.components.checks.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -202,10 +238,24 @@ stackstate/stackstate
 | stackstate.components.correlate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.correlate.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `correlate` pods. |
 | stackstate.components.correlate.replicaCount | int | `1` | Number of `correlate` replicas. |
-| stackstate.components.correlate.resources | object | `{"limits":{"memory":"1500Mi"},"requests":{"cpu":"150m","memory":"1500Mi"}}` | Resource allocation for `correlate` pods. |
+| stackstate.components.correlate.resources | object | `{"limits":{"cpu":"600m","memory":"1500Mi"},"requests":{"cpu":"600m","memory":"1500Mi"}}` | Resource allocation for `correlate` pods. |
 | stackstate.components.correlate.sizing.baseMemoryConsumption | string | `"475Mi"` |  |
 | stackstate.components.correlate.sizing.javaHeapMemoryFraction | string | `"78"` |  |
 | stackstate.components.correlate.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.e2es.additionalLogging | string | `""` | Additional logback config |
+| stackstate.components.e2es.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.e2es.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| stackstate.components.e2es.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.e2es.image.pullPolicy | string | `""` | `pullPolicy` used for the `e2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.components.e2es.image.repository | string | `"stackstate/stackstate-kafka-to-es"` | Repository of the e2es component Docker image. |
+| stackstate.components.e2es.image.tag | string | `""` | Tag used for the `e2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.e2es.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.e2es.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `e2es` pods. |
+| stackstate.components.e2es.replicaCount | int | `1` | Number of `e2es` replicas. |
+| stackstate.components.e2es.resources | object | `{"limits":{"cpu":"500m","memory":"1500Mi"},"requests":{"cpu":"500m","memory":"1500Mi"}}` | Resource allocation for `e2es` pods. |
+| stackstate.components.e2es.sizing.baseMemoryConsumption | string | `"600Mi"` |  |
+| stackstate.components.e2es.sizing.javaHeapMemoryFraction | string | `"85"` |  |
+| stackstate.components.e2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.initializer.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.initializer.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.initializer.config | string | `""` | Configuration file contents to customize the default StackState initializer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
@@ -215,25 +265,10 @@ stackstate/stackstate
 | stackstate.components.initializer.image.repository | string | `"stackstate/stackstate-server"` | Repository of the initializer component Docker image. |
 | stackstate.components.initializer.image.tag | string | `""` | Tag used for the `initializer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.initializer.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.initializer.resources | object | `{"limits":{"memory":"700Mi"},"requests":{"cpu":"50m","memory":"128Mi"}}` | Resource allocation for `initializer` pods. |
+| stackstate.components.initializer.resources | object | `{"limits":{"cpu":"500m","memory":"700Mi"},"requests":{"cpu":"500m","memory":"128Mi"}}` | Resource allocation for `initializer` pods. |
 | stackstate.components.initializer.sizing.baseMemoryConsumption | string | `"460Mi"` |  |
 | stackstate.components.initializer.sizing.javaHeapMemoryFraction | string | `"65"` |  |
 | stackstate.components.initializer.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| stackstate.components.k2es.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.k2es.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.k2es.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.k2es.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.k2es.image.pullPolicy | string | `""` | `pullPolicy` used for the `k2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.k2es.image.repository | string | `"stackstate/stackstate-kafka-to-es"` | Repository of the k2es component Docker image. |
-| stackstate.components.k2es.image.tag | string | `""` | Tag used for the `k2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.k2es.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.k2es.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `k2es` pods. |
-| stackstate.components.k2es.replicaCount | int | `1` | Number of `k2es` replicas. |
-| stackstate.components.k2es.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"250m","memory":"1Gi"}}` | Resource allocation for `k2es` pods. |
-| stackstate.components.k2es.sizing.baseMemoryConsumption | string | `"600Mi"` |  |
-| stackstate.components.k2es.sizing.javaHeapMemoryFraction | string | `"85"` |  |
-| stackstate.components.k2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| stackstate.components.k2es.traces | object | `{"enabled":true}` | Trace-related `k2es` settings. |
 | stackstate.components.kafkaTopicCreate.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.registry | string | `"docker.io"` | Base container image registry for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.repository | string | `"bitnami/kafka"` | Base container image repository for kafka-topic-create containers. |
@@ -242,6 +277,20 @@ stackstate/stackstate
 | stackstate.components.kafkaTopicCreate.securityContext.runAsGroup | int | `1001` | The GID (group ID) of the owning user of the process |
 | stackstate.components.kafkaTopicCreate.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | stackstate.components.kafkaTopicCreate.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
+| stackstate.components.mm2es.additionalLogging | string | `""` | Additional logback config |
+| stackstate.components.mm2es.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.mm2es.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| stackstate.components.mm2es.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.mm2es.image.pullPolicy | string | `""` | `pullPolicy` used for the `mm2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.components.mm2es.image.repository | string | `"stackstate/stackstate-kafka-to-es"` | Repository of the mm2es component Docker image. |
+| stackstate.components.mm2es.image.tag | string | `""` | Tag used for the `mm2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.mm2es.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.mm2es.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `mm2es` pods. |
+| stackstate.components.mm2es.replicaCount | int | `1` | Number of `mm2es` replicas. |
+| stackstate.components.mm2es.resources | object | `{"limits":{"cpu":"1000m","memory":"1Gi"},"requests":{"cpu":"1000m","memory":"1Gi"}}` | Resource allocation for `mm2es` pods. |
+| stackstate.components.mm2es.sizing.baseMemoryConsumption | string | `"600Mi"` |  |
+| stackstate.components.mm2es.sizing.javaHeapMemoryFraction | string | `"85"` |  |
+| stackstate.components.mm2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.nginxPrometheusExporter.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.registry | string | `"docker.io"` | Base container image registry for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.repository | string | `"nginx/nginx-prometheus-exporter"` | Base container image repository for nginx-prometheus-exporter containers. |
@@ -256,7 +305,7 @@ stackstate/stackstate
 | stackstate.components.receiver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.receiver.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `receiver` pods. |
 | stackstate.components.receiver.replicaCount | int | `1` | Number of `receiver` replicas. |
-| stackstate.components.receiver.resources | object | `{"limits":{"memory":"2Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Resource allocation for `receiver` pods. |
+| stackstate.components.receiver.resources | object | `{"limits":{"cpu":"500m","memory":"3Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Resource allocation for `receiver` pods. |
 | stackstate.components.receiver.sizing.baseMemoryConsumption | string | `"700Mi"` |  |
 | stackstate.components.receiver.sizing.javaHeapMemoryFraction | string | `"75"` |  |
 | stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -282,7 +331,7 @@ stackstate/stackstate
 | stackstate.components.server.image.tag | string | `""` | Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.server.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.server.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `server` pods. |
-| stackstate.components.server.resources | object | `{"limits":{"memory":"8Gi"},"requests":{"cpu":"2000m","memory":"8Gi"}}` | Resource allocation for `server` pods. |
+| stackstate.components.server.resources | object | `{"limits":{"cpu":"4000m","memory":"8Gi"},"requests":{"cpu":"2000m","memory":"8Gi"}}` | Resource allocation for `server` pods. |
 | stackstate.components.server.sizing.baseMemoryConsumption | string | `"1700Mi"` |  |
 | stackstate.components.server.sizing.javaHeapMemoryFraction | string | `"85"` |  |
 | stackstate.components.server.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -295,7 +344,7 @@ stackstate/stackstate
 | stackstate.components.slicing.image.repository | string | `"stackstate/stackstate-server"` | Repository of the slicing component Docker image. |
 | stackstate.components.slicing.image.tag | string | `""` | Tag used for the `slicing` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.slicing.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.slicing.resources | object | `{"limits":{"memory":"1800Mi"},"requests":{"cpu":"750m","memory":"1800Mi"}}` | Resource allocation for `slicing` pods. |
+| stackstate.components.slicing.resources | object | `{"limits":{"cpu":"500","memory":"1800Mi"},"requests":{"cpu":"250m","memory":"1800Mi"}}` | Resource allocation for `slicing` pods. |
 | stackstate.components.slicing.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.slicing.sizing.javaHeapMemoryFraction | string | `"60"` |  |
 | stackstate.components.slicing.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -309,7 +358,7 @@ stackstate/stackstate
 | stackstate.components.state.image.tag | string | `""` | Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.state.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.state.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `state` pods. |
-| stackstate.components.state.resources | object | `{"limits":{"memory":"2000Mi"},"requests":{"cpu":"500m","memory":"2000Mi"}}` | Resource allocation for `state` pods. |
+| stackstate.components.state.resources | object | `{"limits":{"cpu":"1000m","memory":"2000Mi"},"requests":{"cpu":"1000m","memory":"2000Mi"}}` | Resource allocation for `state` pods. |
 | stackstate.components.state.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.state.sizing.javaHeapMemoryFraction | string | `"80"` |  |
 | stackstate.components.state.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -323,10 +372,25 @@ stackstate/stackstate
 | stackstate.components.sync.image.tag | string | `""` | Tag used for the `sync` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.sync.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.sync.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `sync` pods. |
-| stackstate.components.sync.resources | object | `{"limits":{"memory":"2500Mi"},"requests":{"cpu":"500m","memory":"2500Mi"}}` | Resource allocation for `sync` pods. |
+| stackstate.components.sync.resources | object | `{"limits":{"cpu":"2000m","memory":"2500Mi"},"requests":{"cpu":"2000m","memory":"2500Mi"}}` | Resource allocation for `sync` pods. |
 | stackstate.components.sync.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.sync.sizing.javaHeapMemoryFraction | string | `"60"` |  |
 | stackstate.components.sync.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.trace2es.additionalLogging | string | `""` | Additional logback config |
+| stackstate.components.trace2es.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.trace2es.enabled | bool | `true` | Enable/disable the trace2es service |
+| stackstate.components.trace2es.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| stackstate.components.trace2es.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.trace2es.image.pullPolicy | string | `""` | `pullPolicy` used for the `trace2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.components.trace2es.image.repository | string | `"stackstate/stackstate-kafka-to-es"` | Repository of the trace2es component Docker image. |
+| stackstate.components.trace2es.image.tag | string | `""` | Tag used for the `trace2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.trace2es.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.trace2es.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `trace2es` pods. |
+| stackstate.components.trace2es.replicaCount | int | `1` | Number of `trace2es` replicas. |
+| stackstate.components.trace2es.resources | object | `{"limits":{"cpu":"500m","memory":"1Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Resource allocation for `trace2es` pods. |
+| stackstate.components.trace2es.sizing.baseMemoryConsumption | string | `"600Mi"` |  |
+| stackstate.components.trace2es.sizing.javaHeapMemoryFraction | string | `"85"` |  |
+| stackstate.components.trace2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.ui.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.ui.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.ui.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
@@ -352,7 +416,7 @@ stackstate/stackstate
 | stackstate.components.viewHealth.image.tag | string | `""` | Tag used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.viewHealth.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.viewHealth.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `viewHealth` pods. |
-| stackstate.components.viewHealth.resources | object | `{"limits":{"memory":"2700Mi"},"requests":{"cpu":"1000m","memory":"2700Mi"}}` | Resource allocation for `viewHealth` pods. |
+| stackstate.components.viewHealth.resources | object | `{"limits":{"cpu":"2000m","memory":"2700Mi"},"requests":{"cpu":"2000m","memory":"2700Mi"}}` | Resource allocation for `viewHealth` pods. |
 | stackstate.components.viewHealth.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.viewHealth.sizing.javaHeapMemoryFraction | string | `"55"` |  |
 | stackstate.components.viewHealth.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -378,6 +442,10 @@ stackstate/stackstate
 | zookeeper.metrics.serviceMonitor.selector | object | `{}` | Default selector to use to target a certain Prometheus instance. |
 | zookeeper.podAnnotations | object | `{"ad.stackstate.com/zookeeper.check_names":"[\"openmetrics\"]","ad.stackstate.com/zookeeper.init_configs":"[{}]","ad.stackstate.com/zookeeper.instances":"[ { \"prometheus_url\": \"http://%%host%%:9141/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Annotations for ZooKeeper pod. |
 | zookeeper.replicaCount | int | `3` | Default amount of Zookeeper replicas to provision. |
+| zookeeper.resources.limits.cpu | string | `"250m"` |  |
+| zookeeper.resources.limits.memory | string | `"512Mi"` |  |
+| zookeeper.resources.requests.cpu | string | `"100m"` |  |
+| zookeeper.resources.requests.memory | string | `"512Mi"` |  |
 
 ## Authentication
 
