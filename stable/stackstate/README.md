@@ -103,9 +103,9 @@ stackstate/stackstate
 | hbase.hbase.regionserver.resources.requests.cpu | string | `"1250m"` |  |
 | hbase.hbase.regionserver.resources.requests.memory | string | `"2Gi"` |  |
 | hbase.hdfs.datanode.replicaCount | int | `3` | Number of HDFS datanode replicas. |
-| hbase.hdfs.datanode.resources.limits.cpu | string | `"400m"` |  |
+| hbase.hdfs.datanode.resources.limits.cpu | string | `"500m"` |  |
 | hbase.hdfs.datanode.resources.limits.memory | string | `"4Gi"` |  |
-| hbase.hdfs.datanode.resources.requests.cpu | string | `"400m"` |  |
+| hbase.hdfs.datanode.resources.requests.cpu | string | `"300m"` |  |
 | hbase.hdfs.datanode.resources.requests.memory | string | `"2Gi"` |  |
 | hbase.hdfs.namenode.resources.limits.cpu | string | `"500m"` |  |
 | hbase.hdfs.namenode.resources.limits.memory | string | `"1Gi"` |  |
@@ -143,11 +143,11 @@ stackstate/stackstate
 | kafka.livenessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
 | kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
 | kafka.metrics.jmx.enabled | bool | `true` | Whether or not to expose JMX metrics to Prometheus. |
+| kafka.metrics.jmx.resources.limits.cpu | string | `"200m"` |  |
+| kafka.metrics.jmx.resources.limits.memory | string | `"300Mi"` |  |
+| kafka.metrics.jmx.resources.requests.cpu | string | `"200m"` |  |
+| kafka.metrics.jmx.resources.requests.memory | string | `"300Mi"` |  |
 | kafka.metrics.kafka.enabled | bool | `false` | Whether or not to create a standalone Kafka exporter to expose Kafka metrics. |
-| kafka.metrics.resources.limits.cpu | string | `"200m"` |  |
-| kafka.metrics.resources.limits.memory | string | `"300Mi"` |  |
-| kafka.metrics.resources.requests.cpu | string | `"200m"` |  |
-| kafka.metrics.resources.requests.memory | string | `"300Mi"` |  |
 | kafka.metrics.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` (also requires `kafka.metrics.kafka.enabled` or `kafka.metrics.jmx.enabled` to be `true`). |
 | kafka.metrics.serviceMonitor.interval | string | `"20s"` | How frequently to scrape metrics. |
 | kafka.metrics.serviceMonitor.selector | object | `{}` | Selector to target Prometheus instance. |
@@ -306,7 +306,7 @@ stackstate/stackstate
 | stackstate.components.receiver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.receiver.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `receiver` pods. |
 | stackstate.components.receiver.replicaCount | int | `1` | Number of `receiver` replicas. |
-| stackstate.components.receiver.resources | object | `{"limits":{"cpu":"500m","memory":"3Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Resource allocation for `receiver` pods. |
+| stackstate.components.receiver.resources | object | `{"limits":{"cpu":"2000m","memory":"3Gi"},"requests":{"cpu":"2000m","memory":"1Gi"}}` | Resource allocation for `receiver` pods. |
 | stackstate.components.receiver.sizing.baseMemoryConsumption | string | `"700Mi"` |  |
 | stackstate.components.receiver.sizing.javaHeapMemoryFraction | string | `"75"` |  |
 | stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
