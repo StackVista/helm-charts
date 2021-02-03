@@ -369,10 +369,10 @@ stackstate:
       resources:
         limits:
           memory: "3Gi"
-          cpu: "500m"
+          cpu: "2000m"
         requests:
           memory: "1Gi"
-          cpu: "500m"
+          cpu: "2000m"
       sizing:
         baseMemoryConsumption: "700Mi"
         javaHeapMemoryFraction: "75"
@@ -843,10 +843,10 @@ hbase:
       resources:
         limits:
           memory: "4Gi"
-          cpu: "400m"
+          cpu: "500m"
         requests:
           memory: "2Gi"
-          cpu: "400m"
+          cpu: "300m"
     namenode:
       resources:
         limits:
@@ -951,6 +951,13 @@ kafka:
     jmx:
       # kafka.metrics.jmx.enabled -- Whether or not to expose JMX metrics to Prometheus.
       enabled: true
+      resources:
+        limits:
+          cpu: "200m"
+          memory: "300Mi"
+        requests:
+          cpu: "200m"
+          memory: "300Mi"
     serviceMonitor:
       # kafka.metrics.serviceMonitor.enabled -- If `true`, creates a Prometheus Operator `ServiceMonitor` (also requires `kafka.metrics.kafka.enabled` or `kafka.metrics.jmx.enabled` to be `true`).
       enabled: false
@@ -958,13 +965,6 @@ kafka:
       interval: 20s
       # kafka.metrics.serviceMonitor.selector -- Selector to target Prometheus instance.
       selector: {}
-    resources:
-      limits:
-        cpu: "200m"
-        memory: "300Mi"
-      requests:
-        cpu: "200m"
-        memory: "300Mi"
   readinessProbe:
     # kafka.readinessProbe.initialDelaySeconds -- Delay before readiness probe is initiated.
     initialDelaySeconds: 45
