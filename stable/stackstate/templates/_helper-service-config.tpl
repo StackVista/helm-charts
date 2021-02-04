@@ -86,9 +86,9 @@ Mount secrets and log config in pod for stackstate services
   secret:
     secretName: {{ template "common.fullname.short" .root }}-common
     items:
-{{- range $key, $val := $mountSecrets }}
+{{- range $key := (keys $mountSecrets | sortAlpha) }}
     - key: {{ $key }}
-      path: {{ $val }}
+      path: {{ get $mountSecrets $key }}
 {{- end }}
 {{- end }}
 {{- end -}}

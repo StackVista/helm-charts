@@ -69,13 +69,13 @@ Common extra environment variables for all processes inherited through `stacksta
 */}}
 {{- define "stackstate.common.envvars" -}}
 {{- if .Values.stackstate.components.all.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.all.extraEnv.open  }}
-- name: {{ $key }}
-  value: {{ $value | quote }}
+  {{- range $key := (keys .Values.stackstate.components.all.extraEnv.open | sortAlpha ) }}
+- name: {{ $key .Values.stackstate.components.all.extraEnv.open $key }}
+  value: {{ get  | quote }}
   {{- end }}
 {{- end }}
 {{- if .Values.stackstate.components.all.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.all.extraEnv.secret  }}
+  {{- range $key := (keys .Values.stackstate.components.all.extraEnv.secret | sortAlpha) }}
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
@@ -90,13 +90,13 @@ Router extra environment variables for ui pods inherited through `stackstate.com
 */}}
 {{- define "stackstate.router.envvars" -}}
 {{- if .Values.stackstate.components.router.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.router.extraEnv.open  }}
+  {{- range $key := ( keys .Values.stackstate.components.router.extraEnv.open | sortAlpha)  }}
 - name: {{ $key }}
-  value: {{ $value | quote }}
+  value: {{ get .Values.stackstate.components.router.extraEnv.open $key | quote }}
   {{- end }}
 {{- end }}
 {{- if .Values.stackstate.components.router.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.router.extraEnv.secret  }}
+  {{- range $key := ( keys .Values.stackstate.components.router.extraEnv.secret | sortAlpha )  }}
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
@@ -127,13 +127,13 @@ UI extra environment variables for ui pods inherited through `stackstate.compone
 */}}
 {{- define "stackstate.ui.envvars" -}}
 {{- if .Values.stackstate.components.ui.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.ui.extraEnv.open  }}
+  {{- range $key := (keys .Values.stackstate.components.ui.extraEnv.open | sortAlpha)  }}
 - name: {{ $key }}
-  value: {{ $value | quote }}
+  value: {{ get .Values.stackstate.components.ui.extraEnv.open $key | quote }}
   {{- end }}
 {{- end }}
 {{- if .Values.stackstate.components.ui.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.ui.extraEnv.secret  }}
+  {{- range $key:= ( keys .Values.stackstate.components.ui.extraEnv.secret | sortAlpha )  }}
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
