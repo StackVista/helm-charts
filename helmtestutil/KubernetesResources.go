@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
 	batchv1 "k8s.io/api/batch/v1"
+	batchv1beta1 "k8s.io/api/batch/v1beta1"
 	corev1 "k8s.io/api/core/v1"
 	policyv1 "k8s.io/api/policy/v1beta1"
 	rbacv1 "k8s.io/api/rbac/v1"
@@ -16,19 +17,21 @@ import (
 
 // KubernetesResources parsed from a multi-document template string
 type KubernetesResources struct {
-	ClusterRoles        []rbacv1.ClusterRole
-	ClusterRoleBindings []rbacv1.ClusterRoleBinding
-	ConfigMaps          []corev1.ConfigMap
-	Deployments         []appsv1.Deployment
-	Jobs                []batchv1.Job
-	Pods                []corev1.Pod
-	Pdbs                []policyv1.PodDisruptionBudget
-	Roles               []rbacv1.Role
-	RoleBindings        []rbacv1.RoleBinding
-	Secrets             []corev1.Secret
-	Services            []corev1.Service
-	ServiceAccounts     []corev1.ServiceAccount
-	Statefulsets        []appsv1.StatefulSet
+	ClusterRoles          []rbacv1.ClusterRole
+	ClusterRoleBindings   []rbacv1.ClusterRoleBinding
+	ConfigMaps            []corev1.ConfigMap
+	CronJobs              []batchv1beta1.CronJob
+	Deployments           []appsv1.Deployment
+	Jobs                  []batchv1.Job
+	PersistentVolumeClaim []corev1.PersistentVolumeClaim
+	Pods                  []corev1.Pod
+	Pdbs                  []policyv1.PodDisruptionBudget
+	Roles                 []rbacv1.Role
+	RoleBindings          []rbacv1.RoleBinding
+	Secrets               []corev1.Secret
+	Services              []corev1.Service
+	ServiceAccounts       []corev1.ServiceAccount
+	Statefulsets          []appsv1.StatefulSet
 }
 
 // NewKubernetesResources creates a new instance of KubernetesResources by parsing the helmOutput and
@@ -37,8 +40,10 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 	clusterRoles := make([]rbacv1.ClusterRole, 0)
 	clusterRoleBindings := make([]rbacv1.ClusterRoleBinding, 0)
 	configMaps := make([]corev1.ConfigMap, 0)
+	cronJobs := make([]batchv1beta1.CronJob, 0)
 	deployments := make([]appsv1.Deployment, 0)
 	jobs := make([]batchv1.Job, 0)
+	persistentVolumeClaims := make([]corev1.PersistentVolumeClaim, 0)
 	pods := make([]corev1.Pod, 0)
 	pdbs := make([]policyv1.PodDisruptionBudget, 0)
 	roles := make([]rbacv1.Role, 0)
@@ -68,6 +73,11 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 			var configMap corev1.ConfigMap
 			helm.UnmarshalK8SYaml(t, v, &configMap)
 			configMaps = append(configMaps, configMap)
+		case "CronJob":
+			var resource batchv1beta1.CronJob
+			e := helm.UnmarshalK8SYamlE(t, v, &resource)
+			assert.NoError(t, e, "CronJob failed to parse: "+v)
+			cronJobs = append(cronJobs, resource)
 		case "Deployment":
 			var resource appsv1.Deployment
 			e := helm.UnmarshalK8SYamlE(t, v, &resource)
@@ -79,6 +89,11 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 			jobs = append(jobs, resource)
 		case "List":
 			// Skip for now
+		case "PersistentVolumeClaim":
+			var resource corev1.PersistentVolumeClaim
+			e := helm.UnmarshalK8SYamlE(t, v, &resource)
+			assert.NoError(t, e, "PersistentVolumeClaim failed to parse: "+v)
+			persistentVolumeClaims = append(persistentVolumeClaims, resource)
 		case "Pod":
 			var resource corev1.Pod
 			helm.UnmarshalK8SYaml(t, v, &resource)
