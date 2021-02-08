@@ -461,9 +461,9 @@ in that case.
 {{- define "stackstate.initContainer.ensure.no.server.statefulset.pod.are.running" -}}
 name: ensure-no-server-statefulset-pod-are-running
 image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
+imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
 command:
 - '/bin/bash'
 - '-c'
 - 'kubectl get pod {{ template "common.fullname.short" . }}-server-0 --ignore-not-found && while (kubectl get pod {{ template "common.fullname.short" . }}-server-0 ) ; do echo "Waiting for {{ template "common.fullname.short" . }}-server-0 pod to terminate"; sleep 1; done'
-imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
 {{- end -}}

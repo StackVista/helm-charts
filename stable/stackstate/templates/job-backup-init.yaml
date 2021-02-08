@@ -1,0 +1,41 @@
+{{- if or .Values.backup.stackGraph.enabled .Values.backup.elasticSearch.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "common.fullname.short" . }}-backup-init-{{ now | date "20060102t150405" }}
+spec:
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      initContainers:
+        - name: wait
+          command:
+            - sh
+            - -c
+            - |
+              /entrypoint -c {{ include "stackstate.es.endpoint" . }},{{ include "stackstate.minio.endpoint" . }} -t 300
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+      containers:
+        - name: configure
+          image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
+          imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
+          command:
+            - '/backup-restore-scripts/configure-backup.sh'
+          env:
+            {{- include "stackstate.backup.envvars" . | nindent 12 }}
+          volumeMounts:
+            - name: backup-restore-scripts
+              mountPath: /backup-restore-scripts
+            - name: minio-keys
+              mountPath: /aws-keys
+      volumes:
+        - name: backup-restore-scripts
+          configMap:
+            name: {{ template "common.fullname.short" . }}-backup-restore-scripts
+            defaultMode: 0755
+        - name: minio-keys
+          secret:
+            secretName: {{ include "stackstate.minio.keys" . }}
+      restartPolicy: Never
+{{- end }}

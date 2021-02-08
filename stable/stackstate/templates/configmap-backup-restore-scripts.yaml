@@ -1,0 +1,181 @@
+{{- define "job-elasticsearch-list-snapshots.yaml" -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: elasticsearch-list-snapshots
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      initContainers:
+        - name: wait
+          command:
+            - sh
+            - -c
+            - |
+              /entrypoint -c {{ include "stackstate.es.endpoint" . }},{{ include "stackstate.minio.endpoint" . }} -t 300
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+      containers:
+        - name: list
+          image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
+          imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
+          command:
+            - '/backup-restore-scripts/list-elasticsearch-snapshots.sh'
+          env:
+            {{- include "stackstate.backup.envvars" . | nindent 12 }}
+          volumeMounts:
+            {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
+      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      volumes:
+        {{- include "stackstate.backup.volumes" . | nindent 8 }}
+      restartPolicy: Never
+{{- end -}}
+
+{{- define "job-elasticsearch-restore-snapshot.yaml" -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: elasticsearch-restore-snapshot
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      initContainers:
+        - name: wait
+          command:
+            - sh
+            - -c
+            - |
+              /entrypoint -c {{ include "stackstate.es.endpoint" . }},{{ include "stackstate.minio.endpoint" . }} -t 300
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+      containers:
+        - name: restore
+          image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
+          imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
+          command:
+            - '/backup-restore-scripts/restore-elasticsearch-snapshot.sh'
+          env:
+            {{- include "stackstate.backup.envvars" . | nindent 12 }}
+            - name: SNAPSHOT_NAME
+              value: "REPLACE_ME_SNAPSHOT_NAME_REPLACE_ME"
+          volumeMounts:
+            {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
+      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      volumes:
+        {{- include "stackstate.backup.volumes" . | nindent 8 }}
+      restartPolicy: Never
+{{- end -}}
+
+{{- define "job-stackgraph-list-backups.yaml" -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: stackgraph-list-backups
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      initContainers:
+        - name: wait
+          command:
+            - sh
+            - -c
+            - |
+              /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+      containers:
+        - name: list
+          image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.server.image.tag }}"
+          imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
+          command:
+            - '/backup-restore-scripts/list-stackgraph-backups.sh'
+          env:
+            {{- include "stackstate.backup.envvars" . | nindent 12 }}
+          volumeMounts:
+            {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
+      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      volumes:
+        {{- include "stackstate.backup.volumes" . | nindent 8 }}
+      restartPolicy: Never
+{{- end -}}
+
+{{- define "job-stackgraph-restore-backup.yaml" -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: stackgraph-restore-backup
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      initContainers:
+        - name: wait
+          command:
+            - sh
+            - -c
+            - |
+              /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+      containers:
+        - name: list
+          image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.server.image.tag }}"
+          imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
+          command:
+            - '/backup-restore-scripts/restore-stackgraph-backup.sh'
+          env:
+            {{- include "stackstate.backup.envvars" . | nindent 12 }}
+            - name: BACKUP_FILE
+              value: "REPLACE_ME_BACKUP_FILE_REPLACE_ME"
+            - name: ZOOKEEPER_QUORUM
+              value: stackstate-zookeeper-headless:2181
+          volumeMounts:
+            {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
+      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      volumes:
+        {{- include "stackstate.backup.volumes" . | nindent 8 }}
+      restartPolicy: Never
+{{- end -}}
+
+{{- if or .Values.backup.stackGraph.enabled .Values.backup.elasticSearch.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "common.fullname.short" . }}-backup-restore-scripts
+data:
+  configure-backup.sh: |
+    {{- .Files.Get "scripts/configure-backup.sh" | nindent 4 }}
+{{- if .Values.backup.stackGraph.enabled }}
+  backup-stackgraph.sh: |
+    {{- .Files.Get "scripts/backup-stackgraph.sh" | nindent 4 }}
+  expire-stackgraph-backups.py: |
+    {{- .Files.Get "scripts/expire-stackgraph-backups.py" | nindent 4 }}
+{{- end }}
+{{- if .Values.backup.elasticSearch.enabled }}
+  job-elasticsearch-list-snapshots.yaml: |
+    {{- include "job-elasticsearch-list-snapshots.yaml" . | nindent 4 }}
+  list-elasticsearch-snapshots.sh: |
+    {{- .Files.Get "scripts/list-elasticsearch-snapshots.sh" | nindent 4 }}
+  job-elasticsearch-restore-snapshot.yaml: |
+    {{- include "job-elasticsearch-restore-snapshot.yaml" . | nindent 4 }}
+  restore-elasticsearch-snapshot.sh: |
+    {{- .Files.Get "scripts/restore-elasticsearch-snapshot.sh" | nindent 4 }}
+{{- end }}
+{{- if .Values.backup.stackGraph.enabled }}
+  job-stackgraph-list-backups.yaml: |
+    {{- include "job-stackgraph-list-backups.yaml" . | nindent 4 }}
+  list-stackgraph-backups.sh: |
+    {{- .Files.Get "scripts/list-stackgraph-backups.sh" | nindent 4 }}
+  job-stackgraph-restore-backup.yaml: |
+    {{- include "job-stackgraph-restore-backup.yaml" . | nindent 4 }}
+  restore-stackgraph-backup.sh: |
+    {{- .Files.Get "scripts/restore-stackgraph-backup.sh" | nindent 4 }}
+{{- end }}
+{{- end }}

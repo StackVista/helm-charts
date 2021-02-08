@@ -38,11 +38,12 @@ securityContext: {{- omit .Values.stackstate.components.kafkaTopicCreate.securit
 {{- $overrideContainer := fromYaml (include "stackstate.kafkaTopicCreate.job.container.main" .) -}}
 {{- $stsstackstateKafkaTopicCreateMainContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-{{ now | date "20060102t150405" }}-topic-create
+  name: {{ template "common.fullname.short" . }}-topic-create-{{ now | date "20060102t150405" }}
   labels:
     app.kubernetes.io/component: topic-create
 spec:
   activeDeadlineSeconds: 1200
+  ttlSecondsAfterFinished: 600
   template:
     metadata:
       annotations:

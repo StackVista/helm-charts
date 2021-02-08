@@ -1,4 +1,10 @@
 dependencies:
+- name: anomaly-detection
+  repository: https://helm.stackstate.io
+  version: 4.3.0-pre.1
+- name: cluster-agent
+  repository: https://helm.stackstate.io
+  version: 0.4.11
 - name: common
   repository: https://helm.stackstate.io
   version: 0.4.13
@@ -11,14 +17,11 @@ dependencies:
 - name: kafka
   repository: https://helm.stackstate.io
   version: 12.2.5-stackstate.0
+- name: minio
+  repository: https://helm.min.io/
+  version: 8.0.8
 - name: zookeeper
   repository: https://charts.bitnami.com/bitnami
   version: 5.16.0
-- name: anomaly-detection
-  repository: https://helm.stackstate.io
-  version: 4.3.0-pre.1
-- name: cluster-agent
-  repository: https://helm.stackstate.io
-  version: 0.4.11
-digest: sha256:829bb255d79c7a3938c38073fee47b21676e1b2a1b050a31e81a80b2565d4d30
-generated: "2021-01-25T15:12:45.758225+01:00"
+digest: sha256:296619b50795f2b1d19de50c6d5daf1eb4eab463a173e8eb46f11ee15f335963
+generated: "2021-01-27T09:01:58.90573+01:00"
