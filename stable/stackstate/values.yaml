@@ -481,10 +481,10 @@ stackstate:
       resources:
         limits:
           memory: "8Gi"
-          cpu: "4000m"
+          cpu: "3600m"
         requests:
           memory: "8Gi"
-          cpu: "3500m"
+          cpu: "3600m"
       sizing:
         baseMemoryConsumption: "1700Mi"
         javaHeapMemoryFraction: "85"
