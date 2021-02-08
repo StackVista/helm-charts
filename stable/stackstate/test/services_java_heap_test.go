@@ -16,7 +16,7 @@ func TestServerJavaHeapRender(t *testing.T) {
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
 	expectedDeployments["stackstate-server"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx5858m -Xms5858m"}
-	expectedDeployments["stackstate-receiver"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1891m -Xms280m"}
+	expectedDeployments["stackstate-receiver"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1891m -Xms1891m"}
 	expectedDeployments["stackstate-correlate"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx799m -Xms799m"}
 	expectedDeployments["stackstate-mm2es"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx402m -Xms402m"}
 
@@ -44,7 +44,7 @@ func TestSplitServicesJavaHeapRender(t *testing.T) {
 	expectedDeployments["stackstate-api"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1750m -Xms1750m"}
 	expectedDeployments["stackstate-checks"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx2450m -Xms2450m"}
 	expectedDeployments["stackstate-state"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1200m -Xms1200m"}
-	expectedDeployments["stackstate-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1200m -Xms1200m"}
+	expectedDeployments["stackstate-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1800m -Xms1800m"}
 	expectedDeployments["stackstate-slicing"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx780m -Xms780m"}
 	expectedDeployments["stackstate-view-health"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1210m -Xms1210m"}
 
