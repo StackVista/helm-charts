@@ -229,7 +229,7 @@ stackstate/stackstate
 | stackstate.components.api.image.tag | string | `""` | Tag used for the `api` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.api.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.api.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `api` pods. |
-| stackstate.components.api.resources | object | `{"limits":{"cpu":"1500m","memory":"4000Mi"},"requests":{"cpu":"1500m","memory":"4000Mi"}}` | Resource allocation for `api` pods. |
+| stackstate.components.api.resources | object | `{"limits":{"cpu":"2000m","memory":"4000Mi"},"requests":{"cpu":"1500m","memory":"4000Mi"}}` | Resource allocation for `api` pods. |
 | stackstate.components.api.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.api.sizing.javaHeapMemoryFraction | string | `"50"` |  |
 | stackstate.components.api.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -395,7 +395,7 @@ stackstate/stackstate
 | stackstate.components.sync.image.tag | string | `""` | Tag used for the `sync` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.sync.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.sync.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `sync` pods. |
-| stackstate.components.sync.resources | object | `{"limits":{"cpu":"2500m","memory":"3500Mi"},"requests":{"cpu":"2000m","memory":"3500Mi"}}` | Resource allocation for `sync` pods. |
+| stackstate.components.sync.resources | object | `{"limits":{"cpu":"3000m","memory":"3500Mi"},"requests":{"cpu":"2000m","memory":"3500Mi"}}` | Resource allocation for `sync` pods. |
 | stackstate.components.sync.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.sync.sizing.javaHeapMemoryFraction | string | `"60"` |  |
 | stackstate.components.sync.tolerations | list | `[]` | Toleration labels for pod assignment. |

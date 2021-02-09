@@ -152,7 +152,7 @@ stackstate:
       resources:
         limits:
           memory: "4000Mi"
-          cpu: "1500m"
+          cpu: "2000m"
         requests:
           memory: "4000Mi"
           cpu: "1500m"
@@ -555,7 +555,7 @@ stackstate:
       resources:
         limits:
           memory: "3500Mi"
-          cpu: "2500m"
+          cpu: "3000m"
         requests:
           memory: "3500Mi"
           cpu: "2000m"
