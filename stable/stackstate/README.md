@@ -115,15 +115,15 @@ stackstate/stackstate
 | hbase.hbase.master.resources.requests.cpu | string | `"50m"` |  |
 | hbase.hbase.master.resources.requests.memory | string | `"1Gi"` |  |
 | hbase.hbase.regionserver.replicaCount | int | `3` | Number of HBase regionserver node replicas. |
-| hbase.hbase.regionserver.resources.limits.cpu | string | `"1250m"` |  |
+| hbase.hbase.regionserver.resources.limits.cpu | string | `"3000m"` |  |
 | hbase.hbase.regionserver.resources.limits.memory | string | `"3Gi"` |  |
-| hbase.hbase.regionserver.resources.requests.cpu | string | `"1250m"` |  |
-| hbase.hbase.regionserver.resources.requests.memory | string | `"2Gi"` |  |
+| hbase.hbase.regionserver.resources.requests.cpu | string | `"3000m"` |  |
+| hbase.hbase.regionserver.resources.requests.memory | string | `"3Gi"` |  |
 | hbase.hdfs.datanode.replicaCount | int | `3` | Number of HDFS datanode replicas. |
 | hbase.hdfs.datanode.resources.limits.cpu | string | `"500m"` |  |
 | hbase.hdfs.datanode.resources.limits.memory | string | `"4Gi"` |  |
 | hbase.hdfs.datanode.resources.requests.cpu | string | `"300m"` |  |
-| hbase.hdfs.datanode.resources.requests.memory | string | `"2Gi"` |  |
+| hbase.hdfs.datanode.resources.requests.memory | string | `"4Gi"` |  |
 | hbase.hdfs.namenode.resources.limits.cpu | string | `"500m"` |  |
 | hbase.hdfs.namenode.resources.limits.memory | string | `"1Gi"` |  |
 | hbase.hdfs.namenode.resources.requests.cpu | string | `"100m"` |  |
@@ -230,7 +230,7 @@ stackstate/stackstate
 | stackstate.components.api.image.tag | string | `""` | Tag used for the `api` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.api.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.api.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `api` pods. |
-| stackstate.components.api.resources | object | `{"limits":{"cpu":"1500m","memory":"4000Mi"},"requests":{"cpu":"1000m","memory":"4000Mi"}}` | Resource allocation for `api` pods. |
+| stackstate.components.api.resources | object | `{"limits":{"cpu":"1500m","memory":"4000Mi"},"requests":{"cpu":"1500m","memory":"4000Mi"}}` | Resource allocation for `api` pods. |
 | stackstate.components.api.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.api.sizing.javaHeapMemoryFraction | string | `"50"` |  |
 | stackstate.components.api.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -289,7 +289,7 @@ stackstate/stackstate
 | stackstate.components.initializer.image.repository | string | `"stackstate/stackstate-server"` | Repository of the initializer component Docker image. |
 | stackstate.components.initializer.image.tag | string | `""` | Tag used for the `initializer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.initializer.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.initializer.resources | object | `{"limits":{"cpu":"500m","memory":"700Mi"},"requests":{"cpu":"500m","memory":"128Mi"}}` | Resource allocation for `initializer` pods. |
+| stackstate.components.initializer.resources | object | `{"limits":{"cpu":"500m","memory":"700Mi"},"requests":{"cpu":"500m","memory":"700Mi"}}` | Resource allocation for `initializer` pods. |
 | stackstate.components.initializer.sizing.baseMemoryConsumption | string | `"460Mi"` |  |
 | stackstate.components.initializer.sizing.javaHeapMemoryFraction | string | `"65"` |  |
 | stackstate.components.initializer.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -329,7 +329,7 @@ stackstate/stackstate
 | stackstate.components.receiver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.receiver.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `receiver` pods. |
 | stackstate.components.receiver.replicaCount | int | `1` | Number of `receiver` replicas. |
-| stackstate.components.receiver.resources | object | `{"limits":{"cpu":"2000m","memory":"3Gi"},"requests":{"cpu":"2000m","memory":"1Gi"}}` | Resource allocation for `receiver` pods. |
+| stackstate.components.receiver.resources | object | `{"limits":{"cpu":"2000m","memory":"3Gi"},"requests":{"cpu":"2000m","memory":"3Gi"}}` | Resource allocation for `receiver` pods. |
 | stackstate.components.receiver.sizing.baseMemoryConsumption | string | `"700Mi"` |  |
 | stackstate.components.receiver.sizing.javaHeapMemoryFraction | string | `"75"` |  |
 | stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -355,7 +355,7 @@ stackstate/stackstate
 | stackstate.components.server.image.tag | string | `""` | Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.server.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.server.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `server` pods. |
-| stackstate.components.server.resources | object | `{"limits":{"cpu":"4000m","memory":"8Gi"},"requests":{"cpu":"2000m","memory":"8Gi"}}` | Resource allocation for `server` pods. |
+| stackstate.components.server.resources | object | `{"limits":{"cpu":"3600m","memory":"8Gi"},"requests":{"cpu":"3600m","memory":"8Gi"}}` | Resource allocation for `server` pods. |
 | stackstate.components.server.sizing.baseMemoryConsumption | string | `"1700Mi"` |  |
 | stackstate.components.server.sizing.javaHeapMemoryFraction | string | `"85"` |  |
 | stackstate.components.server.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -396,7 +396,7 @@ stackstate/stackstate
 | stackstate.components.sync.image.tag | string | `""` | Tag used for the `sync` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.sync.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.sync.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `sync` pods. |
-| stackstate.components.sync.resources | object | `{"limits":{"cpu":"2000m","memory":"2500Mi"},"requests":{"cpu":"2000m","memory":"2500Mi"}}` | Resource allocation for `sync` pods. |
+| stackstate.components.sync.resources | object | `{"limits":{"cpu":"2000m","memory":"3500Mi"},"requests":{"cpu":"2000m","memory":"3500Mi"}}` | Resource allocation for `sync` pods. |
 | stackstate.components.sync.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.sync.sizing.javaHeapMemoryFraction | string | `"60"` |  |
 | stackstate.components.sync.tolerations | list | `[]` | Toleration labels for pod assignment. |

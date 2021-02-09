@@ -155,7 +155,7 @@ stackstate:
           cpu: "1500m"
         requests:
           memory: "4000Mi"
-          cpu: "1000m"
+          cpu: "1500m"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "50"
@@ -262,7 +262,7 @@ stackstate:
           memory: "700Mi"
           cpu: "500m"
         requests:
-          memory: "128Mi"
+          memory: "700Mi"
           cpu: "500m"
       sizing:
         baseMemoryConsumption: "460Mi"
@@ -412,7 +412,7 @@ stackstate:
           memory: "3Gi"
           cpu: "2000m"
         requests:
-          memory: "1Gi"
+          memory: "3Gi"
           cpu: "2000m"
       sizing:
         baseMemoryConsumption: "700Mi"
@@ -481,10 +481,10 @@ stackstate:
       resources:
         limits:
           memory: "8Gi"
-          cpu: "4000m"
+          cpu: "3600m"
         requests:
           memory: "8Gi"
-          cpu: "2000m"
+          cpu: "3600m"
       sizing:
         baseMemoryConsumption: "1700Mi"
         javaHeapMemoryFraction: "85"
@@ -554,10 +554,10 @@ stackstate:
       # stackstate.components.sync.resources -- Resource allocation for `sync` pods.
       resources:
         limits:
-          memory: "2500Mi"
+          memory: "3500Mi"
           cpu: "2000m"
         requests:
-          memory: "2500Mi"
+          memory: "3500Mi"
           cpu: "2000m"
       sizing:
         baseMemoryConsumption: "500Mi"
@@ -879,10 +879,10 @@ hbase:
       resources:
         limits:
           memory: "3Gi"
-          cpu: "1250m"
+          cpu: "3000m"
         requests:
-          memory: "2Gi"
-          cpu: "1250m"
+          memory: "3Gi"
+          cpu: "3000m"
   hdfs:
     datanode:
       # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas.
@@ -892,7 +892,7 @@ hbase:
           memory: "4Gi"
           cpu: "500m"
         requests:
-          memory: "2Gi"
+          memory: "4Gi"
           cpu: "300m"
     namenode:
       resources:
