@@ -91,8 +91,7 @@ stackstate/stackstate
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
 | elasticsearch.esJavaOpts | string | `"-Xmx3g -Xms3g"` | JVM options |
 | elasticsearch.extraEnvs | list | `[{"name":"action.auto_create_index","value":"true"},{"name":"indices.query.bool.max_clause_count","value":"10000"}]` | Extra settings that StackState uses for Elasticsearch. |
-| elasticsearch.keystore | list | `[{"items":[{"key":"accesskey","path":"s3.client.minio.access_key"},{"key":"secretkey","path":"s3.client.minio.secret_key"}],"secretName":"stackstate-minio"}]` | ElasticSearch keystore for access to Minio. Remove this if you set `minio.enabled` to `false` |
-| elasticsearch.minimumMasterNodes | int | `2` | Minimum number of Elasticsearch master nodes. |
+| elasticsearch.minimumMasterNodes | int | `2` |  |
 | elasticsearch.nodeGroup | string | `"master"` |  |
 | elasticsearch.replicas | int | `3` | Number of Elasticsearch replicas. |
 | elasticsearch.resources | object | `{"limits":{"cpu":"2000m","memory":"4Gi"},"requests":{"cpu":"1000m","memory":"4Gi"}}` | Override Elasticsearch resources |
@@ -143,7 +142,7 @@ stackstate/stackstate
 | kafka.volumePermissions.enabled | bool | `false` |  |
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
 | minio.accessKey | string | `"setme"` | Access key for Minio. Default is set to an invalid value that will cause Minio to not start up to ensure users of this Helm chart set an explicit value. |
-| minio.enabled | bool | `true` | Enables Minio for local backups. If you disable Minio, also override `elasticsearch.keystore` to not load the Minio keys into the ElasticSearch configuration |
+| minio.enabled | bool | `false` | Enables Minio for local backups. If you enable Minio, also override `elasticsearch.keystore` to not load the Minio keys into the ElasticSearch configuration |
 | minio.fullnameOverride | string | `"stackstate-minio"` | **N.B.: Do not change this value!** The fullname override for Minio subchart is hardcoded so that this chart can refer to its components. |
 | minio.secretKey | string | `"setme"` |  |
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |

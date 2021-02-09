@@ -718,13 +718,13 @@ elasticsearch:
     - name: indices.query.bool.max_clause_count
       value: "10000"
   # elasticsearch.keystore -- ElasticSearch keystore for access to Minio. Remove this if you set `minio.enabled` to `false`
-  keystore:
-    - secretName: stackstate-minio
-      items:
-        - key: accesskey
-          path: s3.client.minio.access_key
-        - key: secretkey
-          path: s3.client.minio.secret_key
+  # keystore:
+  #   - secretName: stackstate-minio
+  #     items:
+  #       - key: accesskey
+  #         path: s3.client.minio.access_key
+  #       - key: secretkey
+  #         path: s3.client.minio.secret_key
   # elasticsearch.minimumMasterNodes -- Minimum number of Elasticsearch master nodes.
   minimumMasterNodes: 2
   nodeGroup: "master"
@@ -898,12 +898,12 @@ kafka:
   zookeeper:
     enabled: false
 minio:
-  # minio.accessKey -- Access key for Minio. Default is set to an invalid value that will cause Minio to not start up to ensure users of this Helm chart set an explicit value.
-  accessKey: setme
-  # minio.enabled -- Enables Minio for local backups. If you disable Minio, also override `elasticsearch.keystore` to not load the Minio keys into the ElasticSearch configuration
-  enabled: true
+  # minio.enabled -- Enables Minio for local backups. If you enable Minio, also override `elasticsearch.keystore` to not load the Minio keys into the ElasticSearch configuration
+  enabled: false
   # minio.fullnameOverride -- **N.B.: Do not change this value!** The fullname override for Minio subchart is hardcoded so that this chart can refer to its components.
   fullnameOverride: stackstate-minio
+  # minio.accessKey -- Access key for Minio. Default is set to an invalid value that will cause Minio to not start up to ensure users of this Helm chart set an explicit value.
+  accessKey: setme
   # minio.accessKey - Secret key for Minio. Default is set to an invalid value that will cause Minio to not start up to ensure users of this Helm chart set an explicit value.
   secretKey: setme
 zookeeper:
