@@ -1,42 +1,41 @@
-{{- define "stackstate.k2es.deployment.eventsToEs.container" -}}
+{{- define "stackstate.k2es.deployment.stsEventsToEs.container" -}}
 args:
 {{- include "stackstate.service.args" . }}
-- state-events
-- generic-events
-- topology-events
-name: e2es
+- sts-events
+name: sts2es
 volumeMounts:
 {{- include "stackstate.service.container.volumes" . }}
 {{- end -}}
 
-{{- define "stackstate.k2es.eventsToEs.deployment" -}}
+{{- define "stackstate.k2es.stsEventsToEs.deployment" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $commonKafkaToEsContainer := fromYaml (include "stackstate.k2es.deployment.common.container" .) -}}
 {{- $commonKafkaToEsInitContainer := fromYaml (include "stackstate.k2es.deployment.common.initcontainer" .) -}}
-{{- $eventsToEsContainer := fromYaml (include "stackstate.k2es.deployment.eventsToEs.container" .) -}}
+{{- $stsEventsToEsContainer := fromYaml (include "stackstate.k2es.deployment.stsEventsToEs.container" .) }}
+
 metadata:
-  name: {{ template "common.fullname.short" . }}-e2es
+  name: {{ template "common.fullname.short" . }}-sts2es
   labels:
-    app.kubernetes.io/component: e2es
+    app.kubernetes.io/component: sts2es
 spec:
   replicas: {{ .Values.stackstate.components.k2es.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/component: e2es
+      app.kubernetes.io/component: sts2es
   template:
     metadata:
       annotations:
-        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "e2es") | indent 8 }}
+        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "sts2es") | indent 8 }}
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.k2es.secret.checksum" . | nindent 8 }}
       labels:
-        app.kubernetes.io/component: e2es
+        app.kubernetes.io/component: sts2es
     spec:
       {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml (merge $commonKafkaToEsInitContainer $commonContainer) | nindent 8 }}
       containers:
-      - {{ toYaml (merge $eventsToEsContainer $commonKafkaToEsContainer $commonContainer) | nindent 8 }}
+      - {{ toYaml (merge $stsEventsToEsContainer $commonKafkaToEsContainer $commonContainer) | nindent 8 }}
       volumes:
         {{- include "stackstate.service.pod.volumes" (dict "pod_name" "k2es" "root" . ) | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.k2es.nodeSelector }}
@@ -69,5 +68,5 @@ spec:
 {{- end -}}
 
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
-{{- $k2esEventsToEsDeployment := fromYaml (include "stackstate.k2es.eventsToEs.deployment" .) -}}
-{{- toYaml (merge $k2esEventsToEsDeployment $commonDeployment) -}}
+{{- $k2esStsEventsToEsDeployment := fromYaml (include "stackstate.k2es.stsEventsToEs.deployment" .) -}}
+{{- toYaml (merge $k2esStsEventsToEsDeployment $commonDeployment) -}}

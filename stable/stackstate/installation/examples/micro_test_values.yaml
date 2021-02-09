@@ -62,15 +62,7 @@ stackstate:
         requests:
           memory: "200Mi"
           cpu: "500m"
-    e2es:
-      resources:
-        requests:
-          cpu: "100m"
-    mm2es:
-      resources:
-        requests:
-          cpu: "100m"
-    trace2es:
+    k2es:
       resources:
         requests:
           cpu: "100m"

@@ -17,7 +17,7 @@ spec:
   type: ClusterIP
 {{- end -}}
 
-{{- if .Values.stackstate.components.trace2es.enabled }}
+{{- if .Values.stackstate.components.k2es.traces.enabled }}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $k2esTraceEventsToEsService := fromYaml (include "stackstate.k2es.service.traceEventsToEs" .) -}}
 {{- toYaml (merge $k2esTraceEventsToEsService $commonService) -}}

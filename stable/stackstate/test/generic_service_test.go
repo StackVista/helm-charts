@@ -1,6 +1,7 @@
 package test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -10,7 +11,7 @@ import (
 func TestAllServicesRenderedSplit(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/dummy_trust_store.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
-	podsToCheck := append([]string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "view-health", "mm2es", "e2es", "trace2es"})
+	podsToCheck := append([]string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "view-health", "mm2es", "e2es", "trace2es", "sts2es"})
 
 	assertTrustStoreOnPods(t, resources, podsToCheck)
 }
@@ -18,7 +19,7 @@ func TestAllServicesRenderedSplit(t *testing.T) {
 func TestAllServicesRenderedServer(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/dummy_trust_store.yaml", "values/split_disabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
-	podsToCheck := append([]string{"server", "correlate", "receiver", "mm2es", "e2es", "trace2es"})
+	podsToCheck := append([]string{"server", "correlate", "receiver", "mm2es", "e2es", "trace2es", "sts2es"})
 
 	assertTrustStoreOnPods(t, resources, podsToCheck)
 }
@@ -30,14 +31,18 @@ func assertTrustStoreOnPods(t *testing.T, resources helmtestutil.KubernetesResou
 		for _, name := range podsToCheck {
 			if ("stackstate-" + name) == deployment.Name {
 				checked = append(checked, name)
-				podName = name
+				if strings.Contains(name, "2es") {
+					podName = "k2es"
+				} else {
+					podName = name
+				}
 			}
 		}
 		if podName != "" {
-			assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Args, "-Djavax.net.ssl.trustStore=/opt/docker/secrets/java-cacerts", "For pod "+podName)
-			assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Args, "-Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD)", "For pod "+podName)
-			assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Args, "-Djavax.net.ssl.trustStoreType=jks", "For pod "+podName)
-			assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Args, "-Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy", "For pod "+podName)
+			assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Args, "-Djavax.net.ssl.trustStore=/opt/docker/secrets/java-cacerts")
+			assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Args, "-Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD)")
+			assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Args, "-Djavax.net.ssl.trustStoreType=jks")
+			assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Args, "-Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy")
 
 			var logVolumePath string
 			var secretVolumePath string
@@ -49,8 +54,8 @@ func assertTrustStoreOnPods(t *testing.T, resources helmtestutil.KubernetesResou
 					secretVolumePath = volume.MountPath
 				}
 			}
-			assert.Equal(t, "/opt/docker/etc_log", logVolumePath, "For pod "+podName)
-			assert.Equal(t, "/opt/docker/secrets", secretVolumePath, "For pod "+podName)
+			assert.Equal(t, "/opt/docker/etc_log", logVolumePath)
+			assert.Equal(t, "/opt/docker/secrets", secretVolumePath)
 
 			var logConfigMapName string
 			var secretName string
@@ -62,8 +67,8 @@ func assertTrustStoreOnPods(t *testing.T, resources helmtestutil.KubernetesResou
 					secretName = volume.Secret.SecretName
 				}
 			}
-			assert.Equal(t, "stackstate-"+podName+"-log", logConfigMapName, "For pod "+podName)
-			assert.Equal(t, "stackstate-common", secretName, "For pod "+podName)
+			assert.Equal(t, "stackstate-"+podName+"-log", logConfigMapName)
+			assert.Equal(t, "stackstate-common", secretName)
 		}
 	}
 	assert.ElementsMatch(t, podsToCheck, checked, "Not all expected deployments were found")

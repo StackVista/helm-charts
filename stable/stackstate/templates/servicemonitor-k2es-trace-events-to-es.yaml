@@ -13,7 +13,7 @@ spec:
   {{ include "stackstate.servicemonitor.extraLabels" . | nindent 2 }}
 {{- end -}}
 
-{{- if and ( .Values.stackstate.components.all.metrics.enabled ) ( .Values.stackstate.components.all.metrics.servicemonitor.enabled ) ( .Values.stackstate.components.trace2es.enabled ) }}
+{{- if and ( .Values.stackstate.components.all.metrics.enabled ) ( .Values.stackstate.components.all.metrics.servicemonitor.enabled ) ( .Values.stackstate.components.k2es.traces.enabled ) }}
 {{- $commonServiceMonitor := fromYaml (include "common.servicemonitor" .) -}}
 {{- $k2esTraceEventsToEsServiceMonitor := fromYaml (include "stackstate.k2es.traceEventsToEs.servicemonitor" .) -}}
 {{- toYaml (merge $k2esTraceEventsToEsServiceMonitor $commonServiceMonitor) -}}

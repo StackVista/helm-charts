@@ -14,7 +14,7 @@ imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote 
 
 {{- define "stackstate.k2es.deployment.common.container" -}}
 env:
-{{- $serviceConfig := dict "ServiceName" .K2esName "ServiceConfig" .K2esConfig }}
+{{- $serviceConfig := dict "ServiceName" "k2es" "ServiceConfig" .Values.stackstate.components.k2es }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{/*
     Currently we use a single replicationFactor config for all indices on ES, that works fine with calculating the available disk space
@@ -41,8 +41,8 @@ env:
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
-image: "{{ include "stackstate.image.registry" . }}/{{ .K2esConfig.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .K2esConfig.image.tag }}"
-imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .K2esConfig.image.pullPolicy | quote }}
+image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.k2es.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.k2es.image.tag }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.k2es.image.pullPolicy | quote }}
 livenessProbe:
   httpGet:
     path: /liveness
@@ -62,9 +62,9 @@ readinessProbe:
   httpGet:
     path: /readiness
     port: health
-  initialDelaySeconds: 10
+  initialDelaySeconds: 60
   timeoutSeconds: 5
-{{- with .K2esConfig.resources }}
+{{- with .Values.stackstate.components.k2es.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}

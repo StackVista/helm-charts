@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/helm"
-	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
 	batchv1 "k8s.io/api/batch/v1"
 	batchv1beta1 "k8s.io/api/batch/v1beta1"
@@ -80,8 +79,7 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 			cronJobs = append(cronJobs, resource)
 		case "Deployment":
 			var resource appsv1.Deployment
-			e := helm.UnmarshalK8SYamlE(t, v, &resource)
-			assert.NoError(t, e, "Deployment failed to parse: "+v)
+			helm.UnmarshalK8SYaml(t, v, &resource)
 			deployments = append(deployments, resource)
 		case "Job":
 			var resource batchv1.Job
@@ -127,7 +125,7 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 			helm.UnmarshalK8SYaml(t, v, &resource)
 			statefulsets = append(statefulsets, resource)
 		default:
-			t.Error("Found unknown kind " + metadata.Kind + ". This can be caused by an incorrect k8s resource type in the helm template or when using a custom resource type.")
+			t.Error("Found unknown kind " + metadata.Kind + ". Ths can be caused by an incorrect k8s resource type in the helm template or when using a custom resource type.")
 		}
 	}
 

@@ -67,7 +67,7 @@ readinessProbe:
   httpGet:
     path: /readiness
     port: health
-  initialDelaySeconds: 10
+  initialDelaySeconds: 60
   timeoutSeconds: 5
 {{- with .Values.stackstate.components.server.resources }}
 resources:
