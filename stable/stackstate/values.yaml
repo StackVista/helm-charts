@@ -791,7 +791,7 @@ elasticsearch:
   # elasticsearch.enabled -- Enable / disable chart-based Elasticsearch.
   enabled: true
   # elasticsearch.esJavaOpts -- JVM options
-  esJavaOpts: "-Xmx3g -Xms3g"
+  esJavaOpts: "-Xmx3g -Xms3g -Des.allow_insecure_settings=true"
   # elasticsearch.commonLabels -- Add additional labels to all resources created for elasticsearch
   commonLabels:
     app.kubernetes.io/part-of: stackstate
@@ -801,14 +801,6 @@ elasticsearch:
       value: "true"
     - name: indices.query.bool.max_clause_count
       value: "10000"
-  # elasticsearch.keystore -- ElasticSearch keystore for access to Minio. Remove this if you set `minio.enabled` to `false`
-  # keystore:
-  #   - secretName: stackstate-minio
-  #     items:
-  #       - key: accesskey
-  #         path: s3.client.minio.access_key
-  #       - key: secretkey
-  #         path: s3.client.minio.secret_key
   # elasticsearch.minimumMasterNodes -- Minimum number of Elasticsearch master nodes.
   minimumMasterNodes: 2
   nodeGroup: "master"
@@ -1040,7 +1032,7 @@ kafka:
   zookeeper:
     enabled: false
 minio:
-  # minio.enabled -- Enables Minio for local backups. If you enable Minio, also override `elasticsearch.keystore` to not load the Minio keys into the ElasticSearch configuration
+  # minio.enabled -- Enables Minio for backups.
   enabled: false
   # minio.fullnameOverride -- **N.B.: Do not change this value!** The fullname override for Minio subchart is hardcoded so that this chart can refer to its components.
   fullnameOverride: stackstate-minio

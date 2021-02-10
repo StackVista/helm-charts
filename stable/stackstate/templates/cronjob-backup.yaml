@@ -1,4 +1,4 @@
-{{- if .Values.backup.stackGraph.enabled }}
+{{- if and .Values.minio.enabled .Values.backup.stackGraph.enabled }}
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
