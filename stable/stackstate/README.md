@@ -91,9 +91,9 @@ stackstate/stackstate
 | elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/elasticsearch-exporter.check_names" | string | `"[\"openmetrics\"]"` |  |
 | elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/elasticsearch-exporter.init_configs" | string | `"[{}]"` |  |
 | elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/elasticsearch-exporter.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:9108/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
-| elasticsearch.elasticsearch-exporter.resources.limits.cpu | string | `"50m"` |  |
+| elasticsearch.elasticsearch-exporter.resources.limits.cpu | string | `"100m"` |  |
 | elasticsearch.elasticsearch-exporter.resources.limits.memory | string | `"100Mi"` |  |
-| elasticsearch.elasticsearch-exporter.resources.requests.cpu | string | `"50m"` |  |
+| elasticsearch.elasticsearch-exporter.resources.requests.cpu | string | `"100m"` |  |
 | elasticsearch.elasticsearch-exporter.resources.requests.memory | string | `"100Mi"` |  |
 | elasticsearch.elasticsearch-exporter.servicemonitor.enabled | bool | `false` |  |
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
@@ -461,6 +461,7 @@ stackstate/stackstate
 | zookeeper.fourlwCommandsWhitelist | string | `"mntr, ruok, stat, srvr"` | Zookeeper four-letter-word (FLW) commands that are enabled. |
 | zookeeper.fullnameOverride | string | `"stackstate-zookeeper"` | Name override for Zookeeper child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | zookeeper.metrics.enabled | bool | `true` | Enable / disable Zookeeper Prometheus metrics. |
+| zookeeper.metrics.serviceMonitor | object | `{"enabled":false,"selector":{}}` |  |
 | zookeeper.metrics.serviceMonitor.enabled | bool | `false` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |
 | zookeeper.metrics.serviceMonitor.selector | object | `{}` | Default selector to use to target a certain Prometheus instance. |
 | zookeeper.podAnnotations | object | `{"ad.stackstate.com/zookeeper.check_names":"[\"openmetrics\"]","ad.stackstate.com/zookeeper.init_configs":"[{}]","ad.stackstate.com/zookeeper.instances":"[ { \"prometheus_url\": \"http://%%host%%:9141/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Annotations for ZooKeeper pod. |
