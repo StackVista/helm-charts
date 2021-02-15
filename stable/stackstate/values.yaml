@@ -831,10 +831,10 @@ elasticsearch:
       ad.stackstate.com/elasticsearch-exporter.instances: '[ { "prometheus_url": "http://%%host%%:9108/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
     resources:
       limits:
-        cpu: "50m"
+        cpu: "100m"
         memory: "100Mi"
       requests:
-        cpu: "50m"
+        cpu: "100m"
         memory: "100Mi"
     es:
       uri: http://stackstate-elasticsearch-master:9200
