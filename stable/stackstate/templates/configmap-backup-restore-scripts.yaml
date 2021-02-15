@@ -144,7 +144,7 @@ spec:
       restartPolicy: Never
 {{- end -}}
 
-{{- if or .Values.backup.stackGraph.enabled .Values.backup.elasticSearch.enabled }}
+{{- if and .Values.minio.enabled (or .Values.backup.stackGraph.enabled .Values.backup.elasticSearch.enabled) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

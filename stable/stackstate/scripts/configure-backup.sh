@@ -22,9 +22,10 @@ if [ "${BACKUP_ELASTICSEARCH_ENABLED}" == "true" ]; then
         \"type\": \"s3\",
         \"settings\": {
             \"bucket\": \"${BACKUP_ELASTICSEARCH_BUCKET_NAME}\",
-            \"client\": \"minio\",
             \"endpoint\": \"${MINIO_ENDPOINT}\",
             \"protocol\": \"http\",
+            \"access_key\": \"${AWS_ACCESS_KEY_ID}\",
+            \"secret_key\": \"${AWS_SECRET_ACCESS_KEY}\",
             \"path_style_access\": \"true\"
         }
     }" --silent --output /dev/stderr --write-out "%{http_code}")
