@@ -18,10 +18,10 @@ repos:
   hooks:
   - id: helmlint
   - id: shellcheck
-- repo: https://github.com/kadrach/pre-commit-gitlabci-lint
-  rev: 1baf80b1130b99bf45db64c7f9d2b1af19ab5662
-  hooks:
-  - id: gitlabci-lint
+# - repo: https://github.com/kadrach/pre-commit-gitlabci-lint
+#   rev: 1baf80b1130b99bf45db64c7f9d2b1af19ab5662
+#   hooks:
+#   - id: gitlabci-lint
 - repo: https://github.com/norwoodj/helm-docs
   rev: v1.5.0
   hooks:
