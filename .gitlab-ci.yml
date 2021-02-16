@@ -477,6 +477,8 @@ push_stackstate_release_to_public:
   variables:
     CHART: stable/stackstate
 push_stackstate_to_internal:
+  before_script:
+    - .gitlab/bump_sts_chart_master_version.sh stackstate-internal
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -492,6 +494,8 @@ push_stackstate_to_internal:
   variables:
     CHART: stable/stackstate
 push_stackstate_to_public:
+  before_script:
+    - .gitlab/bump_sts_chart_master_version.sh stackstate
   needs:
     - push_stackstate_to_internal
   rules:
@@ -994,7 +998,22 @@ validate_charts:
     - when: always
   script:
     - ct list-changed --config test/ct.yaml
-    - ct lint --debug --validate-maintainers=false --check-version-increment=false --config test/ct.yaml
+    - ct lint --debug --validate-maintainers=false --excluded-charts stackstate --excluded-charts gitlab-runner --config test/ct.yaml
+    - .gitlab/validate_kubeval.sh
+  stage: validate
+validate_stackstate_chart:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  environment: stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $CI_COMMIT_BRANCH == "master"
+      when: never
+    - when: always
+  script:
+    - ct list-changed --config test/ct.yaml
+    - ct lint --debug --validate-maintainers=false --charts stackstate --config test/ct.yaml
     - .gitlab/validate_kubeval.sh
   stage: validate
 variables:
