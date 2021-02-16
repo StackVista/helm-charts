@@ -58,7 +58,7 @@ stackstate/stackstate
 | backup.elasticSearch.bucketName | string | `"sts-elasticsearch-backup"` | Name of the MinIO bucket to store ElasticSearch snapshots. |
 | backup.elasticSearch.enabled | bool | `false` | Enable automatic ElasticSearch backups. |
 | backup.elasticSearch.indices | string | `"[\"*\"]"` | ElasticSearch indeces to snapshot (in JSON list format). |
-| backup.elasticSearch.schedule | string | `"0 3 * * *"` | Cron schedule for automatic ElasticSearch backups. |
+| backup.elasticSearch.schedule | string | `"0 3 * * * ?"` | Cron schedule for automatic ElasticSearch backups. |
 | backup.elasticSearch.snapshotNameTemplate | string | `"<sts-backup-{now{yyyyMMdd-HHmm}}>"` | Template for the ElasticSearch snapshot name. |
 | backup.elasticSearch.snapshotPolicyName | string | `"auto-sts-backup"` | Name for the ElasticSearch snapshot policy. |
 | backup.elasticSearch.snapshotRepositoryName | string | `"sts-backup"` | Name for the ElasticSearch snapshot repository. |
@@ -71,7 +71,7 @@ stackstate/stackstate
 | backup.stackGraph.backupRetentionTimeDelta | string | `"days = 30"` | Time to keep StackGraph backups in [Python timedelta format](https://docs.python.org/3/library/datetime.html#timedelta-objects). |
 | backup.stackGraph.bucketName | string | `"sts-stackgraph-backup"` | Name of the MinIO bucket to store StackGraph backups. |
 | backup.stackGraph.enabled | bool | `false` | Enable automatic StackGraph backups. |
-| backup.stackGraph.schedule | string | `"0 0 3 * * ?"` | Cron schedule for automatic StackGraph backups. |
+| backup.stackGraph.schedule | string | `"0 0 3 * *"` | Cron schedule for automatic StackGraph backups. |
 | caspr.enabled | bool | `false` | Enable CASPR compatible values. |
 | cluster-agent.enabled | bool | `false` | Deploy the StackState Kubernetes Agent so StackState can monitor the cluster it runs in |
 | cluster-agent.stackstate.cluster.authToken | string | `nil` |  |

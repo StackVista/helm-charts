@@ -12,7 +12,7 @@ backup:
     # backup.elasticSearch.enabled -- Enable automatic ElasticSearch backups.
     enabled: false
     # backup.elasticSearch.schedule -- Cron schedule for automatic ElasticSearch backups.
-    schedule: '0 3 * * *'
+    schedule: '0 3 * * * ?'
     # backup.elasticSearch.bucketName -- Name of the MinIO bucket to store ElasticSearch snapshots.
     bucketName: 'sts-elasticsearch-backup'
     # backup.elasticSearch.indices -- ElasticSearch indeces to snapshot (in JSON list format).
@@ -33,7 +33,7 @@ backup:
     # backup.stackGraph.enabled -- Enable automatic StackGraph backups.
     enabled: false
     # backup.stackGraph.schedule -- Cron schedule for automatic StackGraph backups.
-    schedule: '0 0 3 * * ?'
+    schedule: '0 0 3 * *'
     # backup.stackGraph.bucketName -- Name of the MinIO bucket to store StackGraph backups.
     bucketName: 'sts-stackgraph-backup'
     # backup.stackGraph.backupNameTemplate -- Template for the StackGraph backup name.
