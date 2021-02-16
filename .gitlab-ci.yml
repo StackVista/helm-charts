@@ -478,6 +478,7 @@ push_stackstate_release_to_public:
     CHART: stable/stackstate
 push_stackstate_to_internal:
   before_script:
+    - apk add --no-cache jq
     - .gitlab/bump_sts_chart_master_version.sh stackstate-internal
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
@@ -495,6 +496,7 @@ push_stackstate_to_internal:
     CHART: stable/stackstate
 push_stackstate_to_public:
   before_script:
+    - apk add --no-cache jq
     - .gitlab/bump_sts_chart_master_version.sh stackstate
   needs:
     - push_stackstate_to_internal

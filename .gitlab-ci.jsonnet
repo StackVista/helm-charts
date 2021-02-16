@@ -190,7 +190,7 @@ local push_charts_to_internal_jobs = {
     stage: 'push-charts-to-internal',
   } + (
     if chart == 'stackstate' then
-  { before_script: ['.gitlab/bump_sts_chart_master_version.sh stackstate-internal'] }
+  { before_script: ['apk add --no-cache jq', '.gitlab/bump_sts_chart_master_version.sh stackstate-internal'] }
   else {}
   ))
   for chart in charts
@@ -207,7 +207,7 @@ local push_charts_to_public_jobs = {
     needs: ['push_%s_to_internal' % chart],
   } + (
     if chart == 'stackstate' then
-  { before_script: ['.gitlab/bump_sts_chart_master_version.sh stackstate'] }
+  { before_script: ['apk add --no-cache jq', '.gitlab/bump_sts_chart_master_version.sh stackstate'] }
   else {}
   ))
   for chart in charts
