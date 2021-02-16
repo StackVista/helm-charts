@@ -38,9 +38,9 @@ stackstate/stackstate
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| anomaly-detection.cpu.limit | int | `4` |  |
-| anomaly-detection.cpu.request | int | `4` |  |
-| anomaly-detection.enabled | bool | `false` | Enables anomaly detection chart |
+| anomaly-detection.cpu.limit | int | `2` |  |
+| anomaly-detection.cpu.request | int | `2` |  |
+| anomaly-detection.enabled | bool | `true` | Enables anomaly detection chart |
 | anomaly-detection.image.imagePullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for anomaly detection pods. |
 | anomaly-detection.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
 | anomaly-detection.image.pullSecretPassword | string | `nil` |  |
@@ -50,15 +50,15 @@ stackstate/stackstate
 | anomaly-detection.ingress | object | `{"annotations":{},"enabled":false,"hostname":null,"hosts":[],"port":8090,"tls":null}` | Status interface ingress |
 | anomaly-detection.ingress.enabled | bool | `false` | Enables ingress controller for status interface |
 | anomaly-detection.ingress.hostname | string | `nil` | Status interface hostname e.g. spotlight.local.domain |
-| anomaly-detection.memory.limit | string | `"6Gi"` |  |
-| anomaly-detection.memory.request | string | `"6Gi"` |  |
+| anomaly-detection.memory.limit | string | `"3Gi"` |  |
+| anomaly-detection.memory.request | string | `"3Gi"` |  |
 | anomaly-detection.stackstate.apiToken | string | `nil` | Stackstate Api token that used by spotlight for authentication, it is expected to be set only in case if authType = "api-token" |
 | anomaly-detection.stackstate.authRoleName | string | `"stackstate-admin"` | Stackstate Role used by spotlight for authentication, it is mapped to the stackstate role with the same name.  It is expected to be set only in case if authType = "token" |
 | anomaly-detection.stackstate.authType | string | `"token"` | Type of authentication. There are three options 1) "token" - with service account token (default), 2) "api-token" - with Stackstate API Token, 3) "cookie" - username, password based auth. |
 | anomaly-detection.stackstate.instance | string | `"http://{{ include \"stackstate.hostname.prefix\" . }}-router:8080"` | **Required Stackstate instance URL, e.g http://stackstate-router:8080 |
 | anomaly-detection.stackstate.password | string | `nil` | Stackstate Password used by spotlight for authentication, it is expected to be set only in case if authType = "cookie" |
 | anomaly-detection.stackstate.username | string | `nil` | Stackstate Username used by spotlight for authentication, it is expected to be set only in case if authType = "cookie" |
-| anomaly-detection.threadWorkers | int | `5` | The number of worker threads. |
+| anomaly-detection.threadWorkers | int | `3` | The number of worker threads. |
 | backup.elasticSearch.bucketName | string | `"sts-elasticsearch-backup"` | Name of the MinIO bucket to store ElasticSearch snapshots. |
 | backup.elasticSearch.enabled | bool | `false` | Enable automatic ElasticSearch backups. |
 | backup.elasticSearch.indices | string | `"[\"*\"]"` | ElasticSearch indeces to snapshot (in JSON list format). |

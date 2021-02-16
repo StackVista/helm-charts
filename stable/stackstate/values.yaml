@@ -1076,17 +1076,17 @@ zookeeper:
   replicaCount: 3
 anomaly-detection:
   # anomaly-detection.enabled -- Enables anomaly detection chart
-  enabled: false
+  enabled: true
   cpu:
     # cpu.limit -- CPU resource limit
-    limit: 4
+    limit: 2
     # cpu.request -- CPU resource request
-    request: 4
+    request: 2
   memory:
     # memory.limit -- Memory resource limit
-    limit: 6Gi
+    limit: 3Gi
     # memory.request -- Memory resource request
-    request: 6Gi
+    request: 3Gi
   image:
     # anomaly-detection.image.imagePullPolicy -- The default pullPolicy used for anomaly detection pods.
     imagePullPolicy: IfNotPresent
@@ -1119,7 +1119,7 @@ anomaly-detection:
     # anomaly-detection.stackstate.apiToken -- Stackstate Api token that used by spotlight for authentication, it is expected to be set only in case if authType = "api-token"
     apiToken:
   # anomaly-detection.threadWorkers -- The number of worker threads.
-  threadWorkers: 5
+  threadWorkers: 3
   # anomaly-detection.ingress -- Status interface ingress
   ingress:
     # anomaly-detection.ingress.enabled -- Enables ingress controller for status interface
