@@ -17,10 +17,6 @@ maintainers:
     email: vpartington@stackstate.com
 name: stackstate
 dependencies:
-  - name: anomaly-detection
-    version: 4.3.0-pre.1
-    repository: https://helm.stackstate.io
-    condition: anomaly-detection.enabled
   - name: cluster-agent
     version: 0.4.11
     repository: https://helm.stackstate.io
