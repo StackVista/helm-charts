@@ -23,5 +23,8 @@ dependencies:
 - name: zookeeper
   repository: https://charts.bitnami.com/bitnami
   version: 5.16.0
-digest: sha256:8eff9eeb4becfc2ab39bbc4271c4d19541b18a0d0dc6d0cdf703edd6f4c6b511
-generated: "2021-01-26T14:46:31.488679+01:00"
+- name: anomaly-detection
+  repository: https://helm.stackstate.io
+  version: 4.1.27
+digest: sha256:25e3e6539883ed653e23edc739d58c375947c4f40fde09a77b38d81d88abc42a
+generated: "2021-02-17T15:20:29.165503+01:00"
