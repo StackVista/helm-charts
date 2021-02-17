@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euxo pipefail
+
 repository=$1
 
 latest_version=$(helm search repo --devel  "$repository/stackstate" -o json | jq --arg chart "$repository/stackstate" '.[] | select (.name == $chart) | .version' -r)
