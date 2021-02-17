@@ -157,7 +157,7 @@ stackstate/stackstate
 | kafka.extraVolumes | list | `[{"configMap":{"defaultMode":493,"name":"kafka-custom-scripts"},"name":"kafka-custom-scripts"}]` | Extra volume(s) to add to Kafka statefulset. |
 | kafka.fullnameOverride | string | `"stackstate-kafka"` | Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | kafka.image.tag | string | `"2.3.1-debian-9-r41"` | Default tag used for Kafka. **Since StackState relies on this specific version, it's advised NOT to change this.** |
-| kafka.livenessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
+| kafka.livenessProbe.initialDelaySeconds | int | `240` | Delay before readiness probe is initiated. |
 | kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
 | kafka.metrics.jmx.enabled | bool | `true` | Whether or not to expose JMX metrics to Prometheus. |
 | kafka.metrics.jmx.resources.limits.cpu | string | `"200m"` |  |
