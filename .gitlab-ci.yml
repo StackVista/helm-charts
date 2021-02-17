@@ -1004,7 +1004,7 @@ update_aad_chart_version:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-  image: ubuntu:18.04
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   # rules:
   #   - if: $UPDATE_AAD_CHART_VERSION
   #     when: always
