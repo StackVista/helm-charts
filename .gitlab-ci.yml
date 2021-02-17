@@ -478,6 +478,14 @@ push_stackstate_release_to_public:
     CHART: stable/stackstate
 push_stackstate_to_internal:
   before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
     - apk add --no-cache jq bash
     - .gitlab/bump_sts_chart_master_version.sh stackstate-internal
   rules:
@@ -496,6 +504,14 @@ push_stackstate_to_internal:
     CHART: stable/stackstate
 push_stackstate_to_public:
   before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
     - apk add --no-cache jq bash
     - .gitlab/bump_sts_chart_master_version.sh stackstate
   needs:
