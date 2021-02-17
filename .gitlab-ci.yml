@@ -995,7 +995,7 @@ update_aad_chart_version:
     - curl -L https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_386 --output /tmp/yq_linux_386
     - cp /tmp/yq_linux_386 ./yq
     - chmod +x ./yq
-    - export PATH=PATH:.
+    - export PATH=$PATH:.
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add minio https://helm.min.io/
