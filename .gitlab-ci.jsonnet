@@ -40,7 +40,24 @@ local validate_and_push_jobs = {
     ],
     script: [
       'ct list-changed --config test/ct.yaml',
-      'ct lint --debug --validate-maintainers=false --check-version-increment=false --config test/ct.yaml',
+      'ct lint --debug --validate-maintainers=false --excluded-charts stackstate --excluded-charts gitlab-runner --config test/ct.yaml',
+      '.gitlab/validate_kubeval.sh',
+    ],
+    stage: 'validate',
+  } + skip_when_sg_upgrade,
+  validate_stackstate_chart: {
+    before_script: ['.gitlab/validate_before_script.sh'],
+    environment: 'stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}',
+    rules: [
+      {
+        @'if': '$CI_COMMIT_BRANCH == "master"',
+        when: 'never',
+      },
+      { when: 'always' },
+    ],
+    script: [
+      'ct list-changed --config test/ct.yaml',
+      'ct lint --debug --validate-maintainers=false --charts stable/stackstate --config test/ct.yaml',
       '.gitlab/validate_kubeval.sh',
     ],
     stage: 'validate',
@@ -169,9 +186,13 @@ local push_charts_to_internal_jobs = {
       '${CHARTMUSEUM_INTERNAL_URL}',
 '${CHARTMUSEUM_INTERNAL_USERNAME}',
 '${CHARTMUSEUM_INTERNAL_PASSWORD}',
-'on_success') {
+'on_success') + {
     stage: 'push-charts-to-internal',
-  })
+  } + (
+    if chart == 'stackstate' then
+  { before_script: ['apk add --no-cache jq', '.gitlab/bump_sts_chart_master_version.sh stackstate-internal'] }
+  else {}
+  ))
   for chart in charts
 };
 
@@ -180,11 +201,15 @@ local push_charts_to_public_jobs = {
       '${CHARTMUSEUM_URL}',
 '${CHARTMUSEUM_USERNAME}',
 '${CHARTMUSEUM_PASSWORD}',
-'manual') {
+'manual') + {
     stage: 'push-charts-to-public',
 
     needs: ['push_%s_to_internal' % chart],
-  })
+  } + (
+    if chart == 'stackstate' then
+  { before_script: ['apk add --no-cache jq', '.gitlab/bump_sts_chart_master_version.sh stackstate'] }
+  else {}
+  ))
   for chart in charts
 };
 
