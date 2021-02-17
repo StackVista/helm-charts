@@ -988,6 +988,36 @@ update_stackgraph_version:
     GIT_AUTHOR_NAME: stackstate-system-user
     GIT_COMMITTER_EMAIL: sts-admin@stackstate.com
     GIT_COMMITTER_NAME: stackstate-system-user
+update_aad_chart_version:
+  before_script:
+    - apt update && apt install -y curl git gawk
+    - YQ_VERSION="3.3.2"
+    - curl -L https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_386 --output /tmp/yq_linux_386
+    - cp /tmp/yq_linux_386 /usr/bin/yq
+    - chmod +x /usr/bin/yq
+    - rm -f /tmp/yq_linux_386
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+  image: ubuntu:18.04
+  # rules:
+  #   - if: $UPDATE_AAD_CHART_VERSION
+  #     when: always
+  script:
+    - UPDATE_AAD_CHART_VERSION="4.3.0-snapshot.78"
+    - .gitlab/update_chart_version.sh stable/stackstate anomaly-detection $UPDATE_AAD_CHART_VERSION
+    - .gitlab/commit_changes_and_push.sh
+  stage: update
+  variables:
+    GIT_AUTHOR_EMAIL: sts-admin@stackstate.com
+    GIT_AUTHOR_NAME: stackstate-system-user
+    GIT_COMMITTER_EMAIL: sts-admin@stackstate.com
+    GIT_COMMITTER_NAME: stackstate-system-user
 validate_charts:
   before_script:
     - .gitlab/validate_before_script.sh
