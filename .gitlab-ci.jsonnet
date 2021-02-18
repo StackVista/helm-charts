@@ -13,9 +13,12 @@ local helm_fetch_dependencies = [
     'helm repo update',
   ];
 
-local skip_when_sg_upgrade = {
+local skip_when_dependency_upgrade = {
   rules: [{
     @'if': '$UPDATE_STACKGRAPH_VERSION',
+    when: 'never',
+  }, {
+    @'if': '$UPDATE_AAD_CHART_VERSION',
     when: 'never',
   }] + super.rules,
 };
@@ -25,7 +28,7 @@ local sync_charts_template = {
   ['.gitlab/push_before_script.sh'] + helm_fetch_dependencies,
   script: ['sh test/sync-repo.sh'],
   stage: 'build',
-} + skip_when_sg_upgrade;
+} + skip_when_dependency_upgrade;
 
 local validate_and_push_jobs = {
   validate_charts: {
@@ -44,7 +47,7 @@ local validate_and_push_jobs = {
       '.gitlab/validate_kubeval.sh',
     ],
     stage: 'validate',
-  } + skip_when_sg_upgrade,
+  } + skip_when_dependency_upgrade,
   validate_stackstate_chart: {
     before_script: ['.gitlab/validate_before_script.sh'],
     environment: 'stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}',
@@ -61,7 +64,7 @@ local validate_and_push_jobs = {
       '.gitlab/validate_kubeval.sh',
     ],
     stage: 'validate',
-  } + skip_when_sg_upgrade,
+  } + skip_when_dependency_upgrade,
   push_test_charts: sync_charts_template {
     rules: [
       {
@@ -82,7 +85,7 @@ local validate_and_push_jobs = {
 };
 
 local test_chart_job(chart) = {
-  image: 'stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526',
+  image: 'stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc',
   before_script: helm_fetch_dependencies +
   ['helm dependencies update ${CHART}'],
   script: [
@@ -100,10 +103,10 @@ local test_chart_job(chart) = {
     CHART: 'stable/' + chart,
     CGO_ENABLED: 0,
   },
-} + skip_when_sg_upgrade;
+} + skip_when_dependency_upgrade;
 
 local itest_chart_job(chart) = {
-  image: 'stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526',
+  image: 'stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc',
   before_script: helm_fetch_dependencies +
   ['helm dependencies update ${CHART}'],
   script: [
@@ -121,7 +124,7 @@ local itest_chart_job(chart) = {
     CHART: 'stable/' + chart,
     CGO_ENABLED: 0,
   },
-} + skip_when_sg_upgrade;
+} + skip_when_dependency_upgrade;
 
 local push_chart_job_if(chart, repository_url, repository_username, repository_password, rules) = {
   script: [
@@ -133,7 +136,7 @@ local push_chart_job_if(chart, repository_url, repository_username, repository_p
   variables: {
     CHART: 'stable/' + chart,
   },
-} + skip_when_sg_upgrade;
+} + skip_when_dependency_upgrade;
 
 local push_chart_job(chart, repository_url, repository_username, repository_password, when) =
   push_chart_job_if(
@@ -215,7 +218,7 @@ local push_charts_to_public_jobs = {
 
 local update_sg_version = {
   update_stackgraph_version: {
-    image: 'ubuntu:18.04',
+    image: 'stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc',
     stage: 'update',
     variables: {
       GIT_AUTHOR_EMAIL: 'sts-admin@stackstate.com',
@@ -223,14 +226,6 @@ local update_sg_version = {
       GIT_COMMITTER_EMAIL: 'sts-admin@stackstate.com',
       GIT_COMMITTER_NAME: 'stackstate-system-user',
     },
-    before_script: [
-        'apt update && apt install -y curl git gawk',
-        'YQ_VERSION="3.3.2"',
-        'curl -L https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_386 --output /tmp/yq_linux_386',
-        'cp /tmp/yq_linux_386 /usr/bin/yq',
-        'chmod +x /usr/bin/yq',
-        'rm -f /tmp/yq_linux_386',
-      ],
     rules: [
       {
         @'if': '$UPDATE_STACKGRAPH_VERSION',
@@ -241,6 +236,30 @@ local update_sg_version = {
       '.gitlab/update_sg_version.sh stable/stackstate "hbase."',
       '.gitlab/update_sg_version.sh stable/hbase ""',
       '.gitlab/commit_changes_and_push.sh',
+    ],
+  },
+};
+
+local update_aad_chart_version = {
+  update_chart_version: {
+    image: 'stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc',
+    stage: 'update',
+    variables: {
+      GIT_AUTHOR_EMAIL: 'sts-admin@stackstate.com',
+      GIT_AUTHOR_NAME: 'stackstate-system-user',
+      GIT_COMMITTER_EMAIL: 'sts-admin@stackstate.com',
+      GIT_COMMITTER_NAME: 'stackstate-system-user',
+    },
+    before_script: helm_fetch_dependencies,
+    rules: [
+      {
+        @'if': '$UPDATE_AAD_CHART_VERSION',
+        when: 'always',
+      },
+    ],
+    script: [
+      '.gitlab/update_chart_version.sh stable/stackstate anomaly-detection $UPDATE_AAD_CHART_VERSION',
+      '.gitlab/commit_changes_and_push.sh anomaly-detection $UPDATE_AAD_CHART_VERSION',
     ],
   },
 };
@@ -270,3 +289,4 @@ local update_sg_version = {
 + push_stackstate_chart_releases
 + itest_stackstate
 + update_sg_version
++ update_aad_chart_version
