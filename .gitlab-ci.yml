@@ -13,7 +13,7 @@ integration_test_stackstate:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -613,7 +613,7 @@ test_aws-nuke:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -639,7 +639,7 @@ test_chartmuseum:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -743,7 +743,7 @@ test_gitlab-runner:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -769,7 +769,7 @@ test_gitlab-steward:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -795,7 +795,7 @@ test_hbase:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -821,7 +821,7 @@ test_iceman:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -847,7 +847,7 @@ test_kafka:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -873,7 +873,7 @@ test_sandbox-operator:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -899,7 +899,7 @@ test_stackstate:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -925,7 +925,7 @@ test_stackstate-standalone:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -951,7 +951,7 @@ test_trafficmirror:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -967,14 +967,7 @@ test_trafficmirror:
     CGO_ENABLED: 0
     CHART: stable/trafficmirror
 update_stackgraph_version:
-  before_script:
-    - apt update && apt install -y curl git gawk
-    - YQ_VERSION="3.3.2"
-    - curl -L https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_386 --output /tmp/yq_linux_386
-    - cp /tmp/yq_linux_386 /usr/bin/yq
-    - chmod +x /usr/bin/yq
-    - rm -f /tmp/yq_linux_386
-  image: ubuntu:18.04
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: always
@@ -990,12 +983,6 @@ update_stackgraph_version:
     GIT_COMMITTER_NAME: stackstate-system-user
 update_aad_chart_version:
   before_script:
-    # - apt update && apt install -y curl git gawk
-    - YQ_VERSION="3.3.2"
-    - curl -L https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_386 --output /tmp/yq_linux_386
-    - cp /tmp/yq_linux_386 ./yq
-    - chmod +x ./yq
-    - export PATH=$PATH:.
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add minio https://helm.min.io/
@@ -1004,7 +991,7 @@ update_aad_chart_version:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
   # rules:
   #   - if: $UPDATE_AAD_CHART_VERSION
   #     when: always
