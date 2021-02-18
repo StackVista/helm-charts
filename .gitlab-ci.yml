@@ -92,6 +92,38 @@ push_aws-nuke_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/aws-nuke
+push_aws-pod-identity-webhook_to_internal:
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - changes:
+        - stable/aws-pod-identity-webhook/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+  script:
+    - helm plugin install https://github.com/chartmuseum/helm-push.git
+    - helm dependencies update ${CHART}
+    - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/aws-pod-identity-webhook
+push_aws-pod-identity-webhook_to_public:
+  needs:
+    - push_aws-pod-identity-webhook_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - changes:
+        - stable/aws-pod-identity-webhook/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+  script:
+    - helm plugin install https://github.com/chartmuseum/helm-push.git
+    - helm dependencies update ${CHART}
+    - helm push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/aws-pod-identity-webhook
 push_chartmuseum_to_internal:
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
@@ -644,6 +676,32 @@ test_aws-nuke:
   variables:
     CGO_ENABLED: 0
     CHART: stable/aws-nuke
+test_aws-pod-identity-webhook:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add minio https://helm.min.io/
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - changes:
+        - stable/aws-pod-identity-webhook/**/*
+      exists:
+        - stable/aws-pod-identity-webhook/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/aws-pod-identity-webhook/test/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/aws-pod-identity-webhook
 test_chartmuseum:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
