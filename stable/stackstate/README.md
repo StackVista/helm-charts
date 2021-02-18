@@ -11,7 +11,7 @@ Current chart version is `4.3.0-snapshot.25`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
-| https://helm.min.io/ | minio | 8.0.8 |
+| https://helm.min.io/ | minio | 8.0.10 |
 | https://helm.stackstate.io | anomaly-detection | 4.3.0-snapshot.83 |
 | https://helm.stackstate.io | cluster-agent | 0.4.11 |
 | https://helm.stackstate.io | common | 0.4.13 |
@@ -177,9 +177,13 @@ stackstate/stackstate
 | kafka.transactionStateLogReplicationFactor | int | `2` |  |
 | kafka.volumePermissions.enabled | bool | `false` |  |
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
-| minio.accessKey | string | `"setme"` | Access key for Minio. Default is set to an invalid value that will cause Minio to not start up to ensure users of this Helm chart set an explicit value. |
-| minio.enabled | bool | `false` | Enables Minio for backups. |
-| minio.fullnameOverride | string | `"stackstate-minio"` | **N.B.: Do not change this value!** The fullname override for Minio subchart is hardcoded so that this chart can refer to its components. |
+| minio.accessKey | string | `"setme"` | Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value. |
+| minio.azuregateway.replicas | int | `1` |  |
+| minio.enabled | bool | `false` | Enables MinIO for backups. |
+| minio.fullnameOverride | string | `"stackstate-minio"` | **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components. |
+| minio.persistence.enabled | bool | `false` | Enables MinIO persistence. Must be enabled when MinIO is not configured as a gateway to AWS S3 or Azure Blob Storage. |
+| minio.replicas | int | `1` | Number of MinIO replicas. |
+| minio.s3gateway.replicas | int | `1` |  |
 | minio.secretKey | string | `"setme"` |  |
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
