@@ -8,13 +8,23 @@ AWS_SECRET_ACCESS_KEY="$(cat /aws-keys/secretkey)"
 export MC_HOST_minio="http://${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}@${MINIO_ENDPOINT}"
 
 if [ "${BACKUP_STACKGRAPH_ENABLED}" == "true" ]; then
-    echo "=== Creating MinIO bucket \"${BACKUP_STACKGRAPH_BUCKET_NAME}\"..."
-    mc mb --ignore-existing "minio/${BACKUP_STACKGRAPH_BUCKET_NAME}"
+    echo "=== Testing for existence of MinIO bucket \"${BACKUP_STACKGRAPH_BUCKET_NAME}\"..."
+    if ! mc ls "minio/${BACKUP_STACKGRAPH_BUCKET_NAME}" >/dev/null ; then
+        # N.B.: This code does not use mc mb --ignore-existing because that requires more permissions on S3
+        # when MinIO has been configured as an S3 gateway
+        echo "=== Creating MinIO bucket \"${BACKUP_STACKGRAPH_BUCKET_NAME}\"..."
+        mc mb "minio/${BACKUP_STACKGRAPH_BUCKET_NAME}"
+    fi
 fi
 
 if [ "${BACKUP_ELASTICSEARCH_ENABLED}" == "true" ]; then
-    echo "=== Creating MinIO bucket \"${BACKUP_ELASTICSEARCH_BUCKET_NAME}\"..."
-    mc mb --ignore-existing "minio/${BACKUP_ELASTICSEARCH_BUCKET_NAME}"
+    echo "=== Testing for existence of MinIO bucket \"${BACKUP_ELASTICSEARCH_BUCKET_NAME}\"..."
+    if ! mc ls "minio/${BACKUP_ELASTICSEARCH_BUCKET_NAME}" >/dev/null ; then
+        # N.B.: This code does not use mc mb --ignore-existing because that requires more permissions on S3
+        # when MinIO has been configured as an S3 gateway
+        echo "=== Creating MinIO bucket \"${BACKUP_ELASTICSEARCH_BUCKET_NAME}\"..."
+        mc mb "minio/${BACKUP_ELASTICSEARCH_BUCKET_NAME}"
+    fi
 
     echo "=== Configuring ElaticSearch snapshot repository \"${BACKUP_ELASTICSEARCH_SNAPSHOT_REPOSITORY_NAME}\" for bucket \"${BACKUP_ELASTICSEARCH_BUCKET_NAME}\"..."
     SC=$(curl --request PUT "http://${ELASTICSEARCH_ENDPOINT}/_snapshot/${BACKUP_ELASTICSEARCH_SNAPSHOT_REPOSITORY_NAME}?pretty" --header "Content-Type: application/json" --data "

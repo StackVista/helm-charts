@@ -11,3 +11,4 @@ aws --endpoint-url "http://${MINIO_ENDPOINT}" s3 cp "s3://${BACKUP_STACKGRAPH_BU
 
 echo "=== Importing StackGraph data from \"${BACKUP_FILE}\"..."
 /opt/docker/bin/stackstate-server -import "/tmp/${BACKUP_FILE}"
+echo "==="

@@ -1032,14 +1032,25 @@ kafka:
   zookeeper:
     enabled: false
 minio:
-  # minio.enabled -- Enables Minio for backups.
+  # minio.enabled -- Enables MinIO for backups.
   enabled: false
-  # minio.fullnameOverride -- **N.B.: Do not change this value!** The fullname override for Minio subchart is hardcoded so that this chart can refer to its components.
+  # minio.replicas -- Number of MinIO replicas.
+  replicas: 1
+  persistence:
+    # minio.persistence.enabled -- Enables MinIO persistence. Must be enabled when MinIO is not configured as a gateway to AWS S3 or Azure Blob Storage.
+    enabled: false
+  # minio.fullnameOverride -- **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components.
   fullnameOverride: stackstate-minio
-  # minio.accessKey -- Access key for Minio. Default is set to an invalid value that will cause Minio to not start up to ensure users of this Helm chart set an explicit value.
+  # minio.accessKey -- Access key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
   accessKey: setme
-  # minio.accessKey - Secret key for Minio. Default is set to an invalid value that will cause Minio to not start up to ensure users of this Helm chart set an explicit value.
+  # minio.accessKey -- Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
   secretKey: setme
+  azuregateway:
+    # azuregateway.replicas -- Number of azure gateway instances to run in parallel
+    replicas: 1
+  s3gateway:
+    # s3gateway.replicas -- Number of s3 gateway instances to run in parallel
+    replicas: 1
 zookeeper:
   # zookeeper.enabled -- Enable / disable chart-based Zookeeper.
   enabled: true
