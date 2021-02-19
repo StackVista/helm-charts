@@ -235,13 +235,13 @@ local update_sg_version = {
     script: [
       '.gitlab/update_sg_version.sh stable/stackstate "hbase."',
       '.gitlab/update_sg_version.sh stable/hbase ""',
-      '.gitlab/commit_changes_and_push.sh',
+      '.gitlab/commit_changes_and_push.sh StackGraph $UPDATE_STACKGRAPH_VERSION',
     ],
   },
 };
 
 local update_aad_chart_version = {
-  update_chart_version: {
+  update_aad_chart_version: {
     image: 'stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc',
     stage: 'update',
     variables: {

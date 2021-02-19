@@ -1078,7 +1078,7 @@ test_trafficmirror:
   variables:
     CGO_ENABLED: 0
     CHART: stable/trafficmirror
-update_chart_version:
+update_aad_chart_version:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
@@ -1109,7 +1109,7 @@ update_stackgraph_version:
   script:
     - .gitlab/update_sg_version.sh stable/stackstate "hbase."
     - .gitlab/update_sg_version.sh stable/hbase ""
-    - .gitlab/commit_changes_and_push.sh
+    - .gitlab/commit_changes_and_push.sh StackGraph $UPDATE_STACKGRAPH_VERSION
   stage: update
   variables:
     GIT_AUTHOR_EMAIL: sts-admin@stackstate.com
