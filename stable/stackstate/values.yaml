@@ -11,32 +11,32 @@ backup:
   elasticSearch:
     # backup.elasticSearch.enabled -- Enable automatic ElasticSearch backups.
     enabled: false
-    # backup.elasticSearch.schedule -- Cron schedule for automatic ElasticSearch backups.
+    # backup.elasticSearch.schedule -- Cron schedule for automatic ElasticSearch backups in [ElastichSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html).
     schedule: '0 3 * * * ?'
     # backup.elasticSearch.bucketName -- Name of the MinIO bucket to store ElasticSearch snapshots.
     bucketName: 'sts-elasticsearch-backup'
-    # backup.elasticSearch.indices -- ElasticSearch indeces to snapshot (in JSON list format).
+    # backup.elasticSearch.indices -- ElasticSearch indices to snapshot in [JSON array format](https://www.w3schools.com/js/js_json_arrays.asp).
     indices: '["*"]'
     # backup.elasticSearch.snapshotRepositoryName -- Name for the ElasticSearch snapshot repository.
     snapshotRepositoryName: 'sts-backup'
     # backup.elasticSearch.snapshotPolicyName -- Name for the ElasticSearch snapshot policy.
     snapshotPolicyName: 'auto-sts-backup'
-    # backup.elasticSearch.snapshotNameTemplate -- Template for the ElasticSearch snapshot name.
+    # backup.elasticSearch.snapshotNameTemplate -- Template for the ElasticSearch snapshot name in [ElasticSearch date math format](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/date-math-index-names.html).
     snapshotNameTemplate: "<sts-backup-{now{yyyyMMdd-HHmm}}>"
-    # backup.elasticSearch.snapshotRetentionExpireAfter -- Number of days to keep ElasticSearch snapshots. *Note:* By default, the retention task itself runs daily at 1:30 AM UTC, see https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule
+    # backup.elasticSearch.snapshotRetentionExpireAfter -- Amount of time to keep ElasticSearch snapshots in [ElasticSearch time units](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/common-options.html#time-units). *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule).
     snapshotRetentionExpireAfter: "30d"
-    # backup.elasticSearch.snapshotRetentionMinCount -- Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself runs daily at 1:30 AM UTC, see https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule
+    # backup.elasticSearch.snapshotRetentionMinCount -- Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule).
     snapshotRetentionMinCount: "5"
-    # backup.elasticSearch.snapshotRetentionMaxCount -- Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself runs daily at 1:30 AM UTC, see https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule
+    # backup.elasticSearch.snapshotRetentionMaxCount -- Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule).
     snapshotRetentionMaxCount: "30"
   stackGraph:
     # backup.stackGraph.enabled -- Enable automatic StackGraph backups.
     enabled: false
-    # backup.stackGraph.schedule -- Cron schedule for automatic StackGraph backups.
+    # backup.stackGraph.schedule -- Cron schedule for automatic StackGraph backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax).
     schedule: '0 0 3 * *'
     # backup.stackGraph.bucketName -- Name of the MinIO bucket to store StackGraph backups.
     bucketName: 'sts-stackgraph-backup'
-    # backup.stackGraph.backupNameTemplate -- Template for the StackGraph backup name.
+    # backup.stackGraph.backupNameTemplate -- Template for the StackGraph backup name as a double-quoted shell string value.
     backupNameTemplate: 'sts-backup-$(date +%Y%m%d-%H%M).graph'
     # backup.stackGraph.backupNameParseRegexp -- Regular expression to retrieve date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`.
     backupNameParseRegexp: 'sts-backup-([0-9]*-[0-9]*).graph'
@@ -1087,17 +1087,17 @@ zookeeper:
   replicaCount: 3
 anomaly-detection:
   # anomaly-detection.enabled -- Enables anomaly detection chart
-  enabled: false
+  enabled: true
   cpu:
     # cpu.limit -- CPU resource limit
-    limit: 4
+    limit: 2
     # cpu.request -- CPU resource request
-    request: 4
+    request: 2
   memory:
     # memory.limit -- Memory resource limit
-    limit: 6Gi
+    limit: 3Gi
     # memory.request -- Memory resource request
-    request: 6Gi
+    request: 3Gi
   image:
     # anomaly-detection.image.imagePullPolicy -- The default pullPolicy used for anomaly detection pods.
     imagePullPolicy: IfNotPresent
@@ -1130,7 +1130,7 @@ anomaly-detection:
     # anomaly-detection.stackstate.apiToken -- Stackstate Api token that used by spotlight for authentication, it is expected to be set only in case if authType = "api-token"
     apiToken:
   # anomaly-detection.threadWorkers -- The number of worker threads.
-  threadWorkers: 5
+  threadWorkers: 3
   # anomaly-detection.ingress -- Status interface ingress
   ingress:
     # anomaly-detection.ingress.enabled -- Enables ingress controller for status interface
