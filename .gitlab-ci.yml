@@ -1092,8 +1092,6 @@ update_chart_version:
   rules:
     - if: $UPDATE_AAD_CHART_VERSION
       when: always
-    - if: $CI_REF == "STAC-12024-aad-chart-upgrade"
-      when: always
   script:
     - .gitlab/update_chart_version.sh stable/stackstate anomaly-detection $UPDATE_AAD_CHART_VERSION
     - .gitlab/commit_changes_and_push.sh anomaly-detection $UPDATE_AAD_CHART_VERSION
