@@ -116,7 +116,7 @@ spec:
       imagePullSecrets:
       - name: '{{ template "common.fullname.short" . }}-pull-secret'
     {{- end }}
-      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
       - {{ include "stackstate.initContainer.ensure.no.server.statefulset.pod.are.running" . | nindent 8 }}

@@ -27,7 +27,7 @@ spec:
             {{- include "stackstate.backup.envvars" . | nindent 12 }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
-      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
       restartPolicy: Never
@@ -64,7 +64,7 @@ spec:
               value: "REPLACE_ME_SNAPSHOT_NAME_REPLACE_ME"
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
-      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
       restartPolicy: Never
@@ -99,7 +99,7 @@ spec:
             {{- include "stackstate.backup.envvars" . | nindent 12 }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
-      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
       restartPolicy: Never
@@ -138,7 +138,7 @@ spec:
               value: stackstate-zookeeper-headless:2181
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
-      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
       restartPolicy: Never
