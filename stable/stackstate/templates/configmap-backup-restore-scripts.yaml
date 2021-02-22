@@ -125,7 +125,7 @@ spec:
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
           imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
       containers:
-        - name: list
+        - name: restore
           image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.server.image.tag }}"
           imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
           command:
