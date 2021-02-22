@@ -33,7 +33,7 @@ spec:
                   value: stackstate-zookeeper-headless:2181
               volumeMounts:
                 {{- include "stackstate.backup.volumeMounts" . | nindent 16 }}
-          {{ include "stackstate.image.pullSecret.name" . | nindent 10 }}
+          {{- include "stackstate.image.pullSecret.name" . | nindent 10 }}
           volumes:
             {{- include "stackstate.backup.volumes" . | nindent 12 }}
           restartPolicy: Never

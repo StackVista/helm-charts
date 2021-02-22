@@ -81,7 +81,7 @@ spec:
       labels:
         app.kubernetes.io/component: receiver
     spec:
-      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml $stsstackstateReceiverInitContainer | nindent 8 }}
       containers:
