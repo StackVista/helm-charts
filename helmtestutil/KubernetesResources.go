@@ -74,8 +74,7 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 			configMaps = append(configMaps, configMap)
 		case "CronJob":
 			var resource batchv1beta1.CronJob
-			e := helm.UnmarshalK8SYamlE(t, v, &resource)
-			assert.NoError(t, e, "CronJob failed to parse: "+v)
+			helm.UnmarshalK8SYamlE(t, v, &resource)
 			cronJobs = append(cronJobs, resource)
 		case "Deployment":
 			var resource appsv1.Deployment
@@ -89,8 +88,7 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 			// Skip for now
 		case "PersistentVolumeClaim":
 			var resource corev1.PersistentVolumeClaim
-			e := helm.UnmarshalK8SYamlE(t, v, &resource)
-			assert.NoError(t, e, "PersistentVolumeClaim failed to parse: "+v)
+			helm.UnmarshalK8SYamlE(t, v, &resource)
 			persistentVolumeClaims = append(persistentVolumeClaims, resource)
 		case "Pod":
 			var resource corev1.Pod
