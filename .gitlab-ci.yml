@@ -13,7 +13,7 @@ integration_test_stackstate:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -669,7 +669,7 @@ test_aws-amicleaner:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -697,7 +697,7 @@ test_aws-nuke:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -725,7 +725,7 @@ test_chartmuseum:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -753,7 +753,7 @@ test_cluster-agent:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -781,7 +781,7 @@ test_common:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -809,7 +809,7 @@ test_elasticsearch:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -837,7 +837,7 @@ test_gitlab-runner:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -865,7 +865,7 @@ test_gitlab-steward:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -893,7 +893,7 @@ test_hbase:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -921,7 +921,7 @@ test_iceman:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -949,7 +949,7 @@ test_kafka:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -977,7 +977,7 @@ test_sandbox-operator:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1005,7 +1005,7 @@ test_stackstate:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1033,7 +1033,7 @@ test_stackstate-standalone:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1061,7 +1061,7 @@ test_trafficmirror:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1088,7 +1088,7 @@ update_aad_chart_version:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_AAD_CHART_VERSION
       when: always
@@ -1102,7 +1102,7 @@ update_aad_chart_version:
     GIT_COMMITTER_EMAIL: sts-admin@stackstate.com
     GIT_COMMITTER_NAME: stackstate-system-user
 update_stackgraph_version:
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-f8b33edc
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: always
