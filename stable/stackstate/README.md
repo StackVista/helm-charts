@@ -11,7 +11,7 @@ Current chart version is `4.2.4-rc.5`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
-| https://helm.min.io/ | minio | 8.0.8 |
+| https://helm.min.io/ | minio | 8.0.10 |
 | https://helm.stackstate.io | anomaly-detection | 4.1.27 |
 | https://helm.stackstate.io | cluster-agent | 0.4.11 |
 | https://helm.stackstate.io | common | 0.4.13 |
@@ -57,21 +57,21 @@ stackstate/stackstate
 | anomaly-detection.threadWorkers | int | `5` | The number of worker threads. |
 | backup.elasticSearch.bucketName | string | `"sts-elasticsearch-backup"` | Name of the MinIO bucket to store ElasticSearch snapshots. |
 | backup.elasticSearch.enabled | bool | `false` | Enable automatic ElasticSearch backups. |
-| backup.elasticSearch.indices | string | `"[\"*\"]"` | ElasticSearch indeces to snapshot (in JSON list format). |
-| backup.elasticSearch.schedule | string | `"0 3 * * *"` | Cron schedule for automatic ElasticSearch backups. |
-| backup.elasticSearch.snapshotNameTemplate | string | `"<sts-backup-{now{yyyyMMdd-HHmm}}>"` | Template for the ElasticSearch snapshot name. |
+| backup.elasticSearch.indices | string | `"[\"*\"]"` | ElasticSearch indices to snapshot in [JSON array format](https://www.w3schools.com/js/js_json_arrays.asp). |
+| backup.elasticSearch.schedule | string | `"0 0 3 * * ?"` | Cron schedule for automatic ElasticSearch backups in [ElastichSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html). |
+| backup.elasticSearch.snapshotNameTemplate | string | `"<sts-backup-{now{yyyyMMdd-HHmm}}>"` | Template for the ElasticSearch snapshot name in [ElasticSearch date math format](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/date-math-index-names.html). |
 | backup.elasticSearch.snapshotPolicyName | string | `"auto-sts-backup"` | Name for the ElasticSearch snapshot policy. |
 | backup.elasticSearch.snapshotRepositoryName | string | `"sts-backup"` | Name for the ElasticSearch snapshot repository. |
-| backup.elasticSearch.snapshotRetentionExpireAfter | string | `"30d"` | Number of days to keep ElasticSearch snapshots. *Note:* By default, the retention task itself runs daily at 1:30 AM UTC, see https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule |
-| backup.elasticSearch.snapshotRetentionMaxCount | string | `"30"` | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself runs daily at 1:30 AM UTC, see https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule |
-| backup.elasticSearch.snapshotRetentionMinCount | string | `"5"` | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself runs daily at 1:30 AM UTC, see https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule |
+| backup.elasticSearch.snapshotRetentionExpireAfter | string | `"30d"` | Amount of time to keep ElasticSearch snapshots in [ElasticSearch time units](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/common-options.html#time-units). *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
+| backup.elasticSearch.snapshotRetentionMaxCount | string | `"30"` | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
+| backup.elasticSearch.snapshotRetentionMinCount | string | `"5"` | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
 | backup.stackGraph.backupDatetimeParseFormat | string | `"%Y%m%d-%H%M"` | Format to parse date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`. |
 | backup.stackGraph.backupNameParseRegexp | string | `"sts-backup-([0-9]*-[0-9]*).graph"` | Regular expression to retrieve date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`. |
-| backup.stackGraph.backupNameTemplate | string | `"sts-backup-$(date +%Y%m%d-%H%M).graph"` | Template for the StackGraph backup name. |
+| backup.stackGraph.backupNameTemplate | string | `"sts-backup-$(date +%Y%m%d-%H%M).graph"` | Template for the StackGraph backup name as a double-quoted shell string value. |
 | backup.stackGraph.backupRetentionTimeDelta | string | `"days = 30"` | Time to keep StackGraph backups in [Python timedelta format](https://docs.python.org/3/library/datetime.html#timedelta-objects). |
 | backup.stackGraph.bucketName | string | `"sts-stackgraph-backup"` | Name of the MinIO bucket to store StackGraph backups. |
 | backup.stackGraph.enabled | bool | `false` | Enable automatic StackGraph backups. |
-| backup.stackGraph.schedule | string | `"0 0 3 * * ?"` | Cron schedule for automatic StackGraph backups. |
+| backup.stackGraph.schedule | string | `"0 3 * * *"` | Cron schedule for automatic StackGraph backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax). |
 | caspr.enabled | bool | `false` | Enable CASPR compatible values. |
 | cluster-agent.enabled | bool | `false` | Deploy the StackState Kubernetes Agent so StackState can monitor the cluster it runs in |
 | cluster-agent.stackstate.cluster.authToken | string | `nil` |  |
@@ -89,9 +89,8 @@ stackstate/stackstate
 | elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/elasticsearch-exporter.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:9108/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
 | elasticsearch.elasticsearch-exporter.servicemonitor.enabled | bool | `false` |  |
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
-| elasticsearch.esJavaOpts | string | `"-Xmx3g -Xms3g"` | JVM options |
+| elasticsearch.esJavaOpts | string | `"-Xmx3g -Xms3g -Des.allow_insecure_settings=true"` | JVM options |
 | elasticsearch.extraEnvs | list | `[{"name":"action.auto_create_index","value":"true"},{"name":"indices.query.bool.max_clause_count","value":"10000"}]` | Extra settings that StackState uses for Elasticsearch. |
-| elasticsearch.keystore | list | `[{"items":[{"key":"accesskey","path":"s3.client.minio.access_key"},{"key":"secretkey","path":"s3.client.minio.secret_key"}],"secretName":"stackstate-minio"}]` | ElasticSearch keystore for access to Minio. Remove this if you set `minio.enabled` to `false` |
 | elasticsearch.minimumMasterNodes | int | `2` | Minimum number of Elasticsearch master nodes. |
 | elasticsearch.nodeGroup | string | `"master"` |  |
 | elasticsearch.replicas | int | `3` | Number of Elasticsearch replicas. |
@@ -142,9 +141,13 @@ stackstate/stackstate
 | kafka.transactionStateLogReplicationFactor | int | `2` |  |
 | kafka.volumePermissions.enabled | bool | `false` |  |
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
-| minio.accessKey | string | `"setme"` | Access key for Minio. Default is set to an invalid value that will cause Minio to not start up to ensure users of this Helm chart set an explicit value. |
-| minio.enabled | bool | `true` | Enables Minio for local backups. If you disable Minio, also override `elasticsearch.keystore` to not load the Minio keys into the ElasticSearch configuration |
-| minio.fullnameOverride | string | `"stackstate-minio"` | **N.B.: Do not change this value!** The fullname override for Minio subchart is hardcoded so that this chart can refer to its components. |
+| minio.accessKey | string | `"setme"` | Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value. |
+| minio.azuregateway.replicas | int | `1` |  |
+| minio.enabled | bool | `false` | Enables MinIO for backups. |
+| minio.fullnameOverride | string | `"stackstate-minio"` | **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components. |
+| minio.persistence.enabled | bool | `false` | Enables MinIO persistence. Must be enabled when MinIO is not configured as a gateway to AWS S3 or Azure Blob Storage. |
+| minio.replicas | int | `1` | Number of MinIO replicas. |
+| minio.s3gateway.replicas | int | `1` |  |
 | minio.secretKey | string | `"setme"` |  |
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |

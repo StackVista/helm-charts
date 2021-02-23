@@ -27,7 +27,7 @@ spec:
             {{- include "stackstate.backup.envvars" . | nindent 12 }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
-      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
       restartPolicy: Never
@@ -64,7 +64,7 @@ spec:
               value: "REPLACE_ME_SNAPSHOT_NAME_REPLACE_ME"
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
-      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
       restartPolicy: Never
@@ -99,7 +99,7 @@ spec:
             {{- include "stackstate.backup.envvars" . | nindent 12 }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
-      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
       restartPolicy: Never
@@ -125,7 +125,7 @@ spec:
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
           imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
       containers:
-        - name: list
+        - name: restore
           image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.server.image.tag }}"
           imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
           command:
@@ -138,13 +138,13 @@ spec:
               value: stackstate-zookeeper-headless:2181
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
-      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
       restartPolicy: Never
 {{- end -}}
 
-{{- if or .Values.backup.stackGraph.enabled .Values.backup.elasticSearch.enabled }}
+{{- if .Values.minio.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -158,7 +158,6 @@ data:
   expire-stackgraph-backups.py: |
     {{- .Files.Get "scripts/expire-stackgraph-backups.py" | nindent 4 }}
 {{- end }}
-{{- if .Values.backup.elasticSearch.enabled }}
   job-elasticsearch-list-snapshots.yaml: |
     {{- include "job-elasticsearch-list-snapshots.yaml" . | nindent 4 }}
   list-elasticsearch-snapshots.sh: |
@@ -167,8 +166,6 @@ data:
     {{- include "job-elasticsearch-restore-snapshot.yaml" . | nindent 4 }}
   restore-elasticsearch-snapshot.sh: |
     {{- .Files.Get "scripts/restore-elasticsearch-snapshot.sh" | nindent 4 }}
-{{- end }}
-{{- if .Values.backup.stackGraph.enabled }}
   job-stackgraph-list-backups.yaml: |
     {{- include "job-stackgraph-list-backups.yaml" . | nindent 4 }}
   list-stackgraph-backups.sh: |
@@ -177,5 +174,4 @@ data:
     {{- include "job-stackgraph-restore-backup.yaml" . | nindent 4 }}
   restore-stackgraph-backup.sh: |
     {{- .Files.Get "scripts/restore-stackgraph-backup.sh" | nindent 4 }}
-{{- end }}
 {{- end }}

@@ -360,13 +360,13 @@ endpoints:
 {{- end -}}
 
 {{- define "stackstate.image.pullSecret.name" -}}
-{{- if .Values.stackstate.components.all.image.pullSecretName }}
+{{- if .Values.stackstate.components.all.image.pullSecretName -}}
 imagePullSecrets:
 - name: '{{ .Values.stackstate.components.all.image.pullSecretName }}'
-{{- else if .Values.stackstate.components.all.image.pullSecretUsername }}
+{{- else if .Values.stackstate.components.all.image.pullSecretUsername -}}
 imagePullSecrets:
 - name: '{{ template "common.fullname.short" . }}-pull-secret'
-{{- end }}
+{{- end -}}
 {{- end -}}
 
 {{- define "stackstate.service.spec.poddisruptionbudget" -}}

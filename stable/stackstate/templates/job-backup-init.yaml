@@ -1,4 +1,4 @@
-{{- if or .Values.backup.stackGraph.enabled .Values.backup.elasticSearch.enabled }}
+{{- if and .Values.minio.enabled (or .Values.backup.stackGraph.enabled .Values.backup.elasticSearch.enabled) }}
 apiVersion: batch/v1
 kind: Job
 metadata:

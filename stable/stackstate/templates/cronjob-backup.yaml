@@ -1,4 +1,4 @@
-{{- if .Values.backup.stackGraph.enabled }}
+{{- if and .Values.minio.enabled .Values.backup.stackGraph.enabled }}
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -33,7 +33,7 @@ spec:
                   value: stackstate-zookeeper-headless:2181
               volumeMounts:
                 {{- include "stackstate.backup.volumeMounts" . | nindent 16 }}
-          {{ include "stackstate.image.pullSecret.name" . | nindent 10 }}
+          {{- include "stackstate.image.pullSecret.name" . | nindent 10 }}
           volumes:
             {{- include "stackstate.backup.volumes" . | nindent 12 }}
           restartPolicy: Never
