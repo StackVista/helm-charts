@@ -80,7 +80,7 @@ spec:
       labels:
         app.kubernetes.io/component: correlate
     spec:
-      {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml $stsstackstateCorrelateInitContainer | nindent 8 }}
       containers:
