@@ -54,3 +54,15 @@ $ go test ./stable/<chart>/itest/...
 The test-set for a chart is in the `stable/<chart>/itest` directory.
 
 You are encouraged to adding more tests when working on the Helm charts ;).
+
+## Chart build scripting
+
+We use gawk (instead of awk) for consistent local and container scripting.
+
+```shell
+$ brew install gawk
+```
+
+```shell
+$ apk add gawk
+```
