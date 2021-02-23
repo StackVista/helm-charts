@@ -52,7 +52,7 @@ spec:
       labels:
         app.kubernetes.io/component: router
     spec:
-    {{ include "stackstate.image.pullSecret.name" . | nindent 6 }}
+    {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
       containers:
       - {{ toYaml $stsstackstateRouterMainContainer | nindent 8 }}
       volumes:

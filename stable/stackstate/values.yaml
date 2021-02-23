@@ -12,7 +12,7 @@ backup:
     # backup.elasticSearch.enabled -- Enable automatic ElasticSearch backups.
     enabled: false
     # backup.elasticSearch.schedule -- Cron schedule for automatic ElasticSearch backups in [ElastichSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html).
-    schedule: '0 3 * * * ?'
+    schedule: '0 0 3 * * ?'
     # backup.elasticSearch.bucketName -- Name of the MinIO bucket to store ElasticSearch snapshots.
     bucketName: 'sts-elasticsearch-backup'
     # backup.elasticSearch.indices -- ElasticSearch indices to snapshot in [JSON array format](https://www.w3schools.com/js/js_json_arrays.asp).
@@ -33,7 +33,7 @@ backup:
     # backup.stackGraph.enabled -- Enable automatic StackGraph backups.
     enabled: false
     # backup.stackGraph.schedule -- Cron schedule for automatic StackGraph backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax).
-    schedule: '0 0 3 * *'
+    schedule: '0 3 * * *'
     # backup.stackGraph.bucketName -- Name of the MinIO bucket to store StackGraph backups.
     bucketName: 'sts-stackgraph-backup'
     # backup.stackGraph.backupNameTemplate -- Template for the StackGraph backup name as a double-quoted shell string value.
@@ -850,7 +850,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 3.7.3
+      tag: 3.7.4
   console:
     # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
     enabled: false

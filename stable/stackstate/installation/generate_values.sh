@@ -147,6 +147,22 @@ function create_agent_auth_token() {
   head -c32 < /dev/urandom | $md5sum_command  | cut -c-32
 }
 
+function configure_autoinstalled_stackpacks() {
+  cat >> "${values_file}" <<EOF
+  stackpacks:
+    installed:
+      - name: aad
+        configuration: {}
+EOF
+  if ${stackstate_cluster_agent_enabled}; then
+  cat >> "${values_file}" <<EOF
+      - name: kubernetes
+        configuration:
+          kubernetes_cluster_name: "${k8s_cluster_name}"
+EOF
+  fi
+}
+
 function generate_values() {
   cat > "${values_file}" <<EOF
 global:
@@ -156,6 +172,10 @@ hbase:
     image:
       pullSecretUsername: "${image_pull_credentials_username}"
       pullSecretPassword: "${image_pull_credentials_password}"
+anomaly-detection:
+  image:
+    pullSecretUsername: "${image_pull_credentials_username}"
+    pullSecretPassword: "${image_pull_credentials_password}"
 stackstate:
   components:
     all:
@@ -171,22 +191,7 @@ stackstate:
     authentication:
       password: "$(create_admin_api_password_hash)"
 EOF
-
-  if ${stackstate_cluster_agent_enabled}; then
-  cat >> "${values_file}" <<EOF
-  stackpacks:
-    installed:
-      - name: kubernetes
-        configuration:
-          kubernetes_cluster_name: "${k8s_cluster_name}"
-cluster-agent:
-  enabled: true
-  stackstate:
-    cluster:
-      name: "${k8s_cluster_name}"
-      authToken: "$(create_agent_auth_token)"
-EOF
-  fi
+  configure_autoinstalled_stackpacks
 }
 
 function print_helm_command() {
