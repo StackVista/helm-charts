@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.2.4-rc.5`
+Current chart version is `4.2.4-rc.6`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -105,7 +105,7 @@ stackstate/stackstate
 | hbase.hbase.regionserver.replicaCount | int | `3` | Number of HBase regionserver node replicas. |
 | hbase.hdfs.datanode.replicaCount | int | `3` | Number of HDFS datanode replicas. |
 | hbase.hdfs.secondarynamenode.enabled | bool | `true` |  |
-| hbase.stackgraph.image.tag | string | `"3.7.1"` | The StackGraph server version, must be compatible with the StackState version |
+| hbase.stackgraph.image.tag | string | `"3.7.4"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
 | hbase.zookeeper.enabled | bool | `false` | Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**. |
 | hbase.zookeeper.externalServers | string | `"stackstate-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
@@ -174,7 +174,7 @@ stackstate/stackstate
 | stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
 | stackstate.components.all.image.repositorySuffix | string | `"-stable"` |  |
-| stackstate.components.all.image.tag | string | `"4.2.4-rc.5"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
+| stackstate.components.all.image.tag | string | `"4.2.4-rc.6"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
 | stackstate.components.all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
