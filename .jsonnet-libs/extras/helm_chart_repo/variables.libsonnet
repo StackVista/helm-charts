@@ -14,6 +14,7 @@
     charts: [
       'aws-amicleaner',
       'aws-nuke',
+      'aws-pod-identity-webhook',
       'chartmuseum',
       'cluster-agent',
       'common',
