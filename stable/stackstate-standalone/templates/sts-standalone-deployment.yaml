@@ -28,10 +28,10 @@ spec:
         app.kubernetes.io/name: {{ include "stackstate-standalone.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-    {{- with .Values.imagePullSecrets }}
+      {{- if .Values.image.pullSecretUsername }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
+      - name: {{ include "stackstate-standalone.fullname" . }}-pull-secret
+      {{- end }}
       containers:
         - args: ["start"]
           name: {{ .Chart.Name }}
