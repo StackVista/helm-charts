@@ -144,7 +144,7 @@ spec:
       restartPolicy: Never
 {{- end -}}
 
-{{- if .Values.minio.enabled }}
+{{- if and .Values.minio.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticSearch.restore.enabled .Values.backup.elasticSearch.scheduled.enabled) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -152,12 +152,13 @@ metadata:
 data:
   configure-backup.sh: |
     {{- .Files.Get "scripts/configure-backup.sh" | nindent 4 }}
-{{- if .Values.backup.stackGraph.enabled }}
+{{- if .Values.backup.stackGraph.scheduled.enabled }}
   backup-stackgraph.sh: |
     {{- .Files.Get "scripts/backup-stackgraph.sh" | nindent 4 }}
   expire-stackgraph-backups.py: |
     {{- .Files.Get "scripts/expire-stackgraph-backups.py" | nindent 4 }}
 {{- end }}
+{{- if .Values.backup.elasticSearch.restore.enabled }}
   job-elasticsearch-list-snapshots.yaml: |
     {{- include "job-elasticsearch-list-snapshots.yaml" . | nindent 4 }}
   list-elasticsearch-snapshots.sh: |
@@ -166,6 +167,8 @@ data:
     {{- include "job-elasticsearch-restore-snapshot.yaml" . | nindent 4 }}
   restore-elasticsearch-snapshot.sh: |
     {{- .Files.Get "scripts/restore-elasticsearch-snapshot.sh" | nindent 4 }}
+{{- end }}
+{{- if .Values.backup.stackGraph.restore.enabled }}
   job-stackgraph-list-backups.yaml: |
     {{- include "job-stackgraph-list-backups.yaml" . | nindent 4 }}
   list-stackgraph-backups.sh: |
@@ -174,4 +177,5 @@ data:
     {{- include "job-stackgraph-restore-backup.yaml" . | nindent 4 }}
   restore-stackgraph-backup.sh: |
     {{- .Files.Get "scripts/restore-stackgraph-backup.sh" | nindent 4 }}
+{{- end }}
 {{- end }}

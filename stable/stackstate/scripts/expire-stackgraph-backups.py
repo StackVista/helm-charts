@@ -4,9 +4,9 @@ import os, re, subprocess, sys
 from datetime import datetime, timedelta
 
 def main():
-  backup_datetime_re = re.compile(os.getenv('BACKUP_STACKGRAPH_BACKUP_NAME_PARSE_REGEXP'))
-  backup_datetime_format = os.getenv('BACKUP_STACKGRAPH_BACKUP_DATETIME_PARSE_FORMAT')
-  backup_retention_timedelta = eval('timedelta(' + os.getenv('BACKUP_STACKGRAPH_BACKUP_RETENTION_TIME_DELTA') + ')')
+  backup_datetime_re = re.compile(os.getenv('BACKUP_STACKGRAPH_SCHEDULED_BACKUP_NAME_PARSE_REGEXP'))
+  backup_datetime_format = os.getenv('BACKUP_STACKGRAPH_SCHEDULED_BACKUP_DATETIME_PARSE_FORMAT')
+  backup_retention_timedelta = eval('timedelta(' + os.getenv('BACKUP_STACKGRAPH_SCHEDULED_BACKUP_RETENTION_TIME_DELTA') + ')')
   bucket_name = os.getenv('BACKUP_STACKGRAPH_BUCKET_NAME')
   minio_endpoint = 'http://' + os.getenv('MINIO_ENDPOINT')
   now = datetime.now()
