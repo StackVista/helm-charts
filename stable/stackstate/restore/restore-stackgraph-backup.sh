@@ -21,6 +21,8 @@ sleep 15
 
 echo "=== Starting restore job"
 kubectl create -f "${JOB_YAML_FILE}"
-while ! kubectl logs job/"${JOB_NAME}" --container=restore >/dev/null 2>/dev/null ; do echo "Waiting for job to start..."; sleep 2; done; kubectl logs "job/${JOB_NAME}"  --container=restore --follow=true
-kubectl delete job "${JOB_NAME}"
 rm -rf "${JOB_YAML_DIR}"
+
+echo "=== Restore job started. Follow the logs and clean up the job with the following commands:"
+echo "kubectl logs --follow job/${JOB_NAME}"
+echo "kubectl delete job/${JOB_NAME}"
