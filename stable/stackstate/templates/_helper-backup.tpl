@@ -42,6 +42,8 @@
 {{- end -}}
 
 {{- define "stackstate.backup.volumeMounts" -}}
+- name: backup-log
+  mountPath: /opt/docker/etc_log
 - name: backup-restore-scripts
   mountPath: /backup-restore-scripts
 - name: minio-keys
@@ -49,6 +51,9 @@
 {{- end -}}
 
 {{- define "stackstate.backup.volumes" -}}
+- name: backup-log
+  configMap:
+    name: {{ template "common.fullname.short" . }}-backup-log
 - name: backup-restore-scripts
   configMap:
     name: {{ template "common.fullname.short" . }}-backup-restore-scripts
