@@ -8,6 +8,8 @@ global:
 # commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
 commonLabels: {}
 backup:
+  # backup.additionalLogging -- Additional logback config for backup components
+  additionalLogging: ""
   elasticSearch:
     # backup.elasticSearch.bucketName -- Name of the MinIO bucket where ElasticSearch snapshots are stored.
     bucketName: 'sts-elasticsearch-backup'

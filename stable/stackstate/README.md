@@ -55,6 +55,7 @@ stackstate/stackstate
 | anomaly-detection.stackstate.password | string | `nil` | Stackstate Password used by spotlight for authentication, it is expected to be set only in case if authType = "cookie" |
 | anomaly-detection.stackstate.username | string | `nil` | Stackstate Username used by spotlight for authentication, it is expected to be set only in case if authType = "cookie" |
 | anomaly-detection.threadWorkers | int | `5` | The number of worker threads. |
+| backup.additionalLogging | string | `""` | Additional logback config for backup components |
 | backup.elasticSearch.bucketName | string | `"sts-elasticsearch-backup"` | Name of the MinIO bucket where ElasticSearch snapshots are stored. |
 | backup.elasticSearch.restore.enabled | bool | `false` | Enable ElasticSearch snapshot restore functionality. |
 | backup.elasticSearch.scheduled.enabled | bool | `false` | Enable scheduled ElasticSearch snapshots. |

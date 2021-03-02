@@ -10,5 +10,5 @@ echo "=== Downloading StackGraph backup \"${BACKUP_FILE}\" from bucket \"${BACKU
 aws --endpoint-url "http://${MINIO_ENDPOINT}" s3 cp "s3://${BACKUP_STACKGRAPH_BUCKET_NAME}/${BACKUP_FILE}" "/tmp/${BACKUP_FILE}"
 
 echo "=== Importing StackGraph data from \"${BACKUP_FILE}\"..."
-/opt/docker/bin/stackstate-server -import "/tmp/${BACKUP_FILE}"
+/opt/docker/bin/stackstate-server -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy -import "/tmp/${BACKUP_FILE}"
 echo "==="
