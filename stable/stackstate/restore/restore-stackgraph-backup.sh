@@ -13,6 +13,13 @@ if (! (kubectl get configmap stackstate-backup-restore-scripts -o jsonpath="{.da
     exit 1
 fi
 
+echo "=== Scaling down deployments for pods that connect to StackGraph"
+kubectl scale --replicas=0 deployments --selector=stackstate.com/connects-to-stackgraph=true
+
+echo "=== Allowing pods to terminate"
+sleep 15
+
+echo "=== Starting restore job"
 kubectl create -f "${JOB_YAML_FILE}"
 while ! kubectl logs job/"${JOB_NAME}" --container=restore >/dev/null 2>/dev/null ; do echo "Waiting for job to start..."; sleep 2; done; kubectl logs "job/${JOB_NAME}"  --container=restore --follow=true
 kubectl delete job "${JOB_NAME}"
