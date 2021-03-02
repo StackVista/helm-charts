@@ -1,11 +1,11 @@
-{{- if and .Values.minio.enabled .Values.backup.stackGraph.enabled }}
+{{- if and .Values.minio.enabled .Values.backup.stackGraph.scheduled.enabled }}
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: {{ template "common.fullname.short" . }}-backup-stackgraph
 spec:
   concurrencyPolicy: Forbid
-  schedule: {{ .Values.backup.stackGraph.schedule | quote }}
+  schedule: {{ .Values.backup.stackGraph.scheduled.schedule | quote }}
   jobTemplate:
     spec:
       backoffLimit: 1
