@@ -1,0 +1,11 @@
+{{- if and .Values.minio.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticSearch.restore.enabled .Values.backup.elasticSearch.scheduled.enabled) }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "common.fullname.short" . }}-backup
+spec:
+  maxUnavailable: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: backup
+{{- end }}

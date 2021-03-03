@@ -8,42 +8,52 @@ global:
 # commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
 commonLabels: {}
 backup:
+  # backup.additionalLogging -- Additional logback config for backup components
+  additionalLogging: ""
   elasticSearch:
-    # backup.elasticSearch.enabled -- Enable automatic ElasticSearch backups.
-    enabled: false
-    # backup.elasticSearch.schedule -- Cron schedule for automatic ElasticSearch backups in [ElastichSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html).
-    schedule: '0 0 3 * * ?'
-    # backup.elasticSearch.bucketName -- Name of the MinIO bucket to store ElasticSearch snapshots.
+    # backup.elasticSearch.bucketName -- Name of the MinIO bucket where ElasticSearch snapshots are stored.
     bucketName: 'sts-elasticsearch-backup'
-    # backup.elasticSearch.indices -- ElasticSearch indices to snapshot in [JSON array format](https://www.w3schools.com/js/js_json_arrays.asp).
-    indices: '["*"]'
-    # backup.elasticSearch.snapshotRepositoryName -- Name for the ElasticSearch snapshot repository.
+    # backup.elasticSearch.snapshotRepositoryName -- Name of the ElasticSearch snapshot repository.
     snapshotRepositoryName: 'sts-backup'
-    # backup.elasticSearch.snapshotPolicyName -- Name for the ElasticSearch snapshot policy.
-    snapshotPolicyName: 'auto-sts-backup'
-    # backup.elasticSearch.snapshotNameTemplate -- Template for the ElasticSearch snapshot name in [ElasticSearch date math format](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/date-math-index-names.html).
-    snapshotNameTemplate: "<sts-backup-{now{yyyyMMdd-HHmm}}>"
-    # backup.elasticSearch.snapshotRetentionExpireAfter -- Amount of time to keep ElasticSearch snapshots in [ElasticSearch time units](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/common-options.html#time-units). *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule).
-    snapshotRetentionExpireAfter: "30d"
-    # backup.elasticSearch.snapshotRetentionMinCount -- Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule).
-    snapshotRetentionMinCount: "5"
-    # backup.elasticSearch.snapshotRetentionMaxCount -- Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule).
-    snapshotRetentionMaxCount: "30"
+    restore:
+      # backup.elasticSearch.restore.enabled -- Enable ElasticSearch snapshot restore functionality.
+      enabled: false
+    scheduled:
+      # backup.elasticSearch.scheduled.enabled -- Enable scheduled ElasticSearch snapshots.
+      enabled: false
+      # backup.elasticSearch.scheduled.schedule -- Cron schedule for automatic ElasticSearch snaphosts in [ElastichSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html).
+      schedule: '0 0 3 * * ?'
+      # backup.elasticSearch.scheduled.indices -- ElasticSearch indices to snapshot in [JSON array format](https://www.w3schools.com/js/js_json_arrays.asp).
+      indices: '["*"]'
+      # backup.elasticSearch.scheduled.snapshotPolicyName -- Name of the ElasticSearch snapshot policy.
+      snapshotPolicyName: 'auto-sts-backup'
+      # backup.elasticSearch.scheduled.snapshotNameTemplate -- Template for the ElasticSearch snapshot name in [ElasticSearch date math format](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/date-math-index-names.html).
+      snapshotNameTemplate: "<sts-backup-{now{yyyyMMdd-HHmm}}>"
+      # backup.elasticSearch.scheduled.snapshotRetentionExpireAfter -- Amount of time to keep ElasticSearch snapshots in [ElasticSearch time units](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/common-options.html#time-units). *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule).
+      snapshotRetentionExpireAfter: "30d"
+      # backup.elasticSearch.scheduled.snapshotRetentionMinCount -- Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule).
+      snapshotRetentionMinCount: "5"
+      # backup.elasticSearch.scheduled.snapshotRetentionMaxCount -- Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule).
+      snapshotRetentionMaxCount: "30"
   stackGraph:
-    # backup.stackGraph.enabled -- Enable automatic StackGraph backups.
-    enabled: false
-    # backup.stackGraph.schedule -- Cron schedule for automatic StackGraph backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax).
-    schedule: '0 3 * * *'
     # backup.stackGraph.bucketName -- Name of the MinIO bucket to store StackGraph backups.
     bucketName: 'sts-stackgraph-backup'
-    # backup.stackGraph.backupNameTemplate -- Template for the StackGraph backup name as a double-quoted shell string value.
-    backupNameTemplate: 'sts-backup-$(date +%Y%m%d-%H%M).graph'
-    # backup.stackGraph.backupNameParseRegexp -- Regular expression to retrieve date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`.
-    backupNameParseRegexp: 'sts-backup-([0-9]*-[0-9]*).graph'
-    # backup.stackGraph.backupDatetimeParseFormat -- Format to parse date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`.
-    backupDatetimeParseFormat: '%Y%m%d-%H%M'
-    # backup.stackGraph.backupRetentionTimeDelta -- Time to keep StackGraph backups in [Python timedelta format](https://docs.python.org/3/library/datetime.html#timedelta-objects).
-    backupRetentionTimeDelta: 'days = 30'
+    restore:
+      # backup.stackGraph.restore.enabled -- Enable StackGraph backup restore functionality.
+      enabled: false
+    scheduled:
+      # backup.stackGraph.scheduled.enabled -- Enable scheduled StackGraph backups.
+      enabled: false
+      # backup.stackGraph.scheduled.schedule -- Cron schedule for automatic StackGraph backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax).
+      schedule: '0 3 * * *'
+      # backup.stackGraph.scheduled.backupNameTemplate -- Template for the StackGraph backup name as a double-quoted shell string value.
+      backupNameTemplate: 'sts-backup-$(date +%Y%m%d-%H%M).graph'
+      # backup.stackGraph.scheduled.backupNameParseRegexp -- Regular expression to retrieve date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`.
+      backupNameParseRegexp: 'sts-backup-([0-9]*-[0-9]*).graph'
+      # backup.stackGraph.scheduled.backupDatetimeParseFormat -- Format to parse date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`.
+      backupDatetimeParseFormat: '%Y%m%d-%H%M'
+      # backup.stackGraph.scheduled.backupRetentionTimeDelta -- Time to keep StackGraph backups in [Python timedelta format](https://docs.python.org/3/library/datetime.html#timedelta-objects).
+      backupRetentionTimeDelta: 'days = 30'
 caspr:
   # caspr.enabled -- Enable CASPR compatible values.
   enabled: false

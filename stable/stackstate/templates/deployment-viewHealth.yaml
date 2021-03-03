@@ -93,6 +93,8 @@ metadata:
   name: {{ template "common.fullname.short" . }}-view-health
   labels:
     app.kubernetes.io/component: view-health
+    stackstate.com/connects-to-stackgraph: "true"
+    stackstate.com/replicas: "1"
 spec:
   selector:
     matchLabels:

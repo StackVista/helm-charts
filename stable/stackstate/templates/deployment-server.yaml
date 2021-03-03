@@ -93,6 +93,8 @@ metadata:
   name: {{ template "common.fullname.short" . }}-server
   labels:
     app.kubernetes.io/component: server
+    stackstate.com/connects-to-stackgraph: "true"
+    stackstate.com/replicas: "1"
 spec:
   replicas: 1
   selector:

@@ -95,6 +95,8 @@ metadata:
   name: {{ template "common.fullname.short" . }}-checks
   labels:
     app.kubernetes.io/component: checks
+    stackstate.com/connects-to-stackgraph: "true"
+    stackstate.com/replicas: "1"
 spec:
   selector:
     matchLabels:
