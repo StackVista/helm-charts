@@ -57,8 +57,8 @@ stackstate/stackstate
 | anomaly-detection.threadWorkers | int | `5` | The number of worker threads. |
 | backup.additionalLogging | string | `""` | Additional logback config for backup components |
 | backup.elasticSearch.bucketName | string | `"sts-elasticsearch-backup"` | Name of the MinIO bucket where ElasticSearch snapshots are stored. |
-| backup.elasticSearch.restore.enabled | bool | `false` | Enable ElasticSearch snapshot restore functionality. |
-| backup.elasticSearch.scheduled.enabled | bool | `false` | Enable scheduled ElasticSearch snapshots. |
+| backup.elasticSearch.restore.enabled | bool | `true` | Enable ElasticSearch snapshot restore functionality (if `backup.enabled` is set to `true`). |
+| backup.elasticSearch.scheduled.enabled | bool | `true` | Enable scheduled ElasticSearch snapshots (if `backup.enabled` is set to `true`). |
 | backup.elasticSearch.scheduled.indices | string | `"[\"*\"]"` | ElasticSearch indices to snapshot in [JSON array format](https://www.w3schools.com/js/js_json_arrays.asp). |
 | backup.elasticSearch.scheduled.schedule | string | `"0 0 3 * * ?"` | Cron schedule for automatic ElasticSearch snaphosts in [ElastichSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html). |
 | backup.elasticSearch.scheduled.snapshotNameTemplate | string | `"<sts-backup-{now{yyyyMMdd-HHmm}}>"` | Template for the ElasticSearch snapshot name in [ElasticSearch date math format](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/date-math-index-names.html). |
@@ -67,13 +67,14 @@ stackstate/stackstate
 | backup.elasticSearch.scheduled.snapshotRetentionMaxCount | string | `"30"` | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
 | backup.elasticSearch.scheduled.snapshotRetentionMinCount | string | `"5"` | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
 | backup.elasticSearch.snapshotRepositoryName | string | `"sts-backup"` | Name of the ElasticSearch snapshot repository. |
+| backup.enabled | bool | `false` | Enables backup/restore, including the MinIO subsystem. |
 | backup.stackGraph.bucketName | string | `"sts-stackgraph-backup"` | Name of the MinIO bucket to store StackGraph backups. |
-| backup.stackGraph.restore.enabled | bool | `false` | Enable StackGraph backup restore functionality. |
+| backup.stackGraph.restore.enabled | bool | `true` | Enable StackGraph backup restore functionality (if `backup.enabled` is set to `true`). |
 | backup.stackGraph.scheduled.backupDatetimeParseFormat | string | `"%Y%m%d-%H%M"` | Format to parse date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`. |
 | backup.stackGraph.scheduled.backupNameParseRegexp | string | `"sts-backup-([0-9]*-[0-9]*).graph"` | Regular expression to retrieve date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`. |
 | backup.stackGraph.scheduled.backupNameTemplate | string | `"sts-backup-$(date +%Y%m%d-%H%M).graph"` | Template for the StackGraph backup name as a double-quoted shell string value. |
 | backup.stackGraph.scheduled.backupRetentionTimeDelta | string | `"days = 30"` | Time to keep StackGraph backups in [Python timedelta format](https://docs.python.org/3/library/datetime.html#timedelta-objects). |
-| backup.stackGraph.scheduled.enabled | bool | `false` | Enable scheduled StackGraph backups. |
+| backup.stackGraph.scheduled.enabled | bool | `true` | Enable scheduled StackGraph backups (if `backup.enabled` is set to `true`). |
 | backup.stackGraph.scheduled.schedule | string | `"0 3 * * *"` | Cron schedule for automatic StackGraph backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax). |
 | caspr.enabled | bool | `false` | Enable CASPR compatible values. |
 | cluster-agent.enabled | bool | `false` | Deploy the StackState Kubernetes Agent so StackState can monitor the cluster it runs in |
@@ -146,7 +147,6 @@ stackstate/stackstate
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
 | minio.accessKey | string | `"setme"` | Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value. |
 | minio.azuregateway.replicas | int | `1` |  |
-| minio.enabled | bool | `false` | Enables MinIO for backups. |
 | minio.fullnameOverride | string | `"stackstate-minio"` | **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components. |
 | minio.persistence.enabled | bool | `false` | Enables MinIO persistence. Must be enabled when MinIO is not configured as a gateway to AWS S3 or Azure Blob Storage. |
 | minio.replicas | int | `1` | Number of MinIO replicas. |
@@ -182,8 +182,6 @@ stackstate/stackstate
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
 | stackstate.components.all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
 | stackstate.components.all.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
-| stackstate.components.all.minioEndpoint | string | `""` |  |
-| stackstate.components.all.minioKeys | string | `""` |  |
 | stackstate.components.all.nodeSelector | object | `{}` | Node labels for pod assignment on all components. |
 | stackstate.components.all.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
 | stackstate.components.all.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |

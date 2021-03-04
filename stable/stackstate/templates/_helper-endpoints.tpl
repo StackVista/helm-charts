@@ -24,22 +24,14 @@ Logic to determine Kafka endpoint.
 Logic to determine MinIO endpoint.
 */}}
 {{- define "stackstate.minio.endpoint" -}}
-{{- if .Values.minio.enabled -}}
 {{- .Values.minio.fullnameOverride -}}:9000
-{{- else -}}
-{{- .Values.stackstate.components.all.minioEndpoint -}}
-{{- end -}}
 {{- end -}}
 
 {{/*
 Logic to determine MinIO keys.
 */}}
 {{- define "stackstate.minio.keys" -}}
-{{- if .Values.minio.enabled -}}
 {{- .Values.minio.fullnameOverride -}}
-{{- else -}}
-{{- .Values.stackstate.components.all.minioKeys -}}
-{{- end -}}
 {{- end -}}
 
 {{/*
