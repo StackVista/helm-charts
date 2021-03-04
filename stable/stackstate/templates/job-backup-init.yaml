@@ -1,11 +1,16 @@
-{{- if and .Values.minio.enabled (or .Values.backup.stackGraph.enabled .Values.backup.elasticSearch.enabled) }}
+{{- if and .Values.minio.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticSearch.restore.enabled .Values.backup.elasticSearch.scheduled.enabled) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ template "common.fullname.short" . }}-backup-init-{{ now | date "20060102t150405" }}
+  labels:
+    app.kubernetes.io/component: backup
 spec:
   ttlSecondsAfterFinished: 600
   template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: backup
     spec:
       initContainers:
         - name: wait

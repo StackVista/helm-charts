@@ -1,16 +1,24 @@
-{{- if and .Values.minio.enabled .Values.backup.stackGraph.enabled }}
+{{- if and .Values.minio.enabled .Values.backup.stackGraph.scheduled.enabled }}
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: {{ template "common.fullname.short" . }}-backup-stackgraph
+  labels:
+    app.kubernetes.io/component: backup
 spec:
   concurrencyPolicy: Forbid
-  schedule: {{ .Values.backup.stackGraph.schedule | quote }}
+  schedule: {{ .Values.backup.stackGraph.scheduled.schedule | quote }}
   jobTemplate:
+    metadata:
+      labels:
+        app.kubernetes.io/component: backup
     spec:
       backoffLimit: 1
       ttlSecondsAfterFinished: 600
       template:
+        metadata:
+          labels:
+            app.kubernetes.io/component: backup
         spec:
           initContainers:
             - name: wait
