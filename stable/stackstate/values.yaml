@@ -10,17 +10,19 @@ commonLabels: {}
 backup:
   # backup.additionalLogging -- Additional logback config for backup components
   additionalLogging: ""
+  # backup.enabled -- Enables backup/restore, including the MinIO subsystem.
+  enabled: false
   elasticSearch:
     # backup.elasticSearch.bucketName -- Name of the MinIO bucket where ElasticSearch snapshots are stored.
     bucketName: 'sts-elasticsearch-backup'
     # backup.elasticSearch.snapshotRepositoryName -- Name of the ElasticSearch snapshot repository.
     snapshotRepositoryName: 'sts-backup'
     restore:
-      # backup.elasticSearch.restore.enabled -- Enable ElasticSearch snapshot restore functionality.
-      enabled: false
+      # backup.elasticSearch.restore.enabled -- Enable ElasticSearch snapshot restore functionality (if `backup.enabled` is set to `true`).
+      enabled: true
     scheduled:
-      # backup.elasticSearch.scheduled.enabled -- Enable scheduled ElasticSearch snapshots.
-      enabled: false
+      # backup.elasticSearch.scheduled.enabled -- Enable scheduled ElasticSearch snapshots (if `backup.enabled` is set to `true`).
+      enabled: true
       # backup.elasticSearch.scheduled.schedule -- Cron schedule for automatic ElasticSearch snaphosts in [ElastichSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html).
       schedule: '0 0 3 * * ?'
       # backup.elasticSearch.scheduled.indices -- ElasticSearch indices to snapshot in [JSON array format](https://www.w3schools.com/js/js_json_arrays.asp).
@@ -39,11 +41,11 @@ backup:
     # backup.stackGraph.bucketName -- Name of the MinIO bucket to store StackGraph backups.
     bucketName: 'sts-stackgraph-backup'
     restore:
-      # backup.stackGraph.restore.enabled -- Enable StackGraph backup restore functionality.
-      enabled: false
+      # backup.stackGraph.restore.enabled -- Enable StackGraph backup restore functionality (if `backup.enabled` is set to `true`).
+      enabled: true
     scheduled:
-      # backup.stackGraph.scheduled.enabled -- Enable scheduled StackGraph backups.
-      enabled: false
+      # backup.stackGraph.scheduled.enabled -- Enable scheduled StackGraph backups (if `backup.enabled` is set to `true`).
+      enabled: true
       # backup.stackGraph.scheduled.schedule -- Cron schedule for automatic StackGraph backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax).
       schedule: '0 3 * * *'
       # backup.stackGraph.scheduled.backupNameTemplate -- Template for the StackGraph backup name as a double-quoted shell string value.
@@ -130,10 +132,6 @@ stackstate:
       elasticsearchEndpoint: ""
       # stackstate.components.all.kafkaEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker.
       kafkaEndpoint: ""
-      # stackstate.components.all.minoEndpoint -- **Required if `minio.enabled` is `false`** Endpoint for shared MinIO cluster.
-      minioEndpoint: ""
-      # stackstate.components.all.minoEndpoint -- **Required if `minio.enabled` is `false`** Name of Secret that contains MinIO keys.
-      minioKeys: ""
       # stackstate.components.all.zookeeperEndpoint -- **Required if `zookeeper.enabled` is `false`** Endpoint for shared Zookeeper nodes.
       zookeeperEndpoint: ""
       # stackstate.components.all.nodeSelector -- Node labels for pod assignment on all components.
@@ -1042,8 +1040,6 @@ kafka:
   zookeeper:
     enabled: false
 minio:
-  # minio.enabled -- Enables MinIO for backups.
-  enabled: false
   # minio.replicas -- Number of MinIO replicas.
   replicas: 1
   persistence:

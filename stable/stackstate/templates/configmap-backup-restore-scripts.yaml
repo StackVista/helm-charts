@@ -164,7 +164,7 @@ spec:
       restartPolicy: Never
 {{- end -}}
 
-{{- if and .Values.minio.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticSearch.restore.enabled .Values.backup.elasticSearch.scheduled.enabled) }}
+{{- if and .Values.backup.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticSearch.restore.enabled .Values.backup.elasticSearch.scheduled.enabled) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
