@@ -15,7 +15,7 @@ Current chart version is `4.2.4`
 | https://helm.stackstate.io | anomaly-detection | 4.1.27 |
 | https://helm.stackstate.io | cluster-agent | 0.4.11 |
 | https://helm.stackstate.io | common | 0.4.13 |
-| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.10 |
+| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.11 |
 | https://helm.stackstate.io | hbase | 0.1.66 |
 | https://helm.stackstate.io | kafka | 12.2.5-stackstate.0 |
 
