@@ -26,12 +26,16 @@ image:
   tag: master
   # image.pullPolicy -- Default container image pull policy.
   pullPolicy: Always
+  # image.pullSecrets -- Extra secrets / credentials needed for container image registry. Is ignored when specifying a pullSecretUsername/password
+  pullSecrets: []
+  # image.pullSecretUsername -- Specify username and password to create an image pull secret that is used to pull the imagepullSecretUsername:
+  pullSecretUsername:
+  # image.pullSecretPassword -- Specify username and password to create an image pull secret that is used to pull the image
+  pullsecretPassword:
 
 # podAnnotations -- Annotations to inject into `Job` pods.
 podAnnotations: {}
 
-# imagePullSecrets -- Extra secrets / credentials needed for container image registry.
-imagePullSecrets: []
 # nameOverride -- Override the name of the chart.
 nameOverride: ""
 # fullnameOverride -- Override the fullname of the chart.
