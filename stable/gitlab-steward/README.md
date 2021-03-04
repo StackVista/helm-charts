@@ -1,6 +1,6 @@
 # gitlab-steward
 
-![Version: 0.2.5](https://img.shields.io/badge/Version-0.2.5-informational?style=flat-square) ![AppVersion: 0.2.0](https://img.shields.io/badge/AppVersion-0.2.0-informational?style=flat-square)
+![Version: 0.2.6](https://img.shields.io/badge/Version-0.2.6-informational?style=flat-square) ![AppVersion: 0.2.0](https://img.shields.io/badge/AppVersion-0.2.0-informational?style=flat-square)
 
 Steward -- GitLab environment cleaner
 
@@ -25,9 +25,11 @@ Steward -- GitLab environment cleaner
 | failedJobsHistoryLimit | int | `5` | The number of failed CronJob executions that are saved. |
 | fullnameOverride | string | `""` | Override the fullname of the chart. |
 | image.pullPolicy | string | `"Always"` | Default container image pull policy. |
+| image.pullSecretUsername | string | `nil` | Specify username and password to create an image pull secret that is used to pull the imagepullSecretUsername: |
+| image.pullSecrets | list | `[]` | Extra secrets / credentials needed for container image registry. Is ignored when specifying a pullSecretUsername/password |
+| image.pullsecretPassword | string | `nil` |  |
 | image.repository | string | `"quay.io/stackstate/python-steward"` | Base container image registry. |
 | image.tag | string | `"master"` | Default container image tag. |
-| imagePullSecrets | list | `[]` | Extra secrets / credentials needed for container image registry. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | object | `{}` | Node labels for pod assignment. |
 | resources.limits.cpu | string | `"100m"` | CPU resource limits. |

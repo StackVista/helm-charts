@@ -1,6 +1,6 @@
 # iceman
 
-![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: 0.1.7](https://img.shields.io/badge/Version-0.1.7-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 
 Iceman -- Export configuration for all StackState instances in a cluster to an S3 bucket as backup (i.e. freeze their configuration state).
 
@@ -30,9 +30,11 @@ Iceman -- Export configuration for all StackState instances in a cluster to an S
 | iceman.stackstatePassword | string | `nil` | **REQUIRED** Administrator password for the Admin API running on all StackStates. |
 | iceman.stackstateUsername | string | `nil` | **REQUIRED** Administrator username for the Admin API running on all StackStates. |
 | image.pullPolicy | string | `"Always"` | Default container image pull policy. |
+| image.pullSecretUsername | string | `nil` | Specify username and password to create an image pull secret that is used to pull the imagepullSecretUsername: |
+| image.pullSecrets | list | `[]` | Extra secrets / credentials needed for container image registry. Is ignored when specifying a pullSecretUsername/password |
+| image.pullsecretPassword | string | `nil` |  |
 | image.repository | string | `"quay.io/stackstate/iceman"` | Base container image registry. |
 | image.tag | string | `"master"` | Default container image tag. |
-| imagePullSecrets | list | `[]` | Extra secrets / credentials needed for container image registry. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | object | `{}` | Node labels for pod assignment. |
 | podAnnotations | object | `{}` | Annotations to inject into `Job` pods. |

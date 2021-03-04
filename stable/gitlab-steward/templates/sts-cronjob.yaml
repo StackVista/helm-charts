@@ -18,9 +18,14 @@ spec:
             app.kubernetes.io/instance: {{ .Release.Name }}
             app.kubernetes.io/name: {{ include "gitlab-steward.name" . }}
         spec:
-        {{- with .Values.imagePullSecrets }}
+        {{- if .Values.image.pullSecretUsername }}
+          imagePullSecrets:
+          - name: {{ include "stackstate-standalone.fullname" . }}-pull-secret
+        {{- else -}}
+          {{- with .Values.image.pullSecrets }}
           imagePullSecrets:
             {{- toYaml . | nindent 12 }}
+          {{- end }}
         {{- end }}
           containers:
           - name: {{ .Chart.Name }}
