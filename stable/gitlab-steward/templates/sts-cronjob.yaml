@@ -20,7 +20,7 @@ spec:
         spec:
         {{- if .Values.image.pullSecretUsername }}
           imagePullSecrets:
-          - name: {{ include "stackstate-standalone.fullname" . }}-pull-secret
+          - name: {{ include "gitlab-steward.fullname" . }}-pull-secret
         {{- else -}}
           {{- with .Values.image.pullSecrets }}
           imagePullSecrets:

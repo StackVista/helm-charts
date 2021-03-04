@@ -24,7 +24,7 @@ spec:
         spec:
         {{- if .Values.image.pullSecretUsername }}
           imagePullSecrets:
-          - name: {{ include "stackstate-standalone.fullname" . }}-pull-secret
+          - name: {{ include "iceman.fullname" . }}-pull-secret
         {{- else -}}
           {{- with .Values.image.pullSecrets }}
           imagePullSecrets:
