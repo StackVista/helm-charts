@@ -164,7 +164,7 @@ spec:
       restartPolicy: Never
 {{- end -}}
 
-{{- if and .Values.backup.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticSearch.restore.enabled .Values.backup.elasticSearch.scheduled.enabled) }}
+{{- if and .Values.backup.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticsearch.restore.enabled .Values.backup.elasticsearch.scheduled.enabled) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -178,7 +178,7 @@ data:
   expire-stackgraph-backups.py: |
     {{- .Files.Get "scripts/expire-stackgraph-backups.py" | nindent 4 }}
 {{- end }}
-{{- if .Values.backup.elasticSearch.restore.enabled }}
+{{- if .Values.backup.elasticsearch.restore.enabled }}
   job-elasticsearch-list-snapshots.yaml: |
     {{- include "job-elasticsearch-list-snapshots.yaml" . | nindent 4 }}
   list-elasticsearch-snapshots.sh: |
