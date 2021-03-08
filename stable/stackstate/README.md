@@ -74,6 +74,9 @@ stackstate/stackstate
 | backup.enabled | bool | `false` | Enables backup/restore, including the MinIO subsystem. |
 | backup.stackGraph.bucketName | string | `"sts-stackgraph-backup"` | Name of the MinIO bucket to store StackGraph backups. |
 | backup.stackGraph.restore.enabled | bool | `true` | Enable StackGraph backup restore functionality (if `backup.enabled` is set to `true`). |
+| backup.stackGraph.restore.tempData.accessModes[0] | string | `"ReadWriteOnce"` |  |
+| backup.stackGraph.restore.tempData.size | string | `"{{ .Values.hbase.hdfs.datanode.persistence.size }}"` |  |
+| backup.stackGraph.restore.tempData.storageClass | string | `nil` |  |
 | backup.stackGraph.scheduled.backupDatetimeParseFormat | string | `"%Y%m%d-%H%M"` | Format to parse date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`. |
 | backup.stackGraph.scheduled.backupNameParseRegexp | string | `"sts-backup-([0-9]*-[0-9]*).graph"` | Regular expression to retrieve date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`. |
 | backup.stackGraph.scheduled.backupNameTemplate | string | `"sts-backup-$(date +%Y%m%d-%H%M).graph"` | Template for the StackGraph backup name as a double-quoted shell string value. |

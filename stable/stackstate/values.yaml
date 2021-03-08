@@ -43,6 +43,13 @@ backup:
     restore:
       # backup.stackGraph.restore.enabled -- Enable StackGraph backup restore functionality (if `backup.enabled` is set to `true`).
       enabled: true
+      tempData:
+        # backup.stackGraph.restore.tmpData.accessModes -- Access mode for temporary backup data.
+        accessModes: ["ReadWriteOnce"]
+        # backup.stackGraph.restore.tmpData.size -- Size of volume for temporary backup data -- must be large enough to store a single backup.
+        size: '{{ .Values.hbase.hdfs.datanode.persistence.size }}'
+        # backup.stackGraph.restore.tmpData.storageClass -- Storage class of the volume for temporary backup data.
+        storageClass:
     scheduled:
       # backup.stackGraph.scheduled.enabled -- Enable scheduled StackGraph backups (if `backup.enabled` is set to `true`).
       enabled: true
@@ -59,8 +66,8 @@ backup:
       tempData:
         # backup.stackGraph.scheduled.tmpData.accessModes -- Access mode for temporary backup data.
         accessModes: ["ReadWriteOnce"]
-        # backup.stackGraph.scheduled.tmpData.size -- Size of volume for temporary backup data.
-        size: "{{ .Values.hbase.hdfs.datanode.persistence.size }}"
+        # backup.stackGraph.scheduled.tmpData.size -- Size of volume for temporary backup data -- must be large enough to store a single backup.
+        size: '{{ .Values.hbase.hdfs.datanode.persistence.size }}'
         # backup.stackGraph.scheduled.tmpData.storageClass -- Storage class of the volume for temporary backup data.
         storageClass:
 caspr:
