@@ -76,6 +76,9 @@ stackstate/stackstate
 | backup.stackGraph.scheduled.backupRetentionTimeDelta | string | `"days = 30"` | Time to keep StackGraph backups in [Python timedelta format](https://docs.python.org/3/library/datetime.html#timedelta-objects). |
 | backup.stackGraph.scheduled.enabled | bool | `true` | Enable scheduled StackGraph backups (if `backup.enabled` is set to `true`). |
 | backup.stackGraph.scheduled.schedule | string | `"0 3 * * *"` | Cron schedule for automatic StackGraph backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax). |
+| backup.stackGraph.scheduled.tempData.accessModes[0] | string | `"ReadWriteOnce"` |  |
+| backup.stackGraph.scheduled.tempData.size | string | `"{{ .Values.hbase.hdfs.datanode.persistence.size }}"` |  |
+| backup.stackGraph.scheduled.tempData.storageClass | string | `nil` |  |
 | caspr.enabled | bool | `false` | Enable CASPR compatible values. |
 | cluster-agent.enabled | bool | `false` | Deploy the StackState Kubernetes Agent so StackState can monitor the cluster it runs in |
 | cluster-agent.stackstate.cluster.authToken | string | `nil` |  |
