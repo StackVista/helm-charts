@@ -1,26 +1,26 @@
 {{- define "stackstate.backup.envvars" -}}
 - name: BACKUP_ELASTICSEARCH_BUCKET_NAME
-  value: {{ .Values.backup.elasticSearch.bucketName | quote }}
+  value: {{ .Values.backup.elasticsearch.bucketName | quote }}
 - name: BACKUP_ELASTICSEARCH_RESTORE_ENABLED
-  value: {{ .Values.backup.elasticSearch.restore.enabled | quote }}
+  value: {{ .Values.backup.elasticsearch.restore.enabled | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_ENABLED
-  value: {{ .Values.backup.elasticSearch.scheduled.enabled | quote }}
+  value: {{ .Values.backup.elasticsearch.scheduled.enabled | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_SCHEDULED
-  value: {{ .Values.backup.elasticSearch.scheduled.schedule | quote }}
+  value: {{ .Values.backup.elasticsearch.scheduled.schedule | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_INDICES
-  value: {{ .Values.backup.elasticSearch.scheduled.indices | quote }}
+  value: {{ .Values.backup.elasticsearch.scheduled.indices | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_REPOSITORY_NAME
-  value: {{ .Values.backup.elasticSearch.snapshotRepositoryName | quote }}
+  value: {{ .Values.backup.elasticsearch.snapshotRepositoryName | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_POLICY_NAME
-  value: {{ .Values.backup.elasticSearch.scheduled.snapshotPolicyName | quote }}
+  value: {{ .Values.backup.elasticsearch.scheduled.snapshotPolicyName | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_NAME_TEMPLATE
-  value: {{ .Values.backup.elasticSearch.scheduled.snapshotNameTemplate | quote }}
+  value: {{ .Values.backup.elasticsearch.scheduled.snapshotNameTemplate | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_RETENTION_EXPIRE_AFTER
-  value: {{ .Values.backup.elasticSearch.scheduled.snapshotRetentionExpireAfter | quote }}
+  value: {{ .Values.backup.elasticsearch.scheduled.snapshotRetentionExpireAfter | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_RETENTION_MIN_COUNT
-  value: {{ .Values.backup.elasticSearch.scheduled.snapshotRetentionMinCount | quote }}
+  value: {{ .Values.backup.elasticsearch.scheduled.snapshotRetentionMinCount | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_RETENTION_MAX_COUNT
-  value: {{ .Values.backup.elasticSearch.scheduled.snapshotRetentionMaxCount | quote }}
+  value: {{ .Values.backup.elasticsearch.scheduled.snapshotRetentionMaxCount | quote }}
 - name: BACKUP_STACKGRAPH_BUCKET_NAME
   value: {{ .Values.backup.stackGraph.bucketName | quote }}
 - name: BACKUP_STACKGRAPH_RESTORE_ENABLED

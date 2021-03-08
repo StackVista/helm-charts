@@ -1,4 +1,4 @@
-{{- if and .Values.minio.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticSearch.restore.enabled .Values.backup.elasticSearch.scheduled.enabled) }}
+{{- if and .Values.backup.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticsearch.restore.enabled .Values.backup.elasticsearch.scheduled.enabled) }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
