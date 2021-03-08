@@ -106,6 +106,8 @@ push_aws-pod-identity-webhook_to_internal:
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
     - changes:
         - stable/aws-pod-identity-webhook/**/*
       if: $CI_COMMIT_BRANCH == "master"
@@ -122,6 +124,8 @@ push_aws-pod-identity-webhook_to_public:
     - push_aws-pod-identity-webhook_to_internal
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - changes:
         - stable/aws-pod-identity-webhook/**/*
@@ -757,9 +761,11 @@ test_aws-pod-identity-webhook:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: stackstate/stackstate-ci-images:stackstate-helm-test-e8e8e526
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - changes:
         - stable/aws-pod-identity-webhook/**/*
