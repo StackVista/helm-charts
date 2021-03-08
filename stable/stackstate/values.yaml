@@ -56,6 +56,13 @@ backup:
       backupDatetimeParseFormat: '%Y%m%d-%H%M'
       # backup.stackGraph.scheduled.backupRetentionTimeDelta -- Time to keep StackGraph backups in [Python timedelta format](https://docs.python.org/3/library/datetime.html#timedelta-objects).
       backupRetentionTimeDelta: 'days = 30'
+      tempData:
+        # backup.stackGraph.scheduled.tmpData.accessModes -- Access mode for temporary backup data.
+        accessModes: ["ReadWriteOnce"]
+        # backup.stackGraph.scheduled.tmpData.size -- Size of volume for temporary backup data.
+        size: "{{ .Values.hbase.hdfs.datanode.persistence.size }}"
+        # backup.stackGraph.scheduled.tmpData.storageClass -- Storage class of the volume for temporary backup data.
+        storageClass:
 caspr:
   # caspr.enabled -- Enable CASPR compatible values.
   enabled: false
