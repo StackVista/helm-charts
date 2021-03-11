@@ -23,5 +23,5 @@ dependencies:
 - name: anomaly-detection
   repository: https://helm.stackstate.io
   version: 4.1.27
-digest: sha256:01784b99dfe2b629c89f8beebd8b5afb674edd590b228ff15bceb71dac7d02e0
-generated: "2021-03-04T16:08:21.619239+01:00"
+digest: sha256:45159c43fdb51bf7381a37c3bb22bec83e3277874d9e2cd052ed8ac97e9e587d
+generated: "2021-03-11T14:07:49.556853+01:00"
