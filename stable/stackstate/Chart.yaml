@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 4.2.4
-version: 4.2.4
+version: 4.2.5-snapshot.1
 description: Helm chart for StackState
 keywords:
   - aiops
@@ -27,7 +27,7 @@ dependencies:
   - name: elasticsearch
     condition: elasticsearch.enabled
     repository: https://helm.stackstate.io
-    version: 7.6.2-stackstate.10
+    version: 7.6.2-stackstate.11
   - name: hbase
     condition: hbase.enabled
     repository: https://helm.stackstate.io
@@ -39,7 +39,7 @@ dependencies:
   - name: minio
     repository: https://helm.min.io/
     version: 8.0.10
-    condition: minio.enabled
+    condition: backup.enabled
   - name: zookeeper
     version: 5.16.0
     repository: https://charts.bitnami.com/bitnami

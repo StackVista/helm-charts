@@ -7,7 +7,7 @@ dependencies:
   version: 0.4.13
 - name: elasticsearch
   repository: https://helm.stackstate.io
-  version: 7.6.2-stackstate.10
+  version: 7.6.2-stackstate.11
 - name: hbase
   repository: https://helm.stackstate.io
   version: 0.1.66
@@ -23,5 +23,5 @@ dependencies:
 - name: anomaly-detection
   repository: https://helm.stackstate.io
   version: 4.1.27
-digest: sha256:f84f54f355c280921cc7a7ec058b7e810afad106224723d38320cd8a9ee010f0
-generated: "2021-02-23T17:59:17.358792+01:00"
+digest: sha256:45159c43fdb51bf7381a37c3bb22bec83e3277874d9e2cd052ed8ac97e9e587d
+generated: "2021-03-11T14:07:49.556853+01:00"
