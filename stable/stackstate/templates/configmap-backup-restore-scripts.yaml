@@ -155,7 +155,7 @@ spec:
             - name: BACKUP_FILE
               value: "REPLACE_ME_BACKUP_FILE_REPLACE_ME"
             - name: FORCE_DELETE
-              value: "REPLACE_ME_FORCE_DELETE"
+              value: "REPLACE_ME_FORCE_DELETE_REPLACE_ME"
             - name: ZOOKEEPER_QUORUM
               value: stackstate-zookeeper-headless:2181
           volumeMounts:
