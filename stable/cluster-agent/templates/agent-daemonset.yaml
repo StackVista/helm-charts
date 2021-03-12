@@ -20,6 +20,7 @@ spec:
     metadata:
       annotations:
         {{- include "cluster-agent.checksum-configs" . | nindent 8 }}
+        {{- include "cluster-agent.agent.configmap.override.checksum" . | nindent 8 }}
       labels:
         app.kubernetes.io/component: agent
         app.kubernetes.io/instance: {{ .Release.Name }}
