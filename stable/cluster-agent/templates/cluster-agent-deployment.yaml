@@ -81,8 +81,8 @@ spec:
           volumeMounts:
           - name: logs
             mountPath: /var/log/stackstate-agent
-          {{- if .Values.agent.config.override }}
-          {{- range .Values.agent.config.override }}
+          {{- if .Values.clusterAgent.config.override }}
+          {{- range .Values.clusterAgent.config.override }}
           - name: config-override-volume
             mountPath: {{ .path }}/{{ .name }}
             subPath: {{ .path | replace "/" "_"}}_{{ .name }}
@@ -103,7 +103,7 @@ spec:
       volumes:
         - name: logs
           emptyDir: {}
-        {{- if .Values.agent.config.override }}
+        {{- if .Values.clusterAgent.config.override }}
         - name: config-override-volume
           configMap:
             name: {{ include "cluster-agent.fullname" . }}
