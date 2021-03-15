@@ -143,7 +143,7 @@ spec:
           {{- range .Values.agent.config.override }}
           - name: config-override-volume
             mountPath: {{ .path }}/{{ .name }}
-            subPath: {{ .name }}
+            subPath: {{ .path | replace "/" "_"}}_{{ .name }}
           {{- end }}
           {{- end }}
           securityContext:
