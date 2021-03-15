@@ -57,3 +57,15 @@ StackState URL function
 {{- define "cluster-agent.stackstate.url" -}}
 {{ tpl .Values.stackstate.url . | quote }}
 {{- end }}
+
+{{- define "cluster-agent.configmap.override.checksum" -}}
+{{- if .Values.clusterAgent.config.override }}
+checksum/override-configmap: {{ include (print $.Template.BasePath "/cluster-agent-configmap.yaml") . | sha256sum }}
+{{- end }}
+{{- end }}
+
+{{- define "cluster-agent.agent.configmap.override.checksum" -}}
+{{- if .Values.agent.config.override }}
+checksum/override-configmap: {{ include (print $.Template.BasePath "/agent-configmap.yaml") . | sha256sum }}
+{{- end }}
+{{- end }}

@@ -40,11 +40,16 @@ agent:
   # agent.checksTagCardinality -- low, orchestrator or high. Orchestrator level adds pod_name, high adds display_container_name
   checksTagCardinality: orchestrator
 
+  # agent.config --
+  config:
+    # agent.config.override -- A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap
+    override: []
+
   image:
     # agent.image.repository -- Base container image registry.
     repository: docker.io/stackstate/stackstate-agent-2
     # agent.image.tag -- Default container image tag.
-    tag: 2.9.0
+    tag: 2.10.0
     # agent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -113,6 +118,12 @@ clusterAgent:
     kubernetesTimeout: 10
     # clusterAgent.collection.kubernetesTopology -- Enable / disable the cluster agent topology collection.
     kubernetesTopology: true
+
+  # clusterAgent.config --
+  config:
+    # clusterAgent.config.override -- A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap
+    override: []
+
 
   # clusterAgent.enabled -- Enable / disable the cluster agent.
   enabled: true
