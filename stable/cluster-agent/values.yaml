@@ -132,7 +132,7 @@ clusterAgent:
     # clusterAgent.image.repository -- Base container image registry.
     repository: docker.io/stackstate/stackstate-cluster-agent
     # clusterAgent.image.tag -- Default container image tag.
-    tag: 2.9.0
+    tag: 2.10.0
     # clusterAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
