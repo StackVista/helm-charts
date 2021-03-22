@@ -432,10 +432,10 @@ stackstate:
       resources:
         limits:
           memory: "3Gi"
-          cpu: "2000m"
+          cpu: "3000m"
         requests:
           memory: "3Gi"
-          cpu: "2000m"
+          cpu: "3000m"
       sizing:
         baseMemoryConsumption: "700Mi"
         javaHeapMemoryFraction: "75"
@@ -539,11 +539,11 @@ stackstate:
       # stackstate.components.state.resources -- Resource allocation for `state` pods.
       resources:
         limits:
-          cpu: "1000m"
+          cpu: "500m"
           memory: "2000Mi"
         requests:
           memory: "2000Mi"
-          cpu: "1000m"
+          cpu: "500m"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "80"
@@ -610,11 +610,11 @@ stackstate:
       # stackstate.components.slicing.resources -- Resource allocation for `slicing` pods.
       resources:
         limits:
-          cpu: "500"
+          cpu: "1500m"
           memory: "1800Mi"
         requests:
           memory: "1800Mi"
-          cpu: "250m"
+          cpu: "1500m"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "60"
@@ -689,10 +689,10 @@ stackstate:
       resources:
         limits:
           memory: "2700Mi"
-          cpu: "2000m"
+          cpu: "1500m"
         requests:
           memory: "2700Mi"
-          cpu: "2000m"
+          cpu: "1500m"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "55"
@@ -893,10 +893,10 @@ hbase:
       resources:
         limits:
           memory: "3Gi"
-          cpu: "3000m"
+          cpu: "1500m"
         requests:
           memory: "3Gi"
-          cpu: "3000m"
+          cpu: "1500m"
   hdfs:
     datanode:
       # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas.
@@ -1107,7 +1107,7 @@ zookeeper:
   replicaCount: 3
 anomaly-detection:
   # anomaly-detection.enabled -- Enables anomaly detection chart
-  enabled: true
+  enabled: false
   cpu:
     # cpu.limit -- CPU resource limit
     limit: 2

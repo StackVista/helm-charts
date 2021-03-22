@@ -40,7 +40,7 @@ stackstate/stackstate
 |-----|------|---------|-------------|
 | anomaly-detection.cpu.limit | int | `2` |  |
 | anomaly-detection.cpu.request | int | `2` |  |
-| anomaly-detection.enabled | bool | `true` | Enables anomaly detection chart |
+| anomaly-detection.enabled | bool | `false` | Enables anomaly detection chart |
 | anomaly-detection.image.imagePullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for anomaly detection pods. |
 | anomaly-detection.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
 | anomaly-detection.image.pullSecretPassword | string | `nil` |  |
@@ -125,9 +125,9 @@ stackstate/stackstate
 | hbase.hbase.master.resources.requests.cpu | string | `"50m"` |  |
 | hbase.hbase.master.resources.requests.memory | string | `"1Gi"` |  |
 | hbase.hbase.regionserver.replicaCount | int | `3` | Number of HBase regionserver node replicas. |
-| hbase.hbase.regionserver.resources.limits.cpu | string | `"3000m"` |  |
+| hbase.hbase.regionserver.resources.limits.cpu | string | `"1500m"` |  |
 | hbase.hbase.regionserver.resources.limits.memory | string | `"3Gi"` |  |
-| hbase.hbase.regionserver.resources.requests.cpu | string | `"3000m"` |  |
+| hbase.hbase.regionserver.resources.requests.cpu | string | `"1500m"` |  |
 | hbase.hbase.regionserver.resources.requests.memory | string | `"3Gi"` |  |
 | hbase.hdfs.datanode.replicaCount | int | `3` | Number of HDFS datanode replicas. |
 | hbase.hdfs.datanode.resources.limits.cpu | string | `"500m"` |  |
@@ -340,7 +340,7 @@ stackstate/stackstate
 | stackstate.components.receiver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.receiver.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `receiver` pods. |
 | stackstate.components.receiver.replicaCount | int | `1` | Number of `receiver` replicas. |
-| stackstate.components.receiver.resources | object | `{"limits":{"cpu":"2000m","memory":"3Gi"},"requests":{"cpu":"2000m","memory":"3Gi"}}` | Resource allocation for `receiver` pods. |
+| stackstate.components.receiver.resources | object | `{"limits":{"cpu":"3000m","memory":"3Gi"},"requests":{"cpu":"3000m","memory":"3Gi"}}` | Resource allocation for `receiver` pods. |
 | stackstate.components.receiver.sizing.baseMemoryConsumption | string | `"700Mi"` |  |
 | stackstate.components.receiver.sizing.javaHeapMemoryFraction | string | `"75"` |  |
 | stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -379,7 +379,7 @@ stackstate/stackstate
 | stackstate.components.slicing.image.repository | string | `"stackstate/stackstate-server"` | Repository of the slicing component Docker image. |
 | stackstate.components.slicing.image.tag | string | `""` | Tag used for the `slicing` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.slicing.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.slicing.resources | object | `{"limits":{"cpu":"500","memory":"1800Mi"},"requests":{"cpu":"250m","memory":"1800Mi"}}` | Resource allocation for `slicing` pods. |
+| stackstate.components.slicing.resources | object | `{"limits":{"cpu":"1500m","memory":"1800Mi"},"requests":{"cpu":"1500m","memory":"1800Mi"}}` | Resource allocation for `slicing` pods. |
 | stackstate.components.slicing.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.slicing.sizing.javaHeapMemoryFraction | string | `"60"` |  |
 | stackstate.components.slicing.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -393,7 +393,7 @@ stackstate/stackstate
 | stackstate.components.state.image.tag | string | `""` | Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.state.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.state.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `state` pods. |
-| stackstate.components.state.resources | object | `{"limits":{"cpu":"1000m","memory":"2000Mi"},"requests":{"cpu":"1000m","memory":"2000Mi"}}` | Resource allocation for `state` pods. |
+| stackstate.components.state.resources | object | `{"limits":{"cpu":"500m","memory":"2000Mi"},"requests":{"cpu":"500m","memory":"2000Mi"}}` | Resource allocation for `state` pods. |
 | stackstate.components.state.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.state.sizing.javaHeapMemoryFraction | string | `"80"` |  |
 | stackstate.components.state.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -451,7 +451,7 @@ stackstate/stackstate
 | stackstate.components.viewHealth.image.tag | string | `""` | Tag used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.viewHealth.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.viewHealth.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `viewHealth` pods. |
-| stackstate.components.viewHealth.resources | object | `{"limits":{"cpu":"2000m","memory":"2700Mi"},"requests":{"cpu":"2000m","memory":"2700Mi"}}` | Resource allocation for `viewHealth` pods. |
+| stackstate.components.viewHealth.resources | object | `{"limits":{"cpu":"1500m","memory":"2700Mi"},"requests":{"cpu":"1500m","memory":"2700Mi"}}` | Resource allocation for `viewHealth` pods. |
 | stackstate.components.viewHealth.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.viewHealth.sizing.javaHeapMemoryFraction | string | `"55"` |  |
 | stackstate.components.viewHealth.tolerations | list | `[]` | Toleration labels for pod assignment. |
