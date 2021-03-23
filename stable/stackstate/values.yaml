@@ -539,11 +539,11 @@ stackstate:
       # stackstate.components.state.resources -- Resource allocation for `state` pods.
       resources:
         limits:
-          cpu: "500m"
+          cpu: "1000m"
           memory: "2000Mi"
         requests:
           memory: "2000Mi"
-          cpu: "500m"
+          cpu: "750m"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "80"
@@ -614,7 +614,7 @@ stackstate:
           memory: "1800Mi"
         requests:
           memory: "1800Mi"
-          cpu: "1500m"
+          cpu: "500m"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "60"
@@ -689,10 +689,10 @@ stackstate:
       resources:
         limits:
           memory: "2700Mi"
-          cpu: "1500m"
+          cpu: "2000m"
         requests:
           memory: "2700Mi"
-          cpu: "1500m"
+          cpu: "2000m"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "55"
@@ -893,7 +893,7 @@ hbase:
       resources:
         limits:
           memory: "3Gi"
-          cpu: "1500m"
+          cpu: "3000m"
         requests:
           memory: "3Gi"
           cpu: "1500m"
@@ -1107,17 +1107,17 @@ zookeeper:
   replicaCount: 3
 anomaly-detection:
   # anomaly-detection.enabled -- Enables anomaly detection chart
-  enabled: false
+  enabled: true
   cpu:
     # cpu.limit -- CPU resource limit
-    limit: 2
+    limit: "2000m"
     # cpu.request -- CPU resource request
-    request: 2
+    request: "1000m"
   memory:
     # memory.limit -- Memory resource limit
-    limit: 3Gi
+    limit: "3Gi"
     # memory.request -- Memory resource request
-    request: 3Gi
+    request: "3Gi"
   image:
     # anomaly-detection.image.imagePullPolicy -- The default pullPolicy used for anomaly detection pods.
     imagePullPolicy: IfNotPresent
