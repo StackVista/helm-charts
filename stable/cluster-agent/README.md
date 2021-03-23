@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `0.4.13`
+Current chart version is `0.4.14`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -99,7 +99,7 @@ stackstate/cluster-agent
 | clusterAgent.livenessProbe.periodSeconds | int | `15` | `periodSeconds` for the liveness probe. |
 | clusterAgent.livenessProbe.successThreshold | int | `1` | `successThreshold` for the liveness probe. |
 | clusterAgent.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
-| clusterAgent.logLevel | string | `"DEBUG"` | Logging level for agent processes. |
+| clusterAgent.logLevel | string | `"INFO"` | Logging level for agent processes. |
 | clusterAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | clusterAgent.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
 | clusterAgent.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
