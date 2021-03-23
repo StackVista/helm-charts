@@ -151,7 +151,7 @@ clusterAgent:
     timeoutSeconds: 5
 
   # clusterAgent.logLevel -- Logging level for agent processes.
-  logLevel: DEBUG
+  logLevel: INFO
 
   readinessProbe:
     # clusterAgent.readinessProbe.enabled -- Enable use of readinessProbe check.
