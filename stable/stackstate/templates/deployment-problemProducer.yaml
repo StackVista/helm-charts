@@ -1,4 +1,4 @@
-{{- define "stackstate.viewHealth.deployment.container.init" -}}
+{{- define "stackstate.problemProducer.deployment.container.init" -}}
 name: server-init
 command:
 - sh
@@ -9,13 +9,13 @@ image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.com
 imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
 {{- end -}}
 
-{{- define "stackstate.viewHealth.deployment.container.main" -}}
+{{- define "stackstate.problemProducer.deployment.container.main" -}}
 args:
 {{- include "stackstate.service.args" . }}
 - -startRole
-- viewHealth
+- problemProducer
 env:
-{{- $serviceConfig := dict "ServiceName" "view-health" "ServiceConfig" .Values.stackstate.components.viewHealth }}
+{{- $serviceConfig := dict "ServiceName" "problem-producer" "ServiceConfig" .Values.stackstate.components.problemProducer }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.authentication.envvars" . }}
 - name: API_KEY
@@ -42,12 +42,12 @@ env:
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
 - name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
   value: "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
-  # When seeing a new change takes more than an hour, we can start dropping stuff from cache
+  # Keep data for a longlong time (a day), we actually want to run problem producer from cache
 - name: CONFIG_FORCE_stackgraph.vertex.cache.expireAfterSeconds
-  value: "3600"
-image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.viewHealth.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.viewHealth.image.tag }}"
-imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.viewHealth.image.pullPolicy | quote }}
-name: view-health
+  value: "86400"
+image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.problemProducer.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.problemProducer.image.tag }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.problemProducer.image.pullPolicy | quote }}
+name: problem-producer
 ports:
 - containerPort: 1618
   name: health
@@ -69,7 +69,7 @@ livenessProbe:
     port: health
   initialDelaySeconds: 60
   timeoutSeconds: 5
-{{- with .Values.stackstate.components.viewHealth.resources }}
+{{- with .Values.stackstate.components.problemProducer.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -83,33 +83,33 @@ volumeMounts:
 {{- include "stackstate.service.container.volumes" . }}
 {{- end -}}
 
-{{- define "stackstate.viewHealth.deployment" -}}
+{{- define "stackstate.problemProducer.deployment" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.viewHealth.deployment.container.main" .) -}}
-{{- $stsStackstateViewHealthMainContainer := (merge $overrideContainer $commonContainer) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.viewHealth.deployment.container.init" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.problemProducer.deployment.container.main" .) -}}
+{{- $stsStackstateProblemProducerMainContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.problemProducer.deployment.container.init" .) -}}
 {{- $stsStackstateServerInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-view-health
+  name: {{ template "common.fullname.short" . }}-problem-producer
   labels:
-    app.kubernetes.io/component: view-health
+    app.kubernetes.io/component: problem-producer
     stackstate.com/connects-to-stackgraph: "true"
     stackstate.com/replicas: "1"
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/component: view-health
+      app.kubernetes.io/component: problem-producer
   template:
     metadata:
       annotations:
-        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "view-health" ) | indent 8 }}
+        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "problem-producer" ) | indent 8 }}
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
-        {{- include "stackstate.viewHealth.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.problemProducer.secret.checksum" . | nindent 8 }}
       labels:
-        app.kubernetes.io/component: view-health
+        app.kubernetes.io/component: problem-producer
     spec:
-      serviceAccountName: {{ template "common.fullname.short" . }}-view-health
+      serviceAccountName: {{ template "common.fullname.short" . }}-problem-producer
     {{- if .Values.stackstate.components.all.image.pullSecretName }}
       imagePullSecrets:
       - name: '{{ .Values.stackstate.components.all.image.pullSecretName }}'
@@ -122,43 +122,43 @@ spec:
       - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
       - {{ include "stackstate.initContainer.ensure.no.server.statefulset.pod.are.running" . | nindent 8 }}
       containers:
-      - {{ toYaml $stsStackstateViewHealthMainContainer | nindent 8 }}
+      - {{ toYaml $stsStackstateProblemProducerMainContainer | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.state.nodeSelector }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.stackstate.components.viewHealth.nodeSelector }}
+      {{- with .Values.stackstate.components.problemProducer.nodeSelector }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.viewHealth.affinity }}
+    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.problemProducer.affinity }}
       affinity:
       {{- with .Values.stackstate.components.all.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.stackstate.components.viewHealth.affinity }}
+      {{- with .Values.stackstate.components.problemProducer.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.viewHealth.tolerations }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.problemProducer.tolerations }}
       tolerations:
       {{- with .Values.stackstate.components.all.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.stackstate.components.viewHealth.tolerations }}
+      {{- with .Values.stackstate.components.problemProducer.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
       volumes:
         - name: config-secrets-volume
           secret:
-            secretName: {{ template "common.fullname.short" . }}-view-health
-        {{- include "stackstate.service.pod.volumes" (dict "pod_name" "view-health" "root" . ) | nindent 8 }}
+            secretName: {{ template "common.fullname.short" . }}-problem-producer
+        {{- include "stackstate.service.pod.volumes" (dict "pod_name" "problem-producer" "root" . ) | nindent 8 }}
 {{- end -}}
 
 {{- if .Values.stackstate.experimental.server.split }}
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
-{{- $viewHealthDeployment := fromYaml (include "stackstate.viewHealth.deployment" .) -}}
-{{- toYaml (merge $viewHealthDeployment $commonDeployment) -}}
+{{- $problemProducerDeployment := fromYaml (include "stackstate.problemProducer.deployment" .) -}}
+{{- toYaml (merge $problemProducerDeployment $commonDeployment) -}}
 {{- end}}
