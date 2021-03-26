@@ -1,6 +1,6 @@
 {{- define "stackstate.problemProducer.configmap-log" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-view-health-log
+  name: {{ template "common.fullname.short" . }}-problem-producer-log
 data:
   logback.groovy: |
 {{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "WARN" "AdditionalLogging" .Values.stackstate.components.problemProducer.additionalLogging) .) | nindent 4 -}}
