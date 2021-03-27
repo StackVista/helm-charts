@@ -19,6 +19,8 @@ subjects:
 - kind: ServiceAccount
   name: {{ template "common.fullname.short" . }}-state
 - kind: ServiceAccount
+  name: {{ template "common.fullname.short" . }}-problem-producer
+- kind: ServiceAccount
   name: {{ template "common.fullname.short" . }}-sync
 - kind: ServiceAccount
   name: {{ template "common.fullname.short" . }}-view-health
