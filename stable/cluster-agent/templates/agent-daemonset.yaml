@@ -20,6 +20,7 @@ spec:
     metadata:
       annotations:
         {{- include "cluster-agent.checksum-configs" . | nindent 8 }}
+        {{- include "cluster-agent.agent.configmap.override.checksum" . | nindent 8 }}
       labels:
         app.kubernetes.io/component: agent
         app.kubernetes.io/instance: {{ .Release.Name }}
@@ -138,6 +139,13 @@ spec:
           - name: cgroups
             mountPath: /host/sys/fs/cgroup
             readOnly: true
+          {{- if .Values.agent.config.override }}
+          {{- range .Values.agent.config.override }}
+          - name: config-override-volume
+            mountPath: {{ .path }}/{{ .name }}
+            subPath: {{ .path | replace "/" "_"}}_{{ .name }}
+          {{- end }}
+          {{- end }}
           securityContext:
             privileged: true
       dnsPolicy: ClusterFirstWithHostNet
@@ -172,3 +180,8 @@ spec:
       - hostPath:
           path: /sys/fs/cgroup
         name: cgroups
+      {{- if .Values.agent.config.override }}
+      - name: config-override-volume
+        configMap:
+          name: {{ include "cluster-agent.fullname" . }}-agent
+      {{- end }}

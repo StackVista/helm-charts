@@ -44,6 +44,7 @@ func TestSplitServicesJavaHeapRender(t *testing.T) {
 	expectedDeployments["stackstate-api"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1750m -Xms1750m"}
 	expectedDeployments["stackstate-checks"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx2450m -Xms2450m"}
 	expectedDeployments["stackstate-state"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1200m -Xms1200m"}
+	expectedDeployments["stackstate-problem-producer"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1200m -Xms1200m"}
 	expectedDeployments["stackstate-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1800m -Xms1800m"}
 	expectedDeployments["stackstate-slicing"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx780m -Xms780m"}
 	expectedDeployments["stackstate-view-health"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1210m -Xms1210m"}

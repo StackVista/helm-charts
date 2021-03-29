@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.3.0-snapshot.34`
+Current chart version is `4.4.0-snapshot.3`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -12,7 +12,7 @@ Current chart version is `4.3.0-snapshot.34`
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
 | https://helm.min.io/ | minio | 8.0.10 |
-| https://helm.stackstate.io | anomaly-detection | 4.3.0-snapshot.117 |
+| https://helm.stackstate.io | anomaly-detection | 4.4.0-snapshot.1 |
 | https://helm.stackstate.io | cluster-agent | 0.4.11 |
 | https://helm.stackstate.io | common | 0.4.13 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.11 |
@@ -38,8 +38,8 @@ stackstate/stackstate
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| anomaly-detection.cpu.limit | int | `2` |  |
-| anomaly-detection.cpu.request | int | `2` |  |
+| anomaly-detection.cpu.limit | string | `"2000m"` |  |
+| anomaly-detection.cpu.request | string | `"1000m"` |  |
 | anomaly-detection.enabled | bool | `true` | Enables anomaly detection chart |
 | anomaly-detection.image.imagePullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for anomaly detection pods. |
 | anomaly-detection.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
@@ -74,6 +74,9 @@ stackstate/stackstate
 | backup.enabled | bool | `false` | Enables backup/restore, including the MinIO subsystem. |
 | backup.stackGraph.bucketName | string | `"sts-stackgraph-backup"` | Name of the MinIO bucket to store StackGraph backups. |
 | backup.stackGraph.restore.enabled | bool | `true` | Enable StackGraph backup restore functionality (if `backup.enabled` is set to `true`). |
+| backup.stackGraph.restore.tempData.accessModes[0] | string | `"ReadWriteOnce"` |  |
+| backup.stackGraph.restore.tempData.size | string | `"{{ .Values.hbase.hdfs.datanode.persistence.size }}"` |  |
+| backup.stackGraph.restore.tempData.storageClass | string | `nil` |  |
 | backup.stackGraph.scheduled.backupDatetimeParseFormat | string | `"%Y%m%d-%H%M"` | Format to parse date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`. |
 | backup.stackGraph.scheduled.backupNameParseRegexp | string | `"sts-backup-([0-9]*-[0-9]*).graph"` | Regular expression to retrieve date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`. |
 | backup.stackGraph.scheduled.backupNameTemplate | string | `"sts-backup-$(date +%Y%m%d-%H%M).graph"` | Template for the StackGraph backup name as a double-quoted shell string value. |
@@ -124,7 +127,7 @@ stackstate/stackstate
 | hbase.hbase.regionserver.replicaCount | int | `3` | Number of HBase regionserver node replicas. |
 | hbase.hbase.regionserver.resources.limits.cpu | string | `"3000m"` |  |
 | hbase.hbase.regionserver.resources.limits.memory | string | `"3Gi"` |  |
-| hbase.hbase.regionserver.resources.requests.cpu | string | `"3000m"` |  |
+| hbase.hbase.regionserver.resources.requests.cpu | string | `"1500m"` |  |
 | hbase.hbase.regionserver.resources.requests.memory | string | `"3Gi"` |  |
 | hbase.hdfs.datanode.replicaCount | int | `3` | Number of HDFS datanode replicas. |
 | hbase.hdfs.datanode.resources.limits.cpu | string | `"500m"` |  |
@@ -140,7 +143,7 @@ stackstate/stackstate
 | hbase.hdfs.secondarynamenode.resources.limits.memory | string | `"1Gi"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.cpu | string | `"50m"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.memory | string | `"1Gi"` |  |
-| hbase.stackgraph.image.tag | string | `"4.0.2"` | The StackGraph server version, must be compatible with the StackState version |
+| hbase.stackgraph.image.tag | string | `"4.1.1"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
 | hbase.tephra.resources.limits.cpu | string | `"500m"` |  |
 | hbase.tephra.resources.limits.memory | string | `"3Gi"` |  |
@@ -216,7 +219,7 @@ stackstate/stackstate
 | stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
-| stackstate.components.all.image.tag | string | `"master"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
+| stackstate.components.all.image.tag | string | `"4.3.0-rc.2"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
 | stackstate.components.all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
@@ -327,6 +330,20 @@ stackstate/stackstate
 | stackstate.components.nginxPrometheusExporter.image.registry | string | `"docker.io"` | Base container image registry for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.repository | string | `"nginx/nginx-prometheus-exporter"` | Base container image repository for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.tag | string | `"0.4.2"` | Container image tag for nginx-prometheus-exporter containers. |
+| stackstate.components.problemProducer.additionalLogging | string | `""` | Additional logback config |
+| stackstate.components.problemProducer.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.problemProducer.config | string | `""` | Configuration file contents to customize the default StackState problemProducer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
+| stackstate.components.problemProducer.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| stackstate.components.problemProducer.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.problemProducer.image.pullPolicy | string | `""` | `pullPolicy` used for the `problemProducer` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.components.problemProducer.image.repository | string | `"stackstate/stackstate-server"` | Repository of the problemProducer component Docker image. |
+| stackstate.components.problemProducer.image.tag | string | `""` | Tag used for the `problemProducer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.problemProducer.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.problemProducer.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `problemProducer` pods. |
+| stackstate.components.problemProducer.resources | object | `{"limits":{"cpu":"1000m","memory":"2000Mi"},"requests":{"cpu":"500m","memory":"2000Mi"}}` | Resource allocation for `problemProducer` pods. |
+| stackstate.components.problemProducer.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
+| stackstate.components.problemProducer.sizing.javaHeapMemoryFraction | string | `"80"` |  |
+| stackstate.components.problemProducer.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.receiver.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.receiver.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.receiver.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -337,7 +354,7 @@ stackstate/stackstate
 | stackstate.components.receiver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.receiver.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `receiver` pods. |
 | stackstate.components.receiver.replicaCount | int | `1` | Number of `receiver` replicas. |
-| stackstate.components.receiver.resources | object | `{"limits":{"cpu":"2000m","memory":"3Gi"},"requests":{"cpu":"2000m","memory":"3Gi"}}` | Resource allocation for `receiver` pods. |
+| stackstate.components.receiver.resources | object | `{"limits":{"cpu":"3000m","memory":"3Gi"},"requests":{"cpu":"3000m","memory":"3Gi"}}` | Resource allocation for `receiver` pods. |
 | stackstate.components.receiver.sizing.baseMemoryConsumption | string | `"700Mi"` |  |
 | stackstate.components.receiver.sizing.javaHeapMemoryFraction | string | `"75"` |  |
 | stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -376,7 +393,7 @@ stackstate/stackstate
 | stackstate.components.slicing.image.repository | string | `"stackstate/stackstate-server"` | Repository of the slicing component Docker image. |
 | stackstate.components.slicing.image.tag | string | `""` | Tag used for the `slicing` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.slicing.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.slicing.resources | object | `{"limits":{"cpu":"500","memory":"1800Mi"},"requests":{"cpu":"250m","memory":"1800Mi"}}` | Resource allocation for `slicing` pods. |
+| stackstate.components.slicing.resources | object | `{"limits":{"cpu":"1500m","memory":"1800Mi"},"requests":{"cpu":"500m","memory":"1800Mi"}}` | Resource allocation for `slicing` pods. |
 | stackstate.components.slicing.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.slicing.sizing.javaHeapMemoryFraction | string | `"60"` |  |
 | stackstate.components.slicing.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -390,7 +407,7 @@ stackstate/stackstate
 | stackstate.components.state.image.tag | string | `""` | Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.state.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.state.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `state` pods. |
-| stackstate.components.state.resources | object | `{"limits":{"cpu":"1000m","memory":"2000Mi"},"requests":{"cpu":"1000m","memory":"2000Mi"}}` | Resource allocation for `state` pods. |
+| stackstate.components.state.resources | object | `{"limits":{"cpu":"1000m","memory":"2000Mi"},"requests":{"cpu":"750m","memory":"2000Mi"}}` | Resource allocation for `state` pods. |
 | stackstate.components.state.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.state.sizing.javaHeapMemoryFraction | string | `"80"` |  |
 | stackstate.components.state.tolerations | list | `[]` | Toleration labels for pod assignment. |

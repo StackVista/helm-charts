@@ -271,6 +271,13 @@ checksum/viewHealth-env: {{ include (print $.Template.BasePath "/secret-viewHeal
 {{- end -}}
 
 {{/*
+ProblemProducer secret checksum annotations
+*/}}
+{{- define "stackstate.problemProducer.secret.checksum" -}}
+checksum/problemProducer-env: {{ include (print $.Template.BasePath "/secret-problemProducer.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
 Router configmap checksum annotations
 */}}
 {{- define "stackstate.router.configmap.checksum" -}}
@@ -331,6 +338,13 @@ ViewHealth configmap checksum annotations
 */}}
 {{- define "stackstate.viewHealth.configmap.checksum" -}}
 checksum/viewHealth-configmap: {{ include (print $.Template.BasePath "/configmap-viewHealth.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+ProblemProducer configmap checksum annotations
+*/}}
+{{- define "stackstate.problemProducer.configmap.checksum" -}}
+checksum/problemProducer-configmap: {{ include (print $.Template.BasePath "/configmap-problemProducer.yaml") . | sha256sum }}
 {{- end -}}
 
 {{/*

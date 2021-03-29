@@ -43,6 +43,13 @@ backup:
     restore:
       # backup.stackGraph.restore.enabled -- Enable StackGraph backup restore functionality (if `backup.enabled` is set to `true`).
       enabled: true
+      tempData:
+        # backup.stackGraph.restore.tmpData.accessModes -- Access mode for temporary backup data.
+        accessModes: ["ReadWriteOnce"]
+        # backup.stackGraph.restore.tmpData.size -- Size of volume for temporary backup data -- must be large enough to store a single backup.
+        size: '{{ .Values.hbase.hdfs.datanode.persistence.size }}'
+        # backup.stackGraph.restore.tmpData.storageClass -- Storage class of the volume for temporary backup data.
+        storageClass:
     scheduled:
       # backup.stackGraph.scheduled.enabled -- Enable scheduled StackGraph backups (if `backup.enabled` is set to `true`).
       enabled: true
@@ -59,8 +66,8 @@ backup:
       tempData:
         # backup.stackGraph.scheduled.tmpData.accessModes -- Access mode for temporary backup data.
         accessModes: ["ReadWriteOnce"]
-        # backup.stackGraph.scheduled.tmpData.size -- Size of volume for temporary backup data.
-        size: "{{ .Values.hbase.hdfs.datanode.persistence.size }}"
+        # backup.stackGraph.scheduled.tmpData.size -- Size of volume for temporary backup data -- must be large enough to store a single backup.
+        size: '{{ .Values.hbase.hdfs.datanode.persistence.size }}'
         # backup.stackGraph.scheduled.tmpData.storageClass -- Storage class of the volume for temporary backup data.
         storageClass:
 caspr:
@@ -117,7 +124,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.image.tag to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: master
+        tag: 4.3.0-rc.2
       metrics:
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
         enabled: true
@@ -425,10 +432,10 @@ stackstate:
       resources:
         limits:
           memory: "3Gi"
-          cpu: "2000m"
+          cpu: "3000m"
         requests:
           memory: "3Gi"
-          cpu: "2000m"
+          cpu: "3000m"
       sizing:
         baseMemoryConsumption: "700Mi"
         javaHeapMemoryFraction: "75"
@@ -536,7 +543,7 @@ stackstate:
           memory: "2000Mi"
         requests:
           memory: "2000Mi"
-          cpu: "1000m"
+          cpu: "750m"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "80"
@@ -603,11 +610,11 @@ stackstate:
       # stackstate.components.slicing.resources -- Resource allocation for `slicing` pods.
       resources:
         limits:
-          cpu: "500"
+          cpu: "1500m"
           memory: "1800Mi"
         requests:
           memory: "1800Mi"
-          cpu: "250m"
+          cpu: "500m"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "60"
@@ -698,6 +705,43 @@ stackstate:
       # stackstate.components.viewHealth.config -- Configuration file contents to customize the default StackState viewHealth configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
       config: ""
       # stackstate.components.viewHealth.additionalLogging -- Additional logback config
+      additionalLogging: ""
+    problemProducer:
+      extraEnv:
+        # stackstate.components.problemProducer.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.problemProducer.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.problemProducer.image.pullPolicy -- `pullPolicy` used for the `problemProducer` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.problemProducer.image.repository -- Repository of the problemProducer component Docker image.
+        repository: stackstate/stackstate-server
+        # stackstate.components.problemProducer.image.tag -- Tag used for the `problemProducer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.problemProducer.poddisruptionbudget -- PodDisruptionBudget settings for `problemProducer` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.problemProducer.resources -- Resource allocation for `problemProducer` pods.
+      resources:
+        limits:
+          cpu: "1000m"
+          memory: "2000Mi"
+        requests:
+          cpu: "500m"
+          memory: "2000Mi"
+      sizing:
+        baseMemoryConsumption: "500Mi"
+        javaHeapMemoryFraction: "80"
+      # stackstate.components.problemProducer.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.problemProducer.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.problemProducer.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.problemProducer.config -- Configuration file contents to customize the default StackState problemProducer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
+      config: ""
+      # stackstate.components.problemProducer.additionalLogging -- Additional logback config
       additionalLogging: ""
     kafkaTopicCreate:
       image:
@@ -865,7 +909,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 4.0.2
+      tag: 4.1.1
   console:
     # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
     enabled: false
@@ -889,7 +933,7 @@ hbase:
           cpu: "3000m"
         requests:
           memory: "3Gi"
-          cpu: "3000m"
+          cpu: "1500m"
   hdfs:
     datanode:
       # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas.
@@ -1103,14 +1147,14 @@ anomaly-detection:
   enabled: true
   cpu:
     # cpu.limit -- CPU resource limit
-    limit: 2
+    limit: "2000m"
     # cpu.request -- CPU resource request
-    request: 2
+    request: "1000m"
   memory:
     # memory.limit -- Memory resource limit
-    limit: 3Gi
+    limit: "3Gi"
     # memory.request -- Memory resource request
-    request: 3Gi
+    request: "3Gi"
   image:
     # anomaly-detection.image.imagePullPolicy -- The default pullPolicy used for anomaly detection pods.
     imagePullPolicy: IfNotPresent

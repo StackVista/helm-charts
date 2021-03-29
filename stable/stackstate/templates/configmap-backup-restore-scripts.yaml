@@ -160,10 +160,38 @@ spec:
               value: stackstate-zookeeper-headless:2181
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
+            - name: tmp-data
+              mountPath: /tmp-data
       {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      restartPolicy: Never
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
-      restartPolicy: Never
+        - name: tmp-data
+          persistentVolumeClaim:
+            claimName: stackgraph-restore-backup
+      securityContext:
+        runAsGroup: 65534
+        runAsUser: 65534
+        fsGroup: 65534
+{{- end -}}
+
+{{- define "pvc-stackgraph-restore-backup.yaml" -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: stackgraph-restore-backup
+spec:
+  accessModes: {{ .Values.backup.stackGraph.restore.tempData.accessModes }}
+  resources:
+    requests:
+      storage: {{ tpl .Values.backup.stackGraph.restore.tempData.size . }}
+{{- if .Values.backup.stackGraph.restore.tempData.storageClass }}
+  {{- if (eq "-" .Values.backup.stackGraph.restore.tempData.storageClass) }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: {{ .Values.backup.stackGraph.restore.tempData.storageClass | quote }}
+  {{- end }}
+{{- end }}
 {{- end -}}
 
 {{- if and .Values.backup.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticsearch.restore.enabled .Values.backup.elasticsearch.scheduled.enabled) }}
@@ -197,6 +225,8 @@ data:
     {{- .Files.Get "scripts/list-stackgraph-backups.sh" | nindent 4 }}
   job-stackgraph-restore-backup.yaml: |
     {{- include "job-stackgraph-restore-backup.yaml" . | nindent 4 }}
+  pvc-stackgraph-restore-backup.yaml: |
+    {{- include "pvc-stackgraph-restore-backup.yaml" . | nindent 4 }}
   restore-stackgraph-backup.sh: |
     {{- .Files.Get "scripts/restore-stackgraph-backup.sh" | nindent 4 }}
 {{- end }}
