@@ -32,8 +32,7 @@
   value: {{ $xmxParam }} {{ $xmsParam }}
 {{- end }}
 {{- if $openEnvVars }}
-  {{- range $key := (keys $openEnvVars | sortAlpha) }}
-  {{- $value := get $openEnvVars $key }}
+  {{- range $key, $value := $openEnvVars }}
   {{- if eq $key "JAVA_OPTS" }}
 - name: {{ $key }}
   value: "{{ $xmxParam }} {{ $xmsParam }} {{ $value }}"
