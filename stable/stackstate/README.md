@@ -12,7 +12,7 @@ Current chart version is `4.4.0-snapshot.6`
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
 | https://helm.min.io/ | minio | 8.0.10 |
-| https://helm.stackstate.io | anomaly-detection | 4.3.0-snapshot.129 |
+| https://helm.stackstate.io | anomaly-detection | 4.4.0-snapshot.19 |
 | https://helm.stackstate.io | cluster-agent | 0.4.13 |
 | https://helm.stackstate.io | common | 0.4.13 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.11 |
@@ -291,6 +291,20 @@ stackstate/stackstate
 | stackstate.components.e2es.sizing.baseMemoryConsumption | string | `"600Mi"` |  |
 | stackstate.components.e2es.sizing.javaHeapMemoryFraction | string | `"85"` |  |
 | stackstate.components.e2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.healthSync.additionalLogging | string | `""` | Additional logback config |
+| stackstate.components.healthSync.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.healthSync.config | string | `""` | Configuration file contents to customize the default StackState healthSync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
+| stackstate.components.healthSync.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| stackstate.components.healthSync.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.healthSync.image.pullPolicy | string | `""` | `pullPolicy` used for the `healthSync` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.components.healthSync.image.repository | string | `"stackstate/stackstate-server"` | Repository of the healthSync component Docker image. |
+| stackstate.components.healthSync.image.tag | string | `""` | Tag used for the `healthSync` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.healthSync.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.healthSync.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `healthSync` pods. |
+| stackstate.components.healthSync.resources | object | `{"limits":{"cpu":"1000m","memory":"2700Mi"},"requests":{"cpu":"1000m","memory":"2700Mi"}}` | Resource allocation for `healthSync` pods. |
+| stackstate.components.healthSync.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
+| stackstate.components.healthSync.sizing.javaHeapMemoryFraction | string | `"55"` |  |
+| stackstate.components.healthSync.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.initializer.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.initializer.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.initializer.config | string | `""` | Configuration file contents to customize the default StackState initializer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |

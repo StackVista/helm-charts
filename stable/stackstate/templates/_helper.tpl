@@ -271,6 +271,15 @@ checksum/viewHealth-env: {{ include (print $.Template.BasePath "/secret-viewHeal
 {{- end -}}
 
 {{/*
+HealthSync secret checksum annotations
+*/}}
+{{- define "stackstate.healthSync.secret.checksum" -}}
+{{- if .Values.stackstate.components.healthSync.extraEnv.secret }}
+checksum/healthSync-env: {{ include (print $.Template.BasePath "/secret-healthSync.yaml") . | sha256sum }}
+{{- end }}
+{{- end -}}
+
+{{/*
 ProblemProducer secret checksum annotations
 */}}
 {{- define "stackstate.problemProducer.secret.checksum" -}}
@@ -338,6 +347,13 @@ ViewHealth configmap checksum annotations
 */}}
 {{- define "stackstate.viewHealth.configmap.checksum" -}}
 checksum/viewHealth-configmap: {{ include (print $.Template.BasePath "/configmap-viewHealth.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+HealthSync configmap checksum annotations
+*/}}
+{{- define "stackstate.healthSync.configmap.checksum" -}}
+checksum/healthSync-configmap: {{ include (print $.Template.BasePath "/configmap-healthSync.yaml") . | sha256sum }}
 {{- end -}}
 
 {{/*
