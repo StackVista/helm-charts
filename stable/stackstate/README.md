@@ -301,9 +301,9 @@ stackstate/stackstate
 | stackstate.components.healthSync.image.tag | string | `""` | Tag used for the `healthSync` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.healthSync.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.healthSync.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `healthSync` pods. |
-| stackstate.components.healthSync.resources | object | `{"limits":{"cpu":"1000m","memory":"2700Mi"},"requests":{"cpu":"1000m","memory":"2700Mi"}}` | Resource allocation for `healthSync` pods. |
-| stackstate.components.healthSync.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
-| stackstate.components.healthSync.sizing.javaHeapMemoryFraction | string | `"55"` |  |
+| stackstate.components.healthSync.resources | object | `{"limits":{"cpu":"1000m","memory":"1000Mi"},"requests":{"cpu":"1000m","memory":"1000Mi"}}` | Resource allocation for `healthSync` pods. |
+| stackstate.components.healthSync.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
+| stackstate.components.healthSync.sizing.javaHeapMemoryFraction | string | `"95"` |  |
 | stackstate.components.healthSync.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.initializer.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.initializer.affinity | object | `{}` | Affinity settings for pod assignment. |

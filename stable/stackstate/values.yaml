@@ -284,14 +284,14 @@ stackstate:
       # stackstate.components.healthSync.resources -- Resource allocation for `healthSync` pods.
       resources:
         limits:
-          memory: "2700Mi"
+          memory: "1000Mi"
           cpu: "1000m"
         requests:
-          memory: "2700Mi"
+          memory: "1000Mi"
           cpu: "1000m"
       sizing:
-        baseMemoryConsumption: "500Mi"
-        javaHeapMemoryFraction: "55"
+        baseMemoryConsumption: "400Mi"
+        javaHeapMemoryFraction: "95"
       # stackstate.components.healthSync.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.healthSync.tolerations -- Toleration labels for pod assignment.
