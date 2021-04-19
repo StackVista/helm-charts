@@ -69,3 +69,9 @@ checksum/override-configmap: {{ include (print $.Template.BasePath "/cluster-age
 checksum/override-configmap: {{ include (print $.Template.BasePath "/agent-configmap.yaml") . | sha256sum }}
 {{- end }}
 {{- end }}
+
+{{- define "cluster-agent.clusterChecksRunner.configmap.override.checksum" -}}
+{{- if .Values.clusterChecksRunner.config.override }}
+checksum/override-configmap: {{ include (print $.Template.BasePath "/agent-clusterchecks-configmap.yaml") . | sha256sum }}
+{{- end }}
+{{- end }}
