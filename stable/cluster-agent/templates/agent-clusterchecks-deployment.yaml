@@ -51,18 +51,10 @@ spec:
                 fieldPath: status.hostIP
           - name: AGENT_VERSION
             value: {{ .Values.clusterChecksRunner.image.tag | quote }}
-          - name: HOST_PROC
-            value: "/host/proc"
-          - name: HOST_SYS
-            value: "/host/sys"
-          - name: KUBERNETES
-            value: "false"
           - name: LOG_LEVEL
             value: {{ .Values.clusterChecksRunner.logLevel | quote }}
           - name: STS_APM_ENABLED
             value: "false"
-          - name: STS_APM_URL
-            value: {{ include "cluster-agent.stackstate.url" . }}
           - name: STS_CLUSTER_AGENT_ENABLED
             value: {{ .Values.clusterAgent.enabled | quote }}
           - name: STS_CLUSTER_NAME
@@ -79,8 +71,6 @@ spec:
             value: "false"
           - name: STS_PROCESS_AGENT_ENABLED
             value: "false"
-          - name: STS_PROCESS_AGENT_URL
-            value: {{ include "cluster-agent.stackstate.url" . }}
           - name: STS_SKIP_SSL_VALIDATION
             value: {{ .Values.clusterChecksRunner.skipSslValidation | quote }}
           - name: STS_STS_URL
@@ -126,19 +116,6 @@ spec:
             {{- toYaml . | nindent 12 }}
         {{- end }}
           volumeMounts:
-          - name: sys-kernel-debug
-            mountPath: /sys/kernel/debug
-          - name: dockersocket
-            mountPath: /var/run/docker.sock
-          - name: procdir
-            mountPath: /host/proc
-            readOnly: true
-          - name: passwd
-            mountPath: /etc/passwd
-            readOnly: true
-          - name: cgroups
-            mountPath: /host/sys/fs/cgroup
-            readOnly: true
           {{- if .Values.clusterChecksRunner.config.override }}
           {{- range .Values.clusterChecksRunner.config.override }}
           - name: config-override-volume
@@ -148,9 +125,6 @@ spec:
           {{- end }}
           securityContext:
             privileged: true
-      dnsPolicy: ClusterFirstWithHostNet
-      hostNetwork: true
-      hostPID: true
       serviceAccountName: {{ include "cluster-agent.fullname" . }}-agent
     {{- with .Values.clusterChecksRunner.nodeSelector }}
       nodeSelector:
@@ -164,22 +138,6 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      volumes:
-      - hostPath:
-          path: /sys/kernel/debug
-        name: sys-kernel-debug
-      - hostPath:
-          path: /var/run/docker.sock
-        name: dockersocket
-      - hostPath:
-          path: /proc
-        name: procdir
-      - hostPath:
-          path: /etc/passwd
-        name: passwd
-      - hostPath:
-          path: /sys/fs/cgroup
-        name: cgroups
       {{- if .Values.clusterChecksRunner.config.override }}
       - name: config-override-volume
         configMap:
