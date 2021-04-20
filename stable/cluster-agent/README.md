@@ -113,36 +113,36 @@ stackstate/cluster-agent
 | clusterAgent.resources.requests.cpu | string | `"50m"` | CPU resource requests. |
 | clusterAgent.resources.requests.memory | string | `"64Mi"` | Memory resource requests. |
 | clusterAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| clusterChecksRunner.affinity | object | `{}` | Affinity settings for pod assignment. |
-| clusterChecksRunner.apm.enabled | bool | `true` | Enable / disable the agent APM module. |
-| clusterChecksRunner.checksTagCardinality | string | `"orchestrator"` |  |
-| clusterChecksRunner.config | object | `{"override":[]}` |  |
-| clusterChecksRunner.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
-| clusterChecksRunner.enabled | bool | `false` | Enable / disable runnning cluster checks in a separately deployed pod |
-| clusterChecksRunner.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
-| clusterChecksRunner.image.repository | string | `"docker.io/stackstate/stackstate-agent-2"` | Base container image registry. |
-| clusterChecksRunner.image.tag | string | `"2.10.0"` | Default container image tag. |
-| clusterChecksRunner.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
-| clusterChecksRunner.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
-| clusterChecksRunner.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
-| clusterChecksRunner.livenessProbe.periodSeconds | int | `15` | `periodSeconds` for the liveness probe. |
-| clusterChecksRunner.livenessProbe.successThreshold | int | `1` | `successThreshold` for the liveness probe. |
-| clusterChecksRunner.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
-| clusterChecksRunner.logLevel | string | `"INFO"` | Logging level for agent processes. |
-| clusterChecksRunner.networkTracing.enabled | bool | `true` | Enable / disable the agent network tracing module. |
-| clusterChecksRunner.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| clusterChecksRunner.processAgent.enabled | bool | `true` | Enable / disable the agent process agent module. |
-| clusterChecksRunner.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
-| clusterChecksRunner.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
-| clusterChecksRunner.readinessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the readiness probe. |
-| clusterChecksRunner.readinessProbe.periodSeconds | int | `15` | `periodSeconds` for the readiness probe. |
-| clusterChecksRunner.readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
-| clusterChecksRunner.readinessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the readiness probe. |
-| clusterChecksRunner.resources | object | `{}` | Resources for agent pods. |
-| clusterChecksRunner.scc.enabled | bool | `false` | Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift |
-| clusterChecksRunner.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
-| clusterChecksRunner.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
-| clusterChecksRunner.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| clusterChecks.affinity | object | `{}` | Affinity settings for pod assignment. |
+| clusterChecks.apm.enabled | bool | `true` | Enable / disable the agent APM module. |
+| clusterChecks.checksTagCardinality | string | `"orchestrator"` |  |
+| clusterChecks.config | object | `{"override":[]}` |  |
+| clusterChecks.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
+| clusterChecks.enabled | bool | `false` | Enable / disable runnning cluster checks in a separately deployed pod |
+| clusterChecks.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
+| clusterChecks.image.repository | string | `"docker.io/stackstate/stackstate-agent-2"` | Base container image registry. |
+| clusterChecks.image.tag | string | `"2.10.0"` | Default container image tag. |
+| clusterChecks.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
+| clusterChecks.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
+| clusterChecks.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
+| clusterChecks.livenessProbe.periodSeconds | int | `15` | `periodSeconds` for the liveness probe. |
+| clusterChecks.livenessProbe.successThreshold | int | `1` | `successThreshold` for the liveness probe. |
+| clusterChecks.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
+| clusterChecks.logLevel | string | `"INFO"` | Logging level for agent processes. |
+| clusterChecks.networkTracing.enabled | bool | `true` | Enable / disable the agent network tracing module. |
+| clusterChecks.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| clusterChecks.processAgent.enabled | bool | `true` | Enable / disable the agent process agent module. |
+| clusterChecks.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
+| clusterChecks.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
+| clusterChecks.readinessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the readiness probe. |
+| clusterChecks.readinessProbe.periodSeconds | int | `15` | `periodSeconds` for the readiness probe. |
+| clusterChecks.readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
+| clusterChecks.readinessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the readiness probe. |
+| clusterChecks.resources | object | `{}` | Resources for agent pods. |
+| clusterChecks.scc.enabled | bool | `false` | Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift |
+| clusterChecks.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
+| clusterChecks.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
+| clusterChecks.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | dependencies.kubeStateMetrics.enabled | bool | `true` | Whether or not to install the `kube-state-metrics` Deployment along with the StackState cluster agent. Set to `false` if you have `kube-state-metrics` already installed on the cluster. |
 | fullnameOverride | string | `""` | Override the fullname of the chart. |
 | global.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |

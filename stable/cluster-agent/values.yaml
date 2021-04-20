@@ -108,72 +108,72 @@ agent:
   # agent.affinity -- Affinity settings for pod assignment.
   affinity: {}
 
-clusterChecksRunner:
-  # clusterChecksRunner.enabled -- Enable / disable runnning cluster checks in a separately deployed pod
+clusterChecks:
+  # clusterChecks.enabled -- Enable / disable runnning cluster checks in a separately deployed pod
   enabled: false
   scc:
-    # clusterChecksRunner.scc.enabled -- Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift
+    # clusterChecks.scc.enabled -- Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift
     enabled: false
   apm:
-    # clusterChecksRunner.apm.enabled -- Enable / disable the agent APM module.
+    # clusterChecks.apm.enabled -- Enable / disable the agent APM module.
     enabled: true
   networkTracing:
-    # clusterChecksRunner.networkTracing.enabled -- Enable / disable the agent network tracing module.
+    # clusterChecks.networkTracing.enabled -- Enable / disable the agent network tracing module.
     enabled: true
   processAgent:
-    # clusterChecksRunner.processAgent.enabled -- Enable / disable the agent process agent module.
+    # clusterChecks.processAgent.enabled -- Enable / disable the agent process agent module.
     enabled: true
-  # clusterChecksRunner.skipSslValidation -- Set to true if self signed certificates are used.
+  # clusterChecks.skipSslValidation -- Set to true if self signed certificates are used.
   skipSslValidation: false
 
   # agent.checksTagCardinality -- low, orchestrator or high. Orchestrator level adds pod_name, high adds display_container_name
   checksTagCardinality: orchestrator
 
-  # clusterChecksRunner.config --
+  # clusterChecks.config --
   config:
-    # clusterChecksRunner.config.override -- A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap
+    # clusterChecks.config.override -- A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap
     override: []
 
   image:
-    # clusterChecksRunner.image.repository -- Base container image registry.
+    # clusterChecks.image.repository -- Base container image registry.
     repository: docker.io/stackstate/stackstate-agent-2
-    # clusterChecksRunner.image.tag -- Default container image tag.
+    # clusterChecks.image.tag -- Default container image tag.
     tag: 2.10.0
-    # clusterChecksRunner.image.pullPolicy -- Default container image pull policy.
+    # clusterChecks.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
   livenessProbe:
-    # clusterChecksRunner.livenessProbe.enabled -- Enable use of livenessProbe check.
+    # clusterChecks.livenessProbe.enabled -- Enable use of livenessProbe check.
     enabled: true
-    # clusterChecksRunner.livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
+    # clusterChecks.livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
     failureThreshold: 3
-    # clusterChecksRunner.livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
+    # clusterChecks.livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
     initialDelaySeconds: 15
-    # clusterChecksRunner.livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
+    # clusterChecks.livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
     periodSeconds: 15
-    # clusterChecksRunner.livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
+    # clusterChecks.livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
     successThreshold: 1
-    # clusterChecksRunner.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
+    # clusterChecks.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
     timeoutSeconds: 5
 
-  # clusterChecksRunner.logLevel -- Logging level for agent processes.
+  # clusterChecks.logLevel -- Logging level for agent processes.
   logLevel: INFO
 
   readinessProbe:
-    # clusterChecksRunner.readinessProbe.enabled -- Enable use of readinessProbe check.
+    # clusterChecks.readinessProbe.enabled -- Enable use of readinessProbe check.
     enabled: true
-    # clusterChecksRunner.readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
+    # clusterChecks.readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
     failureThreshold: 3
-    # clusterChecksRunner.readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
+    # clusterChecks.readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
     initialDelaySeconds: 15
-    # clusterChecksRunner.readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
+    # clusterChecks.readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
     periodSeconds: 15
-    # clusterChecksRunner.readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
+    # clusterChecks.readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
     successThreshold: 1
-    # clusterChecksRunner.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
+    # clusterChecks.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
     timeoutSeconds: 5
 
-  # clusterChecksRunner.resources -- Resources for agent pods.
+  # clusterChecks.resources -- Resources for agent pods.
   resources: {}
     # limits:
     #   cpu: "200m"
@@ -182,19 +182,19 @@ clusterChecksRunner:
     #   cpu: "200m"
     #   memory: 256Mi
 
-  # clusterChecksRunner.strategy -- The strategy for the Deployment object.
+  # clusterChecks.strategy -- The strategy for the Deployment object.
   strategy:
     type: RollingUpdate
     # rollingUpdate:
     #   maxUnavailable: 1
 
-  # clusterChecksRunner.nodeSelector -- Node labels for pod assignment.
+  # clusterChecks.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}
 
-  # clusterChecksRunner.tolerations -- Toleration labels for pod assignment.
+  # clusterChecks.tolerations -- Toleration labels for pod assignment.
   tolerations: []
 
-  # clusterChecksRunner.affinity -- Affinity settings for pod assignment.
+  # clusterChecks.affinity -- Affinity settings for pod assignment.
   affinity: {}
 
 clusterAgent:
