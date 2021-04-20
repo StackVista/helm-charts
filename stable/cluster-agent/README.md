@@ -138,6 +138,7 @@ stackstate/cluster-agent
 | clusterChecks.readinessProbe.periodSeconds | int | `15` | `periodSeconds` for the readiness probe. |
 | clusterChecks.readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
 | clusterChecks.readinessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the readiness probe. |
+| clusterChecks.replicas | int | `1` | Number of clusterchecks agent pods to schedule |
 | clusterChecks.resources | object | `{}` | Resources for agent pods. |
 | clusterChecks.scc.enabled | bool | `false` | Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift |
 | clusterChecks.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |

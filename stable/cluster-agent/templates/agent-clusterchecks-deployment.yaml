@@ -13,6 +13,7 @@ spec:
       app.kubernetes.io/component: agent
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/name: {{ include "cluster-agent.name" . }}
+  replicas: {{ .Values.clusterChecks.replicas }}
 {{- with .Values.clusterChecks.strategy }}
   strategy:
     {{- toYaml . | nindent 4 }}

@@ -173,6 +173,9 @@ clusterChecks:
     # clusterChecks.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
     timeoutSeconds: 5
 
+  # clusterChecks.replicas -- Number of clusterchecks agent pods to schedule
+  replicas: 1
+
   # clusterChecks.resources -- Resources for agent pods.
   resources: {}
     # limits:
