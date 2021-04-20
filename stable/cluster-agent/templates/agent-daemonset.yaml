@@ -40,11 +40,6 @@ spec:
               secretKeyRef:
                 name: {{ include "cluster-agent.fullname" . }}
                 key: sts-api-key
-          - name: STS_CLUSTER_AGENT_AUTH_TOKEN
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "cluster-agent.fullname" . }}
-                key: sts-cluster-auth-token
           - name: STS_KUBERNETES_KUBELET_HOST
             valueFrom:
               fieldRef:
@@ -65,6 +60,7 @@ spec:
             value: {{ include "cluster-agent.stackstate.url" . }}
           - name: STS_CLUSTER_AGENT_ENABLED
             value: {{ .Values.clusterAgent.enabled | quote }}
+          {{- if .Values.clusterAgent.enabled }}
           - name: STS_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
             value: {{ include "cluster-agent.fullname" . }}
           - name: STS_CLUSTER_AGENT_AUTH_TOKEN
@@ -72,6 +68,7 @@ spec:
               secretKeyRef:
                   name: {{ include "cluster-agent.fullname" . }}
                   key: sts-cluster-auth-token
+          {{- end }}
           - name: STS_CLUSTER_NAME
             value: {{ .Values.stackstate.cluster.name | quote }}
           - name: STS_CHECKS_TAG_CARDINALITY
