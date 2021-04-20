@@ -108,6 +108,89 @@ agent:
   # agent.affinity -- Affinity settings for pod assignment.
   affinity: {}
 
+clusterAgent:
+  collection:
+    # clusterAgent.collection.kubernetesEvents -- Enable / disable the cluster agent events collection.
+    kubernetesEvents: true
+    # clusterAgent.collection.kubernetesMetrics -- Enable / disable the cluster agent metrics collection.
+    kubernetesMetrics: true
+    # clusterAgent.collection.kubernetesTimeout -- Default timeout (in seconds) when obtaining information from the Kubernetes API.
+    kubernetesTimeout: 10
+    # clusterAgent.collection.kubernetesTopology -- Enable / disable the cluster agent topology collection.
+    kubernetesTopology: true
+
+  # clusterAgent.config --
+  config:
+    # clusterAgent.config.override -- A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap
+    override: []
+
+
+  # clusterAgent.enabled -- Enable / disable the cluster agent.
+  enabled: true
+
+  image:
+    # clusterAgent.image.repository -- Base container image registry.
+    repository: docker.io/stackstate/stackstate-cluster-agent
+    # clusterAgent.image.tag -- Default container image tag.
+    tag: 2.10.0
+    # clusterAgent.image.pullPolicy -- Default container image pull policy.
+    pullPolicy: IfNotPresent
+
+  livenessProbe:
+    # clusterAgent.livenessProbe.enabled -- Enable use of livenessProbe check.
+    enabled: true
+    # clusterAgent.livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
+    failureThreshold: 3
+    # clusterAgent.livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
+    initialDelaySeconds: 15
+    # clusterAgent.livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
+    periodSeconds: 15
+    # clusterAgent.livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
+    successThreshold: 1
+    # clusterAgent.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
+    timeoutSeconds: 5
+
+  # clusterAgent.logLevel -- Logging level for agent processes.
+  logLevel: INFO
+
+  readinessProbe:
+    # clusterAgent.readinessProbe.enabled -- Enable use of readinessProbe check.
+    enabled: true
+    # clusterAgent.readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
+    failureThreshold: 3
+    # clusterAgent.readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
+    initialDelaySeconds: 15
+    # clusterAgent.readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
+    periodSeconds: 15
+    # clusterAgent.readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
+    successThreshold: 1
+    # clusterAgent.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
+    timeoutSeconds: 5
+
+  # clusterAgent.replicaCount -- Number of replicas of the cluster agent to deploy.
+  replicaCount: 1
+
+  resources:
+    limits:
+      # clusterAgent.resources.limits.cpu -- CPU resource limits.
+      cpu: "200m"
+      # clusterAgent.resources.limits.memory -- Memory resource limits.
+      memory: "256Mi"
+    requests:
+      # clusterAgent.resources.requests.cpu -- CPU resource requests.
+      cpu: "50m"
+      # clusterAgent.resources.requests.memory -- Memory resource requests.
+      memory: "64Mi"
+
+  # clusterAgent.nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
+
+  # clusterAgent.tolerations -- Toleration labels for pod assignment.
+  tolerations: []
+
+  # clusterAgent.affinity -- Affinity settings for pod assignment.
+  affinity: {}
+
 clusterChecks:
   # clusterChecks.enabled -- Enable / disable runnning cluster checks in a separately deployed pod
   enabled: false
@@ -198,89 +281,6 @@ clusterChecks:
   tolerations: []
 
   # clusterChecks.affinity -- Affinity settings for pod assignment.
-  affinity: {}
-
-clusterAgent:
-  collection:
-    # clusterAgent.collection.kubernetesEvents -- Enable / disable the cluster agent events collection.
-    kubernetesEvents: true
-    # clusterAgent.collection.kubernetesMetrics -- Enable / disable the cluster agent metrics collection.
-    kubernetesMetrics: true
-    # clusterAgent.collection.kubernetesTimeout -- Default timeout (in seconds) when obtaining information from the Kubernetes API.
-    kubernetesTimeout: 10
-    # clusterAgent.collection.kubernetesTopology -- Enable / disable the cluster agent topology collection.
-    kubernetesTopology: true
-
-  # clusterAgent.config --
-  config:
-    # clusterAgent.config.override -- A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap
-    override: []
-
-
-  # clusterAgent.enabled -- Enable / disable the cluster agent.
-  enabled: true
-
-  image:
-    # clusterAgent.image.repository -- Base container image registry.
-    repository: docker.io/stackstate/stackstate-cluster-agent
-    # clusterAgent.image.tag -- Default container image tag.
-    tag: 2.10.0
-    # clusterAgent.image.pullPolicy -- Default container image pull policy.
-    pullPolicy: IfNotPresent
-
-  livenessProbe:
-    # clusterAgent.livenessProbe.enabled -- Enable use of livenessProbe check.
-    enabled: true
-    # clusterAgent.livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
-    failureThreshold: 3
-    # clusterAgent.livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
-    initialDelaySeconds: 15
-    # clusterAgent.livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
-    periodSeconds: 15
-    # clusterAgent.livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
-    successThreshold: 1
-    # clusterAgent.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
-    timeoutSeconds: 5
-
-  # clusterAgent.logLevel -- Logging level for agent processes.
-  logLevel: INFO
-
-  readinessProbe:
-    # clusterAgent.readinessProbe.enabled -- Enable use of readinessProbe check.
-    enabled: true
-    # clusterAgent.readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
-    failureThreshold: 3
-    # clusterAgent.readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
-    initialDelaySeconds: 15
-    # clusterAgent.readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
-    periodSeconds: 15
-    # clusterAgent.readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
-    successThreshold: 1
-    # clusterAgent.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
-    timeoutSeconds: 5
-
-  # clusterAgent.replicaCount -- Number of replicas of the cluster agent to deploy.
-  replicaCount: 1
-
-  resources:
-    limits:
-      # clusterAgent.resources.limits.cpu -- CPU resource limits.
-      cpu: "200m"
-      # clusterAgent.resources.limits.memory -- Memory resource limits.
-      memory: "256Mi"
-    requests:
-      # clusterAgent.resources.requests.cpu -- CPU resource requests.
-      cpu: "50m"
-      # clusterAgent.resources.requests.memory -- Memory resource requests.
-      memory: "64Mi"
-
-  # clusterAgent.nodeSelector -- Node labels for pod assignment.
-  nodeSelector: {}
-
-  # clusterAgent.tolerations -- Toleration labels for pod assignment.
-  tolerations: []
-
-  # clusterAgent.affinity -- Affinity settings for pod assignment.
   affinity: {}
 
 ########################
