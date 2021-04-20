@@ -1,6 +1,6 @@
 {{- if .Values.agent.config.override }}
-kind: ConfigMap
 apiVersion: v1
+kind: ConfigMap
 metadata:
   name: {{ include "cluster-agent.fullname" . }}-agent
   labels:

@@ -1,6 +1,6 @@
 {{- if and .Values.clusterChecks.enabled .Values.clusterChecks.config.override }}
-kind: ConfigMap
 apiVersion: v1
+kind: ConfigMap
 metadata:
   name: {{ include "cluster-agent.fullname" . }}-clusterchecks
   labels:
