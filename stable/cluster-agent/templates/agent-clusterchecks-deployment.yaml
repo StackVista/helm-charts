@@ -6,11 +6,11 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
 {{ include "cluster-agent.labels" . | indent 4 }}
-    app.kubernetes.io/component: agent
+    app.kubernetes.io/component: clusterchecks
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/component: agent
+      app.kubernetes.io/component: clusterchecks
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/name: {{ include "cluster-agent.name" . }}
   replicas: {{ .Values.clusterChecks.replicas }}
@@ -24,7 +24,7 @@ spec:
         {{- include "cluster-agent.checksum-configs" . | nindent 8 }}
         {{- include "cluster-agent.agent.configmap.override.checksum" . | nindent 8 }}
       labels:
-        app.kubernetes.io/component: agent
+        app.kubernetes.io/component: clusterchecks
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/name: {{ include "cluster-agent.name" . }}
     spec:
@@ -109,9 +109,6 @@ spec:
             successThreshold: {{ .Values.clusterChecks.readinessProbe.successThreshold }}
             timeoutSeconds: {{ .Values.clusterChecks.readinessProbe.timeoutSeconds }}
           ports:
-          - containerPort: 8126
-            name: traceport
-            protocol: TCP
           - containerPort: 5555
             name: healthport
             protocol: TCP
@@ -129,7 +126,7 @@ spec:
             subPath: {{ .path | replace "/" "_"}}_{{ .name }}
           {{- end }}
           {{- end }}
-      serviceAccountName: {{ include "cluster-agent.fullname" . }}-agent
+      serviceAccountName: {{ include "cluster-agent.fullname" . }}-clusterchecks
     {{- with .Values.clusterChecks.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
