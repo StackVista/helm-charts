@@ -116,6 +116,8 @@ spec:
             {{- toYaml . | nindent 12 }}
         {{- end }}
           volumeMounts:
+          - name: confd-empty-volume
+            mountPath: /etc/stackstate-agent/conf.d
           {{- if .Values.clusterChecksRunner.config.override }}
           {{- range .Values.clusterChecksRunner.config.override }}
           - name: config-override-volume
@@ -138,6 +140,9 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+      volumes:
+      - name: confd-empty-volume
+        emptyDir: {}
       {{- if .Values.clusterChecksRunner.config.override }}
       - name: config-override-volume
         configMap:
