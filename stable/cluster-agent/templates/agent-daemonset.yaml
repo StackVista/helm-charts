@@ -14,7 +14,7 @@ spec:
       app.kubernetes.io/name: {{ include "cluster-agent.name" . }}
 {{- with .Values.agent.updateStrategy }}
   updateStrategy:
-    {{ toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
 {{- end }}
   template:
     metadata:
@@ -40,11 +40,6 @@ spec:
               secretKeyRef:
                 name: {{ include "cluster-agent.fullname" . }}
                 key: sts-api-key
-          - name: STS_CLUSTER_AGENT_AUTH_TOKEN
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "cluster-agent.fullname" . }}
-                key: sts-cluster-auth-token
           - name: STS_KUBERNETES_KUBELET_HOST
             valueFrom:
               fieldRef:
@@ -65,10 +60,23 @@ spec:
             value: {{ include "cluster-agent.stackstate.url" . }}
           - name: STS_CLUSTER_AGENT_ENABLED
             value: {{ .Values.clusterAgent.enabled | quote }}
+          {{- if .Values.clusterAgent.enabled }}
+          - name: STS_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
+            value: {{ include "cluster-agent.fullname" . }}
+          - name: STS_CLUSTER_AGENT_AUTH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                  name: {{ include "cluster-agent.fullname" . }}
+                  key: sts-cluster-auth-token
+          {{- end }}
           - name: STS_CLUSTER_NAME
             value: {{ .Values.stackstate.cluster.name | quote }}
           - name: STS_CHECKS_TAG_CARDINALITY
             value: {{ .Values.agent.checksTagCardinality | quote }}
+          {{- if .Values.clusterChecks.enabled }}
+          - name: STS_EXTRA_CONFIG_PROVIDERS
+            value: "endpointschecks"
+          {{- end }}
           - name: STS_HEALTH_PORT
             value: "5555"
           - name: STS_LEADER_ELECTION

@@ -1,8 +1,11 @@
 {{- if .Values.clusterAgent.config.override }}
-kind: ConfigMap
 apiVersion: v1
+kind: ConfigMap
 metadata:
   name: {{ include "cluster-agent.fullname" . }}
+  labels:
+{{ include "cluster-agent.labels" . | indent 4 }}
+    app.kubernetes.io/component: cluster-agent
 data:
 {{- range .Values.clusterAgent.config.override }}
   {{ .path | replace "/" "_"}}_{{ .name }}: |
