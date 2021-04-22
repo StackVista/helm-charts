@@ -150,7 +150,7 @@ clusterAgent:
     # clusterAgent.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
     timeoutSeconds: 5
 
-  # clusterAgent.logLevel -- Logging level for agent processes.
+  # clusterAgent.logLevel -- Logging level for cluster-agent processes.
   logLevel: INFO
 
   readinessProbe:
@@ -239,7 +239,7 @@ clusterChecks:
     # clusterChecks.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
     timeoutSeconds: 5
 
-  # clusterChecks.logLevel -- Logging level for agent processes.
+  # clusterChecks.logLevel -- Logging level for clusterchecks agent processes.
   logLevel: INFO
 
   readinessProbe:

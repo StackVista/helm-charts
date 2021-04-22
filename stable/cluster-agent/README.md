@@ -99,7 +99,7 @@ stackstate/cluster-agent
 | clusterAgent.livenessProbe.periodSeconds | int | `15` | `periodSeconds` for the liveness probe. |
 | clusterAgent.livenessProbe.successThreshold | int | `1` | `successThreshold` for the liveness probe. |
 | clusterAgent.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
-| clusterAgent.logLevel | string | `"INFO"` | Logging level for agent processes. |
+| clusterAgent.logLevel | string | `"INFO"` | Logging level for cluster-agent processes. |
 | clusterAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | clusterAgent.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
 | clusterAgent.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
@@ -128,7 +128,7 @@ stackstate/cluster-agent
 | clusterChecks.livenessProbe.periodSeconds | int | `15` | `periodSeconds` for the liveness probe. |
 | clusterChecks.livenessProbe.successThreshold | int | `1` | `successThreshold` for the liveness probe. |
 | clusterChecks.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
-| clusterChecks.logLevel | string | `"INFO"` | Logging level for agent processes. |
+| clusterChecks.logLevel | string | `"INFO"` | Logging level for clusterchecks agent processes. |
 | clusterChecks.networkTracing.enabled | bool | `true` | Enable / disable the agent network tracing module. |
 | clusterChecks.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | clusterChecks.processAgent.enabled | bool | `true` | Enable / disable the agent process agent module. |
