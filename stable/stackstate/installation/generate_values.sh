@@ -22,7 +22,7 @@ Arguments:
     -d : Password that will be set for the default StackState 'admin' user (required)
     -a : Password that will be set for StackState's admin api, access should be restricted (Dev)Ops (required)
     -v : Name of generated values file (default: values.yaml)
-    -k : Install the StackState Kubernetes agent, StackState and the agent will refer to the cluster by thisn name (for convenience we suggest to use the same name as in your kube context) (optional)
+    -k : Install the StackState Kubernetes agent, StackState and the agent will refer to the cluster by this name (for convenience we suggest to use the same name as in your kube context) (optional)
     -n : Non-interactive mode
     -h : Show this help text
 EOF
