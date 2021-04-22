@@ -84,14 +84,17 @@ agent:
     # agent.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
     timeoutSeconds: 5
 
-  # agent.resources -- Resources for agent pods.
-  resources: {}
-    # limits:
-    #   cpu: "200m"
-    #   memory: 256Mi
-    # requests:
-    #   cpu: "200m"
-    #   memory: 256Mi
+  resources:
+    limits:
+      # agent.resources.limits.cpu -- CPU resource limits.
+      cpu: "400m"
+      # agent.resources.limits.cpu -- Memory resource limits.
+      memory: "1024Mi"
+    requests:
+      # agent.resources.requests.cpu -- CPU resource requests.
+      cpu: "100m"
+      # agent.resources.requests.cpu -- Memory resource requests.
+      memory: "256Mi"
 
   # agent.updateStrategy -- The update strategy for the DaemonSet object.
   updateStrategy:
@@ -259,14 +262,17 @@ clusterChecks:
   # clusterChecks.replicas -- Number of clusterchecks agent pods to schedule
   replicas: 1
 
-  # clusterChecks.resources -- Resources for agent pods.
-  resources: {}
-    # limits:
-    #   cpu: "200m"
-    #   memory: 256Mi
-    # requests:
-    #   cpu: "200m"
-    #   memory: 256Mi
+  resources:
+    limits:
+      # clusterChecks.resources.limits.cpu -- CPU resource limits.
+      cpu: "400m"
+      # clusterChecks.resources.limits.cpu -- Memory resource limits.
+      memory: "1024Mi"
+    requests:
+      # clusterChecks.resources.requests.cpu -- CPU resource requests.
+      cpu: "100m"
+      # clusterChecks.resources.requests.cpu -- Memory resource requests.
+      memory: "256Mi"
 
   # clusterChecks.strategy -- The strategy for the Deployment object.
   strategy:

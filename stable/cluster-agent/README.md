@@ -77,7 +77,10 @@ stackstate/cluster-agent
 | agent.readinessProbe.periodSeconds | int | `15` | `periodSeconds` for the readiness probe. |
 | agent.readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
 | agent.readinessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the readiness probe. |
-| agent.resources | object | `{}` | Resources for agent pods. |
+| agent.resources.limits.cpu | string | `"400m"` | Memory resource limits. |
+| agent.resources.limits.memory | string | `"1024Mi"` |  |
+| agent.resources.requests.cpu | string | `"100m"` | Memory resource requests. |
+| agent.resources.requests.memory | string | `"256Mi"` |  |
 | agent.scc.enabled | bool | `false` | Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift |
 | agent.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
 | agent.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -139,7 +142,10 @@ stackstate/cluster-agent
 | clusterChecks.readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
 | clusterChecks.readinessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the readiness probe. |
 | clusterChecks.replicas | int | `1` | Number of clusterchecks agent pods to schedule |
-| clusterChecks.resources | object | `{}` | Resources for agent pods. |
+| clusterChecks.resources.limits.cpu | string | `"400m"` | Memory resource limits. |
+| clusterChecks.resources.limits.memory | string | `"1024Mi"` |  |
+| clusterChecks.resources.requests.cpu | string | `"100m"` | Memory resource requests. |
+| clusterChecks.resources.requests.memory | string | `"256Mi"` |  |
 | clusterChecks.scc.enabled | bool | `false` | Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift |
 | clusterChecks.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
 | clusterChecks.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
