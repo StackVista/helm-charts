@@ -163,6 +163,19 @@ EOF
   fi
 }
 
+function configure_agent() {
+  if ${stackstate_cluster_agent_enabled}; then
+  cat >> "${values_file}" <<EOF
+cluster-agent:
+  enabled: true
+  stackstate:
+    cluster:
+      name: "${k8s_cluster_name}"
+      authToken: "$(create_agent_auth_token)"
+EOF
+  fi
+}
+
 function generate_values() {
   cat > "${values_file}" <<EOF
 global:
@@ -192,6 +205,7 @@ stackstate:
       password: "$(create_admin_api_password_hash)"
 EOF
   configure_autoinstalled_stackpacks
+  configure_agent
 }
 
 function print_helm_command() {
