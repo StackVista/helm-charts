@@ -16,12 +16,6 @@ dependencies:
     # dependencies.kubeStateMetrics.enabled -- Whether or not to install the `kube-state-metrics` Deployment along with the StackState cluster agent. Set to `false` if you have `kube-state-metrics` already installed on the cluster.
     enabled: true
 
-kube-state-metrics:
-  # kube-state-metrics.priorityClassName -- Name of priority class to create and set for kube-state-metrics pods.
-  priorityClassName: cluster-agent-kube-state-metrics
-  # kube-state-metrics.priorityClassValue -- Priority for kube-state-metrics pods.
-  priorityClassValue: 1000000000
-
 # nameOverride -- Override the name of the chart.
 nameOverride: ""
 # fullnameOverride -- Override the fullname of the chart.
