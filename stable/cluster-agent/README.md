@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `0.4.15`
+Current chart version is `0.4.16`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -60,7 +60,7 @@ stackstate/cluster-agent
 | agent.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
 | agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | agent.image.repository | string | `"docker.io/stackstate/stackstate-agent-2"` | Base container image registry. |
-| agent.image.tag | string | `"2.10.0"` | Default container image tag. |
+| agent.image.tag | string | `"2.11.0"` | Default container image tag. |
 | agent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | agent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | agent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -92,7 +92,7 @@ stackstate/cluster-agent
 | clusterAgent.enabled | bool | `true` | Enable / disable the cluster agent. |
 | clusterAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterAgent.image.repository | string | `"docker.io/stackstate/stackstate-cluster-agent"` | Base container image registry. |
-| clusterAgent.image.tag | string | `"2.10.0"` | Default container image tag. |
+| clusterAgent.image.tag | string | `"2.11.0"` | Default container image tag. |
 | clusterAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | clusterAgent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -121,7 +121,7 @@ stackstate/cluster-agent
 | clusterChecks.enabled | bool | `false` | Enable / disable runnning cluster checks in a separately deployed pod |
 | clusterChecks.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterChecks.image.repository | string | `"docker.io/stackstate/stackstate-agent-2"` | Base container image registry. |
-| clusterChecks.image.tag | string | `"2.10.0"` | Default container image tag. |
+| clusterChecks.image.tag | string | `"2.11.0"` | Default container image tag. |
 | clusterChecks.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterChecks.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | clusterChecks.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
