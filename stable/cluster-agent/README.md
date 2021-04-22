@@ -70,7 +70,7 @@ stackstate/cluster-agent
 | agent.logLevel | string | `"INFO"` | Logging level for agent processes. |
 | agent.networkTracing.enabled | bool | `true` | Enable / disable the agent network tracing module. |
 | agent.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| agent.priorityClassValue | int | `1000000000` | Priority for agent pods. |
+| agent.priorityClassName | string | `""` | Priority class for agent pods. |
 | agent.processAgent.enabled | bool | `true` | Enable / disable the agent process agent module. |
 | agent.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
 | agent.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
@@ -105,7 +105,7 @@ stackstate/cluster-agent
 | clusterAgent.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
 | clusterAgent.logLevel | string | `"INFO"` | Logging level for cluster-agent processes. |
 | clusterAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| clusterAgent.priorityClassValue | int | `1000000000` | Priority for cluster-agent pods. |
+| clusterAgent.priorityClassName | string | `""` | Priority class for cluster-agent pods. |
 | clusterAgent.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
 | clusterAgent.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
 | clusterAgent.readinessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the readiness probe. |
@@ -136,7 +136,7 @@ stackstate/cluster-agent
 | clusterChecks.logLevel | string | `"INFO"` | Logging level for clusterchecks agent processes. |
 | clusterChecks.networkTracing.enabled | bool | `true` | Enable / disable the agent network tracing module. |
 | clusterChecks.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| clusterChecks.priorityClassValue | int | `1000000000` | Priority for clusterchecks agent pods. |
+| clusterChecks.priorityClassName | string | `""` | Priority class for clusterchecks agent pods. |
 | clusterChecks.processAgent.enabled | bool | `true` | Enable / disable the agent process agent module. |
 | clusterChecks.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
 | clusterChecks.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
