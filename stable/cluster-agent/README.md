@@ -158,6 +158,8 @@ stackstate/cluster-agent
 | global.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | global.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | global.imagePullSecrets | list | `[]` | Secrets / credentials needed for container image registry. |
+| kube-state-metrics.priorityClassName | string | `"cluster-agent-kube-state-metrics"` | Name of priority class to create and set for kube-state-metrics pods. |
+| kube-state-metrics.priorityClassValue | int | `1000000000` | Priority for kube-state-metrics pods. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | stackstate.apiKey | string | `nil` | **PROVIDE YOUR API KEY HERE** API key to be used by the StackState agent. |
 | stackstate.cluster.authToken | string | `""` | Provide a token to enable secure communication between the agent and the cluster agent. |
