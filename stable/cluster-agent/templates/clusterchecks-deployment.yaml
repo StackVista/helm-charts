@@ -126,6 +126,7 @@ spec:
             subPath: {{ .path | replace "/" "_"}}_{{ .name }}
           {{- end }}
           {{- end }}
+      priorityClassName: {{ include "cluster-agent.fullname" . }}-clusterchecks
       serviceAccountName: {{ include "cluster-agent.fullname" . }}-clusterchecks
     {{- with .Values.clusterChecks.nodeSelector }}
       nodeSelector:

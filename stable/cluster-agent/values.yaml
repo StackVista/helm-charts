@@ -70,6 +70,9 @@ agent:
   # agent.logLevel -- Logging level for agent processes.
   logLevel: INFO
 
+  # agent.priorityClassValue -- Priority for agent pods.
+  priorityClassValue: 1000000000
+
   readinessProbe:
     # agent.readinessProbe.enabled -- Enable use of readinessProbe check.
     enabled: true
@@ -155,6 +158,9 @@ clusterAgent:
 
   # clusterAgent.logLevel -- Logging level for cluster-agent processes.
   logLevel: INFO
+
+  # clusterAgent.priorityClassValue -- Priority for cluster-agent pods.
+  priorityClassValue: 1000000000
 
   readinessProbe:
     # clusterAgent.readinessProbe.enabled -- Enable use of readinessProbe check.
@@ -244,6 +250,9 @@ clusterChecks:
 
   # clusterChecks.logLevel -- Logging level for clusterchecks agent processes.
   logLevel: INFO
+
+  # clusterChecks.priorityClassValue -- Priority for clusterchecks agent pods.
+  priorityClassValue: 1000000000
 
   readinessProbe:
     # clusterChecks.readinessProbe.enabled -- Enable use of readinessProbe check.
