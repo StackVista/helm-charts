@@ -159,6 +159,9 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       hostNetwork: true
       hostPID: true
+      {{- if .Values.agent.priorityClassName }}
+      priorityClassName: {{ .Values.agent.priorityClassName }}
+      {{- end }}
       serviceAccountName: {{ include "cluster-agent.fullname" . }}-agent
     {{- with .Values.agent.nodeSelector }}
       nodeSelector:

@@ -29,6 +29,9 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+      {{- if .Values.clusterAgent.priorityClassName }}
+      priorityClassName: {{ .Values.clusterAgent.priorityClassName }}
+      {{- end }}
       serviceAccountName: {{ include "cluster-agent.fullname" . }}
       containers:
         - name: cluster-agent

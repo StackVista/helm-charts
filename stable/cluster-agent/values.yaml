@@ -70,6 +70,9 @@ agent:
   # agent.logLevel -- Logging level for agent processes.
   logLevel: INFO
 
+  # agent.priorityClassName -- Priority class for agent pods.
+  priorityClassName: ""
+
   readinessProbe:
     # agent.readinessProbe.enabled -- Enable use of readinessProbe check.
     enabled: true
@@ -84,14 +87,17 @@ agent:
     # agent.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
     timeoutSeconds: 5
 
-  # agent.resources -- Resources for agent pods.
-  resources: {}
-    # limits:
-    #   cpu: "200m"
-    #   memory: 256Mi
-    # requests:
-    #   cpu: "200m"
-    #   memory: 256Mi
+  resources:
+    limits:
+      # agent.resources.limits.cpu -- CPU resource limits.
+      cpu: "400m"
+      # agent.resources.limits.cpu -- Memory resource limits.
+      memory: "1024Mi"
+    requests:
+      # agent.resources.requests.cpu -- CPU resource requests.
+      cpu: "100m"
+      # agent.resources.requests.cpu -- Memory resource requests.
+      memory: "256Mi"
 
   # agent.updateStrategy -- The update strategy for the DaemonSet object.
   updateStrategy:
@@ -150,8 +156,11 @@ clusterAgent:
     # clusterAgent.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
     timeoutSeconds: 5
 
-  # clusterAgent.logLevel -- Logging level for agent processes.
+  # clusterAgent.logLevel -- Logging level for cluster-agent processes.
   logLevel: INFO
+
+  # clusterAgent.priorityClassName -- Priority class for cluster-agent pods.
+  priorityClassName: ""
 
   readinessProbe:
     # clusterAgent.readinessProbe.enabled -- Enable use of readinessProbe check.
@@ -239,8 +248,11 @@ clusterChecks:
     # clusterChecks.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
     timeoutSeconds: 5
 
-  # clusterChecks.logLevel -- Logging level for agent processes.
+  # clusterChecks.logLevel -- Logging level for clusterchecks agent processes.
   logLevel: INFO
+
+  # clusterChecks.priorityClassName -- Priority class for clusterchecks agent pods.
+  priorityClassName: ""
 
   readinessProbe:
     # clusterChecks.readinessProbe.enabled -- Enable use of readinessProbe check.
@@ -259,14 +271,17 @@ clusterChecks:
   # clusterChecks.replicas -- Number of clusterchecks agent pods to schedule
   replicas: 1
 
-  # clusterChecks.resources -- Resources for agent pods.
-  resources: {}
-    # limits:
-    #   cpu: "200m"
-    #   memory: 256Mi
-    # requests:
-    #   cpu: "200m"
-    #   memory: 256Mi
+  resources:
+    limits:
+      # clusterChecks.resources.limits.cpu -- CPU resource limits.
+      cpu: "400m"
+      # clusterChecks.resources.limits.cpu -- Memory resource limits.
+      memory: "1024Mi"
+    requests:
+      # clusterChecks.resources.requests.cpu -- CPU resource requests.
+      cpu: "100m"
+      # clusterChecks.resources.requests.cpu -- Memory resource requests.
+      memory: "256Mi"
 
   # clusterChecks.strategy -- The strategy for the Deployment object.
   strategy:
