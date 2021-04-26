@@ -288,7 +288,7 @@ stackstate:
           cpu: "1500m"
         requests:
           memory: "1500Mi"
-          cpu: "1500m"
+          cpu: "1000m"
       sizing:
         baseMemoryConsumption: "700Mi"
         javaHeapMemoryFraction: "85"
