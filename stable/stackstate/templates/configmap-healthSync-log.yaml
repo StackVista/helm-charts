@@ -8,6 +8,6 @@ data:
 
 {{- if .Values.stackstate.experimental.server.split }}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
-{{- $stackstateSealthSyncLogConfigMap := fromYaml (include "stackstate.healthSync.configmap-log" .) -}}
-{{- toYaml (merge $stackstateSealthSyncLogConfigMap $commonConfigMap) -}}
+{{- $stackstateHealthSyncLogConfigMap := fromYaml (include "stackstate.healthSync.configmap-log" .) -}}
+{{- toYaml (merge $stackstateHealthSyncLogConfigMap $commonConfigMap) -}}
 {{- end -}}
