@@ -265,6 +265,43 @@ stackstate:
       config: ""
       # stackstate.components.checks.additionalLogging -- Additional logback config
       additionalLogging: ""
+    healthSync:
+      extraEnv:
+        # stackstate.components.healthSync.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.healthSync.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.healthSync.image.pullPolicy -- `pullPolicy` used for the `healthSync` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.healthSync.image.repository -- Repository of the healthSync component Docker image.
+        repository: stackstate/stackstate-server
+        # stackstate.components.healthSync.image.tag -- Tag used for the `healthSync` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.healthSync.poddisruptionbudget -- PodDisruptionBudget settings for `healthSync` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.healthSync.resources -- Resource allocation for `healthSync` pods.
+      resources:
+        limits:
+          memory: "1500Mi"
+          cpu: "1500m"
+        requests:
+          memory: "1500Mi"
+          cpu: "1000m"
+      sizing:
+        baseMemoryConsumption: "700Mi"
+        javaHeapMemoryFraction: "85"
+      # stackstate.components.healthSync.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.healthSync.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.healthSync.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.healthSync.config -- Configuration file contents to customize the default StackState healthSync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
+      config: ""
+      # stackstate.components.healthSync.additionalLogging -- Additional logback config
+      additionalLogging: ""
     initializer:
       extraEnv:
         # stackstate.components.initializer.extraEnv.open -- Extra open environment variables to inject into pods.
