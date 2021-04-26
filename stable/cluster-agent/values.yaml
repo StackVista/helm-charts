@@ -49,7 +49,7 @@ agent:
     # agent.image.repository -- Base container image registry.
     repository: docker.io/stackstate/stackstate-agent-2
     # agent.image.tag -- Default container image tag.
-    tag: 2.10.0
+    tag: 2.11.0
     # agent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -70,6 +70,9 @@ agent:
   # agent.logLevel -- Logging level for agent processes.
   logLevel: INFO
 
+  # agent.priorityClassName -- Priority class for agent pods.
+  priorityClassName: ""
+
   readinessProbe:
     # agent.readinessProbe.enabled -- Enable use of readinessProbe check.
     enabled: true
@@ -84,14 +87,17 @@ agent:
     # agent.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
     timeoutSeconds: 5
 
-  # agent.resources -- Resources for agent pods.
-  resources: {}
-    # limits:
-    #   cpu: "200m"
-    #   memory: 256Mi
-    # requests:
-    #   cpu: "200m"
-    #   memory: 256Mi
+  resources:
+    limits:
+      # agent.resources.limits.cpu -- CPU resource limits.
+      cpu: "400m"
+      # agent.resources.limits.cpu -- Memory resource limits.
+      memory: "1024Mi"
+    requests:
+      # agent.resources.requests.cpu -- CPU resource requests.
+      cpu: "100m"
+      # agent.resources.requests.cpu -- Memory resource requests.
+      memory: "256Mi"
 
   # agent.updateStrategy -- The update strategy for the DaemonSet object.
   updateStrategy:
@@ -132,7 +138,7 @@ clusterAgent:
     # clusterAgent.image.repository -- Base container image registry.
     repository: docker.io/stackstate/stackstate-cluster-agent
     # clusterAgent.image.tag -- Default container image tag.
-    tag: 2.10.0
+    tag: 2.11.0
     # clusterAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -150,8 +156,11 @@ clusterAgent:
     # clusterAgent.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
     timeoutSeconds: 5
 
-  # clusterAgent.logLevel -- Logging level for agent processes.
+  # clusterAgent.logLevel -- Logging level for cluster-agent processes.
   logLevel: INFO
+
+  # clusterAgent.priorityClassName -- Priority class for cluster-agent pods.
+  priorityClassName: ""
 
   readinessProbe:
     # clusterAgent.readinessProbe.enabled -- Enable use of readinessProbe check.
@@ -189,6 +198,104 @@ clusterAgent:
   tolerations: []
 
   # clusterAgent.affinity -- Affinity settings for pod assignment.
+  affinity: {}
+
+clusterChecks:
+  # clusterChecks.enabled -- Enable / disable runnning cluster checks in a separately deployed pod
+  enabled: false
+  scc:
+    # clusterChecks.scc.enabled -- Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift
+    enabled: false
+  apm:
+    # clusterChecks.apm.enabled -- Enable / disable the agent APM module.
+    enabled: true
+  networkTracing:
+    # clusterChecks.networkTracing.enabled -- Enable / disable the agent network tracing module.
+    enabled: true
+  processAgent:
+    # clusterChecks.processAgent.enabled -- Enable / disable the agent process agent module.
+    enabled: true
+  # clusterChecks.skipSslValidation -- Set to true if self signed certificates are used.
+  skipSslValidation: false
+
+  # agent.checksTagCardinality -- low, orchestrator or high. Orchestrator level adds pod_name, high adds display_container_name
+  checksTagCardinality: orchestrator
+
+  # clusterChecks.config --
+  config:
+    # clusterChecks.config.override -- A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap
+    override: []
+
+  image:
+    # clusterChecks.image.repository -- Base container image registry.
+    repository: docker.io/stackstate/stackstate-agent-2
+    # clusterChecks.image.tag -- Default container image tag.
+    tag: 2.11.0
+    # clusterChecks.image.pullPolicy -- Default container image pull policy.
+    pullPolicy: IfNotPresent
+
+  livenessProbe:
+    # clusterChecks.livenessProbe.enabled -- Enable use of livenessProbe check.
+    enabled: true
+    # clusterChecks.livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
+    failureThreshold: 3
+    # clusterChecks.livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
+    initialDelaySeconds: 15
+    # clusterChecks.livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
+    periodSeconds: 15
+    # clusterChecks.livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
+    successThreshold: 1
+    # clusterChecks.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
+    timeoutSeconds: 5
+
+  # clusterChecks.logLevel -- Logging level for clusterchecks agent processes.
+  logLevel: INFO
+
+  # clusterChecks.priorityClassName -- Priority class for clusterchecks agent pods.
+  priorityClassName: ""
+
+  readinessProbe:
+    # clusterChecks.readinessProbe.enabled -- Enable use of readinessProbe check.
+    enabled: true
+    # clusterChecks.readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
+    failureThreshold: 3
+    # clusterChecks.readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
+    initialDelaySeconds: 15
+    # clusterChecks.readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
+    periodSeconds: 15
+    # clusterChecks.readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
+    successThreshold: 1
+    # clusterChecks.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
+    timeoutSeconds: 5
+
+  # clusterChecks.replicas -- Number of clusterchecks agent pods to schedule
+  replicas: 1
+
+  resources:
+    limits:
+      # clusterChecks.resources.limits.cpu -- CPU resource limits.
+      cpu: "400m"
+      # clusterChecks.resources.limits.cpu -- Memory resource limits.
+      memory: "1024Mi"
+    requests:
+      # clusterChecks.resources.requests.cpu -- CPU resource requests.
+      cpu: "100m"
+      # clusterChecks.resources.requests.cpu -- Memory resource requests.
+      memory: "256Mi"
+
+  # clusterChecks.strategy -- The strategy for the Deployment object.
+  strategy:
+    type: RollingUpdate
+    # rollingUpdate:
+    #   maxUnavailable: 1
+
+  # clusterChecks.nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
+
+  # clusterChecks.tolerations -- Toleration labels for pod assignment.
+  tolerations: []
+
+  # clusterChecks.affinity -- Affinity settings for pod assignment.
   affinity: {}
 
 ########################

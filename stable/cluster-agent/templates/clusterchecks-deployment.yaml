@@ -1,0 +1,153 @@
+{{- if .Values.clusterChecks.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cluster-agent.fullname" . }}-clusterchecks
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "cluster-agent.labels" . | indent 4 }}
+    app.kubernetes.io/component: clusterchecks
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: clusterchecks
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "cluster-agent.name" . }}
+  replicas: {{ .Values.clusterChecks.replicas }}
+{{- with .Values.clusterChecks.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
+  template:
+    metadata:
+      annotations:
+        {{- include "cluster-agent.checksum-configs" . | nindent 8 }}
+        {{- include "cluster-agent.agent.configmap.override.checksum" . | nindent 8 }}
+      labels:
+        app.kubernetes.io/component: clusterchecks
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "cluster-agent.name" . }}
+    spec:
+    {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.clusterChecks.image.repository }}:{{ .Values.clusterChecks.image.tag }}"
+          imagePullPolicy: "{{ .Values.clusterChecks.image.pullPolicy }}"
+          env:
+          - name: STS_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "cluster-agent.fullname" . }}
+                key: sts-api-key
+          - name: AGENT_VERSION
+            value: {{ .Values.clusterChecks.image.tag | quote }}
+          - name: LOG_LEVEL
+            value: {{ .Values.clusterChecks.logLevel | quote }}
+          - name: STS_APM_ENABLED
+            value: "false"
+          - name: STS_CLUSTER_AGENT_ENABLED
+            value: {{ .Values.clusterAgent.enabled | quote }}
+          {{- if .Values.clusterAgent.enabled }}
+          - name: STS_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
+            value: {{ include "cluster-agent.fullname" . }}
+          - name: STS_CLUSTER_AGENT_AUTH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                  name: {{ include "cluster-agent.fullname" . }}
+                  key: sts-cluster-auth-token
+          {{- end }}
+          - name: STS_CLUSTER_NAME
+            value: {{ .Values.stackstate.cluster.name | quote }}
+          - name: STS_CHECKS_TAG_CARDINALITY
+            value: {{ .Values.clusterChecks.checksTagCardinality | quote }}
+          - name: STS_EXTRA_CONFIG_PROVIDERS
+            value: "clusterchecks"
+          - name: STS_HEALTH_PORT
+            value: "5555"
+          - name: STS_LEADER_ELECTION
+            value: "false"
+          - name: STS_LOG_LEVEL
+            value: {{ .Values.clusterChecks.logLevel | quote }}
+          - name: STS_NETWORK_TRACING_ENABLED
+            value: "false"
+          - name: STS_PROCESS_AGENT_ENABLED
+            value: "false"
+          - name: STS_SKIP_SSL_VALIDATION
+            value: {{ .Values.clusterChecks.skipSslValidation | quote }}
+          - name: STS_STS_URL
+            value: {{ include "cluster-agent.stackstate.url" . }}
+          {{- range $key, $value := .Values.global.extraEnv.open }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{- range $key, $value := .Values.global.extraEnv.secret }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "cluster-agent.fullname" . }}
+                key: {{ $key }}
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: healthport
+            failureThreshold: {{ .Values.clusterChecks.livenessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.clusterChecks.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.clusterChecks.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.clusterChecks.livenessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.clusterChecks.livenessProbe.timeoutSeconds }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: healthport
+            failureThreshold: {{ .Values.clusterChecks.readinessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.clusterChecks.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.clusterChecks.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.clusterChecks.readinessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.clusterChecks.readinessProbe.timeoutSeconds }}
+          ports:
+          - containerPort: 5555
+            name: healthport
+            protocol: TCP
+        {{- with .Values.clusterChecks.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+          volumeMounts:
+          - name: confd-empty-volume
+            mountPath: /etc/stackstate-agent/conf.d
+          {{- if .Values.clusterChecks.config.override }}
+          {{- range .Values.clusterChecks.config.override }}
+          - name: config-override-volume
+            mountPath: {{ .path }}/{{ .name }}
+            subPath: {{ .path | replace "/" "_"}}_{{ .name }}
+          {{- end }}
+          {{- end }}
+      {{- if .Values.clusterChecks.priorityClassName }}
+      priorityClassName: {{ .Values.clusterChecks.priorityClassName }}
+      {{- end }}
+      serviceAccountName: {{ include "cluster-agent.fullname" . }}-clusterchecks
+    {{- with .Values.clusterChecks.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.clusterChecks.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.clusterChecks.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+      - name: confd-empty-volume
+        emptyDir: {}
+      {{- if .Values.clusterChecks.config.override }}
+      - name: config-override-volume
+        configMap:
+          name: {{ include "cluster-agent.fullname" . }}-clusterchecks
+      {{- end }}
+{{- end -}}

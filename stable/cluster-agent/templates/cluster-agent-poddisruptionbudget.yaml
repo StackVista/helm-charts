@@ -1,0 +1,14 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "cluster-agent.fullname" . }}
+  labels:
+{{ include "cluster-agent.labels" . | indent 4 }}
+    app.kubernetes.io/component: cluster-agent
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: cluster-agent
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "cluster-agent.name" . }}

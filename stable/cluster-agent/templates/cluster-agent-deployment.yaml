@@ -29,6 +29,9 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+      {{- if .Values.clusterAgent.priorityClassName }}
+      priorityClassName: {{ .Values.clusterAgent.priorityClassName }}
+      {{- end }}
       serviceAccountName: {{ include "cluster-agent.fullname" . }}
       containers:
         - name: cluster-agent
@@ -47,6 +50,14 @@ spec:
                 key: sts-cluster-auth-token
           - name: LOG_LEVEL
             value: {{ .Values.clusterAgent.logLevel | quote }}
+          {{- if .Values.clusterChecks.enabled }}
+          - name: STS_CLUSTER_CHECKS_ENABLED
+            value: "true"
+          - name: STS_EXTRA_CONFIG_PROVIDERS
+            value: "kube_endpoints kube_services"
+          - name: STS_EXTRA_LISTENERS
+            value: "kube_endpoints kube_services"
+          {{- end }}
           - name: STS_CLUSTER_NAME
             value: {{.Values.stackstate.cluster.name | quote }}
           - name: STS_COLLECT_KUBERNETES_EVENTS

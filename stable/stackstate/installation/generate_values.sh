@@ -22,7 +22,7 @@ Arguments:
     -d : Password that will be set for the default StackState 'admin' user (required)
     -a : Password that will be set for StackState's admin api, access should be restricted (Dev)Ops (required)
     -v : Name of generated values file (default: values.yaml)
-    -k : Install the StackState Kubernetes agent, StackState and the agent will refer to the cluster by thisn name (for convenience we suggest to use the same name as in your kube context) (optional)
+    -k : Install the StackState Kubernetes agent, StackState and the agent will refer to the cluster by this name (for convenience we suggest to use the same name as in your kube context) (optional)
     -n : Non-interactive mode
     -h : Show this help text
 EOF
@@ -163,6 +163,19 @@ EOF
   fi
 }
 
+function configure_agent() {
+  if ${stackstate_cluster_agent_enabled}; then
+  cat >> "${values_file}" <<EOF
+cluster-agent:
+  enabled: true
+  stackstate:
+    cluster:
+      name: "${k8s_cluster_name}"
+      authToken: "$(create_agent_auth_token)"
+EOF
+  fi
+}
+
 function generate_values() {
   cat > "${values_file}" <<EOF
 global:
@@ -192,6 +205,7 @@ stackstate:
       password: "$(create_admin_api_password_hash)"
 EOF
   configure_autoinstalled_stackpacks
+  configure_agent
 }
 
 function print_helm_command() {
