@@ -18,8 +18,8 @@ maintainers:
 name: stackstate
 dependencies:
   - name: anomaly-detection
-    version: 4.3.0
-    repository: https://helm.stackstate.io
+    version: 4.3.0-snapshot.156.STAC-12742-hardc.ee7326ac
+    repository: https://helm-test.stackstate.io
     condition: anomaly-detection.enabled
   - name: cluster-agent
     version: 0.4.11
