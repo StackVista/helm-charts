@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.3.0`
+Current chart version is `4.3.0-hardcoded-roles`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 

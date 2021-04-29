@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 4.3.0
-version: 4.3.0
+version: 4.3.0-hardcoded-roles
 description: Helm chart for StackState
 keywords:
   - aiops
