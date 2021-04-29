@@ -177,14 +177,24 @@ stackstate.api.authentication.authServer.stackstateAuthServer {
 stackstate.api.authentication.sessionLifetime =  {{ .Values.stackstate.authentication.sessionLifetime | toJson }}
 
 {{- if .Values.stackstate.authentication.roles.admin }}
-stackstate.api.authentication.adminGroups = {{ .Values.stackstate.authentication.roles.admin | toJson }}
+stackstate.api.authentication.adminGroups = {{ append .Values.stackstate.authentication.roles.admin "stackstate-admin" | toJson }}
+{{- else }}
+stackstate.api.authentication.adminGroups = ["stackstate-admin"]
 {{- end }}
+
 {{- if .Values.stackstate.authentication.roles.powerUser }}
-stackstate.api.authentication.powerUserGroups = {{ .Values.stackstate.authentication.roles.powerUser | toJson }}
+stackstate.api.authentication.powerUserGroups = {{ append .Values.stackstate.authentication.roles.powerUser "stackstate-power-user"| toJson }}
+{{- else }}
+stackstate.api.authentication.powerUserGroups = ["stackstate-power-user"]
 {{- end }}
+
+
 {{- if .Values.stackstate.authentication.roles.guest }}
-stackstate.api.authentication.guestGroups = {{ .Values.stackstate.authentication.roles.guest | toJson }}
+stackstate.api.authentication.guestGroups = {{ append .Values.stackstate.authentication.roles.guest "stackstate-guest"| toJson }}
+{{- else }}
+stackstate.api.authentication.guestGroups = ["stackstate-guest"]
 {{- end }}
+
 
 {{- $authTypes = append $authTypes "k8sServiceAccountAuthServer" }}
 stackstate.api.authentication.authServer.authServerType = [ {{- $authTypes | compact | join ", " -}} ]
