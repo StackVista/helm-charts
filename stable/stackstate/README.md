@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.3.0-hardcoded-roles`
+Current chart version is `4.3.1-developing-4.3.1-aad-role`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -11,8 +11,8 @@ Current chart version is `4.3.0-hardcoded-roles`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
-| https://helm-test.stackstate.io | anomaly-detection | 4.3.0-snapshot.156.STAC-12742-hardc.ee7326ac |
 | https://helm.min.io/ | minio | 8.0.10 |
+| https://helm.stackstate.io | anomaly-detection | 4.3.0-snapshot.161.developing-4.3.1.27adb7a8 |
 | https://helm.stackstate.io | cluster-agent | 0.4.11 |
 | https://helm.stackstate.io | common | 0.4.13 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.11 |
@@ -53,7 +53,6 @@ stackstate/stackstate
 | anomaly-detection.memory.limit | string | `"3Gi"` |  |
 | anomaly-detection.memory.request | string | `"3Gi"` |  |
 | anomaly-detection.stackstate.apiToken | string | `nil` | Stackstate Api token that used by spotlight for authentication, it is expected to be set only in case if authType = "api-token" |
-| anomaly-detection.stackstate.authRoleName | string | `"stackstate-admin"` | Stackstate Role used by spotlight for authentication, it is mapped to the stackstate role with the same name.  It is expected to be set only in case if authType = "token" |
 | anomaly-detection.stackstate.authType | string | `"token"` | Type of authentication. There are three options 1) "token" - with service account token (default), 2) "api-token" - with Stackstate API Token, 3) "cookie" - username, password based auth. |
 | anomaly-detection.stackstate.instance | string | `"http://{{ include \"stackstate.hostname.prefix\" . }}-router:8080"` | **Required Stackstate instance URL, e.g http://stackstate-router:8080 |
 | anomaly-detection.stackstate.password | string | `nil` | Stackstate Password used by spotlight for authentication, it is expected to be set only in case if authType = "cookie" |
