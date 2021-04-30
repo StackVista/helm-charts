@@ -177,14 +177,20 @@ stackstate.api.authentication.authServer.stackstateAuthServer {
 stackstate.api.authentication.sessionLifetime =  {{ .Values.stackstate.authentication.sessionLifetime | toJson }}
 
 {{- if .Values.stackstate.authentication.roles.admin }}
-stackstate.api.authentication.adminGroups = {{ .Values.stackstate.authentication.roles.admin | toJson }}
+stackstate.api.authentication.adminGroups = {{ append .Values.stackstate.authentication.roles.admin "stackstate-aad" | toJson }}
+{{- else }}
+stackstate.api.authentication.adminGroups = ["stackstate-aad"]
 {{- end }}
+
 {{- if .Values.stackstate.authentication.roles.powerUser }}
 stackstate.api.authentication.powerUserGroups = {{ .Values.stackstate.authentication.roles.powerUser | toJson }}
 {{- end }}
+
+
 {{- if .Values.stackstate.authentication.roles.guest }}
 stackstate.api.authentication.guestGroups = {{ .Values.stackstate.authentication.roles.guest | toJson }}
 {{- end }}
+
 
 {{- $authTypes = append $authTypes "k8sServiceAccountAuthServer" }}
 stackstate.api.authentication.authServer.authServerType = [ {{- $authTypes | compact | join ", " -}} ]
