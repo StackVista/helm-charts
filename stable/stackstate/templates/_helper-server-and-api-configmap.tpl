@@ -179,7 +179,12 @@ stackstate.api.authentication.sessionLifetime =  {{ .Values.stackstate.authentic
 {{- if .Values.stackstate.authentication.roles.admin }}
 stackstate.api.authentication.adminGroups = {{ append .Values.stackstate.authentication.roles.admin "stackstate-aad" | toJson }}
 {{- else }}
-stackstate.api.authentication.adminGroups = ["stackstate-aad"]
+{{/*
+  - stackstate-aad is required for anomaly-detection
+  - stackstate-admin is required becaues stackstate default config defines this by default,
+    and some customers have stackstate-admin defined in their ldap, so we want to be consistent with the default application.conf
+*/}}
+stackstate.api.authentication.adminGroups = ["stackstate-admin","stackstate-aad"]
 {{- end }}
 
 {{- if .Values.stackstate.authentication.roles.powerUser }}
