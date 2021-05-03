@@ -172,13 +172,13 @@ func TestAuthenticationRolesSplit(t *testing.T) {
 	RunSecretsConfigTest(t, "stackstate-api", []string{"values/authentication_roles.yaml"}, expectedRolesAuthConfig)
 }
 
-const expectedRolesWhenEmptyAuthConfig = `stackstate.api.authentication.adminGroups = ["stackstate-aad"]`
+const expectedRolesWhenEmptyAuthConfig = `stackstate.api.authentication.adminGroups = ["stackstate-admin","stackstate-aad"]`
 
 func TestAuthenticationRolesEmptySplit(t *testing.T) {
 	RunSecretsConfigTest(t, "stackstate-api", []string{"values/authentication_roles_empty.yaml"}, expectedRolesWhenEmptyAuthConfig)
 }
 
-const expectedRolesWhenUndefinedAdminAuthConfig = `stackstate.api.authentication.adminGroups = ["stackstate-aad"]`
+const expectedRolesWhenUndefinedAdminAuthConfig = `stackstate.api.authentication.adminGroups = ["stackstate-admin","stackstate-aad"]`
 
 func TestAuthenticationRolesUndefinedAdminSplit(t *testing.T) {
 	RunSecretsConfigTest(t, "stackstate-api", []string{"values/authentication_roles_no_admin.yaml"}, expectedRolesWhenUndefinedAdminAuthConfig)
