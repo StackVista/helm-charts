@@ -13,30 +13,44 @@ else
 fi
 
 commonFlags="--bootstrap-server ${KAFKA_BROKERS}"
-commonCreateFlags="--config retention.ms=86400000 --create --force --replication-factor ${defaultReplicationFactor}"
-extraPartitionTopics=("sts_correlate_endpoints" "sts_trace_events" "sts_alerts" "sts_external_alerts" "sts_health_sync" "sts_intake_health")
-normalTopics=("sts_connection_beat_events" "sts_topology_events" "sts_generic_events" "sts_internal_events" "sts_multi_metrics" "sts_state_events" "sts_topo_process_agents" "sts_topo_trace_agents" "sts_internal_topology")
+commonCreateFlags="--create --force --replication-factor ${defaultReplicationFactor}"
 
-for topic in "${normalTopics[@]}"; do
+function createOrUpdateTopic() {
+  local topic=$1
+  local partitions=$2
+  local property=$3
+
   # shellcheck disable=SC2086
   if kafka-topics.sh ${commonFlags} --topic "${topic}" --describe 2>/dev/null; then
-    printf -- "Topic '%s' already exists, skipping...\n" "${topic}"
+    printf -- "Topic '%s' already exists, updating settings...\n" "${topic}"
+    kafka-configs.sh ${commonFlags} --alter --entity-type topics --entity-name "${topic}" --add-config ${property}
   else
     printf -- "Creating topic '%s'...\n" "${topic}"
     # shellcheck disable=SC2046
     # shellcheck disable=SC2086
-    kafka-topics.sh ${commonFlags} ${commonCreateFlags} --partitions 1 --topic "${topic}" 2>/dev/null
+    kafka-topics.sh ${commonFlags} ${commonCreateFlags} --partitions $partitions --topic "${topic}" --config ${property} 2>/dev/null
   fi
-done
+}
 
-for topic in "${extraPartitionTopics[@]}"; do
-  # shellcheck disable=SC2086
-  if kafka-topics.sh ${commonFlags} --topic "${topic}" --describe 2>/dev/null; then
-    printf -- "Topic '%s' already exists, skipping...\n" "${topic}"
-  else
-    printf -- "Creating topic '%s'...\n" "${topic}"
-    # shellcheck disable=SC2046
-    # shellcheck disable=SC2086
-    kafka-topics.sh ${commonFlags} ${commonCreateFlags} --partitions 10 --topic "${topic}" 2>/dev/null
-  fi
-done
+# For ephemeral data we can do time-based retention, to use less resources
+ephemeralRetention="retention.ms=86400000"
+# For persistent topics (which are required for consistency) we disable retention
+persistentRetention="retention.ms=-1"
+
+createOrUpdateTopic "sts_correlate_endpoints" "10" "${ephemeralRetention}" &
+createOrUpdateTopic "sts_trace_events" "10" "${ephemeralRetention}" &
+
+createOrUpdateTopic "sts_health_sync" "10" "${persistentRetention}" &
+createOrUpdateTopic "sts_intake_health" "10" "${persistentRetention}" &
+
+createOrUpdateTopic "sts_connection_beat_events" "1" "${ephemeralRetention}" &
+createOrUpdateTopic "sts_topology_events" "1" "${ephemeralRetention}" &
+createOrUpdateTopic "sts_generic_events" "1" "${ephemeralRetention}" &
+createOrUpdateTopic "sts_internal_events" "1" "${ephemeralRetention}" &
+createOrUpdateTopic "sts_multi_metrics" "1" "${ephemeralRetention}" &
+createOrUpdateTopic "sts_state_events" "1" "${ephemeralRetention}" &
+createOrUpdateTopic "sts_topo_process_agents" "1" "${ephemeralRetention}" &
+createOrUpdateTopic "sts_topo_trace_agents" "1" "${ephemeralRetention}" &
+createOrUpdateTopic "sts_internal_topology" "1" "${ephemeralRetention}" &
+
+wait
