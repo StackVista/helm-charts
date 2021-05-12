@@ -164,21 +164,21 @@ func TestAuthenticationFallbackInvalid(t *testing.T) {
 	require.Contains(t, err.Error(), "stackstate.authentication.adminPassword is required")
 }
 
-const expectedRolesAuthConfig = `stackstate.api.authentication.adminGroups = ["extra-admin","stackstate-aad"]
-stackstate.api.authentication.powerUserGroups = ["extra-power"]
-stackstate.api.authentication.guestGroups = ["guest1","guest2"]`
+const expectedRolesAuthConfig = `stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["extra-admin","stackstate-aad"]
+stackstate.authorization.powerUserGroups = ${stackstate.authorization.powerUserGroups} ["extra-power"]
+stackstate.authorization.guestGroups = ${stackstate.authorization.guestGroups} ["guest1","guest2"]`
 
 func TestAuthenticationRolesSplit(t *testing.T) {
 	RunSecretsConfigTest(t, "stackstate-api", []string{"values/authentication_roles.yaml"}, expectedRolesAuthConfig)
 }
 
-const expectedRolesWhenEmptyAuthConfig = `stackstate.api.authentication.adminGroups = ["stackstate-admin","stackstate-aad"]`
+const expectedRolesWhenEmptyAuthConfig = `stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["stackstate-aad"]`
 
 func TestAuthenticationRolesEmptySplit(t *testing.T) {
 	RunSecretsConfigTest(t, "stackstate-api", []string{"values/authentication_roles_empty.yaml"}, expectedRolesWhenEmptyAuthConfig)
 }
 
-const expectedRolesWhenUndefinedAdminAuthConfig = `stackstate.api.authentication.adminGroups = ["stackstate-admin","stackstate-aad"]`
+const expectedRolesWhenUndefinedAdminAuthConfig = `stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["stackstate-aad"]`
 
 func TestAuthenticationRolesUndefinedAdminSplit(t *testing.T) {
 	RunSecretsConfigTest(t, "stackstate-api", []string{"values/authentication_roles_no_admin.yaml"}, expectedRolesWhenUndefinedAdminAuthConfig)
