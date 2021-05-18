@@ -177,25 +177,22 @@ stackstate.api.authentication.authServer.stackstateAuthServer {
 stackstate.api.authentication.sessionLifetime =  {{ .Values.stackstate.authentication.sessionLifetime | toJson }}
 
 {{- if .Values.stackstate.authentication.roles.admin }}
-stackstate.api.authentication.adminGroups = {{ append .Values.stackstate.authentication.roles.admin "stackstate-aad" | toJson }}
+stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} {{ append .Values.stackstate.authentication.roles.admin "stackstate-aad" | toJson }}
 {{- else }}
 {{/*
-  - stackstate-aad is required for anomaly-detection
-  - stackstate-admin is required becaues stackstate default config defines this by default,
-    and some customers have stackstate-admin defined in their ldap, so we want to be consistent with the default application.conf
+  - 'stackstate-aad' is required for anomaly-detection
+  - '${stackstate.authorization.adminGroups}' is required to preserve default groups, e.g. stackstate-admin
 */}}
-stackstate.api.authentication.adminGroups = ["stackstate-admin","stackstate-aad"]
+stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["stackstate-aad"]
 {{- end }}
 
 {{- if .Values.stackstate.authentication.roles.powerUser }}
-stackstate.api.authentication.powerUserGroups = {{ .Values.stackstate.authentication.roles.powerUser | toJson }}
+stackstate.authorization.powerUserGroups = ${stackstate.authorization.powerUserGroups} {{ .Values.stackstate.authentication.roles.powerUser | toJson }}
 {{- end }}
-
 
 {{- if .Values.stackstate.authentication.roles.guest }}
-stackstate.api.authentication.guestGroups = {{ .Values.stackstate.authentication.roles.guest | toJson }}
+stackstate.authorization.guestGroups = ${stackstate.authorization.guestGroups} {{ .Values.stackstate.authentication.roles.guest | toJson }}
 {{- end }}
-
 
 {{- $authTypes = append $authTypes "k8sServiceAccountAuthServer" }}
 stackstate.api.authentication.authServer.authServerType = [ {{- $authTypes | compact | join ", " -}} ]
