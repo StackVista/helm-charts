@@ -122,6 +122,7 @@ func TestAuthenticationKeycloakInvalid(t *testing.T) {
 
 const expectedFileAuthConfig = `stackstate.api.authentication.authServer.stackstateAuthServer.logins = [
   { username = "administrator", password = "098f6bcd4621d373cade4e832627b4f6", roles = ["stackstate-admin"] },
+  { username = "platformadmin", password = "098f6bcd4621d373cade4e832627b4f6", roles = ["stackstate-platform-admin"] },
   { username = "guest1", password = "098f6bcd4621d373cade4e832627b4f6", roles = ["stackstate-guest"] },
   { username = "guest2", password = "098f6bcd4621d373cade4e832627b4f6", roles = ["stackstate-guest"] },
   { username = "maintainer", password = "098f6bcd4621d373cade4e832627b4f6", roles = ["stackstate-power-user","stackstate-guest"] },
@@ -165,6 +166,7 @@ func TestAuthenticationFallbackInvalid(t *testing.T) {
 }
 
 const expectedRolesAuthConfig = `stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["extra-admin","stackstate-aad"]
+stackstate.authorization.platformAdminGroups = ${stackstate.authorization.platformAdminGroups} ["extra-platform-admin"]
 stackstate.authorization.powerUserGroups = ${stackstate.authorization.powerUserGroups} ["extra-power"]
 stackstate.authorization.guestGroups = ${stackstate.authorization.guestGroups} ["guest1","guest2"]`
 
