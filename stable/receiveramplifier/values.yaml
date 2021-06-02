@@ -1,0 +1,23 @@
+container:
+  livenessProbeDefaults:
+    # container.livenessProbeDefaults.enabled -- Use defaults for the `livenessProbe` from the upstream `common` chart.
+    enabled: true
+  readinessProbeDefaults:
+    # container.readinessProbeDefaults.enabled -- Use defaults for the `readinessProbe` from the upstream `common` chart.
+    enabled: true
+
+image:
+  # image.repository -- Base container image repository.
+  repository: quay.io/stackstate/stackstate-receiver-amplifier
+  # image.tag -- Default container image tag.
+  tag: master
+
+ingress:
+  # ingress.enabled -- Enable use of ingress controllers.
+  enabled: false
+
+receiveramplifier:
+  # receiveramplifier.targetUrl -- The target URL for sending the amplified intake requests.
+  targetUrl: ""
+  # trafficmirror.amplifierFactor -- Amplification factor.
+  amplifierFactor: ""

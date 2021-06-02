@@ -1,0 +1,33 @@
+{{- define "receiveramplifier.deployment.container" -}}
+env:
+{{- if .Values.receiveramplifier.targetUrl }}
+- name: CONFIG_FORCE_stackstate_amplifier_targetUrl
+  value: {{ .Values.receiveramplifier.targetUrl | quote }}
+{{- end }}
+- name: CONFIG_FORCE_stackstate_amplifier_amplifierFactor
+  value: {{ .Values.receiveramplifier.amplifierFactor | quote }}
+ports:
+- containerPort: 9000
+  name: app
+livenessProbe:
+  tcpSocket:
+    port: app
+readinessProbe:
+  tcpSocket:
+    port: app
+{{- end -}}
+
+{{- define "receiveramplifier.deployment" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "receiveramplifier.deployment.container" .) -}}
+{{- $receiveramplifierContainer := (merge $overrideContainer $commonContainer) }}
+spec:
+  template:
+    spec:
+      containers:
+      - {{ toYaml $receiveramplifierContainer | nindent 8 }}
+{{- end -}}
+
+{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $receiveramplifierDeployment := fromYaml (include "receiveramplifier.deployment" .) -}}
+{{- toYaml (merge $receiveramplifierDeployment $commonDeployment) -}}
