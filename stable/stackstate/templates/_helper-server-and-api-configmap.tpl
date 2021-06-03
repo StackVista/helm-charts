@@ -186,6 +186,10 @@ stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} {
 stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["stackstate-aad"]
 {{- end }}
 
+{{- if .Values.stackstate.authentication.roles.platformAdmin }}
+stackstate.authorization.platformAdminGroups = ${stackstate.authorization.platformAdminGroups} {{ .Values.stackstate.authentication.roles.platformAdmin | toJson }}
+{{- end }}
+
 {{- if .Values.stackstate.authentication.roles.powerUser }}
 stackstate.authorization.powerUserGroups = ${stackstate.authorization.powerUserGroups} {{ .Values.stackstate.authentication.roles.powerUser | toJson }}
 {{- end }}

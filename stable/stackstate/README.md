@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.4.0-snapshot.17`
+Current chart version is `4.4.0-snapshot.18`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -195,17 +195,18 @@ stackstate/stackstate
 | minio.secretKey | string | `"setme"` |  |
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
-| stackstate.admin.authentication.password | string | `nil` | Password used for maintenance "admin" api's (low-level tools) of the various services, username: admin |
-| stackstate.authentication | object | `{"adminPassword":null,"file":{},"keycloak":{},"ldap":{},"oidc":{},"roles":{"admin":[],"guest":[],"powerUser":[]},"sessionLifetime":"7d"}` | Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error. |
+| stackstate.admin.authentication.password | string | `nil` | Password used for default platform "admin" api's (low-level tools) of the various services, username: platformadmin |
+| stackstate.authentication | object | `{"adminPassword":null,"file":{},"keycloak":{},"ldap":{},"oidc":{},"roles":{"admin":[],"guest":[],"platformAdmin":[],"powerUser":[]},"sessionLifetime":"7d"}` | Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error. |
 | stackstate.authentication.adminPassword | string | `nil` | Password for the 'admin' user that StackState creates by default |
 | stackstate.authentication.file | object | `{}` | Configure users, their passwords and roles from (config) file |
 | stackstate.authentication.keycloak | object | `{}` | Use Keycloak as authentication provider. See [Configuring Keycloak](#configuring-keycloak). |
 | stackstate.authentication.ldap | object | `{}` | LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap). |
 | stackstate.authentication.oidc | object | `{}` | Use an OpenId Connect provider for authentication. See [Configuring OpenId Connect](#configuring-openid-connect). |
-| stackstate.authentication.roles | object | `{"admin":[],"guest":[],"powerUser":[]}` | Override the default role names in StackState |
-| stackstate.authentication.roles.admin | list | `[]` | Override the role names that have admin permissions (default: 'stackstate-admin') |
-| stackstate.authentication.roles.guest | list | `[]` | Override the role names that have guest permissions (default: 'stackstate-guest') |
-| stackstate.authentication.roles.powerUser | list | `[]` | Override the role names that have power user permissions (default: 'stackstate-power-user') |
+| stackstate.authentication.roles | object | `{"admin":[],"guest":[],"platformAdmin":[],"powerUser":[]}` | Extend the default role names in StackState |
+| stackstate.authentication.roles.admin | list | `[]` | Extend the role names that have admin permissions (default: 'stackstate-admin') |
+| stackstate.authentication.roles.guest | list | `[]` | Extend the role names that have guest permissions (default: 'stackstate-guest') |
+| stackstate.authentication.roles.platformAdmin | list | `[]` | Extend the role names that have platform admin permissions (default: 'stackstate-platform-admin') |
+| stackstate.authentication.roles.powerUser | list | `[]` | Extend the role names that have power user permissions (default: 'stackstate-power-user') |
 | stackstate.authentication.sessionLifetime | string | `"7d"` | Amount of time to keep a session when a user does not log in |
 | stackstate.baseUrl | string | `nil` |  |
 | stackstate.components.all.affinity | object | `{}` | Affinity settings for pod assignment on all components. |
