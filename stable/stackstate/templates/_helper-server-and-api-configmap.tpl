@@ -166,7 +166,15 @@ for production this should be replaced with one of the other mechanisms.
 {{- if eq (len $authTypes) 0 }}
 {{- $authTypes = append $authTypes "stackstateAuthServer" }}
 stackstate.api.authentication.authServer.stackstateAuthServer {
-  defaultPassword = {{ .Values.stackstate.authentication.adminPassword | required "stackstate.authentication.adminPassword is required when not configuring ldap, oidc, keycloak or file based authentication" | quote }}
+{{- if .Values.stackstate.authentication.adminPassword }}
+  defaultPassword = {{ .Values.stackstate.authentication.adminPassword | quote }}
+{{- else }}
+{{- if .Values.kots.enabled }}
+  defaultPassword = {{ "f6325555cbe33536e95e2c938a4df887" | quote }}
+{{- else }}
+{{- fail "Helm value 'stackstate.authentication.adminPassword' is required when neither LDAP, OIDC, Keycloak nor file-based authentication has been configured" -}}
+{{- end }}
+{{- end }}
 }
 {{- end }}
 
