@@ -7,8 +7,10 @@ container:
     enabled: true
 
 image:
+  # image.registry -- REgistry
+  registry: quay.io
   # image.repository -- Base container image repository.
-  repository: quay.io/stackstate/stackstate-receiver-amplifier
+  repository: stackstate/stackstate-receiver-amplifier
   # image.tag -- Default container image tag.
   tag: master
 
@@ -19,5 +21,5 @@ ingress:
 receiveramplifier:
   # receiveramplifier.targetUrl -- The target URL for sending the amplified intake requests.
   targetUrl: ""
-  # trafficmirror.amplifierFactor -- Amplification factor.
+  # receiveramplifier.amplifierFactor -- Amplification factor.
   amplifierFactor: ""

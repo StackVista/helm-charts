@@ -25,10 +25,11 @@ Receiver amplifier to increase the load on an installation.
 |-----|------|---------|-------------|
 | container.livenessProbeDefaults.enabled | bool | `true` | Use defaults for the `livenessProbe` from the upstream `common` chart. |
 | container.readinessProbeDefaults.enabled | bool | `true` | Use defaults for the `readinessProbe` from the upstream `common` chart. |
-| image.repository | string | `"quay.io/stackstate/stackstate-receiver-amplifier"` | Base container image repository. |
+| image.registry | string | `"quay.io"` | REgistry |
+| image.repository | string | `"stackstate/stackstate-receiver-amplifier"` | Base container image repository. |
 | image.tag | string | `"master"` | Default container image tag. |
 | ingress.enabled | bool | `false` | Enable use of ingress controllers. |
-| receiveramplifier.amplifierFactor | string | `""` |  |
+| receiveramplifier.amplifierFactor | string | `""` | Amplification factor. |
 | receiveramplifier.targetUrl | string | `""` | The target URL for sending the amplified intake requests. |
 
 ----------------------------------------------

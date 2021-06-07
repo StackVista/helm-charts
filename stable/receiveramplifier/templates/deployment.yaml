@@ -1,4 +1,5 @@
 {{- define "receiveramplifier.deployment.container" -}}
+image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
 env:
 {{- if .Values.receiveramplifier.targetUrl }}
 - name: CONFIG_FORCE_stackstate_amplifier_targetUrl
@@ -24,6 +25,7 @@ readinessProbe:
 spec:
   template:
     spec:
+    {{- include "receiveramplifier.image.pullSecret.name" . | nindent 6 }}
       containers:
       - {{ toYaml $receiveramplifierContainer | nindent 8 }}
 {{- end -}}

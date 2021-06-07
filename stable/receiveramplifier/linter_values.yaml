@@ -9,3 +9,7 @@ ingress:
   - secretName: some-tls-secret
     hosts:
       - some-receiveramplifier.website.com
+
+receiveramplifier:
+  image:
+    pullSecretUsername:
