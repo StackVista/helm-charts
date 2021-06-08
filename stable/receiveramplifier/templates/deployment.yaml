@@ -10,6 +10,10 @@ env:
 ports:
 - containerPort: 9000
   name: app
+- containerPort: 9404
+  name: metrics
+- containerPort: 1618
+  name: health
 livenessProbe:
   tcpSocket:
     port: app
