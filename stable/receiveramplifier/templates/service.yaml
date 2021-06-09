@@ -1,0 +1,16 @@
+{{- define "receiveramplifier.service" -}}
+spec:
+  ports:
+  - name: app
+    port: 9000
+    protocol: TCP
+    targetPort: app
+  - name: metrics
+    port: 9404
+    protocol: TCP
+    targetPort: metrics
+{{- end -}}
+
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $receiveramplifierService := fromYaml (include "receiveramplifier.service" .) -}}
+{{- toYaml (merge $receiveramplifierService $commonService) -}}

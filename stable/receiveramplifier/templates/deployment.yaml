@@ -1,0 +1,42 @@
+{{- define "receiveramplifier.deployment.container" -}}
+image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+env:
+{{- if .Values.receiveramplifier.targetUrl }}
+- name: CONFIG_FORCE_stackstate_amplifier_targetUrl
+  value: {{ .Values.receiveramplifier.targetUrl | quote }}
+{{- end }}
+- name: CONFIG_FORCE_stackstate_amplifier_amplifierFactor
+  value: {{ .Values.receiveramplifier.amplifierFactor | quote }}
+ports:
+- containerPort: 9000
+  name: app
+- containerPort: 9404
+  name: metrics
+- containerPort: 1618
+  name: health
+livenessProbe:
+  tcpSocket:
+    port: app
+readinessProbe:
+  tcpSocket:
+    port: app
+{{- end -}}
+
+{{- define "receiveramplifier.deployment" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "receiveramplifier.deployment.container" .) -}}
+{{- $receiveramplifierContainer := (merge $overrideContainer $commonContainer) }}
+spec:
+  template:
+    metadata:
+      annotations:
+        {{- include "common.metrics.annotations" (dict "metrics" .Values.metrics "port" "9404" "container_name" "receiveramplifier") | indent 8 }}
+    spec:
+    {{- include "receiveramplifier.image.pullSecret.name" . | nindent 6 }}
+      containers:
+      - {{ toYaml $receiveramplifierContainer | nindent 8 }}
+{{- end -}}
+
+{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $receiveramplifierDeployment := fromYaml (include "receiveramplifier.deployment" .) -}}
+{{- toYaml (merge $receiveramplifierDeployment $commonDeployment) -}}

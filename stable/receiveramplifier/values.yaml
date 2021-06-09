@@ -1,0 +1,34 @@
+container:
+  livenessProbeDefaults:
+    # container.livenessProbeDefaults.enabled -- Use defaults for the `livenessProbe` from the upstream `common` chart.
+    enabled: true
+  readinessProbeDefaults:
+    # container.readinessProbeDefaults.enabled -- Use defaults for the `readinessProbe` from the upstream `common` chart.
+    enabled: true
+
+image:
+  # image.registry -- REgistry
+  registry: quay.io
+  # image.repository -- Base container image repository.
+  repository: stackstate/stackstate-receiver-amplifier
+  # image.tag -- Default container image tag.
+  tag: master
+
+ingress:
+  # ingress.enabled -- Enable use of ingress controllers.
+  enabled: false
+
+metrics:
+  # metrics.enabled -- Enable metrics port.
+  enabled: true
+  servicemonitor:
+    # metrics.servicemonitor.additionalLabels -- Additional labels for targeting Prometheus operator instances.
+    additionalLabels: {}
+    # metrics.servicemonitor.enabled -- Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled.
+    enabled: false
+
+receiveramplifier:
+  # receiveramplifier.targetUrl -- The target URL for sending the amplified intake requests.
+  targetUrl: ""
+  # receiveramplifier.amplifierFactor -- Amplification factor.
+  amplifierFactor: ""

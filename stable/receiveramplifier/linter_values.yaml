@@ -1,0 +1,15 @@
+ingress:
+  enabled: true
+  hosts:
+  - host: some-receiveramplifier.website.com
+    paths:
+      - /
+      - /another-path
+  tls:
+  - secretName: some-tls-secret
+    hosts:
+      - some-receiveramplifier.website.com
+
+receiveramplifier:
+  image:
+    pullSecretUsername:

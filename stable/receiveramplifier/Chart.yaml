@@ -1,0 +1,16 @@
+apiVersion: v1
+appVersion: 0.1.0
+version: 0.1.0
+description: Receiver amplifier to increase the load on an installation.
+keywords:
+  - receiver
+  - amplifier
+  - stackstate
+home: https://gitlab.com/stackvista/stackstate.git
+icon: https://www.stackstate.com/favicon-32x32.png
+maintainers:
+  - name: Alejandro Acevedo
+    email: aacevedo@stackstate.com
+  - name: Bram Schuur
+    email: bschuur@stackstate.com
+name: receiveramplifier
