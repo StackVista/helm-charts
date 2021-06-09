@@ -29,6 +29,9 @@ Receiver amplifier to increase the load on an installation.
 | image.repository | string | `"stackstate/stackstate-receiver-amplifier"` | Base container image repository. |
 | image.tag | string | `"master"` | Default container image tag. |
 | ingress.enabled | bool | `false` | Enable use of ingress controllers. |
+| metrics.enabled | bool | `true` | Enable metrics port. |
+| metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
+| metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
 | receiveramplifier.amplifierFactor | string | `""` | Amplification factor. |
 | receiveramplifier.targetUrl | string | `""` | The target URL for sending the amplified intake requests. |
 

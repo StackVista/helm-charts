@@ -18,6 +18,15 @@ ingress:
   # ingress.enabled -- Enable use of ingress controllers.
   enabled: false
 
+metrics:
+  # metrics.enabled -- Enable metrics port.
+  enabled: true
+  servicemonitor:
+    # metrics.servicemonitor.additionalLabels -- Additional labels for targeting Prometheus operator instances.
+    additionalLabels: {}
+    # metrics.servicemonitor.enabled -- Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled.
+    enabled: false
+
 receiveramplifier:
   # receiveramplifier.targetUrl -- The target URL for sending the amplified intake requests.
   targetUrl: ""

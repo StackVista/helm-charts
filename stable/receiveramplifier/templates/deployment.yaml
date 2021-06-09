@@ -28,6 +28,9 @@ readinessProbe:
 {{- $receiveramplifierContainer := (merge $overrideContainer $commonContainer) }}
 spec:
   template:
+    metadata:
+      annotations:
+        {{- include "common.metrics.annotations" (dict "metrics" .Values.metrics "port" "9404" "container_name" "receiveramplifier") | indent 8 }}
     spec:
     {{- include "receiveramplifier.image.pullSecret.name" . | nindent 6 }}
       containers:
