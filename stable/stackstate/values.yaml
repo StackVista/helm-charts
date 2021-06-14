@@ -101,6 +101,9 @@ networkPolicy:
       matchLabels: {}
     policyTypes:
       - Ingress
+kots:
+  # kots.enabled -- Enables functionality for Replicated KOTS.
+  enabled: false
 stackstate:
   components:
     all:
