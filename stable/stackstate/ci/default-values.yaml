@@ -4,6 +4,8 @@ stackstate:
   license:
     key: 00000-00000-00000
   baseUrl: https://some-test-helm-render.stackstate.io
+  authentication:
+    adminPassword: test
   admin:
     authentication:
       password: test
