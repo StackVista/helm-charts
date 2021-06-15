@@ -1,6 +1,6 @@
 # elasticsearch
 
-![Version: 7.6.2-stackstate.11](https://img.shields.io/badge/Version-7.6.2--stackstate.11-informational?style=flat-square) ![AppVersion: 7.6.2](https://img.shields.io/badge/AppVersion-7.6.2-informational?style=flat-square)
+![Version: 7.6.2-stackstate.12](https://img.shields.io/badge/Version-7.6.2--stackstate.12-informational?style=flat-square) ![AppVersion: 7.6.2](https://img.shields.io/badge/AppVersion-7.6.2-informational?style=flat-square)
 
 Official Elastic helm chart for Elasticsearch
 
@@ -34,6 +34,7 @@ Official Elastic helm chart for Elasticsearch
 | commonLabels | object | `{}` |  |
 | elasticsearch-exporter.enabled | bool | `false` |  |
 | elasticsearch-exporter.es.uri | string | `"http://elasticsearch-master:9200"` |  |
+| elasticsearch-exporter.image.repository | string | `"quay.io/stackstate/elasticsearch_exporter"` |  |
 | elasticsearch-exporter.podAnnotations | object | `{}` |  |
 | elasticsearch-exporter.servicemonitor.enabled | bool | `false` |  |
 | esConfig | object | `{}` |  |
@@ -49,7 +50,7 @@ Official Elastic helm chart for Elasticsearch
 | httpPort | int | `9200` |  |
 | imagePullPolicy | string | `"IfNotPresent"` |  |
 | imagePullSecrets | list | `[]` |  |
-| imageRegistry | string | `"docker.io"` |  |
+| imageRegistry | string | `"quay.io"` |  |
 | imageRepository | string | `"stackstate/elasticsearch"` |  |
 | imageTag | string | `"7.6.2"` |  |
 | ingress.annotations | object | `{}` |  |
