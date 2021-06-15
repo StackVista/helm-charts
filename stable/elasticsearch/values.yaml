@@ -45,7 +45,7 @@ secretMounts: []
 #    secretName: elastic-certificates
 #    path: /usr/share/elasticsearch/config/certs
 
-imageRegistry: "docker.io"
+imageRegistry: "quay.io"
 imageRepository: "stackstate/elasticsearch"
 imageTag: "7.6.2"
 imagePullPolicy: "IfNotPresent"
@@ -264,6 +264,8 @@ keystore: []
 elasticsearch-exporter:
   # Enable to expose prometheus metrics
   enabled: false
+  image:
+    repository: "quay.io/stackstate/elasticsearch_exporter"
   # enable to create a servicemonitor for prometheus operator
   servicemonitor:
     enabled: false
