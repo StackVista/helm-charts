@@ -85,6 +85,8 @@ spec:
             value: {{ .Values.agent.logLevel | quote }}
           - name: STS_NETWORK_TRACING_ENABLED
             value: {{ .Values.agent.networkTracing.enabled | quote }}
+          - name: STS_PROTOCOL_INSPECTION_ENABLED
+            value: {{ .Values.agent.protocolInspection.enabled | quote }}
           - name: STS_PROCESS_AGENT_ENABLED
             value: {{ .Values.agent.processAgent.enabled | quote }}
           - name: STS_PROCESS_AGENT_URL

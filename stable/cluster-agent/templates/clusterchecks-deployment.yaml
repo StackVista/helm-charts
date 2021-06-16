@@ -73,6 +73,8 @@ spec:
             value: {{ .Values.clusterChecks.logLevel | quote }}
           - name: STS_NETWORK_TRACING_ENABLED
             value: "false"
+          - name: STS_PROTOCOL_INSPECTION_ENABLED
+            value: "false"
           - name: STS_PROCESS_AGENT_ENABLED
             value: "false"
           - name: STS_SKIP_SSL_VALIDATION

@@ -72,6 +72,7 @@ stackstate/cluster-agent
 | agent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | agent.priorityClassName | string | `""` | Priority class for agent pods. |
 | agent.processAgent.enabled | bool | `true` | Enable / disable the agent process agent module. |
+| agent.protocolInspection.enabled | bool | `true` | Enable / disable the agent protocol inspection. |
 | agent.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
 | agent.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
 | agent.readinessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the readiness probe. |
@@ -138,6 +139,7 @@ stackstate/cluster-agent
 | clusterChecks.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | clusterChecks.priorityClassName | string | `""` | Priority class for clusterchecks agent pods. |
 | clusterChecks.processAgent.enabled | bool | `true` | Enable / disable the agent process agent module. |
+| clusterChecks.protocolInspection.enabled | bool | `true` | Enable / disable the agent protocol inspection. |
 | clusterChecks.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
 | clusterChecks.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
 | clusterChecks.readinessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the readiness probe. |
