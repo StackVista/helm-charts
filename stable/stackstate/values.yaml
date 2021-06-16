@@ -251,7 +251,7 @@ stackstate:
       resources:
         limits:
           memory: "4000Mi"
-          cpu: "1500m"
+          cpu: "2000m"
         requests:
           memory: "4000Mi"
           cpu: "1000m"
@@ -654,7 +654,7 @@ stackstate:
           memory: "1800Mi"
         requests:
           memory: "1800Mi"
-          cpu: "500m"
+          cpu: "1000m"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "60"
