@@ -215,9 +215,6 @@ clusterChecks:
   networkTracing:
     # clusterChecks.networkTracing.enabled -- Enable / disable the agent network tracing module.
     enabled: true
-  protocolInspection:
-    # agent.protocolInspection.enabled -- Enable / disable the agent protocol inspection.
-    enabled: true
   processAgent:
     # clusterChecks.processAgent.enabled -- Enable / disable the agent process agent module.
     enabled: true

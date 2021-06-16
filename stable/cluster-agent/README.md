@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `0.4.17`
+Current chart version is `0.4.18`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -139,7 +139,6 @@ stackstate/cluster-agent
 | clusterChecks.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | clusterChecks.priorityClassName | string | `""` | Priority class for clusterchecks agent pods. |
 | clusterChecks.processAgent.enabled | bool | `true` | Enable / disable the agent process agent module. |
-| clusterChecks.protocolInspection.enabled | bool | `true` | Enable / disable the agent protocol inspection. |
 | clusterChecks.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
 | clusterChecks.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
 | clusterChecks.readinessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the readiness probe. |
