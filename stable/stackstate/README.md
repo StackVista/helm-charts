@@ -260,7 +260,7 @@ stackstate/stackstate
 | stackstate.components.checks.image.tag | string | `""` | Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.checks.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.checks.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `checks` pods. |
-| stackstate.components.checks.resources | object | `{"limits":{"cpu":"1500m","memory":"4000Mi"},"requests":{"cpu":"1000m","memory":"4000Mi"}}` | Resource allocation for `state` pods. |
+| stackstate.components.checks.resources | object | `{"limits":{"cpu":"2000m","memory":"4000Mi"},"requests":{"cpu":"1000m","memory":"4000Mi"}}` | Resource allocation for `state` pods. |
 | stackstate.components.checks.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.checks.sizing.javaHeapMemoryFraction | string | `"70"` |  |
 | stackstate.components.checks.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -412,7 +412,7 @@ stackstate/stackstate
 | stackstate.components.slicing.image.repository | string | `"stackstate/stackstate-server"` | Repository of the slicing component Docker image. |
 | stackstate.components.slicing.image.tag | string | `""` | Tag used for the `slicing` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.slicing.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.slicing.resources | object | `{"limits":{"cpu":"1500m","memory":"1800Mi"},"requests":{"cpu":"500m","memory":"1800Mi"}}` | Resource allocation for `slicing` pods. |
+| stackstate.components.slicing.resources | object | `{"limits":{"cpu":"1500m","memory":"1800Mi"},"requests":{"cpu":"1000m","memory":"1800Mi"}}` | Resource allocation for `slicing` pods. |
 | stackstate.components.slicing.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.slicing.sizing.javaHeapMemoryFraction | string | `"60"` |  |
 | stackstate.components.slicing.tolerations | list | `[]` | Toleration labels for pod assignment. |
