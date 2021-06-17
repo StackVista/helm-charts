@@ -1149,6 +1149,9 @@ minio:
     enabled: false
   # minio.fullnameOverride -- **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components.
   fullnameOverride: stackstate-minio
+  image:
+    # minio.image.repository -- MinIO image repository
+    repository: quay.io/stackstate/minio
   # minio.accessKey -- Access key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
   accessKey: setme
   # minio.accessKey -- Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
