@@ -471,10 +471,10 @@ stackstate:
       # stackstate.components.receiver.resources -- Resource allocation for `receiver` pods.
       resources:
         limits:
-          memory: "3Gi"
+          memory: "4Gi"
           cpu: "3000m"
         requests:
-          memory: "3Gi"
+          memory: "4Gi"
           cpu: "3000m"
       sizing:
         baseMemoryConsumption: "700Mi"
