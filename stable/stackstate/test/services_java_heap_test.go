@@ -16,7 +16,7 @@ func TestServerJavaHeapRender(t *testing.T) {
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
 	expectedDeployments["stackstate-server"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx5858m -Xms5858m"}
-	expectedDeployments["stackstate-receiver"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx1891m -Xms1891m"}
+	expectedDeployments["stackstate-receiver"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx2697m -Xms2697m"}
 	expectedDeployments["stackstate-correlate"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx799m -Xms799m"}
 	expectedDeployments["stackstate-mm2es"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx402m -Xms402m"}
 
