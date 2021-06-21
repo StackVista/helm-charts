@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.4.0-snapshot.19`
+Current chart version is `4.4.0-snapshot.20`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -192,6 +192,7 @@ stackstate/stackstate
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
 | kots.enabled | bool | `false` | Enables functionality for Replicated KOTS. |
 | kots.kurl.enabled | bool | `false` | Enables KURL cluster and ingress |
+| kots.kurl.hostname | string | `"localhost"` | The hostname to setup for the HTTPProxy |
 | minio.accessKey | string | `"setme"` | Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value. |
 | minio.azuregateway.replicas | int | `1` |  |
 | minio.fullnameOverride | string | `"stackstate-minio"` | **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components. |

@@ -5,11 +5,7 @@ metadata:
   name: {{ include "common.fullname.short" . }}
 spec:
   virtualhost:
-    {{- $ctx := . }}
-    fqdn:
-      {{- range .hosts }}
-        - {{ tpl . $ctx | quote }}
-      {{- end }}
+    fqdn: "{{ .Values.kots.kurl.hostname }}"
     tls:
       secretName: kotsadm-tls
   routes:
