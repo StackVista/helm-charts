@@ -289,8 +289,8 @@ clusterChecks:
   # clusterChecks.strategy -- The strategy for the Deployment object.
   strategy:
     type: RollingUpdate
-    # rollingUpdate:
-    #   maxUnavailable: 1
+    rollingUpdate:
+      maxUnavailable: 100
 
   # clusterChecks.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}
