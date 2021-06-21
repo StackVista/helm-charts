@@ -1,0 +1,25 @@
+{{- if .Values.kots.kurl.enabled -}}
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: {{ include "common.fullname.short" . }}
+spec:
+  virtualhost:
+    {{- $ctx := . }}
+    fqdn:
+      {{- range .hosts }}
+        - {{ tpl . $ctx | quote }}
+      {{- end }}
+    tls:
+      secretName: kotsadm-tls
+  routes:
+  - services:
+    - name: {{ include "common.fullname.short" $ }}-router
+      port: 8080
+  - conditions:
+    - prefix: /
+    enableWebsockets: true
+    services:
+      - name: {{ include "common.fullname.short" $ }}-router
+        port: 8080
+{{- end -}}

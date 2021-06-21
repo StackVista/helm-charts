@@ -104,6 +104,9 @@ networkPolicy:
 kots:
   # kots.enabled -- Enables functionality for Replicated KOTS.
   enabled: false
+  kurl:
+    # kots.kurl.enabled -- Enables KURL cluster and ingress
+    enabled: false
 stackstate:
   components:
     all:
