@@ -86,7 +86,7 @@ stackstate/cluster-agent
 | agent.scc.enabled | bool | `false` | Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift |
 | agent.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
 | agent.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| agent.updateStrategy | object | `{"type":"RollingUpdate"}` | The update strategy for the DaemonSet object. |
+| agent.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":100},"type":"RollingUpdate"}` | The update strategy for the DaemonSet object. |
 | clusterAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | clusterAgent.collection.kubernetesEvents | bool | `true` | Enable / disable the cluster agent events collection. |
 | clusterAgent.collection.kubernetesMetrics | bool | `true` | Enable / disable the cluster agent metrics collection. |
@@ -152,7 +152,7 @@ stackstate/cluster-agent
 | clusterChecks.resources.requests.memory | string | `"256Mi"` |  |
 | clusterChecks.scc.enabled | bool | `false` | Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift |
 | clusterChecks.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
-| clusterChecks.strategy | object | `{"rollingUpdate":{"maxUnavailable":100},"type":"RollingUpdate"}` | The strategy for the Deployment object. |
+| clusterChecks.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | clusterChecks.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | dependencies.kubeStateMetrics.enabled | bool | `true` | Whether or not to install the `kube-state-metrics` Deployment along with the StackState cluster agent. Set to `false` if you have `kube-state-metrics` already installed on the cluster. |
 | fullnameOverride | string | `""` | Override the fullname of the chart. |
