@@ -1,6 +1,6 @@
 # elasticsearch
 
-![Version: 7.6.2-stackstate.12](https://img.shields.io/badge/Version-7.6.2--stackstate.12-informational?style=flat-square) ![AppVersion: 7.6.2](https://img.shields.io/badge/AppVersion-7.6.2-informational?style=flat-square)
+![Version: 7.6.2-stackstate.13](https://img.shields.io/badge/Version-7.6.2--stackstate.13-informational?style=flat-square) ![AppVersion: 7.6.2](https://img.shields.io/badge/AppVersion-7.6.2-informational?style=flat-square)
 
 Official Elastic helm chart for Elasticsearch
 
@@ -22,7 +22,7 @@ Official Elastic helm chart for Elasticsearch
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.helm.sh/stable | elasticsearch-exporter | 3.7.0 |
+| https://prometheus-community.github.io/helm-charts | prometheus-elasticsearch-exporter | 4.4.0 |
 
 ## Values
 
@@ -32,11 +32,6 @@ Official Elastic helm chart for Elasticsearch
 | antiAffinityTopologyKey | string | `"kubernetes.io/hostname"` |  |
 | clusterName | string | `"elasticsearch"` |  |
 | commonLabels | object | `{}` |  |
-| elasticsearch-exporter.enabled | bool | `false` |  |
-| elasticsearch-exporter.es.uri | string | `"http://elasticsearch-master:9200"` |  |
-| elasticsearch-exporter.image.repository | string | `"quay.io/stackstate/elasticsearch_exporter"` |  |
-| elasticsearch-exporter.podAnnotations | object | `{}` |  |
-| elasticsearch-exporter.servicemonitor.enabled | bool | `false` |  |
 | esConfig | object | `{}` |  |
 | esJavaOpts | string | `"-Xmx1g -Xms1g"` |  |
 | esMajorVersion | string | `""` |  |
@@ -88,6 +83,12 @@ Official Elastic helm chart for Elasticsearch
 | podSecurityPolicy.spec.volumes[1] | string | `"configMap"` |  |
 | podSecurityPolicy.spec.volumes[2] | string | `"persistentVolumeClaim"` |  |
 | priorityClassName | string | `""` |  |
+| prometheus-elasticsearch-exporter.enabled | bool | `false` | Enable to expose prometheus metrics |
+| prometheus-elasticsearch-exporter.es.uri | string | `"http://elasticsearch-master:9200"` | URI of Elasticsearch to monitor, override when changing clusterName or nodeGroup (format is <protocol>://<clusterName>-<nodegroup>:<httpPort>) |
+| prometheus-elasticsearch-exporter.image.repository | string | `"quay.io/stackstate/elasticsearch_exporter"` |  |
+| prometheus-elasticsearch-exporter.podAnnotations | object | `{}` | custom annotations on the pod |
+| prometheus-elasticsearch-exporter.securityContext.enabled | bool | `true` | Set to `false` for OpenShift compatibility |
+| prometheus-elasticsearch-exporter.servicemonitor.enabled | bool | `false` | enable to create a servicemonitor for prometheus operator |
 | protocol | string | `"http"` |  |
 | rbac.create | bool | `false` |  |
 | rbac.serviceAccountName | string | `""` |  |
