@@ -12,6 +12,7 @@ helm_add_common_repos:
   - helm repo add --debug jetstack https://charts.jetstack.io
   - helm repo add --debug jfrog https://charts.jfrog.io
   - helm repo add --debug kube-eagle https://raw.githubusercontent.com/cloudworkz/kube-eagle-helm-chart/master
+  - helm repo add --debug prometheus https://prometheus-community.github.io/helm-charts
   - helm repo add --debug stable https://kubernetes-charts.storage.googleapis.com
   - helm repo add --debug stackstate https://helm.stackstate.io
   - helm repo add --debug vmware-tanzu https://vmware-tanzu.github.io/helm-charts
