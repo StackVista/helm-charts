@@ -147,14 +147,14 @@ stackstate.api.authentication.authServer.keycloakAuthServer {
 {{- if .Values.stackstate.authentication.file }}
 {{ $authTypes = append $authTypes "stackstateAuthServer" }}
 {{- if not .Values.stackstate.authentication.file.logins -}}
-{{- fail "File configuration requires a non-empty list of logins to be specified with fields username, passwordMd5 and roles specified." -}}
+{{- fail "File configuration requires a non-empty list of logins to be specified with fields username, passwordHash and roles specified." -}}
 {{- end }}
 stackstate.api.authentication.authServer.stackstateAuthServer.logins = [
 {{- range .Values.stackstate.authentication.file.logins }}
   {{- if not .roles -}}
   {{- printf "No roles specified for user %s" .username | fail -}}
   {{- end }}
-  { username = {{ .username | required "A login requires a username" | quote }}, password = {{ .passwordMd5 | required "A login requires a password hash" | quote }}, roles = {{ .roles | toJson }} },
+  { username = {{ .username | required "A login requires a username" | quote }}, password = {{ .passwordHash | default .passwordMd5 | required "A login requires a password hash" | quote }}, roles = {{ .roles | toJson }} },
 {{- end }}
 ]
 {{- end }}
