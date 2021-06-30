@@ -15,7 +15,7 @@ Current chart version is `4.4.0-rc.1`
 | https://helm.stackstate.io | anomaly-detection | 4.4.0-rc.1 |
 | https://helm.stackstate.io | cluster-agent | 0.4.13 |
 | https://helm.stackstate.io | common | 0.4.13 |
-| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.12 |
+| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.13 |
 | https://helm.stackstate.io | hbase | 0.1.66 |
 | https://helm.stackstate.io | kafka | 12.2.5-stackstate.0 |
 
@@ -95,21 +95,21 @@ stackstate/stackstate
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` | The Elasticsearch cluster health status params that will be used by readinessProbe command |
 | elasticsearch.clusterName | string | `"stackstate-elasticsearch"` | Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | elasticsearch.commonLabels | object | `{"app.kubernetes.io/part-of":"stackstate"}` | Add additional labels to all resources created for elasticsearch |
-| elasticsearch.elasticsearch-exporter.enabled | bool | `true` |  |
-| elasticsearch.elasticsearch-exporter.es.uri | string | `"http://stackstate-elasticsearch-master:9200"` |  |
-| elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/elasticsearch-exporter.check_names" | string | `"[\"openmetrics\"]"` |  |
-| elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/elasticsearch-exporter.init_configs" | string | `"[{}]"` |  |
-| elasticsearch.elasticsearch-exporter.podAnnotations."ad.stackstate.com/elasticsearch-exporter.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:9108/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
-| elasticsearch.elasticsearch-exporter.resources.limits.cpu | string | `"100m"` |  |
-| elasticsearch.elasticsearch-exporter.resources.limits.memory | string | `"100Mi"` |  |
-| elasticsearch.elasticsearch-exporter.resources.requests.cpu | string | `"100m"` |  |
-| elasticsearch.elasticsearch-exporter.resources.requests.memory | string | `"100Mi"` |  |
-| elasticsearch.elasticsearch-exporter.servicemonitor.enabled | bool | `false` |  |
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
 | elasticsearch.esJavaOpts | string | `"-Xmx3g -Xms3g -Des.allow_insecure_settings=true"` | JVM options |
 | elasticsearch.extraEnvs | list | `[{"name":"action.auto_create_index","value":"true"},{"name":"indices.query.bool.max_clause_count","value":"10000"}]` | Extra settings that StackState uses for Elasticsearch. |
 | elasticsearch.minimumMasterNodes | int | `2` | Minimum number of Elasticsearch master nodes. |
 | elasticsearch.nodeGroup | string | `"master"` |  |
+| elasticsearch.prometheus-elasticsearch-exporter.enabled | bool | `true` |  |
+| elasticsearch.prometheus-elasticsearch-exporter.es.uri | string | `"http://stackstate-elasticsearch-master:9200"` |  |
+| elasticsearch.prometheus-elasticsearch-exporter.podAnnotations."ad.stackstate.com/prometheus-elasticsearch-exporter.check_names" | string | `"[\"openmetrics\"]"` |  |
+| elasticsearch.prometheus-elasticsearch-exporter.podAnnotations."ad.stackstate.com/prometheus-elasticsearch-exporter.init_configs" | string | `"[{}]"` |  |
+| elasticsearch.prometheus-elasticsearch-exporter.podAnnotations."ad.stackstate.com/prometheus-elasticsearch-exporter.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:9108/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
+| elasticsearch.prometheus-elasticsearch-exporter.resources.limits.cpu | string | `"100m"` |  |
+| elasticsearch.prometheus-elasticsearch-exporter.resources.limits.memory | string | `"100Mi"` |  |
+| elasticsearch.prometheus-elasticsearch-exporter.resources.requests.cpu | string | `"100m"` |  |
+| elasticsearch.prometheus-elasticsearch-exporter.resources.requests.memory | string | `"100Mi"` |  |
+| elasticsearch.prometheus-elasticsearch-exporter.servicemonitor.enabled | bool | `false` |  |
 | elasticsearch.replicas | int | `3` | Number of Elasticsearch replicas. |
 | elasticsearch.resources | object | `{"limits":{"cpu":"2000m","memory":"4Gi"},"requests":{"cpu":"2000m","memory":"4Gi"}}` | Override Elasticsearch resources |
 | elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"250Gi"}}}` | PVC template defaulting to 250Gi default volumes |
