@@ -1,6 +1,6 @@
 dependencies:
-- name: elasticsearch-exporter
-  repository: https://kubernetes-charts.storage.googleapis.com
-  version: 3.7.0
-digest: sha256:82bbf44ae264f38a39212e8f34f1ad033f5a0054e94277f7fc6c7550d2ae693c
-generated: "2020-08-11T10:42:35.806196862+02:00"
+- name: prometheus-elasticsearch-exporter
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 4.4.0
+digest: sha256:bb43b104bd0342a80fa8fd0c99991bf8b9ec5f27426b37b0425de4601d0a2bc9
+generated: "2021-06-30T10:33:50.65084+02:00"

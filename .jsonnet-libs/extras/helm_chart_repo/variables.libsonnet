@@ -10,6 +10,7 @@
       stackstate: 'https://helm.stackstate.io',
       stackstate_internal: 'https://helm-internal.stackstate.io',
       stackstate_test: 'https://helm-test.stackstate.io',
+      prometheus: 'https://prometheus-community.github.io/helm-charts',
     },
     charts: [
       'aws-amicleaner',

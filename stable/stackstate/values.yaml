@@ -927,14 +927,14 @@ elasticsearch:
     resources:
       requests:
         storage: 250Gi
-  elasticsearch-exporter:
+  prometheus-elasticsearch-exporter:
     enabled: true
     servicemonitor:
       enabled: false
     podAnnotations:
-      ad.stackstate.com/elasticsearch-exporter.check_names: '["openmetrics"]'
-      ad.stackstate.com/elasticsearch-exporter.init_configs: "[{}]"
-      ad.stackstate.com/elasticsearch-exporter.instances: '[ { "prometheus_url": "http://%%host%%:9108/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
+      ad.stackstate.com/prometheus-elasticsearch-exporter.check_names: '["openmetrics"]'
+      ad.stackstate.com/prometheus-elasticsearch-exporter.init_configs: "[{}]"
+      ad.stackstate.com/prometheus-elasticsearch-exporter.instances: '[ { "prometheus_url": "http://%%host%%:9108/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
     resources:
       limits:
         cpu: "100m"
@@ -956,7 +956,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 4.1.7
+      tag: 4.1.8
   console:
     # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
     enabled: false

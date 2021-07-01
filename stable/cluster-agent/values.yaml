@@ -105,8 +105,8 @@ agent:
   # agent.updateStrategy -- The update strategy for the DaemonSet object.
   updateStrategy:
     type: RollingUpdate
-    # rollingUpdate:
-    #   maxUnavailable: 1
+    rollingUpdate:
+      maxUnavailable: 100
 
   # agent.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}
@@ -289,8 +289,8 @@ clusterChecks:
   # clusterChecks.strategy -- The strategy for the Deployment object.
   strategy:
     type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 100
+    # rollingUpdate:
+    #   maxUnavailable: 1
 
   # clusterChecks.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}

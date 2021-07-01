@@ -144,6 +144,9 @@ func TestAuthenticationFileInvalid(t *testing.T) {
 
 	err = helmtestutil.RenderHelmTemplateError(t, "stackstate", "values/full.yaml", "values/file_authentication_no_roles.yaml")
 	require.Contains(t, err.Error(), "No roles specified for user administrator")
+
+	err = helmtestutil.RenderHelmTemplateError(t, "stackstate", "values/full.yaml", "values/file_authentication_no_password.yaml")
+	require.Contains(t, err.Error(), "A login requires a password hash")
 }
 
 const expectedFallbackAuthConfig = `stackstate.api.authentication.authServer.stackstateAuthServer {

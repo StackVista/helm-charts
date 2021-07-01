@@ -12,6 +12,7 @@ local common_repos = {
   jfrog: 'https://charts.jfrog.io',
   stable: 'https://kubernetes-charts.storage.googleapis.com',
   stackstate: 'https://helm.stackstate.io',
+  prometheus: 'https://prometheus-community.github.io/helm-charts',
 };
 
 {
