@@ -190,6 +190,8 @@ stackstate/stackstate
 | kafka.transactionStateLogReplicationFactor | int | `2` |  |
 | kafka.volumePermissions.enabled | bool | `false` |  |
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
+| kots.contourIngress.enabled | bool | `false` |  |
+| kots.contourIngress.hostname | string | `"localhost"` |  |
 | kots.enabled | bool | `false` | Enables functionality for Replicated KOTS. |
 | minio.accessKey | string | `"setme"` | Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value. |
 | minio.azuregateway.replicas | int | `1` |  |
