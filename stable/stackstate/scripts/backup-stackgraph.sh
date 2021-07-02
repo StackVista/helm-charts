@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-TMP_DIR=/tmp-data
+export TMP_DIR=/tmp-data
 
 export AWS_ACCESS_KEY_ID
 AWS_ACCESS_KEY_ID="$(cat /aws-keys/accesskey)"
@@ -9,7 +9,9 @@ export AWS_SECRET_ACCESS_KEY
 AWS_SECRET_ACCESS_KEY="$(cat /aws-keys/secretkey)"
 
 echo "=== Removing old StackGraph backups from temporary storage \"${TMP_DIR}\"..."
-rm -rf "${TMP_DIR:?}/*"
+(cd "${TMP_DIR:?}" && rm -rf ./sts-backup-*)
+echo "=== Listing contents of \"${TMP_DIR}\"..."
+ls -lat "${TMP_DIR:?}"
 eval "BACKUP_FILE=\"${BACKUP_STACKGRAPH_SCHEDULED_BACKUP_NAME_TEMPLATE}\""
 echo "=== Exporting StackGraph data to \"${BACKUP_FILE}\"..."
 /opt/docker/bin/stackstate-server -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy -export "${TMP_DIR}/${BACKUP_FILE}"
