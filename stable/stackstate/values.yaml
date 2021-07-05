@@ -1105,7 +1105,7 @@ kafka:
         registry: quay.io
         # kafka.metrics.jmx.image.repository -- Kafka JMX exporter image repository
         repository: stackstate/jmx-exporter
-        # kafka.metrics.jmx.image.repository -- Kafka JMX exporter image tag
+        # kafka.metrics.jmx.image.tag -- Kafka JMX exporter image tag
         tag: 0.15.0-debian-10-r138
       resources:
         limits:
