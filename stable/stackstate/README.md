@@ -172,8 +172,8 @@ stackstate/stackstate
 | kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
 | kafka.metrics.jmx.enabled | bool | `true` | Whether or not to expose JMX metrics to Prometheus. |
 | kafka.metrics.jmx.image.registry | string | `"quay.io"` | Kafka JMX exporter image registry |
-| kafka.metrics.jmx.image.repository | string | `"stackstate/jmx-exporter"` | Kafka JMX exporter image tag |
-| kafka.metrics.jmx.image.tag | string | `"0.15.0-debian-10-r138"` |  |
+| kafka.metrics.jmx.image.repository | string | `"stackstate/jmx-exporter"` | Kafka JMX exporter image repository |
+| kafka.metrics.jmx.image.tag | string | `"0.15.0-debian-10-r138"` | Kafka JMX exporter image tag |
 | kafka.metrics.jmx.resources.limits.cpu | string | `"200m"` |  |
 | kafka.metrics.jmx.resources.limits.memory | string | `"300Mi"` |  |
 | kafka.metrics.jmx.resources.requests.cpu | string | `"200m"` |  |
