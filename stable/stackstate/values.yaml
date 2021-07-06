@@ -829,7 +829,7 @@ stackstate:
         # stackstate.components.wait.image.repository -- Base container image repository for wait containers.
         repository: stackstate/wait
         # stackstate.components.wait.image.tag -- Container image tag for wait containers.
-        tag: 1.0.1
+        tag: 1.0.2
         # stackstate.components.wait.image.pullPolicy -- Image pull policy for wait containers.
         pullPolicy: IfNotPresent
   # stackstate.authentication -- Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error.
