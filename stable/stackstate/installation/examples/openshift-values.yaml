@@ -1,3 +1,6 @@
+# This files defines additional Helm values to run StackState on OpenShift.
+# Use this file in combination with a regular values.yaml file that contains your API key, etc.
+# N.B.: Replace YOUR_CLUSTER_NAME with the name of your OpenShift cluster and YOUR_API_TOKEN with a random API token
 stackstate:
   components:
     all:
@@ -13,8 +16,11 @@ stackstate:
     installed:
       - name: openshift
         configuration:
-          openshift_cluster_name: api-crc-testing
+          openshift_cluster_name: YOUR_CLUSTER_NAME
 elasticsearch:
+  prometheus-elasticsearch-exporter:
+    securityContext:
+      enabled: false
   securityContext:
     enabled: false
   sysctlInitContainer:
@@ -26,15 +32,10 @@ kafka:
     enabled: false
 hbase:
   hdfs:
-    scc:
-      enabled: true
     securityContext:
-      enabled: true
+      enabled: false
     volumePermissions:
-      enabled: true
-      securityContext:
-        enabled: true
-        privileged: false
+      enabled: false
   hbase:
     securityContext:
       enabled: false
@@ -54,8 +55,8 @@ cluster-agent:
   enabled: true
   stackstate:
     cluster:
-      name: api-crc-testing
-      authToken: d8cf3cb5418c03152db54c5c7aa96708
+      name: YOUR_CLUSTER_NAME
+      authToken: YOUR_API_TOKEN
   kube-state-metrics:
     podAnnotations:
       ad.stackstate.com/kube-state-metrics.check_names: '["kubernetes_state"]'
