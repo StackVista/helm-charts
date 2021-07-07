@@ -1,6 +1,8 @@
 # This files defines additional Helm values to run StackState on OpenShift.
 # Use this file in combination with a regular values.yaml file that contains your API key, etc.
-# N.B.: Replace YOUR_CLUSTER_NAME with the name of your OpenShift cluster and YOUR_API_TOKEN with a random API token
+#
+# N.B.: If you enabled the cluster-agent subchart, replace YOUR_CLUSTER_NAME with the name of your
+# OpenShift cluster and YOUR_API_TOKEN with a random API token
 stackstate:
   components:
     all:
@@ -12,11 +14,6 @@ stackstate:
     ui:
       securityContext:
         enabled: false
-  stackpacks:
-    installed:
-      - name: openshift
-        configuration:
-          openshift_cluster_name: YOUR_CLUSTER_NAME
 elasticsearch:
   prometheus-elasticsearch-exporter:
     securityContext:
@@ -52,7 +49,7 @@ cluster-agent:
   agent:
     scc:
       enabled: true
-  enabled: true
+  enabled: false
   stackstate:
     cluster:
       name: YOUR_CLUSTER_NAME
