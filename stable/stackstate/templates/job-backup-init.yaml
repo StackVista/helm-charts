@@ -30,17 +30,13 @@ spec:
           env:
             {{- include "stackstate.backup.envvars" . | nindent 12 }}
           volumeMounts:
-            - name: backup-restore-scripts
-              mountPath: /backup-restore-scripts
-            - name: minio-keys
-              mountPath: /aws-keys
+            {{- include "stackstate.backup.volumeMounts" . | nindent 16 }}
+            - name: tmp-data
+              mountPath: /tmp-data
       volumes:
-        - name: backup-restore-scripts
-          configMap:
-            name: {{ template "common.fullname.short" . }}-backup-restore-scripts
-            defaultMode: 0755
-        - name: minio-keys
-          secret:
-            secretName: {{ include "stackstate.minio.keys" . }}
+        {{- include "stackstate.backup.volumes" . | nindent 8 }}
+        - name: tmp-data
+          persistentVolumeClaim:
+            claimName: {{ template "common.fullname.short" . }}-backup-stackgraph-tmp-data
       restartPolicy: Never
 {{- end }}
