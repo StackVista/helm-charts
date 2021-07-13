@@ -30,7 +30,7 @@ spec:
           env:
             {{- include "stackstate.backup.envvars" . | nindent 12 }}
           volumeMounts:
-            {{- include "stackstate.backup.volumeMounts" . | nindent 16 }}
+            {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
             - name: tmp-data
               mountPath: /tmp-data
       volumes:
