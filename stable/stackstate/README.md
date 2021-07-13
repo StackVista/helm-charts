@@ -381,6 +381,7 @@ stackstate/stackstate
 | stackstate.components.receiver.sizing.baseMemoryConsumption | string | `"700Mi"` |  |
 | stackstate.components.receiver.sizing.javaHeapMemoryFraction | string | `"75"` |  |
 | stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.router.accessLog.enabled | bool | `false` | Enable access log for StackState router |
 | stackstate.components.router.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.router.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.router.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |

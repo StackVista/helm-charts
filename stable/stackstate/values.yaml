@@ -528,6 +528,9 @@ stackstate:
       tolerations: []
       # stackstate.components.router.affinity -- Affinity settings for pod assignment.
       affinity: {}
+      accessLog:
+        # stackstate.components.router.accessLog.enabled -- Enable access log for StackState router
+        enabled: false
     server:
       extraEnv:
         # stackstate.components.server.extraEnv.open -- Extra open environment variables to inject into pods.
