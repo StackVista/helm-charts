@@ -218,13 +218,13 @@ stackstate:
       # stackstate.components.correlate.resources -- Resource allocation for `correlate` pods.
       resources:
         limits:
-          memory: "1500Mi"
+          memory: "1600Mi"
           cpu: "600m"
         requests:
-          memory: "1500Mi"
+          memory: "1600Mi"
           cpu: "600m"
       sizing:
-        baseMemoryConsumption: "475Mi"
+        baseMemoryConsumption: "575Mi"
         javaHeapMemoryFraction: "78"
       # stackstate.components.correlate.replicaCount -- Number of `correlate` replicas.
       replicaCount: 1
