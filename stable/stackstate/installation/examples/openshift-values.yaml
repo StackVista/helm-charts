@@ -1,17 +1,9 @@
 # This files defines additional Helm values to run StackState on OpenShift.
 # Use this file in combination with a regular values.yaml file that contains your API key, etc.
-#
-# N.B.: If you enabled the cluster-agent subchart, replace YOUR_CLUSTER_NAME with the name of your
-# OpenShift cluster and YOUR_API_TOKEN with a random API token
 cluster-agent:
   agent:
     scc:
       enabled: true
-  enabled: false
-  stackstate:
-    cluster:
-      name: YOUR_CLUSTER_NAME
-      authToken: YOUR_API_TOKEN
   kube-state-metrics:
     podAnnotations:
       ad.stackstate.com/kube-state-metrics.check_names: '["kubernetes_state"]'
