@@ -1,5 +1,9 @@
 # This files defines additional Helm values to run StackState on OpenShift.
 # Use this file in combination with a regular values.yaml file that contains your API key, etc.
+backup:
+  stackGraph:
+    securityContext:
+      enabled: false
 cluster-agent:
   agent:
     scc:
