@@ -269,7 +269,7 @@ stackstate/stackstate
 | stackstate.components.containerTools.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for container-tools containers. |
 | stackstate.components.containerTools.image.registry | string | `"quay.io"` | Base container image registry for container-tools containers. |
 | stackstate.components.containerTools.image.repository | string | `"stackstate/container-tools"` | Base container image repository for container-tools containers. |
-| stackstate.components.containerTools.image.tag | string | `"1.0.2"` | Container image tag for container-tools containers. |
+| stackstate.components.containerTools.image.tag | string | `"1.0.3"` | Container image tag for container-tools containers. |
 | stackstate.components.correlate.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.correlate.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.correlate.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
