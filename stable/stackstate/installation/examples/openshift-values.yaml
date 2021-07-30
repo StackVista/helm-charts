@@ -57,6 +57,9 @@ kafka:
     enabled: false
   volumePermissions:
     enabled: false
+minio:
+  securityContext:
+    enabled: false
 zookeeper:
   securityContext:
     enabled: false
