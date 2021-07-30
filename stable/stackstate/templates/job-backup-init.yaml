@@ -38,5 +38,7 @@ spec:
         - name: tmp-data
           persistentVolumeClaim:
             claimName: {{ template "common.fullname.short" . }}-backup-stackgraph-tmp-data
+      securityContext:
+        runAsNonRoot: true
       restartPolicy: Never
 {{- end }}
