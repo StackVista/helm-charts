@@ -1,0 +1,32 @@
+image:
+  # image.registry -- Registry containing the image for the Kommoner operator
+  registry: quay.io
+  # image.repository -- Repository containing the image for the Kommoner operator
+  repository: stackstate/kommoner
+  # image.tag -- Tag of the image for the Kommoner operator
+  tag: v0.1.2
+  # image.pullPolicy -- Pull policy for the image for the Kommoner operator
+  pullPolicy: IfNotPresent
+# nodeSelector:
+#   node.kubernetes.io/purpose-core: "yes"
+resources:
+  limits:
+    cpu: 50m
+    memory: 64Mi
+  requests:
+    cpu: 25m
+    memory: 32Mi
+namespaces:
+  # namespaces.exclude -- Namespaces to exclude from processing by the Kommoner
+  exclude:
+    - default
+    - kube-system
+    - kube-public
+    - kube-node-lease
+# rbac -- Types of Kubernetes objects that are created by Kommoner, these are added to an RBAC ClusterRole so that Kommoner may manipulate them
+rbac: []
+# commonObjects -- Common objects to be installed in all namespaces
+commonObjects: []
+# tolerations:
+# - effect: NoSchedule
+#   operator: Exists

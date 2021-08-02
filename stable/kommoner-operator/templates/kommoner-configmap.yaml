@@ -1,0 +1,19 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "fullname.short" . }}-config
+  namespace: {{.Release.Namespace}}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+data:
+  config.yaml: |
+    namespace:
+      exclude:
+        named:
+        {{- with .Values.namespaces.exclude }}
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+    commonObjects:
+      {{- with .Values.commonObjects }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
