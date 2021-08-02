@@ -807,6 +807,12 @@ stackstate:
         runAsGroup: 1001
         # stackstate.components.kafkaTopicCreate.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
         runAsUser: 1001
+      # stackstate.components.kafkaTopicCreate.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.kafkaTopicCreate.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.kafkaTopicCreate.affinity -- Affinity settings for pod assignment.
+      affinity: {}
     nginxPrometheusExporter:
       image:
         # stackstate.components.nginxPrometheusExporter.image.registry -- Base container image registry for nginx-prometheus-exporter containers.
