@@ -26,6 +26,7 @@
       'iceman',
       'kafka',
       'sandbox-operator',
+      'kommoner-operator',
       'stackstate',
       'stackstate-standalone',
       'trafficmirror',
