@@ -56,6 +56,33 @@ spec:
       - {{ include "stackstate.kafkaTopicCreate.job.initContainer.main" . | nindent 8 }}
       containers:
       - {{ toYaml $stsstackstateKafkaTopicCreateMainContainer | nindent 8 }}
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.kafkaTopicCreate.nodeSelector }}
+      nodeSelector:
+      {{- with .Values.stackstate.components.all.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.kafkaTopicCreate.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.kafkaTopicCreate.affinity }}
+      affinity:
+      {{- with .Values.stackstate.components.all.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.kafkaTopicCreate.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.kafkaTopicCreate.tolerations }}
+      tolerations:
+      {{- with .Values.stackstate.components.all.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.kafkaTopicCreate.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
 {{- end -}}
 
 {{- $commonJob := fromYaml (include "common.job" .) -}}
