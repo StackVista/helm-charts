@@ -42,8 +42,18 @@
         when: 'on_success',
       },
 
+      pre_release_patch_rule: {
+        'if': '$CI_COMMIT_TAG =~ /^(\\d+)\\.(\\d+)\\.(\\d+)-pre\\.(\\d+)\\.(\\d+)$/',
+        when: 'on_success',
+      },
+
       rc_pre_release_rule: {
         'if': '$CI_COMMIT_TAG =~ /^(\\d+)\\.(\\d+)\\.(\\d+)-pre\\.(\\d+)\\.rc\\.(\\d+)$/',
+        when: 'on_success',
+      },
+
+      rc_pre_release_patch_rule: {
+        'if': '$CI_COMMIT_TAG =~ /^(\\d+)\\.(\\d+)\\.(\\d+)-pre\\.(\\d+)\\.(\\d+)\\.rc\\.(\\d+)$/',
         when: 'on_success',
       },
 
@@ -54,12 +64,14 @@
 
       rc_rules: [
         Variable.rules.tag.rc_pre_release_rule,
+        Variable.rules.tag.rc_pre_release_patch_rule,
         Variable.rules.tag.rc_release_rule,
       ],
 
       published_release_rules: [
         Variable.rules.tag.release_rule,
         Variable.rules.tag.pre_release_rule,
+        Variable.rules.tag.pre_release_patch_rule,
       ],
 
       all_release_rules: Variable.rules.tag.rc_rules + Variable.rules.tag.published_release_rules,
