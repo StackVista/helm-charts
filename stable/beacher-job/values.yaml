@@ -1,0 +1,31 @@
+image:
+  # image.registry -- Registry containing the image for the Beacher cron job
+  registry: quay.io
+  # image.repository -- Repository containing the image for the Beacher cron job
+  repository: stackstate/sts-toolbox
+  # image.tag -- Tag of the image for the Beacher cron job
+  tag: v1.3.11
+  # image.pullPolicy -- Pull policy for the image for the Beacher cron job
+  pullPolicy: IfNotPresent
+# nodeSelector -- Node labels for pod assignment.
+nodeSelector: {}
+# tolerations -- Toleration labels for pod assignment.
+tolerations: []
+# affinity -- Affinity settings for pod assignment.
+affinity: {}
+# schedule -- The cron schedule for the Beacher cron job.
+schedule: "0 1 * * *"
+# systemNamespaces -- Namespaces that are considered system and off-limits to the Beacher cron job.
+systemNamespaces:
+  - kube-system
+  - kube-public
+  - kube-node-lease
+# scaleInterval -- Interval after which a namespace will be scaled down.
+scaleInterval: 24h
+resources:
+  limits:
+    cpu: 50m
+    memory: 64Mi
+  requests:
+    cpu: 25m
+    memory: 32Mi

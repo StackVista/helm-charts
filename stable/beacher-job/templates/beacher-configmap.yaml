@@ -1,0 +1,15 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "fullname.short" . }}-config
+  namespace: {{.Release.Namespace}}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+data:
+  config.yaml: |
+    scale:
+      system-namespaces:
+        {{- with .Values.systemNamespaces }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      scale-interval: "{{ .Values.scaleInterval }}"

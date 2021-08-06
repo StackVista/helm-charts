@@ -1,0 +1,33 @@
+{{ template "chart.header" . }}
+{{ template "chart.description" . }}
+
+Current chart version is `{{ template "chart.version" . }}`
+
+{{ template "chart.homepageLine" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+## Example values file
+
+```
+scaleInterval: 72h
+systemNamespaces:
+  - aws-pod-identity-webhook
+  - cert-manager
+  - default
+  - ingress-nginx-external
+  - ingress-nginx-internal
+  - kube-node-lease
+  - kube-public
+  - kube-system
+  - logging
+  - monitoring
+  - trafficmirror
+  - velero
+  - beacher
+  - kommoner
+```
+
+## Values
+
+{{ template "chart.valuesSection" . }}

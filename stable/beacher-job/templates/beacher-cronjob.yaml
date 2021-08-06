@@ -1,0 +1,53 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "fullname.short" . }}-cron
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  schedule: {{ .Values.schedule }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ include "fullname.short" . }}
+        {{- if .Values.image.pullSecretName }}
+          imagePullSecrets:
+          - name: '{{ .Values.image.pullSecretName }}'
+        {{- else if .Values.image.pullSecretUsername }}
+          imagePullSecrets:
+          - name: '{{ template "fullname.short" . }}-pull-secret'
+        {{- end }}
+          containers:
+          - name: beacher
+            image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            args:
+            - scale
+            - down
+            - --all
+            - --config
+            - /conf.d/config.yaml
+            - -v
+            volumeMounts:
+            - name: config-volume
+              mountPath: /conf.d
+            resources:
+{{ toYaml .Values.resources | indent 14 }}
+          restartPolicy: OnFailure
+{{- if .Values.nodeSelector }}
+          nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 12 }}
+{{- end }}
+{{- if .Values.tolerations }}
+          tolerations:
+{{ toYaml .Values.tolerations | indent 12 }}
+{{- end }}
+{{- if .Values.affinity }}
+          affinity:
+{{ toYaml .Values.affinity | indent 12 }}
+{{- end }}
+          volumes:
+          - name: config-volume
+            configMap:
+              name: {{ template "fullname.short" . }}-config
