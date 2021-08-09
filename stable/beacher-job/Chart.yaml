@@ -1,7 +1,7 @@
 apiVersion: v1
 name: "beacher"
 description: "The StackState Beacher"
-version: 0.1.0
+version: 1.0.0
 appVersion: v1.3.11
 home: https://gitlab.com/StackVista/devops/sts-toolbox
 maintainers:
