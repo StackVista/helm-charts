@@ -139,14 +139,14 @@ push_aws-pod-identity-webhook_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/aws-pod-identity-webhook
-push_beacher_to_internal:
+push_beacher-job_to_internal:
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - changes:
-        - stable/beacher/**/*
+        - stable/beacher-job/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
@@ -155,17 +155,17 @@ push_beacher_to_internal:
     - helm push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
   variables:
-    CHART: stable/beacher
-push_beacher_to_public:
+    CHART: stable/beacher-job
+push_beacher-job_to_public:
   needs:
-    - push_beacher_to_internal
+    - push_beacher-job_to_internal
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - changes:
-        - stable/beacher/**/*
+        - stable/beacher-job/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
   script:
@@ -174,7 +174,7 @@ push_beacher_to_public:
     - helm push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
   variables:
-    CHART: stable/beacher
+    CHART: stable/beacher-job
 push_chartmuseum_to_internal:
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
@@ -857,7 +857,7 @@ test_aws-pod-identity-webhook:
   variables:
     CGO_ENABLED: 0
     CHART: stable/aws-pod-identity-webhook
-test_beacher:
+test_beacher-job:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
@@ -876,16 +876,16 @@ test_beacher:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - changes:
-        - stable/beacher/**/*
+        - stable/beacher-job/**/*
       exists:
-        - stable/beacher/test/*.go
+        - stable/beacher-job/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - go test ./stable/beacher/test/...
+    - go test ./stable/beacher-job/test/...
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/beacher
+    CHART: stable/beacher-job
 test_chartmuseum:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
