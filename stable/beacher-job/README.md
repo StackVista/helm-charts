@@ -2,7 +2,7 @@
 
 The StackState Beacher
 
-Current chart version is `0.1.0`
+Current chart version is `1.0.0`
 
 **Homepage:** <https://gitlab.com/StackVista/devops/sts-toolbox>
 
