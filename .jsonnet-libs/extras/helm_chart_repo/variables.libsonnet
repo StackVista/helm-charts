@@ -27,6 +27,7 @@
       'kafka',
       'sandbox-operator',
       'kommoner-operator',
+      'beacher',
       'stackstate',
       'stackstate-standalone',
       'trafficmirror',
