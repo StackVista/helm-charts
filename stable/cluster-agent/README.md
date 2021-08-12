@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `0.4.22`
+Current chart version is `0.4.23`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -127,7 +127,7 @@ stackstate/cluster-agent
 | clusterChecks.enabled | bool | `false` | Enable / disable runnning cluster checks in a separately deployed pod |
 | clusterChecks.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterChecks.image.repository | string | `"docker.io/stackstate/stackstate-agent-2"` | Base container image registry. |
-| clusterChecks.image.tag | string | `"2.11.0"` | Default container image tag. |
+| clusterChecks.image.tag | string | `"2.13.0"` | Default container image tag. |
 | clusterChecks.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterChecks.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | clusterChecks.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |

@@ -14,4 +14,4 @@ maintainers:
 - name: Vincent Partington
   email: vpartington@stackstate.com
 name: common
-version: 0.4.14
+version: 0.4.15
