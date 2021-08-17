@@ -26,7 +26,7 @@ spec:
                 - sh
                 - -c
                 - |
-                  /entrypoint -c {{ include "stackstate.es.endpoint" . }},{{ include "stackstate.minio.endpoint" . }},{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn-headful:9000,{{ template "common.fullname.short" . }}-initializer:1618 -t 300
+                  /entrypoint -c {{ include "stackstate.es.endpoint" . }},{{ include "stackstate.minio.endpoint" . }},{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn-headful:9000,{{ template "common.fullname.short" . }}-{{- if .Values.stackstate.experimental.server.split }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
               image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
               imagePullPolicy: Always
           containers:
@@ -49,9 +49,8 @@ spec:
             - name: tmp-data
               persistentVolumeClaim:
                 claimName: {{ template "common.fullname.short" . }}-backup-stackgraph-tmp-data
-          securityContext:
-            runAsGroup: 65534
-            runAsUser: 65534
-            fsGroup: 65534
+{{- if .Values.backup.stackGraph.securityContext.enabled }}
+          securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 12 }}
+{{- end }}
           restartPolicy: Never
 {{- end }}
