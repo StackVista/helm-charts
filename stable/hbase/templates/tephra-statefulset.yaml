@@ -14,9 +14,9 @@ name: tephra
 image: "{{include "image.registry" .}}/{{ .Values.tephra.image.repository }}:{{ default .Values.stackgraph.image.tag .Values.tephra.image.tag }}"
 imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.tephra.image.pullPolicy | quote  }}
 env:
-{{- include "all.commonEnv" . }}
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "hbase.hbase.commonEnv" . }}
+{{- include "all.commonEnv" . }}
 {{- include "tephra.commonEnv" . }}
 ports:
 - containerPort: 15165

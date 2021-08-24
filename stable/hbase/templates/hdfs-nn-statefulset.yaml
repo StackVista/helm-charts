@@ -32,8 +32,8 @@ args:
 - /run.sh
 - namenode
 env:
-{{- include "all.commonEnv" . }}
 {{- include "hbase.hdfs.commonEnv" . }}
+{{- include "all.commonEnv" . }}
 {{- include "hdfs.namenode.commonEnv" . }}
 ports:
 - containerPort: 9000

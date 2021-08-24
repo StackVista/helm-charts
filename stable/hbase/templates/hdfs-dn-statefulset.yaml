@@ -33,8 +33,8 @@ args:
 - /run.sh
 - datanode
 env:
-{{- include "all.commonEnv" . }}
 {{- include "hbase.hdfs.commonEnv" . }}
+{{- include "all.commonEnv" . }}
 {{- include "hdfs.datanode.commonEnv" . }}
 ports:
 - containerPort: 50010
