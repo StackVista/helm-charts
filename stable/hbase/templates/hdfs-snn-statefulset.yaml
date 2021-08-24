@@ -34,8 +34,8 @@ args:
 - secondarynamenode
 env:
 {{- include "all.commonEnv" . }}
-{{- include "hdfs.secondarynamenode.commonEnv" . }}
 {{- include "hbase.hdfs.commonEnv" . }}
+{{- include "hdfs.secondarynamenode.commonEnv" . }}
 ports:
 - containerPort: 50090
   name: snn

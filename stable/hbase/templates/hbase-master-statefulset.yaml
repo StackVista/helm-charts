@@ -15,9 +15,9 @@ image: "{{include "image.registry" .}}/{{ .Values.hbase.master.image.repository 
 imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.hbase.master.image.pullPolicy | quote  }}
 env:
 {{- include "all.commonEnv" . }}
-{{- include "hbase.master.commonEnv" . }}
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "hbase.hbase.commonEnv" . }}
+{{- include "hbase.master.commonEnv" . }}
 ports:
 - containerPort: 16000
   name: master

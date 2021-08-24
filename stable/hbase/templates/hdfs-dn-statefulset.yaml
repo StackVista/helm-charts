@@ -34,8 +34,8 @@ args:
 - datanode
 env:
 {{- include "all.commonEnv" . }}
-{{- include "hdfs.datanode.commonEnv" . }}
 {{- include "hbase.hdfs.commonEnv" . }}
+{{- include "hdfs.datanode.commonEnv" . }}
 ports:
 - containerPort: 50010
   name: dn

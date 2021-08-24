@@ -33,8 +33,8 @@ args:
 - namenode
 env:
 {{- include "all.commonEnv" . }}
-{{- include "hdfs.namenode.commonEnv" . }}
 {{- include "hbase.hdfs.commonEnv" . }}
+{{- include "hdfs.namenode.commonEnv" . }}
 ports:
 - containerPort: 9000
   name: nn

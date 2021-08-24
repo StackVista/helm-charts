@@ -15,9 +15,9 @@ image: "{{include "image.registry" .}}/{{ .Values.hbase.regionserver.image.repos
 imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.hbase.regionserver.image.pullPolicy | quote  }}
 env:
 {{- include "all.commonEnv" . }}
-{{- include "hbase.regionserver.commonEnv" . }}
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "hbase.hbase.commonEnv" . }}
+{{- include "hbase.regionserver.commonEnv" . }}
 - name: POD_NAME
   valueFrom:
     fieldRef:
