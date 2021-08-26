@@ -70,6 +70,15 @@ backup:
         size: '{{ .Values.hbase.hdfs.datanode.persistence.size }}'
         # backup.stackGraph.scheduled.tmpData.storageClass -- Storage class of the volume for temporary backup data.
         storageClass:
+    securityContext:
+      # backup.stackGraph.securityContext.enabled -- Whether or not to enable the securityContext
+      enabled: true
+      # backup.stackGraph.securityContext.fsGroup -- The GID (group ID) of all files on all mounted volumes
+      fsGroup: 65534
+      # backup.stackGraph.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
+      runAsGroup: 65534
+      # backup.stackGraph.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
+      runAsUser: 65534
 caspr:
   # caspr.enabled -- Enable CASPR compatible values.
   enabled: false
@@ -825,7 +834,7 @@ stackstate:
         # stackstate.components.containerTools.image.repository -- Base container image repository for container-tools containers.
         repository: stackstate/container-tools
         # stackstate.components.containerTools.image.tag -- Container image tag for container-tools containers.
-        tag: 1.0.2
+        tag: 1.0.4
         # stackstate.components.containerTools.image.pullPolicy -- Image pull policy for container-tools containers.
         pullPolicy: IfNotPresent
     wait:
@@ -835,7 +844,7 @@ stackstate:
         # stackstate.components.wait.image.repository -- Base container image repository for wait containers.
         repository: stackstate/wait
         # stackstate.components.wait.image.tag -- Container image tag for wait containers.
-        tag: 1.0.2
+        tag: 1.0.3
         # stackstate.components.wait.image.pullPolicy -- Image pull policy for wait containers.
         pullPolicy: IfNotPresent
   # stackstate.authentication -- Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error.

@@ -85,6 +85,10 @@ stackstate/stackstate
 | backup.stackGraph.scheduled.tempData.accessModes[0] | string | `"ReadWriteOnce"` |  |
 | backup.stackGraph.scheduled.tempData.size | string | `"{{ .Values.hbase.hdfs.datanode.persistence.size }}"` |  |
 | backup.stackGraph.scheduled.tempData.storageClass | string | `nil` |  |
+| backup.stackGraph.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
+| backup.stackGraph.securityContext.fsGroup | int | `65534` | The GID (group ID) of all files on all mounted volumes |
+| backup.stackGraph.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
+| backup.stackGraph.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
 | caspr.enabled | bool | `false` | Enable CASPR compatible values. |
 | cluster-agent.enabled | bool | `false` | Deploy the StackState Kubernetes Agent so StackState can monitor the cluster it runs in |
 | cluster-agent.stackstate.cluster.authToken | string | `nil` |  |
@@ -269,7 +273,7 @@ stackstate/stackstate
 | stackstate.components.containerTools.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for container-tools containers. |
 | stackstate.components.containerTools.image.registry | string | `"quay.io"` | Base container image registry for container-tools containers. |
 | stackstate.components.containerTools.image.repository | string | `"stackstate/container-tools"` | Base container image repository for container-tools containers. |
-| stackstate.components.containerTools.image.tag | string | `"1.0.2"` | Container image tag for container-tools containers. |
+| stackstate.components.containerTools.image.tag | string | `"1.0.4"` | Container image tag for container-tools containers. |
 | stackstate.components.correlate.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.correlate.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.correlate.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -496,7 +500,7 @@ stackstate/stackstate
 | stackstate.components.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | stackstate.components.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
-| stackstate.components.wait.image.tag | string | `"1.0.2"` | Container image tag for wait containers. |
+| stackstate.components.wait.image.tag | string | `"1.0.3"` | Container image tag for wait containers. |
 | stackstate.experimental.server.split | bool | `true` | (boolean) Run a single service server or split in multiple sub services as api, state .... |
 | stackstate.java | object | `{"trustStore":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
