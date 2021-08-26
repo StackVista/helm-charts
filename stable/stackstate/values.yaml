@@ -113,6 +113,11 @@ networkPolicy:
 kots:
   # kots.enabled -- Enables functionality for Replicated KOTS.
   enabled: false
+  contourIngress:
+    # kots.kurl.enabled -- Enables KURL cluster and ingress
+    enabled: false
+    # kots.kurl.hostname -- The hostname to setup for the HTTPProxy
+    hostname: "localhost"
 stackstate:
   components:
     all:
