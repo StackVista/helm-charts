@@ -85,9 +85,9 @@ stackstate.api.authentication.authServer.oidcAuthServer {
   secret = {{ .Values.stackstate.authentication.oidc.secret | required "OIDC authentication requires the client secret to be set." | quote }}
   discoveryUri = {{ .Values.stackstate.authentication.oidc.discoveryUri | required "OIDC authentication requires the discovery uri to be set." | quote }}
   {{- if .Values.stackstate.authentication.oidc.redirectUri }}
-  redirectUri = {{ .Values.stackstate.authentication.oidc.redirectUri | trimSuffix '/' | quote }}
+  redirectUri = {{ .Values.stackstate.authentication.oidc.redirectUri | trimSuffix "/" | quote }}
   {{- else }}
-  redirectUri = "{{ .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix '/' | required "Could not determine redirectUri for OIDC. Please specify explicitly." }}/loginCallback"
+  redirectUri = "{{ .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "Could not determine redirectUri for OIDC. Please specify explicitly." }}/loginCallback"
   {{- end }}
   {{- if .Values.stackstate.authentication.oidc.scope }}
   {{- if not (kindIs "slice" .Values.stackstate.authentication.oidc.scope) -}}
