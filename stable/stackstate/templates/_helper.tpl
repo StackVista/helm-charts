@@ -122,9 +122,9 @@ Environment variables containing the properly sanitized StackState Base URLs
 */}}
 {{- define "stackstate.baseurls.envvars" }}
 - name: STACKSTATE_BASE_URL
-  value: {{ .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix '/' | required "stackstate.baseUrl is required" | quote }}
+  value: {{ .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is required" | quote }}
 - name: RECEIVER_BASE_URL
-  value: {{ printf "%s/%s" ( .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix '/' | required "stackstate.baseUrl is required" ) "receiver" | quote }}
+  value: {{ printf "%s/%s" ( .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is required" ) "receiver" | quote }}
 {{- end -}}
 
 {{/*
