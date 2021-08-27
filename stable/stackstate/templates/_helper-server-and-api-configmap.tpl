@@ -121,9 +121,9 @@ stackstate.api.authentication.authServer.keycloakAuthServer {
   clientId = {{ .Values.stackstate.authentication.keycloak.clientId | required "Keycloak authentication requires the client id to be set." | quote }}
   secret = {{ .Values.stackstate.authentication.keycloak.secret | required "Keycloak authentication requires the client secret to be set." | quote }}
   {{- if .Values.stackstate.authentication.keycloak.redirectUri }}
-  redirectUri = {{ .Values.stackstate.authentication.keycloak.redirectUri | trimSuffix '/' | quote }}
+  redirectUri = {{ .Values.stackstate.authentication.keycloak.redirectUri | trimSuffix "/" | quote }}
   {{- else }}
-  redirectUri = "{{ .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix '/' | required "stackstate.baseUrl is a required value." }}/loginCallback"
+  redirectUri = "{{ .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is a required value." }}/loginCallback"
   {{- end }}
   {{- if .Values.stackstate.authentication.keycloak.authenticationMethod }}
   authenticationMethod = {{ .Values.stackstate.authentication.keycloak.authenticationMethod | quote }}
