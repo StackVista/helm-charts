@@ -118,6 +118,16 @@ Environment variables to enable authentication with safe defaults
 {{- end -}}
 
 {{/*
+Environment variables containing the properly sanitized StackState Base URLs
+*/}}
+{{- define "stackstate.baseurls.envvars" }}
+- name: STACKSTATE_BASE_URL
+  value: {{ .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix '/' | required "stackstate.baseUrl is required" | quote }}
+- name: RECEIVER_BASE_URL
+  value: {{ printf "%s/%s" ( .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix '/' | required "stackstate.baseUrl is required" ) "receiver" | quote }}
+{{- end -}}
+
+{{/*
 UI extra environment variables for ui pods inherited through `stackstate.components.ui.extraEnv`
 */}}
 {{- define "stackstate.ui.envvars" -}}
