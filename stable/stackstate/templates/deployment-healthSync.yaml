@@ -18,6 +18,7 @@ env:
 {{- $serviceConfig := dict "ServiceName" "health-sync" "ServiceConfig" .Values.stackstate.components.healthSync }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.authentication.envvars" . }}
+{{- include "stackstate.baseurls.envvars" . }}
 - name: API_KEY
   valueFrom:
     secretKeyRef:
@@ -34,10 +35,6 @@ env:
     secretKeyRef:
       name: {{ template "common.fullname.short" . }}-license
       key: sts-license-key
-- name: STACKSTATE_BASE_URL
-  value: {{ .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | required "stackstate.baseUrl is required" | quote }}
-- name: RECEIVER_BASE_URL
-  value: {{ printf "%s/%s" ( .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | required "stackstate.baseUrl is required" ) "receiver" | quote }}
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.healthSync.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.healthSync.image.tag }}"
