@@ -8,18 +8,24 @@ container:
 
 image:
   # image.repository -- Base container image repository.
-  repository: docker.io/stackstate/trafficmirror
+  repository: quay.io/stackstate/trafficmirror
   # image.tag -- Default container image tag.
-  tag: 652621a6e6ace12819dbddfb43ff26cda45bda28
+  tag: v2.0.0
 
 ingress:
   # ingress.enabled -- Enable use of ingress controllers.
   enabled: false
 
 trafficmirror:
-  # trafficmirror.mainUrl -- The default URL for receiving the mirrored traffic.
+  # trafficmirror.mainUrl -- The default URL to receive the mirrored traffic.
   mainUrl: ""
+  # trafficmirror.mirrorUrls -- The additional URLs that should also receive mirrored traffic.
+  mirrorUrls: []
   # trafficmirror.password -- Basic auth password for the Trafficmirror service.
   password: ""
   # trafficmirror.username -- Basic auth username for the Trafficmirror service.
   username: ""
+  # trafficmirror.failAfterMinutes -- Remove a target when it has been failing for this many minutes.
+  failAfterMinutes: 30
+  # trafficmirror.retryAfterMinutes -- After 5 successive failures a target is temporarily disabled, it will be retried after this many minutes.
+  retryAfterMinutes: 1
