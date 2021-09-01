@@ -57,35 +57,15 @@ Common environment variables for HDFS configuration.
 - name: HDFS_CONF_dfs_client_retry_policy_enabled
   value: "true"
 - name: HDFS_CONF_dfs_client_retry_policy_spec
-  value: "1000,6,2000,10"
-- name: HDFS_CONF_dfs_client_use_datanode_hostname
-  value: "false"
+  value: "10000,6,60000,10"
 - name: HDFS_CONF_dfs_datanode_data_dir
   value: "/hadoop-data/data"
-- name: HDFS_CONF_dfs_datanode_sync_behind_writes
-  value: "true"
-- name: HDFS_CONF_dfs_datanode_synconclose
-  value: "true"
-- name: HDFS_CONF_dfs_datanode_use_datanode_hostname
-  value: "false"
 - name: HDFS_CONF_dfs_namenode_checkpoint_dir
   value: "/hadoop-data/data"
-- name: HDFS_CONF_dfs_namenode_datanode_registration_ip___hostname___check
-  value: "false"
-- name: HDFS_CONF_dfs_namenode_http___bind___host
-  value: "0.0.0.0"
-- name: HDFS_CONF_dfs_namenode_https___bind___host
-  value: "0.0.0.0"
 - name: HDFS_CONF_dfs_namenode_name_dir
   value: "/hadoop-data/data"
-- name: HDFS_CONF_dfs_namenode_rpc___bind___host
-  value: "0.0.0.0"
-- name: HDFS_CONF_dfs_namenode_servicerpc___bind___host
-  value: "0.0.0.0"
 - name: HDFS_CONF_dfs_replication
   value: "2"
-- name: HDFS_CONF_dfs_secondary_http_address
-  value: "0.0.0.0:50090"
 {{- end }}
 
 {{/*

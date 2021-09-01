@@ -113,7 +113,7 @@ hdfs:
     # hdfs.image.repository -- Base container image repository for HDFS datanode.
     repository: quay.io/stackstate/hadoop
     # hdfs.image.tag -- Default container image tag for HDFS datanode.
-    tag: 2.9.2-java11
+    tag: 2.9.2-java11-2
   datanode:
     extraEnv:
       # hdfs.datanode.extraEnv.open -- Extra open environment variables to inject into pods.

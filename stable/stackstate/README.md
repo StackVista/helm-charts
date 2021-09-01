@@ -11,12 +11,12 @@ Current chart version is `4.5.0-snapshot.10`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
-| https://helm-test.stackstate.io | hbase | 0.1.90 |
 | https://helm.min.io/ | minio | 8.0.10 |
 | https://helm.stackstate.io | anomaly-detection | 4.5.0-snapshot.14 |
 | https://helm.stackstate.io | cluster-agent | 0.4.22 |
 | https://helm.stackstate.io | common | 0.4.13 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.14 |
+| https://helm.stackstate.io | hbase | 0.1.66 |
 | https://helm.stackstate.io | kafka | 12.2.5-stackstate.0 |
 
 ## Required Values

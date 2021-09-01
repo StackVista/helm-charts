@@ -36,6 +36,12 @@ env:
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "all.commonEnv" . }}
 {{- include "hdfs.datanode.commonEnv" . }}
+lifecycle:
+  preStop:
+    exec:
+      command:
+        - /dn-scripts/check-status.sh
+        - waitForReplication
 ports:
 - containerPort: 50010
   name: dn
@@ -46,13 +52,20 @@ ports:
   name: metrics
 {{- end }}
 livenessProbe:
-  httpGet:
-    path: /
-    port: dninfo
+  exec:
+    command:
+      - /dn-scripts/check-status.sh
+      - clusterIdCheck
+  initialDelaySeconds: 60
+  periodSeconds: 30
 readinessProbe:
-  httpGet:
-    path: /
-    port: dninfo
+  exec:
+    command:
+      - /dn-scripts/check-status.sh
+      - clusterIdCheck
+  initialDelaySeconds: 60
+  periodSeconds: 30
+  successThreshold: 5
 {{- with .Values.hdfs.datanode.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
@@ -62,6 +75,8 @@ securityContext:
 volumeMounts:
 - name: data
   mountPath: /hadoop-data
+- name: dn-scripts
+  mountPath: /dn-scripts
 {{- end -}}
 
 {{- define "hbase.hdfs.datanode.statefulset" -}}
@@ -117,6 +132,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.hdfs.datanode.terminationGracePeriodSeconds }}
     {{- if or .Values.all.tolerations .Values.hdfs.datanode.tolerations }}
       tolerations:
       {{- with .Values.all.tolerations }}
@@ -131,6 +147,10 @@ spec:
       - name: data
         emptyDir: {}
     {{- end }}
+      - name: dn-scripts
+        configMap:
+          name: {{ template "common.fullname.short" . }}-hdfs-dn-scripts
+          defaultMode: 0755
 {{- if .Values.hdfs.datanode.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
