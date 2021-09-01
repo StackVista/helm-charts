@@ -17,6 +17,7 @@ env:
 {{- $serviceConfig := dict "ServiceName" "server" "ServiceConfig" .Values.stackstate.components.server }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.authentication.envvars" . }}
+{{- include "stackstate.baseurls.envvars" . }}
 - name: API_KEY
   valueFrom:
     secretKeyRef:
@@ -33,10 +34,6 @@ env:
     secretKeyRef:
       name: {{ template "common.fullname.short" . }}-license
       key: sts-license-key
-- name: STACKSTATE_BASE_URL
-  value: {{ .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | required "stackstate.baseUrl is required" | quote }}
-- name: RECEIVER_BASE_URL
-  value: {{ printf "%s/%s" ( .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | required "stackstate.baseUrl is required" ) "receiver" | quote }}
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
 - name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
