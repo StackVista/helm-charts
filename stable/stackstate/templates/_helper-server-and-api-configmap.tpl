@@ -101,6 +101,9 @@ stackstate.api.authentication.authServer.oidcAuthServer {
   {{- if .Values.stackstate.authentication.oidc.jwsAlgorithm }}
   jwsAlgorithm = {{ .Values.stackstate.authentication.oidc.jwsAlgorithm | quote }}
   {{- end }}
+  {{- if .Values.stackstate.authentication.oidc.customParameters }}
+  customParams {{ .Values.stackstate.authentication.oidc.customParameters | toJson }}
+  {{- end }}
   {{- if .Values.stackstate.authentication.oidc.jwtClaims }}
   jwtClaims {
     {{- if .Values.stackstate.authentication.oidc.jwtClaims.usernameField }}
