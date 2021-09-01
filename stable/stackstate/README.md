@@ -559,6 +559,8 @@ stackstate:
       jwtClaims:
         usernameField: email
         groupsField: groups
+      customParameters:
+        access_type: offline # Custom request parameter
 ```
 
 ### Configuring Keycloak
