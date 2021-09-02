@@ -69,6 +69,6 @@ PIDS+=($!)
 createOrUpdateTopic "sts_internal_topology" "1" "${ephemeralRetention}" &
 PIDS+=($!)
 
-for pid in ${PIDS[*]}; do
+for pid in "${PIDS[@]}"; do
   wait "$pid"
 done
