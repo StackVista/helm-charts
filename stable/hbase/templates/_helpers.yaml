@@ -50,6 +50,7 @@ parent chart.
 
 {{/*
 Common environment variables for HDFS configuration.
+We use HDFS_CONF_dfs_namenode_replication_min to ensure the desired amount of replicas to be written or fail the write op see https://stackoverflow.com/questions/23799658/hadoop-replication-factor-confusion
 */}}
 {{- define "hbase.hdfs.commonEnv" }}
 - name: CORE_CONF_fs_defaultFS
@@ -65,6 +66,8 @@ Common environment variables for HDFS configuration.
 - name: HDFS_CONF_dfs_namenode_name_dir
   value: "/hadoop-data/data"
 - name: HDFS_CONF_dfs_replication
+  value: "2"
+- name: HDFS_CONF_dfs_namenode_replication_min
   value: "2"
 {{- end }}
 
