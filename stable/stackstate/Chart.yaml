@@ -1,6 +1,6 @@
 apiVersion: v2
-appVersion: 4.5.0-pre.1.rc.10
-version: 4.5.0-pre.1.rc.10
+appVersion: 4.5.0-pre.1
+version: 4.5.0-pre.1
 description: Helm chart for StackState
 keywords:
   - aiops
@@ -18,7 +18,7 @@ maintainers:
 name: stackstate
 dependencies:
   - name: anomaly-detection
-    version: 4.5.0-pre.1.rc.10
+    version: 4.5.0-pre.1
     repository: https://helm.stackstate.io
     condition: anomaly-detection.enabled
   - name: cluster-agent
