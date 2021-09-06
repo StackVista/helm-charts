@@ -493,8 +493,8 @@ N.B.: The first invocation of kubectl get pod is not a mistake. It is there to c
 if that command fails because of a misconfiguration error. The while loop would just exit succesfully
 in that case.
 */}}
-{{- define "stackstate.initContainer.ensure.no.server.statefulset.pod.are.running" -}}
-name: ensure-no-server-statefulset-pod-are-running
+{{- define "stackstate.initContainer.ensure.no.server.statefulset.pods.are.running" -}}
+name: ensure-no-server-statefulset-pods-are-running
 image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
 imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
 command:
