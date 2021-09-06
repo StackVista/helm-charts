@@ -163,15 +163,15 @@ spec:
             - name: tmp-data
               mountPath: /tmp-data
       {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
+{{- if .Values.backup.stackGraph.securityContext.enabled }}
+      securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 8 }}
+{{- end }}
       restartPolicy: Never
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
         - name: tmp-data
           persistentVolumeClaim:
             claimName: stackgraph-restore-backup
-{{- if .Values.backup.stackGraph.securityContext.enabled }}
-      securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 8 }}
-{{- end }}
 {{- end -}}
 
 {{- define "pvc-stackgraph-restore-backup.yaml" -}}
