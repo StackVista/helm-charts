@@ -49,8 +49,8 @@ spec:
             - name: tmp-data
               persistentVolumeClaim:
                 claimName: {{ template "common.fullname.short" . }}-backup-stackgraph-tmp-data
-{{- if .Values.backup.stackGraph.securityContext.enabled }}
+        {{- if .Values.backup.stackGraph.securityContext.enabled }}
           securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 12 }}
-{{- end }}
+        {{- end }}
           restartPolicy: Never
 {{- end }}

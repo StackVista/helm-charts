@@ -70,9 +70,6 @@ livenessProbe:
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
-{{- if .Values.stackstate.components.all.securityContext.enabled }}
-securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 2 }}
-{{- end }}
 volumeMounts:
 - name: config-secrets-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
@@ -149,6 +146,9 @@ spec:
       {{- with .Values.stackstate.components.problemProducer.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+    {{- end }}
+    {{- if .Values.stackstate.components.all.securityContext.enabled }}
+      securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
     {{- end }}
       volumes:
         - name: config-secrets-volume
