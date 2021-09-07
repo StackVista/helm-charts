@@ -378,18 +378,36 @@ Ingress paths / routes
 - host: {{ tpl .host $ctx | quote }}
   http:
     paths:
-      - backend:
+      - path: /
+    {{- if $ctx.Capabilities.APIVersions.Has "batch/v1" }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "common.fullname.short" $ }}-router
+            port:
+              number: 8080
+    {{- else }}
+        backend:
           serviceName: {{ include "common.fullname.short" $ }}-router
           servicePort: 8080
-        path: /
+    {{- end }}
   {{- end }}
 {{- else }}
 - http:
     paths:
-      - backend:
-          serviceName: {{ include "common.fullname.short" . }}-router
+      - path: /
+    {{- if $ctx.Capabilities.APIVersions.Has "batch/v1" }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "common.fullname.short" $ }}-router
+            port:
+              number: 8080
+    {{- else }}
+        backend:
+          serviceName: {{ include "common.fullname.short" $ }}-router
           servicePort: 8080
-        path: /
+    {{- end }}
 {{- end }}
 {{- end -}}
 {{- define "stackstate.servicemonitor.extraLabels" -}}
