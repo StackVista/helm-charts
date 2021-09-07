@@ -378,18 +378,36 @@ Ingress paths / routes
 - host: {{ tpl .host $ctx | quote }}
   http:
     paths:
-      - backend:
+      - path: /
+    {{- if $ctx.Capabilities.APIVersions.Has "batch/v1" }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "common.fullname.short" $ }}-router
+            port:
+              number: 8080
+    {{- else }}
+        backend:
           serviceName: {{ include "common.fullname.short" $ }}-router
           servicePort: 8080
-        path: /
+    {{- end }}
   {{- end }}
 {{- else }}
 - http:
     paths:
-      - backend:
-          serviceName: {{ include "common.fullname.short" . }}-router
+      - path: /
+    {{- if $ctx.Capabilities.APIVersions.Has "batch/v1" }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "common.fullname.short" $ }}-router
+            port:
+              number: 8080
+    {{- else }}
+        backend:
+          serviceName: {{ include "common.fullname.short" $ }}-router
           servicePort: 8080
-        path: /
+    {{- end }}
 {{- end }}
 {{- end -}}
 {{- define "stackstate.servicemonitor.extraLabels" -}}
@@ -493,8 +511,8 @@ N.B.: The first invocation of kubectl get pod is not a mistake. It is there to c
 if that command fails because of a misconfiguration error. The while loop would just exit succesfully
 in that case.
 */}}
-{{- define "stackstate.initContainer.ensure.no.server.statefulset.pod.are.running" -}}
-name: ensure-no-server-statefulset-pod-are-running
+{{- define "stackstate.initContainer.ensure.no.server.statefulset.pods.are.running" -}}
+name: ensure-no-server-statefulset-pods-are-running
 image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
 imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
 command:

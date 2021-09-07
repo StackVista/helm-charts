@@ -70,9 +70,6 @@ livenessProbe:
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
-{{- if .Values.stackstate.components.all.securityContext.enabled }}
-securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 2 }}
-{{- end }}
 volumeMounts:
 - name: config-secrets-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
@@ -86,6 +83,9 @@ volumeMounts:
 {{- $stsStackstateViewHealthMainContainer := (merge $overrideContainer $commonContainer) -}}
 {{- $overrideContainer := fromYaml (include "stackstate.viewHealth.deployment.container.init" .) -}}
 {{- $stsStackstateServerInitContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.initContainer.ensure.no.server.statefulset.pods.are.running" .) -}}
+{{- $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer := (merge $overrideContainer $commonContainer) -}}
+
 metadata:
   name: {{ template "common.fullname.short" . }}-view-health
   labels:
@@ -117,7 +117,7 @@ spec:
       {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
-      - {{ include "stackstate.initContainer.ensure.no.server.statefulset.pod.are.running" . | nindent 8 }}
+      - {{ toYaml $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer | nindent 8 }}
       containers:
       - {{ toYaml $stsStackstateViewHealthMainContainer | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.state.nodeSelector }}
@@ -146,6 +146,9 @@ spec:
       {{- with .Values.stackstate.components.viewHealth.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+    {{- end }}
+    {{- if .Values.stackstate.components.all.securityContext.enabled }}
+      securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
     {{- end }}
       volumes:
         - name: config-secrets-volume
