@@ -66,8 +66,6 @@ container:
 cronjob:
   # cronjob.annotations -- Annotations for `CronJob` objects.
   annotations: {}
-  # cronjob.apiVersion -- Kubernetes apiVersion to use with a `CronJob` object.
-  apiVersion: batch/v1beta1
   # cronjob.concurrencyPolicy -- Specifies how to treat concurrent executions of a job that is created by this `CronJob` object.
   concurrencyPolicy: Forbid
   # cronjob.dnsPolicy -- DNS policy to apply to `Pod` objects.
@@ -177,8 +175,6 @@ image:
 ingress:
   # ingress.annotations -- Annotations for `Ingress` objects.
   annotations: {}
-  # ingress.apiVersion -- Kubernetes apiVersion to use with an `Ingress` object.
-  apiVersion: networking.k8s.io/v1beta1
   # ingress.hosts -- List of ingress hostnames.
   hosts: []
   # - host: chart-example.local
@@ -234,8 +230,6 @@ pod:
 poddisruptionbudget:
   # poddisruptionbudget.annotations -- Annotations for `PodDisruptionBudget` objects.
   annotations: {}
-  # poddisruptionbudget.apiVersion -- Kubernetes apiVersion to use with a `PodDisruptionBudget` object.
-  apiVersion: "policy/v1beta1"
 
 role:
   # clusterrole.annotations -- Annotations for `Role` objects.
