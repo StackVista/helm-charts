@@ -33,17 +33,34 @@ spec:
   {{- end }}
 {{- end }}
   rules:
+  {{- $ctx := . }}
   {{- range .Values.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
         {{- range .paths }}
           - path: {{ . }}
+          {{- if $ctx.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ template "common.fullname" $ }}
+                port:
+                  number: app
+          {{- else }}
             backend:
               serviceName: {{ template "common.fullname" $ }}
               servicePort: app
+          {{- end }}
         {{- end }}
   {{- end }}
+
+
+
+
+
+
+
 {{- end }}
 {{- end -}}
 {{- end -}}
