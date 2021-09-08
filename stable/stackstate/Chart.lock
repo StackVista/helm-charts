@@ -7,10 +7,10 @@ dependencies:
   version: 0.4.22
 - name: common
   repository: https://helm.stackstate.io
-  version: 0.4.16
+  version: 0.4.17
 - name: elasticsearch
   repository: https://helm.stackstate.io
-  version: 7.6.2-stackstate.16
+  version: 7.6.2-stackstate.17
 - name: hbase
   repository: https://helm.stackstate.io
   version: 0.1.93
@@ -23,5 +23,5 @@ dependencies:
 - name: zookeeper
   repository: https://charts.bitnami.com/bitnami
   version: 5.16.0
-digest: sha256:81bb2ab2bff48001d9b984508dda0024d8a4d34cb074bcb7228b3016df9a4909
-generated: "2021-09-09T09:14:51.922223+02:00"
+digest: sha256:905996dbebf5623964cf5ce25bed2b7d3fa68cd8f4fd32dd3dd2f41b05b084c5
+generated: "2021-09-09T08:45:14.993566+02:00"
