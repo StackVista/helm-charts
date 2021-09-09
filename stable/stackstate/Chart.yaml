@@ -27,11 +27,11 @@ dependencies:
     condition: cluster-agent.enabled
   - name: common
     repository: https://helm.stackstate.io
-    version: 0.4.16
+    version: 0.4.17
   - name: elasticsearch
     condition: elasticsearch.enabled
     repository: https://helm.stackstate.io
-    version: 7.6.2-stackstate.16
+    version: 7.6.2-stackstate.17
   - name: hbase
     condition: hbase.enabled
     repository: https://helm.stackstate.io

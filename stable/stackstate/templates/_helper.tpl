@@ -379,7 +379,7 @@ Ingress paths / routes
   http:
     paths:
       - path: /
-    {{- if $ctx.Capabilities.APIVersions.Has "batch/v1" }}
+    {{- if $ctx.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
         pathType: Prefix
         backend:
           service:
@@ -396,7 +396,7 @@ Ingress paths / routes
 - http:
     paths:
       - path: /
-    {{- if $ctx.Capabilities.APIVersions.Has "batch/v1" }}
+    {{- if $ctx.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
         pathType: Prefix
         backend:
           service:
