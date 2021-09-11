@@ -18,6 +18,7 @@ env:
 {{- $serviceConfig := dict "ServiceName" "sync" "ServiceConfig" .Values.stackstate.components.sync }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.authentication.envvars" . }}
+{{- include "stackstate.baseurls.envvars" . }}
 - name: API_KEY
   valueFrom:
     secretKeyRef:
@@ -34,10 +35,6 @@ env:
     secretKeyRef:
       name: {{ template "common.fullname.short" . }}-license
       key: sts-license-key
-- name: STACKSTATE_BASE_URL
-  value: {{ .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | required "stackstate.baseUrl is required" | quote }}
-- name: RECEIVER_BASE_URL
-  value: {{ printf "%s/%s" ( .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | required "stackstate.baseUrl is required" ) "receiver" | quote }}
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
 - name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
@@ -74,9 +71,6 @@ readinessProbe:
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
-{{- if .Values.stackstate.components.all.securityContext.enabled }}
-securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 2 }}
-{{- end }}
 volumeMounts:
 - name: config-secrets-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
@@ -90,6 +84,9 @@ volumeMounts:
 {{- $stsStackstateSyncMainContainer := (merge $overrideContainer $commonContainer) -}}
 {{- $overrideContainer := fromYaml (include "stackstate.sync.deployment.container.init" .) -}}
 {{- $stsStackstateServerInitContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.initContainer.ensure.no.server.statefulset.pods.are.running" .) -}}
+{{- $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer := (merge $overrideContainer $commonContainer) -}}
+
 metadata:
   name: {{ template "common.fullname.short" . }}-sync
   labels:
@@ -121,7 +118,7 @@ spec:
       {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
-      - {{ include "stackstate.initContainer.ensure.no.server.statefulset.pod.are.running" . | nindent 8 }}
+      - {{ toYaml $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer | nindent 8 }}
       containers:
       - {{ toYaml $stsStackstateSyncMainContainer | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.sync.nodeSelector }}
@@ -150,6 +147,9 @@ spec:
       {{- with .Values.stackstate.components.sync.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+    {{- end }}
+    {{- if .Values.stackstate.components.all.securityContext.enabled }}
+      securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
     {{- end }}
       volumes:
         - name: config-secrets-volume

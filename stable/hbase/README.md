@@ -83,7 +83,7 @@ Current chart version is `0.1.91`
 | hdfs.datanode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.image.pullPolicy | string | `"IfNotPresent"` | Pull policy for HDFS datanode. |
 | hdfs.image.repository | string | `"stackstate/hadoop"` | Base container image repository for HDFS datanode. |
-| hdfs.image.tag | string | `"2.9.2-java11-2"` | Default container image tag for HDFS datanode. |
+| hdfs.image.tag | string | `"2.9.2-java11-3"` | Default container image tag for HDFS datanode. |
 | hdfs.namenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.namenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hdfs.namenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
@@ -118,7 +118,7 @@ Current chart version is `0.1.91`
 | hdfs.volumePermissions.securityContext.runAsUser | int | `0` | Run the volumePermissions init container with the specified UID (Do not change unless instructed) |
 | serviceAccount.create | bool | `true` | Whether to create serviceAccounts and run the statefulsets under them |
 | stackgraph.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below). |
-| stackgraph.image.tag | string | `"4.2.2"` | The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below). |
+| stackgraph.image.tag | string | `"4.2.6"` | The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below). |
 | statefulset.antiAffinity.strategy | string | `"soft"` | AntiAffinity strategy to use for all StatefulSets. |
 | statefulset.antiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | AntiAffinity topology key to use for all StatefulSets. |
 | tephra.affinity | object | `{}` | Affinity settings for pod assignment. |

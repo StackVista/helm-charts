@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.5.0-snapshot.10`
+Current chart version is `4.5.0-snapshot.18`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -12,11 +12,11 @@ Current chart version is `4.5.0-snapshot.10`
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
 | https://helm.min.io/ | minio | 8.0.10 |
-| https://helm.stackstate.io | anomaly-detection | 4.5.0-snapshot.14 |
+| https://helm.stackstate.io | anomaly-detection | 4.5.0-snapshot.99 |
 | https://helm.stackstate.io | cluster-agent | 0.4.22 |
-| https://helm.stackstate.io | common | 0.4.13 |
-| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.14 |
-| https://helm.stackstate.io | hbase | 0.1.66 |
+| https://helm.stackstate.io | common | 0.4.17 |
+| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.17 |
+| https://helm.stackstate.io | hbase | 0.1.93 |
 | https://helm.stackstate.io | kafka | 12.2.5-stackstate.0 |
 
 ## Required Values
@@ -88,6 +88,7 @@ stackstate/stackstate
 | backup.stackGraph.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
 | backup.stackGraph.securityContext.fsGroup | int | `65534` | The GID (group ID) of all files on all mounted volumes |
 | backup.stackGraph.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
+| backup.stackGraph.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | backup.stackGraph.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
 | caspr.enabled | bool | `false` | Enable CASPR compatible values. |
 | cluster-agent.enabled | bool | `false` | Deploy the StackState Kubernetes Agent so StackState can monitor the cluster it runs in |
@@ -146,7 +147,7 @@ stackstate/stackstate
 | hbase.hdfs.secondarynamenode.resources.limits.memory | string | `"1Gi"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.cpu | string | `"50m"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.memory | string | `"1Gi"` |  |
-| hbase.stackgraph.image.tag | string | `"4.2.2"` | The StackGraph server version, must be compatible with the StackState version |
+| hbase.stackgraph.image.tag | string | `"4.2.6"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
 | hbase.tephra.resources.limits.cpu | string | `"500m"` |  |
 | hbase.tephra.resources.limits.memory | string | `"3Gi"` |  |
@@ -239,6 +240,7 @@ stackstate/stackstate
 | stackstate.components.all.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
 | stackstate.components.all.nodeSelector | object | `{}` | Node labels for pod assignment on all components. |
 | stackstate.components.all.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
+| stackstate.components.all.securityContext.fsGroup | int | `65534` | The GID (group ID) used to mount volumes |
 | stackstate.components.all.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
 | stackstate.components.all.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | stackstate.components.all.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
@@ -338,6 +340,7 @@ stackstate/stackstate
 | stackstate.components.kafkaTopicCreate.image.tag | string | `"latest"` | Container image tag for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.kafkaTopicCreate.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
+| stackstate.components.kafkaTopicCreate.securityContext.fsGroup | int | `1001` | The GID (group ID) used to mount volumes |
 | stackstate.components.kafkaTopicCreate.securityContext.runAsGroup | int | `1001` | The GID (group ID) of the owning user of the process |
 | stackstate.components.kafkaTopicCreate.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | stackstate.components.kafkaTopicCreate.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
@@ -481,6 +484,7 @@ stackstate/stackstate
 | stackstate.components.ui.replicaCount | int | `2` | Number of `ui` replicas. |
 | stackstate.components.ui.resources | object | `{"limits":{"cpu":"50m","memory":"64Mi"},"requests":{"cpu":"50m","memory":"64Mi"}}` | Resource allocation for `ui` pods. |
 | stackstate.components.ui.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
+| stackstate.components.ui.securityContext.fsGroup | int | `101` | The GID (group ID) used to mount volumes |
 | stackstate.components.ui.securityContext.runAsGroup | int | `101` | The GID (group ID) of the owning user of the process |
 | stackstate.components.ui.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | stackstate.components.ui.securityContext.runAsUser | int | `101` | The UID (user ID) of the owning user of the process |
@@ -559,6 +563,8 @@ stackstate:
       jwtClaims:
         usernameField: email
         groupsField: groups
+      customParameters:
+        access_type: offline # Custom request parameter
 ```
 
 ### Configuring Keycloak

@@ -1,5 +1,9 @@
 {{- if .Values.ingress.enabled -}}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+apiVersion: networking.k8s.io/v1
+{{- else }}
 apiVersion: networking.k8s.io/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
   name: {{ include "common.fullname.short" . }}
@@ -24,7 +28,11 @@ spec:
   rules:
     {{- include "stackstate.ingress.rules" . | nindent 4 }}
 {{- else if .Values.caspr.enabled -}}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+apiVersion: networking.k8s.io/v1
+{{- else }}
 apiVersion: networking.k8s.io/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
   name: {{ include "common.fullname.short" . }}
@@ -43,8 +51,17 @@ spec:
   - host: {{ .Values.caspr.applicationInstance.host | quote }}
     http:
       paths:
-        - backend:
+        - path: /
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+          pathType: Prefix
+          backend:
+            service:
+              name: {{ include "common.fullname.short" $ }}-router
+              port:
+                number: 8080
+{{- else }}
+          backend:
             serviceName: {{ include "common.fullname.short" $ }}-router
             servicePort: 8080
-          path: /
+{{- end }}
 {{- end }}

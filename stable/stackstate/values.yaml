@@ -77,6 +77,8 @@ backup:
       fsGroup: 65534
       # backup.stackGraph.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
       runAsGroup: 65534
+      # backup.stackGraph.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
+      runAsNonRoot: true
       # backup.stackGraph.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
       runAsUser: 65534
 caspr:
@@ -153,10 +155,12 @@ stackstate:
       securityContext:
         # stackstate.components.all.securityContext.enabled -- Whether or not to enable the securityContext
         enabled: true
-        # stackstate.components.all.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
-        runAsNonRoot: true
+        # stackstate.components.all.securityContext.fsGroup -- The GID (group ID) used to mount volumes
+        fsGroup: 65534
         # stackstate.components.all.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
         runAsGroup: 65534
+        # stackstate.components.all.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
+        runAsNonRoot: true
         # stackstate.components.all.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
         runAsUser: 65534
       # stackstate.components.all.elasticsearchEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster.
@@ -709,10 +713,12 @@ stackstate:
       securityContext:
         # stackstate.components.ui.securityContext.enabled -- Whether or not to enable the securityContext
         enabled: true
-        # stackstate.components.ui.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
-        runAsNonRoot: true
+        # stackstate.components.ui.securityContext.fsGroup -- The GID (group ID) used to mount volumes
+        fsGroup: 101
         # stackstate.components.ui.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
         runAsGroup: 101
+        # stackstate.components.ui.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
+        runAsNonRoot: true
         # stackstate.components.ui.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
         runAsUser: 101
       # stackstate.components.ui.replicaCount -- Number of `ui` replicas.
@@ -810,10 +816,12 @@ stackstate:
       securityContext:
         # stackstate.components.kafkaTopicCreate.securityContext.enabled -- Whether or not to enable the securityContext
         enabled: true
-        # stackstate.components.kafkaTopicCreate.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
-        runAsNonRoot: true
+        # stackstate.components.kafkaTopicCreate.securityContext.fsGroup -- The GID (group ID) used to mount volumes
+        fsGroup: 1001
         # stackstate.components.kafkaTopicCreate.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
         runAsGroup: 1001
+        # stackstate.components.kafkaTopicCreate.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
+        runAsNonRoot: true
         # stackstate.components.kafkaTopicCreate.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
         runAsUser: 1001
       # stackstate.components.kafkaTopicCreate.nodeSelector -- Node labels for pod assignment.
@@ -971,7 +979,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 4.2.2
+      tag: 4.2.6
   console:
     # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
     enabled: false

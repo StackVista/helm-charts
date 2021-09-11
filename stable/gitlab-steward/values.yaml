@@ -23,7 +23,7 @@ image:
   # image.repository -- Base container image registry.
   repository: quay.io/stackstate/python-steward
   # image.tag -- Default container image tag.
-  tag: master
+  tag: v0.4.0
   # image.pullPolicy -- Default container image pull policy.
   pullPolicy: Always
   # image.pullSecrets -- Extra secrets / credentials needed for container image registry. Is ignored when specifying a pullSecretUsername/password
