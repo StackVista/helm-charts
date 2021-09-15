@@ -21,7 +21,7 @@ extraEnv:
 
 image:
   # image.repository -- Base container image registry.
-  repository: quay.io/stackstate/python-steward
+  repository: quay.io/stackstate/gitlab-steward
   # image.tag -- Default container image tag.
   tag: v0.4.0
   # image.pullPolicy -- Default container image pull policy.
