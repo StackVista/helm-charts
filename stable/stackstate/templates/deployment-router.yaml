@@ -57,7 +57,7 @@ spec:
         configMap:
           name: {{ template "common.fullname.short" . }}-router
           items:
-          - key: envoy-config
+          - key: envoy.yaml
             path: envoy.yaml
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.router.nodeSelector }}
       nodeSelector:
