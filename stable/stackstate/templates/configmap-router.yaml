@@ -65,7 +65,7 @@ data:
                     route:
                       cluster: "{{ template "common.fullname.short" . }}-ui"
               http_filters:
-              - name: envoy.router
+              - name: envoy.filters.http.router
                 typed_config: {}
       clusters:
       - name: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
