@@ -33,12 +33,13 @@ spec:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
             - name: tmp-data
               mountPath: /tmp-data
+      restartPolicy: Never
+{{- if .Values.backup.stackGraph.securityContext.enabled }}
+      securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 8 }}
+{{- end }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
         - name: tmp-data
           persistentVolumeClaim:
             claimName: {{ template "common.fullname.short" . }}-backup-stackgraph-tmp-data
-      securityContext:
-        runAsNonRoot: true
-      restartPolicy: Never
 {{- end }}
