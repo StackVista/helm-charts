@@ -1,3 +1,4 @@
+{{- if .Values.clusterChecks.enabled }}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -12,3 +13,4 @@ spec:
       app.kubernetes.io/component: clusterchecks
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/name: {{ include "cluster-agent.name" . }}
+{{- end -}}
