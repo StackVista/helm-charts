@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.94`
+Current chart version is `0.1.95`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -52,7 +52,7 @@ Current chart version is `0.1.94`
 | hbase.master.image.repository | string | `"stackstate/hbase-master"` | Base container image repository for HBase masters. |
 | hbase.master.image.tag | string | `nil` | Container image tag for HBase masters, defaults to `stackgraph.image.tag` |
 | hbase.master.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| hbase.master.replicaCount | int | `1` | Number of pods for HBase masters. |
+| hbase.master.replicaCount | int | `2` | Number of pods for HBase masters. |
 | hbase.master.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HBase masters. |
 | hbase.master.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.regionserver.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -62,7 +62,7 @@ Current chart version is `0.1.94`
 | hbase.regionserver.image.repository | string | `"stackstate/hbase-regionserver"` | Base container image repository for HBase region servers. |
 | hbase.regionserver.image.tag | string | `nil` | Container image tag for HBase region servers, defaults to `stackgraph.image.tag` |
 | hbase.regionserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| hbase.regionserver.replicaCount | int | `1` | Number of HBase regionserver nodes. |
+| hbase.regionserver.replicaCount | int | `3` | Number of HBase regionserver nodes. |
 | hbase.regionserver.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"2000m","memory":"2Gi"}}` | Resources to allocate for HBase region servers. |
 | hbase.regionserver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |

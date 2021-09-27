@@ -58,7 +58,7 @@ We use HDFS_CONF_dfs_namenode_replication_min to ensure the desired amount of re
 - name: HDFS_CONF_dfs_client_retry_policy_enabled
   value: "true"
 - name: HDFS_CONF_dfs_client_retry_policy_spec
-  value: "10000,6,60000,10"
+  value: "1000,6,2000,10"
 - name: HDFS_CONF_dfs_datanode_data_dir
   value: "/hadoop-data/data"
 - name: HDFS_CONF_dfs_namenode_checkpoint_dir
@@ -77,8 +77,6 @@ Common environment variables for HBase configuration.
 {{- define "hbase.hbase.commonEnv" }}
 - name: HBASE_CONF_data_tx_zookeeper_quorum
   value: {{ include "hbase.zookeeper.endpoint" . | quote }}
-- name: HBASE_CONF_hbase_master
-  value: "{{ template "common.fullname.short" . }}-hbase-master:16000"
 - name: HBASE_CONF_hbase_rootdir
   value: "hdfs://{{ template "common.fullname.short" . }}-hdfs-nn-headful:9000/hbase"
 - name: HBASE_CONF_hbase_zookeeper_quorum

@@ -18,6 +18,8 @@ env:
 {{- include "hbase.hbase.commonEnv" . }}
 {{- include "all.commonEnv" . }}
 {{- include "tephra.commonEnv" . }}
+- name: HBASE_CONF_hbase_master_hostname
+  value: "{{ template "common.fullname.short" . }}-hbase-master"
 ports:
 - containerPort: 15165
   name: tephra

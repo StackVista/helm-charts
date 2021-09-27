@@ -28,6 +28,8 @@ env:
       fieldPath: metadata.namespace
 - name: HBASE_CONF_hbase_regionserver_hostname
   value: $(POD_NAME).{{ template "common.fullname.short" . }}-hbase-rs.$(POD_NAMESPACE).svc.cluster.local
+- name: HBASE_CONF_hbase_master_hostname
+  value: "{{ template "common.fullname.short" . }}-hbase-master"
 ports:
 - containerPort: 16020
   name: rs
@@ -38,19 +40,29 @@ ports:
   name: metrics
 {{- end }}
 livenessProbe:
-  httpGet:
-    path: /
-    port: rsinfo
+  exec:
+    command:
+      - /rs-scripts/check-status.sh
+      - rsClusterIdCheck
+  initialDelaySeconds: 30
+  periodSeconds: 15
 readinessProbe:
-  httpGet:
-    path: /
-    port: rsinfo
+  exec:
+    command:
+      - /rs-scripts/check-status.sh
+      - rsClusterIdCheck
+  initialDelaySeconds: 30
+  periodSeconds: 15
+  successThreshold: 3
 {{- with .Values.hbase.regionserver.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 securityContext:
   runAsNonRoot: true
+volumeMounts:
+  - name: rs-scripts
+    mountPath: /rs-scripts
 {{- end -}}
 
 {{- define "hbase.hbase.regionserver.statefulset" -}}
@@ -90,6 +102,11 @@ spec:
       - {{ toYaml $stackstateHbaseRegionServerInitContainer | nindent 8 }}
       containers:
       - {{ toYaml $stackstateHbaseRegionServerContainer | nindent 8 }}
+      volumes:
+        - name: rs-scripts
+          configMap:
+            name: {{ template "common.fullname.short" . }}-hbase-rs-scripts
+            defaultMode: 0755
     {{- if or .Values.all.nodeSelector .Values.hbase.regionserver.nodeSelector }}
       nodeSelector:
       {{- with .Values.all.nodeSelector }}

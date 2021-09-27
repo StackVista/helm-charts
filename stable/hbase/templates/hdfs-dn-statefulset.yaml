@@ -36,12 +36,6 @@ env:
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "all.commonEnv" . }}
 {{- include "hdfs.datanode.commonEnv" . }}
-lifecycle:
-  preStop:
-    exec:
-      command:
-        - /dn-scripts/check-status.sh
-        - waitForReplication
 ports:
 - containerPort: 50010
   name: dn
@@ -56,15 +50,15 @@ livenessProbe:
     command:
       - /dn-scripts/check-status.sh
       - clusterIdCheck
-  initialDelaySeconds: 60
-  periodSeconds: 30
+  initialDelaySeconds: 30
+  periodSeconds: 15
 readinessProbe:
   exec:
     command:
       - /dn-scripts/check-status.sh
       - clusterIdCheck
-  initialDelaySeconds: 60
-  periodSeconds: 30
+  initialDelaySeconds: 30
+  periodSeconds: 15
   successThreshold: 5
 {{- with .Values.hdfs.datanode.resources }}
 resources:
