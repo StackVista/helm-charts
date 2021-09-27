@@ -40,7 +40,7 @@ ephemeralRetention="retention.ms=86400000"
 persistentRetention="retention.ms=-1"
 
 PIDS=()
-createOrUpdateTopic "sts_correlate_aggregation" "10" "${ephemeralRetention}" &
+createOrUpdateTopic "sts_correlated_connections" "10" "${ephemeralRetention}" &
 PIDS+=($!)
 createOrUpdateTopic "sts_correlate_endpoints" "10" "${ephemeralRetention}" &
 PIDS+=($!)
