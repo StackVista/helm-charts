@@ -101,7 +101,7 @@ hbase:
       # hbase.master.image.tag -- Container image tag for HBase masters, defaults to `stackgraph.image.tag`
       tag:
     # hbase.master.replicaCount -- Number of pods for HBase masters.
-    replicaCount: 2
+    replicaCount: 1
     # hbase.master.resources -- Resources to allocate for HBase masters.
     resources:
       limits:
@@ -129,7 +129,7 @@ hbase:
       # hbase.regionserver.image.tag -- Container image tag for HBase region servers, defaults to `stackgraph.image.tag`
       tag:
     # hbase.regionserver.replicaCount -- Number of HBase regionserver nodes.
-    replicaCount: 3
+    replicaCount: 1
     # hbase.regionserver.resources -- Resources to allocate for HBase region servers.
     resources:
       limits:
