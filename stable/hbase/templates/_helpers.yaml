@@ -68,7 +68,7 @@ We use HDFS_CONF_dfs_namenode_replication_min to ensure the desired amount of re
 - name: HDFS_CONF_dfs_replication
   value: "3"
 - name: HDFS_CONF_dfs_namenode_replication_min
-  value: "1"
+  value: "2"
 {{- end }}
 
 {{/*
