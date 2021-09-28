@@ -35,7 +35,7 @@ dependencies:
   - name: hbase
     condition: hbase.enabled
     repository: https://helm.stackstate.io
-    version: 0.1.93
+    version: 0.1.94
   - name: kafka
     condition: kafka.enabled
     repository: https://helm.stackstate.io
