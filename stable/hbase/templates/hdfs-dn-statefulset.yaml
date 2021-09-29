@@ -49,14 +49,12 @@ livenessProbe:
   exec:
     command:
       - /dn-scripts/check-status.sh
-      - clusterIdCheck
   initialDelaySeconds: 30
   periodSeconds: 15
 readinessProbe:
   exec:
     command:
       - /dn-scripts/check-status.sh
-      - clusterIdCheck
   initialDelaySeconds: 30
   periodSeconds: 15
   successThreshold: 5

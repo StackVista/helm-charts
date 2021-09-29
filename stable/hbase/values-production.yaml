@@ -107,6 +107,7 @@ hbase:
     quorum: hbase
 
 hdfs:
+  minReplication: 2
   image:
     # hdfs.image.pullPolicy -- Pull policy for HDFS datanode.
     pullPolicy: Always

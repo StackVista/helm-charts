@@ -10,22 +10,12 @@ set -o pipefail
 # Turn on traces, useful while debugging.
 set -o xtrace
 
-function rsClusterIdCheck() {
-  # Check if region server registered with the master and got non-null cluster ID.
-  _PORTS="16030"
-  _URL_PATH="jmx?qry=Hadoop:service=HBase,name=RegionServer,sub=Server"
-  _CLUSTER_ID=""
-  for _PORT in $_PORTS; do
-  _CLUSTER_ID+=$(curl -s http://localhost:"${_PORT}"/"$_URL_PATH" |  \
-      grep clusterId) || true
-  done
-  echo "$_CLUSTER_ID" | grep -q -v null
-}
-
-case "$1" in
-  rsClusterIdCheck)
-    rsClusterIdCheck
-    ;;
-  *)
-    echo $"Usage: $0 {rsClusterIdCheck}"
-esac
+# Check if region server registered with the master and got non-null cluster ID.
+_PORTS="16030"
+_URL_PATH="jmx?qry=Hadoop:service=HBase,name=RegionServer,sub=Server"
+_CLUSTER_ID=""
+for _PORT in $_PORTS; do
+_CLUSTER_ID+=$(curl -s http://localhost:"${_PORT}"/"$_URL_PATH" |  \
+    grep clusterId) || true
+done
+echo "$_CLUSTER_ID" | grep -q -v null
