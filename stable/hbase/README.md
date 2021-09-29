@@ -52,7 +52,7 @@ Current chart version is `0.1.95`
 | hbase.master.image.repository | string | `"stackstate/hbase-master"` | Base container image repository for HBase masters. |
 | hbase.master.image.tag | string | `nil` | Container image tag for HBase masters, defaults to `stackgraph.image.tag` |
 | hbase.master.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| hbase.master.replicaCount | int | `2` | Number of pods for HBase masters. |
+| hbase.master.replicaCount | int | `1` | Number of pods for HBase masters. |
 | hbase.master.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HBase masters. |
 | hbase.master.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.regionserver.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -62,7 +62,7 @@ Current chart version is `0.1.95`
 | hbase.regionserver.image.repository | string | `"stackstate/hbase-regionserver"` | Base container image repository for HBase region servers. |
 | hbase.regionserver.image.tag | string | `nil` | Container image tag for HBase region servers, defaults to `stackgraph.image.tag` |
 | hbase.regionserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| hbase.regionserver.replicaCount | int | `3` | Number of HBase regionserver nodes. |
+| hbase.regionserver.replicaCount | int | `1` | Number of HBase regionserver nodes. |
 | hbase.regionserver.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"2000m","memory":"2Gi"}}` | Resources to allocate for HBase region servers. |
 | hbase.regionserver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
@@ -84,7 +84,7 @@ Current chart version is `0.1.95`
 | hdfs.image.pullPolicy | string | `"IfNotPresent"` | Pull policy for HDFS datanode. |
 | hdfs.image.repository | string | `"stackstate/hadoop"` | Base container image repository for HDFS datanode. |
 | hdfs.image.tag | string | `"2.9.2-java11-3"` | Default container image tag for HDFS datanode. |
-| hdfs.minReplication | int | `1` |  |
+| hdfs.minReplication | int | `1` | Sets the minimum synchronous replication that the namenode will enforce when writing a block. This gives guarantees about the amount of copies of a single block. |
 | hdfs.namenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.namenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hdfs.namenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
