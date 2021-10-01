@@ -69,6 +69,10 @@ We use HDFS_CONF_dfs_namenode_replication_min to ensure the desired amount of re
   value: "2"
 - name: HDFS_CONF_dfs_namenode_replication_min
   value: {{ .Values.hdfs.minReplication | quote }}
+- name: HDFS_CONF_dfs_client_block_write_replace___datanode___on___failure_enable
+  value: "true"
+- name: HDFS_CONF_dfs_client_block_write_replace___datanode___on___failure_policy
+  value: "ALWAYS"
 {{- end }}
 
 {{/*

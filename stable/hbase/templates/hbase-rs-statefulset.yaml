@@ -43,15 +43,10 @@ livenessProbe:
   exec:
     command:
       - /rs-scripts/check-status.sh
-  initialDelaySeconds: 30
-  periodSeconds: 15
 readinessProbe:
   exec:
     command:
       - /rs-scripts/check-status.sh
-  initialDelaySeconds: 30
-  periodSeconds: 15
-  successThreshold: 3
 {{- with .Values.hbase.regionserver.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
