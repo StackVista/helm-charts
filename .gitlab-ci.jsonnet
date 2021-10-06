@@ -128,7 +128,7 @@ local itest_chart_job(chart) = {
 
 local push_chart_job_if(chart, repository_url, repository_username, repository_password, rules) = {
   script: [
-    'helm plugin install https://github.com/chartmuseum/helm-push.git',
+    'helm plugin install --version v0.9.0 https://github.com/chartmuseum/helm-push.git',
     'helm dependencies update ${CHART}',
     'helm push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
   ],
