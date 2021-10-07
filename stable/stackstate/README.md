@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.5.0-snapshot.19`
+Current chart version is `4.5.0-snapshot.22`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -12,11 +12,11 @@ Current chart version is `4.5.0-snapshot.19`
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
 | https://helm.min.io/ | minio | 8.0.10 |
-| https://helm.stackstate.io | anomaly-detection | 4.5.0-snapshot.102 |
+| https://helm.stackstate.io | anomaly-detection | 4.5.0-snapshot.104 |
 | https://helm.stackstate.io | cluster-agent | 0.4.22 |
 | https://helm.stackstate.io | common | 0.4.17 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.17 |
-| https://helm.stackstate.io | hbase | 0.1.93 |
+| https://helm.stackstate.io | hbase | 0.1.94 |
 | https://helm.stackstate.io | kafka | 12.2.5-stackstate.0 |
 
 ## Required Values
@@ -147,7 +147,7 @@ stackstate/stackstate
 | hbase.hdfs.secondarynamenode.resources.limits.memory | string | `"1Gi"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.cpu | string | `"50m"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.memory | string | `"1Gi"` |  |
-| hbase.stackgraph.image.tag | string | `"4.2.6"` | The StackGraph server version, must be compatible with the StackState version |
+| hbase.stackgraph.image.tag | string | `"4.2.8"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
 | hbase.tephra.resources.limits.cpu | string | `"500m"` |  |
 | hbase.tephra.resources.limits.memory | string | `"3Gi"` |  |
