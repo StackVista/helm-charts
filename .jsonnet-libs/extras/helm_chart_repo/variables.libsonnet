@@ -1,6 +1,11 @@
 {
   local Variable = self,
 
+  images: {
+    stackstate_helm_test: 'stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee',
+    stackstate_devops: 'stackstate/stackstate-ci-images:stackstate-devops-f87d9654',
+    chart_testing: 'quay.io/helmpack/chart-testing:v3.0.0-beta.2',
+  },
   helm: {
     repositories: {
       bitnami: 'https://charts.bitnami.com/bitnami',
