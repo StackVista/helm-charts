@@ -49,10 +49,15 @@ livenessProbe:
   exec:
     command:
       - /dn-scripts/check-status.sh
+  initialDelaySeconds: 60
+  periodSeconds: 30
 readinessProbe:
   exec:
     command:
       - /dn-scripts/check-status.sh
+  initialDelaySeconds: 60
+  periodSeconds:
+  successThreshold: 1
 {{- with .Values.hdfs.datanode.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
