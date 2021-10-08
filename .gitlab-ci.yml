@@ -722,6 +722,7 @@ push_test_charts:
       when: never
     - when: always
   script:
+    - source .gitlab/aws_auth_setup.sh
     - sh test/sync-repo.sh
   stage: build
   variables:
