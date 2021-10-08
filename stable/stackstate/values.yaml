@@ -1005,6 +1005,7 @@ hbase:
           memory: "3Gi"
           cpu: "1500m"
   hdfs:
+    minReplication: 2
     datanode:
       # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas.
       replicaCount: 3
