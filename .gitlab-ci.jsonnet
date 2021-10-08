@@ -85,7 +85,7 @@ local validate_and_push_jobs = {
 };
 
 local test_chart_job(chart) = {
-  image: 'stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee',
+  image: variables.images.stackstate_helm_test,
   before_script: helm_fetch_dependencies +
   ['helm dependencies update ${CHART}'],
   script: [
@@ -106,7 +106,7 @@ local test_chart_job(chart) = {
 } + skip_when_dependency_upgrade;
 
 local itest_chart_job(chart) = {
-  image: 'stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee',
+  image: variables.images.stackstate_helm_test,
   before_script: helm_fetch_dependencies +
   ['helm dependencies update ${CHART}'],
   script: [
@@ -128,10 +128,10 @@ local itest_chart_job(chart) = {
 
 local push_chart_job_if(chart, repository_url, repository_username, repository_password, rules) = {
   script: [
-    'helm plugin install https://github.com/chartmuseum/helm-push.git',
     'helm dependencies update ${CHART}',
-    'helm push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
+    'helm cm-push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
   ],
+  image: variables.images.stackstate_devops,
   rules: rules,
   variables: {
     CHART: 'stable/' + chart,
@@ -218,7 +218,7 @@ local push_charts_to_public_jobs = {
 
 local update_sg_version = {
   update_stackgraph_version: {
-    image: 'stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee',
+    image: variables.images.stackstate_helm_test,
     stage: 'update',
     variables: {
       GIT_AUTHOR_EMAIL: 'sts-admin@stackstate.com',
@@ -242,7 +242,7 @@ local update_sg_version = {
 
 local update_aad_chart_version = {
   update_aad_chart_version: {
-    image: 'stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee',
+    image: variables.images.stackstate_helm_test,
     stage: 'update',
     variables: {
       GIT_AUTHOR_EMAIL: 'sts-admin@stackstate.com',
@@ -274,7 +274,7 @@ local update_aad_chart_version = {
       { @'if': '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH' },
     ],
   },
-  image: 'quay.io/helmpack/chart-testing:v3.0.0-beta.2',
+  image: variables.images.chart_testing,
   stages: ['validate', 'test', 'update', 'build', 'push-charts-to-internal', 'push-charts-to-public'],
 
   variables: {
