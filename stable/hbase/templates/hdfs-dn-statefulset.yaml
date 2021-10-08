@@ -56,7 +56,7 @@ readinessProbe:
     command:
       - /dn-scripts/check-status.sh
   initialDelaySeconds: 60
-  periodSeconds:
+  periodSeconds: 30
   successThreshold: 1
 {{- with .Values.hdfs.datanode.resources }}
 resources:
