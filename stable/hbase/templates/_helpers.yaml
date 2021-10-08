@@ -50,6 +50,7 @@ parent chart.
 
 {{/*
 Common environment variables for HDFS configuration.
+We use HDFS_CONF_dfs_namenode_replication_min to ensure the desired amount of replicas to be written or fail the write op see https://stackoverflow.com/questions/23799658/hadoop-replication-factor-confusion
 */}}
 {{- define "hbase.hdfs.commonEnv" }}
 - name: CORE_CONF_fs_defaultFS
@@ -58,34 +59,20 @@ Common environment variables for HDFS configuration.
   value: "true"
 - name: HDFS_CONF_dfs_client_retry_policy_spec
   value: "1000,6,2000,10"
-- name: HDFS_CONF_dfs_client_use_datanode_hostname
-  value: "false"
 - name: HDFS_CONF_dfs_datanode_data_dir
   value: "/hadoop-data/data"
-- name: HDFS_CONF_dfs_datanode_sync_behind_writes
-  value: "true"
-- name: HDFS_CONF_dfs_datanode_synconclose
-  value: "true"
-- name: HDFS_CONF_dfs_datanode_use_datanode_hostname
-  value: "false"
 - name: HDFS_CONF_dfs_namenode_checkpoint_dir
   value: "/hadoop-data/data"
-- name: HDFS_CONF_dfs_namenode_datanode_registration_ip___hostname___check
-  value: "false"
-- name: HDFS_CONF_dfs_namenode_http___bind___host
-  value: "0.0.0.0"
-- name: HDFS_CONF_dfs_namenode_https___bind___host
-  value: "0.0.0.0"
 - name: HDFS_CONF_dfs_namenode_name_dir
   value: "/hadoop-data/data"
-- name: HDFS_CONF_dfs_namenode_rpc___bind___host
-  value: "0.0.0.0"
-- name: HDFS_CONF_dfs_namenode_servicerpc___bind___host
-  value: "0.0.0.0"
 - name: HDFS_CONF_dfs_replication
   value: "2"
-- name: HDFS_CONF_dfs_secondary_http_address
-  value: "0.0.0.0:50090"
+- name: HDFS_CONF_dfs_namenode_replication_min
+  value: {{ .Values.hdfs.minReplication | quote }}
+- name: HDFS_CONF_dfs_client_block_write_replace___datanode___on___failure_enable
+  value: "true"
+- name: HDFS_CONF_dfs_client_block_write_replace___datanode___on___failure_policy
+  value: "ALWAYS"
 {{- end }}
 
 {{/*
@@ -94,8 +81,6 @@ Common environment variables for HBase configuration.
 {{- define "hbase.hbase.commonEnv" }}
 - name: HBASE_CONF_data_tx_zookeeper_quorum
   value: {{ include "hbase.zookeeper.endpoint" . | quote }}
-- name: HBASE_CONF_hbase_master
-  value: "{{ template "common.fullname.short" . }}-hbase-master:16000"
 - name: HBASE_CONF_hbase_rootdir
   value: "hdfs://{{ template "common.fullname.short" . }}-hdfs-nn-headful:9000/hbase"
 - name: HBASE_CONF_hbase_zookeeper_quorum

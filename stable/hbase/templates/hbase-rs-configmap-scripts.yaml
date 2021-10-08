@@ -1,0 +1,11 @@
+{{- define "hbase.hbase.rs.configmap-scripts" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-hbase-rs-scripts
+data:
+  check-status.sh: |
+    {{- .Files.Get "scripts/hbase-check-status.sh" | nindent 4 }}
+{{- end -}}
+
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $rsScriptsConfigMap := fromYaml (include "hbase.hbase.rs.configmap-scripts" .) -}}
+{{- toYaml (merge $rsScriptsConfigMap $commonConfigMap) -}}

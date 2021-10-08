@@ -147,6 +147,8 @@ hbase:
     # hbase.zookeeper.quorum -- Zookeeper quorum used for single-node Zookeeper installations; not used if `zookeeper.replicaCount` is more than `1`.
     quorum: hbase
 hdfs:
+  # hdfs.minReplication -- Sets the minimum synchronous replication that the namenode will enforce when writing a block. This gives guarantees about the amount of copies of a single block.
+  minReplication: 1
   scc:
     # hdfs.scc.enabled -- Whether to create an OpenShift SecurityContextConfiguration (required when running on OpenShift)
     enabled: false
@@ -207,6 +209,8 @@ hdfs:
     nodeSelector: {}
     # hdfs.datanode.tolerations -- Toleration labels for pod assignment.
     tolerations: []
+    # hdfs.datanode.terminationGracePeriodSeconds -- Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook
+    terminationGracePeriodSeconds: 600
     # hdfs.datanode.affinity -- Affinity settings for pod assignment.
     affinity: {}
   namenode:
