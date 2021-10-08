@@ -14,10 +14,10 @@ name: regionserver
 image: "{{include "image.registry" .}}/{{ .Values.hbase.regionserver.image.repository }}:{{ default .Values.stackgraph.image.tag .Values.hbase.regionserver.image.tag }}"
 imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.hbase.regionserver.image.pullPolicy | quote  }}
 env:
-{{- include "all.commonEnv" . }}
-{{- include "hbase.regionserver.commonEnv" . }}
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "hbase.hbase.commonEnv" . }}
+{{- include "all.commonEnv" . }}
+{{- include "hbase.regionserver.commonEnv" . }}
 - name: POD_NAME
   valueFrom:
     fieldRef:
@@ -28,6 +28,8 @@ env:
       fieldPath: metadata.namespace
 - name: HBASE_CONF_hbase_regionserver_hostname
   value: $(POD_NAME).{{ template "common.fullname.short" . }}-hbase-rs.$(POD_NAMESPACE).svc.cluster.local
+- name: HBASE_CONF_hbase_master_hostname
+  value: "{{ template "common.fullname.short" . }}-hbase-master"
 ports:
 - containerPort: 16020
   name: rs
@@ -38,19 +40,22 @@ ports:
   name: metrics
 {{- end }}
 livenessProbe:
-  httpGet:
-    path: /
-    port: rsinfo
+  exec:
+    command:
+      - /rs-scripts/check-status.sh
 readinessProbe:
-  httpGet:
-    path: /
-    port: rsinfo
+  exec:
+    command:
+      - /rs-scripts/check-status.sh
 {{- with .Values.hbase.regionserver.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 securityContext:
   runAsNonRoot: true
+volumeMounts:
+  - name: rs-scripts
+    mountPath: /rs-scripts
 {{- end -}}
 
 {{- define "hbase.hbase.regionserver.statefulset" -}}
@@ -90,6 +95,11 @@ spec:
       - {{ toYaml $stackstateHbaseRegionServerInitContainer | nindent 8 }}
       containers:
       - {{ toYaml $stackstateHbaseRegionServerContainer | nindent 8 }}
+      volumes:
+        - name: rs-scripts
+          configMap:
+            name: {{ template "common.fullname.short" . }}-hbase-rs-scripts
+            defaultMode: 0755
     {{- if or .Values.all.nodeSelector .Values.hbase.regionserver.nodeSelector }}
       nodeSelector:
       {{- with .Values.all.nodeSelector }}

@@ -72,9 +72,6 @@ livenessProbe:
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
-{{- if .Values.stackstate.components.all.securityContext.enabled }}
-securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 2 }}
-{{- end }}
 volumeMounts:
 - name: config-secrets-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
@@ -88,6 +85,9 @@ volumeMounts:
 {{- $stsStackstateStateMainContainer := (merge $overrideContainer $commonContainer) -}}
 {{- $overrideContainer := fromYaml (include "stackstate.checks.deployment.container.init" .) -}}
 {{- $stsStackstateServerInitContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.initContainer.ensure.no.server.statefulset.pods.are.running" .) -}}
+{{- $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer := (merge $overrideContainer $commonContainer) -}}
+
 metadata:
   name: {{ template "common.fullname.short" . }}-checks
   labels:
@@ -119,7 +119,7 @@ spec:
       {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
       initContainers:
       - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
-      - {{ include "stackstate.initContainer.ensure.no.server.statefulset.pod.are.running" . | nindent 8 }}
+      - {{ toYaml $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer | nindent 8 }}
       containers:
       - {{ toYaml $stsStackstateStateMainContainer | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.checks.nodeSelector }}
@@ -148,6 +148,9 @@ spec:
       {{- with .Values.stackstate.components.checks.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+    {{- end }}
+    {{- if .Values.stackstate.components.all.securityContext.enabled }}
+      securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
     {{- end }}
       volumes:
         - name: config-secrets-volume

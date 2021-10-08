@@ -77,6 +77,8 @@ backup:
       fsGroup: 65534
       # backup.stackGraph.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
       runAsGroup: 65534
+      # backup.stackGraph.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
+      runAsNonRoot: true
       # backup.stackGraph.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
       runAsUser: 65534
 caspr:
@@ -153,10 +155,12 @@ stackstate:
       securityContext:
         # stackstate.components.all.securityContext.enabled -- Whether or not to enable the securityContext
         enabled: true
-        # stackstate.components.all.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
-        runAsNonRoot: true
+        # stackstate.components.all.securityContext.fsGroup -- The GID (group ID) used to mount volumes
+        fsGroup: 65534
         # stackstate.components.all.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
         runAsGroup: 65534
+        # stackstate.components.all.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
+        runAsNonRoot: true
         # stackstate.components.all.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
         runAsUser: 65534
       # stackstate.components.all.elasticsearchEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster.
@@ -517,7 +521,7 @@ stackstate:
         # stackstate.components.router.image.repository -- Repository of the router component Docker image.
         repository: stackstate/envoy-alpine
         # stackstate.components.router.image.tag -- Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: v1.15.5
+        tag: v1.19.1-sts.20210921.1300
       # stackstate.components.router.poddisruptionbudget -- PodDisruptionBudget settings for `router` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -709,10 +713,12 @@ stackstate:
       securityContext:
         # stackstate.components.ui.securityContext.enabled -- Whether or not to enable the securityContext
         enabled: true
-        # stackstate.components.ui.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
-        runAsNonRoot: true
+        # stackstate.components.ui.securityContext.fsGroup -- The GID (group ID) used to mount volumes
+        fsGroup: 101
         # stackstate.components.ui.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
         runAsGroup: 101
+        # stackstate.components.ui.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
+        runAsNonRoot: true
         # stackstate.components.ui.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
         runAsUser: 101
       # stackstate.components.ui.replicaCount -- Number of `ui` replicas.
@@ -810,10 +816,12 @@ stackstate:
       securityContext:
         # stackstate.components.kafkaTopicCreate.securityContext.enabled -- Whether or not to enable the securityContext
         enabled: true
-        # stackstate.components.kafkaTopicCreate.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
-        runAsNonRoot: true
+        # stackstate.components.kafkaTopicCreate.securityContext.fsGroup -- The GID (group ID) used to mount volumes
+        fsGroup: 1001
         # stackstate.components.kafkaTopicCreate.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
         runAsGroup: 1001
+        # stackstate.components.kafkaTopicCreate.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
+        runAsNonRoot: true
         # stackstate.components.kafkaTopicCreate.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
         runAsUser: 1001
       # stackstate.components.kafkaTopicCreate.nodeSelector -- Node labels for pod assignment.
@@ -829,7 +837,7 @@ stackstate:
         # stackstate.components.nginxPrometheusExporter.image.repository -- Base container image repository for nginx-prometheus-exporter containers.
         repository: stackstate/nginx-prometheus-exporter
         # stackstate.components.nginxPrometheusExporter.image.tag -- Container image tag for nginx-prometheus-exporter containers.
-        tag: 0.7.0
+        tag: 0.7.0-sts.20210921.1257
         # stackstate.components.nginxPrometheusExporter.image.pullPolicy -- Image pull policy for nginx-prometheus-exporter containers.
         pullPolicy: IfNotPresent
     containerTools:
@@ -839,7 +847,7 @@ stackstate:
         # stackstate.components.containerTools.image.repository -- Base container image repository for container-tools containers.
         repository: stackstate/container-tools
         # stackstate.components.containerTools.image.tag -- Container image tag for container-tools containers.
-        tag: 1.0.4
+        tag: 1.1.2
         # stackstate.components.containerTools.image.pullPolicy -- Image pull policy for container-tools containers.
         pullPolicy: IfNotPresent
     wait:
@@ -849,7 +857,7 @@ stackstate:
         # stackstate.components.wait.image.repository -- Base container image repository for wait containers.
         repository: stackstate/wait
         # stackstate.components.wait.image.tag -- Container image tag for wait containers.
-        tag: 1.0.3
+        tag: 1.0.4
         # stackstate.components.wait.image.pullPolicy -- Image pull policy for wait containers.
         pullPolicy: IfNotPresent
   # stackstate.authentication -- Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error.
@@ -971,7 +979,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 4.2.3
+      tag: 4.2.8
   console:
     # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
     enabled: false
@@ -1121,7 +1129,7 @@ kafka:
         # kafka.metrics.jmx.image.repository -- Kafka JMX exporter image repository
         repository: stackstate/jmx-exporter
         # kafka.metrics.jmx.image.tag -- Kafka JMX exporter image tag
-        tag: 0.15.0-debian-10-r138
+        tag: 0.15.0-debian-10-r138-sts.20210921.1259
       resources:
         limits:
           cpu: "200m"

@@ -59,9 +59,6 @@ resources:
   requests:
     cpu: "20m"
     memory: "32Mi"
-{{- if .Values.stackstate.components.ui.securityContext.enabled }}
-securityContext: {{- omit .Values.stackstate.components.ui.securityContext "enabled" | toYaml | nindent 2 }}
-{{- end }}
 {{- end -}}
 
 {{- define "stackstate.ui.deployment" -}}
@@ -119,6 +116,9 @@ spec:
       {{- with .Values.stackstate.components.ui.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+    {{- end }}
+    {{- if .Values.stackstate.components.ui.securityContext.enabled }}
+      securityContext: {{- omit .Values.stackstate.components.ui.securityContext "enabled" | toYaml | nindent 8 }}
     {{- end }}
 {{- end -}}
 

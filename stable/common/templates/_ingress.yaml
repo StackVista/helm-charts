@@ -5,7 +5,11 @@
 {{- $overrides := dict "Values" $noCommon -}}
 {{- $noValues := omit . "Values" -}}
 {{- with merge $noValues $overrides $common -}}
-apiVersion: {{ .Values.ingress.apiVersion }}
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+apiVersion: networking.k8s.io/v1
+{{- else }}
+apiVersion: networking.k8s.io/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
   annotations:
@@ -29,17 +33,34 @@ spec:
   {{- end }}
 {{- end }}
   rules:
+  {{- $ctx := . }}
   {{- range .Values.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
         {{- range .paths }}
           - path: {{ . }}
+          {{- if $ctx.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ template "common.fullname" $ }}
+                port:
+                  number: app
+          {{- else }}
             backend:
               serviceName: {{ template "common.fullname" $ }}
               servicePort: app
+          {{- end }}
         {{- end }}
   {{- end }}
+
+
+
+
+
+
+
 {{- end }}
 {{- end -}}
 {{- end -}}

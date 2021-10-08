@@ -1,0 +1,11 @@
+{{- define "hbase.hdfs.datanode.configmap-scripts" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-hdfs-dn-scripts
+data:
+  check-status.sh: |
+    {{- .Files.Get "scripts/datanode-check-status.sh" | nindent 4 }}
+{{- end -}}
+
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $datanodeScriptsConfigMap := fromYaml (include "hbase.hdfs.datanode.configmap-scripts" .) -}}
+{{- toYaml (merge $datanodeScriptsConfigMap $commonConfigMap) -}}

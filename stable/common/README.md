@@ -1,6 +1,6 @@
 # common
 
-![Version: 0.4.15](https://img.shields.io/badge/Version-0.4.15-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: 0.4.17](https://img.shields.io/badge/Version-0.4.17-informational?style=flat-square) ![AppVersion: 0.4.17](https://img.shields.io/badge/AppVersion-0.4.17-informational?style=flat-square)
 Common chartbuilding components and helpers
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 ## Maintainers
@@ -37,7 +37,6 @@ Common chartbuilding components and helpers
 | container.securityContext.allowPrivilegeEscalation | bool | `false` | Controls whether a process can gain more privileges than its parent process. |
 | container.securityContext.capabilities.drop | list | `["all"]` | Drops all Linux capabilities by default. |
 | cronjob.annotations | object | `{}` | Annotations for `CronJob` objects. |
-| cronjob.apiVersion | string | `"batch/v1beta1"` | Kubernetes apiVersion to use with a `CronJob` object. |
 | cronjob.concurrencyPolicy | string | `"Forbid"` | Specifies how to treat concurrent executions of a job that is created by this `CronJob` object. |
 | cronjob.dnsPolicy | string | `"ClusterFirst"` | DNS policy to apply to `Pod` objects. |
 | cronjob.failedJobsHistoryLimit | int | `5` | Specifies how many failed `Job` objects created from a parent `CronJob` should be kept. |
@@ -80,7 +79,6 @@ Common chartbuilding components and helpers
 | image.repository | string | `"nginx"` | (string) Repository of the Docker image. |
 | image.tag | string | `"latest"` | (string) Tag of the Docker image. |
 | ingress.annotations | object | `{}` | Annotations for `Ingress` objects. |
-| ingress.apiVersion | string | `"networking.k8s.io/v1beta1"` | Kubernetes apiVersion to use with an `Ingress` object. |
 | ingress.hosts | list | `[]` | List of ingress hostnames. |
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
 | job.annotations | object | `{}` | Annotations for `Job` objects. |
@@ -101,7 +99,6 @@ Common chartbuilding components and helpers
 | persistentvolumeclaim.storageClass | string | `nil` | Default storage class for `PersistentVolumeClaim` object. If left blank, then the default provisioner is used. If set to "-", then `storageClass: ""`, which disabled dynamic provisioning. |
 | pod.annotations | object | `{}` | Annotations for `Pod` objects. |
 | poddisruptionbudget.annotations | object | `{}` | Annotations for `PodDisruptionBudget` objects. |
-| poddisruptionbudget.apiVersion | string | `"policy/v1beta1"` | Kubernetes apiVersion to use with a `PodDisruptionBudget` object. |
 | role.annotations | object | `{}` |  |
 | role.apiVersion | string | `"rbac.authorization.k8s.io/v1"` |  |
 | rolebinding.annotations | object | `{}` | Annotations for `RoleBinding` objects. |

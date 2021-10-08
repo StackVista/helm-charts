@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 4.5.0-snapshot.0
-version: 4.5.0-snapshot.13
+version: 4.5.0-snapshot.22
 description: Helm chart for StackState
 keywords:
   - aiops
@@ -18,7 +18,7 @@ maintainers:
 name: stackstate
 dependencies:
   - name: anomaly-detection
-    version: 4.5.0-snapshot.22
+    version: 4.5.0-snapshot.104
     repository: https://helm.stackstate.io
     condition: anomaly-detection.enabled
   - name: cluster-agent
@@ -27,15 +27,15 @@ dependencies:
     condition: cluster-agent.enabled
   - name: common
     repository: https://helm.stackstate.io
-    version: 0.4.13
+    version: 0.4.17
   - name: elasticsearch
     condition: elasticsearch.enabled
     repository: https://helm.stackstate.io
-    version: 7.6.2-stackstate.14
+    version: 7.6.2-stackstate.17
   - name: hbase
     condition: hbase.enabled
-    repository: https://helm-test.stackstate.io
-    version: 0.1.91
+    repository: https://helm.stackstate.io
+    version: 0.1.94
   - name: kafka
     condition: kafka.enabled
     repository: https://helm.stackstate.io
