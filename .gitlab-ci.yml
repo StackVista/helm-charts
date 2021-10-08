@@ -705,7 +705,6 @@ push_stackstate_to_public:
     CHART: stable/stackstate
 push_test_charts:
   before_script:
-    - .gitlab/push_before_script.sh
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add minio https://helm.min.io/
@@ -715,6 +714,7 @@ push_test_charts:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
+  image: stackstate/stackstate-ci-images:stackstate-devops-f87d9654
   rules:
     - if: $CI_COMMIT_BRANCH == "master"
       when: never
@@ -722,6 +722,7 @@ push_test_charts:
       when: never
     - when: always
   script:
+    - source .gitlab/aws_auth_setup.sh
     - sh test/sync-repo.sh
   stage: build
   variables:

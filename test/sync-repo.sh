@@ -1,9 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 set -o errexit
 set -o nounset
-
-[[ -n "${TRACE+x}" ]] && set -x
 
 readonly awsBucket="${AWS_BUCKET:-"s3://helm.stackstate.io"}"
 readonly repoUrl=${REPO_URL:-"https://helm.stackstate.io/"}

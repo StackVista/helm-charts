@@ -24,10 +24,13 @@ local skip_when_dependency_upgrade = {
 };
 
 local sync_charts_template = {
-  before_script:
-  ['.gitlab/push_before_script.sh'] + helm_fetch_dependencies,
-  script: ['sh test/sync-repo.sh'],
+  before_script: helm_fetch_dependencies,
+  script: [
+    'source .gitlab/aws_auth_setup.sh',
+    'sh test/sync-repo.sh',
+    ],
   stage: 'build',
+  image: variables.images.stackstate_devops,
 } + skip_when_dependency_upgrade;
 
 local validate_and_push_jobs = {
