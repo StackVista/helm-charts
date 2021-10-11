@@ -138,7 +138,7 @@ stackstate/stackstate
 | hbase.hdfs.datanode.resources.limits.memory | string | `"4Gi"` |  |
 | hbase.hdfs.datanode.resources.requests.cpu | string | `"300m"` |  |
 | hbase.hdfs.datanode.resources.requests.memory | string | `"4Gi"` |  |
-| hbase.hdfs.minReplication | int | `2` |  |
+| hbase.hdfs.minReplication | int | `2` | Min number of copies we create from any data block. |
 | hbase.hdfs.namenode.resources.limits.cpu | string | `"500m"` |  |
 | hbase.hdfs.namenode.resources.limits.memory | string | `"1Gi"` |  |
 | hbase.hdfs.namenode.resources.requests.cpu | string | `"100m"` |  |
