@@ -654,7 +654,6 @@ push_stackstate_to_internal:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-    - apk add --no-cache jq bash
     - .gitlab/bump_sts_chart_master_version.sh stackstate-internal
   image: stackstate/stackstate-ci-images:stackstate-devops-f87d9654
   rules:
@@ -683,7 +682,6 @@ push_stackstate_to_public:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-    - apk add --no-cache jq bash
     - .gitlab/bump_sts_chart_master_version.sh stackstate
   image: stackstate/stackstate-ci-images:stackstate-devops-f87d9654
   needs:
