@@ -16,7 +16,7 @@ Current chart version is `4.5.0-snapshot.22`
 | https://helm.stackstate.io | cluster-agent | 0.4.22 |
 | https://helm.stackstate.io | common | 0.4.17 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.17 |
-| https://helm.stackstate.io | hbase | 0.1.94 |
+| https://helm.stackstate.io | hbase | 0.1.99 |
 | https://helm.stackstate.io | kafka | 12.2.5-stackstate.0 |
 
 ## Required Values
@@ -138,6 +138,7 @@ stackstate/stackstate
 | hbase.hdfs.datanode.resources.limits.memory | string | `"4Gi"` |  |
 | hbase.hdfs.datanode.resources.requests.cpu | string | `"300m"` |  |
 | hbase.hdfs.datanode.resources.requests.memory | string | `"4Gi"` |  |
+| hbase.hdfs.minReplication | int | `2` | Min number of copies we create from any data block. |
 | hbase.hdfs.namenode.resources.limits.cpu | string | `"500m"` |  |
 | hbase.hdfs.namenode.resources.limits.memory | string | `"1Gi"` |  |
 | hbase.hdfs.namenode.resources.requests.cpu | string | `"100m"` |  |
