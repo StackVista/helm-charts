@@ -36,7 +36,7 @@ metadata:
   labels:
     app.kubernetes.io/component: topic-create
 spec:
-  activeDeadlineSeconds: 1200
+  backoffLimit: 20
   ttlSecondsAfterFinished: 600
   template:
     metadata:
