@@ -173,13 +173,13 @@ stackstate/stackstate
 | kafka.fullnameOverride | string | `"stackstate-kafka"` | Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | kafka.image.registry | string | `"quay.io"` | Kafka image registry |
 | kafka.image.repository | string | `"stackstate/kafka"` | Kafka image repository |
-| kafka.image.tag | string | `"2.3.1-debian-9-r41-du"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** |
+| kafka.image.tag | string | `"2.3.1-focal-20210827-r41"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** |
 | kafka.livenessProbe.initialDelaySeconds | int | `240` | Delay before readiness probe is initiated. |
 | kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
 | kafka.metrics.jmx.enabled | bool | `true` | Whether or not to expose JMX metrics to Prometheus. |
 | kafka.metrics.jmx.image.registry | string | `"quay.io"` | Kafka JMX exporter image registry |
 | kafka.metrics.jmx.image.repository | string | `"stackstate/jmx-exporter"` | Kafka JMX exporter image repository |
-| kafka.metrics.jmx.image.tag | string | `"0.15.0-debian-10-r138-sts.20210921.1259"` | Kafka JMX exporter image tag |
+| kafka.metrics.jmx.image.tag | string | `"0.15.0-focal-20210827-r138"` | Kafka JMX exporter image tag |
 | kafka.metrics.jmx.resources.limits.cpu | string | `"200m"` |  |
 | kafka.metrics.jmx.resources.limits.memory | string | `"300Mi"` |  |
 | kafka.metrics.jmx.resources.requests.cpu | string | `"200m"` |  |
@@ -278,7 +278,7 @@ stackstate/stackstate
 | stackstate.components.containerTools.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for container-tools containers. |
 | stackstate.components.containerTools.image.registry | string | `"quay.io"` | Base container image registry for container-tools containers. |
 | stackstate.components.containerTools.image.repository | string | `"stackstate/container-tools"` | Base container image repository for container-tools containers. |
-| stackstate.components.containerTools.image.tag | string | `"1.1.2"` | Container image tag for container-tools containers. |
+| stackstate.components.containerTools.image.tag | string | `"1.1.3"` | Container image tag for container-tools containers. |
 | stackstate.components.correlate.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.correlate.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.correlate.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -338,7 +338,7 @@ stackstate/stackstate
 | stackstate.components.kafkaTopicCreate.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.registry | string | `"quay.io"` | Base container image registry for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.repository | string | `"stackstate/kafka"` | Base container image repository for kafka-topic-create containers. |
-| stackstate.components.kafkaTopicCreate.image.tag | string | `"latest"` | Container image tag for kafka-topic-create containers. |
+| stackstate.components.kafkaTopicCreate.image.tag | string | `"2.3.1-focal-20210827-r41"` | Container image tag for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.kafkaTopicCreate.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
 | stackstate.components.kafkaTopicCreate.securityContext.fsGroup | int | `1001` | The GID (group ID) used to mount volumes |
@@ -398,7 +398,7 @@ stackstate/stackstate
 | stackstate.components.router.image.pullPolicy | string | `""` | `pullPolicy` used for the `router` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.router.image.registry | string | `"quay.io"` | Registry of the router component Docker image. |
 | stackstate.components.router.image.repository | string | `"stackstate/envoy-alpine"` | Repository of the router component Docker image. |
-| stackstate.components.router.image.tag | string | `"v1.19.1-sts.20210921.1300"` | Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.router.image.tag | string | `"v1.19.1-sts.20211012.0914"` | Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.router.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.router.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `router` pods. |
 | stackstate.components.router.replicaCount | int | `1` | Number of `router` replicas. |
