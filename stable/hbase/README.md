@@ -60,7 +60,7 @@ Current chart version is `0.1.102`
 | hbase.regionserver.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | hbase.regionserver.image.pullPolicy | string | `nil` | Pull policy for HBase region servers, defaults to `stackgraph.image.pullPolicy` |
 | hbase.regionserver.image.repository | string | `"stackstate/hbase-regionserver"` | Base container image repository for HBase region servers. |
-| hbase.regionserver.image.tag | string | `"4.2.10"` | Container image tag for HBase region servers, defaults to `stackgraph.image.tag` |
+| hbase.regionserver.image.tag | string | `nil` | Container image tag for HBase region servers, defaults to `stackgraph.image.tag` |
 | hbase.regionserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hbase.regionserver.replicaCount | int | `1` | Number of HBase regionserver nodes. |
 | hbase.regionserver.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"2000m","memory":"2Gi"}}` | Resources to allocate for HBase region servers. |
