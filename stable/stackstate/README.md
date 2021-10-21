@@ -148,7 +148,7 @@ stackstate/stackstate
 | hbase.hdfs.secondarynamenode.resources.limits.memory | string | `"1Gi"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.cpu | string | `"50m"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.memory | string | `"1Gi"` |  |
-| hbase.stackgraph.image.tag | string | `"4.2.9"` | The StackGraph server version, must be compatible with the StackState version |
+| hbase.stackgraph.image.tag | string | `"4.2.10"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
 | hbase.tephra.resources.limits.cpu | string | `"500m"` |  |
 | hbase.tephra.resources.limits.memory | string | `"3Gi"` |  |
@@ -173,13 +173,13 @@ stackstate/stackstate
 | kafka.fullnameOverride | string | `"stackstate-kafka"` | Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | kafka.image.registry | string | `"quay.io"` | Kafka image registry |
 | kafka.image.repository | string | `"stackstate/kafka"` | Kafka image repository |
-| kafka.image.tag | string | `"2.3.1-debian-9-r41-du"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** |
+| kafka.image.tag | string | `"2.3.1-focal-20210827-r41"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** |
 | kafka.livenessProbe.initialDelaySeconds | int | `240` | Delay before readiness probe is initiated. |
 | kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
 | kafka.metrics.jmx.enabled | bool | `true` | Whether or not to expose JMX metrics to Prometheus. |
 | kafka.metrics.jmx.image.registry | string | `"quay.io"` | Kafka JMX exporter image registry |
 | kafka.metrics.jmx.image.repository | string | `"stackstate/jmx-exporter"` | Kafka JMX exporter image repository |
-| kafka.metrics.jmx.image.tag | string | `"0.15.0-debian-10-r138-sts.20210921.1259"` | Kafka JMX exporter image tag |
+| kafka.metrics.jmx.image.tag | string | `"0.15.0-focal-20210827-r138"` | Kafka JMX exporter image tag |
 | kafka.metrics.jmx.resources.limits.cpu | string | `"200m"` |  |
 | kafka.metrics.jmx.resources.limits.memory | string | `"300Mi"` |  |
 | kafka.metrics.jmx.resources.requests.cpu | string | `"200m"` |  |
@@ -204,6 +204,7 @@ stackstate/stackstate
 | minio.azuregateway.replicas | int | `1` |  |
 | minio.fullnameOverride | string | `"stackstate-minio"` | **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components. |
 | minio.image.repository | string | `"quay.io/stackstate/minio"` | MinIO image repository |
+| minio.image.tag | string | `"2021.2.19-focal-20210827-r5"` |  |
 | minio.persistence.enabled | bool | `false` | Enables MinIO persistence. Must be enabled when MinIO is not configured as a gateway to AWS S3 or Azure Blob Storage. |
 | minio.replicas | int | `1` | Number of MinIO replicas. |
 | minio.s3gateway.replicas | int | `1` |  |
@@ -278,7 +279,7 @@ stackstate/stackstate
 | stackstate.components.containerTools.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for container-tools containers. |
 | stackstate.components.containerTools.image.registry | string | `"quay.io"` | Base container image registry for container-tools containers. |
 | stackstate.components.containerTools.image.repository | string | `"stackstate/container-tools"` | Base container image repository for container-tools containers. |
-| stackstate.components.containerTools.image.tag | string | `"1.1.2"` | Container image tag for container-tools containers. |
+| stackstate.components.containerTools.image.tag | string | `"1.1.3"` | Container image tag for container-tools containers. |
 | stackstate.components.correlate.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.correlate.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.correlate.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -338,7 +339,7 @@ stackstate/stackstate
 | stackstate.components.kafkaTopicCreate.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.registry | string | `"quay.io"` | Base container image registry for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.repository | string | `"stackstate/kafka"` | Base container image repository for kafka-topic-create containers. |
-| stackstate.components.kafkaTopicCreate.image.tag | string | `"latest"` | Container image tag for kafka-topic-create containers. |
+| stackstate.components.kafkaTopicCreate.image.tag | string | `"kafka:3.0.0-focal-20210827-r6"` | Container image tag for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.kafkaTopicCreate.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
 | stackstate.components.kafkaTopicCreate.securityContext.fsGroup | int | `1001` | The GID (group ID) used to mount volumes |
@@ -363,7 +364,7 @@ stackstate/stackstate
 | stackstate.components.nginxPrometheusExporter.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.registry | string | `"quay.io"` | Base container image registry for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.repository | string | `"stackstate/nginx-prometheus-exporter"` | Base container image repository for nginx-prometheus-exporter containers. |
-| stackstate.components.nginxPrometheusExporter.image.tag | string | `"0.7.0-sts.20210921.1257"` | Container image tag for nginx-prometheus-exporter containers. |
+| stackstate.components.nginxPrometheusExporter.image.tag | string | `"0.7.0-sts.20211018.0810"` | Container image tag for nginx-prometheus-exporter containers. |
 | stackstate.components.problemProducer.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.problemProducer.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.problemProducer.config | string | `""` | Configuration file contents to customize the default StackState problemProducer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
@@ -398,7 +399,7 @@ stackstate/stackstate
 | stackstate.components.router.image.pullPolicy | string | `""` | `pullPolicy` used for the `router` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.router.image.registry | string | `"quay.io"` | Registry of the router component Docker image. |
 | stackstate.components.router.image.repository | string | `"stackstate/envoy-alpine"` | Repository of the router component Docker image. |
-| stackstate.components.router.image.tag | string | `"v1.19.1-sts.20210921.1300"` | Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.router.image.tag | string | `"v1.19.1-sts.20211012.0914"` | Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.router.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.router.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `router` pods. |
 | stackstate.components.router.replicaCount | int | `1` | Number of `router` replicas. |
@@ -507,7 +508,7 @@ stackstate/stackstate
 | stackstate.components.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | stackstate.components.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
-| stackstate.components.wait.image.tag | string | `"1.0.4"` | Container image tag for wait containers. |
+| stackstate.components.wait.image.tag | string | `"1.0.5"` | Container image tag for wait containers. |
 | stackstate.experimental.server.split | bool | `true` | (boolean) Run a single service server or split in multiple sub services as api, state .... |
 | stackstate.java | object | `{"trustStore":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
@@ -522,7 +523,7 @@ stackstate/stackstate
 | zookeeper.fullnameOverride | string | `"stackstate-zookeeper"` | Name override for Zookeeper child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | zookeeper.image.registry | string | `"quay.io"` | ZooKeeper image registry |
 | zookeeper.image.repository | string | `"stackstate/zookeeper"` | ZooKeeper image repository |
-| zookeeper.image.tag | string | `"3.6.1-debian-10-r37-du"` | ZooKeeper image tag |
+| zookeeper.image.tag | string | `"3.6.1-focal-20210827-r37"` | ZooKeeper image tag |
 | zookeeper.metrics.enabled | bool | `true` | Enable / disable Zookeeper Prometheus metrics. |
 | zookeeper.metrics.serviceMonitor | object | `{"enabled":false,"selector":{}}` |  |
 | zookeeper.metrics.serviceMonitor.enabled | bool | `false` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |

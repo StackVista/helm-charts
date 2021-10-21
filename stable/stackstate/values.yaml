@@ -521,7 +521,7 @@ stackstate:
         # stackstate.components.router.image.repository -- Repository of the router component Docker image.
         repository: stackstate/envoy-alpine
         # stackstate.components.router.image.tag -- Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: v1.19.1-sts.20210921.1300
+        tag: v1.19.1-sts.20211012.0914
       # stackstate.components.router.poddisruptionbudget -- PodDisruptionBudget settings for `router` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -810,7 +810,7 @@ stackstate:
         # stackstate.components.kafkaTopicCreate.image.repository -- Base container image repository for kafka-topic-create containers.
         repository: stackstate/kafka
         # stackstate.components.kafkaTopicCreate.image.tag -- Container image tag for kafka-topic-create containers.
-        tag: latest
+        tag: kafka:3.0.0-focal-20210827-r6
         # stackstate.components.kafkaTopicCreate.image.pullPolicy -- Image pull policy for kafka-topic-create containers.
         pullPolicy: IfNotPresent
       securityContext:
@@ -837,7 +837,7 @@ stackstate:
         # stackstate.components.nginxPrometheusExporter.image.repository -- Base container image repository for nginx-prometheus-exporter containers.
         repository: stackstate/nginx-prometheus-exporter
         # stackstate.components.nginxPrometheusExporter.image.tag -- Container image tag for nginx-prometheus-exporter containers.
-        tag: 0.7.0-sts.20210921.1257
+        tag: 0.7.0-sts.20211018.0810
         # stackstate.components.nginxPrometheusExporter.image.pullPolicy -- Image pull policy for nginx-prometheus-exporter containers.
         pullPolicy: IfNotPresent
     containerTools:
@@ -847,7 +847,7 @@ stackstate:
         # stackstate.components.containerTools.image.repository -- Base container image repository for container-tools containers.
         repository: stackstate/container-tools
         # stackstate.components.containerTools.image.tag -- Container image tag for container-tools containers.
-        tag: 1.1.2
+        tag: 1.1.3
         # stackstate.components.containerTools.image.pullPolicy -- Image pull policy for container-tools containers.
         pullPolicy: IfNotPresent
     wait:
@@ -857,7 +857,7 @@ stackstate:
         # stackstate.components.wait.image.repository -- Base container image repository for wait containers.
         repository: stackstate/wait
         # stackstate.components.wait.image.tag -- Container image tag for wait containers.
-        tag: 1.0.4
+        tag: 1.0.5
         # stackstate.components.wait.image.pullPolicy -- Image pull policy for wait containers.
         pullPolicy: IfNotPresent
   # stackstate.authentication -- Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error.
@@ -979,7 +979,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 4.2.9
+      tag: 4.2.10
   console:
     # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
     enabled: false
@@ -1112,7 +1112,7 @@ kafka:
     # kafka.image.repository -- Kafka image repository
     repository: stackstate/kafka
     # kafka.image.tag -- Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.**
-    tag: 2.3.1-debian-9-r41-du
+    tag: 2.3.1-focal-20210827-r41
   livenessProbe:
     # kafka.livenessProbe.initialDelaySeconds -- Delay before readiness probe is initiated.
     initialDelaySeconds: 240
@@ -1131,7 +1131,7 @@ kafka:
         # kafka.metrics.jmx.image.repository -- Kafka JMX exporter image repository
         repository: stackstate/jmx-exporter
         # kafka.metrics.jmx.image.tag -- Kafka JMX exporter image tag
-        tag: 0.15.0-debian-10-r138-sts.20210921.1259
+        tag: 0.15.0-focal-20210827-r138
       resources:
         limits:
           cpu: "200m"
@@ -1184,6 +1184,7 @@ minio:
   image:
     # minio.image.repository -- MinIO image repository
     repository: quay.io/stackstate/minio
+    tag: 2021.2.19-focal-20210827-r5
   # minio.accessKey -- Access key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
   accessKey: setme
   # minio.accessKey -- Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
@@ -1209,7 +1210,7 @@ zookeeper:
     # zookeeper.image.repository -- ZooKeeper image repository
     repository: stackstate/zookeeper
     # zookeeper.image.tag -- ZooKeeper image tag
-    tag: 3.6.1-debian-10-r37-du
+    tag: 3.6.1-focal-20210827-r37
   metrics:
     # zookeeper.metrics.enabled -- Enable / disable Zookeeper Prometheus metrics.
     enabled: true

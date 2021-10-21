@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.101`
+Current chart version is `0.1.102`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -119,7 +119,7 @@ Current chart version is `0.1.101`
 | hdfs.volumePermissions.securityContext.runAsUser | int | `0` | Run the volumePermissions init container with the specified UID (Do not change unless instructed) |
 | serviceAccount.create | bool | `true` | Whether to create serviceAccounts and run the statefulsets under them |
 | stackgraph.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below). |
-| stackgraph.image.tag | string | `"4.2.9"` | The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below). |
+| stackgraph.image.tag | string | `"4.2.10"` | The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below). |
 | statefulset.antiAffinity.strategy | string | `"soft"` | AntiAffinity strategy to use for all StatefulSets. |
 | statefulset.antiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | AntiAffinity topology key to use for all StatefulSets. |
 | tephra.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -138,7 +138,7 @@ Current chart version is `0.1.101`
 | wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | wait.image.repository | string | `"stackstate/wait"` | Container image tag for wait containers. |
-| wait.image.tag | string | `"1.0.4"` |  |
+| wait.image.tag | string | `"1.0.5"` |  |
 | zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
 | zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |
 | zookeeper.fourlwCommandsWhitelist | string | `"mntr, ruok, stat, srvr"` | Zookeeper four-letter-word (FLW) commands that are enabled. |
