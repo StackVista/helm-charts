@@ -1005,7 +1005,7 @@ hbase:
           memory: "3Gi"
           cpu: "1500m"
   hdfs:
-    # hbase.hdfs.minReplication -- Min number of copies we create from any data block.
+    # hbase.hdfs.minReplication -- Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead)
     minReplication: 2
     datanode:
       # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas.
