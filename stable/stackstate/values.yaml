@@ -1183,7 +1183,7 @@ minio:
   fullnameOverride: stackstate-minio
   image:
     # minio.image.repository -- MinIO image repository
-    repository: quay.io/stackstate/
+    repository: quay.io/stackstate/minio
     tag: 2021.2.19-focal-20210827-r5
   # minio.accessKey -- Access key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
   accessKey: setme
