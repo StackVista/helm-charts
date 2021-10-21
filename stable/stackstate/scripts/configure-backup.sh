@@ -32,7 +32,7 @@ if [ "${BACKUP_ELASTICSEARCH_RESTORE_ENABLED}" == "true" ] || [ "${BACKUP_ELASTI
         fi
     fi
 
-    echo "=== Configuring ElaticSearch snapshot repository \"${BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_REPOSITORY_NAME}\" for bucket \"${BACKUP_ELASTICSEARCH_BUCKET_NAME}\"..."
+    echo "=== Configuring ElasticSearch snapshot repository \"${BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_REPOSITORY_NAME}\" for bucket \"${BACKUP_ELASTICSEARCH_BUCKET_NAME}\"..."
     SC=$(curl --request PUT "http://${ELASTICSEARCH_ENDPOINT}/_snapshot/${BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_REPOSITORY_NAME}?pretty" --header "Content-Type: application/json" --data "
     {
         \"type\": \"s3\",
@@ -48,7 +48,7 @@ if [ "${BACKUP_ELASTICSEARCH_RESTORE_ENABLED}" == "true" ] || [ "${BACKUP_ELASTI
     if [ "$SC" -ne 200 ]; then exit 1; fi
 
     if [ "${BACKUP_ELASTICSEARCH_SCHEDULED_ENABLED}" == "true" ]; then
-        echo "=== Configuring ElaticSearch snapshot lifecycle management policy \"${BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_POLICY_NAME}\" for snapshot repository \"${BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_REPOSITORY_NAME}\"..."
+        echo "=== Configuring ElasticSearch snapshot lifecycle management policy \"${BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_POLICY_NAME}\" for snapshot repository \"${BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_REPOSITORY_NAME}\"..."
         SC=$(curl --request PUT "http://${ELASTICSEARCH_ENDPOINT}/_slm/policy/${BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_POLICY_NAME}?pretty" --header "Content-Type: application/json" --data "
         {
             \"schedule\": \"${BACKUP_ELASTICSEARCH_SCHEDULED_SCHEDULED}\",
