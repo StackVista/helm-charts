@@ -50,7 +50,7 @@ Current chart version is `0.1.102`
 | hbase.master.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | hbase.master.image.pullPolicy | string | `nil` | Pull policy for HBase masters, defaults to `stackgraph.image.pullPolicy` |
 | hbase.master.image.repository | string | `"stackstate/hbase-master"` | Base container image repository for HBase masters. |
-| hbase.master.image.tag | string | `"4.2.10"` | Container image tag for HBase masters, defaults to `stackgraph.image.tag` |
+| hbase.master.image.tag | string | `nil` | Container image tag for HBase masters, defaults to `stackgraph.image.tag` |
 | hbase.master.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hbase.master.replicaCount | int | `1` | Number of pods for HBase masters. |
 | hbase.master.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HBase masters. |

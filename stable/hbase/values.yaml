@@ -99,7 +99,7 @@ hbase:
       # hbase.master.image.repository -- Base container image repository for HBase masters.
       repository: stackstate/hbase-master
       # hbase.master.image.tag -- Container image tag for HBase masters, defaults to `stackgraph.image.tag`
-      tag: 4.2.10
+      tag:
     # hbase.master.replicaCount -- Number of pods for HBase masters.
     replicaCount: 1
     # hbase.master.resources -- Resources to allocate for HBase masters.
