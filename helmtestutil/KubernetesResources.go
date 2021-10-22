@@ -60,6 +60,7 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 	for _, v := range separateFiles {
 		var metadata metav1.TypeMeta
 		helm.UnmarshalK8SYaml(t, v, &metadata)
+		t.Log("Processing resource of kind", metadata.Kind)
 		switch metadata.Kind {
 		case "ClusterRole":
 			var resource rbacv1.ClusterRole
