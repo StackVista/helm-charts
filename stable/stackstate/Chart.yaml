@@ -31,11 +31,11 @@ dependencies:
   - name: elasticsearch
     condition: elasticsearch.enabled
     repository: https://helm.stackstate.io
-    version: 7.6.2-stackstate.17
+    version: 7.6.2-stackstate.18
   - name: hbase
     condition: hbase.enabled
     repository: https://helm.stackstate.io
-    version: 0.1.101
+    version: 0.1.103
   - name: kafka
     condition: kafka.enabled
     repository: https://helm.stackstate.io
