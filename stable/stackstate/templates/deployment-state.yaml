@@ -40,7 +40,7 @@ env:
 - name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
   value: "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
   # Keep data for a longlong time (a day), we actually want to run stateservice from cache
-- name: CONFIG_FORCE_stackgraph.vertex.cache.expireAfterSeconds
+- name: CONFIG_FORCE_stackgraph_vertex_cache_expireAfterSeconds
   value: "86400"
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.state.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.state.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.state.image.pullPolicy | quote }}
