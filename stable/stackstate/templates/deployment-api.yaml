@@ -40,7 +40,7 @@ env:
 - name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
   value: "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
   # Keep for 1.5 hours, allowing timetravel and having users in analytics keep their results cached
-- name: CONFIG_FORCE_stackgraph.vertex.cache.expireAfterSeconds
+- name: CONFIG_FORCE_stackgraph_vertex_cache_expireAfterSeconds
   value: "5400"
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.api.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.api.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.api.image.pullPolicy | quote }}

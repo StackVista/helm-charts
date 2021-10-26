@@ -38,7 +38,7 @@ env:
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
   # No need to keep cached items for a long time
-- name: CONFIG_FORCE_stackgraph.vertex.cache.expireAfterSeconds
+- name: CONFIG_FORCE_stackgraph_vertex_cache_expireAfterSeconds
   value: "600"
 - name: CONFIG_FORCE_stackgraph.vertex.cache.sizePercentage
   value: "10"
