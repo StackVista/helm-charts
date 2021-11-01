@@ -1112,7 +1112,7 @@ kafka:
     # kafka.image.repository -- Kafka image repository
     repository: stackstate/kafka
     # kafka.image.tag -- Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.**
-    tag: 2.3.1-focal-20210827-r41
+    tag: 2.3.1-focal-20210827-r41.1
   livenessProbe:
     # kafka.livenessProbe.initialDelaySeconds -- Delay before readiness probe is initiated.
     initialDelaySeconds: 240
