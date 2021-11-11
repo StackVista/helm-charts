@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+{{- if .Values.serviceMonitor.enabled }}
+kind: ServiceMonitor
+metadata:
+  name: {{ include "fullname.short" . }}
+  labels:
+    release: prometheus-operator
+spec:
+  endpoints:
+  - interval: 30s
+    port: metrics
+  namespaceSelector:
+    matchNames:
+    - {{.Release.Namespace}}
+  selector:
+    matchLabels:
+      name: {{ include "fullname.short" . }}
+{{- end }}

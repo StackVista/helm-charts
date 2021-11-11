@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fullname.short" . }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: {{ include "fullname.short" . }}
+  template:
+    metadata:
+      labels:
+        name: {{ include "fullname.short" . }}
+    spec:
+{{- if .Values.image.pullSecretName }}
+      imagePullSecrets:
+      - name: '{{ .Values.image.pullSecretName }}'
+{{- else if .Values.image.pullSecretUsername }}
+      imagePullSecrets:
+      - name: '{{ template "fullname.short" . }}-pull-secret'
+{{- end }}
+      serviceAccountName: {{ include "fullname.short" . }}
+      containers:
+      - name: kubelet-stats-exporter
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: metrics
+          containerPort: 9118
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}

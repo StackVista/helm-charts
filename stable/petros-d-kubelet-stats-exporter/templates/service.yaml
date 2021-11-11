@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "fullname.short" . }}
+  labels:
+    name: {{ include "fullname.short" . }} # ServiceMonitor reqires a labelon the service
+spec:
+  selector:
+    name: {{ include "fullname.short" . }}
+  ports:
+  - name: metrics
+    port: 9113
+    protocol: TCP
+    targetPort: metrics
+  type: ClusterIP
