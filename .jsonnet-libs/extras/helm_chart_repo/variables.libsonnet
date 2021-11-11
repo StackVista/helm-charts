@@ -32,6 +32,7 @@
       'iceman',
       'kafka',
       'kommoner-operator',
+      'petros-d-kubelet-stats-exporter',
       'sandbox-operator',
       'stackstate-standalone',
       'stackstate',
