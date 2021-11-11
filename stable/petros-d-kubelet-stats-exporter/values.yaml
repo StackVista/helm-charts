@@ -1,0 +1,21 @@
+image:
+  # image.registry -- Registry containing the image for the Kommoner operator
+  registry: quay.io
+  # image.repository -- Repository containing the image for the Kommoner operator
+  repository: stackstate/petros-d-kubelet-stats-exporter
+  # image.tag -- Tag of the image for the Kommoner operator
+  tag: 0.9.0
+  # image.pullPolicy -- Pull policy for the image for the Kommoner operator
+  pullPolicy: IfNotPresent
+# nodeSelector:
+#   node.kubernetes.io/purpose-core: "yes"
+resources:
+  limits:
+    cpu: 50m
+    memory: 150Mi
+  requests:
+    cpu: 10m
+    memory: 50Mi
+serviceMonitor:
+  # serviceMonitor.enabled - Enables ServiceMonitor resource for prometheus-operator
+  enabled: true
