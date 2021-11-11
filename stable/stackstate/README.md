@@ -16,7 +16,7 @@ Current chart version is `4.6.0-snapshot.9`
 | https://helm.stackstate.io | cluster-agent | 0.4.27 |
 | https://helm.stackstate.io | common | 0.4.17 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.19 |
-| https://helm.stackstate.io | hbase | 0.1.103 |
+| https://helm.stackstate.io | hbase | 0.1.108 |
 | https://helm.stackstate.io | kafka | 12.2.5-stackstate.0 |
 
 ## Required Values
