@@ -196,9 +196,11 @@ stackstate:
         limits:
           memory: "4000Mi"
           cpu: "2000m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "4000Mi"
           cpu: "1500m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "50"
@@ -233,9 +235,11 @@ stackstate:
         limits:
           memory: "1600Mi"
           cpu: "600m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "1600Mi"
           cpu: "600m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "575Mi"
         javaHeapMemoryFraction: "78"
@@ -270,9 +274,11 @@ stackstate:
         limits:
           memory: "4000Mi"
           cpu: "2000m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "4000Mi"
           cpu: "1000m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "70"
@@ -307,9 +313,11 @@ stackstate:
         limits:
           memory: "1500Mi"
           cpu: "1500m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "1500Mi"
           cpu: "1000m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "700Mi"
         javaHeapMemoryFraction: "85"
@@ -341,9 +349,11 @@ stackstate:
         limits:
           memory: "700Mi"
           cpu: "500m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "700Mi"
           cpu: "500m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "460Mi"
         javaHeapMemoryFraction: "65"
@@ -378,9 +388,11 @@ stackstate:
         limits:
           memory: "1Gi"
           cpu: "1000m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "1Gi"
           cpu: "1000m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "600Mi"
         javaHeapMemoryFraction: "85"
@@ -415,9 +427,11 @@ stackstate:
         limits:
           memory: "1500Mi"
           cpu: "500m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "1500Mi"
           cpu: "500m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "600Mi"
         javaHeapMemoryFraction: "85"
@@ -452,9 +466,11 @@ stackstate:
         limits:
           memory: "1Gi"
           cpu: "500m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "1Gi"
           cpu: "500m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "600Mi"
         javaHeapMemoryFraction: "85"
@@ -491,9 +507,11 @@ stackstate:
         limits:
           memory: "4Gi"
           cpu: "3000m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "4Gi"
           cpu: "3000m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "700Mi"
         javaHeapMemoryFraction: "75"
@@ -530,9 +548,11 @@ stackstate:
         limits:
           cpu: "100m"
           memory: "128Mi"
+          ephemeral-storage: "1Gi"
         requests:
           cpu: "100m"
           memory: "128Mi"
+          ephemeral-storage: "1Mi"
       # stackstate.components.router.replicaCount -- Number of `router` replicas.
       replicaCount: 1
       # stackstate.components.router.nodeSelector -- Node labels for pod assignment.
@@ -562,9 +582,11 @@ stackstate:
         limits:
           memory: "8Gi"
           cpu: "3600m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "8Gi"
           cpu: "3600m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "1700Mi"
         javaHeapMemoryFraction: "85"
@@ -599,9 +621,11 @@ stackstate:
         limits:
           cpu: "1000m"
           memory: "2000Mi"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "2000Mi"
           cpu: "750m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "80"
@@ -636,9 +660,11 @@ stackstate:
         limits:
           memory: "3500Mi"
           cpu: "3000m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "3500Mi"
           cpu: "2000m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "60"
@@ -670,9 +696,11 @@ stackstate:
         limits:
           cpu: "1500m"
           memory: "1800Mi"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "1800Mi"
           cpu: "1000m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "60"
@@ -707,9 +735,11 @@ stackstate:
         limits:
           cpu: "50m"
           memory: "64Mi"
+          ephemeral-storage: "1Gi"
         requests:
           cpu: "50m"
           memory: "64Mi"
+          ephemeral-storage: "1Mi"
       securityContext:
         # stackstate.components.ui.securityContext.enabled -- Whether or not to enable the securityContext
         enabled: true
@@ -750,9 +780,11 @@ stackstate:
         limits:
           memory: "2700Mi"
           cpu: "2000m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "2700Mi"
           cpu: "2000m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "55"
@@ -787,9 +819,11 @@ stackstate:
         limits:
           cpu: "1000m"
           memory: "2000Mi"
+          ephemeral-storage: "1Gi"
         requests:
           cpu: "500m"
           memory: "2000Mi"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "80"
@@ -940,9 +974,11 @@ elasticsearch:
     requests:
       cpu: "2000m"
       memory: "4Gi"
+      ephemeral-storage: "1Mi"
     limits:
       cpu: "2000m"
       memory: "4Gi"
+      ephemeral-storage: "1Gi"
   # elasticsearch.volumeClaimTemplate -- PVC template defaulting to 250Gi default volumes
   volumeClaimTemplate:
     accessModes:
@@ -962,9 +998,11 @@ elasticsearch:
       limits:
         cpu: "100m"
         memory: "100Mi"
+        ephemeral-storage: "1Gi"
       requests:
         cpu: "100m"
         memory: "100Mi"
+        ephemeral-storage: "1Mi"
     es:
       uri: http://stackstate-elasticsearch-master:9200
 hbase:
@@ -991,9 +1029,11 @@ hbase:
         limits:
           memory: "1Gi"
           cpu: "500m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "1Gi"
           cpu: "50m"
+          ephemeral-storage: "1Mi"
     regionserver:
       # hbase.hbase.regionserver.replicaCount -- Number of HBase regionserver node replicas.
       replicaCount: 3
@@ -1001,9 +1041,11 @@ hbase:
         limits:
           memory: "3Gi"
           cpu: "3000m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "3Gi"
           cpu: "1500m"
+          ephemeral-storage: "1Mi"
   hdfs:
     # hbase.hdfs.minReplication -- Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead)
     minReplication: 2
@@ -1014,26 +1056,32 @@ hbase:
         limits:
           memory: "4Gi"
           cpu: "500m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "4Gi"
           cpu: "300m"
+          ephemeral-storage: "1Mi"
     namenode:
       resources:
         limits:
           memory: "1Gi"
           cpu: "500m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "1Gi"
           cpu: "100m"
+          ephemeral-storage: "1Mi"
     secondarynamenode:
       enabled: true
       resources:
         limits:
           memory: "1Gi"
           cpu: "500m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "1Gi"
           cpu: "50m"
+          ephemeral-storage: "1Mi"
   tephra:
     # hbase.tephra.replicaCount -- Number of Tephra replicas.
     replicaCount: 2
@@ -1041,9 +1089,11 @@ hbase:
       limits:
         memory: "3Gi"
         cpu: "500m"
+        ephemeral-storage: "1Gi"
       requests:
         memory: "2Gi"
         cpu: "250m"
+        ephemeral-storage: "1Mi"
   zookeeper:
     # hbase.zookeeper.enabled -- Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**.
     enabled: false
@@ -1136,9 +1186,11 @@ kafka:
         limits:
           cpu: "200m"
           memory: "300Mi"
+          ephemeral-storage: "1Gi"
         requests:
           cpu: "200m"
           memory: "300Mi"
+          ephemeral-storage: "1Mi"
     serviceMonitor:
       # kafka.metrics.serviceMonitor.enabled -- If `true`, creates a Prometheus Operator `ServiceMonitor` (also requires `kafka.metrics.kafka.enabled` or `kafka.metrics.jmx.enabled` to be `true`).
       enabled: false
@@ -1167,9 +1219,11 @@ kafka:
     limits:
       memory: "2Gi"
       cpu: "1000m"
+      ephemeral-storage: "1Gi"
     requests:
       memory: "2Gi"
       cpu: "1000m"
+      ephemeral-storage: "1Mi"
   # kafka.zookeeper.enabled -- Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**.
   zookeeper:
     enabled: false
@@ -1226,9 +1280,11 @@ zookeeper:
     limits:
       memory: "512Mi"
       cpu: "250m"
+      ephemeral-storage: "1Gi"
     requests:
       memory: "512Mi"
       cpu: "100m"
+      ephemeral-storage: "1Mi"
   # zookeeper.podAnnotations -- Annotations for ZooKeeper pod.
   podAnnotations:
     ad.stackstate.com/zookeeper.check_names: '["openmetrics"]'
