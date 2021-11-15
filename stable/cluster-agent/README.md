@@ -58,6 +58,7 @@ stackstate/cluster-agent
 | agent.checksTagCardinality | string | `"orchestrator"` | low, orchestrator or high. Orchestrator level adds pod_name, high adds display_container_name |
 | agent.config | object | `{"override":[]}` |  |
 | agent.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
+| agent.containerd.enabled | bool | `false` | Enable / disable the configuration of containerd container check. |
 | agent.cri.enabled | bool | `false` | Enable / disable the configuration of CRI container check. |
 | agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | agent.image.repository | string | `"docker.io/stackstate/stackstate-agent-2"` | Base container image registry. |

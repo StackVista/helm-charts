@@ -99,6 +99,10 @@ spec:
           - name: STS_CRI_SOCKET_PATH
             value: /var/run/crio/crio.sock
           {{- end }}
+          {{- if .Values.agent.containerd.enabled }}
+          - name: STS_CRI_SOCKET_PATH
+            value: /var/run/containerd/containerd.sock
+          {{- end }}
           {{- range $key, $value := .Values.global.extraEnv.open }}
           - name: {{ $key }}
             value: {{ $value | quote }}
@@ -143,6 +147,13 @@ spec:
           {{- if .Values.agent.cri.enabled }}
           - name: crisocket
             mountPath: /var/run/crio/crio.sock
+          - name: var-run
+            mountPath: /host/var/run
+            readOnly: true
+          {{- end }}
+          {{- if .Values.agent.containerd.enabled }}
+          - name: containerdsocket
+            mountPath: /var/run/containerd/containerd.sock
           - name: var-run
             mountPath: /host/var/run
             readOnly: true
@@ -193,6 +204,15 @@ spec:
       - hostPath:
           path: /var/run/crio/crio.sock
         name: crisocket
+      - hostPath:
+          path: /var/run
+          type: DirectoryOrCreate
+        name: var-run
+      {{- end }}
+      {{- if .Values.agent.containerd.enabled }}
+      - hostPath:
+          path: /var/run/containerd/containerd.sock
+        name: containerdsocket
       - hostPath:
           path: /var/run
           type: DirectoryOrCreate
