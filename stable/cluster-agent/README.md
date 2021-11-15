@@ -58,6 +58,7 @@ stackstate/cluster-agent
 | agent.checksTagCardinality | string | `"orchestrator"` | low, orchestrator or high. Orchestrator level adds pod_name, high adds display_container_name |
 | agent.config | object | `{"override":[]}` |  |
 | agent.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
+| agent.cri.enabled | bool | `false` | Enable / disable the configuration of CRI container check. |
 | agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | agent.image.repository | string | `"docker.io/stackstate/stackstate-agent-2"` | Base container image registry. |
 | agent.image.tag | string | `"2.14.0"` | Default container image tag. |
@@ -83,7 +84,7 @@ stackstate/cluster-agent
 | agent.resources.limits.memory | string | `"1024Mi"` |  |
 | agent.resources.requests.cpu | string | `"100m"` | Memory resource requests. |
 | agent.resources.requests.memory | string | `"256Mi"` |  |
-| agent.scc.enabled | bool | `false` | Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift |
+| agent.scc.enabled | bool | `false` | Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift. |
 | agent.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
 | agent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | agent.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":100},"type":"RollingUpdate"}` | The update strategy for the DaemonSet object. |

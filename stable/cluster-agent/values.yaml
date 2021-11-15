@@ -22,8 +22,11 @@ nameOverride: ""
 fullnameOverride: ""
 
 agent:
+  cri:
+    # agent.cri.enabled -- Enable / disable the configuration of CRI container check.
+    enabled: false
   scc:
-    # agent.scc.enabled -- Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift
+    # agent.scc.enabled -- Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift.
     enabled: false
   apm:
     # agent.apm.enabled -- Enable / disable the agent APM module.
