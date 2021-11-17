@@ -18,7 +18,7 @@ maintainers:
 name: stackstate
 dependencies:
   - name: anomaly-detection
-    version: 4.5.0-snapshot.170
+    version: 4.5.0-snapshot.175
     repository: https://helm.stackstate.io
     condition: anomaly-detection.enabled
   - name: cluster-agent
