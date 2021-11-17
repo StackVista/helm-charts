@@ -106,14 +106,7 @@ spec:
         app.kubernetes.io/component: initializer
     spec:
       serviceAccountName: {{ template "common.fullname.short" . }}-initializer
-    {{- if .Values.stackstate.components.all.image.pullSecretName }}
-      imagePullSecrets:
-      - name: '{{ .Values.stackstate.components.all.image.pullSecretName }}'
-    {{- else if .Values.stackstate.components.all.image.pullSecretDockerConfigJson }}
-      imagePullSecrets:
-      - name: '{{ template "common.fullname.short" . }}-pull-secret'
-    {{- end }}
-      {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
       initContainers:
       - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
       - {{ toYaml $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer | nindent 8 }}

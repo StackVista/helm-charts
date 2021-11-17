@@ -378,7 +378,7 @@ Ingress paths / routes
 - host: {{ tpl .host $ctx | quote }}
   http:
     paths:
-      - path: /
+      - path: {{ $.Values.ingress.path | quote }}
     {{- if $ctx.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
         pathType: Prefix
         backend:
@@ -395,7 +395,7 @@ Ingress paths / routes
 {{- else }}
 - http:
     paths:
-      - path: /
+      - path: {{ $.Values.ingress.path | quote }}
     {{- if $ctx.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
         pathType: Prefix
         backend:
@@ -430,15 +430,51 @@ endpoints:
       action: replace
 {{- end -}}
 
+{{/*
+Renders a value that contains a template.
+Usage:
+{{ include "stackstate.tplvalue.render" ( dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "stackstate.tplvalue.render" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
+{{- end -}}
+
+{{/*
+Return the proper Docker Image Registry Secret Names evaluating values as templates
+{{ include "stackstate.image.pullSecret.name" ( dict "images" (list .Values.path.to.the.image1, .Values.path.to.the.image2) "context" $) }}
+*/}}
 {{- define "stackstate.image.pullSecret.name" -}}
-{{- if .Values.stackstate.components.all.image.pullSecretName -}}
+  {{- $pullSecrets := list }}
+  {{- $context := .context }}
+
+  {{- if $context.Values.global }}
+    {{- range $context.Values.global.imagePullSecrets -}}
+      {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" . "context" $context)) -}}
+    {{- end -}}
+    {{- if $context.Values.global.imagePullUsername -}}
+      {{- $pullSecrets = append $pullSecrets ((list (include "common.fullname.short" $context ) "pull-secret") | join "-")  -}}
+    {{- end -}}
+  {{- end -}}
+  {{- range .images -}}
+    {{- if .pullSecretName -}}
+      {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" .pullSecretName "context" $context)) -}}
+    {{- else if (or .pullSecretUsername .pullSecretDockerConfigJson) -}}
+      {{- $pullSecrets = append $pullSecrets ((list (include "common.fullname.short" $context ) "pull-secret") | join "-")  -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- if (not (empty $pullSecrets)) }}
 imagePullSecrets:
-- name: '{{ .Values.stackstate.components.all.image.pullSecretName }}'
-{{- else if .Values.stackstate.components.all.image.pullSecretUsername -}}
-imagePullSecrets:
-- name: '{{ template "common.fullname.short" . }}-pull-secret'
+    {{- range $pullSecrets }}
+  - name: {{ . }}
+    {{- end }}
+  {{- end }}
 {{- end -}}
-{{- end -}}
+
 
 {{- define "stackstate.service.spec.poddisruptionbudget" -}}
 metadata:

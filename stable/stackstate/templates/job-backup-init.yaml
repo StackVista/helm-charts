@@ -33,6 +33,7 @@ spec:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
             - name: tmp-data
               mountPath: /tmp-data
+      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
       restartPolicy: Never
 {{- if .Values.backup.stackGraph.securityContext.enabled }}
       securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 8 }}
