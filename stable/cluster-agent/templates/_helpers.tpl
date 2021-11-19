@@ -75,3 +75,63 @@ checksum/override-configmap: {{ include (print $.Template.BasePath "/agent-confi
 checksum/override-configmap: {{ include (print $.Template.BasePath "/agent-clusterchecks-configmap.yaml") . | sha256sum }}
 {{- end }}
 {{- end }}
+
+
+{{/*
+Return the image registry
+*/}}
+{{- define "cluster-agent.imageRegistry" -}}
+  {{- if .Values.global }}
+    {{- .Values.global.imageRegistry | default .Values.all.image.registry -}}
+  {{- else -}}
+    {{- .Values.all.image.registry -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Renders a value that contains a template.
+Usage:
+{{ include "cluster-agent.tplvalue.render" ( dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "cluster-agent.tplvalue.render" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
+{{- end -}}
+
+{{/*
+Return the proper Docker Image Registry Secret Names evaluating values as templates
+{{ include "cluster-agent.image.pullSecret.name" ( dict "images" (list .Values.path.to.the.image1, .Values.path.to.the.image2) "context" $) }}
+*/}}
+{{- define "cluster-agent.image.pullSecret.name" -}}
+  {{- $pullSecrets := list }}
+  {{- $context := .context }}
+
+  {{- if $context.Values.global }}
+    {{- range $context.Values.global.imagePullSecrets -}}
+      {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" .name "context" $context)) -}}
+    {{- end -}}
+    {{- if $context.Values.global.imagePullUsername -}}
+      {{- $pullSecrets = append $pullSecrets ((list (include "cluster-agent.fullname" $context ) "pull-secret") | join "-")  -}}
+    {{- end -}}
+  {{- end -}}
+  {{- range $context.Values.imagePullSecrets -}}
+    {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" .name "context" $context)) -}}
+  {{- end -}}
+  {{- range .images -}}
+    {{- if .pullSecretName -}}
+      {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" .pullSecretName "context" $context)) -}}
+    {{- else if (or .pullSecretUsername .pullSecretDockerConfigJson) -}}
+      {{- $pullSecrets = append $pullSecrets ((list (include "cluster-agent.fullname" $context ) "pull-secret") | join "-")  -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- if (not (empty $pullSecrets)) }}
+imagePullSecrets:
+    {{- range $pullSecrets }}
+  - name: {{ . }}
+    {{- end }}
+  {{- end }}
+{{- end -}}

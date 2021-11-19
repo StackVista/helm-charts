@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `0.4.27`
+Current chart version is `0.4.28`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -59,7 +59,7 @@ stackstate/cluster-agent
 | agent.config | object | `{"override":[]}` |  |
 | agent.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
 | agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
-| agent.image.repository | string | `"docker.io/stackstate/stackstate-agent-2"` | Base container image registry. |
+| agent.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
 | agent.image.tag | string | `"2.14.0"` | Default container image tag. |
 | agent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | agent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
@@ -87,6 +87,7 @@ stackstate/cluster-agent
 | agent.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
 | agent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | agent.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":100},"type":"RollingUpdate"}` | The update strategy for the DaemonSet object. |
+| all.image.registry | string | `"docker.io"` | The image registry to use. |
 | clusterAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | clusterAgent.collection.kubernetesEvents | bool | `true` | Enable / disable the cluster agent events collection. |
 | clusterAgent.collection.kubernetesMetrics | bool | `true` | Enable / disable the cluster agent metrics collection. |
@@ -96,7 +97,7 @@ stackstate/cluster-agent
 | clusterAgent.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
 | clusterAgent.enabled | bool | `true` | Enable / disable the cluster agent. |
 | clusterAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
-| clusterAgent.image.repository | string | `"docker.io/stackstate/stackstate-cluster-agent"` | Base container image registry. |
+| clusterAgent.image.repository | string | `"stackstate/stackstate-cluster-agent"` | Base container image repository. |
 | clusterAgent.image.tag | string | `"2.14.0"` | Default container image tag. |
 | clusterAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
@@ -126,7 +127,7 @@ stackstate/cluster-agent
 | clusterChecks.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
 | clusterChecks.enabled | bool | `false` | Enable / disable runnning cluster checks in a separately deployed pod |
 | clusterChecks.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
-| clusterChecks.image.repository | string | `"docker.io/stackstate/stackstate-agent-2"` | Base container image registry. |
+| clusterChecks.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
 | clusterChecks.image.tag | string | `"2.14.0"` | Default container image tag. |
 | clusterChecks.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterChecks.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |

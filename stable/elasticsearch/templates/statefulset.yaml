@@ -133,10 +133,7 @@ spec:
       {{- if .Values.extraVolumes }}
 {{ tpl .Values.extraVolumes . | indent 8 }}
       {{- end }}
-      {{- if .Values.imagePullSecrets }}
-      imagePullSecrets:
-{{ toYaml .Values.imagePullSecrets | indent 8 }}
-      {{- end }}
+      {{- include "elasticsearch.image.pullSecret.name" (dict "images" (list .Values) "context" $) | nindent 6 }}
       initContainers:
       {{- if .Values.sysctlInitContainer.enabled }}
       - name: configure-sysctl
