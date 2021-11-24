@@ -1,0 +1,13 @@
+apiVersion: v2
+name: "kafkaup-operator"
+description: "The StackState Kafka upgrade operator"
+version: 0.1.0-SNAPSHOT
+appVersion: v0.1.0
+home: https://gitlab.com/StackVista/platform/kafkaup-operator
+maintainers:
+- name: Bram Schuur
+  email: bschuur@stackstate.com
+dependencies:
+  - name: common
+    version: 0.4.14
+    repository: https://helm.stackstate.io/

@@ -1,0 +1,40 @@
+image:
+  # image.registry -- Registry containing the image for the KafkaUp operator
+  registry: quay.io
+  # image.repository -- Repository containing the image for the KafkaUp operator
+  repository: stackstate/kafkaup-operator
+  # image.tag -- Tag of the image for the KafkaUp operator
+  tag: 0.0.1
+  # image.pullPolicy -- Pull policy for the image for the KafkaUp operator
+  pullPolicy: IfNotPresent
+
+kafkaSelectors:
+  # kafkaSelectors.statefulSetName -- name of the statefulSet to operate on
+  statefulSetName: "kafka"
+
+  # kafkaSelectors.podLabel -- pod label of kafka pods to operate on
+  podLabel:
+    key: "app.kubernetes.io/component"
+    value: "kafka"
+
+# startVersion -- Version to use if no version is set. Allow going from a non-operated to operated situation
+startVersion:
+
+# nodeSelector:
+#   node.kubernetes.io/purpose-core: "yes"
+
+## Add labels to all the deployed resources
+##
+commonLabels: {}
+
+## Add annotations to all the deployed resources
+##
+commonAnnotations: {}
+
+resources:
+  limits:
+    cpu: 50m
+    memory: 64Mi
+  requests:
+    cpu: 25m
+    memory: 32Mi

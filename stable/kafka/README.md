@@ -1,6 +1,6 @@
 # kafka
 
-![Version: 12.2.5-stackstate.1](https://img.shields.io/badge/Version-12.2.5--stackstate.1-informational?style=flat-square) ![AppVersion: 2.6.0](https://img.shields.io/badge/AppVersion-2.6.0-informational?style=flat-square)
+![Version: 12.2.5-stackstate.2](https://img.shields.io/badge/Version-12.2.5--stackstate.2-informational?style=flat-square) ![AppVersion: 2.6.0](https://img.shields.io/badge/AppVersion-2.6.0-informational?style=flat-square)
 Apache Kafka is a distributed streaming platform.
 **Homepage:** <https://github.com/bitnami/charts/tree/master/bitnami/kafka>
 ## Maintainers
@@ -158,6 +158,9 @@ Apache Kafka is a distributed streaming platform.
 | readinessProbe.initialDelaySeconds | int | `5` |  |
 | readinessProbe.timeoutSeconds | int | `5` |  |
 | replicaCount | int | `1` |  |
+| requireInterBrokerProtocolVersion.enabled | bool | `false` |  |
+| requireInterBrokerProtocolVersion.resources.limits | object | `{}` |  |
+| requireInterBrokerProtocolVersion.resources.requests | object | `{}` |  |
 | resources.limits | object | `{}` |  |
 | resources.requests | object | `{}` |  |
 | service.annotations | object | `{}` |  |

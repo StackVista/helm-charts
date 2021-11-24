@@ -1,0 +1,9 @@
+{{- define "kafkaup.image.pullSecret.name" -}}
+{{- if .Values.image.pullSecretName }}
+imagePullSecrets:
+- name: '{{ .Values.image.pullSecretName }}'
+{{- else if .Values.image.pullSecretUsername }}
+imagePullSecrets:
+- name: '{{ template "common.fullname.short" . }}-pull-secret'
+{{- end }}
+{{- end -}}

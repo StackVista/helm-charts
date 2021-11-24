@@ -686,6 +686,25 @@ logPersistence:
   mountPath: /opt/bitnami/kafka/logs
 
 ## Init Container paramaters
+## Is it required to have CFG_KAFKA_INTER_BROKER_PROTOCOL_VERSION set? This
+# setting is here to allow an external operator to dictate the upgrade flow
+requireInterBrokerProtocolVersion:
+  enabled: false
+  ## Init Container resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    limits: { }
+    #   cpu: 100m
+    #   memory: 128Mi
+    requests: { }
+    #   cpu: 100m
+    #   memory: 128Mi
+
 ## Change the owner and group of the persistent volume(s) mountpoint(s) to 'runAsUser:fsGroup' on each component
 ## values from the securityContext section of the component
 ##
