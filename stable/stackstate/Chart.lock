@@ -17,11 +17,8 @@ dependencies:
 - name: kafka
   repository: https://helm.stackstate.io
   version: 12.2.5-stackstate.0
-- name: minio
-  repository: https://helm.min.io/
-  version: 8.0.10
 - name: zookeeper
   repository: https://charts.bitnami.com/bitnami
   version: 5.16.0
-digest: sha256:df6f39efac690f30cd810d6918b313b6706d6a9e39d9c6e5e8a72713e0798f55
-generated: "2021-11-18T10:45:32.026103+01:00"
+digest: sha256:a321d49581d6d5b376ffb14bd7ba5b93ab076d0f879e6ecdfc8f1403096e50db
+generated: "2021-11-25T11:42:05.849403+01:00"
