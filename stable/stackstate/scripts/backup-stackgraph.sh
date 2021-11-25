@@ -15,8 +15,13 @@ ls -lat "${TMP_DIR:?}"
 eval "BACKUP_FILE=\"${BACKUP_STACKGRAPH_SCHEDULED_BACKUP_NAME_TEMPLATE}\""
 echo "=== Exporting StackGraph data to \"${BACKUP_FILE}\"..."
 /opt/docker/bin/stackstate-server -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy -export "${TMP_DIR}/${BACKUP_FILE}"
-echo "=== Uploading StackGraph backup \"${BACKUP_FILE}\" to bucket \"${BACKUP_STACKGRAPH_BUCKET_NAME}\"..."
-aws --endpoint-url "http://${MINIO_ENDPOINT}" s3 cp "${TMP_DIR}/${BACKUP_FILE}" "s3://${BACKUP_STACKGRAPH_BUCKET_NAME}/${BACKUP_FILE}"
 
-echo "=== Expiring old StackGraph backups..."
-/backup-restore-scripts/expire-stackgraph-backups.py
+if [ -f "${TMP_DIR}/${BACKUP_FILE}" ]; then
+    echo "=== Uploading StackGraph backup \"${BACKUP_FILE}\" to bucket \"${BACKUP_STACKGRAPH_BUCKET_NAME}\"..."
+    aws --endpoint-url "http://${MINIO_ENDPOINT}" s3 cp "${TMP_DIR}/${BACKUP_FILE}" "s3://${BACKUP_STACKGRAPH_BUCKET_NAME}/${BACKUP_FILE}"
+    echo "=== Expiring old StackGraph backups..."
+    /backup-restore-scripts/expire-stackgraph-backups.py
+else
+    echo "=== Export failed. Backup file \"${TMP_DIR}/${BACKUP_FILE}\" does not exist."
+    exit 1
+fi

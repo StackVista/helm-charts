@@ -26,7 +26,7 @@ func TestPullSecret(t *testing.T) {
 	CheckPullSecret(t, resources, "stackstate-pull-secret", "test", "secret", "quay.io")
 }
 
-func TestPullSecretNamed(t *testing.T) {
+func TestPullSecretGlobalNamed(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/pull_secret_global_named.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "problem-producer", "sync", "view-health", "mm2es", "e2es", "trace2es"}
@@ -37,6 +37,36 @@ func TestPullSecretNamed(t *testing.T) {
 			assert.Fail(t, "Expected that no dockerconfigjson is being created")
 		}
 	}
+}
+func TestImagePullSecretName(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/pull_secret_name.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "problem-producer", "sync", "view-health", "mm2es", "e2es", "trace2es"}
+
+	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "my-pull-secret")
+	for _, secret := range resources.Secrets {
+		if secret.Name == "my-pull-secret" {
+			assert.Fail(t, "Expected that no dockerconfigjson is being created")
+		}
+	}
+}
+
+func TestGlobalRegistryLocalPullSecret(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/pull_secret_global_registry.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "problem-producer", "sync", "view-health", "mm2es", "e2es", "trace2es"}
+
+	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "stackstate-pull-secret")
+	CheckPullSecret(t, resources, "stackstate-pull-secret", "test", "secret", "my.registry.com")
+}
+
+func TestGlobalOverridesLocalPullSecretDetails(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/pull_secret_both.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "problem-producer", "sync", "view-health", "mm2es", "e2es", "trace2es"}
+
+	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "stackstate-pull-secret")
+	CheckPullSecret(t, resources, "stackstate-pull-secret", "global-user", "global-password", "my.registry.com")
 }
 
 func CheckDeploymentsForPullSecret(t *testing.T, resources helmtestutil.KubernetesResources, deploymentsToCheck []string, pullSecretName string) {
@@ -56,8 +86,7 @@ func CheckDeploymentsForPullSecret(t *testing.T, resources helmtestutil.Kubernet
 
 func CheckPullSecret(t *testing.T, resources helmtestutil.KubernetesResources, secretName string, user string, password string, registry string) {
 	for _, secret := range resources.Secrets {
-		if secret.Type == "kubernetes.io/dockerconfigjson" {
-			assert.Equal(t, "stackstate-pull-secret", secret.Name)
+		if secret.Type == "kubernetes.io/dockerconfigjson" && secret.Name == secretName {
 			assert.Len(t, secret.Data, 1)
 
 			assert.Contains(t, secret.Data, ".dockerconfigjson")

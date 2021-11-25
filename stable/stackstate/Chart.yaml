@@ -18,11 +18,11 @@ maintainers:
 name: stackstate
 dependencies:
   - name: anomaly-detection
-    version: 4.5.0-snapshot.175
+    version: 4.5.0-snapshot.182
     repository: https://helm.stackstate.io
     condition: anomaly-detection.enabled
   - name: cluster-agent
-    version: 0.4.27
+    version: 0.4.30
     repository: https://helm.stackstate.io
     condition: cluster-agent.enabled
   - name: common
@@ -31,19 +31,19 @@ dependencies:
   - name: elasticsearch
     condition: elasticsearch.enabled
     repository: https://helm.stackstate.io
-    version: 7.6.2-stackstate.19
+    version: 7.6.2-stackstate.22
   - name: hbase
     condition: hbase.enabled
     repository: https://helm.stackstate.io
-    version: 0.1.110
+    version: 0.1.114
   - name: kafka
     condition: kafka.enabled
     repository: https://helm.stackstate.io
     version: 12.2.5-stackstate.0
-  # - name: minio
-  #   repository: https://helm.min.io/
-  #   version: 8.0.10
-  #   condition: backup.enabled
+  - name: minio
+    repository: https://helm.stackstate.io
+    version: 8.0.10-stackstate.0
+    condition: backup.enabled
   - name: zookeeper
     version: 5.16.0
     repository: https://charts.bitnami.com/bitnami

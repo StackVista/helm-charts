@@ -37,6 +37,9 @@ backup:
       snapshotRetentionMinCount: "5"
       # backup.elasticsearch.scheduled.snapshotRetentionMaxCount -- Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule).
       snapshotRetentionMaxCount: "30"
+  poddisruptionbudget:
+    # backup.poddisruptionbudget.maxUnavailable -- Maximum number of pods that can be unavailable during the backup.
+    maxUnavailable: 0
   stackGraph:
     # backup.stackGraph.bucketName -- Name of the MinIO bucket to store StackGraph backups.
     bucketName: 'sts-stackgraph-backup'
