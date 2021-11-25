@@ -32,7 +32,7 @@ Return the image registry
 */}}
 {{- define "elasticsearch.imageRegistry" -}}
   {{- if .Values.global }}
-    {{- default .Values.imageRegistry .Values.global.imageRegistry -}}
+    {{- .Values.global.imageRegistry | default .Values.imageRegistry -}}
   {{- else -}}
     {{- .Values.imageRegistry -}}
   {{- end -}}
@@ -126,4 +126,52 @@ Common labels
 {{- range $key, $value := .Values.commonLabels -}}
 {{ $key }}: {{ $value | quote }}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Renders a value that contains a template.
+Usage:
+{{ include "elasticsearch.tplvalue.render" ( dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "elasticsearch.tplvalue.render" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
+{{- end -}}
+
+{{/*
+Return the proper Docker Image Registry Secret Names evaluating values as templates
+{{ include "elasticsearch.image.pullSecret.name" ( dict "images" (list .Values.path.to.the.image1, .Values.path.to.the.image2) "context" $) }}
+*/}}
+{{- define "elasticsearch.image.pullSecret.name" -}}
+  {{- $pullSecrets := list }}
+  {{- $context := .context }}
+
+  {{- if $context.Values.global }}
+    {{- range $context.Values.global.imagePullSecrets -}}
+      {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" .name "context" $context)) -}}
+    {{- end -}}
+    {{- if $context.Values.global.imagePullUsername -}}
+      {{- $pullSecrets = append $pullSecrets ((list (include "elasticsearch.uname" $context ) "pull-secret") | join "-")  -}}
+    {{- end -}}
+  {{- end -}}
+  {{- range $context.Values.imagePullSecrets -}}
+    {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" .name "context" $context)) -}}
+  {{- end -}}
+  {{- range .images -}}
+    {{- if .pullSecretName -}}
+      {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" .pullSecretName "context" $context)) -}}
+    {{- else if (or .pullSecretUsername .pullSecretDockerConfigJson) -}}
+      {{- $pullSecrets = append $pullSecrets ((list (include "elasticsearch.uname" $context ) "pull-secret") | join "-")  -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- if (not (empty $pullSecrets)) }}
+imagePullSecrets:
+    {{- range $pullSecrets | uniq }}
+  - name: {{ . }}
+    {{- end }}
+  {{- end }}
 {{- end -}}

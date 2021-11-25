@@ -21,6 +21,12 @@ nameOverride: ""
 # fullnameOverride -- Override the fullname of the chart.
 fullnameOverride: ""
 
+all:
+  image:
+    # all.image.registry -- The image registry to use.
+    registry: "docker.io"
+
+
 agent:
   scc:
     # agent.scc.enabled -- Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift
@@ -49,8 +55,8 @@ agent:
     override: []
 
   image:
-    # agent.image.repository -- Base container image registry.
-    repository: docker.io/stackstate/stackstate-agent-2
+    # agent.image.repository -- Base container image repository.
+    repository: stackstate/stackstate-agent-2
     # agent.image.tag -- Default container image tag.
     tag: 2.14.0
     # agent.image.pullPolicy -- Default container image pull policy.
@@ -138,8 +144,8 @@ clusterAgent:
   enabled: true
 
   image:
-    # clusterAgent.image.repository -- Base container image registry.
-    repository: docker.io/stackstate/stackstate-cluster-agent
+    # clusterAgent.image.repository -- Base container image repository.
+    repository: stackstate/stackstate-cluster-agent
     # clusterAgent.image.tag -- Default container image tag.
     tag: 2.14.0
     # clusterAgent.image.pullPolicy -- Default container image pull policy.
@@ -230,8 +236,8 @@ clusterChecks:
     override: []
 
   image:
-    # clusterChecks.image.repository -- Base container image registry.
-    repository: docker.io/stackstate/stackstate-agent-2
+    # clusterChecks.image.repository -- Base container image repository.
+    repository: stackstate/stackstate-agent-2
     # clusterChecks.image.tag -- Default container image tag.
     tag: 2.14.0
     # clusterChecks.image.pullPolicy -- Default container image pull policy.

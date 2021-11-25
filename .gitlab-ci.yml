@@ -6,7 +6,6 @@ integration_test_stackstate:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -571,6 +570,42 @@ push_kommoner-operator_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/kommoner-operator
+push_minio_to_internal:
+  image: stackstate/stackstate-ci-images:stackstate-devops-f87d9654
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - changes:
+        - stable/minio/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+  script:
+    - helm dependencies update ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/minio
+push_minio_to_public:
+  image: stackstate/stackstate-ci-images:stackstate-devops-f87d9654
+  needs:
+    - push_minio_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - changes:
+        - stable/minio/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+  script:
+    - helm dependencies update ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/minio
 push_petros-d-kubelet-stats-exporter_to_internal:
   image: stackstate/stackstate-ci-images:stackstate-devops-f87d9654
   rules:
@@ -719,7 +754,6 @@ push_stackstate_to_internal:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -747,7 +781,6 @@ push_stackstate_to_public:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -777,7 +810,6 @@ push_test_charts:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -845,7 +877,6 @@ test_aws-amicleaner:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -874,7 +905,6 @@ test_aws-nuke:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -903,7 +933,6 @@ test_aws-pod-identity-webhook:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -932,7 +961,6 @@ test_beacher-job:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -961,7 +989,6 @@ test_chartmuseum:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -990,7 +1017,6 @@ test_cluster-agent:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1019,7 +1045,6 @@ test_common:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1048,7 +1073,6 @@ test_elasticsearch:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1077,7 +1101,6 @@ test_gitlab-runner:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1106,7 +1129,6 @@ test_gitlab-steward:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1135,7 +1157,6 @@ test_hbase:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1164,7 +1185,6 @@ test_iceman:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1193,7 +1213,6 @@ test_kafka:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1222,7 +1241,6 @@ test_kafkaup-operator:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1251,7 +1269,6 @@ test_kommoner-operator:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1276,11 +1293,38 @@ test_kommoner-operator:
   variables:
     CGO_ENABLED: 0
     CHART: stable/kommoner-operator
+test_minio:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - changes:
+        - stable/minio/**/*
+      exists:
+        - stable/minio/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/minio/test/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/minio
 test_petros-d-kubelet-stats-exporter:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1309,7 +1353,6 @@ test_sandbox-operator:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1338,7 +1381,6 @@ test_stackstate:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1367,7 +1409,6 @@ test_stackstate-standalone:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1396,7 +1437,6 @@ test_trafficmirror:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1425,7 +1465,6 @@ update_aad_chart_version:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add elastic https://helm.elastic.co
-    - helm repo add minio https://helm.min.io/
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io

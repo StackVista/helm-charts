@@ -10,7 +10,6 @@
     repositories: {
       bitnami: 'https://charts.bitnami.com/bitnami',
       elastic: 'https://helm.elastic.co',
-      minio: 'https://helm.min.io/',
       stable: 'https://charts.helm.sh/stable',
       stackstate: 'https://helm.stackstate.io',
       stackstate_internal: 'https://helm-internal.stackstate.io',
@@ -33,6 +32,7 @@
       'kafka',
       'kommoner-operator',
       'kafkaup-operator',
+      'minio',
       'petros-d-kubelet-stats-exporter',
       'sandbox-operator',
       'stackstate-standalone',
