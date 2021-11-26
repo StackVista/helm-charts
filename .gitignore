@@ -3,3 +3,4 @@
 **/charts/*.tgz
 .idea/*
 *.swp
+.DS_Store

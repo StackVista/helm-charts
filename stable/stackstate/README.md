@@ -11,12 +11,13 @@ Current chart version is `4.6.0-snapshot.9-nominio`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
-| https://helm.stackstate.io | anomaly-detection | 4.5.0-snapshot.175 |
-| https://helm.stackstate.io | cluster-agent | 0.4.27 |
+| https://helm.stackstate.io | anomaly-detection | 4.5.0-snapshot.182 |
+| https://helm.stackstate.io | cluster-agent | 0.4.30 |
 | https://helm.stackstate.io | common | 0.4.17 |
-| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.19 |
-| https://helm.stackstate.io | hbase | 0.1.110 |
+| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.22 |
+| https://helm.stackstate.io | hbase | 0.1.114 |
 | https://helm.stackstate.io | kafka | 12.2.5-stackstate.0 |
+| https://helm.stackstate.io | minio | 8.0.10-stackstate.0 |
 
 ## Required Values
 
@@ -70,6 +71,7 @@ stackstate/stackstate
 | backup.elasticsearch.scheduled.snapshotRetentionMinCount | string | `"5"` | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
 | backup.elasticsearch.snapshotRepositoryName | string | `"sts-backup"` | Name of the ElasticSearch snapshot repository. |
 | backup.enabled | bool | `false` | Enables backup/restore, including the MinIO subsystem. |
+| backup.poddisruptionbudget.maxUnavailable | int | `0` | Maximum number of pods that can be unavailable during the backup. |
 | backup.stackGraph.bucketName | string | `"sts-stackgraph-backup"` | Name of the MinIO bucket to store StackGraph backups. |
 | backup.stackGraph.restore.enabled | bool | `true` | Enable StackGraph backup restore functionality (if `backup.enabled` is set to `true`). |
 | backup.stackGraph.restore.tempData.accessModes[0] | string | `"ReadWriteOnce"` |  |

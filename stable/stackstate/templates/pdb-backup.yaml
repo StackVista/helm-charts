@@ -1,15 +1,4 @@
 {{- if and .Values.backup.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticsearch.restore.enabled .Values.backup.elasticsearch.scheduled.enabled) }}
-{{- if .Capabilities.APIVersions.Has "policy/v1/PodDisruptionBudget" }}
-apiVersion: policy/v1
-{{- else }}
-apiVersion: policy/v1beta1
-{{- end }}
-kind: PodDisruptionBudget
-metadata:
-  name: {{ template "common.fullname.short" . }}-backup
-spec:
-  maxUnavailable: 0
-  selector:
-    matchLabels:
-      app.kubernetes.io/component: backup
+{{- $valuesPdb := dict "PdbName" "backup" "PdbBudget" .Values.backup.poddisruptionbudget -}}
+{{- (include "stackstate.service.poddisruptionbudget" (merge $valuesPdb .) ) -}}
 {{- end }}
