@@ -1,7 +1,7 @@
 dependencies:
 - name: anomaly-detection
   repository: https://helm.stackstate.io
-  version: 4.6.0-pre.0.rc.3
+  version: 4.6.0-pre.0.rc.4
 - name: cluster-agent
   repository: https://helm.stackstate.io
   version: 0.4.30
@@ -23,5 +23,5 @@ dependencies:
 - name: zookeeper
   repository: https://charts.bitnami.com/bitnami
   version: 5.16.0
-digest: sha256:df90eb00ed111e578f6417eb62be0895ecfb4a72114512201d59a6159edd8a80
-generated: "2021-11-26T14:29:50.751638+01:00"
+digest: sha256:2ea766686ef0d89dcbc41c8e427be00116a598bfd6cedad0deccc0aa3386dcfc
+generated: "2021-11-26T15:00:14.803087655Z"
