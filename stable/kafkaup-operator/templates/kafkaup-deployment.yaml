@@ -20,6 +20,8 @@ spec:
     metadata:
       labels:
         app: {{ include "common.fullname.short" . }}-kafkaup
+      annotations:
+        {{ include "kafkaup-operator.checksum-configs" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "common.fullname.short" . }}-kafkaup
       {{ include "kafkaup.image.pullSecret.name" . | nindent 6 }}
