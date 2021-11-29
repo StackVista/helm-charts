@@ -17,7 +17,7 @@ Apache Kafka is a distributed streaming platform.
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | common | 1.x.x |
-| https://charts.bitnami.com/bitnami | zookeeper | 6.0.x |
+| https://charts.bitnami.com/bitnami | zookeeper | 6.0.0 |
 ## Values
 
 | Key | Type | Default | Description |
