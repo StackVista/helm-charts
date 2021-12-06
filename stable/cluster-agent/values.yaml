@@ -22,12 +22,13 @@ nameOverride: ""
 fullnameOverride: ""
 
 agent:
-  cri:
-    # agent.cri.enabled -- Enable / disable the configuration of CRI container check.
-    enabled: false
-  containerd:
-    # agent.containerd.enabled -- Enable / disable the configuration of containerd container check.
-    enabled: false
+  containerRuntime:
+    cri:
+      # agent.containerRuntime.cri.enabled -- Enable / disable the configuration of CRI container check.
+      enabled: false
+    containerd:
+      # agent.containerRuntime.containerd.enabled -- Enable / disable the configuration of containerd container check.
+      enabled: false
   scc:
     # agent.scc.enabled -- Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift.
     enabled: false
