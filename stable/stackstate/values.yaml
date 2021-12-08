@@ -1020,7 +1020,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 4.2.16
+      tag: 4.4.1
   console:
     # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
     enabled: false
@@ -1299,15 +1299,18 @@ anomaly-detection:
   # anomaly-detection.enabled -- Enables anomaly detection chart
   enabled: true
   cpu:
-    # cpu.limit -- CPU resource limit
+    # anomaly-detection.cpu.limit -- CPU resource limit
     limit: "2000m"
-    # cpu.request -- CPU resource request
+    # anomaly-detection.cpu.request -- CPU resource request
     request: "1000m"
   memory:
-    # memory.limit -- Memory resource limit
+    # anomaly-detection.memory.limit -- Memory resource limit
     limit: "3Gi"
-    # memory.request -- Memory resource request
+    # anomaly-detection.memory.request -- Memory resource request
     request: "3Gi"
+  pdb:
+    # anomaly-detection.pdb.maxUnavailable -- Maximum number of pods that can be unavailable for the anomaly detection
+    maxUnavailable: 0
   image:
     # anomaly-detection.image.imagePullPolicy -- The default pullPolicy used for anomaly detection pods.
     imagePullPolicy: IfNotPresent
