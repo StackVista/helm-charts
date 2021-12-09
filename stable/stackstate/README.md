@@ -11,13 +11,13 @@ Current chart version is `4.3.5`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
-| https://helm.min.io/ | minio | 8.0.10 |
 | https://helm.stackstate.io | anomaly-detection | 4.3.5 |
 | https://helm.stackstate.io | cluster-agent | 0.4.11 |
 | https://helm.stackstate.io | common | 0.4.13 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.11 |
 | https://helm.stackstate.io | hbase | 0.1.66 |
 | https://helm.stackstate.io | kafka | 12.2.5-stackstate.0 |
+| https://helm.stackstate.io | minio | 8.0.10-stackstate.0 |
 
 ## Required Values
 
