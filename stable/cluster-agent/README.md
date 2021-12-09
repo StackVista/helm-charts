@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `0.4.30`
+Current chart version is `0.4.31`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
