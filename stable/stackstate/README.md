@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.6.0-snapshot.12`
+Current chart version is `4.6.0-snapshot.13`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -382,7 +382,7 @@ stackstate/stackstate
 | stackstate.components.nginxPrometheusExporter.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.registry | string | `"quay.io"` | Base container image registry for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.repository | string | `"stackstate/nginx-prometheus-exporter"` | Base container image repository for nginx-prometheus-exporter containers. |
-| stackstate.components.nginxPrometheusExporter.image.tag | string | `"0.7.0-sts.20211018.0810"` | Container image tag for nginx-prometheus-exporter containers. |
+| stackstate.components.nginxPrometheusExporter.image.tag | string | `"0.9.0"` | Container image tag for nginx-prometheus-exporter containers. |
 | stackstate.components.problemProducer.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.problemProducer.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.problemProducer.config | string | `""` | Configuration file contents to customize the default StackState problemProducer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
