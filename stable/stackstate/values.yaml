@@ -542,7 +542,7 @@ stackstate:
         # stackstate.components.router.image.repository -- Repository of the router component Docker image.
         repository: stackstate/envoy-alpine
         # stackstate.components.router.image.tag -- Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: v1.19.1-sts.20211012.0914
+        tag: v1.19.1-sts.20211207.0748
       # stackstate.components.router.poddisruptionbudget -- PodDisruptionBudget settings for `router` pods.
       poddisruptionbudget:
         maxUnavailable: 1
