@@ -31,7 +31,7 @@ dependencies:
   - name: elasticsearch
     condition: elasticsearch.enabled
     repository: https://helm.stackstate.io
-    version: 7.6.2-stackstate.14
+    version: 7.6.2-stackstate.24
   - name: hbase
     condition: hbase.enabled
     repository: https://helm.stackstate.io
