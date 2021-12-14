@@ -85,7 +85,7 @@ local validate_and_push_jobs = {
 };
 
 local test_chart_job(chart) = {
-  image: 'stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee',
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-42679f47',
   before_script: helm_fetch_dependencies +
   ['helm dependencies update ${CHART}'],
   script: [
@@ -106,7 +106,7 @@ local test_chart_job(chart) = {
 } + skip_when_dependency_upgrade;
 
 local itest_chart_job(chart) = {
-  image: 'stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee',
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-42679f47',
   before_script: helm_fetch_dependencies +
   ['helm dependencies update ${CHART}'],
   script: [
@@ -218,7 +218,7 @@ local push_charts_to_public_jobs = {
 
 local update_sg_version = {
   update_stackgraph_version: {
-    image: 'stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee',
+    image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-42679f47',
     stage: 'update',
     variables: {
       GIT_AUTHOR_EMAIL: 'sts-admin@stackstate.com',
@@ -242,7 +242,7 @@ local update_sg_version = {
 
 local update_aad_chart_version = {
   update_aad_chart_version: {
-    image: 'stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee',
+    image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-42679f47',
     stage: 'update',
     variables: {
       GIT_AUTHOR_EMAIL: 'sts-admin@stackstate.com',
