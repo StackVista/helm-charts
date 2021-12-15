@@ -130,8 +130,9 @@ local push_chart_job_if(chart, repository_url, repository_username, repository_p
   script: [
     'helm plugin install https://github.com/chartmuseum/helm-push.git',
     'helm dependencies update ${CHART}',
-    'helm push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
+    'helm cm-push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
   ],
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1',
   rules: rules,
   variables: {
     CHART: 'stable/' + chart,
