@@ -42,7 +42,6 @@ push_aws-amicleaner_to_internal:
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -62,7 +61,6 @@ push_aws-amicleaner_to_public:
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
@@ -80,7 +78,6 @@ push_aws-nuke_to_internal:
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -100,7 +97,6 @@ push_aws-nuke_to_public:
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
@@ -118,7 +114,6 @@ push_aws-pod-identity-webhook_to_internal:
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -138,7 +133,6 @@ push_aws-pod-identity-webhook_to_public:
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
@@ -156,7 +150,6 @@ push_chartmuseum_to_internal:
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -176,7 +169,6 @@ push_chartmuseum_to_public:
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
@@ -194,7 +186,6 @@ push_cluster-agent_to_internal:
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -214,7 +205,6 @@ push_cluster-agent_to_public:
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
@@ -232,7 +222,6 @@ push_common_to_internal:
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -252,7 +241,6 @@ push_common_to_public:
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
@@ -270,7 +258,6 @@ push_elasticsearch_to_internal:
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -290,7 +277,6 @@ push_elasticsearch_to_public:
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
@@ -308,7 +294,6 @@ push_gitlab-runner_to_internal:
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -328,7 +313,6 @@ push_gitlab-runner_to_public:
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
@@ -346,7 +330,6 @@ push_gitlab-steward_to_internal:
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -366,7 +349,6 @@ push_gitlab-steward_to_public:
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
@@ -384,7 +366,6 @@ push_hbase_to_internal:
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -404,7 +385,6 @@ push_hbase_to_public:
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
@@ -422,7 +402,6 @@ push_iceman_to_internal:
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -442,7 +421,6 @@ push_iceman_to_public:
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
@@ -460,7 +438,6 @@ push_kafka_to_internal:
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -480,7 +457,6 @@ push_kafka_to_public:
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
@@ -498,7 +474,6 @@ push_sandbox-operator_to_internal:
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -518,7 +493,6 @@ push_sandbox-operator_to_public:
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
@@ -536,7 +510,6 @@ push_stackstate-standalone_to_internal:
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -556,7 +529,6 @@ push_stackstate-standalone_to_public:
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
@@ -578,7 +550,6 @@ push_stackstate_release_to_internal:
     - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)-pre\.(\d+)$/
       when: on_success
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -594,7 +565,6 @@ push_stackstate_release_to_public:
     - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)$/
       when: on_success
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
@@ -623,7 +593,6 @@ push_stackstate_to_internal:
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -654,7 +623,6 @@ push_stackstate_to_public:
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
@@ -695,7 +663,6 @@ push_trafficmirror_to_internal:
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -715,7 +682,6 @@ push_trafficmirror_to_public:
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
   script:
-    - helm plugin install https://github.com/chartmuseum/helm-push.git
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
