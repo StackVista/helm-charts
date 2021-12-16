@@ -746,11 +746,11 @@ stackstate:
     kafkaTopicCreate:
       image:
         # stackstate.components.kafkaTopicCreate.image.registry -- Base container image registry for kafka-topic-create containers.
-        registry: docker.io
+        registry: quay.io
         # stackstate.components.kafkaTopicCreate.image.repository -- Base container image repository for kafka-topic-create containers.
-        repository: bitnami/kafka
+        repository: stackstate/kafka
         # stackstate.components.kafkaTopicCreate.image.tag -- Container image tag for kafka-topic-create containers.
-        tag: latest
+        tag: 2.8.0-focal-20210827-r108
         # stackstate.components.kafkaTopicCreate.image.pullPolicy -- Image pull policy for kafka-topic-create containers.
         pullPolicy: IfNotPresent
       securityContext:
