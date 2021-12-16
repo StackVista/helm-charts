@@ -33,6 +33,7 @@
       'kommoner-operator',
       'minio',
       'petros-d-kubelet-stats-exporter',
+      'pull-secret',
       'sandbox-operator',
       'stackstate-standalone',
       'stackstate',

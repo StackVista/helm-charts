@@ -1,0 +1,7 @@
+credentials:
+- username: john
+  password: doe
+  registry: docker.io
+- username: pietje
+  password: puk
+  registry: quay.io
