@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.4.3-rc.5`
+Current chart version is `4.4.3`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -11,7 +11,7 @@ Current chart version is `4.4.3-rc.5`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
-| https://helm.stackstate.io | anomaly-detection | 4.4.3-rc.5 |
+| https://helm.stackstate.io | anomaly-detection | 4.4.3 |
 | https://helm.stackstate.io | cluster-agent | 0.4.22 |
 | https://helm.stackstate.io | common | 0.4.13 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.24 |
@@ -232,8 +232,8 @@ stackstate/stackstate
 | stackstate.components.all.image.pullSecretPassword | string | `nil` |  |
 | stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
-| stackstate.components.all.image.repositorySuffix | string | `""` |  |
-| stackstate.components.all.image.tag | string | `"4.4.3-rc.5"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
+| stackstate.components.all.image.repositorySuffix | string | `"-stable"` |  |
+| stackstate.components.all.image.tag | string | `"4.4.3"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
 | stackstate.components.all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
