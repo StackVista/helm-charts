@@ -4,7 +4,7 @@
   images: {
     stackstate_helm_test: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1',
     stackstate_devops: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1',
-    chart_testing: 'quay.io/helmpack/chart-testing:v3.0.0-beta.2',
+    chart_testing: 'quay.io/helmpack/chart-testing:v3.4.0',
   },
   helm: {
     repositories: {
