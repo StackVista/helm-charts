@@ -211,6 +211,8 @@ stackstate:
       config: ""
       # stackstate.components.api.additionalLogging -- Additional logback config
       additionalLogging: ""
+      # stackstate.components.api.docslink -- Documentation URL root to use in the product help page & tooltips.
+      docslink: ""
     correlate:
       extraEnv:
         # stackstate.components.correlate.extraEnv.open -- Extra open environment variables to inject into pods.
