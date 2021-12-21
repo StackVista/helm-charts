@@ -23,5 +23,8 @@ dependencies:
 - name: zookeeper
   repository: https://charts.bitnami.com/bitnami
   version: 5.16.0
-digest: sha256:ef6cbdcbe8526b753bfe375e7abfe3e6abb102d78204ecb802a2ae7c5458849b
-generated: "2021-12-20T11:51:58.493609216Z"
+- name: pull-secret
+  repository: https://helm.stackstate.io
+  version: 1.0.0
+digest: sha256:ee523f215d70a11d400ac7ee9416de052bfd2d695cc6f0a766768a57afe818ee
+generated: "2021-12-21T16:47:44.559451+01:00"

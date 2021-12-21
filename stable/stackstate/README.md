@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.6.0-snapshot.15`
+Current chart version is `4.6.0-snapshot.16`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -18,6 +18,7 @@ Current chart version is `4.6.0-snapshot.15`
 | https://helm.stackstate.io | hbase | 0.1.116 |
 | https://helm.stackstate.io | kafka | 12.2.5-stackstate.0 |
 | https://helm.stackstate.io | minio | 8.0.10-stackstate.0 |
+| https://helm.stackstate.io | pull-secret | 1.0.0 |
 
 ## Required Values
 
@@ -122,6 +123,7 @@ stackstate/stackstate
 | elasticsearch.replicas | int | `3` | Number of Elasticsearch replicas. |
 | elasticsearch.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"1Gi","memory":"4Gi"},"requests":{"cpu":"2000m","ephemeral-storage":"1Mi","memory":"4Gi"}}` | Override Elasticsearch resources |
 | elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"250Gi"}}}` | PVC template defaulting to 250Gi default volumes |
+| global.imagePullSecrets | list | `[]` | List of image pull secret names to be used by all images across all charts. |
 | global.receiverApiKey | string | `""` | API key to be used by the Receiver; if no key is provided, a random one will be generated for you. |
 | hbase.all.metrics.enabled | bool | `true` |  |
 | hbase.commonLabels | object | `{"app.kubernetes.io/part-of":"stackstate"}` | Add additional labels to all resources created for all hbase resources |
@@ -226,6 +228,9 @@ stackstate/stackstate
 | minio.secretKey | string | `"setme"` |  |
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
+| pull-secret.credentials | list | `[]` | Registry and assotiated credentials (username, password) that will be stored in the pull-secret |
+| pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |
+| pull-secret.fullNameOverride | string | `""` | Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart. |
 | stackstate.admin.authentication.password | string | `nil` | Password used for default platform "admin" api's (low-level tools) of the various services, username: platformadmin |
 | stackstate.authentication | object | `{"adminPassword":null,"file":{},"keycloak":{},"ldap":{},"oidc":{},"roles":{"admin":[],"guest":[],"platformAdmin":[],"powerUser":[]},"sessionLifetime":"7d"}` | Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error. |
 | stackstate.authentication.adminPassword | string | `nil` | Password for the 'admin' user that StackState creates by default |

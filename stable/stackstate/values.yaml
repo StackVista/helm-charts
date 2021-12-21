@@ -5,6 +5,8 @@
 global:
   # global.receiverApiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
   receiverApiKey: ""
+  # global.imagePullSecrets -- List of image pull secret names to be used by all images across all charts.
+  imagePullSecrets: []
 # commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
 commonLabels: {}
 backup:
@@ -1373,3 +1375,10 @@ cluster-agent:
 cluster-role:
   # cluster-role.enabled -- Deploy the ClusterRole(s) and ClusterRoleBinding(s) together with the chart. Can be disabled if these need to be installed by an administrator of the Kubernetes cluster.
   enabled: true
+pull-secret:
+  # pull-secret.enabled -- Deploy the ImagePullSecret for the chart.
+  enabled: false
+  # pull-secret.fullNameOverride -- Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart.
+  fullNameOverride: ''
+  # pull-secret.credentials -- Registry and assotiated credentials (username, password) that will be stored in the pull-secret
+  credentials: []
