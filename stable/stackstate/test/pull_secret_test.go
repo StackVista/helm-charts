@@ -8,15 +8,6 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func TestPullSecretGlobal(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/pull_secret_global.yaml")
-	resources := helmtestutil.NewKubernetesResources(t, output)
-	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "problem-producer", "sync", "view-health", "mm2es", "e2es", "trace2es"}
-
-	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "stackstate-pull-secret")
-	CheckPullSecret(t, resources, "stackstate-pull-secret", "global-user", "global-password", "my.registry.com")
-}
-
 func TestPullSecret(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -65,18 +56,20 @@ func TestGlobalOverridesLocalPullSecretDetails(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "problem-producer", "sync", "view-health", "mm2es", "e2es", "trace2es"}
 
-	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "stackstate-pull-secret")
-	CheckPullSecret(t, resources, "stackstate-pull-secret", "global-user", "global-password", "my.registry.com")
+	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "stackstate-pull-secret", "test-secret")
+	CheckPullSecret(t, resources, "stackstate-pull-secret", "test", "secret", "my.registry.com")
 }
 
-func CheckDeploymentsForPullSecret(t *testing.T, resources helmtestutil.KubernetesResources, deploymentsToCheck []string, pullSecretName string) {
+func CheckDeploymentsForPullSecret(t *testing.T, resources helmtestutil.KubernetesResources, deploymentsToCheck []string, pullSecretName ...string) {
 	checked := []string{}
 	for _, deployment := range resources.Deployments {
 		for _, name := range deploymentsToCheck {
 			if ("stackstate-" + name) == deployment.Name {
 				checked = append(checked, name)
-				assert.Len(t, deployment.Spec.Template.Spec.ImagePullSecrets, 1)
-				assert.Equal(t, pullSecretName, deployment.Spec.Template.Spec.ImagePullSecrets[0].Name)
+				assert.Len(t, deployment.Spec.Template.Spec.ImagePullSecrets, len(pullSecretName))
+				for _, secret := range deployment.Spec.Template.Spec.ImagePullSecrets {
+					assert.Contains(t, pullSecretName, secret.Name)
+				}
 			}
 		}
 	}
