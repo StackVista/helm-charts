@@ -13,7 +13,7 @@ Current chart version is `4.6.0-snapshot.18`
 | https://charts.bitnami.com/bitnami | kafka | 14.8.1 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
 | https://helm.stackstate.io | anomaly-detection | 4.5.0-snapshot.206 |
-| https://helm.stackstate.io | cluster-agent | 0.4.33 |
+| https://helm.stackstate.io | cluster-agent | 0.5.0 |
 | https://helm.stackstate.io | common | 0.4.17 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.26 |
 | https://helm.stackstate.io | hbase | 0.1.118 |
