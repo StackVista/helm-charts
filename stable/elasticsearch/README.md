@@ -1,6 +1,6 @@
 # elasticsearch
 
-![Version: 7.6.2-stackstate.25](https://img.shields.io/badge/Version-7.6.2--stackstate.25-informational?style=flat-square) ![AppVersion: 7.6.2](https://img.shields.io/badge/AppVersion-7.6.2-informational?style=flat-square)
+![Version: 7.6.2-stackstate.26](https://img.shields.io/badge/Version-7.6.2--stackstate.26-informational?style=flat-square) ![AppVersion: 7.6.2](https://img.shields.io/badge/AppVersion-7.6.2-informational?style=flat-square)
 Official Elastic helm chart for Elasticsearch
 **Homepage:** <https://github.com/elastic/helm-charts>
 ## Maintainers
