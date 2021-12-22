@@ -4,7 +4,7 @@ set -o errexit
 set -o nounset
 
 readonly awsBucket="${AWS_BUCKET:-"s3://helm.stackstate.io"}"
-readonly repoUrl=${REPO_URL:-"https://helm.stackstate.io/"}
+readonly repoUrl="${REPO_URL:-"https://helm.stackstate.io/"}"
 
 main() {
   if ! sync_repo stable "${awsBucket}" "${repoUrl}"; then

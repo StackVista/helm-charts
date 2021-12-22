@@ -1,0 +1,20 @@
+apiVersion: v2
+appVersion: master
+version: 8.0.10-stackstate.0
+description: High Performance, Kubernetes Native Object Storage
+keywords:
+- storage
+- object-storage
+- S3
+home: https://min.io
+icon: https://min.io/resources/img/logo/MINIO_wordmark.png
+maintainers:
+- email: dev@minio.io
+  name: MinIO, Inc
+- name: Jeroen van Erp
+  email: jvanerp@stackstate.com
+- name: Remco Beckers
+  email: rbeckers@stackstate.com
+- name: Vincent Partington
+  email: vpartington@stackstate.com
+name: minio

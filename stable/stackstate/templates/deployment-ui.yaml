@@ -38,20 +38,19 @@ name: exporter
 ports:
 - containerPort: 9113
   name: metrics
+  protocol: TCP
 livenessProbe:
-  exec:
-    command:
-    - pgrep
-    - exporter
-  initialDelaySeconds: 5
-  periodSeconds: 5
+  httpGet:
+    path: /
+    port: metrics
+  initialDelaySeconds: 30
+  timeoutSeconds: 10
 readinessProbe:
-  exec:
-    command:
-    - pgrep
-    - exporter
-  initialDelaySeconds: 5
-  periodSeconds: 5
+  httpGet:
+    path: /
+    port: metrics
+  initialDelaySeconds: 30
+  timeoutSeconds: 10
 resources:
   limits:
     cpu: "20m"
@@ -84,7 +83,7 @@ spec:
       labels:
         app.kubernetes.io/component: ui
     spec:
-      {{- include "stackstate.image.pullSecret.name" . | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
       containers:
       - {{ toYaml (merge $stsstackstateUiMainContainer $commonContainer) | nindent 8 }}
     {{- if .Values.stackstate.components.all.metrics.enabled }}

@@ -2,15 +2,14 @@
   local Variable = self,
 
   images: {
-    stackstate_helm_test: 'stackstate/stackstate-ci-images:stackstate-helm-test-1f9205ee',
-    stackstate_devops: 'stackstate/stackstate-ci-images:stackstate-devops-f87d9654',
-    chart_testing: 'quay.io/helmpack/chart-testing:v3.0.0-beta.2',
+    stackstate_helm_test: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1',
+    stackstate_devops: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1',
+    chart_testing: 'quay.io/helmpack/chart-testing:v3.4.0',
   },
   helm: {
     repositories: {
       bitnami: 'https://charts.bitnami.com/bitnami',
       elastic: 'https://helm.elastic.co',
-      minio: 'https://helm.min.io/',
       stable: 'https://charts.helm.sh/stable',
       stackstate: 'https://helm.stackstate.io',
       stackstate_internal: 'https://helm-internal.stackstate.io',
@@ -32,7 +31,9 @@
       'iceman',
       'kafka',
       'kommoner-operator',
+      'minio',
       'petros-d-kubelet-stats-exporter',
+      'pull-secret',
       'sandbox-operator',
       'stackstate-standalone',
       'stackstate',

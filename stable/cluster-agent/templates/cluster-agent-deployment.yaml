@@ -25,17 +25,14 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/name: {{ include "cluster-agent.name" . }}
     spec:
-    {{- with .Values.global.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- include "cluster-agent.image.pullSecret.name" (dict "images" (list .Values.clusterAgent.image) "context" $) | nindent 6 }}
       {{- if .Values.clusterAgent.priorityClassName }}
       priorityClassName: {{ .Values.clusterAgent.priorityClassName }}
       {{- end }}
       serviceAccountName: {{ include "cluster-agent.fullname" . }}
       containers:
         - name: cluster-agent
-          image: "{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
+          image: "{{ include "cluster-agent.imageRegistry" . }}/{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
           imagePullPolicy: "{{ .Values.clusterAgent.image.pullPolicy }}"
           env:
           - name: STS_API_KEY

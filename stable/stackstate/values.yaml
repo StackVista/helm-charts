@@ -5,6 +5,8 @@
 global:
   # global.receiverApiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
   receiverApiKey: ""
+  # global.imagePullSecrets -- List of image pull secret names to be used by all images across all charts.
+  imagePullSecrets: []
 # commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
 commonLabels: {}
 backup:
@@ -37,6 +39,9 @@ backup:
       snapshotRetentionMinCount: "5"
       # backup.elasticsearch.scheduled.snapshotRetentionMaxCount -- Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule).
       snapshotRetentionMaxCount: "30"
+  poddisruptionbudget:
+    # backup.poddisruptionbudget.maxUnavailable -- Maximum number of pods that can be unavailable during the backup.
+    maxUnavailable: 0
   stackGraph:
     # backup.stackGraph.bucketName -- Name of the MinIO bucket to store StackGraph backups.
     bucketName: 'sts-stackgraph-backup'
@@ -112,14 +117,6 @@ networkPolicy:
       matchLabels: {}
     policyTypes:
       - Ingress
-kots:
-  # kots.enabled -- Enables functionality for Replicated KOTS.
-  enabled: false
-  contourIngress:
-    # kots.kurl.enabled -- Enables KURL cluster and ingress
-    enabled: false
-    # kots.kurl.hostname -- The hostname to setup for the HTTPProxy
-    hostname: "localhost"
 stackstate:
   components:
     all:
@@ -196,9 +193,11 @@ stackstate:
         limits:
           memory: "4000Mi"
           cpu: "2000m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "4000Mi"
           cpu: "1500m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "50"
@@ -233,9 +232,11 @@ stackstate:
         limits:
           memory: "1600Mi"
           cpu: "600m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "1600Mi"
           cpu: "600m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "575Mi"
         javaHeapMemoryFraction: "78"
@@ -270,9 +271,11 @@ stackstate:
         limits:
           memory: "4000Mi"
           cpu: "2000m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "4000Mi"
           cpu: "1000m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "70"
@@ -307,9 +310,11 @@ stackstate:
         limits:
           memory: "1500Mi"
           cpu: "1500m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "1500Mi"
           cpu: "1000m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "700Mi"
         javaHeapMemoryFraction: "85"
@@ -341,9 +346,11 @@ stackstate:
         limits:
           memory: "700Mi"
           cpu: "500m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "700Mi"
           cpu: "500m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "460Mi"
         javaHeapMemoryFraction: "65"
@@ -378,9 +385,11 @@ stackstate:
         limits:
           memory: "1Gi"
           cpu: "1000m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "1Gi"
           cpu: "1000m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "600Mi"
         javaHeapMemoryFraction: "85"
@@ -415,9 +424,11 @@ stackstate:
         limits:
           memory: "1500Mi"
           cpu: "500m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "1500Mi"
           cpu: "500m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "600Mi"
         javaHeapMemoryFraction: "85"
@@ -452,9 +463,11 @@ stackstate:
         limits:
           memory: "1Gi"
           cpu: "500m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "1Gi"
           cpu: "500m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "600Mi"
         javaHeapMemoryFraction: "85"
@@ -491,9 +504,11 @@ stackstate:
         limits:
           memory: "4Gi"
           cpu: "3000m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "4Gi"
           cpu: "3000m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "700Mi"
         javaHeapMemoryFraction: "75"
@@ -521,7 +536,7 @@ stackstate:
         # stackstate.components.router.image.repository -- Repository of the router component Docker image.
         repository: stackstate/envoy-alpine
         # stackstate.components.router.image.tag -- Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: v1.19.1-sts.20211012.0914
+        tag: v1.19.1-sts.20211207.0748
       # stackstate.components.router.poddisruptionbudget -- PodDisruptionBudget settings for `router` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -530,9 +545,11 @@ stackstate:
         limits:
           cpu: "100m"
           memory: "128Mi"
+          ephemeral-storage: "1Gi"
         requests:
           cpu: "100m"
           memory: "128Mi"
+          ephemeral-storage: "1Mi"
       # stackstate.components.router.replicaCount -- Number of `router` replicas.
       replicaCount: 1
       # stackstate.components.router.nodeSelector -- Node labels for pod assignment.
@@ -562,9 +579,11 @@ stackstate:
         limits:
           memory: "8Gi"
           cpu: "3600m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "8Gi"
           cpu: "3600m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "1700Mi"
         javaHeapMemoryFraction: "85"
@@ -599,9 +618,11 @@ stackstate:
         limits:
           cpu: "1000m"
           memory: "2000Mi"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "2000Mi"
           cpu: "750m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "80"
@@ -636,9 +657,11 @@ stackstate:
         limits:
           memory: "3500Mi"
           cpu: "3000m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "3500Mi"
           cpu: "2000m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "60"
@@ -670,9 +693,11 @@ stackstate:
         limits:
           cpu: "1500m"
           memory: "1800Mi"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "1800Mi"
           cpu: "1000m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "60"
@@ -707,9 +732,11 @@ stackstate:
         limits:
           cpu: "50m"
           memory: "64Mi"
+          ephemeral-storage: "1Gi"
         requests:
           cpu: "50m"
           memory: "64Mi"
+          ephemeral-storage: "1Mi"
       securityContext:
         # stackstate.components.ui.securityContext.enabled -- Whether or not to enable the securityContext
         enabled: true
@@ -750,9 +777,11 @@ stackstate:
         limits:
           memory: "2700Mi"
           cpu: "2000m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "2700Mi"
           cpu: "2000m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "55"
@@ -787,9 +816,11 @@ stackstate:
         limits:
           cpu: "1000m"
           memory: "2000Mi"
+          ephemeral-storage: "1Gi"
         requests:
           cpu: "500m"
           memory: "2000Mi"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "80"
@@ -837,7 +868,7 @@ stackstate:
         # stackstate.components.nginxPrometheusExporter.image.repository -- Base container image repository for nginx-prometheus-exporter containers.
         repository: stackstate/nginx-prometheus-exporter
         # stackstate.components.nginxPrometheusExporter.image.tag -- Container image tag for nginx-prometheus-exporter containers.
-        tag: 0.7.0-sts.20211018.0810
+        tag: 0.9.0
         # stackstate.components.nginxPrometheusExporter.image.pullPolicy -- Image pull policy for nginx-prometheus-exporter containers.
         pullPolicy: IfNotPresent
     containerTools:
@@ -857,7 +888,7 @@ stackstate:
         # stackstate.components.wait.image.repository -- Base container image repository for wait containers.
         repository: stackstate/wait
         # stackstate.components.wait.image.tag -- Container image tag for wait containers.
-        tag: 1.0.5
+        tag: 1.0.6
         # stackstate.components.wait.image.pullPolicy -- Image pull policy for wait containers.
         pullPolicy: IfNotPresent
   # stackstate.authentication -- Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error.
@@ -940,9 +971,11 @@ elasticsearch:
     requests:
       cpu: "2000m"
       memory: "4Gi"
+      ephemeral-storage: "1Mi"
     limits:
       cpu: "2000m"
       memory: "4Gi"
+      ephemeral-storage: "1Gi"
   # elasticsearch.volumeClaimTemplate -- PVC template defaulting to 250Gi default volumes
   volumeClaimTemplate:
     accessModes:
@@ -962,9 +995,11 @@ elasticsearch:
       limits:
         cpu: "100m"
         memory: "100Mi"
+        ephemeral-storage: "1Gi"
       requests:
         cpu: "100m"
         memory: "100Mi"
+        ephemeral-storage: "1Mi"
     es:
       uri: http://stackstate-elasticsearch-master:9200
 hbase:
@@ -979,7 +1014,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 4.2.16
+      tag: 4.4.1
   console:
     # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
     enabled: false
@@ -991,9 +1026,11 @@ hbase:
         limits:
           memory: "1Gi"
           cpu: "500m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "1Gi"
           cpu: "50m"
+          ephemeral-storage: "1Mi"
     regionserver:
       # hbase.hbase.regionserver.replicaCount -- Number of HBase regionserver node replicas.
       replicaCount: 3
@@ -1001,9 +1038,11 @@ hbase:
         limits:
           memory: "3Gi"
           cpu: "3000m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "3Gi"
           cpu: "1500m"
+          ephemeral-storage: "1Mi"
   hdfs:
     # hbase.hdfs.minReplication -- Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead)
     minReplication: 2
@@ -1014,26 +1053,32 @@ hbase:
         limits:
           memory: "4Gi"
           cpu: "500m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "4Gi"
           cpu: "300m"
+          ephemeral-storage: "1Mi"
     namenode:
       resources:
         limits:
           memory: "1Gi"
           cpu: "500m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "1Gi"
           cpu: "100m"
+          ephemeral-storage: "1Mi"
     secondarynamenode:
       enabled: true
       resources:
         limits:
           memory: "1Gi"
           cpu: "500m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "1Gi"
           cpu: "50m"
+          ephemeral-storage: "1Mi"
   tephra:
     # hbase.tephra.replicaCount -- Number of Tephra replicas.
     replicaCount: 2
@@ -1041,9 +1086,11 @@ hbase:
       limits:
         memory: "3Gi"
         cpu: "500m"
+        ephemeral-storage: "1Gi"
       requests:
         memory: "2Gi"
         cpu: "250m"
+        ephemeral-storage: "1Mi"
   zookeeper:
     # hbase.zookeeper.enabled -- Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**.
     enabled: false
@@ -1136,9 +1183,11 @@ kafka:
         limits:
           cpu: "200m"
           memory: "300Mi"
+          ephemeral-storage: "1Gi"
         requests:
           cpu: "200m"
           memory: "300Mi"
+          ephemeral-storage: "1Mi"
     serviceMonitor:
       # kafka.metrics.serviceMonitor.enabled -- If `true`, creates a Prometheus Operator `ServiceMonitor` (also requires `kafka.metrics.kafka.enabled` or `kafka.metrics.jmx.enabled` to be `true`).
       enabled: false
@@ -1167,9 +1216,11 @@ kafka:
     limits:
       memory: "2Gi"
       cpu: "1000m"
+      ephemeral-storage: "1Gi"
     requests:
       memory: "2Gi"
       cpu: "1000m"
+      ephemeral-storage: "1Mi"
   # kafka.zookeeper.enabled -- Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**.
   zookeeper:
     enabled: false
@@ -1226,9 +1277,11 @@ zookeeper:
     limits:
       memory: "512Mi"
       cpu: "250m"
+      ephemeral-storage: "1Gi"
     requests:
       memory: "512Mi"
       cpu: "100m"
+      ephemeral-storage: "1Mi"
   # zookeeper.podAnnotations -- Annotations for ZooKeeper pod.
   podAnnotations:
     ad.stackstate.com/zookeeper.check_names: '["openmetrics"]'
@@ -1240,15 +1293,18 @@ anomaly-detection:
   # anomaly-detection.enabled -- Enables anomaly detection chart
   enabled: true
   cpu:
-    # cpu.limit -- CPU resource limit
+    # anomaly-detection.cpu.limit -- CPU resource limit
     limit: "2000m"
-    # cpu.request -- CPU resource request
+    # anomaly-detection.cpu.request -- CPU resource request
     request: "1000m"
   memory:
-    # memory.limit -- Memory resource limit
+    # anomaly-detection.memory.limit -- Memory resource limit
     limit: "3Gi"
-    # memory.request -- Memory resource request
+    # anomaly-detection.memory.request -- Memory resource request
     request: "3Gi"
+  pdb:
+    # anomaly-detection.pdb.maxUnavailable -- Maximum number of pods that can be unavailable for the anomaly detection
+    maxUnavailable: 0
   image:
     # anomaly-detection.image.imagePullPolicy -- The default pullPolicy used for anomaly detection pods.
     imagePullPolicy: IfNotPresent
@@ -1319,3 +1375,10 @@ cluster-agent:
 cluster-role:
   # cluster-role.enabled -- Deploy the ClusterRole(s) and ClusterRoleBinding(s) together with the chart. Can be disabled if these need to be installed by an administrator of the Kubernetes cluster.
   enabled: true
+pull-secret:
+  # pull-secret.enabled -- Deploy the ImagePullSecret for the chart.
+  enabled: false
+  # pull-secret.fullNameOverride -- Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart.
+  fullNameOverride: ''
+  # pull-secret.credentials -- Registry and assotiated credentials (username, password) that will be stored in the pull-secret
+  credentials: []

@@ -1,27 +1,30 @@
 dependencies:
 - name: anomaly-detection
   repository: https://helm.stackstate.io
-  version: 4.5.0-snapshot.170
+  version: 4.5.0-snapshot.206
 - name: cluster-agent
   repository: https://helm.stackstate.io
-  version: 0.4.27
+  version: 0.4.30
 - name: common
   repository: https://helm.stackstate.io
   version: 0.4.17
 - name: elasticsearch
   repository: https://helm.stackstate.io
-  version: 7.6.2-stackstate.19
+  version: 7.6.2-stackstate.24
 - name: hbase
   repository: https://helm.stackstate.io
-  version: 0.1.108
+  version: 0.1.116
 - name: kafka
   repository: https://helm.stackstate.io
   version: 12.2.5-stackstate.0
 - name: minio
-  repository: https://helm.min.io/
-  version: 8.0.10
+  repository: https://helm.stackstate.io
+  version: 8.0.10-stackstate.0
 - name: zookeeper
   repository: https://charts.bitnami.com/bitnami
   version: 5.16.0
-digest: sha256:07c0980097945db539ec481e08cd19c8a2d393bb9bba08e164c37d329e5966bf
-generated: "2021-11-11T14:07:56.085241581+01:00"
+- name: pull-secret
+  repository: https://helm.stackstate.io
+  version: 1.0.0
+digest: sha256:12ad574f62f2e489da66a3027b793ea26cf3c233c24a466fba1f02300bdcc7ea
+generated: "2021-12-22T17:12:41.672898251Z"
