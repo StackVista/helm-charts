@@ -217,6 +217,7 @@ local push_charts_to_public_jobs = {
   else {}
   ))
   for chart in charts
+  if chart != 'stackstate'
 };
 
 local update_sg_version = {
