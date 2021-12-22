@@ -22,7 +22,7 @@ dependencies:
     repository: https://helm.stackstate.io
     condition: anomaly-detection.enabled
   - name: cluster-agent
-    version: 0.4.30
+    version: 0.4.33
     repository: https://helm.stackstate.io
     condition: cluster-agent.enabled
   - name: common
@@ -31,15 +31,15 @@ dependencies:
   - name: elasticsearch
     condition: elasticsearch.enabled
     repository: https://helm.stackstate.io
-    version: 7.6.2-stackstate.24
+    version: 7.6.2-stackstate.26
   - name: hbase
     condition: hbase.enabled
     repository: https://helm.stackstate.io
-    version: 0.1.116
+    version: 0.1.118
   - name: kafka
     condition: kafka.enabled
-    repository: https://helm.stackstate.io
-    version: 12.2.5-stackstate.0
+    repository: https://charts.bitnami.com/bitnami
+    version: 14.8.1
   - name: minio
     repository: https://helm.stackstate.io
     version: 8.0.10-stackstate.0
