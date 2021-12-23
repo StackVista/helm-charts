@@ -60,7 +60,7 @@ spec:
           emptyDir: {}
       initContainers:
         - name: minio-mc
-          image: "{{ .Values.mcImage.repository }}:{{ .Values.mcImage.tag }}"
+          image: "{{ include "minio.image.registry" (dict "image" .Values.mcImage "context" $) }}/{{ .Values.mcImage.repository }}:{{ .Values.mcImage.tag }}"
           imagePullPolicy: {{ .Values.mcImage.pullPolicy }}
           command:
             - /bin/sh
@@ -87,7 +87,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
         # extract bearerToken from mc admin output
         - name: jq
-          image: "{{ .Values.helmKubectlJqImage.repository }}:{{ .Values.helmKubectlJqImage.tag }}"
+          image: "{{ include "minio.image.registry" (dict "image" .Values.helmKubectlJqImage "context" $) }}/{{ .Values.helmKubectlJqImage.repository }}:{{ .Values.helmKubectlJqImage.tag }}"
           imagePullPolicy: {{ .Values.helmKubectlJqImage.pullPolicy }}
           command:
             - /bin/sh
@@ -99,7 +99,7 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
         - name: kubectl-create
-          image: "{{ .Values.helmKubectlJqImage.repository }}:{{ .Values.helmKubectlJqImage.tag }}"
+          image: "{{ include "minio.image.registry" (dict "image" .Values.helmKubectlJqImage "context" $) }}/{{ .Values.helmKubectlJqImage.repository }}:{{ .Values.helmKubectlJqImage.tag }}"
           imagePullPolicy: {{ .Values.helmKubectlJqImage.pullPolicy }}
           command:
             - /bin/sh
@@ -120,7 +120,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
       containers:
         - name: kubectl-apply
-          image: "{{ .Values.helmKubectlJqImage.repository }}:{{ .Values.helmKubectlJqImage.tag }}"
+          image: "{{ include "minio.image.registry" (dict "image" .Values.helmKubectlJqImage "context" $) }}/{{ .Values.helmKubectlJqImage.repository }}:{{ .Values.helmKubectlJqImage.tag }}"
           imagePullPolicy: {{ .Values.helmKubectlJqImage.pullPolicy }}
           command:
             - kubectl

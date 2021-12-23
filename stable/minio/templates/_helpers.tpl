@@ -185,3 +185,16 @@ Formats volume for Minio tls keys and trusted certs
     {{- end }}
 {{- end }}
 {{- end -}}
+
+
+{{/*
+Return the image registry for the container-tools containers
+*/}}
+{{- define "minio.image.registry" -}}
+{{- $context := .context }}
+{{- if $context.global -}}
+    {{- $context.global.imageRegistry | default .image.registry -}}
+  {{- else -}}
+    {{- .image.registry -}}
+  {{- end -}}
+{{- end -}}
