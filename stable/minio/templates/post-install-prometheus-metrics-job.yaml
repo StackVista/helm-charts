@@ -36,7 +36,7 @@ spec:
       serviceAccountName: {{ $fullName }}-update-prometheus-secret
 {{- end }}
       restartPolicy: OnFailure
-{{- include "minio.imagePullSecrets" . | indent 6 }}
+{{- include "minio.image.pullSecret.name" (dict "images" (list .Values.mcImage .Values.helmKubectlJqImage) "context" $) | indent 6 }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
