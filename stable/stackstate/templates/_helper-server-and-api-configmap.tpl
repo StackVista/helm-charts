@@ -172,11 +172,7 @@ stackstate.api.authentication.authServer.stackstateAuthServer {
 {{- if .Values.stackstate.authentication.adminPassword }}
   defaultPassword = {{ .Values.stackstate.authentication.adminPassword | quote }}
 {{- else }}
-{{- if .Values.kots.enabled }}
-  defaultPassword = {{ "f6325555cbe33536e95e2c938a4df887" | quote }}
-{{- else }}
 {{- fail "Helm value 'stackstate.authentication.adminPassword' is required when neither LDAP, OIDC, Keycloak nor file-based authentication has been configured" -}}
-{{- end }}
 {{- end }}
 }
 {{- end }}
@@ -226,4 +222,9 @@ stackstate.stackPacks {
   }
 }
 {{- end }}
+
+{{- if .Values.stackstate.components.api.docslink }}
+stackstate.webUIConfig.docLinkUrlPrefix = "{{- .Values.stackstate.components.api.docslink -}}"
+{{- end }}
+
 {{- end -}}

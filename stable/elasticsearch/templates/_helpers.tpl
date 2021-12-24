@@ -151,18 +151,16 @@ Return the proper Docker Image Registry Secret Names evaluating values as templa
 
   {{- if $context.Values.global }}
     {{- range $context.Values.global.imagePullSecrets -}}
-      {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" .name "context" $context)) -}}
-    {{- end -}}
-    {{- if $context.Values.global.imagePullUsername -}}
-      {{- $pullSecrets = append $pullSecrets ((list (include "elasticsearch.uname" $context ) "pull-secret") | join "-")  -}}
+      {{/* Is plain array of strings, compatible with all bitnami charts */}}
+      {{- $pullSecrets = append $pullSecrets (include "elasticsearch.tplvalue.render" (dict "value" . "context" $context)) -}}
     {{- end -}}
   {{- end -}}
   {{- range $context.Values.imagePullSecrets -}}
-    {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" .name "context" $context)) -}}
+    {{- $pullSecrets = append $pullSecrets (include "elasticsearch.tplvalue.render" (dict "value" .name "context" $context)) -}}
   {{- end -}}
   {{- range .images -}}
     {{- if .pullSecretName -}}
-      {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" .pullSecretName "context" $context)) -}}
+      {{- $pullSecrets = append $pullSecrets (include "elasticsearch.tplvalue.render" (dict "value" .pullSecretName "context" $context)) -}}
     {{- else if (or .pullSecretUsername .pullSecretDockerConfigJson) -}}
       {{- $pullSecrets = append $pullSecrets ((list (include "elasticsearch.uname" $context ) "pull-secret") | join "-")  -}}
     {{- end -}}

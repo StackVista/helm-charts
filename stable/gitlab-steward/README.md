@@ -1,6 +1,6 @@
 # gitlab-steward
 
-![Version: 0.2.11](https://img.shields.io/badge/Version-0.2.11-informational?style=flat-square) ![AppVersion: 0.4.0](https://img.shields.io/badge/AppVersion-0.4.0-informational?style=flat-square)
+![Version: 0.2.12](https://img.shields.io/badge/Version-0.2.12-informational?style=flat-square) ![AppVersion: 0.4.0](https://img.shields.io/badge/AppVersion-0.4.0-informational?style=flat-square)
 Steward -- GitLab environment cleaner
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 ## Maintainers

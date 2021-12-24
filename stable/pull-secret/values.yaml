@@ -1,0 +1,2 @@
+# credentials -- Array of Registries and their credentials (i.e. username, password, registry)
+credentials: []

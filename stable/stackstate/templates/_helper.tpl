@@ -453,10 +453,7 @@ Return the proper Docker Image Registry Secret Names evaluating values as templa
 
   {{- if $context.Values.global }}
     {{- range $context.Values.global.imagePullSecrets -}}
-      {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" .name "context" $context)) -}}
-    {{- end -}}
-    {{- if $context.Values.global.imagePullUsername -}}
-      {{- $pullSecrets = append $pullSecrets ((list (include "common.fullname.short" $context ) "pull-secret") | join "-")  -}}
+      {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" . "context" $context)) -}}
     {{- end -}}
   {{- end -}}
   {{- range $context.Values.imagePullSecrets -}}

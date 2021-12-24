@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.6.0-snapshot.11`
+Current chart version is `4.6.0-snapshot.17`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -10,14 +10,15 @@ Current chart version is `4.6.0-snapshot.11`
 
 | Repository | Name | Version |
 |------------|------|---------|
+| https://charts.bitnami.com/bitnami | kafka | 14.8.1 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
-| https://helm.stackstate.io | anomaly-detection | 4.5.0-snapshot.182 |
-| https://helm.stackstate.io | cluster-agent | 0.4.30 |
+| https://helm.stackstate.io | anomaly-detection | 4.5.0-snapshot.206 |
+| https://helm.stackstate.io | cluster-agent | 0.4.33 |
 | https://helm.stackstate.io | common | 0.4.17 |
-| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.22 |
-| https://helm.stackstate.io | hbase | 0.1.115 |
-| https://helm.stackstate.io | kafka | 12.2.5-stackstate.0 |
+| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.26 |
+| https://helm.stackstate.io | hbase | 0.1.118 |
 | https://helm.stackstate.io | minio | 8.0.10-stackstate.0 |
+| https://helm.stackstate.io | pull-secret | 1.0.0 |
 
 ## Required Values
 
@@ -38,8 +39,8 @@ stackstate/stackstate
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| anomaly-detection.cpu.limit | string | `"2000m"` |  |
-| anomaly-detection.cpu.request | string | `"1000m"` |  |
+| anomaly-detection.cpu.limit | string | `"2000m"` | CPU resource limit |
+| anomaly-detection.cpu.request | string | `"1000m"` | CPU resource request |
 | anomaly-detection.enabled | bool | `true` | Enables anomaly detection chart |
 | anomaly-detection.image.imagePullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for anomaly detection pods. |
 | anomaly-detection.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
@@ -50,8 +51,9 @@ stackstate/stackstate
 | anomaly-detection.ingress | object | `{"annotations":{},"enabled":false,"hostname":null,"hosts":[],"port":8090,"tls":null}` | Status interface ingress |
 | anomaly-detection.ingress.enabled | bool | `false` | Enables ingress controller for status interface |
 | anomaly-detection.ingress.hostname | string | `nil` | Status interface hostname e.g. spotlight.local.domain |
-| anomaly-detection.memory.limit | string | `"3Gi"` |  |
-| anomaly-detection.memory.request | string | `"3Gi"` |  |
+| anomaly-detection.memory.limit | string | `"3Gi"` | Memory resource limit |
+| anomaly-detection.memory.request | string | `"3Gi"` | Memory resource request |
+| anomaly-detection.pdb.maxUnavailable | int | `0` | Maximum number of pods that can be unavailable for the anomaly detection |
 | anomaly-detection.stackstate.apiToken | string | `nil` | Stackstate Api token that used by spotlight for authentication, it is expected to be set only in case if authType = "api-token" |
 | anomaly-detection.stackstate.authType | string | `"token"` | Type of authentication. There are three options 1) "token" - with service account token (default), 2) "api-token" - with Stackstate API Token, 3) "cookie" - username, password based auth. |
 | anomaly-detection.stackstate.instance | string | `"http://{{ include \"stackstate.hostname.prefix\" . }}-router:8080"` | **Required Stackstate instance URL, e.g http://stackstate-router:8080 |
@@ -121,6 +123,7 @@ stackstate/stackstate
 | elasticsearch.replicas | int | `3` | Number of Elasticsearch replicas. |
 | elasticsearch.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"1Gi","memory":"4Gi"},"requests":{"cpu":"2000m","ephemeral-storage":"1Mi","memory":"4Gi"}}` | Override Elasticsearch resources |
 | elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"250Gi"}}}` | PVC template defaulting to 250Gi default volumes |
+| global.imagePullSecrets | list | `[]` | List of image pull secret names to be used by all images across all charts. |
 | global.receiverApiKey | string | `""` | API key to be used by the Receiver; if no key is provided, a random one will be generated for you. |
 | hbase.all.metrics.enabled | bool | `true` |  |
 | hbase.commonLabels | object | `{"app.kubernetes.io/part-of":"stackstate"}` | Add additional labels to all resources created for all hbase resources |
@@ -161,7 +164,7 @@ stackstate/stackstate
 | hbase.hdfs.secondarynamenode.resources.requests.cpu | string | `"50m"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.memory | string | `"1Gi"` |  |
-| hbase.stackgraph.image.tag | string | `"4.2.16"` | The StackGraph server version, must be compatible with the StackState version |
+| hbase.stackgraph.image.tag | string | `"4.4.1"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
 | hbase.tephra.resources.limits.cpu | string | `"500m"` |  |
 | hbase.tephra.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
@@ -214,9 +217,6 @@ stackstate/stackstate
 | kafka.transactionStateLogReplicationFactor | int | `2` |  |
 | kafka.volumePermissions.enabled | bool | `false` |  |
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
-| kots.contourIngress.enabled | bool | `false` |  |
-| kots.contourIngress.hostname | string | `"localhost"` |  |
-| kots.enabled | bool | `false` | Enables functionality for Replicated KOTS. |
 | minio.accessKey | string | `"setme"` | Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value. |
 | minio.azuregateway.replicas | int | `1` |  |
 | minio.fullnameOverride | string | `"stackstate-minio"` | **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components. |
@@ -228,6 +228,9 @@ stackstate/stackstate
 | minio.secretKey | string | `"setme"` |  |
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
+| pull-secret.credentials | list | `[]` | Registry and assotiated credentials (username, password) that will be stored in the pull-secret |
+| pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |
+| pull-secret.fullNameOverride | string | `""` | Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart. |
 | stackstate.admin.authentication.password | string | `nil` | Password used for default platform "admin" api's (low-level tools) of the various services, username: platformadmin |
 | stackstate.authentication | object | `{"adminPassword":null,"file":{},"keycloak":{},"ldap":{},"oidc":{},"roles":{"admin":[],"guest":[],"platformAdmin":[],"powerUser":[]},"sessionLifetime":"7d"}` | Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error. |
 | stackstate.authentication.adminPassword | string | `nil` | Password for the 'admin' user that StackState creates by default |
@@ -268,6 +271,7 @@ stackstate/stackstate
 | stackstate.components.api.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.api.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.api.config | string | `""` | Configuration file contents to customize the default StackState api configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
+| stackstate.components.api.docslink | string | `""` | Documentation URL root to use in the product help page & tooltips. |
 | stackstate.components.api.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.api.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.api.image.pullPolicy | string | `""` | `pullPolicy` used for the `api` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
@@ -381,7 +385,7 @@ stackstate/stackstate
 | stackstate.components.nginxPrometheusExporter.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.registry | string | `"quay.io"` | Base container image registry for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.repository | string | `"stackstate/nginx-prometheus-exporter"` | Base container image repository for nginx-prometheus-exporter containers. |
-| stackstate.components.nginxPrometheusExporter.image.tag | string | `"0.7.0-sts.20211018.0810"` | Container image tag for nginx-prometheus-exporter containers. |
+| stackstate.components.nginxPrometheusExporter.image.tag | string | `"0.9.0"` | Container image tag for nginx-prometheus-exporter containers. |
 | stackstate.components.problemProducer.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.problemProducer.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.problemProducer.config | string | `""` | Configuration file contents to customize the default StackState problemProducer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
@@ -416,7 +420,7 @@ stackstate/stackstate
 | stackstate.components.router.image.pullPolicy | string | `""` | `pullPolicy` used for the `router` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.router.image.registry | string | `"quay.io"` | Registry of the router component Docker image. |
 | stackstate.components.router.image.repository | string | `"stackstate/envoy-alpine"` | Repository of the router component Docker image. |
-| stackstate.components.router.image.tag | string | `"v1.19.1-sts.20211012.0914"` | Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.router.image.tag | string | `"v1.19.1-sts.20211207.0748"` | Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.router.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.router.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `router` pods. |
 | stackstate.components.router.replicaCount | int | `1` | Number of `router` replicas. |
@@ -525,7 +529,7 @@ stackstate/stackstate
 | stackstate.components.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | stackstate.components.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
-| stackstate.components.wait.image.tag | string | `"1.0.5"` | Container image tag for wait containers. |
+| stackstate.components.wait.image.tag | string | `"1.0.6"` | Container image tag for wait containers. |
 | stackstate.experimental.server.split | bool | `true` | (boolean) Run a single service server or split in multiple sub services as api, state .... |
 | stackstate.java | object | `{"trustStore":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
