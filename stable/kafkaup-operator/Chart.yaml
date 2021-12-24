@@ -9,5 +9,5 @@ maintainers:
   email: bschuur@stackstate.com
 dependencies:
   - name: common
-    version: 0.4.14
+    version: 0.4.17
     repository: https://helm.stackstate.io/

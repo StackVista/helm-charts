@@ -10,7 +10,7 @@ Current chart version is `0.1.0-SNAPSHOT`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://helm.stackstate.io/ | common | 0.4.14 |
+| https://helm.stackstate.io/ | common | 0.4.17 |
 
 ## Values
 

@@ -85,19 +85,8 @@ spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ template "kafka.serviceAccountName" . }}
       {{- end }}
-      {{- if or (or (and .Values.volumePermissions.enabled .Values.persistence.enabled) (and .Values.externalAccess.enabled .Values.externalAccess.autoDiscovery.enabled)) .Values.requireInterBrokerProtocolVersion.enabled }}
+      {{- if or (and .Values.volumePermissions.enabled .Values.persistence.enabled) (and .Values.externalAccess.enabled .Values.externalAccess.autoDiscovery.enabled) }}
       initContainers:
-        {{- if .Values.requireInterBrokerProtocolVersion.enabled }}
-        - name: check-inter-broker-protocol-version
-          image: {{ include "kafka.image" . }}
-          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
-          command:
-            - /bin/bash
-          args:
-            - -c
-            - "while [ -z \"${KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION}\" ]; do echo \"KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION should be set by operator\"; sleep 1; done"
-          resources: {{- toYaml .Values.requireInterBrokerProtocolVersion.resources | nindent 12 }}
-        {{- end }}
         {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
         - name: volume-permissions
           image: {{ include "kafka.volumePermissions.image" . }}

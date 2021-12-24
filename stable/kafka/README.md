@@ -16,8 +16,8 @@ Apache Kafka is a distributed streaming platform.
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.bitnami.com/bitnami | common | 1.1.1 |
-| https://charts.bitnami.com/bitnami | zookeeper | 6.0.0 |
+| https://charts.bitnami.com/bitnami | common | 1.x.x |
+| https://charts.bitnami.com/bitnami | zookeeper | 6.x.x |
 ## Values
 
 | Key | Type | Default | Description |
@@ -158,9 +158,6 @@ Apache Kafka is a distributed streaming platform.
 | readinessProbe.initialDelaySeconds | int | `5` |  |
 | readinessProbe.timeoutSeconds | int | `5` |  |
 | replicaCount | int | `1` |  |
-| requireInterBrokerProtocolVersion.enabled | bool | `false` |  |
-| requireInterBrokerProtocolVersion.resources.limits | object | `{}` |  |
-| requireInterBrokerProtocolVersion.resources.requests | object | `{}` |  |
 | resources.limits | object | `{}` |  |
 | resources.requests | object | `{}` |  |
 | service.annotations | object | `{}` |  |

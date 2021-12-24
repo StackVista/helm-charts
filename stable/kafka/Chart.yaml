@@ -7,13 +7,11 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     tags:
       - bitnami-common
-    # This version is pinned due to https://github.com/bitnami/charts/issues/5032
-    version: 1.1.1
+    version: 1.x.x
   - condition: zookeeper.enabled
     name: zookeeper
     repository: https://charts.bitnami.com/bitnami
-    # This version is pinned due to https://github.com/bitnami/charts/issues/5032
-    version: 6.0.0
+    version: 6.x.x
 description: Apache Kafka is a distributed streaming platform.
 engine: gotpl
 home: https://github.com/bitnami/charts/tree/master/bitnami/kafka
