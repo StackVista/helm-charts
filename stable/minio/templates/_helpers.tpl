@@ -178,9 +178,24 @@ Return the image registry for the container-tools containers
   {{- end -}}
 {{- end -}}
 
+
+{{/*
+Renders a value that contains a template.
+Usage:
+{{ include "minio.tplvalue.render" ( dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "minio.tplvalue.render" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
+{{- end -}}
+
+
 {{/*
 Return the proper Docker Image Registry Secret Names evaluating values as templates
-{{ include "stackstate.image.pullSecret.name" ( dict "images" (list .Values.path.to.the.image1, .Values.path.to.the.image2) "context" $) }}
+{{ include "minio.image.pullSecret.name" ( dict "images" (list .Values.path.to.the.image1, .Values.path.to.the.image2) "context" $) }}
 */}}
 {{- define "minio.image.pullSecret.name" -}}
   {{- $pullSecrets := list }}
@@ -188,15 +203,15 @@ Return the proper Docker Image Registry Secret Names evaluating values as templa
 
   {{- if $context.Values.global }}
     {{- range $context.Values.global.imagePullSecrets -}}
-      {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" . "context" $context)) -}}
+      {{- $pullSecrets = append $pullSecrets (include "minio.tplvalue.render" (dict "value" . "context" $context)) -}}
     {{- end -}}
   {{- end -}}
   {{- range $context.Values.imagePullSecrets -}}
-    {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" .name "context" $context)) -}}
+    {{- $pullSecrets = append $pullSecrets (include "minio.tplvalue.render" (dict "value" .name "context" $context)) -}}
   {{- end -}}
   {{- range .images -}}
     {{- if .pullSecretName -}}
-      {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" .pullSecretName "context" $context)) -}}
+      {{- $pullSecrets = append $pullSecrets (include "minio.tplvalue.render" (dict "value" .pullSecretName "context" $context)) -}}
     {{- else if (or .pullSecretUsername .pullSecretDockerConfigJson) -}}
       {{- $pullSecrets = append $pullSecrets ((list (include "common.fullname.short" $context ) "pull-secret") | join "-")  -}}
     {{- end -}}
