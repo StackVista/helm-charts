@@ -29,7 +29,6 @@
       'gitlab-steward',
       'hbase',
       'iceman',
-      'kafka',
       'kommoner-operator',
       'kafkaup-operator',
       'minio',
