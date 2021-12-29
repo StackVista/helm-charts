@@ -1175,7 +1175,7 @@ kafka:
     - name: kafka-custom-scripts
       mountPath: /scripts/custom-setup.sh
       subPath: custom-setup.sh
-  # Initcontainer required to make the kafka versionup operator work
+  # kafka.initContainers -- required to make the kafka versionup operator work
   initContainers:
     - name: check-inter-broker-protocol-version
       image: '{{ include "kafka.image" . }}'

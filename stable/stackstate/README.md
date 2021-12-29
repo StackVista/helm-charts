@@ -193,14 +193,7 @@ stackstate/stackstate
 | kafka.image.registry | string | `"quay.io"` | Kafka image registry |
 | kafka.image.repository | string | `"stackstate/kafka"` | Kafka image repository |
 | kafka.image.tag | string | `"2.4.1-focal-20210827-r9.1"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** When changing this version, be sure to change the pod stackstate.com/kafkaup-operator.kafka_version aswell, in order for the kafkaup operator to upgrade the inter broker protocol version |
-| kafka.initContainers[0].args[0] | string | `"-c"` |  |
-| kafka.initContainers[0].args[1] | string | `"while [ -z \"${KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION}\" ]; do echo \"KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION should be set by operator\"; sleep 1; done"` |  |
-| kafka.initContainers[0].command[0] | string | `"/bin/bash"` |  |
-| kafka.initContainers[0].image | string | `"{{ include \"kafka.image\" . }}"` |  |
-| kafka.initContainers[0].imagePullPolicy | string | `""` |  |
-| kafka.initContainers[0].name | string | `"check-inter-broker-protocol-version"` |  |
-| kafka.initContainers[0].resources.limits | object | `{}` |  |
-| kafka.initContainers[0].resources.requests | object | `{}` |  |
+| kafka.initContainers | list | `[{"args":["-c","while [ -z \"${KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION}\" ]; do echo \"KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION should be set by operator\"; sleep 1; done"],"command":["/bin/bash"],"image":"{{ include \"kafka.image\" . }}","imagePullPolicy":"","name":"check-inter-broker-protocol-version","resources":{"limits":{},"requests":{}}}]` | required to make the kafka versionup operator work |
 | kafka.livenessProbe.initialDelaySeconds | int | `240` | Delay before readiness probe is initiated. |
 | kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
 | kafka.metrics.jmx.enabled | bool | `true` | Whether or not to expose JMX metrics to Prometheus. |
