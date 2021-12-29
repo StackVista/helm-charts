@@ -1,6 +1,6 @@
 # minio
 
-![Version: 8.0.10-stackstate.1](https://img.shields.io/badge/Version-8.0.10--stackstate.1-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 8.0.10-stackstate.2](https://img.shields.io/badge/Version-8.0.10--stackstate.2-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 High Performance, Kubernetes Native Object Storage
 
