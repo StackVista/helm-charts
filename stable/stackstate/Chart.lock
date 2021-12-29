@@ -19,12 +19,12 @@ dependencies:
   version: 14.8.1
 - name: minio
   repository: https://helm.stackstate.io
-  version: 8.0.10-stackstate.1
+  version: 8.0.10-stackstate.2
 - name: zookeeper
   repository: https://charts.bitnami.com/bitnami
   version: 5.16.0
 - name: pull-secret
   repository: https://helm.stackstate.io
   version: 1.0.0
-digest: sha256:65950cca0bb3475977cf6ae8b836e6eeab999e0e687fc8eb16fec341c1b05110
-generated: "2021-12-27T16:52:57.495727+01:00"
+digest: sha256:8aad33683f7021d3aa0577b4c16713dd3e22f8c18822dcb290e5048a16680f82
+generated: "2021-12-29T11:48:27.526431+01:00"
