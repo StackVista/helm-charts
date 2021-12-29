@@ -52,3 +52,7 @@ dependencies:
     version: 1.0.0
     repository: https://helm.stackstate.io
     condition: pull-secret.enabled
+  - name: kafkaup-operator
+    condition: kafkaup-operator.enabled
+    repository: https://helm.stackstate.io
+    version: 0.1.0

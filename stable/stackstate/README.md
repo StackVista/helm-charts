@@ -17,6 +17,7 @@ Current chart version is `4.6.0-snapshot.18`
 | https://helm.stackstate.io | common | 0.4.17 |
 | https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.26 |
 | https://helm.stackstate.io | hbase | 0.1.118 |
+| https://helm.stackstate.io | kafkaup-operator | 0.1.0 |
 | https://helm.stackstate.io | minio | 8.0.10-stackstate.1 |
 | https://helm.stackstate.io | pull-secret | 1.0.0 |
 
@@ -191,7 +192,15 @@ stackstate/stackstate
 | kafka.fullnameOverride | string | `"stackstate-kafka"` | Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | kafka.image.registry | string | `"quay.io"` | Kafka image registry |
 | kafka.image.repository | string | `"stackstate/kafka"` | Kafka image repository |
-| kafka.image.tag | string | `"2.3.1-focal-20210827-r41.1"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** |
+| kafka.image.tag | string | `"2.4.1-focal-20210827-r9.1"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** When changing this version, be sure to change the pod stackstate.com/kafkaup-operator.kafka_version aswell, in order for the kafkaup operator to upgrade the inter broker protocol version |
+| kafka.initContainers[0].args[0] | string | `"-c"` |  |
+| kafka.initContainers[0].args[1] | string | `"while [ -z \"${KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION}\" ]; do echo \"KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION should be set by operator\"; sleep 1; done"` |  |
+| kafka.initContainers[0].command[0] | string | `"/bin/bash"` |  |
+| kafka.initContainers[0].image | string | `"{{ include \"kafka.image\" . }}"` |  |
+| kafka.initContainers[0].imagePullPolicy | string | `""` |  |
+| kafka.initContainers[0].name | string | `"check-inter-broker-protocol-version"` |  |
+| kafka.initContainers[0].resources.limits | object | `{}` |  |
+| kafka.initContainers[0].resources.requests | object | `{}` |  |
 | kafka.livenessProbe.initialDelaySeconds | int | `240` | Delay before readiness probe is initiated. |
 | kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
 | kafka.metrics.jmx.enabled | bool | `true` | Whether or not to expose JMX metrics to Prometheus. |
@@ -210,13 +219,22 @@ stackstate/stackstate
 | kafka.metrics.serviceMonitor.selector | object | `{}` | Selector to target Prometheus instance. |
 | kafka.offsetsTopicReplicationFactor | int | `2` |  |
 | kafka.persistence.size | string | `"50Gi"` | Size of persistent volume for each Kafka pod |
-| kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Kafka Pod annotations. |
+| kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]","stackstate.com/kafkaup-operator.kafka_version":"2.4.1"}` | Kafka Pod annotations. |
 | kafka.readinessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
 | kafka.replicaCount | int | `3` | Number of Kafka replicas. |
 | kafka.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"2Gi"}}` | Kafka resources per pods. |
 | kafka.transactionStateLogReplicationFactor | int | `2` |  |
 | kafka.volumePermissions.enabled | bool | `false` |  |
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
+| kafkaup-operator.enabled | bool | `true` |  |
+| kafkaup-operator.image.pullPolicy | string | `""` |  |
+| kafkaup-operator.image.registry | string | `"quay.io"` |  |
+| kafkaup-operator.image.repository | string | `"stackstate/kafkaup-operator"` |  |
+| kafkaup-operator.image.tag | string | `"0.0.1"` |  |
+| kafkaup-operator.kafkaSelectors.podLabel.key | string | `"app.kubernetes.io/component"` |  |
+| kafkaup-operator.kafkaSelectors.podLabel.value | string | `"kafka"` |  |
+| kafkaup-operator.kafkaSelectors.statefulSetName | string | `"{{ .Release.Name }}-kafka"` |  |
+| kafkaup-operator.startVersion | string | `"2.3.1"` |  |
 | minio.accessKey | string | `"setme"` | Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value. |
 | minio.azuregateway.replicas | int | `1` |  |
 | minio.fullnameOverride | string | `"stackstate-minio"` | **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components. |

@@ -26,5 +26,8 @@ dependencies:
 - name: pull-secret
   repository: https://helm.stackstate.io
   version: 1.0.0
-digest: sha256:65950cca0bb3475977cf6ae8b836e6eeab999e0e687fc8eb16fec341c1b05110
-generated: "2021-12-27T16:52:57.495727+01:00"
+- name: kafkaup-operator
+  repository: https://helm.stackstate.io
+  version: 0.1.0
+digest: sha256:5b496d6f2517a726cfe225cde4287a13d7f05ce7db2ced21e687465c5bbf07aa
+generated: "2021-12-29T11:05:01.677134958+01:00"
