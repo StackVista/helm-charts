@@ -2,7 +2,7 @@
 
 The StackState Kafka upgrade operator
 
-Current chart version is `0.1.0-SNAPSHOT`
+Current chart version is `0.1.0`
 
 **Homepage:** <https://gitlab.com/StackVista/platform/kafkaup-operator>
 
