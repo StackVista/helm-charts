@@ -29,5 +29,5 @@ dependencies:
 - name: kafkaup-operator
   repository: https://helm.stackstate.io
   version: 0.1.0
-digest: sha256:5b496d6f2517a726cfe225cde4287a13d7f05ce7db2ced21e687465c5bbf07aa
-generated: "2021-12-29T11:05:01.677134958+01:00"
+digest: sha256:7ddbd300944b62ed04aeaeafb1696f84035f4fd592b41f9c423a1342e1749fa3
+generated: "2021-12-29T14:01:11.209004527+01:00"
