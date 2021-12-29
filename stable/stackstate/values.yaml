@@ -1117,7 +1117,7 @@ kafkaup-operator:
     podLabel:
       key: "app.kubernetes.io/component"
       value: "kafka"
-  # kafkaup.startVersion -- The below version is the version at which we started to use the kadka
+  # kafkaup.startVersion -- The below version is the version at which we started to use the kafka
   # versioning operator, this should not be changed
   startVersion: "2.3.1"
 kafka:
