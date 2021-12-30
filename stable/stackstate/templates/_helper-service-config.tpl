@@ -53,6 +53,25 @@
 {{- end }}
 {{- end -}}
 
+{{- define "stackstate.service.secret.data" -}}
+{{- $secrets := .service.extraEnv.secret -}}
+{{- $additionalSecrets := default dict .additionalSecrets -}}
+{{- $context := .context -}}
+{{- $allSecrets := merge $secrets $context.Values.stackstate.components.all.extraEnv.secret -}}
+data:
+{{- range $key, $value := $allSecrets }}
+  {{ $key }}: {{ $value | b64enc | quote }}
+{{- end }}
+{{- range $key, $value := $additionalSecrets }}
+  {{ $key }}: {{ $value | b64enc | quote }}
+{{- end }}
+stringData:
+  application_stackstate.conf: |
+{{- if .service.config }}
+{{- .service.config | nindent 4 -}}
+{{- end }}
+{{- end -}}
+
 {{/*
 Secrets dict for custom certificates for stackstate services
 */}}
