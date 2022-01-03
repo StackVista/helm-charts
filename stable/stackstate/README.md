@@ -226,7 +226,7 @@ stackstate/stackstate
 | kafkaup-operator.image.tag | string | `"0.0.1"` |  |
 | kafkaup-operator.kafkaSelectors.podLabel.key | string | `"app.kubernetes.io/component"` |  |
 | kafkaup-operator.kafkaSelectors.podLabel.value | string | `"kafka"` |  |
-| kafkaup-operator.kafkaSelectors.statefulSetName | string | `"{{ .Release.Name }}-kafka"` |  |
+| kafkaup-operator.kafkaSelectors.statefulSetName | string | `"stackstate-kafka"` |  |
 | kafkaup-operator.startVersion | string | `"2.3.1"` |  |
 | minio.accessKey | string | `"setme"` | Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value. |
 | minio.azuregateway.replicas | int | `1` |  |

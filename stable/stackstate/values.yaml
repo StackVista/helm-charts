@@ -1111,7 +1111,7 @@ kafkaup-operator:
     pullPolicy: ""
   kafkaSelectors:
     # kafkaup.kafkaSelectors.statefulSetName -- name of the statefulSet to operate on
-    statefulSetName: "{{ .Release.Name }}-kafka"
+    statefulSetName: "stackstate-kafka"
 
     # kafkaup.kafkaSelectors.podLabel -- pod label of kafka pods to operate on
     podLabel:
