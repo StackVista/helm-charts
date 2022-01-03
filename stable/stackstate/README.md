@@ -279,6 +279,7 @@ stackstate/stackstate
 | stackstate.components.all.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | stackstate.components.all.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
 | stackstate.components.all.tolerations | list | `[]` | Toleration labels for pod assignment on all components. |
+| stackstate.components.all.useRecreateDeploymentStrategy | bool | `false` | Enable the "Recreate" deployment strategy for StackState components. |
 | stackstate.components.all.zookeeperEndpoint | string | `""` | **Required if `zookeeper.enabled` is `false`** Endpoint for shared Zookeeper nodes. |
 | stackstate.components.api.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.api.affinity | object | `{}` | Affinity settings for pod assignment. |
