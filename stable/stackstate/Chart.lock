@@ -4,7 +4,7 @@ dependencies:
   version: 4.5.0-snapshot.206
 - name: cluster-agent
   repository: https://helm.stackstate.io
-  version: 0.4.33
+  version: 0.5.0
 - name: common
   repository: https://helm.stackstate.io
   version: 0.4.17
