@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: stackstate-service-uptime-alerts
+  labels:
+    app: kube-prometheus-stack
+{{- with .Values.rules.additionalLabels }}
+  {{ toYaml . | nindent 4 }}
+{{- end }}
+spec:
+  groups:
+    - name: stackstate-service-uptime-alerts
+      rules:
+        - alert: StackStatePodsDownAlert
+          annotations:
+            message: StackState pod \{\{ $labels.pod }} for service  \{\{ $labels.service }} is down.
+          expr: |
+            up\{namespace=~{{ .Values.rules.namespaceRegex | quote }}} == 0
+          for: 5m
+          labels:
+            severity: critical

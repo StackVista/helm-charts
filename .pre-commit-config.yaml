@@ -31,5 +31,9 @@ repos:
   hooks:
   - id: jsonnet_format
   - id: jsonnet_to_yaml
+    alias: jsonnet_to_yaml
+    args:
+    - --only=./.gitlab-ci.jsonnet
+    files: '.*\.(j|lib)sonnet$|.json$'
 default_language_version:
   python: python3

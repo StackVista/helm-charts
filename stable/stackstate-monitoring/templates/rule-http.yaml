@@ -1,0 +1,103 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: stackstate-http-alerts
+  labels:
+    app: kube-prometheus-stack
+{{- with .Values.rules.additionalLabels }}
+  {{ toYaml . | nindent 4 }}
+{{- end }}
+spec:
+  groups:
+    - name: stackstate-http-alerts
+      rules:
+        - alert: StackStateReceiverApiLatency
+          annotations:
+            message: The receiver in \{\{ $labels.namespace }}, path \{\{ $labels.path }}, has high latency \{\{ $value | humanizeDuration }}.
+          expr: |
+            akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="receiver"} > 8
+          for: 5m
+          labels:
+            severity: warning
+        - alert: StackStateServerApiLatency
+          annotations:
+            message: The server api in \{\{ $labels.namespace }}, path \{\{ $labels.path }}, has high latency \{\{ $value | humanizeDuration }}.
+          expr: |
+            akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="server", path!="/export", path!="/api/export", path!="/api/script"} > 5
+          for: 5m
+          labels:
+            severity: warning
+        - alert: StackStateServerSlowEndpointsApiLatency
+          annotations:
+            message: The export api in \{\{ $labels.namespace }}, path \{\{ $labels.path }}, has high latency \{\{ $value | humanizeDuration }}.
+          expr: |
+            akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="server", path=~"/export||/api/export||/api/script"} > 30
+          for: 5m
+          labels:
+            severity: warning
+        - expr: |
+            sum by(namespace)(rate(akka_http_responses_total{status="5xx", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="server"}[5m])) /
+            sum by(namespace)(rate(akka_http_responses_total{namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="server"}[5m]))
+          record: stackstate:server:http_failures_per_request:ratio_rate_5m
+        - expr: |
+            sum by(namespace)(rate(akka_http_responses_total{status="5xx", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="server"}[30m])) /
+            sum by(namespace)(rate(akka_http_responses_total{namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="server"}[30m]))
+          record: stackstate:server:http_failures_per_request:ratio_rate_30m
+        - expr: |
+            sum by(namespace)(rate(akka_http_responses_total{status="5xx", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="server"}[1h])) /
+            sum by(namespace)(rate(akka_http_responses_total{namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="server"}[1h]))
+          record: stackstate:server:http_failures_per_request:ratio_rate_1h
+        - expr: |
+            sum by(namespace)(rate(akka_http_responses_total{status="5xx", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="server"}[6h])) /
+            sum by(namespace)(rate(akka_http_responses_total{namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="server"}[6h]))
+          record: stackstate:server:http_failures_per_request:ratio_rate_6h
+        - alert: StackStateServerApiErrorBudgetBurn
+          annotations:
+            message: The server API for \{\{ $labels.namespace }} is going over its error budget.
+          expr: |
+            (
+                stackstate:server:http_failures_per_request:ratio_rate_1h > (14.4 * 0.001000)
+              and
+                stackstate:server:http_failures_per_request:ratio_rate_5m > (14.4 * 0.001000)
+            )
+            or
+            (
+                stackstate:server:http_failures_per_request:ratio_rate_6h > (6 * 0.001000)
+              and
+                stackstate:server:http_failures_per_request:ratio_rate_30m > (6 * 0.001000)
+            )
+          labels:
+            severity: critical
+        - expr: |
+            sum by(namespace)(rate(akka_http_responses_total{status="5xx", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="receiver"}[5m])) /
+            sum by(namespace)(rate(akka_http_responses_total{namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="server"}[5m]))
+          record: stackstate:receiver:http_failures_per_request:ratio_rate_5m
+        - expr: |
+            sum by(namespace)(rate(akka_http_responses_total{status="5xx", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="receiver"}[30m])) /
+            sum by(namespace)(rate(akka_http_responses_total{namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="server"}[30m]))
+          record: stackstate:receiver:http_failures_per_request:ratio_rate_30m
+        - expr: |
+            sum by(namespace)(rate(akka_http_responses_total{status="5xx", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="receiver"}[1h])) /
+            sum by(namespace)(rate(akka_http_responses_total{namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="server"}[1h]))
+          record: stackstate:receiver:http_failures_per_request:ratio_rate_1h
+        - expr: |
+            sum by(namespace)(rate(akka_http_responses_total{status="5xx", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="receiver"}[6h])) /
+            sum by(namespace)(rate(akka_http_responses_total{namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="server"}[6h]))
+          record: stackstate:receiver:http_failures_per_request:ratio_rate_6h
+        - alert: StackStateReceiverApiErrorBudgetBurn
+          annotations:
+            message: The receiver API for \{\{ $labels.namespace }} is going over its error budget.
+          expr: |
+            (
+                stackstate:receiver:http_failures_per_request:ratio_rate_1h > (14.4 * 0.001000)
+              and
+                stackstate:receiver:http_failures_per_request:ratio_rate_5m > (14.4 * 0.001000)
+            )
+            or
+            (
+                stackstate:receiver:http_failures_per_request:ratio_rate_6h > (6 * 0.001000)
+              and
+                stackstate:receiver:http_failures_per_request:ratio_rate_30m > (6 * 0.001000)
+            )
+          labels:
+            severity: critical

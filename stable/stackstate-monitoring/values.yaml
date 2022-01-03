@@ -1,0 +1,5 @@
+rules:
+  # rules.additionalLabels -- List of additional labels to add to all rules
+  additionalLabels: {}
+  # rules.namespaceRegex -- Regex to match namespaces to be monitored
+  namespaceRegex: 'stackstate-.*'

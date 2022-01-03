@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: stackstate-jvm-alerts
+  labels:
+    app: kube-prometheus-stack
+{{- with .Values.rules.additionalLabels }}
+  {{ toYaml . | nindent 4 }}
+{{- end }}
+spec:
+  groups:
+    - name: stackstate-jvm-alerts
+      rules:
+        - alert: StackStateServerViewStreamTopologyLatencyCritical
+          annotations:
+            message: 'JVM Garbage collection for \{\{ $labels.pod }} is taking too long: \{\{ $value | humanizeDuration }}.'
+          expr: |
+            rate(jvm_gc_collection_seconds_sum{namespace=~{{ .Values.rules.namespaceRegex | quote }}}[1m]) > 1.500000
+          for: 5m
+          labels:
+            severity: warning

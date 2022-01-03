@@ -1,0 +1,16 @@
+# stackstate-monitoring
+
+Helm chart for Monitoring Dashboards
+
+Current chart version is `1.0.0`
+
+**Homepage:** <https://gitlab.com/stackvista/stackstate.git>
+
+## Required Values
+
+## Values
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| rules.additionalLabels | object | `{}` | List of additional labels to add to all rules |
+| rules.namespaceRegex | string | `"stackstate-.*"` | Regex to match namespaces to be monitored |
