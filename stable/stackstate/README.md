@@ -192,7 +192,7 @@ stackstate/stackstate
 | kafka.fullnameOverride | string | `"stackstate-kafka"` | Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | kafka.image.registry | string | `"quay.io"` | Kafka image registry |
 | kafka.image.repository | string | `"stackstate/kafka"` | Kafka image repository |
-| kafka.image.tag | string | `"2.4.1-focal-20210827-r9.1"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order for the kafkaup operator to upgrade the inter broker protocol version |
+| kafka.image.tag | string | `"2.8.1-focal-20210827-r90.20220103.1605"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order for the kafkaup operator to upgrade the inter broker protocol version |
 | kafka.initContainers | list | `[{"args":["-c","while [ -z \"${KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION}\" ]; do echo \"KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION should be set by operator\"; sleep 1; done"],"command":["/bin/bash"],"image":"{{ include \"kafka.image\" . }}","imagePullPolicy":"","name":"check-inter-broker-protocol-version","resources":{"limits":{},"requests":{}}}]` | required to make the kafka versionup operator work |
 | kafka.livenessProbe.initialDelaySeconds | int | `240` | Delay before readiness probe is initiated. |
 | kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
@@ -212,7 +212,7 @@ stackstate/stackstate
 | kafka.metrics.serviceMonitor.selector | object | `{}` | Selector to target Prometheus instance. |
 | kafka.offsetsTopicReplicationFactor | int | `2` |  |
 | kafka.persistence.size | string | `"50Gi"` | Size of persistent volume for each Kafka pod |
-| kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]","stackstate.com/kafkaup-operator.kafka_version":"2.4.1"}` | Kafka Pod annotations. |
+| kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]","stackstate.com/kafkaup-operator.kafka_version":"2.8.1"}` | Kafka Pod annotations. |
 | kafka.readinessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
 | kafka.replicaCount | int | `3` | Number of Kafka replicas. |
 | kafka.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"2Gi"}}` | Kafka resources per pods. |
