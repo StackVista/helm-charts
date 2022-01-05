@@ -16,6 +16,7 @@ The kubelet stats exporter for ephemeral storage metrics
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| dashboards.enabled | bool | `true` | Enables Dashboard resource for prometheus-operator |
 | image.pullPolicy | string | `"IfNotPresent"` | Pull policy for the image for the Kommoner operator |
 | image.registry | string | `"quay.io"` | Registry containing the image for the Kommoner operator |
 | image.repository | string | `"stackstate/petros-d-kubelet-stats-exporter"` | Repository containing the image for the Kommoner operator |

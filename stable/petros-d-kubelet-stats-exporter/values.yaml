@@ -23,3 +23,6 @@ serviceMonitor:
   interval: 300s
   # serviceMonitor.scrapeTimeout -- Scrape timeout for the ServiceMonitor
   scrapeTimeout: 120s
+dashboards:
+  # dashboards.enabled -- Enables Dashboard resource for prometheus-operator
+  enabled: true
