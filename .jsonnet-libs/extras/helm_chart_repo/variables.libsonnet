@@ -36,6 +36,7 @@
       'pull-secret',
       'sandbox-operator',
       'stackstate-standalone',
+      'stackstate-monitoring',
       'stackstate',
       'trafficmirror',
     ],

@@ -4,7 +4,7 @@ dependencies:
   version: 4.5.0-snapshot.206
 - name: cluster-agent
   repository: https://helm.stackstate.io
-  version: 0.4.33
+  version: 0.5.0
 - name: common
   repository: https://helm.stackstate.io
   version: 0.4.17
@@ -29,5 +29,5 @@ dependencies:
 - name: kafkaup-operator
   repository: https://helm.stackstate.io
   version: 0.1.0
-digest: sha256:7ddbd300944b62ed04aeaeafb1696f84035f4fd592b41f9c423a1342e1749fa3
-generated: "2021-12-29T14:01:11.209004527+01:00"
+digest: sha256:ac4dffc3ccaf045885816bc473ae7ace22e67423a8acff7c040846ab46fb02b1
+generated: "2022-01-04T15:15:34.560088-03:00"

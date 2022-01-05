@@ -1,0 +1,10 @@
+{{- if .Values.dashboards.enabled }}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "fullname.short" . }}-dashboard
+  labels:
+    grafana_dashboard: true
+data:
+{{ ($.Files.Glob "dashboards/*.json").AsConfig | indent 4 }}
+{{- end }}

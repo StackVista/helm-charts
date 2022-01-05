@@ -1,6 +1,6 @@
 # petros-d-kubelet-stats-exporter
 
-![Version: 0.9.2](https://img.shields.io/badge/Version-0.9.2-informational?style=flat-square) ![AppVersion: 0.9.2](https://img.shields.io/badge/AppVersion-0.9.2-informational?style=flat-square)
+![Version: 0.9.3](https://img.shields.io/badge/Version-0.9.3-informational?style=flat-square) ![AppVersion: 0.9.2](https://img.shields.io/badge/AppVersion-0.9.2-informational?style=flat-square)
 
 The kubelet stats exporter for ephemeral storage metrics
 
@@ -16,6 +16,7 @@ The kubelet stats exporter for ephemeral storage metrics
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| dashboards.enabled | bool | `true` | Enables Dashboard resource for prometheus-operator |
 | image.pullPolicy | string | `"IfNotPresent"` | Pull policy for the image for the Kommoner operator |
 | image.registry | string | `"quay.io"` | Registry containing the image for the Kommoner operator |
 | image.repository | string | `"stackstate/petros-d-kubelet-stats-exporter"` | Repository containing the image for the Kommoner operator |

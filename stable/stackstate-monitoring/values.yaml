@@ -1,0 +1,11 @@
+rules:
+  # rules.enabled -- Whether or not to enable the rules
+  enabled: true
+  # rules.additionalLabels -- List of additional labels to add to all rules
+  additionalLabels: {}
+  # rules.namespaceRegex -- Regex to match namespaces to be monitored
+  namespaceRegex: 'stackstate-.*'
+grafana:
+  dashboards:
+    # grafana.dashboards.enabled -- Whether or not to enable the Grafana dashboards
+    enabled: true
