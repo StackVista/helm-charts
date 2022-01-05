@@ -51,7 +51,7 @@ This takes the same parameters as common.fullname
   {{- $base := .Chart.Name -}}
   {{- if .Values.fullnameOverride -}}
     {{- $base = .Values.fullnameOverride -}}
-  {{- else if and (not hasPrefix $base .Release.Name) (not hasSuffix $base .Release.Name) -}}
+  {{- else if ne $base .Release.Name -}}
     {{- $base = (printf "%s-%s" .Release.Name .Chart.Name) -}}
   {{- end -}}
   {{- $gpre := default "" $global.fullnamePrefix -}}
