@@ -14,9 +14,6 @@ metadata:
   labels:
     grafana_dashboard: true
 data:
-  {{- range $file, $_ := $.Files.Glob (printf "grafana-dashboards/%s/**" $d) }}
-  {{ $file | replace (printf "grafana-dashboards/%s/" $d) "" }}: |
-{{ $.Files.Get $file | indent 4 }}
-  {{- end }}
+{{ ($.Files.Glob (printf "grafana-dashboards/%s/**" $d)).AsConfig | indent 4 }}
 {{- end }}
 {{- end }}
