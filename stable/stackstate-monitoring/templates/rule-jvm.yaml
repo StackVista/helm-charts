@@ -1,3 +1,4 @@
+{{- if .Values.rules.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -5,7 +6,7 @@ metadata:
   labels:
     app: kube-prometheus-stack
 {{- with .Values.rules.additionalLabels }}
-  {{ toYaml . | nindent 4 }}
+{{ toYaml . | nindent 4 }}
 {{- end }}
 spec:
   groups:
@@ -19,3 +20,4 @@ spec:
           for: 5m
           labels:
             severity: warning
+{{- end }}
