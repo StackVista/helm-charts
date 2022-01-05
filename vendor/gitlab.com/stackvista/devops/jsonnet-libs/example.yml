@@ -1,0 +1,46 @@
+################################################################
+# THIS FILE WAS GENERATED AUTOMATICALLY! DO NOT EDIT MANUALLY! #
+################################################################
+helm_add_common_repos:
+- helm repo add --debug banzaicloud-stable https://kubernetes-charts.banzaicloud.com
+- helm repo add --debug bitnami https://charts.bitnami.com
+- helm repo add --debug eks https://aws.github.io/eks-charts
+- helm repo add --debug elastic https://helm.elastic.co
+- helm repo add --debug gitlab https://charts.gitlab.io
+- helm repo add --debug gremlin https://helm.gremlin.com
+- helm repo add --debug incubator https://kubernetes-charts-incubator.storage.googleapis.com
+- helm repo add --debug jetstack https://charts.jetstack.io
+- helm repo add --debug jfrog https://charts.jfrog.io
+- helm repo add --debug kube-eagle https://raw.githubusercontent.com/cloudworkz/kube-eagle-helm-chart/master
+- helm repo add --debug stable https://kubernetes-charts.storage.googleapis.com
+- helm repo add --debug stackstate https://helm.stackstate.io
+- helm repo add --debug vmware-tanzu https://vmware-tanzu.github.io/helm-charts
+helm_add_custom_repo: helm repo add --password='!QAZxsw2@' --username='user' custom-repo
+  https://custom-repo.helm.io
+helm_delete: helm delete --purge some-other-chart
+helm_init: helm init --client-only
+helm_install: helm install --debug --force --namespace test    --timeout 600  --version
+  1.2.3 --verify  stackstate/hbase
+helm_upgrade: helm upgrade --force --install --recreate-pods    --timeout 600  --wait
+  some-test-chart stackstate/distributed
+semver_release:
+  image: docker.io/stackstate/stackstate-ci-images:stackstate-semver-release
+  only:
+    refs:
+    - another_branch
+  script:
+  - semantic-release --debug --dry-run
+  stage: another_stage
+  variables:
+    GITLAB_TOKEN: asdja7sg8eg
+    GIT_AUTHOR_EMAIL: sts-admin@stackstate.com
+    GIT_AUTHOR_NAME: stackstate-system-user
+    GIT_COMMITTER_EMAIL: sts-admin@stackstate.com
+    GIT_COMMITTER_NAME: stackstate-system-user
+    SOME_VAR: some_value
+some_key:
+- docker build  --no-cache --squash --file Dockerfile --compress --tag quay.io/stackstate/stackgraph:some-tag
+  --tag quay.io/stackstate/stackgraph:some-other-tag --tag quay.io/stackstate/stackgraph
+  .
+- docker push quay.io/stackstate/stackgraph:some-tag
+- docker push quay.io/stackstate/stackgraph:some-other-tag

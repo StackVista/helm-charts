@@ -1,0 +1,29 @@
+################################################################
+# THIS FILE WAS GENERATED AUTOMATICALLY! DO NOT EDIT MANUALLY! #
+################################################################
+image:
+  entrypoint:
+    - ""
+  name: docker.io/sparkprime/jsonnet:latest
+jsonnet_lint:
+  script: .gitlab/jsonnet_lint.sh
+  stage: verify
+semver_release:
+  image: docker.io/stackstate/stackstate-ci-images:stackstate-semver-release
+  needs:
+    - jsonnet_lint
+  only:
+    refs:
+      - master
+  script:
+    - semantic-release --debug
+  stage: tag
+  variables:
+    GITLAB_TOKEN: ${gitlab_api_scope_token}
+    GIT_AUTHOR_EMAIL: sts-admin@stackstate.com
+    GIT_AUTHOR_NAME: stackstate-system-user
+    GIT_COMMITTER_EMAIL: sts-admin@stackstate.com
+    GIT_COMMITTER_NAME: stackstate-system-user
+stages:
+  - verify
+  - tag

@@ -12,5 +12,7 @@ Current chart version is `1.0.0`
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| grafana.dashboards.enabled | bool | `true` | Whether or not to enable the Grafana dashboards |
 | rules.additionalLabels | object | `{}` | List of additional labels to add to all rules |
+| rules.enabled | bool | `true` | Whether or not to enable the rules |
 | rules.namespaceRegex | string | `"stackstate-.*"` | Regex to match namespaces to be monitored |

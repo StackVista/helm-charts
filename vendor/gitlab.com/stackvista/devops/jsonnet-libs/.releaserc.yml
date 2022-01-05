@@ -1,0 +1,26 @@
+branch: master
+ci: true
+debug: true
+plugins:
+- - @semantic-release/commit-analyzer
+  - preset: angular
+- - @semantic-release/release-notes-generator
+  - preset: angular
+    writerOpts:
+      commitsSort:
+      - subject
+      - scope
+- - @semantic-release/changelog
+  - changelogFile: CHANGELOG.md
+    changelogTitle: '# jsonnet-libs CHANGELOG'
+- @semantic-release/npm
+- - @semantic-release/git
+  - assets:
+    - CHANGELOG.md
+    - package.json
+- @semantic-release/gitlab
+publish:
+- @semantic-release/gitlab
+repositoryUrl: https://gitlab.com/stackvista/devops/jsonnet-libs
+verifyConditions:
+- @semantic-release/gitlab
