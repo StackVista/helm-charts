@@ -39,6 +39,7 @@ repos:
     name: Grafana Dashboards JSONnet to JSON
     args:
     - --ignore=.gitlab-ci.jsonnet
+    - --ignore=test/ct.jsonnet
     - --ignore=vendor
     - --jpath=vendor/github.com/grafana
     - --jpath=vendor/gitlab.com/stackvista/devops
