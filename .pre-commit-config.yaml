@@ -1,4 +1,4 @@
-exclude: 'gitlab-runner|^vendor/'
+exclude: 'gitlab-runner|^(jsonnet-)?vendor/'
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v4.0.1
@@ -40,9 +40,9 @@ repos:
     args:
     - --ignore=.gitlab-ci.jsonnet
     - --ignore=test/ct.jsonnet
-    - --ignore=vendor
-    - --jpath=vendor/github.com/grafana
-    - --jpath=vendor/gitlab.com/stackvista/devops
+    - --ignore=jsonnet-vendor
+    - --jpath=jsonnet-vendor/github.com/grafana
+    - --jpath=jsonnet-vendor/gitlab.com/stackvista/devops
 
 default_language_version:
   python: python3
