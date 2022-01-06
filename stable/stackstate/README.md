@@ -15,7 +15,7 @@ Current chart version is `4.6.0-snapshot.18`
 | https://helm.stackstate.io | anomaly-detection | 4.5.0-snapshot.206 |
 | https://helm.stackstate.io | cluster-agent | 0.5.0 |
 | https://helm.stackstate.io | common | 0.4.17 |
-| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.26 |
+| https://helm.stackstate.io | elasticsearch | 7.16.2-stackstate.0 |
 | https://helm.stackstate.io | hbase | 0.1.118 |
 | https://helm.stackstate.io | kafkaup-operator | 0.1.0 |
 | https://helm.stackstate.io | minio | 8.0.10-stackstate.2 |

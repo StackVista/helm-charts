@@ -10,7 +10,7 @@ dependencies:
   version: 0.4.17
 - name: elasticsearch
   repository: https://helm.stackstate.io
-  version: 7.6.2-stackstate.26
+  version: 7.16.2-stackstate.0
 - name: hbase
   repository: https://helm.stackstate.io
   version: 0.1.118
@@ -29,5 +29,5 @@ dependencies:
 - name: kafkaup-operator
   repository: https://helm.stackstate.io
   version: 0.1.0
-digest: sha256:ac4dffc3ccaf045885816bc473ae7ace22e67423a8acff7c040846ab46fb02b1
-generated: "2022-01-04T15:15:34.560088-03:00"
+digest: sha256:497ffe93b4aa46ac0e030f1b9733d8184a4a43f357bea68fcafb3f8986f15230
+generated: "2022-01-06T14:06:44.786094+01:00"
