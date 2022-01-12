@@ -7,6 +7,17 @@
 {{- end -}}
 
 {{/*
+    Include the parallelism env var which is derived from the CPU requests on the deployment
+    Receives the CPU requests string as argument and uses it to calc the effective parallelism on the sync service.
+    The parallelism is the requested CPU divided by 2 (parallel component and relation workers) or 1
+*/}}
+{{- define "stackstate.server.cpu.parallelism" }}
+{{- $podCpuCoreRequest := (include "stackstate.cpu_resource.to.cpu_core" .) }}
+- name: CONFIG_FORCE_stackstate_sync_parallelWorkers
+  value: {{ max $podCpuCoreRequest 1 | quote }}
+{{- end }}
+
+{{/*
     Extra environment variables for pods inherited through `stackstate.components.*.extraEnv`
     We merge the service specific env vars into the common ones to avoid duplicate entries in the env
 */}}

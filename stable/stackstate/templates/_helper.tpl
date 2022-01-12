@@ -516,7 +516,18 @@ spec:
     {{- trimSuffix "M" . | int -}}
 {{- else -}}
     {{- if regexMatch "^[0-9]*$" . -}}
-        {{ . }} | int
+        {{ . | int }}
+    {{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "stackstate.cpu_resource.to.cpu_core" -}}
+{{- if hasSuffix "m" . -}}
+    {{- $ti := trimSuffix "m" . | int -}}
+    {{- floor (div $ti 1000) -}}
+{{- else -}}
+    {{- if regexMatch "^[0-9]*$" . -}}
+        {{ . | int }}
     {{- end -}}
 {{- end -}}
 {{- end -}}
