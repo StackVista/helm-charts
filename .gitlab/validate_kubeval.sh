@@ -18,6 +18,6 @@ for chartPath in "${charts[@]}"; do
       valuesFile=()
     fi
 
-    helm template "${valuesFile[@]}" "${chartPath}" | kubeval --skip-kinds ServiceMonitor -
+    helm template "${valuesFile[@]}" "${chartPath}" | kubeval --skip-kinds ServiceMonitor,PrometheusRule -
   fi
 done
