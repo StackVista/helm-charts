@@ -980,7 +980,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 4.2.12
+      tag: 4.2.18
   console:
     # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
     enabled: false
@@ -1006,6 +1006,9 @@ hbase:
           memory: "3Gi"
           cpu: "1500m"
   hdfs:
+    # Release override (security) to avoid having to bump the sg chart
+    image:
+      tag: 2.10.1-java11-4
     # hbase.hdfs.minReplication -- Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead)
     minReplication: 2
     datanode:
@@ -1050,6 +1053,10 @@ hbase:
     enabled: false
     # hbase.zookeeper.externalServers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
     externalServers: stackstate-zookeeper-headless
+  # Release override (security) to avoid having to bump the sg chart
+  wait:
+    image:
+      tag: 1.0.6
 kafka:
   # kafka.command -- Override kafka container command.
   command:

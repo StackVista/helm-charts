@@ -138,6 +138,7 @@ stackstate/stackstate
 | hbase.hdfs.datanode.resources.limits.memory | string | `"4Gi"` |  |
 | hbase.hdfs.datanode.resources.requests.cpu | string | `"300m"` |  |
 | hbase.hdfs.datanode.resources.requests.memory | string | `"4Gi"` |  |
+| hbase.hdfs.image.tag | string | `"2.10.1-java11-4"` |  |
 | hbase.hdfs.minReplication | int | `2` | Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead) |
 | hbase.hdfs.namenode.resources.limits.cpu | string | `"500m"` |  |
 | hbase.hdfs.namenode.resources.limits.memory | string | `"1Gi"` |  |
@@ -148,12 +149,13 @@ stackstate/stackstate
 | hbase.hdfs.secondarynamenode.resources.limits.memory | string | `"1Gi"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.cpu | string | `"50m"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.memory | string | `"1Gi"` |  |
-| hbase.stackgraph.image.tag | string | `"4.2.12"` | The StackGraph server version, must be compatible with the StackState version |
+| hbase.stackgraph.image.tag | string | `"4.2.18"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
 | hbase.tephra.resources.limits.cpu | string | `"500m"` |  |
 | hbase.tephra.resources.limits.memory | string | `"3Gi"` |  |
 | hbase.tephra.resources.requests.cpu | string | `"250m"` |  |
 | hbase.tephra.resources.requests.memory | string | `"2Gi"` |  |
+| hbase.wait.image.tag | string | `"1.0.6"` |  |
 | hbase.zookeeper.enabled | bool | `false` | Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**. |
 | hbase.zookeeper.externalServers | string | `"stackstate-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |
