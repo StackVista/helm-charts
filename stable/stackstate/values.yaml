@@ -858,7 +858,7 @@ stackstate:
         # stackstate.components.wait.image.repository -- Base container image repository for wait containers.
         repository: stackstate/wait
         # stackstate.components.wait.image.tag -- Container image tag for wait containers.
-        tag: 1.0.5
+        tag: 1.0.6
         # stackstate.components.wait.image.pullPolicy -- Image pull policy for wait containers.
         pullPolicy: IfNotPresent
   # stackstate.authentication -- Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error.
@@ -1006,6 +1006,9 @@ hbase:
           memory: "3Gi"
           cpu: "1500m"
   hdfs:
+    # We do an override here instead of on the base chart because publishing from a release chart is pain
+    image:
+      tag: 2.10.1-java11-4
     # hbase.hdfs.minReplication -- Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead)
     minReplication: 2
     datanode:
@@ -1050,6 +1053,10 @@ hbase:
     enabled: false
     # hbase.zookeeper.externalServers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
     externalServers: stackstate-zookeeper-headless
+  # We do an override here instead of on the base chart because publishing from a release chart is pain
+  wait:
+    image:
+      tag: 1.0.6
 kafka:
   # kafka.command -- Override kafka container command.
   command:
