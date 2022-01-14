@@ -24,7 +24,7 @@ fullnameOverride: ""
 all:
   image:
     # all.image.registry -- The image registry to use.
-    registry: "docker.io"
+    registry: "quay.io"
 
 
 agent:
