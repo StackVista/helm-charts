@@ -67,8 +67,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "count_over_time({namespace=\"$namespace\", app_kubernetes_io_name=\"stackstate\"} |~ \"ERROR\" [5m])",
-          "legendFormat": "{{app_kubernetes_io_component}}",
+          "expr": "count_over_time({namespace=\"$namespace\", app=\"stackstate\"} |~ \"ERROR\" [5m])",
+          "legendFormat": "{{component}}",
           "refId": "A"
         }
       ],
@@ -161,7 +161,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "count_over_time({namespace=\"$namespace\", app_kubernetes_io_part_of=\"stackstate\"} |~ \"ERROR\" [5m])",
+          "expr": "count_over_time({namespace=\"$namespace\", part_of=\"stackstate\"} |~ \"ERROR\" [5m])",
           "legendFormat": "Errors in StackState services",
           "refId": "A"
         }
@@ -325,7 +325,69 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "{namespace=\"$namespace\", app_kubernetes_io_component=\"sync\"}",
+          "expr": "{namespace=\"$namespace\", component=\"api\"}",
+          "refId": "A"
+        }
+      ],
+      "title": "Api",
+      "type": "logs"
+    },
+    {
+      "datasource": "Loki",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 22,
+        "x": 0,
+        "y": 18
+      },
+      "id": 2,
+      "options": {
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "7.4.3",
+      "targets": [
+        {
+          "expr": "{namespace=\"$namespace\", component=\"health-sync\"}",
+          "refId": "A"
+        }
+      ],
+      "title": "Health Sync",
+      "type": "logs"
+    },
+    {
+      "datasource": "Loki",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 22,
+        "x": 0,
+        "y": 18
+      },
+      "id": 2,
+      "options": {
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "7.4.3",
+      "targets": [
+        {
+          "expr": "{namespace=\"$namespace\", component=\"sync\"}",
           "refId": "A"
         }
       ],
@@ -356,7 +418,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "{namespace=\"$namespace\", app_kubernetes_io_component=\"receiver\"}",
+          "expr": "{namespace=\"$namespace\", component=\"receiver\"}",
           "refId": "A"
         }
       ],
@@ -387,7 +449,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "{namespace=\"$namespace\", app_kubernetes_io_component=\"state\"}",
+          "expr": "{namespace=\"$namespace\", component=\"state\"}",
           "refId": "A"
         }
       ],
@@ -418,7 +480,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "{namespace=\"$namespace\", app_kubernetes_io_component=\"view-health\"}",
+          "expr": "{namespace=\"$namespace\", component=\"view-health\"}",
           "refId": "A"
         }
       ],
@@ -449,7 +511,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "{namespace=\"$namespace\", app_kubernetes_io_component=\"checks\"}",
+          "expr": "{namespace=\"$namespace\", component=\"checks\"}",
           "refId": "A"
         }
       ],
@@ -480,7 +542,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "{namespace=\"$namespace\", app_kubernetes_io_component=\"correlate\"}",
+          "expr": "{namespace=\"$namespace\", component=\"correlate\"}",
           "refId": "A"
         }
       ],
@@ -511,7 +573,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "{namespace=\"$namespace\", app_kubernetes_io_component=\"initializer\"}",
+          "expr": "{namespace=\"$namespace\", component=\"initializer\"}",
           "refId": "A"
         }
       ],
