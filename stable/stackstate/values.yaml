@@ -1166,6 +1166,11 @@ kafka:
   extraEnvVars:
     - name: KAFKA_CFG_RESERVED_BROKER_MAX_ID
       value: "2000"
+    # How long will a producer linger when no data is flowing? We make this quite a high number to make
+    # sure that in POC like settings, where there is not always much activity, transactional producer do not get kicked out.
+    # See STAC-15583
+    - name: KAFKA_CFG_TRANSACTIONAL_ID_EXPIRATION_MS
+      value: "31556952000"
   # kafka.extraVolumes -- Extra volume(s) to add to Kafka statefulset.
   extraVolumes:
     - name: kafka-custom-scripts
