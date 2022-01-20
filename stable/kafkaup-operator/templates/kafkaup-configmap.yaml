@@ -1,0 +1,18 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "common.fullname.short" . }}-kafkaup-config
+  namespace: {{.Release.Namespace}}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+data:
+  config.yaml: |
+    # Name of the kafka statefulSet under control
+    statefulset-name: {{ tpl .Values.kafkaSelectors.statefulSetName . | quote }}
+    # Label of the pods that make the kafka cluster
+    pod-label:
+      key: {{ .Values.kafkaSelectors.podLabel.key | quote }}
+      value: {{ .Values.kafkaSelectors.podLabel.value | quote }}
+    # Version for pods which do not have an annotation, allowing for an upgrade from a non-operated to kafkaup operated
+    # situation
+    start-version: {{ .Values.startVersion | quote }}

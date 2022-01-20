@@ -19,6 +19,7 @@ env:
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.authentication.envvars" . }}
 {{- include "stackstate.baseurls.envvars" . }}
+{{- include "stackstate.server.cpu.parallelism" .Values.stackstate.components.sync.resources.requests.cpu }}
 - name: API_KEY
   valueFrom:
     secretKeyRef:
@@ -94,9 +95,14 @@ metadata:
     stackstate.com/connects-to-stackgraph: "true"
     stackstate.com/replicas: "1"
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/component: sync
+{{- if .Values.stackstate.components.all.useRecreateDeploymentStrategy }}
+  strategy:
+    type: Recreate
+{{- end }}
   template:
     metadata:
       annotations:

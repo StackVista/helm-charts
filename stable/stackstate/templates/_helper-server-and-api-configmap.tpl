@@ -222,4 +222,9 @@ stackstate.stackPacks {
   }
 }
 {{- end }}
+
+{{- if .Values.stackstate.components.api.docslink }}
+stackstate.webUIConfig.docLinkUrlPrefix = "{{- .Values.stackstate.components.api.docslink -}}"
+{{- end }}
+
 {{- end -}}

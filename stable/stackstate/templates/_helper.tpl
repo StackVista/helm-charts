@@ -453,7 +453,7 @@ Return the proper Docker Image Registry Secret Names evaluating values as templa
 
   {{- if $context.Values.global }}
     {{- range $context.Values.global.imagePullSecrets -}}
-      {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" .name "context" $context)) -}}
+      {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" . "context" $context)) -}}
     {{- end -}}
   {{- end -}}
   {{- range $context.Values.imagePullSecrets -}}
@@ -516,7 +516,18 @@ spec:
     {{- trimSuffix "M" . | int -}}
 {{- else -}}
     {{- if regexMatch "^[0-9]*$" . -}}
-        {{ . }} | int
+        {{ . | int }}
+    {{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "stackstate.cpu_resource.to.cpu_core" -}}
+{{- if hasSuffix "m" . -}}
+    {{- $ti := trimSuffix "m" . | int -}}
+    {{- floor (div $ti 1000) -}}
+{{- else -}}
+    {{- if regexMatch "^[0-9]*$" . -}}
+        {{ . | int }}
     {{- end -}}
 {{- end -}}
 {{- end -}}

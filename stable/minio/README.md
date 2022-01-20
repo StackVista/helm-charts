@@ -1,6 +1,6 @@
 # minio
 
-![Version: 8.0.10-stackstate.0](https://img.shields.io/badge/Version-8.0.10--stackstate.0-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 8.0.10-stackstate.2](https://img.shields.io/badge/Version-8.0.10--stackstate.2-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 High Performance, Kubernetes Native Object Storage
 
@@ -52,12 +52,15 @@ High Performance, Kubernetes Native Object Storage
 | gcsgateway.gcsKeyJson | string | `""` |  |
 | gcsgateway.projectId | string | `""` |  |
 | gcsgateway.replicas | int | `4` |  |
+| global.imageRegistry | string | `""` |  |
 | helmKubectlJqImage.pullPolicy | string | `"IfNotPresent"` |  |
+| helmKubectlJqImage.registry | string | `"docker.io"` |  |
 | helmKubectlJqImage.repository | string | `"bskim45/helm-kubectl-jq"` |  |
 | helmKubectlJqImage.tag | string | `"3.1.0"` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
-| image.repository | string | `"minio/minio"` |  |
-| image.tag | string | `"RELEASE.2021-02-14T04-01-33Z"` |  |
+| image.registry | string | `"quay.io"` |  |
+| image.repository | string | `"stackstate/minio"` |  |
+| image.tag | string | `"2021.2.19-focal-20210827-r5"` |  |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.enabled | bool | `false` |  |
@@ -73,6 +76,7 @@ High Performance, Kubernetes Native Object Storage
 | makeBucketJob.securityContext.runAsGroup | int | `1000` |  |
 | makeBucketJob.securityContext.runAsUser | int | `1000` |  |
 | mcImage.pullPolicy | string | `"IfNotPresent"` |  |
+| mcImage.registry | string | `"docker.io"` |  |
 | mcImage.repository | string | `"minio/mc"` |  |
 | mcImage.tag | string | `"RELEASE.2021-02-14T04-28-06Z"` |  |
 | metrics.serviceMonitor.additionalLabels | object | `{}` |  |

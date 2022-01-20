@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "common.fullname.short" . }}-kafkaup
+  namespace: {{.Release.Namespace}}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: kafka
+    {{- if .Values.commonLabels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
+    {{- end }}
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "common.fullname.short" . }}-kafkaup
+  replicas: {{ default 1 .Values.replicaCount | int }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "common.fullname.short" . }}-kafkaup
+      annotations:
+        {{ include "kafkaup-operator.checksum-configs" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "common.fullname.short" . }}-kafkaup
+      {{- include "kafkaup.image.pullSecret.name" (dict "images" (list .Values.image) "context" $) | nindent 6 }}
+      containers:
+      - name: kafkaup-operator
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+        - start
+        - --namespace
+        - {{ .Release.Namespace }}
+        - -vv
+        volumeMounts:
+        - name: kafkaup-config-volume
+          mountPath: /conf.d
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+      volumes:
+      - name: kafkaup-config-volume
+        configMap:
+          name: {{ template "common.fullname.short" . }}-kafkaup-config

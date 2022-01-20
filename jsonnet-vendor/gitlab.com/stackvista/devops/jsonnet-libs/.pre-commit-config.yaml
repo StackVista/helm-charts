@@ -1,0 +1,23 @@
+repos:
+- repo: git://github.com/pre-commit/pre-commit-hooks
+  rev: v2.4.0
+  hooks:
+    - id: check-added-large-files
+    - id: check-case-conflict
+    - id: check-executables-have-shebangs
+    - id: check-merge-conflict
+    - id: detect-private-key
+    - id: end-of-file-fixer
+    - id: trailing-whitespace
+    - id: detect-aws-credentials
+      args:
+        - --allow-missing-credentials
+- repo: https://gitlab.com/stackvista/devops/pre-commit-hooks
+  rev: v0.1.1
+  hooks:
+  - id: jsonnet_format
+  - id: jsonnet_to_yaml
+- repo: git://github.com/kadrach/pre-commit-gitlabci-lint
+  rev: ab984c60414b012e294a65166691473047ccce49
+  hooks:
+  - id: gitlabci-lint

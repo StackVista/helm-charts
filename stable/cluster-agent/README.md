@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `0.5.0`
+Current chart version is `0.5.2`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -89,13 +89,14 @@ stackstate/cluster-agent
 | agent.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
 | agent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | agent.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":100},"type":"RollingUpdate"}` | The update strategy for the DaemonSet object. |
-| all.image.registry | string | `"docker.io"` | The image registry to use. |
+| all.image.registry | string | `"quay.io"` | The image registry to use. |
 | clusterAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | clusterAgent.collection.kubernetesEvents | bool | `true` | Enable / disable the cluster agent events collection. |
 | clusterAgent.collection.kubernetesMetrics | bool | `true` | Enable / disable the cluster agent metrics collection. |
 | clusterAgent.collection.kubernetesTimeout | int | `10` | Default timeout (in seconds) when obtaining information from the Kubernetes API. |
 | clusterAgent.collection.kubernetesTopology | bool | `true` | Enable / disable the cluster agent topology collection. |
-| clusterAgent.config | object | `{"override":[]}` |  |
+| clusterAgent.config | object | `{"configMap":{"maxDataSize":null},"override":[]}` |  |
+| clusterAgent.config.configMap.maxDataSize | string | `nil` | Maximum amount of characters for the data property of a ConfigMap collected by the kubernetes topology check |
 | clusterAgent.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
 | clusterAgent.enabled | bool | `true` | Enable / disable the cluster agent. |
 | clusterAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |

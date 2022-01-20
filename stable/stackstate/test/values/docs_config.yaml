@@ -1,0 +1,4 @@
+stackstate:
+  components:
+    api:
+      docslink: "https://docs.stackstate.io"

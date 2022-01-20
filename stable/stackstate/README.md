@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.6.0-snapshot.17`
+Current chart version is `4.6.0-snapshot.19`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -10,14 +10,15 @@ Current chart version is `4.6.0-snapshot.17`
 
 | Repository | Name | Version |
 |------------|------|---------|
+| https://charts.bitnami.com/bitnami | kafka | 14.8.1 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
-| https://helm.stackstate.io | anomaly-detection | 4.5.0-snapshot.206 |
-| https://helm.stackstate.io | cluster-agent | 0.4.30 |
+| https://helm.stackstate.io | anomaly-detection | 4.5.0-snapshot.210 |
+| https://helm.stackstate.io | cluster-agent | 0.5.0 |
 | https://helm.stackstate.io | common | 0.4.17 |
-| https://helm.stackstate.io | elasticsearch | 7.6.2-stackstate.24 |
-| https://helm.stackstate.io | hbase | 0.1.116 |
-| https://helm.stackstate.io | kafka | 12.2.5-stackstate.0 |
-| https://helm.stackstate.io | minio | 8.0.10-stackstate.0 |
+| https://helm.stackstate.io | elasticsearch | 7.16.2-stackstate.0 |
+| https://helm.stackstate.io | hbase | 0.1.118 |
+| https://helm.stackstate.io | kafkaup-operator | 0.1.0 |
+| https://helm.stackstate.io | minio | 8.0.10-stackstate.2 |
 | https://helm.stackstate.io | pull-secret | 1.0.0 |
 
 ## Required Values
@@ -164,7 +165,7 @@ stackstate/stackstate
 | hbase.hdfs.secondarynamenode.resources.requests.cpu | string | `"50m"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.memory | string | `"1Gi"` |  |
-| hbase.stackgraph.image.tag | string | `"4.4.1"` | The StackGraph server version, must be compatible with the StackState version |
+| hbase.stackgraph.image.tag | string | `"4.6.1"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
 | hbase.tephra.resources.limits.cpu | string | `"500m"` |  |
 | hbase.tephra.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
@@ -191,7 +192,8 @@ stackstate/stackstate
 | kafka.fullnameOverride | string | `"stackstate-kafka"` | Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | kafka.image.registry | string | `"quay.io"` | Kafka image registry |
 | kafka.image.repository | string | `"stackstate/kafka"` | Kafka image repository |
-| kafka.image.tag | string | `"2.3.1-focal-20210827-r41.1"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** |
+| kafka.image.tag | string | `"2.8.1-focal-20210827-r90.20220103.1605"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order for the kafkaup operator to upgrade the inter broker protocol version |
+| kafka.initContainers | list | `[{"args":["-c","while [ -z \"${KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION}\" ]; do echo \"KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION should be set by operator\"; sleep 1; done"],"command":["/bin/bash"],"image":"{{ include \"kafka.image\" . }}","imagePullPolicy":"","name":"check-inter-broker-protocol-version","resources":{"limits":{},"requests":{}}}]` | required to make the kafka versionup operator work |
 | kafka.livenessProbe.initialDelaySeconds | int | `240` | Delay before readiness probe is initiated. |
 | kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
 | kafka.metrics.jmx.enabled | bool | `true` | Whether or not to expose JMX metrics to Prometheus. |
@@ -210,17 +212,27 @@ stackstate/stackstate
 | kafka.metrics.serviceMonitor.selector | object | `{}` | Selector to target Prometheus instance. |
 | kafka.offsetsTopicReplicationFactor | int | `2` |  |
 | kafka.persistence.size | string | `"50Gi"` | Size of persistent volume for each Kafka pod |
-| kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Kafka Pod annotations. |
+| kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]","stackstate.com/kafkaup-operator.kafka_version":"2.8.1"}` | Kafka Pod annotations. |
 | kafka.readinessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
 | kafka.replicaCount | int | `3` | Number of Kafka replicas. |
 | kafka.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"2Gi"}}` | Kafka resources per pods. |
 | kafka.transactionStateLogReplicationFactor | int | `2` |  |
 | kafka.volumePermissions.enabled | bool | `false` |  |
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
+| kafkaup-operator.enabled | bool | `true` |  |
+| kafkaup-operator.image.pullPolicy | string | `""` |  |
+| kafkaup-operator.image.registry | string | `"quay.io"` |  |
+| kafkaup-operator.image.repository | string | `"stackstate/kafkaup-operator"` |  |
+| kafkaup-operator.image.tag | string | `"0.0.1"` |  |
+| kafkaup-operator.kafkaSelectors.podLabel.key | string | `"app.kubernetes.io/component"` |  |
+| kafkaup-operator.kafkaSelectors.podLabel.value | string | `"kafka"` |  |
+| kafkaup-operator.kafkaSelectors.statefulSetName | string | `"stackstate-kafka"` |  |
+| kafkaup-operator.startVersion | string | `"2.3.1"` |  |
 | minio.accessKey | string | `"setme"` | Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value. |
 | minio.azuregateway.replicas | int | `1` |  |
 | minio.fullnameOverride | string | `"stackstate-minio"` | **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components. |
-| minio.image.repository | string | `"quay.io/stackstate/minio"` | MinIO image repository |
+| minio.image.registry | string | `"quay.io"` | MinIO image registry |
+| minio.image.repository | string | `"stackstate/minio"` | MinIO image repository |
 | minio.image.tag | string | `"2021.2.19-focal-20210827-r5"` |  |
 | minio.persistence.enabled | bool | `false` | Enables MinIO persistence. Must be enabled when MinIO is not configured as a gateway to AWS S3 or Azure Blob Storage. |
 | minio.replicas | int | `1` | Number of MinIO replicas. |
@@ -267,10 +279,12 @@ stackstate/stackstate
 | stackstate.components.all.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | stackstate.components.all.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
 | stackstate.components.all.tolerations | list | `[]` | Toleration labels for pod assignment on all components. |
+| stackstate.components.all.useRecreateDeploymentStrategy | bool | `false` | Enable the "Recreate" deployment strategy for StackState components. |
 | stackstate.components.all.zookeeperEndpoint | string | `""` | **Required if `zookeeper.enabled` is `false`** Endpoint for shared Zookeeper nodes. |
 | stackstate.components.api.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.api.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.api.config | string | `""` | Configuration file contents to customize the default StackState api configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
+| stackstate.components.api.docslink | string | `""` | Documentation URL root to use in the product help page & tooltips. |
 | stackstate.components.api.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.api.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.api.image.pullPolicy | string | `""` | `pullPolicy` used for the `api` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |

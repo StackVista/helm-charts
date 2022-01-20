@@ -1,0 +1,13 @@
+{
+  "description": "Repository for holding commonly used JSONNet libraries and functions.",
+  "name": "jsonnet-libs",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.com:stackvista/devops/jsonnet-libs.git"
+  },
+  "version": "0.2.2",
+  "devDependencies": {
+    "husky": "^3.1.0"
+  }
+}

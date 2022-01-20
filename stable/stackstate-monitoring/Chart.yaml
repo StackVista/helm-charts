@@ -1,0 +1,18 @@
+apiVersion: v2
+appVersion: 4.6.0-snapshot.0
+version: 1.0.2
+description: Helm chart for Monitoring Dashboards
+keywords:
+  - monitoring
+  - stackstate
+  - prometheus
+home: https://gitlab.com/stackvista/stackstate.git
+icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
+maintainers:
+  - name: Jeroen van Erp
+    email: jvanerp@stackstate.com
+  - name: Remco Beckers
+    email: rbeckers@stackstate.com
+  - name: Vincent Partington
+    email: vpartington@stackstate.com
+name: stackstate-monitoring

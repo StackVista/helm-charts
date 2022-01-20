@@ -1,0 +1,19 @@
+{{- if $.Values.grafana.dashboards.enabled }}
+{{- $cms := list }}
+{{- range $path, $_  := $.Files.Glob "grafana-dashboards/**" }}
+  {{- $dir := (dir $path | replace "grafana-dashboards/" "") }}
+  {{- $dir = regexSplit "/" $dir 2 | first -}}
+  {{- $cms = append $cms $dir }}
+{{- end }}
+{{- range $d := ($cms | uniq) }}
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: grafana-dashboard-{{ $d }}
+  labels:
+    grafana_dashboard: "true"
+data:
+{{ ($.Files.Glob (printf "grafana-dashboards/%s/**" $d)).AsConfig | indent 4 }}
+{{- end }}
+{{- end }}

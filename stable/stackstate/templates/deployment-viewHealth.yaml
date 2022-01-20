@@ -93,9 +93,14 @@ metadata:
     stackstate.com/connects-to-stackgraph: "true"
     stackstate.com/replicas: "1"
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/component: view-health
+{{- if .Values.stackstate.components.all.useRecreateDeploymentStrategy }}
+  strategy:
+    type: Recreate
+{{- end }}
   template:
     metadata:
       annotations:

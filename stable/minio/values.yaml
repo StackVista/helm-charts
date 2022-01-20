@@ -1,3 +1,7 @@
+global:
+  # global.imageRegistry - Global image registry setting for all images
+  imageRegistry: ''
+
 ## Provide a name in place of minio for `app:` labels
 ##
 nameOverride: ""
@@ -13,14 +17,16 @@ clusterDomain: cluster.local
 ## Set default image, imageTag, and imagePullPolicy. mode is used to indicate the
 ##
 image:
-  repository: minio/minio
-  tag: RELEASE.2021-02-14T04-01-33Z
+  registry: quay.io
+  repository: stackstate/minio
+  tag: 2021.2.19-focal-20210827-r5
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio
 ## client used to create a default bucket).
 ##
 mcImage:
+  registry: docker.io
   repository: minio/mc
   tag: RELEASE.2021-02-14T04-28-06Z
   pullPolicy: IfNotPresent
@@ -29,6 +35,7 @@ mcImage:
 ## process used to create secret for prometheus ServiceMonitor).
 ##
 helmKubectlJqImage:
+  registry: docker.io
   repository: bskim45/helm-kubectl-jq
   tag: 3.1.0
   pullPolicy: IfNotPresent

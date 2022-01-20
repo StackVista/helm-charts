@@ -2,7 +2,7 @@
 
 The StackState Common Objects Operator
 
-Current chart version is `0.1.0`
+Current chart version is `0.2.0`
 
 **Homepage:** <https://gitlab.com/StackVista/devops/kommoner>
 
@@ -41,7 +41,7 @@ commonObjects:
 | image.pullPolicy | string | `"IfNotPresent"` | Pull policy for the image for the Kommoner operator |
 | image.registry | string | `"quay.io"` | Registry containing the image for the Kommoner operator |
 | image.repository | string | `"stackstate/kommoner"` | Repository containing the image for the Kommoner operator |
-| image.tag | string | `"v0.1.2"` | Tag of the image for the Kommoner operator |
+| image.tag | string | `"v0.2.0"` | Tag of the image for the Kommoner operator |
 | namespaces.exclude | list | `["default","kube-system","kube-public","kube-node-lease"]` | Namespaces to exclude from processing by the Kommoner |
 | rbac | list | `[]` | Types of Kubernetes objects that are created by Kommoner, these are added to an RBAC ClusterRole so that Kommoner may manipulate them |
 | resources.limits.cpu | string | `"50m"` |  |

@@ -7,13 +7,28 @@
 {{- end -}}
 
 {{/*
+    Include the parallelism env var which is derived from the CPU requests on the deployment
+    Receives the CPU requests string as argument and uses it to calc the effective parallelism on the sync service.
+    The parallelism is the requested CPU divided by 2 (parallel component and relation workers) or 1
+*/}}
+{{- define "stackstate.server.cpu.parallelism" }}
+{{- $podCpuCoreRequest := (include "stackstate.cpu_resource.to.cpu_core" .) }}
+- name: CONFIG_FORCE_stackstate_sync_parallelWorkers
+  value: {{ max $podCpuCoreRequest 1 | quote }}
+{{- end }}
+
+{{/*
     Extra environment variables for pods inherited through `stackstate.components.*.extraEnv`
     We merge the service specific env vars into the common ones to avoid duplicate entries in the env
 */}}
 {{- define "stackstate.service.envvars" -}}
 {{- $openEnvVars := merge .ServiceConfig.extraEnv.open .Values.stackstate.components.all.extraEnv.open }}
 {{- $secretEnvVars := merge .ServiceConfig.extraEnv.secret .Values.stackstate.components.all.extraEnv.secret }}
-{{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_singleWriter_releaseRevision" .Release.Revision }}
+{{- if .Values.stackstate.components.all.useRecreateDeploymentStrategy }}
+  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_singleWriter_releaseRevision" "1" }}
+{{- else }}
+  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_singleWriter_releaseRevision" .Release.Revision }}
+{{- end }}
 {{- $xmxConfig := dict "Mem" .ServiceConfig.resources.limits.memory "BaseMem" .ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
 {{- $xmx := (include "stackstate.server.memory.resource" $xmxConfig) | int }}
 {{- $xmsConfig := dict "Mem" .ServiceConfig.resources.requests.memory "BaseMem" .ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
@@ -50,6 +65,25 @@
       name: {{ template "common.fullname.short" $ }}-{{ $.ServiceName }}
       key: {{ $key }}
   {{- end }}
+{{- end }}
+{{- end -}}
+
+{{- define "stackstate.service.secret.data" -}}
+{{- $secrets := .service.extraEnv.secret -}}
+{{- $additionalSecrets := default dict .additionalSecrets -}}
+{{- $context := .context -}}
+{{- $allSecrets := merge $secrets $context.Values.stackstate.components.all.extraEnv.secret -}}
+data:
+{{- range $key, $value := $allSecrets }}
+  {{ $key }}: {{ $value | b64enc | quote }}
+{{- end }}
+{{- range $key, $value := $additionalSecrets }}
+  {{ $key }}: {{ $value | b64enc | quote }}
+{{- end }}
+stringData:
+  application_stackstate.conf: |
+{{- if .service.config }}
+{{- .service.config | nindent 4 -}}
 {{- end }}
 {{- end -}}
 

@@ -24,7 +24,7 @@ fullnameOverride: ""
 all:
   image:
     # all.image.registry -- The image registry to use.
-    registry: "docker.io"
+    registry: "quay.io"
 
 
 agent:
@@ -143,6 +143,9 @@ clusterAgent:
 
   # clusterAgent.config --
   config:
+    configMap:
+      # clusterAgent.config.configMap.maxDataSize -- Maximum amount of characters for the data property of a ConfigMap collected by the kubernetes topology check
+      maxDataSize: null
     # clusterAgent.config.override -- A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap
     override: []
 

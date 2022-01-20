@@ -95,6 +95,10 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: initializer
+{{- if .Values.stackstate.components.all.useRecreateDeploymentStrategy }}
+  strategy:
+    type: Recreate
+{{- end }}
   template:
     metadata:
       annotations:

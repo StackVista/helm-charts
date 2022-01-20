@@ -121,27 +121,6 @@ Properly format optional additional arguments to Minio binary
 {{/*
 Return the proper Docker Image Registry Secret Names
 */}}
-{{- define "minio.imagePullSecrets" -}}
-{{/*
-Helm 2.11 supports the assignment of a value to a variable defined in a different scope,
-but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else logic.
-Also, we can not use a single if because lazy evaluation is not an option
-*/}}
-{{- if .Values.global }}
-{{- if .Values.global.imagePullSecrets }}
-imagePullSecrets:
-{{- range .Values.global.imagePullSecrets }}
-  - name: {{ . }}
-{{- end }}
-{{- else if .Values.imagePullSecrets }}
-imagePullSecrets:
-    {{ toYaml .Values.imagePullSecrets }}
-{{- end -}}
-{{- else if .Values.imagePullSecrets }}
-imagePullSecrets:
-    {{ toYaml .Values.imagePullSecrets }}
-{{- end -}}
-{{- end -}}
 
 {{/*
 Formats volumeMount for Minio tls keys and trusted certs
@@ -184,4 +163,64 @@ Formats volume for Minio tls keys and trusted certs
       path: public.crt
     {{- end }}
 {{- end }}
+{{- end -}}
+
+
+{{/*
+Return the image registry for the container-tools containers
+*/}}
+{{- define "minio.image.registry" -}}
+{{- $context := .context }}
+{{- if $context.global -}}
+    {{- $context.global.imageRegistry | default .image.registry -}}
+  {{- else -}}
+    {{- .image.registry -}}
+  {{- end -}}
+{{- end -}}
+
+
+{{/*
+Renders a value that contains a template.
+Usage:
+{{ include "minio.tplvalue.render" ( dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "minio.tplvalue.render" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
+{{- end -}}
+
+
+{{/*
+Return the proper Docker Image Registry Secret Names evaluating values as templates
+{{ include "minio.image.pullSecret.name" ( dict "images" (list .Values.path.to.the.image1, .Values.path.to.the.image2) "context" $) }}
+*/}}
+{{- define "minio.image.pullSecret.name" -}}
+  {{- $pullSecrets := list }}
+  {{- $context := .context }}
+
+  {{- if $context.Values.global }}
+    {{- range $context.Values.global.imagePullSecrets -}}
+      {{- $pullSecrets = append $pullSecrets (include "minio.tplvalue.render" (dict "value" . "context" $context)) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- range $context.Values.imagePullSecrets -}}
+    {{- $pullSecrets = append $pullSecrets (include "minio.tplvalue.render" (dict "value" .name "context" $context)) -}}
+  {{- end -}}
+  {{- range .images -}}
+    {{- if .pullSecretName -}}
+      {{- $pullSecrets = append $pullSecrets (include "minio.tplvalue.render" (dict "value" .pullSecretName "context" $context)) -}}
+    {{- else if (or .pullSecretUsername .pullSecretDockerConfigJson) -}}
+      {{- $pullSecrets = append $pullSecrets ((list (include "common.fullname.short" $context ) "pull-secret") | join "-")  -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- if (not (empty $pullSecrets)) }}
+imagePullSecrets:
+    {{- range $pullSecrets | uniq }}
+  - name: {{ . }}
+    {{- end }}
+  {{- end }}
 {{- end -}}
