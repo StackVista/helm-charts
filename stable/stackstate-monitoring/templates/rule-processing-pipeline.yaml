@@ -16,7 +16,7 @@ spec:
           annotations:
             message: The synchronization for \{\{ $labels.namespace }} and integration \{\{ $labels.integration_type }} has high latency \{\{ $value | humanizeDuration }}.
           expr: |
-            stackstate_sync_sts_latency_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}} > 30.000000
+            stackstate_sync_sts_latency_seconds{quantile="0.98", namespace=~{{ .Values.rules.namespaceRegex | quote }}} > 60.000000
           for: 5m
           labels:
             severity: warning
