@@ -1222,7 +1222,7 @@ kafka:
         tag: 0.15.0-focal-20210827-r138
       resources:
         limits:
-          cpu: "200m"
+          cpu: "1"
           memory: "300Mi"
           ephemeral-storage: "1Gi"
         requests:
