@@ -2,7 +2,7 @@
 
 The StackState Kafka upgrade operator
 
-Current chart version is `0.1.0`
+Current chart version is `0.1.1`
 
 **Homepage:** <https://gitlab.com/StackVista/platform/kafkaup-operator>
 
@@ -10,7 +10,7 @@ Current chart version is `0.1.0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://helm.stackstate.io/ | common | 0.4.17 |
+| https://helm.stackstate.io/ | common | 0.4.19 |
 
 ## Values
 
