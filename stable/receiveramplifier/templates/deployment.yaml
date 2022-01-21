@@ -1,5 +1,6 @@
 {{- define "receiveramplifier.deployment.container" -}}
-image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+image: "{{ include "common.image.registry" (dict "image" .Values.image "context" .) }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+imagePullPolicy: {{ .Values.image.pullPolicy }}
 env:
 {{- if .Values.receiveramplifier.targetUrl }}
 - name: CONFIG_FORCE_stackstate_amplifier_targetUrl
@@ -32,7 +33,7 @@ spec:
       annotations:
         {{- include "common.metrics.annotations" (dict "metrics" .Values.metrics "port" "9404" "container_name" "receiveramplifier") | indent 8 }}
     spec:
-    {{- include "receiveramplifier.image.pullSecret.name" . | nindent 6 }}
+      {{- include "common.image.pullSecret.name" (dict "images" (list .Values.image) "context" $) | nindent 6 }}
       containers:
       - {{ toYaml $receiveramplifierContainer | nindent 8 }}
 {{- end -}}

@@ -1,3 +1,8 @@
+global:
+  # global.imagePullSecrets -- List of image pull secret names to be used by all images across all charts.
+  imagePullSecrets: []
+
+
 container:
   livenessProbeDefaults:
     # container.livenessProbeDefaults.enabled -- Use defaults for the `livenessProbe` from the upstream `common` chart.
@@ -13,6 +18,8 @@ image:
   repository: stackstate/stackstate-receiver-amplifier
   # image.tag -- Default container image tag.
   tag: master
+  # image.pullPolicy -- Default image pull policy.
+  pullPolicy: IfNotPresent
 
 ingress:
   # ingress.enabled -- Enable use of ingress controllers.
