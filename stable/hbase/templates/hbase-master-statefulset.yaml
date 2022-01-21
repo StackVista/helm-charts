@@ -5,13 +5,13 @@ command:
 - -c
 - |
   /entrypoint -c {{ include "hbase.zookeeper.endpoint" . }}:2181,{{ template "common.fullname.short" . }}-hdfs-nn-headful:9000,{{ template "common.fullname.short" . }}-hdfs-dn:50010 -t 300
-image: "{{include "wait.image.registry" .}}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
+image: "{{ include "common.image.registry" (dict "image" .Values.wait.image "context" .) }}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
 imagePullPolicy: {{ .Values.wait.image.pullPolicy | quote }}
 {{- end -}}
 
 {{- define "hbase.hbase.master.container.main" -}}
 name: master
-image: "{{include "image.registry" .}}/{{ .Values.hbase.master.image.repository }}:{{ default .Values.stackgraph.image.tag .Values.hbase.master.image.tag }}"
+image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.hbase.master.image.repository }}:{{ default .Values.stackgraph.image.tag .Values.hbase.master.image.tag }}"
 imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.hbase.master.image.pullPolicy | quote  }}
 env:
 {{- include "hbase.hdfs.commonEnv" . }}
@@ -67,7 +67,7 @@ spec:
       annotations:
       {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404" "container_name" "master") | indent 8 }}
     spec:
-      {{- include "hbase.image.pullSecret.name" (dict "images" (list .Values.all.image) "context" $) | nindent 6 }}
+      {{- include "common.image.pullSecret.name" (dict "images" (list .Values.all.image) "context" $) | nindent 6 }}
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ template "common.fullname.short" . }}-hbase
       {{- end }}
