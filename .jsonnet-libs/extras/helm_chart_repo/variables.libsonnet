@@ -35,6 +35,7 @@
       'petros-d-kubelet-stats-exporter',
       'pull-secret',
       'sandbox-operator',
+      'receiveramplifier',
       'stackstate-standalone',
       'stackstate-monitoring',
       'stackstate',
