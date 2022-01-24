@@ -14,7 +14,7 @@ spec:
       rules:
         - alert: StackStateReceiverApiLatency
           annotations:
-            message: The receiver in \{\{ $labels.namespace }}, path \{\{ $labels.path }}, has high latency \{\{ $value | humanizeDuration }}.
+            message: {{`The receiver in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.`}}
           expr: |
             akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="receiver"} > 8
           for: 5m
@@ -22,7 +22,7 @@ spec:
             severity: warning
         - alert: StackStateServerApiLatency
           annotations:
-            message: The server api in \{\{ $labels.namespace }}, path \{\{ $labels.path }}, has high latency \{\{ $value | humanizeDuration }}.
+            message: {{`The server api in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.`}}
           expr: |
             akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="server", path!="/export", path!="/api/export", path!="/api/script"} > 5
           for: 5m
@@ -30,7 +30,7 @@ spec:
             severity: warning
         - alert: StackStateServerSlowEndpointsApiLatency
           annotations:
-            message: The export api in \{\{ $labels.namespace }}, path \{\{ $labels.path }}, has high latency \{\{ $value | humanizeDuration }}.
+            message: {{`The export api in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.`}}
           expr: |
             akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="server", path=~"/export||/api/export||/api/script"} > 30
           for: 5m
@@ -54,7 +54,7 @@ spec:
           record: stackstate:server:http_failures_per_request:ratio_rate_6h
         - alert: StackStateServerApiErrorBudgetBurn
           annotations:
-            message: The server API for \{\{ $labels.namespace }} is going over its error budget.
+            message: {{`The server API for {{ $labels.namespace }} is going over its error budget.`}}
           expr: |
             (
                 stackstate:server:http_failures_per_request:ratio_rate_1h > (14.4 * 0.001000)
@@ -87,7 +87,7 @@ spec:
           record: stackstate:receiver:http_failures_per_request:ratio_rate_6h
         - alert: StackStateReceiverApiErrorBudgetBurn
           annotations:
-            message: The receiver API for \{\{ $labels.namespace }} is going over its error budget.
+            message: {{`The receiver API for {{ $labels.namespace }} is going over its error budget.`}}
           expr: |
             (
                 stackstate:receiver:http_failures_per_request:ratio_rate_1h > (14.4 * 0.001000)
