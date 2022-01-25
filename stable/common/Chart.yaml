@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 0.4.19
+appVersion: 0.4.20
 description: Common chartbuilding components and helpers
 home: https://gitlab.com/stackvista/devops/helm-charts.git
 icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
@@ -14,4 +14,4 @@ maintainers:
 - name: Vincent Partington
   email: vpartington@stackstate.com
 name: common
-version: 0.4.19
+version: 0.4.20
