@@ -69,6 +69,12 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: receiver
+  strategy:
+{{- if eq (lower .Values.stackstate.components.all.deploymentStrategy.type) "recreatesingletonsonly" }}
+    type: RollingUpdate
+{{- else }}
+    {{- toYaml .Values.stackstate.components.all.deploymentStrategy | nindent 4 }}
+{{- end }}
   template:
     metadata:
       annotations:

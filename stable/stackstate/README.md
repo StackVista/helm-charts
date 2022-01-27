@@ -228,6 +228,7 @@ stackstate/stackstate
 | stackstate.authentication.sessionLifetime | string | `"7d"` | Amount of time to keep a session when a user does not log in |
 | stackstate.baseUrl | string | `nil` |  |
 | stackstate.components.all.affinity | object | `{}` | Affinity settings for pod assignment on all components. |
+| stackstate.components.all.deploymentStrategy.type | string | `"RecreateSingletonsOnly"` | Deployment strategy for StackState components. Possible values: `RollingUpdate`, `Recreate` and `RecreateSingletonsOnly`. `RecreateSingletonsOnly` uses `Recreate` for the singleton Deployments and `RollingUpdate` for the other Deployments. |
 | stackstate.components.all.elasticsearchEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster. |
 | stackstate.components.all.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods for all components. |
 | stackstate.components.all.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object for all components. |
@@ -249,7 +250,6 @@ stackstate/stackstate
 | stackstate.components.all.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | stackstate.components.all.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
 | stackstate.components.all.tolerations | list | `[]` | Toleration labels for pod assignment on all components. |
-| stackstate.components.all.useRecreateDeploymentStrategy | bool | `false` | Enable the "Recreate" deployment strategy for StackState components. |
 | stackstate.components.all.zookeeperEndpoint | string | `""` | **Required if `zookeeper.enabled` is `false`** Endpoint for shared Zookeeper nodes. |
 | stackstate.components.api.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.api.affinity | object | `{}` | Affinity settings for pod assignment. |
