@@ -12,6 +12,10 @@ spec:
       app.kubernetes.io/component: cluster-agent
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/name: {{ include "cluster-agent.name" . }}
+{{- with .Values.clusterAgent.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
   template:
     metadata:
       annotations:

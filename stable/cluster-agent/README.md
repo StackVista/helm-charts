@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `0.5.2`
+Current chart version is `0.5.3`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -120,6 +120,7 @@ stackstate/cluster-agent
 | clusterAgent.resources.limits.memory | string | `"256Mi"` | Memory resource limits. |
 | clusterAgent.resources.requests.cpu | string | `"50m"` | CPU resource requests. |
 | clusterAgent.resources.requests.memory | string | `"64Mi"` | Memory resource requests. |
+| clusterAgent.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | clusterAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | clusterChecks.affinity | object | `{}` | Affinity settings for pod assignment. |
 | clusterChecks.apm.enabled | bool | `true` | Enable / disable the agent APM module. |

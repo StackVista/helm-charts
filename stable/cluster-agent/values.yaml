@@ -191,6 +191,12 @@ clusterAgent:
   # clusterAgent.replicaCount -- Number of replicas of the cluster agent to deploy.
   replicaCount: 1
 
+  # clusterAgent.strategy -- The strategy for the Deployment object.
+  strategy:
+    type: RollingUpdate
+    # rollingUpdate:
+    #   maxUnavailable: 1
+
   resources:
     limits:
       # clusterAgent.resources.limits.cpu -- CPU resource limits.
