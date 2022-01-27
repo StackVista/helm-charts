@@ -12,10 +12,14 @@ metadata:
   annotations: {{- include "common.tplvalue.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
 spec:
+  replicas: {{ default 1 .Values.replicaCount | int }}
   selector:
     matchLabels:
       app: {{ include "common.fullname.short" . }}-kafkaup
-  replicas: {{ default 1 .Values.replicaCount | int }}
+{{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
   template:
     metadata:
       labels:

@@ -4,7 +4,7 @@
 
 The StackState Kafka upgrade operator
 
-Current chart version is `0.1.1`
+Current chart version is `0.1.2`
 
 **Homepage:** <https://gitlab.com/StackVista/platform/kafkaup-operator>
 
@@ -37,3 +37,4 @@ Current chart version is `0.1.1`
 | resources.requests.cpu | string | `"25m"` |  |
 | resources.requests.memory | string | `"32Mi"` |  |
 | startVersion | string | `nil` | Version to use if no version is set. Allow going from a non-operated to operated situation |
+| strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
