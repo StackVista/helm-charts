@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.120`
+Current chart version is `0.1.121`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -44,6 +44,7 @@ Current chart version is `0.1.120`
 | console.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
 | console.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | console.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
+| console.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | console.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.master.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hbase.master.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |

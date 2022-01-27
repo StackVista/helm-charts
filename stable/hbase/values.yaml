@@ -63,6 +63,11 @@ console:
     tag:
   # console.resources -- Resources to allocate for HDFS data nodes.
   resources: {}
+  # console.strategy -- The strategy for the Deployment object.
+  strategy:
+    type: RollingUpdate
+    # rollingUpdate:
+    #   maxUnavailable: 1
   # console.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}
   # console.tolerations -- Toleration labels for pod assignment.
