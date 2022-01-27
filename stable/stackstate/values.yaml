@@ -120,8 +120,10 @@ networkPolicy:
 stackstate:
   components:
     all:
-      # stackstate.components.all.useRecreateDeploymentStrategy -- Enable the "Recreate" deployment strategy for StackState components.
-      useRecreateDeploymentStrategy: false
+      # stackstate.components.all.deploymentStrategy.type -- Deployment strategy for StackState components. Possible values: `RollingUpdate`, `Recreate` and `RecreateSingletonsOnly`.
+      # `RecreateSingletonsOnly` uses `Recreate` for the singleton Deployments and `RollingUpdate` for the other Deployments.
+      deploymentStrategy:
+        type: RecreateSingletonsOnly
       extraEnv:
         # stackstate.components.all.extraEnv.open -- Extra open environment variables to inject into pods for all components.
         open: {}
