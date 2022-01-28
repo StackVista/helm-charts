@@ -1020,7 +1020,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 4.6.1
+      tag: 4.6.2
   console:
     # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
     enabled: false
@@ -1116,7 +1116,6 @@ kafkaup-operator:
   kafkaSelectors:
     # kafkaup.kafkaSelectors.statefulSetName -- name of the statefulSet to operate on
     statefulSetName: "stackstate-kafka"
-
     # kafkaup.kafkaSelectors.podLabel -- pod label of kafka pods to operate on
     podLabel:
       key: "app.kubernetes.io/component"
