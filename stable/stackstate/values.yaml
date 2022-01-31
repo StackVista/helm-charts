@@ -991,8 +991,10 @@ elasticsearch:
         storage: 250Gi
   prometheus-elasticsearch-exporter:
     enabled: true
-    servicemonitor:
+    serviceMonitor:
       enabled: false
+      # elasticsearch.prometheus-elasticsearch-exporter.serviceMonitor.labels -- Labels for the service monitor
+      labels: {}
     podAnnotations:
       ad.stackstate.com/prometheus-elasticsearch-exporter.check_names: '["openmetrics"]'
       ad.stackstate.com/prometheus-elasticsearch-exporter.init_configs: "[{}]"
