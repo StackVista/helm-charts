@@ -1,7 +1,7 @@
 dependencies:
 - name: anomaly-detection
   repository: https://helm.stackstate.io
-  version: 4.6.0-pre.4.rc.3
+  version: 4.6.0-pre.4
 - name: cluster-agent
   repository: https://helm.stackstate.io
   version: 0.5.0
@@ -29,5 +29,5 @@ dependencies:
 - name: kafkaup-operator
   repository: https://helm.stackstate.io
   version: 0.1.0
-digest: sha256:8282a261025aa5dc7aaaa860d86db52cf2a0bc026c372e93f2a22310646ca8ab
-generated: "2022-01-25T11:14:48.980666018Z"
+digest: sha256:5cb5202211f05a0282952abcb34897a601e862575c703b64e8d4a4d59c976472
+generated: "2022-02-03T17:40:58.857092285Z"
