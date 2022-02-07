@@ -1,0 +1,16 @@
+{{- define "stackstate.amplifier.configmap" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}
+data:
+  application.conf: |
+    stackstate.amplifier {
+      targetUrl = {{ .Values.receiveramplifier.targetUrl | required "receiveramplifier.targetUrl is a required value." | quote }}
+      amplifierFactor = {{ .Values.receiveramplifier.amplifierFactor }}
+      amplifierFactorPeak = {{ .Values.receiveramplifier.amplifierFactorPeak }}
+      dailyPeaks = {{ toJson .Values.receiveramplifier.dailyPeaks }}
+    }
+{{- end -}}
+
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $stackstateRouterConfigMap := fromYaml (include "stackstate.amplifier.configmap" .) -}}
+{{- toYaml (merge $stackstateRouterConfigMap $commonConfigMap) -}}

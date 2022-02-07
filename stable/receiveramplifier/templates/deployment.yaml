@@ -2,12 +2,6 @@
 image: "{{ include "common.image.registry" (dict "image" .Values.image "context" .) }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
 imagePullPolicy: {{ .Values.image.pullPolicy }}
 env:
-{{- if .Values.receiveramplifier.targetUrl }}
-- name: CONFIG_FORCE_stackstate_amplifier_targetUrl
-  value: {{ .Values.receiveramplifier.targetUrl | quote }}
-{{- end }}
-- name: CONFIG_FORCE_stackstate_amplifier_amplifierFactor
-  value: {{ .Values.receiveramplifier.amplifierFactor | quote }}
 ports:
 - containerPort: 9000
   name: app
@@ -21,6 +15,10 @@ livenessProbe:
 readinessProbe:
   tcpSocket:
     port: app
+volumeMounts:
+  - name: stackstate-amplifier-application-config
+    mountPath: /opt/docker/etc/application.conf
+    subPath: application.conf
 {{- end -}}
 
 {{- define "receiveramplifier.deployment" -}}
@@ -36,6 +34,10 @@ spec:
       {{- include "common.image.pullSecret.name" (dict "images" (list .Values.image) "context" $) | nindent 6 }}
       containers:
       - {{ toYaml $receiveramplifierContainer | nindent 8 }}
+      volumes:
+      - name: stackstate-amplifier-application-config
+        configMap:
+          name: {{ template "common.fullname.short" . }}
 {{- end -}}
 
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}

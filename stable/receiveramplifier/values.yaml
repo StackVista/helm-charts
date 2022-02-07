@@ -36,6 +36,12 @@ metrics:
 
 receiveramplifier:
   # receiveramplifier.targetUrl -- The target URL for sending the amplified intake requests.
-  targetUrl: ""
+  targetUrl:
   # receiveramplifier.amplifierFactor -- Amplification factor.
-  amplifierFactor: ""
+  amplifierFactor: 1
+  # receiveramplifier.amplifierFactorPeak -- Amplification factor during peak hours
+  amplifierFactorPeak: 1
+  # receiveramplifier.dailyPeaks -- Daily peak hours (multiple is possible) defined by startTime and endTime
+  dailyPeaks: []
+    # - startTime: '13:00'
+    #   endTime: '14:00'
