@@ -47,7 +47,7 @@ local validate_and_push_jobs = {
     script: [
       'ct list-changed --config test/ct.yaml',
       'ct lint --debug --validate-maintainers=false --excluded-charts stackstate --excluded-charts gitlab-runner --config test/ct.yaml',
-      '.gitlab/validate_kubeval.sh',
+      '.gitlab/validate_kubeconform.sh',
     ],
     stage: 'validate',
   } + skip_when_dependency_upgrade,
@@ -64,7 +64,7 @@ local validate_and_push_jobs = {
     script: [
       'ct list-changed --config test/ct.yaml',
       'ct lint --debug --validate-maintainers=false --charts stable/stackstate --config test/ct.yaml',
-      '.gitlab/validate_kubeval.sh',
+      '.gitlab/validate_kubeconform.sh',
     ],
     stage: 'validate',
   } + skip_when_dependency_upgrade,
@@ -283,7 +283,6 @@ local update_aad_chart_version = {
 
   variables: {
     HELM_VERSION: 'v3.1.2',
-    KUBEVAL_SCHEMA_LOCATION: 'https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master',
   },
 }
 + test_chart_jobs

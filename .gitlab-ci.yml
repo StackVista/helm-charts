@@ -1613,7 +1613,7 @@ validate_charts:
   script:
     - ct list-changed --config test/ct.yaml
     - ct lint --debug --validate-maintainers=false --excluded-charts stackstate --excluded-charts gitlab-runner --config test/ct.yaml
-    - .gitlab/validate_kubeval.sh
+    - .gitlab/validate_kubeconform.sh
   stage: validate
 validate_stackstate_chart:
   before_script:
@@ -1630,11 +1630,10 @@ validate_stackstate_chart:
   script:
     - ct list-changed --config test/ct.yaml
     - ct lint --debug --validate-maintainers=false --charts stable/stackstate --config test/ct.yaml
-    - .gitlab/validate_kubeval.sh
+    - .gitlab/validate_kubeconform.sh
   stage: validate
 variables:
   HELM_VERSION: v3.1.2
-  KUBEVAL_SCHEMA_LOCATION: https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master
 workflow:
   rules:
     - if: $CI_MERGE_REQUEST_IID

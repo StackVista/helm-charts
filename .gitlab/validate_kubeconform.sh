@@ -8,9 +8,9 @@ charts=$(ct list-changed --config test/ct.yaml)
 
 for chartPath in "${charts[@]}"; do
   if [ "${chartPath}" == "stable/stackstate" ]; then
-    printf "\nNOT running 'kubeval' on '%s' because kubeval cannot validate v1/List objects...\n" "${chartPath}"
+    printf "\nNOT running 'kubeconform' on '%s' because kubeconform cannot validate v1/List objects...\n" "${chartPath}"
   else
-    printf "\nRunning 'kubeval' on '%s'...\n" "${chartPath}"
+    printf "\nRunning 'kubeconform' on '%s'...\n" "${chartPath}"
 
     if [ -e "${chartPath}/linter_values.yaml" ]; then
       valuesFile=("--values" "${chartPath}/linter_values.yaml")
@@ -18,6 +18,6 @@ for chartPath in "${charts[@]}"; do
       valuesFile=()
     fi
 
-    helm template "${valuesFile[@]}" "${chartPath}" | kubeval --skip-kinds ServiceMonitor,PrometheusRule -
+    helm template "${valuesFile[@]}" "${chartPath}" | kubeconform --skip ServiceMonitor,PrometheusRule -
   fi
 done
