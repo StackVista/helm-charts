@@ -1,0 +1,27 @@
+image:
+  # image.registry -- Registry containing the image for the Helm reaper cron job
+  registry: quay.io
+  # image.repository -- Repository containing the image for the Helm reaper cron job
+  repository: stackstate/sts-ci-images
+  # image.tag -- Tag of the image for the Helm reaper cron job
+  tag: stackstate-devops-0925b2ff
+  # image.pullPolicy -- Pull policy for the image for the Helm reaper cron job
+  pullPolicy: IfNotPresent
+# nodeSelector -- Node labels for pod assignment.
+nodeSelector: {}
+# tolerations -- Toleration labels for pod assignment.
+tolerations: []
+# affinity -- Affinity settings for pod assignment.
+affinity: {}
+# schedule -- The cron schedule for the Helm reaper cron job.
+schedule: "0 */1 * * *"
+# reapNamespace -- The namespace to reap Helm releases from.
+reapNamespace: default
+# systemNamespaces -- Namespaces that are considered system and off-limits to the Helm reaper cron job.
+resources:
+  limits:
+    cpu: 50m
+    memory: 64Mi
+  requests:
+    cpu: 25m
+    memory: 32Mi

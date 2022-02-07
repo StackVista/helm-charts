@@ -1,0 +1,22 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "common.fullname.short" . }}-config
+  namespace: {{.Release.Namespace}}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+data:
+  reap.sh: |
+    #!/usr/bin/env bash
+
+    set -euo pipefail
+
+    echo "Going to reap namespace {{.Values.reapNamespace}}"
+
+    cut_off_date=$(date --iso-8601=hours --date="3 days ago")
+    releases=$(helm list --namespace {{.Values.reapNamespace}} -o json | jq -r --arg cut_off_date "$cut_off_date" '.[] | select(.name != "master" and .updated < $cut_off_date) | .name')
+
+    for release in $releases; do
+      echo "Deleting release $release"
+      helm --namespace {{.Values.reapNamespace}} delete $release
+    done

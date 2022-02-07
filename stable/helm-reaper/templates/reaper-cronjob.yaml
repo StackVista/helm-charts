@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "common.fullname.short" . }}-cron
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  schedule: {{ .Values.schedule }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ include "common.fullname.short" . }}
+          {{- include "common.image.pullSecret.name" (dict "images" (list .Values.image) "context" $) | nindent 10 }}
+          containers:
+          - name: reaper
+            image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            command:
+            - /bin/sh
+            - -c
+            - "/opt/reaper/reap.sh"
+            volumeMounts:
+            - name: script-volume
+              mountPath: /opt/reaper
+            resources:
+{{ toYaml .Values.resources | indent 14 }}
+          restartPolicy: OnFailure
+{{- if .Values.nodeSelector }}
+          nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 12 }}
+{{- end }}
+{{- if .Values.tolerations }}
+          tolerations:
+{{ toYaml .Values.tolerations | indent 12 }}
+{{- end }}
+{{- if .Values.affinity }}
+          affinity:
+{{ toYaml .Values.affinity | indent 12 }}
+{{- end }}
+          volumes:
+          - name: script-volume
+            configMap:
+              name: {{ template "common.fullname.short" . }}-config
+              defaultMode: 0755
+              items:
+              - key: reap.sh
+                path: reap.sh
