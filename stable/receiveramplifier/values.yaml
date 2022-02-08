@@ -45,3 +45,5 @@ receiveramplifier:
   dailyPeaks: []
     # - startTime: '13:00'
     #   endTime: '14:00'
+  # receiveramplifier.additionalConfig -- Additional configuration settings appended to the end of the amplifier config file
+  additionalConfig: ""

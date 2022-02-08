@@ -9,6 +9,7 @@ data:
       amplifierFactorPeak = {{ .Values.receiveramplifier.amplifierFactorPeak }}
       dailyPeaks = {{ toJson .Values.receiveramplifier.dailyPeaks }}
     }
+    {{ .Values.receiveramplifier.additionalConfig | nindent 4 }}
 {{- end -}}
 
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}

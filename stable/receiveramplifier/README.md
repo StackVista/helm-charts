@@ -1,6 +1,6 @@
 # receiveramplifier
 
-![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 Receiver amplifier to increase the load on an installation.
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 ## Maintainers
@@ -30,6 +30,7 @@ Receiver amplifier to increase the load on an installation.
 | metrics.enabled | bool | `true` | Enable metrics port. |
 | metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
 | metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
+| receiveramplifier.additionalConfig | string | `""` | Additional configuration settings appended to the end of the amplifier config file |
 | receiveramplifier.amplifierFactor | int | `1` | Amplification factor. |
 | receiveramplifier.amplifierFactorPeak | int | `1` | Amplification factor during peak hours |
 | receiveramplifier.dailyPeaks | list | `[]` | Daily peak hours (multiple is possible) defined by startTime and endTime |
