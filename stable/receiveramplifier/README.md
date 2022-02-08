@@ -1,6 +1,6 @@
 # receiveramplifier
 
-![Version: 0.1.6](https://img.shields.io/badge/Version-0.1.6-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: 0.1.5](https://img.shields.io/badge/Version-0.1.5-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 Receiver amplifier to increase the load on an installation.
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 ## Maintainers
