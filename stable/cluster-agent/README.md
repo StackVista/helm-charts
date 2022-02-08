@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `0.5.3`
+Current chart version is `0.5.4`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -127,7 +127,7 @@ stackstate/cluster-agent
 | clusterChecks.checksTagCardinality | string | `"orchestrator"` |  |
 | clusterChecks.config | object | `{"override":[]}` |  |
 | clusterChecks.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
-| clusterChecks.enabled | bool | `false` | Enable / disable runnning cluster checks in a separately deployed pod |
+| clusterChecks.enabled | bool | `true` | Enable / disable runnning cluster checks in a separately deployed pod |
 | clusterChecks.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterChecks.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
 | clusterChecks.image.tag | string | `"2.15.0"` | Default container image tag. |

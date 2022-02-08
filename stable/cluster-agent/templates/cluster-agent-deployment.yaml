@@ -104,6 +104,11 @@ spec:
             subPath: {{ .path | replace "/" "_"}}_{{ .name }}
           {{- end }}
           {{- end }}
+          {{- if and .Values.clusterChecks.enabled .Values.dependencies.kubeStateMetrics.enabled }}
+          - name: config-override-volume
+            mountPath: /etc/stackstate-agent/conf.d/kubernetes_state.d/conf.yaml
+            subPath: _etc_stackstate-agent_conf.d_kubernetes_state.d_conf.yaml
+          {{- end }}
     {{- with .Values.clusterAgent.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -119,7 +124,7 @@ spec:
       volumes:
         - name: logs
           emptyDir: {}
-        {{- if .Values.clusterAgent.config.override }}
+        {{- if or .Values.clusterAgent.config.override  (and .Values.clusterChecks.enabled .Values.dependencies.kubeStateMetrics.enabled) }}
         - name: config-override-volume
           configMap:
             name: {{ include "cluster-agent.fullname" . }}

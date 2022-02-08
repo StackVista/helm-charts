@@ -220,7 +220,7 @@ clusterAgent:
 
 clusterChecks:
   # clusterChecks.enabled -- Enable / disable runnning cluster checks in a separately deployed pod
-  enabled: false
+  enabled: true
   scc:
     # clusterChecks.scc.enabled -- Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift
     enabled: false
