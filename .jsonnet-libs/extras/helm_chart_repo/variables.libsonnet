@@ -35,7 +35,6 @@
       'aws-pod-identity-webhook',
       'beacher-job',
       'chartmuseum',
-      'gitlab-runner',
       'gitlab-steward',
       'helm-reaper',
       'iceman',
