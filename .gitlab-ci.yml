@@ -47,25 +47,6 @@ push_aws-amicleaner_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/aws-amicleaner
-push_aws-amicleaner_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
-  needs:
-    - push_aws-amicleaner_to_internal
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - changes:
-        - stable/aws-amicleaner/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: manual
-  script:
-    - helm dependencies update ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
-  stage: push-charts-to-public
-  variables:
-    CHART: stable/aws-amicleaner
 push_aws-nuke_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
   rules:
@@ -81,25 +62,6 @@ push_aws-nuke_to_internal:
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
-  variables:
-    CHART: stable/aws-nuke
-push_aws-nuke_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
-  needs:
-    - push_aws-nuke_to_internal
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - changes:
-        - stable/aws-nuke/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: manual
-  script:
-    - helm dependencies update ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
-  stage: push-charts-to-public
   variables:
     CHART: stable/aws-nuke
 push_aws-pod-identity-webhook_to_internal:
@@ -119,25 +81,6 @@ push_aws-pod-identity-webhook_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/aws-pod-identity-webhook
-push_aws-pod-identity-webhook_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
-  needs:
-    - push_aws-pod-identity-webhook_to_internal
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - changes:
-        - stable/aws-pod-identity-webhook/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: manual
-  script:
-    - helm dependencies update ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
-  stage: push-charts-to-public
-  variables:
-    CHART: stable/aws-pod-identity-webhook
 push_beacher-job_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
   rules:
@@ -155,25 +98,6 @@ push_beacher-job_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/beacher-job
-push_beacher-job_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
-  needs:
-    - push_beacher-job_to_internal
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - changes:
-        - stable/beacher-job/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: manual
-  script:
-    - helm dependencies update ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
-  stage: push-charts-to-public
-  variables:
-    CHART: stable/beacher-job
 push_chartmuseum_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
   rules:
@@ -189,25 +113,6 @@ push_chartmuseum_to_internal:
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
-  variables:
-    CHART: stable/chartmuseum
-push_chartmuseum_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
-  needs:
-    - push_chartmuseum_to_internal
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - changes:
-        - stable/chartmuseum/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: manual
-  script:
-    - helm dependencies update ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
-  stage: push-charts-to-public
   variables:
     CHART: stable/chartmuseum
 push_cluster-agent_to_internal:
@@ -335,25 +240,6 @@ push_gitlab-runner_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/gitlab-runner
-push_gitlab-runner_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
-  needs:
-    - push_gitlab-runner_to_internal
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - changes:
-        - stable/gitlab-runner/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: manual
-  script:
-    - helm dependencies update ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
-  stage: push-charts-to-public
-  variables:
-    CHART: stable/gitlab-runner
 push_gitlab-steward_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
   rules:
@@ -369,25 +255,6 @@ push_gitlab-steward_to_internal:
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
-  variables:
-    CHART: stable/gitlab-steward
-push_gitlab-steward_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
-  needs:
-    - push_gitlab-steward_to_internal
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - changes:
-        - stable/gitlab-steward/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: manual
-  script:
-    - helm dependencies update ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
-  stage: push-charts-to-public
   variables:
     CHART: stable/gitlab-steward
 push_hbase_to_internal:
@@ -443,25 +310,6 @@ push_helm-reaper_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/helm-reaper
-push_helm-reaper_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
-  needs:
-    - push_helm-reaper_to_internal
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - changes:
-        - stable/helm-reaper/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: manual
-  script:
-    - helm dependencies update ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
-  stage: push-charts-to-public
-  variables:
-    CHART: stable/helm-reaper
 push_iceman_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
   rules:
@@ -477,25 +325,6 @@ push_iceman_to_internal:
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
-  variables:
-    CHART: stable/iceman
-push_iceman_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
-  needs:
-    - push_iceman_to_internal
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - changes:
-        - stable/iceman/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: manual
-  script:
-    - helm dependencies update ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
-  stage: push-charts-to-public
   variables:
     CHART: stable/iceman
 push_kafkaup-operator_to_internal:
@@ -551,25 +380,6 @@ push_kommoner-operator_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/kommoner-operator
-push_kommoner-operator_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
-  needs:
-    - push_kommoner-operator_to_internal
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - changes:
-        - stable/kommoner-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: manual
-  script:
-    - helm dependencies update ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
-  stage: push-charts-to-public
-  variables:
-    CHART: stable/kommoner-operator
 push_minio_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
   rules:
@@ -621,25 +431,6 @@ push_petros-d-kubelet-stats-exporter_to_internal:
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
-  variables:
-    CHART: stable/petros-d-kubelet-stats-exporter
-push_petros-d-kubelet-stats-exporter_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
-  needs:
-    - push_petros-d-kubelet-stats-exporter_to_internal
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - changes:
-        - stable/petros-d-kubelet-stats-exporter/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: manual
-  script:
-    - helm dependencies update ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
-  stage: push-charts-to-public
   variables:
     CHART: stable/petros-d-kubelet-stats-exporter
 push_pull-secret_to_internal:
@@ -695,25 +486,6 @@ push_receiveramplifier_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/receiveramplifier
-push_receiveramplifier_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
-  needs:
-    - push_receiveramplifier_to_internal
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - changes:
-        - stable/receiveramplifier/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: manual
-  script:
-    - helm dependencies update ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
-  stage: push-charts-to-public
-  variables:
-    CHART: stable/receiveramplifier
 push_sandbox-operator_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
   rules:
@@ -729,25 +501,6 @@ push_sandbox-operator_to_internal:
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
-  variables:
-    CHART: stable/sandbox-operator
-push_sandbox-operator_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
-  needs:
-    - push_sandbox-operator_to_internal
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - changes:
-        - stable/sandbox-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: manual
-  script:
-    - helm dependencies update ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
-  stage: push-charts-to-public
   variables:
     CHART: stable/sandbox-operator
 push_stackstate-monitoring_to_internal:
