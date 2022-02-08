@@ -28,6 +28,7 @@
       'gitlab-runner',
       'gitlab-steward',
       'hbase',
+      'helm-reaper',
       'iceman',
       'kommoner-operator',
       'kafkaup-operator',
