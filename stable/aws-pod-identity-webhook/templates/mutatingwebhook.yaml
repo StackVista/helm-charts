@@ -1,4 +1,4 @@
-apiVersion: admissionregistration.k8s.io/v1beta1
+apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
   name: {{ include "aws-pod-identity-webhook.fullname" . }}
@@ -6,13 +6,15 @@ metadata:
 {{ include "aws-pod-identity-webhook.labels" . | indent 4 }}
 webhooks:
 - name: pod-identity-webhook.amazonaws.com
-  failurePolicy: Ignore
+  failurePolicy: {{ .Values.webhook.failurePolicy }}
   clientConfig:
     service:
       name: {{ include "aws-pod-identity-webhook.fullname" . }}
       namespace: {{ .Release.Namespace }}
       path: "/mutate"
     caBundle: {{ .Values.caBundle | quote }}
+  sideEffects: None
+  admissionReviewVersions: ["v1", "v1beta1"]
   rules:
   - operations: [ "CREATE" ]
     apiGroups: [""]
