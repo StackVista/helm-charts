@@ -316,6 +316,10 @@ clusterChecks:
   # clusterChecks.affinity -- Affinity settings for pod assignment.
   affinity: {}
 
+  kubeStateMetrics:
+    # clusterChecks.kubeStateMetrics.url -- URL of the KubeStateMetrics server. This needs to be configured if the KubeStateMetrics server is not enabled by default in this Helm chart.
+    url: ""
+
 ########################
 # StackState variables #
 ########################

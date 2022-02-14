@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `0.5.4`
+Current chart version is `0.5.5`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -131,6 +131,7 @@ stackstate/cluster-agent
 | clusterChecks.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterChecks.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
 | clusterChecks.image.tag | string | `"2.15.0"` | Default container image tag. |
+| clusterChecks.kubeStateMetrics.url | string | `""` | URL of the KubeStateMetrics server. This needs to be configured if the KubeStateMetrics server is not enabled by default in this Helm chart. |
 | clusterChecks.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterChecks.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | clusterChecks.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |

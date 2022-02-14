@@ -12,7 +12,12 @@ data:
     cluster_check: true
     init_config:
     instances:
-      - kube_state_url: http://%%host%%:8080/metrics
+  {{- if .Values.dependencies.kubeStateMetrics.enabled }}
+      - kube_state_url: {{ .Values.clusterChecks.kubeStateMetrics.url | default (printf "http://%s-kube-state-metrics.%s.svc.cluster.local:8080/metrics" .Release.Name .Release.Namespace) }}
+        kube_state_token: {{ .Values.clusterChecks.kubeStateMetrics.token }}
+  {{- else }}
+      - kube_state_url: {{ .Values.clusterChecks.kubeStateMetrics.url | required "If the kubeStateMetrics dependent chart is not enabled, the clusterChecks.kubeStateMetrics.url needs to be configured." }}
+  {{- end }}
 {{- end }}
 {{- range .Values.clusterAgent.config.override }}
   {{ .path | replace "/" "_"}}_{{ .name }}: |
