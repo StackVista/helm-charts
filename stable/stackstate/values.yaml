@@ -1243,8 +1243,8 @@ kafka:
       enabled: false
       # kafka.metrics.serviceMonitor.interval -- How frequently to scrape metrics.
       interval: 20s
-      # kafka.metrics.serviceMonitor.selector -- Selector to target Prometheus instance.
-      selector: {}
+      # kafka.metrics.serviceMonitor.labels -- Add extra labels to target a specific prometheus instance
+      labels: {}
   readinessProbe:
     # kafka.readinessProbe.initialDelaySeconds -- Delay before readiness probe is initiated.
     initialDelaySeconds: 45
