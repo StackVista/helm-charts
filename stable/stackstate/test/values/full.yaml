@@ -1,5 +1,5 @@
 global:
-  receiverApiKey: ""
+  receiverApiKey: "test-key"
 stackstate:
   components:
     all:
