@@ -1,0 +1,8 @@
+clusterChecks:
+  enabled: true
+dependencies:
+  kubeStateMetrics:
+    enabled: false
+clusterChecks:
+  kubeStateMetrics:
+    url: http://my-custom-ksm-url.monitoring.svc.local:8080/metrics

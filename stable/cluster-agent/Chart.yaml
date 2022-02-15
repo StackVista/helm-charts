@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 2.15.0
-version: 0.5.5
+version: 0.5.6
 description: Helm chart for the StackState cluster agent.
 keywords:
 - aiops
@@ -18,6 +18,6 @@ maintainers:
 name: cluster-agent
 dependencies:
 - name: kube-state-metrics
-  version: 1.1.2
+  version: 2.2.5
   repository: https://charts.bitnami.com/bitnami
   condition: dependencies.kubeStateMetrics.enabled

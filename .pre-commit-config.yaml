@@ -14,7 +14,7 @@ repos:
     args:
     - --allow-missing-credentials
 - repo: https://github.com/gruntwork-io/pre-commit
-  rev: v0.1.12
+  rev: v0.1.17
   hooks:
   - id: helmlint
   - id: shellcheck
