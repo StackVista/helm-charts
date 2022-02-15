@@ -1180,38 +1180,6 @@ update_stackgraph_version:
     GIT_AUTHOR_NAME: stackstate-system-user
     GIT_COMMITTER_EMAIL: sts-admin@stackstate.com
     GIT_COMMITTER_NAME: stackstate-system-user
-validate_charts:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  environment: stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $CI_COMMIT_BRANCH == "master"
-      when: never
-    - when: always
-  script:
-    - ct list-changed --config test/ct.yaml
-    - ct lint --debug --validate-maintainers=false --excluded-charts stackstate --excluded-charts gitlab-runner --config test/ct.yaml
-    - .gitlab/validate_kubeval.sh
-  stage: validate
-validate_stackstate_chart:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  environment: stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $CI_COMMIT_BRANCH == "master"
-      when: never
-    - when: always
-  script:
-    - .gitlab/validate_kubeval.sh
-  stage: validate
 variables:
   HELM_VERSION: v3.1.2
   KUBEVAL_SCHEMA_LOCATION: https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master

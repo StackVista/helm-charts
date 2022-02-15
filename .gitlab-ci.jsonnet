@@ -31,38 +31,6 @@ local sync_charts_template = {
 } + skip_when_dependency_upgrade;
 
 local validate_and_push_jobs = {
-  validate_charts: {
-    before_script: ['.gitlab/validate_before_script.sh'],
-    environment: 'stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}',
-    rules: [
-      {
-        @'if': '$CI_COMMIT_BRANCH == "master"',
-        when: 'never',
-      },
-      { when: 'always' },
-    ],
-    script: [
-      'ct list-changed --config test/ct.yaml',
-      'ct lint --debug --validate-maintainers=false --excluded-charts stackstate --excluded-charts gitlab-runner --config test/ct.yaml',
-      '.gitlab/validate_kubeval.sh',
-    ],
-    stage: 'validate',
-  } + skip_when_dependency_upgrade,
-  validate_stackstate_chart: {
-    before_script: ['.gitlab/validate_before_script.sh'],
-    environment: 'stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}',
-    rules: [
-      {
-        @'if': '$CI_COMMIT_BRANCH == "master"',
-        when: 'never',
-      },
-      { when: 'always' },
-    ],
-    script: [
-      '.gitlab/validate_kubeval.sh',
-    ],
-    stage: 'validate',
-  } + skip_when_dependency_upgrade,
   push_test_charts: sync_charts_template {
     rules: [
       {
