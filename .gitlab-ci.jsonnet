@@ -59,8 +59,6 @@ local validate_and_push_jobs = {
       { when: 'always' },
     ],
     script: [
-      'ct list-changed --config test/ct.yaml',
-      'ct lint --debug --validate-maintainers=false --charts stable/stackstate --config test/ct.yaml',
       '.gitlab/validate_kubeval.sh',
     ],
     stage: 'validate',
