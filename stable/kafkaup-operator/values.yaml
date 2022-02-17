@@ -38,3 +38,7 @@ resources:
   requests:
     cpu: 25m
     memory: 32Mi
+
+# strategy -- The strategy for the Deployment object.
+strategy:
+  type: RollingUpdate

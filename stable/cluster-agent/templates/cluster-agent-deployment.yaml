@@ -1,3 +1,5 @@
+{{- $kubeStateOverridden := (include "cluster-agent.kube-state-metrics.overridden" $) }}
+{{- $clusterCheckKSM := and (and .Values.clusterChecks.enabled (or .Values.dependencies.kubeStateMetrics.enabled .Values.clusterChecks.kubeStateMetrics.url)) (not $kubeStateOverridden) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -12,6 +14,10 @@ spec:
       app.kubernetes.io/component: cluster-agent
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/name: {{ include "cluster-agent.name" . }}
+{{- with .Values.clusterAgent.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
   template:
     metadata:
       annotations:
@@ -100,6 +106,11 @@ spec:
             subPath: {{ .path | replace "/" "_"}}_{{ .name }}
           {{- end }}
           {{- end }}
+          {{- if $clusterCheckKSM }}
+          - name: config-override-volume
+            mountPath: /etc/stackstate-agent/conf.d/kubernetes_state.d/conf.yaml
+            subPath: _etc_stackstate-agent_conf.d_kubernetes_state.d_conf.yaml
+          {{- end }}
     {{- with .Values.clusterAgent.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -115,7 +126,7 @@ spec:
       volumes:
         - name: logs
           emptyDir: {}
-        {{- if .Values.clusterAgent.config.override }}
+        {{- if or .Values.clusterAgent.config.override $clusterCheckKSM }}
         - name: config-override-volume
           configMap:
             name: {{ include "cluster-agent.fullname" . }}

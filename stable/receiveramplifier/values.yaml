@@ -1,3 +1,8 @@
+global:
+  # global.imagePullSecrets -- List of image pull secret names to be used by all images across all charts.
+  imagePullSecrets: []
+
+
 container:
   livenessProbeDefaults:
     # container.livenessProbeDefaults.enabled -- Use defaults for the `livenessProbe` from the upstream `common` chart.
@@ -13,6 +18,8 @@ image:
   repository: stackstate/stackstate-receiver-amplifier
   # image.tag -- Default container image tag.
   tag: master
+  # image.pullPolicy -- Default image pull policy.
+  pullPolicy: IfNotPresent
 
 ingress:
   # ingress.enabled -- Enable use of ingress controllers.
@@ -29,6 +36,14 @@ metrics:
 
 receiveramplifier:
   # receiveramplifier.targetUrl -- The target URL for sending the amplified intake requests.
-  targetUrl: ""
+  targetUrl:
   # receiveramplifier.amplifierFactor -- Amplification factor.
-  amplifierFactor: ""
+  amplifierFactor: 1
+  # receiveramplifier.amplifierFactorPeak -- Amplification factor during peak hours
+  amplifierFactorPeak: 1
+  # receiveramplifier.dailyPeaks -- Daily peak hours (multiple is possible) defined by startTime and endTime
+  dailyPeaks: []
+    # - startTime: '13:00'
+    #   endTime: '14:00'
+  # receiveramplifier.additionalConfig -- Additional configuration settings appended to the end of the amplifier config file
+  additionalConfig: ""

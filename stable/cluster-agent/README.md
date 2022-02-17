@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `0.5.2`
+Current chart version is `0.5.6`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -10,7 +10,7 @@ Current chart version is `0.5.2`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.bitnami.com/bitnami | kube-state-metrics | 1.1.2 |
+| https://charts.bitnami.com/bitnami | kube-state-metrics | 2.2.5 |
 
 If you already have the `kube-state-metrics` application installed in your Kubernetes cluster, set `dependencies.kubeStateMetrics.enabled` to `false` to disable installation via this Helm chart.
 
@@ -122,16 +122,18 @@ stackstate/cluster-agent
 | clusterAgent.resources.limits.memory | string | `"256Mi"` | Memory resource limits. |
 | clusterAgent.resources.requests.cpu | string | `"50m"` | CPU resource requests. |
 | clusterAgent.resources.requests.memory | string | `"64Mi"` | Memory resource requests. |
+| clusterAgent.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | clusterAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | clusterChecks.affinity | object | `{}` | Affinity settings for pod assignment. |
 | clusterChecks.apm.enabled | bool | `true` | Enable / disable the agent APM module. |
 | clusterChecks.checksTagCardinality | string | `"orchestrator"` |  |
 | clusterChecks.config | object | `{"override":[]}` |  |
 | clusterChecks.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
-| clusterChecks.enabled | bool | `false` | Enable / disable runnning cluster checks in a separately deployed pod |
+| clusterChecks.enabled | bool | `true` | Enable / disable runnning cluster checks in a separately deployed pod |
 | clusterChecks.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterChecks.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
 | clusterChecks.image.tag | string | `"2.15.0"` | Default container image tag. |
+| clusterChecks.kubeStateMetrics.url | string | `""` | URL of the KubeStateMetrics server. This needs to be configured if the KubeStateMetrics server is not enabled by default in this Helm chart. |
 | clusterChecks.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterChecks.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | clusterChecks.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |

@@ -22,10 +22,10 @@ func TestClusterRoleDeployedToSameNamespaceAsChartName(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	require.Equal(t, 2, len(resources.ClusterRoleBindings))
-	require.Equal(t, "stackstate-authentication", resources.ClusterRoleBindings[0].Name)
-	require.Equal(t, "stackstate-authorization", resources.ClusterRoleBindings[1].Name)
+	require.Contains(t, resources.ClusterRoleBindings, "stackstate-authentication")
+	require.Contains(t, resources.ClusterRoleBindings, "stackstate-authorization")
 	require.Equal(t, 1, len(resources.ClusterRoles))
-	require.Equal(t, "stackstate-authorization", resources.ClusterRoles[0].Name)
+	require.Contains(t, resources.ClusterRoles, "stackstate-authorization")
 }
 func TestClusterRoleDeployedToDifferentNamespaceAsChartName(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "stackstate", &helm.Options{
@@ -40,10 +40,10 @@ func TestClusterRoleDeployedToDifferentNamespaceAsChartName(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	require.Equal(t, 2, len(resources.ClusterRoleBindings))
-	require.Equal(t, "devver-stackstate-authentication", resources.ClusterRoleBindings[0].Name)
-	require.Equal(t, "devver-stackstate-authorization", resources.ClusterRoleBindings[1].Name)
+	require.Contains(t, resources.ClusterRoleBindings, "devver-stackstate-authentication")
+	require.Contains(t, resources.ClusterRoleBindings, "devver-stackstate-authorization")
 	require.Equal(t, 1, len(resources.ClusterRoles))
-	require.Equal(t, "devver-stackstate-authorization", resources.ClusterRoles[0].Name)
+	require.Contains(t, resources.ClusterRoles, "devver-stackstate-authorization")
 }
 
 func TestClusterRoleNameWhenNamespaceReleaseNameAndChartNameAllDifferent(t *testing.T) {
@@ -59,8 +59,8 @@ func TestClusterRoleNameWhenNamespaceReleaseNameAndChartNameAllDifferent(t *test
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	require.Equal(t, 2, len(resources.ClusterRoleBindings))
-	require.Equal(t, "devver-stacky-stackstate-authentication", resources.ClusterRoleBindings[0].Name)
-	require.Equal(t, "devver-stacky-stackstate-authorization", resources.ClusterRoleBindings[1].Name)
+	require.Contains(t, resources.ClusterRoleBindings, "devver-stacky-stackstate-authentication")
+	require.Contains(t, resources.ClusterRoleBindings, "devver-stacky-stackstate-authorization")
 	require.Equal(t, 1, len(resources.ClusterRoles))
-	require.Equal(t, "devver-stacky-stackstate-authorization", resources.ClusterRoles[0].Name)
+	require.Contains(t, resources.ClusterRoles, "devver-stacky-stackstate-authorization")
 }

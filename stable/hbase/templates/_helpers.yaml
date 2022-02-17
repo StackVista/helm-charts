@@ -14,28 +14,6 @@ Expand the name of the chart.
 {{- end -}}
 
 {{/*
-Return the image registry
-*/}}
-{{- define "image.registry" -}}
-  {{- if .Values.global }}
-    {{- .Values.global.imageRegistry | default .Values.all.image.registry -}}
-  {{- else -}}
-    {{- .Values.all.image.registry -}}
-  {{- end -}}
-{{- end -}}
-
-{{/*
-Return the image registry for the wait container
-*/}}
-{{- define "wait.image.registry" -}}
-  {{- if .Values.global }}
-    {{- default .Values.wait.image.registry .Values.global.imageRegistry -}}
-  {{- else -}}
-    {{- .Values.wait.image.registry -}}
-  {{- end -}}
-{{- end -}}
-
-{{/*
 Get and use nested subchart templates with the proper context. The reason this is needed is because when pulling
 in a subchart (like ZooKeeper), the subchart will create objects based on it's own 'fullName' template. That 'fullName'
 template is often needed within a parent chart to reference a created Service / Secret / etc. objects for use in the
@@ -259,50 +237,4 @@ Console extra environment variables for all processes inherited through `console
       key: {{ $key }}
   {{- end }}
 {{- end }}
-{{- end -}}
-
-{{/*
-Renders a value that contains a template.
-Usage:
-{{ include "hbase.tplvalue.render" ( dict "value" .Values.path.to.the.Value "context" $) }}
-*/}}
-{{- define "hbase.tplvalue.render" -}}
-    {{- if typeIs "string" .value }}
-        {{- tpl .value .context }}
-    {{- else }}
-        {{- tpl (.value | toYaml) .context }}
-    {{- end }}
-{{- end -}}
-
-{{/*
-Return the proper Docker Image Registry Secret Names evaluating values as templates
-{{ include "hbase.image.pullSecret.name" ( dict "images" (list .Values.path.to.the.image1, .Values.path.to.the.image2) "context" $) }}
-*/}}
-{{- define "hbase.image.pullSecret.name" -}}
-  {{- $pullSecrets := list }}
-  {{- $context := .context }}
-
-  {{- if $context.Values.global }}
-    {{- range $context.Values.global.imagePullSecrets -}}
-      {{/* Is plain array of strings, compatible with all bitnami charts */}}
-      {{- $pullSecrets = append $pullSecrets (include "hbase.tplvalue.render" (dict "value" . "context" $context)) -}}
-    {{- end -}}
-  {{- end -}}
-  {{- range $context.Values.imagePullSecrets -}}
-    {{- $pullSecrets = append $pullSecrets (include "hbase.tplvalue.render" (dict "value" .name "context" $context)) -}}
-  {{- end -}}
-  {{- range .images -}}
-    {{- if .pullSecretName -}}
-      {{- $pullSecrets = append $pullSecrets (include "hbase.tplvalue.render" (dict "value" .pullSecretName "context" $context)) -}}
-    {{- else if (or .pullSecretUsername .pullSecretDockerConfigJson) -}}
-      {{- $pullSecrets = append $pullSecrets ((list (include "common.fullname.short" $context ) "pull-secret") | join "-")  -}}
-    {{- end -}}
-  {{- end -}}
-
-  {{- if (not (empty $pullSecrets)) }}
-imagePullSecrets:
-    {{- range $pullSecrets | uniq }}
-  - name: {{ . }}
-    {{- end }}
-  {{- end }}
 {{- end -}}

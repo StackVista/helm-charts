@@ -4,6 +4,7 @@ local variables = import '.jsonnet-libs/extras/helm_chart_repo/variables.libsonn
 // Shortcuts
 local repositories = variables.helm.repositories;
 local charts = variables.helm.charts;
+local public_charts = variables.helm.public_charts;
 
 local helm_fetch_dependencies = [
     'helm repo add %s %s' % [std.strReplace(name, '_', '-'), repositories[name]]
@@ -47,7 +48,7 @@ local validate_and_push_jobs = {
     script: [
       'ct list-changed --config test/ct.yaml',
       'ct lint --debug --validate-maintainers=false --excluded-charts stackstate --excluded-charts gitlab-runner --config test/ct.yaml',
-      '.gitlab/validate_kubeval.sh',
+      '.gitlab/validate_kubeconform.sh',
     ],
     stage: 'validate',
   } + skip_when_dependency_upgrade,
@@ -64,7 +65,7 @@ local validate_and_push_jobs = {
     script: [
       'ct list-changed --config test/ct.yaml',
       'ct lint --debug --validate-maintainers=false --charts stable/stackstate --config test/ct.yaml',
-      '.gitlab/validate_kubeval.sh',
+      '.gitlab/validate_kubeconform.sh',
     ],
     stage: 'validate',
   } + skip_when_dependency_upgrade,
@@ -180,7 +181,7 @@ local push_stackstate_chart_releases =
 
 local test_chart_jobs = {
   ['test_%s' % chart]: (test_chart_job(chart))
-  for chart in charts
+  for chart in (charts + public_charts)
 };
 
 local itest_stackstate = {
@@ -199,7 +200,7 @@ local push_charts_to_internal_jobs = {
   { before_script: helm_fetch_dependencies + ['.gitlab/bump_sts_chart_master_version.sh stackstate-internal'] }
   else {}
   ))
-  for chart in charts
+  for chart in (charts + public_charts)
 };
 
 local push_charts_to_public_jobs = {
@@ -216,7 +217,7 @@ local push_charts_to_public_jobs = {
   { before_script: helm_fetch_dependencies + ['.gitlab/bump_sts_chart_master_version.sh stackstate'] }
   else {}
   ))
-  for chart in charts
+  for chart in public_charts
   if chart != 'stackstate'
 };
 
@@ -283,7 +284,6 @@ local update_aad_chart_version = {
 
   variables: {
     HELM_VERSION: 'v3.1.2',
-    KUBEVAL_SCHEMA_LOCATION: 'https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master',
   },
 }
 + test_chart_jobs

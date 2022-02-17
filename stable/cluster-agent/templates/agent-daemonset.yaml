@@ -1,3 +1,5 @@
+{{- $kubeStateOverridden := (include "cluster-agent.agent.kube-state-metrics.overridden" $) }}
+{{- $clusterCheckKSM := and (and .Values.clusterChecks.enabled (or .Values.dependencies.kubeStateMetrics.enabled .Values.clusterChecks.kubeStateMetrics.url)) (not $kubeStateOverridden) }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -175,6 +177,11 @@ spec:
             subPath: {{ .path | replace "/" "_"}}_{{ .name }}
           {{- end }}
           {{- end }}
+          {{- if $clusterCheckKSM }}
+          - name: config-override-volume
+            mountPath: /etc/stackstate-agent/conf.d/kubernetes_state.d/auto_conf.yaml
+            subPath: _etc_stackstate-agent_conf.d_kubernetes_state.d_auto_conf.yaml
+          {{- end }}
           securityContext:
             privileged: true
       dnsPolicy: ClusterFirstWithHostNet
@@ -230,7 +237,7 @@ spec:
       - hostPath:
           path: /sys/fs/cgroup
         name: cgroups
-      {{- if .Values.agent.config.override }}
+      {{- if or .Values.agent.config.override $clusterCheckKSM }}
       - name: config-override-volume
         configMap:
           name: {{ include "cluster-agent.fullname" . }}-agent

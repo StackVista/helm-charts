@@ -1,1 +1,10 @@
-ci/default-values.yaml
+dependencies:
+  kubeStateMetrics:
+    enabled: false
+stackstate:
+  apiKey: ugWjTFNN7zLjnXtn9CvduPksqssPwpMa
+  cluster:
+    name: some-k8s-cluster
+    token: some-token
+  url: https://{{ .Values.stackstate.cluster.name }}.mycompany.com
+fullnameOverride: some-installation

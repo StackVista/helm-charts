@@ -36,3 +36,7 @@ serviceAccount:
   create: true
   # serviceAccount.name: The name of the service account to create or use
   name: ""
+
+webhook:
+  # webhook.failurePolicy: The failure policy for the webhook
+  failurePolicy: Ignore

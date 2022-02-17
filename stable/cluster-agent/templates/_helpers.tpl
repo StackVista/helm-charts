@@ -133,3 +133,27 @@ imagePullSecrets:
     {{- end }}
   {{- end }}
 {{- end -}}
+
+{{/*
+Check whether the kubernetes-state-metrics configuration is overridden. If so, return 'true' else return nothing (which is false).
+{{ include "cluster-agent.kube-state-metrics.overridden" $ }}
+*/}}
+{{- define "cluster-agent.kube-state-metrics.overridden" -}}
+{{- if .Values.clusterAgent.config.override }}
+  {{- range $i, $val := .Values.clusterAgent.config.override }}
+    {{- if and (eq $val.name "conf.yaml") (eq $val.path "/etc/stackstate-agent/conf.d/kubernetes_state.d") }}
+true
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{- define "cluster-agent.agent.kube-state-metrics.overridden" -}}
+{{- if .Values.agent.config.override }}
+  {{- range $i, $val := .Values.agent.config.override }}
+    {{- if and (eq $val.name "auto_conf.yaml") (eq $val.path "/etc/stackstate-agent/conf.d/kubernetes_state.d") }}
+true
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- end -}}

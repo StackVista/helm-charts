@@ -11,5 +11,6 @@ ingress:
       - some-receiveramplifier.website.com
 
 receiveramplifier:
+  targetUrl: "http://localhost"
   image:
     pullSecretUsername:

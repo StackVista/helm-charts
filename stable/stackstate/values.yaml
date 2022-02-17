@@ -120,8 +120,10 @@ networkPolicy:
 stackstate:
   components:
     all:
-      # stackstate.components.all.useRecreateDeploymentStrategy -- Enable the "Recreate" deployment strategy for StackState components.
-      useRecreateDeploymentStrategy: false
+      # stackstate.components.all.deploymentStrategy.type -- Deployment strategy for StackState components. Possible values: `RollingUpdate`, `Recreate` and `RecreateSingletonsOnly`.
+      # `RecreateSingletonsOnly` uses `Recreate` for the singleton Deployments and `RollingUpdate` for the other Deployments.
+      deploymentStrategy:
+        type: RecreateSingletonsOnly
       extraEnv:
         # stackstate.components.all.extraEnv.open -- Extra open environment variables to inject into pods for all components.
         open: {}
@@ -989,8 +991,10 @@ elasticsearch:
         storage: 250Gi
   prometheus-elasticsearch-exporter:
     enabled: true
-    servicemonitor:
+    serviceMonitor:
       enabled: false
+      # elasticsearch.prometheus-elasticsearch-exporter.serviceMonitor.labels -- Labels for the service monitor
+      labels: {}
     podAnnotations:
       ad.stackstate.com/prometheus-elasticsearch-exporter.check_names: '["openmetrics"]'
       ad.stackstate.com/prometheus-elasticsearch-exporter.init_configs: "[{}]"
@@ -1018,7 +1022,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 4.6.1
+      tag: 4.6.3
   console:
     # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
     enabled: false
@@ -1114,7 +1118,6 @@ kafkaup-operator:
   kafkaSelectors:
     # kafkaup.kafkaSelectors.statefulSetName -- name of the statefulSet to operate on
     statefulSetName: "stackstate-kafka"
-
     # kafkaup.kafkaSelectors.podLabel -- pod label of kafka pods to operate on
     podLabel:
       key: "app.kubernetes.io/component"
@@ -1166,6 +1169,12 @@ kafka:
   extraEnvVars:
     - name: KAFKA_CFG_RESERVED_BROKER_MAX_ID
       value: "2000"
+    # How long will a producer linger when no data is flowing? We make this quite a high number to make
+    # sure that in POC like settings, where there is not always much activity, transactional producer do not get kicked out.
+    # See STAC-15583
+    # Using MaxInt value, giving 25 days of retention on txIds
+    - name: KAFKA_CFG_TRANSACTIONAL_ID_EXPIRATION_MS
+      value: "2147483647"
   # kafka.extraVolumes -- Extra volume(s) to add to Kafka statefulset.
   extraVolumes:
     - name: kafka-custom-scripts
@@ -1222,7 +1231,7 @@ kafka:
         tag: 0.15.0-focal-20210827-r138
       resources:
         limits:
-          cpu: "200m"
+          cpu: "1"
           memory: "300Mi"
           ephemeral-storage: "1Gi"
         requests:
@@ -1234,8 +1243,8 @@ kafka:
       enabled: false
       # kafka.metrics.serviceMonitor.interval -- How frequently to scrape metrics.
       interval: 20s
-      # kafka.metrics.serviceMonitor.selector -- Selector to target Prometheus instance.
-      selector: {}
+      # kafka.metrics.serviceMonitor.labels -- Add extra labels to target a specific prometheus instance
+      labels: {}
   readinessProbe:
     # kafka.readinessProbe.initialDelaySeconds -- Delay before readiness probe is initiated.
     initialDelaySeconds: 45

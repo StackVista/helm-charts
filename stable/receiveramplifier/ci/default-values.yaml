@@ -13,3 +13,4 @@ ingress:
 receiveramplifier:
   image:
     pullSecretUsername:
+  targetUrl: "http://localhost"
