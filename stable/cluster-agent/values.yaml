@@ -26,15 +26,10 @@ all:
     # all.image.registry -- The image registry to use.
     registry: "quay.io"
 
-
 agent:
   containerRuntime:
-    cri:
-      # agent.containerRuntime.cri.enabled -- Enable / disable the configuration of CRI container check.
-      enabled: false
-    containerd:
-      # agent.containerRuntime.containerd.enabled -- Enable / disable the configuration of containerd container check.
-      enabled: false
+    # agent.containerRuntime.socketPath -- Configure the CRI socket path.
+    socketPath: ""
   scc:
     # agent.scc.enabled -- Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift.
     enabled: false

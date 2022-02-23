@@ -94,13 +94,9 @@ spec:
             value: {{ .Values.agent.skipSslValidation | quote }}
           - name: STS_STS_URL
             value: {{ include "cluster-agent.stackstate.url" . }}
-          {{- if .Values.agent.containerRuntime.cri.enabled }}
+          {{- if .Values.agent.containerRuntime.socketPath }}
           - name: STS_CRI_SOCKET_PATH
-            value: /var/run/crio/crio.sock
-          {{- end }}
-          {{- if .Values.agent.containerRuntime.containerd.enabled }}
-          - name: STS_CRI_SOCKET_PATH
-            value: /var/run/containerd/containerd.sock
+            value: {{- .Values.agent.containerRuntime.socketPath }}
           {{- end }}
           {{- range $key, $value := .Values.global.extraEnv.open }}
           - name: {{ $key }}
@@ -143,20 +139,13 @@ spec:
             {{- toYaml . | nindent 12 }}
         {{- end }}
           volumeMounts:
-          {{- if .Values.agent.containerRuntime.cri.enabled }}
           - name: crisocket
             mountPath: /var/run/crio/crio.sock
-          - name: var-run
-            mountPath: /host/var/run
-            readOnly: true
-          {{- end }}
-          {{- if .Values.agent.containerRuntime.containerd.enabled }}
           - name: containerdsocket
             mountPath: /var/run/containerd/containerd.sock
           - name: var-run
             mountPath: /host/var/run
             readOnly: true
-          {{- end }}
           - name: sys-kernel-debug
             mountPath: /sys/kernel/debug
           - name: dockersocket
@@ -204,24 +193,16 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       volumes:
-      {{- if .Values.agent.containerRuntime.cri.enabled }}
       - hostPath:
           path: /var/run/crio/crio.sock
         name: crisocket
       - hostPath:
-          path: /var/run
-          type: DirectoryOrCreate
-        name: var-run
-      {{- end }}
-      {{- if .Values.agent.containerRuntime.containerd.enabled }}
-      - hostPath:
           path: /var/run/containerd/containerd.sock
         name: containerdsocket
-      - hostPath:
+      - name: var-run
+        hostPath:
           path: /var/run
           type: DirectoryOrCreate
-        name: var-run
-      {{- end }}
       - hostPath:
           path: /sys/kernel/debug
         name: sys-kernel-debug
