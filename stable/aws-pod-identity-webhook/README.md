@@ -2,7 +2,7 @@
 
 A Helm chart for the Amazon EKS Pod Identity Webhook
 
-Current chart version is `1.0.1`
+Current chart version is `1.0.2`
 
 **Homepage:** <https://github.com/aws/amazon-eks-pod-identity-webhook>
 
