@@ -94,9 +94,9 @@ spec:
             value: {{ .Values.agent.skipSslValidation | quote }}
           - name: STS_STS_URL
             value: {{ include "cluster-agent.stackstate.url" . }}
-          {{- if .Values.agent.containerRuntime.socketPath }}
+          {{- if .Values.agent.containerRuntime.customSocketPath }}
           - name: STS_CRI_SOCKET_PATH
-            value: {{- .Values.agent.containerRuntime.socketPath }}
+            value: {{- .Values.agent.containerRuntime.customSocketPath }}
           {{- end }}
           {{- range $key, $value := .Values.global.extraEnv.open }}
           - name: {{ $key }}
@@ -139,9 +139,9 @@ spec:
             {{- toYaml . | nindent 12 }}
         {{- end }}
           volumeMounts:
-          {{- if .Values.agent.containerRuntime.socketPath }}
+          {{- if .Values.agent.containerRuntime.customSocketPath }}
           - name: customcrisocket
-            mountPath: {{- .Values.agent.containerRuntime.socketPath }}
+            mountPath: {{- .Values.agent.containerRuntime.customSocketPath }}
           {{- end }}
           - name: crisocket
             mountPath: /var/run/crio/crio.sock
@@ -194,9 +194,9 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       volumes:
-      {{- if .Values.agent.containerRuntime.socketPath }}
+      {{- if .Values.agent.containerRuntime.customSocketPath }}
       - hostPath:
-          path: {{- .Values.agent.containerRuntime.socketPath }}
+          path: {{- .Values.agent.containerRuntime.customSocketPath }}
         name: customcrisocket
       {{- end }}
       - hostPath:

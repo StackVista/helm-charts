@@ -28,8 +28,8 @@ all:
 
 agent:
   containerRuntime:
-    # agent.containerRuntime.socketPath -- Configure the CRI socket path.
-    socketPath: ""
+    # agent.containerRuntime.customSocketPath -- If the container socket path does not match the default for CRI-O, Containerd or Docker, supply a custom socket path.
+    customSocketPath: ""
   scc:
     # agent.scc.enabled -- Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift.
     enabled: false
