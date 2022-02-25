@@ -46,11 +46,11 @@ agent:
     # agent.processAgent.enabled -- Enable / disable the agent process agent module.
     enabled: true
     checkIntervals:
-      # agent.processAgent.checkIntervals.container -- Override value for the default value of the container check interval in seconds.
+      # agent.processAgent.checkIntervals.container -- Override the default value of the container check interval in seconds.
       container: 30
-      # agent.processAgent.checkIntervals.connections -- Override value for the default value of the connections check interval in seconds.
+      # agent.processAgent.checkIntervals.connections -- Override the default value of the connections check interval in seconds.
       connections: 30
-      # agent.processAgent.checkIntervals.process -- Override value for the default value of the process check interval in seconds.
+      # agent.processAgent.checkIntervals.process -- Override the default value of the process check interval in seconds.
       process: 30
   # agent.skipSslValidation -- Set to true if self signed certificates are used.
   skipSslValidation: false

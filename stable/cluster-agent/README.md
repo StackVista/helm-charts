@@ -72,9 +72,9 @@ stackstate/cluster-agent
 | agent.networkTracing.enabled | bool | `true` | Enable / disable the agent network tracing module. |
 | agent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | agent.priorityClassName | string | `""` | Priority class for agent pods. |
-| agent.processAgent.checkIntervals.connections | int | `30` | Override value for the default value of the connections check interval in seconds. |
-| agent.processAgent.checkIntervals.container | int | `30` | Override value for the default value of the container check interval in seconds. |
-| agent.processAgent.checkIntervals.process | int | `30` | Override value for the default value of the process check interval in seconds. |
+| agent.processAgent.checkIntervals.connections | int | `30` | Override the default value of the connections check interval in seconds. |
+| agent.processAgent.checkIntervals.container | int | `30` | Override the default value of the container check interval in seconds. |
+| agent.processAgent.checkIntervals.process | int | `30` | Override the default value of the process check interval in seconds. |
 | agent.processAgent.enabled | bool | `true` | Enable / disable the agent process agent module. |
 | agent.protocolInspection.enabled | bool | `true` | Enable / disable the agent protocol inspection. |
 | agent.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
