@@ -88,6 +88,12 @@ spec:
             value: {{ .Values.agent.protocolInspection.enabled | quote }}
           - name: STS_PROCESS_AGENT_ENABLED
             value: {{ .Values.agent.processAgent.enabled | quote }}
+          - name: STS_CONTAINER_CHECK_INTERVAL
+            value: {{ .Values.agent.processAgent.checkIntervals.container | quote }}
+          - name: STS_CONNECTION_CHECK_INTERVAL
+            value: {{ .Values.agent.processAgent.checkIntervals.connections | quote }}
+          - name: STS_PROCESS_CHECK_INTERVAL
+            value: {{ .Values.agent.processAgent.checkIntervals.process | quote }}
           - name: STS_PROCESS_AGENT_URL
             value: {{ include "cluster-agent.stackstate.url" . }}
           - name: STS_SKIP_SSL_VALIDATION
