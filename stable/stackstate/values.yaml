@@ -237,11 +237,11 @@ stackstate:
       resources:
         limits:
           memory: "1600Mi"
-          cpu: "600m"
+          cpu: "2"
           ephemeral-storage: "1Gi"
         requests:
           memory: "1600Mi"
-          cpu: "600m"
+          cpu: "2"
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "575Mi"
