@@ -22,6 +22,8 @@ all:
   metrics:
     # all.metrics.enabled -- Enable metrics port.
     enabled: false
+    # stackstate.components.all.metrics.agentAnnotationsEnabled -- Put annotations on each pod to instruct the stackstate agent to scrape the metrics
+    agentAnnotationsEnabled: true
     servicemonitor:
       # all.metrics.servicemonitor.additionalLabels -- Additional labels for targeting Prometheus operator instances.
       additionalLabels: {}

@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.124`
+Current chart version is `0.1.125`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -11,7 +11,7 @@ Current chart version is `0.1.124`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | zookeeper | 5.3.4 |
-| https://helm.stackstate.io/ | common | 0.4.19 |
+| https://helm.stackstate.io/ | common | 0.4.21 |
 
 ## Required Values
 
@@ -26,6 +26,7 @@ Current chart version is `0.1.124`
 | all.image.pullSecretPassword | string | `nil` | Password used to login to the registry to pull Docker images of all pods. |
 | all.image.pullSecretUsername | string | `nil` | Username used to login to the registry to pull Docker images of all pods. |
 | all.image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
+| all.metrics.agentAnnotationsEnabled | bool | `true` |  |
 | all.metrics.enabled | bool | `false` | Enable metrics port. |
 | all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
 | all.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
