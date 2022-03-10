@@ -26,16 +26,16 @@ dependencies:
     version: 1.0.1
     condition: cluster-agent.enabled
   - name: common
-    repository: https://helm.stackstate.io
-    version: 0.4.17
+    repository: file://../common/
+    version: "*"
   - name: elasticsearch
     condition: elasticsearch.enabled
     repository: https://helm.stackstate.io
     version: 7.16.2-stackstate.2
   - name: hbase
     condition: hbase.enabled
-    repository: https://helm.stackstate.io
-    version: 0.1.121
+    repository: file://../hbase/
+    version: "*"
   - name: kafka
     condition: kafka.enabled
     repository: https://charts.bitnami.com/bitnami

@@ -14,7 +14,7 @@ Receiver amplifier to increase the load on an installation.
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://helm.stackstate.io/ | common | 0.4.21 |
+| file://../common/ | common | * |
 ## Values
 
 | Key | Type | Default | Description |

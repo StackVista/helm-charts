@@ -10,6 +10,8 @@ Current chart version is `4.7.0-snapshot.0`
 
 | Repository | Name | Version |
 |------------|------|---------|
+| file://../common/ | common | * |
+| file://../hbase/ | hbase | * |
 | https://charts.bitnami.com/bitnami | kafka | 14.8.1 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
 | https://helm.stackstate.io | anomaly-detection | 4.7.0-snapshot.31 |
@@ -127,6 +129,7 @@ stackstate/stackstate
 | elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"250Gi"}}}` | PVC template defaulting to 250Gi default volumes |
 | global.imagePullSecrets | list | `[]` | List of image pull secret names to be used by all images across all charts. |
 | global.receiverApiKey | string | `""` | API key to be used by the Receiver; if no key is provided, a random one will be generated for you. |
+| hbase.all.metrics.agentAnnotationsEnabled | bool | `true` |  |
 | hbase.all.metrics.enabled | bool | `true` |  |
 | hbase.commonLabels | object | `{"app.kubernetes.io/part-of":"stackstate"}` | Add additional labels to all resources created for all hbase resources |
 | hbase.console.enabled | bool | `false` | Enable / disable deployment of the stackgraph-console for debugging. |
@@ -271,6 +274,7 @@ stackstate/stackstate
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
 | stackstate.components.all.image.tag | string | `"master"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
+| stackstate.components.all.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
 | stackstate.components.all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
 | stackstate.components.all.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |

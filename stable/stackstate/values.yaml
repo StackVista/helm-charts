@@ -148,6 +148,8 @@ stackstate:
       metrics:
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
         enabled: true
+        # stackstate.components.all.metrics.agentAnnotationsEnabled -- Put annotations on each pod to instruct the stackstate agent to scrape the metrics
+        agentAnnotationsEnabled: true
         servicemonitor:
           # stackstate.components.all.metrics.servicemonitor.additionalLabels -- Additional labels for targeting Prometheus operator instances.
           additionalLabels: {}
@@ -1019,6 +1021,8 @@ hbase:
   all:
     metrics:
       enabled: true
+      # stackstate.components.all.metrics.agentAnnotationsEnabled -- Put annotations on each pod to instruct the stackstate agent to scrape the metrics
+      agentAnnotationsEnabled: true
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
