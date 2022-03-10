@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `1.0.0`
+Current chart version is `1.0.1`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -61,7 +61,7 @@ stackstate/cluster-agent
 | agent.containerRuntime.customSocketPath | string | `""` | If the container socket path does not match the default for CRI-O, Containerd or Docker, supply a custom socket path. |
 | agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | agent.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
-| agent.image.tag | string | `"2.15.0"` | Default container image tag. |
+| agent.image.tag | string | `"2.16.0"` | Default container image tag. |
 | agent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | agent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | agent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -103,7 +103,7 @@ stackstate/cluster-agent
 | clusterAgent.enabled | bool | `true` | Enable / disable the cluster agent. |
 | clusterAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterAgent.image.repository | string | `"stackstate/stackstate-cluster-agent"` | Base container image repository. |
-| clusterAgent.image.tag | string | `"2.15.0"` | Default container image tag. |
+| clusterAgent.image.tag | string | `"2.16.0"` | Default container image tag. |
 | clusterAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | clusterAgent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -120,10 +120,10 @@ stackstate/cluster-agent
 | clusterAgent.readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
 | clusterAgent.readinessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the readiness probe. |
 | clusterAgent.replicaCount | int | `1` | Number of replicas of the cluster agent to deploy. |
-| clusterAgent.resources.limits.cpu | string | `"200m"` | CPU resource limits. |
-| clusterAgent.resources.limits.memory | string | `"256Mi"` | Memory resource limits. |
-| clusterAgent.resources.requests.cpu | string | `"50m"` | CPU resource requests. |
-| clusterAgent.resources.requests.memory | string | `"64Mi"` | Memory resource requests. |
+| clusterAgent.resources.limits.cpu | string | `"400m"` | CPU resource limits. |
+| clusterAgent.resources.limits.memory | string | `"1024Mi"` | Memory resource limits. |
+| clusterAgent.resources.requests.cpu | string | `"100m"` | CPU resource requests. |
+| clusterAgent.resources.requests.memory | string | `"256Mi"` | Memory resource requests. |
 | clusterAgent.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | clusterAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | clusterChecks.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -134,7 +134,7 @@ stackstate/cluster-agent
 | clusterChecks.enabled | bool | `true` | Enable / disable runnning cluster checks in a separately deployed pod |
 | clusterChecks.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterChecks.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
-| clusterChecks.image.tag | string | `"2.15.0"` | Default container image tag. |
+| clusterChecks.image.tag | string | `"2.16.0"` | Default container image tag. |
 | clusterChecks.kubeStateMetrics.url | string | `""` | URL of the KubeStateMetrics server. This needs to be configured if the KubeStateMetrics server is not enabled by default in this Helm chart. |
 | clusterChecks.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterChecks.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |

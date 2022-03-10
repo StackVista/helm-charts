@@ -67,7 +67,7 @@ agent:
     # agent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-agent-2
     # agent.image.tag -- Default container image tag.
-    tag: 2.15.0
+    tag: 2.16.0
     # agent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -159,7 +159,7 @@ clusterAgent:
     # clusterAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-cluster-agent
     # clusterAgent.image.tag -- Default container image tag.
-    tag: 2.15.0
+    tag: 2.16.0
     # clusterAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -209,14 +209,14 @@ clusterAgent:
   resources:
     limits:
       # clusterAgent.resources.limits.cpu -- CPU resource limits.
-      cpu: "200m"
+      cpu: "400m"
       # clusterAgent.resources.limits.memory -- Memory resource limits.
-      memory: "256Mi"
+      memory: "1024Mi"
     requests:
       # clusterAgent.resources.requests.cpu -- CPU resource requests.
-      cpu: "50m"
+      cpu: "100m"
       # clusterAgent.resources.requests.memory -- Memory resource requests.
-      memory: "64Mi"
+      memory: "256Mi"
 
   # clusterAgent.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}
@@ -257,7 +257,7 @@ clusterChecks:
     # clusterChecks.image.repository -- Base container image repository.
     repository: stackstate/stackstate-agent-2
     # clusterChecks.image.tag -- Default container image tag.
-    tag: 2.15.0
+    tag: 2.16.0
     # clusterChecks.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
