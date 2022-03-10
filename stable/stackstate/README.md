@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.6.0-snapshot.34`
+Current chart version is `4.7.0-snapshot.0`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -325,7 +325,7 @@ stackstate/stackstate
 | stackstate.components.correlate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.correlate.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `correlate` pods. |
 | stackstate.components.correlate.replicaCount | int | `1` | Number of `correlate` replicas. |
-| stackstate.components.correlate.resources | object | `{"limits":{"cpu":"600m","ephemeral-storage":"1Gi","memory":"1600Mi"},"requests":{"cpu":"600m","ephemeral-storage":"1Mi","memory":"1600Mi"}}` | Resource allocation for `correlate` pods. |
+| stackstate.components.correlate.resources | object | `{"limits":{"cpu":"2","ephemeral-storage":"1Gi","memory":"1600Mi"},"requests":{"cpu":"2","ephemeral-storage":"1Mi","memory":"1600Mi"}}` | Resource allocation for `correlate` pods. |
 | stackstate.components.correlate.sizing.baseMemoryConsumption | string | `"575Mi"` |  |
 | stackstate.components.correlate.sizing.javaHeapMemoryFraction | string | `"78"` |  |
 | stackstate.components.correlate.tolerations | list | `[]` | Toleration labels for pod assignment. |
