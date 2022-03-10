@@ -12,6 +12,7 @@ integration_test_stackstate:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
+    - helm dependencies update stable/hbase
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
   rules:
@@ -1230,6 +1231,7 @@ test_stackstate:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
+    - helm dependencies update stable/hbase
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
   rules:
@@ -1390,6 +1392,13 @@ validate_charts:
 validate_stackstate_chart:
   before_script:
     - .gitlab/validate_before_script.sh
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
   environment: stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
@@ -1401,6 +1410,7 @@ validate_stackstate_chart:
     - when: always
   script:
     - ct list-changed --config test/ct.yaml
+    - helm dep build stable/hbase
     - ct lint --debug --validate-maintainers=false --charts stable/stackstate --config test/ct.yaml
     - .gitlab/validate_kubeconform.sh
   stage: validate

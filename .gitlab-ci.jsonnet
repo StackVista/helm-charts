@@ -6,10 +6,12 @@ local repositories = variables.helm.repositories;
 local charts = variables.helm.charts;
 local public_charts = variables.helm.public_charts;
 
-local helm_fetch_dependencies = [
+local helm_config_dependencies = [
     'helm repo add %s %s' % [std.strReplace(name, '_', '-'), repositories[name]]
     for name in std.objectFields(repositories)
-  ] +
+  ];
+
+local helm_fetch_dependencies = helm_config_dependencies +
   [
     'helm repo update',
   ];
@@ -53,7 +55,7 @@ local validate_and_push_jobs = {
     stage: 'validate',
   } + skip_when_dependency_upgrade,
   validate_stackstate_chart: {
-    before_script: ['.gitlab/validate_before_script.sh'],
+    before_script: ['.gitlab/validate_before_script.sh'] + helm_config_dependencies,
     environment: 'stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}',
     rules: [
       {
@@ -64,6 +66,7 @@ local validate_and_push_jobs = {
     ],
     script: [
       'ct list-changed --config test/ct.yaml',
+      'helm dep build stable/hbase',  // a dependency with dependencies, ct lint will not resolve that properly
       'ct lint --debug --validate-maintainers=false --charts stable/stackstate --config test/ct.yaml',
       '.gitlab/validate_kubeconform.sh',
     ],
@@ -90,7 +93,9 @@ local validate_and_push_jobs = {
 
 local test_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
-  before_script: helm_fetch_dependencies +
+  before_script: helm_fetch_dependencies + (
+    if chart == 'stackstate' then ['helm dependencies update stable/hbase'] else []
+  ) +
   ['helm dependencies update ${CHART}'],
   script: [
     'go test ./stable/' + chart + '/test/...',
@@ -111,7 +116,9 @@ local test_chart_job(chart) = {
 
 local itest_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
-  before_script: helm_fetch_dependencies +
+  before_script: helm_fetch_dependencies + (
+    if chart == 'stackstate' then ['helm dependencies update stable/hbase'] else []
+  ) +
   ['helm dependencies update ${CHART}'],
   script: [
     'go test ./stable/' + chart + '/itest/...',
