@@ -27,7 +27,7 @@ local skip_when_dependency_upgrade = {
 };
 
 local sync_charts_template = {
-  before_script: helm_fetch_dependencies,
+  before_script: helm_fetch_dependencies + ['helm dependencies build stable/hbase'],
   script: [
     'source .gitlab/aws_auth_setup.sh',
     'sh test/sync-repo.sh',
@@ -94,7 +94,7 @@ local validate_and_push_jobs = {
 local test_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   before_script: helm_fetch_dependencies + (
-    if chart == 'stackstate' then ['helm dependencies update stable/hbase'] else []
+    if chart == 'stackstate' then ['helm dependencies build stable/hbase'] else []
   ) +
   ['helm dependencies update ${CHART}'],
   script: [
@@ -117,7 +117,7 @@ local test_chart_job(chart) = {
 local itest_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   before_script: helm_fetch_dependencies + (
-    if chart == 'stackstate' then ['helm dependencies update stable/hbase'] else []
+    if chart == 'stackstate' then ['helm dependencies build stable/hbase'] else []
   ) +
   ['helm dependencies update ${CHART}'],
   script: [
@@ -138,7 +138,9 @@ local itest_chart_job(chart) = {
 } + skip_when_dependency_upgrade;
 
 local push_chart_job_if(chart, repository_url, repository_username, repository_password, rules) = {
-  script: [
+  script: (
+    if chart == 'stackstate' then ['helm dependencies build stable/hbase'] else []
+  ) + [
     'helm dependencies update ${CHART}',
     'helm cm-push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
   ],
