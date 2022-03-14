@@ -10,7 +10,7 @@ image:
   # image.repository -- Base container image repository.
   repository: quay.io/stackstate/trafficmirror
   # image.tag -- Default container image tag.
-  tag: v2.0.0
+  tag: v2.1.0
 
 ingress:
   # ingress.enabled -- Enable use of ingress controllers.

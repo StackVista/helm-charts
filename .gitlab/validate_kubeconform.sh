@@ -18,6 +18,6 @@ for chartPath in "${charts[@]}"; do
       valuesFile=()
     fi
 
-    helm template "${valuesFile[@]}" "${chartPath}" | kubeconform --skip ServiceMonitor,PrometheusRule -
+    helm template --api-versions networking.k8s.io/v1/Ingress "${valuesFile[@]}" "${chartPath}" | kubeconform --skip ServiceMonitor,PrometheusRule -
   fi
 done

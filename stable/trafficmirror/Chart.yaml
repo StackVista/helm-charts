@@ -1,6 +1,6 @@
-apiVersion: v1
+apiVersion: v2
 appVersion: 2.0.0
-version: 2.0.1
+version: 2.0.2
 description: Trafficmirror -- mirror traffic to various endpoints.
 keywords:
   - mirror
@@ -17,3 +17,7 @@ maintainers:
   - name: Vincent Partington
     email: vpartington@stackstate.com
 name: trafficmirror
+dependencies:
+  - name: common
+    version: "*"
+    repository: file://../common/
