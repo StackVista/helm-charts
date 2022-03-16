@@ -16,3 +16,4 @@ excluded-charts:
 helm-extra-args: --debug --kubeconfig ${KUBECONFIG} --timeout 1200
 remote: helm
 target-branch: master
+check-version-increment: false

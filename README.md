@@ -53,7 +53,7 @@ $ go test ./stable/<chart>/itest/...
 
 The test-set for a chart is in the `stable/<chart>/itest` directory.
 
-You are encouraged to adding more tests when working on the Helm charts ;).
+You are encouraged to add more tests when working on the Helm charts ;).
 
 ## Chart build scripting
 
