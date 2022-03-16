@@ -1,6 +1,6 @@
 # elasticsearch
 
-![Version: 7.6.2-stackstate.19](https://img.shields.io/badge/Version-7.6.2--stackstate.19-informational?style=flat-square) ![AppVersion: 7.6.2](https://img.shields.io/badge/AppVersion-7.6.2-informational?style=flat-square)
+![Version: 7.6.2-stackstate.27](https://img.shields.io/badge/Version-7.6.2--stackstate.27-informational?style=flat-square) ![AppVersion: 7.6.2](https://img.shields.io/badge/AppVersion-7.6.2-informational?style=flat-square)
 Official Elastic helm chart for Elasticsearch
 **Homepage:** <https://github.com/elastic/helm-charts>
 ## Maintainers
@@ -41,7 +41,7 @@ Official Elastic helm chart for Elasticsearch
 | imagePullSecrets | list | `[]` |  |
 | imageRegistry | string | `"quay.io"` |  |
 | imageRepository | string | `"stackstate/elasticsearch"` |  |
-| imageTag | string | `"7.6.2-yu"` |  |
+| imageTag | string | `"7.6.2-sts.20220316.0825"` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.enabled | bool | `false` |  |
 | ingress.hosts[0] | string | `"chart-example.local"` |  |
