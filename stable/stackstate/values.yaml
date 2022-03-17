@@ -916,6 +916,8 @@ stackstate:
 # Dependency chart overrides #
 ##############################
 elasticsearch:
+  # elasticsearch.imageTag -- Overrides the image tag in the dependent chart, for sts 4.5.6 and later versions of 4.5
+  imageTag: "7.6.2-sts.20220316.0825"
   # elasticsearch.clusterHealthCheckParams -- The Elasticsearch cluster health status params that will be used by readinessProbe command
   clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
   # elasticsearch.clusterName -- Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**

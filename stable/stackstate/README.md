@@ -103,6 +103,7 @@ stackstate/stackstate
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
 | elasticsearch.esJavaOpts | string | `"-Xmx3g -Xms3g -Des.allow_insecure_settings=true"` | JVM options |
 | elasticsearch.extraEnvs | list | `[{"name":"action.auto_create_index","value":"true"},{"name":"indices.query.bool.max_clause_count","value":"10000"}]` | Extra settings that StackState uses for Elasticsearch. |
+| elasticsearch.imageTag | string | `"7.6.2-sts.20220316.0825"` | Overrides the image tag in the dependent chart, for sts 4.5.6 and later versions of 4.5 |
 | elasticsearch.minimumMasterNodes | int | `2` | Minimum number of Elasticsearch master nodes. |
 | elasticsearch.nodeGroup | string | `"master"` |  |
 | elasticsearch.prometheus-elasticsearch-exporter.enabled | bool | `true` |  |
