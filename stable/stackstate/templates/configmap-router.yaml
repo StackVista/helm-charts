@@ -33,36 +33,44 @@ data:
                   - match:
                       prefix: "/admin/"
                     route:
+                      timeout: 0s
                       cluster: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-admin"
                       prefix_rewrite: "/"
                   - match:
                       prefix: "/api"
                     route:
+                      timeout: 0s
                       cluster: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
                   - match:
                       prefix: "/loginCallback"
                     route:
+                      timeout: 0s
                       cluster: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
                   - match:
                       prefix: "/loginInfo"
                     route:
+                      timeout: 0s
                       cluster: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
                   - match:
                       prefix: "/logout"
                     route:
+                      timeout: 0s
                       cluster: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
                   - match:
                       prefix: "/stsAgent"
                     route:
+                      timeout: 0s
                       cluster: "{{ template "common.fullname.short" . }}-receiver"
                   - match:
                       prefix: "/receiver/"
                     route:
+                      timeout: 0s
                       cluster: "{{ template "common.fullname.short" . }}-receiver"
                       prefix_rewrite: "/"
                   - match:
                       prefix: "/"
                     route:
+                      timeout: 0s
                       cluster: "{{ template "common.fullname.short" . }}-ui"
                     response_headers_to_add:
                       - header:
