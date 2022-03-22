@@ -21,7 +21,7 @@ func TestClusterRoleDeployedToSameNamespaceAsChartName(t *testing.T) {
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	require.Equal(t, 2, len(resources.ClusterRoleBindings))
+	require.Equal(t, 3, len(resources.ClusterRoleBindings))
 	require.Contains(t, resources.ClusterRoleBindings, "stackstate-authentication")
 	require.Contains(t, resources.ClusterRoleBindings, "stackstate-authorization")
 	require.Equal(t, 1, len(resources.ClusterRoles))
@@ -39,7 +39,7 @@ func TestClusterRoleDeployedToDifferentNamespaceAsChartName(t *testing.T) {
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	require.Equal(t, 2, len(resources.ClusterRoleBindings))
+	require.Equal(t, 3, len(resources.ClusterRoleBindings))
 	require.Contains(t, resources.ClusterRoleBindings, "devver-stackstate-authentication")
 	require.Contains(t, resources.ClusterRoleBindings, "devver-stackstate-authorization")
 	require.Equal(t, 1, len(resources.ClusterRoles))
@@ -58,7 +58,7 @@ func TestClusterRoleNameWhenNamespaceReleaseNameAndChartNameAllDifferent(t *test
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	require.Equal(t, 2, len(resources.ClusterRoleBindings))
+	require.Equal(t, 3, len(resources.ClusterRoleBindings))
 	require.Contains(t, resources.ClusterRoleBindings, "devver-stacky-stackstate-authentication")
 	require.Contains(t, resources.ClusterRoleBindings, "devver-stacky-stackstate-authorization")
 	require.Equal(t, 1, len(resources.ClusterRoles))
