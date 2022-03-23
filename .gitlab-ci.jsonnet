@@ -175,6 +175,7 @@ local push_stackstate_chart_releases =
     '${CHARTMUSEUM_INTERNAL_PASSWORD}',
     variables.rules.tag.all_release_rules,
     ) {
+    before_script: helm_fetch_dependencies,
     stage: 'push-charts-to-internal',
   },
   push_stackstate_release_to_public: push_chart_job_if(
@@ -184,6 +185,7 @@ local push_stackstate_chart_releases =
     '${CHARTMUSEUM_PASSWORD}',
     [variables.rules.tag.release_rule],
     ) {
+    before_script: helm_fetch_dependencies,
     stage: 'push-charts-to-public',
   },
 };
