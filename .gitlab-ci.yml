@@ -560,6 +560,15 @@ push_stackstate-standalone_to_public:
   variables:
     CHART: stable/stackstate-standalone
 push_stackstate_release_to_internal:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
@@ -582,6 +591,15 @@ push_stackstate_release_to_internal:
   variables:
     CHART: stable/stackstate
 push_stackstate_release_to_public:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
