@@ -21,13 +21,11 @@ env:
 {{- include "stackstate.baseurls.envvars" . }}
 {{- include "stackstate.server.cpu.parallelism" .Values.stackstate.components.sync.resources.requests.cpu }}
 - name: CONFIG_FORCE_stackstate_cacheStorage_backend
-  value: {{ default .Values.stackstate.components.sync.cache.backend "mapdb" | quote }}
-{{- if eq (lower .Values.stackstate.components.sync.cache.backend) "rocksdb" -}}
-  {{- $xmxConfig := dict "Mem" .ServiceConfig.resources.limits.memory "BaseMem" .ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
-  {{- $xmx := (include "stackstate.server.memory.resource" $xmxConfig) | int }}
+  value: {{ .Values.stackstate.components.sync.cache.backend }}
+{{- if eq (lower .Values.stackstate.components.sync.cache.backend) "rocksdb" }}
 - name: CONFIG_FORCE_stackstate_rocksdb_cacheSizeBytes
-  value: {{- include "stackstate.server.cache.memory.limit" $xmx -}}
-{{- end -}}
+  value: {{ include "stackstate.server.cache.memory.limit" .Values.stackstate.components.sync.resources.requests.memory | int }}
+{{- end }}
 - name: API_KEY
   valueFrom:
     secretKeyRef:

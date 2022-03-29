@@ -7,7 +7,9 @@
 {{- end -}}
 
 {{- define "stackstate.server.cache.memory.limit" -}}
-{{- $cacheSize := (div . 3) | int -}}
+{{- $podMemoryLimitMB := ( include "stackstate.storage.to.megabytes" . ) -}}
+{{- $podMemoryLimitBytes := (mul $podMemoryLimitMB 1000) -}}
+{{- $cacheSize := (div $podMemoryLimitBytes 3) | int -}}
 {{- max $cacheSize 0 }}
 {{- end -}}
 
