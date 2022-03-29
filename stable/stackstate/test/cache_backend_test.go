@@ -58,6 +58,6 @@ func TestSyncWithRocksDbCache(t *testing.T) {
 	assert.NotNil(t, stsSyncDeployment)
 	expected := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_cacheStorage_backend", Value: "rocksdb"}
 	assert.Contains(t, stsSyncDeployment.Spec.Template.Spec.Containers[0].Env, expected)
-	expectedBytes := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_rocksdb_cacheSizeBytes", Value: 1166666}
+	expectedBytes := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_rocksdb_cacheSizeBytes", Value: "1166666" }
 	assert.Contains(t, stsSyncDeployment.Spec.Template.Spec.Containers[0].Env, expectedBytes)
 }
