@@ -7,10 +7,11 @@
 {{- end -}}
 
 {{- define "stackstate.server.cache.memory.limit" -}}
-{{- $podMemoryLimitMB := ( include "stackstate.storage.to.megabytes" . ) -}}
-{{- $podMemoryLimitBytes := (mul $podMemoryLimitMB 1000) -}}
-{{- $cacheSize := (div $podMemoryLimitBytes 3) | int -}}
-{{- max $cacheSize 0 }}
+{{- $podMemoryLimitMB := ( include "stackstate.storage.to.megabytes" .Mem ) -}}
+{{- $podMemoryLimitBytes := (mul (mul $podMemoryLimitMB 1000) 1000) -}}
+{{- $thisMemoryFactor := (sub 100 .JavaHeapFraction) -}}
+{{- $cacheSize := (div (mul $podMemoryLimitBytes $thisMemoryFactor) 100) | int -}}
+{{- max (sub $cacheSize .BaseMem) 0 }}
 {{- end -}}
 
 {{/*
