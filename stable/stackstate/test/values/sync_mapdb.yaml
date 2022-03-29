@@ -1,0 +1,6 @@
+stackstate:
+  components:
+    sync:
+      cache:
+        backend: "mapdb"
+
