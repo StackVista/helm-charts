@@ -497,6 +497,7 @@ stackstate/stackstate
 | stackstate.components.sync.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.sync.sizing.javaHeapMemoryFraction | string | `"60"` |  |
 | stackstate.components.sync.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.sync.cache.backend | string | `"mapdb"` | Backend type for cache implementation. Possible values are mapdb, rocksdb and inmemory. |
 | stackstate.components.trace2es.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.trace2es.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.trace2es.enabled | bool | `true` | Enable/disable the trace2es service |

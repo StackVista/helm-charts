@@ -683,6 +683,9 @@ stackstate:
       config: ""
       # stackstate.components.sync.additionalLogging -- Additional logback config
       additionalLogging: ""
+      cache:
+        # Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory
+        backend: "mapdb"
     slicing:
       extraEnv:
         # stackstate.components.slicing.extraEnv.open -- Extra open environment variables to inject into pods.

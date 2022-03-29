@@ -6,6 +6,11 @@
 {{- max $javaHeapMemory 0 -}}
 {{- end -}}
 
+{{- define "stackstate.server.cache.memory.limit" -}}
+{{- $cacheSize := (div . 3) | int -}}
+{{- max $cacheSize 0 }}
+{{- end -}}
+
 {{/*
     Include the parallelism env var which is derived from the CPU requests on the deployment
     Receives the CPU requests string as argument and uses it to calc the effective parallelism on the sync service.
@@ -28,7 +33,7 @@
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_singleWriter_releaseRevision" .Release.Revision }}
 {{- else }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_singleWriter_releaseRevision" "1" }}
-{{- end }}
+{{- end -}}
 {{- $xmxConfig := dict "Mem" .ServiceConfig.resources.limits.memory "BaseMem" .ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
 {{- $xmx := (include "stackstate.server.memory.resource" $xmxConfig) | int }}
 {{- $xmsConfig := dict "Mem" .ServiceConfig.resources.requests.memory "BaseMem" .ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
