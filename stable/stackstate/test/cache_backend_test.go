@@ -10,7 +10,7 @@ import (
 )
 
 func TestSyncWithInMemoryCache(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/sync_inmemory.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/sync_inmemory.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -27,7 +27,7 @@ func TestSyncWithInMemoryCache(t *testing.T) {
 }
 
 func TestSyncWithMapDbCache(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/sync_mapdb.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/sync_mapdb.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -44,7 +44,7 @@ func TestSyncWithMapDbCache(t *testing.T) {
 }
 
 func TestSyncWithRocksDbCache(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/sync_rocksdb.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/sync_rocksdb.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
