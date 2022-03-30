@@ -25,7 +25,7 @@ env:
 {{- if eq (lower .Values.stackstate.components.sync.cache.backend) "rocksdb" }}
 {{- $config := dict "Mem" $serviceConfig.ServiceConfig.resources.limits.memory "BaseMem" $serviceConfig.ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" $serviceConfig.ServiceConfig.sizing.javaHeapMemoryFraction }}
 - name: CONFIG_FORCE_stackstate_rocksdb_cacheSizeBytes
-  value: {{ include "stackstate.server.cache.memory.limit" $config | int }}
+  value: {{ include "stackstate.server.cache.memory.limit" $config | int | quote }}
 {{- end }}
 - name: API_KEY
   valueFrom:
