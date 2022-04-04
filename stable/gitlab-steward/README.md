@@ -1,6 +1,6 @@
 # gitlab-steward
 
-![Version: 0.2.12](https://img.shields.io/badge/Version-0.2.12-informational?style=flat-square) ![AppVersion: 0.4.0](https://img.shields.io/badge/AppVersion-0.4.0-informational?style=flat-square)
+![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![AppVersion: 0.5.0](https://img.shields.io/badge/AppVersion-0.5.0-informational?style=flat-square)
 Steward -- GitLab environment cleaner
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 ## Maintainers
@@ -26,7 +26,7 @@ Steward -- GitLab environment cleaner
 | image.pullSecrets | list | `[]` | Extra secrets / credentials needed for container image registry. Is ignored when specifying a pullSecretUsername/password |
 | image.pullsecretPassword | string | `nil` |  |
 | image.repository | string | `"quay.io/stackstate/gitlab-steward"` | Base container image registry. |
-| image.tag | string | `"v0.4.0"` | Default container image tag. |
+| image.tag | string | `"v0.5.0"` | Default container image tag. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeSelector | object | `{}` | Node labels for pod assignment. |
 | resources.limits.cpu | string | `"100m"` | CPU resource limits. |

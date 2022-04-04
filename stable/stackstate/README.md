@@ -485,6 +485,7 @@ stackstate/stackstate
 | stackstate.components.state.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.sync.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.sync.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.sync.cache.backend | string | `"mapdb"` | Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory |
 | stackstate.components.sync.config | string | `""` | Configuration file contents to customize the default StackState sync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.sync.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.sync.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
@@ -497,7 +498,6 @@ stackstate/stackstate
 | stackstate.components.sync.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.sync.sizing.javaHeapMemoryFraction | string | `"60"` |  |
 | stackstate.components.sync.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| stackstate.components.sync.cache.backend | string | `"mapdb"` | Backend type for cache implementation. Possible values are mapdb, rocksdb and inmemory. |
 | stackstate.components.trace2es.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.trace2es.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.trace2es.enabled | bool | `true` | Enable/disable the trace2es service |
