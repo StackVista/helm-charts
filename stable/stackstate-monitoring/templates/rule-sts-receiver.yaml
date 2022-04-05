@@ -16,34 +16,31 @@ spec:
           annotations:
             message: {{`The receiver in {{ $labels.namespace }}, path {{ $labels.path }}, has high element budget saturation level {{ $value }}.`}}
           expr: |
-            stackstate_receiver_unique_element_passed_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~"*.stackstate-receiver"} / stackstate_receiver_unique_element_passed_max{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~"*.stackstate-receiver"} > 0.95
+            stackstate_receiver_unique_element_passed_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~".*.stackstate-receiver"} / stackstate_receiver_unique_element_passed_max{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~".*.stackstate-receiver"} > 0.95
           for: 5m
           labels:
             severity: warning
-      rules:
         - alert: StackStateReceiverElementHourlyBudgetSaturation
           annotations:
             message: {{`The receiver in {{ $labels.namespace }}, path {{ $labels.path }}, has high element hourly budget saturation level {{ $value }}.`}}
           expr: |
-            stackstate_receiver_element_create_passed_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~"*.stackstate-receiver"} / stackstate_receiver_element_create_passed_max{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~"*.stackstate-receiver"} > 0.95
+            stackstate_receiver_element_create_passed_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~".*.stackstate-receiver"} / stackstate_receiver_element_create_passed_max{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~".*.stackstate-receiver"} > 0.95
           for: 5m
           labels:
             severity: warning
-      rules:
         - alert: StackStateReceiverExceedsMaxElementLimit
           annotations:
-            message: {{`The receiver in {{ $labels.namespace }}, path {{ $labels.path }}, exceeds the limit for total number of {{ element_type }}.`}}
+            message: {{`The receiver in {{ $labels.namespace }}, path {{ $labels.path }}, exceeds the limit for total number of {{ $labels.element_type }}.`}}
           expr: |
-            stackstate_receiver_unique_element_passed_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~"*.stackstate-receiver"} > stackstate_receiver_unique_element_passed_max{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~"*.stackstate-receiver"}
+            stackstate_receiver_unique_element_passed_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~".*.stackstate-receiver"} > stackstate_receiver_unique_element_passed_max{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~".*.stackstate-receiver"}
           for: 5m
           labels:
             severity: warning
-      rules:
         - alert: StackStateReceiverExceedsMaxHourlyElementLimit
           annotations:
-            message: {{`The receiver in {{ $labels.namespace }}, path {{ $labels.path }}, exceeds the hourly limit for {{ element_type }}.`}}
+            message: {{`The receiver in {{ $labels.namespace }}, path {{ $labels.path }}, exceeds the hourly limit for {{ $labels.element_type }}.`}}
           expr: |
-            stackstate_receiver_element_create_passed_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~"*.stackstate-receiver"} > stackstate_receiver_element_create_passed_max{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~"*.stackstate-receiver"}
+            stackstate_receiver_element_create_passed_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~".*.stackstate-receiver"} > stackstate_receiver_element_create_passed_max{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~".*.stackstate-receiver"}
           for: 5m
           labels:
             severity: warning
