@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.7.0-snapshot.4`
+Current chart version is `4.7.0-pre.1.rc.4`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -14,7 +14,7 @@ Current chart version is `4.7.0-snapshot.4`
 | file://../hbase/ | hbase | * |
 | https://charts.bitnami.com/bitnami | kafka | 14.8.1 |
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
-| https://helm.stackstate.io | anomaly-detection | 4.7.0-snapshot.132 |
+| https://helm.stackstate.io | anomaly-detection | 4.7.0-pre.1.rc.4 |
 | https://helm.stackstate.io | cluster-agent | 1.0.2 |
 | https://helm.stackstate.io | elasticsearch | 7.16.2-stackstate.2 |
 | https://helm.stackstate.io | kafkaup-operator | 0.1.2 |
@@ -270,7 +270,7 @@ stackstate/stackstate
 | stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
-| stackstate.components.all.image.tag | string | `"master"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
+| stackstate.components.all.image.tag | string | `"4.7.0-pre.1.rc.4"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
@@ -485,6 +485,7 @@ stackstate/stackstate
 | stackstate.components.state.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.sync.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.sync.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.sync.cache.backend | string | `"mapdb"` | Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory |
 | stackstate.components.sync.config | string | `""` | Configuration file contents to customize the default StackState sync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.sync.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.sync.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
@@ -497,7 +498,6 @@ stackstate/stackstate
 | stackstate.components.sync.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.sync.sizing.javaHeapMemoryFraction | string | `"60"` |  |
 | stackstate.components.sync.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| stackstate.components.sync.cache.backend | string | `"mapdb"` | Backend type for cache implementation. Possible values are mapdb, rocksdb and inmemory. |
 | stackstate.components.trace2es.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.trace2es.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.trace2es.enabled | bool | `true` | Enable/disable the trace2es service |
