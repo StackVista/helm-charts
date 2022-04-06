@@ -329,6 +329,16 @@ clusterChecks:
     # clusterChecks.kubeStateMetrics.url -- URL of the KubeStateMetrics server. This needs to be configured if the KubeStateMetrics server is not enabled by default in this Helm chart.
     url: ""
 
+kube-state-metrics:
+  # kube-state-metrics.image -- Details about the docker image to be used for this component. This overrides the value in the bitnami chart.
+  image:
+    # kube-state-metrics.image.registry -- Registry where docker image will be pulled from. This overrides the value in the bitnami chart.
+    registry: quay.io
+    # kube-state-metrics.image.repository -- The path inside the registry where the image is hosted. This overrides the value in the bitnami chart.
+    repository: stackstate/kube-state-metrics
+    # kube-state-metrics.image.tag -- The version tag of the image to be used during deployment. This overrides the value in the bitnami chart.
+    tag: 1.9.7-focal-20220316-r143.20220412.1244
+
 ########################
 # StackState variables #
 ########################

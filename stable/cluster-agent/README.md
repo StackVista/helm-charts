@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `1.0.2`
+Current chart version is `1.0.3`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -167,6 +167,10 @@ stackstate/cluster-agent
 | global.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | global.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | global.imagePullSecrets | list | `[]` | Secrets / credentials needed for container image registry. |
+| kube-state-metrics.image | object | `{"registry":"quay.io","repository":"stackstate/kube-state-metrics","tag":"1.9.7-focal-20220316-r143.20220412.1244"}` | Details about the docker image to be used for this component. This overrides the value in the bitnami chart. |
+| kube-state-metrics.image.registry | string | `"quay.io"` | Registry where docker image will be pulled from. This overrides the value in the bitnami chart. |
+| kube-state-metrics.image.repository | string | `"stackstate/kube-state-metrics"` | The path inside the registry where the image is hosted. This overrides the value in the bitnami chart. |
+| kube-state-metrics.image.tag | string | `"1.9.7-focal-20220316-r143.20220412.1244"` | The version tag of the image to be used during deployment. This overrides the value in the bitnami chart. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | stackstate.apiKey | string | `nil` | **PROVIDE YOUR API KEY HERE** API key to be used by the StackState agent. |
 | stackstate.cluster.authToken | string | `""` | Provide a token to enable secure communication between the agent and the cluster agent. |
