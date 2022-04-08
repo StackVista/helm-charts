@@ -95,6 +95,7 @@ stackstate/cluster-agent
 | clusterAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | clusterAgent.collection.kubernetesEvents | bool | `true` | Enable / disable the cluster agent events collection. |
 | clusterAgent.collection.kubernetesMetrics | bool | `true` | Enable / disable the cluster agent metrics collection. |
+| clusterAgent.collection.kubernetesResources | list | `["namespaces","componentstatuses","configmaps","endpoints","events","nodes","persistentvolumeclaims","persistentvolumes","pods","services","secrets"]` | List of resources the cluster agent will be able to collect from the cluster. |
 | clusterAgent.collection.kubernetesTimeout | int | `10` | Default timeout (in seconds) when obtaining information from the Kubernetes API. |
 | clusterAgent.collection.kubernetesTopology | bool | `true` | Enable / disable the cluster agent topology collection. |
 | clusterAgent.config | object | `{"configMap":{"maxDataSize":null},"override":[]}` |  |

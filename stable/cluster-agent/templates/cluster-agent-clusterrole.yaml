@@ -9,16 +9,9 @@ rules:
 - apiGroups:
   - ""
   resources:
-  - namespaces
-  - componentstatuses
-  - configmaps
-  - endpoints
-  - events
-  - nodes
-  - persistentvolumeclaims
-  - persistentvolumes
-  - pods
-  - services
+  {{- with .Values.clusterAgent.collection.kubernetesResources }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
   verbs:
   - get
   - list

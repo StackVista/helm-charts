@@ -142,6 +142,19 @@ clusterAgent:
     kubernetesTimeout: 10
     # clusterAgent.collection.kubernetesTopology -- Enable / disable the cluster agent topology collection.
     kubernetesTopology: true
+    # clusterAgent.collection.kubernetesResources -- List of resources the cluster agent will be able to collect from the cluster.
+    kubernetesResources:
+    - namespaces
+    - componentstatuses
+    - configmaps
+    - endpoints
+    - events
+    - nodes
+    - persistentvolumeclaims
+    - persistentvolumes
+    - pods
+    - services
+    - secrets
 
   # clusterAgent.config --
   config:
