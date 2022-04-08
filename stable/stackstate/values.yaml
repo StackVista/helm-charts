@@ -531,6 +531,9 @@ stackstate:
       # stackstate.components.receiver.additionalLogging -- Additional logback config
       additionalLogging: ""
     router:
+      accesslog:
+        # stackstate.components.router.accesslog.enabled -- Enable access logging on the router
+        enabled: false
       extraEnv:
         # stackstate.components.router.extraEnv.open -- Extra open environment variables to inject into pods.
         open: {}
