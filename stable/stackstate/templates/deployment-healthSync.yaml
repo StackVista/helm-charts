@@ -19,6 +19,13 @@ env:
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.authentication.envvars" . }}
 {{- include "stackstate.baseurls.envvars" . }}
+- name: CONFIG_FORCE_stackstate_cacheStorage_backend
+  value: {{ .Values.stackstate.components.healthSync.cache.backend }}
+{{- if eq (lower .Values.stackstate.components.healthSync.cache.backend) "rocksdb" }}
+{{- $config := dict "Mem" $serviceConfig.ServiceConfig.resources.limits.memory "BaseMem" $serviceConfig.ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" $serviceConfig.ServiceConfig.sizing.javaHeapMemoryFraction }}
+- name: CONFIG_FORCE_stackstate_rocksdb_cacheSizeBytes
+  value: {{ include "stackstate.server.cache.memory.limit" $config | int | quote }}
+{{- end }}
 - name: API_KEY
   valueFrom:
     secretKeyRef:

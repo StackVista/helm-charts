@@ -359,6 +359,7 @@ stackstate/stackstate
 | stackstate.components.healthSync.sizing.baseMemoryConsumption | string | `"700Mi"` |  |
 | stackstate.components.healthSync.sizing.javaHeapMemoryFraction | string | `"85"` |  |
 | stackstate.components.healthSync.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.healthSync.cache.backend | string | `"mapdb"` | Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory |
 | stackstate.components.initializer.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.initializer.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.initializer.config | string | `""` | Configuration file contents to customize the default StackState initializer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |

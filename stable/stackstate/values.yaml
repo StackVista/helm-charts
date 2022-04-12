@@ -336,6 +336,9 @@ stackstate:
       config: ""
       # stackstate.components.healthSync.additionalLogging -- Additional logback config
       additionalLogging: ""
+      cache:
+      # stackstate.components.healthSync.cache.backend -- Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory
+        backend: "mapdb"
     initializer:
       extraEnv:
         # stackstate.components.initializer.extraEnv.open -- Extra open environment variables to inject into pods.
