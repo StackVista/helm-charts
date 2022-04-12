@@ -95,24 +95,25 @@ stackstate/cluster-agent
 | clusterAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | clusterAgent.collection.kubernetesEvents | bool | `true` | Enable / disable the cluster agent events collection. |
 | clusterAgent.collection.kubernetesMetrics | bool | `true` | Enable / disable the cluster agent metrics collection. |
-| clusterAgent.collection.kubernetesResources.componentstatuses | bool | `true` | Enable / disable collection of componentstatuses. |
-| clusterAgent.collection.kubernetesResources.configmaps | bool | `true` | Enable / disable collection of configmaps. |
-| clusterAgent.collection.kubernetesResources.cronjobs | bool | `true` | Enable / disable collection of cronjobs. |
-| clusterAgent.collection.kubernetesResources.daemonsets | bool | `true` | Enable / disable collection of daemonsets. |
-| clusterAgent.collection.kubernetesResources.deployments | bool | `true` | Enable / disable collection of deployments. |
-| clusterAgent.collection.kubernetesResources.endpoints | bool | `true` | Enable / disable collection of endpoints. |
-| clusterAgent.collection.kubernetesResources.events | bool | `true` | Enable / disable collection of events. |
-| clusterAgent.collection.kubernetesResources.ingresses | bool | `true` | Enable / disable collection of ingresses. |
-| clusterAgent.collection.kubernetesResources.jobs | bool | `true` | Enable / disable collection of jobs. |
-| clusterAgent.collection.kubernetesResources.namespaces | bool | `true` | Enable / disable collection of namespaces. |
-| clusterAgent.collection.kubernetesResources.nodes | bool | `true` | Enable / disable collection of nodes. |
-| clusterAgent.collection.kubernetesResources.persistentvolumeclaims | bool | `true` | Enable / disable collection of persistentvolumeclaims. |
-| clusterAgent.collection.kubernetesResources.persistentvolumes | bool | `true` | Enable / disable collection of persistentvolumes. |
-| clusterAgent.collection.kubernetesResources.pods | bool | `true` | Enable / disable collection of pods. |
-| clusterAgent.collection.kubernetesResources.replicasets | bool | `true` | Enable / disable collection of replicasets. |
-| clusterAgent.collection.kubernetesResources.secrets | bool | `true` | Enable / disable collection of secrets. |
-| clusterAgent.collection.kubernetesResources.services | bool | `true` | Enable / disable collection of services. |
-| clusterAgent.collection.kubernetesResources.statefulsets | bool | `true` | Enable / disable collection of statefulsets. |
+| clusterAgent.collection.kubernetesResources.componentstatuses | bool | `true` | Enable / disable collection of ComponentStatuses. |
+| clusterAgent.collection.kubernetesResources.configmaps | bool | `true` | Enable / disable collection of ConfigMaps. |
+| clusterAgent.collection.kubernetesResources.cronjobs | bool | `true` | Enable / disable collection of CronKobs. |
+| clusterAgent.collection.kubernetesResources.daemonsets | bool | `true` | Enable / disable collection of DaemonSets. |
+| clusterAgent.collection.kubernetesResources.deployments | bool | `true` | Enable / disable collection of Deployments. |
+| clusterAgent.collection.kubernetesResources.endpoints | bool | `true` | Enable / disable collection of Endpoints. |
+| clusterAgent.collection.kubernetesResources.events | bool | `true` | Enable / disable collection of Events. |
+| clusterAgent.collection.kubernetesResources.ingresses | bool | `true` | Enable / disable collection of Ingresses. |
+| clusterAgent.collection.kubernetesResources.jobs | bool | `true` | Enable / disable collection of Jobs. |
+| clusterAgent.collection.kubernetesResources.namespaces | bool | `true` | Enable / disable collection of Namespaces. |
+| clusterAgent.collection.kubernetesResources.nodes | bool | `true` | Enable / disable collection of Nodes. |
+| clusterAgent.collection.kubernetesResources.persistentvolumeclaims | bool | `true` | Enable / disable collection of PersistentVolumeClaims. |
+| clusterAgent.collection.kubernetesResources.persistentvolumes | bool | `true` | Enable / disable collection of PersistentVolumes. |
+| clusterAgent.collection.kubernetesResources.pods | bool | `true` | Enable / disable collection of Pods. |
+| clusterAgent.collection.kubernetesResources.replicasets | bool | `true` | Enable / disable collection of ReplicaSets. |
+| clusterAgent.collection.kubernetesResources.secrets | bool | `true` | Enable / disable collection of Secrets. |
+| clusterAgent.collection.kubernetesResources.services | bool | `true` | Enable / disable collection of Services. |
+| clusterAgent.collection.kubernetesResources.statefulsets | bool | `true` | Enable / disable collection of StatefulSets. |
+| clusterAgent.collection.kubernetesResources.volumeattachments | bool | `true` | Enable / disable collection of VolumeAttachments. |
 | clusterAgent.collection.kubernetesTimeout | int | `10` | Default timeout (in seconds) when obtaining information from the Kubernetes API. |
 | clusterAgent.collection.kubernetesTopology | bool | `true` | Enable / disable the cluster agent topology collection. |
 | clusterAgent.config | object | `{"configMap":{"maxDataSize":null},"override":[]}` |  |

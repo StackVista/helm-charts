@@ -143,42 +143,44 @@ clusterAgent:
     # clusterAgent.collection.kubernetesTopology -- Enable / disable the cluster agent topology collection.
     kubernetesTopology: true
     kubernetesResources:
-      # clusterAgent.collection.kubernetesResources.namespaces -- Enable / disable collection of namespaces.
+      # clusterAgent.collection.kubernetesResources.namespaces -- Enable / disable collection of Namespaces.
       namespaces: true
-      # clusterAgent.collection.kubernetesResources.componentstatuses -- Enable / disable collection of componentstatuses.
+      # clusterAgent.collection.kubernetesResources.componentstatuses -- Enable / disable collection of ComponentStatuses.
       componentstatuses: true
-      # clusterAgent.collection.kubernetesResources.configmaps -- Enable / disable collection of configmaps.
+      # clusterAgent.collection.kubernetesResources.configmaps -- Enable / disable collection of ConfigMaps.
       configmaps: true
-      # clusterAgent.collection.kubernetesResources.endpoints -- Enable / disable collection of endpoints.
+      # clusterAgent.collection.kubernetesResources.endpoints -- Enable / disable collection of Endpoints.
       endpoints: true
-      # clusterAgent.collection.kubernetesResources.events -- Enable / disable collection of events.
+      # clusterAgent.collection.kubernetesResources.events -- Enable / disable collection of Events.
       events: true
-      # clusterAgent.collection.kubernetesResources.nodes -- Enable / disable collection of nodes.
+      # clusterAgent.collection.kubernetesResources.nodes -- Enable / disable collection of Nodes.
       nodes: true
-      # clusterAgent.collection.kubernetesResources.persistentvolumeclaims -- Enable / disable collection of persistentvolumeclaims.
+      # clusterAgent.collection.kubernetesResources.persistentvolumeclaims -- Enable / disable collection of PersistentVolumeClaims.
       persistentvolumeclaims: true
-      # clusterAgent.collection.kubernetesResources.persistentvolumes -- Enable / disable collection of persistentvolumes.
+      # clusterAgent.collection.kubernetesResources.persistentvolumes -- Enable / disable collection of PersistentVolumes.
       persistentvolumes: true
-      # clusterAgent.collection.kubernetesResources.pods -- Enable / disable collection of pods.
+      # clusterAgent.collection.kubernetesResources.pods -- Enable / disable collection of Pods.
       pods: true
-      # clusterAgent.collection.kubernetesResources.services -- Enable / disable collection of services.
+      # clusterAgent.collection.kubernetesResources.services -- Enable / disable collection of Services.
       services: true
-      # clusterAgent.collection.kubernetesResources.secrets -- Enable / disable collection of secrets.
+      # clusterAgent.collection.kubernetesResources.secrets -- Enable / disable collection of Secrets.
       secrets: true
-      # clusterAgent.collection.kubernetesResources.daemonsets -- Enable / disable collection of daemonsets.
+      # clusterAgent.collection.kubernetesResources.daemonsets -- Enable / disable collection of DaemonSets.
       daemonsets: true
-      # clusterAgent.collection.kubernetesResources.deployments -- Enable / disable collection of deployments.
+      # clusterAgent.collection.kubernetesResources.deployments -- Enable / disable collection of Deployments.
       deployments: true
-      # clusterAgent.collection.kubernetesResources.replicasets -- Enable / disable collection of replicasets.
+      # clusterAgent.collection.kubernetesResources.replicasets -- Enable / disable collection of ReplicaSets.
       replicasets: true
-      # clusterAgent.collection.kubernetesResources.statefulsets -- Enable / disable collection of statefulsets.
+      # clusterAgent.collection.kubernetesResources.statefulsets -- Enable / disable collection of StatefulSets.
       statefulsets: true
-      # clusterAgent.collection.kubernetesResources.ingresses -- Enable / disable collection of ingresses.
+      # clusterAgent.collection.kubernetesResources.ingresses -- Enable / disable collection of Ingresses.
       ingresses: true
-      # clusterAgent.collection.kubernetesResources.cronjobs -- Enable / disable collection of cronjobs.
+      # clusterAgent.collection.kubernetesResources.cronjobs -- Enable / disable collection of CronKobs.
       cronjobs: true
-      # clusterAgent.collection.kubernetesResources.jobs -- Enable / disable collection of jobs.
+      # clusterAgent.collection.kubernetesResources.jobs -- Enable / disable collection of Jobs.
       jobs: true
+      # clusterAgent.collection.kubernetesResources.volumeattachments -- Enable / disable collection of VolumeAttachments.
+      volumeattachments: true
 
   # clusterAgent.config --
   config:

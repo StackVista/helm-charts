@@ -1,3 +1,4 @@
+{{- $kubeRes := .Values.clusterAgent.collection.kubernetesResources }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -6,46 +7,49 @@ metadata:
 {{ include "cluster-agent.labels" . | indent 4 }}
     app.kubernetes.io/component: cluster-agent
 rules:
+{{- if or $kubeRes.namespaces $kubeRes.componentstatuses $kubeRes.configmaps $kubeRes.endpoints $kubeRes.events
+    $kubeRes.nodes $kubeRes.persistentvolumeclaims $kubeRes.persistentvolumes $kubeRes.pods $kubeRes.services $kubeRes.secrets }}
 - apiGroups:
   - ""
   resources:
-  {{- if .Values.clusterAgent.collection.kubernetesResources.namespaces }}
+  {{- if $kubeRes.namespaces }}
   - namespaces
   {{- end }}
-  {{- if .Values.clusterAgent.collection.kubernetesResources.componentstatuses }}
+  {{- if $kubeRes.componentstatuses }}
   - componentstatuses
   {{- end }}
-  {{- if .Values.clusterAgent.collection.kubernetesResources.configmaps }}
+  {{- if $kubeRes.configmaps }}
   - configmaps
   {{- end }}
-  {{- if .Values.clusterAgent.collection.kubernetesResources.endpoints }}
+  {{- if $kubeRes.endpoints }}
   - endpoints
   {{- end }}
-  {{- if .Values.clusterAgent.collection.kubernetesResources.events }}
+  {{- if $kubeRes.events }}
   - events
   {{- end }}
-  {{- if .Values.clusterAgent.collection.kubernetesResources.nodes }}
+  {{- if $kubeRes.nodes }}
   - nodes
   {{- end }}
-  {{- if .Values.clusterAgent.collection.kubernetesResources.persistentvolumeclaims }}
+  {{- if $kubeRes.persistentvolumeclaims }}
   - persistentvolumeclaims
   {{- end }}
-  {{- if .Values.clusterAgent.collection.kubernetesResources.persistentvolumes }}
+  {{- if $kubeRes.persistentvolumes }}
   - persistentvolumes
   {{- end }}
-  {{- if .Values.clusterAgent.collection.kubernetesResources.pods }}
+  {{- if $kubeRes.pods }}
   - pods
   {{- end }}
-  {{- if .Values.clusterAgent.collection.kubernetesResources.services }}
+  {{- if $kubeRes.services }}
   - services
   {{- end }}
-  {{- if .Values.clusterAgent.collection.kubernetesResources.secrets }}
+  {{- if $kubeRes.secrets }}
   - secrets
   {{- end }}
   verbs:
   - get
   - list
   - watch
+{{- end }}
 - apiGroups:
   - ""
   resources:
@@ -55,6 +59,7 @@ rules:
   - get
   - patch
   - update
+{{- if $kubeRes.volumeattachments }}
 - apiGroups:
   - "storage.k8s.io"
   resources:
@@ -63,48 +68,55 @@ rules:
   - get
   - list
   - watch
+{{- end}}
+{{- if or $kubeRes.daemonsets $kubeRes.deployments $kubeRes.replicasets $kubeRes.statefulsets }}
 - apiGroups:
   - "apps"
   resources:
-  {{- if .Values.clusterAgent.collection.kubernetesResources.daemonsets }}
+  {{- if $kubeRes.daemonsets }}
   - daemonsets
   {{- end }}
-  {{- if .Values.clusterAgent.collection.kubernetesResources.deployments }}
+  {{- if $kubeRes.deployments }}
   - deployments
   {{- end }}
-  {{- if .Values.clusterAgent.collection.kubernetesResources.replicasets }}
+  {{- if $kubeRes.replicasets }}
   - replicasets
   {{- end }}
-  {{- if .Values.clusterAgent.collection.kubernetesResources.statefulsets }}
+  {{- if $kubeRes.statefulsets }}
   - statefulsets
   {{- end }}
   verbs:
   - get
   - list
   - watch
+{{- end}}
+{{- if $kubeRes.ingresses }}
 - apiGroups:
   - "extensions"
   resources:
-  {{- if .Values.clusterAgent.collection.kubernetesResources.ingresses }}
+  {{- if $kubeRes.ingresses }}
   - ingresses
   {{- end }}
   verbs:
   - get
   - list
   - watch
+{{- end}}
+{{- if or $kubeRes.ingresses $kubeRes.jobs }}
 - apiGroups:
   - "batch"
   resources:
-  {{- if .Values.clusterAgent.collection.kubernetesResources.cronjobs }}
+  {{- if $kubeRes.cronjobs }}
   - cronjobs
   {{- end }}
-  {{- if .Values.clusterAgent.collection.kubernetesResources.jobs }}
+  {{- if $kubeRes.jobs }}
   - jobs
   {{- end }}
   verbs:
   - get
   - list
   - watch
+{{- end}}
 - nonResourceURLs:
   - "/healthz"
   - "/version"
