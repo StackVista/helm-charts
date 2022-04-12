@@ -142,19 +142,43 @@ clusterAgent:
     kubernetesTimeout: 10
     # clusterAgent.collection.kubernetesTopology -- Enable / disable the cluster agent topology collection.
     kubernetesTopology: true
-    # clusterAgent.collection.kubernetesResources -- List of resources the cluster agent will be able to collect from the cluster.
     kubernetesResources:
-    - namespaces
-    - componentstatuses
-    - configmaps
-    - endpoints
-    - events
-    - nodes
-    - persistentvolumeclaims
-    - persistentvolumes
-    - pods
-    - services
-    - secrets
+      # clusterAgent.collection.kubernetesResources.namespaces -- Enable / disable collection of namespaces.
+      namespaces: true
+      # clusterAgent.collection.kubernetesResources.componentstatuses -- Enable / disable collection of componentstatuses.
+      componentstatuses: true
+      # clusterAgent.collection.kubernetesResources.configmaps -- Enable / disable collection of configmaps.
+      configmaps: true
+      # clusterAgent.collection.kubernetesResources.endpoints -- Enable / disable collection of endpoints.
+      endpoints: true
+      # clusterAgent.collection.kubernetesResources.events -- Enable / disable collection of events.
+      events: true
+      # clusterAgent.collection.kubernetesResources.nodes -- Enable / disable collection of nodes.
+      nodes: true
+      # clusterAgent.collection.kubernetesResources.persistentvolumeclaims -- Enable / disable collection of persistentvolumeclaims.
+      persistentvolumeclaims: true
+      # clusterAgent.collection.kubernetesResources.persistentvolumes -- Enable / disable collection of persistentvolumes.
+      persistentvolumes: true
+      # clusterAgent.collection.kubernetesResources.pods -- Enable / disable collection of pods.
+      pods: true
+      # clusterAgent.collection.kubernetesResources.services -- Enable / disable collection of services.
+      services: true
+      # clusterAgent.collection.kubernetesResources.secrets -- Enable / disable collection of secrets.
+      secrets: true
+      # clusterAgent.collection.kubernetesResources.daemonsets -- Enable / disable collection of daemonsets.
+      daemonsets: true
+      # clusterAgent.collection.kubernetesResources.deployments -- Enable / disable collection of deployments.
+      deployments: true
+      # clusterAgent.collection.kubernetesResources.replicasets -- Enable / disable collection of replicasets.
+      replicasets: true
+      # clusterAgent.collection.kubernetesResources.statefulsets -- Enable / disable collection of statefulsets.
+      statefulsets: true
+      # clusterAgent.collection.kubernetesResources.ingresses -- Enable / disable collection of ingresses.
+      ingresses: true
+      # clusterAgent.collection.kubernetesResources.cronjobs -- Enable / disable collection of cronjobs.
+      cronjobs: true
+      # clusterAgent.collection.kubernetesResources.jobs -- Enable / disable collection of jobs.
+      jobs: true
 
   # clusterAgent.config --
   config:

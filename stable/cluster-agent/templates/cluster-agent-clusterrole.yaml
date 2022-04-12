@@ -9,8 +9,38 @@ rules:
 - apiGroups:
   - ""
   resources:
-  {{- with .Values.clusterAgent.collection.kubernetesResources }}
-  {{- toYaml . | nindent 2 }}
+  {{- if .Values.clusterAgent.collection.kubernetesResources.namespaces }}
+  - namespaces
+  {{- end }}
+  {{- if .Values.clusterAgent.collection.kubernetesResources.componentstatuses }}
+  - componentstatuses
+  {{- end }}
+  {{- if .Values.clusterAgent.collection.kubernetesResources.configmaps }}
+  - configmaps
+  {{- end }}
+  {{- if .Values.clusterAgent.collection.kubernetesResources.endpoints }}
+  - endpoints
+  {{- end }}
+  {{- if .Values.clusterAgent.collection.kubernetesResources.events }}
+  - events
+  {{- end }}
+  {{- if .Values.clusterAgent.collection.kubernetesResources.nodes }}
+  - nodes
+  {{- end }}
+  {{- if .Values.clusterAgent.collection.kubernetesResources.persistentvolumeclaims }}
+  - persistentvolumeclaims
+  {{- end }}
+  {{- if .Values.clusterAgent.collection.kubernetesResources.persistentvolumes }}
+  - persistentvolumes
+  {{- end }}
+  {{- if .Values.clusterAgent.collection.kubernetesResources.pods }}
+  - pods
+  {{- end }}
+  {{- if .Values.clusterAgent.collection.kubernetesResources.services }}
+  - services
+  {{- end }}
+  {{- if .Values.clusterAgent.collection.kubernetesResources.secrets }}
+  - secrets
   {{- end }}
   verbs:
   - get
@@ -36,10 +66,18 @@ rules:
 - apiGroups:
   - "apps"
   resources:
+  {{- if .Values.clusterAgent.collection.kubernetesResources.daemonsets }}
   - daemonsets
+  {{- end }}
+  {{- if .Values.clusterAgent.collection.kubernetesResources.deployments }}
   - deployments
+  {{- end }}
+  {{- if .Values.clusterAgent.collection.kubernetesResources.replicasets }}
   - replicasets
+  {{- end }}
+  {{- if .Values.clusterAgent.collection.kubernetesResources.statefulsets }}
   - statefulsets
+  {{- end }}
   verbs:
   - get
   - list
@@ -47,7 +85,9 @@ rules:
 - apiGroups:
   - "extensions"
   resources:
+  {{- if .Values.clusterAgent.collection.kubernetesResources.ingresses }}
   - ingresses
+  {{- end }}
   verbs:
   - get
   - list
@@ -55,8 +95,12 @@ rules:
 - apiGroups:
   - "batch"
   resources:
+  {{- if .Values.clusterAgent.collection.kubernetesResources.cronjobs }}
   - cronjobs
+  {{- end }}
+  {{- if .Values.clusterAgent.collection.kubernetesResources.jobs }}
   - jobs
+  {{- end }}
   verbs:
   - get
   - list
