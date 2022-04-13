@@ -101,17 +101,13 @@ stackstate/cluster-agent
 | clusterAgent.collection.kubernetesResources.daemonsets | bool | `true` | Enable / disable collection of DaemonSets. |
 | clusterAgent.collection.kubernetesResources.deployments | bool | `true` | Enable / disable collection of Deployments. |
 | clusterAgent.collection.kubernetesResources.endpoints | bool | `true` | Enable / disable collection of Endpoints. |
-| clusterAgent.collection.kubernetesResources.events | bool | `true` | Enable / disable collection of Events. |
 | clusterAgent.collection.kubernetesResources.ingresses | bool | `true` | Enable / disable collection of Ingresses. |
 | clusterAgent.collection.kubernetesResources.jobs | bool | `true` | Enable / disable collection of Jobs. |
 | clusterAgent.collection.kubernetesResources.namespaces | bool | `true` | Enable / disable collection of Namespaces. |
-| clusterAgent.collection.kubernetesResources.nodes | bool | `true` | Enable / disable collection of Nodes. |
 | clusterAgent.collection.kubernetesResources.persistentvolumeclaims | bool | `true` | Enable / disable collection of PersistentVolumeClaims. |
 | clusterAgent.collection.kubernetesResources.persistentvolumes | bool | `true` | Enable / disable collection of PersistentVolumes. |
-| clusterAgent.collection.kubernetesResources.pods | bool | `true` | Enable / disable collection of Pods. |
 | clusterAgent.collection.kubernetesResources.replicasets | bool | `true` | Enable / disable collection of ReplicaSets. |
 | clusterAgent.collection.kubernetesResources.secrets | bool | `true` | Enable / disable collection of Secrets. |
-| clusterAgent.collection.kubernetesResources.services | bool | `true` | Enable / disable collection of Services. |
 | clusterAgent.collection.kubernetesResources.statefulsets | bool | `true` | Enable / disable collection of StatefulSets. |
 | clusterAgent.collection.kubernetesResources.volumeattachments | bool | `true` | Enable / disable collection of VolumeAttachments. |
 | clusterAgent.collection.kubernetesTimeout | int | `10` | Default timeout (in seconds) when obtaining information from the Kubernetes API. |

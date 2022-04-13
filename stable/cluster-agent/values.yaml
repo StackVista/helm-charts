@@ -151,18 +151,10 @@ clusterAgent:
       configmaps: true
       # clusterAgent.collection.kubernetesResources.endpoints -- Enable / disable collection of Endpoints.
       endpoints: true
-      # clusterAgent.collection.kubernetesResources.events -- Enable / disable collection of Events.
-      events: true
-      # clusterAgent.collection.kubernetesResources.nodes -- Enable / disable collection of Nodes.
-      nodes: true
       # clusterAgent.collection.kubernetesResources.persistentvolumeclaims -- Enable / disable collection of PersistentVolumeClaims.
       persistentvolumeclaims: true
       # clusterAgent.collection.kubernetesResources.persistentvolumes -- Enable / disable collection of PersistentVolumes.
       persistentvolumes: true
-      # clusterAgent.collection.kubernetesResources.pods -- Enable / disable collection of Pods.
-      pods: true
-      # clusterAgent.collection.kubernetesResources.services -- Enable / disable collection of Services.
-      services: true
       # clusterAgent.collection.kubernetesResources.secrets -- Enable / disable collection of Secrets.
       secrets: true
       # clusterAgent.collection.kubernetesResources.daemonsets -- Enable / disable collection of DaemonSets.

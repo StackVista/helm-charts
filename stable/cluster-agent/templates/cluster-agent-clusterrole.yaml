@@ -7,11 +7,13 @@ metadata:
 {{ include "cluster-agent.labels" . | indent 4 }}
     app.kubernetes.io/component: cluster-agent
 rules:
-{{- if or $kubeRes.namespaces $kubeRes.componentstatuses $kubeRes.configmaps $kubeRes.endpoints $kubeRes.events
-    $kubeRes.nodes $kubeRes.persistentvolumeclaims $kubeRes.persistentvolumes $kubeRes.pods $kubeRes.services $kubeRes.secrets }}
 - apiGroups:
   - ""
   resources:
+  - events
+  - nodes
+  - pods
+  - services
   {{- if $kubeRes.namespaces }}
   - namespaces
   {{- end }}
@@ -24,23 +26,11 @@ rules:
   {{- if $kubeRes.endpoints }}
   - endpoints
   {{- end }}
-  {{- if $kubeRes.events }}
-  - events
-  {{- end }}
-  {{- if $kubeRes.nodes }}
-  - nodes
-  {{- end }}
   {{- if $kubeRes.persistentvolumeclaims }}
   - persistentvolumeclaims
   {{- end }}
   {{- if $kubeRes.persistentvolumes }}
   - persistentvolumes
-  {{- end }}
-  {{- if $kubeRes.pods }}
-  - pods
-  {{- end }}
-  {{- if $kubeRes.services }}
-  - services
   {{- end }}
   {{- if $kubeRes.secrets }}
   - secrets
@@ -49,7 +39,6 @@ rules:
   - get
   - list
   - watch
-{{- end }}
 - apiGroups:
   - ""
   resources:
