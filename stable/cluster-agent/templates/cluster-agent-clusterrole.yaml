@@ -83,15 +83,13 @@ rules:
 - apiGroups:
   - "extensions"
   resources:
-  {{- if $kubeRes.ingresses }}
   - ingresses
-  {{- end }}
   verbs:
   - get
   - list
   - watch
 {{- end}}
-{{- if or $kubeRes.ingresses $kubeRes.jobs }}
+{{- if or $kubeRes.cronjobs $kubeRes.jobs }}
 - apiGroups:
   - "batch"
   resources:
