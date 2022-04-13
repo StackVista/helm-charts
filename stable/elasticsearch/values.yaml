@@ -47,7 +47,7 @@ secretMounts: []
 
 imageRegistry: "quay.io"
 imageRepository: "stackstate/elasticsearch"
-imageTag: "7.16.2-sts.20220304.0931"
+imageTag: "7.16.2-sts.20220405.1517"
 imagePullPolicy: "IfNotPresent"
 
 podAnnotations: {}

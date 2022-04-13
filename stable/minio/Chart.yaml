@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: master
-version: 8.0.10-stackstate.2
+version: 8.0.10-stackstate.3
 description: High Performance, Kubernetes Native Object Storage
 keywords:
 - storage
