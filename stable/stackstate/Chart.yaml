@@ -31,7 +31,7 @@ dependencies:
   - name: elasticsearch
     condition: elasticsearch.enabled
     repository: https://helm.stackstate.io
-    version: 7.16.2-stackstate.2
+    version: 7.16.2-stackstate.3
   - name: hbase
     condition: hbase.enabled
     repository: file://../hbase/
@@ -46,7 +46,7 @@ dependencies:
     version: 0.1.2
   - name: minio
     repository: https://helm.stackstate.io
-    version: 8.0.10-stackstate.2
+    version: 8.0.10-stackstate.3
     condition: backup.enabled
   - name: pull-secret
     version: 1.0.0
