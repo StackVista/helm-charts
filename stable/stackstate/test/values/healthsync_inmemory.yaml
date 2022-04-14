@@ -1,0 +1,6 @@
+stackstate:
+  components:
+    healthSync:
+      cache:
+        backend: "inmemory"
+

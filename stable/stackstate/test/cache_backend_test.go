@@ -61,3 +61,56 @@ func TestSyncWithRocksDbCache(t *testing.T) {
 	expectedBytes := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_rocksdb_cacheSizeBytes", Value: "1400000000" }
 	assert.Contains(t, stsSyncDeployment.Spec.Template.Spec.Containers[0].Env, expectedBytes)
 }
+
+func TestHealthSyncWithInMemoryCache(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/healthsync_inmemory.yaml")
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	var stsSyncDeployment appsv1.Deployment
+
+	for _, deployment := range resources.Deployments {
+		if deployment.Name == "stackstate-health-sync" {
+			stsSyncDeployment = deployment
+		}
+	}
+	assert.NotNil(t, stsSyncDeployment)
+	expected := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_cacheStorage_backend", Value: "inmemory"}
+	assert.Contains(t, stsSyncDeployment.Spec.Template.Spec.Containers[0].Env, expected)
+}
+
+func TestHealthSyncWithMapDbCache(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/healthsync_mapdb.yaml")
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	var stsSyncDeployment appsv1.Deployment
+
+	for _, deployment := range resources.Deployments {
+		if deployment.Name == "stackstate-health-sync" {
+			stsSyncDeployment = deployment
+		}
+	}
+	assert.NotNil(t, stsSyncDeployment)
+	expected := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_cacheStorage_backend", Value: "mapdb"}
+	assert.Contains(t, stsSyncDeployment.Spec.Template.Spec.Containers[0].Env, expected)
+}
+
+func TestHealthSyncWithRocksDbCache(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/healthsync_rocksdb.yaml")
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	var stsSyncDeployment appsv1.Deployment
+
+	for _, deployment := range resources.Deployments {
+		if deployment.Name == "stackstate-health-sync" {
+			stsSyncDeployment = deployment
+		}
+	}
+	assert.NotNil(t, stsSyncDeployment)
+	expected := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_cacheStorage_backend", Value: "rocksdb"}
+	assert.Contains(t, stsSyncDeployment.Spec.Template.Spec.Containers[0].Env, expected)
+	expectedBytes := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_rocksdb_cacheSizeBytes", Value: "1400000000" }
+	assert.Contains(t, stsSyncDeployment.Spec.Template.Spec.Containers[0].Env, expectedBytes)
+}
