@@ -23,7 +23,7 @@ dependencies:
     condition: anomaly-detection.enabled
   - name: cluster-agent
     repository: https://helm.stackstate.io
-    version: 1.0.3
+    version: 1.0.5
     condition: cluster-agent.enabled
   - name: common
     repository: file://../common/

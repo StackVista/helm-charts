@@ -4,7 +4,7 @@ dependencies:
   version: 4.7.0-snapshot.138
 - name: cluster-agent
   repository: https://helm.stackstate.io
-  version: 1.0.3
+  version: 1.0.5
 - name: common
   repository: file://../common/
   version: 0.4.21
@@ -29,5 +29,5 @@ dependencies:
 - name: zookeeper
   repository: https://charts.bitnami.com/bitnami
   version: 5.16.0
-digest: sha256:69e983a077c51020089632a67006eeaff5bfa8e965bc4011468d3ba2a6be1e46
-generated: "2022-04-14T10:51:06.241976+02:00"
+digest: sha256:afd959a67feadf4d41b3eebc7c68c9815e5f23b60efa4f8c06c558733e6d6c68
+generated: "2022-04-18T23:06:44.268295+02:00"
