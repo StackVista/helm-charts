@@ -368,7 +368,7 @@ kube-state-metrics:
     # kube-state-metrics.image.repository -- The path inside the registry where the image is hosted. This overrides the value in the bitnami chart.
     repository: stackstate/kube-state-metrics
     # kube-state-metrics.image.tag -- The version tag of the image to be used during deployment. This overrides the value in the bitnami chart.
-    tag: 1.9.7-focal-20220316-r143.20220412.1244
+    tag: 2.3.0-focal-20220316-r61.20220418.2032
 
 ########################
 # StackState variables #
