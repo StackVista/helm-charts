@@ -309,10 +309,10 @@
          "steppedLine": false,
          "targets": [
             {
-               "expr": "kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{namespace=\"$namespace\"}",
+               "expr": "kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", topic!=\"\"}",
                "format": "time_series",
                "intervalFactor": 2,
-               "legendFormat": "{{pod}} - {{topic}}",
+               "legendFormat": "{{pod}} - {{topic}} - {{client_id}} - {{partition}}",
                "refId": "A"
             }
          ],
@@ -394,10 +394,10 @@
          "steppedLine": false,
          "targets": [
             {
-               "expr": "kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{namespace=\"$namespace\"} / kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{namespace=\"$namespace\"}",
+               "expr": "sum (kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", topic!=\"\"}) by (pod, client_id, topic) / sum(kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", topic!=\"\"}) by (pod, client_id, topic)",
                "format": "time_series",
                "intervalFactor": 2,
-               "legendFormat": "{{pod}} - {{topic}}",
+               "legendFormat": "{{pod}} - {{topic}} - {{client_id}}",
                "refId": "A"
             }
          ],

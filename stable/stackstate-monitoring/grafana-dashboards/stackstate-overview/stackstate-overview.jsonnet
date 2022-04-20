@@ -53,8 +53,8 @@ local kafka_lag = graphPanel.new(
   format='short',
 ).addTarget(
   prometheus.target(
-    expr='kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{namespace="$namespace"}' % ({ selectors: variables.grafana.standard_selectors_string }),
-    legendFormat='{{pod}} - {{topic}}',
+    expr='kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{%(selectors)s, topic!=""}' % ({ selectors: variables.grafana.standard_selectors_string }),
+    legendFormat='{{pod}} - {{topic}} - {{client_id}} - {{partition}}',
   )
 );
 
@@ -64,8 +64,8 @@ local kafka_lag_time_to_catchup = graphPanel.new(
   format='s',
 ).addTarget(
   prometheus.target(
-    expr='kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{namespace="$namespace"} / kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{namespace="$namespace"}' % ({ selectors: variables.grafana.standard_selectors_string }),
-    legendFormat='{{pod}} - {{topic}}',
+    expr='sum (kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{%(selectors)s, topic!=""}) by (pod, client_id, topic) / sum(kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{%(selectors)s, topic!=""}) by (pod, client_id, topic)' % ({ selectors: variables.grafana.standard_selectors_string }),
+    legendFormat='{{pod}} - {{topic}} - {{client_id}}',
   )
 );
 
