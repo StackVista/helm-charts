@@ -42,8 +42,8 @@ local stackstate_kafka2es_time_to_catchup = graphPanel.new(
   format='s',
 ).addTarget(
   prometheus.target(
-    expr='stackstate_kafka2es_data_latency_seconds{%(selectors)s, quantile="0.95"} / sum by(data_type, service)(rate(stackstate_kafka2es_data_latency_seconds_count{%(selectors)s}[$__rate_interval]))' % ({ selectors: variables.grafana.standard_selectors_string }),
-    legendFormat='{{data_type}} - {{service}}',
+    expr='sum by(data_type, pod, service)(stackstate_kafka2es_data_latency_seconds{%(selectors)s, quantile="0.95"}) / sum by(data_type, pod, service)(rate(stackstate_kafka2es_data_latency_seconds_count{%(selectors)s}[$__rate_interval]))' % ({ selectors: variables.grafana.standard_selectors_string }),
+    legendFormat='{{data_type}} - {{pod}} - {{service}}',
   )
 );
 
