@@ -26,7 +26,7 @@ local stackstate_kafka2es_data_latency_seconds = graphPanel.new(
 );
 
 local stackstate_kafka2es_data_latency_seconds_count = graphPanel.new(
-  title='Kafka2Es - Kafka Messages consumed',
+  title='Kafka2Es - Rate of consumed messages',
   datasource=datasource,
   format='cps',
 ).addTarget(
@@ -47,31 +47,58 @@ local stackstate_kafka2es_time_to_catchup = graphPanel.new(
   )
 );
 
-local capacity(data_type) =
-graphPanel.new(
-  title='Kafka2Es - %s' % data_type,
+local kafka_lag = graphPanel.new(
+  title='Kafka - Topic partition lag',
   datasource=datasource,
-  format='bytes',
+  format='short',
 ).addTarget(
   prometheus.target(
-    expr='max by (index_name)(stackstate_kafka2es_index_capacity_quota_bytes{data_type="%s", %s})' % [data_type, variables.grafana.standard_selectors_string],
-    legendFormat='{{index_name}} - Quotum',
-  )
-).addTarget(
-  prometheus.target(
-    expr='max by (index_name)(stackstate_kafka2es_index_capacity_usage_bytes{data_type="%s", %s})' % [data_type, variables.grafana.standard_selectors_string],
-    legendFormat='{{index_name}} - Used',
+    expr='kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{namespace="$namespace"}' % ({ selectors: variables.grafana.standard_selectors_string }),
+    legendFormat='{{pod}} - {{topic}}',
   )
 );
 
+local kafka_lag_time_to_catchup = graphPanel.new(
+  title='Kafka - Topics time to catch up',
+  datasource=datasource,
+  format='s',
+).addTarget(
+  prometheus.target(
+    expr='kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{namespace="$namespace"} / kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{namespace="$namespace"}' % ({ selectors: variables.grafana.standard_selectors_string }),
+    legendFormat='{{pod}} - {{topic}}',
+  )
+);
+
+local stackstate_receiver_unique_element_saturation = graphPanel.new(
+  title='Receiver - Unique elements seen budget saturation',
+  description='Percentage of agent element processing budget used, fully saturated when at 1 (i.e. dropping data)',
+  datasource=datasource,
+).addTarget(
+  prometheus.target(
+    expr='stackstate_receiver_unique_element_passed_count{%(standard_selectors_string)s} / stackstate_receiver_unique_element_passed_max{%(standard_selectors_string)s}' % variables.grafana,
+    legendFormat='{{element_type}}',
+  )
+);
+
+local stackstate_receiver_created_element_saturation = graphPanel.new(
+  title='Receiver - Created elements hourly budget saturation',
+  description='Percentage of newly created elements budget used, fully saturated when at 1 (i.e. dropping data)',
+  datasource=datasource,
+).addTarget(
+  prometheus.target(
+    expr='stackstate_receiver_element_create_passed_count{%(standard_selectors_string)s} / stackstate_receiver_element_create_passed_max{%(standard_selectors_string)s}' % variables.grafana,
+    legendFormat='{{element_type}}',
+  )
+);
 
 // Init dashboard
 dashboard.new(
-  'StackState - Kafka2Es',
+  'StackState - Overview',
   editable=true,
-  refresh='10s',
-  tags=['stackstate', 'kafka2es'],
+  refresh='1m',
+  tags=['stackstate', 'overview'],
   time_from='now-1h',
+  description='Look here for a high level overview of StackState load and performance',
 )
 .addTemplates(variables.grafana.common_dashboard_variables)
 .addPanels(
@@ -80,11 +107,10 @@ dashboard.new(
       stackstate_kafka2es_data_latency_seconds,
       stackstate_kafka2es_data_latency_seconds_count,
       stackstate_kafka2es_time_to_catchup,
-      capacity('GenericEvent'),
-      capacity('TopologyEvent'),
-      capacity('StsEvent'),
-      capacity('MultiMetric'),
-      capacity('Trace'),
+      kafka_lag,
+      kafka_lag_time_to_catchup,
+      stackstate_receiver_unique_element_saturation,
+      stackstate_receiver_created_element_saturation,
     ],
   )
 )
