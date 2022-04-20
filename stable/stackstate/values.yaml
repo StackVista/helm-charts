@@ -813,7 +813,7 @@ stackstate:
         # stackstate.components.kafkaTopicCreate.image.repository -- Base container image repository for kafka-topic-create containers.
         repository: stackstate/kafka
         # stackstate.components.kafkaTopicCreate.image.tag -- Container image tag for kafka-topic-create containers.
-        tag: 2.8.0-focal-20210827-r108
+        tag: 2.8.0-focal-20220316-r108.20220405.1511
         # stackstate.components.kafkaTopicCreate.image.pullPolicy -- Image pull policy for kafka-topic-create containers.
         pullPolicy: IfNotPresent
       securityContext:
@@ -1124,7 +1124,7 @@ kafka:
     # kafka.image.repository -- Kafka image repository
     repository: stackstate/kafka
     # kafka.image.tag -- Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.**
-    tag: 2.3.1-focal-20210827-r41.1
+    tag: 2.3.1-focal-20220316-r41.1
   livenessProbe:
     # kafka.livenessProbe.initialDelaySeconds -- Delay before readiness probe is initiated.
     initialDelaySeconds: 240
@@ -1143,7 +1143,7 @@ kafka:
         # kafka.metrics.jmx.image.repository -- Kafka JMX exporter image repository
         repository: stackstate/jmx-exporter
         # kafka.metrics.jmx.image.tag -- Kafka JMX exporter image tag
-        tag: 0.15.0-focal-20210827-r138
+        tag: 0.15.0-focal-20220316-r138.20220405.1513
       resources:
         limits:
           cpu: "200m"
@@ -1196,7 +1196,7 @@ minio:
   image:
     # minio.image.repository -- MinIO image repository
     repository: quay.io/stackstate/minio
-    tag: 2021.2.19-focal-20210827-r5
+    tag: 2021.2.19-focal-20220316-r5.20220405.1533
   # minio.accessKey -- Access key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
   accessKey: setme
   # minio.accessKey -- Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
@@ -1222,7 +1222,7 @@ zookeeper:
     # zookeeper.image.repository -- ZooKeeper image repository
     repository: stackstate/zookeeper
     # zookeeper.image.tag -- ZooKeeper image tag
-    tag: 3.6.1-focal-20210827-r37
+    tag: 3.6.3-focal-20220316-r302.20220411.1232
   metrics:
     # zookeeper.metrics.enabled -- Enable / disable Zookeeper Prometheus metrics.
     enabled: true
