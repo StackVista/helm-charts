@@ -107,6 +107,7 @@ stackstate/stackstate
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
 | elasticsearch.esJavaOpts | string | `"-Xmx3g -Xms3g -Des.allow_insecure_settings=true"` | JVM options |
 | elasticsearch.extraEnvs | list | `[{"name":"action.auto_create_index","value":"true"},{"name":"indices.query.bool.max_clause_count","value":"10000"}]` | Extra settings that StackState uses for Elasticsearch. |
+| elasticsearch.imageTag | string | `"7.16.2-sts.20220414.0806"` |  |
 | elasticsearch.minimumMasterNodes | int | `2` | Minimum number of Elasticsearch master nodes. |
 | elasticsearch.nodeGroup | string | `"master"` |  |
 | elasticsearch.prometheus-elasticsearch-exporter.enabled | bool | `true` |  |
@@ -193,14 +194,14 @@ stackstate/stackstate
 | kafka.fullnameOverride | string | `"stackstate-kafka"` | Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | kafka.image.registry | string | `"quay.io"` | Kafka image registry |
 | kafka.image.repository | string | `"stackstate/kafka"` | Kafka image repository |
-| kafka.image.tag | string | `"2.8.1-focal-20210827-r90.20220304.0940"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order for the kafkaup operator to upgrade the inter broker protocol version |
+| kafka.image.tag | string | `"2.8.1-focal-20220316-r90.20220405.1508"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order for the kafkaup operator to upgrade the inter broker protocol version |
 | kafka.initContainers | list | `[{"args":["-c","while [ -z \"${KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION}\" ]; do echo \"KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION should be set by operator\"; sleep 1; done"],"command":["/bin/bash"],"image":"{{ include \"kafka.image\" . }}","imagePullPolicy":"","name":"check-inter-broker-protocol-version","resources":{"limits":{},"requests":{}}}]` | required to make the kafka versionup operator work |
 | kafka.livenessProbe.initialDelaySeconds | int | `240` | Delay before readiness probe is initiated. |
 | kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
 | kafka.metrics.jmx.enabled | bool | `true` | Whether or not to expose JMX metrics to Prometheus. |
 | kafka.metrics.jmx.image.registry | string | `"quay.io"` | Kafka JMX exporter image registry |
 | kafka.metrics.jmx.image.repository | string | `"stackstate/jmx-exporter"` | Kafka JMX exporter image repository |
-| kafka.metrics.jmx.image.tag | string | `"0.15.0-focal-20210827-r138"` | Kafka JMX exporter image tag |
+| kafka.metrics.jmx.image.tag | string | `"0.15.0-focal-20220316-r138.20220405.1513"` | Kafka JMX exporter image tag |
 | kafka.metrics.jmx.resources.limits.cpu | string | `"1"` |  |
 | kafka.metrics.jmx.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | kafka.metrics.jmx.resources.limits.memory | string | `"300Mi"` |  |
@@ -234,7 +235,7 @@ stackstate/stackstate
 | minio.fullnameOverride | string | `"stackstate-minio"` | **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components. |
 | minio.image.registry | string | `"quay.io"` | MinIO image registry |
 | minio.image.repository | string | `"stackstate/minio"` | MinIO image repository |
-| minio.image.tag | string | `"2021.2.19-focal-20210827-r5"` |  |
+| minio.image.tag | string | `"2021.2.19-focal-20220316-r5.20220405.1533"` |  |
 | minio.persistence.enabled | bool | `false` | Enables MinIO persistence. Must be enabled when MinIO is not configured as a gateway to AWS S3 or Azure Blob Storage. |
 | minio.replicas | int | `1` | Number of MinIO replicas. |
 | minio.s3gateway.replicas | int | `1` |  |
@@ -268,7 +269,7 @@ stackstate/stackstate
 | stackstate.components.all.image.pullSecretPassword | string | `nil` |  |
 | stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
-| stackstate.components.all.image.repositorySuffix | string | `"-stable"` |  |
+| stackstate.components.all.image.repositorySuffix | string | `""` |  |
 | stackstate.components.all.image.tag | string | `"4.6.1"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
@@ -374,7 +375,7 @@ stackstate/stackstate
 | stackstate.components.kafkaTopicCreate.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.registry | string | `"quay.io"` | Base container image registry for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.repository | string | `"stackstate/kafka"` | Base container image repository for kafka-topic-create containers. |
-| stackstate.components.kafkaTopicCreate.image.tag | string | `"2.8.0-focal-20210827-r108"` | Container image tag for kafka-topic-create containers. |
+| stackstate.components.kafkaTopicCreate.image.tag | string | `"2.8.0-focal-20220316-r108.20220405.1511"` | Container image tag for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.kafkaTopicCreate.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
 | stackstate.components.kafkaTopicCreate.securityContext.fsGroup | int | `1001` | The GID (group ID) used to mount volumes |
