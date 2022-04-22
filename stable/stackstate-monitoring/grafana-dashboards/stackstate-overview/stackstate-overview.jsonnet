@@ -9,6 +9,7 @@ local graphPanel = grafana.graphPanel;
 local link = grafana.link;
 local prometheus = grafana.prometheus;
 local template = grafana.template;
+local row = grafana.row;
 
 // Local variables
 local datasource = '$datasource';
@@ -25,13 +26,13 @@ local stackstate_kafka2es_data_latency_seconds = graphPanel.new(
   )
 );
 
-local stackstate_kafka2es_data_latency_seconds_count = graphPanel.new(
-  title='Kafka2Es - Rate of consumed messages',
+local stackstate_kafka2es_received_data_latency_seconds = graphPanel.new(
+  title='Kafka2Es - Data Latency (from received to being persisted)',
   datasource=datasource,
-  format='cps',
+  format='s',
 ).addTarget(
   prometheus.target(
-    expr='sum by(data_type, service)(rate(stackstate_kafka2es_data_latency_seconds_count{%s}[$__rate_interval]))' % variables.grafana.standard_selectors_string,
+    expr='stackstate_kafka2es_received_data_latency_seconds{%s, quantile="0.95"}' % variables.grafana.standard_selectors_string,
     legendFormat='{{data_type}} - {{service}}',
   )
 );
@@ -42,30 +43,30 @@ local stackstate_kafka2es_time_to_catchup = graphPanel.new(
   format='s',
 ).addTarget(
   prometheus.target(
-    expr='sum by(data_type, pod, service)(stackstate_kafka2es_data_latency_seconds{%(selectors)s, quantile="0.95"}) / sum by(data_type, pod, service)(rate(stackstate_kafka2es_data_latency_seconds_count{%(selectors)s}[$__rate_interval]))' % ({ selectors: variables.grafana.standard_selectors_string }),
-    legendFormat='{{data_type}} - {{pod}} - {{service}}',
+    expr='stackstate_kafka2es_received_data_latency_seconds{%(selectors)s, quantile="0.95"} / sum by(data_type, service)(rate(stackstate_kafka2es_received_data_latency_seconds_count{%(selectors)s}[$__rate_interval]))' % ({ selectors: variables.grafana.standard_selectors_string }),
+    legendFormat='{{data_type}} - {{service}}',
   )
 );
 
 local kafka_lag = graphPanel.new(
-  title='Kafka - Topic partition lag',
+  title='Kafka - Topic record consumption - lag',
   datasource=datasource,
   format='short',
 ).addTarget(
   prometheus.target(
-    expr='kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{%(selectors)s, topic!=""}' % ({ selectors: variables.grafana.standard_selectors_string }),
-    legendFormat='{{pod}} - {{topic}} - {{client_id}} - {{partition}}',
+    expr='sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{%(selectors)s, topic!=""}[10m])) by (topic, service)' % ({ selectors: variables.grafana.standard_selectors_string }),
+    legendFormat='{{topic}} - {{service}}',
   )
 );
 
 local kafka_lag_time_to_catchup = graphPanel.new(
-  title='Kafka - Topics time to catch up',
+  title='Kafka - Topic record consumption - time to catch up',
   datasource=datasource,
   format='s',
 ).addTarget(
   prometheus.target(
-    expr='sum (kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{%(selectors)s, topic!=""}) by (pod, client_id, topic) / sum(kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{%(selectors)s, topic!=""}) by (pod, client_id, topic)' % ({ selectors: variables.grafana.standard_selectors_string }),
-    legendFormat='{{pod}} - {{topic}} - {{client_id}}',
+    expr='sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{%(selectors)s, topic!=""}[10m])) by (topic, service) / sum(avg_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{%(selectors)s, topic!=""}[10m])) by (topic, service)' % ({ selectors: variables.grafana.standard_selectors_string }),
+    legendFormat='{{topic}} - {{service}}',
   )
 );
 
@@ -104,11 +105,13 @@ dashboard.new(
 .addPanels(
   functions.grafana.grid_positioning(
     [
-      stackstate_kafka2es_data_latency_seconds,
-      stackstate_kafka2es_data_latency_seconds_count,
+      row.new('Elasticserach Metric / Event / Trace ingestion latency'),
+      stackstate_kafka2es_received_data_latency_seconds,
       stackstate_kafka2es_time_to_catchup,
+      row.new('Kafka topic record consumption'),
       kafka_lag,
       kafka_lag_time_to_catchup,
+      row.new('StackState Receiver limits'),
       stackstate_receiver_unique_element_saturation,
       stackstate_receiver_created_element_saturation,
     ],

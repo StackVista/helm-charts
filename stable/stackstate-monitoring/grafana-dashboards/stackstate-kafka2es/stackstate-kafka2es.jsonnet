@@ -14,8 +14,8 @@ local template = grafana.template;
 local datasource = '$datasource';
 
 // Main
-local stackstate_kafka2es_data_latency_seconds = graphPanel.new(
-  title='Kafka2Es - Data Latency',
+local stackstate_kafka2es_source_data_latency_seconds = graphPanel.new(
+  title='Kafka2Es - Data Latency (from source to being persisted)',
   datasource=datasource,
   format='s',
 ).addTarget(
@@ -36,13 +36,24 @@ local stackstate_kafka2es_data_latency_seconds_count = graphPanel.new(
   )
 );
 
+local stackstate_kafka2es_received_data_latency_seconds = graphPanel.new(
+  title='Kafka2Es - Data Latency (from received to being persisted)',
+  datasource=datasource,
+  format='s',
+).addTarget(
+  prometheus.target(
+    expr='stackstate_kafka2es_received_data_latency_seconds{%s, quantile="0.95"}' % variables.grafana.standard_selectors_string,
+    legendFormat='{{data_type}} - {{service}}',
+  )
+);
+
 local stackstate_kafka2es_time_to_catchup = graphPanel.new(
   title='Kafka2Es - Time to catch up',
   datasource=datasource,
   format='s',
 ).addTarget(
   prometheus.target(
-    expr='stackstate_kafka2es_data_latency_seconds{%(selectors)s, quantile="0.95"} / sum by(data_type, service)(rate(stackstate_kafka2es_data_latency_seconds_count{%(selectors)s}[$__rate_interval]))' % ({ selectors: variables.grafana.standard_selectors_string }),
+    expr='stackstate_kafka2es_received_data_latency_seconds{%(selectors)s, quantile="0.95"} / sum by(data_type, service)(rate(stackstate_kafka2es_received_data_latency_seconds_count{%(selectors)s}[$__rate_interval]))' % ({ selectors: variables.grafana.standard_selectors_string }),
     legendFormat='{{data_type}} - {{service}}',
   )
 );
@@ -77,8 +88,9 @@ dashboard.new(
 .addPanels(
   functions.grafana.grid_positioning(
     [
-      stackstate_kafka2es_data_latency_seconds,
+      stackstate_kafka2es_source_data_latency_seconds,
       stackstate_kafka2es_data_latency_seconds_count,
+      stackstate_kafka2es_received_data_latency_seconds,
       stackstate_kafka2es_time_to_catchup,
       capacity('GenericEvent'),
       capacity('TopologyEvent'),

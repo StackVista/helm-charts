@@ -63,7 +63,7 @@
          "thresholds": [ ],
          "timeFrom": null,
          "timeShift": null,
-         "title": "Kafka2Es - Data Latency",
+         "title": "Kafka2Es - Data Latency (from source to being persisted)",
          "tooltip": {
             "shared": true,
             "sort": 0,
@@ -223,7 +223,92 @@
          "steppedLine": false,
          "targets": [
             {
-               "expr": "stackstate_kafka2es_data_latency_seconds{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", quantile=\"0.95\"} / sum by(data_type, service)(rate(stackstate_kafka2es_data_latency_seconds_count{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}[$__rate_interval]))",
+               "expr": "stackstate_kafka2es_received_data_latency_seconds{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", quantile=\"0.95\"}",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "{{data_type}} - {{service}}",
+               "refId": "A"
+            }
+         ],
+         "thresholds": [ ],
+         "timeFrom": null,
+         "timeShift": null,
+         "title": "Kafka2Es - Data Latency (from received to being persisted)",
+         "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+         },
+         "type": "graph",
+         "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": [ ]
+         },
+         "yaxes": [
+            {
+               "format": "s",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            },
+            {
+               "format": "s",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            }
+         ]
+      },
+      {
+         "aliasColors": { },
+         "bars": false,
+         "dashLength": 10,
+         "dashes": false,
+         "datasource": "$datasource",
+         "fill": 1,
+         "fillGradient": 0,
+         "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 8
+         },
+         "id": 5,
+         "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "sideWidth": null,
+            "total": false,
+            "values": false
+         },
+         "lines": true,
+         "linewidth": 1,
+         "links": [ ],
+         "nullPointMode": "null",
+         "percentage": false,
+         "pointradius": 5,
+         "points": false,
+         "renderer": "flot",
+         "repeat": null,
+         "seriesOverrides": [ ],
+         "spaceLength": 10,
+         "stack": false,
+         "steppedLine": false,
+         "targets": [
+            {
+               "expr": "stackstate_kafka2es_received_data_latency_seconds{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", quantile=\"0.95\"} / sum by(data_type, service)(rate(stackstate_kafka2es_received_data_latency_seconds_count{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}[$__rate_interval]))",
                "format": "time_series",
                "intervalFactor": 2,
                "legendFormat": "{{data_type}} - {{service}}",
@@ -277,10 +362,10 @@
          "gridPos": {
             "h": 8,
             "w": 12,
-            "x": 12,
-            "y": 8
+            "x": 0,
+            "y": 16
          },
-         "id": 5,
+         "id": 6,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -369,10 +454,10 @@
          "gridPos": {
             "h": 8,
             "w": 12,
-            "x": 0,
+            "x": 12,
             "y": 16
          },
-         "id": 6,
+         "id": 7,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -461,10 +546,10 @@
          "gridPos": {
             "h": 8,
             "w": 12,
-            "x": 12,
-            "y": 16
+            "x": 0,
+            "y": 24
          },
-         "id": 7,
+         "id": 8,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -553,10 +638,10 @@
          "gridPos": {
             "h": 8,
             "w": 12,
-            "x": 0,
+            "x": 12,
             "y": 24
          },
-         "id": 8,
+         "id": 9,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -645,10 +730,10 @@
          "gridPos": {
             "h": 8,
             "w": 12,
-            "x": 12,
-            "y": 24
+            "x": 0,
+            "y": 32
          },
-         "id": 9,
+         "id": 10,
          "legend": {
             "alignAsTable": false,
             "avg": false,
