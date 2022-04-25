@@ -153,6 +153,7 @@ stackstate/stackstate
 | hbase.hdfs.datanode.resources.requests.cpu | string | `"300m"` |  |
 | hbase.hdfs.datanode.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | hbase.hdfs.datanode.resources.requests.memory | string | `"4Gi"` |  |
+| hbase.hdfs.image.tag | string | `"2.10.1-java11-5"` |  |
 | hbase.hdfs.minReplication | int | `2` | Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead) |
 | hbase.hdfs.namenode.resources.limits.cpu | string | `"500m"` |  |
 | hbase.hdfs.namenode.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
