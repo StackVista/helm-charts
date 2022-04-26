@@ -42,16 +42,6 @@ agent:
   protocolInspection:
     # agent.protocolInspection.enabled -- Enable / disable the agent protocol inspection.
     enabled: true
-  processAgent:
-    # agent.processAgent.enabled -- Enable / disable the agent process agent module.
-    enabled: true
-    checkIntervals:
-      # agent.processAgent.checkIntervals.container -- Override the default value of the container check interval in seconds.
-      container: 30
-      # agent.processAgent.checkIntervals.connections -- Override the default value of the connections check interval in seconds.
-      connections: 30
-      # agent.processAgent.checkIntervals.process -- Override the default value of the process check interval in seconds.
-      process: 30
   # agent.skipSslValidation -- Set to true if self signed certificates are used.
   skipSslValidation: false
 
@@ -63,59 +53,96 @@ agent:
     # agent.config.override -- A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap
     override: []
 
-  image:
-    # agent.image.repository -- Base container image repository.
-    repository: stackstate/stackstate-agent-2
-    # agent.image.tag -- Default container image tag.
-    tag: 2.16.1
-    # agent.image.pullPolicy -- Default container image pull policy.
-    pullPolicy: IfNotPresent
-
-  livenessProbe:
-    # agent.livenessProbe.enabled -- Enable use of livenessProbe check.
-    enabled: true
-    # agent.livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
-    failureThreshold: 3
-    # agent.livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
-    initialDelaySeconds: 15
-    # agent.livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
-    periodSeconds: 15
-    # agent.livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
-    successThreshold: 1
-    # agent.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
-    timeoutSeconds: 5
-
-  # agent.logLevel -- Logging level for agent processes.
-  logLevel: INFO
-
   # agent.priorityClassName -- Priority class for agent pods.
   priorityClassName: ""
 
-  readinessProbe:
-    # agent.readinessProbe.enabled -- Enable use of readinessProbe check.
-    enabled: true
-    # agent.readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
-    failureThreshold: 3
-    # agent.readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
-    initialDelaySeconds: 15
-    # agent.readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
-    periodSeconds: 15
-    # agent.readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
-    successThreshold: 1
-    # agent.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
-    timeoutSeconds: 5
+  containers:
 
-  resources:
-    limits:
-      # agent.resources.limits.cpu -- CPU resource limits.
-      cpu: "400m"
-      # agent.resources.limits.cpu -- Memory resource limits.
-      memory: "1024Mi"
-    requests:
-      # agent.resources.requests.cpu -- CPU resource requests.
-      cpu: "100m"
-      # agent.resources.requests.cpu -- Memory resource requests.
-      memory: "256Mi"
+    agent:
+      image:
+        # agent.containers.agent.image.repository -- Base container image repository.
+        repository: stackstate/stackstate-agent-2
+        # agent.containers.agent.image.tag -- Default container image tag.
+        tag: 2.16.1
+        # agent.containers.agent.image.pullPolicy -- Default container image pull policy.
+        pullPolicy: IfNotPresent
+      processAgent:
+        # agent.containers.agent.processAgent.enabled -- Enable / disable the agent process agent module. - deprecated
+        enabled: false
+      # agent.containers.agent.env -- Additional environment variables for the agent container
+      env: {}
+      # agent.containers.agent.logLevel -- Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off
+      ## If not set, fall back to the value of agent.logLevel.
+      logLevel:  # INFO
+
+      resources:
+        limits:
+          # agent.containers.agent.resources.limits.cpu -- CPU resource limits.
+          cpu: "400m"
+          # agent.containers.agent.resources.limits.cpu -- Memory resource limits.
+          memory: "256Mi"
+        requests:
+          # agent.containers.agent.resources.requests.cpu -- CPU resource requests.
+          cpu: "100m"
+          # agent.containers.agent.resources.requests.cpu -- Memory resource requests.
+          memory: "128Mi"
+      livenessProbe:
+        # agent.containers.agent.livenessProbe.enabled -- Enable use of livenessProbe check.
+        enabled: true
+        # agent.containers.agent.livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
+        failureThreshold: 3
+        # agent.containers.agent.livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
+        initialDelaySeconds: 15
+        # agent.containers.agent.livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
+        periodSeconds: 15
+        # agent.containers.agent.livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
+        successThreshold: 1
+        # agent.containers.agent.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
+        timeoutSeconds: 5
+      readinessProbe:
+        # agent.containers.agent.readinessProbe.enabled -- Enable use of readinessProbe check.
+        enabled: true
+        # agent.containers.agent.readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
+        failureThreshold: 3
+        # agent.containers.agent.readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
+        initialDelaySeconds: 15
+        # agent.containers.agent.readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
+        periodSeconds: 15
+        # agent.containers.agent.readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
+        successThreshold: 1
+        # agent.containers.agent.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
+        timeoutSeconds: 5
+
+    processAgent:
+      # agent.containers.processAgent.enabled -- Enable / disable the process agent container.
+      enabled: true
+      image:
+        # agent.containers.processAgent.image.repository -- Process-agent container image repository.
+        repository: stackstate/stackstate-process-agent
+        # agent.containers.processAgent.image.tag -- Default process-agent container image tag.
+        tag: 4.0.4
+        # agent.containers.processAgent.image.pullPolicy -- Process-agent container image pull policy.
+        pullPolicy: IfNotPresent
+      # agent.containers.processAgent.env -- Additional environment variables for the process-agent container
+      env: {}
+      # agent.containers.processAgent.logLevel -- Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off
+      ## If not set, fall back to the value of agent.logLevel.
+      logLevel:  # INFO
+
+      resources:
+        limits:
+          # agent.containers.processAgent.resources.limits.cpu -- CPU resource limits.
+          cpu: "400m"
+          # agent.containers.processAgent.resources.limits.cpu -- Memory resource limits.
+          memory: "768Mi"
+        requests:
+          # agent.containers.processAgent.resources.requests.cpu -- CPU resource requests.
+          cpu: "100m"
+          # agent.containers.processAgent.resources.requests.cpu -- Memory resource requests.
+          memory: "128Mi"
+
+  # agent.logLevel -- Logging level for agent processes.
+  logLevel: INFO
 
   # agent.updateStrategy -- The update strategy for the DaemonSet object.
   updateStrategy:
@@ -131,6 +158,15 @@ agent:
 
   # agent.affinity -- Affinity settings for pod assignment.
   affinity: {}
+
+processAgent:
+  checkIntervals:
+    # processAgent.checkIntervals.container -- Override the default value of the container check interval in seconds.
+    container: 30
+    # processAgent.checkIntervals.connections -- Override the default value of the connections check interval in seconds.
+    connections: 30
+    # processAgent.checkIntervals.process -- Override the default value of the process check interval in seconds.
+    process: 30
 
 clusterAgent:
   collection:
@@ -181,7 +217,6 @@ clusterAgent:
       maxDataSize: null
     # clusterAgent.config.override -- A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap
     override: []
-
 
   # clusterAgent.enabled -- Enable / disable the cluster agent.
   enabled: true
