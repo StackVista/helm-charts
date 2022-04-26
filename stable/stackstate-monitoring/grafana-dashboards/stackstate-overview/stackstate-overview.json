@@ -158,7 +158,7 @@
          "steppedLine": false,
          "targets": [
             {
-               "expr": "stackstate_kafka2es_received_data_latency_seconds{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", quantile=\"0.95\"} / sum by(data_type, service)(rate(stackstate_kafka2es_received_data_latency_seconds_count{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}[$__rate_interval]))",
+               "expr": "sum by(data_type, service)(stackstate_kafka2es_received_data_latency_seconds{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", quantile=\"0.95\"}) / sum by(data_type, service)(rate(stackstate_kafka2es_received_data_latency_seconds_count{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}[$__rate_interval]))",
                "format": "time_series",
                "intervalFactor": 2,
                "legendFormat": "{{data_type}} - {{service}}",
