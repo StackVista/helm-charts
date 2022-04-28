@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `1.0.5`
+Current chart version is `2.0.0`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -59,34 +59,43 @@ stackstate/cluster-agent
 | agent.config | object | `{"override":[]}` |  |
 | agent.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
 | agent.containerRuntime.customSocketPath | string | `""` | If the container socket path does not match the default for CRI-O, Containerd or Docker, supply a custom socket path. |
-| agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
-| agent.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
-| agent.image.tag | string | `"2.16.1"` | Default container image tag. |
-| agent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
-| agent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
-| agent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
-| agent.livenessProbe.periodSeconds | int | `15` | `periodSeconds` for the liveness probe. |
-| agent.livenessProbe.successThreshold | int | `1` | `successThreshold` for the liveness probe. |
-| agent.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
+| agent.containers.agent.env | object | `{}` | Additional environment variables for the agent container |
+| agent.containers.agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
+| agent.containers.agent.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
+| agent.containers.agent.image.tag | string | `"2.16.1"` | Default container image tag. |
+| agent.containers.agent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
+| agent.containers.agent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
+| agent.containers.agent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
+| agent.containers.agent.livenessProbe.periodSeconds | int | `15` | `periodSeconds` for the liveness probe. |
+| agent.containers.agent.livenessProbe.successThreshold | int | `1` | `successThreshold` for the liveness probe. |
+| agent.containers.agent.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
+| agent.containers.agent.logLevel | string | `nil` | Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off |
+| agent.containers.agent.processAgent.enabled | bool | `false` | Enable / disable the agent process agent module. - deprecated |
+| agent.containers.agent.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
+| agent.containers.agent.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
+| agent.containers.agent.readinessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the readiness probe. |
+| agent.containers.agent.readinessProbe.periodSeconds | int | `15` | `periodSeconds` for the readiness probe. |
+| agent.containers.agent.readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
+| agent.containers.agent.readinessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the readiness probe. |
+| agent.containers.agent.resources.limits.cpu | string | `"400m"` | Memory resource limits. |
+| agent.containers.agent.resources.limits.memory | string | `"256Mi"` |  |
+| agent.containers.agent.resources.requests.cpu | string | `"100m"` | Memory resource requests. |
+| agent.containers.agent.resources.requests.memory | string | `"128Mi"` |  |
+| agent.containers.processAgent.enabled | bool | `true` | Enable / disable the process agent container. |
+| agent.containers.processAgent.env | object | `{}` | Additional environment variables for the process-agent container |
+| agent.containers.processAgent.image.pullPolicy | string | `"IfNotPresent"` | Process-agent container image pull policy. |
+| agent.containers.processAgent.image.repository | string | `"stackstate/stackstate-process-agent"` | Process-agent container image repository. |
+| agent.containers.processAgent.image.tag | string | `"4.0.4"` | Default process-agent container image tag. |
+| agent.containers.processAgent.logLevel | string | `nil` | Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off |
+| agent.containers.processAgent.resources.limits.cpu | string | `"400m"` | Memory resource limits. |
+| agent.containers.processAgent.resources.limits.memory | string | `"768Mi"` |  |
+| agent.containers.processAgent.resources.requests.cpu | string | `"100m"` | Memory resource requests. |
+| agent.containers.processAgent.resources.requests.memory | string | `"128Mi"` |  |
 | agent.logLevel | string | `"INFO"` | Logging level for agent processes. |
 | agent.networkTracing.enabled | bool | `true` | Enable / disable the agent network tracing module. |
 | agent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | agent.priorityClassName | string | `""` | Priority class for agent pods. |
-| agent.processAgent.checkIntervals.connections | int | `30` | Override the default value of the connections check interval in seconds. |
-| agent.processAgent.checkIntervals.container | int | `30` | Override the default value of the container check interval in seconds. |
-| agent.processAgent.checkIntervals.process | int | `30` | Override the default value of the process check interval in seconds. |
-| agent.processAgent.enabled | bool | `true` | Enable / disable the agent process agent module. |
 | agent.protocolInspection.enabled | bool | `true` | Enable / disable the agent protocol inspection. |
-| agent.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
-| agent.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
-| agent.readinessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the readiness probe. |
-| agent.readinessProbe.periodSeconds | int | `15` | `periodSeconds` for the readiness probe. |
-| agent.readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
-| agent.readinessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the readiness probe. |
-| agent.resources.limits.cpu | string | `"400m"` | Memory resource limits. |
-| agent.resources.limits.memory | string | `"1024Mi"` |  |
-| agent.resources.requests.cpu | string | `"100m"` | Memory resource requests. |
-| agent.resources.requests.memory | string | `"256Mi"` |  |
 | agent.scc.enabled | bool | `false` | Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift. |
 | agent.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
 | agent.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -187,6 +196,9 @@ stackstate/cluster-agent
 | kube-state-metrics.image.repository | string | `"stackstate/kube-state-metrics"` | The path inside the registry where the image is hosted. This overrides the value in the bitnami chart. |
 | kube-state-metrics.image.tag | string | `"2.3.0-focal-20220316-r61.20220418.2032"` | The version tag of the image to be used during deployment. This overrides the value in the bitnami chart. |
 | nameOverride | string | `""` | Override the name of the chart. |
+| processAgent.checkIntervals.connections | int | `30` | Override the default value of the connections check interval in seconds. |
+| processAgent.checkIntervals.container | int | `30` | Override the default value of the container check interval in seconds. |
+| processAgent.checkIntervals.process | int | `30` | Override the default value of the process check interval in seconds. |
 | stackstate.apiKey | string | `nil` | **PROVIDE YOUR API KEY HERE** API key to be used by the StackState agent. |
 | stackstate.cluster.authToken | string | `""` | Provide a token to enable secure communication between the agent and the cluster agent. |
 | stackstate.cluster.name | string | `nil` | **PROVIDE KUBERNETES CLUSTER NAME HERE** Name of the Kubernetes cluster where the agent will be installed. |

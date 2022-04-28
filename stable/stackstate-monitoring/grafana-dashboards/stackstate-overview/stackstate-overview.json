@@ -4,6 +4,7 @@
    "annotations": {
       "list": [ ]
    },
+   "description": "Look here for a high level overview of StackState load and performance",
    "editable": true,
    "gnetId": null,
    "graphTooltip": 0,
@@ -12,13 +13,8 @@
    "links": [ ],
    "panels": [
       {
-         "aliasColors": { },
-         "bars": false,
-         "dashLength": 10,
-         "dashes": false,
-         "datasource": "$datasource",
-         "fill": 1,
-         "fillGradient": 0,
+         "collapse": false,
+         "collapsed": false,
          "gridPos": {
             "h": 8,
             "w": 12,
@@ -26,75 +22,14 @@
             "y": 0
          },
          "id": 2,
-         "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
-            "show": true,
-            "sideWidth": null,
-            "total": false,
-            "values": false
-         },
-         "lines": true,
-         "linewidth": 1,
-         "links": [ ],
-         "nullPointMode": "null",
-         "percentage": false,
-         "pointradius": 5,
-         "points": false,
-         "renderer": "flot",
+         "panels": [ ],
          "repeat": null,
-         "seriesOverrides": [ ],
-         "spaceLength": 10,
-         "stack": false,
-         "steppedLine": false,
-         "targets": [
-            {
-               "expr": "stackstate_kafka2es_data_latency_seconds{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", quantile=\"0.95\"}",
-               "format": "time_series",
-               "intervalFactor": 2,
-               "legendFormat": "{{data_type}} - {{service}}",
-               "refId": "A"
-            }
-         ],
-         "thresholds": [ ],
-         "timeFrom": null,
-         "timeShift": null,
-         "title": "Kafka2Es - Data Latency (from source to being persisted)",
-         "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-         },
-         "type": "graph",
-         "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": [ ]
-         },
-         "yaxes": [
-            {
-               "format": "s",
-               "label": null,
-               "logBase": 1,
-               "max": null,
-               "min": null,
-               "show": true
-            },
-            {
-               "format": "s",
-               "label": null,
-               "logBase": 1,
-               "max": null,
-               "min": null,
-               "show": true
-            }
-         ]
+         "repeatIteration": null,
+         "repeatRowId": null,
+         "showTitle": true,
+         "title": "Elasticserach Metric / Event / Trace ingestion latency",
+         "titleSize": "h6",
+         "type": "row"
       },
       {
          "aliasColors": { },
@@ -111,91 +46,6 @@
             "y": 0
          },
          "id": 3,
-         "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
-            "show": true,
-            "sideWidth": null,
-            "total": false,
-            "values": false
-         },
-         "lines": true,
-         "linewidth": 1,
-         "links": [ ],
-         "nullPointMode": "null",
-         "percentage": false,
-         "pointradius": 5,
-         "points": false,
-         "renderer": "flot",
-         "repeat": null,
-         "seriesOverrides": [ ],
-         "spaceLength": 10,
-         "stack": false,
-         "steppedLine": false,
-         "targets": [
-            {
-               "expr": "sum by(data_type, service)(rate(stackstate_kafka2es_data_latency_seconds_count{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}[$__rate_interval]))",
-               "format": "time_series",
-               "intervalFactor": 2,
-               "legendFormat": "{{data_type}} - {{service}}",
-               "refId": "A"
-            }
-         ],
-         "thresholds": [ ],
-         "timeFrom": null,
-         "timeShift": null,
-         "title": "Kafka2Es - Kafka Messages consumed",
-         "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-         },
-         "type": "graph",
-         "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": [ ]
-         },
-         "yaxes": [
-            {
-               "format": "cps",
-               "label": null,
-               "logBase": 1,
-               "max": null,
-               "min": null,
-               "show": true
-            },
-            {
-               "format": "cps",
-               "label": null,
-               "logBase": 1,
-               "max": null,
-               "min": null,
-               "show": true
-            }
-         ]
-      },
-      {
-         "aliasColors": { },
-         "bars": false,
-         "dashLength": 10,
-         "dashes": false,
-         "datasource": "$datasource",
-         "fill": 1,
-         "fillGradient": 0,
-         "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 8
-         },
-         "id": 4,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -277,10 +127,10 @@
          "gridPos": {
             "h": 8,
             "w": 12,
-            "x": 12,
+            "x": 0,
             "y": 8
          },
-         "id": 5,
+         "id": 4,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -352,6 +202,25 @@
          ]
       },
       {
+         "collapse": false,
+         "collapsed": false,
+         "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 8
+         },
+         "id": 5,
+         "panels": [ ],
+         "repeat": null,
+         "repeatIteration": null,
+         "repeatRowId": null,
+         "showTitle": true,
+         "title": "Kafka topic record consumption",
+         "titleSize": "h6",
+         "type": "row"
+      },
+      {
          "aliasColors": { },
          "bars": false,
          "dashLength": 10,
@@ -393,24 +262,17 @@
          "steppedLine": false,
          "targets": [
             {
-               "expr": "max by (index_name)(stackstate_kafka2es_index_capacity_quota_bytes{data_type=\"GenericEvent\", cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"})",
+               "expr": "sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", topic!=\"\"}[10m])) by (topic, service)",
                "format": "time_series",
                "intervalFactor": 2,
-               "legendFormat": "{{index_name}} - Quotum",
+               "legendFormat": "{{topic}} - {{service}}",
                "refId": "A"
-            },
-            {
-               "expr": "max by (index_name)(stackstate_kafka2es_index_capacity_usage_bytes{data_type=\"GenericEvent\", cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"})",
-               "format": "time_series",
-               "intervalFactor": 2,
-               "legendFormat": "{{index_name}} - Used",
-               "refId": "B"
             }
          ],
          "thresholds": [ ],
          "timeFrom": null,
          "timeShift": null,
-         "title": "Kafka2Es - GenericEvent",
+         "title": "Kafka - Topic record consumption - lag",
          "tooltip": {
             "shared": true,
             "sort": 0,
@@ -426,7 +288,7 @@
          },
          "yaxes": [
             {
-               "format": "bytes",
+               "format": "short",
                "label": null,
                "logBase": 1,
                "max": null,
@@ -434,7 +296,7 @@
                "show": true
             },
             {
-               "format": "bytes",
+               "format": "short",
                "label": null,
                "logBase": 1,
                "max": null,
@@ -485,24 +347,17 @@
          "steppedLine": false,
          "targets": [
             {
-               "expr": "max by (index_name)(stackstate_kafka2es_index_capacity_quota_bytes{data_type=\"TopologyEvent\", cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"})",
+               "expr": "sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", topic!=\"\"}[10m])) by (topic, service) / sum(avg_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", topic!=\"\"}[10m])) by (topic, service)",
                "format": "time_series",
                "intervalFactor": 2,
-               "legendFormat": "{{index_name}} - Quotum",
+               "legendFormat": "{{topic}} - {{service}}",
                "refId": "A"
-            },
-            {
-               "expr": "max by (index_name)(stackstate_kafka2es_index_capacity_usage_bytes{data_type=\"TopologyEvent\", cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"})",
-               "format": "time_series",
-               "intervalFactor": 2,
-               "legendFormat": "{{index_name}} - Used",
-               "refId": "B"
             }
          ],
          "thresholds": [ ],
          "timeFrom": null,
          "timeShift": null,
-         "title": "Kafka2Es - TopologyEvent",
+         "title": "Kafka - Topic record consumption - time to catch up",
          "tooltip": {
             "shared": true,
             "sort": 0,
@@ -518,7 +373,7 @@
          },
          "yaxes": [
             {
-               "format": "bytes",
+               "format": "s",
                "label": null,
                "logBase": 1,
                "max": null,
@@ -526,7 +381,7 @@
                "show": true
             },
             {
-               "format": "bytes",
+               "format": "s",
                "label": null,
                "logBase": 1,
                "max": null,
@@ -536,13 +391,8 @@
          ]
       },
       {
-         "aliasColors": { },
-         "bars": false,
-         "dashLength": 10,
-         "dashes": false,
-         "datasource": "$datasource",
-         "fill": 1,
-         "fillGradient": 0,
+         "collapse": false,
+         "collapsed": false,
          "gridPos": {
             "h": 8,
             "w": 12,
@@ -550,82 +400,14 @@
             "y": 24
          },
          "id": 8,
-         "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
-            "show": true,
-            "sideWidth": null,
-            "total": false,
-            "values": false
-         },
-         "lines": true,
-         "linewidth": 1,
-         "links": [ ],
-         "nullPointMode": "null",
-         "percentage": false,
-         "pointradius": 5,
-         "points": false,
-         "renderer": "flot",
+         "panels": [ ],
          "repeat": null,
-         "seriesOverrides": [ ],
-         "spaceLength": 10,
-         "stack": false,
-         "steppedLine": false,
-         "targets": [
-            {
-               "expr": "max by (index_name)(stackstate_kafka2es_index_capacity_quota_bytes{data_type=\"StsEvent\", cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"})",
-               "format": "time_series",
-               "intervalFactor": 2,
-               "legendFormat": "{{index_name}} - Quotum",
-               "refId": "A"
-            },
-            {
-               "expr": "max by (index_name)(stackstate_kafka2es_index_capacity_usage_bytes{data_type=\"StsEvent\", cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"})",
-               "format": "time_series",
-               "intervalFactor": 2,
-               "legendFormat": "{{index_name}} - Used",
-               "refId": "B"
-            }
-         ],
-         "thresholds": [ ],
-         "timeFrom": null,
-         "timeShift": null,
-         "title": "Kafka2Es - StsEvent",
-         "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-         },
-         "type": "graph",
-         "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": [ ]
-         },
-         "yaxes": [
-            {
-               "format": "bytes",
-               "label": null,
-               "logBase": 1,
-               "max": null,
-               "min": null,
-               "show": true
-            },
-            {
-               "format": "bytes",
-               "label": null,
-               "logBase": 1,
-               "max": null,
-               "min": null,
-               "show": true
-            }
-         ]
+         "repeatIteration": null,
+         "repeatRowId": null,
+         "showTitle": true,
+         "title": "StackState Receiver limits",
+         "titleSize": "h6",
+         "type": "row"
       },
       {
          "aliasColors": { },
@@ -633,6 +415,7 @@
          "dashLength": 10,
          "dashes": false,
          "datasource": "$datasource",
+         "description": "Percentage of agent element processing budget used, fully saturated when at 1 (i.e. dropping data)",
          "fill": 1,
          "fillGradient": 0,
          "gridPos": {
@@ -669,24 +452,17 @@
          "steppedLine": false,
          "targets": [
             {
-               "expr": "max by (index_name)(stackstate_kafka2es_index_capacity_quota_bytes{data_type=\"MultiMetric\", cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"})",
+               "expr": "stackstate_receiver_unique_element_passed_count{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"} / stackstate_receiver_unique_element_passed_max{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}",
                "format": "time_series",
                "intervalFactor": 2,
-               "legendFormat": "{{index_name}} - Quotum",
+               "legendFormat": "{{element_type}}",
                "refId": "A"
-            },
-            {
-               "expr": "max by (index_name)(stackstate_kafka2es_index_capacity_usage_bytes{data_type=\"MultiMetric\", cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"})",
-               "format": "time_series",
-               "intervalFactor": 2,
-               "legendFormat": "{{index_name}} - Used",
-               "refId": "B"
             }
          ],
          "thresholds": [ ],
          "timeFrom": null,
          "timeShift": null,
-         "title": "Kafka2Es - MultiMetric",
+         "title": "Receiver - Unique elements seen budget saturation",
          "tooltip": {
             "shared": true,
             "sort": 0,
@@ -702,7 +478,7 @@
          },
          "yaxes": [
             {
-               "format": "bytes",
+               "format": "short",
                "label": null,
                "logBase": 1,
                "max": null,
@@ -710,7 +486,7 @@
                "show": true
             },
             {
-               "format": "bytes",
+               "format": "short",
                "label": null,
                "logBase": 1,
                "max": null,
@@ -725,6 +501,7 @@
          "dashLength": 10,
          "dashes": false,
          "datasource": "$datasource",
+         "description": "Percentage of newly created elements budget used, fully saturated when at 1 (i.e. dropping data)",
          "fill": 1,
          "fillGradient": 0,
          "gridPos": {
@@ -761,24 +538,17 @@
          "steppedLine": false,
          "targets": [
             {
-               "expr": "max by (index_name)(stackstate_kafka2es_index_capacity_quota_bytes{data_type=\"Trace\", cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"})",
+               "expr": "stackstate_receiver_element_create_passed_count{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"} / stackstate_receiver_element_create_passed_max{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}",
                "format": "time_series",
                "intervalFactor": 2,
-               "legendFormat": "{{index_name}} - Quotum",
+               "legendFormat": "{{element_type}}",
                "refId": "A"
-            },
-            {
-               "expr": "max by (index_name)(stackstate_kafka2es_index_capacity_usage_bytes{data_type=\"Trace\", cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"})",
-               "format": "time_series",
-               "intervalFactor": 2,
-               "legendFormat": "{{index_name}} - Used",
-               "refId": "B"
             }
          ],
          "thresholds": [ ],
          "timeFrom": null,
          "timeShift": null,
-         "title": "Kafka2Es - Trace",
+         "title": "Receiver - Created elements hourly budget saturation",
          "tooltip": {
             "shared": true,
             "sort": 0,
@@ -794,7 +564,7 @@
          },
          "yaxes": [
             {
-               "format": "bytes",
+               "format": "short",
                "label": null,
                "logBase": 1,
                "max": null,
@@ -802,7 +572,7 @@
                "show": true
             },
             {
-               "format": "bytes",
+               "format": "short",
                "label": null,
                "logBase": 1,
                "max": null,
@@ -812,13 +582,13 @@
          ]
       }
    ],
-   "refresh": "10s",
+   "refresh": "1m",
    "rows": [ ],
    "schemaVersion": 14,
    "style": "dark",
    "tags": [
       "stackstate",
-      "kafka2es"
+      "overview"
    ],
    "templating": {
       "list": [
@@ -948,6 +718,6 @@
       ]
    },
    "timezone": "browser",
-   "title": "StackState - Kafka2Es",
+   "title": "StackState - Overview",
    "version": 0
 }
