@@ -547,8 +547,9 @@ stackstate/stackstate
 | stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
 | stackstate.components.wait.image.tag | string | `"1.0.6"` | Container image tag for wait containers. |
 | stackstate.experimental.server.split | bool | `true` | (boolean) Run a single service server or split in multiple sub services as api, state .... |
-| stackstate.java | object | `{"trustStore":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
+| stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
+| stackstate.java.trustStoreBase64Encoded | string | `nil` | Base64 encoded Java TrustStore (cacerts) file to use. Ignored if stackstate.java.trustStore is set. |
 | stackstate.java.trustStorePassword | string | `nil` | Password to access the Java TrustStore (cacerts) file |
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
 | stackstate.receiver.baseUrl | string | `nil` | **DEPRECATED** Use stackstate.baseUrl instead |
@@ -648,7 +649,12 @@ To use LDAP create a ldap_values.yaml similar to the example below (update for y
 * `stackstate.authentication.ldap.ssl.trustStore`: The Certificate Truststore to verify server certificates against
 * `stackstate.authentication.ldap.ssl.trustCertificates`: The client Certificate trusted by the server (supports PEM, DER and PKCS7 formats)
 
-Only one of `trustCertificates` or `trustStore` will be used, `trustCertificates` takes precedence over `trustStore`.
+There are also Base64 Encoded analogues of these values. They are ignored if `trustCertificates` and/or `trustStore` are set:
+* `stackstate.authentication.ldap.ssl.trustStoreBase64Encoded`
+* `stackstate.authentication.ldap.ssl.trustCertificatesBase64Encoded`
+**Note: The reason for `*Base64Encoded` values is this is the only way to upload binary files via KOTS Config**
+
+Only one of `trustCertificates`/`trustCertificatesBase64Encoded` or `trustStore`/`trustStoreBase64Encoded` will be used, `trustCertificates` takes precedence over `trustStore`, and `trustStore`/`trustCertificates` takes precedence over `trustStoreBase64Encoded`/`trustCertificatesBase64Encoded` respectively.
 
 In order to search the groups that a user belongs to and from those get the roles the user can have in StackState we need to config values `rolesKey` and `groupMemberKey`.
 

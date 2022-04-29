@@ -93,14 +93,14 @@ Secrets dict for custom certificates for stackstate services
 {{- define "stackstate.service.mountsecrets" -}}
 {{- $mountSecrets := dict }}
 {{- if hasKey .Values.stackstate.authentication.ldap "ssl" }}
-  {{- if .Values.stackstate.authentication.ldap.ssl.trustCertificates }}
+  {{- if or .Values.stackstate.authentication.ldap.ssl.trustCertificates .Values.stackstate.authentication.ldap.ssl.trustCertificatesBase64Encoded }}
     {{- $_ := set $mountSecrets "ldapTrustCertificates" "ldap-certificates.pem" }}
   {{- end }}
-  {{- if .Values.stackstate.authentication.ldap.ssl.trustStore }}
+  {{- if or .Values.stackstate.authentication.ldap.ssl.trustStore .Values.stackstate.authentication.ldap.ssl.trustStoreBase64Encoded }}
     {{- $_ := set $mountSecrets "ldapTrustStore" "ldap-cacerts" }}
   {{- end }}
 {{- end }}
-{{- if .Values.stackstate.java.trustStore }}
+{{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }}
     {{- $_ := set $mountSecrets "javaTrustStore" "java-cacerts" }}
 {{- end }}
 {{ $mountSecrets | toYaml }}
@@ -145,7 +145,7 @@ NOTE: $JAVA_TRUSTSTORE_PASSWORD cannot be passed via JAVA_OPTS because the start
 does not expand variables within the JAVA_OPTS anymore
 */}}
 {{- define "stackstate.service.args" -}}
-{{- if .Values.stackstate.java.trustStore }}
+{{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }}
 - -Djavax.net.ssl.trustStore=/opt/docker/secrets/java-cacerts
 - -Djavax.net.ssl.trustStoreType=jks
 {{- if .Values.stackstate.java.trustStorePassword }}
