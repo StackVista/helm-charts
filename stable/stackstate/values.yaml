@@ -988,6 +988,7 @@ elasticsearch:
     resources:
       requests:
         storage: 250Gi
+  imageTag: "7.17.2-sts.20220425.0743"
   prometheus-elasticsearch-exporter:
     enabled: true
     serviceMonitor:
