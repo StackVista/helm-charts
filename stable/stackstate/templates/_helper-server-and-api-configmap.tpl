@@ -52,10 +52,10 @@ stackstate.api.authentication.authServer.ldapAuthServer {
 {{- if .Values.stackstate.authentication.ldap.ssl }}
     ssl {
       sslType = {{ required "stackstate.authentication.ldap.ssl.type is required when configuring LDAP SSL" .Values.stackstate.authentication.ldap.ssl.type }}
-  {{- if .Values.stackstate.authentication.ldap.ssl.trustCertificates }}
+  {{- if or .Values.stackstate.authentication.ldap.ssl.trustCertificates .Values.stackstate.authentication.ldap.ssl.trustCertificatesBase64Encoded }}
       trustCertificatesPath = "/opt/docker/secrets/ldap-certificates.pem"
   {{- end }}
-  {{- if .Values.stackstate.authentication.ldap.ssl.trustStore }}
+  {{- if or .Values.stackstate.authentication.ldap.ssl.trustStore .Values.stackstate.authentication.ldap.ssl.trustStoreBase64Encoded }}
       trustStorePath = "/opt/docker/secrets/ldap-cacerts"
   {{- end }}
     }
