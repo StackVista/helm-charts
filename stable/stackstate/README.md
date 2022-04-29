@@ -16,7 +16,7 @@ Current chart version is `4.7.0-snapshot.8`
 | https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
 | https://helm.stackstate.io | anomaly-detection | 4.7.0-snapshot.138 |
 | https://helm.stackstate.io | cluster-agent | 1.0.5 |
-| https://helm.stackstate.io | elasticsearch | 7.16.2-stackstate.4 |
+| https://helm.stackstate.io | elasticsearch | 7.17.2-stackstate.0 |
 | https://helm.stackstate.io | kafkaup-operator | 0.1.2 |
 | https://helm.stackstate.io | minio | 8.0.10-stackstate.3 |
 | https://helm.stackstate.io | pull-secret | 1.0.0 |
