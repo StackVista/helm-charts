@@ -337,7 +337,7 @@ stackstate:
       # stackstate.components.healthSync.additionalLogging -- Additional logback config
       additionalLogging: ""
       cache:
-      # stackstate.components.healthSync.cache.backend -- Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory
+        # stackstate.components.healthSync.cache.backend -- Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory
         backend: "mapdb"
     initializer:
       extraEnv:
@@ -690,7 +690,7 @@ stackstate:
       # stackstate.components.sync.additionalLogging -- Additional logback config
       additionalLogging: ""
       cache:
-      # stackstate.components.sync.cache.backend -- Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory
+        # stackstate.components.sync.cache.backend -- Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory
         backend: "mapdb"
     slicing:
       extraEnv:
@@ -1035,7 +1035,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 4.6.5
+      tag: 4.6.6
   console:
     # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
     enabled: false
