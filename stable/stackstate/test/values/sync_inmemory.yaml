@@ -3,4 +3,3 @@ stackstate:
     sync:
       cache:
         backend: "inmemory"
-
