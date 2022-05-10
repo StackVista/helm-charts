@@ -861,6 +861,16 @@ stackstate:
         tag: 2.8.0-focal-20220316-r108.20220405.1511
         # stackstate.components.kafkaTopicCreate.image.pullPolicy -- Image pull policy for kafka-topic-create containers.
         pullPolicy: IfNotPresent
+      # stackstate.components.kafkaTopicCreate.resources -- Resource allocation for `kafkaTopicCreate` pods.
+      resources:
+        limits:
+          cpu: "1000m"
+          memory: "2000Mi"
+          ephemeral-storage: "1Gi"
+        requests:
+          cpu: "500m"
+          memory: "2000Mi"
+          ephemeral-storage: "1Mi"
       securityContext:
         # stackstate.components.kafkaTopicCreate.securityContext.enabled -- Whether or not to enable the securityContext
         enabled: true
@@ -898,6 +908,16 @@ stackstate:
         tag: 1.1.3
         # stackstate.components.containerTools.image.pullPolicy -- Image pull policy for container-tools containers.
         pullPolicy: IfNotPresent
+      # stackstate.components.kafkaTopicCreate.resources -- Resource allocation for `kafkaTopicCreate` pods.
+      resources:
+        limits:
+          cpu: "1000m"
+          memory: "2000Mi"
+          ephemeral-storage: "1Gi"
+        requests:
+          cpu: "500m"
+          memory: "2000Mi"
+          ephemeral-storage: "1Mi"
     wait:
       image:
         # stackstate.components.wait.image.registry -- Base container image registry for wait containers.
