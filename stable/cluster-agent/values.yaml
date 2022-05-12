@@ -203,7 +203,7 @@ clusterAgent:
       statefulsets: true
       # clusterAgent.collection.kubernetesResources.ingresses -- Enable / disable collection of Ingresses.
       ingresses: true
-      # clusterAgent.collection.kubernetesResources.cronjobs -- Enable / disable collection of CronKobs.
+      # clusterAgent.collection.kubernetesResources.cronjobs -- Enable / disable collection of CronJobs.
       cronjobs: true
       # clusterAgent.collection.kubernetesResources.jobs -- Enable / disable collection of Jobs.
       jobs: true
