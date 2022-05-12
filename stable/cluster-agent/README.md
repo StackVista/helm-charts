@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `2.0.0`
+Current chart version is `2.0.1`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -106,7 +106,7 @@ stackstate/cluster-agent
 | clusterAgent.collection.kubernetesMetrics | bool | `true` | Enable / disable the cluster agent metrics collection. |
 | clusterAgent.collection.kubernetesResources.componentstatuses | bool | `true` | Enable / disable collection of ComponentStatuses. |
 | clusterAgent.collection.kubernetesResources.configmaps | bool | `true` | Enable / disable collection of ConfigMaps. |
-| clusterAgent.collection.kubernetesResources.cronjobs | bool | `true` | Enable / disable collection of CronKobs. |
+| clusterAgent.collection.kubernetesResources.cronjobs | bool | `true` | Enable / disable collection of CronJobs. |
 | clusterAgent.collection.kubernetesResources.daemonsets | bool | `true` | Enable / disable collection of DaemonSets. |
 | clusterAgent.collection.kubernetesResources.deployments | bool | `true` | Enable / disable collection of Deployments. |
 | clusterAgent.collection.kubernetesResources.endpoints | bool | `true` | Enable / disable collection of Endpoints. |
