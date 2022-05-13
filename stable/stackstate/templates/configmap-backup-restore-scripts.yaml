@@ -120,7 +120,7 @@ spec:
             - '/backup-restore-scripts/list-stackgraph-backups.sh'
           env:
             {{- include "stackstate.backup.envvars" . | nindent 12 }}
-          {{- with .Values.stackstate.components.server.resources }}
+          {{- with .Values.stackstate.components.backup.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -170,7 +170,7 @@ spec:
               value: "REPLACE_ME_FORCE_DELETE_REPLACE_ME"
             - name: ZOOKEEPER_QUORUM
               value: stackstate-zookeeper-headless:2181
-          {{- with .Values.stackstate.components.server.resources }}
+          {{- with .Values.stackstate.components.backup.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}

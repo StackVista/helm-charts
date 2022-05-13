@@ -299,6 +299,12 @@ stackstate/stackstate
 | stackstate.components.api.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.api.sizing.javaHeapMemoryFraction | string | `"50"` |  |
 | stackstate.components.api.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.backup.resources.limits.cpu | string | `"3000m"` |  |
+| stackstate.components.backup.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
+| stackstate.components.backup.resources.limits.memory | string | `"4000mi"` |  |
+| stackstate.components.backup.resources.requests.cpu | string | `"1000m"` |  |
+| stackstate.components.backup.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
+| stackstate.components.backup.resources.requests.memory | string | `"4000Mi"` |  |
 | stackstate.components.checks.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.checks.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.checks.config | string | `""` | Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |

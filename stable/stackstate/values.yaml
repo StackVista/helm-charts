@@ -219,6 +219,16 @@ stackstate:
       additionalLogging: ""
       # stackstate.components.api.docslink -- Documentation URL root to use in the product help page & tooltips.
       docslink: ""
+    backup:
+      resources:
+        limits:
+          memory: "4000mi"
+          cpu: "3000m"
+          ephemeral-storage: "1Gi"
+        requests:
+          memory: "4000Mi"
+          cpu: "1000m"
+          ephemeral-storage: "1Mi"
     correlate:
       extraEnv:
         # stackstate.components.correlate.extraEnv.open -- Extra open environment variables to inject into pods.
