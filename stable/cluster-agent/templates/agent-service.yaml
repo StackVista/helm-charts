@@ -6,7 +6,15 @@ metadata:
   labels:
 {{ include "cluster-agent.labels" . | indent 4 }}
     app.kubernetes.io/component: agent
+{{- with .Values.agent.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
 spec:
+  type: {{ .Values.agent.service.type }}
+{{- if eq .Values.agent.service.type "LoadBalancer" }}
+  loadBalancerSourceRanges: {{ toYaml .Values.agent.service.loadBalancerSourceRanges | nindent 4}}
+{{- end }}
   ports:
   - name: traceport
     port: 8126

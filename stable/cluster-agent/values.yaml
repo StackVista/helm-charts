@@ -140,6 +140,14 @@ agent:
           cpu: "100m"
           # agent.containers.processAgent.resources.requests.cpu -- Memory resource requests.
           memory: "128Mi"
+  # agent.service -- The Kubernetes service for the agent
+  service:
+    # agent.service.type -- Type of Kubernetes service: ClusterIP, LoadBalancer, NodePort
+    type: ClusterIP
+    # agent.service.annotations -- Annotations for the service
+    annotations: {}
+    # agent.service.loadBalancerSourceRanges -- The IP4 CIDR allowed to reach LoadBalancer for the service. For LoadBalancer type of service only.
+    loadBalancerSourceRanges: ["10.0.0.0/8"]
 
   # agent.logLevel -- Logging level for agent processes.
   logLevel: INFO
