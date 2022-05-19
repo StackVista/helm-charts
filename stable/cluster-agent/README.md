@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `2.0.1`
+Current chart version is `2.0.3`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -97,6 +97,10 @@ stackstate/cluster-agent
 | agent.priorityClassName | string | `""` | Priority class for agent pods. |
 | agent.protocolInspection.enabled | bool | `true` | Enable / disable the agent protocol inspection. |
 | agent.scc.enabled | bool | `false` | Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift. |
+| agent.service | object | `{"annotations":{},"loadBalancerSourceRanges":["10.0.0.0/8"],"type":"ClusterIP"}` | The Kubernetes service for the agent |
+| agent.service.annotations | object | `{}` | Annotations for the service |
+| agent.service.loadBalancerSourceRanges | list | `["10.0.0.0/8"]` | The IP4 CIDR allowed to reach LoadBalancer for the service. For LoadBalancer type of service only. |
+| agent.service.type | string | `"ClusterIP"` | Type of Kubernetes service: ClusterIP, LoadBalancer, NodePort |
 | agent.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
 | agent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | agent.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":100},"type":"RollingUpdate"}` | The update strategy for the DaemonSet object. |
