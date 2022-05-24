@@ -65,7 +65,6 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 		var metadata metav1.TypeMeta
 		err := helm.UnmarshalK8SYamlE(t, v, &metadata)
 		assert.NoError(t, err)
-		t.Log("Processing resource of kind", metadata.Kind)
 		switch metadata.Kind {
 		case "ClusterRole":
 			var resource rbacv1.ClusterRole
@@ -142,7 +141,11 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 			helm.UnmarshalK8SYaml(t, v, &resource)
 			statefulsets[resource.Name] = resource
 		default:
-			t.Error("Found unknown kind " + metadata.Kind + " in content\n" + v + "\n This can be caused by an incorrect k8s resource type in the helm template or when using a custom resource type.")
+			if metadata.Kind != "" || metadata.APIVersion != "" {
+				t.Errorf("Found unknown kind '%s/%s' in content\n%s\n This can be caused by an incorrect k8s resource type in the helm template or when using a custom resource type.", metadata.APIVersion, metadata.Kind, v)
+			} else {
+				t.Logf("Skipping empty resource: %s", v)
+			}
 		}
 	}
 

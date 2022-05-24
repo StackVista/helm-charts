@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/helm"
+	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/stretchr/testify/require"
 )
 
@@ -13,6 +14,7 @@ import (
 func RenderHelmTemplate(t *testing.T, releaseName string, valuesFiles ...string) string {
 	helmOpts := &helm.Options{
 		ValuesFiles: valuesFiles,
+		Logger:      logger.Discard,
 	}
 
 	return RenderHelmTemplateOptsNoError(t, releaseName, helmOpts)
