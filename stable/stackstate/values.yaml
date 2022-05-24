@@ -918,7 +918,7 @@ stackstate:
         tag: 1.1.3
         # stackstate.components.containerTools.image.pullPolicy -- Image pull policy for container-tools containers.
         pullPolicy: IfNotPresent
-      # stackstate.components.kafkaTopicCreate.resources -- Resource allocation for `kafkaTopicCreate` pods.
+      # stackstate.components.containerTools.resources -- Resource allocation for `kafkaTopicCreate` pods.
       resources:
         limits:
           cpu: "1000m"

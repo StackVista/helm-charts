@@ -323,12 +323,7 @@ stackstate/stackstate
 | stackstate.components.containerTools.image.registry | string | `"quay.io"` | Base container image registry for container-tools containers. |
 | stackstate.components.containerTools.image.repository | string | `"stackstate/container-tools"` | Base container image repository for container-tools containers. |
 | stackstate.components.containerTools.image.tag | string | `"1.1.3"` | Container image tag for container-tools containers. |
-| stackstate.components.containerTools.resources.limits.cpu | string | `"1000m"` |  |
-| stackstate.components.containerTools.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
-| stackstate.components.containerTools.resources.limits.memory | string | `"2000Mi"` |  |
-| stackstate.components.containerTools.resources.requests.cpu | string | `"500m"` |  |
-| stackstate.components.containerTools.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
-| stackstate.components.containerTools.resources.requests.memory | string | `"2000Mi"` |  |
+| stackstate.components.containerTools.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `kafkaTopicCreate` pods. |
 | stackstate.components.correlate.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.correlate.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.correlate.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
