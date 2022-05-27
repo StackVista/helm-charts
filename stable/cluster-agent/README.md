@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `2.0.3`
+Current chart version is `2.0.4`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -101,6 +101,7 @@ stackstate/cluster-agent
 | agent.service.annotations | object | `{}` | Annotations for the service |
 | agent.service.loadBalancerSourceRanges | list | `["10.0.0.0/8"]` | The IP4 CIDR allowed to reach LoadBalancer for the service. For LoadBalancer type of service only. |
 | agent.service.type | string | `"ClusterIP"` | Type of Kubernetes service: ClusterIP, LoadBalancer, NodePort |
+| agent.serviceaccount.annotations | object | `{}` | Annotations for the service account for the agent daemonset pods |
 | agent.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
 | agent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | agent.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":100},"type":"RollingUpdate"}` | The update strategy for the DaemonSet object. |
@@ -152,6 +153,7 @@ stackstate/cluster-agent
 | clusterAgent.resources.limits.memory | string | `"1024Mi"` | Memory resource limits. |
 | clusterAgent.resources.requests.cpu | string | `"100m"` | CPU resource requests. |
 | clusterAgent.resources.requests.memory | string | `"256Mi"` | Memory resource requests. |
+| clusterAgent.serviceaccount.annotations | object | `{}` | Annotations for the service account for the cluster agent pods |
 | clusterAgent.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | clusterAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | clusterChecks.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -187,6 +189,7 @@ stackstate/cluster-agent
 | clusterChecks.resources.requests.cpu | string | `"100m"` | Memory resource requests. |
 | clusterChecks.resources.requests.memory | string | `"256Mi"` |  |
 | clusterChecks.scc.enabled | bool | `false` | Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift |
+| clusterChecks.serviceaccount.annotations | object | `{}` | Annotations for the service account for the cluster checks pods |
 | clusterChecks.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
 | clusterChecks.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | clusterChecks.tolerations | list | `[]` | Toleration labels for pod assignment. |
