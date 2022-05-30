@@ -3,4 +3,3 @@ stackstate:
     healthSync:
       cache:
         backend: "mapdb"
-

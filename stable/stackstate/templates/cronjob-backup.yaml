@@ -43,6 +43,10 @@ spec:
                 {{- include "stackstate.backup.envvars" . | nindent 16 }}
                 - name: ZOOKEEPER_QUORUM
                   value: stackstate-zookeeper-headless:2181
+              {{- with .Values.stackstate.components.backup.resources }}
+              resources:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
               volumeMounts:
                 {{- include "stackstate.backup.volumeMounts" . | nindent 16 }}
                 - name: tmp-data

@@ -6,7 +6,13 @@ JOB_NAME=stackgraph-list-backups-$(date +%Y%m%dt%H%M%S)
 JOB_YAML_DIR=$(mktemp -d /tmp/sts-restore-XXXXXX)
 JOB_YAML_FILE="${JOB_YAML_DIR}/job-${JOB_NAME}.yaml"
 
-if (! (kubectl get configmap stackstate-backup-restore-scripts -o jsonpath="{.data.job-${JOB_NAME_TEMPLATE}\.yaml}" | sed -e "s/${JOB_NAME_TEMPLATE}/${JOB_NAME}/" > "${JOB_YAML_FILE}")) || [ ! -s "${JOB_YAML_FILE}" ]; then
+CM_NAME="$(kubectl get configmap -l stackstate.com/backup-scripts=true -o jsonpath='{.items[0].metadata.name}')"
+if [ -z "${CM_NAME}" ]; then
+    echo "=== Configmap not found. Exiting..."
+    exit 1
+fi
+
+if (! (kubectl get configmap "${CM_NAME}" -o jsonpath="{.data.job-${JOB_NAME_TEMPLATE}\.yaml}" | sed -e "s/${JOB_NAME_TEMPLATE}/${JOB_NAME}/" > "${JOB_YAML_FILE}")) || [ ! -s "${JOB_YAML_FILE}" ]; then
     echo "Did you set backup.enabled and backup.stackGraph.restore.enabled to true?"
     exit 1
 fi

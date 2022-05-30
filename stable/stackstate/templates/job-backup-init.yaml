@@ -29,6 +29,10 @@ spec:
             - '/backup-restore-scripts/configure-backup.sh'
           env:
             {{- include "stackstate.backup.envvars" . | nindent 12 }}
+          {{- with .Values.stackstate.components.containerTools.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
             - name: tmp-data

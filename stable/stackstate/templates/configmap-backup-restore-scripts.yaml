@@ -30,6 +30,10 @@ spec:
             - '/backup-restore-scripts/list-elasticsearch-snapshots.sh'
           env:
             {{- include "stackstate.backup.envvars" . | nindent 12 }}
+          {{- with .Values.stackstate.components.containerTools.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
       {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
@@ -72,6 +76,10 @@ spec:
             {{- include "stackstate.backup.envvars" . | nindent 12 }}
             - name: SNAPSHOT_NAME
               value: "REPLACE_ME_SNAPSHOT_NAME_REPLACE_ME"
+          {{- with .Values.stackstate.components.containerTools.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
       {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
@@ -112,6 +120,10 @@ spec:
             - '/backup-restore-scripts/list-stackgraph-backups.sh'
           env:
             {{- include "stackstate.backup.envvars" . | nindent 12 }}
+          {{- with .Values.stackstate.components.backup.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
       {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
@@ -158,6 +170,10 @@ spec:
               value: "REPLACE_ME_FORCE_DELETE_REPLACE_ME"
             - name: ZOOKEEPER_QUORUM
               value: stackstate-zookeeper-headless:2181
+          {{- with .Values.stackstate.components.backup.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
             - name: tmp-data
@@ -198,6 +214,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "common.fullname.short" . }}-backup-restore-scripts
+  labels:
+    stackstate.com/backup-scripts: true
 data:
   configure-backup.sh: |
     {{- .Files.Get "scripts/configure-backup.sh" | nindent 4 }}
