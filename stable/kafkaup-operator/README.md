@@ -1,10 +1,10 @@
 # kafkaup-operator
 
-![Version: 0.1.3](https://img.shields.io/badge/Version-0.1.3-informational?style=flat-square) ![AppVersion: v0.1.0](https://img.shields.io/badge/AppVersion-v0.1.0-informational?style=flat-square)
+![Version: 0.1.4](https://img.shields.io/badge/Version-0.1.4-informational?style=flat-square) ![AppVersion: v0.1.0](https://img.shields.io/badge/AppVersion-v0.1.0-informational?style=flat-square)
 
 The StackState Kafka upgrade operator
 
-Current chart version is `0.1.3`
+Current chart version is `0.1.4`
 
 **Homepage:** <https://gitlab.com/StackVista/platform/kafkaup-operator>
 
@@ -18,7 +18,7 @@ Current chart version is `0.1.3`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://helm.stackstate.io/ | common | 0.4.19 |
+| file://../common/ | common | * |
 
 ## Values
 
@@ -36,5 +36,10 @@ Current chart version is `0.1.3`
 | resources.limits.memory | string | `"64Mi"` |  |
 | resources.requests.cpu | string | `"25m"` |  |
 | resources.requests.memory | string | `"32Mi"` |  |
+| securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
+| securityContext.fsGroup | int | `65534` | The GID (group ID) used to mount volumes |
+| securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
+| securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
+| securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
 | startVersion | string | `nil` | Version to use if no version is set. Allow going from a non-operated to operated situation |
 | strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |

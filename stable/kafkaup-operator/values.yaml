@@ -42,3 +42,15 @@ resources:
 # strategy -- The strategy for the Deployment object.
 strategy:
   type: RollingUpdate
+
+securityContext:
+  # securityContext.enabled -- Whether or not to enable the securityContext
+  enabled: true
+  # securityContext.fsGroup -- The GID (group ID) used to mount volumes
+  fsGroup: 65534
+  # securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
+  runAsGroup: 65534
+  # securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
+  runAsNonRoot: true
+  # securityContext.runAsUser -- The UID (user ID) of the owning user of the process
+  runAsUser: 65534
