@@ -215,7 +215,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "common.fullname.short" . }}-backup-restore-scripts
   labels:
-    stackstate.com/backup-scripts: true
+    stackstate.com/backup-scripts: "true"
 data:
   configure-backup.sh: |
     {{- .Files.Get "scripts/configure-backup.sh" | nindent 4 }}

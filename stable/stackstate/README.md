@@ -12,14 +12,14 @@ Current chart version is `5.0.0-snapshot.1`
 |------------|------|---------|
 | file://../common/ | common | * |
 | file://../hbase/ | hbase | * |
-| https://charts.bitnami.com/bitnami | kafka | 14.8.1 |
-| https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
 | https://helm.stackstate.io | anomaly-detection | 5.0.0-pre.4 |
 | https://helm.stackstate.io | cluster-agent | 1.0.5 |
 | https://helm.stackstate.io | elasticsearch | 7.17.2-stackstate.0 |
 | https://helm.stackstate.io | kafkaup-operator | 0.1.2 |
 | https://helm.stackstate.io | minio | 8.0.10-stackstate.3 |
 | https://helm.stackstate.io | pull-secret | 1.0.0 |
+| https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | kafka | 14.8.1 |
+| https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 5.16.0 |
 
 ## Required Values
 

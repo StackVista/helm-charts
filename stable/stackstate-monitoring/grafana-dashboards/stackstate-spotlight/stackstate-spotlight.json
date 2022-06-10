@@ -18,6 +18,7 @@
          "dashes": false,
          "datasource": "$datasource",
          "fill": 1,
+         "fillGradient": 0,
          "gridPos": {
             "h": 8,
             "w": 12,
@@ -33,6 +34,7 @@
             "min": false,
             "rightSide": false,
             "show": true,
+            "sideWidth": null,
             "total": false,
             "values": false
          },
@@ -115,6 +117,7 @@
          "dashes": false,
          "datasource": "$datasource",
          "fill": 1,
+         "fillGradient": 0,
          "gridPos": {
             "h": 8,
             "w": 12,
@@ -130,6 +133,7 @@
             "min": false,
             "rightSide": false,
             "show": true,
+            "sideWidth": null,
             "total": false,
             "values": false
          },
@@ -212,6 +216,7 @@
          "dashes": false,
          "datasource": "$datasource",
          "fill": 1,
+         "fillGradient": 0,
          "gridPos": {
             "h": 8,
             "w": 12,
@@ -227,6 +232,7 @@
             "min": false,
             "rightSide": false,
             "show": true,
+            "sideWidth": null,
             "total": false,
             "values": false
          },
@@ -302,6 +308,7 @@
          "dashes": false,
          "datasource": "$datasource",
          "fill": 1,
+         "fillGradient": 0,
          "gridPos": {
             "h": 8,
             "w": 12,
@@ -317,6 +324,7 @@
             "min": false,
             "rightSide": false,
             "show": true,
+            "sideWidth": null,
             "total": false,
             "values": false
          },
@@ -392,6 +400,7 @@
          "dashes": false,
          "datasource": "$datasource",
          "fill": 1,
+         "fillGradient": 0,
          "gridPos": {
             "h": 8,
             "w": 12,
@@ -407,6 +416,7 @@
             "min": false,
             "rightSide": false,
             "show": true,
+            "sideWidth": null,
             "total": false,
             "values": false
          },
@@ -489,6 +499,7 @@
          "dashes": false,
          "datasource": "$datasource",
          "fill": 1,
+         "fillGradient": 0,
          "gridPos": {
             "h": 8,
             "w": 12,
@@ -504,6 +515,7 @@
             "min": false,
             "rightSide": false,
             "show": true,
+            "sideWidth": null,
             "total": false,
             "values": false
          },
