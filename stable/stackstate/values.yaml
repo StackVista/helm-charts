@@ -325,15 +325,15 @@ stackstate:
       # stackstate.components.healthSync.resources -- Resource allocation for `healthSync` pods.
       resources:
         limits:
-          memory: "1500Mi"
+          memory: "2000Mi"
           cpu: "1500m"
           ephemeral-storage: "1Gi"
         requests:
-          memory: "1500Mi"
+          memory: "2000Mi"
           cpu: "1000m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "700Mi"
+        baseMemoryConsumption: "1200Mi"
         javaHeapMemoryFraction: "85"
       # stackstate.components.healthSync.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
