@@ -45,7 +45,7 @@ dependencies:
   - name: kafkaup-operator
     condition: kafkaup-operator.enabled
     repository: https://helm.stackstate.io
-    version: 0.1.2
+    version: 0.1.4
   - name: minio
     repository: https://helm.stackstate.io
     version: 8.0.10-stackstate.3
