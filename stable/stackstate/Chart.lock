@@ -19,7 +19,7 @@ dependencies:
   version: 14.8.1
 - name: kafkaup-operator
   repository: https://helm.stackstate.io
-  version: 0.1.2
+  version: 0.1.4
 - name: minio
   repository: https://helm.stackstate.io
   version: 8.0.10-stackstate.3
@@ -29,5 +29,5 @@ dependencies:
 - name: zookeeper
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 5.16.0
-digest: sha256:f40b32fe644fdff13c51ddd1a163f4616ae67debbb75ab4b646ccda3cc744cba
-generated: "2022-06-15T15:46:14.716833362Z"
+digest: sha256:7fb44b7533ce9b7530e252beb6743731a030277ead94b194bac6f4ec06fb5d25
+generated: "2022-06-20T16:18:56.880095036+02:00"
