@@ -143,7 +143,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.image.tag to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: 5.0.0-rc.3
+        tag: 5.0.0-rc.4
       metrics:
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
         enabled: true
