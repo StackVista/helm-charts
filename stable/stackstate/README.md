@@ -301,7 +301,7 @@ stackstate/stackstate
 | stackstate.components.api.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.backup.resources.limits.cpu | string | `"3000m"` |  |
 | stackstate.components.backup.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
-| stackstate.components.backup.resources.limits.memory | string | `"4000mi"` |  |
+| stackstate.components.backup.resources.limits.memory | string | `"4000Mi"` |  |
 | stackstate.components.backup.resources.requests.cpu | string | `"1000m"` |  |
 | stackstate.components.backup.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | stackstate.components.backup.resources.requests.memory | string | `"4000Mi"` |  |

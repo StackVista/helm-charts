@@ -221,7 +221,7 @@ stackstate:
     backup:
       resources:
         limits:
-          memory: "4000mi"
+          memory: "4000Mi"
           cpu: "3000m"
           ephemeral-storage: "1Gi"
         requests:
