@@ -1,7 +1,7 @@
 dependencies:
 - name: anomaly-detection
   repository: https://helm.stackstate.io
-  version: 5.0.0-snapshot.39
+  version: 5.0.0-snapshot.41
 - name: cluster-agent
   repository: file://../cluster-agent/
   version: 2.0.4
@@ -13,7 +13,7 @@ dependencies:
   version: 7.17.2-stackstate.1
 - name: hbase
   repository: file://../hbase/
-  version: 0.1.131
+  version: 0.1.132
 - name: kafka
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 14.8.1
@@ -29,5 +29,5 @@ dependencies:
 - name: zookeeper
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 5.16.0
-digest: sha256:8fc85f408ea97c5eafac371bc7162e9326437ce4a8e00f3903ba18a9542722c3
-generated: "2022-06-21T10:27:29.395452+02:00"
+digest: sha256:28d9d6c81818ea0e125509ab344d5543c412d3ea621f5cda0353797f9d7e4b7f
+generated: "2022-06-21T16:48:09.802071661Z"
