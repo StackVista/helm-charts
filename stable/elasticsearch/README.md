@@ -1,6 +1,6 @@
 # elasticsearch
 
-![Version: 7.17.2-stackstate.0](https://img.shields.io/badge/Version-7.17.2--stackstate.0-informational?style=flat-square) ![AppVersion: 7.17.2](https://img.shields.io/badge/AppVersion-7.17.2-informational?style=flat-square)
+![Version: 7.17.2-stackstate.1](https://img.shields.io/badge/Version-7.17.2--stackstate.1-informational?style=flat-square) ![AppVersion: 7.17.2](https://img.shields.io/badge/AppVersion-7.17.2-informational?style=flat-square)
 Official Elastic helm chart for Elasticsearch
 **Homepage:** <https://github.com/elastic/helm-charts>
 ## Maintainers
@@ -17,7 +17,7 @@ Official Elastic helm chart for Elasticsearch
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://prometheus-community.github.io/helm-charts | prometheus-elasticsearch-exporter | 4.4.0 |
+| https://prometheus-community.github.io/helm-charts | prometheus-elasticsearch-exporter | 4.13.0 |
 ## Values
 
 | Key | Type | Default | Description |

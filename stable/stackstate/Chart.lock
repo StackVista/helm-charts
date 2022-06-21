@@ -3,14 +3,14 @@ dependencies:
   repository: https://helm.stackstate.io
   version: 5.0.0-rc.4
 - name: cluster-agent
-  repository: https://helm.stackstate.io
-  version: 1.0.5
+  repository: file://../cluster-agent/
+  version: 2.0.4
 - name: common
   repository: file://../common/
   version: 0.4.21
 - name: elasticsearch
-  repository: https://helm.stackstate.io
-  version: 7.17.2-stackstate.0
+  repository: file://../elasticsearch/
+  version: 7.17.2-stackstate.1
 - name: hbase
   repository: file://../hbase/
   version: 0.1.131
@@ -18,16 +18,16 @@ dependencies:
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 14.8.1
 - name: kafkaup-operator
-  repository: https://helm.stackstate.io
+  repository: file://../kafkaup-operator/
   version: 0.1.4
 - name: minio
-  repository: https://helm.stackstate.io
+  repository: file://../minio/
   version: 8.0.10-stackstate.3
 - name: pull-secret
-  repository: https://helm.stackstate.io
+  repository: file://../pull-secret/
   version: 1.0.0
 - name: zookeeper
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 5.16.0
-digest: sha256:afadb218d660feeecb1be60d40cf48701c7d4270d6c66caf42c396591ffe84ec
-generated: "2022-06-20T15:55:33.304799284Z"
+digest: sha256:388a292d4099e67a4ca27cb1c70475a706a62d127300e196912e708c6002c185
+generated: "2022-06-21T10:21:35.688396+02:00"
