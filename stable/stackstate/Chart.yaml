@@ -22,16 +22,16 @@ dependencies:
     repository: https://helm.stackstate.io
     condition: anomaly-detection.enabled
   - name: cluster-agent
-    repository: https://helm.stackstate.io
-    version: 1.0.5
+    repository: file://../cluster-agent/
+    version: "*"
     condition: cluster-agent.enabled
   - name: common
     repository: file://../common/
     version: "*"
   - name: elasticsearch
     condition: elasticsearch.enabled
-    repository: https://helm.stackstate.io
-    version: 7.17.2-stackstate.0
+    repository: file://../elasticsearch/
+    version: 7.17.2-stackstate.1
   - name: hbase
     condition: hbase.enabled
     repository: file://../hbase/
@@ -44,15 +44,15 @@ dependencies:
     version: 14.8.1
   - name: kafkaup-operator
     condition: kafkaup-operator.enabled
-    repository: https://helm.stackstate.io
-    version: 0.1.4
+    repository: file://../kafkaup-operator/
+    version: "*"
   - name: minio
-    repository: https://helm.stackstate.io
+    repository: file://../minio/
     version: 8.0.10-stackstate.3
     condition: backup.enabled
   - name: pull-secret
-    version: 1.0.0
-    repository: https://helm.stackstate.io
+    version: "*"
+    repository: file://../pull-secret/
     condition: pull-secret.enabled
   - name: zookeeper
     version: 5.16.0
