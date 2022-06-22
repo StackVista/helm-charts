@@ -63,8 +63,14 @@ console:
     repository: stackstate/stackgraph-console
     # console.image.tag -- Container image tag for console pods, defaults to `stackgraph.image.tag`
     tag:
-  # console.resources -- Resources to allocate for HDFS data nodes.
-  resources: {}
+  # console.resources -- Resources to allocate for HDFS console.
+  resources:
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+    requests:
+      memory: "512Mi"
+      cpu: "50m"
   # console.strategy -- The strategy for the Deployment object.
   strategy:
     type: RollingUpdate
