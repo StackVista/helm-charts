@@ -1,7 +1,7 @@
 apiVersion: v1
 name: "kommoner-operator"
 description: "The StackState Common Objects Operator"
-version: 0.2.0
+version: 0.2.1
 appVersion: v0.2.0
 home: https://gitlab.com/StackVista/devops/kommoner
 maintainers:

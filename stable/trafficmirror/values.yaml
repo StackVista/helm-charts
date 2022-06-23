@@ -29,3 +29,7 @@ trafficmirror:
   failAfterMinutes: 30
   # trafficmirror.retryAfterMinutes -- After 5 successive failures a target is temporarily disabled, it will be retried after this many minutes.
   retryAfterMinutes: 1
+deployment:
+  securityContext:
+    runAsUser: 65534
+    runAsNonRoot: true

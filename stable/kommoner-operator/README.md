@@ -2,7 +2,7 @@
 
 The StackState Common Objects Operator
 
-Current chart version is `0.2.0`
+Current chart version is `0.2.1`
 
 **Homepage:** <https://gitlab.com/StackVista/devops/kommoner>
 
@@ -48,3 +48,4 @@ commonObjects:
 | resources.limits.memory | string | `"64Mi"` |  |
 | resources.requests.cpu | string | `"25m"` |  |
 | resources.requests.memory | string | `"32Mi"` |  |
+| securityContext | object | `{"runAsNonRoot":true,"runAsUser":65532}` | SecurityContext for the Kommoner pod |

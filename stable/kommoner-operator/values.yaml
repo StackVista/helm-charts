@@ -30,3 +30,7 @@ commonObjects: []
 # tolerations:
 # - effect: NoSchedule
 #   operator: Exists
+# securityContext -- SecurityContext for the Kommoner pod
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 65532

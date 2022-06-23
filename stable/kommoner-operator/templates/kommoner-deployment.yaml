@@ -35,6 +35,10 @@ spec:
           mountPath: /conf.d
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.securityContext }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+{{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
