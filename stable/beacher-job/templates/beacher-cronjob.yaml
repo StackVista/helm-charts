@@ -1,4 +1,4 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: {{ include "fullname.short" . }}-cron
@@ -11,6 +11,10 @@ spec:
       template:
         spec:
           serviceAccountName: {{ include "fullname.short" . }}
+        {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
         {{- if .Values.image.pullSecretName }}
           imagePullSecrets:
           - name: '{{ .Values.image.pullSecretName }}'

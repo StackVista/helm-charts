@@ -4,7 +4,7 @@ image:
   # image.repository -- Repository containing the image for the Beacher cron job
   repository: stackstate/sts-toolbox
   # image.tag -- Tag of the image for the Beacher cron job
-  tag: v1.3.11
+  tag: v1.3.31
   # image.pullPolicy -- Pull policy for the image for the Beacher cron job
   pullPolicy: IfNotPresent
 # nodeSelector -- Node labels for pod assignment.
@@ -29,3 +29,7 @@ resources:
   requests:
     cpu: 25m
     memory: 32Mi
+# securityContext -- SecurityContext for the pod created by the cronjob
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 999
