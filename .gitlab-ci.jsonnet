@@ -48,7 +48,6 @@ local validate_and_push_jobs = {
       { when: 'always' },
     ],
     script: [
-      'env',
       'ct list-changed --config test/ct.yaml',
       'if [[ "${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" == releasing* ]] || [[ "${CI_COMMIT_TAG}" == *-rc* ]] ; then export VERSION_INCREMENT_CHECK="--check-version-increment=false" ; fi',
       'ct lint --debug --validate-maintainers=false ${VERSION_INCREMENT_CHECK} --excluded-charts stackstate --excluded-charts gitlab-runner --config test/ct.yaml',
