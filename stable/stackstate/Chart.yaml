@@ -1,6 +1,6 @@
 apiVersion: v2
-appVersion: 5.0.0-snapshot.0
-version: 5.0.0-snapshot.12
+appVersion: 5.1.0-snapshot.0
+version: 5.1.0-snapshot.0
 description: Helm chart for StackState
 keywords:
   - aiops
