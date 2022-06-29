@@ -28,22 +28,27 @@ local counter_target(metric, period='1m', legend='{{pod}}', intervalFactor=5) =
     intervalFactor=intervalFactor,
   );
 
-local histogram_target(metric, quantile, legend) =
-  local selector = std.join(', ', variables.grafana.standard_selectors);
+local histogram_target(metric, quantile, legend, extra_selectors=[]) =
+  local selectors = variables.grafana.standard_selectors + extra_selectors;
+  local selector = std.join(', ', selectors);
   prometheus.target(
     expr='histogram_quantile(%(quantile)s, sum(rate(%(metric)s{%(selector)s}[$__rate_interval])) by (le))' % { metric: metric, quantile: quantile, selector: selector },
     legendFormat=legend,
   );
+
+local step_target(step, quantile, legend) =
+  histogram_target('spotlight_step_timings_seconds_bucket', quantile, legend, extra_selectors=['step="%(step)s"' % { step: step }]);
 
 // Main
 
 local anomalies_detected = graphPanel.new(
   title='Anomalies detected (per minute)',
   datasource=datasource,
+  aliasColors={ LOW: '#FADE2A', MEDIUM: '#FF9830', HIGH: '#F2495C' },
 ).addTargets([
   counter_target(metric='low_anomalies_found_total', legend='LOW'),
-  counter_target(metric='low_anomalies_found_total', legend='MEDIUM'),
-  counter_target(metric='low_anomalies_found_total', legend='HIGH'),
+  counter_target(metric='medium_anomalies_found_total', legend='MEDIUM'),
+  counter_target(metric='high_anomalies_found_total', legend='HIGH'),
 ]);
 
 local errors = graphPanel.new(
@@ -71,26 +76,25 @@ local aad_scale = graphPanel.new(
   gauge_target(metric='spotlight_streams_checked', legend='Checked Streams'),
 ]);
 
-local train_timings = graphPanel.new(
-  title='Training runs (quantiles)',
+local histogram_panel(title, metric) = graphPanel.new(
+  title=title,
   datasource=datasource,
   format='s',
 ).addTargets([
-  histogram_target('train_timings_seconds_bucket', 0.9, '90%'),
-  histogram_target('train_timings_seconds_bucket', 0.75, '75%'),
-  histogram_target('train_timings_seconds_bucket', 0.5, '50%'),
+  histogram_target(metric, 0.9, '90%'),
+  histogram_target(metric, 0.75, '75%'),
+  histogram_target(metric, 0.5, '50%'),
 ]);
 
-local detect_timings = graphPanel.new(
-  title='Detect runs (quantiles)',
+local step_panel(title, step) = graphPanel.new(
+  title=title,
   datasource=datasource,
   format='s',
 ).addTargets([
-  histogram_target('detect_timings_seconds_bucket', 0.9, '90%'),
-  histogram_target('detect_timings_seconds_bucket', 0.75, '75%'),
-  histogram_target('detect_timings_seconds_bucket', 0.5, '50%'),
+  step_target(step, 0.9, '90%'),
+  step_target(step, 0.75, '75%'),
+  step_target(step, 0.5, '50%'),
 ]);
-
 
 // Init dashboard
 dashboard.new(
@@ -105,11 +109,15 @@ dashboard.new(
   functions.grafana.grid_positioning(
     [
       anomalies_detected,
-errors,
+      errors,
       job_runs,
-aad_scale,
-      train_timings,
-detect_timings,
+      aad_scale,
+      histogram_panel('Training runs (quantiles)', 'train_timings_seconds_bucket'),
+      histogram_panel('Detect runs (quantiles)', 'detect_timings_seconds_bucket'),
+      step_panel('Telemetry query (quantiles)', 'source'),
+      step_panel('Store annotations (quantiles)', 'save_annotations'),
+      step_panel('Report topology event (quantiles)', 'log_topology_event'),
+      step_panel('Topology query (quantiles)', 'topology_query'),
     ],
   )
 )

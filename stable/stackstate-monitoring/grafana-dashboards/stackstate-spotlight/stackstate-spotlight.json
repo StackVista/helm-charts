@@ -12,13 +12,16 @@
    "links": [ ],
    "panels": [
       {
-         "aliasColors": { },
+         "aliasColors": {
+            "HIGH": "#F2495C",
+            "LOW": "#FADE2A",
+            "MEDIUM": "#FF9830"
+         },
          "bars": false,
          "dashLength": 10,
          "dashes": false,
          "datasource": "$datasource",
          "fill": 1,
-         "fillGradient": 0,
          "gridPos": {
             "h": 8,
             "w": 12,
@@ -34,7 +37,6 @@
             "min": false,
             "rightSide": false,
             "show": true,
-            "sideWidth": null,
             "total": false,
             "values": false
          },
@@ -60,14 +62,14 @@
                "refId": "A"
             },
             {
-               "expr": "sum(increase(low_anomalies_found_total{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}[1m])) by (service)",
+               "expr": "sum(increase(medium_anomalies_found_total{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}[1m])) by (service)",
                "format": "time_series",
                "intervalFactor": 5,
                "legendFormat": "MEDIUM",
                "refId": "B"
             },
             {
-               "expr": "sum(increase(low_anomalies_found_total{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}[1m])) by (service)",
+               "expr": "sum(increase(high_anomalies_found_total{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}[1m])) by (service)",
                "format": "time_series",
                "intervalFactor": 5,
                "legendFormat": "HIGH",
@@ -117,7 +119,6 @@
          "dashes": false,
          "datasource": "$datasource",
          "fill": 1,
-         "fillGradient": 0,
          "gridPos": {
             "h": 8,
             "w": 12,
@@ -133,7 +134,6 @@
             "min": false,
             "rightSide": false,
             "show": true,
-            "sideWidth": null,
             "total": false,
             "values": false
          },
@@ -216,7 +216,6 @@
          "dashes": false,
          "datasource": "$datasource",
          "fill": 1,
-         "fillGradient": 0,
          "gridPos": {
             "h": 8,
             "w": 12,
@@ -232,7 +231,6 @@
             "min": false,
             "rightSide": false,
             "show": true,
-            "sideWidth": null,
             "total": false,
             "values": false
          },
@@ -308,7 +306,6 @@
          "dashes": false,
          "datasource": "$datasource",
          "fill": 1,
-         "fillGradient": 0,
          "gridPos": {
             "h": 8,
             "w": 12,
@@ -324,7 +321,6 @@
             "min": false,
             "rightSide": false,
             "show": true,
-            "sideWidth": null,
             "total": false,
             "values": false
          },
@@ -400,7 +396,6 @@
          "dashes": false,
          "datasource": "$datasource",
          "fill": 1,
-         "fillGradient": 0,
          "gridPos": {
             "h": 8,
             "w": 12,
@@ -416,7 +411,6 @@
             "min": false,
             "rightSide": false,
             "show": true,
-            "sideWidth": null,
             "total": false,
             "values": false
          },
@@ -499,7 +493,6 @@
          "dashes": false,
          "datasource": "$datasource",
          "fill": 1,
-         "fillGradient": 0,
          "gridPos": {
             "h": 8,
             "w": 12,
@@ -515,7 +508,6 @@
             "min": false,
             "rightSide": false,
             "show": true,
-            "sideWidth": null,
             "total": false,
             "values": false
          },
@@ -559,6 +551,394 @@
          "timeFrom": null,
          "timeShift": null,
          "title": "Detect runs (quantiles)",
+         "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+         },
+         "type": "graph",
+         "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": [ ]
+         },
+         "yaxes": [
+            {
+               "format": "s",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            },
+            {
+               "format": "s",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            }
+         ]
+      },
+      {
+         "aliasColors": { },
+         "bars": false,
+         "dashLength": 10,
+         "dashes": false,
+         "datasource": "$datasource",
+         "fill": 1,
+         "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 24
+         },
+         "id": 8,
+         "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": false
+         },
+         "lines": true,
+         "linewidth": 1,
+         "links": [ ],
+         "nullPointMode": "null",
+         "percentage": false,
+         "pointradius": 5,
+         "points": false,
+         "renderer": "flot",
+         "repeat": null,
+         "seriesOverrides": [ ],
+         "spaceLength": 10,
+         "stack": false,
+         "steppedLine": false,
+         "targets": [
+            {
+               "expr": "histogram_quantile(0.90000000000000002, sum(rate(spotlight_step_timings_seconds_bucket{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", step=\"source\"}[$__rate_interval])) by (le))",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "90%",
+               "refId": "A"
+            },
+            {
+               "expr": "histogram_quantile(0.75, sum(rate(spotlight_step_timings_seconds_bucket{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", step=\"source\"}[$__rate_interval])) by (le))",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "75%",
+               "refId": "B"
+            },
+            {
+               "expr": "histogram_quantile(0.5, sum(rate(spotlight_step_timings_seconds_bucket{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", step=\"source\"}[$__rate_interval])) by (le))",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "50%",
+               "refId": "C"
+            }
+         ],
+         "thresholds": [ ],
+         "timeFrom": null,
+         "timeShift": null,
+         "title": "Telemetry query (quantiles)",
+         "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+         },
+         "type": "graph",
+         "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": [ ]
+         },
+         "yaxes": [
+            {
+               "format": "s",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            },
+            {
+               "format": "s",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            }
+         ]
+      },
+      {
+         "aliasColors": { },
+         "bars": false,
+         "dashLength": 10,
+         "dashes": false,
+         "datasource": "$datasource",
+         "fill": 1,
+         "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 24
+         },
+         "id": 9,
+         "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": false
+         },
+         "lines": true,
+         "linewidth": 1,
+         "links": [ ],
+         "nullPointMode": "null",
+         "percentage": false,
+         "pointradius": 5,
+         "points": false,
+         "renderer": "flot",
+         "repeat": null,
+         "seriesOverrides": [ ],
+         "spaceLength": 10,
+         "stack": false,
+         "steppedLine": false,
+         "targets": [
+            {
+               "expr": "histogram_quantile(0.90000000000000002, sum(rate(spotlight_step_timings_seconds_bucket{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", step=\"save_annotations\"}[$__rate_interval])) by (le))",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "90%",
+               "refId": "A"
+            },
+            {
+               "expr": "histogram_quantile(0.75, sum(rate(spotlight_step_timings_seconds_bucket{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", step=\"save_annotations\"}[$__rate_interval])) by (le))",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "75%",
+               "refId": "B"
+            },
+            {
+               "expr": "histogram_quantile(0.5, sum(rate(spotlight_step_timings_seconds_bucket{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", step=\"save_annotations\"}[$__rate_interval])) by (le))",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "50%",
+               "refId": "C"
+            }
+         ],
+         "thresholds": [ ],
+         "timeFrom": null,
+         "timeShift": null,
+         "title": "Store annotations (quantiles)",
+         "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+         },
+         "type": "graph",
+         "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": [ ]
+         },
+         "yaxes": [
+            {
+               "format": "s",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            },
+            {
+               "format": "s",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            }
+         ]
+      },
+      {
+         "aliasColors": { },
+         "bars": false,
+         "dashLength": 10,
+         "dashes": false,
+         "datasource": "$datasource",
+         "fill": 1,
+         "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 32
+         },
+         "id": 10,
+         "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": false
+         },
+         "lines": true,
+         "linewidth": 1,
+         "links": [ ],
+         "nullPointMode": "null",
+         "percentage": false,
+         "pointradius": 5,
+         "points": false,
+         "renderer": "flot",
+         "repeat": null,
+         "seriesOverrides": [ ],
+         "spaceLength": 10,
+         "stack": false,
+         "steppedLine": false,
+         "targets": [
+            {
+               "expr": "histogram_quantile(0.90000000000000002, sum(rate(spotlight_step_timings_seconds_bucket{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", step=\"log_topology_event\"}[$__rate_interval])) by (le))",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "90%",
+               "refId": "A"
+            },
+            {
+               "expr": "histogram_quantile(0.75, sum(rate(spotlight_step_timings_seconds_bucket{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", step=\"log_topology_event\"}[$__rate_interval])) by (le))",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "75%",
+               "refId": "B"
+            },
+            {
+               "expr": "histogram_quantile(0.5, sum(rate(spotlight_step_timings_seconds_bucket{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", step=\"log_topology_event\"}[$__rate_interval])) by (le))",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "50%",
+               "refId": "C"
+            }
+         ],
+         "thresholds": [ ],
+         "timeFrom": null,
+         "timeShift": null,
+         "title": "Report topology event (quantiles)",
+         "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+         },
+         "type": "graph",
+         "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": [ ]
+         },
+         "yaxes": [
+            {
+               "format": "s",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            },
+            {
+               "format": "s",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            }
+         ]
+      },
+      {
+         "aliasColors": { },
+         "bars": false,
+         "dashLength": 10,
+         "dashes": false,
+         "datasource": "$datasource",
+         "fill": 1,
+         "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 32
+         },
+         "id": 11,
+         "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "total": false,
+            "values": false
+         },
+         "lines": true,
+         "linewidth": 1,
+         "links": [ ],
+         "nullPointMode": "null",
+         "percentage": false,
+         "pointradius": 5,
+         "points": false,
+         "renderer": "flot",
+         "repeat": null,
+         "seriesOverrides": [ ],
+         "spaceLength": 10,
+         "stack": false,
+         "steppedLine": false,
+         "targets": [
+            {
+               "expr": "histogram_quantile(0.90000000000000002, sum(rate(spotlight_step_timings_seconds_bucket{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", step=\"topology_query\"}[$__rate_interval])) by (le))",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "90%",
+               "refId": "A"
+            },
+            {
+               "expr": "histogram_quantile(0.75, sum(rate(spotlight_step_timings_seconds_bucket{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", step=\"topology_query\"}[$__rate_interval])) by (le))",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "75%",
+               "refId": "B"
+            },
+            {
+               "expr": "histogram_quantile(0.5, sum(rate(spotlight_step_timings_seconds_bucket{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", step=\"topology_query\"}[$__rate_interval])) by (le))",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "50%",
+               "refId": "C"
+            }
+         ],
+         "thresholds": [ ],
+         "timeFrom": null,
+         "timeShift": null,
+         "title": "Topology query (quantiles)",
          "tooltip": {
             "shared": true,
             "sort": 0,
