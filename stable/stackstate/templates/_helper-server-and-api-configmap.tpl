@@ -205,6 +205,15 @@ stackstate.authorization.powerUserGroups = ${stackstate.authorization.powerUserG
 stackstate.authorization.guestGroups = ${stackstate.authorization.guestGroups} {{ .Values.stackstate.authentication.roles.guest | toJson }}
 {{- end }}
 
+{{- if .Values.stackstate.authentication.servicetoken.bootstrap.token }}
+{{- $authTypes = append $authTypes "serviceTokenAuthServer" }}
+stackstate.api.authentication.authServer.serviceTokenAuthServer.bootstrap {
+  token = {{ .Values.stackstate.authentication.servicetoken.bootstrap.token | quote }}
+  roles = [ {{- .Values.stackstate.authentication.servicetoken.bootstrap.roles | compact | join ", " -}} ]
+  ttl = {{ .Values.stackstate.authentication.servicetoken.bootstrap.ttl | quote }}
+}
+{{- end }}
+
 {{- $authTypes = append $authTypes "k8sServiceAccountAuthServer" }}
 stackstate.api.authentication.authServer.authServerType = [ {{- $authTypes | compact | join ", " -}} ]
 {{- end }}
