@@ -9,7 +9,7 @@ sg_version="${UPDATE_STACKGRAPH_VERSION}"
 values="${chart_path}/values.yaml"
 
 # Check if version changed
-current_version=$(yq read "${values}" "${tag_path_prefix}stackgraph.image.tag")
+current_version=$(yq e ".${tag_path_prefix}stackgraph.image.tag" "${values}")
 
 echo "Current StackGraph version: ${current_version}."
 echo "New StackGraph version: ${sg_version}."
@@ -23,9 +23,7 @@ if [ "${sg_version}" == "${current_version}" ]; then
   echo "No change in StackGraph version, skipping update."
 else
   # Update StackGraph version
-  new_values=".values.yaml"
-  yq w "${values}" "${tag_path_prefix}stackgraph.image.tag" "${sg_version}" > "${new_values}"
-  mv -f "${new_values}" "${values}"
+  yq e ".${tag_path_prefix}stackgraph.image.tag = \"${sg_version}\"" -i "${values}"
 
   # update Helm chart versions
   chart="${chart_path}/Chart.yaml"
@@ -37,7 +35,7 @@ else
   # update Readme
   readme="${chart_path}/README.md"
   new_readme=".readme.md"
-  chart_version=$(yq r "${chart}" version)
+  chart_version=$(yq e .version "${chart}" )
   sed -E "s/^Current chart version is .*$/Current chart version is \`${chart_version}\`/" "${readme}" | \
   sed -E "s/${tag_path_prefix}stackgraph\.image\.tag \| string \| \`.*\` \|/${tag_path_prefix}stackgraph.image.tag | string | \`\"${sg_version}\"\` |/" > "${new_readme}"
 

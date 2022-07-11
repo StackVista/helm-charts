@@ -6,6 +6,9 @@ local repositories = variables.helm.repositories;
 local charts = variables.helm.charts;
 local public_charts = variables.helm.public_charts;
 
+// resolving deps with deps, ct lint will not resolve that properly;
+local update_2nd_degree_chart_deps(chart) = ['yq e \'.dependencies[] | select (.repository == "file*").repository | sub("^file://","")\' stable/' + chart + '/Chart.yaml  | xargs -I % helm dependencies build stable/' + chart + '/%'];
+
 local helm_config_dependencies = [
     'helm repo add %s %s' % [std.strReplace(name, '_', '-'), repositories[name]]
     for name in std.objectFields(repositories)
@@ -27,7 +30,7 @@ local skip_when_dependency_upgrade = {
 };
 
 local sync_charts_template = {
-  before_script: helm_fetch_dependencies + ['helm dependencies build stable/hbase'],
+  before_script: helm_fetch_dependencies,
   script: [
     'source .gitlab/aws_auth_setup.sh',
     'sh test/sync-repo.sh',
@@ -35,6 +38,7 @@ local sync_charts_template = {
   stage: 'build',
   image: variables.images.stackstate_devops,
 } + skip_when_dependency_upgrade;
+
 
 local validate_and_push_jobs = {
   validate_charts: {
@@ -65,12 +69,13 @@ local validate_and_push_jobs = {
       },
       { when: 'always' },
     ],
-    script: [
-      'ct list-changed --config test/ct.yaml',
-      'helm dep build stable/hbase',  // a dependency with dependencies, ct lint will not resolve that properly
-      'ct lint --debug --validate-maintainers=false --charts stable/stackstate --config test/ct.yaml',
-      '.gitlab/validate_kubeconform.sh',
-    ],
+    script:
+      ['ct list-changed --config test/ct.yaml'] +
+      update_2nd_degree_chart_deps('stackstate') +
+      [
+        'ct lint --debug --validate-maintainers=false --charts stable/stackstate --config test/ct.yaml',
+        '.gitlab/validate_kubeconform.sh',
+      ],
     stage: 'validate',
   } + skip_when_dependency_upgrade,
   push_test_charts: sync_charts_template {
@@ -95,7 +100,7 @@ local validate_and_push_jobs = {
 local test_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   before_script: helm_fetch_dependencies + (
-    if chart == 'stackstate' then ['helm dependencies build stable/hbase'] else []
+    if chart == 'stackstate' then ['apk add yq'] + update_2nd_degree_chart_deps(chart) else []
   ) +
   ['helm dependencies update ${CHART}'],
   script: [
@@ -118,7 +123,7 @@ local test_chart_job(chart) = {
 local itest_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   before_script: helm_fetch_dependencies + (
-    if chart == 'stackstate' then ['helm dependencies build stable/hbase'] else []
+    if chart == 'stackstate' then ['apk add yq'] + update_2nd_degree_chart_deps(chart) else []
   ) +
   ['helm dependencies update ${CHART}'],
   script: [
@@ -140,7 +145,7 @@ local itest_chart_job(chart) = {
 
 local push_chart_job_if(chart, repository_url, repository_username, repository_password, rules) = {
   script: (
-    if chart == 'stackstate' then ['helm dependencies build stable/hbase'] else []
+    if chart == 'stackstate' then ['apk add yq'] + update_2nd_degree_chart_deps(chart) else []
   ) + [
     'helm dependencies update ${CHART}',
     'helm cm-push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,

@@ -30,6 +30,14 @@ sync_repo() {
   exit_code=0
 
   for dir in "${repo_dir}"/*; do
+
+    if ! yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","") ' "${dir}/Chart.yaml"  | xargs -I % helm dependency build "${dir}/%" ;
+    then
+      log_error "Problem building 2nd degree dependencies. Skipping packaging of '${dir}'."
+      exit_code=1
+      continue
+    fi
+
     if helm dependency build "${dir}"; then
       helm package --destination "${sync_dir}" "${dir}"
     else

@@ -1,7 +1,7 @@
 ################################################################
 # THIS FILE WAS GENERATED AUTOMATICALLY! DO NOT EDIT MANUALLY! #
 ################################################################
-image: quay.io/helmpack/chart-testing:v3.4.0
+image: quay.io/helmpack/chart-testing:v3.6.0
 integration_test_stackstate:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -13,9 +13,10 @@ integration_test_stackstate:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-    - helm dependencies build stable/hbase
+    - apk add yq
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -586,7 +587,8 @@ push_stackstate_release_to_internal:
     - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)-pre\.(\d+)$/
       when: on_success
   script:
-    - helm dependencies build stable/hbase
+    - apk add yq
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -612,7 +614,8 @@ push_stackstate_release_to_public:
     - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)$/
       when: on_success
   script:
-    - helm dependencies build stable/hbase
+    - apk add yq
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
   stage: push-charts-to-public
@@ -641,7 +644,8 @@ push_stackstate_to_internal:
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
-    - helm dependencies build stable/hbase
+    - apk add yq
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
@@ -658,7 +662,6 @@ push_test_charts:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-    - helm dependencies build stable/hbase
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
   rules:
     - if: $CI_COMMIT_BRANCH == "master"
@@ -728,7 +731,7 @@ test_aws-amicleaner:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -757,7 +760,7 @@ test_aws-nuke:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -786,7 +789,7 @@ test_aws-pod-identity-webhook:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -815,7 +818,7 @@ test_beacher-job:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -844,7 +847,7 @@ test_chartmuseum:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -873,7 +876,7 @@ test_cluster-agent:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -902,7 +905,7 @@ test_common:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -931,7 +934,7 @@ test_elasticsearch:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -960,7 +963,7 @@ test_gitlab-steward:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -989,7 +992,7 @@ test_hbase:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1018,7 +1021,7 @@ test_helm-reaper:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1047,7 +1050,7 @@ test_iceman:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1076,7 +1079,7 @@ test_kafkaup-operator:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1105,7 +1108,7 @@ test_kommoner-operator:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1134,7 +1137,7 @@ test_minio:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1163,7 +1166,7 @@ test_petros-d-kubelet-stats-exporter:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1192,7 +1195,7 @@ test_pull-secret:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1221,7 +1224,7 @@ test_receiveramplifier:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1250,7 +1253,7 @@ test_sandbox-operator:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1278,9 +1281,10 @@ test_stackstate:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-    - helm dependencies build stable/hbase
+    - apk add yq
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1309,7 +1313,7 @@ test_stackstate-monitoring:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1338,7 +1342,7 @@ test_stackstate-standalone:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1367,7 +1371,7 @@ test_trafficmirror:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1395,7 +1399,7 @@ update_aad_chart_version:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_AAD_CHART_VERSION
       when: always
@@ -1409,7 +1413,7 @@ update_aad_chart_version:
     GIT_COMMITTER_EMAIL: sts-admin@stackstate.com
     GIT_COMMITTER_NAME: stackstate-system-user
 update_stackgraph_version:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: always
@@ -1463,7 +1467,7 @@ validate_stackstate_chart:
     - when: always
   script:
     - ct list-changed --config test/ct.yaml
-    - helm dep build stable/hbase
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - ct lint --debug --validate-maintainers=false --charts stable/stackstate --config test/ct.yaml
     - .gitlab/validate_kubeconform.sh
   stage: validate

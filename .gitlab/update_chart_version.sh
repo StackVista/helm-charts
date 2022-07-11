@@ -18,7 +18,7 @@ bumping_chart() {
   chart_yaml="${chart_path}/Chart.yaml"
   chart_lock="${chart_path}/Chart.lock"
 
-  yq w -i "${chart_yaml}" "dependencies[name==$dependency_chart_name].version" "${dependency_version}"
+  yq e "(.dependencies[] | select(.name == \"$dependency_chart_name\")).version = \"${dependency_version}\"" -i "${chart_yaml}"
 
   sed -E "s/$dependency_chart_name \| [^\|]* \|/$dependency_chart_name | $dependency_version |/" "${readme}" > "${readme_out}"
   mv "$readme_out" "$readme"
@@ -36,7 +36,7 @@ increment_helm_chart_version() {
   readme_out="${readme}.out"
   chart_yaml="${chart_path}/Chart.yaml"
 
-  chart_version=$(yq r "${chart_yaml}" version)
+  chart_version=$(yq e .version "${chart_yaml}")
 
   if [[ "$chart_version" =~ ^(([0-9]+\.[0-9]+\.[0-9]+-snapshot\.)([0-9]+))$ ]];
   then
@@ -47,7 +47,7 @@ increment_helm_chart_version() {
     incremented_version="${prefix}${incremented_number}"
 
     echo "New chart version: ${incremented_version}"
-    yq w -i "${chart_yaml}" "version" "${incremented_version}"
+    yq e ".version = \"${incremented_version}\"" -i "${chart_yaml}"
     sed -E "s/^Current chart version is .*$/Current chart version is \`${incremented_version}\`/" "${readme}" > "${readme_out}"
     mv "$readme_out" "$readme"
 
