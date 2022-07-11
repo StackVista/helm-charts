@@ -1272,7 +1272,7 @@ kafka:
         # kafka.metrics.jmx.image.repository -- Kafka JMX exporter image repository
         repository: stackstate/jmx-exporter
         # kafka.metrics.jmx.image.tag -- Kafka JMX exporter image tag
-        tag: 0.17.0-debian-11-r12-sts.20220707.1343
+        tag: 0.17.0-focal-20220531-r13.20220711.1312
       resources:
         limits:
           cpu: "1"
