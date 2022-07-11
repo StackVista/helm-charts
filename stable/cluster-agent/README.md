@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `2.0.5`
+Current chart version is `2.0.6`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -62,7 +62,7 @@ stackstate/cluster-agent
 | agent.containers.agent.env | object | `{}` | Additional environment variables for the agent container |
 | agent.containers.agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | agent.containers.agent.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
-| agent.containers.agent.image.tag | string | `"2.17.0"` | Default container image tag. |
+| agent.containers.agent.image.tag | string | `"2.17.1"` | Default container image tag. |
 | agent.containers.agent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | agent.containers.agent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | agent.containers.agent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -132,7 +132,7 @@ stackstate/cluster-agent
 | clusterAgent.enabled | bool | `true` | Enable / disable the cluster agent. |
 | clusterAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterAgent.image.repository | string | `"stackstate/stackstate-cluster-agent"` | Base container image repository. |
-| clusterAgent.image.tag | string | `"2.17.0"` | Default container image tag. |
+| clusterAgent.image.tag | string | `"2.17.1"` | Default container image tag. |
 | clusterAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | clusterAgent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -164,7 +164,7 @@ stackstate/cluster-agent
 | clusterChecks.enabled | bool | `true` | Enable / disable runnning cluster checks in a separately deployed pod |
 | clusterChecks.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterChecks.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
-| clusterChecks.image.tag | string | `"2.17.0"` | Default container image tag. |
+| clusterChecks.image.tag | string | `"2.17.1"` | Default container image tag. |
 | clusterChecks.kubeStateMetrics.url | string | `""` | URL of the KubeStateMetrics server. This needs to be configured if the KubeStateMetrics server is not enabled by default in this Helm chart. |
 | clusterChecks.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterChecks.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
