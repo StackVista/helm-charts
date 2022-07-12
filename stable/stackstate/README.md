@@ -10,8 +10,6 @@ Current chart version is `4.6.1`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.bitnami.com/bitnami | kafka | 14.8.1 |
-| https://charts.bitnami.com/bitnami | zookeeper | 5.16.0 |
 | https://helm.stackstate.io | anomaly-detection | 4.6.1 |
 | https://helm.stackstate.io | cluster-agent | 0.5.3 |
 | https://helm.stackstate.io | common | 0.4.17 |
@@ -20,6 +18,8 @@ Current chart version is `4.6.1`
 | https://helm.stackstate.io | kafkaup-operator | 0.1.2 |
 | https://helm.stackstate.io | minio | 8.0.10-stackstate.2 |
 | https://helm.stackstate.io | pull-secret | 1.0.0 |
+| https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | kafka | 14.8.1 |
+| https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 5.16.0 |
 
 ## Required Values
 
