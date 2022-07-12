@@ -13,7 +13,6 @@ integration_test_stackstate:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-    - apk add yq
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
@@ -587,7 +586,6 @@ push_stackstate_release_to_internal:
     - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)-pre\.(\d+)$/
       when: on_success
   script:
-    - apk add yq
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
@@ -614,7 +612,6 @@ push_stackstate_release_to_public:
     - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)$/
       when: on_success
   script:
-    - apk add yq
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
@@ -644,7 +641,6 @@ push_stackstate_to_internal:
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
   script:
-    - apk add yq
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
@@ -1281,7 +1277,6 @@ test_stackstate:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-    - apk add yq
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63

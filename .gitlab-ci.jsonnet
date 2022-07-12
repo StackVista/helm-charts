@@ -100,7 +100,7 @@ local validate_and_push_jobs = {
 local test_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   before_script: helm_fetch_dependencies + (
-    if chart == 'stackstate' then ['apk add yq'] + update_2nd_degree_chart_deps(chart) else []
+    if chart == 'stackstate' then update_2nd_degree_chart_deps(chart) else []
   ) +
   ['helm dependencies update ${CHART}'],
   script: [
@@ -123,7 +123,7 @@ local test_chart_job(chart) = {
 local itest_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   before_script: helm_fetch_dependencies + (
-    if chart == 'stackstate' then ['apk add yq'] + update_2nd_degree_chart_deps(chart) else []
+    if chart == 'stackstate' then update_2nd_degree_chart_deps(chart) else []
   ) +
   ['helm dependencies update ${CHART}'],
   script: [
@@ -145,7 +145,7 @@ local itest_chart_job(chart) = {
 
 local push_chart_job_if(chart, repository_url, repository_username, repository_password, rules) = {
   script: (
-    if chart == 'stackstate' then ['apk add yq'] + update_2nd_degree_chart_deps(chart) else []
+    if chart == 'stackstate' then update_2nd_degree_chart_deps(chart) else []
   ) + [
     'helm dependencies update ${CHART}',
     'helm cm-push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
