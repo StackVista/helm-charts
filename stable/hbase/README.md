@@ -10,8 +10,8 @@ Current chart version is `0.1.123`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.bitnami.com/bitnami | zookeeper | 5.3.4 |
 | https://helm.stackstate.io/ | common | 0.4.19 |
+| https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 5.3.4 |
 
 ## Required Values
 
