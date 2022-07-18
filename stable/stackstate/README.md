@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `5.1.0-snapshot.14`
+Current chart version is `5.1.0-pre.0.rc.1`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -17,7 +17,7 @@ Current chart version is `5.1.0-snapshot.14`
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.3 |
 | file://../pull-secret/ | pull-secret | * |
-| https://helm.stackstate.io | anomaly-detection | 5.1.0-snapshot.122 |
+| https://helm.stackstate.io | anomaly-detection | 5.1.0-pre.0.rc.1 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | kafka | 14.8.1 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 5.16.0 |
 
@@ -270,7 +270,7 @@ stackstate/stackstate
 | stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
-| stackstate.components.all.image.tag | string | `"master"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
+| stackstate.components.all.image.tag | string | `"5.1.0-pre.0.rc.1"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
