@@ -109,8 +109,11 @@ spec:
           {{- if $clusterCheckKSM }}
           - name: config-override-volume
             mountPath: /etc/stackstate-agent/conf.d/kubernetes_state.d/conf.yaml
-            subPath: _etc_stackstate-agent_conf.d_kubernetes_state.d_conf.yaml
+            subPath: kubernetes_state_conf
           {{- end }}
+          - name: kubernetes-topology-check
+            mountPath: /etc/stackstate-agent/conf.d/kubernetes_api_topology.d/conf.yaml
+            subPath: kubernetes_api_topology_conf
     {{- with .Values.clusterAgent.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -126,8 +129,6 @@ spec:
       volumes:
         - name: logs
           emptyDir: {}
-        {{- if or .Values.clusterAgent.config.override $clusterCheckKSM }}
         - name: config-override-volume
           configMap:
             name: {{ include "cluster-agent.fullname" . }}
-        {{- end }}
