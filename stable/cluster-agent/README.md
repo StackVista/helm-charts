@@ -126,9 +126,10 @@ stackstate/cluster-agent
 | clusterAgent.collection.kubernetesResources.volumeattachments | bool | `true` | Enable / disable collection of VolumeAttachments. |
 | clusterAgent.collection.kubernetesTimeout | int | `10` | Default timeout (in seconds) when obtaining information from the Kubernetes API. |
 | clusterAgent.collection.kubernetesTopology | bool | `true` | Enable / disable the cluster agent topology collection. |
-| clusterAgent.config | object | `{"configMap":{"maxDataSize":null},"override":[]}` |  |
+| clusterAgent.config | object | `{"configMap":{"maxDataSize":null},"override":[],"topology":{"collectionInterval":90}}` |  |
 | clusterAgent.config.configMap.maxDataSize | string | `nil` | Maximum amount of characters for the data property of a ConfigMap collected by the kubernetes topology check |
 | clusterAgent.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
+| clusterAgent.config.topology.collectionInterval | int | `90` | Interval for running topology collection, in seconds |
 | clusterAgent.enabled | bool | `true` | Enable / disable the cluster agent. |
 | clusterAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterAgent.image.repository | string | `"stackstate/stackstate-cluster-agent"` | Base container image repository. |

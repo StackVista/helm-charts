@@ -11,9 +11,8 @@ data:
   kubernetes_api_topology_conf: |
     init_config:
     instances:
-      - collection_interval: {{ .Values.clusterAgent.config.configMap.topology.collectionInterval }}
-        resources:
-          {{ .Values.clusterAgent.collection.kubernetesResources | toYaml | indent 10 }}
+      - collection_interval: {{ .Values.clusterAgent.config.topology.collectionInterval }}
+        resources:{{ .Values.clusterAgent.collection.kubernetesResources | toYaml | nindent 10 }}
 {{- if $clusterCheckKSM }}
   kubernetes_state_conf: |
     cluster_check: true

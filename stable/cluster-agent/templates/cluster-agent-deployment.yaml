@@ -99,6 +99,9 @@ spec:
           volumeMounts:
           - name: logs
             mountPath: /var/log/stackstate-agent
+          - name: config-override-volume
+            mountPath: /etc/stackstate-agent/conf.d/kubernetes_api_topology.d/conf.yaml
+            subPath: kubernetes_api_topology_conf
           {{- if .Values.clusterAgent.config.override }}
           {{- range .Values.clusterAgent.config.override }}
           - name: config-override-volume
@@ -111,9 +114,6 @@ spec:
             mountPath: /etc/stackstate-agent/conf.d/kubernetes_state.d/conf.yaml
             subPath: kubernetes_state_conf
           {{- end }}
-          - name: kubernetes-topology-check
-            mountPath: /etc/stackstate-agent/conf.d/kubernetes_api_topology.d/conf.yaml
-            subPath: kubernetes_api_topology_conf
     {{- with .Values.clusterAgent.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
