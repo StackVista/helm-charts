@@ -17,6 +17,9 @@ rules:
   {{- if $kubeRes.namespaces }}
   - namespaces
   {{- end }}
+  {{- if .Values.clusterAgent.collection.kubernetesMetrics }}
+  - componentstatuses
+  {{- end }}
   {{- if $kubeRes.configmaps }}
   - configmaps
   {{- end }}
