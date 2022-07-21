@@ -17,9 +17,6 @@ rules:
   {{- if $kubeRes.namespaces }}
   - namespaces
   {{- end }}
-  {{- if $kubeRes.componentstatuses }}
-  - componentstatuses
-  {{- end }}
   {{- if $kubeRes.configmaps }}
   - configmaps
   {{- end }}
@@ -48,16 +45,6 @@ rules:
   - get
   - patch
   - update
-{{- if $kubeRes.volumeattachments }}
-- apiGroups:
-  - "storage.k8s.io"
-  resources:
-  - volumeattachments
-  verbs:
-  - get
-  - list
-  - watch
-{{- end}}
 {{- if or $kubeRes.daemonsets $kubeRes.deployments $kubeRes.replicasets $kubeRes.statefulsets }}
 - apiGroups:
   - "apps"

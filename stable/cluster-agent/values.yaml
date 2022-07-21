@@ -193,8 +193,6 @@ clusterAgent:
     kubernetesResources:
       # clusterAgent.collection.kubernetesResources.namespaces -- Enable / disable collection of Namespaces.
       namespaces: true
-      # clusterAgent.collection.kubernetesResources.componentstatuses -- Enable / disable collection of ComponentStatuses.
-      componentstatuses: true
       # clusterAgent.collection.kubernetesResources.configmaps -- Enable / disable collection of ConfigMaps.
       configmaps: true
       # clusterAgent.collection.kubernetesResources.endpoints -- Enable / disable collection of Endpoints.
@@ -219,8 +217,6 @@ clusterAgent:
       cronjobs: true
       # clusterAgent.collection.kubernetesResources.jobs -- Enable / disable collection of Jobs.
       jobs: true
-      # clusterAgent.collection.kubernetesResources.volumeattachments -- Enable / disable collection of VolumeAttachments.
-      volumeattachments: true
 
   # clusterAgent.config --
   config:

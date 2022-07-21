@@ -109,7 +109,6 @@ stackstate/cluster-agent
 | clusterAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | clusterAgent.collection.kubernetesEvents | bool | `true` | Enable / disable the cluster agent events collection. |
 | clusterAgent.collection.kubernetesMetrics | bool | `true` | Enable / disable the cluster agent metrics collection. |
-| clusterAgent.collection.kubernetesResources.componentstatuses | bool | `true` | Enable / disable collection of ComponentStatuses. |
 | clusterAgent.collection.kubernetesResources.configmaps | bool | `true` | Enable / disable collection of ConfigMaps. |
 | clusterAgent.collection.kubernetesResources.cronjobs | bool | `true` | Enable / disable collection of CronJobs. |
 | clusterAgent.collection.kubernetesResources.daemonsets | bool | `true` | Enable / disable collection of DaemonSets. |
@@ -123,7 +122,6 @@ stackstate/cluster-agent
 | clusterAgent.collection.kubernetesResources.replicasets | bool | `true` | Enable / disable collection of ReplicaSets. |
 | clusterAgent.collection.kubernetesResources.secrets | bool | `true` | Enable / disable collection of Secrets. |
 | clusterAgent.collection.kubernetesResources.statefulsets | bool | `true` | Enable / disable collection of StatefulSets. |
-| clusterAgent.collection.kubernetesResources.volumeattachments | bool | `true` | Enable / disable collection of VolumeAttachments. |
 | clusterAgent.collection.kubernetesTimeout | int | `10` | Default timeout (in seconds) when obtaining information from the Kubernetes API. |
 | clusterAgent.collection.kubernetesTopology | bool | `true` | Enable / disable the cluster agent topology collection. |
 | clusterAgent.config | object | `{"configMap":{"maxDataSize":null},"override":[],"topology":{"collectionInterval":90}}` |  |
