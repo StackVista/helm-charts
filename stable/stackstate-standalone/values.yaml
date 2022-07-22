@@ -158,3 +158,6 @@ stackstate:
     apiKey: ""
     # stackstate.receiver.baseUrl -- (string) **DEPRECATED** Use stackstate.baseUrl instead
     baseUrl:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000

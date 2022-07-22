@@ -2,7 +2,7 @@
 
 Helm chart for StackState standlone -- all components running inside a single container.
 
-Current chart version is `0.4.16`
+Current chart version is `0.4.17`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -76,4 +76,6 @@ stackstate/stackstate-standalone
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
 | stackstate.receiver.apiKey | string | `""` | API key to be used by the Receiver; if no key is provided, a random one will be generated for you. |
 | stackstate.receiver.baseUrl | string | `nil` | **DEPRECATED** Use stackstate.baseUrl instead |
+| stackstate.securityContext.runAsNonRoot | bool | `true` |  |
+| stackstate.securityContext.runAsUser | int | `1000` |  |
 | tolerations | list | `[]` | Toleration labels for pod assignment. |

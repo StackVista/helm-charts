@@ -37,6 +37,7 @@ spec:
           name: {{ .Chart.Name }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext: {{- .Values.stackstate.securityContext | toYaml | nindent 12 }}
           env:
           {{ include "stackstate-standalone.requiredEnvVars" . | indent 10 }}
           ports:
