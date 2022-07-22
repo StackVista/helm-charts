@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `4.6.1`
+Current chart version is `4.6.2-rc.1`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -10,7 +10,7 @@ Current chart version is `4.6.1`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://helm.stackstate.io | anomaly-detection | 4.6.1 |
+| https://helm.stackstate.io | anomaly-detection | 4.6.2-rc.1 |
 | https://helm.stackstate.io | cluster-agent | 0.5.3 |
 | https://helm.stackstate.io | common | 0.4.17 |
 | https://helm.stackstate.io | elasticsearch | 7.16.2-stackstate.2 |
@@ -271,7 +271,7 @@ stackstate/stackstate
 | stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
-| stackstate.components.all.image.tag | string | `"4.6.1"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
+| stackstate.components.all.image.tag | string | `"4.6.2-rc.1"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
 | stackstate.components.all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
