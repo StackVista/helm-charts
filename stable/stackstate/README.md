@@ -295,7 +295,7 @@ stackstate/stackstate
 | stackstate.components.api.image.tag | string | `""` | Tag used for the `api` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.api.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.api.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `api` pods. |
-| stackstate.components.api.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"1Gi","memory":"4000Mi"},"requests":{"cpu":"1500m","ephemeral-storage":"1Mi","memory":"4000Mi"}}` | Resource allocation for `api` pods. |
+| stackstate.components.api.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"2Gi","memory":"4000Mi"},"requests":{"cpu":"1500m","ephemeral-storage":"1Mi","memory":"4000Mi"}}` | Resource allocation for `api` pods. |
 | stackstate.components.api.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.api.sizing.javaHeapMemoryFraction | string | `"50"` |  |
 | stackstate.components.api.tolerations | list | `[]` | Toleration labels for pod assignment. |
