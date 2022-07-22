@@ -1,10 +1,10 @@
 # minio
 
-![Version: 8.0.10-stackstate.3](https://img.shields.io/badge/Version-8.0.10--stackstate.3-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 8.0.10-stackstate.4](https://img.shields.io/badge/Version-8.0.10--stackstate.4-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 High Performance, Kubernetes Native Object Storage
 
-Current chart version is `8.0.10-stackstate.3`
+Current chart version is `8.0.10-stackstate.4`
 
 **Homepage:** <https://min.io>
 
@@ -12,10 +12,10 @@ Current chart version is `8.0.10-stackstate.3`
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| MinIO, Inc | dev@minio.io |  |
-| Jeroen van Erp | jvanerp@stackstate.com |  |
-| Remco Beckers | rbeckers@stackstate.com |  |
-| Vincent Partington | vpartington@stackstate.com |  |
+| MinIO, Inc | <dev@minio.io> |  |
+| Jeroen van Erp | <jvanerp@stackstate.com> |  |
+| Remco Beckers | <rbeckers@stackstate.com> |  |
+| Vincent Partington | <vpartington@stackstate.com> |  |
 
 ## Values
 

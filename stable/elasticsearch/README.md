@@ -1,15 +1,15 @@
 # elasticsearch
 
-![Version: 7.17.2-stackstate.1](https://img.shields.io/badge/Version-7.17.2--stackstate.1-informational?style=flat-square) ![AppVersion: 7.17.2](https://img.shields.io/badge/AppVersion-7.17.2-informational?style=flat-square)
+![Version: 7.17.2-stackstate.2](https://img.shields.io/badge/Version-7.17.2--stackstate.2-informational?style=flat-square) ![AppVersion: 7.17.2](https://img.shields.io/badge/AppVersion-7.17.2-informational?style=flat-square)
 Official Elastic helm chart for Elasticsearch
 **Homepage:** <https://github.com/elastic/helm-charts>
 ## Maintainers
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Jeroen van Erp | jvanerp@stackstate.com |  |
-| Remco Beckers | rbeckers@stackstate.com |  |
-| Vincent Partington | vpartington@stackstate.com |  |
+| Jeroen van Erp | <jvanerp@stackstate.com> |  |
+| Remco Beckers | <rbeckers@stackstate.com> |  |
+| Vincent Partington | <vpartington@stackstate.com> |  |
 ## Source Code
 
 * <https://github.com/elastic/elasticsearch>

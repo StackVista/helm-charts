@@ -1,15 +1,15 @@
 # aws-nuke
 
-![Version: 0.2.6](https://img.shields.io/badge/Version-0.2.6-informational?style=flat-square) ![AppVersion: v2.14.0](https://img.shields.io/badge/AppVersion-v2.14.0-informational?style=flat-square)
+![Version: 0.2.7](https://img.shields.io/badge/Version-0.2.7-informational?style=flat-square) ![AppVersion: v2.14.0](https://img.shields.io/badge/AppVersion-v2.14.0-informational?style=flat-square)
 AWS Nuke -- Clean an entire AWS account
 **Homepage:** <https://github.com/rebuy-de/aws-nuke>
 ## Maintainers
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Jeroen van Erp | jvanerp@stackstate.com |  |
-| Remco Beckers | rbeckers@stackstate.com |  |
-| Vincent Partington | vpartington@stackstate.com |  |
+| Jeroen van Erp | <jvanerp@stackstate.com> |  |
+| Remco Beckers | <rbeckers@stackstate.com> |  |
+| Vincent Partington | <vpartington@stackstate.com> |  |
 
 ## Requirements
 

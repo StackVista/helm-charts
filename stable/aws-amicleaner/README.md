@@ -1,15 +1,15 @@
 # aws-amicleaner
 
-![Version: 0.2.7](https://img.shields.io/badge/Version-0.2.7-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
+![Version: 0.2.8](https://img.shields.io/badge/Version-0.2.8-informational?style=flat-square) ![AppVersion: 0.1.0](https://img.shields.io/badge/AppVersion-0.1.0-informational?style=flat-square)
 AMI cleaner -- Clean old AWS AMI images.
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 ## Maintainers
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Jeroen van Erp | jvanerp@stackstate.com |  |
-| Remco Beckers | rbeckers@stackstate.com |  |
-| Vincent Partington | vpartington@stackstate.com |  |
+| Jeroen van Erp | <jvanerp@stackstate.com> |  |
+| Remco Beckers | <rbeckers@stackstate.com> |  |
+| Vincent Partington | <vpartington@stackstate.com> |  |
 
 ## Values
 

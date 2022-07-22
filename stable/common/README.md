@@ -1,15 +1,15 @@
 # common
 
-![Version: 0.4.21](https://img.shields.io/badge/Version-0.4.21-informational?style=flat-square) ![AppVersion: 0.4.20](https://img.shields.io/badge/AppVersion-0.4.20-informational?style=flat-square)
+![Version: 0.4.22](https://img.shields.io/badge/Version-0.4.22-informational?style=flat-square) ![AppVersion: 0.4.22](https://img.shields.io/badge/AppVersion-0.4.22-informational?style=flat-square)
 Common chartbuilding components and helpers
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 ## Maintainers
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Jeroen van Erp | jvanerp@stackstate.com |  |
-| Remco Beckers | rbeckers@stackstate.com |  |
-| Vincent Partington | vpartington@stackstate.com |  |
+| Jeroen van Erp | <jvanerp@stackstate.com> |  |
+| Remco Beckers | <rbeckers@stackstate.com> |  |
+| Vincent Partington | <vpartington@stackstate.com> |  |
 
 ## Values
 
@@ -76,8 +76,8 @@ Common chartbuilding components and helpers
 | gitlab.env | string | `""` | If CI is GitLab, specify the `env` for annotations. |
 | global | object | `{}` |  |
 | image.pullPolicy | string | `"IfNotPresent"` | The pull policy for the Docker image. |
-| image.repository | string | `"nginx"` | (string) Repository of the Docker image. |
-| image.tag | string | `"latest"` | (string) Tag of the Docker image. |
+| image.repository | string | `"nginx"` | Repository of the Docker image. |
+| image.tag | string | `"latest"` | Tag of the Docker image. |
 | ingress.annotations | object | `{}` | Annotations for `Ingress` objects. |
 | ingress.hosts | list | `[]` | List of ingress hostnames. |
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |

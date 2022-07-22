@@ -12,10 +12,10 @@ Current chart version is `5.1.0-snapshot.16`
 |------------|------|---------|
 | file://../cluster-agent/ | cluster-agent | * |
 | file://../common/ | common | * |
-| file://../elasticsearch/ | elasticsearch | 7.17.2-stackstate.1 |
+| file://../elasticsearch/ | elasticsearch | 7.17.2-stackstate.2 |
 | file://../hbase/ | hbase | * |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
-| file://../minio/ | minio | 8.0.10-stackstate.3 |
+| file://../minio/ | minio | 8.0.10-stackstate.4 |
 | file://../pull-secret/ | pull-secret | * |
 | https://helm.stackstate.io | anomaly-detection | 5.1.0-snapshot.128 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | kafka | 14.8.1 |
@@ -557,7 +557,7 @@ stackstate/stackstate
 | stackstate.components.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
 | stackstate.components.wait.image.tag | string | `"1.0.6"` | Container image tag for wait containers. |
-| stackstate.experimental.server.split | bool | `true` | (boolean) Run a single service server or split in multiple sub services as api, state .... |
+| stackstate.experimental.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |
 | stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
 | stackstate.java.trustStoreBase64Encoded | string | `nil` | Base64 encoded Java TrustStore (cacerts) file to use. Ignored if stackstate.java.trustStore is set. |

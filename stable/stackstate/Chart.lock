@@ -4,10 +4,10 @@ dependencies:
   version: 5.1.0-snapshot.128
 - name: cluster-agent
   repository: file://../cluster-agent/
-  version: 2.0.6
+  version: 2.0.7
 - name: common
   repository: file://../common/
-  version: 0.4.21
+  version: 0.4.22
 - name: elasticsearch
   repository: file://../elasticsearch/
   version: 7.17.2-stackstate.2
@@ -19,15 +19,15 @@ dependencies:
   version: 14.8.1
 - name: kafkaup-operator
   repository: file://../kafkaup-operator/
-  version: 0.1.4
+  version: 0.1.5
 - name: minio
   repository: file://../minio/
-  version: 8.0.10-stackstate.3
+  version: 8.0.10-stackstate.4
 - name: pull-secret
   repository: file://../pull-secret/
   version: 1.0.0
 - name: zookeeper
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 5.16.0
-digest: sha256:c007fc0afed8dc85b1332645f124ecc38999af353b159ed718ef3b523465af8d
-generated: "2022-07-22T15:57:37.91907+03:00"
+digest: sha256:92300a7ca5deb096ce33d1f3613b2c21743ed9130756ef106de8eeae2f552ee7
+generated: "2022-07-25T12:23:38.230487+02:00"
