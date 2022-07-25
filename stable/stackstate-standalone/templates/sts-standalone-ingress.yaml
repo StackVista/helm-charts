@@ -35,18 +35,24 @@ spec:
           - path: {{ $dot.Values.ingress.path.ui }}?(.*)
             pathType: Prefix
             backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $serviceUiPort }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $serviceUiPort }}
           - path: {{ $dot.Values.ingress.path.admin }}/?(.*)
             pathType: Prefix
             backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $serviceAdminPort }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $serviceAdminPort }}
           - path: {{ $dot.Values.ingress.path.receiver }}/?(.*)
             pathType: Prefix
             backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $serviceReceiverPort }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $serviceReceiverPort }}
     {{- end }}
   {{- end }}
 {{- end }}
