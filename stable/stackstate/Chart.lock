@@ -10,10 +10,10 @@ dependencies:
   version: 0.4.21
 - name: elasticsearch
   repository: file://../elasticsearch/
-  version: 7.17.2-stackstate.1
+  version: 7.17.2-stackstate.2
 - name: hbase
   repository: file://../hbase/
-  version: 0.1.133
+  version: 0.1.135
 - name: kafka
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 14.8.1
@@ -29,5 +29,5 @@ dependencies:
 - name: zookeeper
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 5.16.0
-digest: sha256:b6c780a052d75d3ee327572d9a4fac844b108811ede3b761341efab9640073b2
-generated: "2022-07-20T09:09:34.592957127Z"
+digest: sha256:c007fc0afed8dc85b1332645f124ecc38999af353b159ed718ef3b523465af8d
+generated: "2022-07-22T15:57:37.91907+03:00"

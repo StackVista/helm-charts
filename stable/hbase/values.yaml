@@ -89,7 +89,7 @@ wait:
     # wait.image.repository -- Base container image repository for wait containers.
     repository: stackstate/wait
     # wait.image.repository -- Container image tag for wait containers.
-    tag: 1.0.6
+    tag: 1.0.7-2755960650
     # wait.image.pullPolicy -- Image pull policy for wait containers.
     pullPolicy: IfNotPresent
 hbase:
@@ -171,7 +171,7 @@ hdfs:
     # hdfs.image.repository -- Base container image repository for HDFS datanode.
     repository: stackstate/hadoop
     # hdfs.image.tag -- Default container image tag for HDFS datanode.
-    tag: 2.10.1-java11-5-20220503082249
+    tag: 2.10.1-java11-6-2738734712
   volumePermissions:
     # hdfs.volumePermissions.enabled -- Whether to explicitly change the volume permissions for the data/name nodes. If permissions on volume mounts are not correct for whatever reason this can be used to set them properly. Usually also requires enabling the securityContext because root user is required.
     enabled: false
