@@ -2,7 +2,7 @@
 
 Helm chart for deploying a pull-secret for StackState
 
-Current chart version is `1.0.0`
+Current chart version is `1.0.1`
 
 **Homepage:** <https://github.com/StackVista/stackstate>
 

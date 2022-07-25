@@ -12,7 +12,7 @@ Current chart version is `0.9.4`
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Vincent Partington | <vpartington@stackstate.com> |  |
+| Stackstate Ops Team | <ops@stackstate.com> |  |
 
 ## Values
 

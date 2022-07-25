@@ -1,11 +1,9 @@
 apiVersion: v1
 name: "sandbox-operator"
 description: "The StackState Sandboxer"
-version: 0.1.5
-appVersion: 0.5.2
+version: 0.1.6
+appVersion: 0.5.0
 home: https://github.com/StackVista/sandbox-operator
 maintainers:
-- name: Jeroen van Erp
-  email: jvanerp@stackstate.com
-- name: Vincent Partington
-  email: vpartington@stackstate.com
+- name: Stackstate Ops Team
+  email: ops@stackstate.com

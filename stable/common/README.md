@@ -7,9 +7,7 @@ Common chartbuilding components and helpers
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Jeroen van Erp | <jvanerp@stackstate.com> |  |
-| Remco Beckers | <rbeckers@stackstate.com> |  |
-| Vincent Partington | <vpartington@stackstate.com> |  |
+| Stackstate Ops Team | <ops@stackstate.com> |  |
 
 ## Values
 

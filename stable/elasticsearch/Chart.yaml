@@ -2,18 +2,14 @@ apiVersion: v2
 description: Official Elastic helm chart for Elasticsearch
 home: https://github.com/elastic/helm-charts
 name: elasticsearch
-version: 7.17.2-stackstate.2
+version: 7.17.2-stackstate.3
 appVersion: 7.17.2
 sources:
   - https://github.com/elastic/elasticsearch
 icon: https://helm.elastic.co/icons/elasticsearch.png
 maintainers:
-  - name: Jeroen van Erp
-    email: jvanerp@stackstate.com
-  - name: Remco Beckers
-    email: rbeckers@stackstate.com
-  - name: Vincent Partington
-    email: vpartington@stackstate.com
+- name: Stackstate Ops Team
+  email: ops@stackstate.com
 dependencies:
   - name: prometheus-elasticsearch-exporter
     version: 4.13.0

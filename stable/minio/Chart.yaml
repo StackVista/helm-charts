@@ -11,10 +11,6 @@ icon: https://min.io/resources/img/logo/MINIO_wordmark.png
 maintainers:
 - email: dev@minio.io
   name: MinIO, Inc
-- name: Jeroen van Erp
-  email: jvanerp@stackstate.com
-- name: Remco Beckers
-  email: rbeckers@stackstate.com
-- name: Vincent Partington
-  email: vpartington@stackstate.com
+- name: Stackstate Ops Team
+  email: ops@stackstate.com
 name: minio

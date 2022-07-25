@@ -10,12 +10,8 @@ keywords:
 home: https://github.com/rb3ckers/trafficmirror
 icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
 maintainers:
-  - name: Jeroen van Erp
-    email: jvanerp@stackstate.com
-  - name: Remco Beckers
-    email: rbeckers@stackstate.com
-  - name: Vincent Partington
-    email: vpartington@stackstate.com
+- name: Stackstate Ops Team
+  email: ops@stackstate.com
 name: trafficmirror
 dependencies:
   - name: common

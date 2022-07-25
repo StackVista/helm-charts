@@ -10,10 +10,10 @@ dependencies:
   version: 0.4.22
 - name: elasticsearch
   repository: file://../elasticsearch/
-  version: 7.17.2-stackstate.2
+  version: 7.17.2-stackstate.3
 - name: hbase
   repository: file://../hbase/
-  version: 0.1.135
+  version: 0.1.136
 - name: kafka
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 14.8.1
@@ -25,9 +25,9 @@ dependencies:
   version: 8.0.10-stackstate.4
 - name: pull-secret
   repository: file://../pull-secret/
-  version: 1.0.0
+  version: 1.0.1
 - name: zookeeper
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 5.16.0
-digest: sha256:92300a7ca5deb096ce33d1f3613b2c21743ed9130756ef106de8eeae2f552ee7
-generated: "2022-07-25T12:23:38.230487+02:00"
+digest: sha256:147d0306b95d3a19d318fe3526b920f4dcf34a262584d6d0ce27be1a834c7b01
+generated: "2022-07-25T12:43:01.550022+02:00"

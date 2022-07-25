@@ -2,7 +2,7 @@
 
 The StackState Common Objects Operator
 
-Current chart version is `0.2.1`
+Current chart version is `0.2.2`
 
 **Homepage:** <https://gitlab.com/StackVista/devops/kommoner>
 

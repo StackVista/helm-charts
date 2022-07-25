@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.135`
+Current chart version is `0.1.136`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -85,7 +85,7 @@ Current chart version is `0.1.135`
 | hdfs.datanode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.image.pullPolicy | string | `"IfNotPresent"` | Pull policy for HDFS datanode. |
 | hdfs.image.repository | string | `"stackstate/hadoop"` | Base container image repository for HDFS datanode. |
-| hdfs.image.tag | string | `"2.10.1-java11-5-20220503082249"` | Default container image tag for HDFS datanode. |
+| hdfs.image.tag | string | `"2.10.1-java11-6-2738734712"` | Default container image tag for HDFS datanode. |
 | hdfs.minReplication | int | `1` | Sets the minimum synchronous replication that the namenode will enforce when writing a block. This gives guarantees about the amount of copies of a single block. (If hdfs.datanode.replicaCount is set to a value less than this, the replicationfactor will be equal to the replicaCount.) |
 | hdfs.namenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.namenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -140,7 +140,7 @@ Current chart version is `0.1.135`
 | wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | wait.image.repository | string | `"stackstate/wait"` | Container image tag for wait containers. |
-| wait.image.tag | string | `"1.0.6"` |  |
+| wait.image.tag | string | `"1.0.7-2755960650"` |  |
 | zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
 | zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |
 | zookeeper.fourlwCommandsWhitelist | string | `"mntr, ruok, stat, srvr"` | Zookeeper four-letter-word (FLW) commands that are enabled. |

@@ -1,15 +1,13 @@
 # elasticsearch
 
-![Version: 7.17.2-stackstate.2](https://img.shields.io/badge/Version-7.17.2--stackstate.2-informational?style=flat-square) ![AppVersion: 7.17.2](https://img.shields.io/badge/AppVersion-7.17.2-informational?style=flat-square)
+![Version: 7.17.2-stackstate.3](https://img.shields.io/badge/Version-7.17.2--stackstate.3-informational?style=flat-square) ![AppVersion: 7.17.2](https://img.shields.io/badge/AppVersion-7.17.2-informational?style=flat-square)
 Official Elastic helm chart for Elasticsearch
 **Homepage:** <https://github.com/elastic/helm-charts>
 ## Maintainers
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Jeroen van Erp | <jvanerp@stackstate.com> |  |
-| Remco Beckers | <rbeckers@stackstate.com> |  |
-| Vincent Partington | <vpartington@stackstate.com> |  |
+| Stackstate Ops Team | <ops@stackstate.com> |  |
 ## Source Code
 
 * <https://github.com/elastic/elasticsearch>
@@ -41,7 +39,7 @@ Official Elastic helm chart for Elasticsearch
 | imagePullSecrets | list | `[]` |  |
 | imageRegistry | string | `"quay.io"` |  |
 | imageRepository | string | `"stackstate/elasticsearch"` |  |
-| imageTag | string | `"7.17.2-sts.20220425.0743"` |  |
+| imageTag | string | `"7.17.2-2738749846"` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.enabled | bool | `false` |  |
 | ingress.hosts[0] | string | `"chart-example.local"` |  |
@@ -80,7 +78,7 @@ Official Elastic helm chart for Elasticsearch
 | prometheus-elasticsearch-exporter.enabled | bool | `false` | Enable to expose prometheus metrics |
 | prometheus-elasticsearch-exporter.es.uri | string | `"http://elasticsearch-master:9200"` | URI of Elasticsearch to monitor, override when changing clusterName or nodeGroup (format is <protocol>://<clusterName>-<nodegroup>:<httpPort>) |
 | prometheus-elasticsearch-exporter.image.repository | string | `"quay.io/stackstate/elasticsearch-exporter"` | Elastichsearch Prometheus exporter image repository |
-| prometheus-elasticsearch-exporter.image.tag | string | `"v1.2.1"` | Elastichsearch Prometheus exporter image tag |
+| prometheus-elasticsearch-exporter.image.tag | string | `"v1.2.1-2738680411"` | Elastichsearch Prometheus exporter image tag |
 | prometheus-elasticsearch-exporter.podAnnotations | object | `{}` | custom annotations on the pod |
 | prometheus-elasticsearch-exporter.securityContext.enabled | bool | `true` | Set to `false` for OpenShift compatibility |
 | prometheus-elasticsearch-exporter.servicemonitor.enabled | bool | `false` | enable to create a servicemonitor for prometheus operator |

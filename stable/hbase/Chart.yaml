@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 1.2.12
-version: 0.1.135
+version: 0.1.136
 description: Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 keywords:
 - aiops
@@ -13,12 +13,8 @@ sources:
 - https://github.com/apache/hadoop
 icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
 maintainers:
-- name: Jeroen van Erp
-  email: jvanerp@stackstate.com
-- name: Remco Beckers
-  email: rbeckers@stackstate.com
-- name: Vincent Partington
-  email: vpartington@stackstate.com
+- name: Stackstate Ops Team
+  email: ops@stackstate.com
 name: hbase
 dependencies:
 - name: common

@@ -1,13 +1,13 @@
 apiVersion: v2
 name: "helm-reaper"
 description: "The StackState Helm Reaper"
-version: 1.0.0
+version: 1.0.1
 appVersion: v1.0.0
 home: https://gitlab.com/StackVista/devops/helm-charts
 maintainers:
-- name: Jeroen van Erp
-  email: jvanerp@stackstate.com
+- name: Stackstate Ops Team
+  email: ops@stackstate.com
 dependencies:
 - name: common
-  version: 0.4.19
-  repository: https://helm.stackstate.io/
+  version: "*"
+  repository: file://../common/

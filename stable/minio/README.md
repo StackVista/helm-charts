@@ -13,9 +13,7 @@ Current chart version is `8.0.10-stackstate.4`
 | Name | Email | Url |
 | ---- | ------ | --- |
 | MinIO, Inc | <dev@minio.io> |  |
-| Jeroen van Erp | <jvanerp@stackstate.com> |  |
-| Remco Beckers | <rbeckers@stackstate.com> |  |
-| Vincent Partington | <vpartington@stackstate.com> |  |
+| Stackstate Ops Team | <ops@stackstate.com> |  |
 
 ## Values
 
