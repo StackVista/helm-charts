@@ -3,7 +3,7 @@
 {{- $serviceAdminPort := .Values.service.admin.port -}}
 {{- $serviceReceiverPort := .Values.service.receiver.port -}}
 {{- $serviceUiPort := .Values.service.ui.port -}}
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -33,14 +33,17 @@ spec:
       http:
         paths:
           - path: {{ $dot.Values.ingress.path.ui }}?(.*)
+            pathType: Prefix
             backend:
               serviceName: {{ $fullName }}
               servicePort: {{ $serviceUiPort }}
           - path: {{ $dot.Values.ingress.path.admin }}/?(.*)
+            pathType: Prefix
             backend:
               serviceName: {{ $fullName }}
               servicePort: {{ $serviceAdminPort }}
           - path: {{ $dot.Values.ingress.path.receiver }}/?(.*)
+            pathType: Prefix
             backend:
               serviceName: {{ $fullName }}
               servicePort: {{ $serviceReceiverPort }}
