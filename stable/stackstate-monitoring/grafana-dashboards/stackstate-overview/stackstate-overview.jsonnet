@@ -54,8 +54,8 @@ local kafka_lag = graphPanel.new(
   format='short',
 ).addTarget(
   prometheus.target(
-    expr='sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{%(selectors)s, topic!=""}[10m])) by (topic, service)' % ({ selectors: variables.grafana.standard_selectors_string }),
-    legendFormat='{{topic}} - {{service}}',
+    expr='sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{%(selectors)s, topic!=""}[10m])) by (topic, service, client_id)' % ({ selectors: variables.grafana.standard_selectors_string }),
+    legendFormat='{{topic}} - {{service}} - {{client_id}}',
   )
 );
 
@@ -65,8 +65,8 @@ local kafka_lag_time_to_catchup = graphPanel.new(
   format='s',
 ).addTarget(
   prometheus.target(
-    expr='sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{%(selectors)s, topic!=""}[10m])) by (topic, service) / sum(avg_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{%(selectors)s, topic!=""}[10m])) by (topic, service)' % ({ selectors: variables.grafana.standard_selectors_string }),
-    legendFormat='{{topic}} - {{service}}',
+    expr='sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{%(selectors)s, topic!=""}[10m])) by (topic, service, client_id) / sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{%(selectors)s, topic!=""}[10m])) by (topic, service, client_id)' % ({ selectors: variables.grafana.standard_selectors_string }),
+    legendFormat='{{topic}} - {{service}} - {{client_id}}',
   )
 );
 

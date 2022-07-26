@@ -262,10 +262,10 @@
          "steppedLine": false,
          "targets": [
             {
-               "expr": "sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", topic!=\"\"}[10m])) by (topic, service)",
+               "expr": "sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", topic!=\"\"}[10m])) by (topic, service, client_id)",
                "format": "time_series",
                "intervalFactor": 2,
-               "legendFormat": "{{topic}} - {{service}}",
+               "legendFormat": "{{topic}} - {{service}} - {{client_id}}",
                "refId": "A"
             }
          ],
@@ -347,10 +347,10 @@
          "steppedLine": false,
          "targets": [
             {
-               "expr": "sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", topic!=\"\"}[10m])) by (topic, service) / sum(avg_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", topic!=\"\"}[10m])) by (topic, service)",
+               "expr": "sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", topic!=\"\"}[10m])) by (topic, service, client_id) / sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", topic!=\"\"}[10m])) by (topic, service, client_id)",
                "format": "time_series",
                "intervalFactor": 2,
-               "legendFormat": "{{topic}} - {{service}}",
+               "legendFormat": "{{topic}} - {{service}} - {{client_id}}",
                "refId": "A"
             }
          ],
