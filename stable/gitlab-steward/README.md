@@ -1,6 +1,6 @@
 # gitlab-steward
 
-![Version: 0.5.1](https://img.shields.io/badge/Version-0.5.1-informational?style=flat-square) ![AppVersion: 0.5.0](https://img.shields.io/badge/AppVersion-0.5.0-informational?style=flat-square)
+![Version: 0.5.2](https://img.shields.io/badge/Version-0.5.2-informational?style=flat-square) ![AppVersion: 0.5.0](https://img.shields.io/badge/AppVersion-0.5.0-informational?style=flat-square)
 Steward -- GitLab environment cleaner
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 ## Maintainers
@@ -33,6 +33,9 @@ Steward -- GitLab environment cleaner
 | resources.requests.memory | string | `"128Mi"` | Memory resource requests. |
 | restartPolicy | string | `"OnFailure"` | For failed jobs, how to handle restarts. |
 | schedule | string | `"*/10 * * * *"` | Default schedule for this CronJob. |
+| securityContext | object | `{"allowPrivilegeEscalation":false,"enabled":true,"runAsNonRoot":true,"runAsUser":65534}` | securityContext for the container. |
+| securityContext.enabled | bool | `true` | AllowPrivilegeEscalation controls whether a process can gain more  privileges than its parent process |
+| securityContext.runAsNonRoot | bool | `true` | Indicates that the container must run as a non-root user |
 | serviceAccount.annotations | object | `{}` | Extra annotations for the `ServiceAccount` object. |
 | serviceAccount.create | bool | `true` | Create the `ServiceAccount` object. |
 | steward.dryRun | string | `"False"` | Show which environments *would be* stopped, but don't actually stop them. |

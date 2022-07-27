@@ -65,6 +65,18 @@ tolerations: []
 # affinity -- Affinity settings for pod assignment.
 affinity: {}
 
+# securityContext -- securityContext for the container.
+securityContext:
+  # securityContext.enabled -- Whether the securityContext should be set up for the container
+  enabled: true
+  # securityContext.enabled -- AllowPrivilegeEscalation controls whether a process can gain more
+  #  privileges than its parent process
+  allowPrivilegeEscalation: false
+  # securityContext.runAsNonRoot -- Indicates that the container must run as a non-root user
+  runAsNonRoot: true
+  # securityContext.runAsUser The UID to run the entrypoint of the container process.
+  runAsUser: 65534
+
 ########################
 # StackState variables #
 ########################

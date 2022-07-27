@@ -1,4 +1,4 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: {{ include "gitlab-steward.fullname" . }}
@@ -35,6 +35,10 @@ spec:
             {{ include "gitlab-steward.envVars" . | indent 12 }}
             resources:
               {{- toYaml .Values.resources | nindent 14 }}
+            {{- if .Values.securityContext.enabled }}
+            securityContext:
+            {{- omit .Values.securityContext "enabled" | toYaml | nindent 14 }}
+            {{- end }}
           restartPolicy: {{ .Values.restartPolicy }}
           serviceAccountName: {{ include "gitlab-steward.fullname" . }}
         {{- with .Values.nodeSelector }}
