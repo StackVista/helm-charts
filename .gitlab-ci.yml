@@ -872,7 +872,7 @@ test_cluster-agent:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-sync-helm-go-version-40457a30
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
