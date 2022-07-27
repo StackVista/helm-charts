@@ -15,7 +15,7 @@ integration_test_stackstate:
     - helm repo update
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -33,7 +33,7 @@ integration_test_stackstate:
     CGO_ENABLED: 0
     CHART: stable/stackstate
 push_aws-amicleaner_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -50,7 +50,7 @@ push_aws-amicleaner_to_internal:
   variables:
     CHART: stable/aws-amicleaner
 push_aws-nuke_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -67,7 +67,7 @@ push_aws-nuke_to_internal:
   variables:
     CHART: stable/aws-nuke
 push_aws-pod-identity-webhook_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -84,7 +84,7 @@ push_aws-pod-identity-webhook_to_internal:
   variables:
     CHART: stable/aws-pod-identity-webhook
 push_beacher-job_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -101,7 +101,7 @@ push_beacher-job_to_internal:
   variables:
     CHART: stable/beacher-job
 push_chartmuseum_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -118,7 +118,7 @@ push_chartmuseum_to_internal:
   variables:
     CHART: stable/chartmuseum
 push_cluster-agent_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -135,7 +135,7 @@ push_cluster-agent_to_internal:
   variables:
     CHART: stable/cluster-agent
 push_cluster-agent_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   needs:
     - push_cluster-agent_to_internal
   rules:
@@ -154,7 +154,7 @@ push_cluster-agent_to_public:
   variables:
     CHART: stable/cluster-agent
 push_common_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -171,7 +171,7 @@ push_common_to_internal:
   variables:
     CHART: stable/common
 push_common_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   needs:
     - push_common_to_internal
   rules:
@@ -190,7 +190,7 @@ push_common_to_public:
   variables:
     CHART: stable/common
 push_elasticsearch_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -207,7 +207,7 @@ push_elasticsearch_to_internal:
   variables:
     CHART: stable/elasticsearch
 push_elasticsearch_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   needs:
     - push_elasticsearch_to_internal
   rules:
@@ -226,7 +226,7 @@ push_elasticsearch_to_public:
   variables:
     CHART: stable/elasticsearch
 push_gitlab-steward_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -243,7 +243,7 @@ push_gitlab-steward_to_internal:
   variables:
     CHART: stable/gitlab-steward
 push_hbase_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -260,7 +260,7 @@ push_hbase_to_internal:
   variables:
     CHART: stable/hbase
 push_hbase_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   needs:
     - push_hbase_to_internal
   rules:
@@ -279,7 +279,7 @@ push_hbase_to_public:
   variables:
     CHART: stable/hbase
 push_helm-reaper_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -296,7 +296,7 @@ push_helm-reaper_to_internal:
   variables:
     CHART: stable/helm-reaper
 push_iceman_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -313,7 +313,7 @@ push_iceman_to_internal:
   variables:
     CHART: stable/iceman
 push_kafkaup-operator_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -330,7 +330,7 @@ push_kafkaup-operator_to_internal:
   variables:
     CHART: stable/kafkaup-operator
 push_kafkaup-operator_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   needs:
     - push_kafkaup-operator_to_internal
   rules:
@@ -349,7 +349,7 @@ push_kafkaup-operator_to_public:
   variables:
     CHART: stable/kafkaup-operator
 push_kommoner-operator_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -366,7 +366,7 @@ push_kommoner-operator_to_internal:
   variables:
     CHART: stable/kommoner-operator
 push_minio_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -383,7 +383,7 @@ push_minio_to_internal:
   variables:
     CHART: stable/minio
 push_minio_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   needs:
     - push_minio_to_internal
   rules:
@@ -402,7 +402,7 @@ push_minio_to_public:
   variables:
     CHART: stable/minio
 push_petros-d-kubelet-stats-exporter_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -419,7 +419,7 @@ push_petros-d-kubelet-stats-exporter_to_internal:
   variables:
     CHART: stable/petros-d-kubelet-stats-exporter
 push_pull-secret_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -436,7 +436,7 @@ push_pull-secret_to_internal:
   variables:
     CHART: stable/pull-secret
 push_pull-secret_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   needs:
     - push_pull-secret_to_internal
   rules:
@@ -455,7 +455,7 @@ push_pull-secret_to_public:
   variables:
     CHART: stable/pull-secret
 push_receiveramplifier_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -472,7 +472,7 @@ push_receiveramplifier_to_internal:
   variables:
     CHART: stable/receiveramplifier
 push_sandbox-operator_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -489,7 +489,7 @@ push_sandbox-operator_to_internal:
   variables:
     CHART: stable/sandbox-operator
 push_stackstate-monitoring_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -506,7 +506,7 @@ push_stackstate-monitoring_to_internal:
   variables:
     CHART: stable/stackstate-monitoring
 push_stackstate-monitoring_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   needs:
     - push_stackstate-monitoring_to_internal
   rules:
@@ -525,7 +525,7 @@ push_stackstate-monitoring_to_public:
   variables:
     CHART: stable/stackstate-monitoring
 push_stackstate-standalone_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -542,7 +542,7 @@ push_stackstate-standalone_to_internal:
   variables:
     CHART: stable/stackstate-standalone
 push_stackstate-standalone_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   needs:
     - push_stackstate-standalone_to_internal
   rules:
@@ -571,7 +571,7 @@ push_stackstate_release_to_internal:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -603,7 +603,7 @@ push_stackstate_release_to_public:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -630,7 +630,7 @@ push_stackstate_to_internal:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - .gitlab/bump_sts_chart_master_version.sh stackstate-internal
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -658,7 +658,7 @@ push_test_charts:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $CI_COMMIT_BRANCH == "master"
       when: never
@@ -673,7 +673,7 @@ push_test_charts:
     AWS_BUCKET: s3://helm-test.stackstate.io
     REPO_URL: https://helm-test.stackstate.io/
 push_trafficmirror_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -690,7 +690,7 @@ push_trafficmirror_to_internal:
   variables:
     CHART: stable/trafficmirror
 push_trafficmirror_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-1f9e87f1
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   needs:
     - push_trafficmirror_to_internal
   rules:
@@ -727,7 +727,7 @@ test_aws-amicleaner:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -756,7 +756,7 @@ test_aws-nuke:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -785,7 +785,7 @@ test_aws-pod-identity-webhook:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -814,7 +814,7 @@ test_beacher-job:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -843,7 +843,7 @@ test_chartmuseum:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -872,7 +872,7 @@ test_cluster-agent:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-sync-helm-go-version-40457a30
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -901,7 +901,7 @@ test_common:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -930,7 +930,7 @@ test_elasticsearch:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -959,7 +959,7 @@ test_gitlab-steward:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -988,7 +988,7 @@ test_hbase:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1017,7 +1017,7 @@ test_helm-reaper:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1046,7 +1046,7 @@ test_iceman:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1075,7 +1075,7 @@ test_kafkaup-operator:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1104,7 +1104,7 @@ test_kommoner-operator:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1133,7 +1133,7 @@ test_minio:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1162,7 +1162,7 @@ test_petros-d-kubelet-stats-exporter:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1191,7 +1191,7 @@ test_pull-secret:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1220,7 +1220,7 @@ test_receiveramplifier:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1249,7 +1249,7 @@ test_sandbox-operator:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1279,7 +1279,7 @@ test_stackstate:
     - helm repo update
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1308,7 +1308,7 @@ test_stackstate-monitoring:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1337,7 +1337,7 @@ test_stackstate-standalone:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1366,7 +1366,7 @@ test_trafficmirror:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1394,7 +1394,7 @@ update_aad_chart_version:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_AAD_CHART_VERSION
       when: always
@@ -1408,7 +1408,7 @@ update_aad_chart_version:
     GIT_COMMITTER_EMAIL: sts-admin@stackstate.com
     GIT_COMMITTER_NAME: stackstate-system-user
 update_stackgraph_version:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-f151ec63
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: always
