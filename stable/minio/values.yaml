@@ -209,8 +209,7 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
-## Add stateful containers to have security context, if enabled MinIO will run as this
-## user and group NOTE: securityContext is only enabled if persistence.enabled=true
+## Add security context to minio pod
 securityContext:
   enabled: true
   runAsUser: 1000

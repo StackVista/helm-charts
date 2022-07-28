@@ -64,7 +64,7 @@ spec:
       priorityClassName: "{{ .Values.priorityClassName }}"
   {{- end }}
       serviceAccountName: {{ include "minio.serviceAccountName" . | quote }}
-{{- if and .Values.securityContext.enabled .Values.persistence.enabled }}
+{{- if .Values.securityContext.enabled }}
       securityContext:
         runAsUser: {{ .Values.securityContext.runAsUser }}
         runAsGroup: {{ .Values.securityContext.runAsGroup }}

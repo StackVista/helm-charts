@@ -15,7 +15,7 @@ Current chart version is `5.1.0-snapshot.16`
 | file://../elasticsearch/ | elasticsearch | 7.17.2-stackstate.3 |
 | file://../hbase/ | hbase | * |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
-| file://../minio/ | minio | 8.0.10-stackstate.4 |
+| file://../minio/ | minio | 8.0.10-stackstate.5 |
 | file://../pull-secret/ | pull-secret | * |
 | https://helm.stackstate.io | anomaly-detection | 5.1.0-snapshot.128 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | kafka | 14.8.1 |
