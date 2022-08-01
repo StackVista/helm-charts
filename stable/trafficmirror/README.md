@@ -7,7 +7,7 @@ Trafficmirror -- mirror traffic to various endpoints.
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Stackstate Ops Team | <ops@stackstate.com> |  |
+| Stackstate Ops Team | ops@stackstate.com |  |
 
 ## Requirements
 

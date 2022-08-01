@@ -7,8 +7,8 @@ Receiver amplifier to increase the load on an installation.
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Alejandro Acevedo | <aacevedo@stackstate.com> |  |
-| Bram Schuur | <bschuur@stackstate.com> |  |
+| Alejandro Acevedo | aacevedo@stackstate.com |  |
+| Bram Schuur | bschuur@stackstate.com |  |
 
 ## Requirements
 

@@ -7,7 +7,7 @@ Iceman -- Export configuration for all StackState instances in a cluster to an S
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Stackstate Ops Team | <ops@stackstate.com> |  |
+| Stackstate Ops Team | ops@stackstate.com |  |
 
 ## Values
 

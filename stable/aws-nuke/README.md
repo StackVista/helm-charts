@@ -7,7 +7,7 @@ AWS Nuke -- Clean an entire AWS account
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Stackstate Ops Team | <ops@stackstate.com> |  |
+| Stackstate Ops Team | ops@stackstate.com |  |
 
 ## Requirements
 

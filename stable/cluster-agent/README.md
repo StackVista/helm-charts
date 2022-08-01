@@ -69,7 +69,7 @@ stackstate/cluster-agent
 | agent.containers.agent.livenessProbe.periodSeconds | int | `15` | `periodSeconds` for the liveness probe. |
 | agent.containers.agent.livenessProbe.successThreshold | int | `1` | `successThreshold` for the liveness probe. |
 | agent.containers.agent.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
-| agent.containers.agent.logLevel | string | `nil` | Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off # If not set, fall back to the value of agent.logLevel. |
+| agent.containers.agent.logLevel | string | `nil` | Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off |
 | agent.containers.agent.processAgent.enabled | bool | `false` | Enable / disable the agent process agent module. - deprecated |
 | agent.containers.agent.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
 | agent.containers.agent.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
@@ -86,7 +86,7 @@ stackstate/cluster-agent
 | agent.containers.processAgent.image.pullPolicy | string | `"IfNotPresent"` | Process-agent container image pull policy. |
 | agent.containers.processAgent.image.repository | string | `"stackstate/stackstate-process-agent"` | Process-agent container image repository. |
 | agent.containers.processAgent.image.tag | string | `"4.0.7"` | Default process-agent container image tag. |
-| agent.containers.processAgent.logLevel | string | `nil` | Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off # If not set, fall back to the value of agent.logLevel. |
+| agent.containers.processAgent.logLevel | string | `nil` | Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off |
 | agent.containers.processAgent.resources.limits.cpu | string | `"400m"` | Memory resource limits. |
 | agent.containers.processAgent.resources.limits.memory | string | `"768Mi"` |  |
 | agent.containers.processAgent.resources.requests.cpu | string | `"100m"` | Memory resource requests. |

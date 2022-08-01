@@ -7,7 +7,7 @@ The StackState Sandboxer
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Stackstate Ops Team | <ops@stackstate.com> |  |
+| Stackstate Ops Team | ops@stackstate.com |  |
 
 ## Values
 
