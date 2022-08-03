@@ -43,6 +43,7 @@ dashboard.new(
   refresh='60s',
   tags=['stackstate', 'receiver'],
   time_from='now-1h',
+  uid='d86633e624b6df5beace9cde97223928',
 )
 .addTemplates(variables.grafana.common_dashboard_variables)
 .addPanels(

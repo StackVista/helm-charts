@@ -53,6 +53,7 @@ dashboard.new(
   refresh='10s',
   tags=['stackstate', 'correlate'],
   time_from='now-1h',
+  uid='d97e8881c65e8d7cd08469fcbfb7ac5f',
 )
 .addTemplates(variables.grafana.common_dashboard_variables)
 .addPanels(

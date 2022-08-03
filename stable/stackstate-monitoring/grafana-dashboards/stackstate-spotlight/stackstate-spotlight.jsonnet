@@ -103,6 +103,7 @@ dashboard.new(
   refresh='10s',
   tags=['stackstate', 'spotlight'],
   time_from='now-1h',
+  uid='485526f11012a3cff6702b922da9cc90',
 )
 .addTemplates(variables.grafana.common_dashboard_variables)
 .addPanels(

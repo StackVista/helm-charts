@@ -123,6 +123,7 @@ dashboard.new(
   refresh='10s',
   tags=['stackstate', 'sync'],
   time_from='now-1h',
+  uid='b7c79dd698255aa350c49903afc29c0d',
 )
 .addTemplates(variables.grafana.common_dashboard_variables)
 .addPanels(

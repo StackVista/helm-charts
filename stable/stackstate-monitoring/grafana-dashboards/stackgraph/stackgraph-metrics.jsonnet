@@ -160,6 +160,7 @@ dashboard.new(
   refresh='10s',
   tags=['stackgraph', 'readcache', 'transactions'],
   time_from='now-1h',
+  uid='7a6624794a271aefea0b79652cd1e80e',
 )
 .addTemplates(variables.grafana.common_dashboard_variables)
 .addPanels(

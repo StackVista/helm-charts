@@ -26,6 +26,14 @@ repos:
   rev: v1.11.0
   hooks:
   - id: helm-docs-built
+- repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.17.1
+  hooks:
+    - id: check-jsonschema
+      files: ^stable/stackstate-monitoring/grafana-dashboards/*/.*\.json$
+      args: ["--schemafile", "stable/stackstate-monitoring/dashboard-schema.json"]
+    - id: check-metaschema
+      files: stable/stackstate-monitoring/dashboard-schema.json
 - repo: git@gitlab.com:stackvista/devops/pre-commit-hooks.git
   rev: v1.0.6
   hooks:

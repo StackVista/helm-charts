@@ -100,6 +100,7 @@ dashboard.new(
   tags=['stackstate', 'overview'],
   time_from='now-1h',
   description='Look here for a high level overview of StackState load and performance',
+  uid='bc77a880dabe35cc1e7d3175095235ff',
 )
 .addTemplates(variables.grafana.common_dashboard_variables)
 .addPanels(

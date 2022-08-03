@@ -132,6 +132,7 @@ dashboard.new(
   refresh='10s',
   tags=['stackgraph', 'compaction', 'slicing', 'major compaction'],
   time_from='now-1h',
+  uid='c4787962e219da7026ba634e4b2d8f5f'
 )
 .addTemplates(variables.grafana.common_dashboard_variables)
 .addPanels(

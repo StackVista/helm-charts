@@ -55,6 +55,7 @@ dashboard.new(
   refresh='10s',
   tags=['stackstate', 'HTTP Endpoints'],
   time_from='now-1h',
+  uid='ea9989a65cac81cb34d64eb6cf5d2c91',
 )
 .addTemplates(variables.grafana.common_dashboard_variables)
 .addPanels(

@@ -1,0 +1,22 @@
+{
+	"definitions": {},
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "https://example.com/object1659543332.json",
+	"title": "Root",
+	"type": "object",
+	"required": [
+		"uid"
+	],
+	"properties": {
+		"uid": {
+			"$id": "#root/uid",
+			"title": "Uid",
+			"type": "string",
+			"default": "",
+			"examples": [
+				"7a6624794a271aefea0b79652cd1e80e"
+			],
+			"pattern": "^[a-zA-Z0-9-_]+$"
+		}
+	}
+}

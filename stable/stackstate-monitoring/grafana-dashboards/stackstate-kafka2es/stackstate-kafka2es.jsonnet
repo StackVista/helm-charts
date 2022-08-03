@@ -83,6 +83,7 @@ dashboard.new(
   refresh='10s',
   tags=['stackstate', 'kafka2es'],
   time_from='now-1h',
+  uid='4e750e563e3452be01af051af1c440fe',
 )
 .addTemplates(variables.grafana.common_dashboard_variables)
 .addPanels(

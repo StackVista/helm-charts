@@ -98,6 +98,7 @@ dashboard.new(
   refresh='10s',
   tags=['stackstate', 'state-propagation'],
   time_from='now-1h',
+  uid='b015c14c2ef5cf346a95e70b14c7c7d1',
 )
 .addTemplates(variables.grafana.common_dashboard_variables)
 .addPanels(

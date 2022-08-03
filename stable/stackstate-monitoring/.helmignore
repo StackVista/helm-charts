@@ -1,3 +1,5 @@
 *.jsonnet
 *.libsonnet
 README.gotmpl
+dashboard-schema.json
+.helmignore

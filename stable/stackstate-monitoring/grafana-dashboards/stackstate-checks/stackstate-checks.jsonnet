@@ -54,6 +54,7 @@ dashboard.new(
   refresh='10s',
   tags=['stackstate', 'checks'],
   time_from='now-1h',
+  uid='ee492734acffed0266a00c75e9898ee6',
 )
 .addTemplates(variables.grafana.common_dashboard_variables)
 .addPanels(

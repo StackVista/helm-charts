@@ -43,6 +43,7 @@ dashboard.new(
   refresh='10s',
   tags=['stackstate', 'topology'],
   time_from='now-1h',
+  uid='a9f75a5bfd88ee7579304c4ca9e62cb8',
 )
 .addTemplates(variables.grafana.common_dashboard_variables)
 .addPanels(

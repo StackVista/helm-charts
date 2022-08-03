@@ -145,6 +145,7 @@ dashboard.new(
   refresh='10s',
   tags=['stackstate', 'websockets'],
   time_from='now-1h',
+  uid='14f74ae1dc50cffc105f95502a851388',
 )
 .addTemplates(variables.grafana.common_dashboard_variables)
 .addPanels(
