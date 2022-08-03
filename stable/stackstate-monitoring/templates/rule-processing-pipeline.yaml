@@ -32,21 +32,21 @@ spec:
             severity: warning
         - alert: StackStateKafkaTopologyTopicLag
           annotations:
-            message: {{`Consumption of kafka messages for topology synchronization {{$labels.namespace }}, topic {{$labels.topic}} and service {{ $labels.service }} is lagging behind by {{ $value | humanizeDuration }}.`}}
+            message: {{`Consumption of kafka messages for topology synchronization {{ $labels.namespace }}, topic {{ $labels.topic }} and service {{ $labels.service }} by client {{ $labels.client_id }} is lagging behind by {{ $value | humanizeDuration }}.`}}
           expr: |
-            (sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{namespace=~{{ .Values.rules.namespaceRegex | quote}}, topic=~"sts_topo_.*"}[10m])) by (namespace, topic, service)
+            (sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{namespace=~{{ .Values.rules.namespaceRegex | quote}}, topic=~"sts_topo_.*"}[10m])) by (namespace, topic, service, client_id)
               /
-            sum(avg_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{namespace=~{{ .Values.rules.namespaceRegex | quote}}, topic=~"sts_topo_.*"}[10m])) by (namespace, topic, service)) > 120.0
+            sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{namespace=~{{ .Values.rules.namespaceRegex | quote}}, topic=~"sts_topo_.*"}[10m])) by (namespace, topic, service, client_id)) > 120.0
           for: 5m
           labels:
             severity: warning
         - alert: StackStateKafkaTopicLag
           annotations:
-            message: {{`Consumption of kafka messages for topology synchronization {{$labels.namespace }}, topic {{$labels.topic}} and service {{ $labels.service }} is lagging behind by {{ $value | humanizeDuration }}.`}}
+            message: {{`Consumption of kafka messages for topology synchronization {{ $labels.namespace }}, topic {{ $labels.topic }} and service {{ $labels.service }} by client {{ $labels.client_id }} is lagging behind by {{ $value | humanizeDuration }}.`}}
           expr: |
-            (sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{namespace=~{{ .Values.rules.namespaceRegex | quote}}, topic!~"sts_topo_.*"}[10m])) by (namespace, topic, service)
+            (sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{namespace=~{{ .Values.rules.namespaceRegex | quote}}, topic!~"sts_topo_.*"}[10m])) by (namespace, topic, service, client_id)
               /
-            sum(avg_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{namespace=~{{ .Values.rules.namespaceRegex | quote}}, topic!~"sts_topo_.*"}[10m])) by (namespace, topic, service)) > 120.0
+            sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{namespace=~{{ .Values.rules.namespaceRegex | quote}}, topic!~"sts_topo_.*"}[10m])) by (namespace, topic, service, client_id)) > 120.0
           for: 5m
           labels:
             severity: warning
