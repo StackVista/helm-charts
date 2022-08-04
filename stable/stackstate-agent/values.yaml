@@ -1,0 +1,443 @@
+#####################
+# General variables #
+#####################
+
+global:
+  extraEnv:
+    # global.extraEnv.open -- Extra open environment variables to inject into pods.
+    open: {}
+    # global.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+    secret: {}
+  # global.imagePullSecrets -- Secrets / credentials needed for container image registry.
+  imagePullSecrets: []
+
+dependencies:
+  kubeStateMetrics:
+    # dependencies.kubeStateMetrics.enabled -- Whether or not to install the `kube-state-metrics` Deployment along with the StackState cluster agent. Set to `false` if you have `kube-state-metrics` already installed on the cluster.
+    enabled: true
+
+# nameOverride -- Override the name of the chart.
+nameOverride: ""
+# fullnameOverride -- Override the fullname of the chart.
+fullnameOverride: ""
+
+all:
+  image:
+    # all.image.registry -- The image registry to use.
+    registry: "quay.io"
+
+agent:
+  containerRuntime:
+    # agent.containerRuntime.customSocketPath -- If the container socket path does not match the default for CRI-O, Containerd or Docker, supply a custom socket path.
+    customSocketPath: ""
+  scc:
+    # agent.scc.enabled -- Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift.
+    enabled: false
+  apm:
+    # agent.apm.enabled -- Enable / disable the agent APM module.
+    enabled: true
+  networkTracing:
+    # agent.networkTracing.enabled -- Enable / disable the agent network tracing module.
+    enabled: true
+  protocolInspection:
+    # agent.protocolInspection.enabled -- Enable / disable the agent protocol inspection.
+    enabled: true
+  # agent.skipSslValidation -- Set to true if self signed certificates are used.
+  skipSslValidation: false
+
+  # agent.checksTagCardinality -- low, orchestrator or high. Orchestrator level adds pod_name, high adds display_container_name
+  checksTagCardinality: orchestrator
+
+  # agent.config --
+  config:
+    # agent.config.override -- A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap
+    override: []
+
+  # agent.priorityClassName -- Priority class for agent pods.
+  priorityClassName: ""
+
+  containers:
+
+    agent:
+      image:
+        # agent.containers.agent.image.repository -- Base container image repository.
+        repository: stackstate/stackstate-agent-2
+        # agent.containers.agent.image.tag -- Default container image tag.
+        tag: 2.17.1
+        # agent.containers.agent.image.pullPolicy -- Default container image pull policy.
+        pullPolicy: IfNotPresent
+      processAgent:
+        # agent.containers.agent.processAgent.enabled -- Enable / disable the agent process agent module. - deprecated
+        enabled: false
+      # agent.containers.agent.env -- Additional environment variables for the agent container
+      env: {}
+      # agent.containers.agent.logLevel -- Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off
+      ## If not set, fall back to the value of agent.logLevel.
+      logLevel:  # INFO
+
+      resources:
+        limits:
+          # agent.containers.agent.resources.limits.cpu -- CPU resource limits.
+          cpu: "400m"
+          # agent.containers.agent.resources.limits.cpu -- Memory resource limits.
+          memory: "256Mi"
+        requests:
+          # agent.containers.agent.resources.requests.cpu -- CPU resource requests.
+          cpu: "100m"
+          # agent.containers.agent.resources.requests.cpu -- Memory resource requests.
+          memory: "128Mi"
+      livenessProbe:
+        # agent.containers.agent.livenessProbe.enabled -- Enable use of livenessProbe check.
+        enabled: true
+        # agent.containers.agent.livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
+        failureThreshold: 3
+        # agent.containers.agent.livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
+        initialDelaySeconds: 15
+        # agent.containers.agent.livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
+        periodSeconds: 15
+        # agent.containers.agent.livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
+        successThreshold: 1
+        # agent.containers.agent.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
+        timeoutSeconds: 5
+      readinessProbe:
+        # agent.containers.agent.readinessProbe.enabled -- Enable use of readinessProbe check.
+        enabled: true
+        # agent.containers.agent.readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
+        failureThreshold: 3
+        # agent.containers.agent.readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
+        initialDelaySeconds: 15
+        # agent.containers.agent.readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
+        periodSeconds: 15
+        # agent.containers.agent.readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
+        successThreshold: 1
+        # agent.containers.agent.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
+        timeoutSeconds: 5
+
+    processAgent:
+      # agent.containers.processAgent.enabled -- Enable / disable the process agent container.
+      enabled: true
+      image:
+        # agent.containers.processAgent.image.repository -- Process-agent container image repository.
+        repository: stackstate/stackstate-process-agent
+        # agent.containers.processAgent.image.tag -- Default process-agent container image tag.
+        tag: 4.0.7
+        # agent.containers.processAgent.image.pullPolicy -- Process-agent container image pull policy.
+        pullPolicy: IfNotPresent
+      # agent.containers.processAgent.env -- Additional environment variables for the process-agent container
+      env: {}
+      # agent.containers.processAgent.logLevel -- Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off
+      ## If not set, fall back to the value of agent.logLevel.
+      logLevel:  # INFO
+
+      resources:
+        limits:
+          # agent.containers.processAgent.resources.limits.cpu -- CPU resource limits.
+          cpu: "400m"
+          # agent.containers.processAgent.resources.limits.cpu -- Memory resource limits.
+          memory: "768Mi"
+        requests:
+          # agent.containers.processAgent.resources.requests.cpu -- CPU resource requests.
+          cpu: "100m"
+          # agent.containers.processAgent.resources.requests.cpu -- Memory resource requests.
+          memory: "128Mi"
+  # agent.service -- The Kubernetes service for the agent
+  service:
+    # agent.service.type -- Type of Kubernetes service: ClusterIP, LoadBalancer, NodePort
+    type: ClusterIP
+    # agent.service.annotations -- Annotations for the service
+    annotations: {}
+    # agent.service.loadBalancerSourceRanges -- The IP4 CIDR allowed to reach LoadBalancer for the service. For LoadBalancer type of service only.
+    loadBalancerSourceRanges: ["10.0.0.0/8"]
+
+  # agent.logLevel -- Logging level for agent processes.
+  logLevel: INFO
+
+  # agent.updateStrategy -- The update strategy for the DaemonSet object.
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 100
+
+  # agent.nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
+
+  # agent.tolerations -- Toleration labels for pod assignment.
+  tolerations: []
+
+  # agent.affinity -- Affinity settings for pod assignment.
+  affinity: {}
+
+  serviceaccount:
+    # agent.serviceaccount.annotations -- Annotations for the service account for the agent daemonset pods
+    annotations: {}
+
+processAgent:
+  checkIntervals:
+    # processAgent.checkIntervals.container -- Override the default value of the container check interval in seconds.
+    container: 30
+    # processAgent.checkIntervals.connections -- Override the default value of the connections check interval in seconds.
+    connections: 30
+    # processAgent.checkIntervals.process -- Override the default value of the process check interval in seconds.
+    process: 30
+
+stackstateAgent:
+  collection:
+    # stackstateAgent.collection.kubernetesEvents -- Enable / disable the cluster agent events collection.
+    kubernetesEvents: true
+    # stackstateAgent.collection.kubernetesMetrics -- Enable / disable the cluster agent metrics collection.
+    kubernetesMetrics: true
+    # stackstateAgent.collection.kubernetesTimeout -- Default timeout (in seconds) when obtaining information from the Kubernetes API.
+    kubernetesTimeout: 10
+    # stackstateAgent.collection.kubernetesTopology -- Enable / disable the cluster agent topology collection.
+    kubernetesTopology: true
+    kubernetesResources:
+      # stackstateAgent.collection.kubernetesResources.namespaces -- Enable / disable collection of Namespaces.
+      namespaces: true
+      # stackstateAgent.collection.kubernetesResources.configmaps -- Enable / disable collection of ConfigMaps.
+      configmaps: true
+      # stackstateAgent.collection.kubernetesResources.endpoints -- Enable / disable collection of Endpoints. If endpoints are disabled then StackState won't be able to connect a Service to Pods that serving it
+      endpoints: true
+      # stackstateAgent.collection.kubernetesResources.persistentvolumes -- Enable / disable collection of PersistentVolumes.
+      persistentvolumes: true
+      # stackstateAgent.collection.kubernetesResources.persistentvolumeclaims -- Enable / disable collection of PersistentVolumeClaims. Disabling these will not let StackState connect PersistentVolumes to pods they are attached to
+      persistentvolumeclaims: true
+      # stackstateAgent.collection.kubernetesResources.secrets -- Enable / disable collection of Secrets.
+      secrets: true
+      # stackstateAgent.collection.kubernetesResources.daemonsets -- Enable / disable collection of DaemonSets.
+      daemonsets: true
+      # stackstateAgent.collection.kubernetesResources.deployments -- Enable / disable collection of Deployments.
+      deployments: true
+      # stackstateAgent.collection.kubernetesResources.replicasets -- Enable / disable collection of ReplicaSets.
+      replicasets: true
+      # stackstateAgent.collection.kubernetesResources.statefulsets -- Enable / disable collection of StatefulSets.
+      statefulsets: true
+      # stackstateAgent.collection.kubernetesResources.ingresses -- Enable / disable collection of Ingresses.
+      ingresses: true
+      # stackstateAgent.collection.kubernetesResources.cronjobs -- Enable / disable collection of CronJobs.
+      cronjobs: true
+      # stackstateAgent.collection.kubernetesResources.jobs -- Enable / disable collection of Jobs.
+      jobs: true
+
+  # stackstateAgent.config --
+  config:
+    events:
+      # clusterAgent.config.events.categories -- Custom mapping from Kubernetes event reason to StackState event category. Categories allowed: Alerts, Activities, Changes, Others
+      categories: {}
+    topology:
+      # stackstateAgent.config.topology.collectionInterval -- Interval for running topology collection, in seconds
+      collectionInterval: 90
+    configMap:
+      # stackstateAgent.config.configMap.maxDataSize -- Maximum amount of characters for the data property of a ConfigMap collected by the kubernetes topology check
+      maxDataSize: null
+    # stackstateAgent.config.override -- A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap
+    override: []
+
+  # stackstateAgent.enabled -- Enable / disable the cluster agent.
+  enabled: true
+
+  image:
+    # stackstateAgent.image.repository -- Base container image repository.
+    repository: stackstate/stackstate-stackstate-agent
+    # stackstateAgent.image.tag -- Default container image tag.
+    tag: 2.17.1
+    # stackstateAgent.image.pullPolicy -- Default container image pull policy.
+    pullPolicy: IfNotPresent
+
+  livenessProbe:
+    # stackstateAgent.livenessProbe.enabled -- Enable use of livenessProbe check.
+    enabled: true
+    # stackstateAgent.livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
+    failureThreshold: 3
+    # stackstateAgent.livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
+    initialDelaySeconds: 15
+    # stackstateAgent.livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
+    periodSeconds: 15
+    # stackstateAgent.livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
+    successThreshold: 1
+    # stackstateAgent.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
+    timeoutSeconds: 5
+
+  # stackstateAgent.logLevel -- Logging level for stackstate-agent processes.
+  logLevel: INFO
+
+  # stackstateAgent.priorityClassName -- Priority class for stackstate-agent pods.
+  priorityClassName: ""
+
+  readinessProbe:
+    # stackstateAgent.readinessProbe.enabled -- Enable use of readinessProbe check.
+    enabled: true
+    # stackstateAgent.readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
+    failureThreshold: 3
+    # stackstateAgent.readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
+    initialDelaySeconds: 15
+    # stackstateAgent.readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
+    periodSeconds: 15
+    # stackstateAgent.readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
+    successThreshold: 1
+    # stackstateAgent.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
+    timeoutSeconds: 5
+
+  # stackstateAgent.replicaCount -- Number of replicas of the cluster agent to deploy.
+  replicaCount: 1
+
+  serviceaccount:
+    # stackstateAgent.serviceaccount.annotations -- Annotations for the service account for the cluster agent pods
+    annotations: {}
+
+  # stackstateAgent.strategy -- The strategy for the Deployment object.
+  strategy:
+    type: RollingUpdate
+    # rollingUpdate:
+    #   maxUnavailable: 1
+
+  resources:
+    limits:
+      # stackstateAgent.resources.limits.cpu -- CPU resource limits.
+      cpu: "400m"
+      # stackstateAgent.resources.limits.memory -- Memory resource limits.
+      memory: "1024Mi"
+    requests:
+      # stackstateAgent.resources.requests.cpu -- CPU resource requests.
+      cpu: "100m"
+      # stackstateAgent.resources.requests.memory -- Memory resource requests.
+      memory: "256Mi"
+
+  # stackstateAgent.nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
+
+  # stackstateAgent.tolerations -- Toleration labels for pod assignment.
+  tolerations: []
+
+  # stackstateAgent.affinity -- Affinity settings for pod assignment.
+  affinity: {}
+
+clusterChecks:
+  # clusterChecks.enabled -- Enable / disable runnning cluster checks in a separately deployed pod
+  enabled: true
+  scc:
+    # clusterChecks.scc.enabled -- Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift
+    enabled: false
+  apm:
+    # clusterChecks.apm.enabled -- Enable / disable the agent APM module.
+    enabled: true
+  networkTracing:
+    # clusterChecks.networkTracing.enabled -- Enable / disable the agent network tracing module.
+    enabled: true
+  processAgent:
+    # clusterChecks.processAgent.enabled -- Enable / disable the agent process agent module.
+    enabled: true
+  # clusterChecks.skipSslValidation -- Set to true if self signed certificates are used.
+  skipSslValidation: false
+
+  # agent.checksTagCardinality -- low, orchestrator or high. Orchestrator level adds pod_name, high adds display_container_name
+  checksTagCardinality: orchestrator
+
+  # clusterChecks.config --
+  config:
+    # clusterChecks.config.override -- A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap
+    override: []
+
+  image:
+    # clusterChecks.image.repository -- Base container image repository.
+    repository: stackstate/stackstate-agent-2
+    # clusterChecks.image.tag -- Default container image tag.
+    tag: 2.17.1
+    # clusterChecks.image.pullPolicy -- Default container image pull policy.
+    pullPolicy: IfNotPresent
+
+  livenessProbe:
+    # clusterChecks.livenessProbe.enabled -- Enable use of livenessProbe check.
+    enabled: true
+    # clusterChecks.livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
+    failureThreshold: 3
+    # clusterChecks.livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
+    initialDelaySeconds: 15
+    # clusterChecks.livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
+    periodSeconds: 15
+    # clusterChecks.livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
+    successThreshold: 1
+    # clusterChecks.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
+    timeoutSeconds: 5
+
+  # clusterChecks.logLevel -- Logging level for clusterchecks agent processes.
+  logLevel: INFO
+
+  # clusterChecks.priorityClassName -- Priority class for clusterchecks agent pods.
+  priorityClassName: ""
+
+  readinessProbe:
+    # clusterChecks.readinessProbe.enabled -- Enable use of readinessProbe check.
+    enabled: true
+    # clusterChecks.readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
+    failureThreshold: 3
+    # clusterChecks.readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
+    initialDelaySeconds: 15
+    # clusterChecks.readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
+    periodSeconds: 15
+    # clusterChecks.readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
+    successThreshold: 1
+    # clusterChecks.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
+    timeoutSeconds: 5
+
+  # clusterChecks.replicas -- Number of clusterchecks agent pods to schedule
+  replicas: 1
+
+  resources:
+    limits:
+      # clusterChecks.resources.limits.cpu -- CPU resource limits.
+      cpu: "400m"
+      # clusterChecks.resources.limits.cpu -- Memory resource limits.
+      memory: "1024Mi"
+    requests:
+      # clusterChecks.resources.requests.cpu -- CPU resource requests.
+      cpu: "100m"
+      # clusterChecks.resources.requests.cpu -- Memory resource requests.
+      memory: "256Mi"
+
+  serviceaccount:
+    # clusterChecks.serviceaccount.annotations -- Annotations for the service account for the cluster checks pods
+    annotations: {}
+
+  # clusterChecks.strategy -- The strategy for the Deployment object.
+  strategy:
+    type: RollingUpdate
+    # rollingUpdate:
+    #   maxUnavailable: 1
+
+  # clusterChecks.nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
+
+  # clusterChecks.tolerations -- Toleration labels for pod assignment.
+  tolerations: []
+
+  # clusterChecks.affinity -- Affinity settings for pod assignment.
+  affinity: {}
+
+  kubeStateMetrics:
+    # clusterChecks.kubeStateMetrics.url -- URL of the KubeStateMetrics server. This needs to be configured if the KubeStateMetrics server is not enabled by default in this Helm chart.
+    url: ""
+
+kube-state-metrics:
+  # kube-state-metrics.image -- Details about the docker image to be used for this component. This overrides the value in the bitnami chart.
+  image:
+    # kube-state-metrics.image.registry -- Registry where docker image will be pulled from. This overrides the value in the bitnami chart.
+    registry: quay.io
+    # kube-state-metrics.image.repository -- The path inside the registry where the image is hosted. This overrides the value in the bitnami chart.
+    repository: stackstate/kube-state-metrics
+    # kube-state-metrics.image.tag -- The version tag of the image to be used during deployment. This overrides the value in the bitnami chart.
+    tag: 2.3.0-focal-20220316-r61.20220418.2032
+
+########################
+# StackState variables #
+########################
+
+stackstate:
+  # stackstate.apiKey -- (string) **PROVIDE YOUR API KEY HERE** API key to be used by the StackState agent.
+  apiKey:
+  cluster:
+    # stackstate.cluster.name -- (string) **PROVIDE KUBERNETES CLUSTER NAME HERE** Name of the Kubernetes cluster where the agent will be installed.
+    name:
+    # stackstate.cluster.authToken -- Provide a token to enable secure communication between the agent and the cluster agent.
+    authToken: ""
+  # stackstate.url -- (string) **PROVIDE STACKSTATE URL HERE** URL of the StackState installation to receive data from the agent.
+  url:

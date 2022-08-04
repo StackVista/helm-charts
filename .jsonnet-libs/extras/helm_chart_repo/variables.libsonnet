@@ -18,7 +18,7 @@
       prometheus: 'https://prometheus-community.github.io/helm-charts',
     },
     public_charts: [
-      'cluster-agent',
+      'stackstate-agent',
       'common',
       'elasticsearch',
       'hbase',

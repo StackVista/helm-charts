@@ -30,7 +30,7 @@ EOF
 
 values_file="values.yaml"
 
-stackstate_cluster_agent_enabled=false
+stackstate_stackstate_agent_enabled=false
 interactive=true
 
 # Parse arguments
@@ -44,7 +44,7 @@ while getopts "u:p:l:b:a:v:d:k:nh" opt; do
   d)  default_admin_password=$OPTARG ;;
   v)  values_file=$OPTARG ;;
   n)  interactive=false ;;
-  k)  k8s_cluster_name=$OPTARG; stackstate_cluster_agent_enabled=true ;;
+  k)  k8s_cluster_name=$OPTARG; stackstate_stackstate_agent_enabled=true ;;
   h)  usage; exit;;
   \?) echo "Unknown option: -$OPTARG" >&2; exit 1;;
   :) echo "Missing option argument for -$OPTARG" >&2; exit 1;;
@@ -96,7 +96,7 @@ function check_args() {
       read -r -p "Do you want to install the StackState Kubernetes Agent on the cluster? [yn] " yn
       case $yn in
         [Yy]* )
-          stackstate_cluster_agent_enabled=true
+          stackstate_stackstate_agent_enabled=true
           printf "\n\n"
           echo "StackState and the agent use a cluster name to refer to this Kubernetes cluster."
           echo "For convenience we suggest to use the same name as in your kube context."
@@ -104,7 +104,7 @@ function check_args() {
           [ -z "${k8s_cluster_name}" ] && echo -e "${red}The Kubernetes cluster name is required when installing the agent.${nc}" && exit 1
           break;;
         [Nn]* )
-          stackstate_cluster_agent_enabled=false
+          stackstate_stackstate_agent_enabled=false
           break;;
         * ) echo "Please answer yes or no.";;
       esac
@@ -154,7 +154,7 @@ function configure_autoinstalled_stackpacks() {
       - name: aad
         configuration: {}
 EOF
-  if ${stackstate_cluster_agent_enabled}; then
+  if ${stackstate_stackstate_agent_enabled}; then
   cat >> "${values_file}" <<EOF
       - name: kubernetes
         configuration:
@@ -164,9 +164,9 @@ EOF
 }
 
 function configure_agent() {
-  if ${stackstate_cluster_agent_enabled}; then
+  if ${stackstate_stackstate_agent_enabled}; then
   cat >> "${values_file}" <<EOF
-cluster-agent:
+stackstate-agent:
   enabled: true
   stackstate:
     cluster:

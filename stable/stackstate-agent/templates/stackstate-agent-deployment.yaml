@@ -1,0 +1,137 @@
+{{- $kubeStateOverridden := (include "stackstate-agent.kube-state-metrics.overridden" $) }}
+{{- $clusterCheckKSM := and (and .Values.clusterChecks.enabled (or .Values.dependencies.kubeStateMetrics.enabled .Values.clusterChecks.kubeStateMetrics.url)) (not $kubeStateOverridden) }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-cluster
+  labels:
+{{ include "stackstate-agent.labels" . | indent 4 }}
+    app.kubernetes.io/component: cluster-agent
+spec:
+  replicas: {{ .Values.stackstateAgent.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: cluster-agent
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "stackstate-agent.name" . }}
+{{- with .Values.stackstateAgent.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
+  template:
+    metadata:
+      annotations:
+        ad.stackstate.com/stackstate-stackstate-agent.check_names: '["openmetrics"]'
+        ad.stackstate.com/stackstate-stackstate-agent.init_configs: '[{}]'
+        ad.stackstate.com/stackstate-stackstate-agent.instances: '[{"prometheus_url": "http://%%host%%:5000/metrics","namespace": "stackstate.stackstate_agent","metrics": ["go_goroutines","go_memstats_*","process_*","api_requests","stackstate_requests","external_metrics", "cluster_checks_*"]}]'
+        {{- include "stackstate-agent.checksum-configs" . | nindent 8 }}
+        {{- include "stackstate-agent.configmap.override.checksum" . | nindent 8 }}
+      labels:
+        app.kubernetes.io/component: cluster-agent
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "stackstate-agent.name" . }}
+    spec:
+      {{- include "stackstate-agent.image.pullSecret.name" (dict "images" (list .Values.stackstateAgent.image) "context" $) | nindent 6 }}
+      {{- if .Values.stackstateAgent.priorityClassName }}
+      priorityClassName: {{ .Values.stackstateAgent.priorityClassName }}
+      {{- end }}
+      serviceAccountName: {{ include "stackstate-agent.fullname" . }}
+      containers:
+        - name: stackstate-agent
+          image: "{{ include "stackstate-agent.imageRegistry" . }}/{{ .Values.stackstateAgent.image.repository }}:{{ .Values.stackstateAgent.image.tag }}"
+          imagePullPolicy: "{{ .Values.stackstateAgent.image.pullPolicy }}"
+          env:
+          - name: STS_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "stackstate-agent.fullname" . }}
+                key: sts-api-key
+          - name: STS_CLUSTER_AGENT_AUTH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "stackstate-agent.fullname" . }}
+                key: sts-cluster-auth-token
+          - name: LOG_LEVEL
+            value: {{ .Values.stackstateAgent.logLevel | quote }}
+          {{- if .Values.clusterChecks.enabled }}
+          - name: STS_CLUSTER_CHECKS_ENABLED
+            value: "true"
+          - name: STS_EXTRA_CONFIG_PROVIDERS
+            value: "kube_endpoints kube_services"
+          - name: STS_EXTRA_LISTENERS
+            value: "kube_endpoints kube_services"
+          {{- end }}
+          - name: STS_CLUSTER_NAME
+            value: {{.Values.stackstate.cluster.name | quote }}
+          - name: STS_SKIP_VALIDATE_CLUSTERNAME
+            value: "true"
+          - name: STS_COLLECT_KUBERNETES_METRICS
+            value: {{ .Values.stackstateAgent.collection.kubernetesMetrics | quote }}
+          - name: STS_COLLECT_KUBERNETES_TIMEOUT
+            value: {{ .Values.stackstateAgent.collection.kubernetesTimeout | quote }}
+          - name: STS_COLLECT_KUBERNETES_TOPOLOGY
+            value: {{ .Values.stackstateAgent.collection.kubernetesTopology | quote }}
+          - name: STS_LEADER_ELECTION
+            value: "true"
+          - name: STS_LOG_LEVEL
+            value: {{ .Values.stackstateAgent.logLevel | quote }}
+          - name: STS_STS_URL
+            value: {{ include "stackstate-agent.stackstate.url" . }}
+          {{- if .Values.stackstateAgent.config.configMap.maxDataSize }}
+          - name: STS_CONFIGMAP_MAX_DATASIZE
+            value: {{ .Values.stackstateAgent.config.configMap.maxDataSize | quote }}
+          {{- end}}
+          {{- range $key, $value := .Values.global.extraEnv.open }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{- end }}
+          {{- range $key, $value := .Values.global.extraEnv.secret }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "stackstate-agent.fullname" . }}
+                key: {{ $key }}
+          {{- end }}
+        {{- with .Values.stackstateAgent.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+          volumeMounts:
+          - name: logs
+            mountPath: /var/log/stackstate-agent
+          - name: config-override-volume
+            mountPath: /etc/stackstate-agent/conf.d/kubernetes_api_events.d/conf.yaml
+            subPath: kubernetes_api_events_conf
+          - name: config-override-volume
+            mountPath: /etc/stackstate-agent/conf.d/kubernetes_api_topology.d/conf.yaml
+            subPath: kubernetes_api_topology_conf
+          {{- if .Values.stackstateAgent.config.override }}
+          {{- range .Values.stackstateAgent.config.override }}
+          - name: config-override-volume
+            mountPath: {{ .path }}/{{ .name }}
+            subPath: {{ .path | replace "/" "_"}}_{{ .name }}
+          {{- end }}
+          {{- end }}
+          {{- if $clusterCheckKSM }}
+          - name: config-override-volume
+            mountPath: /etc/stackstate-agent/conf.d/kubernetes_state.d/conf.yaml
+            subPath: kubernetes_state_conf
+          {{- end }}
+    {{- with .Values.stackstateAgent.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.stackstateAgent.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.stackstateAgent.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+        - name: logs
+          emptyDir: {}
+        - name: config-override-volume
+          configMap:
+            name: {{ include "stackstate-agent.fullname" . }}

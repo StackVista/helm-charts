@@ -17,10 +17,10 @@ dependencies:
     version: 5.1.0-snapshot.303
     repository: https://helm.stackstate.io
     condition: anomaly-detection.enabled
-  - name: cluster-agent
-    repository: file://../cluster-agent/
+  - name: stackstate-agent
+    repository: file://../stackstate-agent/
     version: "*"
-    condition: cluster-agent.enabled
+    condition: stackstate-agent.enabled
   - name: common
     repository: file://../common/
     version: "*"

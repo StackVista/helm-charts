@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "stackstate-agent.fullname" . }}-agent
+  labels:
+{{ include "stackstate-agent.labels" . | indent 4 }}
+    app.kubernetes.io/component: agent
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "stackstate-agent.fullname" . }}-agent
+subjects:
+- apiGroup: ""
+  kind: ServiceAccount
+  name: {{ include "stackstate-agent.fullname" . }}-agent
+  namespace: {{ .Release.Namespace }}

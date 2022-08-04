@@ -1508,8 +1508,8 @@ anomaly-detection:
     tls:
     # - hosts:
     #     - spotlight.local.domain
-cluster-agent:
-  # cluster-agent.enabled -- Deploy the StackState Kubernetes Agent so StackState can monitor the cluster it runs in
+stackstate-agent:
+  # stackstate-agent.enabled -- Deploy the StackState Kubernetes Agent so StackState can monitor the cluster it runs in
   enabled: false
   stackstate:
     cluster:

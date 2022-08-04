@@ -4,7 +4,7 @@ backup:
   stackGraph:
     securityContext:
       enabled: false
-cluster-agent:
+stackstate-agent:
   agent:
     scc:
       enabled: true

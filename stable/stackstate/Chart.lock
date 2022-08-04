@@ -2,8 +2,8 @@ dependencies:
 - name: anomaly-detection
   repository: https://helm.stackstate.io
   version: 5.1.0-snapshot.303
-- name: cluster-agent
-  repository: file://../cluster-agent/
+- name: stackstate-agent
+  repository: file://../stackstate-agent/
   version: 2.2.1
 - name: common
   repository: file://../common/
