@@ -17,7 +17,7 @@ spec:
             message: {{ `StackState pod {{ $labels.pod }} for service  {{ $labels.service }} is down.` }}
           expr: |
             up{namespace=~{{ .Values.rules.namespaceRegex | quote }}} == 0
-          for: 5m
+          for: 10m
           labels:
             severity: critical
 {{- end }}
