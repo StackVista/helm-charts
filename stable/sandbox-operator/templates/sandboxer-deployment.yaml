@@ -19,6 +19,10 @@ spec:
       - name: sandboxer
         image: "{{ .Values.sandboxer.image }}"
         imagePullPolicy: IfNotPresent
+{{- if .Values.sandboxer.securityContext }}
+        securityContext:
+{{ toYaml .Values.sandboxer.securityContext | indent 10 }}
+{{- end }}
         resources:
 {{ toYaml .Values.sandboxer.resources | indent 10 }}
 {{- if .Values.sandboxer.nodeSelector }}

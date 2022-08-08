@@ -1,4 +1,4 @@
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: {{ include "fullname.short" . }}-cron
@@ -34,6 +34,10 @@ spec:
                   key: slackApiKey
             - name: SLACK_CHANNEL_ID
               value: {{ .Values.reaper.slack.channelId | quote }}
+{{- if .Values.reaper.securityContext }}
+            securityContext:
+{{ toYaml .Values.reaper.securityContext | indent 14 }}
+{{- end }}
             resources:
 {{ toYaml .Values.reaper.resources | indent 14 }}
           restartPolicy: OnFailure

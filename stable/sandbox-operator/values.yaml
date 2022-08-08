@@ -3,6 +3,9 @@ sandboxer:
   image: ghcr.io/stackvista/sandboxer:0.5.0
   # nodeSelector:
   #   node.kubernetes.io/purpose-core: "yes"
+  securityContext:
+    # sandboxer.securityContext.runAsUser -- Run sandboxer container under unprivileged user
+    runAsUser: 65534
   resources:
     limits:
       cpu: 50m
@@ -35,6 +38,9 @@ reaper:
     channelId: ""
   # nodeSelector:
   #   node.kubernetes.io/purpose-core: "yes"
+  securityContext:
+    # reaper.securityContext.runAsUser -- Run reaper container under unprivileged user
+    runAsUser: 65534
   resources:
     limits:
       cpu: 50m
