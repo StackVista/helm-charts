@@ -206,6 +206,8 @@ stackstate:
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "50"
+      # stackstate.components.api.replicaCount -- Number of `api` replicas.
+      replicaCount: 1
       # stackstate.components.api.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.api.tolerations -- Toleration labels for pod assignment.
@@ -296,6 +298,8 @@ stackstate:
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "70"
+      # stackstate.components.checks.replicaCount -- Number of `checks` replicas.
+      replicaCount: 1
       # stackstate.components.checks.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.checks.tolerations -- Toleration labels for pod assignment.
@@ -335,6 +339,8 @@ stackstate:
       sizing:
         baseMemoryConsumption: "1200Mi"
         javaHeapMemoryFraction: "85"
+      # stackstate.components.healthSync.replicaCount -- Number of `healthSync` replicas.
+      replicaCount: 1
       # stackstate.components.healthSync.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.healthSync.tolerations -- Toleration labels for pod assignment.
@@ -610,6 +616,8 @@ stackstate:
       sizing:
         baseMemoryConsumption: "1700Mi"
         javaHeapMemoryFraction: "85"
+      # stackstate.components.server.replicaCount -- Number of `server` replicas.
+      replicaCount: 1
       # stackstate.components.server.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.server.tolerations -- Toleration labels for pod assignment.
@@ -649,6 +657,8 @@ stackstate:
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "80"
+      # stackstate.components.state.replicaCount -- Number of `state` replicas.
+      replicaCount: 1
       # stackstate.components.state.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.state.tolerations -- Toleration labels for pod assignment.
@@ -688,6 +698,8 @@ stackstate:
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "60"
+      # stackstate.components.sync.replicaCount -- Number of `sync` replicas.
+      replicaCount: 1
       # stackstate.components.sync.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.sync.tolerations -- Toleration labels for pod assignment.
@@ -727,6 +739,9 @@ stackstate:
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "60"
+      # stackstate.components.slicing.replicaCount -- Number of `slicing` replicas.
+      replicaCount: 1
+
       # stackstate.components.slicing.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.slicing.tolerations -- Toleration labels for pod assignment.
@@ -811,6 +826,8 @@ stackstate:
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "55"
+      # stackstate.components.viewHealth.replicaCount -- Number of `viewHealth` replicas.
+      replicaCount: 1
       # stackstate.components.viewHealth.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.viewHealth.tolerations -- Toleration labels for pod assignment.
@@ -850,6 +867,8 @@ stackstate:
       sizing:
         baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "80"
+      # stackstate.components.problemProducer.replicaCount -- Number of `problemProducer` replicas.
+      replicaCount: 1
       # stackstate.components.problemProducer.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.problemProducer.tolerations -- Toleration labels for pod assignment.

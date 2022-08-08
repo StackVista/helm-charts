@@ -94,7 +94,7 @@ metadata:
     stackstate.com/connects-to-stackgraph: "true"
     stackstate.com/replicas: "1"
 spec:
-  replicas: 1
+  replicas: {{ .Values.stackstate.components.api.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/component: api
