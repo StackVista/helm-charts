@@ -10,6 +10,12 @@ bumping_chart() {
   chart_path=${1?Please specify the chart you want to update}
   dependency_chart_name=${2?Please specify the dependency chart name}
   dependency_version=${3?Please Specify the version of dependency}
+
+  if [[ ${dependency_version} == local:* ]]; then
+    local_dependency_path=${dependency_version#local:}
+    dependency_version=$(yq e .version "${local_dependency_path}/Chart.yaml")
+  fi
+
   # Updates dependency version in the chart
   echo "Upgrading dependency '$dependency_chart_name' for '${chart_path}'."
   echo "New dependency version: ${dependency_version}."

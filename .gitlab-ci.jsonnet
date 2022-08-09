@@ -248,6 +248,7 @@ local update_sg_version = {
       GIT_COMMITTER_EMAIL: 'sts-admin@stackstate.com',
       GIT_COMMITTER_NAME: 'stackstate-system-user',
     },
+    before_script: helm_fetch_dependencies,
     rules: [
       {
         @'if': '$UPDATE_STACKGRAPH_VERSION',
@@ -255,8 +256,8 @@ local update_sg_version = {
       },
     ],
     script: [
-      '.gitlab/update_sg_version.sh stable/stackstate "hbase."',
       '.gitlab/update_sg_version.sh stable/hbase ""',
+      '.gitlab/update_chart_version.sh stable/stackstate hbase local:stable/hbase',
       '.gitlab/commit_changes_and_push.sh StackGraph $UPDATE_STACKGRAPH_VERSION',
     ],
   },
