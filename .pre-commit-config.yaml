@@ -30,7 +30,7 @@ repos:
   rev: 0.17.1
   hooks:
     - id: check-jsonschema
-      files: ^stable/stackstate-monitoring/grafana-dashboards/*/.*\.json$
+      files: ^stable/stackstate-monitoring/grafana-dashboards/.*/.*\.json$
       args: ["--schemafile", "stable/stackstate-monitoring/dashboard-schema.json"]
     - id: check-metaschema
       files: stable/stackstate-monitoring/dashboard-schema.json
