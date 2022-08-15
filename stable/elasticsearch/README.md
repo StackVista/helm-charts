@@ -7,7 +7,7 @@ Official Elastic helm chart for Elasticsearch
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Stackstate Ops Team | <ops@stackstate.com> |  |
+| Stackstate Ops Team | ops@stackstate.com |  |
 ## Source Code
 
 * <https://github.com/elastic/elasticsearch>

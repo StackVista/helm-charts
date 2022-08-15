@@ -12,8 +12,8 @@ Current chart version is `8.0.10-stackstate.5`
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| MinIO, Inc | <dev@minio.io> |  |
-| Stackstate Ops Team | <ops@stackstate.com> |  |
+| MinIO, Inc | dev@minio.io |  |
+| Stackstate Ops Team | ops@stackstate.com |  |
 
 ## Values
 

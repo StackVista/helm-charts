@@ -7,7 +7,7 @@ Steward -- GitLab environment cleaner
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Stackstate Ops Team | <ops@stackstate.com> |  |
+| Stackstate Ops Team | ops@stackstate.com |  |
 
 ## Values
 
