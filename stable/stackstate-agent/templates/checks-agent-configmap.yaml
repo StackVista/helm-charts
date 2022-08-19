@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "stackstate-agent.fullname" . }}-clusterchecks
+  name: {{ .Release.Name }}-checks-agent
   labels:
 {{ include "stackstate-agent.labels" . | indent 4 }}
-    app.kubernetes.io/component: clusterchecks
+    app.kubernetes.io/component: checks-agent
 data:
 {{- range .Values.clusterChecks.config.override }}
   {{ .path | replace "/" "_"}}_{{ .name }}: |

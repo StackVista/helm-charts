@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ .Release.Name }}-node
+  name: {{ .Release.Name }}-node-agent
   namespace: {{ .Release.Namespace }}
   labels:
 {{ include "stackstate-agent.labels" . | indent 4 }}
@@ -40,7 +40,7 @@ spec:
       {{- if .Values.agent.priorityClassName }}
       priorityClassName: {{ .Values.agent.priorityClassName }}
       {{- end }}
-      serviceAccountName: {{ include "stackstate-agent.fullname" . }}-agent
+      serviceAccountName: {{ .Release.Name }}-node-agent
     {{- with .Values.agent.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -83,5 +83,5 @@ spec:
       {{- if or .Values.agent.config.override $clusterCheckKSM }}
       - name: config-override-volume
         configMap:
-          name: {{ include "stackstate-agent.fullname" . }}-agent
+          name: {{ .Release.Name }}-node-agent
       {{- end }}

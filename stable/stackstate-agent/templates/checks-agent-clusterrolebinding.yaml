@@ -2,17 +2,17 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "stackstate-agent.fullname" . }}-clusterchecks
+  name: {{ .Release.Name }}-checks-agent
   labels:
 {{ include "stackstate-agent.labels" . | indent 4 }}
-    app.kubernetes.io/component: clusterchecks
+    app.kubernetes.io/component: checks-agent
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ include "stackstate-agent.fullname" . }}-agent
+  name: {{ .Release.Name }}-node-agent
 subjects:
 - apiGroup: ""
   kind: ServiceAccount
-  name: {{ include "stackstate-agent.fullname" . }}-clusterchecks
+  name: {{ .Release.Name }}-checks-agent
   namespace: {{ .Release.Namespace }}
 {{- end -}}

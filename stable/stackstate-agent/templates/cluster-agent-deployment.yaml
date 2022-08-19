@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-cluster
+  name: {{ .Release.Name }}-cluster-agent
   labels:
 {{ include "stackstate-agent.labels" . | indent 4 }}
     app.kubernetes.io/component: cluster-agent
@@ -134,4 +134,4 @@ spec:
           emptyDir: {}
         - name: config-override-volume
           configMap:
-            name: {{ include "stackstate-agent.fullname" . }}
+            name: {{ .Release.Name }}-cluster-agent

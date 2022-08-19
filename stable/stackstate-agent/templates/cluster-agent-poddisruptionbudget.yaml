@@ -1,4 +1,3 @@
-{{- if .Values.clusterChecks.enabled }}
 {{- if .Capabilities.APIVersions.Has "policy/v1/PodDisruptionBudget" }}
 apiVersion: policy/v1
 {{- else }}
@@ -6,15 +5,14 @@ apiVersion: policy/v1beta1
 {{- end }}
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include "stackstate-agent.fullname" . }}-clusterchecks
+  name: {{ include "stackstate-agent.fullname" . }}
   labels:
 {{ include "stackstate-agent.labels" . | indent 4 }}
-    app.kubernetes.io/component: clusterchecks
+    app.kubernetes.io/component: cluster-agent
 spec:
   maxUnavailable: 1
   selector:
     matchLabels:
-      app.kubernetes.io/component: clusterchecks
+      app.kubernetes.io/component: cluster-agent
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/name: {{ include "stackstate-agent.name" . }}
-{{- end -}}

@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-checks
+  name: {{ .Release.Name }}-checks-agent
   namespace: {{ .Release.Namespace }}
   labels:
 {{ include "stackstate-agent.labels" . | indent 4 }}
@@ -128,7 +128,7 @@ spec:
       {{- if .Values.clusterChecks.priorityClassName }}
       priorityClassName: {{ .Values.clusterChecks.priorityClassName }}
       {{- end }}
-      serviceAccountName: {{ include "stackstate-agent.fullname" . }}-clusterchecks
+      serviceAccountName: {{ .Release.Name }}-checks-agent
     {{- with .Values.clusterChecks.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -147,6 +147,6 @@ spec:
       {{- if .Values.clusterChecks.config.override }}
       - name: config-override-volume
         configMap:
-          name: {{ include "stackstate-agent.fullname" . }}-clusterchecks
+          name: {{ .Release.Name }}-checks-agent
       {{- end }}
 {{- end -}}

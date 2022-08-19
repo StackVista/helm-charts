@@ -23,7 +23,7 @@ fsGroup:
 groups: []
 kind: SecurityContextConstraints
 metadata:
-  name: {{ include "stackstate-agent.fullname" . }}-agent
+  name: {{ .Release.Name }}-node-agent
   namespace: {{ .Release.Namespace }}
 priority: null
 readOnlyRootFilesystem: false
@@ -45,7 +45,7 @@ seccompProfiles: []
 supplementalGroups:
   type: RunAsAny
 users:
-- system:serviceaccount:{{ .Release.Namespace }}:{{ include "stackstate-agent.fullname" . }}-agent
+- system:serviceaccount:{{ .Release.Namespace }}:{{ .Release.Name }}-node-agent
 # Allow hostPath for docker / process metrics
 volumes:
   - configMap
