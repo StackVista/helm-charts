@@ -60,19 +60,19 @@ StackState URL function
 
 {{- define "stackstate-agent.configmap.override.checksum" -}}
 {{- if .Values.stackstateAgent.config.override }}
-checksum/override-configmap: {{ include (print $.Template.BasePath "/stackstate-agent-configmap.yaml") . | sha256sum }}
+checksum/override-configmap: {{ include (print $.Template.BasePath "/cluster-agent-configmap.yaml") . | sha256sum }}
 {{- end }}
 {{- end }}
 
 {{- define "stackstate-agent.agent.configmap.override.checksum" -}}
 {{- if .Values.agent.config.override }}
-checksum/override-configmap: {{ include (print $.Template.BasePath "/agent-configmap.yaml") . | sha256sum }}
+checksum/override-configmap: {{ include (print $.Template.BasePath "/node-agent-configmap.yaml") . | sha256sum }}
 {{- end }}
 {{- end }}
 
 {{- define "stackstate-agent.clusterChecks.configmap.override.checksum" -}}
 {{- if .Values.clusterChecks.config.override }}
-checksum/override-configmap: {{ include (print $.Template.BasePath "/agent-clusterchecks-configmap.yaml") . | sha256sum }}
+checksum/override-configmap: {{ include (print $.Template.BasePath "/checks-agent-configmap.yaml") . | sha256sum }}
 {{- end }}
 {{- end }}
 
