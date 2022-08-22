@@ -1,4 +1,4 @@
-clusterCheck:
+checksAgent:
   enabled: true
 dependencies:
   kubeStateMetrics:
@@ -10,10 +10,10 @@ agent:
     - name: auto_conf.yaml
       path: /etc/stackstate-agent/conf.d/kubernetes_state.d
       data: |
-stackstateAgent:
+clusterAgent:
   config:
     override:
-# stackstateAgent.config.override -- Defines kubernetes_state check for clusterchecks agents. Auto-discovery
+# clusterAgent.config.override -- Defines kubernetes_state check for clusterchecks agents. Auto-discovery
 #                                 with ad_identifiers does not work here. Use a specific URL instead.
     - name: conf.yaml
       path: /etc/stackstate-agent/conf.d/kubernetes_state.d

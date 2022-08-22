@@ -1,4 +1,4 @@
-{{- $kubeRes := .Values.stackstateAgent.collection.kubernetesResources }}
+{{- $kubeRes := .Values.clusterAgent.collection.kubernetesResources }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -17,7 +17,7 @@ rules:
   {{- if $kubeRes.namespaces }}
   - namespaces
   {{- end }}
-  {{- if .Values.stackstateAgent.collection.kubernetesMetrics }}
+  {{- if .Values.clusterAgent.collection.kubernetesMetrics }}
   - componentstatuses
   {{- end }}
   {{- if $kubeRes.configmaps }}

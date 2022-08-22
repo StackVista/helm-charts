@@ -1,4 +1,4 @@
-{{- if .Values.clusterChecks.enabled }}
+{{- if .Values.checksAgent.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:

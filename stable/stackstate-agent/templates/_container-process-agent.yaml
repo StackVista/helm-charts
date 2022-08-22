@@ -1,7 +1,7 @@
 {{- define "container-process-agent" -}}
 - name: process-agent
-  image: "{{ include "stackstate-agent.imageRegistry" . }}/{{ .Values.agent.containers.processAgent.image.repository }}:{{ .Values.agent.containers.processAgent.image.tag }}"
-  imagePullPolicy: "{{ .Values.agent.containers.processAgent.image.pullPolicy }}"
+  image: "{{ include "stackstate-agent.imageRegistry" . }}/{{ .Values.nodeAgent.containers.processAgent.image.repository }}:{{ .Values.nodeAgent.containers.processAgent.image.tag }}"
+  imagePullPolicy: "{{ .Values.nodeAgent.containers.processAgent.image.pullPolicy }}"
   env:
     - name: STS_API_KEY
       valueFrom:
@@ -13,7 +13,7 @@
         fieldRef:
           fieldPath: status.hostIP
     - name: AGENT_VERSION
-      value: {{ .Values.agent.containers.processAgent.image.tag | quote }}
+      value: {{ .Values.nodeAgent.containers.processAgent.image.tag | quote }}
     - name: STS_LOG_TO_CONSOLE
       value: "true"
     - name: HOST_PROC
@@ -23,8 +23,8 @@
     - name: KUBERNETES
       value: "true"
     - name: STS_CLUSTER_AGENT_ENABLED
-      value: {{ .Values.stackstateAgent.enabled | quote }}
-    {{- if .Values.stackstateAgent.enabled }}
+      value: {{ .Values.clusterAgent.enabled | quote }}
+    {{- if .Values.clusterAgent.enabled }}
     - name: STS_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
       value: {{ include "stackstate-agent.fullname" . }}
     - name: STS_CLUSTER_AGENT_AUTH_TOKEN
@@ -38,15 +38,15 @@
     - name: STS_SKIP_VALIDATE_CLUSTERNAME
       value: "true"
     - name: LOG_LEVEL
-      value: {{ .Values.agent.containers.processAgent.logLevel | default .Values.agent.logLevel | quote }}
+      value: {{ .Values.nodeAgent.containers.processAgent.logLevel | default .Values.nodeAgent.logLevel | quote }}
     - name: STS_LOG_LEVEL
-      value: {{ .Values.agent.containers.processAgent.logLevel | default .Values.agent.logLevel | quote }}
+      value: {{ .Values.nodeAgent.containers.processAgent.logLevel | default .Values.nodeAgent.logLevel | quote }}
     - name: STS_NETWORK_TRACING_ENABLED
-      value: {{ .Values.agent.networkTracing.enabled | quote }}
+      value: {{ .Values.nodeAgent.networkTracing.enabled | quote }}
     - name: STS_PROTOCOL_INSPECTION_ENABLED
-      value: {{ .Values.agent.protocolInspection.enabled | quote }}
+      value: {{ .Values.nodeAgent.protocolInspection.enabled | quote }}
     - name: STS_PROCESS_AGENT_ENABLED
-      value: {{ .Values.agent.containers.processAgent.enabled | quote }}
+      value: {{ .Values.nodeAgent.containers.processAgent.enabled | quote }}
     - name: STS_CONTAINER_CHECK_INTERVAL
       value: {{ .Values.processAgent.checkIntervals.container | quote }}
     - name: STS_CONNECTION_CHECK_INTERVAL
@@ -56,14 +56,14 @@
     - name: STS_PROCESS_AGENT_URL
       value: {{ include "stackstate-agent.stackstate.url" . }}
     - name: STS_SKIP_SSL_VALIDATION
-      value: {{ .Values.agent.skipSslValidation | quote }}
+      value: {{ .Values.nodeAgent.skipSslValidation | quote }}
     - name: STS_STS_URL
       value: {{ include "stackstate-agent.stackstate.url" . }}
-    {{- if .Values.agent.containerRuntime.customSocketPath }}
+    {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
     - name: STS_CRI_SOCKET_PATH
-      value: {{- .Values.agent.containerRuntime.customSocketPath }}
+      value: {{- .Values.nodeAgent.containerRuntime.customSocketPath }}
     {{- end }}
-    {{- range $key, $value := .Values.agent.containers.processAgent.env }}
+    {{- range $key, $value := .Values.nodeAgent.containers.processAgent.env }}
     - name: {{ $key }}
       value: {{ $value | quote }}
     {{- end }}
@@ -78,14 +78,14 @@
           name: {{ include "stackstate-agent.fullname" . }}
           key: {{ $key }}
     {{- end }}
-  {{- with .Values.agent.containers.processAgent.resources }}
+  {{- with .Values.nodeAgent.containers.processAgent.resources }}
   resources:
     {{- toYaml . | nindent 12 }}
   {{- end }}
   volumeMounts:
-  {{- if .Values.agent.containerRuntime.customSocketPath }}
+  {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
   - name: customcrisocket
-    mountPath: {{- .Values.agent.containerRuntime.customSocketPath }}
+    mountPath: {{- .Values.nodeAgent.containerRuntime.customSocketPath }}
   {{- end }}
   - name: crisocket
     mountPath: /var/run/crio/crio.sock
@@ -104,8 +104,8 @@
   - name: cgroups
     mountPath: /host/sys/fs/cgroup
     readOnly: true
-  {{- if .Values.agent.config.override }}
-  {{- range .Values.agent.config.override }}
+  {{- if .Values.nodeAgent.config.override }}
+  {{- range .Values.nodeAgent.config.override }}
   - name: config-override-volume
     mountPath: {{ .path }}/{{ .name }}
     subPath: {{ .path | replace "/" "_"}}_{{ .name }}

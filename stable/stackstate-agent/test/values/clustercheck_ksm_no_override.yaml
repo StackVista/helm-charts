@@ -1,4 +1,4 @@
-clusterCheck:
+checksAgent:
   enabled: true
 dependencies:
   kubeStateMetrics:

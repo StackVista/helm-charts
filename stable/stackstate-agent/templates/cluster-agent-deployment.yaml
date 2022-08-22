@@ -1,5 +1,5 @@
 {{- $kubeStateOverridden := (include "stackstate-agent.kube-state-metrics.overridden" $) }}
-{{- $clusterCheckKSM := and (and .Values.clusterChecks.enabled (or .Values.dependencies.kubeStateMetrics.enabled .Values.clusterChecks.kubeStateMetrics.url)) (not $kubeStateOverridden) }}
+{{- $checksAgentKSM := and (and .Values.checksAgent.enabled (or .Values.dependencies.kubeStateMetrics.enabled .Values.checksAgent.kubeStateMetrics.url)) (not $kubeStateOverridden) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -8,22 +8,22 @@ metadata:
 {{ include "stackstate-agent.labels" . | indent 4 }}
     app.kubernetes.io/component: cluster-agent
 spec:
-  replicas: {{ .Values.stackstateAgent.replicaCount }}
+  replicas: {{ .Values.clusterAgent.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/component: cluster-agent
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/name: {{ include "stackstate-agent.name" . }}
-{{- with .Values.stackstateAgent.strategy }}
+{{- with .Values.clusterAgent.strategy }}
   strategy:
     {{- toYaml . | nindent 4 }}
 {{- end }}
   template:
     metadata:
       annotations:
-        ad.stackstate.com/stackstate-stackstate-agent.check_names: '["openmetrics"]'
-        ad.stackstate.com/stackstate-stackstate-agent.init_configs: '[{}]'
-        ad.stackstate.com/stackstate-stackstate-agent.instances: '[{"prometheus_url": "http://%%host%%:5000/metrics","namespace": "stackstate.stackstate_agent","metrics": ["go_goroutines","go_memstats_*","process_*","api_requests","stackstate_requests","external_metrics", "cluster_checks_*"]}]'
+        ad.stackstate.com/stackstate-agent.check_names: '["openmetrics"]'
+        ad.stackstate.com/stackstate-agent.init_configs: '[{}]'
+        ad.stackstate.com/stackstate-agent.instances: '[{"prometheus_url": "http://%%host%%:5000/metrics","namespace": "stackstate.stackstate_agent","metrics": ["go_goroutines","go_memstats_*","process_*","api_requests","stackstate_requests","external_metrics", "cluster_checks_*"]}]'
         {{- include "stackstate-agent.checksum-configs" . | nindent 8 }}
         {{- include "stackstate-agent.configmap.override.checksum" . | nindent 8 }}
       labels:
@@ -31,15 +31,15 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/name: {{ include "stackstate-agent.name" . }}
     spec:
-      {{- include "stackstate-agent.image.pullSecret.name" (dict "images" (list .Values.stackstateAgent.image) "context" $) | nindent 6 }}
-      {{- if .Values.stackstateAgent.priorityClassName }}
-      priorityClassName: {{ .Values.stackstateAgent.priorityClassName }}
+      {{- include "stackstate-agent.image.pullSecret.name" (dict "images" (list .Values.clusterAgent.image) "context" $) | nindent 6 }}
+      {{- if .Values.clusterAgent.priorityClassName }}
+      priorityClassName: {{ .Values.clusterAgent.priorityClassName }}
       {{- end }}
       serviceAccountName: {{ include "stackstate-agent.fullname" . }}
       containers:
         - name: stackstate-agent
-          image: "{{ include "stackstate-agent.imageRegistry" . }}/{{ .Values.stackstateAgent.image.repository }}:{{ .Values.stackstateAgent.image.tag }}"
-          imagePullPolicy: "{{ .Values.stackstateAgent.image.pullPolicy }}"
+          image: "{{ include "stackstate-agent.imageRegistry" . }}/{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
+          imagePullPolicy: "{{ .Values.clusterAgent.image.pullPolicy }}"
           env:
           - name: STS_API_KEY
             valueFrom:
@@ -52,8 +52,8 @@ spec:
                 name: {{ include "stackstate-agent.fullname" . }}
                 key: sts-cluster-auth-token
           - name: LOG_LEVEL
-            value: {{ .Values.stackstateAgent.logLevel | quote }}
-          {{- if .Values.clusterChecks.enabled }}
+            value: {{ .Values.clusterAgent.logLevel | quote }}
+          {{- if .Values.checksAgent.enabled }}
           - name: STS_CLUSTER_CHECKS_ENABLED
             value: "true"
           - name: STS_EXTRA_CONFIG_PROVIDERS
@@ -66,20 +66,20 @@ spec:
           - name: STS_SKIP_VALIDATE_CLUSTERNAME
             value: "true"
           - name: STS_COLLECT_KUBERNETES_METRICS
-            value: {{ .Values.stackstateAgent.collection.kubernetesMetrics | quote }}
+            value: {{ .Values.clusterAgent.collection.kubernetesMetrics | quote }}
           - name: STS_COLLECT_KUBERNETES_TIMEOUT
-            value: {{ .Values.stackstateAgent.collection.kubernetesTimeout | quote }}
+            value: {{ .Values.clusterAgent.collection.kubernetesTimeout | quote }}
           - name: STS_COLLECT_KUBERNETES_TOPOLOGY
-            value: {{ .Values.stackstateAgent.collection.kubernetesTopology | quote }}
+            value: {{ .Values.clusterAgent.collection.kubernetesTopology | quote }}
           - name: STS_LEADER_ELECTION
             value: "true"
           - name: STS_LOG_LEVEL
-            value: {{ .Values.stackstateAgent.logLevel | quote }}
+            value: {{ .Values.clusterAgent.logLevel | quote }}
           - name: STS_STS_URL
             value: {{ include "stackstate-agent.stackstate.url" . }}
-          {{- if .Values.stackstateAgent.config.configMap.maxDataSize }}
+          {{- if .Values.clusterAgent.config.configMap.maxDataSize }}
           - name: STS_CONFIGMAP_MAX_DATASIZE
-            value: {{ .Values.stackstateAgent.config.configMap.maxDataSize | quote }}
+            value: {{ .Values.clusterAgent.config.configMap.maxDataSize | quote }}
           {{- end}}
           {{- range $key, $value := .Values.global.extraEnv.open }}
           - name: {{ $key }}
@@ -92,7 +92,7 @@ spec:
                 name: {{ include "stackstate-agent.fullname" . }}
                 key: {{ $key }}
           {{- end }}
-        {{- with .Values.stackstateAgent.resources }}
+        {{- with .Values.clusterAgent.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
         {{- end }}
@@ -105,27 +105,27 @@ spec:
           - name: config-override-volume
             mountPath: /etc/stackstate-agent/conf.d/kubernetes_api_topology.d/conf.yaml
             subPath: kubernetes_api_topology_conf
-          {{- if .Values.stackstateAgent.config.override }}
-          {{- range .Values.stackstateAgent.config.override }}
+          {{- if .Values.clusterAgent.config.override }}
+          {{- range .Values.clusterAgent.config.override }}
           - name: config-override-volume
             mountPath: {{ .path }}/{{ .name }}
             subPath: {{ .path | replace "/" "_"}}_{{ .name }}
           {{- end }}
           {{- end }}
-          {{- if $clusterCheckKSM }}
+          {{- if $checksAgentKSM }}
           - name: config-override-volume
             mountPath: /etc/stackstate-agent/conf.d/kubernetes_state.d/conf.yaml
             subPath: kubernetes_state_conf
           {{- end }}
-    {{- with .Values.stackstateAgent.nodeSelector }}
+    {{- with .Values.clusterAgent.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.stackstateAgent.affinity }}
+    {{- with .Values.clusterAgent.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.stackstateAgent.tolerations }}
+    {{- with .Values.clusterAgent.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}

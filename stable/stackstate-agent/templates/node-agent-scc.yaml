@@ -1,4 +1,4 @@
-{{- if .Values.agent.scc.enabled }}
+{{- if .Values.nodeAgent.scc.enabled }}
 allowHostDirVolumePlugin: true
 # was true
 allowHostIPC: true

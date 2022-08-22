@@ -1,5 +1,5 @@
 {{- $kubeStateOverridden := (include "stackstate-agent.kube-state-metrics.overridden" $) }}
-{{- $clusterCheckKSM := and (and .Values.clusterChecks.enabled (or .Values.dependencies.kubeStateMetrics.enabled .Values.clusterChecks.kubeStateMetrics.url)) (not $kubeStateOverridden) }}
+{{- $checksAgentKSM := and (and .Values.checksAgent.enabled (or .Values.dependencies.kubeStateMetrics.enabled .Values.checksAgent.kubeStateMetrics.url)) (not $kubeStateOverridden) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -16,21 +16,21 @@ data:
   kubernetes_api_topology_conf: |
     init_config:
     instances:
-      - collection_interval: {{ .Values.stackstateAgent.config.topology.collectionInterval }}
-        resources:{{ .Values.stackstateAgent.collection.kubernetesResources | toYaml | nindent 10 }}
-{{- if $clusterCheckKSM }}
+      - collection_interval: {{ .Values.clusterAgent.config.topology.collectionInterval }}
+        resources:{{ .Values.clusterAgent.collection.kubernetesResources | toYaml | nindent 10 }}
+{{- if $checksAgentKSM }}
   kubernetes_state_conf: |
     cluster_check: true
     init_config:
     instances:
   {{- if .Values.dependencies.kubeStateMetrics.enabled }}
-      - kube_state_url: {{ .Values.clusterChecks.kubeStateMetrics.url | default (printf "http://%s-kube-state-metrics.%s.svc.cluster.local:8080/metrics" .Release.Name .Release.Namespace) }}
+      - kube_state_url: {{ .Values.checksAgent.kubeStateMetrics.url | default (printf "http://%s-kube-state-metrics.%s.svc.cluster.local:8080/metrics" .Release.Name .Release.Namespace) }}
   {{- else }}
-      - kube_state_url: {{ .Values.clusterChecks.kubeStateMetrics.url | required "If the kubeStateMetrics dependent chart is not enabled, the clusterChecks.kubeStateMetrics.url needs to be configured." }}
+      - kube_state_url: {{ .Values.checksAgent.kubeStateMetrics.url | required "If the kubeStateMetrics dependent chart is not enabled, the checksAgent.kubeStateMetrics.url needs to be configured." }}
   {{- end }}
 {{- end }}
-{{- if .Values.stackstateAgent.config.override }}
-{{- range .Values.stackstateAgent.config.override }}
+{{- if .Values.clusterAgent.config.override }}
+{{- range .Values.clusterAgent.config.override }}
   {{ .path | replace "/" "_"}}_{{ .name }}: |
 {{ .data | indent 4 -}}
 {{- end -}}

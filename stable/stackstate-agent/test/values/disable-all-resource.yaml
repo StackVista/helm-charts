@@ -1,4 +1,4 @@
-stackstateAgent:
+clusterAgent:
   collection:
     kubernetesMetrics: false
     kubernetesResources:

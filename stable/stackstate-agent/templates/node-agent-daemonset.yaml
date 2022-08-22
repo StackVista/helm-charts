@@ -1,5 +1,5 @@
 {{- $kubeStateOverridden := (include "stackstate-agent.agent.kube-state-metrics.overridden" $) }}
-{{- $clusterCheckKSM := and (and .Values.clusterChecks.enabled (or .Values.dependencies.kubeStateMetrics.enabled .Values.clusterChecks.kubeStateMetrics.url)) (not $kubeStateOverridden) }}
+{{- $checksAgentKSM := and (and .Values.checksAgent.enabled (or .Values.dependencies.kubeStateMetrics.enabled .Values.checksAgent.kubeStateMetrics.url)) (not $kubeStateOverridden) }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -14,7 +14,7 @@ spec:
       app.kubernetes.io/component: node-agent
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/name: {{ include "stackstate-agent.name" . }}
-{{- with .Values.agent.updateStrategy }}
+{{- with .Values.nodeAgent.updateStrategy }}
   updateStrategy:
     {{- toYaml . | nindent 4 }}
 {{- end }}
@@ -28,35 +28,35 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/name: {{ include "stackstate-agent.name" . }}
     spec:
-      {{- include "stackstate-agent.image.pullSecret.name" (dict "images" (list .Values.agent.containers.agent.image) "context" $) | nindent 6 }}
+      {{- include "stackstate-agent.image.pullSecret.name" (dict "images" (list .Values.nodeAgent.containers.agent.image) "context" $) | nindent 6 }}
       containers:
         {{- include "container-agent" . | nindent 6 }}
-        {{- if .Values.agent.containers.processAgent.enabled }}
+        {{- if .Values.nodeAgent.containers.processAgent.enabled }}
           {{- include "container-process-agent" . | nindent 6 }}
         {{- end }}
       dnsPolicy: ClusterFirstWithHostNet
       hostNetwork: true
       hostPID: true
-      {{- if .Values.agent.priorityClassName }}
-      priorityClassName: {{ .Values.agent.priorityClassName }}
+      {{- if .Values.nodeAgent.priorityClassName }}
+      priorityClassName: {{ .Values.nodeAgent.priorityClassName }}
       {{- end }}
       serviceAccountName: {{ .Release.Name }}-node-agent
-    {{- with .Values.agent.nodeSelector }}
+    {{- with .Values.nodeAgent.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.agent.affinity }}
+    {{- with .Values.nodeAgent.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.agent.tolerations }}
+    {{- with .Values.nodeAgent.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       volumes:
-      {{- if .Values.agent.containerRuntime.customSocketPath }}
+      {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
       - hostPath:
-          path: {{- .Values.agent.containerRuntime.customSocketPath }}
+          path: {{- .Values.nodeAgent.containerRuntime.customSocketPath }}
         name: customcrisocket
       {{- end }}
       - hostPath:
@@ -80,7 +80,7 @@ spec:
       - hostPath:
           path: /sys/fs/cgroup
         name: cgroups
-      {{- if or .Values.agent.config.override $clusterCheckKSM }}
+      {{- if or .Values.nodeAgent.config.override $checksAgentKSM }}
       - name: config-override-volume
         configMap:
           name: {{ .Release.Name }}-node-agent
