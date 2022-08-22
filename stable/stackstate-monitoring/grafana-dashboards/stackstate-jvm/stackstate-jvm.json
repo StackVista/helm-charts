@@ -347,7 +347,7 @@
       "targets": [
         {
           "expr": "rate(jvm_gc_collection_seconds_count{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}[1m])",
-          "legendFormat": "{{pod}}",
+          "legendFormat": "{{pod}} - {{gc}}",
           "refId": "A"
         }
       ],
@@ -434,7 +434,7 @@
       "targets": [
         {
           "expr": "rate(jvm_gc_collection_seconds_sum{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}[1m]) / rate(jvm_gc_collection_seconds_count{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}[1m])",
-          "legendFormat": "{{pod}}",
+          "legendFormat": "{{pod}} - {{gc}}",
           "refId": "A"
         }
       ],

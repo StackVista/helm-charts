@@ -20,4 +20,13 @@ spec:
           for: 5m
           labels:
             severity: warning
+        - alert: StackStateGCDuration
+          annotations:
+            message: {{` 'JVM Garbage collection ({{ $labels.gc }}) for {{ $labels.pod }} is taking too long: {{ $value | humanizeDuration }}.'`}}
+            runbook_url: https://www.notion.so/stackstate/Runbook-High-GC-Garbage-collect-times-for-JVM-high-cpu-usage-and-or-JVM-OutOfMemory-exceptions--34e7db8f7ebb40c9af8ed440b814497c
+          expr: |
+            rate(jvm_gc_collection_seconds_sum{namespace=~{{ .Values.rules.namespaceRegex | quote }}}[1m])/rate(jvm_gc_collection_seconds_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}}[1m]) > 2
+          for: 5m
+          labels:
+            severity: warning
 {{- end }}
