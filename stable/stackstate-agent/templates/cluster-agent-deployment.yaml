@@ -37,7 +37,7 @@ spec:
       {{- end }}
       serviceAccountName: {{ include "stackstate-agent.fullname" . }}
       containers:
-        - name: stackstate-agent
+        - name: cluster-agent
           image: "{{ include "stackstate-agent.imageRegistry" . }}/{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
           imagePullPolicy: "{{ .Values.clusterAgent.image.pullPolicy }}"
           env:
