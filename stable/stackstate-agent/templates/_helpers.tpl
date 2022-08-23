@@ -64,7 +64,7 @@ checksum/override-configmap: {{ include (print $.Template.BasePath "/cluster-age
 {{- end }}
 {{- end }}
 
-{{- define "stackstate-agent.agent.configmap.override.checksum" -}}
+{{- define "stackstate-agent.nodeAgent.configmap.override.checksum" -}}
 {{- if .Values.nodeAgent.config.override }}
 checksum/override-configmap: {{ include (print $.Template.BasePath "/node-agent-configmap.yaml") . | sha256sum }}
 {{- end }}
@@ -148,7 +148,7 @@ true
 {{- end }}
 {{- end -}}
 
-{{- define "stackstate-agent.agent.kube-state-metrics.overridden" -}}
+{{- define "stackstate-agent.nodeAgent.kube-state-metrics.overridden" -}}
 {{- if .Values.nodeAgent.config.override }}
   {{- range $i, $val := .Values.nodeAgent.config.override }}
     {{- if and (eq $val.name "auto_conf.yaml") (eq $val.path "/etc/stackstate-agent/conf.d/kubernetes_state.d") }}

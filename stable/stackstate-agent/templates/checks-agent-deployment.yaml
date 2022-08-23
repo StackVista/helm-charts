@@ -22,7 +22,7 @@ spec:
     metadata:
       annotations:
         {{- include "stackstate-agent.checksum-configs" . | nindent 8 }}
-        {{- include "stackstate-agent.agent.configmap.override.checksum" . | nindent 8 }}
+        {{- include "stackstate-agent.nodeAgent.configmap.override.checksum" . | nindent 8 }}
       labels:
         app.kubernetes.io/component: checks-agent
         app.kubernetes.io/instance: {{ .Release.Name }}

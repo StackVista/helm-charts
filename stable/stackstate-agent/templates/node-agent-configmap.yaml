@@ -1,4 +1,4 @@
-{{- $kubeStateOverridden := (include "stackstate-agent.agent.kube-state-metrics.overridden" $) }}
+{{- $kubeStateOverridden := (include "stackstate-agent.nodeAgent.kube-state-metrics.overridden" $) }}
 {{- $checksAgentKSM := and (and .Values.checksAgent.enabled (or .Values.dependencies.kubeStateMetrics.enabled .Values.checksAgent.kubeStateMetrics.url)) (not $kubeStateOverridden) }}
 {{- if or .Values.nodeAgent.config.override $checksAgentKSM }}
 apiVersion: v1
