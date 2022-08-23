@@ -26,7 +26,7 @@
       value: {{ .Values.clusterAgent.enabled | quote }}
     {{- if .Values.clusterAgent.enabled }}
     - name: STS_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
-      value: {{ include "stackstate-agent.fullname" . }}
+      value: {{ .Release.Name }}-cluster-agent
     - name: STS_CLUSTER_AGENT_AUTH_TOKEN
       valueFrom:
         secretKeyRef:
