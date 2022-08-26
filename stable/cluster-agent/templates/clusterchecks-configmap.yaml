@@ -1,0 +1,14 @@
+{{- if and .Values.clusterChecks.enabled .Values.clusterChecks.config.override }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cluster-agent.fullname" . }}-clusterchecks
+  labels:
+{{ include "cluster-agent.labels" . | indent 4 }}
+    app.kubernetes.io/component: clusterchecks
+data:
+{{- range .Values.clusterChecks.config.override }}
+  {{ .path | replace "/" "_"}}_{{ .name }}: |
+{{ .data | indent 4 -}}
+{{- end -}}
+{{- end -}}

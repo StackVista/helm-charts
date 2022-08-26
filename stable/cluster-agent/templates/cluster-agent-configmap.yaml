@@ -1,0 +1,32 @@
+{{- $kubeStateOverridden := (include "cluster-agent.kube-state-metrics.overridden" $) }}
+{{- $clusterCheckKSM := and (and .Values.clusterChecks.enabled (or .Values.dependencies.kubeStateMetrics.enabled .Values.clusterChecks.kubeStateMetrics.url)) (not $kubeStateOverridden) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cluster-agent.fullname" . }}
+  labels:
+{{ include "cluster-agent.labels" . | indent 4 }}
+    app.kubernetes.io/component: cluster-agent
+data:
+  kubernetes_api_topology_conf: |
+    init_config:
+    instances:
+      - collection_interval: {{ .Values.clusterAgent.config.topology.collectionInterval }}
+        resources:{{ .Values.clusterAgent.collection.kubernetesResources | toYaml | nindent 10 }}
+{{- if $clusterCheckKSM }}
+  kubernetes_state_conf: |
+    cluster_check: true
+    init_config:
+    instances:
+  {{- if .Values.dependencies.kubeStateMetrics.enabled }}
+      - kube_state_url: {{ .Values.clusterChecks.kubeStateMetrics.url | default (printf "http://%s-kube-state-metrics.%s.svc.cluster.local:8080/metrics" .Release.Name .Release.Namespace) }}
+  {{- else }}
+      - kube_state_url: {{ .Values.clusterChecks.kubeStateMetrics.url | required "If the kubeStateMetrics dependent chart is not enabled, the clusterChecks.kubeStateMetrics.url needs to be configured." }}
+  {{- end }}
+{{- end }}
+{{- if .Values.clusterAgent.config.override }}
+{{- range .Values.clusterAgent.config.override }}
+  {{ .path | replace "/" "_"}}_{{ .name }}: |
+{{ .data | indent 4 -}}
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "cluster-agent.fullname" . }}-agent
+  labels:
+{{ include "cluster-agent.labels" . | indent 4 }}
+    app.kubernetes.io/component: agent
+rules:
+- apiGroups:  # Kubelet connectivity
+  - ""
+  resources:
+  - nodes/metrics
+  - nodes/proxy
+  - nodes/spec
+  verbs:
+  - get
