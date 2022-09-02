@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `5.1.0-snapshot.23`
+Current chart version is `5.1.0-snapshot.24`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -13,7 +13,7 @@ Current chart version is `5.1.0-snapshot.23`
 | file://../cluster-agent/ | cluster-agent | * |
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 7.17.2-stackstate.3 |
-| file://../hbase/ | hbase | * |
+| file://../hbase/ | hbase | 0.1.138 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.5 |
 | file://../pull-secret/ | pull-secret | * |
