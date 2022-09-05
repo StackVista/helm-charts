@@ -12,7 +12,7 @@ Current chart version is `0.1.5`
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Bram Schuur | <bschuur@stackstate.com> |  |
+| Bram Schuur | bschuur@stackstate.com |  |
 
 ## Requirements
 

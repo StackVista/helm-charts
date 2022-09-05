@@ -7,7 +7,7 @@ Common chartbuilding components and helpers
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Stackstate Ops Team | <ops@stackstate.com> |  |
+| Stackstate Ops Team | ops@stackstate.com |  |
 
 ## Values
 
@@ -74,8 +74,8 @@ Common chartbuilding components and helpers
 | gitlab.env | string | `""` | If CI is GitLab, specify the `env` for annotations. |
 | global | object | `{}` |  |
 | image.pullPolicy | string | `"IfNotPresent"` | The pull policy for the Docker image. |
-| image.repository | string | `"nginx"` | Repository of the Docker image. |
-| image.tag | string | `"latest"` | Tag of the Docker image. |
+| image.repository | string | `"nginx"` | (string) Repository of the Docker image. |
+| image.tag | string | `"latest"` | (string) Tag of the Docker image. |
 | ingress.annotations | object | `{}` | Annotations for `Ingress` objects. |
 | ingress.hosts | list | `[]` | List of ingress hostnames. |
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
