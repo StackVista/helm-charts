@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 2.17.2
-version: 2.1.2
+version: 2.2.0
 description: Helm chart for the StackState cluster agent.
 keywords:
 - aiops

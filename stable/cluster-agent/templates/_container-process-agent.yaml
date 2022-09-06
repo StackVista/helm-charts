@@ -35,6 +35,8 @@
     {{- end }}
     - name: STS_CLUSTER_NAME
       value: {{ .Values.stackstate.cluster.name | quote }}
+    - name: STS_SKIP_VALIDATE_CLUSTERNAME
+      value: "true"
     - name: LOG_LEVEL
       value: {{ .Values.agent.containers.processAgent.logLevel | default .Values.agent.logLevel | quote }}
     - name: STS_LOG_LEVEL

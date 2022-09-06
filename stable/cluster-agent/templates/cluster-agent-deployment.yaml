@@ -63,6 +63,8 @@ spec:
           {{- end }}
           - name: STS_CLUSTER_NAME
             value: {{.Values.stackstate.cluster.name | quote }}
+          - name: STS_SKIP_VALIDATE_CLUSTERNAME
+            value: "true"
           - name: STS_COLLECT_KUBERNETES_EVENTS
             value: {{ .Values.clusterAgent.collection.kubernetesEvents | quote }}
           - name: STS_COLLECT_KUBERNETES_METRICS

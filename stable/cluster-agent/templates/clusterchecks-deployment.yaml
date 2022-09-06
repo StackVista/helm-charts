@@ -58,6 +58,8 @@ spec:
           {{- end }}
           - name: STS_CLUSTER_NAME
             value: {{ .Values.stackstate.cluster.name | quote }}
+          - name: STS_SKIP_VALIDATE_CLUSTERNAME
+            value: "true"
           - name: STS_CHECKS_TAG_CARDINALITY
             value: {{ .Values.clusterChecks.checksTagCardinality | quote }}
           - name: STS_EXTRA_CONFIG_PROVIDERS
