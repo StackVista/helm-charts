@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/component: cluster-agent
 spec:
   ports:
-  - name: stackstateagent
+  - name: clusteragent
     port: 5005
     protocol: TCP
     targetPort: 5005

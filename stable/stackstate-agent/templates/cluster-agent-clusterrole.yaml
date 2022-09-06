@@ -5,7 +5,7 @@ metadata:
   name: {{ include "stackstate-agent.fullname" . }}
   labels:
 {{ include "stackstate-agent.labels" . | indent 4 }}
-    app.kubernetes.io/component: stackstate-agent
+    app.kubernetes.io/component: cluster-agent
 rules:
 - apiGroups:
   - ""

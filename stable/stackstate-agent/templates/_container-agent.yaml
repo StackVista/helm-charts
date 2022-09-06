@@ -1,7 +1,7 @@
 {{- define "container-agent" -}}
 {{- $kubeStateOverridden := (include "stackstate-agent.nodeAgent.kube-state-metrics.overridden" $) }}
 {{- $checksAgentKSM1 := and (and .Values.checksAgent.enabled (or .Values.dependencies.kubeStateMetrics.enabled .Values.checksAgent.kubeStateMetrics.url)) (not $kubeStateOverridden) }}
-- name: agent
+- name: node-agent
   image: "{{ include "stackstate-agent.imageRegistry" . }}/{{ .Values.nodeAgent.containers.agent.image.repository }}:{{ .Values.nodeAgent.containers.agent.image.tag }}"
   imagePullPolicy: "{{ .Values.nodeAgent.containers.agent.image.pullPolicy }}"
   env:
