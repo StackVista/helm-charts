@@ -63,7 +63,7 @@ spec:
         {{- end }}
           restartPolicy: Never
 {{- end }}
-
+---
 {{- if .Values.backup.configuration.scheduled.enabled }}
 {{- if .Capabilities.APIVersions.Has "batch/v1/CronJob" }}
 apiVersion: batch/v1
