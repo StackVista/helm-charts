@@ -20,7 +20,11 @@ if [ -f "${TMP_DIR}/${BACKUP_FILE}" ]; then
     echo "=== Uploading StackGraph backup \"${BACKUP_FILE}\" to bucket \"${BACKUP_STACKGRAPH_BUCKET_NAME}\"..."
     aws --endpoint-url "http://${MINIO_ENDPOINT}" s3 cp "${TMP_DIR}/${BACKUP_FILE}" "s3://${BACKUP_STACKGRAPH_BUCKET_NAME}/${BACKUP_FILE}"
     echo "=== Expiring old StackGraph backups..."
-    /backup-restore-scripts/expire-stackgraph-backups.py
+    export BACKUP_BUCKET_NAME=$BACKUP_STACKGRAPH_BUCKET_NAME
+    export BACKUP_SCHEDULED_BACKUP_NAME_PARSE_REGEXP=$BACKUP_STACKGRAPH_SCHEDULED_BACKUP_NAME_PARSE_REGEXP
+    export BACKUP_SCHEDULED_BACKUP_DATETIME_PARSE_FORMAT=$BACKUP_STACKGRAPH_SCHEDULED_BACKUP_DATETIME_PARSE_FORMAT
+    export BACKUP_SCHEDULED_BACKUP_RETENTION_TIME_DELTA=$BACKUP_STACKGRAPH_SCHEDULED_BACKUP_RETENTION_TIME_DELTA
+    /backup-restore-scripts/expire-s3-backups.py
 else
     echo "=== Export failed. Backup file \"${TMP_DIR}/${BACKUP_FILE}\" does not exist."
     exit 1

@@ -35,6 +35,22 @@
   value: {{ .Values.backup.stackGraph.scheduled.backupDatetimeParseFormat | quote }}
 - name: BACKUP_STACKGRAPH_SCHEDULED_BACKUP_RETENTION_TIME_DELTA
   value: {{ .Values.backup.stackGraph.scheduled.backupRetentionTimeDelta | quote }}
+- name: BACKUP_CONFIGURATION_BUCKET_NAME
+  value: {{ .Values.backup.configuration.bucketName | quote }}
+- name: BACKUP_CONFIGURATION_RESTORE_ENABLED
+  value: {{ .Values.backup.configuration.restore.enabled | quote }}
+- name: BACKUP_CONFIGURATION_SCHEDULED_ENABLED
+  value: {{ .Values.backup.configuration.scheduled.enabled | quote }}
+- name: BACKUP_CONFIGURATION_SCHEDULED_BACKUP_NAME_TEMPLATE
+  value: {{ .Values.backup.configuration.scheduled.backupNameTemplate | quote }}
+- name: BACKUP_CONFIGURATION_SCHEDULED_BACKUP_NAME_PARSE_REGEXP
+  value: {{ .Values.backup.configuration.scheduled.backupNameParseRegexp | quote }}
+- name: BACKUP_CONFIGURATION_SCHEDULED_BACKUP_DATETIME_PARSE_FORMAT
+  value: {{ .Values.backup.configuration.scheduled.backupDatetimeParseFormat | quote }}
+- name: BACKUP_CONFIGURATION_SCHEDULED_BACKUP_RETENTION_TIME_DELTA
+  value: {{ .Values.backup.configuration.scheduled.backupRetentionTimeDelta | quote }}
+- name: STACKSTATE_ROUTER_ENDPOINT
+  value: {{ include "stackstate.router.endpoint" . | quote }}
 - name: ELASTICSEARCH_ENDPOINT
   value: {{ include "stackstate.es.endpoint" . | quote }}
 - name: MINIO_ENDPOINT

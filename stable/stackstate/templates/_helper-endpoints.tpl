@@ -28,6 +28,13 @@ Logic to determine MinIO endpoint.
 {{- end -}}
 
 {{/*
+Logic to determine Router endpoint.
+*/}}
+{{- define "stackstate.router.endpoint" -}}
+http://{{ template "common.fullname.short" . }}-router:8080
+{{- end -}}
+
+{{/*
 Logic to determine MinIO keys.
 */}}
 {{- define "stackstate.minio.keys" -}}

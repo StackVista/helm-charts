@@ -62,6 +62,19 @@ stackstate/stackstate
 | anomaly-detection.stackstate.username | string | `nil` | Stackstate Username used by spotlight for authentication, it is expected to be set only in case if authType = "cookie" |
 | anomaly-detection.threadWorkers | int | `3` | The number of worker threads. |
 | backup.additionalLogging | string | `""` | Additional logback config for backup components |
+| backup.configuration.bucketName | string | `"sts-configuration-backup"` | Name of the MinIO bucket to store configuration backups. |
+| backup.configuration.restore.enabled | bool | `true` | Enable configuration backup restore functionality (if `backup.enabled` is set to `true`). |
+| backup.configuration.scheduled.backupDatetimeParseFormat | string | `"%Y%m%d-%H%M"` | Format to parse date/time from configuration backup name. *Note:* This should match the value for `backupNameTemplate`. |
+| backup.configuration.scheduled.backupNameParseRegexp | string | `"sts-backup-([0-9]*-[0-9]*).stj"` | Regular expression to retrieve date/time from configuration backup name. *Note:* This should match the value for `backupNameTemplate`. |
+| backup.configuration.scheduled.backupNameTemplate | string | `"sts-backup-$(date +%Y%m%d-%H%M).stj"` | Template for the configuration backup name as a double-quoted shell string value. |
+| backup.configuration.scheduled.backupRetentionTimeDelta | string | `"days = 365"` | Time to keep configuration backups in [Python timedelta format](https://docs.python.org/3/library/datetime.html#timedelta-objects). |
+| backup.configuration.scheduled.enabled | bool | `true` | Enable scheduled configuration backups (if `backup.enabled` is set to `true`). |
+| backup.configuration.scheduled.schedule | string | `"0 4 * * *"` | Cron schedule for automatic configuration backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax). |
+| backup.configuration.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
+| backup.configuration.securityContext.fsGroup | int | `65534` | The GID (group ID) of all files on all mounted volumes |
+| backup.configuration.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
+| backup.configuration.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
+| backup.configuration.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
 | backup.elasticsearch.bucketName | string | `"sts-elasticsearch-backup"` | Name of the MinIO bucket where ElasticSearch snapshots are stored. |
 | backup.elasticsearch.restore.enabled | bool | `true` | Enable ElasticSearch snapshot restore functionality (if `backup.enabled` is set to `true`). |
 | backup.elasticsearch.scheduled.enabled | bool | `true` | Enable scheduled ElasticSearch snapshots (if `backup.enabled` is set to `true`). |
@@ -324,7 +337,7 @@ stackstate/stackstate
 | stackstate.components.containerTools.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for container-tools containers. |
 | stackstate.components.containerTools.image.registry | string | `"quay.io"` | Base container image registry for container-tools containers. |
 | stackstate.components.containerTools.image.repository | string | `"stackstate/container-tools"` | Base container image repository for container-tools containers. |
-| stackstate.components.containerTools.image.tag | string | `"1.1.3"` | Container image tag for container-tools containers. |
+| stackstate.components.containerTools.image.tag | string | `"1.1.4"` | Container image tag for container-tools containers. |
 | stackstate.components.containerTools.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `kafkaTopicCreate` pods. |
 | stackstate.components.correlate.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.correlate.affinity | object | `{}` | Affinity settings for pod assignment. |

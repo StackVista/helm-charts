@@ -20,6 +20,19 @@ if [ "${BACKUP_STACKGRAPH_RESTORE_ENABLED}" == "true" ] || [ "${BACKUP_STACKGRAP
     fi
 fi
 
+if [ "${BACKUP_CONFIGURATION_RESTORE_ENABLED}" == "true" ] || [ "${BACKUP_CONFIGURATION_SCHEDULED_ENABLED}" == "true" ]; then
+    echo "=== Testing for existence of MinIO bucket \"${BACKUP_CONFIGURATION_BUCKET_NAME}\"..."
+    if ! mc ls "minio/${BACKUP_CONFIGURATION_BUCKET_NAME}" >/dev/null ; then
+        if [ "${BACKUP_CONFIGURATION_SCHEDULED_ENABLED}" == "true" ]; then
+            echo "=== Creating MinIO bucket \"${BACKUP_CONFIGURATION_BUCKET_NAME}\"..."
+            mc mb "minio/${BACKUP_CONFIGURATION_BUCKET_NAME}"
+        else
+            echo "=== ERROR: MinIO bucket \"${BACKUP_CONFIGURATION_BUCKET_NAME}\" does not exist. Restore functionality for configuration will not function correctly"
+            exit 1
+        fi
+    fi
+fi
+
 if [ "${BACKUP_ELASTICSEARCH_RESTORE_ENABLED}" == "true" ] || [ "${BACKUP_ELASTICSEARCH_SCHEDULED_ENABLED}" == "true" ]; then
     echo "=== Testing for existence of MinIO bucket \"${BACKUP_ELASTICSEARCH_BUCKET_NAME}\"..."
     if ! mc ls "minio/${BACKUP_ELASTICSEARCH_BUCKET_NAME}" >/dev/null ; then

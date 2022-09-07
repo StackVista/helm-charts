@@ -209,6 +209,103 @@ spec:
 {{- end }}
 {{- end -}}
 
+
+{{- define "job-configuration-list-backups.yaml" -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: configuration-list-backups
+  labels:
+    app.kubernetes.io/component: backup
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: backup
+    spec:
+      initContainers:
+        - name: wait
+          command:
+            - sh
+            - -c
+            - |
+              /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+      containers:
+        - name: list
+          image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.server.image.tag }}"
+          imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
+          command:
+            - '/backup-restore-scripts/list-configuration-backups.sh'
+          env:
+            {{- include "stackstate.backup.envvars" . | nindent 12 }}
+          {{- with .Values.stackstate.components.backup.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      volumes:
+        {{- include "stackstate.backup.volumes" . | nindent 8 }}
+      restartPolicy: Never
+{{- end -}}
+
+{{- define "job-configuration-restore-backup.yaml" -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: configuration-restore-backup
+  labels:
+    app.kubernetes.io/component: backup
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: backup
+    spec:
+      initContainers:
+        - name: wait
+          command:
+            - sh
+            - -c
+            - |
+              /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+      containers:
+        - name: restore
+          image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
+          imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
+          command:
+            - '/backup-restore-scripts/restore-configuration-backup.sh'
+          env:
+            {{- include "stackstate.backup.envvars" . | nindent 12 }}
+            - name: BACKUP_FILE
+              value: "REPLACE_ME_BACKUP_FILE_REPLACE_ME"
+            - name: FORCE_DELETE
+              value: "REPLACE_ME_FORCE_DELETE_REPLACE_ME"
+          {{- with .Values.stackstate.components.backup.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+{{- if .Values.backup.configuration.securityContext.enabled }}
+      securityContext: {{- omit .Values.backup.configuration.securityContext "enabled" | toYaml | nindent 8 }}
+{{- end }}
+      restartPolicy: Never
+      serviceAccountName: {{ template "common.fullname.short" . }}-backup
+      volumes:
+        {{- include "stackstate.backup.volumes" . | nindent 8 }}
+{{- end -}}
+
 {{- if and .Values.backup.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticsearch.restore.enabled .Values.backup.elasticsearch.scheduled.enabled) }}
 apiVersion: v1
 kind: ConfigMap
@@ -219,11 +316,15 @@ metadata:
 data:
   configure-backup.sh: |
     {{- .Files.Get "scripts/configure-backup.sh" | nindent 4 }}
+  expire-s3-backups.py: |
+    {{- .Files.Get "scripts/expire-s3-backups.py" | nindent 4 }}
 {{- if .Values.backup.stackGraph.scheduled.enabled }}
   backup-stackgraph.sh: |
     {{- .Files.Get "scripts/backup-stackgraph.sh" | nindent 4 }}
-  expire-stackgraph-backups.py: |
-    {{- .Files.Get "scripts/expire-stackgraph-backups.py" | nindent 4 }}
+{{- end }}
+{{- if .Values.backup.configuration.scheduled.enabled }}
+  backup-configuration.sh: |
+    {{- .Files.Get "scripts/backup-configuration.sh" | nindent 4 }}
 {{- end }}
 {{- if .Values.backup.elasticsearch.restore.enabled }}
   job-elasticsearch-list-snapshots.yaml: |
@@ -246,5 +347,15 @@ data:
     {{- include "pvc-stackgraph-restore-backup.yaml" . | nindent 4 }}
   restore-stackgraph-backup.sh: |
     {{- .Files.Get "scripts/restore-stackgraph-backup.sh" | nindent 4 }}
+{{- end }}
+{{- if .Values.backup.configuration.restore.enabled }}
+  job-configuration-list-backups.yaml: |
+    {{- include "job-configuration-list-backups.yaml" . | nindent 4 }}
+  list-configuration-backups.sh: |
+    {{- .Files.Get "scripts/list-configuration-backups.sh" | nindent 4 }}
+  job-configuration-restore-backup.yaml: |
+    {{- include "job-configuration-restore-backup.yaml" . | nindent 4 }}
+  restore-configuration-backup.sh: |
+    {{- .Files.Get "scripts/restore-configuration-backup.sh" | nindent 4 }}
 {{- end }}
 {{- end }}
