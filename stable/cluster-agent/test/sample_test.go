@@ -23,8 +23,8 @@ func TestClusterNameValidation(t *testing.T) {
 	}{
 		{"not allowed end with special character [.]", "name.", false},
 		{"not allowed end with special character [-]", "name.", false},
-		{"not allowed start with special character [-]", "name-", false},
-		{"not allowed start with special character [.]", "name.", false},
+		{"not allowed start with special character [-]", "-name", false},
+		{"not allowed start with special character [.]", ".name", false},
 		{"special characters are allowed in the middle", "euwest1-prod.cool-company.com", true},
 		{"underscore is allowed everywhere", "_why_7_", true},
 	}
