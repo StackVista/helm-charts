@@ -28,5 +28,5 @@ spec:
             rate(jvm_gc_collection_seconds_sum{namespace=~{{ .Values.rules.namespaceRegex | quote }}}[1m])/rate(jvm_gc_collection_seconds_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}}[1m]) > 2
           for: 5m
           labels:
-            severity: warning
+            severity: critical
 {{- end }}
