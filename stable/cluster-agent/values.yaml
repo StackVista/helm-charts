@@ -220,6 +220,9 @@ clusterAgent:
 
   # clusterAgent.config --
   config:
+    events:
+      # clusterAgent.config.events.eventCategories -- Custom mapping from Kubernetes event's reasons to StackState event's categories: Alerts, Activities, Changes, Others
+      eventCategories: {}
     topology:
       # clusterAgent.config.topology.collectionInterval -- Interval for running topology collection, in seconds
       collectionInterval: 90

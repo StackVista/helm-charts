@@ -5,7 +5,8 @@
   "default": {},
   "title": "StackState Agent Helm chart values",
   "required": [
-    "stackstate"
+    "stackstate",
+    "clusterAgent"
   ],
   "properties": {
     "stackstate": {
@@ -34,6 +35,43 @@
         },
         "url": {
           "type": "string"
+        }
+      }
+    },
+    "clusterAgent": {
+      "type": "object",
+      "required": [
+        "config"
+      ],
+      "properties": {
+        "config": {
+          "type": "object",
+          "required": [
+            "events"
+          ],
+          "properties": {
+            "events": {
+              "type": "object",
+              "properties": {
+                "eventCategories": {
+                  "type": "object",
+                  "patternProperties": {
+                    ".*": {
+                      "type": [
+                        "string"
+                      ],
+                      "enum": [
+                        "Alerts",
+                        "Activities",
+                        "Changes",
+                        "Others"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
