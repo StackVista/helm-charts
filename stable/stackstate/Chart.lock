@@ -4,7 +4,7 @@ dependencies:
   version: 5.1.0-snapshot.166
 - name: cluster-agent
   repository: file://../cluster-agent/
-  version: 2.2.0
+  version: 2.2.1
 - name: common
   repository: file://../common/
   version: 0.4.22
@@ -29,5 +29,5 @@ dependencies:
 - name: zookeeper
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 5.16.0
-digest: sha256:16fab6b7060853df556063c43f0faea9efe4b7f23f73cd82d548ee8cfb3092cd
-generated: "2022-09-15T12:09:16.408096087+03:00"
+digest: sha256:3bfae1dac3d88f220a9cda4a396e2d30047a48217a01b9d05898e8972b489659
+generated: "2022-09-15T12:53:12.139770327+03:00"
