@@ -12,7 +12,7 @@ data:
     init_config:
     instances:
       - collect_events: {{ .Values.clusterAgent.collection.kubernetesEvents }}
-        event_categories:{{ .Values.clusterAgent.config.events.eventCategories | toYaml | nindent 10 }}
+        event_categories:{{ .Values.clusterAgent.config.events.categories | toYaml | nindent 10 }}
   kubernetes_api_topology_conf: |
     init_config:
     instances:
