@@ -1,9 +1,10 @@
 package test
 
 import (
+	"testing"
+
 	"github.com/gruntwork-io/terratest/modules/helm"
 	"github.com/stretchr/testify/assert"
-	"testing"
 
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
 )

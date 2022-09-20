@@ -63,8 +63,8 @@ spec:
           {{- end }}
           - name: STS_CLUSTER_NAME
             value: {{.Values.stackstate.cluster.name | quote }}
-          - name: STS_COLLECT_KUBERNETES_EVENTS
-            value: {{ .Values.clusterAgent.collection.kubernetesEvents | quote }}
+          - name: STS_SKIP_VALIDATE_CLUSTERNAME
+            value: "true"
           - name: STS_COLLECT_KUBERNETES_METRICS
             value: {{ .Values.clusterAgent.collection.kubernetesMetrics | quote }}
           - name: STS_COLLECT_KUBERNETES_TIMEOUT
@@ -99,6 +99,9 @@ spec:
           volumeMounts:
           - name: logs
             mountPath: /var/log/stackstate-agent
+          - name: config-override-volume
+            mountPath: /etc/stackstate-agent/conf.d/kubernetes_api_events.d/conf.yaml
+            subPath: kubernetes_api_events_conf
           - name: config-override-volume
             mountPath: /etc/stackstate-agent/conf.d/kubernetes_api_topology.d/conf.yaml
             subPath: kubernetes_api_topology_conf

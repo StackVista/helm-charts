@@ -8,6 +8,11 @@ metadata:
 {{ include "cluster-agent.labels" . | indent 4 }}
     app.kubernetes.io/component: cluster-agent
 data:
+  kubernetes_api_events_conf: |
+    init_config:
+    instances:
+      - collect_events: {{ .Values.clusterAgent.collection.kubernetesEvents }}
+        event_categories:{{ .Values.clusterAgent.config.events.categories | toYaml | nindent 10 }}
   kubernetes_api_topology_conf: |
     init_config:
     instances:
