@@ -76,6 +76,8 @@ spec:
             {{- include "stackstate.backup.envvars" . | nindent 12 }}
             - name: SNAPSHOT_NAME
               value: "REPLACE_ME_SNAPSHOT_NAME_REPLACE_ME"
+            - name: INDICES_TO_RESTORE
+              value: "REPLACE_ME_INDICES_TO_RESTORE_REPLACE_ME"
           {{- with .Values.stackstate.components.containerTools.resources }}
           resources:
             {{- toYaml . | nindent 12 }}

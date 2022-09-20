@@ -27,7 +27,7 @@ backup:
       # backup.elasticsearch.scheduled.schedule -- Cron schedule for automatic ElasticSearch snaphosts in [ElastichSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html).
       schedule: '0 0 3 * * ?'
       # backup.elasticsearch.scheduled.indices -- ElasticSearch indices to snapshot in [JSON array format](https://www.w3schools.com/js/js_json_arrays.asp).
-      indices: '["*"]'
+      indices: "sts*"
       # backup.elasticsearch.scheduled.snapshotPolicyName -- Name of the ElasticSearch snapshot policy.
       snapshotPolicyName: 'auto-sts-backup'
       # backup.elasticsearch.scheduled.snapshotNameTemplate -- Template for the ElasticSearch snapshot name in [ElasticSearch date math format](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/date-math-index-names.html).

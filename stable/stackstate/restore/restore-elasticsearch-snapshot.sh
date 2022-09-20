@@ -2,6 +2,7 @@
 set -Eeuo pipefail
 
 SNAPSHOT_NAME=$1
+INDICES_TO_RESTORE=${2:-}
 
 JOB_NAME_TEMPLATE=elasticsearch-restore-snapshot
 JOB_NAME=elasticsearch-restore-$(date +%Y%m%dt%H%M%S)
@@ -14,7 +15,7 @@ if [ -z "${CM_NAME}" ]; then
     exit 1
 fi
 
-if (! (kubectl get configmap "${CM_NAME}" -o jsonpath="{.data.job-${JOB_NAME_TEMPLATE}\.yaml}"  | sed -e "s/${JOB_NAME_TEMPLATE}/${JOB_NAME}/" -e "s/REPLACE_ME_SNAPSHOT_NAME_REPLACE_ME/${SNAPSHOT_NAME}/" > "${JOB_YAML_FILE}")) || [ ! -s "${JOB_YAML_FILE}" ]; then
+if (! (kubectl get configmap "${CM_NAME}" -o jsonpath="{.data.job-${JOB_NAME_TEMPLATE}\.yaml}"  | sed -e "s/${JOB_NAME_TEMPLATE}/${JOB_NAME}/" -e "s/REPLACE_ME_SNAPSHOT_NAME_REPLACE_ME/${SNAPSHOT_NAME}/" -e "s/REPLACE_ME_INDICES_TO_RESTORE_REPLACE_ME/${INDICES_TO_RESTORE}/"> "${JOB_YAML_FILE}")) || [ ! -s "${JOB_YAML_FILE}" ]; then
     echo "Did you set backup.enabled and backup.elasticsearch.restore.enabled to true?"
     exit 1
 fi

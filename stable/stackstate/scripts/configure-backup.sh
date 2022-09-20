@@ -68,7 +68,7 @@ if [ "${BACKUP_ELASTICSEARCH_RESTORE_ENABLED}" == "true" ] || [ "${BACKUP_ELASTI
             \"name\": \"${BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_NAME_TEMPLATE}\",
             \"repository\": \"${BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_REPOSITORY_NAME}\",
             \"config\": {
-                \"indices\": ${BACKUP_ELASTICSEARCH_SCHEDULED_INDICES},
+                \"indices\": \"${BACKUP_ELASTICSEARCH_SCHEDULED_INDICES}\",
                 \"ignore_unavailable\": false,
                 \"include_global_state\": false
             },
