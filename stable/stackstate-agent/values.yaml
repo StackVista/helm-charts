@@ -232,6 +232,10 @@ clusterAgent:
     # clusterAgent.config.override -- A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap
     override: []
 
+  service:
+    # clusterAgent.service.targetPort -- Change the Cluster Agent service target port
+    targetPort: 5005
+
   # clusterAgent.enabled -- Enable / disable the cluster agent.
   enabled: true
 

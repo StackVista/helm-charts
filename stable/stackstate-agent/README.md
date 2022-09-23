@@ -138,6 +138,7 @@ stackstate/stackstate-agent
 | clusterAgent.resources.limits.memory | string | `"1024Mi"` | Memory resource limits. |
 | clusterAgent.resources.requests.cpu | string | `"100m"` | CPU resource requests. |
 | clusterAgent.resources.requests.memory | string | `"256Mi"` | Memory resource requests. |
+| clusterAgent.service.targetPort | int | `5005` | Change the Cluster Agent service target port |
 | clusterAgent.serviceaccount.annotations | object | `{}` | Annotations for the service account for the cluster agent pods |
 | clusterAgent.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | clusterAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |

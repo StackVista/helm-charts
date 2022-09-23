@@ -11,7 +11,7 @@ spec:
   - name: clusteragent
     port: 5005
     protocol: TCP
-    targetPort: 5005
+    targetPort: {{int .Values.clusterAgent.service.targetPort }}
   selector:
     app.kubernetes.io/component: cluster-agent
     app.kubernetes.io/instance: {{ .Release.Name }}

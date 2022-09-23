@@ -1,0 +1,3 @@
+clusterAgent:
+  service:
+    targetPort: 8008

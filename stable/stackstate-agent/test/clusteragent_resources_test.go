@@ -1,10 +1,11 @@
 package test
 
 import (
-	v1 "k8s.io/api/rbac/v1"
 	"regexp"
 	"strings"
 	"testing"
+
+	v1 "k8s.io/api/rbac/v1"
 
 	"github.com/stretchr/testify/assert"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
@@ -110,4 +111,16 @@ func TestMostOfResourcesAreDisabled(t *testing.T) {
 	for _, optionalRule := range optionalRules {
 		assertRuleExistence(t, caRole, optionalRule, false)
 	}
+}
+
+func TestServicePortChange(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-agent", "values/minimal.yaml", "values/clustercheck_service_port_override.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	cluster_agent_service := resources.Services["stackstate-agent-cluster-agent"]
+
+	port := cluster_agent_service.Spec.Ports[0]
+	assert.Equal(t, port.Name, "clusteragent")
+	assert.Equal(t, port.Port, int32(5005))
+	assert.Equal(t, port.TargetPort.IntVal, int32(8008))
 }
