@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `3.0.1`
+Current chart version is `3.0.2`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -61,8 +61,8 @@ stackstate/stackstate-agent
 | checksAgent.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
 | checksAgent.enabled | bool | `true` | Enable / disable runnning cluster checks in a separately deployed pod |
 | checksAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
-| checksAgent.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
-| checksAgent.image.tag | string | `"2.17.2"` | Default container image tag. |
+| checksAgent.image.repository | string | `"stackstate/stackstate-agent-2-test"` | Base container image repository. |
+| checksAgent.image.tag | string | `"STAC-17724"` | Default container image tag. |
 | checksAgent.kubeStateMetrics.url | string | `""` | URL of the KubeStateMetrics server. This needs to be configured if the KubeStateMetrics server is not enabled by default in this Helm chart. |
 | checksAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | checksAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
@@ -138,7 +138,7 @@ stackstate/stackstate-agent
 | clusterAgent.resources.limits.memory | string | `"1024Mi"` | Memory resource limits. |
 | clusterAgent.resources.requests.cpu | string | `"100m"` | CPU resource requests. |
 | clusterAgent.resources.requests.memory | string | `"256Mi"` | Memory resource requests. |
-| clusterAgent.service.targetPort | int | `5005` | Change the Cluster Agent service target port |
+| clusterAgent.service.port | int | `5005` | Change the Cluster Agent service port |
 | clusterAgent.serviceaccount.annotations | object | `{}` | Annotations for the service account for the cluster agent pods |
 | clusterAgent.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | clusterAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |

@@ -233,8 +233,8 @@ clusterAgent:
     override: []
 
   service:
-    # clusterAgent.service.targetPort -- Change the Cluster Agent service target port
-    targetPort: 5005
+    # clusterAgent.service.port -- Change the Cluster Agent service port
+    port: 5005
 
   # clusterAgent.enabled -- Enable / disable the cluster agent.
   enabled: true
@@ -343,9 +343,9 @@ checksAgent:
 
   image:
     # checksAgent.image.repository -- Base container image repository.
-    repository: stackstate/stackstate-agent-2
+    repository: stackstate/stackstate-agent-2-test
     # checksAgent.image.tag -- Default container image tag.
-    tag: 2.17.2
+    tag: STAC-17724
     # checksAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
