@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `3.0.0`
+Current chart version is `3.0.1`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -10,7 +10,7 @@ Current chart version is `3.0.0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.bitnami.com/bitnami | kube-state-metrics | 2.2.5 |
+| https://charts.bitnami.com/bitnami | kube-state-metrics | 3.2.2 |
 
 If you already have the `kube-state-metrics` application installed in your Kubernetes cluster, set `dependencies.kubeStateMetrics.enabled` to `false` to disable installation via this Helm chart.
 
@@ -146,10 +146,10 @@ stackstate/stackstate-agent
 | global.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | global.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | global.imagePullSecrets | list | `[]` | Secrets / credentials needed for container image registry. |
-| kube-state-metrics.image | object | `{"registry":"quay.io","repository":"stackstate/kube-state-metrics","tag":"2.3.0-focal-20220316-r61.20220418.2032"}` | Details about the docker image to be used for this component. This overrides the value in the bitnami chart. |
+| kube-state-metrics.image | object | `{"registry":"quay.io","repository":"stackstate/kube-state-metrics","tag":"2.6.0-focal-20220826-r2.20220923.1321"}` | Details about the docker image to be used for this component. This overrides the value in the bitnami chart. |
 | kube-state-metrics.image.registry | string | `"quay.io"` | Registry where docker image will be pulled from. This overrides the value in the bitnami chart. |
 | kube-state-metrics.image.repository | string | `"stackstate/kube-state-metrics"` | The path inside the registry where the image is hosted. This overrides the value in the bitnami chart. |
-| kube-state-metrics.image.tag | string | `"2.3.0-focal-20220316-r61.20220418.2032"` | The version tag of the image to be used during deployment. This overrides the value in the bitnami chart. |
+| kube-state-metrics.image.tag | string | `"2.6.0-focal-20220826-r2.20220923.1321"` | The version tag of the image to be used during deployment. This overrides the value in the bitnami chart. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | nodeAgent.apm.enabled | bool | `true` | Enable / disable the nodeAgent APM module. |
