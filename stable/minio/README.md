@@ -1,10 +1,10 @@
 # minio
 
-![Version: 8.0.10-stackstate.5](https://img.shields.io/badge/Version-8.0.10--stackstate.5-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 8.0.10-stackstate.6](https://img.shields.io/badge/Version-8.0.10--stackstate.6-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 High Performance, Kubernetes Native Object Storage
 
-Current chart version is `8.0.10-stackstate.5`
+Current chart version is `8.0.10-stackstate.6`
 
 **Homepage:** <https://min.io>
 
@@ -104,7 +104,9 @@ Current chart version is `8.0.10-stackstate.5`
 | podLabels | object | `{}` |  |
 | priorityClassName | string | `""` |  |
 | replicas | int | `4` |  |
+| resources.limits.cpu | int | `1` |  |
 | resources.limits.memory | string | `"4Gi"` |  |
+| resources.requests.cpu | string | `"500m"` |  |
 | resources.requests.memory | string | `"4Gi"` |  |
 | s3gateway.accessKey | string | `""` |  |
 | s3gateway.enabled | bool | `false` |  |

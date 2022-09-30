@@ -22,12 +22,12 @@ dependencies:
   version: 0.1.5
 - name: minio
   repository: file://../minio/
-  version: 8.0.10-stackstate.5
+  version: 8.0.10-stackstate.6
 - name: pull-secret
   repository: file://../pull-secret/
   version: 1.0.1
 - name: zookeeper
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 5.16.0
-digest: sha256:5f372a32c0ae68266ee2a0fb37eabdb0cf9b56e7d3907beffad1e5a8e1e27ab1
-generated: "2022-09-27T15:21:35.92262+02:00"
+digest: sha256:7052f21dd7ac8183c1484083aea1137c08572054975c05250e1537da1dc082d8
+generated: "2022-09-28T07:36:53.167029+02:00"
