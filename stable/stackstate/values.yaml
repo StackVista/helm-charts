@@ -197,6 +197,8 @@ stackstate:
         runAsUser: 65534
       # stackstate.components.all.elasticsearchEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster.
       elasticsearchEndpoint: ""
+      # stackstate.components.all.metricStoreEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster.
+      metricStoreEndpoint: ""
       # stackstate.components.all.kafkaEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker.
       kafkaEndpoint: ""
       # stackstate.components.all.zookeeperEndpoint -- **Required if `zookeeper.enabled` is `false`** Endpoint for shared Zookeeper nodes.
