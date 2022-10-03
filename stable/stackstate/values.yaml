@@ -173,7 +173,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.image.tag to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: master
+        tag: 5.1.0-rc.2
       metrics:
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
         enabled: true
@@ -771,7 +771,6 @@ stackstate:
         javaHeapMemoryFraction: "60"
       # stackstate.components.slicing.replicaCount -- Number of `slicing` replicas.
       replicaCount: 1
-
       # stackstate.components.slicing.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.slicing.tolerations -- Toleration labels for pod assignment.
@@ -1115,7 +1114,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 4.7.1
+      tag: 4.9.1
   console:
     # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
     enabled: false
