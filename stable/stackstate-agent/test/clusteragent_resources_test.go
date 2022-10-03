@@ -122,5 +122,5 @@ func TestServicePortChange(t *testing.T) {
 	port := cluster_agent_service.Spec.Ports[0]
 	assert.Equal(t, port.Name, "clusteragent")
 	assert.Equal(t, port.Port, int32(8008))
-	assert.Equal(t, port.TargetPort.IntVal, int32(5005))
+	assert.Equal(t, port.TargetPort.IntVal, int32(9009))
 }

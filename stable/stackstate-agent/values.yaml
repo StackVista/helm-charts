@@ -235,6 +235,8 @@ clusterAgent:
   service:
     # clusterAgent.service.port -- Change the Cluster Agent service port
     port: 5005
+    # clusterAgent.service.targetPort -- Change the Cluster Agent service targetPort
+    targetPort: 5005
 
   # clusterAgent.enabled -- Enable / disable the cluster agent.
   enabled: true
@@ -343,9 +345,9 @@ checksAgent:
 
   image:
     # checksAgent.image.repository -- Base container image repository.
-    repository: stackstate/stackstate-agent-2-test
+    repository: stackstate/stackstate-agent-2
     # checksAgent.image.tag -- Default container image tag.
-    tag: STAC-17724
+    tag: 2.17.2
     # checksAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
