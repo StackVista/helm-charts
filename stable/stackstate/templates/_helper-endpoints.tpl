@@ -1,4 +1,11 @@
 {{/*
+Logic to determine metric store endpoint.
+*/}}
+{{- define "stackstate.metric.endpoint" -}}
+{{- .Values.stackstate.components.all.metricStoreEndpoint -}}
+{{- end -}}
+
+{{/*
 Logic to determine ElasticSearch endpoint.
 */}}
 {{- define "stackstate.es.endpoint" -}}

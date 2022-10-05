@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 5.1.0-snapshot.0
-version: 5.1.0-snapshot.30
+version: 5.1.0-snapshot.32
 description: Helm chart for StackState
 keywords:
   - aiops
@@ -14,7 +14,7 @@ maintainers:
 name: stackstate
 dependencies:
   - name: anomaly-detection
-    version: 5.1.0-snapshot.303
+    version: 5.1.0-snapshot.312
     repository: https://helm.stackstate.io
     condition: anomaly-detection.enabled
   - name: stackstate-agent
@@ -31,7 +31,7 @@ dependencies:
   - name: hbase
     condition: hbase.enabled
     repository: file://../hbase/
-    version: "0.1.139"
+    version: "0.1.140"
   - name: kafka
     condition: kafka.enabled
     # Bitnami official Helm repository stopped serving the old versions of the charts. This is the workaround https://github.com/bitnami/charts/issues/10539
@@ -44,7 +44,7 @@ dependencies:
     version: "*"
   - name: minio
     repository: file://../minio/
-    version: "8.0.10-stackstate.5"
+    version: "8.0.10-stackstate.6"
     condition: backup.enabled
   - name: pull-secret
     version: "*"
