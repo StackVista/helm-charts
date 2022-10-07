@@ -62,7 +62,7 @@ stackstate/stackstate-agent
 | checksAgent.enabled | bool | `true` | Enable / disable runnning cluster checks in a separately deployed pod |
 | checksAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | checksAgent.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
-| checksAgent.image.tag | string | `"2.17.2"` | Default container image tag. |
+| checksAgent.image.tag | string | `"2.18.0"` | Default container image tag. |
 | checksAgent.kubeStateMetrics.url | string | `""` | URL of the KubeStateMetrics server. This needs to be configured if the KubeStateMetrics server is not enabled by default in this Helm chart. |
 | checksAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | checksAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
@@ -117,7 +117,7 @@ stackstate/stackstate-agent
 | clusterAgent.enabled | bool | `true` | Enable / disable the cluster agent. |
 | clusterAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterAgent.image.repository | string | `"stackstate/stackstate-cluster-agent"` | Base container image repository. |
-| clusterAgent.image.tag | string | `"2.17.2"` | Default container image tag. |
+| clusterAgent.image.tag | string | `"2.18.0"` | Default container image tag. |
 | clusterAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | clusterAgent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -162,7 +162,7 @@ stackstate/stackstate-agent
 | nodeAgent.containers.agent.env | object | `{}` | Additional environment variables for the agent container |
 | nodeAgent.containers.agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | nodeAgent.containers.agent.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
-| nodeAgent.containers.agent.image.tag | string | `"2.17.2"` | Default container image tag. |
+| nodeAgent.containers.agent.image.tag | string | `"2.18.0"` | Default container image tag. |
 | nodeAgent.containers.agent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | nodeAgent.containers.agent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | nodeAgent.containers.agent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
