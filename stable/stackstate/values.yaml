@@ -918,7 +918,7 @@ stackstate:
         # stackstate.components.kafkaTopicCreate.image.repository -- Base container image repository for kafka-topic-create containers.
         repository: stackstate/kafka
         # stackstate.components.kafkaTopicCreate.image.tag -- Container image tag for kafka-topic-create containers.
-        tag: 2.8.1-2738720666
+        tag: 3.3.1-3188685235
         # stackstate.components.kafkaTopicCreate.image.pullPolicy -- Image pull policy for kafka-topic-create containers.
         pullPolicy: IfNotPresent
       # stackstate.components.kafkaTopicCreate.resources -- Resource allocation for `kafkaTopicCreate` pods.
@@ -1208,7 +1208,7 @@ kafkaup-operator:
     repository: stackstate/kafkaup-operator
     # kafkaup.image.tag -- Tag of the image for the KafkaUp operator
     tag: 0.0.2
-    # kafkaup.image.pullPolicy -- Pull policy for the image for the KafkaUp operator
+    # kafkaup.image.pullPolicy -- Pull policy for the image:pod for the KafkaUp operator
     pullPolicy: ""
   kafkaSelectors:
     # kafkaup.kafkaSelectors.statefulSetName -- name of the statefulSet to operate on
@@ -1304,7 +1304,7 @@ kafka:
     # kafka.image.tag -- Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.**
     # When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order
     # for the kafkaup operator to upgrade the inter broker protocol version
-    tag: 2.8.1-2738720666
+    tag: 3.3.1-3188685235
   livenessProbe:
     # kafka.livenessProbe.initialDelaySeconds -- Delay before readiness probe is initiated.
     initialDelaySeconds: 240
@@ -1357,7 +1357,7 @@ kafka:
     ad.stackstate.com/jmx-exporter.init_configs: "[{}]"
     ad.stackstate.com/jmx-exporter.instances: '[ { "prometheus_url": "http://%%host%%:5556/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
     # When changing this version, be sure to also change the image, such that the image version and this version are in sync
-    stackstate.com/kafkaup-operator.kafka_version: "2.8.1"
+    stackstate.com/kafkaup-operator.kafka_version: "3.3.1"
   # kafka.resources -- Kafka resources per pods.
   resources:
     limits:
