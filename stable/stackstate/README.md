@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `5.1.0-snapshot.35`
+Current chart version is `5.1.0-snapshot.36`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -17,7 +17,7 @@ Current chart version is `5.1.0-snapshot.35`
 | file://../minio/ | minio | 8.0.10-stackstate.6 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../stackstate-agent/ | stackstate-agent | * |
-| https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.1 |
+| https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.4 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | kafka | 14.8.1 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 5.16.0 |
 
