@@ -12,13 +12,14 @@ eval "BACKUP_FILE=\"${BACKUP_CONFIGURATION_SCHEDULED_BACKUP_NAME_TEMPLATE}\""
 
 sts settings describe --namespace "" --url "${STACKSTATE_ROUTER_ENDPOINT}" --file "${TMP_DIR}/${BACKUP_FILE}"
 
-python3 -m json.tool < "${TMP_DIR}/${BACKUP_FILE}" > /dev/null || (
-    echo "The backup is in wrong format. Expected JSON"
-    exit 1
+grep '"_version":' "${TMP_DIR}/${BACKUP_FILE}" > /dev/null || (
+  echo "Exported file is probably not in STJ format, exiting..."
+  exit 1
 )
 
 echo "=== Uploading backup \"${BACKUP_FILE}\" to bucket \"${BACKUP_CONFIGURATION_BUCKET_NAME}\"..."
 aws --endpoint-url "http://${MINIO_ENDPOINT}" s3 cp "${TMP_DIR}/${BACKUP_FILE}" "s3://${BACKUP_CONFIGURATION_BUCKET_NAME}/${BACKUP_FILE}"
+
 echo "=== Expiring old backups..."
 export BACKUP_BUCKET_NAME=$BACKUP_CONFIGURATION_BUCKET_NAME
 export BACKUP_SCHEDULED_BACKUP_NAME_PARSE_REGEXP=$BACKUP_CONFIGURATION_SCHEDULED_BACKUP_NAME_PARSE_REGEXP
