@@ -13,7 +13,7 @@ else
 fi
 
 commonFlags="--bootstrap-server ${KAFKA_BROKERS}"
-commonCreateFlags="--create --force --replication-factor ${defaultReplicationFactor}"
+commonCreateFlags="--create --replication-factor ${defaultReplicationFactor}"
 
 function createOrUpdateTopic() {
   set -euxo pipefail
