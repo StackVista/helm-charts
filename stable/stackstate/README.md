@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `5.2.0-snapshot.1`
+Current chart version is `5.2.0-snapshot.2`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -12,7 +12,7 @@ Current chart version is `5.2.0-snapshot.1`
 |------------|------|---------|
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 7.17.2-stackstate.3 |
-| file://../hbase/ | hbase | 0.1.143 |
+| file://../hbase/ | hbase | 0.1.144 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.6 |
 | file://../pull-secret/ | pull-secret | * |
