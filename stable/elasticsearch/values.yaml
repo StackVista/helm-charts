@@ -206,6 +206,12 @@ readinessProbe:
   successThreshold: 3
   failureThreshold: 5
 
+livenessProbe:
+  initialDelaySeconds: 50
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 5
+
 ## Use an alternate scheduler.
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##
