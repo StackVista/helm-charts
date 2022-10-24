@@ -27,7 +27,7 @@ env:
 - name: ELASTICSEARCH_URI
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: METRICSTORE_URI
-  value: "http://{{ include "stackstate.metric.endpoint" . }}"
+  value: "{{ include "stackstate.metric.endpoint" . }}"
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
 - name: HADOOP_USER_NAME
