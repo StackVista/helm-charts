@@ -167,6 +167,16 @@ checksum/correlate-env: {{ include (print $.Template.BasePath "/secret-correlate
 {{- end }}
 {{- end -}}
 
+
+{{/*
+Kafka2prom secret checksum annotations
+*/}}
+{{- define "stackstate.kafka2prom.secret.checksum" -}}
+{{- if .Values.stackstate.components.kafka2prom.extraEnv.secret }}
+checksum/kafka2prom-env: {{ include (print $.Template.BasePath "/secret-kafka2prom.yaml") . | sha256sum }}
+{{- end }}
+{{- end -}}
+
 {{/*
 MM2ES secret checksum annotations
 */}}

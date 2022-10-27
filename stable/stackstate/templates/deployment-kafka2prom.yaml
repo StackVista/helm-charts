@@ -1,0 +1,127 @@
+{{- define "stackstate.kafka2prom.deployment.container" -}}
+name: kafka2prom
+env:
+{{- $serviceConfig := dict "ServiceName" "kafka2prom" "ServiceConfig" .Values.stackstate.components.kafka2prom }}
+{{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
+- name: PROMETHEUS_WRITE_ENDPOINT
+  value: {{ include "stackstate.metrics.remotewrite.url" . | quote }}
+- name: KAFKA_BROKERS
+  value: {{ include "stackstate.kafka.endpoint" . | quote }}
+- name: KAFKA_CLIENT_ID
+  valueFrom:
+    fieldRef:
+      fieldPath: metadata.name
+image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.kafka2prom.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.kafka2prom.image.tag }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.kafka2prom.image.pullPolicy | quote }}
+livenessProbe:
+  httpGet:
+    path: /liveness
+    port: health
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
+ports:
+- containerPort: 1618
+  name: health
+{{- if .Values.stackstate.components.all.metrics.enabled }}
+- containerPort: 9404
+  name: metrics
+{{- end }}
+readinessProbe:
+  httpGet:
+    path: /readiness
+    port: health
+  initialDelaySeconds: 10
+  timeoutSeconds: 5
+{{- with .Values.stackstate.components.kafka2prom.resources }}
+resources:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+volumeMounts:
+{{- include "stackstate.service.container.volumes" . }}
+{{- end -}}
+
+{{- define "stackstate.kafka2prom.deployment.initcontainer" -}}
+name: kafka2prom-init
+command:
+- sh
+- -c
+- |
+  /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackstate.metrics.endpoint" . }} -t 300
+image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+{{- end -}}
+
+{{- define "stackstate.kafka2prom.deployment" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $kafka2promConfig := dict "kafka2promName" "kafka2prom" "kafka2promConfig" .Values.stackstate.components.kafka2prom }}
+{{- $kafka2promInitContainer := fromYaml (include "stackstate.kafka2prom.deployment.initcontainer" .) -}}
+{{- $kafka2promcontainer := fromYaml (include "stackstate.kafka2prom.deployment.container" .) }}
+
+metadata:
+  name: {{ template "common.fullname.short" . }}-kafka2prom
+  labels:
+    app.kubernetes.io/component: kafka2prom
+spec:
+  replicas: {{ .Values.stackstate.components.kafka2prom.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: kafka2prom
+  strategy:
+{{- if eq (lower .Values.stackstate.components.all.deploymentStrategy.type) "recreatesingletonsonly" }}
+    type: RollingUpdate
+{{- else }}
+    {{- toYaml .Values.stackstate.components.all.deploymentStrategy | nindent 4 }}
+{{- end }}
+  template:
+    metadata:
+      annotations:
+        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "kafka2prom") | indent 8 }}
+        {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.kafka2prom.secret.checksum" . | nindent 8 }}
+      labels:
+        app.kubernetes.io/component: kafka2prom
+    spec:
+      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      initContainers:
+      - {{ toYaml (merge $kafka2promInitContainer $commonContainer) | nindent 8 }}
+      containers:
+      - {{ toYaml (merge $kafka2promcontainer $commonContainer) | nindent 8 }}
+      volumes:
+        {{- include "stackstate.service.pod.volumes" (dict "pod_name" "kafka2prom" "root" . ) | nindent 8 }}
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.kafka2prom.nodeSelector }}
+      nodeSelector:
+      {{- with .Values.stackstate.components.all.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.kafka2prom.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.kafka2prom.affinity }}
+      affinity:
+      {{- with .Values.stackstate.components.all.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.kafka2prom.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.kafka2prom.tolerations }}
+      tolerations:
+      {{- with .Values.stackstate.components.all.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.kafka2prom.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.stackstate.components.all.securityContext.enabled }}
+      securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
+    {{- end }}
+{{- end -}}
+
+{{- if .Values.stackstate.experimental.metrics }}
+{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $kafka2promMultiMetricsToEsDeployment := fromYaml (include "stackstate.kafka2prom.deployment" .) -}}
+{{- toYaml (merge $kafka2promMultiMetricsToEsDeployment $commonDeployment) -}}
+{{- end -}}

@@ -285,7 +285,9 @@ stackstate/stackstate
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
 | stackstate.components.all.image.tag | string | `"master"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
-| stackstate.components.all.metricStoreEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster. |
+| stackstate.components.all.metricStore.endpoint | string | `""` | **Required if `stackstate.experimental.metrics` is `true`** Host and port for promql compatible metric stores |
+| stackstate.components.all.metricStore.queryApiPath | string | `""` | Path under which `/api/v1/query` etc.. are accessible, the default ("") is fine for most stores |
+| stackstate.components.all.metricStore.remoteWritePath | string | `"/api/v1/write"` | Remote write path used to ingest metrics, /api/v1/write is most common |
 | stackstate.components.all.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
 | stackstate.components.all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
@@ -397,6 +399,20 @@ stackstate/stackstate
 | stackstate.components.initializer.sizing.baseMemoryConsumption | string | `"460Mi"` |  |
 | stackstate.components.initializer.sizing.javaHeapMemoryFraction | string | `"65"` |  |
 | stackstate.components.initializer.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.kafka2prom.additionalLogging | string | `""` | Additional logback config |
+| stackstate.components.kafka2prom.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.kafka2prom.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| stackstate.components.kafka2prom.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.kafka2prom.image.pullPolicy | string | `""` | `pullPolicy` used for the `kafka2prom` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.components.kafka2prom.image.repository | string | `"stackstate/stackstate-kafka-to-prom"` | Repository of the kafka2prom component Docker image. |
+| stackstate.components.kafka2prom.image.tag | string | `""` | Tag used for the `kafka2prom` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.kafka2prom.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.kafka2prom.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `kafka2prom` pods. |
+| stackstate.components.kafka2prom.replicaCount | int | `1` | Number of `kafka2prom` replicas. |
+| stackstate.components.kafka2prom.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"1Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"1Gi"}}` | Resource allocation for `kafka2prom` pods. |
+| stackstate.components.kafka2prom.sizing.baseMemoryConsumption | string | `"600Mi"` |  |
+| stackstate.components.kafka2prom.sizing.javaHeapMemoryFraction | string | `"85"` |  |
+| stackstate.components.kafka2prom.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.kafkaTopicCreate.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.kafkaTopicCreate.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.registry | string | `"quay.io"` | Base container image registry for kafka-topic-create containers. |
@@ -580,6 +596,7 @@ stackstate/stackstate
 | stackstate.components.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
 | stackstate.components.wait.image.tag | string | `"1.0.7-2755960650"` | Container image tag for wait containers. |
+| stackstate.experimental.metrics | boolean | `false` | Enable the new experimental metrics apis and store |
 | stackstate.experimental.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |
 | stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |

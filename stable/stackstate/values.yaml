@@ -197,8 +197,13 @@ stackstate:
         runAsUser: 65534
       # stackstate.components.all.elasticsearchEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster.
       elasticsearchEndpoint: ""
-      # stackstate.components.all.metricStoreEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster.
-      metricStoreEndpoint: ""
+      metricStore:
+        # stackstate.components.all.metricStore.endpoint -- **Required if `stackstate.experimental.metrics` is `true`** Host and port for promql compatible metric stores
+        endpoint: ""
+        # stackstate.components.all.metricStore.queryApiPath -- Path under which `/api/v1/query` etc.. are accessible, the default ("") is fine for most stores
+        queryApiPath: ""
+        # stackstate.components.all.metricStore.remoteWritePath -- Remote write path used to ingest metrics, /api/v1/write is most common
+        remoteWritePath: "/api/v1/write"
       # stackstate.components.all.kafkaEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker.
       kafkaEndpoint: ""
       # stackstate.components.all.zookeeperEndpoint -- **Required if `zookeeper.enabled` is `false`** Endpoint for shared Zookeeper nodes.
@@ -421,6 +426,45 @@ stackstate:
       # stackstate.components.initializer.config -- Configuration file contents to customize the default StackState initializer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
       config: ""
       # stackstate.components.initializer.additionalLogging -- Additional logback config
+      additionalLogging: ""
+    kafka2prom:
+      extraEnv:
+        # stackstate.components.kafka2prom.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.kafka2prom.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.kafka2prom.image.pullPolicy -- `pullPolicy` used for the `kafka2prom` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.kafka2prom.image.repository -- Repository of the kafka2prom component Docker image.
+        repository: stackstate/stackstate-kafka-to-prom
+        # stackstate.components.kafka2prom.image.tag -- Tag used for the `kafka2prom` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.kafka2prom.poddisruptionbudget -- PodDisruptionBudget settings for `kafka2prom` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.kafka2prom.resources -- Resource allocation for `kafka2prom` pods.
+      resources:
+        limits:
+          memory: "1Gi"
+          cpu: "1000m"
+          ephemeral-storage: "1Gi"
+        requests:
+          memory: "1Gi"
+          cpu: "1000m"
+          ephemeral-storage: "1Mi"
+      sizing:
+        baseMemoryConsumption: "600Mi"
+        javaHeapMemoryFraction: "85"
+      # stackstate.components.kafka2prom.replicaCount -- Number of `kafka2prom` replicas.
+      replicaCount: 1
+      # stackstate.components.kafka2prom.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.kafka2prom.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.kafka2prom.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.kafka2prom.additionalLogging -- Additional logback config
       additionalLogging: ""
     mm2es:
       extraEnv:
@@ -1033,6 +1077,8 @@ stackstate:
     # stackstate.receiver.baseUrl -- (string) **DEPRECATED** Use stackstate.baseUrl instead
     baseUrl:
   experimental:
+    # stackstate.experimental.metrics -- (boolean) Enable the new experimental metrics apis and store
+    metrics: false
     server:
       # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
       split: true
