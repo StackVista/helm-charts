@@ -128,6 +128,16 @@ Environment variables containing the properly sanitized StackState Base URLs
 {{- end -}}
 
 {{/*
+Environment variables containing the properly sanitized StackState Base URLs
+*/}}
+{{- define "stackstate.metricstore.envvar" }}
+{{- if .Values.stackstate.experimental.metrics }}
+- name: METRICSTORE_URI
+  value: "{{ include "stackstate.metrics.query.url" . }}"
+{{- end }}
+{{- end -}}
+
+{{/*
 UI extra environment variables for ui pods inherited through `stackstate.components.ui.extraEnv`
 */}}
 {{- define "stackstate.ui.envvars" -}}
