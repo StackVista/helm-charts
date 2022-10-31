@@ -19,6 +19,7 @@ func TestServerJavaHeapRender(t *testing.T) {
 	expectedDeployments["stackstate-receiver"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx2697m -Xms2697m"}
 	expectedDeployments["stackstate-correlate"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx799m -Xms799m"}
 	expectedDeployments["stackstate-mm2es"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx402m -Xms402m"}
+	expectedDeployments["stackstate-kafka2prom"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-Xmx402m -Xms402m"}
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 
