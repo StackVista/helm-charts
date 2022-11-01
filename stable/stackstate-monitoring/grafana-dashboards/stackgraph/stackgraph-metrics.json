@@ -17,7 +17,7 @@
          "dashLength": 10,
          "dashes": false,
          "datasource": "$datasource",
-         "description": "Numbers of seconds that last entry evicted due to size limits stay in the cache",
+         "description": "Read cache space usage",
          "fill": 1,
          "fillGradient": 0,
          "gridPos": {
@@ -27,6 +27,99 @@
             "y": 0
          },
          "id": 2,
+         "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "sideWidth": null,
+            "total": false,
+            "values": false
+         },
+         "lines": true,
+         "linewidth": 1,
+         "links": [ ],
+         "nullPointMode": "null",
+         "percentage": false,
+         "pointradius": 5,
+         "points": false,
+         "renderer": "flot",
+         "repeat": null,
+         "seriesOverrides": [ ],
+         "spaceLength": 10,
+         "stack": false,
+         "steppedLine": false,
+         "targets": [
+            {
+               "expr": "stackgraph_readcache_size_bytes{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "USed Size - {{pod}}",
+               "refId": "A"
+            },
+            {
+               "expr": "stackgraph_readcache_max_size_bytes{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "Max Size - {{pod}}",
+               "refId": "B"
+            }
+         ],
+         "thresholds": [ ],
+         "timeFrom": null,
+         "timeShift": null,
+         "title": "StackGraph - Space utilization",
+         "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+         },
+         "type": "graph",
+         "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": [ ]
+         },
+         "yaxes": [
+            {
+               "format": "bytes",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            },
+            {
+               "format": "short",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            }
+         ]
+      },
+      {
+         "aliasColors": { },
+         "bars": false,
+         "dashLength": 10,
+         "dashes": false,
+         "datasource": "$datasource",
+         "description": "Time that last evicted entry was in the cache. Helpful to detect read cache space issues.",
+         "fill": 1,
+         "fillGradient": 0,
+         "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 0
+         },
+         "id": 3,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -64,7 +157,7 @@
          "thresholds": [ ],
          "timeFrom": null,
          "timeShift": null,
-         "title": "StackGraph - Retention time in minutes",
+         "title": "StackGraph - Retention time",
          "tooltip": {
             "shared": true,
             "sort": 0,
@@ -80,7 +173,7 @@
          },
          "yaxes": [
             {
-               "format": "short",
+               "format": "minutes",
                "label": null,
                "logBase": 1,
                "max": null,
@@ -103,16 +196,16 @@
          "dashLength": 10,
          "dashes": false,
          "datasource": "$datasource",
-         "description": "Time spent on index lookups on a transaction 98 percentile",
+         "description": "Execution time per query 98 percentile",
          "fill": 1,
          "fillGradient": 0,
          "gridPos": {
             "h": 8,
             "w": 12,
-            "x": 12,
-            "y": 0
+            "x": 0,
+            "y": 40
          },
-         "id": 3,
+         "id": 4,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -140,17 +233,17 @@
          "steppedLine": false,
          "targets": [
             {
-               "expr": "stackgraph_index_lookup_duration_seconds{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", quantile=\"0.98\"}",
+               "expr": "stackstate_topology_query_execute_duration_seconds{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", quantile=\"0.98\"}",
                "format": "time_series",
                "intervalFactor": 2,
-               "legendFormat": "{{ name }}",
+               "legendFormat": "{{ query }}",
                "refId": "A"
             }
          ],
          "thresholds": [ ],
          "timeFrom": null,
          "timeShift": null,
-         "title": "StackGraph - Transaction Index Lookups Seconds 98 percentile",
+         "title": "Topology Query - Query Execution time 98 percentile",
          "tooltip": {
             "shared": true,
             "sort": 0,
@@ -189,16 +282,102 @@
          "dashLength": 10,
          "dashes": false,
          "datasource": "$datasource",
-         "description": "Execution time per query 98 percentile",
+         "description": "Execution time per query 75 percentile",
+         "fill": 1,
+         "fillGradient": 0,
+         "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 40
+         },
+         "id": 5,
+         "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "sideWidth": null,
+            "total": false,
+            "values": false
+         },
+         "lines": true,
+         "linewidth": 1,
+         "links": [ ],
+         "nullPointMode": "null",
+         "percentage": false,
+         "pointradius": 5,
+         "points": false,
+         "renderer": "flot",
+         "repeat": null,
+         "seriesOverrides": [ ],
+         "spaceLength": 10,
+         "stack": false,
+         "steppedLine": false,
+         "targets": [
+            {
+               "expr": "stackstate_topology_query_execute_duration_seconds{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", quantile=\"0.75\"}",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "{{ query }}",
+               "refId": "A"
+            }
+         ],
+         "thresholds": [ ],
+         "timeFrom": null,
+         "timeShift": null,
+         "title": "Topology Query - Query Execution time 75 percentile",
+         "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+         },
+         "type": "graph",
+         "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": [ ]
+         },
+         "yaxes": [
+            {
+               "format": "s",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            },
+            {
+               "format": "s",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            }
+         ]
+      },
+      {
+         "aliasColors": { },
+         "bars": false,
+         "dashLength": 10,
+         "dashes": false,
+         "datasource": "$datasource",
+         "description": "Total number of timeouts",
          "fill": 1,
          "fillGradient": 0,
          "gridPos": {
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 40
+            "y": 48
          },
-         "id": 4,
+         "id": 6,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -270,21 +449,40 @@
          ]
       },
       {
-         "aliasColors": { },
-         "bars": false,
-         "dashLength": 10,
-         "dashes": false,
-         "datasource": "$datasource",
-         "description": "Time spent on index lookups on a transaction 95 percentile",
-         "fill": 1,
-         "fillGradient": 0,
+         "collapse": false,
+         "collapsed": false,
          "gridPos": {
             "h": 8,
             "w": 12,
             "x": 0,
             "y": 8
          },
-         "id": 5,
+         "id": 7,
+         "panels": [ ],
+         "repeat": null,
+         "repeatIteration": null,
+         "repeatRowId": null,
+         "showTitle": true,
+         "title": "Transaction metrics",
+         "titleSize": "h6",
+         "type": "row"
+      },
+      {
+         "aliasColors": { },
+         "bars": false,
+         "dashLength": 10,
+         "dashes": false,
+         "datasource": "$datasource",
+         "description": "Total time of a transaction 98 percentile",
+         "fill": 1,
+         "fillGradient": 0,
+         "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 8
+         },
+         "id": 8,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -312,7 +510,7 @@
          "steppedLine": false,
          "targets": [
             {
-               "expr": "stackgraph_index_lookup_duration_seconds{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", quantile=\"0.95\"}",
+               "expr": "stackgraph_transaction_duration_seconds{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", quantile=\"0.98\"}",
                "format": "time_series",
                "intervalFactor": 2,
                "legendFormat": "{{ name }}",
@@ -322,7 +520,179 @@
          "thresholds": [ ],
          "timeFrom": null,
          "timeShift": null,
-         "title": "StackGraph -  Transaction Index Lookups Seconds 95 percentile",
+         "title": "StackGraph - Transaction Duration 98 percentile",
+         "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+         },
+         "type": "graph",
+         "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": [ ]
+         },
+         "yaxes": [
+            {
+               "format": "s",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            },
+            {
+               "format": "s",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            }
+         ]
+      },
+      {
+         "aliasColors": { },
+         "bars": false,
+         "dashLength": 10,
+         "dashes": false,
+         "datasource": "$datasource",
+         "description": "Total time of a transaction 75 percentile",
+         "fill": 1,
+         "fillGradient": 0,
+         "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 16
+         },
+         "id": 9,
+         "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "sideWidth": null,
+            "total": false,
+            "values": false
+         },
+         "lines": true,
+         "linewidth": 1,
+         "links": [ ],
+         "nullPointMode": "null",
+         "percentage": false,
+         "pointradius": 5,
+         "points": false,
+         "renderer": "flot",
+         "repeat": null,
+         "seriesOverrides": [ ],
+         "spaceLength": 10,
+         "stack": false,
+         "steppedLine": false,
+         "targets": [
+            {
+               "expr": "stackgraph_transaction_duration_seconds{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", quantile=\"0.75\"}",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "{{ name }}",
+               "refId": "A"
+            }
+         ],
+         "thresholds": [ ],
+         "timeFrom": null,
+         "timeShift": null,
+         "title": "StackGraph - Transaction Duration 75 percentile",
+         "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+         },
+         "type": "graph",
+         "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": [ ]
+         },
+         "yaxes": [
+            {
+               "format": "s",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            },
+            {
+               "format": "s",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            }
+         ]
+      },
+      {
+         "aliasColors": { },
+         "bars": false,
+         "dashLength": 10,
+         "dashes": false,
+         "datasource": "$datasource",
+         "description": "Time spent on index lookups on a transaction 98 percentile",
+         "fill": 1,
+         "fillGradient": 0,
+         "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 16
+         },
+         "id": 10,
+         "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "sideWidth": null,
+            "total": false,
+            "values": false
+         },
+         "lines": true,
+         "linewidth": 1,
+         "links": [ ],
+         "nullPointMode": "null",
+         "percentage": false,
+         "pointradius": 5,
+         "points": false,
+         "renderer": "flot",
+         "repeat": null,
+         "seriesOverrides": [ ],
+         "spaceLength": 10,
+         "stack": false,
+         "steppedLine": false,
+         "targets": [
+            {
+               "expr": "stackgraph_index_lookup_duration_seconds{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", quantile=\"0.98\"}",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "{{ name }}",
+               "refId": "A"
+            }
+         ],
+         "thresholds": [ ],
+         "timeFrom": null,
+         "timeShift": null,
+         "title": "StackGraph - Transaction Index Lookups 98 percentile",
          "tooltip": {
             "shared": true,
             "sort": 0,
@@ -367,10 +737,10 @@
          "gridPos": {
             "h": 8,
             "w": 12,
-            "x": 12,
-            "y": 8
+            "x": 0,
+            "y": 24
          },
-         "id": 6,
+         "id": 11,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -408,7 +778,7 @@
          "thresholds": [ ],
          "timeFrom": null,
          "timeShift": null,
-         "title": "StackGraph - Transaction Index Lookups Seconds 75 percentile",
+         "title": "StackGraph - Transaction Index Lookups 75 percentile",
          "tooltip": {
             "shared": true,
             "sort": 0,
@@ -453,10 +823,10 @@
          "gridPos": {
             "h": 8,
             "w": 12,
-            "x": 0,
-            "y": 16
+            "x": 12,
+            "y": 24
          },
-         "id": 7,
+         "id": 12,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -494,93 +864,7 @@
          "thresholds": [ ],
          "timeFrom": null,
          "timeShift": null,
-         "title": "StackGraph - Scan Lookups Seconds 98 percentile",
-         "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-         },
-         "type": "graph",
-         "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": [ ]
-         },
-         "yaxes": [
-            {
-               "format": "s",
-               "label": null,
-               "logBase": 1,
-               "max": null,
-               "min": null,
-               "show": true
-            },
-            {
-               "format": "s",
-               "label": null,
-               "logBase": 1,
-               "max": null,
-               "min": null,
-               "show": true
-            }
-         ]
-      },
-      {
-         "aliasColors": { },
-         "bars": false,
-         "dashLength": 10,
-         "dashes": false,
-         "datasource": "$datasource",
-         "description": "Time spent on index lookups on a fallback from GET to SCAN 95 percentile",
-         "fill": 1,
-         "fillGradient": 0,
-         "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 16
-         },
-         "id": 8,
-         "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
-            "show": true,
-            "sideWidth": null,
-            "total": false,
-            "values": false
-         },
-         "lines": true,
-         "linewidth": 1,
-         "links": [ ],
-         "nullPointMode": "null",
-         "percentage": false,
-         "pointradius": 5,
-         "points": false,
-         "renderer": "flot",
-         "repeat": null,
-         "seriesOverrides": [ ],
-         "spaceLength": 10,
-         "stack": false,
-         "steppedLine": false,
-         "targets": [
-            {
-               "expr": "stackgraph_scan_index_lookup_duration_ms{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", quantile=\"0.95\"}",
-               "format": "time_series",
-               "intervalFactor": 2,
-               "legendFormat": "{{ rowId }}",
-               "refId": "A"
-            }
-         ],
-         "thresholds": [ ],
-         "timeFrom": null,
-         "timeShift": null,
-         "title": "StackGraph - Scan Lookups Seconds 95 percentile",
+         "title": "StackGraph - Scan Lookups 98 percentile",
          "tooltip": {
             "shared": true,
             "sort": 0,
@@ -626,9 +910,9 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 24
+            "y": 32
          },
-         "id": 9,
+         "id": 13,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -666,7 +950,7 @@
          "thresholds": [ ],
          "timeFrom": null,
          "timeShift": null,
-         "title": "StackGraph - Scan Lookups Seconds 75 percentile",
+         "title": "StackGraph - Scan Lookups 75 percentile",
          "tooltip": {
             "shared": true,
             "sort": 0,
@@ -700,262 +984,23 @@
          ]
       },
       {
-         "aliasColors": { },
-         "bars": false,
-         "dashLength": 10,
-         "dashes": false,
-         "datasource": "$datasource",
-         "description": "Execution time per query 98 percentile",
-         "fill": 1,
-         "fillGradient": 0,
-         "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 12,
-            "y": 24
-         },
-         "id": 10,
-         "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
-            "show": true,
-            "sideWidth": null,
-            "total": false,
-            "values": false
-         },
-         "lines": true,
-         "linewidth": 1,
-         "links": [ ],
-         "nullPointMode": "null",
-         "percentage": false,
-         "pointradius": 5,
-         "points": false,
-         "renderer": "flot",
-         "repeat": null,
-         "seriesOverrides": [ ],
-         "spaceLength": 10,
-         "stack": false,
-         "steppedLine": false,
-         "targets": [
-            {
-               "expr": "stackstate_topology_query_execute_duration_seconds{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", quantile=\"0.98\"}",
-               "format": "time_series",
-               "intervalFactor": 2,
-               "legendFormat": "{{ query }}",
-               "refId": "A"
-            }
-         ],
-         "thresholds": [ ],
-         "timeFrom": null,
-         "timeShift": null,
-         "title": "Topology Query - Query Executiom time 98 percentile",
-         "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-         },
-         "type": "graph",
-         "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": [ ]
-         },
-         "yaxes": [
-            {
-               "format": "s",
-               "label": null,
-               "logBase": 1,
-               "max": null,
-               "min": null,
-               "show": true
-            },
-            {
-               "format": "s",
-               "label": null,
-               "logBase": 1,
-               "max": null,
-               "min": null,
-               "show": true
-            }
-         ]
-      },
-      {
-         "aliasColors": { },
-         "bars": false,
-         "dashLength": 10,
-         "dashes": false,
-         "datasource": "$datasource",
-         "description": "Execution time per query 95 percentile",
-         "fill": 1,
-         "fillGradient": 0,
-         "gridPos": {
-            "h": 8,
-            "w": 12,
-            "x": 0,
-            "y": 32
-         },
-         "id": 11,
-         "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
-            "show": true,
-            "sideWidth": null,
-            "total": false,
-            "values": false
-         },
-         "lines": true,
-         "linewidth": 1,
-         "links": [ ],
-         "nullPointMode": "null",
-         "percentage": false,
-         "pointradius": 5,
-         "points": false,
-         "renderer": "flot",
-         "repeat": null,
-         "seriesOverrides": [ ],
-         "spaceLength": 10,
-         "stack": false,
-         "steppedLine": false,
-         "targets": [
-            {
-               "expr": "stackstate_topology_query_execute_duration_seconds{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", quantile=\"0.95\"}",
-               "format": "time_series",
-               "intervalFactor": 2,
-               "legendFormat": "{{ query }}",
-               "refId": "A"
-            }
-         ],
-         "thresholds": [ ],
-         "timeFrom": null,
-         "timeShift": null,
-         "title": "Topology Query - Query Executiom time 95 percentile",
-         "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-         },
-         "type": "graph",
-         "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": [ ]
-         },
-         "yaxes": [
-            {
-               "format": "s",
-               "label": null,
-               "logBase": 1,
-               "max": null,
-               "min": null,
-               "show": true
-            },
-            {
-               "format": "s",
-               "label": null,
-               "logBase": 1,
-               "max": null,
-               "min": null,
-               "show": true
-            }
-         ]
-      },
-      {
-         "aliasColors": { },
-         "bars": false,
-         "dashLength": 10,
-         "dashes": false,
-         "datasource": "$datasource",
-         "description": "Execution time per query 75 percentile",
-         "fill": 1,
-         "fillGradient": 0,
+         "collapse": false,
+         "collapsed": false,
          "gridPos": {
             "h": 8,
             "w": 12,
             "x": 12,
             "y": 32
          },
-         "id": 12,
-         "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": false,
-            "show": true,
-            "sideWidth": null,
-            "total": false,
-            "values": false
-         },
-         "lines": true,
-         "linewidth": 1,
-         "links": [ ],
-         "nullPointMode": "null",
-         "percentage": false,
-         "pointradius": 5,
-         "points": false,
-         "renderer": "flot",
+         "id": 14,
+         "panels": [ ],
          "repeat": null,
-         "seriesOverrides": [ ],
-         "spaceLength": 10,
-         "stack": false,
-         "steppedLine": false,
-         "targets": [
-            {
-               "expr": "stackstate_topology_query_execute_duration_seconds{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", quantile=\"0.75\"}",
-               "format": "time_series",
-               "intervalFactor": 2,
-               "legendFormat": "{{ query }}",
-               "refId": "A"
-            }
-         ],
-         "thresholds": [ ],
-         "timeFrom": null,
-         "timeShift": null,
-         "title": "Topology Query - Query Executiom time 75 percentile",
-         "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-         },
-         "type": "graph",
-         "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": [ ]
-         },
-         "yaxes": [
-            {
-               "format": "s",
-               "label": null,
-               "logBase": 1,
-               "max": null,
-               "min": null,
-               "show": true
-            },
-            {
-               "format": "s",
-               "label": null,
-               "logBase": 1,
-               "max": null,
-               "min": null,
-               "show": true
-            }
-         ]
+         "repeatIteration": null,
+         "repeatRowId": null,
+         "showTitle": true,
+         "title": "Topology query metrics",
+         "titleSize": "h6",
+         "type": "row"
       }
    ],
    "refresh": "10s",
