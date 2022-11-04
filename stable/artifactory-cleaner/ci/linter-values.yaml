@@ -1,0 +1,4 @@
+artifactory:
+  url: https://artifactory
+  user: cleaner
+  password: dummypassword

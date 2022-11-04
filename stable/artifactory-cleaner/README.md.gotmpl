@@ -1,0 +1,65 @@
+{{ template "chart.header" . }}
+{{ template "chart.deprecationWarning" . }}
+{{ template "chart.badgesSection" . }}
+{{ template "chart.description" . }}
+{{ template "chart.homepageLine" . }}
+{{ template "chart.maintainersSection" . }}
+{{ template "chart.sourcesSection" . }}
+{{ template "chart.requirementsSection" . }}
+{{ template "chart.valuesSection" . }}
+
+## Overview
+The cleaner uses the [artifactory query language](https://www.jfrog.com/confluence/display/JFROG/Artifactory+Query+Language), AQL, to discover artifacts for deletion. 
+The template for the AQL request rendered based on the values from Retention Policies manifest passed as a Helm value.
+
+```java
+// The AQL request template
+// ${repo} - is a mandatory parameter which describes the name of the Artifactory repository
+// ${until}, ${keep} - one of these is mandatory depending on the policy type
+items
+  .find({
+    "repo":{"\$eq":"${repo}"},
+    "path":{"\$match" : "${repo_path}/*x"},
+    "path":{"\$nmatch" : "${exclude}"},
+    "created":{"\$lt":"${until}"},
+    "name":{"\$match":"${name_filter}"},
+    "type":"file"
+  })
+  .include("name", "repo", "path", "created")
+  .sort({"\$desc": ["created"]}).offset(${keep})
+```
+
+There are types of policies supported:
+- type: **time-based** To delete artifacts based on their creation times
+- type: **keep-last** To keep the recent artifacts only
+
+Below the examples of policies that have been tested with the script:
+
+```
+- type: time-based
+  age: 12 weeks ago
+  repo: libs-candidates-local
+  nameFilter: "*.pom"
+- type: time-based
+  age: 8 weeks ago
+  path: zips/stackgraph-distr
+  exclude: zips/stackgraph-distr/*.*.*
+  repo: libs
+- type: keep-last
+  artifactsToKeep: 100
+  repo: libs-trunk-local
+  nameFilter: "*.pom"
+- type: time-based
+  age: 1 week ago
+  repo: libs-snapshot-local
+  path: com/stackstate
+  nameFilter: "*.pom"
+- type: time-based
+  age: 2 weeks ago
+  path: com/stackstate/stackstate-distr
+  repo: libs
+- type: time-based
+  age: 6 weeks ago
+  path: com/stackstate/stackstate-distr
+  repo: release-candidates
+```

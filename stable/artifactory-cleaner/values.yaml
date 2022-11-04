@@ -1,0 +1,97 @@
+#####################
+# General variables #
+#####################
+
+# backoffLimit -- For failed jobs, how many times to retry.
+backoffLimit: 3
+# failedJobsHistoryLimit -- The number of failed CronJob executions that are saved.
+failedJobsHistoryLimit: 5
+# successfulJobsHistoryLimit -- The number of successful CronJob executions that are saved.
+successfulJobsHistoryLimit: 5
+# restartPolicy -- For failed jobs, how to handle restarts.
+restartPolicy: Never
+# schedule -- Default schedule for this CronJob.
+schedule: "0 23 * * *"
+
+# podAnnotations -- Annotations for the `Job` pod.
+podAnnotations: {}
+
+image:
+  # image.repository -- Base container image registry. Any image with curl and jq will do.
+  repository: quay.io/stackstate/sts-ci-images
+  # image.tag -- Default container image tag.
+  tag: stackstate-devops-d3ac6ed1
+  # image.pullPolicy -- Default container image pull policy.
+  pullPolicy: Always
+
+# imagePullSecrets -- Extra secrets / credentials needed for container image registry.
+imagePullSecrets: []
+# nameOverride -- Override the name of the chart.
+nameOverride: ""
+# fullnameOverride -- Override the fullname of the chart.
+fullnameOverride: ""
+
+resources:
+  limits:
+    # resources.limits.cpu -- CPU resource limits.
+    cpu: "100m"
+    # resources.limits.memory -- Memory resource limits.
+    memory: "64Mi"
+  requests:
+    # resources.requests.cpu -- CPU resource requests.
+    cpu: "100m"
+    # resources.requests.memory -- Memory resource requests.
+    memory: "64Mi"
+
+serviceAccount:
+  # serviceAccount.annotations -- Extra annotations for the `ServiceAccount` object.
+  annotations: {}
+  # serviceAccount.create -- Create the `ServiceAccount` object.
+  create: false
+
+# nodeSelector -- Node labels for pod assignment.
+nodeSelector: {}
+
+# tolerations -- Toleration labels for pod assignment.
+tolerations: []
+
+# affinity -- Affinity settings for pod assignment.
+affinity: {}
+
+artifactory:
+  # artifactory.url -- The Artifactory URL
+  url:
+  # artifactory.user -- An Artifactory user with the permissions to delete artifacts
+  user:
+  # artifactory.password -- The password for the Artifactory user
+  password:
+
+# retentionPolicies -- The retention policies. Check the Chart's Readme for more info.
+retentionPolicies: []
+# Policies examples
+# - type: time-based
+#   age: 12 weeks ago
+#   repo: libs-candidates-local
+#   nameFilter: "*.pom"
+# - type: time-based
+#   age: 8 weeks ago
+#   path: zips/stackgraph-distr
+#   exclude: zips/stackgraph-distr/*.*.*
+#   repo: libs
+# - type: keep-last
+#   artifactsToKeep: 100
+#   repo: libs-trunk-local
+#   nameFilter: "*.pom"
+# - type: time-based
+#   age: 1 week ago
+#   repo: libs-snapshot-local
+#   path: com/stackstate
+#   nameFilter: "*.pom"
+# - type: time-based
+#   age: 2 weeks ago
+#   path: com/stackstate/stackstate-distr
+#   repo: libs
+# - type: time-based
+#   age: 6 weeks ago
+#   path: com/stackstate/stackstate-distr
+#   repo: release-candidates
