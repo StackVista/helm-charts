@@ -1,5 +1,7 @@
 {{- define "stackstate.kafka2prom.deployment.container" -}}
 name: kafka2prom
+args:
+{{- include "stackstate.service.args" . }}
 env:
 {{- $serviceConfig := dict "ServiceName" "kafka2prom" "ServiceConfig" .Values.stackstate.components.kafka2prom }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
