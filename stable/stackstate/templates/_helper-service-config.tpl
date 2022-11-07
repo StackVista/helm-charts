@@ -38,7 +38,7 @@
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_singleWriter_releaseRevision" "1" }}
 {{- end -}}
 {{- if .Values.stackstate.experimental.metrics }}
-  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_metricsPage" "true" }}
+  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_newMetrics" "true" }}
 {{- end -}}
 {{- $xmxConfig := dict "Mem" .ServiceConfig.resources.limits.memory "BaseMem" .ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
 {{- $xmx := (include "stackstate.server.memory.resource" $xmxConfig) | int }}
