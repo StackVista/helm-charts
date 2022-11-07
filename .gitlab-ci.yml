@@ -32,6 +32,42 @@ integration_test_stackstate:
   variables:
     CGO_ENABLED: 0
     CHART: stable/stackstate
+push_artifactory-cleaner_to_internal:
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - changes:
+        - stable/artifactory-cleaner/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+  script:
+    - helm dependencies update ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/artifactory-cleaner
+push_artifactory-cleaner_to_public:
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
+  needs:
+    - push_artifactory-cleaner_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - changes:
+        - stable/artifactory-cleaner/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+  script:
+    - helm dependencies update ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/artifactory-cleaner
 push_aws-amicleaner_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
@@ -715,6 +751,35 @@ stages:
   - build
   - push-charts-to-internal
   - push-charts-to-public
+test_artifactory-cleaner:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - changes:
+        - stable/artifactory-cleaner/**/*
+      exists:
+        - stable/artifactory-cleaner/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/artifactory-cleaner/test/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/artifactory-cleaner
 test_aws-amicleaner:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami

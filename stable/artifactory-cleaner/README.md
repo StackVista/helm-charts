@@ -1,6 +1,6 @@
 # artifactory-cleaner
 
-![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.0.2](https://img.shields.io/badge/Version-0.0.2-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 Artifactory Cleaner -- Clean up artifacts according to retention policies.
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 ## Maintainers
@@ -31,7 +31,7 @@ Artifactory Cleaner -- Clean up artifacts according to retention policies.
 | resources.limits.memory | string | `"64Mi"` | Memory resource limits. |
 | resources.requests.cpu | string | `"100m"` | CPU resource requests. |
 | resources.requests.memory | string | `"64Mi"` | Memory resource requests. |
-| restartPolicy | string | `"OnFailure"` | For failed jobs, how to handle restarts. |
+| restartPolicy | string | `"Never"` | For failed jobs, how to handle restarts. |
 | retentionPolicies | list | `[]` | The retention policies. Check the Chart's Readme for more info. |
 | schedule | string | `"0 23 * * *"` | Default schedule for this CronJob. |
 | serviceAccount.annotations | object | `{}` | Extra annotations for the `ServiceAccount` object. |

@@ -19,6 +19,7 @@
     },
     public_charts: [
       'stackstate-agent',
+      'artifactory-cleaner',
       'common',
       'elasticsearch',
       'hbase',
