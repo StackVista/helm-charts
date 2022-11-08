@@ -13,6 +13,7 @@ import (
 	policyv1 "k8s.io/api/policy/v1beta1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	networkingv1 "k8s.io/api/networking/v1"
 )
 
 // KubernetesResources parsed from a multi-document template string
@@ -23,6 +24,7 @@ type KubernetesResources struct {
 	CronJobs               map[string]batchv1beta1.CronJob
 	DaemonSets             map[string]appsv1.DaemonSet
 	Deployments            map[string]appsv1.Deployment
+	Ingresses              map[string]networkingv1.Ingress
 	Jobs                   map[string]batchv1.Job
 	PersistentVolumeClaims map[string]corev1.PersistentVolumeClaim
 	Pods                   map[string]corev1.Pod
@@ -45,6 +47,7 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 	cronJobs := make(map[string]batchv1beta1.CronJob)
 	daemonSets := make(map[string]appsv1.DaemonSet)
 	deployments := make(map[string]appsv1.Deployment)
+	ingresses := make(map[string]networkingv1.Ingress)
 	jobs := make(map[string]batchv1.Job)
 	persistentVolumeClaims := make(map[string]corev1.PersistentVolumeClaim)
 	pods := make(map[string]corev1.Pod)
@@ -93,6 +96,11 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 			e := helm.UnmarshalK8SYamlE(t, v, &resource)
 			assert.NoError(t, e, "Deployment failed to parse: "+v)
 			deployments[resource.Name] = resource
+		case "Ingress":
+			var resource networkingv1.Ingress
+			e := helm.UnmarshalK8SYamlE(t, v, &resource)
+			assert.NoError(t, e, "Ingress failed to parse: "+v)
+			ingresses[resource.Name] = resource
 		case "Job":
 			var resource batchv1.Job
 			helm.UnmarshalK8SYaml(t, v, &resource)
@@ -155,6 +163,7 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 		ConfigMaps:             configMaps,
 		DaemonSets:             daemonSets,
 		Deployments:            deployments,
+		Ingresses:              ingresses,
 		CronJobs:               cronJobs,
 		Jobs:                   jobs,
 		PersistentVolumeClaims: persistentVolumeClaims,
