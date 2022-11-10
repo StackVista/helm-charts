@@ -185,7 +185,7 @@ stackstate/stackstate-agent
 | nodeAgent.containers.processAgent.env | object | `{}` | Additional environment variables for the process-agent container |
 | nodeAgent.containers.processAgent.image.pullPolicy | string | `"IfNotPresent"` | Process-agent container image pull policy. |
 | nodeAgent.containers.processAgent.image.repository | string | `"stackstate/stackstate-process-agent"` | Process-agent container image repository. |
-| nodeAgent.containers.processAgent.image.tag | string | `"4.0.7"` | Default process-agent container image tag. |
+| nodeAgent.containers.processAgent.image.tag | string | `"4.0.9"` | Default process-agent container image tag. |
 | nodeAgent.containers.processAgent.logLevel | string | `nil` | Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off # If not set, fall back to the value of agent.logLevel. |
 | nodeAgent.containers.processAgent.resources.limits.cpu | string | `"400m"` | Memory resource limits. |
 | nodeAgent.containers.processAgent.resources.limits.memory | string | `"768Mi"` |  |
