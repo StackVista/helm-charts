@@ -54,7 +54,7 @@
          "steppedLine": false,
          "targets": [
             {
-               "expr": "stackstate_receiver_unique_element_request_approx_count{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}",
+               "expr": "stackstate_receiver_unique_element_request_approx_count{cluster=\"$cluster\", namespace=\"$namespace\"}",
                "format": "time_series",
                "intervalFactor": 2,
                "legendFormat": "{{element_type}}",
@@ -146,14 +146,14 @@
          "steppedLine": false,
          "targets": [
             {
-               "expr": "stackstate_receiver_element_create_request_approx_count{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}",
+               "expr": "stackstate_receiver_element_create_request_approx_count{cluster=\"$cluster\", namespace=\"$namespace\"}",
                "format": "time_series",
                "intervalFactor": 2,
                "legendFormat": "{{element_type}}",
                "refId": "A"
             },
             {
-               "expr": "stackstate_receiver_element_create_passed_max{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}",
+               "expr": "stackstate_receiver_element_create_passed_max{cluster=\"$cluster\", namespace=\"$namespace\"}",
                "format": "time_series",
                "intervalFactor": 2,
                "legendFormat": "{{element_type}} budget",
@@ -239,7 +239,7 @@
          "steppedLine": false,
          "targets": [
             {
-               "expr": "stackstate_receiver_unique_element_passed_count{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"} / stackstate_receiver_unique_element_passed_max{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}",
+               "expr": "stackstate_receiver_unique_element_passed_count{cluster=\"$cluster\", namespace=\"$namespace\"} / stackstate_receiver_unique_element_passed_max{cluster=\"$cluster\", namespace=\"$namespace\"}",
                "format": "time_series",
                "intervalFactor": 2,
                "legendFormat": "{{element_type}}",
@@ -325,7 +325,7 @@
          "steppedLine": false,
          "targets": [
             {
-               "expr": "stackstate_receiver_element_create_passed_count{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"} / stackstate_receiver_element_create_passed_max{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}",
+               "expr": "stackstate_receiver_element_create_passed_count{cluster=\"$cluster\", namespace=\"$namespace\"} / stackstate_receiver_element_create_passed_max{cluster=\"$cluster\", namespace=\"$namespace\"}",
                "format": "time_series",
                "intervalFactor": 2,
                "legendFormat": "{{element_type}}",
@@ -411,7 +411,7 @@
          "steppedLine": false,
          "targets": [
             {
-               "expr": "stackstate_receiver_unique_element_passed_count{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\", element_type=\"agent\"}",
+               "expr": "stackstate_receiver_unique_element_passed_count{cluster=\"$cluster\", namespace=\"$namespace\", element_type=\"agent\"}",
                "format": "time_series",
                "intervalFactor": 2,
                "legendFormat": "{{element_type}}",
@@ -497,7 +497,7 @@
          "steppedLine": false,
          "targets": [
             {
-               "expr": "stackstate_receiver_element_create_passed_count{cluster=\"$cluster\", namespace=\"$namespace\", pod=~\"$pod\", service=~\"$service\"}",
+               "expr": "stackstate_receiver_element_create_passed_count{cluster=\"$cluster\", namespace=\"$namespace\"}",
                "format": "time_series",
                "intervalFactor": 2,
                "legendFormat": "{{element_type}}",
@@ -508,6 +508,346 @@
          "timeFrom": null,
          "timeShift": null,
          "title": "Receiver - Created elements hourly total",
+         "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+         },
+         "type": "graph",
+         "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": [ ]
+         },
+         "yaxes": [
+            {
+               "format": "short",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            },
+            {
+               "format": "short",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            }
+         ]
+      },
+      {
+         "aliasColors": { },
+         "bars": false,
+         "dashLength": 10,
+         "dashes": false,
+         "datasource": "$datasource",
+         "fill": 1,
+         "fillGradient": 0,
+         "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 24
+         },
+         "id": 8,
+         "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "sideWidth": null,
+            "total": false,
+            "values": false
+         },
+         "lines": true,
+         "linewidth": 1,
+         "links": [ ],
+         "nullPointMode": "null",
+         "percentage": false,
+         "pointradius": 5,
+         "points": false,
+         "renderer": "flot",
+         "repeat": null,
+         "seriesOverrides": [ ],
+         "spaceLength": 10,
+         "stack": false,
+         "steppedLine": false,
+         "targets": [
+            {
+               "expr": "akka_http_responses_duration_seconds{cluster=\"$cluster\", namespace=\"$namespace\",quantile=~\"0.98\", app_component=\"receiver\"}",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "{{product}} - {{path}} - {{status}}",
+               "refId": "A"
+            }
+         ],
+         "thresholds": [ ],
+         "timeFrom": null,
+         "timeShift": null,
+         "title": "HTTP - Response duration",
+         "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+         },
+         "type": "graph",
+         "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": [ ]
+         },
+         "yaxes": [
+            {
+               "format": "s",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            },
+            {
+               "format": "s",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            }
+         ]
+      },
+      {
+         "aliasColors": { },
+         "bars": false,
+         "dashLength": 10,
+         "dashes": false,
+         "datasource": "$datasource",
+         "fill": 1,
+         "fillGradient": 0,
+         "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 24
+         },
+         "id": 9,
+         "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "sideWidth": null,
+            "total": false,
+            "values": false
+         },
+         "lines": true,
+         "linewidth": 1,
+         "links": [ ],
+         "nullPointMode": "null",
+         "percentage": false,
+         "pointradius": 5,
+         "points": false,
+         "renderer": "flot",
+         "repeat": null,
+         "seriesOverrides": [ ],
+         "spaceLength": 10,
+         "stack": false,
+         "steppedLine": false,
+         "targets": [
+            {
+               "expr": "sum by (product, path, status)(rate(akka_http_responses_total{cluster=\"$cluster\", namespace=\"$namespace\", app_component=\"receiver\"}[1m]))",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "{{product}} - {{path}} - {{status}}",
+               "refId": "A"
+            }
+         ],
+         "thresholds": [ ],
+         "timeFrom": null,
+         "timeShift": null,
+         "title": "HTTP - Counts Rate",
+         "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+         },
+         "type": "graph",
+         "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": [ ]
+         },
+         "yaxes": [
+            {
+               "format": "short",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            },
+            {
+               "format": "short",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            }
+         ]
+      },
+      {
+         "aliasColors": { },
+         "bars": false,
+         "dashLength": 10,
+         "dashes": false,
+         "datasource": "$datasource",
+         "fill": 1,
+         "fillGradient": 0,
+         "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 32
+         },
+         "id": 10,
+         "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "sideWidth": null,
+            "total": false,
+            "values": false
+         },
+         "lines": true,
+         "linewidth": 1,
+         "links": [ ],
+         "nullPointMode": "null",
+         "percentage": false,
+         "pointradius": 5,
+         "points": false,
+         "renderer": "flot",
+         "repeat": null,
+         "seriesOverrides": [ ],
+         "spaceLength": 10,
+         "stack": false,
+         "steppedLine": false,
+         "targets": [
+            {
+               "expr": "sum by (product, path, status)(rate(akka_http_responses_errors_total{cluster=\"$cluster\", namespace=\"$namespace\", app_component=\"receiver\"}[1m]))",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "{{product}} - {{path}} - {{status}}",
+               "refId": "A"
+            }
+         ],
+         "thresholds": [ ],
+         "timeFrom": null,
+         "timeShift": null,
+         "title": "HTTP - Error Counts Rate",
+         "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+         },
+         "type": "graph",
+         "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": [ ]
+         },
+         "yaxes": [
+            {
+               "format": "short",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            },
+            {
+               "format": "short",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            }
+         ]
+      },
+      {
+         "aliasColors": { },
+         "bars": false,
+         "dashLength": 10,
+         "dashes": false,
+         "datasource": "$datasource",
+         "fill": 1,
+         "fillGradient": 0,
+         "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 32
+         },
+         "id": 11,
+         "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "sideWidth": null,
+            "total": false,
+            "values": false
+         },
+         "lines": true,
+         "linewidth": 1,
+         "links": [ ],
+         "nullPointMode": "null",
+         "percentage": false,
+         "pointradius": 5,
+         "points": false,
+         "renderer": "flot",
+         "repeat": null,
+         "seriesOverrides": [ ],
+         "spaceLength": 10,
+         "stack": false,
+         "steppedLine": false,
+         "targets": [
+            {
+               "expr": "sum(akka_http_requests_active{cluster=\"$cluster\", namespace=\"$namespace\", app_component=\"receiver\"})",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "Active HTTP requests",
+               "refId": "A"
+            }
+         ],
+         "thresholds": [ ],
+         "timeFrom": null,
+         "timeShift": null,
+         "title": "HTTP - Active Requests",
          "tooltip": {
             "shared": true,
             "sort": 0,
@@ -596,46 +936,6 @@
             "name": "namespace",
             "options": [ ],
             "query": "label_values(kube_pod_info{cluster=\"$cluster\"}, namespace)",
-            "refresh": 2,
-            "regex": "",
-            "sort": 1,
-            "tagValuesQuery": "",
-            "tags": [ ],
-            "tagsQuery": "",
-            "type": "query",
-            "useTags": false
-         },
-         {
-            "allValue": null,
-            "current": { },
-            "datasource": "$datasource",
-            "hide": 0,
-            "includeAll": true,
-            "label": "service",
-            "multi": false,
-            "name": "service",
-            "options": [ ],
-            "query": "label_values(kube_service_info{cluster=\"$cluster\", namespace=~\"$namespace\"}, service)",
-            "refresh": 2,
-            "regex": "",
-            "sort": 0,
-            "tagValuesQuery": "",
-            "tags": [ ],
-            "tagsQuery": "",
-            "type": "query",
-            "useTags": false
-         },
-         {
-            "allValue": null,
-            "current": { },
-            "datasource": "$datasource",
-            "hide": 0,
-            "includeAll": true,
-            "label": "pod",
-            "multi": false,
-            "name": "pod",
-            "options": [ ],
-            "query": "label_values(kube_pod_info{cluster=\"$cluster\", namespace=~\"$namespace\"}, pod)",
             "refresh": 2,
             "regex": "",
             "sort": 1,

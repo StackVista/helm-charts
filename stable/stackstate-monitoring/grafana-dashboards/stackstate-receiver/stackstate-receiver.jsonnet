@@ -19,7 +19,7 @@ local stackstate_receiver_unique_element_request_approx_count = graphPanel.new(
   datasource=datasource,
 ).addTarget(
   prometheus.target(
-    expr='stackstate_receiver_unique_element_request_approx_count{%s}' % variables.grafana.standard_selectors_string,
+    expr='stackstate_receiver_unique_element_request_approx_count{%s}' % variables.grafana.namespace_selectors_string,
     legendFormat='{{element_type}}',
   )
 );
@@ -31,12 +31,12 @@ local stackstate_receiver_element_create_request_approx_count = graphPanel.new(
   fill=0
 ).addTarget(
   prometheus.target(
-    expr='stackstate_receiver_element_create_request_approx_count{%s}' % variables.grafana.standard_selectors_string,
+    expr='stackstate_receiver_element_create_request_approx_count{%s}' % variables.grafana.namespace_selectors_string,
     legendFormat='{{element_type}}',
   )
 ).addTarget(
     prometheus.target(
-        expr='stackstate_receiver_element_create_passed_max{%s}' % variables.grafana.standard_selectors_string,
+        expr='stackstate_receiver_element_create_passed_max{%s}' % variables.grafana.namespace_selectors_string,
         legendFormat='{{element_type}} budget',
       )
 ).addSeriesOverride(
@@ -53,7 +53,7 @@ local stackstate_receiver_unique_element_saturation = graphPanel.new(
   datasource=datasource,
 ).addTarget(
   prometheus.target(
-    expr='stackstate_receiver_unique_element_passed_count{%(standard_selectors_string)s} / stackstate_receiver_unique_element_passed_max{%(standard_selectors_string)s}' % variables.grafana,
+    expr='stackstate_receiver_unique_element_passed_count{%(namespace_selectors_string)s} / stackstate_receiver_unique_element_passed_max{%(namespace_selectors_string)s}' % variables.grafana,
     legendFormat='{{element_type}}',
   )
 );
@@ -64,7 +64,7 @@ local stackstate_receiver_created_element_saturation = graphPanel.new(
   datasource=datasource,
 ).addTarget(
   prometheus.target(
-    expr='stackstate_receiver_element_create_passed_count{%(standard_selectors_string)s} / stackstate_receiver_element_create_passed_max{%(standard_selectors_string)s}' % variables.grafana,
+    expr='stackstate_receiver_element_create_passed_count{%(namespace_selectors_string)s} / stackstate_receiver_element_create_passed_max{%(namespace_selectors_string)s}' % variables.grafana,
     legendFormat='{{element_type}}',
   )
 );
@@ -75,7 +75,7 @@ local stackstate_receiver_unique_agent = graphPanel.new(
   datasource=datasource,
 ).addTarget(
   prometheus.target(
-    expr='stackstate_receiver_unique_element_passed_count{%s, element_type="agent"}' % variables.grafana.standard_selectors_string,
+    expr='stackstate_receiver_unique_element_passed_count{%s, element_type="agent"}' % variables.grafana.namespace_selectors_string,
     legendFormat='{{element_type}}',
   )
 );
@@ -86,8 +86,51 @@ local stackstate_receiver_created_element_total = graphPanel.new(
   datasource=datasource,
 ).addTarget(
   prometheus.target(
-    expr='stackstate_receiver_element_create_passed_count{%(standard_selectors_string)s}' % variables.grafana,
+    expr='stackstate_receiver_element_create_passed_count{%s}' % variables.grafana.namespace_selectors_string,
     legendFormat='{{element_type}}',
+  )
+);
+
+// akka_http_responses_duration
+local akka_http_responses_duration_seconds = graphPanel.new(
+  title='HTTP - Response duration',
+  datasource=datasource,
+  format='s',
+).addTarget(
+  prometheus.target(
+    expr='akka_http_responses_duration_seconds{%s,quantile=~"0.98", app_component="receiver"}' % variables.grafana.namespace_selectors_string,
+    legendFormat='{{product}} - {{path}} - {{status}}',
+  )
+);
+
+local akka_http_responses_total = graphPanel.new(
+  title='HTTP - Counts Rate',
+  datasource=datasource,
+).addTarget(
+  prometheus.target(
+    expr='sum by (product, path, status)(rate(akka_http_responses_total{%s, app_component="receiver"}[1m]))' % variables.grafana.namespace_selectors_string,
+    legendFormat='{{product}} - {{path}} - {{status}}',
+
+  )
+);
+
+local akka_http_responses_errors_total = graphPanel.new(
+  title='HTTP - Error Counts Rate',
+  datasource=datasource,
+).addTarget(
+  prometheus.target(
+    expr='sum by (product, path, status)(rate(akka_http_responses_errors_total{%s, app_component="receiver"}[1m]))' % variables.grafana.namespace_selectors_string,
+    legendFormat='{{product}} - {{path}} - {{status}}',
+  )
+);
+
+local akka_http_requests_active = graphPanel.new(
+  title='HTTP - Active Requests',
+  datasource=datasource,
+).addTarget(
+  prometheus.target(
+    expr='sum(akka_http_requests_active{%s, app_component="receiver"})' % variables.grafana.namespace_selectors_string,
+    legendFormat='Active HTTP requests',
   )
 );
 
@@ -100,7 +143,7 @@ dashboard.new(
   time_from='now-1h',
   uid='49e75d350918156196744427031022e8',
 )
-.addTemplates(variables.grafana.common_dashboard_variables)
+.addTemplates(variables.grafana.namespace_dashboard_variables)
 .addPanels(
   functions.grafana.grid_positioning(
     [
@@ -110,6 +153,10 @@ dashboard.new(
       stackstate_receiver_created_element_saturation,
       stackstate_receiver_unique_agent,
       stackstate_receiver_created_element_total,
+      akka_http_responses_duration_seconds,
+      akka_http_responses_total,
+      akka_http_responses_errors_total,
+      akka_http_requests_active,
     ],
   )
 )
