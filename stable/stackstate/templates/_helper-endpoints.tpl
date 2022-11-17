@@ -2,21 +2,28 @@
 Logic to determine remote write endpoint.
 */}}
 {{- define "stackstate.metrics.remotewrite.url" -}}
-http://{{- include "stackstate.metrics.endpoint" . -}}{{.Values.stackstate.components.all.metricStore.remoteWritePath}}
+http://{{- include "stackstate.metrics.remoteWriteEndpoint" . -}}{{.Values.stackstate.components.all.metricStore.remoteWritePath}}
 {{- end -}}
 
 {{/*
 Logic to determine promql query endpoint.
 */}}
 {{- define "stackstate.metrics.query.url" -}}
-http://{{- include "stackstate.metrics.endpoint" . -}}{{.Values.stackstate.components.all.metricStore.queryApiPath}}
+http://{{- include "stackstate.metrics.queryApiEndpoint" . -}}{{.Values.stackstate.components.all.metricStore.queryApiPath}}
 {{- end -}}
 
 {{/*
 Logic to determine metric store host and port
 */}}
-{{- define "stackstate.metrics.endpoint" -}}
-{{- .Values.stackstate.components.all.metricStore.endpoint | required "stackstate.components.all.metricStore.endpoint is a required value when stackstate.experimental.metrics = true." -}}
+{{- define "stackstate.metrics.remoteWriteEndpoint" -}}
+{{- .Values.stackstate.components.all.metricStore.remoteWriteEndpoint | required "stackstate.components.all.metricStore.remoteWriteEndpoint is a required value when stackstate.experimental.metrics = true." -}}
+{{- end -}}
+
+{{/*
+Logic to determine metric store host and port
+*/}}
+{{- define "stackstate.metrics.queryApiEndpoint" -}}
+{{- .Values.stackstate.components.all.metricStore.queryApiEndpoint | required "stackstate.components.all.metricStore.queryApiEndpoint is a required value when stackstate.experimental.metrics = true." -}}
 {{- end -}}
 
 {{/*

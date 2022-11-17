@@ -285,8 +285,9 @@ stackstate/stackstate
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
 | stackstate.components.all.image.tag | string | `"master"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
-| stackstate.components.all.metricStore.endpoint | string | `""` | **Required if `stackstate.experimental.metrics` is `true`** Host and port for promql compatible metric stores |
+| stackstate.components.all.metricStore.queryApiEndpoint | string | `""` | **Required if `stackstate.experimental.metrics` is `true`** Host and port for promql api |
 | stackstate.components.all.metricStore.queryApiPath | string | `""` | Path under which `/api/v1/query` etc.. are accessible, the default ("") is fine for most stores |
+| stackstate.components.all.metricStore.remoteWriteEndpoint | string | `""` | **Required if `stackstate.experimental.metrics` is `true`** Host and port for prometheus remote write endpoint |
 | stackstate.components.all.metricStore.remoteWritePath | string | `"/api/v1/write"` | Remote write path used to ingest metrics, /api/v1/write is most common |
 | stackstate.components.all.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
