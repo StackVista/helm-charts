@@ -33,7 +33,7 @@ spec:
           annotations:
             message: {{`The StackState telemetry api in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.`}}
           expr: |
-            akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="api", path="/api/telemetry", window_size_order="hours", product!~"AutonomousAnomalyDetector/.*"} > 5
+            akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="api", path="/api/telemetry", window_size_order="hours", product!~"AutonomousAnomalyDetector.*"} > 5
           for: 5m
           labels:
             severity: warning
@@ -42,7 +42,7 @@ spec:
             message: {{`The StackState telemetry api in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.`}}
             runbook_url: https://www.notion.so/stackstate/Runbook-API-latency-alert-actions-1d9754251be541a296a8ed949dbb2a25
           expr: |
-            akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="api", path="/api/telemetry", window_size_order!="hours", product!~"AutonomousAnomalyDetector/.*"} > 30
+            akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="api", path="/api/telemetry", window_size_order!="hours", product!~"AutonomousAnomalyDetector.*"} > 30
           for: 5m
           labels:
             severity: warning
