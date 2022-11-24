@@ -63,7 +63,7 @@ nodeAgent:
         # nodeAgent.containers.agent.image.repository -- Base container image repository.
         repository: stackstate/stackstate-agent-2
         # nodeAgent.containers.agent.image.tag -- Default container image tag.
-        tag: 2.18.0
+        tag: 2.19.1
         # nodeAgent.containers.agent.image.pullPolicy -- Default container image pull policy.
         pullPolicy: IfNotPresent
       processAgent:
@@ -245,7 +245,7 @@ clusterAgent:
     # clusterAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-cluster-agent
     # clusterAgent.image.tag -- Default container image tag.
-    tag: 2.18.0
+    tag: 2.19.1
     # clusterAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -347,7 +347,7 @@ checksAgent:
     # checksAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-agent-2
     # checksAgent.image.tag -- Default container image tag.
-    tag: 2.18.0
+    tag: 2.19.1
     # checksAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
