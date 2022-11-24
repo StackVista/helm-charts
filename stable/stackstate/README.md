@@ -563,6 +563,7 @@ stackstate/stackstate
 | stackstate.components.trace2es.sizing.javaHeapMemoryFraction | string | `"85"` |  |
 | stackstate.components.trace2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.ui.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.ui.debug | bool | `false` |  |
 | stackstate.components.ui.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.ui.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.ui.image.pullPolicy | string | `""` | `pullPolicy` used for the `ui` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
