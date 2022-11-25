@@ -19,5 +19,6 @@ spec:
             up{namespace=~{{ .Values.rules.namespaceRegex | quote }}} == 0
           for: 10m
           labels:
-            severity: critical
+            - severity: critical
+            - alert_resource: {{` '{{ $labels.pod }}' `}}
 {{- end }}
