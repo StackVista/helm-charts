@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `5.2.0-snapshot.8`
+Current chart version is `5.2.0-snapshot.9`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -17,7 +17,7 @@ Current chart version is `5.2.0-snapshot.8`
 | file://../minio/ | minio | 8.0.10-stackstate.6 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../stackstate-agent/ | stackstate-agent | * |
-| https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.22 |
+| https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.31 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | kafka | 14.8.1 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 5.16.0 |
 
@@ -563,6 +563,7 @@ stackstate/stackstate
 | stackstate.components.trace2es.sizing.javaHeapMemoryFraction | string | `"85"` |  |
 | stackstate.components.trace2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.ui.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.ui.debug | bool | `false` |  |
 | stackstate.components.ui.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.ui.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.ui.image.pullPolicy | string | `""` | `pullPolicy` used for the `ui` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |

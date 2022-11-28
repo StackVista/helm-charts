@@ -831,6 +831,7 @@ stackstate:
       # stackstate.components.slicing.additionalLogging -- Additional logback config
       additionalLogging: ""
     ui:
+      debug: false
       extraEnv:
         # stackstate.components.ui.extraEnv.open -- Extra open environment variables to inject into pods.
         open: {}
