@@ -19,8 +19,8 @@ spec:
             rate(jvm_gc_collection_seconds_sum{namespace=~{{ .Values.rules.namespaceRegex | quote }}}[1m]) > 1.500000
           for: 5m
           labels:
-            - severity: warning
-            - alert_resource: {{` '{{ $labels.pod }}' `}}
+            severity: warning
+            alert_resource: {{` '{{ $labels.pod }}' `}}
         - alert: StackStateGCDuration
           annotations:
             message: {{` 'JVM Garbage collection ({{ $labels.gc }}) for {{ $labels.pod }} is taking too long: {{ $value | humanizeDuration }}.'`}}
@@ -29,6 +29,6 @@ spec:
             rate(jvm_gc_collection_seconds_sum{namespace=~{{ .Values.rules.namespaceRegex | quote }}}[1m])/rate(jvm_gc_collection_seconds_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}}[1m]) > 2
           for: 5m
           labels:
-            - severity: critical
-            - alert_resource: {{` '{{ $labels.pod }}' `}}
+            severity: critical
+            alert_resource: {{` '{{ $labels.pod }}' `}}
 {{- end }}

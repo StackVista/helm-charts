@@ -14,7 +14,7 @@ spec:
       rules:
         - alert: StackStateReceiverApiLatency
           annotations:
-            message: {{` 'The receiver in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.' `}}
+            message: {{`The receiver in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.`}}
           expr: |
             akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="receiver"} > 8
           for: 5m
@@ -23,42 +23,42 @@ spec:
             alert_resource: {{` '{{$labels.service}}' `}}
         - alert: StackStateApiLatency
           annotations:
-            message: {{` 'The StackState api in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.' `}}
+            message: {{`The StackState api in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.`}}
             runbook_url: https://www.notion.so/stackstate/Runbook-API-latency-alert-actions-1d9754251be541a296a8ed949dbb2a25
           expr: |
             akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="api", path!="/export", path!="/api/export", path!="/api/script", path!="/api/telemetry"} > 5
           for: 5m
           labels:
-            - severity: warning
-            - alert_resource: {{` '{{ $labels.service }}' `}}
+            severity: warning
+            alert_resource: {{` '{{ $labels.service }}' `}}
         - alert: StackStateSmallWindowTelemetryApiLatency
           annotations:
-            message: {{` 'The StackState telemetry api in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.' `}}
+            message: {{`The StackState telemetry api in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.`}}
           expr: |
             akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="api", path="/api/telemetry", window_size_order="hours", product!~"AutonomousAnomalyDetector.*"} > 5
           for: 5m
           labels:
-            - severity: warning
-            - alert_resource: {{` '{{ $labels.service }}' `}}
+            severity: warning
+            alert_resource: {{` '{{ $labels.service }}' `}}
         - alert: StackStateTelemetryApiLatency
           annotations:
-            message: {{` 'The StackState telemetry api in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.' `}}
+            message: {{`The StackState telemetry api in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.`}}
             runbook_url: https://www.notion.so/stackstate/Runbook-API-latency-alert-actions-1d9754251be541a296a8ed949dbb2a25
           expr: |
             akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="api", path="/api/telemetry", window_size_order!="hours", product!~"AutonomousAnomalyDetector.*"} > 30
           for: 5m
           labels:
-            - severity: warning
-            - alert_resource: {{` '{{ $labels.service }}' `}}
+            severity: warning
+            alert_resource: {{` '{{ $labels.service }}' `}}
         - alert: StackStateSlowEndpointsApiLatency
           annotations:
-            message: {{` 'The export api in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.' `}}
+            message: {{`The export api in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.`}}
           expr: |
             akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="api", path=~"/export||/api/export||/api/script"} > 30
           for: 5m
           labels:
-            - severity: warning
-            - alert_resource: {{` '{{ $labels.service }}' `}}
+            severity: warning
+            alert_resource: {{` '{{ $labels.service }}' `}}
         - expr: |
             sum by(namespace)(rate(akka_http_responses_total{status="5xx", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="api"}[5m])) /
             sum by(namespace)(rate(akka_http_responses_total{namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="api"}[5m]))
@@ -77,7 +77,7 @@ spec:
           record: stackstate:api:http_failures_per_request:ratio_rate_6h
         - alert: StackStateApiErrorBudgetBurn
           annotations:
-            message: {{` 'The StackState API for {{ $labels.namespace }} is going over its error budget.' `}}
+            message: {{`The StackState API for {{ $labels.namespace }} is going over its error budget.`}}
           expr: |
             (
                 stackstate:api:http_failures_per_request:ratio_rate_1h > (14.4 * 0.001000)
@@ -91,8 +91,8 @@ spec:
                 stackstate:api:http_failures_per_request:ratio_rate_30m > (6 * 0.001000)
             )
           labels:
-            - severity: critical
-            - alert_resource: {{` '{{ $labels.namespace }}' `}}
+            severity: critical
+            alert_resource: {{` '{{ $labels.namespace }}' `}}
         - expr: |
             sum by(namespace)(rate(akka_http_responses_total{status="5xx", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="receiver"}[5m])) /
             sum by(namespace)(rate(akka_http_responses_total{namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="receiver"}[5m]))
@@ -111,7 +111,7 @@ spec:
           record: stackstate:receiver:http_failures_per_request:ratio_rate_6h
         - alert: StackStateReceiverApiErrorBudgetBurn
           annotations:
-            message: {{` 'The receiver API for {{ $labels.namespace }} is going over its error budget.' `}}
+            message: {{`The receiver API for {{ $labels.namespace }} is going over its error budget.`}}
           expr: |
             (
                 stackstate:receiver:http_failures_per_request:ratio_rate_1h > (14.4 * 0.001000)
@@ -125,6 +125,6 @@ spec:
                 stackstate:receiver:http_failures_per_request:ratio_rate_30m > (6 * 0.001000)
             )
           labels:
-            - severity: critical
-            - alert_resource: {{` '{{ $labels.namespace }}' `}}
+            severity: critical
+            alert_resource: {{` '{{ $labels.namespace }}' `}}
 {{- end }}
