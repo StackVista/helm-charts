@@ -1082,6 +1082,8 @@ stackstate:
   experimental:
     # stackstate.experimental.metrics -- (boolean) Enable the new experimental metrics apis and store
     metrics: false
+    # stackstate.experimental.disableMultimetrics -- (boolean) Disable writing and storage of the old multimetrics format, this will break streams and checks, monitors and metric bindings use the new metrics
+    disableMultimetrics: false
     server:
       # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
       split: true
@@ -1580,7 +1582,7 @@ pull-secret:
   fullNameOverride: ''
   # pull-secret.credentials -- Registry and assotiated credentials (username, password) that will be stored in the pull-secret
   credentials: []
-victoria-metrics-1:
+victoria-metrics-0:
   rbac:
     # victoria-metrics-1.server.pspEnabled -- Pod Security Policy has been deprecated and even removed from 1.25, we're not going to use it anymore
     pspEnabled: false
@@ -1622,11 +1624,10 @@ victoria-metrics-1:
       # victoria-metrics-1.server.scrape.enabled -- StackState doesn't use the scraping of VictoriaMetrics
       enabled: false
     # victoria-metrics-1.server.securityContext -- Custom security context settings for running as non-root
-    # Really needed?
-    # securityContext:
-    #   runAsUser: 65534
-    #   runAsGroup: 65534
-    #   fsGroup: 65534
+    securityContext:
+      runAsUser: 65534
+      runAsGroup: 65534
+      fsGroup: 65534
     serviceMonitor:
       # victoria-metrics-1.server.serviceMonitor.enabled -- If `true`, creates a Prometheus Operator `ServiceMonitor`
       enabled: false

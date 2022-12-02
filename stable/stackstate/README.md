@@ -599,6 +599,7 @@ stackstate/stackstate
 | stackstate.components.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
 | stackstate.components.wait.image.tag | string | `"1.0.7-2755960650"` | Container image tag for wait containers. |
+| stackstate.experimental.disableMultimetrics | boolean | `false` | Disable writing and storage of the old multimetrics format, this will break streams and checks, monitors and metric bindings use the new metrics |
 | stackstate.experimental.metrics | boolean | `false` | Enable the new experimental metrics apis and store |
 | stackstate.experimental.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |
 | stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
@@ -608,20 +609,23 @@ stackstate/stackstate
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
 | stackstate.receiver.baseUrl | string | `nil` | **DEPRECATED** Use stackstate.baseUrl instead |
 | stackstate.stackpacks.installed | list | `[]` | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) |
-| victoria-metrics-1.rbac.namespaced | bool | `true` |  |
-| victoria-metrics-1.rbac.pspEnabled | bool | `false` |  |
-| victoria-metrics-1.server.affinity | object | `{}` | Affinity settings for Victoria Metrics pod |
-| victoria-metrics-1.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms"}` | Extra arguments for Victoria Metrics |
-| victoria-metrics-1.server.fullnameOverride | string | `"stackstate-vm-1"` | Full name override |
-| victoria-metrics-1.server.persistentVolume.size | string | `"60Gi"` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
-| victoria-metrics-1.server.resources.limits.cpu | int | `1` |  |
-| victoria-metrics-1.server.resources.limits.memory | string | `"3584Mi"` |  |
-| victoria-metrics-1.server.resources.requests.cpu | string | `"200m"` |  |
-| victoria-metrics-1.server.resources.requests.memory | string | `"3584Mi"` |  |
-| victoria-metrics-1.server.retentionPeriod | int | `1` | How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1) |
-| victoria-metrics-1.server.scrape.enabled | bool | `false` | StackState doesn't use the scraping of VictoriaMetrics |
-| victoria-metrics-1.server.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` |
-| victoria-metrics-1.server.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
+| victoria-metrics-0.rbac.namespaced | bool | `true` |  |
+| victoria-metrics-0.rbac.pspEnabled | bool | `false` |  |
+| victoria-metrics-0.server.affinity | object | `{}` |  |
+| victoria-metrics-0.server.extraArgs."dedup.minScrapeInterval" | string | `"1ms"` |  |
+| victoria-metrics-0.server.fullnameOverride | string | `"stackstate-vm-1"` |  |
+| victoria-metrics-0.server.persistentVolume.size | string | `"60Gi"` |  |
+| victoria-metrics-0.server.resources.limits.cpu | int | `1` |  |
+| victoria-metrics-0.server.resources.limits.memory | string | `"3584Mi"` |  |
+| victoria-metrics-0.server.resources.requests.cpu | string | `"200m"` |  |
+| victoria-metrics-0.server.resources.requests.memory | string | `"3584Mi"` |  |
+| victoria-metrics-0.server.retentionPeriod | int | `1` |  |
+| victoria-metrics-0.server.scrape.enabled | bool | `false` |  |
+| victoria-metrics-0.server.securityContext.fsGroup | int | `65534` |  |
+| victoria-metrics-0.server.securityContext.runAsGroup | int | `65534` |  |
+| victoria-metrics-0.server.securityContext.runAsUser | int | `65534` |  |
+| victoria-metrics-0.server.serviceMonitor.enabled | bool | `false` |  |
+| victoria-metrics-0.server.serviceMonitor.extraLabels | object | `{}` |  |
 | zookeeper.commonLabels."app.kubernetes.io/part-of" | string | `"stackstate"` |  |
 | zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
 | zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |

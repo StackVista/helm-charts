@@ -78,6 +78,8 @@ spec:
     {{- end }}
 {{- end -}}
 
+{{- if not .Values.stackstate.experimental.disableMultimetrics -}}
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 {{- $k2esMultiMetricsToEsDeployment := fromYaml (include "stackstate.k2es.multiMetricsToEs.deployment" .) -}}
 {{- toYaml (merge $k2esMultiMetricsToEsDeployment $commonDeployment) -}}
+{{- end -}}
