@@ -410,7 +410,7 @@ stackstate:
       resources:
         limits:
           memory: "700Mi"
-          cpu: "500m"
+          cpu: "1500m"
           ephemeral-storage: "1Gi"
         requests:
           memory: "700Mi"
