@@ -1589,6 +1589,11 @@ victoria-metrics-0:
     # victoria-metrics-1.server.namespaced -- Make sure all resources are namespaced
     namespaced: true
   server:
+    # victoria-metrics-1.server -- Annotations for Victoria Metrics server pod
+    annotations:
+      ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
+      ad.stackstate.com/victoria-metrics-0-server.init_configs: "[{}]"
+      ad.stackstate.com/victoria-metrics-0-server.instances: '[ { "prometheus_url": "http://%%host%%:8428/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
     # victoria-metrics-1.server.affinity -- Affinity settings for Victoria Metrics pod
     affinity: {}
       # podAntiAffinity:
@@ -1631,5 +1636,7 @@ victoria-metrics-0:
     serviceMonitor:
       # victoria-metrics-1.server.serviceMonitor.enabled -- If `true`, creates a Prometheus Operator `ServiceMonitor`
       enabled: false
+      # victoria-metrics-1.server.serviceMonitor.interval -- Scrape interval for service monitor
+      interval: 15s
       # victoria-metrics-1.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
       extraLabels: {}

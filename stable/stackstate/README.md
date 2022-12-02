@@ -612,6 +612,9 @@ stackstate/stackstate
 | victoria-metrics-0.rbac.namespaced | bool | `true` |  |
 | victoria-metrics-0.rbac.pspEnabled | bool | `false` |  |
 | victoria-metrics-0.server.affinity | object | `{}` |  |
+| victoria-metrics-0.server.annotations."ad.stackstate.com/victoria-metrics-0-server.check_names" | string | `"[\"openmetrics\"]"` |  |
+| victoria-metrics-0.server.annotations."ad.stackstate.com/victoria-metrics-0-server.init_configs" | string | `"[{}]"` |  |
+| victoria-metrics-0.server.annotations."ad.stackstate.com/victoria-metrics-0-server.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
 | victoria-metrics-0.server.extraArgs."dedup.minScrapeInterval" | string | `"1ms"` |  |
 | victoria-metrics-0.server.fullnameOverride | string | `"stackstate-victoria-metrics-0"` |  |
 | victoria-metrics-0.server.persistentVolume.size | string | `"60Gi"` |  |
@@ -626,6 +629,7 @@ stackstate/stackstate
 | victoria-metrics-0.server.securityContext.runAsUser | int | `65534` |  |
 | victoria-metrics-0.server.serviceMonitor.enabled | bool | `false` |  |
 | victoria-metrics-0.server.serviceMonitor.extraLabels | object | `{}` |  |
+| victoria-metrics-0.server.serviceMonitor.interval | string | `"15s"` |  |
 | zookeeper.commonLabels."app.kubernetes.io/part-of" | string | `"stackstate"` |  |
 | zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
 | zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |
