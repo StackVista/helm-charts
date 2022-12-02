@@ -29,5 +29,8 @@ dependencies:
 - name: zookeeper
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 5.16.0
-digest: sha256:97c61ab8d7b1db2666959e3055483f0022719515521663df12773e0bdfe74b9c
-generated: "2022-11-28T11:24:06.983742+01:00"
+- name: victoria-metrics-single
+  repository: https://victoriametrics.github.io/helm-charts
+  version: 0.8.43
+digest: sha256:b24b4b09389f1edc35861d7e715ded4be1b7cbe6f30104a769447659f228d515
+generated: "2022-12-02T11:14:40.093356255+01:00"

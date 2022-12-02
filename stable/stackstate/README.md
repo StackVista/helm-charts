@@ -20,6 +20,7 @@ Current chart version is `5.2.0-snapshot.9`
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.31 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | kafka | 14.8.1 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 5.16.0 |
+| https://victoriametrics.github.io/helm-charts | victoria-metrics-1(victoria-metrics-single) | 0.8.43 |
 
 ## Required Values
 
@@ -285,9 +286,9 @@ stackstate/stackstate
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
 | stackstate.components.all.image.tag | string | `"master"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
-| stackstate.components.all.metricStore.queryApiEndpoint | string | `""` | **Required if `stackstate.experimental.metrics` is `true`** Host and port for promql api |
+| stackstate.components.all.metricStore.queryApiEndpoint | string | `"stackstate-vm-1:8428"` | **Required if `stackstate.experimental.metrics` is `true`** Host and port for promql api |
 | stackstate.components.all.metricStore.queryApiPath | string | `""` | Path under which `/api/v1/query` etc.. are accessible, the default ("") is fine for most stores |
-| stackstate.components.all.metricStore.remoteWriteEndpoint | string | `""` | **Required if `stackstate.experimental.metrics` is `true`** Host and port for prometheus remote write endpoint |
+| stackstate.components.all.metricStore.remoteWriteEndpoint | string | `"stackstate-vm-1:8428"` | **Required if `stackstate.experimental.metrics` is `true`** Host and port for prometheus remote write endpoint |
 | stackstate.components.all.metricStore.remoteWritePath | string | `"/api/v1/write"` | Remote write path used to ingest metrics, /api/v1/write is most common |
 | stackstate.components.all.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
@@ -607,6 +608,20 @@ stackstate/stackstate
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
 | stackstate.receiver.baseUrl | string | `nil` | **DEPRECATED** Use stackstate.baseUrl instead |
 | stackstate.stackpacks.installed | list | `[]` | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) |
+| victoria-metrics-1.rbac.namespaced | bool | `true` |  |
+| victoria-metrics-1.rbac.pspEnabled | bool | `false` |  |
+| victoria-metrics-1.server.affinity | object | `{}` | Affinity settings for Victoria Metrics pod |
+| victoria-metrics-1.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms"}` | Extra arguments for Victoria Metrics |
+| victoria-metrics-1.server.fullnameOverride | string | `"stackstate-vm-1"` | Full name override |
+| victoria-metrics-1.server.persistentVolume.size | string | `"60Gi"` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
+| victoria-metrics-1.server.resources.limits.cpu | int | `1` |  |
+| victoria-metrics-1.server.resources.limits.memory | string | `"3584Mi"` |  |
+| victoria-metrics-1.server.resources.requests.cpu | string | `"200m"` |  |
+| victoria-metrics-1.server.resources.requests.memory | string | `"3584Mi"` |  |
+| victoria-metrics-1.server.retentionPeriod | int | `1` | How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1) |
+| victoria-metrics-1.server.scrape.enabled | bool | `false` | StackState doesn't use the scraping of VictoriaMetrics |
+| victoria-metrics-1.server.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` |
+| victoria-metrics-1.server.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
 | zookeeper.commonLabels."app.kubernetes.io/part-of" | string | `"stackstate"` |  |
 | zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
 | zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |

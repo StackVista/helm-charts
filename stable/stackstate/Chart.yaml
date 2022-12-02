@@ -55,3 +55,8 @@ dependencies:
     # Bitnami official Helm repository stopped serving the old versions of the charts. This is the workaround https://github.com/bitnami/charts/issues/10539
     repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     condition: zookeeper.enabled
+  - name: victoria-metrics-single
+    alias: victoria-metrics-1
+    version: "0.8.43"
+    repository: https://victoriametrics.github.io/helm-charts
+    condition: stackstate.experimental.metrics
