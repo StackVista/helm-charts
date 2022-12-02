@@ -13,6 +13,7 @@ local common_repos = {
   stable: 'https://kubernetes-charts.storage.googleapis.com',
   stackstate: 'https://helm.stackstate.io',
   prometheus: 'https://prometheus-community.github.io/helm-charts',
+  victoriametrics: 'https://victoriametrics.github.io/helm-charts',
 };
 
 {
