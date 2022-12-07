@@ -13,6 +13,8 @@ imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote 
 env:
 {{- $serviceConfig := dict "ServiceName" "receiver" "ServiceConfig" .Values.stackstate.components.receiver }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
+- name: ELASTICSEARCH_URI
+  value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
 - name: RECEIVER_WRITE_STS_MULTI_METRICS
