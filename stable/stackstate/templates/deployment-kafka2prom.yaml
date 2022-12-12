@@ -58,6 +58,9 @@ imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote 
 {{- $kafka2promConfig := dict "kafka2promName" "kafka2prom" "kafka2promConfig" .Values.stackstate.components.kafka2prom }}
 {{- $kafka2promInitContainer := fromYaml (include "stackstate.kafka2prom.deployment.initcontainer" .) -}}
 {{- $kafka2promcontainer := fromYaml (include "stackstate.kafka2prom.deployment.container" .) }}
+{{- if gt .Values.stackstate.components.kafka2prom.replicaCount .Values.kafka.topic.stsMetricsV2.partitionCount -}}
+{{ fail "kafka2prom replica count cannot be bigger than stsMetricsV2 partition count" }}
+{{- end -}}
 
 metadata:
   name: {{ template "common.fullname.short" . }}-kafka2prom

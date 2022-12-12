@@ -1422,6 +1422,9 @@ kafka:
   # kafka.zookeeper.enabled -- Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**.
   zookeeper:
     enabled: false
+  topic:
+    stsMetricsV2:
+      partitionCount: 10
 minio:
   # minio.replicas -- Number of MinIO replicas.
   replicas: 1

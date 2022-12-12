@@ -22,6 +22,8 @@ env:
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
+- name: STS_METRICS_V2_PARTITION_COUNT
+  value: {{ .Values.kafka.topic.stsMetricsV2.partitionCount | quote }}
 image: "{{include "stackstate.kafkaTopicCreate.image.registry" .}}/{{ .Values.stackstate.components.kafkaTopicCreate.image.repository }}:{{ .Values.stackstate.components.kafkaTopicCreate.image.tag }}"
 imagePullPolicy: {{ .Values.stackstate.components.kafkaTopicCreate.image.pullPolicy | quote }}
 name: kafka-topic-create
