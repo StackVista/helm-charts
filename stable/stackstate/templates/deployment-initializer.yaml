@@ -40,6 +40,8 @@ env:
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
 - name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
   value: "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
+- name: CONFIG_FORCE_stackgraph_featureswitches_readCache
+  value: "false"
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.initializer.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.initializer.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.initializer.image.pullPolicy | quote }}
 name: initializer

@@ -409,15 +409,15 @@ stackstate:
       # stackstate.components.initializer.resources -- Resource allocation for `initializer` pods.
       resources:
         limits:
-          memory: "700Mi"
+          memory: "750Mi"
           cpu: "1500m"
           ephemeral-storage: "1Gi"
         requests:
-          memory: "700Mi"
+          memory: "750Mi"
           cpu: "500m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "460Mi"
+        baseMemoryConsumption: "350Mi"
         javaHeapMemoryFraction: "65"
       # stackstate.components.initializer.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
