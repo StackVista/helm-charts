@@ -16,3 +16,4 @@ Current chart version is `1.0.34`
 | rules.additionalLabels | object | `{}` | List of additional labels to add to all rules |
 | rules.enabled | bool | `true` | Whether or not to enable the rules |
 | rules.namespaceRegex | string | `"stackstate-.*"` | Regex to match namespaces to be monitored |
+| rules.podNoCpuCheckRegex | string | `".*spotlight-worker.*"` | Regex to match namespaces to be monitored |

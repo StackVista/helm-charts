@@ -13,7 +13,7 @@ spec:
     - name: stackstate-cpu-alerts
       rules:
         - alert: StackStateContainerHighCpuUsage
-          expr: sum(avg_over_time(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{namespace=~{{ .Values.rules.namespaceRegex | quote }},container!~{{ .Values.rules.containersNoCpuCheckRegex | quote }}}[15m])) by (pod,container) / sum(kube_pod_container_resource_requests{namespace=~{{ .Values.rules.namespaceRegex | quote }},container=~{{ .Values.rules.containersNoCpuCheckRegex | quote }},resource="cpu"}) by (pod,container) * 100 > 110
+          expr: sum(avg_over_time(node_namespace_pod_container:container_cpu_usage_seconds_total:sum_irate{namespace=~{{ .Values.rules.namespaceRegex | quote }},pod!~{{ .Values.rules.podNoCpuCheckRegex | quote }}}[15m])) by (pod,container) / sum(kube_pod_container_resource_requests{namespace=~{{ .Values.rules.namespaceRegex | quote }},pod!~{{ .Values.rules.podNoCpuCheckRegex | quote }},resource="cpu"}) by (pod,container) * 100 > 110
           for: 15m
           labels:
             severity: warning

@@ -5,6 +5,8 @@ rules:
   additionalLabels: {}
   # rules.namespaceRegex -- Regex to match namespaces to be monitored
   namespaceRegex: 'stackstate-.*'
+  # rules.podNoCpuCheckRegex -- Regex to match namespaces to be monitored
+  podNoCpuCheckRegex: '.*spotlight-worker.*'
 grafana:
   dashboards:
     # grafana.dashboards.enabled -- Whether or not to enable the Grafana dashboards
