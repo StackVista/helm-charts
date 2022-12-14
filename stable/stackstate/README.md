@@ -228,6 +228,7 @@ stackstate/stackstate
 | kafka.readinessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
 | kafka.replicaCount | int | `3` | Number of Kafka replicas. |
 | kafka.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"2Gi"}}` | Kafka resources per pods. |
+| kafka.topic.stsMetricsV2.partitionCount | int | `10` |  |
 | kafka.transactionStateLogReplicationFactor | int | `2` |  |
 | kafka.volumePermissions.enabled | bool | `false` |  |
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |

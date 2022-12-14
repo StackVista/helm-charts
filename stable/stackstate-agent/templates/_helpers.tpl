@@ -70,6 +70,10 @@ checksum/override-configmap: {{ include (print $.Template.BasePath "/node-agent-
 {{- end }}
 {{- end }}
 
+{{- define "stackstate-agent.logsAgent.configmap.override.checksum" -}}
+checksum/override-configmap: {{ include (print $.Template.BasePath "/logs-agent-configmap.yaml") . | sha256sum }}
+{{- end }}
+
 {{- define "stackstate-agent.checksAgent.configmap.override.checksum" -}}
 {{- if .Values.checksAgent.config.override }}
 checksum/override-configmap: {{ include (print $.Template.BasePath "/checks-agent-configmap.yaml") . | sha256sum }}

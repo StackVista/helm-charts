@@ -152,6 +152,19 @@ stackstate/stackstate-agent
 | kube-state-metrics.image.registry | string | `"quay.io"` | Registry where docker image will be pulled from. This overrides the value in the bitnami chart. |
 | kube-state-metrics.image.repository | string | `"stackstate/kube-state-metrics"` | The path inside the registry where the image is hosted. This overrides the value in the bitnami chart. |
 | kube-state-metrics.image.tag | string | `"2.6.0-focal-20220826-r2.20220923.1321"` | The version tag of the image to be used during deployment. This overrides the value in the bitnami chart. |
+| logsAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
+| logsAgent.enabled | bool | `false` | Enable / disable k8s pod log collection |
+| logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
+| logsAgent.image.repository | string | `"stackstate/promtail"` | Base container image repository. |
+| logsAgent.image.tag | string | `"2.7.1"` | Default container image tag. |
+| logsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| logsAgent.priorityClassName | string | `""` | Priority class for logsAgent pods. |
+| logsAgent.resources.limits.memory | string | `"192Mi"` |  |
+| logsAgent.resources.requests.cpu | string | `"50m"` | Memory resource requests. |
+| logsAgent.resources.requests.memory | string | `"128Mi"` |  |
+| logsAgent.serviceaccount.annotations | object | `{}` | Annotations for the service account for the daemonset pods |
+| logsAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| logsAgent.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":100},"type":"RollingUpdate"}` | The update strategy for the DaemonSet object. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | nodeAgent.apm.enabled | bool | `true` | Enable / disable the nodeAgent APM module. |
