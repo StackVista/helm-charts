@@ -131,6 +131,7 @@ spec:
       serviceAccountName: {{ .Release.Name }}-checks-agent
     {{- with .Values.checksAgent.nodeSelector }}
       nodeSelector:
+        {{ template "label.os" . }}: {{ .Values.targetSystem }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- with .Values.checksAgent.affinity }}

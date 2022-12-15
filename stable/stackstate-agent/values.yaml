@@ -21,6 +21,9 @@ nameOverride: ""
 # fullnameOverride -- Override the fullname of the chart.
 fullnameOverride: ""
 
+# targetSystem -- Target OS for this deployment (possible values: linux)
+targetSystem: "linux"
+
 all:
   image:
     # all.image.registry -- The image registry to use.

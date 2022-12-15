@@ -4,7 +4,7 @@ dependencies:
   version: 5.2.0-snapshot.31
 - name: stackstate-agent
   repository: file://../stackstate-agent/
-  version: 3.2.0
+  version: 3.2.1
 - name: common
   repository: file://../common/
   version: 0.4.22
@@ -32,5 +32,5 @@ dependencies:
 - name: victoria-metrics-single
   repository: https://victoriametrics.github.io/helm-charts
   version: 0.8.44
-digest: sha256:74c04db11d70350c6ff592dd4e096651a49eab3179f8d1a9f4261e5a84ad73b3
-generated: "2022-12-15T09:42:32.43049174+01:00"
+digest: sha256:9f7acddc40213fb7645cc6aa4d41bb9011d55e15f264a82a7603e6b18f6a8265
+generated: "2022-12-15T11:29:34.819327+01:00"

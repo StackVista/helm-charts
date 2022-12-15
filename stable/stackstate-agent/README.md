@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `3.2.0`
+Current chart version is `3.2.1`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -225,3 +225,4 @@ stackstate/stackstate-agent
 | stackstate.cluster.authToken | string | `""` | Provide a token to enable secure communication between the agent and the cluster agent. |
 | stackstate.cluster.name | string | `nil` | **PROVIDE KUBERNETES CLUSTER NAME HERE** Name of the Kubernetes cluster where the agent will be installed. |
 | stackstate.url | string | `nil` | **PROVIDE STACKSTATE URL HERE** URL of the StackState installation to receive data from the agent. |
+| targetSystem | string | `"linux"` | Target OS for this deployment (possible values: linux) |

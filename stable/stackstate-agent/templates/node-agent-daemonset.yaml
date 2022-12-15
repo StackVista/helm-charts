@@ -43,6 +43,7 @@ spec:
       serviceAccountName: {{ .Release.Name }}-node-agent
     {{- with .Values.nodeAgent.nodeSelector }}
       nodeSelector:
+        {{ template "label.os" . }}: {{ .Values.targetSystem }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- with .Values.nodeAgent.affinity }}
