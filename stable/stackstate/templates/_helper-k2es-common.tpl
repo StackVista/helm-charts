@@ -35,7 +35,7 @@ env:
 {{ $diskSpaceMB := (include "stackstate.storage.to.megabytes" .Values.elasticsearch.volumeClaimTemplate.resources.requests.storage) }}
 {{ if $diskSpaceMB  }}
 - name: CONFIG_FORCE_stackstate_elasticsearchDiskSpaceMB
-  value: "{{ div (mul $diskSpaceMB .Values.elasticsearch.replicas) (add1 $replicationFactor) }}"
+  value: "{{ div (mul (div (mul $diskSpaceMB .Values.elasticsearch.replicas) (add1 $replicationFactor)) .esDiskSpaceShare) 100 }}"
 {{ end }}
 - name: ELASTICSEARCH_URI
   value: "http://{{ include "stackstate.es.endpoint" . }}"

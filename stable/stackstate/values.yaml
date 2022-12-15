@@ -626,6 +626,8 @@ stackstate:
       affinity: {}
       # stackstate.components.receiver.additionalLogging -- Additional logback config
       additionalLogging: ""
+      # stackstate.components.receiver.esDiskSpaceShare -- How much disk space from ElasticSearch can use for k8s log ingestion
+      esDiskSpaceShare: "30"
     router:
       accesslog:
         # stackstate.components.router.accesslog.enabled -- Enable access logging on the router
