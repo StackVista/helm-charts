@@ -319,7 +319,7 @@ clusterAgent:
 
 logsAgent:
   # logsAgent.enabled -- Enable / disable k8s pod log collection
-  enabled: true
+  enabled: false
 
   # logsAgent.priorityClassName -- Priority class for logsAgent pods.
   priorityClassName: ""
