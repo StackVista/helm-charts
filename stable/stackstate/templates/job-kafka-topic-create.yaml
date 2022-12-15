@@ -18,6 +18,8 @@ command:
 env:
 - name: KAFKA_REPLICAS
   value: {{ .Values.kafka.replicaCount | quote }}
+- name: KAFKA_TOPIC_RETENTION
+  value: {{ .Values.kafka.topicRetention | int }}
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
 - name: ZOOKEEPER_QUORUM

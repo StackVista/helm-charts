@@ -1396,6 +1396,8 @@ kafka:
     initialDelaySeconds: 45
   # kafka.replicaCount -- Number of Kafka replicas.
   replicaCount: 3
+  # kafka.topicRetention -- Max time in milliseconds to retain data in each topic.
+  topicRetention: 86400000
   persistence:
     # kafka.persistence.size -- Size of persistent volume for each Kafka pod
     size: 50Gi

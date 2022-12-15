@@ -3,6 +3,7 @@
 set -euxo pipefail
 
 KAFKA_REPLICAS="${KAFKA_REPLICAS:-1}"
+KAFKA_TOPIC_RETENTION="${KAFKA_TOPIC_RETENTION:-86400000}"
 
 if (( KAFKA_REPLICAS >= 5 )); then
   defaultReplicationFactor="3"
@@ -35,7 +36,7 @@ function createOrUpdateTopic() {
 }
 
 # For ephemeral data we can do time-based retention, to use less resources
-ephemeralRetention="retention.ms=86400000"
+ephemeralRetention="retention.ms=$KAFKA_TOPIC_RETENTION"
 # For persistent topics (which are required for consistency) we disable retention
 persistentRetention="retention.ms=-1"
 
