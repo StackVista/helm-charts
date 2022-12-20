@@ -25,6 +25,7 @@ data:
         - role: pod
       pipeline_stages:
         - docker: {}
+        - cri: {}
       relabel_configs:
         - action: replace
           source_labels:
