@@ -46,6 +46,13 @@
 {{- $xms := include "stackstate.server.memory.resource" $xmsConfig | int }}
 {{- $xmxParam := ( (gt $xmx 0) | ternary (printf "-Xmx%dm" $xmx) "") }}
 {{- $xmsParam := ( (gt $xms 0) | ternary (printf "-Xms%dm" $xms) "") }}
+{{/*
+Okay here it goes: Java has a memory area called 'DirectMemory' which is not on-heap, not off-heap but a third kind of memory. It has its own limit,
+which by default is the same as Xmx. Because we want to separate on from off-heap memory this is very unfortunate. Also, this area has its own OOM condition.
+For now we want to avoid hitting that OOM condition, so we basically give unbounded Direct Memory. This means that ultimately memory will be capped by the pod limit
+and avoids hitting this additional memory limit.
+*/}}
+{{- $directMemParam := "-XX:MaxDirectMemorySize=20000m" }}
 {{- if .Values.stackstate.java.trustStorePassword }}
 - name: JAVA_TRUSTSTORE_PASSWORD
   valueFrom:
@@ -55,13 +62,13 @@
 {{- end }}
 {{- if not $openEnvVars.JAVA_OPTS }}
 - name: "JAVA_OPTS"
-  value: {{ $xmxParam }} {{ $xmsParam }}
+  value: "{{ $directMemParam }} {{ $xmxParam }} {{ $xmsParam }}"
 {{- end }}
 {{- if $openEnvVars }}
   {{- range $key, $value := $openEnvVars }}
   {{- if eq $key "JAVA_OPTS" }}
 - name: {{ $key }}
-  value: "{{ $xmxParam }} {{ $xmsParam }} {{ $value }}"
+  value: "{{ $directMemParam }} {{ $xmxParam }} {{ $xmsParam }} {{ $value }}"
   {{- else }}
 - name: {{ $key }}
   value: {{ $value | quote }}
