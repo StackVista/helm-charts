@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `3.2.2`
+Current chart version is `3.3.0`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -218,6 +218,7 @@ stackstate/stackstate-agent
 | nodeAgent.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
 | nodeAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | nodeAgent.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":100},"type":"RollingUpdate"}` | The update strategy for the DaemonSet object. |
+| openShiftLogging.installSecret | bool | `false` | Install a secret for logging on openshift |
 | processAgent.checkIntervals.connections | int | `30` | Override the default value of the connections check interval in seconds. |
 | processAgent.checkIntervals.container | int | `30` | Override the default value of the container check interval in seconds. |
 | processAgent.checkIntervals.process | int | `30` | Override the default value of the process check interval in seconds. |
