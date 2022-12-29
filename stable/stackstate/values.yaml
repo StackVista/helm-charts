@@ -1173,7 +1173,7 @@ hbase:
       tag: 4.7.1
   console:
     # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
-    enabled: true
+    enabled: false
   hbase:
     master:
       # hbase.hbase.master.replicaCount -- Number of HBase master node replicas.
