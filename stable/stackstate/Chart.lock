@@ -13,7 +13,7 @@ dependencies:
   version: 7.17.2-stackstate.5
 - name: hbase
   repository: file://../hbase/
-  version: 0.1.147
+  version: 0.1.148
 - name: kafka
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 14.8.1
@@ -32,5 +32,5 @@ dependencies:
 - name: victoria-metrics-single
   repository: https://victoriametrics.github.io/helm-charts
   version: 0.8.48
-digest: sha256:50ec777b25b23ca63901a437ae4d45862c96f1e7ed07bf717e76ef4bd20f1d6f
-generated: "2022-12-28T14:11:20.627305962+01:00"
+digest: sha256:bf652066184a4943d6afeb87687940c869944b683a0807829769e455ee9a7de2
+generated: "2022-12-29T12:45:10.106963Z"
