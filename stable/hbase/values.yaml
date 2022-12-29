@@ -71,6 +71,8 @@ console:
     requests:
       memory: "512Mi"
       cpu: "50m"
+  # console.replicaCount -- Default amount of console replicas to provision.
+  replicaCount: 0
   # console.strategy -- The strategy for the Deployment object.
   strategy:
     type: RollingUpdate

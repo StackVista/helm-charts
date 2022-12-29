@@ -41,6 +41,7 @@ Current chart version is `0.1.147`
 | console.image.repository | string | `"stackstate/stackgraph-console"` | Base container image repository for console pods. |
 | console.image.tag | string | `nil` | Container image tag for console pods, defaults to `stackgraph.image.tag` |
 | console.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| console.replicaCount | int | `0` | Default amount of console replicas to provision. |
 | console.resources | object | `{"limits":{"cpu":"500m","memory":"1Gi"},"requests":{"cpu":"50m","memory":"512Mi"}}` | Resources to allocate for HDFS console. |
 | console.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
 | console.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
