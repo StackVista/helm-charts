@@ -29,7 +29,7 @@ metadata:
     app.kubernetes.io/component: console
   name: {{ template "common.fullname.short" . }}-console
 spec:
-  replicas: 1
+  replicas: {{ .Values.console.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/component: console
