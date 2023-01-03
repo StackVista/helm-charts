@@ -42,6 +42,9 @@ metadata:
     kubernetes.io/ingress.class: ingress-nginx-external
     nginx.ingress.kubernetes.io/ingress.class: ingress-nginx-external
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_cookie_flags AkkaHttpPac4jSession secure;
+      proxy_cookie_flags pac4jCsrfToken secure;
 spec:
   tls:
     - hosts:
