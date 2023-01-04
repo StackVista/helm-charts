@@ -1172,8 +1172,8 @@ hbase:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
       tag: 4.7.1
   console:
-    # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
-    enabled: false
+    # hbase.console.enabled -- Enabled by default for debugging, but with 0 replicas. Manually scale up to 1 replica and open a shell in the container to access the stackgraph console.
+    enabled: true
   hbase:
     master:
       # hbase.hbase.master.replicaCount -- Number of HBase master node replicas.

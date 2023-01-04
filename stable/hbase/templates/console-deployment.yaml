@@ -83,5 +83,5 @@ spec:
 {{- if .Values.console.enabled }}
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 {{- $stackstateHbaseConsoleDeployment := fromYaml (include "hbase.console.deployment" .) -}}
-{{- toYaml (merge $stackstateHbaseConsoleDeployment $commonDeployment) -}}
+{{- toYaml (mergeOverwrite $commonDeployment $stackstateHbaseConsoleDeployment) -}}
 {{- end -}}
