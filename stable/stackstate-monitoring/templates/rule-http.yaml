@@ -26,7 +26,27 @@ spec:
             message: {{`The StackState api in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.`}}
             runbook_url: https://www.notion.so/stackstate/Runbook-API-latency-alert-actions-1d9754251be541a296a8ed949dbb2a25
           expr: |
-            akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="api", path!="/export", path!="/api/export", path!="/api/script", path!="/api/telemetry"} > 5
+            akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="api", path!="/export", path!="/api/export", path!="/api/script", path!="/api/telemetry", path!="/api/annotations/latest"} > 5
+          for: 5m
+          labels:
+            severity: warning
+            alert_resource: {{` '{{ $labels.service }}' `}}
+        - alert: StackStateLatestAnnotationsApiLatency
+          annotations:
+            message: {{`The StackState latest annotations api in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.`}}
+            runbook_url: https://www.notion.so/stackstate/Runbook-API-latency-alert-actions-1d9754251be541a296a8ed949dbb2a25
+          expr: |
+            akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="api", path="/api/annotations/latest", product!~"AutonomousAnomalyDetector.*|python-requests"} > 5
+          for: 5m
+          labels:
+            severity: warning
+            alert_resource: {{` '{{ $labels.service }}' `}}
+        - alert: StackStateApiAnomalyDetector
+          annotations:
+            message: {{`Anomaly detector is experiencing slow responses from the StackState api in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.`}}
+            runbook_url: https://www.notion.so/stackstate/Runbook-API-latency-alert-actions-1d9754251be541a296a8ed949dbb2a25
+          expr: |
+            akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="api", product=~"AutonomousAnomalyDetector.*|python-requests"} > 30
           for: 5m
           labels:
             severity: warning
