@@ -205,12 +205,12 @@ stackstate.authorization.powerUserGroups = ${stackstate.authorization.powerUserG
 stackstate.authorization.guestGroups = ${stackstate.authorization.guestGroups} {{ .Values.stackstate.authentication.roles.guest | toJson }}
 {{- end }}
 
-{{- if .Values.stackstate.authentication.servicetoken.bootstrap.token }}
+{{- if .Values.stackstate.authentication.serviceToken.bootstrap.token }}
 {{- $authTypes = append $authTypes "serviceTokenAuthServer" }}
 stackstate.api.authentication.authServer.serviceTokenAuthServer.bootstrap {
-  token = {{ .Values.stackstate.authentication.servicetoken.bootstrap.token | quote }}
-  roles = [ {{- .Values.stackstate.authentication.servicetoken.bootstrap.roles | compact | join ", " -}} ]
-  ttl = {{ .Values.stackstate.authentication.servicetoken.bootstrap.ttl | quote }}
+  token = {{ .Values.stackstate.authentication.serviceToken.bootstrap.token | quote }}
+  roles = [ {{- .Values.stackstate.authentication.serviceToken.bootstrap.roles | compact | join ", " -}} ]
+  ttl = {{ .Values.stackstate.authentication.serviceToken.bootstrap.ttl | quote }}
 }
 {{- end }}
 
