@@ -1009,13 +1009,13 @@ stackstate:
       powerUser: []
       # stackstate.authentication.roles.guest -- Extend the role names that have guest permissions (default: 'stackstate-guest')
       guest: []
-    servicetoken:
+    serviceToken:
       bootstrap:
-        # stackstate.authentication.servicetoken.bootstrap.token -- The service token to set as bootstrap token
+        # stackstate.authentication.serviceToken.bootstrap.token -- The service token to set as bootstrap token
         token: ""
-        # stackstate.authentication.servicetoken.bootstrap.roles -- The roles the service token assumes when it’s used for authentication
+        # stackstate.authentication.serviceToken.bootstrap.roles -- The roles the service token assumes when it’s used for authentication
         roles: []
-        # stackstate.authentication.servicetoken.bootstrap.ttl -- The amount of time the service token is valid for
+        # stackstate.authentication.serviceToken.bootstrap.ttl -- The amount of time the service token is valid for
         ttl: 24h
   admin:
     authentication:
