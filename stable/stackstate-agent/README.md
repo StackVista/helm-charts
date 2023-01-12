@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `3.3.0`
+Current chart version is `3.4.0`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -92,6 +92,10 @@ stackstate/stackstate-agent
 | checksAgent.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | checksAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | clusterAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
+| clusterAgent.collection.kubeStateMetrics.annotationsAsTags | object | `{}` | Extra annotations to collect from resources and to turn into StackState tag. |
+| clusterAgent.collection.kubeStateMetrics.clusterCheck | bool | `false` | For large clusters where the Kubernetes State Metrics Check Core needs to be distributed on dedicated workers. |
+| clusterAgent.collection.kubeStateMetrics.enabled | bool | `true` | Enable / disable the cluster agent kube-state-metrics collection. |
+| clusterAgent.collection.kubeStateMetrics.labelsAsTags | object | `{}` | Extra labels to collect from resources and to turn into StackState tag. # It has the following structure: # labelsAsTags: #   <resource1>:        # can be pod, deployment, node, etc. #     <label1>: <tag1>  # where <label1> is the kubernetes label and <tag1> is the StackState tag #     <label2>: <tag2> #   <resource2>: #     <label3>: <tag3> # # Warning: the label must match the transformation done by kube-state-metrics, # for example tags.stackstate/version becomes tags_stackstate_version. |
 | clusterAgent.collection.kubernetesEvents | bool | `true` | Enable / disable the cluster agent events collection. |
 | clusterAgent.collection.kubernetesMetrics | bool | `true` | Enable / disable the cluster agent metrics collection. |
 | clusterAgent.collection.kubernetesResources.configmaps | bool | `true` | Enable / disable collection of ConfigMaps. |
@@ -143,7 +147,7 @@ stackstate/stackstate-agent
 | clusterAgent.serviceaccount.annotations | object | `{}` | Annotations for the service account for the cluster agent pods |
 | clusterAgent.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | clusterAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| dependencies.kubeStateMetrics.enabled | bool | `true` | Whether or not to install the `kube-state-metrics` Deployment along with the StackState cluster agent. Set to `false` if you have `kube-state-metrics` already installed on the cluster. |
+| dependencies.kubeStateMetrics.enabled | bool | `false` | Whether or not to install the `kube-state-metrics` Deployment along with the StackState cluster agent. Set to `false` if you have `kube-state-metrics` already installed on the cluster. This is due to be deprecated in coming releases, replaced by kube-state-metrics core check clusterAgent.collection.kubeStateMetrics. |
 | fullnameOverride | string | `""` | Override the fullname of the chart. |
 | global.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | global.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |

@@ -18,6 +18,10 @@ data:
     instances:
       - collection_interval: {{ .Values.clusterAgent.config.topology.collectionInterval }}
         resources:{{ .Values.clusterAgent.collection.kubernetesResources | toYaml | nindent 10 }}
+  {{- if .Values.clusterAgent.collection.kubeStateMetrics.enabled }}
+  kube_state_metrics_core_conf: |
+    {{- include "cluster-agent-kube-state-metrics" . | nindent 6 }}
+  {{- end }}
 {{- if $checksAgentKSM }}
   kubernetes_state_conf: |
     cluster_check: true

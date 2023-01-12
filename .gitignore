@@ -7,3 +7,6 @@
 *.swp
 .DS_Store
 .jsonnet-libs/example.json
+
+# IDE 
+.vscode

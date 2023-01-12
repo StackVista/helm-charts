@@ -72,7 +72,7 @@ spec:
           - name: STS_COLLECT_KUBERNETES_TOPOLOGY
             value: {{ .Values.clusterAgent.collection.kubernetesTopology | quote }}
           - name: STS_LEADER_ELECTION
-            value: "false"
+            value: "true"
           - name: STS_LOG_LEVEL
             value: {{ .Values.clusterAgent.logLevel | quote }}
           - name: STS_CLUSTER_AGENT_CMD_PORT
@@ -107,6 +107,11 @@ spec:
           - name: config-override-volume
             mountPath: /etc/stackstate-agent/conf.d/kubernetes_api_topology.d/conf.yaml
             subPath: kubernetes_api_topology_conf
+          {{- if .Values.clusterAgent.collection.kubeStateMetrics.enabled }}
+          - name: config-override-volume
+            mountPath: /etc/stackstate-agent/conf.d/kubernetes_state_core.d/conf.yaml
+            subPath: kube_state_metrics_core_conf
+          {{- end }}
           {{- if .Values.clusterAgent.config.override }}
           {{- range .Values.clusterAgent.config.override }}
           - name: config-override-volume

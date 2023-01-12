@@ -13,8 +13,8 @@ global:
 
 dependencies:
   kubeStateMetrics:
-    # dependencies.kubeStateMetrics.enabled -- Whether or not to install the `kube-state-metrics` Deployment along with the StackState cluster agent. Set to `false` if you have `kube-state-metrics` already installed on the cluster.
-    enabled: true
+    # dependencies.kubeStateMetrics.enabled -- Whether or not to install the `kube-state-metrics` Deployment along with the StackState cluster agent. Set to `false` if you have `kube-state-metrics` already installed on the cluster. This is due to be deprecated in coming releases, replaced by kube-state-metrics core check clusterAgent.collection.kubeStateMetrics.
+    enabled: false
 
 # nameOverride -- Override the name of the chart.
 nameOverride: ""
@@ -193,6 +193,42 @@ clusterAgent:
     kubernetesTimeout: 10
     # clusterAgent.collection.kubernetesTopology -- Enable / disable the cluster agent topology collection.
     kubernetesTopology: true
+    kubeStateMetrics:
+      # clusterAgent.collection.kubeStateMetrics.enabled -- Enable / disable the cluster agent kube-state-metrics collection.
+      enabled: true
+      # clusterAgent.collection.kubeStateMetrics.clusterCheck -- For large clusters where the Kubernetes State Metrics Check Core needs to be distributed on dedicated workers.
+      clusterCheck: false
+      # clusterAgent.collection.kubeStateMetrics.labelsAsTags -- Extra labels to collect from resources and to turn into StackState tag.
+      ## It has the following structure:
+      ## labelsAsTags:
+      ##   <resource1>:        # can be pod, deployment, node, etc.
+      ##     <label1>: <tag1>  # where <label1> is the kubernetes label and <tag1> is the StackState tag
+      ##     <label2>: <tag2>
+      ##   <resource2>:
+      ##     <label3>: <tag3>
+      ##
+      ## Warning: the label must match the transformation done by kube-state-metrics,
+      ## for example tags.stackstate/version becomes tags_stackstate_version.
+      labelsAsTags: {}
+      #  pod:
+      #    app: app
+      #  node:
+      #    zone: zone
+      #    team: team
+
+      # clusterAgent.collection.kubeStateMetrics.annotationsAsTags -- Extra annotations to collect from resources and to turn into StackState tag.
+
+      ## It has the following structure:
+      ## annotationsAsTags:
+      ##   <resource1>:        # can be pod, deployment, node, etc.
+      ##     <annotation1>: <tag1>  # where <annotation1> is the kubernetes annotation and <tag1> is the StackState tag
+      ##     <annotation2>: <tag2>
+      ##   <resource2>:
+      ##     <annotation3>: <tag3>
+      ##
+      ## Warning: the annotation must match the transformation done by kube-state-metrics,
+      ## for example tags.stackstate/version becomes tags_stackstate_version.
+      annotationsAsTags: {}
     kubernetesResources:
       # clusterAgent.collection.kubernetesResources.namespaces -- Enable / disable collection of Namespaces.
       namespaces: true
