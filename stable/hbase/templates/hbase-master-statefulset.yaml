@@ -18,19 +18,33 @@ env:
 {{- include "hbase.hbase.commonEnv" . }}
 {{- include "all.commonEnv" . }}
 {{- include "hbase.master.commonEnv" . }}
+{{- if .Values.hbase.master.experimental.execLivenessProbe.enabled }}
+- name: HBASE_MASTER_NAMESPACE
+  valueFrom:
+    fieldRef:
+      fieldPath: metadata.namespace
+- name: HBASE_MASTER_LIVENESS_HTTP_PORT
+  value: {{ .Values.hbase.master.livenessProbe.httpPort | quote }}
+{{- end }}
 ports:
 - containerPort: 16000
   name: master
-- containerPort: 16010
+- containerPort: {{ .Values.hbase.master.livenessProbe.httpPort }}
   name: masterinfo
 {{- if .Values.all.metrics.enabled }}
 - containerPort: 9404
   name: metrics
 {{- end }}
 livenessProbe:
+{{- if .Values.hbase.master.experimental.execLivenessProbe.enabled }}
+  exec:
+    command:
+    - /opt/hbase/scripts/hbase-master-livenessProbe.sh
+{{- else }}
   httpGet:
     path: /
     port: masterinfo
+{{- end }}
 readinessProbe:
   httpGet:
     path: /

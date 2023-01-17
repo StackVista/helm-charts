@@ -40,7 +40,7 @@ stackgraph:
     # stackgraph.image.pullPolicy -- The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below).
     pullPolicy: IfNotPresent
     # stackgraph.image.tag -- The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below).
-    tag: 4.11.4
+    tag: 4.11.5
 console:
   # console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
   enabled: true
@@ -103,6 +103,11 @@ hbase:
     # hbase.securityContext.runAsUser -- UID of the Linux user to use for all pod.
     runAsUser: 65534
   master:
+    experimental:
+      execLivenessProbe:
+        # hbase.master.experimental.execLivenessProbe.enabled -- Whether to use a new scripted livenessProbe instead of the original HTTP check.
+        # Requires >= 4.11.5 version of the StackGraph docker images
+        enabled: false
     extraEnv:
       # hbase.master.extraEnv.open -- Extra open environment variables to inject into pods.
       open: {}
@@ -115,6 +120,9 @@ hbase:
       repository: stackstate/hbase-master
       # hbase.master.image.tag -- Container image tag for HBase masters, defaults to `stackgraph.image.tag`
       tag:
+    livenessProbe:
+      # hbase.master.livenessProbe.httpPort -- The port of the Hbase master service to perform HTTP health checks upon.
+      httpPort: 16010
     # hbase.master.replicaCount -- Number of pods for HBase masters.
     replicaCount: 1
     # hbase.master.resources -- Resources to allocate for HBase masters.
