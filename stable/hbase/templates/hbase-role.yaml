@@ -1,0 +1,17 @@
+{{- define "hbase.hbase.role" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-hbase
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods/log
+  verbs:
+  - get
+{{- end -}}
+
+{{- if .Values.hbase.master.experimental.execLivenessProbe.enabled -}}
+{{- $commonRole := fromYaml (include "common.role" .) -}}
+{{- $stackstateHbaseHbaseRole := fromYaml (include "hbase.hbase.role" .) -}}
+{{- toYaml (merge $stackstateHbaseHbaseRole $commonRole) -}}
+{{- end -}}

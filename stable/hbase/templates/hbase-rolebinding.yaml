@@ -1,0 +1,18 @@
+{{- define "hbase.hbase.rolebinding" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-hbase
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "common.fullname.short" . }}-hbase
+subjects:
+- kind: ServiceAccount
+  name: {{ template "common.fullname.short" . }}-hbase
+  namespace: {{ .Release.Namespace }}
+{{- end -}}
+
+{{- if .Values.hbase.master.experimental.execLivenessProbe.enabled -}}
+{{- $commonRoleBinding := fromYaml (include "common.rolebinding" .) -}}
+{{- $stackstateHbaseHbaseRoleBinding := fromYaml (include "hbase.hbase.rolebinding" .) -}}
+{{- toYaml (merge $stackstateHbaseHbaseRoleBinding $commonRoleBinding) -}}
+{{- end -}}

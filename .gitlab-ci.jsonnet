@@ -257,6 +257,7 @@ local update_sg_version = {
     ],
     script: [
       '.gitlab/update_sg_version.sh stable/hbase ""',
+      '.gitlab/update_sg_version.sh stable/stackstate ""',
       '.gitlab/update_chart_version.sh stable/stackstate hbase local:stable/hbase',
       '.gitlab/commit_changes_and_push.sh StackGraph $UPDATE_STACKGRAPH_VERSION',
     ],
