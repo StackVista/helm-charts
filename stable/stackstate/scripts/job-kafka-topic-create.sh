@@ -53,8 +53,6 @@ PIDS+=($!)
 createOrUpdateTopic "sts_intake_health" "10" "${persistentRetention}" &
 PIDS+=($!)
 
-createOrUpdateTopic "sts_connection_beat_events" "1" "${ephemeralRetention}" &
-PIDS+=($!)
 createOrUpdateTopic "sts_topology_events" "1" "${ephemeralRetention}" &
 PIDS+=($!)
 createOrUpdateTopic "sts_generic_events" "1" "${ephemeralRetention}" &
