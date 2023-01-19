@@ -416,7 +416,7 @@ stackstate/stackstate
 | stackstate.components.kafka2prom.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.kafka2prom.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `kafka2prom` pods. |
 | stackstate.components.kafka2prom.replicaCount | int | `1` | Number of `kafka2prom` replicas. |
-| stackstate.components.kafka2prom.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"1Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"1Gi"}}` | Resource allocation for `kafka2prom` pods. |
+| stackstate.components.kafka2prom.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"1Gi"},"requests":{"cpu":"300m","ephemeral-storage":"1Mi","memory":"1Gi"}}` | Resource allocation for `kafka2prom` pods. |
 | stackstate.components.kafka2prom.sizing.baseMemoryConsumption | string | `"600Mi"` |  |
 | stackstate.components.kafka2prom.sizing.javaHeapMemoryFraction | string | `"85"` |  |
 | stackstate.components.kafka2prom.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -606,7 +606,7 @@ stackstate/stackstate
 | stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
 | stackstate.components.wait.image.tag | string | `"1.0.7-2755960650"` | Container image tag for wait containers. |
 | stackstate.experimental.disableMultimetrics | boolean | `false` | Disable writing and storage of the old multimetrics format, this will break streams and checks, monitors and metric bindings use the new metrics |
-| stackstate.experimental.metrics | boolean | `false` | Enable the new experimental metrics apis and store |
+| stackstate.experimental.metrics | boolean | `true` | Enable the new experimental metrics apis and store |
 | stackstate.experimental.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |
 | stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |

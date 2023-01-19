@@ -453,7 +453,7 @@ stackstate:
           ephemeral-storage: "1Gi"
         requests:
           memory: "1Gi"
-          cpu: "1000m"
+          cpu: "300m"
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "600Mi"
@@ -1091,7 +1091,7 @@ stackstate:
     baseUrl:
   experimental:
     # stackstate.experimental.metrics -- (boolean) Enable the new experimental metrics apis and store
-    metrics: false
+    metrics: true
     # stackstate.experimental.disableMultimetrics -- (boolean) Disable writing and storage of the old multimetrics format, this will break streams and checks, monitors and metric bindings use the new metrics
     disableMultimetrics: false
     server:
