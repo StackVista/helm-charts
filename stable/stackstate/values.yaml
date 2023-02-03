@@ -296,8 +296,8 @@ stackstate:
           cpu: "2"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "575Mi"
-        javaHeapMemoryFraction: "78"
+        baseMemoryConsumption: "400Mi"
+        javaHeapMemoryFraction: "65"
       # stackstate.components.correlate.replicaCount -- Number of `correlate` replicas.
       replicaCount: 1
       # stackstate.components.correlate.nodeSelector -- Node labels for pod assignment.
@@ -336,7 +336,7 @@ stackstate:
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
-        javaHeapMemoryFraction: "70"
+        javaHeapMemoryFraction: "60"
       # stackstate.components.checks.replicaCount -- Number of `checks` replicas.
       replicaCount: 1
       # stackstate.components.checks.nodeSelector -- Node labels for pod assignment.
@@ -376,8 +376,8 @@ stackstate:
           cpu: "1000m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "1200Mi"
-        javaHeapMemoryFraction: "85"
+        baseMemoryConsumption: "400Mi"
+        javaHeapMemoryFraction: "50"
       # stackstate.components.healthSync.replicaCount -- Number of `healthSync` replicas.
       replicaCount: 1
       # stackstate.components.healthSync.nodeSelector -- Node labels for pod assignment.
@@ -456,8 +456,8 @@ stackstate:
           cpu: "300m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "600Mi"
-        javaHeapMemoryFraction: "85"
+        baseMemoryConsumption: "300Mi"
+        javaHeapMemoryFraction: "50"
       # stackstate.components.kafka2prom.replicaCount -- Number of `kafka2prom` replicas.
       replicaCount: 1
       # stackstate.components.kafka2prom.nodeSelector -- Node labels for pod assignment.
@@ -495,8 +495,8 @@ stackstate:
           cpu: "1000m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "600Mi"
-        javaHeapMemoryFraction: "85"
+        baseMemoryConsumption: "300Mi"
+        javaHeapMemoryFraction: "50"
       # stackstate.components.mm2es.replicaCount -- Number of `mm2es` replicas.
       replicaCount: 1
       # stackstate.components.mm2es.nodeSelector -- Node labels for pod assignment.
@@ -534,8 +534,8 @@ stackstate:
           cpu: "500m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "600Mi"
-        javaHeapMemoryFraction: "85"
+        baseMemoryConsumption: "300Mi"
+        javaHeapMemoryFraction: "50"
       # stackstate.components.e2es.replicaCount -- Number of `e2es` replicas.
       replicaCount: 1
       # stackstate.components.e2es.nodeSelector -- Node labels for pod assignment.
@@ -573,8 +573,8 @@ stackstate:
           cpu: "500m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "600Mi"
-        javaHeapMemoryFraction: "85"
+        baseMemoryConsumption: "300Mi"
+        javaHeapMemoryFraction: "50"
       # stackstate.components.trace2es.replicaCount -- Number of `trace2es` replicas.
       replicaCount: 1
       # stackstate.components.trace2es.nodeSelector -- Node labels for pod assignment.
@@ -614,8 +614,8 @@ stackstate:
           cpu: "3000m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "700Mi"
-        javaHeapMemoryFraction: "75"
+        baseMemoryConsumption: "300Mi"
+        javaHeapMemoryFraction: "65"
       # stackstate.components.receiver.replicaCount -- Number of `receiver` replicas.
       replicaCount: 1
       # stackstate.components.receiver.nodeSelector -- Node labels for pod assignment.
@@ -694,8 +694,8 @@ stackstate:
           cpu: "3600m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "1700Mi"
-        javaHeapMemoryFraction: "85"
+        baseMemoryConsumption: "500Mi"
+        javaHeapMemoryFraction: "70"
       # stackstate.components.server.replicaCount -- Number of `server` replicas.
       replicaCount: 1
       # stackstate.components.server.nodeSelector -- Node labels for pod assignment.
@@ -735,8 +735,8 @@ stackstate:
           cpu: "750m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "500Mi"
-        javaHeapMemoryFraction: "80"
+        baseMemoryConsumption: "300Mi"
+        javaHeapMemoryFraction: "70"
       # stackstate.components.state.replicaCount -- Number of `state` replicas.
       replicaCount: 1
       # stackstate.components.state.nodeSelector -- Node labels for pod assignment.
@@ -776,7 +776,7 @@ stackstate:
           cpu: "2000m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "500Mi"
+        baseMemoryConsumption: "400Mi"
         javaHeapMemoryFraction: "60"
       # stackstate.components.sync.replicaCount -- Number of `sync` replicas.
       replicaCount: 1
@@ -905,7 +905,7 @@ stackstate:
           cpu: "2000m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "500Mi"
+        baseMemoryConsumption: "400Mi"
         javaHeapMemoryFraction: "55"
       # stackstate.components.viewHealth.replicaCount -- Number of `viewHealth` replicas.
       replicaCount: 1
@@ -946,7 +946,7 @@ stackstate:
           memory: "2000Mi"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "500Mi"
+        baseMemoryConsumption: "300Mi"
         javaHeapMemoryFraction: "80"
       # stackstate.components.problemProducer.replicaCount -- Number of `problemProducer` replicas.
       replicaCount: 1

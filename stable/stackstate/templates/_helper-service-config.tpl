@@ -1,7 +1,6 @@
 {{- define "stackstate.server.memory.resource" -}}
 {{- $podMemoryLimitMB := (include "stackstate.storage.to.megabytes" .Mem) -}}
-{{- $baseMemoryConsumptionMB := (include "stackstate.storage.to.megabytes" .BaseMem) -}}
-{{- $grossMemoryLimit := (sub $podMemoryLimitMB  $baseMemoryConsumptionMB) | int -}}
+{{- $grossMemoryLimit := (sub $podMemoryLimitMB .BaseMemoryConsumptionMB) | int -}}
 {{- $javaHeapMemory := (div (mul $grossMemoryLimit (.JavaHeapFraction | int)) 100) | int -}}
 {{- max $javaHeapMemory 0 -}}
 {{- end -}}
@@ -40,19 +39,25 @@
 {{- if .Values.stackstate.experimental.metrics }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_newMetrics" "true" }}
 {{- end -}}
-{{- $xmxConfig := dict "Mem" .ServiceConfig.resources.limits.memory "BaseMem" .ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
+{{/*
+Memory used by a JVM process can be calculated as follows:
+JVM memory = Heap memory+ Metaspace + CodeCache + (ThreadStackSize * Number of Threads) + DirectByteBuffers + Jvm-native.
+'BaseMemoryConsumption' encapsulates OS-level memory requirements and following parts of JVM memory: Metaspace, CodeCache,
+ThreadStackSize * Number of Threads and Jvm-native.
+'JavaHeapMemoryFraction' percent of the remainder of 'BaseMemoryConsumption' subracted from pod's memory limit is given to 'Xmx'.
+'JavaHeapMemoryFraction' percent of the remainder of 'BaseMemoryConsumption' subracted from pod's memory request is given to 'Xms'.
+Remainder of 'BaseMemoryConsumption' and 'Xmx' subtracted from pod's memory limit is given to 'DirectMemory'.
+Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory limit.
+*/}}
+{{- $baseMemoryConsumptionMB := (include "stackstate.storage.to.megabytes" .ServiceConfig.sizing.baseMemoryConsumption)}}
+{{- $xmxConfig := dict "Mem" .ServiceConfig.resources.limits.memory "BaseMemoryConsumptionMB" $baseMemoryConsumptionMB "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
 {{- $xmx := (include "stackstate.server.memory.resource" $xmxConfig) | int }}
-{{- $xmsConfig := dict "Mem" .ServiceConfig.resources.requests.memory "BaseMem" .ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
+{{- $xmsConfig := dict "Mem" .ServiceConfig.resources.requests.memory "BaseMemoryConsumptionMB" $baseMemoryConsumptionMB "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
 {{- $xms := include "stackstate.server.memory.resource" $xmsConfig | int }}
 {{- $xmxParam := ( (gt $xmx 0) | ternary (printf "-Xmx%dm" $xmx) "") }}
 {{- $xmsParam := ( (gt $xms 0) | ternary (printf "-Xms%dm" $xms) "") }}
-{{/*
-Okay here it goes: Java has a memory area called 'DirectMemory' which is not on-heap, not off-heap but a third kind of memory. It has its own limit,
-which by default is the same as Xmx. Because we want to separate on from off-heap memory this is very unfortunate. Also, this area has its own OOM condition.
-For now we want to avoid hitting that OOM condition, so we basically give unbounded Direct Memory. This means that ultimately memory will be capped by the pod limit
-and avoids hitting this additional memory limit.
-*/}}
-{{- $directMemParam := "-XX:MaxDirectMemorySize=20000m" }}
+{{- $directMem := (sub (sub (include "stackstate.storage.to.megabytes" .ServiceConfig.resources.limits.memory) $baseMemoryConsumptionMB) $xmx) | int }}
+{{- $directMemParam := ( (gt $directMem 0) | ternary ( printf "-XX:MaxDirectMemorySize=%dm" $directMem) "") }}
 {{- if .Values.stackstate.java.trustStorePassword }}
 - name: JAVA_TRUSTSTORE_PASSWORD
   valueFrom:
