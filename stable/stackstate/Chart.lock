@@ -22,7 +22,7 @@ dependencies:
   version: 0.1.5
 - name: minio
   repository: file://../minio/
-  version: 8.0.10-stackstate.6
+  version: 8.0.10-stackstate.7
 - name: pull-secret
   repository: file://../pull-secret/
   version: 1.0.1
@@ -32,5 +32,5 @@ dependencies:
 - name: victoria-metrics-single
   repository: https://victoriametrics.github.io/helm-charts
   version: 0.8.48
-digest: sha256:3c8157027085d5332e31a2c2e053f93803da6d9fe08ec000d3ac6d43d64f5438
-generated: "2023-01-18T15:22:33.987766+01:00"
+digest: sha256:530c4da742aae1e76e5c4fb8bd130bedb1f99e1485a07046dba2366c63fe2b50
+generated: "2023-02-08T14:47:48.152349+01:00"

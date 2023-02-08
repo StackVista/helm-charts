@@ -14,7 +14,7 @@ Current chart version is `5.2.0-snapshot.12`
 | file://../elasticsearch/ | elasticsearch | 7.17.2-stackstate.5 |
 | file://../hbase/ | hbase | 0.1.150 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
-| file://../minio/ | minio | 8.0.10-stackstate.6 |
+| file://../minio/ | minio | 8.0.10-stackstate.7 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../stackstate-agent/ | stackstate-agent | * |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.31 |
@@ -342,7 +342,7 @@ stackstate/stackstate
 | stackstate.components.checks.replicaCount | int | `1` | Number of `checks` replicas. |
 | stackstate.components.checks.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"1Gi","memory":"4000Mi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"4000Mi"}}` | Resource allocation for `state` pods. |
 | stackstate.components.checks.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
-| stackstate.components.checks.sizing.javaHeapMemoryFraction | string | `"70"` |  |
+| stackstate.components.checks.sizing.javaHeapMemoryFraction | string | `"60"` |  |
 | stackstate.components.checks.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.containerTools.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for container-tools containers. |
 | stackstate.components.containerTools.image.registry | string | `"quay.io"` | Base container image registry for container-tools containers. |
@@ -360,8 +360,8 @@ stackstate/stackstate
 | stackstate.components.correlate.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `correlate` pods. |
 | stackstate.components.correlate.replicaCount | int | `1` | Number of `correlate` replicas. |
 | stackstate.components.correlate.resources | object | `{"limits":{"cpu":"2","ephemeral-storage":"1Gi","memory":"1600Mi"},"requests":{"cpu":"2","ephemeral-storage":"1Mi","memory":"1600Mi"}}` | Resource allocation for `correlate` pods. |
-| stackstate.components.correlate.sizing.baseMemoryConsumption | string | `"575Mi"` |  |
-| stackstate.components.correlate.sizing.javaHeapMemoryFraction | string | `"78"` |  |
+| stackstate.components.correlate.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
+| stackstate.components.correlate.sizing.javaHeapMemoryFraction | string | `"65"` |  |
 | stackstate.components.correlate.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.e2es.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.e2es.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -374,8 +374,8 @@ stackstate/stackstate
 | stackstate.components.e2es.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `e2es` pods. |
 | stackstate.components.e2es.replicaCount | int | `1` | Number of `e2es` replicas. |
 | stackstate.components.e2es.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"1500Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"1500Mi"}}` | Resource allocation for `e2es` pods. |
-| stackstate.components.e2es.sizing.baseMemoryConsumption | string | `"600Mi"` |  |
-| stackstate.components.e2es.sizing.javaHeapMemoryFraction | string | `"85"` |  |
+| stackstate.components.e2es.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
+| stackstate.components.e2es.sizing.javaHeapMemoryFraction | string | `"50"` |  |
 | stackstate.components.e2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.healthSync.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.healthSync.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -390,8 +390,8 @@ stackstate/stackstate
 | stackstate.components.healthSync.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `healthSync` pods. |
 | stackstate.components.healthSync.replicaCount | int | `1` | Number of `healthSync` replicas. |
 | stackstate.components.healthSync.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `healthSync` pods. |
-| stackstate.components.healthSync.sizing.baseMemoryConsumption | string | `"1200Mi"` |  |
-| stackstate.components.healthSync.sizing.javaHeapMemoryFraction | string | `"85"` |  |
+| stackstate.components.healthSync.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
+| stackstate.components.healthSync.sizing.javaHeapMemoryFraction | string | `"50"` |  |
 | stackstate.components.healthSync.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.initializer.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.initializer.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -417,8 +417,8 @@ stackstate/stackstate
 | stackstate.components.kafka2prom.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `kafka2prom` pods. |
 | stackstate.components.kafka2prom.replicaCount | int | `1` | Number of `kafka2prom` replicas. |
 | stackstate.components.kafka2prom.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"1Gi"},"requests":{"cpu":"300m","ephemeral-storage":"1Mi","memory":"1Gi"}}` | Resource allocation for `kafka2prom` pods. |
-| stackstate.components.kafka2prom.sizing.baseMemoryConsumption | string | `"600Mi"` |  |
-| stackstate.components.kafka2prom.sizing.javaHeapMemoryFraction | string | `"85"` |  |
+| stackstate.components.kafka2prom.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
+| stackstate.components.kafka2prom.sizing.javaHeapMemoryFraction | string | `"50"` |  |
 | stackstate.components.kafka2prom.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.kafkaTopicCreate.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.kafkaTopicCreate.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for kafka-topic-create containers. |
@@ -444,8 +444,8 @@ stackstate/stackstate
 | stackstate.components.mm2es.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `mm2es` pods. |
 | stackstate.components.mm2es.replicaCount | int | `1` | Number of `mm2es` replicas. |
 | stackstate.components.mm2es.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"1Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"1Gi"}}` | Resource allocation for `mm2es` pods. |
-| stackstate.components.mm2es.sizing.baseMemoryConsumption | string | `"600Mi"` |  |
-| stackstate.components.mm2es.sizing.javaHeapMemoryFraction | string | `"85"` |  |
+| stackstate.components.mm2es.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
+| stackstate.components.mm2es.sizing.javaHeapMemoryFraction | string | `"50"` |  |
 | stackstate.components.mm2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.nginxPrometheusExporter.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.registry | string | `"quay.io"` | Base container image registry for nginx-prometheus-exporter containers. |
@@ -463,7 +463,7 @@ stackstate/stackstate
 | stackstate.components.problemProducer.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `problemProducer` pods. |
 | stackstate.components.problemProducer.replicaCount | int | `1` | Number of `problemProducer` replicas. |
 | stackstate.components.problemProducer.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `problemProducer` pods. |
-| stackstate.components.problemProducer.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
+| stackstate.components.problemProducer.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
 | stackstate.components.problemProducer.sizing.javaHeapMemoryFraction | string | `"80"` |  |
 | stackstate.components.problemProducer.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.receiver.additionalLogging | string | `""` | Additional logback config |
@@ -478,8 +478,8 @@ stackstate/stackstate
 | stackstate.components.receiver.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `receiver` pods. |
 | stackstate.components.receiver.replicaCount | int | `1` | Number of `receiver` replicas. |
 | stackstate.components.receiver.resources | object | `{"limits":{"cpu":"3000m","ephemeral-storage":"1Gi","memory":"4Gi"},"requests":{"cpu":"3000m","ephemeral-storage":"1Mi","memory":"4Gi"}}` | Resource allocation for `receiver` pods. |
-| stackstate.components.receiver.sizing.baseMemoryConsumption | string | `"700Mi"` |  |
-| stackstate.components.receiver.sizing.javaHeapMemoryFraction | string | `"75"` |  |
+| stackstate.components.receiver.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
+| stackstate.components.receiver.sizing.javaHeapMemoryFraction | string | `"65"` |  |
 | stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.router.accesslog.enabled | bool | `false` | Enable access logging on the router |
 | stackstate.components.router.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -506,8 +506,8 @@ stackstate/stackstate
 | stackstate.components.server.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `server` pods. |
 | stackstate.components.server.replicaCount | int | `1` | Number of `server` replicas. |
 | stackstate.components.server.resources | object | `{"limits":{"cpu":"3600m","ephemeral-storage":"1Gi","memory":"8Gi"},"requests":{"cpu":"3600m","ephemeral-storage":"1Mi","memory":"8Gi"}}` | Resource allocation for `server` pods. |
-| stackstate.components.server.sizing.baseMemoryConsumption | string | `"1700Mi"` |  |
-| stackstate.components.server.sizing.javaHeapMemoryFraction | string | `"85"` |  |
+| stackstate.components.server.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
+| stackstate.components.server.sizing.javaHeapMemoryFraction | string | `"70"` |  |
 | stackstate.components.server.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.slicing.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.slicing.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -535,8 +535,8 @@ stackstate/stackstate
 | stackstate.components.state.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `state` pods. |
 | stackstate.components.state.replicaCount | int | `1` | Number of `state` replicas. |
 | stackstate.components.state.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"750m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `state` pods. |
-| stackstate.components.state.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
-| stackstate.components.state.sizing.javaHeapMemoryFraction | string | `"80"` |  |
+| stackstate.components.state.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
+| stackstate.components.state.sizing.javaHeapMemoryFraction | string | `"70"` |  |
 | stackstate.components.state.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.sync.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.sync.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -551,7 +551,7 @@ stackstate/stackstate
 | stackstate.components.sync.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `sync` pods. |
 | stackstate.components.sync.replicaCount | int | `1` | Number of `sync` replicas. |
 | stackstate.components.sync.resources | object | `{"limits":{"cpu":"3000m","ephemeral-storage":"1Gi","memory":"3500Mi"},"requests":{"cpu":"2000m","ephemeral-storage":"1Mi","memory":"3500Mi"}}` | Resource allocation for `sync` pods. |
-| stackstate.components.sync.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
+| stackstate.components.sync.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
 | stackstate.components.sync.sizing.javaHeapMemoryFraction | string | `"60"` |  |
 | stackstate.components.sync.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.trace2es.additionalLogging | string | `""` | Additional logback config |
@@ -566,8 +566,8 @@ stackstate/stackstate
 | stackstate.components.trace2es.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `trace2es` pods. |
 | stackstate.components.trace2es.replicaCount | int | `1` | Number of `trace2es` replicas. |
 | stackstate.components.trace2es.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"1Gi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"1Gi"}}` | Resource allocation for `trace2es` pods. |
-| stackstate.components.trace2es.sizing.baseMemoryConsumption | string | `"600Mi"` |  |
-| stackstate.components.trace2es.sizing.javaHeapMemoryFraction | string | `"85"` |  |
+| stackstate.components.trace2es.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
+| stackstate.components.trace2es.sizing.javaHeapMemoryFraction | string | `"50"` |  |
 | stackstate.components.trace2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.ui.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.ui.debug | bool | `false` |  |
@@ -598,7 +598,7 @@ stackstate/stackstate
 | stackstate.components.viewHealth.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `viewHealth` pods. |
 | stackstate.components.viewHealth.replicaCount | int | `1` | Number of `viewHealth` replicas. |
 | stackstate.components.viewHealth.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"1Gi","memory":"2700Mi"},"requests":{"cpu":"2000m","ephemeral-storage":"1Mi","memory":"2700Mi"}}` | Resource allocation for `viewHealth` pods. |
-| stackstate.components.viewHealth.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
+| stackstate.components.viewHealth.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
 | stackstate.components.viewHealth.sizing.javaHeapMemoryFraction | string | `"55"` |  |
 | stackstate.components.viewHealth.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |

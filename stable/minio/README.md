@@ -1,10 +1,10 @@
 # minio
 
-![Version: 8.0.10-stackstate.6](https://img.shields.io/badge/Version-8.0.10--stackstate.6-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 8.0.10-stackstate.7](https://img.shields.io/badge/Version-8.0.10--stackstate.7-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 High Performance, Kubernetes Native Object Storage
 
-Current chart version is `8.0.10-stackstate.6`
+Current chart version is `8.0.10-stackstate.7`
 
 **Homepage:** <https://min.io>
 
@@ -124,6 +124,7 @@ Current chart version is `8.0.10-stackstate.6`
 | service.nodePort | int | `32000` |  |
 | service.port | int | `9000` |  |
 | service.type | string | `"ClusterIP"` |  |
+| serviceAccount.annotations | object | `{}` |  |
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.name | string | `nil` |  |
 | tls.certSecret | string | `""` |  |
