@@ -20,6 +20,7 @@
     },
     public_charts: [
       'stackstate-agent',
+      'stackstate-k8s-agent',
       'artifactory-cleaner',
       'common',
       'elasticsearch',
