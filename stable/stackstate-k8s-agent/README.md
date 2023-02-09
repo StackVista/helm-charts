@@ -61,8 +61,8 @@ stackstate/stackstate-k8s-agent
 | checksAgent.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
 | checksAgent.enabled | bool | `true` | Enable / disable runnning cluster checks in a separately deployed pod |
 | checksAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
-| checksAgent.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
-| checksAgent.image.tag | string | `"2.19.1"` | Default container image tag. |
+| checksAgent.image.repository | string | `"stackstate/stackstate-k8s-agent"` | Base container image repository. |
+| checksAgent.image.tag | string | `"4cf78e9b"` | Default container image tag. |
 | checksAgent.kubeStateMetrics.url | string | `""` | URL of the KubeStateMetrics server. This needs to be configured if the KubeStateMetrics server is not enabled by default in this Helm chart. |
 | checksAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | checksAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
@@ -120,8 +120,8 @@ stackstate/stackstate-k8s-agent
 | clusterAgent.config.topology.collectionInterval | int | `90` | Interval for running topology collection, in seconds |
 | clusterAgent.enabled | bool | `true` | Enable / disable the cluster agent. |
 | clusterAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
-| clusterAgent.image.repository | string | `"stackstate/stackstate-cluster-agent"` | Base container image repository. |
-| clusterAgent.image.tag | string | `"2.19.1"` | Default container image tag. |
+| clusterAgent.image.repository | string | `"stackstate/stackstate-k8s-cluster-agent"` | Base container image repository. |
+| clusterAgent.image.tag | string | `"4cf78e9b"` | Default container image tag. |
 | clusterAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | clusterAgent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -178,8 +178,8 @@ stackstate/stackstate-k8s-agent
 | nodeAgent.containerRuntime.customSocketPath | string | `""` | If the container socket path does not match the default for CRI-O, Containerd or Docker, supply a custom socket path. |
 | nodeAgent.containers.agent.env | object | `{}` | Additional environment variables for the agent container |
 | nodeAgent.containers.agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
-| nodeAgent.containers.agent.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
-| nodeAgent.containers.agent.image.tag | string | `"2.19.1"` | Default container image tag. |
+| nodeAgent.containers.agent.image.repository | string | `"stackstate/stackstate-k8s-agent"` | Base container image repository. |
+| nodeAgent.containers.agent.image.tag | string | `"4cf78e9b"` | Default container image tag. |
 | nodeAgent.containers.agent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | nodeAgent.containers.agent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | nodeAgent.containers.agent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -201,8 +201,8 @@ stackstate/stackstate-k8s-agent
 | nodeAgent.containers.processAgent.enabled | bool | `true` | Enable / disable the process agent container. |
 | nodeAgent.containers.processAgent.env | object | `{}` | Additional environment variables for the process-agent container |
 | nodeAgent.containers.processAgent.image.pullPolicy | string | `"IfNotPresent"` | Process-agent container image pull policy. |
-| nodeAgent.containers.processAgent.image.repository | string | `"stackstate/stackstate-process-agent"` | Process-agent container image repository. |
-| nodeAgent.containers.processAgent.image.tag | string | `"4.0.9"` | Default process-agent container image tag. |
+| nodeAgent.containers.processAgent.image.repository | string | `"stackstate/stackstate-k8s-process-agent"` | Process-agent container image repository. |
+| nodeAgent.containers.processAgent.image.tag | string | `"5b7a98b2"` | Default process-agent container image tag. |
 | nodeAgent.containers.processAgent.logLevel | string | `nil` | Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off # If not set, fall back to the value of agent.logLevel. |
 | nodeAgent.containers.processAgent.resources.limits.cpu | string | `"400m"` | Memory resource limits. |
 | nodeAgent.containers.processAgent.resources.limits.memory | string | `"768Mi"` |  |
