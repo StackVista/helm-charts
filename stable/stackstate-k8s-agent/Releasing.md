@@ -11,4 +11,4 @@ To make a new release of this helm chart, follow the following steps:
     * [nodeAgent.containers.processAgent.image.tag]
 - Bump the version of the chart
 - Merge the mr and hit the public release button on the ci pipeline
-- Manually test the newly released stackstate/stackstate-k8s-agent chart
+- Manually smoke-test (deploy) the newly released stackstate/stackstate-k8s-agent chart to make sure it runs
