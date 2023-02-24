@@ -821,7 +821,6 @@ stackstate:
         javaHeapMemoryFraction: "60"
       # stackstate.components.slicing.replicaCount -- Number of `slicing` replicas.
       replicaCount: 1
-
       # stackstate.components.slicing.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.slicing.tolerations -- Toleration labels for pod assignment.
@@ -1611,17 +1610,17 @@ victoria-metrics-0:
       ad.stackstate.com/victoria-metrics-0-server.instances: '[ { "prometheus_url": "http://%%host%%:8428/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
     # victoria-metrics-1.server.affinity -- Affinity settings for Victoria Metrics pod
     affinity: {}
-      # podAntiAffinity:
-      #   preferredDuringSchedulingIgnoredDuringExecution:
-      #   - podAffinityTerm:
-      #       labelSelector:
-      #         matchLabels:
-      #           app.kubernetes.io/name: victoria-metrics-single
-      #           app: server
-      #       namespaces:
-      #       - <the-namespace>
-      #       topologyKey: kubernetes.io/hostname
-      #     weight: 1
+    # podAntiAffinity:
+    #   preferredDuringSchedulingIgnoredDuringExecution:
+    #   - podAffinityTerm:
+    #       labelSelector:
+    #         matchLabels:
+    #           app.kubernetes.io/name: victoria-metrics-single
+    #           app: server
+    #       namespaces:
+    #       - <the-namespace>
+    #       topologyKey: kubernetes.io/hostname
+    #     weight: 1
     # victoria-metrics-1.server.extraArgs -- Extra arguments for Victoria Metrics
     extraArgs:
       dedup.minScrapeInterval: 1ms
@@ -1655,3 +1654,6 @@ victoria-metrics-0:
       interval: 15s
       # victoria-metrics-1.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
       extraLabels: {}
+stackgraph:
+  image:
+    tag: 4.12.0
