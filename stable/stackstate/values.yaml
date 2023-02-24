@@ -1177,7 +1177,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 4.11.5
+      tag: 4.12.0
   console:
     # hbase.console.enabled -- Enabled by default for debugging, but with 0 replicas. Manually scale up to 1 replica and open a shell in the container to access the stackgraph console.
     enabled: true
@@ -1654,6 +1654,3 @@ victoria-metrics-0:
       interval: 15s
       # victoria-metrics-1.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
       extraLabels: {}
-stackgraph:
-  image:
-    tag: 4.12.0
