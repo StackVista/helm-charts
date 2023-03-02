@@ -1603,6 +1603,9 @@ victoria-metrics-0:
     # victoria-metrics-1.server.namespaced -- Make sure all resources are namespaced
     namespaced: true
   server:
+    image:
+      # 1.87.x is the LTS version
+      tag: "v1.87.2"
     # victoria-metrics-1.server -- Annotations for Victoria Metrics server pod
     annotations:
       ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'

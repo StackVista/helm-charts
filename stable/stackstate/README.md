@@ -20,7 +20,7 @@ Current chart version is `5.2.0-snapshot.15`
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.31 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | kafka | 14.8.1 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 5.16.0 |
-| https://victoriametrics.github.io/helm-charts | victoria-metrics-0(victoria-metrics-single) | 0.8.48 |
+| https://victoriametrics.github.io/helm-charts | victoria-metrics-0(victoria-metrics-single) | 0.8.53 |
 
 ## Required Values
 
@@ -623,6 +623,7 @@ stackstate/stackstate
 | victoria-metrics-0.server.annotations."ad.stackstate.com/victoria-metrics-0-server.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
 | victoria-metrics-0.server.extraArgs."dedup.minScrapeInterval" | string | `"1ms"` |  |
 | victoria-metrics-0.server.fullnameOverride | string | `"stackstate-victoria-metrics-0"` |  |
+| victoria-metrics-0.server.image.tag | string | `"v1.87.2"` |  |
 | victoria-metrics-0.server.persistentVolume.size | string | `"60Gi"` |  |
 | victoria-metrics-0.server.resources.limits.cpu | int | `1` |  |
 | victoria-metrics-0.server.resources.limits.memory | string | `"3584Mi"` |  |
