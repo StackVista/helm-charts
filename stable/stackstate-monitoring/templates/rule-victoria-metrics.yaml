@@ -98,6 +98,7 @@ spec:
               This effect is known as Churn Rate.\n
               High Churn Rate tightly connected with database performance and may
               result in unexpected OOM's or slow queries." `}}
+            runbook_url: https://www.notion.so/stackstate/Runbook-VictoriaMetrics-high-churn-rate-TooHighChurnRate-ccd1da045e3e466b9e16741034284b80
 
         - alert: VictoriaMetricsTooHighChurnRate24h
           expr: |
@@ -114,6 +115,7 @@ spec:
               This effect is known as Churn Rate.\n
               High Churn Rate tightly connected with database performance and may
               result in unexpected OOM's or slow queries." `}}
+            runbook_url: https://www.notion.so/stackstate/Runbook-VictoriaMetrics-high-churn-rate-TooHighChurnRate-ccd1da045e3e466b9e16741034284b80
 
         - alert: VictoriaMetricsTooHighSlowInsertsRate
           expr: |
@@ -129,6 +131,7 @@ spec:
             summary: {{` 'Percentage of slow inserts is more than 5% on {{ $labels.instance }} for the last 15m' `}}
             description: {{` 'High rate of slow inserts on {{ $labels.instance }} may be a sign of resource exhaustion
               for the current load. It is likely more RAM is needed for optimal handling of the current number of active time series.' `}}
+            runbook_url: https://www.notion.so/stackstate/Runbook-VictoriaMetrics-slow-performance-TooHighSlowInsertsRate-ffa3f76becf74948b7acc4b7664e7c38
 
         - alert: VictoriaMetricsLabelsLimitExceededOnIngestion
           expr: sum(increase(vm_metrics_with_dropped_labels_total[5m])) by (instance) > 0
