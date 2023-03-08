@@ -35,6 +35,7 @@ spec:
             description: {{` 'Taking into account current ingestion rate, free disk space will be enough only
               for {{ $value | humanizeDuration }} on instance {{ $labels.instance }}.\n
               Consider to limit the ingestion rate, decrease retention or scale the disk space if possible.' `}}
+            runbook_url: https://www.notion.so/stackstate/Runbook-VictoriaMetrics-0f65e5e29fd74e829bb3da7bd4062144
 
         - alert: VictoriaMetricsDiskRunsOutOfSpace
           expr: |
@@ -51,6 +52,7 @@ spec:
             description: {{` 'Disk utilisation on instance {{ $labels.instance }} is more than 80%.\n
               Having less than 20% of free disk space could cripple merges processes and overall performance.
               Consider to limit the ingestion rate, decrease retention or scale the disk space if possible.' `}}
+            runbook_url: https://www.notion.so/stackstate/Runbook-VictoriaMetrics-0f65e5e29fd74e829bb3da7bd4062144
 
         - alert: VictoriaMetricsRequestErrorsToAPI
           expr: increase(vm_http_request_errors_total[5m]) > 0
@@ -61,6 +63,7 @@ spec:
             summary: {{` 'Too many errors served for path {{ $labels.path }} (instance {{ $labels.instance }})' `}}
             description: {{` 'Requests to path {{ $labels.path }} are receiving errors.
               Please verify if clients are sending correct requests.' `}}
+            runbook_url: https://www.notion.so/stackstate/Runbook-VictoriaMetrics-0f65e5e29fd74e829bb3da7bd4062144
 
         - alert: VictoriaMetricsConcurrentFlushesHitTheLimit
           expr: avg_over_time(vm_concurrent_insert_current[1m]) >= vm_concurrent_insert_capacity
@@ -71,6 +74,7 @@ spec:
             summary: {{` 'VictoriaMetrics on instance {{ $labels.instance }} is constantly hitting concurrent flushes limit' `}}
             description: {{` 'The limit of concurrent flushes on instance {{ $labels.instance }} is equal to number of CPUs.\n
               When VictoriaMetrics constantly hits the limit it means that storage is overloaded and requires more CPU.' `}}
+            runbook_url: https://www.notion.so/stackstate/Runbook-VictoriaMetrics-0f65e5e29fd74e829bb3da7bd4062144
 
         - alert: VictoriaMetricsRowsRejectedOnIngestion
           expr: sum(rate(vm_rows_ignored_total[5m])) by (instance, reason) > 0
@@ -81,6 +85,7 @@ spec:
             summary: {{` 'Some rows are rejected on {{ $labels.instance }} on ingestion attempt' `}}
             description: {{` 'VM is rejecting to ingest rows on {{ $labels.instance }} due to the
               following reason: {{ $labels.reason }}' `}}
+            runbook_url: https://www.notion.so/stackstate/Runbook-VictoriaMetrics-0f65e5e29fd74e829bb3da7bd4062144
 
         - alert: VictoriaMetricsTooHighChurnRate
           expr: |
@@ -143,5 +148,6 @@ spec:
             description: {{` "VictoriaMetrics limits the number of labels per each metric with '-maxLabelsPerTimeseries' command-line flag.\n
              This prevents from ingesting metrics with too many labels. Please verify that '-maxLabelsPerTimeseries' is configured
              correctly or that clients which send these metrics aren't misbehaving." `}}
+            runbook_url: https://www.notion.so/stackstate/Runbook-VictoriaMetrics-0f65e5e29fd74e829bb3da7bd4062144
 
 {{- end }}
