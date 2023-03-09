@@ -12,7 +12,6 @@ spec:
   groups:
     - name: stackstate-vmsingle
       interval: 30s
-      concurrency: 2
       rules:
         - alert: VictoriaMetricsDiskRunsOutOfSpaceIn3Days
           expr: |
