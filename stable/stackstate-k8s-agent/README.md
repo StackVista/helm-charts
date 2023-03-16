@@ -111,6 +111,7 @@ stackstate/stackstate-k8s-agent
 | clusterAgent.collection.kubernetesResources.replicasets | bool | `true` | Enable / disable collection of ReplicaSets. |
 | clusterAgent.collection.kubernetesResources.secrets | bool | `true` | Enable / disable collection of Secrets. |
 | clusterAgent.collection.kubernetesResources.statefulsets | bool | `true` | Enable / disable collection of StatefulSets. |
+| clusterAgent.collection.kubernetesResources.volumeattachments | bool | `true` | Enable / disable collection of Volume Attachments. Used to bing Nodes to Persistent Volumes. |
 | clusterAgent.collection.kubernetesTimeout | int | `10` | Default timeout (in seconds) when obtaining information from the Kubernetes API. |
 | clusterAgent.collection.kubernetesTopology | bool | `true` | Enable / disable the cluster agent topology collection. |
 | clusterAgent.config | object | `{"configMap":{"maxDataSize":null},"events":{"categories":{}},"override":[],"topology":{"collectionInterval":90}}` |  |

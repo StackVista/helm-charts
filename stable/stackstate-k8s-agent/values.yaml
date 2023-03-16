@@ -230,6 +230,8 @@ clusterAgent:
       ## for example tags.stackstate/version becomes tags_stackstate_version.
       annotationsAsTags: {}
     kubernetesResources:
+      # clusterAgent.collection.kubernetesResources.volumeattachments -- Enable / disable collection of Volume Attachments. Used to bing Nodes to Persistent Volumes.
+      volumeattachments: true
       # clusterAgent.collection.kubernetesResources.namespaces -- Enable / disable collection of Namespaces.
       namespaces: true
       # clusterAgent.collection.kubernetesResources.configmaps -- Enable / disable collection of ConfigMaps.
