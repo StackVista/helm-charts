@@ -66,7 +66,7 @@ nodeAgent:
         # nodeAgent.containers.agent.image.repository -- Base container image repository.
         repository: stackstate/stackstate-k8s-agent
         # nodeAgent.containers.agent.image.tag -- Default container image tag.
-        tag: 591c167c
+        tag: cdd3972c
         # nodeAgent.containers.agent.image.pullPolicy -- Default container image pull policy.
         pullPolicy: IfNotPresent
       processAgent:
@@ -230,7 +230,7 @@ clusterAgent:
       ## for example tags.stackstate/version becomes tags_stackstate_version.
       annotationsAsTags: {}
     kubernetesResources:
-      # clusterAgent.collection.kubernetesResources.volumeattachments -- Enable / disable collection of Volume Attachments. Used to bing Nodes to Persistent Volumes.
+      # clusterAgent.collection.kubernetesResources.volumeattachments -- Enable / disable collection of Volume Attachments. Used to bind Nodes to Persistent Volumes.
       volumeattachments: true
       # clusterAgent.collection.kubernetesResources.namespaces -- Enable / disable collection of Namespaces.
       namespaces: true
@@ -286,7 +286,7 @@ clusterAgent:
     # clusterAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-k8s-cluster-agent
     # clusterAgent.image.tag -- Default container image tag.
-    tag: 591c167c
+    tag: cdd3972c
     # clusterAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -436,7 +436,7 @@ checksAgent:
     # checksAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-k8s-agent
     # checksAgent.image.tag -- Default container image tag.
-    tag: 591c167c
+    tag: cdd3972c
     # checksAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
