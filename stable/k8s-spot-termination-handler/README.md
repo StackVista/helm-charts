@@ -1,8 +1,10 @@
 # k8s-spot-termination-handler
 
-![Version: 1.4.10](https://img.shields.io/badge/Version-1.4.10-informational?style=flat-square) ![AppVersion: 1.14.3](https://img.shields.io/badge/AppVersion-1.14.3-informational?style=flat-square)
+![Version: 1.4.11](https://img.shields.io/badge/Version-1.4.11-informational?style=flat-square) ![AppVersion: 1.14.3](https://img.shields.io/badge/AppVersion-1.14.3-informational?style=flat-square)
 
 The K8s Spot Termination handler handles draining AWS Spot Instances in response to termination requests.
+
+Current chart version is `1.4.11`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/kube-spot-termination-handler>
 
