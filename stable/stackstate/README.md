@@ -622,6 +622,7 @@ stackstate/stackstate
 | victoria-metrics-0.server.annotations."ad.stackstate.com/victoria-metrics-0-server.init_configs" | string | `"[{}]"` |  |
 | victoria-metrics-0.server.annotations."ad.stackstate.com/victoria-metrics-0-server.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
 | victoria-metrics-0.server.extraArgs."dedup.minScrapeInterval" | string | `"1ms"` |  |
+| victoria-metrics-0.server.extraArgs.maxLabelsPerTimeseries | int | `35` |  |
 | victoria-metrics-0.server.fullnameOverride | string | `"stackstate-victoria-metrics-0"` |  |
 | victoria-metrics-0.server.image.tag | string | `"v1.87.2"` |  |
 | victoria-metrics-0.server.persistentVolume.size | string | `"60Gi"` |  |
