@@ -11,15 +11,15 @@ Current chart version is `5.2.0-snapshot.15`
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common/ | common | * |
-| file://../elasticsearch/ | elasticsearch | 7.17.2-stackstate.5 |
-| file://../hbase/ | hbase | 0.1.151 |
+| file://../elasticsearch/ | elasticsearch | 7.17.2-stackstate.6 |
+| file://../hbase/ | hbase | 0.1.152 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
-| file://../minio/ | minio | 8.0.10-stackstate.7 |
+| file://../minio/ | minio | 8.0.10-stackstate.8 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../stackstate-agent/ | stackstate-agent | * |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.31 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | kafka | 14.8.1 |
-| https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 5.16.0 |
+| https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
 | https://victoriametrics.github.io/helm-charts | victoria-metrics-0(victoria-metrics-single) | 0.8.53 |
 
 ## Required Values

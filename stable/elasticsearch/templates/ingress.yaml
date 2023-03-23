@@ -2,7 +2,8 @@
 {{- $fullName := include "elasticsearch.uname" . -}}
 {{- $servicePort := .Values.httpPort -}}
 {{- $ingressPath := .Values.ingress.path -}}
-apiVersion: {{ template "elasticsearch.ingress.apiVersion" . }}
+{{- $apiVersion := (include "elasticsearch.ingress.apiVersion" .) -}}
+apiVersion: {{ $apiVersion }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -30,8 +31,17 @@ spec:
       http:
         paths:
           - path: {{ $ingressPath }}
+            {{- if ne "networking.k8s.io/v1" $apiVersion }}
             backend:
               serviceName: {{ $fullName }}
               servicePort: {{ $servicePort }}
+            {{- else }}
+            backend:
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $servicePort }}
+            pathType: Prefix
+            {{- end }}
   {{- end }}
 {{- end }}

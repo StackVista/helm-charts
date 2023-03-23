@@ -362,3 +362,10 @@ zookeeper:
         release: prometheus-operator
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
   replicaCount: 1
+  image:
+    # zookeeper.image.registry -- ZooKeeper image registry
+    registry: quay.io
+    # zookeeper.image.repository -- ZooKeeper image repository
+    repository: stackstate/zookeeper
+    # zookeeper.image.tag -- ZooKeeper image tag
+    tag: 3.6.3-2738717608

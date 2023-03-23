@@ -1,6 +1,7 @@
 package helmtestutil
 
 import (
+	"regexp"
 	"strings"
 	"testing"
 
@@ -10,10 +11,10 @@ import (
 	batchv1 "k8s.io/api/batch/v1"
 	batchv1beta1 "k8s.io/api/batch/v1beta1"
 	corev1 "k8s.io/api/core/v1"
+	networkingv1 "k8s.io/api/networking/v1"
 	policyv1 "k8s.io/api/policy/v1beta1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	networkingv1 "k8s.io/api/networking/v1"
 )
 
 // KubernetesResources parsed from a multi-document template string
@@ -63,10 +64,16 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 	// The K8S unmarshalling only can do a single document
 	// So we split them first by the yaml document separator
 	separateFiles := strings.Split(helmOutput, "\n---\n")
+	r, _ := regexp.Compile("skipped value for .*updateStrategy: Not a table")
 
 	for _, v := range separateFiles {
 		var metadata metav1.TypeMeta
 		err := helm.UnmarshalK8SYamlE(t, v, &metadata)
+		// Zookeeper subchart of Kafka, which version is different from Stackstate one, mismatches the type of one of the values .Values.updateStrategy
+		// And this causes go tests to fail. We don't use the subchart so we can ignore the warning given by it.
+		if r.MatchString(v) {
+			continue
+		}
 		assert.NoError(t, err)
 		switch metadata.Kind {
 		case "ClusterRole":

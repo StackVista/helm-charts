@@ -10,10 +10,10 @@ dependencies:
   version: 0.4.22
 - name: elasticsearch
   repository: file://../elasticsearch/
-  version: 7.17.2-stackstate.5
+  version: 7.17.2-stackstate.6
 - name: hbase
   repository: file://../hbase/
-  version: 0.1.151
+  version: 0.1.152
 - name: kafka
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 14.8.1
@@ -22,15 +22,15 @@ dependencies:
   version: 0.1.5
 - name: minio
   repository: file://../minio/
-  version: 8.0.10-stackstate.7
+  version: 8.0.10-stackstate.8
 - name: pull-secret
   repository: file://../pull-secret/
   version: 1.0.1
 - name: zookeeper
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-  version: 5.16.0
+  version: 8.1.2
 - name: victoria-metrics-single
   repository: https://victoriametrics.github.io/helm-charts
   version: 0.8.53
-digest: sha256:42c178dd050d49c0425e23c7a5399df4a059494326ad66eb93a94eeb87a00962
-generated: "2023-03-23T09:13:22.404366+01:00"
+digest: sha256:19babf3d2dc892edcbda327079b24e68a6456ee07c9672ab4f46b92af0b55ab8
+generated: "2023-03-23T11:21:03.18356+01:00"

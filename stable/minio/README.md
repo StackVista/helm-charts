@@ -1,10 +1,10 @@
 # minio
 
-![Version: 8.0.10-stackstate.7](https://img.shields.io/badge/Version-8.0.10--stackstate.7-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 8.0.10-stackstate.8](https://img.shields.io/badge/Version-8.0.10--stackstate.8-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 High Performance, Kubernetes Native Object Storage
 
-Current chart version is `8.0.10-stackstate.7`
+Current chart version is `8.0.10-stackstate.8`
 
 **Homepage:** <https://min.io>
 

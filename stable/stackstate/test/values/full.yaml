@@ -29,3 +29,6 @@ anomaly-detection:
   enabled: true
 backup:
   enabled: true
+kafka:
+  zookeeper:
+    updateStrategy: {}
