@@ -18,7 +18,7 @@ Current chart version is `5.2.0-snapshot.15`
 | file://../pull-secret/ | pull-secret | * |
 | file://../stackstate-agent/ | stackstate-agent | * |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.31 |
-| https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | kafka | 14.8.1 |
+| https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | kafka | 15.5.1 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
 | https://victoriametrics.github.io/helm-charts | victoria-metrics-0(victoria-metrics-single) | 0.8.53 |
 
@@ -197,7 +197,7 @@ stackstate/stackstate
 | kafka.defaultReplicationFactor | int | `2` |  |
 | kafka.enabled | bool | `true` | Enable / disable chart-based Kafka. |
 | kafka.externalZookeeper.servers | string | `"stackstate-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
-| kafka.extraDeploy | list | `[{"apiVersion":"v1","data":{"custom-setup.sh":"#!/bin/bash\n\nID=\"${MY_POD_NAME#\"{{ template \"kafka.fullname\" . }}-\"}\"\n\nKAFKA_META_PROPERTIES=/bitnami/kafka/data/meta.properties\nif [[ -f ${KAFKA_META_PROPERTIES} ]]; then\n  ID=`grep -e ^broker.id= ${KAFKA_META_PROPERTIES} | sed 's/^broker.id=//'`\n  if [[ \"${ID}\" != \"\" ]] && [[ \"${ID}\" -gt 1000 ]]; then\n    echo \"Using broker ID ${ID} from ${KAFKA_META_PROPERTIES} for compatibility (STAC-9614)\"\n  fi\nfi\n\nexport KAFKA_CFG_BROKER_ID=\"$ID\"\n\nexec /entrypoint.sh /run.sh"},"kind":"ConfigMap","metadata":{"name":"kafka-custom-scripts"}}]` | Array of extra objects to deploy with the release |
+| kafka.extraDeploy | list | `[{"apiVersion":"v1","data":{"custom-setup.sh":"#!/bin/bash\n\nID=\"${MY_POD_NAME#\"{{ include \"common.names.fullname\" . }}-\"}\"\n\nKAFKA_META_PROPERTIES=/bitnami/kafka/data/meta.properties\nif [[ -f ${KAFKA_META_PROPERTIES} ]]; then\n  ID=`grep -e ^broker.id= ${KAFKA_META_PROPERTIES} | sed 's/^broker.id=//'`\n  if [[ \"${ID}\" != \"\" ]] && [[ \"${ID}\" -gt 1000 ]]; then\n    echo \"Using broker ID ${ID} from ${KAFKA_META_PROPERTIES} for compatibility (STAC-9614)\"\n  fi\nfi\n\nexport KAFKA_CFG_BROKER_ID=\"$ID\"\n\nexec /entrypoint.sh /run.sh"},"kind":"ConfigMap","metadata":{"name":"kafka-custom-scripts"}}]` | Array of extra objects to deploy with the release |
 | kafka.extraEnvVars | list | `[{"name":"KAFKA_CFG_RESERVED_BROKER_MAX_ID","value":"2000"},{"name":"KAFKA_CFG_TRANSACTIONAL_ID_EXPIRATION_MS","value":"2147483647"}]` | Extra environment variables to add to kafka pods. |
 | kafka.extraVolumeMounts | list | `[{"mountPath":"/scripts/custom-setup.sh","name":"kafka-custom-scripts","subPath":"custom-setup.sh"}]` | Extra volumeMount(s) to add to Kafka containers. |
 | kafka.extraVolumes | list | `[{"configMap":{"defaultMode":493,"name":"kafka-custom-scripts"},"name":"kafka-custom-scripts"}]` | Extra volume(s) to add to Kafka statefulset. |
@@ -223,6 +223,9 @@ stackstate/stackstate
 | kafka.metrics.serviceMonitor.interval | string | `"20s"` | How frequently to scrape metrics. |
 | kafka.metrics.serviceMonitor.labels | object | `{}` | Add extra labels to target a specific prometheus instance |
 | kafka.offsetsTopicReplicationFactor | int | `2` |  |
+| kafka.pdb.create | bool | `true` |  |
+| kafka.pdb.maxUnavailable | int | `1` |  |
+| kafka.pdb.minAvailable | string | `""` |  |
 | kafka.persistence.size | string | `"50Gi"` | Size of persistent volume for each Kafka pod |
 | kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]","stackstate.com/kafkaup-operator.kafka_version":"3.3.1"}` | Kafka Pod annotations. |
 | kafka.readinessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
@@ -650,6 +653,9 @@ stackstate/stackstate
 | zookeeper.metrics.serviceMonitor | object | `{"enabled":false,"selector":{}}` |  |
 | zookeeper.metrics.serviceMonitor.enabled | bool | `false` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |
 | zookeeper.metrics.serviceMonitor.selector | object | `{}` | Default selector to use to target a certain Prometheus instance. |
+| zookeeper.pdb.create | bool | `true` |  |
+| zookeeper.pdb.maxUnavailable | int | `1` |  |
+| zookeeper.pdb.minAvailable | string | `""` |  |
 | zookeeper.podAnnotations | object | `{"ad.stackstate.com/zookeeper.check_names":"[\"openmetrics\"]","ad.stackstate.com/zookeeper.init_configs":"[{}]","ad.stackstate.com/zookeeper.instances":"[ { \"prometheus_url\": \"http://%%host%%:9141/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Annotations for ZooKeeper pod. |
 | zookeeper.replicaCount | int | `3` | Default amount of Zookeeper replicas to provision. |
 | zookeeper.resources.limits.cpu | string | `"250m"` |  |

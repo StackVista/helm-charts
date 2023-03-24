@@ -1307,7 +1307,7 @@ kafka:
         custom-setup.sh: |-
           #!/bin/bash
 
-          ID="${MY_POD_NAME#"{{ template "kafka.fullname" . }}-"}"
+          ID="${MY_POD_NAME#"{{ include "common.names.fullname" . }}-"}"
 
           KAFKA_META_PROPERTIES=/bitnami/kafka/data/meta.properties
           if [[ -f ${KAFKA_META_PROPERTIES} ]]; then
@@ -1436,6 +1436,13 @@ kafka:
   topic:
     stsMetricsV2:
       partitionCount: 10
+  pdb:
+    ## kafka.pdb.create Deploy a pdb object for the Kafka pod
+    create: true
+    ## kafka.pdb.minAvailable Maximum number/percentage of unavailable Kafka replicas
+    minAvailable: ""
+    ## kafka.pdb.maxUnavailable Maximum number/percentage of unavailable Kafka replicas
+    maxUnavailable: 1
 minio:
   # minio.replicas -- Number of MinIO replicas.
   replicas: 1
@@ -1503,6 +1510,13 @@ zookeeper:
     ad.stackstate.com/zookeeper.instances: '[ { "prometheus_url": "http://%%host%%:9141/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
   replicaCount: 3
+  pdb:
+    ## zookeeper.pdb.create Deploy a pdb object for the Zookeeper pod
+    create: true
+    ## zookeeper.pdb.minAvailable Maximum number/percentage of unavailable Zookeeper replicas
+    minAvailable: ""
+    ## zookeeper.pdb.maxUnavailable Maximum number/percentage of unavailable Zookeeper replicas
+    maxUnavailable: 1
 anomaly-detection:
   # anomaly-detection.enabled -- Enables anomaly detection chart
   enabled: true
