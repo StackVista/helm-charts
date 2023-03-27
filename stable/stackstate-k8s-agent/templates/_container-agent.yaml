@@ -75,7 +75,7 @@
       value: {{ include "stackstate-k8s-agent.stackstate.url" . }}
     {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
     - name: STS_CRI_SOCKET_PATH
-      value: {{- .Values.nodeAgent.containerRuntime.customSocketPath }}
+      value: {{ .Values.nodeAgent.containerRuntime.customSocketPath }}
     {{- end }}
     {{- range $key, $value := .Values.nodeAgent.containers.agent.env }}
     - name: {{ $key }}
@@ -128,7 +128,7 @@
   volumeMounts:
   {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
   - name: customcrisocket
-    mountPath: {{- .Values.nodeAgent.containerRuntime.customSocketPath }}
+    mountPath: {{ .Values.nodeAgent.containerRuntime.customSocketPath }}
   {{- end }}
   - name: crisocket
     mountPath: /var/run/crio/crio.sock

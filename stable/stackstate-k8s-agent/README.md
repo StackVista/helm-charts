@@ -177,6 +177,7 @@ stackstate/stackstate-k8s-agent
 | nodeAgent.config | object | `{"override":[]}` |  |
 | nodeAgent.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
 | nodeAgent.containerRuntime.customSocketPath | string | `""` | If the container socket path does not match the default for CRI-O, Containerd or Docker, supply a custom socket path. |
+| nodeAgent.containerRuntime.hostProc | string | `"/proc"` |  |
 | nodeAgent.containers.agent.env | object | `{}` | Additional environment variables for the agent container |
 | nodeAgent.containers.agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | nodeAgent.containers.agent.image.repository | string | `"stackstate/stackstate-k8s-agent"` | Base container image repository. |
@@ -202,6 +203,7 @@ stackstate/stackstate-k8s-agent
 | nodeAgent.containers.processAgent.enabled | bool | `true` | Enable / disable the process agent container. |
 | nodeAgent.containers.processAgent.env | object | `{}` | Additional environment variables for the process-agent container |
 | nodeAgent.containers.processAgent.image.pullPolicy | string | `"IfNotPresent"` | Process-agent container image pull policy. |
+| nodeAgent.containers.processAgent.image.registry | string | `nil` |  |
 | nodeAgent.containers.processAgent.image.repository | string | `"stackstate/stackstate-k8s-process-agent"` | Process-agent container image repository. |
 | nodeAgent.containers.processAgent.image.tag | string | `"8cbf1b1b"` | Default process-agent container image tag. |
 | nodeAgent.containers.processAgent.logLevel | string | `nil` | Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off # If not set, fall back to the value of agent.logLevel. |

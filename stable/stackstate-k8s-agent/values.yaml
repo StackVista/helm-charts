@@ -33,6 +33,9 @@ nodeAgent:
   containerRuntime:
     # nodeAgent.containerRuntime.customSocketPath -- If the container socket path does not match the default for CRI-O, Containerd or Docker, supply a custom socket path.
     customSocketPath: ""
+    # nodeAgent.containerRuntime.customHostProc -- If the container is launched from a place where /proc is mounted differently, /proc can be changed
+    hostProc: /proc
+
   scc:
     # nodeAgent.scc.enabled -- Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift.
     enabled: false
@@ -120,6 +123,8 @@ nodeAgent:
       # nodeAgent.containers.processAgent.enabled -- Enable / disable the process agent container.
       enabled: true
       image:
+        # Override to pull the image from an alternate registry
+        registry:
         # nodeAgent.containers.processAgent.image.repository -- Process-agent container image repository.
         repository: stackstate/stackstate-k8s-process-agent
         # nodeAgent.containers.processAgent.image.tag -- Default process-agent container image tag.

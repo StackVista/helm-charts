@@ -55,11 +55,11 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       volumes:
-      {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
+    {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
       - hostPath:
-          path: {{- .Values.nodeAgent.containerRuntime.customSocketPath }}
+          path: {{ .Values.nodeAgent.containerRuntime.customSocketPath }}
         name: customcrisocket
-      {{- end }}
+    {{- end }}
       - hostPath:
           path: /var/run/crio/crio.sock
         name: crisocket
@@ -73,7 +73,7 @@ spec:
           path: /var/run/docker.sock
         name: dockersocket
       - hostPath:
-          path: /proc
+          path: {{ .Values.nodeAgent.containerRuntime.hostProc }}
         name: procdir
       - hostPath:
           path: /etc/passwd
