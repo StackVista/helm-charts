@@ -6,6 +6,8 @@
   image: "{{ include "stackstate-k8s-agent.imageRegistry" . }}/{{ .Values.nodeAgent.containers.processAgent.image.repository }}:{{ .Values.nodeAgent.containers.processAgent.image.tag }}"
 {{- end }}
   imagePullPolicy: "{{ .Values.nodeAgent.containers.processAgent.image.pullPolicy }}"
+  ports:
+    - containerPort: 6063
   env:
     - name: STS_API_KEY
       valueFrom:

@@ -12,5 +12,7 @@ rules:
   - nodes/metrics
   - nodes/proxy
   - nodes/spec
+  - endpoints
   verbs:
   - get
+  - list
