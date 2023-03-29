@@ -146,6 +146,12 @@ networkPolicy:
       matchLabels: {}
     policyTypes:
       - Ingress
+scc:
+  # scc.enabled -- Create `SecurityContextConstraints` resource to manage Openshift security constraints for Stackstate.
+  # Has to be enabled when installing to Openshift >= 4.12
+  # The resource is deployed as a Helm pre-install hook to avoid any warning for the first deployment.
+  # Because `helm uninstall` does not consider Helm hooks, the resource must be manually deleted after the Helm release is removed.
+  enabled: false
 stackstate:
   components:
     all:
