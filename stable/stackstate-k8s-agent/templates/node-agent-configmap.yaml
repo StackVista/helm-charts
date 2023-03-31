@@ -1,6 +1,4 @@
-{{- $kubeStateOverridden := (include "stackstate-k8s-agent.nodeAgent.kube-state-metrics.overridden" $) }}
-{{- $checksAgentKSM := and (and .Values.checksAgent.enabled (or .Values.dependencies.kubeStateMetrics.enabled .Values.checksAgent.kubeStateMetrics.url)) (not $kubeStateOverridden) }}
-{{- if or .Values.nodeAgent.config.override $checksAgentKSM }}
+{{- if .Values.nodeAgent.config.override }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,9 +7,6 @@ metadata:
 {{ include "stackstate-k8s-agent.labels" . | indent 4 }}
     app.kubernetes.io/component: node-agent
 data:
-{{-  if $checksAgentKSM }}
-  _etc_stackstate-agent_conf.d_kubernetes_state.d_auto_conf.yaml: |
-{{- end }}
 {{- range .Values.nodeAgent.config.override }}
   {{ .path | replace "/" "_"}}_{{ .name }}: |
 {{ .data | indent 4 -}}

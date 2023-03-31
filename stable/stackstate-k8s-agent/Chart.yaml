@@ -11,8 +11,3 @@ maintainers:
 - name: Stackstate Lupulus Team
   email: ops@stackstate.com
 name: stackstate-k8s-agent
-dependencies:
-- name: kube-state-metrics
-  version: 3.2.2
-  repository: https://charts.bitnami.com/bitnami
-  condition: dependencies.kubeStateMetrics.enabled

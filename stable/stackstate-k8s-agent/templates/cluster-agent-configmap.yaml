@@ -1,5 +1,3 @@
-{{- $kubeStateOverridden := (include "stackstate-k8s-agent.kube-state-metrics.overridden" $) }}
-{{- $checksAgentKSM := and (and .Values.checksAgent.enabled (or .Values.dependencies.kubeStateMetrics.enabled .Values.checksAgent.kubeStateMetrics.url)) (not $kubeStateOverridden) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -22,17 +20,6 @@ data:
   kube_state_metrics_core_conf: |
     {{- include "cluster-agent-kube-state-metrics" . | nindent 6 }}
   {{- end }}
-{{- if $checksAgentKSM }}
-  kubernetes_state_conf: |
-    cluster_check: true
-    init_config:
-    instances:
-  {{- if .Values.dependencies.kubeStateMetrics.enabled }}
-      - kube_state_url: {{ .Values.checksAgent.kubeStateMetrics.url | default (printf "http://%s-kube-state-metrics.%s.svc.cluster.local:8080/metrics" .Release.Name .Release.Namespace) }}
-  {{- else }}
-      - kube_state_url: {{ .Values.checksAgent.kubeStateMetrics.url | required "If the kubeStateMetrics dependent chart is not enabled, the checksAgent.kubeStateMetrics.url needs to be configured." }}
-  {{- end }}
-{{- end }}
 {{- if .Values.clusterAgent.config.override }}
 {{- range .Values.clusterAgent.config.override }}
   {{ .path | replace "/" "_"}}_{{ .name }}: |
