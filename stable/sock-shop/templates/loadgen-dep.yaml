@@ -1,0 +1,38 @@
+{{- if .Values.loadgen.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loadgen
+  labels:
+    {{- include "component.common.labels" ("loadgen") | nindent 4 }}
+    {{- include "sock-shop.common.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.loadgen.replicas }}
+  selector:
+    matchLabels:
+      {{- include "component.common.labels" ("loadgen") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "component.common.labels" ("loadgen") | nindent 8 }}
+    spec:
+      serviceAccountName: sock-shop
+      containers:
+      - name: loadgen
+        image:  "{{ .Values.loadgen.image.repository }}:{{ .Values.loadgen.image.tag }}"
+        imagePullPolicy: Always
+        args:
+        - "--weekly_amplitude"
+        - "2"
+        - "--daily_amplitude"
+        - "2"
+        - "--logLevel"
+        - "10"
+        - "--address"
+        - "http://ingress"
+        resources:
+        {{- toYaml .Values.ingress.resources | nindent 10 }}
+        securityContext:
+          runAsUser: 10001
+      priorityClassName: sock-shop-1000
+{{- end }}

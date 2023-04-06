@@ -506,6 +506,23 @@ push_sandbox-operator_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/sandbox-operator
+push_sock-shop_to_internal:
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - changes:
+        - stable/sock-shop/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+  script:
+    - helm dependencies update ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/sock-shop
 push_stackstate-agent_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
@@ -1409,6 +1426,36 @@ test_sandbox-operator:
   variables:
     CGO_ENABLED: 0
     CHART: stable/sandbox-operator
+test_sock-shop:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - changes:
+        - stable/sock-shop/**/*
+      exists:
+        - stable/sock-shop/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/sock-shop/test/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/sock-shop
 test_stackstate:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami

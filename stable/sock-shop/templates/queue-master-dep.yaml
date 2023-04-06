@@ -1,0 +1,48 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: queue-master
+  labels:
+    {{- include "component.common.labels" ("queue-master") | nindent 4 }}
+    {{- include "sock-shop.common.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "component.common.labels" ("queue-master") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "component.common.labels" ("queue-master") | nindent 8 }}
+        domain: business
+        java: "true"
+        job: rabbitmq
+    spec:
+      serviceAccountName: sock-shop
+      containers:
+      - name: queue-master
+        image: weaveworksdemos/queue-master:0.3.1
+        env:
+        - name: JAVA_OPTS
+          value: {{ .Values.all.java.options }}
+        resources:
+        {{- toYaml .Values.queueMaster.resources | nindent 10 }}
+        ports:
+        - containerPort: 80
+        securityContext:
+          runAsUser: 10001
+          readOnlyRootFilesystem: false
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 300
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 3
+      priorityClassName: {{ template "priority-class-name" . }}

@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: session-db
+  labels:
+    {{- include "component.common.labels" ("session-db") | nindent 4 }}
+    {{- include "sock-shop.common.labels" . | nindent 4 }}
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 6379
+    targetPort: 6379
+  selector:
+    {{- include "component.common.labels" ("session-db") | nindent 4 }}

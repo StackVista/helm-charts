@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalogue-db
+  labels:
+    {{- include "component.common.labels" ("catalogue-db") | nindent 4 }}
+    {{- include "sock-shop.common.labels" . | nindent 4 }}
+    domain: business
+    extra-identifier: catalogue-db
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 3306
+    targetPort: 3306
+  selector:
+    {{- include "component.common.labels" ("catalogue-db") | nindent 4 }}

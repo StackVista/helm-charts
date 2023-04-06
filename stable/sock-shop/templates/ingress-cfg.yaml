@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ingress
+  labels:
+    {{- include "component.common.labels" ("ingress") | nindent 4 }}
+    {{- include "sock-shop.common.labels" . | nindent 4 }}
+data:
+  http.toml: |
+    [http]
+      [http.routers]
+        [http.routers.frontend]
+          rule = "PathPrefix(`/`)"
+          service = "frontend"
+
+      [http.services]
+        [http.services.frontend.loadBalancer]
+          [[http.services.frontend.loadBalancer.servers]]
+            url = "http://front-end/"

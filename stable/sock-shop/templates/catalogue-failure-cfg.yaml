@@ -1,0 +1,17 @@
+---
+{{- if .Values.catalogue.demoScenarioSimulation.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: catalogue-failure-script
+  labels:
+    {{- include "component.common.labels" ("catalogue") | nindent 4 }}
+    {{- include "sock-shop.common.labels" . | nindent 4 }}
+data:
+  deploy-catalogue-failure.sh: |
+    {{- .Files.Get "scripts/catalogue-failure-deploy.sh" | nindent 4 }}
+  catalogue-failure-patch.yaml: |
+    {{- .Files.Get "scripts/catalogue-failure-patch.yaml" | nindent 4 }}
+  catalogue-fix-patch.yaml: |
+    {{- .Files.Get "scripts/catalogue-fix-patch.yaml" | nindent 4 }}
+{{- end }}

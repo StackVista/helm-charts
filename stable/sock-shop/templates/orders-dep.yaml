@@ -1,0 +1,71 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders
+  labels:
+    {{- include "component.common.labels" ("orders") | nindent 4 }}
+    {{- include "sock-shop.common.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "component.common.labels" ("orders") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "component.common.labels" ("orders") | nindent 8 }}
+        api_service: "true"
+        domain: business
+        java: "true"
+        job: orders
+        orders: "true"
+    spec:
+      serviceAccountName: sock-shop
+      containers:
+      - name: orders
+        image: "{{ .Values.orders.image.repository }}:{{ .Values.orders.image.tag }}"
+        env:
+          - name: JAVA_OPTS
+            value: {{ .Values.all.java.options }}
+          - name: SHIPPING_PRIORITY
+            value: {{ .Values.orders.shippingPriority | quote }}
+          - name: ORDER_PRIORITY
+            value: {{ .Values.orders.orderPriority | quote }}
+          - name: BACKORDER_PRIORITY
+            value: {{ .Values.orders.backorderPriority | quote }}
+        resources:
+        {{- toYaml .Values.orders.resources | nindent 10 }}
+        ports:
+        - containerPort: 80
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 10001
+{{- if not .Values.all.securityCapabilitiesDisabled }}
+          capabilities:
+            drop:
+              - all
+            add:
+              - NET_BIND_SERVICE
+{{- end }}
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 300
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 3
+      volumes:
+        - name: tmp-volume
+          emptyDir:
+            medium: Memory
+      priorityClassName: {{ template "priority-class-name" . }}

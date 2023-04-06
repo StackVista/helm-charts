@@ -1,0 +1,18 @@
+---
+{{- if .Values.catalogue.demoScenarioSimulation.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: catalogue-failure-deployment
+  labels:
+    {{- include "component.common.labels" ("catalogue") | nindent 4 }}
+    {{- include "sock-shop.common.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: catalogue-failure-deployment
+subjects:
+  - kind: ServiceAccount
+    name: catalogue-failure-deployment
+    namespace: {{ .Release.Namespace }}
+{{- end }}

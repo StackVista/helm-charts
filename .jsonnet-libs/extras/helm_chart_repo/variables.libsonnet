@@ -47,6 +47,7 @@
       'petros-d-kubelet-stats-exporter',
       'receiveramplifier',
       'sandbox-operator',
+      'sock-shop',
     ],
   },
   rules: {

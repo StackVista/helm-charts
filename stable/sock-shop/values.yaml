@@ -1,0 +1,230 @@
+###################
+# SOckShop values #
+###################
+
+# nameOverride -- A name to prepend the Helm resources, if not specified the name of the chart is used.
+nameOverride: ""
+all:
+  # all.securityCapabilitiesDisabled -- Disable securtyContext capabilities operations.
+  securityCapabilitiesDisabled: false
+  java:
+    # all.java.options -- The common JAVA_OPTS for all Java microservices.
+    options: -Xms512m -Xmx512m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
+
+cartsDB:
+  # cartsDB.resources -- Resource allocation for `carts-db` pods.
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+
+carts:
+  # carts.version -- Custom label (version) value for `carts` pods.
+  version: 1
+  # carts.resources -- Resource allocation for `carts` pods.
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1000Mi
+    requests:
+      cpu: 500m
+      memory: 1000Mi
+  # carts.affinity -- Affinity settings for carts pods.
+  affinity: {}
+
+catalogueDB:
+  image:
+    # catalogueDB.image.repository -- The container repository for `catalogue-db` images.
+    repository: quay.io/stackstate/weaveworksdemo-catalogue-db
+    # catalogueDB.image.tag -- The container image tag.
+    tag: 0.3.1
+  # catalogueDB.resources -- Resource allocation for `catalogue-db` pods.
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 500Mi
+    requests:
+      cpu: 500m
+      memory: 250Mi
+
+catalogue:
+  # catalogue.resources -- Resource allocation for `catalogue` pods.
+  resources:
+    limits:
+      cpu: 100m
+      memory: 200Mi
+    requests:
+      cpu: 100m
+      memory: 200Mi
+  # catalogue.annotations -- Custom annotations for `catalogue` pods.
+  annotations:
+    vcs: https://gitlab.com/stackvista/demo/microservices-demo/catalogue/-/commit/e9e5338599dbda30366b38d00794c34aaa4221a7
+  image:
+    # catalogue.image.repository -- The container repository for `catalogue` images.
+    repository: quay.io/stackstate/weaveworksdemo-catalogue
+    # catalogue.image.tag -- The container image tag.
+    tag: 0.3.5
+  demoScenarioSimulation:
+    # catalogue.demoScenarioSimulation.enabled -- Whether the k8s demo scenario should be enabled.
+    enabled: false
+    # catalogue.demoScenarioSimulation.schedule -- The cron schedule to trigger the k8s demo scenario.
+    schedule: "0,30 * * * *"
+
+frontend:
+  image:
+    # frontend.image.repository -- The container repository for `frontend` images.
+    repository: quay.io/stackstate/weaveworksdemo-front-end
+    # frontend.image.tag -- The container image tag.
+    tag: 0.3.13
+  # frontend.replicas -- The number or replicas of `frontend` deployment.
+  replicas: 1
+  # frontend.resources -- Resource allocation for `frontend` pods.
+  resources:
+    limits:
+      cpu: 300m
+      memory: 1000Mi
+    requests:
+      cpu: 200m
+      memory: 1000Mi
+
+ingress:
+  # ingress.replicas -- The number or replicas of `ingress` deployment.
+  replicas: 1
+  # ingress.resources -- Resource allocation for `ingress` pods.
+  resources:
+    limits:
+      cpu: 300m
+      memory: 1000Mi
+    requests:
+      cpu: 200m
+      memory: 1000Mi
+
+loadgen:
+  # loadgen.replicas -- Whether the `loadgen` should be deployed.
+  enabled: false
+  # loadgen.replicas -- The number or replicas of `loadgen` deployment.
+  replicas: 1
+  image:
+    # loadgen.image.repository -- The container repository for `loadgen` images.
+    repository: quay.io/stackstate/loadgen
+    # loadgen.image.tag -- The container image tag.
+    tag: master-a448026e
+  # loadgen.resources -- Resource allocation for `loadgen` pods.
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+
+ordersDB:
+  # ordersDB.resources -- Resource allocation for `orders-db` pods.
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+
+orders:
+  image:
+    # orders.image.repository -- The container repository for `orders` images.
+    repository: quay.io/stackstate/weaveworksdemo-orders
+    # orders.image.tag -- The container image tag.
+    tag: master
+  # orders.shippingPriority -- whatever it means.
+  shippingPriority: 0
+  # orders.orderPriority -- whatever it means.
+  orderPriority: 0
+  # orders.backorderPriority -- whatever it means.
+  backorderPriority: 0
+  # orders.resources -- Resource allocation for `orders` pods.
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1000Mi
+    requests:
+      cpu: 500m
+      memory: 1000Mi
+
+payment:
+  # payment.resources -- Resource allocation for `payment` pods.
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+
+queueMaster:
+  # queueMaster.resources -- Resource allocation for `queue-master` pods.
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1000Mi
+    requests:
+      cpu: 500m
+      memory: 1000Mi
+
+rabbitmq:
+  # rabbitmq.resources -- Resource allocation for `rabbitmq` pods.
+  resources:
+    limits:
+      cpu: 100m
+      memory: 200Mi
+    requests:
+      cpu: 100m
+      memory: 200Mi
+
+sessionDB:
+  # sessionDB.resources -- Resource allocation for `session-db` pods.
+  limits:
+    cpu: 100m
+    memory: 100Mi
+  requests:
+    cpu: 100m
+    memory: 100Mi
+
+shipping:
+  # shipping.resources -- Resource allocation for `shipping` pods.
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1000Mi
+    requests:
+      cpu: 500m
+      memory: 1000Mi
+
+userDB:
+  # userDB.resources -- Resource allocation for `user-db` pods.
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+
+user:
+  # user.resources -- Resource allocation for `user` pods.
+  limits:
+    cpu: 300m
+    memory: 1000Mi
+  requests:
+    cpu: 100m
+    memory: 400Mi
+
+# priority -- priority for the custom PriorityClass
+priority: 1000000000
+
+scc:
+  # scc.enabled -- Create `SecurityContextConstraints` resource to manage Openshift security constraints for Stackstate.
+  enabled: false
+  # scc.extraServiceAccounts -- Extraccounts from the same namespace to add to SecurityContextConstraints users.
+  extraServiceAccounts: []

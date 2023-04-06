@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingress
+  labels:
+    {{- include "component.common.labels" ("ingress") | nindent 4 }}
+    {{- include "sock-shop.common.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.ingress.replicas }}
+  selector:
+    matchLabels:
+      {{- include "component.common.labels" ("ingress") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "component.common.labels" ("ingress") | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/ingress-cfg.yaml") . | sha256sum }}
+    spec:
+      serviceAccountName: sock-shop
+      containers:
+      - name: ingress
+        image: traefik:v2.3.4
+        command:
+        - /bin/sh
+        - -c
+        - 'traefik --entryPoints.web.address=:8000 --providers.file.filename=/etc/traefik/http.toml --api.dashboard=true  --api.insecure=true --log.level=INFO --accessLog=true --tracing=true --tracing.datadog=true --tracing.datadog.debug=true --tracing.datadog.localAgentHostPort=${STS_AGENT_HOST}:8126 --tracing.serviceName=urn:service:/demo-apps-cluster.demo.stackstate.com:sock-shop:ingress --tracing.spanNameLimit=100'
+        env:
+        - name: STS_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        resources:
+        {{- toYaml .Values.ingress.resources | nindent 10 }}
+        ports:
+        - containerPort: 8000
+        - containerPort: 8080
+        securityContext:
+          runAsUser: 10001
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 3
+        volumeMounts:
+        - name: config
+          mountPath: /etc/traefik
+      priorityClassName: sock-shop-1000
+      volumes:
+      - name: config
+        configMap:
+          name: ingress

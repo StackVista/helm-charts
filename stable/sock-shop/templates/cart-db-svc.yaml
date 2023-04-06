@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: carts-db
+  labels:
+    {{- include "component.common.labels" ("carts-db") | nindent 4 }}
+    {{- include "sock-shop.common.labels" . | nindent 4 }}
+    domain: business
+    extra-identifier: carts-db
+spec:
+  ports:
+    # the port that this service should serve on
+  - port: 27017
+    targetPort: 27017
+  selector:
+    {{- include "component.common.labels" ("carts-db") | nindent 4 }}

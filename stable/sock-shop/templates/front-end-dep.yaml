@@ -1,0 +1,56 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-end
+  labels:
+    {{- include "component.common.labels" ("front-end") | nindent 4 }}
+    {{- include "sock-shop.common.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.frontend.replicas }}
+  selector:
+    matchLabels:
+      {{- include "component.common.labels" ("front-end") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "component.common.labels" ("front-end") | nindent 8 }}
+        api_service: "true"
+        domain: business
+        frontend: "true"
+        job: front-end
+        nodejs: "true"
+    spec:
+      serviceAccountName: sock-shop
+      containers:
+      - name: front-end
+        image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
+        resources:
+        {{- toYaml .Values.frontend.resources | nindent 10 }}
+        ports:
+        - containerPort: 8079
+        env:
+        - name: SESSION_REDIS
+          value: "true"
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1001
+          readOnlyRootFilesystem: false
+{{- if not .Values.all.securityCapabilitiesDisabled }}
+          capabilities:
+            drop:
+              - all
+{{- end }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8079
+          initialDelaySeconds: 300
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8079
+          initialDelaySeconds: 30
+          periodSeconds: 3
+      priorityClassName: {{ template "priority-class-name" . }}

@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: session-db
+  labels:
+    {{- include "component.common.labels" ("session-db") | nindent 4 }}
+    {{- include "sock-shop.common.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "component.common.labels" ("session-db") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "component.common.labels" ("session-db") | nindent 8 }}
+    spec:
+      serviceAccountName: sock-shop
+      containers:
+      - name: session-db
+        image: redis:alpine
+        resources:
+        {{- toYaml .Values.sessionDB.resources | nindent 10 }}
+        ports:
+        - name: redis
+          containerPort: 6379
+        securityContext:
+          runAsUser: 999
+          readOnlyRootFilesystem: false
+          {{- if not .Values.all.securityCapabilitiesDisabled }}
+          capabilities:
+            drop:
+              - all
+            add:
+              - CHOWN
+              - SETGID
+              - SETUID
+          {{- end }}
+      priorityClassName: {{ template "priority-class-name" . }}

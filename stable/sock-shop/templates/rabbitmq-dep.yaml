@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  labels:
+    {{- include "component.common.labels" ("rabbitmq") | nindent 4 }}
+    {{- include "sock-shop.common.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "component.common.labels" ("rabbitmq") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "component.common.labels" ("rabbitmq") | nindent 8 }}
+        domain: business
+        java: "true"
+        job: rabbitmq
+    spec:
+      serviceAccountName: sock-shop
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3.6.8
+        ports:
+        - containerPort: 5672
+        resources:
+        {{- toYaml .Values.rabbitmq.resources | nindent 10 }}
+        securityContext:
+          runAsUser: 10001
+          readOnlyRootFilesystem: false
+          {{- if not .Values.all.securityCapabilitiesDisabled }}
+          capabilities:
+            drop:
+              - all
+            add:
+              - CHOWN
+              - SETGID
+              - SETUID
+              - DAC_OVERRIDE
+          {{- end }}
+      priorityClassName: {{ template "priority-class-name" . }}

@@ -1,0 +1,50 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-db
+  labels:
+    {{- include "component.common.labels" ("user-db") | nindent 4 }}
+    {{- include "sock-shop.common.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "component.common.labels" ("user-db") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "component.common.labels" ("user-db") | nindent 8 }}
+        domain: business
+        mysql: "true"
+    spec:
+      serviceAccountName: sock-shop
+      containers:
+      - name: user-db
+        image: weaveworksdemos/user-db:0.4.0
+        ports:
+        - name: mongo
+          containerPort: 27017
+        resources:
+        {{- toYaml .Values.userDB.resources | nindent 10 }}
+        securityContext:
+          runAsUser: 999
+          runAsGroup: 999
+          readOnlyRootFilesystem: false
+          {{- if not .Values.all.securityCapabilitiesDisabled }}
+          capabilities:
+            drop:
+              - all
+            add:
+              - CHOWN
+              - SETGID
+              - SETUID
+          {{- end }}
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+      volumes:
+        - name: tmp-volume
+          emptyDir:
+            medium: Memory
+      priorityClassName: {{ template "priority-class-name" . }}

@@ -1,0 +1,10 @@
+---
+{{- if .Values.catalogue.demoScenarioSimulation.enabled }}
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: catalogue-failure-deployment
+  labels:
+    {{- include "component.common.labels" ("catalogue") | nindent 4 }}
+    {{- include "sock-shop.common.labels" . | nindent 4 }}
+{{- end }}
