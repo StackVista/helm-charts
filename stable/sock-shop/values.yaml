@@ -71,7 +71,11 @@ catalogue:
     # catalogue.demoScenarioSimulation.enabled -- Whether the k8s demo scenario should be enabled.
     enabled: false
     # catalogue.demoScenarioSimulation.schedule -- The cron schedule to trigger the k8s demo scenario.
-    schedule: "0,30 * * * *"
+    schedule:
+      # catalogue.demoScenarioSimulation.schedule.failure -- The cron schedule to trigger the faulty k8s demo scenario.
+      failure: "0 * * * *"
+      # catalogue.demoScenarioSimulation.schedule.fix -- The cron schedule to fix the faulty k8s demo scenario.
+      fix: "30 * * * *"
 
 frontend:
   image:

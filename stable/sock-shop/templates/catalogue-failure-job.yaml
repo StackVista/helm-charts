@@ -9,7 +9,7 @@ metadata:
     {{- include "sock-shop.common.labels" . | nindent 4 }}
 spec:
   concurrencyPolicy: Forbid
-  schedule: "{{ .Values.catalogue.demoScenarioSimulation.schedule }}"
+  schedule: "{{ .Values.catalogue.demoScenarioSimulation.schedule.failure }}"
   jobTemplate:
     spec:
       backoffLimit: 2
@@ -24,7 +24,41 @@ spec:
               command:
                 - bash
                 - -c
-                - /opt/catalogue/deploy-catalogue-failure.sh
+                - /opt/catalogue/deploy-catalogue-demo-scenario.sh failure
+              volumeMounts:
+                  - mountPath: /opt/catalogue/
+                    name: catalogue-failure-script
+          volumes:
+            - name: catalogue-failure-script
+              configMap:
+                name: catalogue-failure-script
+                defaultMode: 0755
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: catalog-successful-deployment
+  labels:
+    {{- include "component.common.labels" ("catalogue") | nindent 4 }}
+    {{- include "sock-shop.common.labels" . | nindent 4 }}
+spec:
+  concurrencyPolicy: Forbid
+  schedule: "{{ .Values.catalogue.demoScenarioSimulation.schedule.fix }}"
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 600
+      template:
+        spec:
+          serviceAccountName: catalogue-failure-deployment
+          restartPolicy: Never
+          containers:
+            - name: kubectl
+              image: bitnami/kubectl
+              command:
+                - bash
+                - -c
+                - /opt/catalogue/deploy-catalogue-demo-scenario.sh fix
               volumeMounts:
                   - mountPath: /opt/catalogue/
                     name: catalogue-failure-script

@@ -8,8 +8,8 @@ metadata:
     {{- include "component.common.labels" ("catalogue") | nindent 4 }}
     {{- include "sock-shop.common.labels" . | nindent 4 }}
 data:
-  deploy-catalogue-failure.sh: |
-    {{- .Files.Get "scripts/catalogue-failure-deploy.sh" | nindent 4 }}
+  deploy-catalogue-demo-scenario.sh: |
+    {{- .Files.Get "scripts/deploy-catalogue-demo-scenario.sh" | nindent 4 }}
   catalogue-failure-patch.yaml: |
     {{- .Files.Get "scripts/catalogue-failure-patch.yaml" | nindent 4 }}
   catalogue-fix-patch.yaml: |
