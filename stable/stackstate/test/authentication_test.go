@@ -174,23 +174,43 @@ stackstate.authorization.powerUserGroups = ${stackstate.authorization.powerUserG
 stackstate.authorization.guestGroups = ${stackstate.authorization.guestGroups} ["guest1","guest2"]`
 
 func TestAuthenticationRolesSplit(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-api", []string{"values/authentication_roles.yaml"}, expectedRolesAuthConfig)
+	RunSecretsConfigTestF(t, "stackstate-api", []string{"values/authentication_roles.yaml"}, func(stringData string) {
+		// check that the roles are added
+		require.Contains(t, stringData, "stackstate-aad")
+		require.Contains(t, stringData, "extra-admin")
+		require.Contains(t, stringData, "extra-platform-admin")
+		require.Contains(t, stringData, "extra-power")
+		require.Contains(t, stringData, "guest1")
+		require.Contains(t, stringData, "guest2")
+	})
 }
 
 const expectedRolesWhenEmptyAuthConfig = `stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["stackstate-aad"]`
 
 func TestAuthenticationRolesEmptySplit(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-api", []string{"values/authentication_roles_empty.yaml"}, expectedRolesWhenEmptyAuthConfig)
+	RunSecretsConfigTestF(t, "stackstate-api", []string{"values/authentication_roles_empty.yaml"}, func(stringData string) {
+		require.Contains(t, stringData, "stackstate-aad")
+	})
 }
 
 const expectedRolesWhenUndefinedAdminAuthConfig = `stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["stackstate-aad"]`
 
 func TestAuthenticationRolesUndefinedAdminSplit(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-api", []string{"values/authentication_roles_no_admin.yaml"}, expectedRolesWhenUndefinedAdminAuthConfig)
+	RunSecretsConfigTestF(t, "stackstate-api", []string{"values/authentication_roles_no_admin.yaml"}, func(stringData string) {
+		require.Contains(t, stringData, "stackstate-aad")
+	})
 }
 
 func TestAuthenticationRoles(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-server", []string{"values/authentication_roles.yaml", "values/split_disabled.yaml"}, expectedRolesAuthConfig)
+	RunSecretsConfigTestF(t, "stackstate-server", []string{"values/authentication_roles.yaml", "values/split_disabled.yaml"}, func(stringData string) {
+		// check that the roles are added
+		require.Contains(t, stringData, "stackstate-aad")
+		require.Contains(t, stringData, "extra-admin")
+		require.Contains(t, stringData, "extra-platform-admin")
+		require.Contains(t, stringData, "extra-power")
+		require.Contains(t, stringData, "guest1")
+		require.Contains(t, stringData, "guest2")
+	})
 }
 
 func TestMultipleAuthConfigsNotAllowed(t *testing.T) {

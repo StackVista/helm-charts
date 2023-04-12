@@ -11,6 +11,14 @@ import (
 // RunSecretsConfigTest takes the standard full.yaml values and additional values.yaml files and extracts the specified configmap
 // for verification
 func RunSecretsConfigTest(t *testing.T, secretKey string, extraValues []string, expectedInConfig ...string) {
+	RunSecretsConfigTestF(t, secretKey, extraValues, func(stringData string) {
+		for _, expected := range expectedInConfig {
+			require.Contains(t, stringData, expected)
+		}
+	})
+}
+
+func RunSecretsConfigTestF(t *testing.T, secretKey string, extraValues []string, f func(stringData string)) {
 	values := append([]string{"values/full.yaml"}, extraValues...)
 
 	output := helmtestutil.RenderHelmTemplate(t, "stackstate", values...)
@@ -26,7 +34,5 @@ func RunSecretsConfigTest(t *testing.T, secretKey string, extraValues []string, 
 	}
 	require.NotNil(t, stackstateSecret)
 
-	for _, expected := range expectedInConfig {
-		require.Contains(t, stackstateSecret.StringData["application_stackstate.conf"], expected)
-	}
+	f(stackstateSecret.StringData["application_stackstate.conf"])
 }

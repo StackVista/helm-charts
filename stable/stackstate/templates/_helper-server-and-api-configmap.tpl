@@ -183,26 +183,44 @@ stackstate.api.authentication.authServer.stackstateAuthServer {
 
 stackstate.api.authentication.sessionLifetime =  {{ .Values.stackstate.authentication.sessionLifetime | toJson }}
 
+{{- $subjects := dict -}}
+
+{{ $admins := list "stackstate-aad" }}
 {{- if .Values.stackstate.authentication.roles.admin }}
-stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} {{ append .Values.stackstate.authentication.roles.admin "stackstate-aad" | toJson }}
-{{- else }}
-{{/*
-  - 'stackstate-aad' is required for anomaly-detection
-  - '${stackstate.authorization.adminGroups}' is required to preserve default groups, e.g. stackstate-admin
-*/}}
-stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["stackstate-aad"]
+{{ $admins = concat $admins .Values.stackstate.authentication.roles.admin }}
+{{- end }}
+{{- $adminSystemPerms := (list "create-views" "access-analytics" "execute-scripts" "read-settings" "update-settings" "import-settings" "export-settings" "manage-topology-elements" "access-cli" "access-explore" "update-visualization" "perform-custom-query" "read-permissions" "manage-star-view" "read-stackpacks" "manage-stackpacks" "execute-component-templates" "access-topic-data" "access-log-data" "access-synchronization-data" "execute-node-sync" "read-telemetry-streams" "manage-telemetry-streams" "execute-component-actions" "manage-annotations" "manage-event-handlers" "manage-monitors" "run-monitors" "read-metrics" "update-permissions" "upload-stackpacks" "execute-restricted-scripts" "manage-service-tokens") }}
+{{- $adminViewPerms := (list "access-view" "save-view" "delete-view") }}
+{{- range $admins }}
+  {{- $_ := set $subjects . (dict "systemPermissions" $adminSystemPerms "viewPermissions" $adminViewPerms) }}
 {{- end }}
 
 {{- if .Values.stackstate.authentication.roles.platformAdmin }}
-stackstate.authorization.platformAdminGroups = ${stackstate.authorization.platformAdminGroups} {{ .Values.stackstate.authentication.roles.platformAdmin | toJson }}
+  {{- $platformAdminSystemPerms := (list "access-admin-api" "access-cli" "access-log-data" "manage-star-view" "unlock-node") }}
+  {{- $platformAdminViewPerms := (list "access-view") }}
+  {{- range .Values.stackstate.authentication.roles.platformAdmin }}
+    {{- $_ := set $subjects . (dict "systemPermissions" $platformAdminSystemPerms "viewPermissions" $platformAdminViewPerms) }}
+  {{- end }}
 {{- end }}
 
 {{- if .Values.stackstate.authentication.roles.powerUser }}
-stackstate.authorization.powerUserGroups = ${stackstate.authorization.powerUserGroups} {{ .Values.stackstate.authentication.roles.powerUser | toJson }}
+  {{- $powerUserSystemPerms := (list "create-views" "access-analytics" "execute-scripts" "read-settings" "update-settings" "import-settings" "export-settings" "manage-topology-elements" "access-cli" "access-explore" "update-visualization" "perform-custom-query" "read-permissions" "manage-star-view" "read-stackpacks" "manage-stackpacks" "execute-component-templates" "access-topic-data" "access-log-data" "access-synchronization-data" "execute-node-sync" "read-telemetry-streams" "manage-telemetry-streams" "execute-component-actions" "manage-annotations" "manage-event-handlers" "manage-monitors" "run-monitors" "read-metrics") }}
+  {{- $powerUserViewPerms := (list "access-view" "save-view" "delete-view") }}
+  {{- range .Values.stackstate.authentication.roles.powerUser }}
+    {{- $_ := set $subjects . (dict "systemPermissions" $powerUserSystemPerms "viewPermissions" $powerUserViewPerms) }}
+  {{- end }}
 {{- end }}
 
 {{- if .Values.stackstate.authentication.roles.guest }}
-stackstate.authorization.guestGroups = ${stackstate.authorization.guestGroups} {{ .Values.stackstate.authentication.roles.guest | toJson }}
+  {{- $guestSystemPerms := (list "access-explore" "access-cli" "perform-custom-query" "manage-star-view" "read-permissions" "update-visualization" "read-telemetry-streams" "execute-component-actions" "read-metrics") }}
+  {{- $guestViewPerms := (list "access-view") }}
+  {{- range .Values.stackstate.authentication.roles.guest }}
+    {{- $_ := set $subjects . (dict "systemPermissions" $guestSystemPerms "viewPermissions" $guestViewPerms) }}
+  {{- end }}
+{{- end }}
+
+{{- if gt (len $subjects) 0 }}
+stackstate.authorization.staticSubjects {{ $subjects | toJson }}
 {{- end }}
 
 {{- if .Values.stackstate.authentication.serviceToken.bootstrap.token }}
