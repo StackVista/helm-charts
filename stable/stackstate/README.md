@@ -394,8 +394,8 @@ stackstate/stackstate
 | stackstate.components.healthSync.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `healthSync` pods. |
 | stackstate.components.healthSync.replicaCount | int | `1` | Number of `healthSync` replicas. |
 | stackstate.components.healthSync.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `healthSync` pods. |
-| stackstate.components.healthSync.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
-| stackstate.components.healthSync.sizing.javaHeapMemoryFraction | string | `"50"` |  |
+| stackstate.components.healthSync.sizing.baseMemoryConsumption | string | `"450Mi"` |  |
+| stackstate.components.healthSync.sizing.javaHeapMemoryFraction | string | `"45"` |  |
 | stackstate.components.healthSync.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.initializer.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.initializer.affinity | object | `{}` | Affinity settings for pod assignment. |

@@ -382,8 +382,8 @@ stackstate:
           cpu: "1000m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "400Mi"
-        javaHeapMemoryFraction: "50"
+        baseMemoryConsumption: "450Mi"
+        javaHeapMemoryFraction: "45"
       # stackstate.components.healthSync.replicaCount -- Number of `healthSync` replicas.
       replicaCount: 1
       # stackstate.components.healthSync.nodeSelector -- Node labels for pod assignment.
