@@ -49,7 +49,7 @@ func TestSplitServicesJavaHeapRender(t *testing.T) {
 	expectedDeployments["stackstate-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1240m -Xmx1860m -Xms1860m"}
 	expectedDeployments["stackstate-slicing"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=520m -Xmx780m -Xms780m"}
 	expectedDeployments["stackstate-view-health"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1035m -Xmx1265m -Xms1265m"}
-	expectedDeployments["stackstate-health-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=800m -Xmx800m -Xms800m"}
+	expectedDeployments["stackstate-health-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=853m -Xmx697m -Xms697m"}
 	expectedDeployments["stackstate-initializer"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=140m -Xmx260m -Xms260m"}
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
