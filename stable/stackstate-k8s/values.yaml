@@ -1533,7 +1533,7 @@ zookeeper:
     maxUnavailable: 1
 anomaly-detection:
   # anomaly-detection.enabled -- Enables anomaly detection chart
-  enabled: true
+  enabled: false
   cpu:
     # anomaly-detection.cpu.limit -- CPU resource limit
     limit: "2000m"

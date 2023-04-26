@@ -43,7 +43,7 @@ stackstate/stackstate
 |-----|------|---------|-------------|
 | anomaly-detection.cpu.limit | string | `"2000m"` | CPU resource limit |
 | anomaly-detection.cpu.request | string | `"1000m"` | CPU resource request |
-| anomaly-detection.enabled | bool | `true` | Enables anomaly detection chart |
+| anomaly-detection.enabled | bool | `false` | Enables anomaly detection chart |
 | anomaly-detection.image.imagePullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for anomaly detection pods. |
 | anomaly-detection.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
 | anomaly-detection.image.pullSecretPassword | string | `nil` |  |

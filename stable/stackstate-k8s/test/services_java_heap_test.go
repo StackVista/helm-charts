@@ -18,7 +18,6 @@ func TestServerJavaHeapRender(t *testing.T) {
 	expectedDeployments["stackstate-server"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=2428m -Xmx5664m -Xms5664m"}
 	expectedDeployments["stackstate-receiver"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1399m -Xmx2597m -Xms2597m"}
 	expectedDeployments["stackstate-correlate"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=420m -Xmx780m -Xms780m"}
-	expectedDeployments["stackstate-mm2es"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=387m -Xmx387m -Xms387m"}
 	expectedDeployments["stackstate-kafka2prom"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=387m -Xmx387m -Xms387m"}
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
