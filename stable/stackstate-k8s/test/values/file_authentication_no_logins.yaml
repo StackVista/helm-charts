@@ -1,0 +1,4 @@
+stackstate:
+  authentication:
+    file:
+      logins: []

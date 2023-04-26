@@ -1,0 +1,20 @@
+{{- define "stackstate.kafka2prom.servicemonitor" -}}
+metadata:
+  labels:
+    app.kubernetes.io/component: kafka2prom
+  {{- with .Values.stackstate.components.all.metrics.servicemonitor.additionalLabels }}
+    {{ toYaml . | nindent 4 }}
+  {{- end }}
+  name: {{ template "common.fullname.short" . }}-kafka2prom
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: kafka2prom
+  {{ include "stackstate.servicemonitor.extraLabels" . | nindent 2 }}
+{{- end -}}
+
+{{- if and ( .Values.stackstate.components.all.metrics.enabled ) ( .Values.stackstate.components.all.metrics.servicemonitor.enabled ) (.Values.stackstate.experimental.metrics) }}
+{{- $commonServiceMonitor := fromYaml (include "common.servicemonitor" .) -}}
+{{- $Kafka2PromServiceMonitor := fromYaml (include "stackstate.kafka2prom.servicemonitor" .) -}}
+{{- toYaml (merge $Kafka2PromServiceMonitor $commonServiceMonitor) -}}
+{{- end -}}

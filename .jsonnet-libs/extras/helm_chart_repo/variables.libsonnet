@@ -29,6 +29,7 @@
       'minio',
       'pull-secret',
       'stackstate',
+      'stackstate-k8s',
       'stackstate-monitoring',
       'stackstate-standalone',
       'trafficmirror',

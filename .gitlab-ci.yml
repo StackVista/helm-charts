@@ -33,6 +33,36 @@ integration_test_stackstate:
   variables:
     CGO_ENABLED: 0
     CHART: stable/stackstate
+integration_test_stackstate_k8s:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - changes:
+        - stable/stackstate-k8s/**/*
+      exists:
+        - stable/stackstate-k8s/itest/*.go
+      if: $CI_COMMIT_TAG
+  script:
+    - go test ./stable/stackstate-k8s/itest/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/stackstate-k8s
 push_artifactory-cleaner_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
@@ -595,6 +625,68 @@ push_stackstate-k8s-agent_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/stackstate-k8s-agent
+push_stackstate-k8s_to_internal:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+    - .gitlab/bump_sts_chart_master_version.sh stackstate-internal
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - changes:
+        - stable/stackstate-k8s/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-k8s/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-k8s/%
+    - helm dependencies update ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/stackstate-k8s
+push_stackstate-k8s_to_public:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+    - .gitlab/bump_sts_chart_master_version.sh stackstate
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
+  needs:
+    - push_stackstate-k8s_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - changes:
+        - stable/stackstate-k8s/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-k8s/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-k8s/%
+    - helm dependencies update ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/stackstate-k8s
 push_stackstate-monitoring_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
@@ -1517,6 +1609,36 @@ test_stackstate-agent:
   variables:
     CGO_ENABLED: 0
     CHART: stable/stackstate-agent
+test_stackstate-k8s:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4dab71c9
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - changes:
+        - stable/stackstate-k8s/**/*
+      exists:
+        - stable/stackstate-k8s/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/stackstate-k8s/test/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/stackstate-k8s
 test_stackstate-k8s-agent:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -1704,7 +1826,7 @@ validate_charts:
   script:
     - ct list-changed --config test/ct.yaml
     - if [[ "${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" =~ ^releasing*|^developing* ]] || [[ -n "${CI_COMMIT_TAG}" ]] ; then export VERSION_INCREMENT_CHECK="--check-version-increment=false" ; fi
-    - ct lint --debug --validate-maintainers=false ${VERSION_INCREMENT_CHECK} --excluded-charts stackstate --excluded-charts gitlab-runner --config test/ct.yaml
+    - ct lint --debug --validate-maintainers=false ${VERSION_INCREMENT_CHECK} --excluded-charts stackstate --excluded-charts stackstate-k8s --excluded-charts gitlab-runner --config test/ct.yaml
     - .gitlab/validate_kubeconform.sh
   stage: validate
 validate_stackstate_chart:
@@ -1731,7 +1853,7 @@ validate_stackstate_chart:
   script:
     - ct list-changed --config test/ct.yaml
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
-    - ct lint --debug --validate-maintainers=false --charts stable/stackstate --config test/ct.yaml
+    - ct lint --debug --validate-maintainers=false --charts stable/stackstate --charts stable/stackstate-k8s --config test/ct.yaml
     - .gitlab/validate_kubeconform.sh
   stage: validate
 variables:
