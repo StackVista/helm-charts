@@ -10,15 +10,15 @@ import (
 )
 
 func TestServerJavaHeapRender(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/split_disabled.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
-	expectedDeployments["stackstate-server"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=2428m -Xmx5664m -Xms5664m"}
-	expectedDeployments["stackstate-receiver"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1399m -Xmx2597m -Xms2597m"}
-	expectedDeployments["stackstate-correlate"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=420m -Xmx780m -Xms780m"}
-	expectedDeployments["stackstate-kafka2prom"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=387m -Xmx387m -Xms387m"}
+	expectedDeployments["stackstate-k8s-server"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=2428m -Xmx5664m -Xms5664m"}
+	expectedDeployments["stackstate-k8s-receiver"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1399m -Xmx2597m -Xms2597m"}
+	expectedDeployments["stackstate-k8s-correlate"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=420m -Xmx780m -Xms780m"}
+	expectedDeployments["stackstate-k8s-kafka2prom"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=387m -Xmx387m -Xms387m"}
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 
@@ -36,20 +36,20 @@ func TestServerJavaHeapRender(t *testing.T) {
 }
 
 func TestSplitServicesJavaHeapRender(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
-	expectedDeployments["stackstate-api"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1750m -Xmx1750m -Xms1750m"}
-	expectedDeployments["stackstate-checks"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1400m -Xmx2100m -Xms2100m"}
-	expectedDeployments["stackstate-state"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=510m -Xmx1190m -Xms1190m"}
-	expectedDeployments["stackstate-problem-producer"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=340m -Xmx1360m -Xms1360m"}
-	expectedDeployments["stackstate-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1240m -Xmx1860m -Xms1860m"}
-	expectedDeployments["stackstate-slicing"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=520m -Xmx780m -Xms780m"}
-	expectedDeployments["stackstate-view-health"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1035m -Xmx1265m -Xms1265m"}
-	expectedDeployments["stackstate-health-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=853m -Xmx697m -Xms697m"}
-	expectedDeployments["stackstate-initializer"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=140m -Xmx260m -Xms260m"}
+	expectedDeployments["stackstate-k8s-api"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1750m -Xmx1750m -Xms1750m"}
+	expectedDeployments["stackstate-k8s-checks"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1400m -Xmx2100m -Xms2100m"}
+	expectedDeployments["stackstate-k8s-state"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=510m -Xmx1190m -Xms1190m"}
+	expectedDeployments["stackstate-k8s-problem-producer"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=340m -Xmx1360m -Xms1360m"}
+	expectedDeployments["stackstate-k8s-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1240m -Xmx1860m -Xms1860m"}
+	expectedDeployments["stackstate-k8s-slicing"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=520m -Xmx780m -Xms780m"}
+	expectedDeployments["stackstate-k8s-view-health"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1035m -Xmx1265m -Xms1265m"}
+	expectedDeployments["stackstate-k8s-health-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=853m -Xmx697m -Xms697m"}
+	expectedDeployments["stackstate-k8s-initializer"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=140m -Xmx260m -Xms260m"}
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 
@@ -67,14 +67,14 @@ func TestSplitServicesJavaHeapRender(t *testing.T) {
 }
 
 func TestServerJavaHeapRenderWithAllJavaOptsOverride(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/components_all_javaopts.yaml", "values/split_disabled.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/components_all_javaopts.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stsServerDeployment appsv1.Deployment
 
 	for _, deployment := range resources.Deployments {
-		if deployment.Name == "stackstate-server" {
+		if deployment.Name == "stackstate-k8s-server" {
 			stsServerDeployment = deployment
 		}
 	}
@@ -87,14 +87,14 @@ func TestServerJavaHeapRenderWithAllJavaOptsOverride(t *testing.T) {
 }
 
 func TestServerJavaHeapRenderWithServerJavaOptsOverride(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/components_server_javaopts.yaml", "values/split_disabled.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/components_server_javaopts.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stsServerDeployment appsv1.Deployment
 
 	for _, deployment := range resources.Deployments {
-		if deployment.Name == "stackstate-server" {
+		if deployment.Name == "stackstate-k8s-server" {
 			stsServerDeployment = deployment
 		}
 	}
@@ -107,14 +107,14 @@ func TestServerJavaHeapRenderWithServerJavaOptsOverride(t *testing.T) {
 }
 
 func TestServerJavaHeapRenderWithBothJavaOptsOverride(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/components_all_javaopts.yaml", "values/components_server_javaopts.yaml", "values/split_disabled.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/components_all_javaopts.yaml", "values/components_server_javaopts.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stsServerDeployment appsv1.Deployment
 
 	for _, deployment := range resources.Deployments {
-		if deployment.Name == "stackstate-server" {
+		if deployment.Name == "stackstate-k8s-server" {
 			stsServerDeployment = deployment
 		}
 	}

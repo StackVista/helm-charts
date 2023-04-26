@@ -1,4 +1,4 @@
-# stackstate
+# stackstate-k8s
 
 Helm chart for StackState for Kubernetes
 

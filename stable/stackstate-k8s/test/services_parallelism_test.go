@@ -10,14 +10,14 @@ import (
 )
 
 func TestSyncParalellismConfigRender(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stsSyncDeployment appsv1.Deployment
 
 	for _, deployment := range resources.Deployments {
-		if deployment.Name == "stackstate-sync" {
+		if deployment.Name == "stackstate-k8s-sync" {
 			stsSyncDeployment = deployment
 		}
 	}
@@ -27,14 +27,14 @@ func TestSyncParalellismConfigRender(t *testing.T) {
 }
 
 func TestSyncParalellismConfigRenderOnMilliCpu(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/sync_parallelism_12001.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/sync_parallelism_12001.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stsSyncDeployment appsv1.Deployment
 
 	for _, deployment := range resources.Deployments {
-		if deployment.Name == "stackstate-sync" {
+		if deployment.Name == "stackstate-k8s-sync" {
 			stsSyncDeployment = deployment
 		}
 	}
@@ -44,14 +44,14 @@ func TestSyncParalellismConfigRenderOnMilliCpu(t *testing.T) {
 }
 
 func TestSyncParalellismConfigRenderOnCpu(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/sync_parallelism_12.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/sync_parallelism_12.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stsSyncDeployment appsv1.Deployment
 
 	for _, deployment := range resources.Deployments {
-		if deployment.Name == "stackstate-sync" {
+		if deployment.Name == "stackstate-k8s-sync" {
 			stsSyncDeployment = deployment
 		}
 	}
@@ -61,14 +61,14 @@ func TestSyncParalellismConfigRenderOnCpu(t *testing.T) {
 }
 
 func TestSyncParalellismConfigRenderNotOverridable(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/sync_parallelism_12.yaml", "values/sync_env_parallel_workers.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/sync_parallelism_12.yaml", "values/sync_env_parallel_workers.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stsSyncDeployment appsv1.Deployment
 
 	for _, deployment := range resources.Deployments {
-		if deployment.Name == "stackstate-sync" {
+		if deployment.Name == "stackstate-k8s-sync" {
 			stsSyncDeployment = deployment
 		}
 	}

@@ -17,9 +17,9 @@ const expectedStackPackConfig = `stackstate.stackPacks {
 }`
 
 func TestStackPackConfigRenderingApi(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-api", []string{"values/stackpack_config.yaml"}, expectedStackPackConfig)
+	RunSecretsConfigTest(t, "stackstate-k8s-api", []string{"values/stackpack_config.yaml"}, expectedStackPackConfig)
 }
 
 func TestStackPackConfigRenderingServer(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-server", []string{"values/stackpack_config.yaml", "values/split_disabled.yaml"}, expectedStackPackConfig)
+	RunSecretsConfigTest(t, "stackstate-k8s-server", []string{"values/stackpack_config.yaml", "values/split_disabled.yaml"}, expectedStackPackConfig)
 }

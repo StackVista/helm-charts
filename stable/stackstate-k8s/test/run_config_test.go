@@ -13,7 +13,7 @@ import (
 func RunSecretsConfigTest(t *testing.T, secretKey string, extraValues []string, expectedInConfig ...string) {
 	values := append([]string{"values/full.yaml"}, extraValues...)
 
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", values...)
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", values...)
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 

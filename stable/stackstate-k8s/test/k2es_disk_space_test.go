@@ -10,7 +10,7 @@ import (
 )
 
 func TestK2ESDiskSpaceRender(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -18,11 +18,11 @@ func TestK2ESDiskSpaceRender(t *testing.T) {
 	var stackstateReceiverDeployment appsv1.Deployment
 
 	for _, deploymentK2ES := range resources.Deployments {
-		if deploymentK2ES.Name == "stackstate-e2es" {
+		if deploymentK2ES.Name == "stackstate-k8s-e2es" {
 			stackstateE2esDeployment = deploymentK2ES
 		}
 
-		if deploymentK2ES.Name == "stackstate-receiver" {
+		if deploymentK2ES.Name == "stackstate-k8s-receiver" {
 			stackstateReceiverDeployment = deploymentK2ES
 		}
 	}
@@ -38,14 +38,14 @@ func TestK2ESDiskSpaceRender(t *testing.T) {
 }
 
 func TestUnknownK2ESDiskSpaceRender(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/unknown_disk_unit.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/unknown_disk_unit.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stackstateE2esDeployment appsv1.Deployment
 
 	for _, deploymentK2ES := range resources.Deployments {
-		if deploymentK2ES.Name == "stackstate-e2es" {
+		if deploymentK2ES.Name == "stackstate-k8s-e2es" {
 			stackstateE2esDeployment = deploymentK2ES
 		}
 	}

@@ -638,7 +638,7 @@ push_stackstate-k8s_to_internal:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-    - .gitlab/bump_sts_chart_master_version.sh stackstate-internal
+    - .gitlab/bump_sts_chart_master_version.sh stackstate-internal stackstate-k8s
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
@@ -668,7 +668,7 @@ push_stackstate-k8s_to_public:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-    - .gitlab/bump_sts_chart_master_version.sh stackstate
+    - .gitlab/bump_sts_chart_master_version.sh stackstate stackstate-k8s
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   needs:
     - push_stackstate-k8s_to_internal
@@ -832,7 +832,7 @@ push_stackstate_to_internal:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-    - .gitlab/bump_sts_chart_master_version.sh stackstate-internal
+    - .gitlab/bump_sts_chart_master_version.sh stackstate-internal stackstate
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION

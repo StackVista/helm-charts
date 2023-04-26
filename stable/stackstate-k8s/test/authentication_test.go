@@ -36,17 +36,17 @@ const expectedLdapAuthConfig = `stackstate.api.authentication.authServer.ldapAut
 const expectedLdapAuthEnabled = `stackstate.api.authentication.authServer.authServerType = [ldapAuthServer, k8sServiceAccountAuthServer]`
 
 func TestAuthenticationLdapSplit(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-api", []string{"values/ldap_authentication.yaml"}, expectedLdapAuthConfig, expectedLdapAuthEnabled)
+	RunSecretsConfigTest(t, "stackstate-k8s-api", []string{"values/ldap_authentication.yaml"}, expectedLdapAuthConfig, expectedLdapAuthEnabled)
 }
 
 func TestAuthenticationLdap(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-server", []string{"values/ldap_authentication.yaml", "values/split_disabled.yaml"}, expectedLdapAuthConfig, expectedLdapAuthEnabled)
+	RunSecretsConfigTest(t, "stackstate-k8s-server", []string{"values/ldap_authentication.yaml", "values/split_disabled.yaml"}, expectedLdapAuthConfig, expectedLdapAuthEnabled)
 }
 
 func TestAuthenticationLdapMissingValues(t *testing.T) {
-	err := helmtestutil.RenderHelmTemplateError(t, "stackstate", "values/full.yaml", "values/ldap_authentication_missing_userQuery_parameters.yaml")
+	err := helmtestutil.RenderHelmTemplateError(t, "stackstate-k8s", "values/full.yaml", "values/ldap_authentication_missing_userQuery_parameters.yaml")
 	require.Contains(t, err.Error(), "userQuery parameters")
-	err = helmtestutil.RenderHelmTemplateError(t, "stackstate", "values/full.yaml", "values/ldap_authentication_missing_userQuery_usernameKey.yaml")
+	err = helmtestutil.RenderHelmTemplateError(t, "stackstate-k8s", "values/full.yaml", "values/ldap_authentication_missing_userQuery_usernameKey.yaml")
 	require.Contains(t, err.Error(), "userQuery usernameKey")
 }
 
@@ -67,22 +67,22 @@ const expectedOidcAuthConfig = `stackstate.api.authentication.authServer.oidcAut
 const expectedOidcEnabled = `stackstate.api.authentication.authServer.authServerType = [oidcAuthServer, k8sServiceAccountAuthServer]`
 
 func TestAuthenticationOidcSplit(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-api", []string{"values/oidc_authentication.yaml"}, expectedOidcAuthConfig, expectedOidcEnabled)
+	RunSecretsConfigTest(t, "stackstate-k8s-api", []string{"values/oidc_authentication.yaml"}, expectedOidcAuthConfig, expectedOidcEnabled)
 }
 
 func TestAuthenticationOidc(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-server", []string{"values/oidc_authentication.yaml", "values/split_disabled.yaml"}, expectedOidcAuthConfig, expectedOidcEnabled)
+	RunSecretsConfigTest(t, "stackstate-k8s-server", []string{"values/oidc_authentication.yaml", "values/split_disabled.yaml"}, expectedOidcAuthConfig, expectedOidcEnabled)
 }
 
 func TestAuthenticationOidcInvalid(t *testing.T) {
-	err := helmtestutil.RenderHelmTemplateError(t, "stackstate", "values/full.yaml", "values/oidc_authentication_invalid_scope.yaml")
+	err := helmtestutil.RenderHelmTemplateError(t, "stackstate-k8s", "values/full.yaml", "values/oidc_authentication_invalid_scope.yaml")
 	require.Contains(t, err.Error(), "stackstate.authentication.oidc.scope must be an array of scopes")
 
-	err = helmtestutil.RenderHelmTemplateError(t, "stackstate", "values/full.yaml", "values/oidc_authentication_missing_clientid.yaml")
+	err = helmtestutil.RenderHelmTemplateError(t, "stackstate-k8s", "values/full.yaml", "values/oidc_authentication_missing_clientid.yaml")
 	require.Contains(t, err.Error(), "the client id to be set")
-	err = helmtestutil.RenderHelmTemplateError(t, "stackstate", "values/full.yaml", "values/oidc_authentication_missing_secret.yaml")
+	err = helmtestutil.RenderHelmTemplateError(t, "stackstate-k8s", "values/full.yaml", "values/oidc_authentication_missing_secret.yaml")
 	require.Contains(t, err.Error(), "the client secret to be set")
-	err = helmtestutil.RenderHelmTemplateError(t, "stackstate", "values/full.yaml", "values/oidc_authentication_missing_discoveryuri.yaml")
+	err = helmtestutil.RenderHelmTemplateError(t, "stackstate-k8s", "values/full.yaml", "values/oidc_authentication_missing_discoveryuri.yaml")
 	require.Contains(t, err.Error(), "the discovery uri to be set")
 }
 
@@ -102,21 +102,21 @@ const expectedKeycloakAuthConfig = `stackstate.api.authentication.authServer.key
 const expectedKeycloakEnabled = `stackstate.api.authentication.authServer.authServerType = [keycloakAuthServer, k8sServiceAccountAuthServer]`
 
 func TestAuthenticationKeycloakSplit(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-api", []string{"values/keycloak_authentication.yaml"}, expectedKeycloakAuthConfig, expectedKeycloakEnabled)
+	RunSecretsConfigTest(t, "stackstate-k8s-api", []string{"values/keycloak_authentication.yaml"}, expectedKeycloakAuthConfig, expectedKeycloakEnabled)
 }
 
 func TestAuthenticationKeycloak(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-server", []string{"values/keycloak_authentication.yaml", "values/split_disabled.yaml"}, expectedKeycloakAuthConfig, expectedKeycloakEnabled)
+	RunSecretsConfigTest(t, "stackstate-k8s-server", []string{"values/keycloak_authentication.yaml", "values/split_disabled.yaml"}, expectedKeycloakAuthConfig, expectedKeycloakEnabled)
 }
 
 func TestAuthenticationKeycloakInvalid(t *testing.T) {
-	err := helmtestutil.RenderHelmTemplateError(t, "stackstate", "values/full.yaml", "values/keycloak_authentication_missing_clientid.yaml")
+	err := helmtestutil.RenderHelmTemplateError(t, "stackstate-k8s", "values/full.yaml", "values/keycloak_authentication_missing_clientid.yaml")
 	require.Contains(t, err.Error(), "the client id to be set")
-	err = helmtestutil.RenderHelmTemplateError(t, "stackstate", "values/full.yaml", "values/keycloak_authentication_missing_secret.yaml")
+	err = helmtestutil.RenderHelmTemplateError(t, "stackstate-k8s", "values/full.yaml", "values/keycloak_authentication_missing_secret.yaml")
 	require.Contains(t, err.Error(), "the client secret to be set")
-	err = helmtestutil.RenderHelmTemplateError(t, "stackstate", "values/full.yaml", "values/keycloak_authentication_missing_realm.yaml")
+	err = helmtestutil.RenderHelmTemplateError(t, "stackstate-k8s", "values/full.yaml", "values/keycloak_authentication_missing_realm.yaml")
 	require.Contains(t, err.Error(), "the keycloak realm to be set")
-	err = helmtestutil.RenderHelmTemplateError(t, "stackstate", "values/full.yaml", "values/keycloak_authentication_missing_url.yaml")
+	err = helmtestutil.RenderHelmTemplateError(t, "stackstate-k8s", "values/full.yaml", "values/keycloak_authentication_missing_url.yaml")
 	require.Contains(t, err.Error(), "the keycloak url to be set")
 }
 
@@ -131,21 +131,21 @@ const expectedFileAuthConfig = `stackstate.api.authentication.authServer.stackst
 const expectedFileEnabled = `stackstate.api.authentication.authServer.authServerType = [stackstateAuthServer, k8sServiceAccountAuthServer]`
 
 func TestAuthenticationFileSplit(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-api", []string{"values/file_authentication.yaml"}, expectedFileAuthConfig, expectedFileEnabled)
+	RunSecretsConfigTest(t, "stackstate-k8s-api", []string{"values/file_authentication.yaml"}, expectedFileAuthConfig, expectedFileEnabled)
 }
 
 func TestAuthenticationFile(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-server", []string{"values/file_authentication.yaml", "values/split_disabled.yaml"}, expectedFileAuthConfig, expectedFileEnabled)
+	RunSecretsConfigTest(t, "stackstate-k8s-server", []string{"values/file_authentication.yaml", "values/split_disabled.yaml"}, expectedFileAuthConfig, expectedFileEnabled)
 }
 
 func TestAuthenticationFileInvalid(t *testing.T) {
-	err := helmtestutil.RenderHelmTemplateError(t, "stackstate", "values/full.yaml", "values/file_authentication_no_logins.yaml")
+	err := helmtestutil.RenderHelmTemplateError(t, "stackstate-k8s", "values/full.yaml", "values/file_authentication_no_logins.yaml")
 	require.Contains(t, err.Error(), "requires a non-empty list of logins")
 
-	err = helmtestutil.RenderHelmTemplateError(t, "stackstate", "values/full.yaml", "values/file_authentication_no_roles.yaml")
+	err = helmtestutil.RenderHelmTemplateError(t, "stackstate-k8s", "values/full.yaml", "values/file_authentication_no_roles.yaml")
 	require.Contains(t, err.Error(), "No roles specified for user administrator")
 
-	err = helmtestutil.RenderHelmTemplateError(t, "stackstate", "values/full.yaml", "values/file_authentication_no_password.yaml")
+	err = helmtestutil.RenderHelmTemplateError(t, "stackstate-k8s", "values/full.yaml", "values/file_authentication_no_password.yaml")
 	require.Contains(t, err.Error(), "A login requires a password hash")
 }
 
@@ -156,15 +156,15 @@ const expectedFallbackAuthConfig = `stackstate.api.authentication.authServer.sta
 const expectedFallbackEnabled = `stackstate.api.authentication.authServer.authServerType = [stackstateAuthServer, k8sServiceAccountAuthServer]`
 
 func TestAuthenticationFallbackSplit(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-api", []string{}, expectedFallbackAuthConfig, expectedFallbackEnabled)
+	RunSecretsConfigTest(t, "stackstate-k8s-api", []string{}, expectedFallbackAuthConfig, expectedFallbackEnabled)
 }
 
 func TestAuthenticationFallback(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-server", []string{"values/split_disabled.yaml"}, expectedFallbackAuthConfig, expectedFallbackEnabled)
+	RunSecretsConfigTest(t, "stackstate-k8s-server", []string{"values/split_disabled.yaml"}, expectedFallbackAuthConfig, expectedFallbackEnabled)
 }
 
 func TestAuthenticationFallbackInvalid(t *testing.T) {
-	err := helmtestutil.RenderHelmTemplateError(t, "stackstate", "values/fallback_authentication_no_password.yaml")
+	err := helmtestutil.RenderHelmTemplateError(t, "stackstate-k8s", "values/fallback_authentication_no_password.yaml")
 	require.Contains(t, err.Error(), "Helm value 'stackstate.authentication.adminPassword' is required")
 }
 
@@ -174,26 +174,26 @@ stackstate.authorization.powerUserGroups = ${stackstate.authorization.powerUserG
 stackstate.authorization.guestGroups = ${stackstate.authorization.guestGroups} ["guest1","guest2"]`
 
 func TestAuthenticationRolesSplit(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-api", []string{"values/authentication_roles.yaml"}, expectedRolesAuthConfig)
+	RunSecretsConfigTest(t, "stackstate-k8s-api", []string{"values/authentication_roles.yaml"}, expectedRolesAuthConfig)
 }
 
 const expectedRolesWhenEmptyAuthConfig = `stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["stackstate-aad"]`
 
 func TestAuthenticationRolesEmptySplit(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-api", []string{"values/authentication_roles_empty.yaml"}, expectedRolesWhenEmptyAuthConfig)
+	RunSecretsConfigTest(t, "stackstate-k8s-api", []string{"values/authentication_roles_empty.yaml"}, expectedRolesWhenEmptyAuthConfig)
 }
 
 const expectedRolesWhenUndefinedAdminAuthConfig = `stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["stackstate-aad"]`
 
 func TestAuthenticationRolesUndefinedAdminSplit(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-api", []string{"values/authentication_roles_no_admin.yaml"}, expectedRolesWhenUndefinedAdminAuthConfig)
+	RunSecretsConfigTest(t, "stackstate-k8s-api", []string{"values/authentication_roles_no_admin.yaml"}, expectedRolesWhenUndefinedAdminAuthConfig)
 }
 
 func TestAuthenticationRoles(t *testing.T) {
-	RunSecretsConfigTest(t, "stackstate-server", []string{"values/authentication_roles.yaml", "values/split_disabled.yaml"}, expectedRolesAuthConfig)
+	RunSecretsConfigTest(t, "stackstate-k8s-server", []string{"values/authentication_roles.yaml", "values/split_disabled.yaml"}, expectedRolesAuthConfig)
 }
 
 func TestMultipleAuthConfigsNotAllowed(t *testing.T) {
-	err := helmtestutil.RenderHelmTemplateError(t, "stackstate", "values/full.yaml", "values/multiple_auth_configs.yaml")
+	err := helmtestutil.RenderHelmTemplateError(t, "stackstate-k8s", "values/full.yaml", "values/multiple_auth_configs.yaml")
 	require.Contains(t, err.Error(), "More than 1 authentication mechanism specified")
 }

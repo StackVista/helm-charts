@@ -9,16 +9,16 @@ import (
 )
 
 func TestPullSecret(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "problem-producer", "sync", "view-health", "e2es", "trace2es", "kafka2prom"}
 
-	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "stackstate-pull-secret")
-	CheckPullSecret(t, resources, "stackstate-pull-secret", "test", "secret", "quay.io")
+	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "stackstate-k8s-pull-secret")
+	CheckPullSecret(t, resources, "stackstate-k8s-pull-secret", "test", "secret", "quay.io")
 }
 
 func TestPullSecretGlobalNamed(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/pull_secret_global_named.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/pull_secret_global_named.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "problem-producer", "sync", "view-health", "e2es", "trace2es", "kafka2prom"}
 
@@ -30,7 +30,7 @@ func TestPullSecretGlobalNamed(t *testing.T) {
 	}
 }
 func TestImagePullSecretName(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/pull_secret_name.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/pull_secret_name.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "problem-producer", "sync", "view-health", "e2es", "trace2es", "kafka2prom"}
 
@@ -43,28 +43,28 @@ func TestImagePullSecretName(t *testing.T) {
 }
 
 func TestGlobalRegistryLocalPullSecret(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/pull_secret_global_registry.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/pull_secret_global_registry.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "problem-producer", "sync", "view-health", "e2es", "trace2es", "kafka2prom"}
 
-	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "stackstate-pull-secret")
-	CheckPullSecret(t, resources, "stackstate-pull-secret", "test", "secret", "my.registry.com")
+	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "stackstate-k8s-pull-secret")
+	CheckPullSecret(t, resources, "stackstate-k8s-pull-secret", "test", "secret", "my.registry.com")
 }
 
 func TestGlobalOverridesLocalPullSecretDetails(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/pull_secret_both.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/pull_secret_both.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "problem-producer", "sync", "view-health", "e2es", "trace2es", "kafka2prom"}
 
-	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "stackstate-pull-secret", "test-secret")
-	CheckPullSecret(t, resources, "stackstate-pull-secret", "test", "secret", "my.registry.com")
+	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "stackstate-k8s-pull-secret", "test-secret")
+	CheckPullSecret(t, resources, "stackstate-k8s-pull-secret", "test", "secret", "my.registry.com")
 }
 
 func CheckDeploymentsForPullSecret(t *testing.T, resources helmtestutil.KubernetesResources, deploymentsToCheck []string, pullSecretName ...string) {
 	checked := []string{}
 	for _, deployment := range resources.Deployments {
 		for _, name := range deploymentsToCheck {
-			if ("stackstate-" + name) == deployment.Name {
+			if ("stackstate-k8s-" + name) == deployment.Name {
 				checked = append(checked, name)
 				assert.Len(t, deployment.Spec.Template.Spec.ImagePullSecrets, len(pullSecretName))
 				for _, secret := range deployment.Spec.Template.Spec.ImagePullSecrets {
