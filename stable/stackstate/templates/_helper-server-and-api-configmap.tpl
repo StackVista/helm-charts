@@ -183,44 +183,24 @@ stackstate.api.authentication.authServer.stackstateAuthServer {
 
 stackstate.api.authentication.sessionLifetime =  {{ .Values.stackstate.authentication.sessionLifetime | toJson }}
 
-{{- $subjects := dict -}}
-
 {{ $admins := list "stackstate-aad" }}
 {{- if .Values.stackstate.authentication.roles.admin }}
 {{ $admins = concat $admins .Values.stackstate.authentication.roles.admin }}
 {{- end }}
-{{- $adminSystemPerms := "${stackstate.authorization.staticSubjects.stackstate-admin.systemPermissions}" }}
-{{- $adminViewPerms := "${stackstate.authorization.staticSubjects.stackstate-admin.viewPermissions}" }}
 {{- range $admins }}
-  {{- $_ := set $subjects . (dict "systemPermissions" $adminSystemPerms "viewPermissions" $adminViewPerms) }}
+stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.viewPermissions} }
 {{- end }}
 
-{{- if .Values.stackstate.authentication.roles.platformAdmin }}
-  {{- $platformAdminSystemPerms := "${stackstate.authorization.staticSubjects.stackstate-platform-admin.systemPermissions}" }}
-  {{- $platformAdminViewPerms := "${stackstate.authorization.staticSubjects.stackstate-platform-admin.viewPermissions}" }}
-  {{- range .Values.stackstate.authentication.roles.platformAdmin }}
-    {{- $_ := set $subjects . (dict "systemPermissions" $platformAdminSystemPerms "viewPermissions" $platformAdminViewPerms) }}
-  {{- end }}
+{{- range .Values.stackstate.authentication.roles.platformAdmin }}
+stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-platform-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-platform-admin.viewPermissions} }
 {{- end }}
 
-{{- if .Values.stackstate.authentication.roles.powerUser }}
-  {{- $powerUserSystemPerms := "${stackstate.authorization.staticSubjects.stackstate-power-user.systemPermissions}" }}
-  {{- $powerUserViewPerms := "${stackstate.authorization.staticSubjects.stackstate-power-user.viewPermissions}" }}
-  {{- range .Values.stackstate.authentication.roles.powerUser }}
-    {{- $_ := set $subjects . (dict "systemPermissions" $powerUserSystemPerms "viewPermissions" $powerUserViewPerms) }}
-  {{- end }}
+{{- range .Values.stackstate.authentication.roles.powerUser }}
+stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-power-user.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-power-user.viewPermissions} }
 {{- end }}
 
-{{- if .Values.stackstate.authentication.roles.guest }}
-  {{- $guestSystemPerms := "${stackstate.authorization.staticSubjects.stackstate-trial.systemPermissions}" }}
-  {{- $guestViewPerms := "${stackstate.authorization.staticSubjects.stackstate-trial.viewPermissions}" }}
-  {{- range .Values.stackstate.authentication.roles.guest }}
-    {{- $_ := set $subjects . (dict "systemPermissions" $guestSystemPerms "viewPermissions" $guestViewPerms) }}
-  {{- end }}
-{{- end }}
-
-{{- if gt (len $subjects) 0 }}
-stackstate.authorization.staticSubjects {{ $subjects | toJson }}
+{{- range .Values.stackstate.authentication.roles.guest }}
+stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.viewPermissions} }
 {{- end }}
 
 {{- if .Values.stackstate.authentication.serviceToken.bootstrap.token }}
