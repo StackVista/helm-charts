@@ -189,31 +189,31 @@ stackstate.api.authentication.sessionLifetime =  {{ .Values.stackstate.authentic
 {{- if .Values.stackstate.authentication.roles.admin }}
 {{ $admins = concat $admins .Values.stackstate.authentication.roles.admin }}
 {{- end }}
-{{- $adminSystemPerms := (list "create-views" "access-analytics" "execute-scripts" "read-settings" "update-settings" "import-settings" "export-settings" "manage-topology-elements" "access-cli" "access-explore" "update-visualization" "perform-custom-query" "read-permissions" "manage-star-view" "read-stackpacks" "manage-stackpacks" "execute-component-templates" "access-topic-data" "access-log-data" "access-synchronization-data" "execute-node-sync" "read-telemetry-streams" "manage-telemetry-streams" "execute-component-actions" "manage-annotations" "manage-event-handlers" "manage-monitors" "run-monitors" "read-metrics" "update-permissions" "upload-stackpacks" "execute-restricted-scripts" "manage-service-tokens") }}
-{{- $adminViewPerms := (list "access-view" "save-view" "delete-view") }}
+{{- $adminSystemPerms := "${stackstate.authorization.staticSubjects.stackstate-admin.systemPermissions}" }}
+{{- $adminViewPerms := "${stackstate.authorization.staticSubjects.stackstate-admin.viewPermissions}" }}
 {{- range $admins }}
   {{- $_ := set $subjects . (dict "systemPermissions" $adminSystemPerms "viewPermissions" $adminViewPerms) }}
 {{- end }}
 
 {{- if .Values.stackstate.authentication.roles.platformAdmin }}
-  {{- $platformAdminSystemPerms := (list "access-admin-api" "access-cli" "access-log-data" "manage-star-view" "unlock-node") }}
-  {{- $platformAdminViewPerms := (list "access-view") }}
+  {{- $platformAdminSystemPerms := "${stackstate.authorization.staticSubjects.stackstate-platform-admin.systemPermissions}" }}
+  {{- $platformAdminViewPerms := "${stackstate.authorization.staticSubjects.stackstate-platform-admin.viewPermissions}" }}
   {{- range .Values.stackstate.authentication.roles.platformAdmin }}
     {{- $_ := set $subjects . (dict "systemPermissions" $platformAdminSystemPerms "viewPermissions" $platformAdminViewPerms) }}
   {{- end }}
 {{- end }}
 
 {{- if .Values.stackstate.authentication.roles.powerUser }}
-  {{- $powerUserSystemPerms := (list "create-views" "access-analytics" "execute-scripts" "read-settings" "update-settings" "import-settings" "export-settings" "manage-topology-elements" "access-cli" "access-explore" "update-visualization" "perform-custom-query" "read-permissions" "manage-star-view" "read-stackpacks" "manage-stackpacks" "execute-component-templates" "access-topic-data" "access-log-data" "access-synchronization-data" "execute-node-sync" "read-telemetry-streams" "manage-telemetry-streams" "execute-component-actions" "manage-annotations" "manage-event-handlers" "manage-monitors" "run-monitors" "read-metrics") }}
-  {{- $powerUserViewPerms := (list "access-view" "save-view" "delete-view") }}
+  {{- $powerUserSystemPerms := "${stackstate.authorization.staticSubjects.stackstate-power-user.systemPermissions}" }}
+  {{- $powerUserViewPerms := "${stackstate.authorization.staticSubjects.stackstate-power-user.viewPermissions}" }}
   {{- range .Values.stackstate.authentication.roles.powerUser }}
     {{- $_ := set $subjects . (dict "systemPermissions" $powerUserSystemPerms "viewPermissions" $powerUserViewPerms) }}
   {{- end }}
 {{- end }}
 
 {{- if .Values.stackstate.authentication.roles.guest }}
-  {{- $guestSystemPerms := (list "access-explore" "access-cli" "perform-custom-query" "manage-star-view" "read-permissions" "update-visualization" "read-telemetry-streams" "execute-component-actions" "read-metrics") }}
-  {{- $guestViewPerms := (list "access-view") }}
+  {{- $guestSystemPerms := "${stackstate.authorization.staticSubjects.stackstate-trial.systemPermissions}" }}
+  {{- $guestViewPerms := "${stackstate.authorization.staticSubjects.stackstate-trial.viewPermissions}" }}
   {{- range .Values.stackstate.authentication.roles.guest }}
     {{- $_ := set $subjects . (dict "systemPermissions" $guestSystemPerms "viewPermissions" $guestViewPerms) }}
   {{- end }}
