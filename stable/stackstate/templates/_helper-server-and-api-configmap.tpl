@@ -4,7 +4,7 @@ Shared settings in configmap for server and api
 {{- define "stackstate.configmap.server-and-api" }}
 
 {{- if .Values.stackstate.authentication }}
-{{- include "stackstate.auth.config" (dict "api" .Values.stackstate "global" .) }}
+{{- include "stackstate.auth.config" (dict "api" .Values.stackstate "authnPrefix" "stackstate.api.authentication" "global" .) }}
 {{- end }}
 
 {{- with .Values.stackstate.stackpacks.installed }}
@@ -30,12 +30,13 @@ stackstate.webUIConfig.docLinkUrlPrefix = "{{- .Values.stackstate.components.api
 {{- define "stackstate.auth.config" }}
 {{- $api := .api -}}
 {{- $apiAuth := .api.authentication -}}
+{{- $authnPrefix := .authnPrefix -}}
 {{- $global := .global -}}
 {{- $authTypes := list -}}
-stackstate.api.authentication.authServer.k8sServiceAccountAuthServer {}
+{{ $authnPrefix }}.authServer.k8sServiceAccountAuthServer {}
 {{- if $apiAuth.ldap }}
 {{ $authTypes = append $authTypes "ldapAuthServer" }}
-stackstate.api.authentication.authServer.ldapAuthServer {
+{{ $authnPrefix }}.authServer.ldapAuthServer {
   connection {
     host = {{ $apiAuth.ldap.host | required "LDAP configuration requires a host" | quote }}
     port = {{ $apiAuth.ldap.port | required "LDAP configuration requires a port" }}
@@ -76,7 +77,7 @@ stackstate.api.authentication.authServer.ldapAuthServer {
 {{- end }}
 {{- if $apiAuth.oidc }}
 {{ $authTypes = append $authTypes "oidcAuthServer" }}
-stackstate.api.authentication.authServer.oidcAuthServer {
+{{ $authnPrefix }}.authServer.oidcAuthServer {
   clientId = {{ $apiAuth.oidc.clientId | required "OIDC authentication requires the client id to be set." | quote }}
   secret = {{ $apiAuth.oidc.secret | required "OIDC authentication requires the client secret to be set." | quote }}
   discoveryUri = {{ $apiAuth.oidc.discoveryUri | required "OIDC authentication requires the discovery uri to be set." | quote }}
@@ -114,7 +115,7 @@ stackstate.api.authentication.authServer.oidcAuthServer {
 {{- end }}
 {{- if $apiAuth.keycloak }}
 {{ $authTypes = append $authTypes "keycloakAuthServer" }}
-stackstate.api.authentication.authServer.keycloakAuthServer {
+{{ $authnPrefix }}.authServer.keycloakAuthServer {
   keycloakBaseUri = {{ $apiAuth.keycloak.url | required "Keycloak authentication requires the keycloak url to be set." | quote }}
   realm = {{ $apiAuth.keycloak.realm | required "Keycloak authentication requires the keycloak realm to be set." | quote }}
   clientId = {{ $apiAuth.keycloak.clientId | required "Keycloak authentication requires the client id to be set." | quote }}
@@ -148,7 +149,7 @@ stackstate.api.authentication.authServer.keycloakAuthServer {
 {{- if not $apiAuth.file.logins -}}
 {{- fail "File configuration requires a non-empty list of logins to be specified with fields username, passwordHash and roles specified." -}}
 {{- end }}
-stackstate.api.authentication.authServer.stackstateAuthServer.logins = [
+{{ $authnPrefix }}.authServer.stackstateAuthServer.logins = [
 {{- range $apiAuth.file.logins }}
   {{- if not .roles -}}
   {{- printf "No roles specified for user %s" .username | fail -}}
@@ -164,7 +165,7 @@ for production this should be replaced with one of the other mechanisms.
 */}}
 {{- if eq (len $authTypes) 0 }}
 {{- $authTypes = append $authTypes "stackstateAuthServer" }}
-stackstate.api.authentication.authServer.stackstateAuthServer {
+{{ $authnPrefix }}.authServer.stackstateAuthServer {
 {{- if $apiAuth.adminPassword }}
   defaultPassword = {{ $apiAuth.adminPassword | quote }}
 {{- else }}
@@ -177,7 +178,7 @@ stackstate.api.authentication.authServer.stackstateAuthServer {
 {{- fail "More than 1 authentication mechanism specified. Please configure only one from: keycloak, oidc or ldap. If none are configured the default admin user will be made available with the stackstate.authentication.adminPassword." -}}
 {{- end }}
 
-stackstate.api.authentication.sessionLifetime =  {{ $apiAuth.sessionLifetime | toJson }}
+{{ $authnPrefix }}.sessionLifetime =  {{ $apiAuth.sessionLifetime | toJson }}
 
 {{ $admins := list "stackstate-aad" }}
 {{- if $apiAuth.roles.admin }}
@@ -205,7 +206,7 @@ stackstate.authorization.staticSubjects.{{ $k }}: { systemPermissions: {{ $v.sys
 
 {{- if $apiAuth.serviceToken.bootstrap.token }}
 {{- $authTypes = append $authTypes "serviceTokenAuthServer" }}
-stackstate.api.authentication.authServer.serviceTokenAuthServer.bootstrap {
+{{ $authnPrefix }}.authServer.serviceTokenAuthServer.bootstrap {
   token = {{ $apiAuth.serviceToken.bootstrap.token | quote }}
   roles = [ {{- $apiAuth.serviceToken.bootstrap.roles | compact | join ", " -}} ]
   ttl = {{ $apiAuth.serviceToken.bootstrap.ttl | quote }}
@@ -213,6 +214,6 @@ stackstate.api.authentication.authServer.serviceTokenAuthServer.bootstrap {
 {{- end }}
 
 {{- $authTypes = append $authTypes "k8sServiceAccountAuthServer" }}
-stackstate.api.authentication.authServer.authServerType = [ {{- $authTypes | compact | join ", " -}} ]
+{{ $authnPrefix }}.authServer.authServerType = [ {{- $authTypes | compact | join ", " -}} ]
 
 {{- end -}}
