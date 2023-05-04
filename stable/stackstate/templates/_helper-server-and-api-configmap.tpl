@@ -2,6 +2,32 @@
 Shared settings in configmap for server and api
 */}}
 {{- define "stackstate.configmap.server-and-api" }}
+
+{{- if .Values.stackstate.authentication }}
+{{- include "stackstate.auth.config" . }}
+{{- end }}
+
+{{- with .Values.stackstate.stackpacks.installed }}
+stackstate.stackPacks {
+  {{- range . }}
+  installOnStartUp += {{ .name | quote }}
+  {{- end }}
+
+  installOnStartUpConfig {
+    {{- range . }}
+    {{ .name }} = {{- toPrettyJson .configuration | indent 4 }}
+    {{- end }}
+  }
+}
+{{- end }}
+
+{{- if .Values.stackstate.components.api.docslink }}
+stackstate.webUIConfig.docLinkUrlPrefix = "{{- .Values.stackstate.components.api.docslink -}}"
+{{- end }}
+
+{{- end -}}
+
+{{- define "stackstate.auth.config" }}
 {{- $authTypes := list -}}
 stackstate.api.authentication.authServer.k8sServiceAccountAuthServer {}
 {{- if .Values.stackstate.authentication.ldap }}
@@ -185,23 +211,5 @@ stackstate.api.authentication.authServer.serviceTokenAuthServer.bootstrap {
 
 {{- $authTypes = append $authTypes "k8sServiceAccountAuthServer" }}
 stackstate.api.authentication.authServer.authServerType = [ {{- $authTypes | compact | join ", " -}} ]
-
-{{- with .Values.stackstate.stackpacks.installed }}
-stackstate.stackPacks {
-  {{- range . }}
-  installOnStartUp += {{ .name | quote }}
-  {{- end }}
-
-  installOnStartUpConfig {
-    {{- range . }}
-    {{ .name }} = {{- toPrettyJson .configuration | indent 4 }}
-    {{- end }}
-  }
-}
-{{- end }}
-
-{{- if .Values.stackstate.components.api.docslink }}
-stackstate.webUIConfig.docLinkUrlPrefix = "{{- .Values.stackstate.components.api.docslink -}}"
-{{- end }}
 
 {{- end -}}
