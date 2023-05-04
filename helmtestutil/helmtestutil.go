@@ -14,7 +14,6 @@ import (
 func RenderHelmTemplate(t *testing.T, releaseName string, valuesFiles ...string) string {
 	helmOpts := &helm.Options{
 		ValuesFiles: valuesFiles,
-		Logger:      logger.Discard,
 	}
 
 	return RenderHelmTemplateOptsNoError(t, releaseName, helmOpts)
@@ -25,6 +24,7 @@ func RenderHelmTemplate(t *testing.T, releaseName string, valuesFiles ...string)
 func RenderHelmTemplateError(t *testing.T, releaseName string, valuesFiles ...string) error {
 	helmOpts := &helm.Options{
 		ValuesFiles: valuesFiles,
+		Logger:      logger.Discard,
 	}
 
 	_, err := RenderHelmTemplateOpts(t, releaseName, helmOpts)
@@ -36,6 +36,7 @@ func RenderHelmTemplateError(t *testing.T, releaseName string, valuesFiles ...st
 // RenderHelmTemplateOptsNoError renders a helm template assuming it lives in the parent directory, asserts that
 // no error happened during rendering
 func RenderHelmTemplateOptsNoError(t *testing.T, releaseName string, helmOpts *helm.Options) string {
+	helmOpts.Logger = logger.Discard
 	output, err := RenderHelmTemplateOpts(t, releaseName, helmOpts)
 	require.NoError(t, err)
 
@@ -44,6 +45,10 @@ func RenderHelmTemplateOptsNoError(t *testing.T, releaseName string, helmOpts *h
 
 // RenderHelmTemplateOpts renders a helm template assuming it lives in the parent directory
 func RenderHelmTemplateOpts(t *testing.T, releaseName string, helmOpts *helm.Options) (string, error) {
+	if helmOpts.Logger == nil {
+		helmOpts.Logger = logger.Discard
+	}
+
 	helmChartPath, pathErr := filepath.Abs("..")
 	require.NoError(t, pathErr)
 

@@ -3,6 +3,8 @@ package test
 import (
 	"testing"
 
+	"github.com/gruntwork-io/terratest/modules/helm"
+	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/stretchr/testify/assert"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
 	appsv1 "k8s.io/api/apps/v1"
@@ -10,7 +12,11 @@ import (
 )
 
 func TestSyncWithInMemoryCache(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/sync_inmemory.yaml")
+	helmOpts := &helm.Options{
+		ValuesFiles: []string{"values/full.yaml", "values/sync_inmemory.yaml"},
+		Logger:      logger.Default,
+	}
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "stackstate", helmOpts)
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
