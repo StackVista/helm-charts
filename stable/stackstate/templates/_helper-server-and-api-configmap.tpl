@@ -4,7 +4,7 @@ Shared settings in configmap for server and api
 {{- define "stackstate.configmap.server-and-api" }}
 
 {{- if .Values.stackstate.authentication }}
-{{- include "stackstate.auth.config" . }}
+{{- include "stackstate.auth.config" (dict "api" .Values.stackstate "global" .) }}
 {{- end }}
 
 {{- with .Values.stackstate.stackpacks.installed }}
@@ -28,27 +28,30 @@ stackstate.webUIConfig.docLinkUrlPrefix = "{{- .Values.stackstate.components.api
 {{- end -}}
 
 {{- define "stackstate.auth.config" }}
+{{- $api := .api -}}
+{{- $apiAuth := .api.authentication -}}
+{{- $global := .global -}}
 {{- $authTypes := list -}}
 stackstate.api.authentication.authServer.k8sServiceAccountAuthServer {}
-{{- if .Values.stackstate.authentication.ldap }}
+{{- if $apiAuth.ldap }}
 {{ $authTypes = append $authTypes "ldapAuthServer" }}
 stackstate.api.authentication.authServer.ldapAuthServer {
   connection {
-    host = {{ .Values.stackstate.authentication.ldap.host | required "LDAP configuration requires a host" | quote }}
-    port = {{ .Values.stackstate.authentication.ldap.port | required "LDAP configuration requires a port" }}
-{{- if .Values.stackstate.authentication.ldap.bind }}
+    host = {{ $apiAuth.ldap.host | required "LDAP configuration requires a host" | quote }}
+    port = {{ $apiAuth.ldap.port | required "LDAP configuration requires a port" }}
+{{- if $apiAuth.ldap.bind }}
     bindCredentials {
-      dn = {{ .Values.stackstate.authentication.ldap.bind.dn | quote }}
-      password = {{ .Values.stackstate.authentication.ldap.bind.password | quote }}
+      dn = {{ $apiAuth.ldap.bind.dn | quote }}
+      password = {{ $apiAuth.ldap.bind.password | quote }}
     }
 {{- end }}
-{{- if .Values.stackstate.authentication.ldap.ssl }}
+{{- if $apiAuth.ldap.ssl }}
     ssl {
-      sslType = {{ required "stackstate.authentication.ldap.ssl.type is required when configuring LDAP SSL" .Values.stackstate.authentication.ldap.ssl.type }}
-  {{- if or .Values.stackstate.authentication.ldap.ssl.trustCertificates .Values.stackstate.authentication.ldap.ssl.trustCertificatesBase64Encoded }}
+      sslType = {{ required "stackstate.authentication.ldap.ssl.type is required when configuring LDAP SSL" $apiAuth.ldap.ssl.type }}
+  {{- if or $apiAuth.ldap.ssl.trustCertificates $apiAuth.ldap.ssl.trustCertificatesBase64Encoded }}
       trustCertificatesPath = "/opt/docker/secrets/ldap-certificates.pem"
   {{- end }}
-  {{- if or .Values.stackstate.authentication.ldap.ssl.trustStore .Values.stackstate.authentication.ldap.ssl.trustStoreBase64Encoded }}
+  {{- if or $apiAuth.ldap.ssl.trustStore $apiAuth.ldap.ssl.trustStoreBase64Encoded }}
       trustStorePath = "/opt/docker/secrets/ldap-cacerts"
   {{- end }}
     }
@@ -56,97 +59,97 @@ stackstate.api.authentication.authServer.ldapAuthServer {
   }
 
   userQuery {
-    parameters = {{ .Values.stackstate.authentication.ldap.userQuery.parameters | required "LDAP authentication requires the userQuery parameters to be set." | toJson }}
-    usernameKey = {{ .Values.stackstate.authentication.ldap.userQuery.usernameKey | required "LDAP authentication requires the userQuery usernameKey to be set." | quote }}
-    {{- if .Values.stackstate.authentication.ldap.userQuery.emailKey }}
-    emailKey = {{ .Values.stackstate.authentication.ldap.userQuery.emailKey | quote }}
+    parameters = {{ $apiAuth.ldap.userQuery.parameters | required "LDAP authentication requires the userQuery parameters to be set." | toJson }}
+    usernameKey = {{ $apiAuth.ldap.userQuery.usernameKey | required "LDAP authentication requires the userQuery usernameKey to be set." | quote }}
+    {{- if $apiAuth.ldap.userQuery.emailKey }}
+    emailKey = {{ $apiAuth.ldap.userQuery.emailKey | quote }}
     {{- end }}
   }
   groupQuery {
-    parameters = {{ .Values.stackstate.authentication.ldap.groupQuery.parameters | required "LDAP authentication requires the groupQuery parameters to be set." | toJson }}
-    rolesKey = {{ .Values.stackstate.authentication.ldap.groupQuery.rolesKey | required "LDAP authentication requires the groupQuery rolesKey to be set." | quote }}
-    {{- if .Values.stackstate.authentication.ldap.groupQuery.groupMemberKey }}
-    groupMemberKey = {{ .Values.stackstate.authentication.ldap.groupQuery.groupMemberKey | quote }}
+    parameters = {{ $apiAuth.ldap.groupQuery.parameters | required "LDAP authentication requires the groupQuery parameters to be set." | toJson }}
+    rolesKey = {{ $apiAuth.ldap.groupQuery.rolesKey | required "LDAP authentication requires the groupQuery rolesKey to be set." | quote }}
+    {{- if $apiAuth.ldap.groupQuery.groupMemberKey }}
+    groupMemberKey = {{ $apiAuth.ldap.groupQuery.groupMemberKey | quote }}
     {{- end }}
   }
 }
 {{- end }}
-{{- if .Values.stackstate.authentication.oidc }}
+{{- if $apiAuth.oidc }}
 {{ $authTypes = append $authTypes "oidcAuthServer" }}
 stackstate.api.authentication.authServer.oidcAuthServer {
-  clientId = {{ .Values.stackstate.authentication.oidc.clientId | required "OIDC authentication requires the client id to be set." | quote }}
-  secret = {{ .Values.stackstate.authentication.oidc.secret | required "OIDC authentication requires the client secret to be set." | quote }}
-  discoveryUri = {{ .Values.stackstate.authentication.oidc.discoveryUri | required "OIDC authentication requires the discovery uri to be set." | quote }}
-  {{- if .Values.stackstate.authentication.oidc.redirectUri }}
-  redirectUri = {{ .Values.stackstate.authentication.oidc.redirectUri | trimSuffix "/" | quote }}
+  clientId = {{ $apiAuth.oidc.clientId | required "OIDC authentication requires the client id to be set." | quote }}
+  secret = {{ $apiAuth.oidc.secret | required "OIDC authentication requires the client secret to be set." | quote }}
+  discoveryUri = {{ $apiAuth.oidc.discoveryUri | required "OIDC authentication requires the discovery uri to be set." | quote }}
+  {{- if $apiAuth.oidc.redirectUri }}
+  redirectUri = {{ $apiAuth.oidc.redirectUri | trimSuffix "/" | quote }}
   {{- else }}
-  redirectUri = "{{ .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "Could not determine redirectUri for OIDC. Please specify explicitly." }}/loginCallback"
+  redirectUri = "{{ $global.Values.stackstate.baseUrl | default $global.Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "Could not determine redirectUri for OIDC. Please specify explicitly." }}/loginCallback"
   {{- end }}
-  {{- if .Values.stackstate.authentication.oidc.scope }}
-  {{- if not (kindIs "slice" .Values.stackstate.authentication.oidc.scope) -}}
+  {{- if $apiAuth.oidc.scope }}
+  {{- if not (kindIs "slice" $apiAuth.oidc.scope) -}}
     {{- fail "stackstate.authentication.oidc.scope must be an array of scopes" -}}
   {{- end }}
-  scope = {{ .Values.stackstate.authentication.oidc.scope | toJson }}
+  scope = {{ $apiAuth.oidc.scope | toJson }}
   {{- end }}
-  {{- if .Values.stackstate.authentication.oidc.authenticationMethod }}
-  authenticationMethod = {{ .Values.stackstate.authentication.oidc.authenticationMethod | quote }}
+  {{- if $apiAuth.oidc.authenticationMethod }}
+  authenticationMethod = {{ $apiAuth.oidc.authenticationMethod | quote }}
   {{- end }}
-  {{- if .Values.stackstate.authentication.oidc.jwsAlgorithm }}
-  jwsAlgorithm = {{ .Values.stackstate.authentication.oidc.jwsAlgorithm | quote }}
+  {{- if $apiAuth.oidc.jwsAlgorithm }}
+  jwsAlgorithm = {{ $apiAuth.oidc.jwsAlgorithm | quote }}
   {{- end }}
-  {{- if .Values.stackstate.authentication.oidc.customParameters }}
-  customParams {{ .Values.stackstate.authentication.oidc.customParameters | toJson }}
+  {{- if $apiAuth.oidc.customParameters }}
+  customParams {{ $apiAuth.oidc.customParameters | toJson }}
   {{- end }}
-  {{- if .Values.stackstate.authentication.oidc.jwtClaims }}
+  {{- if $apiAuth.oidc.jwtClaims }}
   jwtClaims {
-    {{- if .Values.stackstate.authentication.oidc.jwtClaims.usernameField }}
-    usernameField = {{ .Values.stackstate.authentication.oidc.jwtClaims.usernameField | quote }}
+    {{- if $apiAuth.oidc.jwtClaims.usernameField }}
+    usernameField = {{ $apiAuth.oidc.jwtClaims.usernameField | quote }}
     {{- end }}
-    {{- if .Values.stackstate.authentication.oidc.jwtClaims.groupsField }}
-    groupsField = {{ .Values.stackstate.authentication.oidc.jwtClaims.groupsField | quote }}
+    {{- if $apiAuth.oidc.jwtClaims.groupsField }}
+    groupsField = {{ $apiAuth.oidc.jwtClaims.groupsField | quote }}
     {{- end }}
   }
   {{- end }}
 }
 {{- end }}
-{{- if .Values.stackstate.authentication.keycloak }}
+{{- if $apiAuth.keycloak }}
 {{ $authTypes = append $authTypes "keycloakAuthServer" }}
 stackstate.api.authentication.authServer.keycloakAuthServer {
-  keycloakBaseUri = {{ .Values.stackstate.authentication.keycloak.url | required "Keycloak authentication requires the keycloak url to be set." | quote }}
-  realm = {{ .Values.stackstate.authentication.keycloak.realm | required "Keycloak authentication requires the keycloak realm to be set." | quote }}
-  clientId = {{ .Values.stackstate.authentication.keycloak.clientId | required "Keycloak authentication requires the client id to be set." | quote }}
-  secret = {{ .Values.stackstate.authentication.keycloak.secret | required "Keycloak authentication requires the client secret to be set." | quote }}
-  {{- if .Values.stackstate.authentication.keycloak.redirectUri }}
-  redirectUri = {{ .Values.stackstate.authentication.keycloak.redirectUri | trimSuffix "/" | quote }}
+  keycloakBaseUri = {{ $apiAuth.keycloak.url | required "Keycloak authentication requires the keycloak url to be set." | quote }}
+  realm = {{ $apiAuth.keycloak.realm | required "Keycloak authentication requires the keycloak realm to be set." | quote }}
+  clientId = {{ $apiAuth.keycloak.clientId | required "Keycloak authentication requires the client id to be set." | quote }}
+  secret = {{ $apiAuth.keycloak.secret | required "Keycloak authentication requires the client secret to be set." | quote }}
+  {{- if $apiAuth.keycloak.redirectUri }}
+  redirectUri = {{ $apiAuth.keycloak.redirectUri | trimSuffix "/" | quote }}
   {{- else }}
-  redirectUri = "{{ .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is a required value." }}/loginCallback"
+  redirectUri = "{{ $global.Values.stackstate.baseUrl | default $global.Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is a required value." }}/loginCallback"
   {{- end }}
-  {{- if .Values.stackstate.authentication.keycloak.authenticationMethod }}
-  authenticationMethod = {{ .Values.stackstate.authentication.keycloak.authenticationMethod | quote }}
+  {{- if $apiAuth.keycloak.authenticationMethod }}
+  authenticationMethod = {{ $apiAuth.keycloak.authenticationMethod | quote }}
   {{- end }}
-  {{- if .Values.stackstate.authentication.keycloak.jwsAlgorithm }}
-  jwsAlgorithm = {{ .Values.stackstate.authentication.keycloak.jwsAlgorithm | quote }}
+  {{- if $apiAuth.keycloak.jwsAlgorithm }}
+  jwsAlgorithm = {{ $apiAuth.keycloak.jwsAlgorithm | quote }}
   {{- end }}
-  {{- if .Values.stackstate.authentication.keycloak.jwtClaims }}
+  {{- if $apiAuth.keycloak.jwtClaims }}
   jwtClaims {
-    {{- if .Values.stackstate.authentication.keycloak.jwtClaims.usernameField }}
-    usernameField = {{ .Values.stackstate.authentication.keycloak.jwtClaims.usernameField | quote }}
+    {{- if $apiAuth.keycloak.jwtClaims.usernameField }}
+    usernameField = {{ $apiAuth.keycloak.jwtClaims.usernameField | quote }}
     {{- end }}
-    {{- if .Values.stackstate.authentication.keycloak.jwtClaims.groupsField }}
-    groupsField = {{ .Values.stackstate.authentication.keycloak.jwtClaims.groupsField | quote }}
+    {{- if $apiAuth.keycloak.jwtClaims.groupsField }}
+    groupsField = {{ $apiAuth.keycloak.jwtClaims.groupsField | quote }}
     {{- end }}
   }
   {{- end }}
 }
 {{- end }}
 
-{{- if .Values.stackstate.authentication.file }}
+{{- if $apiAuth.file }}
 {{ $authTypes = append $authTypes "stackstateAuthServer" }}
-{{- if not .Values.stackstate.authentication.file.logins -}}
+{{- if not $apiAuth.file.logins -}}
 {{- fail "File configuration requires a non-empty list of logins to be specified with fields username, passwordHash and roles specified." -}}
 {{- end }}
 stackstate.api.authentication.authServer.stackstateAuthServer.logins = [
-{{- range .Values.stackstate.authentication.file.logins }}
+{{- range $apiAuth.file.logins }}
   {{- if not .roles -}}
   {{- printf "No roles specified for user %s" .username | fail -}}
   {{- end }}
@@ -162,8 +165,8 @@ for production this should be replaced with one of the other mechanisms.
 {{- if eq (len $authTypes) 0 }}
 {{- $authTypes = append $authTypes "stackstateAuthServer" }}
 stackstate.api.authentication.authServer.stackstateAuthServer {
-{{- if .Values.stackstate.authentication.adminPassword }}
-  defaultPassword = {{ .Values.stackstate.authentication.adminPassword | quote }}
+{{- if $apiAuth.adminPassword }}
+  defaultPassword = {{ $apiAuth.adminPassword | quote }}
 {{- else }}
 {{- fail "Helm value 'stackstate.authentication.adminPassword' is required when neither LDAP, OIDC, Keycloak nor file-based authentication has been configured" -}}
 {{- end }}
@@ -174,38 +177,38 @@ stackstate.api.authentication.authServer.stackstateAuthServer {
 {{- fail "More than 1 authentication mechanism specified. Please configure only one from: keycloak, oidc or ldap. If none are configured the default admin user will be made available with the stackstate.authentication.adminPassword." -}}
 {{- end }}
 
-stackstate.api.authentication.sessionLifetime =  {{ .Values.stackstate.authentication.sessionLifetime | toJson }}
+stackstate.api.authentication.sessionLifetime =  {{ $apiAuth.sessionLifetime | toJson }}
 
 {{ $admins := list "stackstate-aad" }}
-{{- if .Values.stackstate.authentication.roles.admin }}
-{{ $admins = concat $admins .Values.stackstate.authentication.roles.admin }}
+{{- if $apiAuth.roles.admin }}
+{{ $admins = concat $admins $apiAuth.roles.admin }}
 {{- end }}
 {{- range $admins }}
 stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.viewPermissions} }
 {{- end }}
 
-{{- range .Values.stackstate.authentication.roles.platformAdmin }}
+{{- range $apiAuth.roles.platformAdmin }}
 stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-platform-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-platform-admin.viewPermissions} }
 {{- end }}
 
-{{- range .Values.stackstate.authentication.roles.powerUser }}
+{{- range $apiAuth.roles.powerUser }}
 stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-power-user.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-power-user.viewPermissions} }
 {{- end }}
 
-{{- range .Values.stackstate.authentication.roles.guest }}
+{{- range $apiAuth.roles.guest }}
 stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.viewPermissions} }
 {{- end }}
 
-{{- range $k, $v := .Values.stackstate.authentication.roles.custom }}
+{{- range $k, $v := $apiAuth.roles.custom }}
 stackstate.authorization.staticSubjects.{{ $k }}: { systemPermissions: {{ $v.systemPermissions }}, viewPermissions: {{ $v.viewPermissions }} }
 {{- end }}
 
-{{- if .Values.stackstate.authentication.serviceToken.bootstrap.token }}
+{{- if $apiAuth.serviceToken.bootstrap.token }}
 {{- $authTypes = append $authTypes "serviceTokenAuthServer" }}
 stackstate.api.authentication.authServer.serviceTokenAuthServer.bootstrap {
-  token = {{ .Values.stackstate.authentication.serviceToken.bootstrap.token | quote }}
-  roles = [ {{- .Values.stackstate.authentication.serviceToken.bootstrap.roles | compact | join ", " -}} ]
-  ttl = {{ .Values.stackstate.authentication.serviceToken.bootstrap.ttl | quote }}
+  token = {{ $apiAuth.serviceToken.bootstrap.token | quote }}
+  roles = [ {{- $apiAuth.serviceToken.bootstrap.roles | compact | join ", " -}} ]
+  ttl = {{ $apiAuth.serviceToken.bootstrap.ttl | quote }}
 }
 {{- end }}
 
