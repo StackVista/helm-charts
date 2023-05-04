@@ -1068,6 +1068,8 @@ stackstate:
       powerUser: []
       # stackstate.authentication.roles.guest -- Extend the role names that have guest permissions (default: 'stackstate-guest')
       guest: []
+      # stackstate.authentication.roles.custom -- Extend the authorization with custom roles {roleName: {systemPermissions: [], viewPermissions: []}}
+      custom: {}
     serviceToken:
       bootstrap:
         # stackstate.authentication.serviceToken.bootstrap.token -- The service token to set as bootstrap token

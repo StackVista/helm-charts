@@ -203,6 +203,10 @@ stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate
 stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.viewPermissions} }
 {{- end }}
 
+{{- range $k, $v := .Values.stackstate.authentication.roles.custom }}
+stackstate.authorization.staticSubjects.{{ $k }}: { systemPermissions: {{ $v.systemPermissions }}, viewPermissions: {{ $v.viewPermissions }} }
+{{- end }}
+
 {{- if .Values.stackstate.authentication.serviceToken.bootstrap.token }}
 {{- $authTypes = append $authTypes "serviceTokenAuthServer" }}
 stackstate.api.authentication.authServer.serviceTokenAuthServer.bootstrap {
