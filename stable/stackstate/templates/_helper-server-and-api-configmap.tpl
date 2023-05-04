@@ -4,39 +4,6 @@ Shared settings in configmap for server and api
 {{- define "stackstate.configmap.server-and-api" }}
 {{- $authTypes := list -}}
 stackstate.api.authentication.authServer.k8sServiceAccountAuthServer {}
-{{- if .Values.caspr.enabled }}
-stackstate {
-  tenantAware = true
-  tenant {
-    identifier = {{ .Values.caspr.subscription.tenant }}
-    name = "{{ .Values.caspr.subscription.tenantobj.name }}"
-    subscription {
-{{- if .Values.caspr.subscription.expirationDate }}
-      expirationDate = {{ .Values.caspr.subscription.expirationDate }}
-{{- end }}
-      plan = {{ .Values.caspr.subscription.planobj.name }}
-    }
-  }
-{{- if .Values.caspr.keycloak }}
-  {{- $authTypes = append $authTypes "keycloakAuthServer" -}}
-  api {
-    authentication {
-      authServer {
-        keycloakAuthServer {
-          keycloakBaseUri = "{{ .Values.caspr.keycloak.url }}"
-          realm = "{{ .Values.caspr.keycloak.realm }}"
-          clientId = "{{ .Values.caspr.keycloak.client }}"
-          authenticationMethod = "client_secret_basic"
-          secret = "{{ .Values.caspr.keycloak.secret }}"
-          redirectUri = "https://{{ .Values.caspr.applicationInstance.host }}/loginCallback"
-          jwsAlgorithm = "RS256"
-        }
-      }
-    }
-  }
-{{- end }}
-}
-{{- else }}
 {{- if .Values.stackstate.authentication.ldap }}
 {{ $authTypes = append $authTypes "ldapAuthServer" }}
 stackstate.api.authentication.authServer.ldapAuthServer {
@@ -218,7 +185,6 @@ stackstate.api.authentication.authServer.serviceTokenAuthServer.bootstrap {
 
 {{- $authTypes = append $authTypes "k8sServiceAccountAuthServer" }}
 stackstate.api.authentication.authServer.authServerType = [ {{- $authTypes | compact | join ", " -}} ]
-{{- end }}
 
 {{- with .Values.stackstate.stackpacks.installed }}
 stackstate.stackPacks {
