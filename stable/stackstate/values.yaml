@@ -175,6 +175,7 @@ stackstate:
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
         tag: 5.1.10
       metrics:
+        defaultAgentMetricsFilter: '["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "stackstate*", "receiver*"]'
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
         enabled: true
         # stackstate.components.all.metrics.agentAnnotationsEnabled -- Put annotations on each pod to instruct the stackstate agent to scrape the metrics
@@ -782,6 +783,8 @@ stackstate:
       # stackstate.components.slicing.additionalLogging -- Additional logback config
       additionalLogging: ""
     ui:
+      agentMetricsFilter: '["nginx*"]'
+      debug: false
       extraEnv:
         # stackstate.components.ui.extraEnv.open -- Extra open environment variables to inject into pods.
         open: {}
@@ -1098,9 +1101,9 @@ elasticsearch:
       # elasticsearch.prometheus-elasticsearch-exporter.serviceMonitor.labels -- Labels for the service monitor
       labels: {}
     podAnnotations:
-      ad.stackstate.com/prometheus-elasticsearch-exporter.check_names: '["openmetrics"]'
-      ad.stackstate.com/prometheus-elasticsearch-exporter.init_configs: "[{}]"
-      ad.stackstate.com/prometheus-elasticsearch-exporter.instances: '[ { "prometheus_url": "http://%%host%%:9108/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
+      ad.stackstate.com/exporter.check_names: '["openmetrics"]'
+      ad.stackstate.com/exporter.init_configs: "[{}]"
+      ad.stackstate.com/exporter.instances: '[ { "prometheus_url": "http://%%host%%:9108/metrics", "namespace": "stackstate", "metrics": ["elasticsearch_indices_store_*", "elasticsearch_cluster_health_*"] } ]'
     resources:
       limits:
         cpu: "100m"
