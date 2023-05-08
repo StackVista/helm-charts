@@ -19,7 +19,7 @@ dependencies:
   version: 15.5.1
 - name: kafkaup-operator
   repository: file://../kafkaup-operator/
-  version: 0.1.5
+  version: 0.1.6
 - name: minio
   repository: file://../minio/
   version: 8.0.10-stackstate.8
@@ -32,5 +32,5 @@ dependencies:
 - name: victoria-metrics-single
   repository: https://victoriametrics.github.io/helm-charts
   version: 0.8.53
-digest: sha256:9af612107a3b2dd4753630288792417e629f90ac00d860c4ec5ddc5e137f4df0
-generated: "2023-05-08T15:41:10.715328601+02:00"
+digest: sha256:518656084547f0ea3e5a9b73eb93d87c8d1dd24d4535cceedf71cf319abc6bd6
+generated: "2023-05-08T17:18:25.065204837+02:00"
