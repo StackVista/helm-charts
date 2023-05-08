@@ -615,7 +615,7 @@ stackstate/stackstate
 | stackstate.experimental.disableMultimetrics | boolean | `false` | Disable writing and storage of the old multimetrics format, this will break streams and checks, monitors and metric bindings use the new metrics |
 | stackstate.experimental.metrics | boolean | `true` | Enable the new experimental metrics apis and store |
 | stackstate.experimental.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |
-| stackstate.instanceApi.authentication | object | `{}` |  |
+| stackstate.instanceApi.authentication | object | `{}` | Custom authentication settings for the `instance` API, by default the `stackstate.authentication` authentication settings are used. |
 | stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
 | stackstate.java.trustStoreBase64Encoded | string | `nil` | Base64 encoded Java TrustStore (cacerts) file to use. Ignored if stackstate.java.trustStore is set. |

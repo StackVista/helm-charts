@@ -4,7 +4,13 @@ Shared settings in configmap for server and api
 {{- define "stackstate.configmap.server-and-api" }}
 
 {{- if .Values.stackstate.authentication }}
-{{- include "stackstate.auth.config" (dict "api" .Values.stackstate "authnPrefix" "stackstate.api.authentication" "global" .) }}
+{{- include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.authentication "authnPrefix" "stackstate.api.authentication" "authzPrefix" "stackstate.authorization" "global" .) }}
+{{- end }}
+{{- if gt (len .Values.stackstate.admin.authentication) 1 }}
+{{- include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.admin.authentication "authnPrefix" "stackstate.adminApi.authentication" "authzPrefix" "stackstate.adminApi.authorization" "global" .) }}
+{{- end }}
+{{- if .Values.stackstate.instanceApi.authentication }}
+{{- include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.instanceApi.authentication "authnPrefix" "stackstate.instanceApi.authentication" "authzPrefix" "stackstate.instanceApi.authorization" "global" .) }}
 {{- end }}
 
 {{- with .Values.stackstate.stackpacks.installed }}
@@ -28,9 +34,9 @@ stackstate.webUIConfig.docLinkUrlPrefix = "{{- .Values.stackstate.components.api
 {{- end -}}
 
 {{- define "stackstate.auth.config" }}
-{{- $api := .api -}}
-{{- $apiAuth := .api.authentication -}}
+{{- $apiAuth := .apiAuth -}}
 {{- $authnPrefix := .authnPrefix -}}
+{{- $authzPrefix := .authzPrefix -}}
 {{- $global := .global -}}
 {{- $authTypes := list -}}
 {{ $authnPrefix }}.authServer.k8sServiceAccountAuthServer {}
@@ -166,8 +172,8 @@ for production this should be replaced with one of the other mechanisms.
 {{- if eq (len $authTypes) 0 }}
 {{- $authTypes = append $authTypes "stackstateAuthServer" }}
 {{ $authnPrefix }}.authServer.stackstateAuthServer {
-{{- if $apiAuth.adminPassword }}
-  defaultPassword = {{ $apiAuth.adminPassword | quote }}
+{{- if $global.Values.stackstate.authentication.adminPassword }}
+  defaultPassword = {{ $global.Values.stackstate.authentication.adminPassword | quote }}
 {{- else }}
 {{- fail "Helm value 'stackstate.authentication.adminPassword' is required when neither LDAP, OIDC, Keycloak nor file-based authentication has been configured" -}}
 {{- end }}
@@ -185,23 +191,23 @@ for production this should be replaced with one of the other mechanisms.
 {{ $admins = concat $admins $apiAuth.roles.admin }}
 {{- end }}
 {{- range $admins }}
-stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.viewPermissions} }
+{{ $authzPrefix }}.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.viewPermissions} }
 {{- end }}
 
 {{- range $apiAuth.roles.platformAdmin }}
-stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-platform-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-platform-admin.viewPermissions} }
+{{ $authzPrefix }}.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-platform-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-platform-admin.viewPermissions} }
 {{- end }}
 
 {{- range $apiAuth.roles.powerUser }}
-stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-power-user.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-power-user.viewPermissions} }
+{{ $authzPrefix }}.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-power-user.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-power-user.viewPermissions} }
 {{- end }}
 
 {{- range $apiAuth.roles.guest }}
-stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.viewPermissions} }
+{{ $authzPrefix }}.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.viewPermissions} }
 {{- end }}
 
 {{- range $k, $v := $apiAuth.roles.custom }}
-stackstate.authorization.staticSubjects.{{ $k }}: { systemPermissions: {{ $v.systemPermissions }}, viewPermissions: {{ $v.viewPermissions }} }
+{{ $authzPrefix }}.staticSubjects.{{ $k }}: { systemPermissions: {{ $v.systemPermissions }}, viewPermissions: {{ $v.viewPermissions }} }
 {{- end }}
 
 {{- if $apiAuth.serviceToken.bootstrap.token }}
