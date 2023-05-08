@@ -1078,6 +1078,9 @@ stackstate:
         roles: []
         # stackstate.authentication.serviceToken.bootstrap.ttl -- The amount of time the service token is valid for
         ttl: 24h
+  instanceApi:
+    # stackstate.components.instanceApi.authentication -- Custom authentication settings for the `instance` API, by default the `stackstate.authentication` authentication settings are used.
+    authentication: {}
   admin:
     authentication:
       # stackstate.admin.authentication.password -- Password used for default platform "admin" api's (low-level tools) of the various services, username: platformadmin
