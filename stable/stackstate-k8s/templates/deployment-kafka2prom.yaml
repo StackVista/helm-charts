@@ -80,7 +80,7 @@ spec:
   template:
     metadata:
       annotations:
-        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "kafka2prom") | indent 8 }}
+        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "kafka2prom" "filter" .Values.stackstate.components.kafka2prom.agentMetricsFilter) | indent 8 }}
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.kafka2prom.secret.checksum" . | nindent 8 }}
       labels:

@@ -12,7 +12,7 @@ Current chart version is `1.0.0`
 |------------|------|---------|
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 7.17.2-stackstate.6 |
-| file://../hbase/ | hbase | 0.1.152 |
+| file://../hbase/ | hbase | 0.1.153 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.8 |
 | file://../pull-secret/ | pull-secret | * |

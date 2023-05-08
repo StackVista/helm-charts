@@ -25,9 +25,9 @@ spec:
           annotations:
             message: {{`The synchronization for {{ $labels.namespace }} and integration {{ $labels.integration_type }} is running very slow, processing time for 1 message is now {{ $value | humanizeDuration }}.`}}
           expr: |
-            (sum by (integration_type,pod)(rate(stackstate_sync_duration_seconds_sum{namespace=~{{ .Values.rules.namespaceRegex | quote }}}[1m]))
+            (sum by (integration_type,pod)(rate(stackstate_stackstate_sync_latency_seconds_sum{namespace=~{{ .Values.rules.namespaceRegex | quote }}}[1m]))
               /
-            (sum by (integration_type, pod)(rate(stackstate_sync_changes_total{namespace=~{{ .Values.rules.namespaceRegex | quote }}}[1m])) > 0)) > 5.000000
+            (sum by (integration_type, pod)(rate(stackstate_stackstate_sync_changes_total{namespace=~{{ .Values.rules.namespaceRegex | quote }}}[1m])) > 0)) > 5.000000
           for: 5m
           labels:
             severity: warning
@@ -36,9 +36,9 @@ spec:
           annotations:
             message: {{`Consumption of kafka messages for topology synchronization {{ $labels.namespace }}, topic {{ $labels.topic }} and service {{ $labels.service }} by client {{ $labels.client_id }} is lagging behind by {{ $value | humanizeDuration }}.`}}
           expr: |
-            (sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{namespace=~{{ .Values.rules.namespaceRegex | quote}}, topic=~"sts_topo_.*"}[10m])) by (namespace, topic, service, client_id)
+            (sum(max_over_time(stackstate_kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{namespace=~{{ .Values.rules.namespaceRegex | quote}}, topic=~"sts_topo_.*"}[10m])) by (namespace, topic, service, client_id)
               /
-            sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{namespace=~{{ .Values.rules.namespaceRegex | quote}}, topic=~"sts_topo_.*"}[10m])) by (namespace, topic, service, client_id)) > 120.0
+            sum(max_over_time(stackstate_kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{namespace=~{{ .Values.rules.namespaceRegex | quote}}, topic=~"sts_topo_.*"}[10m])) by (namespace, topic, service, client_id)) > 120.0
           for: 5m
           labels:
             severity: warning
@@ -47,9 +47,9 @@ spec:
           annotations:
             message: {{`Consumption of kafka messages for topology synchronization {{ $labels.namespace }}, topic {{ $labels.topic }} and service {{ $labels.service }} by client {{ $labels.client_id }} is lagging behind by {{ $value | humanizeDuration }}.`}}
           expr: |
-            (sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{namespace=~{{ .Values.rules.namespaceRegex | quote}}, topic!~"sts_topo_.*"}[10m])) by (namespace, topic, service, client_id)
+            (sum(max_over_time(stackstate_kafka_consumer_consumer_fetch_manager_metrics_records_lag_max{namespace=~{{ .Values.rules.namespaceRegex | quote}}, topic!~"sts_topo_.*"}[10m])) by (namespace, topic, service, client_id)
               /
-            sum(max_over_time(kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{namespace=~{{ .Values.rules.namespaceRegex | quote}}, topic!~"sts_topo_.*"}[10m])) by (namespace, topic, service, client_id)) > 120.0
+            sum(max_over_time(stackstate_kafka_consumer_consumer_fetch_manager_metrics_records_consumed_rate{namespace=~{{ .Values.rules.namespaceRegex | quote}}, topic!~"sts_topo_.*"}[10m])) by (namespace, topic, service, client_id)) > 120.0
           for: 5m
           labels:
             severity: warning

@@ -7,13 +7,13 @@ dependencies:
   version: 3.4.2
 - name: common
   repository: file://../common/
-  version: 0.4.22
+  version: 0.4.23
 - name: elasticsearch
   repository: file://../elasticsearch/
   version: 7.17.2-stackstate.6
 - name: hbase
   repository: file://../hbase/
-  version: 0.1.152
+  version: 0.1.153
 - name: kafka
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 15.5.1
@@ -32,5 +32,5 @@ dependencies:
 - name: victoria-metrics-single
   repository: https://victoriametrics.github.io/helm-charts
   version: 0.8.53
-digest: sha256:f9bc6292792ba35cb898e87e34b94a6afb98b0cfc056f47a3b2c452efbb888f0
-generated: "2023-05-03T11:01:20.21201132+02:00"
+digest: sha256:efa2bff91d4c1e33ed413391e85e697cbd30fc4a09f07d4d9a333d215f72e02b
+generated: "2023-05-08T15:40:14.546976476+02:00"
