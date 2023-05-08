@@ -301,6 +301,7 @@ stackstate/stackstate
 | stackstate.components.all.metricStore.remoteWriteEndpoint | string | `"stackstate-victoria-metrics-0:8428"` | **Required if `stackstate.experimental.metrics` is `true`** Host and port for prometheus remote write endpoint |
 | stackstate.components.all.metricStore.remoteWritePath | string | `"/api/v1/write"` | Remote write path used to ingest metrics, /api/v1/write is most common |
 | stackstate.components.all.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
+| stackstate.components.all.metrics.defaultAgentMetricsFilter | string | `"[\"kafka_consumer_consumer_fetch_manager_metrics*\", \"kafka_producer_producer_topic_metrics*\", \"jvm*\", \"stackstate*\"]"` |  |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
 | stackstate.components.all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
 | stackstate.components.all.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
@@ -575,6 +576,7 @@ stackstate/stackstate
 | stackstate.components.trace2es.sizing.javaHeapMemoryFraction | string | `"50"` |  |
 | stackstate.components.trace2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.ui.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.ui.agentMetricsFilter | string | `"[\"nginx*\"]"` |  |
 | stackstate.components.ui.debug | bool | `false` |  |
 | stackstate.components.ui.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.ui.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |

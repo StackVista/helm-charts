@@ -155,6 +155,7 @@ scc:
 stackstate:
   components:
     all:
+      defaultAgentMetricsFilter: '["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "stackstate*"]'
       # stackstate.components.all.deploymentStrategy.type -- Deployment strategy for StackState components. Possible values: `RollingUpdate`, `Recreate` and `RecreateSingletonsOnly`.
       # `RecreateSingletonsOnly` uses `Recreate` for the singleton Deployments and `RollingUpdate` for the other Deployments.
       deploymentStrategy:
@@ -838,6 +839,7 @@ stackstate:
       # stackstate.components.slicing.additionalLogging -- Additional logback config
       additionalLogging: ""
     ui:
+      agentMetricsFilter: '["nginx*"]'
       debug: false
       extraEnv:
         # stackstate.components.ui.extraEnv.open -- Extra open environment variables to inject into pods.
