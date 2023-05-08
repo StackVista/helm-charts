@@ -1629,7 +1629,7 @@ victoria-metrics-0:
       # 1.87.x is the LTS version
       tag: "v1.87.2"
     # victoria-metrics-1.server -- Annotations for Victoria Metrics server pod
-    annotations:
+    podAnnotations:
       ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
       ad.stackstate.com/victoria-metrics-0-server.init_configs: "[{}]"
       ad.stackstate.com/victoria-metrics-0-server.instances: '[ { "prometheus_url": "http://%%host%%:8428/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
