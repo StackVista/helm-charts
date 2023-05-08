@@ -13,6 +13,8 @@ env:
   valueFrom:
     fieldRef:
       fieldPath: metadata.name
+- name: KAFKA_GROUP_ID
+  value: {{ include "stackstate.metrics.kafka2PromGroupId" . | quote }}
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.kafka2prom.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.kafka2prom.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.kafka2prom.image.pullPolicy | quote }}
 livenessProbe:

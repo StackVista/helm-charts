@@ -27,6 +27,13 @@ Logic to determine metric store host and port
 {{- end -}}
 
 {{/*
+Logic to determine metric store consumer group
+*/}}
+{{- define "stackstate.metrics.kafka2PromGroupId" -}}
+{{- .Values.stackstate.components.all.metricStore.kafka2PromGroupId | required "stackstate.components.all.metricStore.kafka2PromGroupId is a required value when stackstate.experimental.metrics = true." -}}
+{{- end -}}
+
+{{/*
 Logic to determine ElasticSearch endpoint.
 */}}
 {{- define "stackstate.es.endpoint" -}}
