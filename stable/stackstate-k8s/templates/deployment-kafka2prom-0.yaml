@@ -1,0 +1,5 @@
+{{- if .Values.stackstate.experimental.metrics }}
+{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $kafka2promDeployment := fromYaml (include "stackstate.kafka2prom.deployment" (merge (dict "vmInstance" "0") .)) -}}
+{{- toYaml (merge $kafka2promDeployment $commonDeployment) -}}
+{{- end -}}
