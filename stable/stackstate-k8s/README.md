@@ -108,7 +108,6 @@ stackstate/stackstate
 | backup.stackGraph.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
 | backup.stackGraph.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | backup.stackGraph.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
-| caspr.enabled | bool | `false` | Enable CASPR compatible values. |
 | cluster-role.enabled | bool | `true` | Deploy the ClusterRole(s) and ClusterRoleBinding(s) together with the chart. Can be disabled if these need to be installed by an administrator of the Kubernetes cluster. |
 | commonLabels | object | `{}` | Labels that will be added to all resources created by the stackstate chart (not the subcharts though) |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` | The Elasticsearch cluster health status params that will be used by readinessProbe command |
@@ -267,14 +266,15 @@ stackstate/stackstate
 | stackstate-agent.stackstate.cluster.name | string | `nil` |  |
 | stackstate-agent.stackstate.url | string | `"http://{{ include \"stackstate.hostname.prefix\" . }}-router:8080/receiver/stsAgent"` |  |
 | stackstate.admin.authentication.password | string | `nil` | Password used for default platform "admin" api's (low-level tools) of the various services, username: platformadmin |
-| stackstate.authentication | object | `{"adminPassword":null,"file":{},"keycloak":{},"ldap":{},"oidc":{},"roles":{"admin":[],"guest":[],"platformAdmin":[],"powerUser":[]},"serviceToken":{"bootstrap":{"roles":[],"token":"","ttl":"24h"}},"sessionLifetime":"7d"}` | Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error. |
+| stackstate.authentication | object | `{"adminPassword":null,"file":{},"keycloak":{},"ldap":{},"oidc":{},"roles":{"admin":[],"custom":{},"guest":[],"platformAdmin":[],"powerUser":[]},"serviceToken":{"bootstrap":{"roles":[],"token":"","ttl":"24h"}},"sessionLifetime":"7d"}` | Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error. |
 | stackstate.authentication.adminPassword | string | `nil` | Password for the 'admin' user that StackState creates by default |
 | stackstate.authentication.file | object | `{}` | Configure users, their passwords and roles from (config) file |
 | stackstate.authentication.keycloak | object | `{}` | Use Keycloak as authentication provider. See [Configuring Keycloak](#configuring-keycloak). |
 | stackstate.authentication.ldap | object | `{}` | LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap). |
 | stackstate.authentication.oidc | object | `{}` | Use an OpenId Connect provider for authentication. See [Configuring OpenId Connect](#configuring-openid-connect). |
-| stackstate.authentication.roles | object | `{"admin":[],"guest":[],"platformAdmin":[],"powerUser":[]}` | Extend the default role names in StackState |
+| stackstate.authentication.roles | object | `{"admin":[],"custom":{},"guest":[],"platformAdmin":[],"powerUser":[]}` | Extend the default role names in StackState |
 | stackstate.authentication.roles.admin | list | `[]` | Extend the role names that have admin permissions (default: 'stackstate-admin') |
+| stackstate.authentication.roles.custom | object | `{}` | Extend the authorization with custom roles {roleName: {systemPermissions: [], viewPermissions: []}} |
 | stackstate.authentication.roles.guest | list | `[]` | Extend the role names that have guest permissions (default: 'stackstate-guest') |
 | stackstate.authentication.roles.platformAdmin | list | `[]` | Extend the role names that have platform admin permissions (default: 'stackstate-platform-admin') |
 | stackstate.authentication.roles.powerUser | list | `[]` | Extend the role names that have power user permissions (default: 'stackstate-power-user') |
@@ -616,6 +616,7 @@ stackstate/stackstate
 | stackstate.experimental.disableMultimetrics | boolean | `true` | Disable writing and storage of the old multimetrics format, this will break streams and checks, monitors and metric bindings use the new metrics |
 | stackstate.experimental.metrics | boolean | `true` | Enable the new experimental metrics apis and store |
 | stackstate.experimental.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |
+| stackstate.instanceApi.authentication | object | `{}` | Custom authentication settings for the `instance` API, by default the `stackstate.authentication` authentication settings are used. |
 | stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
 | stackstate.java.trustStoreBase64Encoded | string | `nil` | Base64 encoded Java TrustStore (cacerts) file to use. Ignored if stackstate.java.trustStore is set. |

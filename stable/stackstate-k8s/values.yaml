@@ -115,9 +115,6 @@ backup:
       runAsNonRoot: true
       # backup.configuration.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
       runAsUser: 65534
-caspr:
-  # caspr.enabled -- Enable CASPR compatible values.
-  enabled: false
 ingress:
   # ingress.annotations -- Annotations for ingress objects.
   annotations: {}
@@ -1075,6 +1072,8 @@ stackstate:
       powerUser: []
       # stackstate.authentication.roles.guest -- Extend the role names that have guest permissions (default: 'stackstate-guest')
       guest: []
+      # stackstate.authentication.roles.custom -- Extend the authorization with custom roles {roleName: {systemPermissions: [], viewPermissions: []}}
+      custom: {}
     serviceToken:
       bootstrap:
         # stackstate.authentication.serviceToken.bootstrap.token -- The service token to set as bootstrap token
@@ -1087,6 +1086,9 @@ stackstate:
     authentication:
       # stackstate.admin.authentication.password -- Password used for default platform "admin" api's (low-level tools) of the various services, username: platformadmin
       password:
+  instanceApi:
+    # stackstate.instanceApi.authentication -- Custom authentication settings for the `instance` API, by default the `stackstate.authentication` authentication settings are used.
+    authentication: {}
   # stackstate.java -- Extra Java configuration for StackState
   java:
     # stackstate.java.trustStore -- Java TrustStore (cacerts) file to use
