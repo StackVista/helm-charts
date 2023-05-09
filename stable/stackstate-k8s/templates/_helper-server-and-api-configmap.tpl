@@ -31,6 +31,8 @@ stackstate.stackPacks {
 stackstate.webUIConfig.docLinkUrlPrefix = "{{- .Values.stackstate.components.api.docslink -}}"
 {{- end }}
 
+stackstate.deploymentMode = "{{- .Values.stackstate.deployment.mode -}}"
+
 {{- end -}}
 
 {{- define "stackstate.auth.config" }}

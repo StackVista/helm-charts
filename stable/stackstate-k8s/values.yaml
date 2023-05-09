@@ -1089,6 +1089,10 @@ stackstate:
   instanceApi:
     # stackstate.instanceApi.authentication -- Custom authentication settings for the `instance` API, by default the `stackstate.authentication` authentication settings are used.
     authentication: {}
+  # stackstate.deployment -- Deployment settings for StackState
+  deployment:
+    # stackstate.deployment.mode -- Deployment mode of StackState, possible values are 'SaaS' and 'SelfHosted'
+    mode: "SaaS"
   # stackstate.java -- Extra Java configuration for StackState
   java:
     # stackstate.java.trustStore -- Java TrustStore (cacerts) file to use
