@@ -188,9 +188,15 @@ for production this should be replaced with one of the other mechanisms.
 
 {{ $authnPrefix }}.sessionLifetime =  {{ $apiAuth.sessionLifetime | toJson }}
 
-{{ $admins := list "stackstate-aad" }}
+{{- $admins := list }}
+{{- if index $global.Values "anomaly-detection" "enabled" }}
+{{ $admins = append $admins "stackstate-aad" }}
+{{- end }}
+
 {{- if $apiAuth.roles.admin }}
-{{ $admins = concat $admins $apiAuth.roles.admin }}
+{{- range  $apiAuth.roles.admin }}
+{{ $admins = append $admins . }}
+{{- end }}
 {{- end }}
 {{- range $admins }}
 {{ $authzPrefix }}.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.viewPermissions} }

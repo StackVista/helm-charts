@@ -1092,7 +1092,7 @@ stackstate:
   # stackstate.deployment -- Deployment settings for StackState
   deployment:
     # stackstate.deployment.mode -- Deployment mode of StackState, possible values are 'SaaS' and 'SelfHosted'
-    mode: "SaaS"
+    mode: "SelfHosted"
   # stackstate.java -- Extra Java configuration for StackState
   java:
     # stackstate.java.trustStore -- Java TrustStore (cacerts) file to use

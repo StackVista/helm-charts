@@ -27,6 +27,6 @@ hbase:
   all:
     image:
 anomaly-detection:
-  enabled: true
+  enabled: false
 backup:
   enabled: true
