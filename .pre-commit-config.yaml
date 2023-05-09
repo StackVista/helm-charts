@@ -1,7 +1,7 @@
 exclude: 'gitlab-runner|^(jsonnet-)?vendor/'
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.0.1
+  rev: v4.4.0
   hooks:
   - id: check-added-large-files
   - id: check-case-conflict
@@ -14,7 +14,7 @@ repos:
     args:
     - --allow-missing-credentials
 - repo: https://github.com/gruntwork-io/pre-commit
-  rev: v0.1.17
+  rev: v0.1.21
   hooks:
   - id: helmlint
   - id: shellcheck
@@ -27,7 +27,7 @@ repos:
   hooks:
   - id: helm-docs-built
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.17.1
+  rev: 0.23.0
   hooks:
     - id: check-jsonschema
       files: ^stable/stackstate-monitoring/grafana-dashboards/.*/.*\.json$
@@ -35,7 +35,7 @@ repos:
     - id: check-metaschema
       files: stable/stackstate-monitoring/dashboard-schema.json
 - repo: git@gitlab.com:stackvista/devops/pre-commit-hooks.git
-  rev: v1.0.6
+  rev: v1.0.10
   hooks:
   - id: jsonnet_format
   - id: jsonnet_to_yaml
