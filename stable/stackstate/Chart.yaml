@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 5.2.0-snapshot.0
-version: 5.2.0-snapshot.16
+version: 5.2.0-snapshot.17
 description: Helm chart for StackState
 keywords:
   - aiops
@@ -14,7 +14,7 @@ maintainers:
 name: stackstate
 dependencies:
   - name: anomaly-detection
-    version: 5.2.0-snapshot.55
+    version: 5.2.0-snapshot.57
     repository: https://helm.stackstate.io
     condition: anomaly-detection.enabled
   - name: stackstate-agent
