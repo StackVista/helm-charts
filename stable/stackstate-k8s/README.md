@@ -630,36 +630,37 @@ stackstate/stackstate
 | victoria-metrics-0.enabled | bool | `true` |  |
 | victoria-metrics-0.rbac.namespaced | bool | `true` |  |
 | victoria-metrics-0.rbac.pspEnabled | bool | `false` |  |
-| victoria-metrics-0.server.affinity | object | `{}` |  |
-| victoria-metrics-0.server.extraArgs."dedup.minScrapeInterval" | string | `"1ms"` |  |
-| victoria-metrics-0.server.extraArgs.maxLabelsPerTimeseries | int | `35` |  |
+| victoria-metrics-0.server.affinity | object | `{}` | Affinity settings for Victoria Metrics pod |
+| victoria-metrics-0.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":35}` | Extra arguments for Victoria Metrics |
 | victoria-metrics-0.server.fullnameOverride | string | `"stackstate-victoria-metrics-0"` | Full name override |
 | victoria-metrics-0.server.image.tag | string | `"v1.87.2"` |  |
-| victoria-metrics-0.server.persistentVolume.size | string | `"60Gi"` |  |
-| victoria-metrics-0.server.podAnnotations."ad.stackstate.com/victoria-metrics-0-server.check_names" | string | `"[\"openmetrics\"]"` |  |
-| victoria-metrics-0.server.podAnnotations."ad.stackstate.com/victoria-metrics-0-server.init_configs" | string | `"[{}]"` |  |
-| victoria-metrics-0.server.podAnnotations."ad.stackstate.com/victoria-metrics-0-server.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
-| victoria-metrics-0.server.podLabels.stackstate-service | string | `"victoriametrics"` |  |
+| victoria-metrics-0.server.persistentVolume.size | string | `"60Gi"` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
+| victoria-metrics-0.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Annotations for Victoria Metrics server pod |
+| victoria-metrics-0.server.podLabels | object | `{"stackstate-service":"victoriametrics"}` | Extra labels for Victoria Metrics pod |
 | victoria-metrics-0.server.resources.limits.cpu | int | `1` |  |
 | victoria-metrics-0.server.resources.limits.memory | string | `"3584Mi"` |  |
 | victoria-metrics-0.server.resources.requests.cpu | string | `"200m"` |  |
 | victoria-metrics-0.server.resources.requests.memory | string | `"3584Mi"` |  |
-| victoria-metrics-0.server.retentionPeriod | int | `1` |  |
-| victoria-metrics-0.server.scrape.enabled | bool | `false` |  |
-| victoria-metrics-0.server.securityContext.fsGroup | int | `65534` |  |
-| victoria-metrics-0.server.securityContext.runAsGroup | int | `65534` |  |
-| victoria-metrics-0.server.securityContext.runAsUser | int | `65534` |  |
-| victoria-metrics-0.server.serviceMonitor.enabled | bool | `false` |  |
-| victoria-metrics-0.server.serviceMonitor.extraLabels | object | `{}` |  |
-| victoria-metrics-0.server.serviceMonitor.interval | string | `"15s"` |  |
+| victoria-metrics-0.server.retentionPeriod | int | `1` | How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1) |
+| victoria-metrics-0.server.scrape.enabled | bool | `false` | StackState doesn't use the scraping of VictoriaMetrics |
+| victoria-metrics-0.server.securityContext | object | `{"fsGroup":65534,"runAsGroup":65534,"runAsUser":65534}` | Custom security context settings for running as non-root |
+| victoria-metrics-0.server.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` |
+| victoria-metrics-0.server.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
+| victoria-metrics-0.server.serviceMonitor.interval | string | `"15s"` | Scrape interval for service monitor |
 | victoria-metrics-1.enabled | bool | `false` |  |
 | victoria-metrics-1.rbac.namespaced | bool | `true` |  |
 | victoria-metrics-1.rbac.pspEnabled | bool | `false` |  |
-| victoria-metrics-1.server | object | `{"affinity":{},"extraArgs":{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":35},"fullnameOverride":"stackstate-victoria-metrics-1","image":{"tag":"v1.87.2"},"persistentVolume":{"size":"60Gi"},"podAnnotations":{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"},"podLabels":{"stackstate-service":"victoriametrics"},"resources":{"limits":{"cpu":1,"memory":"3584Mi"},"requests":{"cpu":"200m","memory":"3584Mi"}},"retentionPeriod":1,"scrape":{"enabled":false},"securityContext":{"fsGroup":65534,"runAsGroup":65534,"runAsUser":65534},"serviceMonitor":{"enabled":false,"extraLabels":{},"interval":"15s"}}` | Annotations for Victoria Metrics server pod |
 | victoria-metrics-1.server.affinity | object | `{}` | Affinity settings for Victoria Metrics pod |
 | victoria-metrics-1.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":35}` | Extra arguments for Victoria Metrics |
 | victoria-metrics-1.server.fullnameOverride | string | `"stackstate-victoria-metrics-1"` | Full name override |
+| victoria-metrics-1.server.image.tag | string | `"v1.87.2"` |  |
 | victoria-metrics-1.server.persistentVolume.size | string | `"60Gi"` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
+| victoria-metrics-1.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Annotations for Victoria Metrics server pod |
+| victoria-metrics-1.server.podLabels | object | `{"stackstate-service":"victoriametrics"}` | Extra arguments for Victoria Metrics pod |
+| victoria-metrics-1.server.resources.limits.cpu | int | `1` |  |
+| victoria-metrics-1.server.resources.limits.memory | string | `"3584Mi"` |  |
+| victoria-metrics-1.server.resources.requests.cpu | string | `"200m"` |  |
+| victoria-metrics-1.server.resources.requests.memory | string | `"3584Mi"` |  |
 | victoria-metrics-1.server.retentionPeriod | int | `1` | How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1) |
 | victoria-metrics-1.server.scrape.enabled | bool | `false` | StackState doesn't use the scraping of VictoriaMetrics |
 | victoria-metrics-1.server.securityContext | object | `{"fsGroup":65534,"runAsGroup":65534,"runAsUser":65534}` | Custom security context settings for running as non-root |

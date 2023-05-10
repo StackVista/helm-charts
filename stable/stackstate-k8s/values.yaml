@@ -1637,9 +1637,9 @@ pull-secret:
 victoria-metrics-0:
   enabled: true
   rbac:
-    # victoria-metrics-1.server.pspEnabled -- Pod Security Policy has been deprecated and even removed from 1.25, we're not going to use it anymore
+    # victoria-metrics-0.pspEnabled -- Pod Security Policy has been deprecated and even removed from 1.25, we're not going to use it anymore
     pspEnabled: false
-    # victoria-metrics-1.server.namespaced -- Make sure all resources are namespaced
+    # victoria-metrics-0.namespaced -- Make sure all resources are namespaced
     namespaced: true
   server:
     # victoria-metrics-0.server.fullnameOverride -- Full name override
@@ -1647,12 +1647,12 @@ victoria-metrics-0:
     image:
       # 1.87.x is the LTS version
       tag: "v1.87.2"
-    # victoria-metrics-1.server -- Annotations for Victoria Metrics server pod
+    # victoria-metrics-0.server.podAnnotations -- Annotations for Victoria Metrics server pod
     podAnnotations:
       ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
       ad.stackstate.com/victoria-metrics-0-server.init_configs: "[{}]"
       ad.stackstate.com/victoria-metrics-0-server.instances: '[ { "prometheus_url": "http://%%host%%:8428/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
-    # victoria-metrics-1.server.affinity -- Affinity settings for Victoria Metrics pod
+    # victoria-metrics-0.server.affinity -- Affinity settings for Victoria Metrics pod
     affinity: {}
     # podAntiAffinity:
     #   preferredDuringSchedulingIgnoredDuringExecution:
@@ -1665,17 +1665,17 @@ victoria-metrics-0:
     #       - <the-namespace>
     #       topologyKey: kubernetes.io/hostname
     #     weight: 1
-    # victoria-metrics-1.server.extraArgs -- Extra arguments for Victoria Metrics
+    # victoria-metrics-0.server.podLabels -- Extra labels for Victoria Metrics pod
     podLabels:
       stackstate-service: victoriametrics
+    # victoria-metrics-0.server.extraArgs -- Extra arguments for Victoria Metrics
     extraArgs:
       dedup.minScrapeInterval: 1ms
       maxLabelsPerTimeseries: 35
-    # victoria-metrics-1.server.fullnameOverride -- Full name override
     persistentVolume:
-      # victoria-metrics-1.server.persistentVolume.size -- Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times
+      # victoria-metrics-0.server.persistentVolume.size -- Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times
       size: 60Gi
-    # victoria-metrics-1.server.retentionPeriod -- How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1)
+    # victoria-metrics-0.server.retentionPeriod -- How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1)
     retentionPeriod: 1
     # victoria-metrics-1.server.resources - CPU/Memory requests and limits
     resources:
@@ -1686,26 +1686,26 @@ victoria-metrics-0:
         memory: 3584Mi
         cpu: 1
     scrape:
-      # victoria-metrics-1.server.scrape.enabled -- StackState doesn't use the scraping of VictoriaMetrics
+      # victoria-metrics-0.server.scrape.enabled -- StackState doesn't use the scraping of VictoriaMetrics
       enabled: false
-    # victoria-metrics-1.server.securityContext -- Custom security context settings for running as non-root
+    # victoria-metrics-0.server.securityContext -- Custom security context settings for running as non-root
     securityContext:
       runAsUser: 65534
       runAsGroup: 65534
       fsGroup: 65534
     serviceMonitor:
-      # victoria-metrics-1.server.serviceMonitor.enabled -- If `true`, creates a Prometheus Operator `ServiceMonitor`
+      # victoria-metrics-0.server.serviceMonitor.enabled -- If `true`, creates a Prometheus Operator `ServiceMonitor`
       enabled: false
-      # victoria-metrics-1.server.serviceMonitor.interval -- Scrape interval for service monitor
+      # victoria-metrics-0.server.serviceMonitor.interval -- Scrape interval for service monitor
       interval: 15s
-      # victoria-metrics-1.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
+      # victoria-metrics-0.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
       extraLabels: {}
 victoria-metrics-1:
   enabled: false
   rbac:
-    # victoria-metrics-1.server.pspEnabled -- Pod Security Policy has been deprecated and even removed from 1.25, we're not going to use it anymore
+    # victoria-metrics-1.pspEnabled -- Pod Security Policy has been deprecated and even removed from 1.25, we're not going to use it anymore
     pspEnabled: false
-    # victoria-metrics-1.server.namespaced -- Make sure all resources are namespaced
+    # victoria-metrics-1.namespaced -- Make sure all resources are namespaced
     namespaced: true
   server:
     # victoria-metrics-1.server.fullnameOverride -- Full name override
@@ -1713,7 +1713,7 @@ victoria-metrics-1:
     image:
       # 1.87.x is the LTS version
       tag: "v1.87.2"
-    # victoria-metrics-1.server -- Annotations for Victoria Metrics server pod
+    # victoria-metrics-1.server.podAnnotations -- Annotations for Victoria Metrics server pod
     podAnnotations:
       ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
       ad.stackstate.com/victoria-metrics-0-server.init_configs: "[{}]"
@@ -1731,9 +1731,10 @@ victoria-metrics-1:
     #       - <the-namespace>
     #       topologyKey: kubernetes.io/hostname
     #     weight: 1
-    # victoria-metrics-1.server.extraArgs -- Extra arguments for Victoria Metrics
+    # victoria-metrics-1.server.podLabels -- Extra arguments for Victoria Metrics pod
     podLabels:
       stackstate-service: victoriametrics
+    # victoria-metrics-1.server.extraArgs -- Extra arguments for Victoria Metrics
     extraArgs:
       dedup.minScrapeInterval: 1ms
       maxLabelsPerTimeseries: 35
