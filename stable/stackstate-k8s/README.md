@@ -297,10 +297,10 @@ stackstate/stackstate
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
 | stackstate.components.all.image.tag | string | `"5.2.0-snapshot.20230418194708-master-8e8d8b7"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
-| stackstate.components.all.metricStore.kafka2PromGroupId | string | `"kafka-to-prom-$VM"` | Kafka consumer group ID of kafka2prom writing to the metric store |
+| stackstate.components.all.metricStore.kafka2PromGroupId | string | `"kafka-to-prom-$vmInstance"` | Kafka consumer group ID of kafka2prom writing to the metric store ($vmInstance is replaced by '0' or '1') |
 | stackstate.components.all.metricStore.queryApiEndpoint | string | `"stackstate-stackstate-k8s-victoriametrics:8428"` | **Required if `stackstate.experimental.metrics` is `true`** Host and port for promql api |
 | stackstate.components.all.metricStore.queryApiPath | string | `""` | Path under which `/api/v1/query` etc.. are accessible, the default ("") is fine for most stores |
-| stackstate.components.all.metricStore.remoteWriteEndpoint | string | `"stackstate-victoria-metrics-$VM:8428"` | **Required if `stackstate.experimental.metrics` is `true`** Host and port for prometheus remote write endpoint |
+| stackstate.components.all.metricStore.remoteWriteEndpoint | string | `"stackstate-victoria-metrics-$vmInstance:8428"` | **Required if `stackstate.experimental.metrics` is `true`** Host and port for prometheus remote write endpoint ($vmInstance is replaced by '0' or '1') |
 | stackstate.components.all.metricStore.remoteWritePath | string | `"/api/v1/write"` | Remote write path used to ingest metrics, /api/v1/write is most common |
 | stackstate.components.all.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | stackstate.components.all.metrics.defaultAgentMetricsFilter | string | `"[\"kafka_consumer_consumer_fetch_manager_metrics*\", \"kafka_producer_producer_topic_metrics*\", \"jvm*\", \"stackstate*\"]"` |  |
@@ -627,83 +627,45 @@ stackstate/stackstate
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
 | stackstate.receiver.baseUrl | string | `nil` | **DEPRECATED** Use stackstate.baseUrl instead |
 | stackstate.stackpacks.installed | list | `[]` | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) |
-| victoria-metrics-0.<<.enabled | bool | `true` |  |
-| victoria-metrics-0.<<.ha | bool | `false` |  |
-| victoria-metrics-0.<<.rbac.namespaced | bool | `true` |  |
-| victoria-metrics-0.<<.rbac.pspEnabled | bool | `false` |  |
-| victoria-metrics-0.<<.server.affinity | object | `{}` |  |
-| victoria-metrics-0.<<.server.extraArgs."dedup.minScrapeInterval" | string | `"1ms"` |  |
-| victoria-metrics-0.<<.server.extraArgs.maxLabelsPerTimeseries | int | `35` |  |
-| victoria-metrics-0.<<.server.image.tag | string | `"v1.87.2"` |  |
-| victoria-metrics-0.<<.server.persistentVolume.size | string | `"60Gi"` |  |
-| victoria-metrics-0.<<.server.podAnnotations."ad.stackstate.com/victoria-metrics-0-server.check_names" | string | `"[\"openmetrics\"]"` |  |
-| victoria-metrics-0.<<.server.podAnnotations."ad.stackstate.com/victoria-metrics-0-server.init_configs" | string | `"[{}]"` |  |
-| victoria-metrics-0.<<.server.podAnnotations."ad.stackstate.com/victoria-metrics-0-server.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
-| victoria-metrics-0.<<.server.podLabels.stackstate-service | string | `"victoriametrics"` |  |
-| victoria-metrics-0.<<.server.resources.limits.cpu | int | `1` |  |
-| victoria-metrics-0.<<.server.resources.limits.memory | string | `"3584Mi"` |  |
-| victoria-metrics-0.<<.server.resources.requests.cpu | string | `"200m"` |  |
-| victoria-metrics-0.<<.server.resources.requests.memory | string | `"3584Mi"` |  |
-| victoria-metrics-0.<<.server.retentionPeriod | int | `1` |  |
-| victoria-metrics-0.<<.server.scrape.enabled | bool | `false` |  |
-| victoria-metrics-0.<<.server.securityContext.fsGroup | int | `65534` |  |
-| victoria-metrics-0.<<.server.securityContext.runAsGroup | int | `65534` |  |
-| victoria-metrics-0.<<.server.securityContext.runAsUser | int | `65534` |  |
-| victoria-metrics-0.<<.server.serviceMonitor.enabled | bool | `false` |  |
-| victoria-metrics-0.<<.server.serviceMonitor.extraLabels | object | `{}` |  |
-| victoria-metrics-0.<<.server.serviceMonitor.interval | string | `"15s"` |  |
-| victoria-metrics-0.fullnameOverride | string | `"stackstate-victoria-metrics-0"` |  |
-| victoria-metrics-1.<<.enabled | bool | `true` |  |
-| victoria-metrics-1.<<.ha | bool | `false` |  |
-| victoria-metrics-1.<<.rbac.namespaced | bool | `true` |  |
-| victoria-metrics-1.<<.rbac.pspEnabled | bool | `false` |  |
-| victoria-metrics-1.<<.server.affinity | object | `{}` |  |
-| victoria-metrics-1.<<.server.extraArgs."dedup.minScrapeInterval" | string | `"1ms"` |  |
-| victoria-metrics-1.<<.server.extraArgs.maxLabelsPerTimeseries | int | `35` |  |
-| victoria-metrics-1.<<.server.image.tag | string | `"v1.87.2"` |  |
-| victoria-metrics-1.<<.server.persistentVolume.size | string | `"60Gi"` |  |
-| victoria-metrics-1.<<.server.podAnnotations."ad.stackstate.com/victoria-metrics-0-server.check_names" | string | `"[\"openmetrics\"]"` |  |
-| victoria-metrics-1.<<.server.podAnnotations."ad.stackstate.com/victoria-metrics-0-server.init_configs" | string | `"[{}]"` |  |
-| victoria-metrics-1.<<.server.podAnnotations."ad.stackstate.com/victoria-metrics-0-server.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
-| victoria-metrics-1.<<.server.podLabels.stackstate-service | string | `"victoriametrics"` |  |
-| victoria-metrics-1.<<.server.resources.limits.cpu | int | `1` |  |
-| victoria-metrics-1.<<.server.resources.limits.memory | string | `"3584Mi"` |  |
-| victoria-metrics-1.<<.server.resources.requests.cpu | string | `"200m"` |  |
-| victoria-metrics-1.<<.server.resources.requests.memory | string | `"3584Mi"` |  |
-| victoria-metrics-1.<<.server.retentionPeriod | int | `1` |  |
-| victoria-metrics-1.<<.server.scrape.enabled | bool | `false` |  |
-| victoria-metrics-1.<<.server.securityContext.fsGroup | int | `65534` |  |
-| victoria-metrics-1.<<.server.securityContext.runAsGroup | int | `65534` |  |
-| victoria-metrics-1.<<.server.securityContext.runAsUser | int | `65534` |  |
-| victoria-metrics-1.<<.server.serviceMonitor.enabled | bool | `false` |  |
-| victoria-metrics-1.<<.server.serviceMonitor.extraLabels | object | `{}` |  |
-| victoria-metrics-1.<<.server.serviceMonitor.interval | string | `"15s"` |  |
-| victoria-metrics-1.fullnameOverride | string | `"stackstate-victoria-metrics-1"` |  |
-| victoriametrics.enabled | bool | `true` |  |
-| victoriametrics.ha | bool | `false` |  |
-| victoriametrics.rbac.namespaced | bool | `true` |  |
-| victoriametrics.rbac.pspEnabled | bool | `false` |  |
-| victoriametrics.server.affinity | object | `{}` |  |
-| victoriametrics.server.extraArgs."dedup.minScrapeInterval" | string | `"1ms"` |  |
-| victoriametrics.server.extraArgs.maxLabelsPerTimeseries | int | `35` |  |
-| victoriametrics.server.image.tag | string | `"v1.87.2"` |  |
-| victoriametrics.server.persistentVolume.size | string | `"60Gi"` |  |
-| victoriametrics.server.podAnnotations."ad.stackstate.com/victoria-metrics-0-server.check_names" | string | `"[\"openmetrics\"]"` |  |
-| victoriametrics.server.podAnnotations."ad.stackstate.com/victoria-metrics-0-server.init_configs" | string | `"[{}]"` |  |
-| victoriametrics.server.podAnnotations."ad.stackstate.com/victoria-metrics-0-server.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
-| victoriametrics.server.podLabels.stackstate-service | string | `"victoriametrics"` |  |
-| victoriametrics.server.resources.limits.cpu | int | `1` |  |
-| victoriametrics.server.resources.limits.memory | string | `"3584Mi"` |  |
-| victoriametrics.server.resources.requests.cpu | string | `"200m"` |  |
-| victoriametrics.server.resources.requests.memory | string | `"3584Mi"` |  |
-| victoriametrics.server.retentionPeriod | int | `1` |  |
-| victoriametrics.server.scrape.enabled | bool | `false` |  |
-| victoriametrics.server.securityContext.fsGroup | int | `65534` |  |
-| victoriametrics.server.securityContext.runAsGroup | int | `65534` |  |
-| victoriametrics.server.securityContext.runAsUser | int | `65534` |  |
-| victoriametrics.server.serviceMonitor.enabled | bool | `false` |  |
-| victoriametrics.server.serviceMonitor.extraLabels | object | `{}` |  |
-| victoriametrics.server.serviceMonitor.interval | string | `"15s"` |  |
+| victoria-metrics-0.enabled | bool | `true` |  |
+| victoria-metrics-0.rbac.namespaced | bool | `true` |  |
+| victoria-metrics-0.rbac.pspEnabled | bool | `false` |  |
+| victoria-metrics-0.server.affinity | object | `{}` |  |
+| victoria-metrics-0.server.extraArgs."dedup.minScrapeInterval" | string | `"1ms"` |  |
+| victoria-metrics-0.server.extraArgs.maxLabelsPerTimeseries | int | `35` |  |
+| victoria-metrics-0.server.fullnameOverride | string | `"stackstate-victoria-metrics-0"` | Full name override |
+| victoria-metrics-0.server.image.tag | string | `"v1.87.2"` |  |
+| victoria-metrics-0.server.persistentVolume.size | string | `"60Gi"` |  |
+| victoria-metrics-0.server.podAnnotations."ad.stackstate.com/victoria-metrics-0-server.check_names" | string | `"[\"openmetrics\"]"` |  |
+| victoria-metrics-0.server.podAnnotations."ad.stackstate.com/victoria-metrics-0-server.init_configs" | string | `"[{}]"` |  |
+| victoria-metrics-0.server.podAnnotations."ad.stackstate.com/victoria-metrics-0-server.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
+| victoria-metrics-0.server.podLabels.stackstate-service | string | `"victoriametrics"` |  |
+| victoria-metrics-0.server.resources.limits.cpu | int | `1` |  |
+| victoria-metrics-0.server.resources.limits.memory | string | `"3584Mi"` |  |
+| victoria-metrics-0.server.resources.requests.cpu | string | `"200m"` |  |
+| victoria-metrics-0.server.resources.requests.memory | string | `"3584Mi"` |  |
+| victoria-metrics-0.server.retentionPeriod | int | `1` |  |
+| victoria-metrics-0.server.scrape.enabled | bool | `false` |  |
+| victoria-metrics-0.server.securityContext.fsGroup | int | `65534` |  |
+| victoria-metrics-0.server.securityContext.runAsGroup | int | `65534` |  |
+| victoria-metrics-0.server.securityContext.runAsUser | int | `65534` |  |
+| victoria-metrics-0.server.serviceMonitor.enabled | bool | `false` |  |
+| victoria-metrics-0.server.serviceMonitor.extraLabels | object | `{}` |  |
+| victoria-metrics-0.server.serviceMonitor.interval | string | `"15s"` |  |
+| victoria-metrics-1.enabled | bool | `false` |  |
+| victoria-metrics-1.rbac.namespaced | bool | `true` |  |
+| victoria-metrics-1.rbac.pspEnabled | bool | `false` |  |
+| victoria-metrics-1.server | object | `{"affinity":{},"extraArgs":{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":35},"fullnameOverride":"stackstate-victoria-metrics-1","image":{"tag":"v1.87.2"},"persistentVolume":{"size":"60Gi"},"podAnnotations":{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"},"podLabels":{"stackstate-service":"victoriametrics"},"resources":{"limits":{"cpu":1,"memory":"3584Mi"},"requests":{"cpu":"200m","memory":"3584Mi"}},"retentionPeriod":1,"scrape":{"enabled":false},"securityContext":{"fsGroup":65534,"runAsGroup":65534,"runAsUser":65534},"serviceMonitor":{"enabled":false,"extraLabels":{},"interval":"15s"}}` | Annotations for Victoria Metrics server pod |
+| victoria-metrics-1.server.affinity | object | `{}` | Affinity settings for Victoria Metrics pod |
+| victoria-metrics-1.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":35}` | Extra arguments for Victoria Metrics |
+| victoria-metrics-1.server.fullnameOverride | string | `"stackstate-victoria-metrics-1"` | Full name override |
+| victoria-metrics-1.server.persistentVolume.size | string | `"60Gi"` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
+| victoria-metrics-1.server.retentionPeriod | int | `1` | How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1) |
+| victoria-metrics-1.server.scrape.enabled | bool | `false` | StackState doesn't use the scraping of VictoriaMetrics |
+| victoria-metrics-1.server.securityContext | object | `{"fsGroup":65534,"runAsGroup":65534,"runAsUser":65534}` | Custom security context settings for running as non-root |
+| victoria-metrics-1.server.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` |
+| victoria-metrics-1.server.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
+| victoria-metrics-1.server.serviceMonitor.interval | string | `"15s"` | Scrape interval for service monitor |
 | zookeeper.commonLabels."app.kubernetes.io/part-of" | string | `"stackstate"` |  |
 | zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
 | zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |

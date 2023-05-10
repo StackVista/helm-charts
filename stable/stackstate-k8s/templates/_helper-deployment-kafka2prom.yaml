@@ -6,7 +6,7 @@ env:
 {{- $serviceConfig := dict "ServiceName" "kafka2prom" "ServiceConfig" .Values.stackstate.components.kafka2prom }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 - name: PROMETHEUS_WRITE_ENDPOINT
-  value: {{ include "stackstate.metrics.remotewrite.url" . | replace "$VM" .vmInstance | quote }}
+  value: {{ include "stackstate.metrics.remotewrite.url" . | replace "$vmInstance" .vmInstance | quote }}
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
 - name: KAFKA_CLIENT_ID
@@ -14,7 +14,7 @@ env:
     fieldRef:
       fieldPath: metadata.name
 - name: KAFKA_GROUP_ID
-  value: {{ include "stackstate.metrics.kafka2PromGroupId" . | replace "$VM" .vmInstance | quote }}
+  value: {{ include "stackstate.metrics.kafka2PromGroupId" . | replace "$vmInstance" .vmInstance | quote }}
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.kafka2prom.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.kafka2prom.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.kafka2prom.image.pullPolicy | quote }}
 livenessProbe:
@@ -50,7 +50,7 @@ command:
 - sh
 - -c
 - |
-  /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackstate.metrics.remoteWriteEndpoint" . | replace "$VM" .vmInstance }} -t 300
+  /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackstate.metrics.remoteWriteEndpoint" . | replace "$vmInstance" .vmInstance }} -t 300
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
 imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
 {{- end -}}

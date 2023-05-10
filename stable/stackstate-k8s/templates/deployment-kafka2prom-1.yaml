@@ -1,4 +1,4 @@
-{{- if and .Values.stackstate.experimental.metrics .Values.victoriametrics.ha }}
+{{- if and .Values.stackstate.experimental.metrics (index .Values "victoria-metrics-1" "enabled") }}
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 {{- $kafka2promDeployment := fromYaml (include "stackstate.kafka2prom.deployment" (merge (dict "vmInstance" "1") .)) -}}
 {{- toYaml (merge $kafka2promDeployment $commonDeployment) -}}
