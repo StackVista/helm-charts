@@ -113,6 +113,7 @@ spec:
         {{- include "stackstate.server.secret.checksum" . | nindent 8 }}
       labels:
         app.kubernetes.io/component: server
+        stackstate.com/connects-to-stackgraph: "true"
     spec:
       serviceAccountName: {{ template "common.fullname.short" . }}-server
       {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}

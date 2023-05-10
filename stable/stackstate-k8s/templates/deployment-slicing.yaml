@@ -109,6 +109,7 @@ spec:
         {{- include "stackstate.slicing.secret.checksum" . | nindent 8 }}
       labels:
         app.kubernetes.io/component: slicing
+        stackstate.com/connects-to-stackgraph: "true"
     spec:
       serviceAccountName: {{ template "common.fullname.short" . }}-slicing
       {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
