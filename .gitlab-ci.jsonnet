@@ -165,7 +165,7 @@ local push_chart_job(chart, repository_url, repository_username, repository_pass
     repository_password,
     [
       {
-        @'if': '$CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"',
+        @'if': '$CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\\[publish-k8s-agent]/',
         changes: ['stable/stackstate-k8s-agent/**/*'],
         when: 'on_success',
       },

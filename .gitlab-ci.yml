@@ -73,7 +73,7 @@ push_artifactory-cleaner_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/artifactory-cleaner/**/*
@@ -96,7 +96,7 @@ push_artifactory-cleaner_to_public:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/artifactory-cleaner/**/*
@@ -117,7 +117,7 @@ push_aws-amicleaner_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/aws-amicleaner/**/*
@@ -138,7 +138,7 @@ push_aws-nuke_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/aws-nuke/**/*
@@ -159,7 +159,7 @@ push_aws-pod-identity-webhook_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/aws-pod-identity-webhook/**/*
@@ -180,7 +180,7 @@ push_beacher-job_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/beacher-job/**/*
@@ -201,7 +201,7 @@ push_chartmuseum_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/chartmuseum/**/*
@@ -222,7 +222,7 @@ push_common_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/common/**/*
@@ -245,7 +245,7 @@ push_common_to_public:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/common/**/*
@@ -266,7 +266,7 @@ push_elasticsearch_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/elasticsearch/**/*
@@ -289,7 +289,7 @@ push_elasticsearch_to_public:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/elasticsearch/**/*
@@ -310,7 +310,7 @@ push_gitlab-steward_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/gitlab-steward/**/*
@@ -331,7 +331,7 @@ push_hbase_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/hbase/**/*
@@ -354,7 +354,7 @@ push_hbase_to_public:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/hbase/**/*
@@ -375,7 +375,7 @@ push_helm-reaper_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/helm-reaper/**/*
@@ -396,7 +396,7 @@ push_iceman_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/iceman/**/*
@@ -417,7 +417,7 @@ push_k8s-spot-termination-handler_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/k8s-spot-termination-handler/**/*
@@ -438,7 +438,7 @@ push_kafkaup-operator_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/kafkaup-operator/**/*
@@ -461,7 +461,7 @@ push_kafkaup-operator_to_public:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/kafkaup-operator/**/*
@@ -482,7 +482,7 @@ push_kommoner-operator_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/kommoner-operator/**/*
@@ -503,7 +503,7 @@ push_minio_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/minio/**/*
@@ -526,7 +526,7 @@ push_minio_to_public:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/minio/**/*
@@ -547,7 +547,7 @@ push_petros-d-kubelet-stats-exporter_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
@@ -568,7 +568,7 @@ push_pull-secret_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/pull-secret/**/*
@@ -591,7 +591,7 @@ push_pull-secret_to_public:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/pull-secret/**/*
@@ -612,7 +612,7 @@ push_receiveramplifier_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/receiveramplifier/**/*
@@ -633,7 +633,7 @@ push_sandbox-operator_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/sandbox-operator/**/*
@@ -654,7 +654,7 @@ push_sock-shop_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/sock-shop/**/*
@@ -675,7 +675,7 @@ push_stackstate-agent_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/stackstate-agent/**/*
@@ -698,7 +698,7 @@ push_stackstate-agent_to_public:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/stackstate-agent/**/*
@@ -719,7 +719,7 @@ push_stackstate-k8s-agent_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/stackstate-k8s-agent/**/*
@@ -742,7 +742,7 @@ push_stackstate-k8s-agent_to_public:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/stackstate-k8s-agent/**/*
@@ -775,7 +775,7 @@ push_stackstate-k8s_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/stackstate-k8s/**/*
@@ -811,7 +811,7 @@ push_stackstate-k8s_to_public:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/stackstate-k8s/**/*
@@ -833,7 +833,7 @@ push_stackstate-monitoring_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/stackstate-monitoring/**/*
@@ -856,7 +856,7 @@ push_stackstate-monitoring_to_public:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/stackstate-monitoring/**/*
@@ -877,7 +877,7 @@ push_stackstate-standalone_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/stackstate-standalone/**/*
@@ -900,7 +900,7 @@ push_stackstate-standalone_to_public:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/stackstate-standalone/**/*
@@ -993,7 +993,7 @@ push_stackstate_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/stackstate/**/*
@@ -1041,7 +1041,7 @@ push_trafficmirror_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/trafficmirror/**/*
@@ -1064,7 +1064,7 @@ push_trafficmirror_to_public:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/trafficmirror/**/*
