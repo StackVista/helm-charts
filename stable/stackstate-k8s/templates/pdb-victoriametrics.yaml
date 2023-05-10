@@ -1,0 +1,18 @@
+{{- define "stackstate.victoriametrics.poddisruptionbudget" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-victoriametrics
+  labels:
+    app.kubernetes.io/component: victoriametrics
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      stackstate-service: victoriametrics
+  maxUnavailable: 1
+{{- end -}}
+
+{{- if and .Values.stackstate.experimental.metrics (index .Values "victoria-metrics-0" "enabled") (index .Values "victoria-metrics-1" "enabled") }}
+{{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
+{{- $victoriaMetricsServiceSpecPdb := fromYaml (include "stackstate.victoriametrics.poddisruptionbudget" .) -}}
+{{- toYaml (merge $victoriaMetricsServiceSpecPdb $commonPdb) -}}
+{{- end -}}
