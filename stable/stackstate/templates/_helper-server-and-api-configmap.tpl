@@ -3,9 +3,38 @@ Shared settings in configmap for server and api
 */}}
 {{- define "stackstate.configmap.server-and-api" }}
 
-{{- if .Values.stackstate.authentication }}
+{{- if and .Values.stackstate.authentication (eq .Values.stackstate.deployment.mode "SelfHosted") }}
 {{- include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.authentication "authnPrefix" "stackstate.api.authentication" "authzPrefix" "stackstate.authorization" "global" .) }}
+{{/* In SelfHosted mode, append any roles to the stackstate.authorization block, so that we keep the defaults delivered with stackstate. */}}
+{{ $admins := list }}
+{{- if index .Values "anomaly-detection" "enabled" }}
+{{ $admins = append $admins "stackstate-aad" }}
 {{- end }}
+{{- range  .Values.stackstate.authentication.roles.admin }}
+{{ $admins = append $admins . }}
+{{- end }}
+{{- range $admins }}
+stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.viewPermissions} }
+{{- end }}
+
+{{- range .Values.stackstate.authentication.roles.platformAdmin }}
+stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-platform-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-platform-admin.viewPermissions} }
+{{- end }}
+
+{{- range .Values.stackstate.authentication.roles.powerUser }}
+stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-power-user.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-power-user.viewPermissions} }
+{{- end }}
+
+{{- range .Values.stackstate.authentication.roles.guest }}
+stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.viewPermissions} }
+{{- end }}
+{{- else }}
+{{/* In SaaS mode, the stackstate.authorization block will be ignored and we will overwrite the reference to it from the stackstate.api.authorization */}}
+stackstate.api.authorization: {}
+stackstate.api.authorization.staticSubjects.stackstate-k8s-troubleshooter: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter.viewPermissions} }
+{{- include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.authentication "authnPrefix" "stackstate.api.authentication" "authzPrefix" "stackstate.api.authorization" "global" .) }}
+{{- end }}
+
 {{- if gt (len .Values.stackstate.admin.authentication) 1 }}
 {{- include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.admin.authentication "authnPrefix" "stackstate.adminApi.authentication" "authzPrefix" "stackstate.adminApi.authorization" "global" .) }}
 {{- end }}
@@ -187,31 +216,6 @@ for production this should be replaced with one of the other mechanisms.
 {{- end }}
 
 {{ $authnPrefix }}.sessionLifetime =  {{ $apiAuth.sessionLifetime | toJson }}
-
-{{ $admins := list }}
-{{- if index $global.Values "anomaly-detection" "enabled" }}
-{{ $admins = append $admins "stackstate-aad" }}
-{{- end }}
-{{- if $apiAuth.roles.admin }}
-{{- range  $apiAuth.roles.admin }}
-{{ $admins = append $admins . }}
-{{- end }}
-{{- end }}
-{{- range $admins }}
-{{ $authzPrefix }}.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.viewPermissions} }
-{{- end }}
-
-{{- range $apiAuth.roles.platformAdmin }}
-{{ $authzPrefix }}.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-platform-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-platform-admin.viewPermissions} }
-{{- end }}
-
-{{- range $apiAuth.roles.powerUser }}
-{{ $authzPrefix }}.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-power-user.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-power-user.viewPermissions} }
-{{- end }}
-
-{{- range $apiAuth.roles.guest }}
-{{ $authzPrefix }}.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.viewPermissions} }
-{{- end }}
 
 {{- range $k, $v := $apiAuth.roles.custom }}
 {{ $authzPrefix }}.staticSubjects.{{ $k }}: { systemPermissions: {{ $v.systemPermissions }}, viewPermissions: {{ $v.viewPermissions }} }

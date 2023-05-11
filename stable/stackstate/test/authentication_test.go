@@ -201,6 +201,26 @@ func TestAuthenticationRolesUndefinedAdminSplit(t *testing.T) {
 	})
 }
 
+func TestNoAuthenticationRolesSaaS(t *testing.T) {
+	RunSecretsConfigTestF(t, "stackstate-server", []string{"values/authentication_saas_noroles.yaml", "values/split_disabled.yaml"}, func(stringData string) {
+		// check that the stackstate-k8s-troubleshooter role is added
+		require.Contains(t, stringData, "stackstate-k8s-troubleshooter")
+		require.NotContains(t, stringData, "stackstate-aad")
+	})
+}
+
+func TestIgnoredAuthenticationRolesSaaS(t *testing.T) {
+	RunSecretsConfigTestF(t, "stackstate-server", []string{"values/authentication_saas_noroles.yaml", "values/split_disabled.yaml"}, func(stringData string) {
+		// check that the stackstate-k8s-troubleshooter role is added
+		require.Contains(t, stringData, "stackstate-k8s-troubleshooter")
+		require.NotContains(t, stringData, "stackstate-aad")
+		require.NotContains(t, stringData, "extra-admin")
+		require.NotContains(t, stringData, "guest1")
+		require.NotContains(t, stringData, "extra-platform-admin")
+		require.NotContains(t, stringData, "extra-power-user")
+	})
+}
+
 func TestAuthenticationRoles(t *testing.T) {
 	RunSecretsConfigTestF(t, "stackstate-server", []string{"values/authentication_roles.yaml", "values/split_disabled.yaml"}, func(stringData string) {
 		// check that the roles are added
