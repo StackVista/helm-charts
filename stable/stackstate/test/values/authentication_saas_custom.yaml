@@ -1,0 +1,46 @@
+stackstate:
+  authentication:
+    roles:
+      custom: {
+        stackstate-k8s-admin: {
+          systemPermissions: [
+            "create-views",
+            "access-analytics",
+            "execute-scripts",
+            "read-settings",
+            "update-settings",
+            "import-settings",
+            "export-settings",
+            "manage-topology-elements",
+            "access-cli",
+            "access-explore",
+            "update-visualization",
+            "perform-custom-query",
+            "read-permissions",
+            "manage-star-view",
+            "read-stackpacks",
+            "manage-stackpacks",
+            "execute-component-templates",
+            "access-topic-data",
+            "access-log-data",
+            "access-synchronization-data",
+            "execute-node-sync",
+            "read-telemetry-streams",
+            "manage-telemetry-streams",
+            "execute-component-actions",
+            "manage-annotations",
+            "manage-event-handlers",
+            "manage-monitors",
+            "run-monitors",
+            "read-metrics",
+            "update-permissions",
+            "upload-stackpacks",
+            "execute-restricted-scripts",
+            "manage-service-tokens"
+          ],
+          viewPermissions: [ "access-view", "save-view", "delete-view" ]
+
+        }
+      }
+  deployment:
+    mode: "SaaS"

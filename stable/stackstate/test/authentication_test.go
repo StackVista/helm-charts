@@ -221,6 +221,14 @@ func TestIgnoredAuthenticationRolesSaaS(t *testing.T) {
 	})
 }
 
+func TestCustomAuthenticationRolesSaaS(t *testing.T) {
+	RunSecretsConfigTestF(t, "stackstate-server", []string{"values/authentication_saas_custom.yaml", "values/split_disabled.yaml"}, func(stringData string) {
+		// check that the stackstate-k8s-troubleshooter role is added
+		require.Contains(t, stringData, "stackstate-k8s-troubleshooter")
+		require.Contains(t, stringData, "stackstate-k8s-admin")
+	})
+}
+
 func TestAuthenticationRoles(t *testing.T) {
 	RunSecretsConfigTestF(t, "stackstate-server", []string{"values/authentication_roles.yaml", "values/split_disabled.yaml"}, func(stringData string) {
 		// check that the roles are added
