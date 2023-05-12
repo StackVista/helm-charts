@@ -17,8 +17,6 @@ spec:
   type: ClusterIP
 {{- end -}}
 
-{{- if .Values.stackstate.experimental.metrics }}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $kafka2promMultiMetricsToEsService := fromYaml (include "stackstate.kafka2prom.service" .) -}}
 {{- toYaml (merge $kafka2promMultiMetricsToEsService $commonService) -}}
-{{- end -}}

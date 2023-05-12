@@ -131,10 +131,8 @@ Environment variables containing the properly sanitized StackState Base URLs
 Environment variables containing the properly sanitized StackState Base URLs
 */}}
 {{- define "stackstate.metricstore.envvar" }}
-{{- if .Values.stackstate.experimental.metrics }}
 - name: METRICSTORE_URI
   value: "{{ include "stackstate.metrics.query.url" . }}"
-{{- end }}
 {{- end -}}
 
 {{/*

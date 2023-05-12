@@ -11,7 +11,7 @@ spec:
   maxUnavailable: 1
 {{- end -}}
 
-{{- if and .Values.stackstate.experimental.metrics (index .Values "victoria-metrics-0" "enabled") (index .Values "victoria-metrics-1" "enabled") }}
+{{- if and (index .Values "victoria-metrics-0" "enabled") (index .Values "victoria-metrics-1" "enabled") }}
 {{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
 {{- $victoriaMetricsServiceSpecPdb := fromYaml (include "stackstate.victoriametrics.poddisruptionbudget" .) -}}
 {{- toYaml (merge $victoriaMetricsServiceSpecPdb $commonPdb) -}}

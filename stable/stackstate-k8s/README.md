@@ -298,9 +298,9 @@ stackstate/stackstate
 | stackstate.components.all.image.tag | string | `"5.2.0-snapshot.20230418194708-master-8e8d8b7"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metricStore.kafka2PromGroupId | string | `"kafka-to-prom-$vmInstance"` | Kafka consumer group ID of kafka2prom writing to the metric store ($vmInstance is replaced by '0' or '1') |
-| stackstate.components.all.metricStore.queryApiEndpoint | string | `"stackstate-stackstate-k8s-victoriametrics:8428"` | **Required if `stackstate.experimental.metrics` is `true`** Host and port for promql api |
+| stackstate.components.all.metricStore.queryApiEndpoint | string | `"stackstate-stackstate-k8s-victoriametrics:8428"` | Host and port for promql api |
 | stackstate.components.all.metricStore.queryApiPath | string | `""` | Path under which `/api/v1/query` etc.. are accessible, the default ("") is fine for most stores |
-| stackstate.components.all.metricStore.remoteWriteEndpoint | string | `"stackstate-victoria-metrics-$vmInstance:8428"` | **Required if `stackstate.experimental.metrics` is `true`** Host and port for prometheus remote write endpoint ($vmInstance is replaced by '0' or '1') |
+| stackstate.components.all.metricStore.remoteWriteEndpoint | string | `"stackstate-victoria-metrics-$vmInstance:8428"` | Host and port for prometheus remote write endpoint ($vmInstance is replaced by '0' or '1') |
 | stackstate.components.all.metricStore.remoteWritePath | string | `"/api/v1/write"` | Remote write path used to ingest metrics, /api/v1/write is most common |
 | stackstate.components.all.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | stackstate.components.all.metrics.defaultAgentMetricsFilter | string | `"[\"kafka_consumer_consumer_fetch_manager_metrics*\", \"kafka_producer_producer_topic_metrics*\", \"jvm*\", \"stackstate*\"]"` |  |
@@ -617,7 +617,6 @@ stackstate/stackstate
 | stackstate.deployment | object | `{"mode":"SelfHosted"}` | Deployment settings for StackState |
 | stackstate.deployment.mode | string | `"SelfHosted"` | Deployment mode of StackState, possible values are 'SaaS' and 'SelfHosted' |
 | stackstate.experimental.disableMultimetrics | boolean | `true` | Disable writing and storage of the old multimetrics format, this will break streams and checks, monitors and metric bindings use the new metrics |
-| stackstate.experimental.metrics | boolean | `true` | Enable the new experimental metrics apis and store |
 | stackstate.experimental.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |
 | stackstate.instanceApi.authentication | object | `{}` | Custom authentication settings for the `instance` API, by default the `stackstate.authentication` authentication settings are used. |
 | stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStorePassword":null}` | Extra Java configuration for StackState |

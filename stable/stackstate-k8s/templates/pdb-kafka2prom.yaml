@@ -1,4 +1,2 @@
-{{- if .Values.stackstate.experimental.metrics }}
 {{- $valuesPdb := dict "PdbName" "kafka2prom" "PdbBudget" .Values.stackstate.components.kafka2prom.poddisruptionbudget -}}
 {{- (include "stackstate.service.poddisruptionbudget" (merge $valuesPdb .) ) -}}
-{{- end -}}

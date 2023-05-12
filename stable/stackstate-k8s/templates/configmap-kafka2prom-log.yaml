@@ -6,8 +6,6 @@ data:
 {{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "INFO" "AdditionalLogging" .Values.stackstate.components.kafka2prom.additionalLogging) .) | nindent 4 -}}
 {{- end -}}
 
-{{- if .Values.stackstate.experimental.metrics }}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $stackstateKafka2promLogConfigMap := fromYaml (include "stackstate.kafka2prom.configmap-log" .) -}}
 {{- toYaml (merge $stackstateKafka2promLogConfigMap $commonConfigMap) -}}
-{{- end -}}

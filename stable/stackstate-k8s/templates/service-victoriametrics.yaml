@@ -16,9 +16,7 @@ spec:
   type: ClusterIP
 {{- end -}}
 
-{{- if .Values.stackstate.experimental.metrics }}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $noSelectorService := set $commonService "spec" (omit (get $commonService "spec") "selector") -}}
 {{- $victoriaMetricsService := fromYaml (include "stackstate.victoriametrics.service" .) -}}
 {{- toYaml (merge $victoriaMetricsService $noSelectorService) -}}
-{{- end -}}

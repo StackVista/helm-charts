@@ -13,7 +13,7 @@ spec:
   {{ include "stackstate.servicemonitor.extraLabels" . | nindent 2 }}
 {{- end -}}
 
-{{- if and ( .Values.stackstate.components.all.metrics.enabled ) ( .Values.stackstate.components.all.metrics.servicemonitor.enabled ) (.Values.stackstate.experimental.metrics) }}
+{{- if and ( .Values.stackstate.components.all.metrics.enabled ) ( .Values.stackstate.components.all.metrics.servicemonitor.enabled ) }}
 {{- $commonServiceMonitor := fromYaml (include "common.servicemonitor" .) -}}
 {{- $Kafka2PromServiceMonitor := fromYaml (include "stackstate.kafka2prom.servicemonitor" .) -}}
 {{- toYaml (merge $Kafka2PromServiceMonitor $commonServiceMonitor) -}}
