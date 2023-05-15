@@ -36,10 +36,10 @@ stackstate.api.authorization.staticSubjects.stackstate-k8s-troubleshooter: { sys
 {{- end }}
 
 {{- if gt (len .Values.stackstate.admin.authentication) 1 }}
-{{- include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.admin.authentication "authnPrefix" "stackstate.adminApi.authentication" "authzPrefix" "stackstate.adminApi.authorization" "global" .) }}
+{{ include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.admin.authentication "authnPrefix" "stackstate.adminApi.authentication" "authzPrefix" "stackstate.adminApi.authorization" "global" .) }}
 {{- end }}
 {{- if .Values.stackstate.instanceApi.authentication }}
-{{- include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.instanceApi.authentication "authnPrefix" "stackstate.instanceApi.authentication" "authzPrefix" "stackstate.instanceApi.authorization" "global" .) }}
+{{ include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.instanceApi.authentication "authnPrefix" "stackstate.instanceApi.authentication" "authzPrefix" "stackstate.instanceApi.authorization" "global" .) }}
 {{- end }}
 
 {{- with .Values.stackstate.stackpacks.installed }}
@@ -215,7 +215,7 @@ for production this should be replaced with one of the other mechanisms.
 {{- fail "More than 1 authentication mechanism specified. Please configure only one from: keycloak, oidc or ldap. If none are configured the default admin user will be made available with the stackstate.authentication.adminPassword." -}}
 {{- end }}
 
-{{ $authnPrefix }}.sessionLifetime =  {{ $apiAuth.sessionLifetime | toJson }}
+{{ $authnPrefix }}.sessionLifetime =  {{ $apiAuth.sessionLifetime | default "7d" | toJson }}
 
 {{- range $k, $v := $apiAuth.roles.custom }}
 {{ $authzPrefix }}.staticSubjects.{{ $k }}: { systemPermissions: {{ $v.systemPermissions }}, viewPermissions: {{ $v.viewPermissions }} }
@@ -233,4 +233,4 @@ for production this should be replaced with one of the other mechanisms.
 {{- $authTypes = append $authTypes "k8sServiceAccountAuthServer" }}
 {{ $authnPrefix }}.authServer.authServerType = [ {{- $authTypes | compact | join ", " -}} ]
 
-{{- end -}}
+{{- end }}
