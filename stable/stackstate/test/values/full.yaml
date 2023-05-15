@@ -7,8 +7,9 @@ stackstate:
         pullSecretUsername: "test"
         pullSecretPassword: "secret"
       metricStore:
-        remoteWriteEndpoint: "test:8148"
+        remoteWriteEndpoint: "test-$vmInstance:8148"
         queryApiEndpoint: "test:8148"
+        kafka2promGroupId: "kafka-to-prom-test-$vmInstance"
     server:
       java:
         trustStorePassword: "secretTrustStorePassword"
@@ -28,4 +29,6 @@ hbase:
 anomaly-detection:
   enabled: true
 backup:
+  enabled: true
+victoria-metrics-1:
   enabled: true

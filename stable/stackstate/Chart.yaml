@@ -59,4 +59,9 @@ dependencies:
     alias: victoria-metrics-0
     version: "0.8.53"
     repository: https://victoriametrics.github.io/helm-charts
-    condition: stackstate.experimental.metrics
+    condition: and stackstate.experimental.metrics victoria-metrics-0.enabled
+  - name: victoria-metrics-single
+    alias: victoria-metrics-1
+    version: "0.8.53"
+    repository: https://victoriametrics.github.io/helm-charts
+    condition: and stackstate.experimental.metrics victoria-metrics-1.enabled

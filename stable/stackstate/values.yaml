@@ -202,14 +202,16 @@ stackstate:
       # stackstate.components.all.elasticsearchEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster.
       elasticsearchEndpoint: ""
       metricStore:
-        # stackstate.components.all.metricStore.remoteWriteEndpoint -- **Required if `stackstate.experimental.metrics` is `true`** Host and port for prometheus remote write endpoint
-        remoteWriteEndpoint: "stackstate-victoria-metrics-0:8428"
+        # stackstate.components.all.metricStore.remoteWriteEndpoint -- **Required if `stackstate.experimental.metrics` is `true`** Host and port for prometheus remote write endpoint ($vmInstance is replaced by '0' or '1')
+        remoteWriteEndpoint: "stackstate-victoria-metrics-$vmInstance:8428"
         # stackstate.components.all.metricStore.remoteWritePath -- Remote write path used to ingest metrics, /api/v1/write is most common
         remoteWritePath: "/api/v1/write"
         # stackstate.components.all.metricStore.queryApiEndpoint -- **Required if `stackstate.experimental.metrics` is `true`** Host and port for promql api
-        queryApiEndpoint: "stackstate-victoria-metrics-0:8428"
+        queryApiEndpoint: "stackstate-victoriametrics:8428"
         # stackstate.components.all.metricStore.queryApiPath -- Path under which `/api/v1/query` etc.. are accessible, the default ("") is fine for most stores
         queryApiPath: ""
+        # stackstate.components.all.metricStore.kafka2PromGroupId -- **Required if `stackstate.experimental.metrics` is `true`** Kafka consumer group ID of kafka2prom writing to the metric store ($vmInstance is replaced by '0' or '1')
+        kafka2PromGroupId: "kafka-to-prom-$vmInstance"
       # stackstate.components.all.kafkaEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker.
       kafkaEndpoint: ""
       # stackstate.components.all.zookeeperEndpoint -- **Required if `zookeeper.enabled` is `false`** Endpoint for shared Zookeeper nodes.
@@ -1625,16 +1627,85 @@ pull-secret:
   # pull-secret.credentials -- Registry and assotiated credentials (username, password) that will be stored in the pull-secret
   credentials: []
 victoria-metrics-0:
+  enabled: true
   rbac:
-    # victoria-metrics-1.server.pspEnabled -- Pod Security Policy has been deprecated and even removed from 1.25, we're not going to use it anymore
+    # victoria-metrics-0.pspEnabled -- Pod Security Policy has been deprecated and even removed from 1.25, we're not going to use it anymore
     pspEnabled: false
-    # victoria-metrics-1.server.namespaced -- Make sure all resources are namespaced
+    # victoria-metrics-0.namespaced -- Make sure all resources are namespaced
     namespaced: true
   server:
+    # victoria-metrics-0.server.fullnameOverride -- Full name override
+    fullnameOverride: stackstate-victoria-metrics-0
     image:
       # 1.87.x is the LTS version
       tag: "v1.87.2"
-    # victoria-metrics-1.server -- Annotations for Victoria Metrics server pod
+    # victoria-metrics-0.server.podAnnotations -- Annotations for Victoria Metrics server pod
+    podAnnotations:
+      ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
+      ad.stackstate.com/victoria-metrics-0-server.init_configs: "[{}]"
+      ad.stackstate.com/victoria-metrics-0-server.instances: '[ { "prometheus_url": "http://%%host%%:8428/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
+    # victoria-metrics-0.server.affinity -- Affinity settings for Victoria Metrics pod
+    affinity: {}
+    # podAntiAffinity:
+    #   preferredDuringSchedulingIgnoredDuringExecution:
+    #   - podAffinityTerm:
+    #       labelSelector:
+    #         matchLabels:
+    #           app.kubernetes.io/name: victoria-metrics-single
+    #           app: server
+    #       namespaces:
+    #       - <the-namespace>
+    #       topologyKey: kubernetes.io/hostname
+    #     weight: 1
+    # victoria-metrics-0.server.podLabels -- Extra labels for Victoria Metrics pod
+    podLabels:
+      stackstate-service: victoriametrics
+    # victoria-metrics-0.server.extraArgs -- Extra arguments for Victoria Metrics
+    extraArgs:
+      dedup.minScrapeInterval: 1ms
+      maxLabelsPerTimeseries: 35
+    persistentVolume:
+      # victoria-metrics-0.server.persistentVolume.size -- Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times
+      size: 60Gi
+    # victoria-metrics-0.server.retentionPeriod -- How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1)
+    retentionPeriod: 1
+    # victoria-metrics-1.server.resources - CPU/Memory requests and limits
+    resources:
+      requests:
+        cpu: 200m
+        memory: 3584Mi
+      limits:
+        memory: 3584Mi
+        cpu: 1
+    scrape:
+      # victoria-metrics-0.server.scrape.enabled -- StackState doesn't use the scraping of VictoriaMetrics
+      enabled: false
+    # victoria-metrics-0.server.securityContext -- Custom security context settings for running as non-root
+    securityContext:
+      runAsUser: 65534
+      runAsGroup: 65534
+      fsGroup: 65534
+    serviceMonitor:
+      # victoria-metrics-0.server.serviceMonitor.enabled -- If `true`, creates a Prometheus Operator `ServiceMonitor`
+      enabled: false
+      # victoria-metrics-0.server.serviceMonitor.interval -- Scrape interval for service monitor
+      interval: 15s
+      # victoria-metrics-0.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
+      extraLabels: {}
+victoria-metrics-1:
+  enabled: false
+  rbac:
+    # victoria-metrics-1.pspEnabled -- Pod Security Policy has been deprecated and even removed from 1.25, we're not going to use it anymore
+    pspEnabled: false
+    # victoria-metrics-1.namespaced -- Make sure all resources are namespaced
+    namespaced: true
+  server:
+    # victoria-metrics-1.server.fullnameOverride -- Full name override
+    fullnameOverride: stackstate-victoria-metrics-1
+    image:
+      # 1.87.x is the LTS version
+      tag: "v1.87.2"
+    # victoria-metrics-1.server.podAnnotations -- Annotations for Victoria Metrics server pod
     podAnnotations:
       ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
       ad.stackstate.com/victoria-metrics-0-server.init_configs: "[{}]"
@@ -1652,12 +1723,13 @@ victoria-metrics-0:
     #       - <the-namespace>
     #       topologyKey: kubernetes.io/hostname
     #     weight: 1
+    # victoria-metrics-1.server.podLabels -- Extra arguments for Victoria Metrics pod
+    podLabels:
+      stackstate-service: victoriametrics
     # victoria-metrics-1.server.extraArgs -- Extra arguments for Victoria Metrics
     extraArgs:
       dedup.minScrapeInterval: 1ms
       maxLabelsPerTimeseries: 35
-    # victoria-metrics-1.server.fullnameOverride -- Full name override
-    fullnameOverride: stackstate-victoria-metrics-0
     persistentVolume:
       # victoria-metrics-1.server.persistentVolume.size -- Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times
       size: 60Gi
