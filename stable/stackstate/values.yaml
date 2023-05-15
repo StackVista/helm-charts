@@ -1105,7 +1105,7 @@ stackstate:
     # stackstate.receiver.baseUrl -- (string) **DEPRECATED** Use stackstate.baseUrl instead
     baseUrl:
   experimental:
-    # stackstate.experimental.metrics -- (boolean) Enable the new experimental metrics apis and store
+    # stackstate.experimental.metrics -- (boolean) Enable the new experimental metrics apis
     metrics: true
     # stackstate.experimental.disableMultimetrics -- (boolean) Disable writing and storage of the old multimetrics format, this will break streams and checks, monitors and metric bindings use the new metrics
     disableMultimetrics: false
@@ -1627,6 +1627,7 @@ pull-secret:
   # pull-secret.credentials -- Registry and assotiated credentials (username, password) that will be stored in the pull-secret
   credentials: []
 victoria-metrics-0:
+  # victoria-metrics-0.enabled -- **Required if `stackstate.experimental.metrics` is `true`** (boolean) Enable the new metrics store
   enabled: true
   rbac:
     # victoria-metrics-0.pspEnabled -- Pod Security Policy has been deprecated and even removed from 1.25, we're not going to use it anymore
@@ -1669,7 +1670,7 @@ victoria-metrics-0:
       size: 60Gi
     # victoria-metrics-0.server.retentionPeriod -- How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1)
     retentionPeriod: 1
-    # victoria-metrics-1.server.resources - CPU/Memory requests and limits
+    # victoria-metrics-0.server.resources - CPU/Memory requests and limits
     resources:
       requests:
         cpu: 200m
@@ -1693,6 +1694,7 @@ victoria-metrics-0:
       # victoria-metrics-0.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
       extraLabels: {}
 victoria-metrics-1:
+  # victoria-metrics-1.enabled -- **Required if `stackstate.experimental.metrics` is `true`** (boolean) Enable HA for the new metrics store
   enabled: false
   rbac:
     # victoria-metrics-1.pspEnabled -- Pod Security Policy has been deprecated and even removed from 1.25, we're not going to use it anymore

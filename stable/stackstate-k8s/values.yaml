@@ -1675,7 +1675,7 @@ victoria-metrics-0:
       size: 60Gi
     # victoria-metrics-0.server.retentionPeriod -- How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1)
     retentionPeriod: 1
-    # victoria-metrics-1.server.resources - CPU/Memory requests and limits
+    # victoria-metrics-0.server.resources - CPU/Memory requests and limits
     resources:
       requests:
         cpu: 200m
