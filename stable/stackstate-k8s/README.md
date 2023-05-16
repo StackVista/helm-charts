@@ -298,7 +298,7 @@ stackstate/stackstate
 | stackstate.components.all.image.tag | string | `"5.2.0-snapshot.20230418194708-master-8e8d8b7"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metricStore.kafka2PromGroupId | string | `"kafka-to-prom-$vmInstance"` | Kafka consumer group ID of kafka2prom writing to the metric store ($vmInstance is replaced by '0' or '1') |
-| stackstate.components.all.metricStore.queryApiEndpoint | string | `"stackstate-stackstate-k8s-victoriametrics:8428"` | Host and port for promql api |
+| stackstate.components.all.metricStore.queryApiEndpoint | string | `"stackstate-victoriametrics:8428"` | Host and port for promql api |
 | stackstate.components.all.metricStore.queryApiPath | string | `""` | Path under which `/api/v1/query` etc.. are accessible, the default ("") is fine for most stores |
 | stackstate.components.all.metricStore.remoteWriteEndpoint | string | `"stackstate-victoria-metrics-$vmInstance:8428"` | Host and port for prometheus remote write endpoint ($vmInstance is replaced by '0' or '1') |
 | stackstate.components.all.metricStore.remoteWritePath | string | `"/api/v1/write"` | Remote write path used to ingest metrics, /api/v1/write is most common |
