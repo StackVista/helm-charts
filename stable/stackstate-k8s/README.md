@@ -424,7 +424,7 @@ stackstate/stackstate
 | stackstate.components.kafka2prom.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.kafka2prom.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `kafka2prom` pods. |
 | stackstate.components.kafka2prom.replicaCount | int | `1` | Number of `kafka2prom` replicas. |
-| stackstate.components.kafka2prom.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"1Gi"},"requests":{"cpu":"300m","ephemeral-storage":"1Mi","memory":"1Gi"}}` | Resource allocation for `kafka2prom` pods. |
+| stackstate.components.kafka2prom.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"1500Mi"},"requests":{"cpu":"300m","ephemeral-storage":"1Mi","memory":"1500Mi"}}` | Resource allocation for `kafka2prom` pods. |
 | stackstate.components.kafka2prom.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
 | stackstate.components.kafka2prom.sizing.javaHeapMemoryFraction | string | `"50"` |  |
 | stackstate.components.kafka2prom.tolerations | list | `[]` | Toleration labels for pod assignment. |

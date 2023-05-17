@@ -454,11 +454,11 @@ stackstate:
       # stackstate.components.kafka2prom.resources -- Resource allocation for `kafka2prom` pods.
       resources:
         limits:
-          memory: "1Gi"
+          memory: "1500Mi"
           cpu: "1000m"
           ephemeral-storage: "1Gi"
         requests:
-          memory: "1Gi"
+          memory: "1500Mi"
           cpu: "300m"
           ephemeral-storage: "1Mi"
       sizing:
