@@ -127,20 +127,31 @@
   {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
   - name: customcrisocket
     mountPath: {{ .Values.nodeAgent.containerRuntime.customSocketPath }}
+    readOnly: true
   {{- end }}
   - name: crisocket
     mountPath: /var/run/crio/crio.sock
+    readOnly: true
   - name: containerdsocket
     mountPath: /var/run/containerd/containerd.sock
-  - name: sys-kernel-debug
-    mountPath: /sys/kernel/debug
+    readOnly: true
+  - name: kubelet
+    mountPath: /var/lib/kubelet
+    readOnly: true
+  - name: nfs
+    mountPath: /var/lib/nfs
+    readOnly: true
   - name: dockersocket
     mountPath: /var/run/docker.sock
+    readOnly: true
+  - name: dockernetns
+    mountPath: /run/docker/netns
+    readOnly: true
+  - name: dockeroverlay2
+    mountPath: /var/lib/docker/overlay2
+    readOnly: true
   - name: procdir
     mountPath: /host/proc
-    readOnly: true
-  - name: passwd
-    mountPath: /etc/passwd
     readOnly: true
   - name: cgroups
     mountPath: /host/sys/fs/cgroup
@@ -150,8 +161,9 @@
   - name: config-override-volume
     mountPath: {{ .path }}/{{ .name }}
     subPath: {{ .path | replace "/" "_"}}_{{ .name }}
+    readOnly: true
   {{- end }}
   {{- end }}
   securityContext:
-    privileged: true
+    privileged: false
 {{- end -}}

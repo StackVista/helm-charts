@@ -111,6 +111,8 @@ spec:
           - containerPort: 5555
             name: healthport
             protocol: TCP
+          securityContext:
+            privileged: false
         {{- with .Values.checksAgent.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
@@ -118,11 +120,13 @@ spec:
           volumeMounts:
           - name: confd-empty-volume
             mountPath: /etc/stackstate-agent/conf.d
+            readOnly: true
           {{- if .Values.checksAgent.config.override }}
           {{- range .Values.checksAgent.config.override }}
           - name: config-override-volume
             mountPath: {{ .path }}/{{ .name }}
             subPath: {{ .path | replace "/" "_"}}_{{ .name }}
+            readOnly: true
           {{- end }}
           {{- end }}
       {{- if .Values.checksAgent.priorityClassName }}

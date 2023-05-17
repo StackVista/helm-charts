@@ -59,6 +59,18 @@ spec:
         name: customcrisocket
     {{- end }}
       - hostPath:
+          path: /var/lib/kubelet
+        name: kubelet
+      - hostPath:
+          path: /var/lib/nfs
+        name: nfs
+      - hostPath:
+          path: /var/lib/docker/overlay2
+        name: dockeroverlay2
+      - hostPath:
+          path: /run/docker/netns
+        name: dockernetns
+      - hostPath:
           path: /var/run/crio/crio.sock
         name: crisocket
       - hostPath:

@@ -45,6 +45,8 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: "spec.nodeName"
+          securityContext:
+            privileged: false
         {{- with .Values.logsAgent.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
@@ -52,10 +54,12 @@ spec:
           volumeMounts:
             - name: logs
               mountPath: /var/log
+              readOnly: true
             - name: logs-agent-config
               mountPath: /etc/promtail
-            - mountPath: /var/lib/docker/containers
-              name: varlibdockercontainers
+              readOnly: true
+            - name: varlibdockercontainers
+              mountPath: /var/lib/docker/containers
               readOnly: true
       {{- if .Values.logsAgent.priorityClassName }}
       priorityClassName: {{ .Values.logsAgent.priorityClassName }}

@@ -89,6 +89,8 @@ spec:
                 name: {{ include "stackstate-k8s-agent.fullname" . }}
                 key: {{ $key }}
           {{- end }}
+          securityContext:
+            privileged: false
         {{- with .Values.clusterAgent.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
@@ -102,16 +104,19 @@ spec:
           - name: config-override-volume
             mountPath: /etc/stackstate-agent/conf.d/kubernetes_api_topology.d/conf.yaml
             subPath: kubernetes_api_topology_conf
+            readOnly: true
           {{- if .Values.clusterAgent.collection.kubeStateMetrics.enabled }}
           - name: config-override-volume
             mountPath: /etc/stackstate-agent/conf.d/kubernetes_state_core.d/conf.yaml
             subPath: kube_state_metrics_core_conf
+            readOnly: true
           {{- end }}
           {{- if .Values.clusterAgent.config.override }}
           {{- range .Values.clusterAgent.config.override }}
           - name: config-override-volume
             mountPath: {{ .path }}/{{ .name }}
             subPath: {{ .path | replace "/" "_"}}_{{ .name }}
+            readOnly: true
           {{- end }}
           {{- end }}
       nodeSelector:
