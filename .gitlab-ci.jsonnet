@@ -157,7 +157,7 @@ local push_chart_job_if(chart, repository_url, repository_username, repository_p
   },
 } + skip_when_dependency_upgrade;
 
-local push_chart_job(chart, repository_url, repository_username, repository_password, when) =
+local push_chart_job(chart, repository_url, repository_username, repository_password, when, autoTriggerOnCommitMsg) =
   push_chart_job_if(
     chart,
     repository_url,
@@ -165,8 +165,8 @@ local push_chart_job(chart, repository_url, repository_username, repository_pass
     repository_password,
     [
       {
-        @'if': '$CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\\[publish-k8s-agent]/',
-        changes: ['stable/stackstate-k8s-agent/**/*'],
+        @'if': '$CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\\[' + autoTriggerOnCommitMsg + ']/',
+        changes: ['stable/' + chart + '/**/*'],
         when: 'on_success',
       },
       {
@@ -216,7 +216,8 @@ local push_charts_to_internal_jobs = {
       '${CHARTMUSEUM_INTERNAL_URL}',
 '${CHARTMUSEUM_INTERNAL_USERNAME}',
 '${CHARTMUSEUM_INTERNAL_PASSWORD}',
-'on_success') + {
+'on_success',
+ if chart == 'stackstate-k8s-agent' then 'publish-k8s-agent' else 'publish-' + chart) + {
     stage: 'push-charts-to-internal',
   } + (
     if chart == 'stackstate' || chart == 'stackstate-k8s' then
@@ -231,7 +232,8 @@ local push_charts_to_public_jobs = {
       '${CHARTMUSEUM_URL}',
 '${CHARTMUSEUM_USERNAME}',
 '${CHARTMUSEUM_PASSWORD}',
-'manual') + {
+'manual',
+if chart == 'stackstate-k8s-agent' then 'publish-k8s-agent' else 'publish-' + chart) + {
     stage: 'push-charts-to-public',
 
     needs: ['push_%s_to_internal' % chart],
