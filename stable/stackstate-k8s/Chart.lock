@@ -10,7 +10,7 @@ dependencies:
   version: 0.4.23
 - name: elasticsearch
   repository: file://../elasticsearch/
-  version: 7.17.2-stackstate.6
+  version: 8.5.1-stackstate.1
 - name: hbase
   repository: file://../hbase/
   version: 0.1.153
@@ -35,5 +35,5 @@ dependencies:
 - name: victoria-metrics-single
   repository: https://victoriametrics.github.io/helm-charts
   version: 0.8.53
-digest: sha256:65811cdf1858b1cea6facaa95592a9f2c6f748e93f354fc5cde5e33a28af2904
-generated: "2023-05-10T15:52:34.776084549+02:00"
+digest: sha256:debef520886fcad5e35b80010838699590e5895c4ea39f30a41b926cd9c54070
+generated: "2023-05-23T11:48:29.734923796Z"
