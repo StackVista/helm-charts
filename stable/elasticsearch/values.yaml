@@ -30,7 +30,7 @@ esConfig: {}
 #  log4j2.properties: |
 #    key = value
 
-createCert: true
+createCert: false
 
 # Extra environment variables to append to this nodeGroup
 # This will be appended to the current 'env:' key. You can use any of the kubernetes env
@@ -41,7 +41,7 @@ extraEnvs: []
 
 # Disable it to use your own elastic-credential Secret.
 secret:
-  enabled: true
+  enabled: false
   password: "" # generated randomly if not defined
 
 # A list of secrets and their paths to mount inside the pod
@@ -162,7 +162,7 @@ nodeAffinity: {}
 # the same time when bootstrapping the cluster
 podManagementPolicy: "Parallel"
 
-protocol: https
+protocol: http
 httpPort: 9200
 transportPort: 9300
 
