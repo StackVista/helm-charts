@@ -22,8 +22,10 @@ Official Elastic helm chart for Elasticsearch
 |-----|------|---------|-------------|
 | antiAffinity | string | `"hard"` |  |
 | antiAffinityTopologyKey | string | `"kubernetes.io/hostname"` |  |
+| clusterHealthCheckParams | string | `"local=true"` |  |
 | clusterName | string | `"elasticsearch"` |  |
 | commonLabels | object | `{}` |  |
+| createCert | bool | `true` |  |
 | esConfig | object | `{}` |  |
 | esJavaOpts | string | `"-Xmx1g -Xms1g"` |  |
 | esMajorVersion | string | `""` |  |
@@ -86,7 +88,7 @@ Official Elastic helm chart for Elasticsearch
 | prometheus-elasticsearch-exporter.podAnnotations | object | `{}` | custom annotations on the pod |
 | prometheus-elasticsearch-exporter.securityContext.enabled | bool | `true` | Set to `false` for OpenShift compatibility |
 | prometheus-elasticsearch-exporter.servicemonitor.enabled | bool | `false` | enable to create a servicemonitor for prometheus operator |
-| protocol | string | `"http"` |  |
+| protocol | string | `"https"` |  |
 | rbac.create | bool | `false` |  |
 | rbac.serviceAccountName | string | `""` |  |
 | readinessProbe.failureThreshold | int | `5` |  |
@@ -99,10 +101,12 @@ Official Elastic helm chart for Elasticsearch
 | resources.limits.memory | string | `"2Gi"` |  |
 | resources.requests.cpu | string | `"1000m"` |  |
 | resources.requests.memory | string | `"2Gi"` |  |
-| roles.data | string | `"true"` |  |
-| roles.ingest | string | `"true"` |  |
-| roles.master | string | `"true"` |  |
+| roles[0] | string | `"master"` |  |
+| roles[1] | string | `"ingest"` |  |
+| roles[2] | string | `"data"` |  |
 | schedulerName | string | `""` |  |
+| secret.enabled | bool | `true` |  |
+| secret.password | string | `""` |  |
 | secretMounts | list | `[]` |  |
 | securityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | securityContext.enabled | bool | `true` |  |

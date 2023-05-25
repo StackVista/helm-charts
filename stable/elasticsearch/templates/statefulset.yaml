@@ -1,3 +1,68 @@
+{{- define "elasticsearch.probe" -}}
+exec:
+  command:
+    - bash
+    - -c
+    - |
+      set -e
+
+      # Exit if ELASTIC_PASSWORD in unset
+      if [ -z "${ELASTIC_PASSWORD}" ]; then
+        echo "ELASTIC_PASSWORD variable is missing, exiting"
+        exit 1
+      fi
+
+      # If the node is starting up wait for the cluster to be ready (request params: "{{ .Values.clusterHealthCheckParams }}" )
+      # Once it has started only check that the node itself is responding
+      START_FILE=/tmp/.es_start_file
+
+      # Disable nss cache to avoid filling dentry cache when calling curl
+      # This is required with Elasticsearch Docker using nss < 3.52
+      export NSS_SDB_USE_CACHE=no
+
+      http () {
+        local path="${1}"
+        local args="${2}"
+        set -- -XGET -s
+
+        if [ "$args" != "" ]; then
+          set -- "$@" $args
+        fi
+
+        set -- "$@" -u "elastic:${ELASTIC_PASSWORD}"
+
+        curl --output /dev/null -k "$@" "{{ .Values.protocol }}://127.0.0.1:{{ .Values.httpPort }}${path}"
+      }
+
+      if [ -f "${START_FILE}" ]; then
+        echo 'Elasticsearch is already running, lets check the node is healthy'
+        HTTP_CODE=$(http "/" "-w %{http_code}")
+        RC=$?
+        if [[ ${RC} -ne 0 ]]; then
+          echo "curl --output /dev/null -k -XGET -s -w '%{http_code}' \${BASIC_AUTH} {{ .Values.protocol }}://127.0.0.1:{{ .Values.httpPort }}/ failed with RC ${RC}"
+          exit ${RC}
+        fi
+        # ready if HTTP code 200, 503 is tolerable if ES version is 6.x
+        if [[ ${HTTP_CODE} == "200" ]]; then
+          exit 0
+        elif [[ ${HTTP_CODE} == "503" && "{{ include "elasticsearch.esMajorVersion" . }}" == "6" ]]; then
+          exit 0
+        else
+          echo "curl --output /dev/null -k -XGET -s -w '%{http_code}' \${BASIC_AUTH} {{ .Values.protocol }}://127.0.0.1:{{ .Values.httpPort }}/ failed with HTTP code ${HTTP_CODE}"
+          exit 1
+        fi
+
+      else
+        echo 'Waiting for elasticsearch cluster to become ready (request params: "{{ .Values.clusterHealthCheckParams }}" )'
+        if http "/_cluster/health?{{ .Values.clusterHealthCheckParams }}" "--fail" ; then
+          touch ${START_FILE}
+          exit 0
+        else
+          echo 'Cluster is not yet ready (request params: "{{ .Values.clusterHealthCheckParams }}" )'
+          exit 1
+        fi
+      fi
+{{- end -}}
 ---
 apiVersion: {{ template "elasticsearch.statefulset.apiVersion" . }}
 kind: StatefulSet
@@ -122,6 +187,11 @@ spec:
           configMap:
             name: {{ template "elasticsearch.uname" . }}-config
         {{- end }}
+        {{- if .Values.createCert }}
+        - name: elasticsearch-certs
+          secret:
+           secretName: {{ template "elasticsearch.uname" . }}-certs
+        {{- end }}
 {{- if .Values.keystore }}
         - name: keystore
           emptyDir: {}
@@ -151,10 +221,9 @@ spec:
         image: "{{ include "elasticsearch.imageRegistry" . }}/{{ .Values.imageRepository }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         command:
-        - sh
+        - bash
         - -c
         - |
-          #!/usr/bin/env bash
           set -euo pipefail
 
           elasticsearch-keystore create
@@ -194,14 +263,10 @@ spec:
         image: "{{ include "elasticsearch.imageRegistry" . }}/{{ .Values.imageRepository }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         readinessProbe:
-          httpGet:
-            path: /_cluster/health?local=true
-            port: http
+{{ include "elasticsearch.probe" . | nindent 10 }}
 {{ toYaml .Values.readinessProbe | indent 10 }}
         livenessProbe:
-          httpGet:
-            path: /_cluster/health?local=true
-            port: http
+{{ include "elasticsearch.probe" . | nindent 10 }}
 {{ toYaml .Values.livenessProbe | indent 10 }}
         ports:
         - name: http
@@ -215,14 +280,13 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.name
-          {{- if eq .Values.roles.master "true" }}
-          {{- if ge (int (include "elasticsearch.esMajorVersion" .)) 7 }}
+          {{- if has "master" .Values.roles }}
           - name: cluster.initial_master_nodes
             value: "{{ template "elasticsearch.endpoints" . }}"
-          {{- else }}
-          - name: discovery.zen.minimum_master_nodes
-            value: "{{ .Values.minimumMasterNodes }}"
           {{- end }}
+          {{- if gt (len (include "elasticsearch.roles" .)) 0 }}
+          - name: node.roles
+            value: "{{ template "elasticsearch.roles" . }}"
           {{- end }}
           {{- if lt (int (include "elasticsearch.esMajorVersion" .)) 7 }}
           - name: discovery.zen.ping.unicast.hosts
@@ -235,11 +299,36 @@ spec:
             value: "{{ .Values.clusterName }}"
           - name: network.host
             value: "{{ .Values.networkHost }}"
+          {{- if .Values.secret.enabled }}
+          - name: ELASTIC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "elasticsearch.uname" . }}-credentials
+                key: password
+          {{- end }}
           - name: ES_JAVA_OPTS
             value: "{{ .Values.esJavaOpts }}"
-          {{- range $role, $enabled := .Values.roles }}
-          - name: node.{{ $role }}
-            value: "{{ $enabled }}"
+          {{- if .Values.createCert }}
+          - name: xpack.security.enabled
+            value: "true"
+          - name: xpack.security.transport.ssl.enabled
+            value: "true"
+          - name: xpack.security.http.ssl.enabled
+            value: "true"
+          - name: xpack.security.transport.ssl.verification_mode
+            value: "certificate"
+          - name: xpack.security.transport.ssl.key
+            value: "/usr/share/elasticsearch/config/certs/tls.key"
+          - name: xpack.security.transport.ssl.certificate
+            value: "/usr/share/elasticsearch/config/certs/tls.crt"
+          - name: xpack.security.transport.ssl.certificate_authorities
+            value: "/usr/share/elasticsearch/config/certs/ca.crt"
+          - name: xpack.security.http.ssl.key
+            value: "/usr/share/elasticsearch/config/certs/tls.key"
+          - name: xpack.security.http.ssl.certificate
+            value: "/usr/share/elasticsearch/config/certs/tls.crt"
+          - name: xpack.security.http.ssl.certificate_authorities
+            value: "/usr/share/elasticsearch/config/certs/ca.crt"
           {{- end }}
 {{- if .Values.extraEnvs }}
 {{ toYaml .Values.extraEnvs | indent 10 }}
@@ -248,6 +337,11 @@ spec:
           {{- if .Values.persistence.enabled }}
           - name: data
             mountPath: /usr/share/elasticsearch/data
+          {{- end }}
+          {{- if .Values.createCert }}
+          - name: elasticsearch-certs
+            mountPath: /usr/share/elasticsearch/config/certs
+            readOnly: true
           {{- end }}
 {{ if .Values.keystore }}
           - name: keystore
@@ -270,7 +364,7 @@ spec:
 {{ tpl .Values.extraVolumeMounts . | indent 10 }}
         {{- end }}
       {{- if .Values.masterTerminationFix }}
-      {{- if eq .Values.roles.master "true" }}
+      {{- if has "master" .Values.roles }}
       # This sidecar will prevent slow master re-election
       # https://github.com/elastic/helm-charts/issues/63
       - name: elasticsearch-master-graceful-termination-handler
