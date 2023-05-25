@@ -42,7 +42,8 @@ extraEnvs: []
 # Disable it to use your own elastic-credential Secret.
 secret:
   enabled: false
-  password: "" # generated randomly if not defined
+  # generated randomly if not defined
+  password: ""
 
 # A list of secrets and their paths to mount inside the pod
 # This is useful for mounting certificates for security and for mounting
