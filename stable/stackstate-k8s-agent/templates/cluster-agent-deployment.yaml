@@ -46,6 +46,12 @@ spec:
               secretKeyRef:
                 name: {{ include "stackstate-k8s-agent.fullname" . }}
                 key: sts-cluster-auth-token
+          - name: KUBERNETES_HOSTNAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: STS_HOSTNAME
+            value: "$(KUBERNETES_HOSTNAME)-{{ .Values.stackstate.cluster.name}}"
           - name: LOG_LEVEL
             value: {{ .Values.clusterAgent.logLevel | quote }}
           {{- if .Values.checksAgent.enabled }}
