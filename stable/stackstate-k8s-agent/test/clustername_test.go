@@ -26,8 +26,11 @@ func TestClusterNameValidation(t *testing.T) {
 		{"not allowed end with special character [-]", "name.", false},
 		{"not allowed start with special character [-]", "-name", false},
 		{"not allowed start with special character [.]", ".name", false},
-		{"special characters are allowed in the middle", "euwest1-prod.cool-company.com", true},
-		{"underscore is allowed everywhere", "_why_7_", true},
+		{"upper case is not allowed", "Euwest1-prod.cool-company.com", false},
+		{"upper case is not allowed", "euwest1-PROD.cool-company.com", false},
+		{"upper case is not allowed", "euwest1-prod.cool-company.coM", false},
+		{"dots and dashes are allowed in the middle", "euwest1-prod.cool-company.com", true},
+		{"underscore is not allowed", "why_7", false},
 	}
 
 	for _, testCase := range testCases {
