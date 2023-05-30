@@ -175,3 +175,20 @@ does not expand variables within the JAVA_OPTS anymore
 {{- end }}
 - -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy
 {{- end -}}
+
+{{/*
+Volume for transaction logs
+*/}}
+{{- define "stackstate.service.transactionLog.volume" -}}
+- name: application-log
+  persistentVolumeClaim:
+    claimName: {{ template "common.fullname.short" .root }}-{{ .pod_name }}-txlog
+{{- end -}}
+
+{{/*
+VolumeMount for transaction logs
+*/}}
+{{- define "stackstate.service.transactionLog.volumeMount" -}}
+- name: application-log
+  mountPath: /opt/docker/logs
+{{- end -}}

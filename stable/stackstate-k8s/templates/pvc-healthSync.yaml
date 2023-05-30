@@ -1,0 +1,16 @@
+{{- define "stackstate.health-sync.persistentvolumeclaim.txLog" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-health-sync-txlog
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.stackstate.experimental.storeTransactionLogsToPVC.volumeSize }}
+{{- end -}}
+
+{{- if .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled }}
+{{- $commonPVC := fromYaml (include "common.persistentvolumeclaim" .) -}}
+{{- $stackstateHealthSyncPVCTxLog := fromYaml (include "stackstate.health-sync.persistentvolumeclaim.txLog" .) -}}
+{{- toYaml (merge $stackstateHealthSyncPVCTxLog $commonPVC) -}}
+{{- end -}}

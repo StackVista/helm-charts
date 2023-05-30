@@ -585,3 +585,18 @@ command:
 - '-c'
 - 'kubectl get pod {{ template "common.fullname.short" . }}-server-0 --ignore-not-found && while (kubectl get pod {{ template "common.fullname.short" . }}-server-0 ) ; do echo "Waiting for {{ template "common.fullname.short" . }}-server-0 pod to terminate"; sleep 1; done'
 {{- end -}}
+
+{{/*
+Clean up the directory containing the transaction logs.
+*/}}
+{{- define "stackstate.initContainer.cleanTransactionLogsDirectory" -}}
+name: clean-transaction-logs-directory
+image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
+imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
+command:
+- '/bin/bash'
+- '-c'
+- 'rm -Rf /opt/docker/logs/*'
+volumeMounts:
+{{ include "stackstate.service.transactionLog.volumeMount" . }}
+{{- end -}}
