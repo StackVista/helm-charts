@@ -618,6 +618,8 @@ stackstate/stackstate
 | stackstate.experimental.disableMultimetrics | boolean | `false` | Disable writing and storage of the old multimetrics format, this will break streams and checks, monitors and metric bindings use the new metrics |
 | stackstate.experimental.metrics | boolean | `true` | Enable the new experimental metrics apis |
 | stackstate.experimental.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |
+| stackstate.experimental.storeTransactionLogsToPVC.enabled | boolean | `false` | Whether the transcation logs for some services, API, Checks, HealthSync, ProblemProducer,State, Sync, and ViewHealth, have to be stored to PVCs instead of pod ephemeral storage. |
+| stackstate.experimental.storeTransactionLogsToPVC.volumeSize | string | `"600Mi"` | The size of the persistent volume for the transaction logs. |
 | stackstate.instanceApi.authentication | object | `{}` | Custom authentication settings for the `instance` API, by default the `stackstate.authentication` authentication settings are used. |
 | stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
