@@ -1134,7 +1134,7 @@ elasticsearch:
   # elasticsearch.enabled -- Enable / disable chart-based Elasticsearch.
   enabled: true
   # elasticsearch.esJavaOpts -- JVM options
-  esJavaOpts: "-Xmx3g -Xms3g -Des.allow_insecure_settings=true"
+  esJavaOpts: "-Xmx3g -Xms3g -Des.allow_insecure_settings=true -Xlog:disable -Xlog:gc*,gc+age=trace,safepoint:file=logs/gc.log:utctime,pid,tags:filecount=8,filesize=16m"
   # elasticsearch.commonLabels -- Add additional labels to all resources created for elasticsearch
   commonLabels:
     app.kubernetes.io/part-of: stackstate
