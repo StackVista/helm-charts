@@ -41,7 +41,7 @@ Official Elastic helm chart for Elasticsearch
 | imagePullSecrets | list | `[]` |  |
 | imageRegistry | string | `"quay.io"` |  |
 | imageRepository | string | `"stackstate/elasticsearch"` |  |
-| imageTag | string | `"8.7.1-4331727506"` |  |
+| imageTag | string | `"8.7.1-b59930e2"` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.enabled | bool | `false` |  |
 | ingress.hosts[0] | string | `"chart-example.local"` |  |
