@@ -45,7 +45,6 @@ func TestSplitServicesJavaHeapRender(t *testing.T) {
 	expectedDeployments["stackstate-k8s-api"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1750m -Xmx1750m -Xms1750m"}
 	expectedDeployments["stackstate-k8s-checks"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1400m -Xmx2100m -Xms2100m"}
 	expectedDeployments["stackstate-k8s-state"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=510m -Xmx1190m -Xms1190m"}
-	expectedDeployments["stackstate-k8s-problem-producer"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=340m -Xmx1360m -Xms1360m"}
 	expectedDeployments["stackstate-k8s-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1240m -Xmx1860m -Xms1860m"}
 	expectedDeployments["stackstate-k8s-slicing"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=520m -Xmx780m -Xms780m"}
 	expectedDeployments["stackstate-k8s-view-health"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1035m -Xmx1265m -Xms1265m"}

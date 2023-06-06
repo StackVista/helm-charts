@@ -303,13 +303,6 @@ checksum/healthSync-env: {{ include (print $.Template.BasePath "/secret-healthSy
 {{- end -}}
 
 {{/*
-ProblemProducer secret checksum annotations
-*/}}
-{{- define "stackstate.problemProducer.secret.checksum" -}}
-checksum/problemProducer-env: {{ include (print $.Template.BasePath "/secret-problemProducer.yaml") . | sha256sum }}
-{{- end -}}
-
-{{/*
 Router configmap checksum annotations
 */}}
 {{- define "stackstate.router.configmap.checksum" -}}
@@ -377,13 +370,6 @@ HealthSync configmap checksum annotations
 */}}
 {{- define "stackstate.healthSync.configmap.checksum" -}}
 checksum/healthSync-configmap: {{ include (print $.Template.BasePath "/configmap-healthSync.yaml") . | sha256sum }}
-{{- end -}}
-
-{{/*
-ProblemProducer configmap checksum annotations
-*/}}
-{{- define "stackstate.problemProducer.configmap.checksum" -}}
-checksum/problemProducer-configmap: {{ include (print $.Template.BasePath "/configmap-problemProducer.yaml") . | sha256sum }}
 {{- end -}}
 
 {{/*

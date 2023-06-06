@@ -930,47 +930,6 @@ stackstate:
       config: ""
       # stackstate.components.viewHealth.additionalLogging -- Additional logback config
       additionalLogging: ""
-    problemProducer:
-      extraEnv:
-        # stackstate.components.problemProducer.extraEnv.open -- Extra open environment variables to inject into pods.
-        open: {}
-        # stackstate.components.problemProducer.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
-        secret: {}
-      image:
-        # stackstate.components.problemProducer.image.pullPolicy -- `pullPolicy` used for the `problemProducer` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
-        pullPolicy: ""
-        # stackstate.components.problemProducer.image.repository -- Repository of the problemProducer component Docker image.
-        repository: stackstate/stackstate-server
-        # stackstate.components.problemProducer.image.tag -- Tag used for the `problemProducer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: ""
-      # stackstate.components.problemProducer.poddisruptionbudget -- PodDisruptionBudget settings for `problemProducer` pods.
-      poddisruptionbudget:
-        maxUnavailable: 1
-      # stackstate.components.problemProducer.resources -- Resource allocation for `problemProducer` pods.
-      resources:
-        limits:
-          cpu: "1000m"
-          memory: "2000Mi"
-          ephemeral-storage: "1Gi"
-        requests:
-          cpu: "500m"
-          memory: "2000Mi"
-          ephemeral-storage: "1Mi"
-      sizing:
-        baseMemoryConsumption: "300Mi"
-        javaHeapMemoryFraction: "80"
-      # stackstate.components.problemProducer.replicaCount -- Number of `problemProducer` replicas.
-      replicaCount: 1
-      # stackstate.components.problemProducer.nodeSelector -- Node labels for pod assignment.
-      nodeSelector: {}
-      # stackstate.components.problemProducer.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
-      # stackstate.components.problemProducer.affinity -- Affinity settings for pod assignment.
-      affinity: {}
-      # stackstate.components.problemProducer.config -- Configuration file contents to customize the default StackState problemProducer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
-      config: ""
-      # stackstate.components.problemProducer.additionalLogging -- Additional logback config
-      additionalLogging: ""
     kafkaTopicCreate:
       image:
         # stackstate.components.kafkaTopicCreate.image.registry -- Base container image registry for kafka-topic-create containers.

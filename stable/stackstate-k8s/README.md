@@ -459,21 +459,6 @@ stackstate/stackstate
 | stackstate.components.nginxPrometheusExporter.image.registry | string | `"quay.io"` | Base container image registry for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.repository | string | `"stackstate/nginx-prometheus-exporter"` | Base container image repository for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.tag | string | `"0.9.0-2738682730"` | Container image tag for nginx-prometheus-exporter containers. |
-| stackstate.components.problemProducer.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.problemProducer.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.problemProducer.config | string | `""` | Configuration file contents to customize the default StackState problemProducer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
-| stackstate.components.problemProducer.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.problemProducer.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.problemProducer.image.pullPolicy | string | `""` | `pullPolicy` used for the `problemProducer` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.problemProducer.image.repository | string | `"stackstate/stackstate-server"` | Repository of the problemProducer component Docker image. |
-| stackstate.components.problemProducer.image.tag | string | `""` | Tag used for the `problemProducer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.problemProducer.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.problemProducer.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `problemProducer` pods. |
-| stackstate.components.problemProducer.replicaCount | int | `1` | Number of `problemProducer` replicas. |
-| stackstate.components.problemProducer.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `problemProducer` pods. |
-| stackstate.components.problemProducer.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
-| stackstate.components.problemProducer.sizing.javaHeapMemoryFraction | string | `"80"` |  |
-| stackstate.components.problemProducer.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.receiver.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.receiver.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.receiver.esDiskSpaceShare | string | `"30"` | How much disk space from ElasticSearch can use for k8s log ingestion |
