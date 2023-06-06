@@ -11,7 +11,7 @@ Current chart version is `5.2.0-snapshot.17`
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common/ | common | * |
-| file://../elasticsearch/ | elasticsearch | 8.5.1-stackstate.1 |
+| file://../elasticsearch/ | elasticsearch | 8.5.1-stackstate.2 |
 | file://../hbase/ | hbase | 0.1.153 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.8 |
