@@ -368,4 +368,4 @@ zookeeper:
     # zookeeper.image.repository -- ZooKeeper image repository
     repository: stackstate/zookeeper
     # zookeeper.image.tag -- ZooKeeper image tag
-    tag: 3.6.3-2738717608
+    tag: 3.6.3-d3a5efbc
