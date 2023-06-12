@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `1.0.18`
+Current chart version is `1.0.19`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -209,6 +209,7 @@ stackstate/stackstate-k8s-agent
 | nodeAgent.service.type | string | `"ClusterIP"` | Type of Kubernetes service: ClusterIP, LoadBalancer, NodePort |
 | nodeAgent.serviceaccount.annotations | object | `{}` | Annotations for the service account for the agent daemonset pods |
 | nodeAgent.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
+| nodeAgent.skipKubeletTLSVerify | bool | `false` | Set to true if you want to skip kubelet tls verification. |
 | nodeAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | nodeAgent.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":100},"type":"RollingUpdate"}` | The update strategy for the DaemonSet object. |
 | openShiftLogging.installSecret | bool | `false` | Install a secret for logging on openshift |
