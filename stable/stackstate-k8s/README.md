@@ -212,7 +212,7 @@ stackstate/stackstate
 | kafka.metrics.jmx.enabled | bool | `true` | Whether or not to expose JMX metrics to Prometheus. |
 | kafka.metrics.jmx.image.registry | string | `"quay.io"` | Kafka JMX exporter image registry |
 | kafka.metrics.jmx.image.repository | string | `"stackstate/jmx-exporter"` | Kafka JMX exporter image repository |
-| kafka.metrics.jmx.image.tag | string | `"0.17.0-e2740ece"` | Kafka JMX exporter image tag |
+| kafka.metrics.jmx.image.tag | string | `"0.17.0-00153388"` | Kafka JMX exporter image tag |
 | kafka.metrics.jmx.resources.limits.cpu | string | `"1"` |  |
 | kafka.metrics.jmx.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | kafka.metrics.jmx.resources.limits.memory | string | `"300Mi"` |  |

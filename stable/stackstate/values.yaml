@@ -1363,7 +1363,7 @@ kafka:
         # kafka.metrics.jmx.image.repository -- Kafka JMX exporter image repository
         repository: stackstate/jmx-exporter
         # kafka.metrics.jmx.image.tag -- Kafka JMX exporter image tag
-        tag: 0.17.0-e2740ece
+        tag: 0.17.0-00153388
       resources:
         limits:
           cpu: "1"
