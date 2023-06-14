@@ -29,6 +29,9 @@ spec:
         app.kubernetes.io/name: {{ include "stackstate-k8s-agent.name" . }}
     spec:
       {{- include "stackstate-k8s-agent.image.pullSecret.name" (dict "images" (list .Values.checksAgent.image) "context" $) | nindent 6 }}
+    {{- if .Values.all.hardening.enabled}}
+      terminationGracePeriodSeconds: 120
+    {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ include "stackstate-k8s-agent.imageRegistry" . }}/{{ .Values.checksAgent.image.repository }}:{{ .Values.checksAgent.image.tag }}"
@@ -117,8 +120,17 @@ spec:
           - containerPort: 5555
             name: healthport
             protocol: TCP
+        {{- if .Values.all.hardening.enabled}}
+          securityContext:
+            privileged: true
+            runAsUser: 0  # root
+            capabilities:
+              add: [ "ALL" ]
+            readOnlyRootFilesystem: false
+        {{- else }}
           securityContext:
             privileged: false
+        {{- end }}
         {{- with .Values.checksAgent.resources }}
           resources:
             {{- toYaml . | nindent 12 }}

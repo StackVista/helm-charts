@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `1.0.20`
+Current chart version is `1.0.21`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -45,6 +45,7 @@ stackstate/stackstate-k8s-agent
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| all.hardening.enabled | bool | `false` | An indication of whether the containers will be evaluated for hardening at runtime |
 | all.image.registry | string | `"quay.io"` | The image registry to use. |
 | checksAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | checksAgent.apm.enabled | bool | `true` | Enable / disable the agent APM module. |

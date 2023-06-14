@@ -172,6 +172,15 @@
     readOnly: true
   {{- end }}
   {{- end }}
+{{- if .Values.all.hardening.enabled}}
+  securityContext:
+    privileged: true
+    runAsUser: 0  # root
+    capabilities:
+      add: [ "ALL" ]
+    readOnlyRootFilesystem: false
+{{- else }}
   securityContext:
     privileged: false
+{{- end }}
 {{- end -}}

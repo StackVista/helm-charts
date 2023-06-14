@@ -31,6 +31,9 @@ spec:
       priorityClassName: {{ .Values.clusterAgent.priorityClassName }}
       {{- end }}
       serviceAccountName: {{ include "stackstate-k8s-agent.fullname" . }}
+    {{- if .Values.all.hardening.enabled}}
+      terminationGracePeriodSeconds: 120
+    {{- end }}
       containers:
         - name: cluster-agent
           image: "{{ include "stackstate-k8s-agent.imageRegistry" . }}/{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
@@ -95,8 +98,17 @@ spec:
                 name: {{ include "stackstate-k8s-agent.fullname" . }}
                 key: {{ $key }}
           {{- end }}
+        {{- if .Values.all.hardening.enabled}}
+          securityContext:
+            privileged: true
+            runAsUser: 0  # root
+            capabilities:
+              add: [ "ALL" ]
+            readOnlyRootFilesystem: false
+        {{- else }}
           securityContext:
             privileged: false
+        {{- end }}
         {{- with .Values.clusterAgent.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
