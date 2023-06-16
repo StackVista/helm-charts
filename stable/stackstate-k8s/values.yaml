@@ -1004,7 +1004,7 @@ stackstate:
         # stackstate.components.wait.image.repository -- Base container image repository for wait containers.
         repository: stackstate/wait
         # stackstate.components.wait.image.tag -- Container image tag for wait containers.
-        tag: 1.0.7-2755960650
+        tag: 1.0.8-a6ec1609
         # stackstate.components.wait.image.pullPolicy -- Image pull policy for wait containers.
         pullPolicy: IfNotPresent
   # stackstate.authentication -- Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error.
@@ -1442,7 +1442,7 @@ minio:
     registry: quay.io
     # minio.image.repository -- MinIO image repository
     repository: stackstate/minio
-    tag: RELEASE.2021-02-14T04-01-33Z-3118065624
+    tag: RELEASE.2021-02-14T04-01-33Z-709fe718
   # minio.accessKey -- Access key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
   accessKey: setme
   # minio.accessKey -- Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.

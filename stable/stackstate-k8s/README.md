@@ -12,7 +12,7 @@ Current chart version is `1.0.2-snapshot.1`
 |------------|------|---------|
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.5.1-stackstate.2 |
-| file://../hbase/ | hbase | 0.1.154 |
+| file://../hbase/ | hbase | 0.1.155 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.8 |
 | file://../pull-secret/ | pull-secret | * |
@@ -251,7 +251,7 @@ stackstate/stackstate
 | minio.fullnameOverride | string | `"stackstate-minio"` | **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components. |
 | minio.image.registry | string | `"quay.io"` | MinIO image registry |
 | minio.image.repository | string | `"stackstate/minio"` | MinIO image repository |
-| minio.image.tag | string | `"RELEASE.2021-02-14T04-01-33Z-3118065624"` |  |
+| minio.image.tag | string | `"RELEASE.2021-02-14T04-01-33Z-709fe718"` |  |
 | minio.persistence.enabled | bool | `false` | Enables MinIO persistence. Must be enabled when MinIO is not configured as a gateway to AWS S3 or Azure Blob Storage. |
 | minio.replicas | int | `1` | Number of MinIO replicas. |
 | minio.s3gateway.replicas | int | `1` |  |
@@ -598,7 +598,7 @@ stackstate/stackstate
 | stackstate.components.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | stackstate.components.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
-| stackstate.components.wait.image.tag | string | `"1.0.7-2755960650"` | Container image tag for wait containers. |
+| stackstate.components.wait.image.tag | string | `"1.0.8-a6ec1609"` | Container image tag for wait containers. |
 | stackstate.deployment | object | `{"mode":"SelfHosted"}` | Deployment settings for StackState |
 | stackstate.deployment.mode | string | `"SelfHosted"` | Deployment mode of StackState, possible values are 'SaaS' and 'SelfHosted' |
 | stackstate.experimental.disableMultimetrics | boolean | `true` | Disable writing and storage of the old multimetrics format, this will break streams and checks, monitors and metric bindings use the new metrics |
