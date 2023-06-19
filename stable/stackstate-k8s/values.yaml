@@ -1395,7 +1395,7 @@ kafka:
   topicRetention: "86400000"
   persistence:
     # kafka.persistence.size -- Size of persistent volume for each Kafka pod
-    size: 50Gi
+    size: 100Gi
   # kafka.commonLabels -- Add additional labels to all resources created for kafka
   commonLabels:
     app.kubernetes.io/part-of: stackstate
