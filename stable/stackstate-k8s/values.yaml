@@ -1636,7 +1636,7 @@ victoria-metrics-0:
       maxLabelsPerTimeseries: 35
     persistentVolume:
       # victoria-metrics-0.server.persistentVolume.size -- Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times
-      size: 60Gi
+      size: 250Gi
     # victoria-metrics-0.server.retentionPeriod -- How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1)
     retentionPeriod: 1
     # victoria-metrics-0.server.resources - CPU/Memory requests and limits
@@ -1702,7 +1702,7 @@ victoria-metrics-1:
       maxLabelsPerTimeseries: 35
     persistentVolume:
       # victoria-metrics-1.server.persistentVolume.size -- Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times
-      size: 60Gi
+      size: 250Gi
     # victoria-metrics-1.server.retentionPeriod -- How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1)
     retentionPeriod: 1
     # victoria-metrics-1.server.resources - CPU/Memory requests and limits
