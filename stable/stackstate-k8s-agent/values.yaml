@@ -84,14 +84,14 @@ nodeAgent:
       resources:
         limits:
           # nodeAgent.containers.agent.resources.limits.cpu -- CPU resource limits.
-          cpu: "400m"
+          cpu: "270m"
           # nodeAgent.containers.agent.resources.limits.cpu -- Memory resource limits.
-          memory: "256Mi"
+          memory: "420Mi"
         requests:
           # nodeAgent.containers.agent.resources.requests.cpu -- CPU resource requests.
-          cpu: "100m"
+          cpu: "20m"
           # nodeAgent.containers.agent.resources.requests.cpu -- Memory resource requests.
-          memory: "128Mi"
+          memory: "180Mi"
       livenessProbe:
         # nodeAgent.containers.agent.livenessProbe.enabled -- Enable use of livenessProbe check.
         enabled: true
@@ -140,12 +140,12 @@ nodeAgent:
       resources:
         limits:
           # nodeAgent.containers.processAgent.resources.limits.cpu -- CPU resource limits.
-          cpu: "400m"
+          cpu: "125m"
           # nodeAgent.containers.processAgent.resources.limits.cpu -- Memory resource limits.
-          memory: "768Mi"
+          memory: "400Mi"
         requests:
           # nodeAgent.containers.processAgent.resources.requests.cpu -- CPU resource requests.
-          cpu: "100m"
+          cpu: "25m"
           # nodeAgent.containers.processAgent.resources.requests.cpu -- Memory resource requests.
           memory: "128Mi"
   # nodeAgent.service -- The Kubernetes service for the agent
@@ -347,12 +347,12 @@ clusterAgent:
       # clusterAgent.resources.limits.cpu -- CPU resource limits.
       cpu: "400m"
       # clusterAgent.resources.limits.memory -- Memory resource limits.
-      memory: "1024Mi"
+      memory: "800Mi"
     requests:
       # clusterAgent.resources.requests.cpu -- CPU resource requests.
-      cpu: "100m"
+      cpu: "70m"
       # clusterAgent.resources.requests.memory -- Memory resource requests.
-      memory: "256Mi"
+      memory: "512Mi"
 
   # clusterAgent.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}
@@ -384,13 +384,15 @@ logsAgent:
 
   resources:
     limits:
+      # logsAgent.resources.limits.cpu -- CPU resource limits.
+      cpu: "1300m"
       # logsAgent.resources.limits.cpu -- Memory resource limits.
       memory: "192Mi"
     requests:
       # logsAgent.resources.requests.cpu -- CPU resource requests.
-      cpu: "50m"
+      cpu: "20m"
       # logsAgent.resources.requests.cpu -- Memory resource requests.
-      memory: "128Mi"
+      memory: "100Mi"
 
   # logsAgent.updateStrategy -- The update strategy for the DaemonSet object.
   updateStrategy:
@@ -487,12 +489,12 @@ checksAgent:
       # checksAgent.resources.limits.cpu -- CPU resource limits.
       cpu: "400m"
       # checksAgent.resources.limits.cpu -- Memory resource limits.
-      memory: "1024Mi"
+      memory: "600Mi"
     requests:
       # checksAgent.resources.requests.cpu -- CPU resource requests.
-      cpu: "100m"
+      cpu: "20m"
       # checksAgent.resources.requests.cpu -- Memory resource requests.
-      memory: "256Mi"
+      memory: "512Mi"
 
   serviceaccount:
     # checksAgent.serviceaccount.annotations -- Annotations for the service account for the cluster checks pods

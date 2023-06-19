@@ -10,3 +10,5 @@
 
 # IDE 
 .vscode
+
+util/**/*.json
