@@ -58,9 +58,25 @@ spec:
           annotations:
             message: {{`Data ingestion for {{$labels.namespace }}, topic {{$labels.topic}} and service {{ $labels.service }} is lagging behind by {{ $value | humanizeDuration }}.`}}
           expr: |
-            (sum by (namespace, data_type, service)(stackstate_kafka2es_received_data_latency_seconds{namespace=~{{ .Values.rules.namespaceRegex | quote}}, quantile="0.95"})
-              /
-            sum by(namespace, data_type, service)(rate(stackstate_kafka2es_received_data_latency_seconds_count{namespace=~{{ .Values.rules.namespaceRegex | quote}}}[1m]) > 0.05)) > 120.0
+            stackstate_kafka2es_received_data_latency_seconds{namespace=~{{ .Values.rules.namespaceRegex | quote}}, quantile="0.95"} > 30.0
+          for: 5m
+          labels:
+            severity: warning
+            alert_resource: {{` '{{ $labels.service }}' `}}
+        - alert: StackStateKafkaToPromLatency
+          annotations:
+            message: {{`Data ingestion for {{$labels.namespace }}, topic {{$labels.topic}} and service {{ $labels.service }} is lagging behind by {{ $value | humanizeDuration }}. Note that this is affected by the delay for metrics from the correlator as well.`}}
+          expr: |
+            stackstate_kafka2prom_received_data_latency_seconds{namespace=~{{ .Values.rules.namespaceRegex | quote}}, quantile="0.95"} > 120.0
+          for: 5m
+          labels:
+            severity: warning
+            alert_resource: {{` '{{ $labels.service }}' `}}
+        - alert: StackStateCorrelateLatency
+          annotations:
+            message: {{`Data ingestion for {{$labels.namespace }}, topic {{$labels.topic}} and service {{ $labels.service }} is lagging behind by {{ $value | humanizeDuration }}.`}}
+          expr: |
+            stackstate_correlate_received_data_latency_seconds{namespace=~{{ .Values.rules.namespaceRegex | quote}}, quantile="0.95"}
           for: 5m
           labels:
             severity: warning
