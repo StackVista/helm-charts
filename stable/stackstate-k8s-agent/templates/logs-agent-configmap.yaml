@@ -14,6 +14,8 @@ data:
 
     clients:
       - url: {{ tpl .Values.stackstate.url . }}/logs/k8s?api_key=${STS_API_KEY}
+        external_labels:
+           sts_cluster_name: {{ .Values.stackstate.cluster.name | quote }}
 
     positions:
       filename: /tmp/positions.yaml
