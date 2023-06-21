@@ -1607,6 +1607,8 @@ victoria-metrics-0:
     # victoria-metrics-0.server.fullnameOverride -- Full name override
     fullnameOverride: stackstate-victoria-metrics-0
     image:
+      # victoria-metrics-0.server.image.registry -- Victoriametrics image registry
+      registry: quay.io
       # victoria-metrics-0.server.image.repository -- Victoriametrics repository
       repository: stackstate/victoria-metrics
       # 1.87.x is the LTS version
@@ -1675,6 +1677,8 @@ victoria-metrics-1:
     # victoria-metrics-1.server.fullnameOverride -- Full name override
     fullnameOverride: stackstate-victoria-metrics-1
     image:
+      # victoria-metrics-1.server.image.registry -- Victoriametrics image registry
+      registry: quay.io
       # victoria-metrics-1.server.image.repository -- Victoriametrics repository
       repository: stackstate/victoria-metrics
       # 1.87.x is the LTS version
