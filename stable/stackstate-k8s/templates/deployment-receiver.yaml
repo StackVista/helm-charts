@@ -21,6 +21,8 @@ env:
   value: "{{ not .Values.stackstate.experimental.disableMultimetrics }}"
 - name: RECEIVER_WRITE_STS_METRICS
   value: "false"
+- name: RECEIVER_WRITE_PROMETHEUS
+  value: "true"
 - name: PROMETHEUS_WRITE_ENDPOINT
   value: http://stackstate-vmagent:8429/api/v1/write
 {{ $replicationFactor := ternary "1" "0" (gt .Values.elasticsearch.replicas 2.0) }}

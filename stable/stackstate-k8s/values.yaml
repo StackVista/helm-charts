@@ -1739,8 +1739,7 @@ vmagent:
   service:
     enabled: true
   config:
-    global:
-      scrape_interval: 10s
+    scrape_configs: []
   remoteWriteUrls:
     - "http://stackstate-victoria-metrics-0:8428/api/v1/write"
   rbac:

@@ -663,7 +663,7 @@ stackstate/stackstate
 | vmagent.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[1].operator | string | `"In"` |  |
 | vmagent.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[1].values[0] | string | `"stackstate"` |  |
 | vmagent.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].topologyKey | string | `"kubernetes.io/hostname"` |  |
-| vmagent.config.global.scrape_interval | string | `"10s"` |  |
+| vmagent.config.scrape_configs | list | `[]` |  |
 | vmagent.deployment.enabled | bool | `false` |  |
 | vmagent.rbac.create | bool | `false` |  |
 | vmagent.rbac.pspEnabled | bool | `false` |  |
