@@ -202,6 +202,91 @@
          "dashLength": 10,
          "dashes": false,
          "datasource": "$datasource",
+         "fill": 1,
+         "fillGradient": 0,
+         "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 40
+         },
+         "id": 4,
+         "legend": {
+            "alignAsTable": false,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": false,
+            "show": true,
+            "sideWidth": null,
+            "total": false,
+            "values": false
+         },
+         "lines": true,
+         "linewidth": 1,
+         "links": [ ],
+         "nullPointMode": "null",
+         "percentage": false,
+         "pointradius": 5,
+         "points": false,
+         "renderer": "flot",
+         "repeat": null,
+         "seriesOverrides": [ ],
+         "spaceLength": 10,
+         "stack": false,
+         "steppedLine": false,
+         "targets": [
+            {
+               "expr": "sum by (product, path, status, logs_cluster_name)(rate(akka_http_responses_total{cluster=\"$cluster\", namespace=\"$namespace\", app_component=\"receiver\", path=~\"(.*)/logs/(.*)\"}[1m]))",
+               "format": "time_series",
+               "intervalFactor": 2,
+               "legendFormat": "{{product}} - {{path}} - {{status}} - {{logs_cluster_name}}",
+               "refId": "A"
+            }
+         ],
+         "thresholds": [ ],
+         "timeFrom": null,
+         "timeShift": null,
+         "title": "HTTP - Logs requests Counts Rate",
+         "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+         },
+         "type": "graph",
+         "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": [ ]
+         },
+         "yaxes": [
+            {
+               "format": "short",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            },
+            {
+               "format": "short",
+               "label": null,
+               "logBase": 1,
+               "max": null,
+               "min": null,
+               "show": true
+            }
+         ]
+      },
+      {
+         "aliasColors": { },
+         "bars": false,
+         "dashLength": 10,
+         "dashes": false,
+         "datasource": "$datasource",
          "description": "Percentage of agent element processing budget filled up",
          "fill": 1,
          "fillGradient": 0,
@@ -211,7 +296,7 @@
             "x": 0,
             "y": 8
          },
-         "id": 4,
+         "id": 5,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -297,7 +382,7 @@
             "x": 12,
             "y": 8
          },
-         "id": 5,
+         "id": 6,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -383,7 +468,7 @@
             "x": 0,
             "y": 16
          },
-         "id": 6,
+         "id": 7,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -469,7 +554,7 @@
             "x": 12,
             "y": 16
          },
-         "id": 7,
+         "id": 8,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -554,7 +639,7 @@
             "x": 0,
             "y": 24
          },
-         "id": 8,
+         "id": 9,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -639,7 +724,7 @@
             "x": 12,
             "y": 24
          },
-         "id": 9,
+         "id": 10,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -724,7 +809,7 @@
             "x": 0,
             "y": 32
          },
-         "id": 10,
+         "id": 11,
          "legend": {
             "alignAsTable": false,
             "avg": false,
@@ -809,7 +894,7 @@
             "x": 12,
             "y": 32
          },
-         "id": 11,
+         "id": 12,
          "legend": {
             "alignAsTable": false,
             "avg": false,

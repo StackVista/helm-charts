@@ -114,6 +114,17 @@ local akka_http_responses_total = graphPanel.new(
   )
 );
 
+local akka_http_logs_responses_total = graphPanel.new(
+  title='HTTP - Logs requests Counts Rate',
+  datasource=datasource,
+).addTarget(
+  prometheus.target(
+    expr='sum by (product, path, status, logs_cluster_name)(rate(akka_http_responses_total{%s, app_component="receiver", path=~"(.*)/logs/(.*)"}[1m]))' % variables.grafana.namespace_selectors_string,
+    legendFormat='{{product}} - {{path}} - {{status}} - {{logs_cluster_name}}',
+
+  )
+);
+
 local akka_http_responses_errors_total = graphPanel.new(
   title='HTTP - Error Counts Rate',
   datasource=datasource,
@@ -157,6 +168,7 @@ dashboard.new(
       akka_http_responses_total,
       akka_http_responses_errors_total,
       akka_http_requests_active,
+      akka_http_logs_responses_total,
     ],
   )
 )
