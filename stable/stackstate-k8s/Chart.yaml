@@ -65,3 +65,7 @@ dependencies:
     version: "0.8.53"
     repository: https://victoriametrics.github.io/helm-charts
     condition: victoria-metrics-1.enabled
+  - name: victoria-metrics-agent
+    alias: vmagent
+    version: "0.8.38"
+    repository: https://victoriametrics.github.io/helm-charts

@@ -1731,3 +1731,36 @@ victoria-metrics-1:
       interval: 15s
       # victoria-metrics-1.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
       extraLabels: {}
+vmagent:
+  deployment:
+    enabled: false
+  statefulset:
+    enabled: true
+  service:
+    enabled: true
+  config:
+    global:
+      scrape_interval: 10s
+  remoteWriteUrls:
+    - "http://stackstate-victoria-metrics-0:8428/api/v1/write"
+  rbac:
+    create: false
+    pspEnabled: false
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app.kubernetes.io/component
+            operator: In
+            values:
+            - receiver
+          - key: app.kubernetes.io/instance
+            operator: In
+            values:
+            - stackstate
+        topologyKey: kubernetes.io/hostname
+  securityContext:
+    runAsGroup: 65534
+    runAsNonRoot: true
+    runAsUser: 65534
