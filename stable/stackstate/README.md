@@ -619,7 +619,6 @@ stackstate/stackstate
 | victoria-metrics-0.server.affinity | object | `{}` | Affinity settings for Victoria Metrics pod |
 | victoria-metrics-0.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":35}` | Extra arguments for Victoria Metrics |
 | victoria-metrics-0.server.fullnameOverride | string | `"stackstate-victoria-metrics-0"` | Full name override |
-| victoria-metrics-0.server.image.registry | string | `"quay.io"` | Victoriametrics image registry |
 | victoria-metrics-0.server.image.repository | string | `"stackstate/victoria-metrics"` | Victoriametrics repository |
 | victoria-metrics-0.server.image.tag | string | `"v1.87.2-b0c8ee1a"` |  |
 | victoria-metrics-0.server.persistentVolume.size | string | `"60Gi"` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
@@ -641,7 +640,6 @@ stackstate/stackstate
 | victoria-metrics-1.server.affinity | object | `{}` | Affinity settings for Victoria Metrics pod |
 | victoria-metrics-1.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":35}` | Extra arguments for Victoria Metrics |
 | victoria-metrics-1.server.fullnameOverride | string | `"stackstate-victoria-metrics-1"` | Full name override |
-| victoria-metrics-1.server.image.registry | string | `"quay.io"` | Victoriametrics image registry |
 | victoria-metrics-1.server.image.repository | string | `"stackstate/victoria-metrics"` | Victoriametrics repository |
 | victoria-metrics-1.server.image.tag | string | `"v1.87.2-b0c8ee1a"` |  |
 | victoria-metrics-1.server.persistentVolume.size | string | `"60Gi"` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
