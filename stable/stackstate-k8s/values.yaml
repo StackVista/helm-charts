@@ -1607,8 +1607,10 @@ victoria-metrics-0:
     # victoria-metrics-0.server.fullnameOverride -- Full name override
     fullnameOverride: stackstate-victoria-metrics-0
     image:
+      # victoria-metrics-0.server.image.repository -- Victoriametrics repository
+      repository: stackstate/victoria-metrics
       # 1.87.x is the LTS version
-      tag: "v1.87.2"
+      tag: "v1.87.2-b0c8ee1a"
     # victoria-metrics-0.server.podAnnotations -- Annotations for Victoria Metrics server pod
     podAnnotations:
       ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
@@ -1673,8 +1675,10 @@ victoria-metrics-1:
     # victoria-metrics-1.server.fullnameOverride -- Full name override
     fullnameOverride: stackstate-victoria-metrics-1
     image:
+      # victoria-metrics-1.server.image.repository -- Victoriametrics repository
+      repository: stackstate/victoria-metrics
       # 1.87.x is the LTS version
-      tag: "v1.87.2"
+      tag: "v1.87.2-b0c8ee1a"
     # victoria-metrics-1.server.podAnnotations -- Annotations for Victoria Metrics server pod
     podAnnotations:
       ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
