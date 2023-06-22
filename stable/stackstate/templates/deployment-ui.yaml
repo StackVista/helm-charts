@@ -2,10 +2,6 @@
 env:
 {{- include "stackstate.common.envvars" . }}
 {{- include "stackstate.ui.envvars" . }}
-{{- if .Values.stackstate.components.ui.debug }}
-command: ["nginx-debug"]
-args: ["-g", "daemon off; error_log /dev/stdout debug;"]
-{{- end }}
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.ui.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.ui.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.ui.image.pullPolicy | quote }}
 name: ui
@@ -87,7 +83,7 @@ spec:
   template:
     metadata:
       annotations:
-        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9113" "container_name" "exporter" "filter" .Values.stackstate.components.ui.agentMetricsFilter) | indent 8 }}
+        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9113" "container_name" "exporter") | indent 8 }}
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.ui.secret.checksum" . | nindent 8 }}
       labels:

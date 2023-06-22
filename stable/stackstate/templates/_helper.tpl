@@ -128,16 +128,6 @@ Environment variables containing the properly sanitized StackState Base URLs
 {{- end -}}
 
 {{/*
-Environment variables containing the properly sanitized StackState Base URLs
-*/}}
-{{- define "stackstate.metricstore.envvar" }}
-{{- if .Values.stackstate.experimental.metrics }}
-- name: METRICSTORE_URI
-  value: "{{ include "stackstate.metrics.query.url" . }}"
-{{- end }}
-{{- end -}}
-
-{{/*
 UI extra environment variables for ui pods inherited through `stackstate.components.ui.extraEnv`
 */}}
 {{- define "stackstate.ui.envvars" -}}
@@ -174,16 +164,6 @@ Correlate secret checksum annotations
 {{- define "stackstate.correlate.secret.checksum" -}}
 {{- if .Values.stackstate.components.correlate.extraEnv.secret }}
 checksum/correlate-env: {{ include (print $.Template.BasePath "/secret-correlate.yaml") . | sha256sum }}
-{{- end }}
-{{- end -}}
-
-
-{{/*
-Kafka2prom secret checksum annotations
-*/}}
-{{- define "stackstate.kafka2prom.secret.checksum" -}}
-{{- if .Values.stackstate.components.kafka2prom.extraEnv.secret }}
-checksum/kafka2prom-env: {{ include (print $.Template.BasePath "/secret-kafka2prom.yaml") . | sha256sum }}
 {{- end }}
 {{- end -}}
 
@@ -305,6 +285,13 @@ checksum/healthSync-env: {{ include (print $.Template.BasePath "/secret-healthSy
 {{- end -}}
 
 {{/*
+ProblemProducer secret checksum annotations
+*/}}
+{{- define "stackstate.problemProducer.secret.checksum" -}}
+checksum/problemProducer-env: {{ include (print $.Template.BasePath "/secret-problemProducer.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
 Router configmap checksum annotations
 */}}
 {{- define "stackstate.router.configmap.checksum" -}}
@@ -372,6 +359,13 @@ HealthSync configmap checksum annotations
 */}}
 {{- define "stackstate.healthSync.configmap.checksum" -}}
 checksum/healthSync-configmap: {{ include (print $.Template.BasePath "/configmap-healthSync.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+ProblemProducer configmap checksum annotations
+*/}}
+{{- define "stackstate.problemProducer.configmap.checksum" -}}
+checksum/problemProducer-configmap: {{ include (print $.Template.BasePath "/configmap-problemProducer.yaml") . | sha256sum }}
 {{- end -}}
 
 {{/*
@@ -572,19 +566,4 @@ command:
 - '/bin/bash'
 - '-c'
 - 'kubectl get pod {{ template "common.fullname.short" . }}-server-0 --ignore-not-found && while (kubectl get pod {{ template "common.fullname.short" . }}-server-0 ) ; do echo "Waiting for {{ template "common.fullname.short" . }}-server-0 pod to terminate"; sleep 1; done'
-{{- end -}}
-
-{{/*
-Clean up the directory containing the transaction logs.
-*/}}
-{{- define "stackstate.initContainer.cleanTransactionLogsDirectory" -}}
-name: clean-transaction-logs-directory
-image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
-imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
-command:
-- '/bin/bash'
-- '-c'
-- 'rm -Rf /opt/docker/logs/*'
-volumeMounts:
-{{ include "stackstate.service.transactionLog.volumeMount" . }}
 {{- end -}}

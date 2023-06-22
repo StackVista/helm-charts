@@ -1,39 +1,4 @@
 {{/*
-Logic to determine remote write endpoint.
-*/}}
-{{- define "stackstate.metrics.remotewrite.url" -}}
-http://{{- include "stackstate.metrics.remoteWriteEndpoint" . -}}{{.Values.stackstate.components.all.metricStore.remoteWritePath}}
-{{- end -}}
-
-{{/*
-Logic to determine promql query endpoint.
-*/}}
-{{- define "stackstate.metrics.query.url" -}}
-http://{{- include "stackstate.metrics.queryApiEndpoint" . -}}{{.Values.stackstate.components.all.metricStore.queryApiPath}}
-{{- end -}}
-
-{{/*
-Logic to determine metric store host and port
-*/}}
-{{- define "stackstate.metrics.remoteWriteEndpoint" -}}
-{{- .Values.stackstate.components.all.metricStore.remoteWriteEndpoint | required "stackstate.components.all.metricStore.remoteWriteEndpoint is a required value when stackstate.experimental.metrics = true." -}}
-{{- end -}}
-
-{{/*
-Logic to determine metric store host and port
-*/}}
-{{- define "stackstate.metrics.queryApiEndpoint" -}}
-{{- .Values.stackstate.components.all.metricStore.queryApiEndpoint | required "stackstate.components.all.metricStore.queryApiEndpoint is a required value when stackstate.experimental.metrics = true." -}}
-{{- end -}}
-
-{{/*
-Logic to determine metric store consumer group
-*/}}
-{{- define "stackstate.metrics.kafka2PromGroupId" -}}
-{{- .Values.stackstate.components.all.metricStore.kafka2PromGroupId | required "stackstate.components.all.metricStore.kafka2PromGroupId is a required value when stackstate.experimental.metrics = true." -}}
-{{- end -}}
-
-{{/*
 Logic to determine ElasticSearch endpoint.
 */}}
 {{- define "stackstate.es.endpoint" -}}

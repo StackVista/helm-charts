@@ -35,10 +35,8 @@ spec:
           {{- end }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
-{{- if and .Values.backup.enabled .Values.backup.stackGraph.scheduled.enabled }}
             - name: tmp-data
               mountPath: /tmp-data
-{{- end }}
       {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
       restartPolicy: Never
 {{- if .Values.backup.stackGraph.securityContext.enabled }}
@@ -46,9 +44,7 @@ spec:
 {{- end }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
-{{- if and .Values.backup.enabled .Values.backup.stackGraph.scheduled.enabled }}
         - name: tmp-data
           persistentVolumeClaim:
             claimName: {{ template "common.fullname.short" . }}-backup-stackgraph-tmp-data
-{{- end }}
 {{- end }}

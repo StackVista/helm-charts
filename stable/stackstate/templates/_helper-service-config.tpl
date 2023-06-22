@@ -1,6 +1,7 @@
 {{- define "stackstate.server.memory.resource" -}}
 {{- $podMemoryLimitMB := (include "stackstate.storage.to.megabytes" .Mem) -}}
-{{- $grossMemoryLimit := (sub $podMemoryLimitMB .BaseMemoryConsumptionMB) | int -}}
+{{- $baseMemoryConsumptionMB := (include "stackstate.storage.to.megabytes" .BaseMem) -}}
+{{- $grossMemoryLimit := (sub $podMemoryLimitMB  $baseMemoryConsumptionMB) | int -}}
 {{- $javaHeapMemory := (div (mul $grossMemoryLimit (.JavaHeapFraction | int)) 100) | int -}}
 {{- max $javaHeapMemory 0 -}}
 {{- end -}}
@@ -36,28 +37,12 @@
 {{- else }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_singleWriter_releaseRevision" "1" }}
 {{- end -}}
-{{- if .Values.stackstate.experimental.metrics }}
-  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_newMetrics" "true" }}
-{{- end -}}
-{{/*
-Memory used by a JVM process can be calculated as follows:
-JVM memory = Heap memory+ Metaspace + CodeCache + (ThreadStackSize * Number of Threads) + DirectByteBuffers + Jvm-native.
-'BaseMemoryConsumption' encapsulates OS-level memory requirements and following parts of JVM memory: Metaspace, CodeCache,
-ThreadStackSize * Number of Threads and Jvm-native.
-'JavaHeapMemoryFraction' percent of the remainder of 'BaseMemoryConsumption' subracted from pod's memory limit is given to 'Xmx'.
-'JavaHeapMemoryFraction' percent of the remainder of 'BaseMemoryConsumption' subracted from pod's memory request is given to 'Xms'.
-Remainder of 'BaseMemoryConsumption' and 'Xmx' subtracted from pod's memory limit is given to 'DirectMemory'.
-Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory limit.
-*/}}
-{{- $baseMemoryConsumptionMB := (include "stackstate.storage.to.megabytes" .ServiceConfig.sizing.baseMemoryConsumption)}}
-{{- $xmxConfig := dict "Mem" .ServiceConfig.resources.limits.memory "BaseMemoryConsumptionMB" $baseMemoryConsumptionMB "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
+{{- $xmxConfig := dict "Mem" .ServiceConfig.resources.limits.memory "BaseMem" .ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
 {{- $xmx := (include "stackstate.server.memory.resource" $xmxConfig) | int }}
-{{- $xmsConfig := dict "Mem" .ServiceConfig.resources.requests.memory "BaseMemoryConsumptionMB" $baseMemoryConsumptionMB "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
+{{- $xmsConfig := dict "Mem" .ServiceConfig.resources.requests.memory "BaseMem" .ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
 {{- $xms := include "stackstate.server.memory.resource" $xmsConfig | int }}
 {{- $xmxParam := ( (gt $xmx 0) | ternary (printf "-Xmx%dm" $xmx) "") }}
 {{- $xmsParam := ( (gt $xms 0) | ternary (printf "-Xms%dm" $xms) "") }}
-{{- $directMem := (sub (sub (include "stackstate.storage.to.megabytes" .ServiceConfig.resources.limits.memory) $baseMemoryConsumptionMB) $xmx) | int }}
-{{- $directMemParam := ( (gt $directMem 0) | ternary ( printf "-XX:MaxDirectMemorySize=%dm" $directMem) "") }}
 {{- if .Values.stackstate.java.trustStorePassword }}
 - name: JAVA_TRUSTSTORE_PASSWORD
   valueFrom:
@@ -67,13 +52,13 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
 {{- end }}
 {{- if not $openEnvVars.JAVA_OPTS }}
 - name: "JAVA_OPTS"
-  value: "{{ $directMemParam }} {{ $xmxParam }} {{ $xmsParam }}"
+  value: {{ $xmxParam }} {{ $xmsParam }}
 {{- end }}
 {{- if $openEnvVars }}
   {{- range $key, $value := $openEnvVars }}
   {{- if eq $key "JAVA_OPTS" }}
 - name: {{ $key }}
-  value: "{{ $directMemParam }} {{ $xmxParam }} {{ $xmsParam }} {{ $value }}"
+  value: "{{ $xmxParam }} {{ $xmsParam }} {{ $value }}"
   {{- else }}
 - name: {{ $key }}
   value: {{ $value | quote }}
@@ -176,22 +161,4 @@ does not expand variables within the JAVA_OPTS anymore
 {{- end }}
 {{- end }}
 - -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy
-{{- end -}}
-
-
-{{/*
-Volume for transaction logs
-*/}}
-{{- define "stackstate.service.transactionLog.volume" -}}
-- name: application-log
-  persistentVolumeClaim:
-    claimName: {{ template "common.fullname.short" .root }}-{{ .pod_name }}-txlog
-{{- end -}}
-
-{{/*
-VolumeMount for transaction logs
-*/}}
-{{- define "stackstate.service.transactionLog.volumeMount" -}}
-- name: application-log
-  mountPath: /opt/docker/logs
 {{- end -}}

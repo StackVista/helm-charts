@@ -1,6 +1,6 @@
 apiVersion: v2
-appVersion: 5.2.0-snapshot.0
-version: 5.2.0-snapshot.18
+appVersion: 5.1.4-snapshot.0
+version: 5.1.4-snapshot.0
 description: Helm chart for StackState
 keywords:
   - aiops
@@ -14,7 +14,7 @@ maintainers:
 name: stackstate
 dependencies:
   - name: anomaly-detection
-    version: 5.2.0-snapshot.57
+    version: 5.1.4
     repository: https://helm.stackstate.io
     condition: anomaly-detection.enabled
   - name: stackstate-agent
@@ -26,42 +26,32 @@ dependencies:
     version: "*"
   - name: elasticsearch
     condition: elasticsearch.enabled
-    repository: file://../elasticsearch/
-    version: 8.5.1-stackstate.2
+    repository: https://helm.stackstate.io
+    version: 7.17.2-stackstate.3
   - name: hbase
     condition: hbase.enabled
-    repository: file://../hbase/
-    version: "0.1.155"
+    repository: https://helm.stackstate.io
+    version: "0.1.139"
   - name: kafka
     condition: kafka.enabled
     # Bitnami official Helm repository stopped serving the old versions of the charts. This is the workaround https://github.com/bitnami/charts/issues/10539
     # repository: https://charts.bitnami.com/bitnami
     repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    version: 15.5.1
+    version: 14.8.1
   - name: kafkaup-operator
     condition: kafkaup-operator.enabled
     repository: file://../kafkaup-operator/
     version: "*"
   - name: minio
-    repository: file://../minio/
-    version: "8.0.10-stackstate.8"
+    repository: https://helm.stackstate.io
+    version: "8.0.10-stackstate.6"
     condition: backup.enabled
   - name: pull-secret
     version: "*"
     repository: file://../pull-secret/
     condition: pull-secret.enabled
   - name: zookeeper
-    version: 8.1.2
+    version: 5.16.0
     # Bitnami official Helm repository stopped serving the old versions of the charts. This is the workaround https://github.com/bitnami/charts/issues/10539
     repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     condition: zookeeper.enabled
-  - name: victoria-metrics-single
-    alias: victoria-metrics-0
-    version: "0.8.53"
-    repository: https://victoriametrics.github.io/helm-charts
-    condition: victoria-metrics-0.enabled
-  - name: victoria-metrics-single
-    alias: victoria-metrics-1
-    version: "0.8.53"
-    repository: https://victoriametrics.github.io/helm-charts
-    condition: victoria-metrics-1.enabled

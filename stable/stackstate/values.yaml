@@ -115,6 +115,9 @@ backup:
       runAsNonRoot: true
       # backup.configuration.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
       runAsUser: 65534
+caspr:
+  # caspr.enabled -- Enable CASPR compatible values.
+  enabled: false
 ingress:
   # ingress.annotations -- Annotations for ingress objects.
   annotations: {}
@@ -143,16 +146,9 @@ networkPolicy:
       matchLabels: {}
     policyTypes:
       - Ingress
-scc:
-  # scc.enabled -- Create `SecurityContextConstraints` resource to manage Openshift security constraints for Stackstate.
-  # Has to be enabled when installing to Openshift >= 4.12
-  # The resource is deployed as a Helm pre-install hook to avoid any warning for the first deployment.
-  # Because `helm uninstall` does not consider Helm hooks, the resource must be manually deleted after the Helm release is removed.
-  enabled: false
 stackstate:
   components:
     all:
-      defaultAgentMetricsFilter: '["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "stackstate*"]'
       # stackstate.components.all.deploymentStrategy.type -- Deployment strategy for StackState components. Possible values: `RollingUpdate`, `Recreate` and `RecreateSingletonsOnly`.
       # `RecreateSingletonsOnly` uses `Recreate` for the singleton Deployments and `RollingUpdate` for the other Deployments.
       deploymentStrategy:
@@ -166,7 +162,7 @@ stackstate:
         # stackstate.components.all.image.registry -- Base container image registry for all StackState containers, except for the wait container and the container-tools container
         registry: quay.io
         # stackstate.components.all.image.repositorySuffix - String to append to repositories for StackState components
-        repositorySuffix: ""
+        repositorySuffix: "-stable"
         # stackstate.components.all.image.pullSecretName -- Name of ImagePullSecret to use for all pods.
         pullSecretName:
         # all.image.pullSecretUsername -- Username used to login to the registry to pull Docker images of all pods.
@@ -177,7 +173,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.image.tag to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: master
+        tag: 5.1.4
       metrics:
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
         enabled: true
@@ -201,17 +197,6 @@ stackstate:
         runAsUser: 65534
       # stackstate.components.all.elasticsearchEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster.
       elasticsearchEndpoint: ""
-      metricStore:
-        # stackstate.components.all.metricStore.remoteWriteEndpoint -- **Required if `stackstate.experimental.metrics` is `true`** Host and port for prometheus remote write endpoint ($vmInstance is replaced by '0' or '1')
-        remoteWriteEndpoint: "stackstate-victoria-metrics-$vmInstance:8428"
-        # stackstate.components.all.metricStore.remoteWritePath -- Remote write path used to ingest metrics, /api/v1/write is most common
-        remoteWritePath: "/api/v1/write"
-        # stackstate.components.all.metricStore.queryApiEndpoint -- **Required if `stackstate.experimental.metrics` is `true`** Host and port for promql api
-        queryApiEndpoint: "stackstate-victoriametrics:8428"
-        # stackstate.components.all.metricStore.queryApiPath -- Path under which `/api/v1/query` etc.. are accessible, the default ("") is fine for most stores
-        queryApiPath: ""
-        # stackstate.components.all.metricStore.kafka2PromGroupId -- **Required if `stackstate.experimental.metrics` is `true`** Kafka consumer group ID of kafka2prom writing to the metric store ($vmInstance is replaced by '0' or '1')
-        kafka2PromGroupId: "kafka-to-prom-$vmInstance"
       # stackstate.components.all.kafkaEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker.
       kafkaEndpoint: ""
       # stackstate.components.all.zookeeperEndpoint -- **Required if `zookeeper.enabled` is `false`** Endpoint for shared Zookeeper nodes.
@@ -302,8 +287,8 @@ stackstate:
           cpu: "2"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "400Mi"
-        javaHeapMemoryFraction: "65"
+        baseMemoryConsumption: "575Mi"
+        javaHeapMemoryFraction: "78"
       # stackstate.components.correlate.replicaCount -- Number of `correlate` replicas.
       replicaCount: 1
       # stackstate.components.correlate.nodeSelector -- Node labels for pod assignment.
@@ -342,7 +327,7 @@ stackstate:
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
-        javaHeapMemoryFraction: "60"
+        javaHeapMemoryFraction: "70"
       # stackstate.components.checks.replicaCount -- Number of `checks` replicas.
       replicaCount: 1
       # stackstate.components.checks.nodeSelector -- Node labels for pod assignment.
@@ -382,8 +367,8 @@ stackstate:
           cpu: "1000m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "450Mi"
-        javaHeapMemoryFraction: "45"
+        baseMemoryConsumption: "1200Mi"
+        javaHeapMemoryFraction: "85"
       # stackstate.components.healthSync.replicaCount -- Number of `healthSync` replicas.
       replicaCount: 1
       # stackstate.components.healthSync.nodeSelector -- Node labels for pod assignment.
@@ -415,15 +400,15 @@ stackstate:
       # stackstate.components.initializer.resources -- Resource allocation for `initializer` pods.
       resources:
         limits:
-          memory: "750Mi"
-          cpu: "1500m"
+          memory: "700Mi"
+          cpu: "500m"
           ephemeral-storage: "1Gi"
         requests:
-          memory: "750Mi"
+          memory: "700Mi"
           cpu: "500m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "350Mi"
+        baseMemoryConsumption: "460Mi"
         javaHeapMemoryFraction: "65"
       # stackstate.components.initializer.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
@@ -434,45 +419,6 @@ stackstate:
       # stackstate.components.initializer.config -- Configuration file contents to customize the default StackState initializer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
       config: ""
       # stackstate.components.initializer.additionalLogging -- Additional logback config
-      additionalLogging: ""
-    kafka2prom:
-      extraEnv:
-        # stackstate.components.kafka2prom.extraEnv.open -- Extra open environment variables to inject into pods.
-        open: {}
-        # stackstate.components.kafka2prom.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
-        secret: {}
-      image:
-        # stackstate.components.kafka2prom.image.pullPolicy -- `pullPolicy` used for the `kafka2prom` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
-        pullPolicy: ""
-        # stackstate.components.kafka2prom.image.repository -- Repository of the kafka2prom component Docker image.
-        repository: stackstate/stackstate-kafka-to-prom
-        # stackstate.components.kafka2prom.image.tag -- Tag used for the `kafka2prom` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: ""
-      # stackstate.components.kafka2prom.poddisruptionbudget -- PodDisruptionBudget settings for `kafka2prom` pods.
-      poddisruptionbudget:
-        maxUnavailable: 1
-      # stackstate.components.kafka2prom.resources -- Resource allocation for `kafka2prom` pods.
-      resources:
-        limits:
-          memory: "1500Mi"
-          cpu: "1000m"
-          ephemeral-storage: "1Gi"
-        requests:
-          memory: "1500Mi"
-          cpu: "300m"
-          ephemeral-storage: "1Mi"
-      sizing:
-        baseMemoryConsumption: "300Mi"
-        javaHeapMemoryFraction: "50"
-      # stackstate.components.kafka2prom.replicaCount -- Number of `kafka2prom` replicas.
-      replicaCount: 1
-      # stackstate.components.kafka2prom.nodeSelector -- Node labels for pod assignment.
-      nodeSelector: {}
-      # stackstate.components.kafka2prom.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
-      # stackstate.components.kafka2prom.affinity -- Affinity settings for pod assignment.
-      affinity: {}
-      # stackstate.components.kafka2prom.additionalLogging -- Additional logback config
       additionalLogging: ""
     mm2es:
       extraEnv:
@@ -501,8 +447,8 @@ stackstate:
           cpu: "1000m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "300Mi"
-        javaHeapMemoryFraction: "50"
+        baseMemoryConsumption: "600Mi"
+        javaHeapMemoryFraction: "85"
       # stackstate.components.mm2es.replicaCount -- Number of `mm2es` replicas.
       replicaCount: 1
       # stackstate.components.mm2es.nodeSelector -- Node labels for pod assignment.
@@ -540,8 +486,8 @@ stackstate:
           cpu: "500m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "300Mi"
-        javaHeapMemoryFraction: "50"
+        baseMemoryConsumption: "600Mi"
+        javaHeapMemoryFraction: "85"
       # stackstate.components.e2es.replicaCount -- Number of `e2es` replicas.
       replicaCount: 1
       # stackstate.components.e2es.nodeSelector -- Node labels for pod assignment.
@@ -579,8 +525,8 @@ stackstate:
           cpu: "500m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "300Mi"
-        javaHeapMemoryFraction: "50"
+        baseMemoryConsumption: "600Mi"
+        javaHeapMemoryFraction: "85"
       # stackstate.components.trace2es.replicaCount -- Number of `trace2es` replicas.
       replicaCount: 1
       # stackstate.components.trace2es.nodeSelector -- Node labels for pod assignment.
@@ -620,8 +566,8 @@ stackstate:
           cpu: "3000m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "300Mi"
-        javaHeapMemoryFraction: "65"
+        baseMemoryConsumption: "700Mi"
+        javaHeapMemoryFraction: "75"
       # stackstate.components.receiver.replicaCount -- Number of `receiver` replicas.
       replicaCount: 1
       # stackstate.components.receiver.nodeSelector -- Node labels for pod assignment.
@@ -632,8 +578,6 @@ stackstate:
       affinity: {}
       # stackstate.components.receiver.additionalLogging -- Additional logback config
       additionalLogging: ""
-      # stackstate.components.receiver.esDiskSpaceShare -- How much disk space from ElasticSearch can use for k8s log ingestion
-      esDiskSpaceShare: "30"
     router:
       accesslog:
         # stackstate.components.router.accesslog.enabled -- Enable access logging on the router
@@ -651,7 +595,7 @@ stackstate:
         # stackstate.components.router.image.repository -- Repository of the router component Docker image.
         repository: stackstate/envoy
         # stackstate.components.router.image.tag -- Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: v1.19.1-3310444937
+        tag: v1.19.1-2738711656
       # stackstate.components.router.poddisruptionbudget -- PodDisruptionBudget settings for `router` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -700,8 +644,8 @@ stackstate:
           cpu: "3600m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "500Mi"
-        javaHeapMemoryFraction: "70"
+        baseMemoryConsumption: "1700Mi"
+        javaHeapMemoryFraction: "85"
       # stackstate.components.server.replicaCount -- Number of `server` replicas.
       replicaCount: 1
       # stackstate.components.server.nodeSelector -- Node labels for pod assignment.
@@ -741,8 +685,8 @@ stackstate:
           cpu: "750m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "300Mi"
-        javaHeapMemoryFraction: "70"
+        baseMemoryConsumption: "500Mi"
+        javaHeapMemoryFraction: "80"
       # stackstate.components.state.replicaCount -- Number of `state` replicas.
       replicaCount: 1
       # stackstate.components.state.nodeSelector -- Node labels for pod assignment.
@@ -782,7 +726,7 @@ stackstate:
           cpu: "2000m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "400Mi"
+        baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "60"
       # stackstate.components.sync.replicaCount -- Number of `sync` replicas.
       replicaCount: 1
@@ -838,8 +782,6 @@ stackstate:
       # stackstate.components.slicing.additionalLogging -- Additional logback config
       additionalLogging: ""
     ui:
-      agentMetricsFilter: '["nginx*"]'
-      debug: false
       extraEnv:
         # stackstate.components.ui.extraEnv.open -- Extra open environment variables to inject into pods.
         open: {}
@@ -911,7 +853,7 @@ stackstate:
           cpu: "2000m"
           ephemeral-storage: "1Mi"
       sizing:
-        baseMemoryConsumption: "400Mi"
+        baseMemoryConsumption: "500Mi"
         javaHeapMemoryFraction: "55"
       # stackstate.components.viewHealth.replicaCount -- Number of `viewHealth` replicas.
       replicaCount: 1
@@ -925,6 +867,47 @@ stackstate:
       config: ""
       # stackstate.components.viewHealth.additionalLogging -- Additional logback config
       additionalLogging: ""
+    problemProducer:
+      extraEnv:
+        # stackstate.components.problemProducer.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.problemProducer.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.problemProducer.image.pullPolicy -- `pullPolicy` used for the `problemProducer` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.problemProducer.image.repository -- Repository of the problemProducer component Docker image.
+        repository: stackstate/stackstate-server
+        # stackstate.components.problemProducer.image.tag -- Tag used for the `problemProducer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.problemProducer.poddisruptionbudget -- PodDisruptionBudget settings for `problemProducer` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.problemProducer.resources -- Resource allocation for `problemProducer` pods.
+      resources:
+        limits:
+          cpu: "1000m"
+          memory: "2000Mi"
+          ephemeral-storage: "1Gi"
+        requests:
+          cpu: "500m"
+          memory: "2000Mi"
+          ephemeral-storage: "1Mi"
+      sizing:
+        baseMemoryConsumption: "500Mi"
+        javaHeapMemoryFraction: "80"
+      # stackstate.components.problemProducer.replicaCount -- Number of `problemProducer` replicas.
+      replicaCount: 1
+      # stackstate.components.problemProducer.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.problemProducer.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.problemProducer.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.problemProducer.config -- Configuration file contents to customize the default StackState problemProducer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
+      config: ""
+      # stackstate.components.problemProducer.additionalLogging -- Additional logback config
+      additionalLogging: ""
     kafkaTopicCreate:
       image:
         # stackstate.components.kafkaTopicCreate.image.registry -- Base container image registry for kafka-topic-create containers.
@@ -932,7 +915,7 @@ stackstate:
         # stackstate.components.kafkaTopicCreate.image.repository -- Base container image repository for kafka-topic-create containers.
         repository: stackstate/kafka
         # stackstate.components.kafkaTopicCreate.image.tag -- Container image tag for kafka-topic-create containers.
-        tag: 3.3.1-f2c6b50d
+        tag: 2.8.1-2738720666
         # stackstate.components.kafkaTopicCreate.image.pullPolicy -- Image pull policy for kafka-topic-create containers.
         pullPolicy: IfNotPresent
       # stackstate.components.kafkaTopicCreate.resources -- Resource allocation for `kafkaTopicCreate` pods.
@@ -979,7 +962,7 @@ stackstate:
         # stackstate.components.containerTools.image.repository -- Base container image repository for container-tools containers.
         repository: stackstate/container-tools
         # stackstate.components.containerTools.image.tag -- Container image tag for container-tools containers.
-        tag: 1.1.8
+        tag: 1.1.4
         # stackstate.components.containerTools.image.pullPolicy -- Image pull policy for container-tools containers.
         pullPolicy: IfNotPresent
       # stackstate.components.containerTools.resources -- Resource allocation for `kafkaTopicCreate` pods.
@@ -999,7 +982,7 @@ stackstate:
         # stackstate.components.wait.image.repository -- Base container image repository for wait containers.
         repository: stackstate/wait
         # stackstate.components.wait.image.tag -- Container image tag for wait containers.
-        tag: 1.0.8-a6ec1609
+        tag: 1.0.7-2755960650
         # stackstate.components.wait.image.pullPolicy -- Image pull policy for wait containers.
         pullPolicy: IfNotPresent
   # stackstate.authentication -- Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error.
@@ -1026,8 +1009,6 @@ stackstate:
       powerUser: []
       # stackstate.authentication.roles.guest -- Extend the role names that have guest permissions (default: 'stackstate-guest')
       guest: []
-      # stackstate.authentication.roles.custom -- Extend the authorization with custom roles {roleName: {systemPermissions: [], viewPermissions: []}}
-      custom: {}
     serviceToken:
       bootstrap:
         # stackstate.authentication.serviceToken.bootstrap.token -- The service token to set as bootstrap token
@@ -1036,17 +1017,10 @@ stackstate:
         roles: []
         # stackstate.authentication.serviceToken.bootstrap.ttl -- The amount of time the service token is valid for
         ttl: 24h
-  instanceApi:
-    # stackstate.instanceApi.authentication -- Custom authentication settings for the `instance` API, by default the `stackstate.authentication` authentication settings are used.
-    authentication: {}
   admin:
     authentication:
       # stackstate.admin.authentication.password -- Password used for default platform "admin" api's (low-level tools) of the various services, username: platformadmin
       password:
-  # stackstate.deployment -- Deployment settings for StackState
-  deployment:
-    # stackstate.deployment.mode -- Deployment mode of StackState, possible values are 'SaaS' and 'SelfHosted'
-    mode: "SelfHosted"
   # stackstate.java -- Extra Java configuration for StackState
   java:
     # stackstate.java.trustStore -- Java TrustStore (cacerts) file to use
@@ -1064,18 +1038,9 @@ stackstate:
     # stackstate.receiver.baseUrl -- (string) **DEPRECATED** Use stackstate.baseUrl instead
     baseUrl:
   experimental:
-    # stackstate.experimental.metrics -- (boolean) Enable the new experimental metrics apis
-    metrics: true
-    # stackstate.experimental.disableMultimetrics -- (boolean) Disable writing and storage of the old multimetrics format, this will break streams and checks, monitors and metric bindings use the new metrics
-    disableMultimetrics: false
     server:
       # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
       split: true
-    storeTransactionLogsToPVC:
-    # stackstate.experimental.storeTransactionLogsToPVC.enabled -- (boolean) Whether the transcation logs for some services, API, Checks, HealthSync, ProblemProducer,State, Sync, and ViewHealth, have to be stored to PVCs instead of pod ephemeral storage.
-      enabled: false
-    # stackstate.experimental.storeTransactionLogsToPVC.volumeSize -- (string) The size of the persistent volume for the transaction logs.
-      volumeSize: 600Mi
   stackpacks:
     # stackstate.stackpacks.installed -- Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks)
     installed: []
@@ -1090,7 +1055,7 @@ elasticsearch:
   # elasticsearch.enabled -- Enable / disable chart-based Elasticsearch.
   enabled: true
   # elasticsearch.esJavaOpts -- JVM options
-  esJavaOpts: "-Xmx3g -Xms3g -Des.allow_insecure_settings=true -Xlog:disable -Xlog:gc*,gc+age=trace,safepoint:file=logs/gc.log:utctime,pid,tags:filecount=8,filesize=16m"
+  esJavaOpts: "-Xmx3g -Xms3g -Des.allow_insecure_settings=true"
   # elasticsearch.commonLabels -- Add additional labels to all resources created for elasticsearch
   commonLabels:
     app.kubernetes.io/part-of: stackstate
@@ -1157,10 +1122,10 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 4.12.0
+      tag: 4.9.2
   console:
-    # hbase.console.enabled -- Enabled by default for debugging, but with 0 replicas. Manually scale up to 1 replica and open a shell in the container to access the stackgraph console.
-    enabled: true
+    # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
+    enabled: false
   hbase:
     master:
       # hbase.hbase.master.replicaCount -- Number of HBase master node replicas.
@@ -1248,7 +1213,7 @@ kafkaup-operator:
     repository: stackstate/kafkaup-operator
     # kafkaup.image.tag -- Tag of the image for the KafkaUp operator
     tag: 0.0.2
-    # kafkaup.image.pullPolicy -- Pull policy for the image:pod for the KafkaUp operator
+    # kafkaup.image.pullPolicy -- Pull policy for the image for the KafkaUp operator
     pullPolicy: ""
   kafkaSelectors:
     # kafkaup.kafkaSelectors.statefulSetName -- name of the statefulSet to operate on
@@ -1287,7 +1252,7 @@ kafka:
         custom-setup.sh: |-
           #!/bin/bash
 
-          ID="${MY_POD_NAME#"{{ include "common.names.fullname" . }}-"}"
+          ID="${MY_POD_NAME#"{{ template "kafka.fullname" . }}-"}"
 
           KAFKA_META_PROPERTIES=/bitnami/kafka/data/meta.properties
           if [[ -f ${KAFKA_META_PROPERTIES} ]]; then
@@ -1344,7 +1309,7 @@ kafka:
     # kafka.image.tag -- Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.**
     # When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order
     # for the kafkaup operator to upgrade the inter broker protocol version
-    tag: 3.3.1-f2c6b50d
+    tag: 2.8.1-2738720666
   livenessProbe:
     # kafka.livenessProbe.initialDelaySeconds -- Delay before readiness probe is initiated.
     initialDelaySeconds: 240
@@ -1363,7 +1328,7 @@ kafka:
         # kafka.metrics.jmx.image.repository -- Kafka JMX exporter image repository
         repository: stackstate/jmx-exporter
         # kafka.metrics.jmx.image.tag -- Kafka JMX exporter image tag
-        tag: 0.17.0-00153388
+        tag: 0.17.0-2738680727
       resources:
         limits:
           cpu: "1"
@@ -1385,8 +1350,6 @@ kafka:
     initialDelaySeconds: 45
   # kafka.replicaCount -- Number of Kafka replicas.
   replicaCount: 3
-  # kafka.topicRetention -- Max time in milliseconds to retain data in each topic.
-  topicRetention: "86400000"
   persistence:
     # kafka.persistence.size -- Size of persistent volume for each Kafka pod
     size: 50Gi
@@ -1399,7 +1362,7 @@ kafka:
     ad.stackstate.com/jmx-exporter.init_configs: "[{}]"
     ad.stackstate.com/jmx-exporter.instances: '[ { "prometheus_url": "http://%%host%%:5556/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
     # When changing this version, be sure to also change the image, such that the image version and this version are in sync
-    stackstate.com/kafkaup-operator.kafka_version: "3.3.1"
+    stackstate.com/kafkaup-operator.kafka_version: "2.8.1"
   # kafka.resources -- Kafka resources per pods.
   resources:
     limits:
@@ -1413,16 +1376,6 @@ kafka:
   # kafka.zookeeper.enabled -- Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**.
   zookeeper:
     enabled: false
-  topic:
-    stsMetricsV2:
-      partitionCount: 10
-  pdb:
-    ## kafka.pdb.create Deploy a pdb object for the Kafka pod
-    create: true
-    ## kafka.pdb.minAvailable Maximum number/percentage of unavailable Kafka replicas
-    minAvailable: ""
-    ## kafka.pdb.maxUnavailable Maximum number/percentage of unavailable Kafka replicas
-    maxUnavailable: 1
 minio:
   # minio.replicas -- Number of MinIO replicas.
   replicas: 1
@@ -1436,7 +1389,7 @@ minio:
     registry: quay.io
     # minio.image.repository -- MinIO image repository
     repository: stackstate/minio
-    tag: RELEASE.2021-02-14T04-01-33Z-709fe718
+    tag: RELEASE.2021-02-14T04-01-33Z-3118065624
   # minio.accessKey -- Access key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
   accessKey: setme
   # minio.accessKey -- Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
@@ -1462,7 +1415,7 @@ zookeeper:
     # zookeeper.image.repository -- ZooKeeper image repository
     repository: stackstate/zookeeper
     # zookeeper.image.tag -- ZooKeeper image tag
-    tag: 3.6.3-d3a5efbc
+    tag: 3.6.3-2738717608
   metrics:
     # zookeeper.metrics.enabled -- Enable / disable Zookeeper Prometheus metrics.
     enabled: true
@@ -1490,13 +1443,6 @@ zookeeper:
     ad.stackstate.com/zookeeper.instances: '[ { "prometheus_url": "http://%%host%%:9141/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
   replicaCount: 3
-  pdb:
-    ## zookeeper.pdb.create Deploy a pdb object for the Zookeeper pod
-    create: true
-    ## zookeeper.pdb.minAvailable Maximum number/percentage of unavailable Zookeeper replicas
-    minAvailable: ""
-    ## zookeeper.pdb.maxUnavailable Maximum number/percentage of unavailable Zookeeper replicas
-    maxUnavailable: 1
 anomaly-detection:
   # anomaly-detection.enabled -- Enables anomaly detection chart
   enabled: true
@@ -1590,141 +1536,3 @@ pull-secret:
   fullNameOverride: ''
   # pull-secret.credentials -- Registry and assotiated credentials (username, password) that will be stored in the pull-secret
   credentials: []
-victoria-metrics-0:
-  # victoria-metrics-0.enabled -- **Required if `stackstate.experimental.metrics` is `true`** (boolean) Enable the new metrics store
-  enabled: true
-  rbac:
-    # victoria-metrics-0.pspEnabled -- Pod Security Policy has been deprecated and even removed from 1.25, we're not going to use it anymore
-    pspEnabled: false
-    # victoria-metrics-0.namespaced -- Make sure all resources are namespaced
-    namespaced: true
-  server:
-    # victoria-metrics-0.server.fullnameOverride -- Full name override
-    fullnameOverride: stackstate-victoria-metrics-0
-    image:
-      # victoria-metrics-0.server.image.repository -- Victoriametrics repository
-      repository: quay.io/stackstate/victoria-metrics
-      # 1.87.x is the LTS version
-      tag: "v1.87.2-b0c8ee1a"
-    # victoria-metrics-0.server.podAnnotations -- Annotations for Victoria Metrics server pod
-    podAnnotations:
-      ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
-      ad.stackstate.com/victoria-metrics-0-server.init_configs: "[{}]"
-      ad.stackstate.com/victoria-metrics-0-server.instances: '[ { "prometheus_url": "http://%%host%%:8428/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
-    # victoria-metrics-0.server.affinity -- Affinity settings for Victoria Metrics pod
-    affinity: {}
-    # podAntiAffinity:
-    #   preferredDuringSchedulingIgnoredDuringExecution:
-    #   - podAffinityTerm:
-    #       labelSelector:
-    #         matchLabels:
-    #           app.kubernetes.io/name: victoria-metrics-single
-    #           app: server
-    #       namespaces:
-    #       - <the-namespace>
-    #       topologyKey: kubernetes.io/hostname
-    #     weight: 1
-    # victoria-metrics-0.server.podLabels -- Extra labels for Victoria Metrics pod
-    podLabels:
-      stackstate-service: victoriametrics
-    # victoria-metrics-0.server.extraArgs -- Extra arguments for Victoria Metrics
-    extraArgs:
-      dedup.minScrapeInterval: 1ms
-      maxLabelsPerTimeseries: 35
-    persistentVolume:
-      # victoria-metrics-0.server.persistentVolume.size -- Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times
-      size: 60Gi
-    # victoria-metrics-0.server.retentionPeriod -- How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1)
-    retentionPeriod: 1
-    # victoria-metrics-0.server.resources - CPU/Memory requests and limits
-    resources:
-      requests:
-        cpu: 200m
-        memory: 3584Mi
-      limits:
-        memory: 3584Mi
-        cpu: 1
-    scrape:
-      # victoria-metrics-0.server.scrape.enabled -- StackState doesn't use the scraping of VictoriaMetrics
-      enabled: false
-    # victoria-metrics-0.server.securityContext -- Custom security context settings for running as non-root
-    securityContext:
-      runAsUser: 65534
-      runAsGroup: 65534
-      fsGroup: 65534
-    serviceMonitor:
-      # victoria-metrics-0.server.serviceMonitor.enabled -- If `true`, creates a Prometheus Operator `ServiceMonitor`
-      enabled: false
-      # victoria-metrics-0.server.serviceMonitor.interval -- Scrape interval for service monitor
-      interval: 15s
-      # victoria-metrics-0.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
-      extraLabels: {}
-victoria-metrics-1:
-  # victoria-metrics-1.enabled -- **Required if `stackstate.experimental.metrics` is `true`** (boolean) Enable HA for the new metrics store
-  enabled: false
-  rbac:
-    # victoria-metrics-1.pspEnabled -- Pod Security Policy has been deprecated and even removed from 1.25, we're not going to use it anymore
-    pspEnabled: false
-    # victoria-metrics-1.namespaced -- Make sure all resources are namespaced
-    namespaced: true
-  server:
-    # victoria-metrics-1.server.fullnameOverride -- Full name override
-    fullnameOverride: stackstate-victoria-metrics-1
-    image:
-      # victoria-metrics-1.server.image.repository -- Victoriametrics repository
-      repository: quay.io/stackstate/victoria-metrics
-      # 1.87.x is the LTS version
-      tag: "v1.87.2-b0c8ee1a"
-    # victoria-metrics-1.server.podAnnotations -- Annotations for Victoria Metrics server pod
-    podAnnotations:
-      ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
-      ad.stackstate.com/victoria-metrics-0-server.init_configs: "[{}]"
-      ad.stackstate.com/victoria-metrics-0-server.instances: '[ { "prometheus_url": "http://%%host%%:8428/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
-    # victoria-metrics-1.server.affinity -- Affinity settings for Victoria Metrics pod
-    affinity: {}
-    # podAntiAffinity:
-    #   preferredDuringSchedulingIgnoredDuringExecution:
-    #   - podAffinityTerm:
-    #       labelSelector:
-    #         matchLabels:
-    #           app.kubernetes.io/name: victoria-metrics-single
-    #           app: server
-    #       namespaces:
-    #       - <the-namespace>
-    #       topologyKey: kubernetes.io/hostname
-    #     weight: 1
-    # victoria-metrics-1.server.podLabels -- Extra arguments for Victoria Metrics pod
-    podLabels:
-      stackstate-service: victoriametrics
-    # victoria-metrics-1.server.extraArgs -- Extra arguments for Victoria Metrics
-    extraArgs:
-      dedup.minScrapeInterval: 1ms
-      maxLabelsPerTimeseries: 35
-    persistentVolume:
-      # victoria-metrics-1.server.persistentVolume.size -- Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times
-      size: 60Gi
-    # victoria-metrics-1.server.retentionPeriod -- How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1)
-    retentionPeriod: 1
-    # victoria-metrics-1.server.resources - CPU/Memory requests and limits
-    resources:
-      requests:
-        cpu: 200m
-        memory: 3584Mi
-      limits:
-        memory: 3584Mi
-        cpu: 1
-    scrape:
-      # victoria-metrics-1.server.scrape.enabled -- StackState doesn't use the scraping of VictoriaMetrics
-      enabled: false
-    # victoria-metrics-1.server.securityContext -- Custom security context settings for running as non-root
-    securityContext:
-      runAsUser: 65534
-      runAsGroup: 65534
-      fsGroup: 65534
-    serviceMonitor:
-      # victoria-metrics-1.server.serviceMonitor.enabled -- If `true`, creates a Prometheus Operator `ServiceMonitor`
-      enabled: false
-      # victoria-metrics-1.server.serviceMonitor.interval -- Scrape interval for service monitor
-      interval: 15s
-      # victoria-metrics-1.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
-      extraLabels: {}

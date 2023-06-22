@@ -6,10 +6,6 @@ stackstate:
       image:
         pullSecretUsername: "test"
         pullSecretPassword: "secret"
-      metricStore:
-        remoteWriteEndpoint: "test-$vmInstance:8148"
-        queryApiEndpoint: "test:8148"
-        kafka2promGroupId: "kafka-to-prom-test-$vmInstance"
     server:
       java:
         trustStorePassword: "secretTrustStorePassword"
@@ -21,14 +17,8 @@ stackstate:
   baseUrl: "http://localhost"
   license:
     key: "api01"
-  experimental:
-    metrics: true
 hbase:
   all:
     image:
 anomaly-detection:
-  enabled: true
-backup:
-  enabled: true
-victoria-metrics-1:
   enabled: true

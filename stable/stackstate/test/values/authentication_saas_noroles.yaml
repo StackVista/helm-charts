@@ -1,6 +1,0 @@
-stackstate:
-  authentication:
-    roles:
-      custom: {}
-  deployment:
-    mode: "SaaS"

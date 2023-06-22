@@ -15,10 +15,6 @@ env:
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
-- name: CORRELATE_WRITE_STS_MULTI_METRICS
-  value: "{{ not .Values.stackstate.experimental.disableMultimetrics }}"
-- name: CORRELATE_WRITE_STS_METRICS
-  value: "{{ .Values.stackstate.experimental.metrics }}"
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.correlate.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.correlate.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.correlate.image.pullPolicy | quote }}
 livenessProbe:
@@ -80,7 +76,7 @@ spec:
   template:
     metadata:
       annotations:
-        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "correlate" "filter" .Values.stackstate.components.correlate.agentMetricsFilter) | indent 8 }}
+        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "correlate") | indent 8 }}
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.correlate.secret.checksum" . | nindent 8 }}

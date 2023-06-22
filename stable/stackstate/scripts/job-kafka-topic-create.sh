@@ -3,7 +3,6 @@
 set -euxo pipefail
 
 KAFKA_REPLICAS="${KAFKA_REPLICAS:-1}"
-KAFKA_TOPIC_RETENTION="${KAFKA_TOPIC_RETENTION:-86400000}"
 
 if (( KAFKA_REPLICAS >= 5 )); then
   defaultReplicationFactor="3"
@@ -14,7 +13,7 @@ else
 fi
 
 commonFlags="--bootstrap-server ${KAFKA_BROKERS}"
-commonCreateFlags="--create --replication-factor ${defaultReplicationFactor}"
+commonCreateFlags="--create --force --replication-factor ${defaultReplicationFactor}"
 
 function createOrUpdateTopic() {
   set -euxo pipefail
@@ -36,7 +35,7 @@ function createOrUpdateTopic() {
 }
 
 # For ephemeral data we can do time-based retention, to use less resources
-ephemeralRetention="retention.ms=$KAFKA_TOPIC_RETENTION"
+ephemeralRetention="retention.ms=86400000"
 # For persistent topics (which are required for consistency) we disable retention
 persistentRetention="retention.ms=-1"
 
@@ -53,6 +52,8 @@ PIDS+=($!)
 createOrUpdateTopic "sts_intake_health" "10" "${persistentRetention}" &
 PIDS+=($!)
 
+createOrUpdateTopic "sts_connection_beat_events" "1" "${ephemeralRetention}" &
+PIDS+=($!)
 createOrUpdateTopic "sts_topology_events" "1" "${ephemeralRetention}" &
 PIDS+=($!)
 createOrUpdateTopic "sts_generic_events" "1" "${ephemeralRetention}" &
@@ -60,8 +61,6 @@ PIDS+=($!)
 createOrUpdateTopic "sts_internal_events" "1" "${ephemeralRetention}" &
 PIDS+=($!)
 createOrUpdateTopic "sts_multi_metrics" "1" "${ephemeralRetention}" &
-PIDS+=($!)
-createOrUpdateTopic "sts_metrics_v2" "$STS_METRICS_V2_PARTITION_COUNT" "${ephemeralRetention}" &
 PIDS+=($!)
 createOrUpdateTopic "sts_state_events" "1" "${ephemeralRetention}" &
 PIDS+=($!)

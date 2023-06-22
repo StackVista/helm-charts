@@ -14,26 +14,18 @@ func TestK2ESDiskSpaceRender(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stackstateMm2EsDeployment appsv1.Deployment
-	var stackstateReceiverDeployment appsv1.Deployment
 
 	for _, deploymentK2ES := range resources.Deployments {
 		if deploymentK2ES.Name == "stackstate-mm2es" {
 			stackstateMm2EsDeployment = deploymentK2ES
 		}
-
-		if deploymentK2ES.Name == "stackstate-receiver" {
-			stackstateReceiverDeployment = deploymentK2ES
-		}
 	}
 
 	require.NotNil(t, stackstateMm2EsDeployment)
-	require.NotNil(t, stackstateReceiverDeployment)
 
-	expectedDiskMm2EsSpace := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_elasticsearchDiskSpaceMB", Value: "281925"}
-	expectedDiskReceiverSpace := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_receiver_elasticsearchDiskSpaceMB", Value: "120825"}
+	expectedDiskSpace := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_elasticsearchDiskSpaceMB", Value: "402750"}
 
-	require.Contains(t, stackstateMm2EsDeployment.Spec.Template.Spec.Containers[0].Env, expectedDiskMm2EsSpace)
-	require.Contains(t, stackstateReceiverDeployment.Spec.Template.Spec.Containers[0].Env, expectedDiskReceiverSpace)
+	require.Contains(t, stackstateMm2EsDeployment.Spec.Template.Spec.Containers[0].Env, expectedDiskSpace)
 }
 
 func TestUnknownK2ESDiskSpaceRender(t *testing.T) {

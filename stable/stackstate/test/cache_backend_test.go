@@ -3,8 +3,6 @@ package test
 import (
 	"testing"
 
-	"github.com/gruntwork-io/terratest/modules/helm"
-	"github.com/gruntwork-io/terratest/modules/logger"
 	"github.com/stretchr/testify/assert"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
 	appsv1 "k8s.io/api/apps/v1"
@@ -12,11 +10,7 @@ import (
 )
 
 func TestSyncWithInMemoryCache(t *testing.T) {
-	helmOpts := &helm.Options{
-		ValuesFiles: []string{"values/full.yaml", "values/sync_inmemory.yaml"},
-		Logger:      logger.Default,
-	}
-	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "stackstate", helmOpts)
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate", "values/full.yaml", "values/sync_inmemory.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
@@ -64,7 +58,7 @@ func TestSyncWithRocksDbCache(t *testing.T) {
 	assert.NotNil(t, stsSyncDeployment)
 	expected := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_cacheStorage_backend", Value: "rocksdb"}
 	assert.Contains(t, stsSyncDeployment.Spec.Template.Spec.Containers[0].Env, expected)
-	expectedBytes := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_rocksdb_cacheSizeBytes", Value: "1400000000"}
+	expectedBytes := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_rocksdb_cacheSizeBytes", Value: "1400000000" }
 	assert.Contains(t, stsSyncDeployment.Spec.Template.Spec.Containers[0].Env, expectedBytes)
 }
 
@@ -117,6 +111,6 @@ func TestHealthSyncWithRocksDbCache(t *testing.T) {
 	assert.NotNil(t, stsSyncDeployment)
 	expected := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_cacheStorage_backend", Value: "rocksdb"}
 	assert.Contains(t, stsSyncDeployment.Spec.Template.Spec.Containers[0].Env, expected)
-	expectedBytes := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_rocksdb_cacheSizeBytes", Value: "1100000000"}
+	expectedBytes := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_rocksdb_cacheSizeBytes", Value: "300000000" }
 	assert.Contains(t, stsSyncDeployment.Spec.Template.Spec.Containers[0].Env, expectedBytes)
 }

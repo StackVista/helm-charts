@@ -1,4 +1,4 @@
-{{- define "stackstate.sync.deployment.container.init" -}}
+{{- define "stackstate.problemProducer.deployment.container.init" -}}
 name: server-init
 command:
 - sh
@@ -9,24 +9,16 @@ image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.com
 imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
 {{- end -}}
 
-{{- define "stackstate.sync.deployment.container.main" -}}
+{{- define "stackstate.problemProducer.deployment.container.main" -}}
 args:
 {{- include "stackstate.service.args" . }}
 - -startRole
-- sync
+- problemProducer
 env:
-{{- $serviceConfig := dict "ServiceName" "sync" "ServiceConfig" .Values.stackstate.components.sync }}
+{{- $serviceConfig := dict "ServiceName" "problem-producer" "ServiceConfig" .Values.stackstate.components.problemProducer }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.authentication.envvars" . }}
 {{- include "stackstate.baseurls.envvars" . }}
-{{- include "stackstate.server.cpu.parallelism" .Values.stackstate.components.sync.resources.requests.cpu }}
-- name: CONFIG_FORCE_stackstate_cacheStorage_backend
-  value: {{ .Values.stackstate.components.sync.cache.backend }}
-{{- if eq (lower .Values.stackstate.components.sync.cache.backend) "rocksdb" }}
-{{- $config := dict "Mem" $serviceConfig.ServiceConfig.resources.limits.memory "BaseMem" $serviceConfig.ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" $serviceConfig.ServiceConfig.sizing.javaHeapMemoryFraction }}
-- name: CONFIG_FORCE_stackstate_rocksdb_cacheSizeBytes
-  value: {{ include "stackstate.server.cache.memory.limit" $config | int | quote }}
-{{- end }}
 - name: API_KEY
   valueFrom:
     secretKeyRef:
@@ -47,13 +39,12 @@ env:
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
 - name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
   value: "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
-  # No need to keep data for a long time, data is very ephemeral.
-  # Only stuff that is used often is cached
+  # Keep data for a longlong time (a day), we actually want to run problem producer from cache
 - name: CONFIG_FORCE_stackgraph_vertex_cache_expireAfterSeconds
-  value: "600"
-image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.sync.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.sync.image.tag }}"
-imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.sync.image.pullPolicy | quote }}
-name: sync
+  value: "86400"
+image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.problemProducer.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.problemProducer.image.tag }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.problemProducer.image.pullPolicy | quote }}
+name: problem-producer
 ports:
 - containerPort: 1618
   name: health
@@ -63,19 +54,19 @@ ports:
 - containerPort: 9404
   name: metrics
 {{- end }}
-livenessProbe:
-  httpGet:
-    path: /liveness
-    port: health
-  initialDelaySeconds: 60
-  timeoutSeconds: 5
 readinessProbe:
   httpGet:
     path: /readiness
     port: health
   initialDelaySeconds: 10
   timeoutSeconds: 5
-{{- with .Values.stackstate.components.sync.resources }}
+livenessProbe:
+  httpGet:
+    path: /liveness
+    port: health
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
+{{- with .Values.stackstate.components.problemProducer.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -86,26 +77,26 @@ volumeMounts:
 {{- include "stackstate.service.container.volumes" . }}
 {{- end -}}
 
-{{- define "stackstate.sync.deployment" -}}
+{{- define "stackstate.problemProducer.deployment" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.sync.deployment.container.main" .) -}}
-{{- $stsStackstateSyncMainContainer := (merge $overrideContainer $commonContainer) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.sync.deployment.container.init" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.problemProducer.deployment.container.main" .) -}}
+{{- $stsStackstateProblemProducerMainContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.problemProducer.deployment.container.init" .) -}}
 {{- $stsStackstateServerInitContainer := (merge $overrideContainer $commonContainer) -}}
 {{- $overrideContainer := fromYaml (include "stackstate.initContainer.ensure.no.server.statefulset.pods.are.running" .) -}}
 {{- $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer := (merge $overrideContainer $commonContainer) -}}
 
 metadata:
-  name: {{ template "common.fullname.short" . }}-sync
+  name: {{ template "common.fullname.short" . }}-problem-producer
   labels:
-    app.kubernetes.io/component: sync
+    app.kubernetes.io/component: problem-producer
     stackstate.com/connects-to-stackgraph: "true"
     stackstate.com/replicas: "1"
 spec:
-  replicas: {{ .Values.stackstate.components.sync.replicaCount }}
+  replicas: {{ .Values.stackstate.components.problemProducer.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/component: sync
+      app.kubernetes.io/component: problem-producer
   strategy:
 {{- if eq (lower .Values.stackstate.components.all.deploymentStrategy.type) "recreatesingletonsonly" }}
     type: Recreate
@@ -115,44 +106,44 @@ spec:
   template:
     metadata:
       annotations:
-        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "sync") | indent 8 }}
+        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "problem-producer" ) | indent 8 }}
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
-        {{- include "stackstate.sync.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.problemProducer.secret.checksum" . | nindent 8 }}
       labels:
-        app.kubernetes.io/component: sync
+        app.kubernetes.io/component: problem-producer
     spec:
-      serviceAccountName: {{ template "common.fullname.short" . }}-sync
+      serviceAccountName: {{ template "common.fullname.short" . }}-problem-producer
       {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
       initContainers:
       - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
       - {{ toYaml $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer | nindent 8 }}
       containers:
-      - {{ toYaml $stsStackstateSyncMainContainer | nindent 8 }}
-    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.sync.nodeSelector }}
+      - {{ toYaml $stsStackstateProblemProducerMainContainer | nindent 8 }}
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.state.nodeSelector }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.stackstate.components.sync.nodeSelector }}
+      {{- with .Values.stackstate.components.problemProducer.nodeSelector }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.sync.affinity }}
+    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.problemProducer.affinity }}
       affinity:
       {{- with .Values.stackstate.components.all.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.stackstate.components.sync.affinity }}
+      {{- with .Values.stackstate.components.problemProducer.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.sync.tolerations }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.problemProducer.tolerations }}
       tolerations:
       {{- with .Values.stackstate.components.all.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.stackstate.components.sync.tolerations }}
+      {{- with .Values.stackstate.components.problemProducer.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
@@ -162,12 +153,12 @@ spec:
       volumes:
         - name: config-secrets-volume
           secret:
-            secretName: {{ template "common.fullname.short" . }}-sync
-        {{- include "stackstate.service.pod.volumes" (dict "pod_name" "sync" "root" . ) | nindent 8 }}
+            secretName: {{ template "common.fullname.short" . }}-problem-producer
+        {{- include "stackstate.service.pod.volumes" (dict "pod_name" "problem-producer" "root" . ) | nindent 8 }}
 {{- end -}}
 
 {{- if .Values.stackstate.experimental.server.split }}
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
-{{- $syncDeployment := fromYaml (include "stackstate.sync.deployment" .) -}}
-{{- toYaml (merge $syncDeployment $commonDeployment) -}}
+{{- $problemProducerDeployment := fromYaml (include "stackstate.problemProducer.deployment" .) -}}
+{{- toYaml (merge $problemProducerDeployment $commonDeployment) -}}
 {{- end}}

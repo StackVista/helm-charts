@@ -12,8 +12,8 @@ eval "BACKUP_FILE=\"${BACKUP_CONFIGURATION_SCHEDULED_BACKUP_NAME_TEMPLATE}\""
 
 sts settings describe --namespace "" --url "${STACKSTATE_ROUTER_ENDPOINT}" --file "${TMP_DIR}/${BACKUP_FILE}"
 
-grep '_version:' "${TMP_DIR}/${BACKUP_FILE}" > /dev/null || (
-  echo "Exported file is probably not in STY format, exiting..."
+grep '"_version":' "${TMP_DIR}/${BACKUP_FILE}" > /dev/null || (
+  echo "Exported file is probably not in STJ format, exiting..."
   exit 1
 )
 

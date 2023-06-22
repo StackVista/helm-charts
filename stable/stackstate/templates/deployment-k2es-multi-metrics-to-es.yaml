@@ -9,7 +9,7 @@ volumeMounts:
 
 {{- define "stackstate.k2es.multiMetricsToEs.deployment" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $mm2esConfig := dict "K2esName" "mm2es" "K2esConfig" .Values.stackstate.components.mm2es "esDiskSpaceShare" (sub 100 .Values.stackstate.components.receiver.esDiskSpaceShare) }}
+{{- $mm2esConfig := dict "K2esName" "mm2es" "K2esConfig" .Values.stackstate.components.mm2es }}
 {{- $commonKafkaToEsContainer := fromYaml (include "stackstate.k2es.deployment.common.container" (merge $mm2esConfig .)) -}}
 {{- $commonKafkaToEsInitContainer := fromYaml (include "stackstate.k2es.deployment.common.initcontainer" .) -}}
 
@@ -33,7 +33,7 @@ spec:
   template:
     metadata:
       annotations:
-        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "mm2es" "filter" .Values.stackstate.components.mm2es.agentMetricsFilter) | indent 8 }}
+        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "mm2es") | indent 8 }}
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.mm2es.secret.checksum" . | nindent 8 }}
       labels:
@@ -78,8 +78,6 @@ spec:
     {{- end }}
 {{- end -}}
 
-{{- if not .Values.stackstate.experimental.disableMultimetrics -}}
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 {{- $k2esMultiMetricsToEsDeployment := fromYaml (include "stackstate.k2es.multiMetricsToEs.deployment" .) -}}
 {{- toYaml (merge $k2esMultiMetricsToEsDeployment $commonDeployment) -}}
-{{- end -}}
