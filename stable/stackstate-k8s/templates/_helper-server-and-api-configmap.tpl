@@ -14,19 +14,19 @@ Shared settings in configmap for server and api
 {{ $admins = append $admins . }}
 {{- end }}
 {{- range $admins }}
-stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.viewPermissions} }
+stackstate.authorization.staticSubjects.{{ . | quote }}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.viewPermissions} }
 {{- end }}
 
 {{- range .Values.stackstate.authentication.roles.platformAdmin }}
-stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-platform-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-platform-admin.viewPermissions} }
+stackstate.authorization.staticSubjects.{{ . | quote }}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-platform-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-platform-admin.viewPermissions} }
 {{- end }}
 
 {{- range .Values.stackstate.authentication.roles.powerUser }}
-stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-power-user.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-power-user.viewPermissions} }
+stackstate.authorization.staticSubjects.{{ . | quote }}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-power-user.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-power-user.viewPermissions} }
 {{- end }}
 
 {{- range .Values.stackstate.authentication.roles.guest }}
-stackstate.authorization.staticSubjects.{{.}}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.viewPermissions} }
+stackstate.authorization.staticSubjects.{{ . | quote }}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.viewPermissions} }
 {{- end }}
 {{- else }}
 {{/* In SaaS mode, the stackstate.authorization block will be ignored and we will overwrite the reference to it from the stackstate.api.authorization */}}
@@ -218,7 +218,7 @@ for production this should be replaced with one of the other mechanisms.
 {{ $authnPrefix }}.sessionLifetime =  {{ $apiAuth.sessionLifetime | default "7d" | toJson }}
 
 {{- range $k, $v := $apiAuth.roles.custom }}
-{{ $authzPrefix }}.staticSubjects.{{ $k }}: { systemPermissions: {{ $v.systemPermissions | toJson }}, viewPermissions: {{ $v.viewPermissions | toJson }} }
+{{ $authzPrefix }}.staticSubjects.{{ $k | quote }}: { systemPermissions: {{ $v.systemPermissions | toJson }}, viewPermissions: {{ $v.viewPermissions | toJson }} }
 {{- end }}
 
 {{- if $apiAuth.serviceToken.bootstrap.token }}

@@ -241,6 +241,17 @@ func TestAuthenticationRoles(t *testing.T) {
 	})
 }
 
+func TestAuthenticationRolesWithDots(t *testing.T) {
+	RunSecretsConfigTestF(t, "stackstate-k8s-server", []string{"values/authentication_roles_dots.yaml", "values/split_disabled.yaml"}, func(stringData string) {
+		require.Contains(t, stringData, "stackstate.authorization.staticSubjects.\"extra.admin\"")
+		require.Contains(t, stringData, "stackstate.authorization.staticSubjects.\"extra.platform.admin\"")
+		require.Contains(t, stringData, "stackstate.authorization.staticSubjects.\"extra.power\"")
+		require.Contains(t, stringData, "stackstate.authorization.staticSubjects.\"guest.1\"")
+		require.Contains(t, stringData, "stackstate.authorization.staticSubjects.\"guest.2\"")
+		require.Contains(t, stringData, "stackstate.authorization.staticSubjects.\"one.two.three\"")
+	})
+}
+
 func TestMultipleAuthConfigsNotAllowed(t *testing.T) {
 	err := helmtestutil.RenderHelmTemplateError(t, "stackstate-k8s", "values/full.yaml", "values/multiple_auth_configs.yaml")
 	require.Contains(t, err.Error(), "More than 1 authentication mechanism specified")
