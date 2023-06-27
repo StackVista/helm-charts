@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 5.1.4-snapshot.0
-version: 5.1.4-snapshot.0
+version: 5.1.4-snapshot.1
 description: Helm chart for StackState
 keywords:
   - aiops
@@ -27,31 +27,31 @@ dependencies:
   - name: elasticsearch
     condition: elasticsearch.enabled
     repository: https://helm.stackstate.io
-    version: 7.17.2-stackstate.3
+    version: 7.17.2-stackstate.6
   - name: hbase
     condition: hbase.enabled
     repository: https://helm.stackstate.io
-    version: "0.1.139"
+    version: "0.1.152"
   - name: kafka
     condition: kafka.enabled
     # Bitnami official Helm repository stopped serving the old versions of the charts. This is the workaround https://github.com/bitnami/charts/issues/10539
     # repository: https://charts.bitnami.com/bitnami
     repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    version: 14.8.1
+    version: 15.5.1
   - name: kafkaup-operator
     condition: kafkaup-operator.enabled
     repository: file://../kafkaup-operator/
     version: "*"
   - name: minio
     repository: https://helm.stackstate.io
-    version: "8.0.10-stackstate.6"
+    version: "8.0.10-stackstate.8"
     condition: backup.enabled
   - name: pull-secret
     version: "*"
     repository: file://../pull-secret/
     condition: pull-secret.enabled
   - name: zookeeper
-    version: 5.16.0
+    version: 8.1.2
     # Bitnami official Helm repository stopped serving the old versions of the charts. This is the workaround https://github.com/bitnami/charts/issues/10539
     repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     condition: zookeeper.enabled

@@ -10,24 +10,24 @@ dependencies:
   version: 0.4.23
 - name: elasticsearch
   repository: https://helm.stackstate.io
-  version: 7.17.2-stackstate.3
+  version: 7.17.2-stackstate.6
 - name: hbase
   repository: https://helm.stackstate.io
-  version: 0.1.139
+  version: 0.1.152
 - name: kafka
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-  version: 14.8.1
+  version: 15.5.1
 - name: kafkaup-operator
   repository: file://../kafkaup-operator/
   version: 0.1.6
 - name: minio
   repository: https://helm.stackstate.io
-  version: 8.0.10-stackstate.6
+  version: 8.0.10-stackstate.8
 - name: pull-secret
   repository: file://../pull-secret/
   version: 1.0.1
 - name: zookeeper
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-  version: 5.16.0
-digest: sha256:80e4a1ffbd44844e78f509deabfcae514a9bc73f8a837063ddf1f8a8bfcfc00e
-generated: "2023-06-22T10:28:01.654879+02:00"
+  version: 8.1.2
+digest: sha256:7d4fb55adedff85b13f36f2c129d2695620b86fce6b6371558b379f6e4635e47
+generated: "2023-06-22T14:06:45.027735+02:00"
