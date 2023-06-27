@@ -46,6 +46,8 @@ nodeAgent:
   protocolInspection:
     # nodeAgent.protocolInspection.enabled -- Enable / disable the nodeAgent protocol inspection.
     enabled: true
+  httpTracing:
+    enabled: dalse
   # nodeAgent.skipSslValidation -- Set to true if self signed certificates are used.
   skipSslValidation: false
   # nodeAgent.skipKubeletTLSVerify -- Set to true if you want to skip kubelet tls verification.
