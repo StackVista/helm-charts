@@ -134,7 +134,6 @@ stackstate/stackstate
 | elasticsearch.replicas | int | `3` | Number of Elasticsearch replicas. |
 | elasticsearch.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"1Gi","memory":"4Gi"},"requests":{"cpu":"2000m","ephemeral-storage":"1Mi","memory":"4Gi"}}` | Override Elasticsearch resources |
 | elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"250Gi"}}}` | PVC template defaulting to 250Gi default volumes |
-| global.commonLabels | object | `{"app.kubernetes.io/part-of":"stackstate"}` | Add additional labels to all resources created for kafka and zookeeper |
 | global.imagePullSecrets | list | `[]` | List of image pull secret names to be used by all images across all charts. |
 | global.receiverApiKey | string | `""` | API key to be used by the Receiver; if no key is provided, a random one will be generated for you. |
 | hbase.all.metrics.agentAnnotationsEnabled | bool | `true` |  |
@@ -227,6 +226,7 @@ stackstate/stackstate
 | kafka.pdb.minAvailable | string | `""` |  |
 | kafka.persistence.size | string | `"50Gi"` | Size of persistent volume for each Kafka pod |
 | kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]","stackstate.com/kafkaup-operator.kafka_version":"2.8.1"}` | Kafka Pod annotations. |
+| kafka.podLabels."app.kubernetes.io/part-of" | string | `"stackstate"` |  |
 | kafka.readinessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
 | kafka.replicaCount | int | `3` | Number of Kafka replicas. |
 | kafka.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"2Gi"}}` | Kafka resources per pods. |
@@ -609,6 +609,7 @@ stackstate/stackstate
 | zookeeper.pdb.maxUnavailable | int | `1` |  |
 | zookeeper.pdb.minAvailable | string | `""` |  |
 | zookeeper.podAnnotations | object | `{"ad.stackstate.com/zookeeper.check_names":"[\"openmetrics\"]","ad.stackstate.com/zookeeper.init_configs":"[{}]","ad.stackstate.com/zookeeper.instances":"[ { \"prometheus_url\": \"http://%%host%%:9141/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Annotations for ZooKeeper pod. |
+| zookeeper.podLabels."app.kubernetes.io/part-of" | string | `"stackstate"` |  |
 | zookeeper.replicaCount | int | `3` | Default amount of Zookeeper replicas to provision. |
 | zookeeper.resources.limits.cpu | string | `"250m"` |  |
 | zookeeper.resources.limits.ephemeral-storage | string | `"1Gi"` |  |

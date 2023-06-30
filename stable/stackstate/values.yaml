@@ -6,10 +6,6 @@ global:
   receiverApiKey: ""
   # global.imagePullSecrets -- List of image pull secret names to be used by all images across all charts.
   imagePullSecrets: []
-  # global.commonLabels -- Add additional labels to all resources created for kafka and zookeeper
-  commonLabels:
-    app.kubernetes.io/part-of: stackstate
-
 # commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
 commonLabels: {}
 backup:
@@ -1238,6 +1234,8 @@ kafka:
     servers: stackstate-zookeeper-headless
   # kafka.enabled -- Enable / disable chart-based Kafka.
   enabled: true
+  podLabels:
+    app.kubernetes.io/part-of: stackstate
   volumePermissions:
     enabled: false
   ## kafka.defaultReplicationFactor -- Default replication factors for automatically created topics
@@ -1420,6 +1418,8 @@ zookeeper:
   fourlwCommandsWhitelist: "mntr, ruok, stat, srvr"
   # zookeeper.fullnameOverride -- Name override for Zookeeper child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
   fullnameOverride: stackstate-zookeeper
+  podLabels:
+    app.kubernetes.io/part-of: stackstate
   image:
     # zookeeper.image.registry -- ZooKeeper image registry
     registry: quay.io
