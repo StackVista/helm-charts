@@ -6,6 +6,9 @@ global:
   receiverApiKey: ""
   # global.imagePullSecrets -- List of image pull secret names to be used by all images across all charts.
   imagePullSecrets: []
+  # global.commonLabels -- Add additional labels to all resources created for kafka and zookeeper
+  commonLabels:
+    app.kubernetes.io/part-of: stackstate-k8s
 # commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
 commonLabels: {}
 backup:
@@ -183,7 +186,7 @@ stackstate:
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
         tag: 5.2.0-snapshot.20230626084947-master-b7d45eb
       metrics:
-        defaultAgentMetricsFilter: '["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "stackstate*"]'
+        defaultAgentMetricsFilter: '["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "akka_http_requests_active", "stackstate*"]'
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
         enabled: true
         # stackstate.components.all.metrics.agentAnnotationsEnabled -- Put annotations on each pod to instruct the stackstate agent to scrape the metrics
@@ -1096,7 +1099,7 @@ elasticsearch:
   esJavaOpts: "-Xmx3g -Xms3g -Des.allow_insecure_settings=true -Xlog:disable -Xlog:gc*,gc+age=trace,safepoint:file=logs/gc.log:utctime,pid,tags:filecount=8,filesize=16m"
   # elasticsearch.commonLabels -- Add additional labels to all resources created for elasticsearch
   commonLabels:
-    app.kubernetes.io/part-of: stackstate
+    app.kubernetes.io/part-of: stackstate-k8s
   # elasticsearch.extraEnvs -- Extra settings that StackState uses for Elasticsearch.
   extraEnvs:
     - name: action.auto_create_index
@@ -1151,7 +1154,7 @@ hbase:
   enabled: true
   # hbase.commonLabels -- Add additional labels to all resources created for all hbase resources
   commonLabels:
-    app.kubernetes.io/part-of: stackstate
+    app.kubernetes.io/part-of: stackstate-k8s
   all:
     metrics:
       enabled: true
@@ -1396,9 +1399,6 @@ kafka:
   persistence:
     # kafka.persistence.size -- Size of persistent volume for each Kafka pod
     size: 100Gi
-  # kafka.commonLabels -- Add additional labels to all resources created for kafka
-  commonLabels:
-    app.kubernetes.io/part-of: stackstate
   # kafka.podAnnotations -- Kafka Pod annotations.
   podAnnotations:
     ad.stackstate.com/jmx-exporter.check_names: '["openmetrics"]'
@@ -1478,8 +1478,6 @@ zookeeper:
       enabled: false
       # zookeeper.metrics.serviceMonitor.selector -- Default selector to use to target a certain Prometheus instance.
       selector: {}
-  commonLabels:
-    app.kubernetes.io/part-of: stackstate
   resources:
     limits:
       memory: "512Mi"
