@@ -412,6 +412,13 @@ stackstate:
       cache:
         # stackstate.components.healthSync.cache.backend -- Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory
         backend: "mapdb"
+        mapdb:
+          # stackstate.components.healthSync.cache.mapdb.volume -- Configuration of Persistent Volume used by mapdb, empty - use Ephemeral Storage.
+          volume:
+            # stackstate.components.healthSync.cache.mapdb.volume.storage -- Size of Persistent Volume used by mapdb (cache backend used by the service)
+            storage: 2Gi
+            # stackstate.components.healthSync.cache.mapdb.volume.storageClassName -- Storage class name of Persistent Volume used by mapdb (cache backend used by the service). It is a cache so it should be the fastest possible.
+            storageClassName: null
     initializer:
       extraEnv:
         # stackstate.components.initializer.extraEnv.open -- Extra open environment variables to inject into pods.

@@ -391,6 +391,9 @@ stackstate/stackstate
 | stackstate.components.healthSync.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.healthSync.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.healthSync.cache.backend | string | `"mapdb"` | Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory |
+| stackstate.components.healthSync.cache.mapdb.volume | object | `{"storage":"2Gi","storageClassName":null}` | Configuration of Persistent Volume used by mapdb, empty - use Ephemeral Storage. |
+| stackstate.components.healthSync.cache.mapdb.volume.storage | string | `"2Gi"` | Size of Persistent Volume used by mapdb (cache backend used by the service) |
+| stackstate.components.healthSync.cache.mapdb.volume.storageClassName | string | `nil` | Storage class name of Persistent Volume used by mapdb (cache backend used by the service). It is a cache so it should be the fastest possible. |
 | stackstate.components.healthSync.config | string | `""` | Configuration file contents to customize the default StackState healthSync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.healthSync.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.healthSync.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |

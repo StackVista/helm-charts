@@ -77,6 +77,10 @@ volumeMounts:
 - name: config-secrets-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
+{{- if and (eq .Values.stackstate.components.healthSync.cache.backend "mapdb") .Values.stackstate.components.healthSync.cache.mapdb.volume }}
+- name: mapdb-volume
+  mountPath: /tmp/server/cache
+{{- end}}
 {{- include "stackstate.service.container.volumes" . }}
 {{- if .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled }}
 {{ include "stackstate.service.transactionLog.volumeMount" . }}
@@ -164,6 +168,11 @@ spec:
         - name: config-secrets-volume
           secret:
             secretName: {{ template "common.fullname.short" . }}-health-sync
+        {{- if and (eq .Values.stackstate.components.healthSync.cache.backend "mapdb") .Values.stackstate.components.healthSync.cache.mapdb.volume }}
+        - name: mapdb-volume
+          persistentVolumeClaim:
+            claimName: {{ template "common.fullname.short" . }}-health-sync-mapdb
+        {{- end}}
         {{- include "stackstate.service.pod.volumes" (dict "pod_name" "health-sync" "root" . ) | nindent 8 }}
         {{- if .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled }}
         {{- include "stackstate.service.transactionLog.volume" (dict "pod_name" "health-sync" "root" . ) | nindent 8 }}
