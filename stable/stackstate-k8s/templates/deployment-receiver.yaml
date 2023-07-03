@@ -17,8 +17,6 @@ env:
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
-- name: RECEIVER_WRITE_STS_MULTI_METRICS
-  value: "{{ not .Values.stackstate.experimental.disableMultimetrics }}"
 - name: RECEIVER_WRITE_STS_METRICS
   value: "false"
 - name: RECEIVER_WRITE_PROMETHEUS

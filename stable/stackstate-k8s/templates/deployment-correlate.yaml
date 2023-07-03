@@ -16,7 +16,7 @@ env:
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
 - name: CORRELATE_WRITE_STS_MULTI_METRICS
-  value: "{{ not .Values.stackstate.experimental.disableMultimetrics }}"
+  value: "false"
 - name: CORRELATE_WRITE_STS_METRICS
   value: "true"
 image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.correlate.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.correlate.image.tag }}"

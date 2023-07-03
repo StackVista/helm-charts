@@ -1069,8 +1069,6 @@ stackstate:
     # stackstate.receiver.baseUrl -- (string) **DEPRECATED** Use stackstate.baseUrl instead
     baseUrl:
   experimental:
-    # stackstate.experimental.disableMultimetrics -- (boolean) Disable writing and storage of the old multimetrics format, this will break streams and checks, monitors and metric bindings use the new metrics
-    disableMultimetrics: true
     server:
       # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
       split: true
@@ -1745,6 +1743,7 @@ vmagent:
   rbac:
     create: false
     pspEnabled: false
+  # vmagent.affinity -- Affinity settings for vmagent pod
   affinity:
     podAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
