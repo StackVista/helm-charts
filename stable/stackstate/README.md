@@ -2,7 +2,7 @@
 
 Helm chart for StackState
 
-Current chart version is `5.1.4-snapshot.0`
+Current chart version is `5.1.4-snapshot.1`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -15,11 +15,11 @@ Current chart version is `5.1.4-snapshot.0`
 | file://../pull-secret/ | pull-secret | * |
 | file://../stackstate-agent/ | stackstate-agent | * |
 | https://helm.stackstate.io | anomaly-detection | 5.1.4 |
-| https://helm.stackstate.io | elasticsearch | 7.17.2-stackstate.3 |
-| https://helm.stackstate.io | hbase | 0.1.139 |
-| https://helm.stackstate.io | minio | 8.0.10-stackstate.6 |
-| https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | kafka | 14.8.1 |
-| https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 5.16.0 |
+| https://helm.stackstate.io | elasticsearch | 7.17.2-stackstate.6 |
+| https://helm.stackstate.io | hbase | 0.1.152 |
+| https://helm.stackstate.io | minio | 8.0.10-stackstate.8 |
+| https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | kafka | 15.5.1 |
+| https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
 
 ## Required Values
 
@@ -192,11 +192,10 @@ stackstate/stackstate
 | ingress.path | string | `"/"` |  |
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
 | kafka.command | list | `["/scripts/custom-setup.sh"]` | Override kafka container command. |
-| kafka.commonLabels | object | `{"app.kubernetes.io/part-of":"stackstate"}` | Add additional labels to all resources created for kafka |
 | kafka.defaultReplicationFactor | int | `2` |  |
 | kafka.enabled | bool | `true` | Enable / disable chart-based Kafka. |
 | kafka.externalZookeeper.servers | string | `"stackstate-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
-| kafka.extraDeploy | list | `[{"apiVersion":"v1","data":{"custom-setup.sh":"#!/bin/bash\n\nID=\"${MY_POD_NAME#\"{{ template \"kafka.fullname\" . }}-\"}\"\n\nKAFKA_META_PROPERTIES=/bitnami/kafka/data/meta.properties\nif [[ -f ${KAFKA_META_PROPERTIES} ]]; then\n  ID=`grep -e ^broker.id= ${KAFKA_META_PROPERTIES} | sed 's/^broker.id=//'`\n  if [[ \"${ID}\" != \"\" ]] && [[ \"${ID}\" -gt 1000 ]]; then\n    echo \"Using broker ID ${ID} from ${KAFKA_META_PROPERTIES} for compatibility (STAC-9614)\"\n  fi\nfi\n\nexport KAFKA_CFG_BROKER_ID=\"$ID\"\n\nexec /entrypoint.sh /run.sh"},"kind":"ConfigMap","metadata":{"name":"kafka-custom-scripts"}}]` | Array of extra objects to deploy with the release |
+| kafka.extraDeploy | list | `[{"apiVersion":"v1","data":{"custom-setup.sh":"#!/bin/bash\n\nID=\"${MY_POD_NAME#\"{{ include \"common.names.fullname\" . }}-\"}\"\n\nKAFKA_META_PROPERTIES=/bitnami/kafka/data/meta.properties\nif [[ -f ${KAFKA_META_PROPERTIES} ]]; then\n  ID=`grep -e ^broker.id= ${KAFKA_META_PROPERTIES} | sed 's/^broker.id=//'`\n  if [[ \"${ID}\" != \"\" ]] && [[ \"${ID}\" -gt 1000 ]]; then\n    echo \"Using broker ID ${ID} from ${KAFKA_META_PROPERTIES} for compatibility (STAC-9614)\"\n  fi\nfi\n\nexport KAFKA_CFG_BROKER_ID=\"$ID\"\n\nexec /entrypoint.sh /run.sh"},"kind":"ConfigMap","metadata":{"name":"kafka-custom-scripts"}}]` | Array of extra objects to deploy with the release |
 | kafka.extraEnvVars | list | `[{"name":"KAFKA_CFG_RESERVED_BROKER_MAX_ID","value":"2000"},{"name":"KAFKA_CFG_TRANSACTIONAL_ID_EXPIRATION_MS","value":"2147483647"}]` | Extra environment variables to add to kafka pods. |
 | kafka.extraVolumeMounts | list | `[{"mountPath":"/scripts/custom-setup.sh","name":"kafka-custom-scripts","subPath":"custom-setup.sh"}]` | Extra volumeMount(s) to add to Kafka containers. |
 | kafka.extraVolumes | list | `[{"configMap":{"defaultMode":493,"name":"kafka-custom-scripts"},"name":"kafka-custom-scripts"}]` | Extra volume(s) to add to Kafka statefulset. |
@@ -222,11 +221,16 @@ stackstate/stackstate
 | kafka.metrics.serviceMonitor.interval | string | `"20s"` | How frequently to scrape metrics. |
 | kafka.metrics.serviceMonitor.labels | object | `{}` | Add extra labels to target a specific prometheus instance |
 | kafka.offsetsTopicReplicationFactor | int | `2` |  |
+| kafka.pdb.create | bool | `true` |  |
+| kafka.pdb.maxUnavailable | int | `1` |  |
+| kafka.pdb.minAvailable | string | `""` |  |
 | kafka.persistence.size | string | `"50Gi"` | Size of persistent volume for each Kafka pod |
 | kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]","stackstate.com/kafkaup-operator.kafka_version":"2.8.1"}` | Kafka Pod annotations. |
+| kafka.podLabels."app.kubernetes.io/part-of" | string | `"stackstate"` |  |
 | kafka.readinessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
 | kafka.replicaCount | int | `3` | Number of Kafka replicas. |
 | kafka.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"2Gi"}}` | Kafka resources per pods. |
+| kafka.topic.stsMetricsV2.partitionCount | int | `10` |  |
 | kafka.transactionStateLogReplicationFactor | int | `2` |  |
 | kafka.volumePermissions.enabled | bool | `false` |  |
 | kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
@@ -590,7 +594,6 @@ stackstate/stackstate
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
 | stackstate.receiver.baseUrl | string | `nil` | **DEPRECATED** Use stackstate.baseUrl instead |
 | stackstate.stackpacks.installed | list | `[]` | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) |
-| zookeeper.commonLabels."app.kubernetes.io/part-of" | string | `"stackstate"` |  |
 | zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
 | zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |
 | zookeeper.fourlwCommandsWhitelist | string | `"mntr, ruok, stat, srvr"` | Zookeeper four-letter-word (FLW) commands that are enabled. |
@@ -602,7 +605,11 @@ stackstate/stackstate
 | zookeeper.metrics.serviceMonitor | object | `{"enabled":false,"selector":{}}` |  |
 | zookeeper.metrics.serviceMonitor.enabled | bool | `false` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |
 | zookeeper.metrics.serviceMonitor.selector | object | `{}` | Default selector to use to target a certain Prometheus instance. |
+| zookeeper.pdb.create | bool | `true` |  |
+| zookeeper.pdb.maxUnavailable | int | `1` |  |
+| zookeeper.pdb.minAvailable | string | `""` |  |
 | zookeeper.podAnnotations | object | `{"ad.stackstate.com/zookeeper.check_names":"[\"openmetrics\"]","ad.stackstate.com/zookeeper.init_configs":"[{}]","ad.stackstate.com/zookeeper.instances":"[ { \"prometheus_url\": \"http://%%host%%:9141/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Annotations for ZooKeeper pod. |
+| zookeeper.podLabels."app.kubernetes.io/part-of" | string | `"stackstate"` |  |
 | zookeeper.replicaCount | int | `3` | Default amount of Zookeeper replicas to provision. |
 | zookeeper.resources.limits.cpu | string | `"250m"` |  |
 | zookeeper.resources.limits.ephemeral-storage | string | `"1Gi"` |  |

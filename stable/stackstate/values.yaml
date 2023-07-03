@@ -1234,6 +1234,8 @@ kafka:
     servers: stackstate-zookeeper-headless
   # kafka.enabled -- Enable / disable chart-based Kafka.
   enabled: true
+  podLabels:
+    app.kubernetes.io/part-of: stackstate
   volumePermissions:
     enabled: false
   ## kafka.defaultReplicationFactor -- Default replication factors for automatically created topics
@@ -1252,7 +1254,7 @@ kafka:
         custom-setup.sh: |-
           #!/bin/bash
 
-          ID="${MY_POD_NAME#"{{ template "kafka.fullname" . }}-"}"
+          ID="${MY_POD_NAME#"{{ include "common.names.fullname" . }}-"}"
 
           KAFKA_META_PROPERTIES=/bitnami/kafka/data/meta.properties
           if [[ -f ${KAFKA_META_PROPERTIES} ]]; then
@@ -1353,9 +1355,6 @@ kafka:
   persistence:
     # kafka.persistence.size -- Size of persistent volume for each Kafka pod
     size: 50Gi
-  # kafka.commonLabels -- Add additional labels to all resources created for kafka
-  commonLabels:
-    app.kubernetes.io/part-of: stackstate
   # kafka.podAnnotations -- Kafka Pod annotations.
   podAnnotations:
     ad.stackstate.com/jmx-exporter.check_names: '["openmetrics"]'
@@ -1376,6 +1375,16 @@ kafka:
   # kafka.zookeeper.enabled -- Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**.
   zookeeper:
     enabled: false
+  topic:
+    stsMetricsV2:
+      partitionCount: 10
+  pdb:
+    ## kafka.pdb.create Deploy a pdb object for the Kafka pod
+    create: true
+    ## kafka.pdb.minAvailable Maximum number/percentage of unavailable Kafka replicas
+    minAvailable: ""
+    ## kafka.pdb.maxUnavailable Maximum number/percentage of unavailable Kafka replicas
+    maxUnavailable: 1
 minio:
   # minio.replicas -- Number of MinIO replicas.
   replicas: 1
@@ -1409,6 +1418,8 @@ zookeeper:
   fourlwCommandsWhitelist: "mntr, ruok, stat, srvr"
   # zookeeper.fullnameOverride -- Name override for Zookeeper child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
   fullnameOverride: stackstate-zookeeper
+  podLabels:
+    app.kubernetes.io/part-of: stackstate
   image:
     # zookeeper.image.registry -- ZooKeeper image registry
     registry: quay.io
@@ -1425,8 +1436,6 @@ zookeeper:
       enabled: false
       # zookeeper.metrics.serviceMonitor.selector -- Default selector to use to target a certain Prometheus instance.
       selector: {}
-  commonLabels:
-    app.kubernetes.io/part-of: stackstate
   resources:
     limits:
       memory: "512Mi"
@@ -1443,6 +1452,13 @@ zookeeper:
     ad.stackstate.com/zookeeper.instances: '[ { "prometheus_url": "http://%%host%%:9141/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
   replicaCount: 3
+  pdb:
+    ## zookeeper.pdb.create Deploy a pdb object for the Zookeeper pod
+    create: true
+    ## zookeeper.pdb.minAvailable Maximum number/percentage of unavailable Zookeeper replicas
+    minAvailable: ""
+    ## zookeeper.pdb.maxUnavailable Maximum number/percentage of unavailable Zookeeper replicas
+    maxUnavailable: 1
 anomaly-detection:
   # anomaly-detection.enabled -- Enables anomaly detection chart
   enabled: true
