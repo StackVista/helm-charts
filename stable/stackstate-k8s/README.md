@@ -20,7 +20,6 @@ Current chart version is `1.0.3-snapshot.1`
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.31 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | kafka | 15.5.1 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
-| https://victoriametrics.github.io/helm-charts | vmagent(victoria-metrics-agent) | 0.8.38 |
 | https://victoriametrics.github.io/helm-charts | victoria-metrics-0(victoria-metrics-single) | 0.8.53 |
 | https://victoriametrics.github.io/helm-charts | victoria-metrics-1(victoria-metrics-single) | 0.8.53 |
 
@@ -596,12 +595,20 @@ stackstate/stackstate
 | stackstate.components.viewHealth.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
 | stackstate.components.viewHealth.sizing.javaHeapMemoryFraction | string | `"55"` |  |
 | stackstate.components.viewHealth.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.vmagent.affinity | object | `{"podAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchExpressions":[{"key":"app.kubernetes.io/component","operator":"In","values":["receiver"]},{"key":"app.kubernetes.io/instance","operator":"In","values":["stackstate"]}]},"topologyKey":"kubernetes.io/hostname"}]}}` | Affinity settings for vmagent pod. |
+| stackstate.components.vmagent.agentMetricsFilter | string | `"[\"vmagent*\"]"` |  |
+| stackstate.components.vmagent.extraArgs | object | `{}` |  |
+| stackstate.components.vmagent.image.repository | string | `"victoriametrics/vmagent"` |  |
+| stackstate.components.vmagent.image.tag | string | `"v1.91.0"` |  |
+| stackstate.components.vmagent.persistence.size | string | `"10Gi"` |  |
+| stackstate.components.vmagent.resources | object | `{"limits":{"cpu":"200m","ephemeral-storage":"1Gi","memory":"256Mi"},"requests":{"cpu":"200m","ephemeral-storage":"1Mi","memory":"256Mi"}}` | Resource allocation for vmagent pod. |
 | stackstate.components.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | stackstate.components.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
 | stackstate.components.wait.image.tag | string | `"1.0.8-a6ec1609"` | Container image tag for wait containers. |
 | stackstate.deployment | object | `{"mode":"SelfHosted"}` | Deployment settings for StackState |
 | stackstate.deployment.mode | string | `"SelfHosted"` | Deployment mode of StackState, possible values are 'SaaS' and 'SelfHosted' |
+| stackstate.experimental.enableVMAgent | bool | `true` |  |
 | stackstate.experimental.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |
 | stackstate.experimental.storeTransactionLogsToPVC.enabled | boolean | `false` | Whether the transcation logs for some services, API, Checks, HealthSync, ProblemProducer,State, Sync, and ViewHealth, have to be stored to PVCs instead of pod ephemeral storage. |
 | stackstate.experimental.storeTransactionLogsToPVC.volumeSize | string | `"600Mi"` | The size of the persistent volume for the transaction logs. |
@@ -655,17 +662,6 @@ stackstate/stackstate
 | victoria-metrics-1.server.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` |
 | victoria-metrics-1.server.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
 | victoria-metrics-1.server.serviceMonitor.interval | string | `"15s"` | Scrape interval for service monitor |
-| vmagent.affinity | object | `{"podAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchExpressions":[{"key":"app.kubernetes.io/component","operator":"In","values":["receiver"]},{"key":"app.kubernetes.io/instance","operator":"In","values":["stackstate"]}]},"topologyKey":"kubernetes.io/hostname"}]}}` | Affinity settings for vmagent pod |
-| vmagent.config.scrape_configs | list | `[]` |  |
-| vmagent.deployment.enabled | bool | `false` |  |
-| vmagent.rbac.create | bool | `false` |  |
-| vmagent.rbac.pspEnabled | bool | `false` |  |
-| vmagent.remoteWriteUrls[0] | string | `"http://stackstate-victoria-metrics-0:8428/api/v1/write"` |  |
-| vmagent.securityContext.runAsGroup | int | `65534` |  |
-| vmagent.securityContext.runAsNonRoot | bool | `true` |  |
-| vmagent.securityContext.runAsUser | int | `65534` |  |
-| vmagent.service.enabled | bool | `true` |  |
-| vmagent.statefulset.enabled | bool | `true` |  |
 | zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
 | zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |
 | zookeeper.fourlwCommandsWhitelist | string | `"mntr, ruok, stat, srvr"` | Zookeeper four-letter-word (FLW) commands that are enabled. |

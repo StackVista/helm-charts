@@ -1,0 +1,24 @@
+{{- define "stackstate.vmagent.service" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-vmagent
+  labels:
+    app.kubernetes.io/component: vmagent
+spec:
+  clusterIP: None
+{{- if .Values.stackstate.components.all.metrics.enabled }}
+  ports:
+    - name: http
+      port: 8429
+      protocol: TCP
+      targetPort: http
+{{- end }}
+  selector:
+    app.kubernetes.io/component: vmagent
+  type: ClusterIP
+{{- end -}}
+
+{{- if .Values.stackstate.experimental.enableVMAgent }}
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $vmagentService := fromYaml (include "stackstate.vmagent.service" .) -}}
+{{- toYaml (merge $vmagentService $commonService) -}}
+{{- end -}}

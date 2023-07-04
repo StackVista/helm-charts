@@ -1,0 +1,132 @@
+{{- define "stackstate.vmagent.container.init" -}}
+name: vmagent-init
+{{ $remoteWriteEndpoints := list }}
+{{- if index .Values "victoria-metrics-0" "enabled" }}
+{{- $remoteWriteEndpoints = append $remoteWriteEndpoints (include "stackstate.metrics.remoteWriteEndpoint" . | replace "$vmInstance" "0") -}}
+{{- end -}}
+{{- if index .Values "victoria-metrics-1" "enabled" }}
+{{- $remoteWriteEndpoints = append $remoteWriteEndpoints (include "stackstate.metrics.remoteWriteEndpoint" . | replace "$vmInstance" "1") -}}
+{{- end -}}
+command:
+- sh
+- -c
+- |
+  /entrypoint -c {{ join "," $remoteWriteEndpoints }} -t 300
+image: {{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}
+imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+{{- end -}}
+
+{{- define "stackstate.vmagent.container.main" -}}
+name: vmagent
+image: {{ .Values.stackstate.components.vmagent.image.repository }}:{{ .Values.stackstate.components.vmagent.image.tag }}
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.vmagent.image.pullPolicy | quote }}
+workingDir: /
+args:
+  - -remoteWrite.tmpDataPath=/tmpData
+  - -remoteWrite.maxDiskUsagePerURL="{{ .Values.stackstate.components.vmagent.persistence.size }}B"
+{{- if index .Values "victoria-metrics-0" "enabled" }}
+  - -remoteWrite.url={{ include "stackstate.metrics.remotewrite.url" . | replace "$vmInstance" "0" | quote }}
+{{- end }}
+{{- if index .Values "victoria-metrics-1" "enabled" }}
+  - -remoteWrite.url={{ include "stackstate.metrics.remotewrite.url" . | replace "$vmInstance" "1" | quote }}
+{{- end }}
+{{- range $key, $value := .Values.stackstate.components.vmagent.extraArgs }}
+  - -{{ $key }}={{ $value }}
+{{- end }}
+ports:
+  - name: http
+    containerPort: 8429
+readinessProbe:
+  httpGet:
+    path: /health
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 15
+livenessProbe:
+  tcpSocket:
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 15
+  timeoutSeconds: 5
+volumeMounts:
+  - name: tmpdata
+    mountPath: /tmpData
+{{- with .Values.stackstate.components.vmagent.resources }}
+resources:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end -}}
+
+{{- define "stackstate.vmagent.statefulset" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.vmagent.container.main" .) -}}
+{{- $stsstackstateVmagentMainContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.vmagent.container.init" .) -}}
+{{- $stsstackstateVmagentInitContainer := (merge $overrideContainer $commonContainer) -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-vmagent
+  labels:
+    app.kubernetes.io/component: vmagent
+spec:
+  replicas: {{ .Values.stackstate.components.receiver.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: vmagent
+  template:
+    metadata:
+      annotations:
+        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "8429" "container_name" "vmagent" "filter" .Values.stackstate.components.vmagent.agentMetricsFilter) | indent 8 }}
+      labels:
+        app.kubernetes.io/component: vmagent
+    spec:
+      initContainers:
+      - {{ toYaml $stsstackstateVmagentInitContainer | nindent 8 }}
+      containers:
+      - {{ toYaml $stsstackstateVmagentMainContainer | nindent 8 }}
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.vmagent.nodeSelector }}
+      nodeSelector:
+      {{- with .Values.stackstate.components.all.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.vmagent.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.vmagent.affinity }}
+      affinity:
+      {{- with .Values.stackstate.components.all.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.vmagent.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.vmagent.tolerations }}
+      tolerations:
+      {{- with .Values.stackstate.components.all.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.vmagent.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.stackstate.components.all.securityContext.enabled }}
+      securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
+    {{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: tmpdata
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ .Values.stackstate.components.vmagent.persistence.size | quote }}
+{{- end }}
+
+
+{{- if .Values.stackstate.experimental.enableVMAgent }}
+{{- $commonStatefulset := fromYaml (include "common.statefulset" .) -}}
+{{- $vmagentStatefulset := fromYaml (include "stackstate.vmagent.statefulset" .) -}}
+{{- toYaml (merge $vmagentStatefulset $commonStatefulset) -}}
+{{- end -}}
