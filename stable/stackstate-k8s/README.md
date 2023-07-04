@@ -441,20 +441,6 @@ stackstate/stackstate
 | stackstate.components.kafkaTopicCreate.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | stackstate.components.kafkaTopicCreate.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
 | stackstate.components.kafkaTopicCreate.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| stackstate.components.mm2es.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.mm2es.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.mm2es.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.mm2es.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.mm2es.image.pullPolicy | string | `""` | `pullPolicy` used for the `mm2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.mm2es.image.repository | string | `"stackstate/stackstate-kafka-to-es"` | Repository of the mm2es component Docker image. |
-| stackstate.components.mm2es.image.tag | string | `""` | Tag used for the `mm2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.mm2es.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.mm2es.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `mm2es` pods. |
-| stackstate.components.mm2es.replicaCount | int | `1` | Number of `mm2es` replicas. |
-| stackstate.components.mm2es.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"1Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"1Gi"}}` | Resource allocation for `mm2es` pods. |
-| stackstate.components.mm2es.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
-| stackstate.components.mm2es.sizing.javaHeapMemoryFraction | string | `"50"` |  |
-| stackstate.components.mm2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.nginxPrometheusExporter.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.registry | string | `"quay.io"` | Base container image registry for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.repository | string | `"stackstate/nginx-prometheus-exporter"` | Base container image repository for nginx-prometheus-exporter containers. |

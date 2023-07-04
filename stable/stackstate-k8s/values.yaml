@@ -479,45 +479,6 @@ stackstate:
       affinity: {}
       # stackstate.components.kafka2prom.additionalLogging -- Additional logback config
       additionalLogging: ""
-    mm2es:
-      extraEnv:
-        # stackstate.components.mm2es.extraEnv.open -- Extra open environment variables to inject into pods.
-        open: {}
-        # stackstate.components.mm2es.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
-        secret: {}
-      image:
-        # stackstate.components.mm2es.image.pullPolicy -- `pullPolicy` used for the `mm2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
-        pullPolicy: ""
-        # stackstate.components.mm2es.image.repository -- Repository of the mm2es component Docker image.
-        repository: stackstate/stackstate-kafka-to-es
-        # stackstate.components.mm2es.image.tag -- Tag used for the `mm2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: ""
-      # stackstate.components.mm2es.poddisruptionbudget -- PodDisruptionBudget settings for `mm2es` pods.
-      poddisruptionbudget:
-        maxUnavailable: 1
-      # stackstate.components.mm2es.resources -- Resource allocation for `mm2es` pods.
-      resources:
-        limits:
-          memory: "1Gi"
-          cpu: "1000m"
-          ephemeral-storage: "1Gi"
-        requests:
-          memory: "1Gi"
-          cpu: "1000m"
-          ephemeral-storage: "1Mi"
-      sizing:
-        baseMemoryConsumption: "300Mi"
-        javaHeapMemoryFraction: "50"
-      # stackstate.components.mm2es.replicaCount -- Number of `mm2es` replicas.
-      replicaCount: 1
-      # stackstate.components.mm2es.nodeSelector -- Node labels for pod assignment.
-      nodeSelector: {}
-      # stackstate.components.mm2es.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
-      # stackstate.components.mm2es.affinity -- Affinity settings for pod assignment.
-      affinity: {}
-      # stackstate.components.mm2es.additionalLogging -- Additional logback config
-      additionalLogging: ""
     e2es:
       extraEnv:
         # stackstate.components.e2es.extraEnv.open -- Extra open environment variables to inject into pods.

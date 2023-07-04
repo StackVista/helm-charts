@@ -186,15 +186,6 @@ checksum/kafka2prom-env: {{ include (print $.Template.BasePath "/secret-kafka2pr
 {{- end -}}
 
 {{/*
-MM2ES secret checksum annotations
-*/}}
-{{- define "stackstate.mm2es.secret.checksum" -}}
-{{- if .Values.stackstate.components.mm2es.extraEnv.secret }}
-checksum/mm2es-env: {{ include (print $.Template.BasePath "/secret-mm2es.yaml") . | sha256sum }}
-{{- end }}
-{{- end -}}
-
-{{/*
 E2ES secret checksum annotations
 */}}
 {{- define "stackstate.e2es.secret.checksum" -}}
