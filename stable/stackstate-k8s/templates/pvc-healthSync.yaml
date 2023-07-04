@@ -15,19 +15,19 @@ spec:
 {{- toYaml (merge $stackstateHealthSyncPVCTxLog $commonPVC) -}}
 {{- end -}}
 
-{{- if and (eq .Values.stackstate.components.healthSync.cache.backend "mapdb") .Values.stackstate.components.healthSync.cache.mapdb.volume }}
+{{- if .Values.stackstate.components.healthSync.tmpToPVC }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "common.fullname.short" . }}-health-sync-mapdb
+  name: {{ template "common.fullname.short" . }}-health-sync-tmp
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.stackstate.components.healthSync.cache.mapdb.volume.storage }}
-  {{- if .Values.stackstate.components.healthSync.cache.mapdb.volume.storageClassName }}
-  storageClassName: {{ .Values.stackstate.components.healthSync.cache.mapdb.volume.storageClassName | quote }}
+      storage: {{ .Values.stackstate.components.healthSync.tmpToPVC.volumeSize }}
+  {{- if .Values.stackstate.components.healthSync.tmpToPVC.storageClassName }}
+  storageClassName: {{ .Values.stackstate.components.healthSync.tmpToPVC.storageClassName | quote }}
   {{- end }}
 {{- end}}

@@ -391,9 +391,6 @@ stackstate/stackstate
 | stackstate.components.healthSync.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.healthSync.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.healthSync.cache.backend | string | `"mapdb"` | Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory |
-| stackstate.components.healthSync.cache.mapdb.volume | object | `{"storage":"2Gi","storageClassName":null}` | Configuration of Persistent Volume used by mapdb, empty - use Ephemeral Storage. |
-| stackstate.components.healthSync.cache.mapdb.volume.storage | string | `"2Gi"` | Size of Persistent Volume used by mapdb (cache backend used by the service) |
-| stackstate.components.healthSync.cache.mapdb.volume.storageClassName | string | `nil` | Storage class name of Persistent Volume used by mapdb (cache backend used by the service). It is a cache so it should be the fastest possible. |
 | stackstate.components.healthSync.config | string | `""` | Configuration file contents to customize the default StackState healthSync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.healthSync.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.healthSync.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
@@ -407,6 +404,9 @@ stackstate/stackstate
 | stackstate.components.healthSync.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `healthSync` pods. |
 | stackstate.components.healthSync.sizing.baseMemoryConsumption | string | `"450Mi"` |  |
 | stackstate.components.healthSync.sizing.javaHeapMemoryFraction | string | `"45"` |  |
+| stackstate.components.healthSync.tmpToPVC | object | `{"storageClassName":null,"volumeSize":"2Gi"}` | Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage. |
+| stackstate.components.healthSync.tmpToPVC.storageClassName | string | `nil` | Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible. |
+| stackstate.components.healthSync.tmpToPVC.volumeSize | string | `"2Gi"` | The size of the PersistentVolume for "/tmp" directory. |
 | stackstate.components.healthSync.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.initializer.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.initializer.affinity | object | `{}` | Affinity settings for pod assignment. |
