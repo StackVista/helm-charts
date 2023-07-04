@@ -47,7 +47,7 @@ createOrUpdateTopic "sts_correlate_endpoints" "10" "${ephemeralRetention}" &
 PIDS+=($!)
 createOrUpdateTopic "sts_trace_events" "10" "${ephemeralRetention}" &
 PIDS+=($!)
-createOrUpdateTopic "sts_http_traces" "10" "${ephemeralRetention}" &
+createOrUpdateTopic "sts_correlate_http_trace_observations" "10" "${ephemeralRetention}" &
 PIDS+=($!)
 
 createOrUpdateTopic "sts_health_sync" "10" "${persistentRetention}" &
