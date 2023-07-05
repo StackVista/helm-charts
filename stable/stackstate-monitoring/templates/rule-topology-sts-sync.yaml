@@ -14,9 +14,9 @@ spec:
       rules:
         - alert: StackStateTopologySyncBlocked
           annotations:
-            message: {{`The topology sync {{ $labels.worker_name }} in {{ $labels.namespace }}, path {{ $labels.path }}, has been blocked for {{ $value }} seconds.`}}
+            message: {{`The topology sync {{ $labels.worker_name }}in {{ $labels.namespace }}, path {{ $labels.path }}, has been block for {{ $value }} seconds.`}}
           expr: |
-            stackstate_sync_blocked_duration_seconds{namespace=~{{ .Values.rules.namespaceRegex | quote }}} > 180
+            stackstate_sync_blocked_duration_seconds{namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="sync"} > 180
           for: 1m
           labels:
             severity: critical
