@@ -16,7 +16,7 @@ spec:
           annotations:
             message: {{`The receiver in {{ $labels.namespace }}, path {{ $labels.path }}, has high element budget saturation level {{ $value }}.`}}
           expr: |
-            stackstate_receiver_unique_element_passed_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~".*.stackstate-receiver"} / stackstate_receiver_unique_element_passed_max{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~".*.stackstate-receiver"} > 0.95
+            stackstate_receiver_unique_element_passed_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}} / stackstate_receiver_unique_element_passed_max{namespace=~{{ .Values.rules.namespaceRegex | quote }}} > 0.95
           for: 5m
           labels:
             severity: warning
@@ -25,7 +25,7 @@ spec:
           annotations:
             message: {{`The receiver in {{ $labels.namespace }}, path {{ $labels.path }}, has high element hourly budget saturation level {{ $value }}.`}}
           expr: |
-            stackstate_receiver_element_create_passed_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~".*.stackstate-receiver"} / stackstate_receiver_element_create_passed_max{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~".*.stackstate-receiver"} > 0.95
+            stackstate_receiver_element_create_passed_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}} / stackstate_receiver_element_create_passed_max{namespace=~{{ .Values.rules.namespaceRegex | quote }}} > 0.95
           for: 5m
           labels:
             severity: warning
@@ -34,7 +34,7 @@ spec:
           annotations:
             message: {{`The receiver in {{ $labels.namespace }}, path {{ $labels.path }}, exceeds the limit for total number of {{ $labels.element_type }}.`}}
           expr: |
-            stackstate_receiver_unique_element_passed_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~".*.stackstate-receiver"} > stackstate_receiver_unique_element_passed_max{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~".*.stackstate-receiver"}
+            stackstate_receiver_unique_element_passed_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}} > stackstate_receiver_unique_element_passed_max{namespace=~{{ .Values.rules.namespaceRegex | quote }}}
           for: 5m
           labels:
             severity: warning
@@ -43,7 +43,7 @@ spec:
           annotations:
             message: {{`The receiver in {{ $labels.namespace }}, path {{ $labels.path }}, exceeds the hourly limit for {{ $labels.element_type }}.`}}
           expr: |
-            stackstate_receiver_element_create_passed_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~".*.stackstate-receiver"} > stackstate_receiver_element_create_passed_max{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~".*.stackstate-receiver"}
+            stackstate_receiver_element_create_passed_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}} > stackstate_receiver_element_create_passed_max{namespace=~{{ .Values.rules.namespaceRegex | quote }}}
           for: 5m
           labels:
             severity: warning
@@ -53,7 +53,7 @@ spec:
             message: {{`The \# of active requests for StackState receiver in {{ $labels.namespace }} has only been growing for the last 5 minutes.`}}
             runbook_url: https://www.notion.so/stackstate/Runbook-Receiver-increasing-active-requests-count-2486fb1560a44f85b107c5a69e29d66d
           expr: |
-            sum(delta(akka_http_requests_active{namespace=~{{ .Values.rules.namespaceRegex | quote }}, service=~".*.stackstate-receiver"}[1m])) > 0
+            sum(delta(akka_http_requests_active{namespace=~{{ .Values.rules.namespaceRegex | quote }}}[1m])) > 0
           for: 5m
           labels:
             severity: critical
