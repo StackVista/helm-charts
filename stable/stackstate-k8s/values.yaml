@@ -969,11 +969,11 @@ stackstate:
       resources:
         limits:
           cpu: "200m"
-          memory: "256Mi"
-          ephemeral-storage: "1Gi"
+          memory: "128Mi"
+          ephemeral-storage: "100Mi"
         requests:
           cpu: "200m"
-          memory: "256Mi"
+          memory: "128Mi"
           ephemeral-storage: "1Mi"
       # stackstate.components.vmagent.affinity -- Affinity settings for vmagent pod.
       affinity:

@@ -587,7 +587,7 @@ stackstate/stackstate
 | stackstate.components.vmagent.image.repository | string | `"victoriametrics/vmagent"` |  |
 | stackstate.components.vmagent.image.tag | string | `"v1.91.0"` |  |
 | stackstate.components.vmagent.persistence.size | string | `"10Gi"` |  |
-| stackstate.components.vmagent.resources | object | `{"limits":{"cpu":"200m","ephemeral-storage":"1Gi","memory":"256Mi"},"requests":{"cpu":"200m","ephemeral-storage":"1Mi","memory":"256Mi"}}` | Resource allocation for vmagent pod. |
+| stackstate.components.vmagent.resources | object | `{"limits":{"cpu":"200m","ephemeral-storage":"100Mi","memory":"128Mi"},"requests":{"cpu":"200m","ephemeral-storage":"1Mi","memory":"128Mi"}}` | Resource allocation for vmagent pod. |
 | stackstate.components.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | stackstate.components.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |

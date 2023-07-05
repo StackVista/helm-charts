@@ -1,35 +1,43 @@
+{{- define "stackstate.vmagent.targets" -}}
+instances:
+{{ if index .Values "victoria-metrics-0" "enabled" }}
+  - url: {{ (include "stackstate.metrics.remotewrite.url" . | replace "$vmInstance" "0") }}
+    endpoint: {{ (include "stackstate.metrics.remoteWriteEndpoint" . | replace "$vmInstance" "0") }}
+{{- end -}}
+{{ if index .Values "victoria-metrics-1" "enabled" }}
+  - url: {{ (include "stackstate.metrics.remotewrite.url" . | replace "$vmInstance" "1") }}
+    endpoint: {{ (include "stackstate.metrics.remoteWriteEndpoint" . | replace "$vmInstance" "1") }}
+{{- end -}}
+{{- end -}}
+
 {{- define "stackstate.vmagent.container.init" -}}
+{{- $targets := fromYaml (include "stackstate.vmagent.targets" .) -}}
+{{- $endpoints := list -}}
+{{- range $targets.instances -}}
+{{- $endpoints = append $endpoints .endpoint -}}
+{{- end -}}
 name: vmagent-init
-{{ $remoteWriteEndpoints := list }}
-{{- if index .Values "victoria-metrics-0" "enabled" }}
-{{- $remoteWriteEndpoints = append $remoteWriteEndpoints (include "stackstate.metrics.remoteWriteEndpoint" . | replace "$vmInstance" "0") -}}
-{{- end -}}
-{{- if index .Values "victoria-metrics-1" "enabled" }}
-{{- $remoteWriteEndpoints = append $remoteWriteEndpoints (include "stackstate.metrics.remoteWriteEndpoint" . | replace "$vmInstance" "1") -}}
-{{- end -}}
 command:
 - sh
 - -c
 - |
-  /entrypoint -c {{ join "," $remoteWriteEndpoints }} -t 300
+  /entrypoint -c {{ join "," $endpoints }} -t 300
 image: {{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}
 imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
 {{- end -}}
 
 {{- define "stackstate.vmagent.container.main" -}}
+{{- $targets := fromYaml (include "stackstate.vmagent.targets" .) -}}
 name: vmagent
 image: {{ .Values.stackstate.components.vmagent.image.repository }}:{{ .Values.stackstate.components.vmagent.image.tag }}
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.vmagent.image.pullPolicy | quote }}
 workingDir: /
 args:
   - -remoteWrite.tmpDataPath=/tmpData
-  - -remoteWrite.maxDiskUsagePerURL="{{ .Values.stackstate.components.vmagent.persistence.size }}B"
-{{- if index .Values "victoria-metrics-0" "enabled" }}
-  - -remoteWrite.url={{ include "stackstate.metrics.remotewrite.url" . | replace "$vmInstance" "0" | quote }}
-{{- end }}
-{{- if index .Values "victoria-metrics-1" "enabled" }}
-  - -remoteWrite.url={{ include "stackstate.metrics.remotewrite.url" . | replace "$vmInstance" "1" | quote }}
-{{- end }}
+  - -remoteWrite.maxDiskUsagePerURL="{{ div (include "stackstate.storage.to.megabytes" .Values.stackstate.components.vmagent.persistence.size) (len $targets.instances) }}MiB"
+{{ range $targets.instances }}
+  - -remoteWrite.url={{ .url }}
+{{- end -}}
 {{- range $key, $value := .Values.stackstate.components.vmagent.extraArgs }}
   - -{{ $key }}={{ $value }}
 {{- end }}
