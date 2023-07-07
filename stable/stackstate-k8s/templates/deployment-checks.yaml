@@ -77,6 +77,10 @@ volumeMounts:
 - name: config-secrets-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
+{{- if .Values.stackstate.components.checks.tmpToPVC }}
+- name: tmp-volume
+  mountPath: /tmp
+{{- end}}
 {{- include "stackstate.service.container.volumes" . }}
 {{- if .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled }}
 {{ include "stackstate.service.transactionLog.volumeMount" . }}
@@ -164,6 +168,11 @@ spec:
         - name: config-secrets-volume
           secret:
             secretName: {{ template "common.fullname.short" . }}-checks
+        {{- if .Values.stackstate.components.checks.tmpToPVC }}
+        - name: tmp-volume
+          persistentVolumeClaim:
+            claimName: {{ template "common.fullname.short" . }}-checks-tmp
+        {{- end}}
         {{- include "stackstate.service.pod.volumes" (dict "pod_name" "checks" "root" . ) | nindent 8 }}
         {{- if .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled }}
         {{- include "stackstate.service.transactionLog.volume" (dict "pod_name" "checks" "root" . ) | nindent 8 }}

@@ -14,3 +14,20 @@ spec:
 {{- $stackstateStatePVCTxLog := fromYaml (include "stackstate.state.persistentvolumeclaim.txLog" .) -}}
 {{- toYaml (merge $stackstateStatePVCTxLog $commonPVC) -}}
 {{- end -}}
+
+{{- if .Values.stackstate.components.state.tmpToPVC }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "common.fullname.short" . }}-state-tmp
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.stackstate.components.state.tmpToPVC.volumeSize }}
+  {{- if .Values.stackstate.components.state.tmpToPVC.storageClassName }}
+  storageClassName: {{ .Values.stackstate.components.state.tmpToPVC.storageClassName | quote }}
+  {{- end }}
+{{- end}}

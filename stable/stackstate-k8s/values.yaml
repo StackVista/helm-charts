@@ -366,6 +366,12 @@ stackstate:
       config: ""
       # stackstate.components.checks.additionalLogging -- Additional logback config
       additionalLogging: ""
+      # stackstate.components.checks.tmpToPVC -- Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage.
+      tmpToPVC:
+        # stackstate.components.checks.tmpToPVC.volumeSize -- (string) The size of the PersistentVolume for "/tmp" directory.
+        volumeSize: 2Gi
+        # stackstate.components.checks.tmpToPVC.storageClassName -- (string) Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible.
+        storageClassName: null
     healthSync:
       extraEnv:
         # stackstate.components.healthSync.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -743,6 +749,12 @@ stackstate:
       config: ""
       # stackstate.components.state.additionalLogging -- Additional logback config
       additionalLogging: ""
+      # stackstate.components.state.tmpToPVC -- Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage.
+      tmpToPVC:
+        # stackstate.components.state.tmpToPVC.volumeSize -- (string) The size of the PersistentVolume for "/tmp" directory.
+        volumeSize: 2Gi
+        # stackstate.components.state.tmpToPVC.storageClassName -- (string) Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible.
+        storageClassName: null
     sync:
       extraEnv:
         # stackstate.components.sync.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -789,6 +801,12 @@ stackstate:
       cache:
         # stackstate.components.sync.cache.backend -- Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory
         backend: "mapdb"
+      # stackstate.components.sync.tmpToPVC -- Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage.
+      tmpToPVC:
+        # stackstate.components.sync.tmpToPVC.volumeSize -- (string) The size of the PersistentVolume for "/tmp" directory.
+        volumeSize: 2Gi
+        # stackstate.components.sync.tmpToPVC.storageClassName -- (string) Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible.
+        storageClassName: null
     slicing:
       extraEnv:
         # stackstate.components.slicing.extraEnv.open -- Extra open environment variables to inject into pods.
