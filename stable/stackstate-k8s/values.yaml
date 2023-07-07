@@ -978,18 +978,20 @@ stackstate:
       # stackstate.components.vmagent.affinity -- Affinity settings for vmagent pod.
       affinity:
         podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app.kubernetes.io/component
-                operator: In
-                values:
-                - receiver
-              - key: app.kubernetes.io/instance
-                operator: In
-                values:
-                - stackstate
-            topologyKey: kubernetes.io/hostname
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 80
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/component
+                  operator: In
+                  values:
+                  - receiver
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                  - stackstate
+              topologyKey: kubernetes.io/hostname
       agentMetricsFilter: '["vmagent*"]'
     wait:
       image:
