@@ -587,7 +587,7 @@ stackstate/stackstate
 | stackstate.components.vmagent.image.repository | string | `"victoriametrics/vmagent"` |  |
 | stackstate.components.vmagent.image.tag | string | `"v1.91.0"` |  |
 | stackstate.components.vmagent.persistence.size | string | `"10Gi"` |  |
-| stackstate.components.vmagent.resources | object | `{"limits":{"cpu":"200m","ephemeral-storage":"100Mi","memory":"128Mi"},"requests":{"cpu":"200m","ephemeral-storage":"1Mi","memory":"128Mi"}}` | Resource allocation for vmagent pod. |
+| stackstate.components.vmagent.resources | object | `{"limits":{"cpu":"200m","ephemeral-storage":"100Mi","memory":"512Mi"},"requests":{"cpu":"200m","ephemeral-storage":"1Mi","memory":"256Mi"}}` | Resource allocation for vmagent pod. |
 | stackstate.components.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | stackstate.components.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
@@ -618,7 +618,7 @@ stackstate/stackstate
 | victoria-metrics-0.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Annotations for Victoria Metrics server pod |
 | victoria-metrics-0.server.podLabels | object | `{"stackstate-service":"victoriametrics"}` | Extra labels for Victoria Metrics pod |
 | victoria-metrics-0.server.resources.limits.cpu | int | `1` |  |
-| victoria-metrics-0.server.resources.limits.memory | string | `"3584Mi"` |  |
+| victoria-metrics-0.server.resources.limits.memory | string | `"4Gi"` |  |
 | victoria-metrics-0.server.resources.requests.cpu | string | `"200m"` |  |
 | victoria-metrics-0.server.resources.requests.memory | string | `"3584Mi"` |  |
 | victoria-metrics-0.server.retentionPeriod | int | `1` | How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1) |

@@ -969,11 +969,11 @@ stackstate:
       resources:
         limits:
           cpu: "200m"
-          memory: "128Mi"
+          memory: "512Mi"
           ephemeral-storage: "100Mi"
         requests:
           cpu: "200m"
-          memory: "128Mi"
+          memory: "256Mi"
           ephemeral-storage: "1Mi"
       # stackstate.components.vmagent.affinity -- Affinity settings for vmagent pod.
       affinity:
@@ -1641,7 +1641,7 @@ victoria-metrics-0:
         cpu: 200m
         memory: 3584Mi
       limits:
-        memory: 3584Mi
+        memory: 4Gi
         cpu: 1
     scrape:
       # victoria-metrics-0.server.scrape.enabled -- StackState doesn't use the scraping of VictoriaMetrics
