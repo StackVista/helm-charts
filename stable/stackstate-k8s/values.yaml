@@ -1709,7 +1709,7 @@ victoria-metrics-1:
         cpu: 200m
         memory: 3584Mi
       limits:
-        memory: 3584Mi
+        memory: 4Gi
         cpu: 1
     scrape:
       # victoria-metrics-1.server.scrape.enabled -- StackState doesn't use the scraping of VictoriaMetrics

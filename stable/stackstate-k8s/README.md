@@ -639,7 +639,7 @@ stackstate/stackstate
 | victoria-metrics-1.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Annotations for Victoria Metrics server pod |
 | victoria-metrics-1.server.podLabels | object | `{"stackstate-service":"victoriametrics"}` | Extra arguments for Victoria Metrics pod |
 | victoria-metrics-1.server.resources.limits.cpu | int | `1` |  |
-| victoria-metrics-1.server.resources.limits.memory | string | `"3584Mi"` |  |
+| victoria-metrics-1.server.resources.limits.memory | string | `"4Gi"` |  |
 | victoria-metrics-1.server.resources.requests.cpu | string | `"200m"` |  |
 | victoria-metrics-1.server.resources.requests.memory | string | `"3584Mi"` |  |
 | victoria-metrics-1.server.retentionPeriod | int | `1` | How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1) |
