@@ -28,7 +28,7 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/name: {{ include "stackstate-k8s-agent.name" . }}
     spec:
-      {{- include "stackstate-k8s-agent.image.pullSecret.name" (dict "images" (list .Values.checksAgent.image) "context" $) | nindent 6 }}
+      {{- include "stackstate-k8s-agent.image.pullSecret.name" (dict "images" (list .Values.checksAgent.image .Values.all.image) "context" $) | nindent 6 }}
     {{- if .Values.all.hardening.enabled}}
       terminationGracePeriodSeconds: 120
     {{- end }}
