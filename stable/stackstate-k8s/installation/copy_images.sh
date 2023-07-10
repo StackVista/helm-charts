@@ -7,7 +7,7 @@ is_ecr_re='\.ecr\..*\.amazonaws\.com'
 repo_and_tag_re='^([^/:]+/)?([^/:]+/[^/:]+):([^/:]+)$'
 nc="\033[0m"
 red="\\033[0;31m"
-helm_chart=stackstate
+helm_chart=stackstate-k8s
 helm_repository=https://helm.stackstate.io
 helm_values="backup.enabled=true,minio.accessKey=ABCDEFGH,minio.secretKey=ABCDEFGHABCDEFGH,stackstate.baseUrl=http://dummy.stackstate.io,stackstate.admin.authentication.password=dummy,stackstate.authentication.adminPassword=dummy,stackstate.license.key=dummy,global.receiverApiKey=dummy"
 dry_run=false
@@ -47,7 +47,10 @@ shift $((OPTIND -1))
 
 #
 images=()
-while IFS='' read -r line; do images+=("$line"); done < <(helm template stackstate "$helm_chart" --repo "$helm_repository" --set "$helm_values" | grep image: | sed -E 's/^.*image: ['\''"]?([^'\''"]*)['\''"]?.*$/\1/')
+while IFS='' read -r line; do images+=("$line"); done < <(helm template stackstate-k8s "$helm_chart" --repo "$helm_repository" --set "$helm_values" | grep image: | sed -E 's/^.*image: ['\''"]?([^'\''"]*)['\''"]?.*$/\1/')
+# Remove duplicates
+IFS=" " read -r -a images <<< "$(echo "${images[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ')"
+
 for src_image in "${images[@]}"
 do
     if [[ "$src_image" =~ $repo_and_tag_re ]]; then
