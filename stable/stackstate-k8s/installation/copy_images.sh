@@ -19,6 +19,8 @@ Copy Docker images needed for StackState chart to another Docker image registry
 
 Arguments:
     -c : Helm chart (default: $helm_chart)
+    -u : StackState repository username (required)
+    -p : StackState repository password (required)
     -d : Destination Docker image registry (required)
     -h : Show this help text
     -r : Helm repository (default: $helm_repository)
@@ -28,9 +30,11 @@ EOF
 
 
 # parse options
-while getopts "c:d:hr:t" opt; do
+while getopts "c:u:p::d:hr:t" opt; do
   case "$opt" in
   c) helm_chart=$OPTARG ;;
+  u) src_registry_username=$OPTARG ;;
+  p) src_registry_password=$OPTARG ;;
   d) dest_registry=$OPTARG ;;
   h) usage; exit ;;
   r) helm_repository=$OPTARG ;;
@@ -43,6 +47,11 @@ done
 shift $((OPTIND -1))
 
 [ -z "$dest_registry" ] && echo -e "${red}Provide the destination registry with the -d flag${nc}" && usage && exit 1
+
+[ -z "$src_registry_username" ] && echo -e "${red}Provide the StackState repository username with the -u flag${nc}" && usage && exit 1
+[ -z "$src_registry_password" ] && echo -e "${red}Provide the StackState repository password with the -p flag${nc}" && usage && exit 1
+
+docker container run -i --rm --net host -v "$(pwd)/regctl:/home/appuser/.regctl/" ghcr.io/regclient/regctl:latest registry login -u "$src_registry_username" -p "$src_registry_password" "quay.io"
 
 
 #
@@ -65,10 +74,7 @@ do
                 aws ecr describe-repositories --repository-names "$repo" >/dev/null 2>/dev/null || aws ecr create-repository --repository-name "$repo" > /dev/null
             fi
             echo "Copying $src_image to $dest_image"
-            docker pull "$src_image"
-            docker tag "$src_image" "$dest_image"
-            docker push "$dest_image"
-            docker rmi "$dest_image"
+            docker container run -i --rm --net host  -v "$(pwd)/regctl:/home/appuser/.regctl/" ghcr.io/regclient/regctl:latest image copy "$src_image" "$dest_image"
         fi
     else
         1>&2 echo "Cannot determine repository and tag for $src_image"

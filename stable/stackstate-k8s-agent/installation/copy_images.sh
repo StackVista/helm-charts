@@ -62,10 +62,7 @@ do
                 aws ecr describe-repositories --repository-names "$repo" >/dev/null 2>/dev/null || aws ecr create-repository --repository-name "$repo" > /dev/null
             fi
             echo "Copying $src_image to $dest_image"
-            docker pull "$src_image"
-            docker tag "$src_image" "$dest_image"
-            docker push "$dest_image"
-            docker rmi "$dest_image"
+            docker container run -i --rm --net host  ghcr.io/regclient/regctl:latest image copy "$src_image" "$dest_image"
         fi
     else
         1>&2 echo "Cannot determine repository and tag for $src_image"
