@@ -29,7 +29,7 @@ imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote 
 {{- define "stackstate.vmagent.container.main" -}}
 {{- $targets := fromYaml (include "stackstate.vmagent.targets" .) -}}
 name: vmagent
-image: {{ .Values.stackstate.components.vmagent.image.repository }}:{{ .Values.stackstate.components.vmagent.image.tag }}
+image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.vmagent.image.repository }}:{{ .Values.stackstate.components.vmagent.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.vmagent.image.pullPolicy | quote }}
 workingDir: /
 args:

@@ -960,7 +960,7 @@ stackstate:
           ephemeral-storage: "1Mi"
     vmagent:
       image:
-        repository: victoriametrics/vmagent
+        repository: stackstate/vmagent
         tag: v1.91.0
       extraArgs: {}
       persistence:

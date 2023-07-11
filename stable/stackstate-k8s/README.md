@@ -584,7 +584,7 @@ stackstate/stackstate
 | stackstate.components.vmagent.affinity | object | `{"podAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app.kubernetes.io/component","operator":"In","values":["receiver"]},{"key":"app.kubernetes.io/instance","operator":"In","values":["stackstate"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":80}]}}` | Affinity settings for vmagent pod. |
 | stackstate.components.vmagent.agentMetricsFilter | string | `"[\"vmagent*\"]"` |  |
 | stackstate.components.vmagent.extraArgs | object | `{}` |  |
-| stackstate.components.vmagent.image.repository | string | `"victoriametrics/vmagent"` |  |
+| stackstate.components.vmagent.image.repository | string | `"stackstate/vmagent"` |  |
 | stackstate.components.vmagent.image.tag | string | `"v1.91.0"` |  |
 | stackstate.components.vmagent.persistence.size | string | `"10Gi"` |  |
 | stackstate.components.vmagent.resources | object | `{"limits":{"cpu":"200m","ephemeral-storage":"100Mi","memory":"512Mi"},"requests":{"cpu":"200m","ephemeral-storage":"1Mi","memory":"256Mi"}}` | Resource allocation for vmagent pod. |
