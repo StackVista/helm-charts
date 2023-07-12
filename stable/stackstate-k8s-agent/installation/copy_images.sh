@@ -10,7 +10,7 @@ red="\\033[0;31m"
 helm_release=release
 helm_chart="stackstate/stackstate-k8s-agent"
 helm_repository=https://helm.stackstate.io
-helm_values="stackstate.apiKey=APIKEY,stackstate.cluster.name=THISCLUSTERNAME,stackstate.url=http://dummy.stackstate.io"
+helm_values="stackstate.apiKey=APIKEY,stackstate.cluster.name=dummy-cluster,stackstate.url=http://dummy.stackstate.io"
 dry_run=false
 
 # usage
