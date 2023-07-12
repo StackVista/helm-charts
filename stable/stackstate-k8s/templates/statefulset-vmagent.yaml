@@ -87,6 +87,7 @@ spec:
       labels:
         app.kubernetes.io/component: vmagent
     spec:
+      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
       initContainers:
       - {{ toYaml $stsstackstateVmagentInitContainer | nindent 8 }}
       containers:
