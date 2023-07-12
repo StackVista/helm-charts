@@ -19,7 +19,7 @@ env:
   value: "false"
 - name: CORRELATE_WRITE_STS_METRICS
   value: "true"
-image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.correlate.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.correlate.image.tag }}"
+image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.correlate.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.correlate.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.correlate.image.pullPolicy | quote }}
 livenessProbe:
   httpGet:

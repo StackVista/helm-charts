@@ -52,7 +52,7 @@ env:
   # Only stuff that is used often is cached
 - name: CONFIG_FORCE_stackgraph_vertex_cache_expireAfterSeconds
   value: "600"
-image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.sync.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.sync.image.tag }}"
+image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.sync.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.sync.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.sync.image.pullPolicy | quote }}
 name: sync
 ports:

@@ -43,7 +43,7 @@ env:
   # When seeing a new change takes more than an hour, we can start dropping stuff from cache
 - name: CONFIG_FORCE_stackgraph_vertex_cache_expireAfterSeconds
   value: "3600"
-image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.viewHealth.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.viewHealth.image.tag }}"
+image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.viewHealth.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.viewHealth.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.viewHealth.image.pullPolicy | quote }}
 name: view-health
 ports:

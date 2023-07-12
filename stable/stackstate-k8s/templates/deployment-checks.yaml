@@ -45,7 +45,7 @@ env:
   value: "10"
 - name: CONFIG_FORCE_stackstate_domainActorPool_fractionOfMemoryReservedForChecks
   value: "0.80"
-image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.checks.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.checks.image.tag }}"
+image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.checks.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.checks.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.checks.image.pullPolicy | quote }}
 name: checks
 ports:

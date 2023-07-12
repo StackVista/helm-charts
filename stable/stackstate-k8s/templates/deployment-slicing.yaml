@@ -39,7 +39,7 @@ env:
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
 - name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
   value: "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
-image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.slicing.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.slicing.image.tag }}"
+image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.slicing.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.slicing.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.slicing.image.pullPolicy | quote }}
 name: slicing
 ports:

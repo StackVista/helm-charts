@@ -45,7 +45,7 @@ env:
       key: sts-license-key
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
-image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.healthSync.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.healthSync.image.tag }}"
+image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.healthSync.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.healthSync.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.healthSync.image.pullPolicy | quote }}
 name: health-sync
 ports:

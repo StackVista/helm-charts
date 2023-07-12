@@ -36,7 +36,7 @@ env:
     secretKeyRef:
       name: {{ template "common.fullname.short" . }}-receiver
       key: sts-receiver-api-key
-image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.receiver.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.receiver.image.tag }}"
+image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.receiver.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.receiver.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.receiver.image.pullPolicy | quote }}
 name: receiver
 args:

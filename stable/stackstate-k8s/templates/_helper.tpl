@@ -2,10 +2,14 @@
 Return the image registry
 */}}
 {{- define "stackstate.image.registry" -}}
-  {{- if .Values.global }}
-    {{- .Values.global.imageRegistry | default .Values.stackstate.components.all.image.registry -}}
+  {{- if ((.ServiceConfig).image).imageRegistry -}}
+    {{- .ServiceConfig.image.imageRegistry -}}
   {{- else -}}
-    {{- .Values.stackstate.components.all.image.registry -}}
+    {{- if .Values.global }}
+      {{- .Values.global.imageRegistry | default .Values.stackstate.components.all.image.registry -}}
+    {{- else -}}
+      {{- .Values.stackstate.components.all.image.registry -}}
+    {{- end -}}
   {{- end -}}
 {{- end -}}
 

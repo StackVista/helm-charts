@@ -321,6 +321,7 @@ stackstate/stackstate
 | stackstate.components.api.docslink | string | `""` | Documentation URL root to use in the product help page & tooltips. |
 | stackstate.components.api.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.api.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.api.image.imageRegistry | string | `""` | `imageRegistry` used for the `api` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.api.image.pullPolicy | string | `""` | `pullPolicy` used for the `api` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.api.image.repository | string | `"stackstate/stackstate-server"` | Repository of the api component Docker image. |
 | stackstate.components.api.image.tag | string | `""` | Tag used for the `api` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
@@ -342,6 +343,7 @@ stackstate/stackstate
 | stackstate.components.checks.config | string | `""` | Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.checks.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.checks.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.checks.image.imageRegistry | string | `""` | `imageRegistry` used for the `checks` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.checks.image.pullPolicy | string | `""` | `pullPolicy` used for the `state` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.checks.image.repository | string | `"stackstate/stackstate-server"` | Repository of the sync component Docker image. |
 | stackstate.components.checks.image.tag | string | `""` | Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
@@ -361,6 +363,7 @@ stackstate/stackstate
 | stackstate.components.correlate.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.correlate.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.correlate.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.correlate.image.imageRegistry | string | `""` | `imageRegistry` used for the `correlate` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.correlate.image.pullPolicy | string | `""` | `pullPolicy` used for the `correlate` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.correlate.image.repository | string | `"stackstate/stackstate-correlate"` | Repository of the correlate component Docker image. |
 | stackstate.components.correlate.image.tag | string | `""` | Tag used for the `correlate` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
@@ -391,6 +394,7 @@ stackstate/stackstate
 | stackstate.components.healthSync.config | string | `""` | Configuration file contents to customize the default StackState healthSync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.healthSync.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.healthSync.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.healthSync.image.imageRegistry | string | `""` | `imageRegistry` used for the `healthSync` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.healthSync.image.pullPolicy | string | `""` | `pullPolicy` used for the `healthSync` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.healthSync.image.repository | string | `"stackstate/stackstate-server"` | Repository of the healthSync component Docker image. |
 | stackstate.components.healthSync.image.tag | string | `""` | Tag used for the `healthSync` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
@@ -406,6 +410,7 @@ stackstate/stackstate
 | stackstate.components.initializer.config | string | `""` | Configuration file contents to customize the default StackState initializer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.initializer.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.initializer.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.initializer.image.imageRegistry | string | `""` | `imageRegistry` used for the `initializer` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.initializer.image.pullPolicy | string | `""` | `pullPolicy` used for the `initializer` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.initializer.image.repository | string | `"stackstate/stackstate-server"` | Repository of the initializer component Docker image. |
 | stackstate.components.initializer.image.tag | string | `""` | Tag used for the `initializer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
@@ -450,6 +455,7 @@ stackstate/stackstate
 | stackstate.components.receiver.esDiskSpaceShare | string | `"30"` | How much disk space from ElasticSearch can use for k8s log ingestion |
 | stackstate.components.receiver.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.receiver.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.receiver.image.imageRegistry | string | `""` | `imageRegistry` used for the `receiver` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.receiver.image.pullPolicy | string | `""` | `pullPolicy` used for the `receiver` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.receiver.image.repository | string | `"stackstate/stackstate-receiver"` | Repository of the receiver component Docker image. |
 | stackstate.components.receiver.image.tag | string | `""` | Tag used for the `receiver` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
@@ -478,6 +484,7 @@ stackstate/stackstate
 | stackstate.components.server.config | string | `""` | Configuration file contents to customize the default StackState configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.server.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.server.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.server.image.imageRegistry | string | `""` | `imageRegistry` used for the `server` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.server.image.pullPolicy | string | `""` | `pullPolicy` used for the `server` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.server.image.repository | string | `"stackstate/stackstate-server"` | Repository of the server component Docker image. |
 | stackstate.components.server.image.tag | string | `""` | Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
@@ -493,6 +500,7 @@ stackstate/stackstate
 | stackstate.components.slicing.config | string | `""` | Configuration file contents to customize the default StackState slicing configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.slicing.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.slicing.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.slicing.image.imageRegistry | string | `""` | `imageRegistry` used for the `slicing` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.slicing.image.pullPolicy | string | `""` | `pullPolicy` used for the `slicing` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.slicing.image.repository | string | `"stackstate/stackstate-server"` | Repository of the slicing component Docker image. |
 | stackstate.components.slicing.image.tag | string | `""` | Tag used for the `slicing` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
@@ -507,6 +515,7 @@ stackstate/stackstate
 | stackstate.components.state.config | string | `""` | Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.state.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.state.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.state.image.imageRegistry | string | `""` | `imageRegistry` used for the `state` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.state.image.pullPolicy | string | `""` | `pullPolicy` used for the `state` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.state.image.repository | string | `"stackstate/stackstate-server"` | Repository of the sync component Docker image. |
 | stackstate.components.state.image.tag | string | `""` | Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
@@ -523,6 +532,7 @@ stackstate/stackstate
 | stackstate.components.sync.config | string | `""` | Configuration file contents to customize the default StackState sync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.sync.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.sync.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.sync.image.imageRegistry | string | `""` | `imageRegistry` used for the `sync` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.sync.image.pullPolicy | string | `""` | `pullPolicy` used for the `sync` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.sync.image.repository | string | `"stackstate/stackstate-server"` | Repository of the sync component Docker image. |
 | stackstate.components.sync.image.tag | string | `""` | Tag used for the `sync` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
@@ -553,6 +563,7 @@ stackstate/stackstate
 | stackstate.components.ui.debug | bool | `false` |  |
 | stackstate.components.ui.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.ui.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.ui.image.imageRegistry | string | `""` | `imageRegistry` used for the `ui` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.ui.image.pullPolicy | string | `""` | `pullPolicy` used for the `ui` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.ui.image.repository | string | `"stackstate/stackstate-ui"` | Repository of the ui component Docker image. |
 | stackstate.components.ui.image.tag | string | `""` | Tag used for the `ui` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
@@ -571,6 +582,7 @@ stackstate/stackstate
 | stackstate.components.viewHealth.config | string | `""` | Configuration file contents to customize the default StackState viewHealth configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.viewHealth.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.viewHealth.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.viewHealth.image.imageRegistry | string | `""` | `imageRegistry` used for the `viewHealth` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.viewHealth.image.pullPolicy | string | `""` | `pullPolicy` used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.viewHealth.image.repository | string | `"stackstate/stackstate-server"` | Repository of the viewHealth component Docker image. |
 | stackstate.components.viewHealth.image.tag | string | `""` | Tag used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |

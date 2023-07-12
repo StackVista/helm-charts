@@ -234,6 +234,8 @@ stackstate:
         # stackstate.components.api.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
         secret: {}
       image:
+        # stackstate.components.api.image.imageRegistry -- `imageRegistry` used for the `api` component Docker image; this will override `global.imageRegistry` on a per-service basis.
+        imageRegistry: ""
         # stackstate.components.api.image.pullPolicy -- `pullPolicy` used for the `api` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.components.api.image.repository -- Repository of the api component Docker image.
@@ -287,6 +289,8 @@ stackstate:
         # stackstate.components.correlate.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
         secret: {}
       image:
+        # stackstate.components.correlate.image.imageRegistry -- `imageRegistry` used for the `correlate` component Docker image; this will override `global.imageRegistry` on a per-service basis.
+        imageRegistry: ""
         # stackstate.components.correlate.image.pullPolicy -- `pullPolicy` used for the `correlate` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.components.correlate.image.repository -- Repository of the correlate component Docker image.
@@ -326,6 +330,8 @@ stackstate:
         # stackstate.components.checks.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
         secret: {}
       image:
+        # stackstate.components.checks.image.imageRegistry -- `imageRegistry` used for the `checks` component Docker image; this will override `global.imageRegistry` on a per-service basis.
+        imageRegistry: ""
         # stackstate.components.checks.image.pullPolicy -- `pullPolicy` used for the `state` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.components.checks.image.repository -- Repository of the sync component Docker image.
@@ -367,6 +373,8 @@ stackstate:
         # stackstate.components.healthSync.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
         secret: {}
       image:
+        # stackstate.components.healthSync.image.imageRegistry -- `imageRegistry` used for the `healthSync` component Docker image; this will override `global.imageRegistry` on a per-service basis.
+        imageRegistry: ""
         # stackstate.components.healthSync.image.pullPolicy -- `pullPolicy` used for the `healthSync` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.components.healthSync.image.repository -- Repository of the healthSync component Docker image.
@@ -411,6 +419,8 @@ stackstate:
         # stackstate.components.initializer.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
         secret: {}
       image:
+        # stackstate.components.initializer.image.imageRegistry -- `imageRegistry` used for the `initializer` component Docker image; this will override `global.imageRegistry` on a per-service basis.
+        imageRegistry: ""
         # stackstate.components.initializer.image.pullPolicy -- `pullPolicy` used for the `initializer` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.components.initializer.image.repository -- Repository of the initializer component Docker image.
@@ -566,6 +576,8 @@ stackstate:
         # stackstate.components.receiver.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
         secret: {}
       image:
+        # stackstate.components.receiver.image.imageRegistry -- `imageRegistry` used for the `receiver` component Docker image; this will override `global.imageRegistry` on a per-service basis.
+        imageRegistry: ""
         # stackstate.components.receiver.image.pullPolicy -- `pullPolicy` used for the `receiver` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.components.receiver.image.repository -- Repository of the receiver component Docker image.
@@ -646,6 +658,8 @@ stackstate:
         # stackstate.components.server.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
         secret: {}
       image:
+        # stackstate.components.server.image.imageRegistry -- `imageRegistry` used for the `server` component Docker image; this will override `global.imageRegistry` on a per-service basis.
+        imageRegistry: ""
         # stackstate.components.server.image.pullPolicy -- `pullPolicy` used for the `server` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.components.server.image.repository -- Repository of the server component Docker image.
@@ -687,6 +701,8 @@ stackstate:
         # stackstate.components.state.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
         secret: {}
       image:
+        # stackstate.components.state.image.imageRegistry -- `imageRegistry` used for the `state` component Docker image; this will override `global.imageRegistry` on a per-service basis.
+        imageRegistry: ""
         # stackstate.components.state.image.pullPolicy -- `pullPolicy` used for the `state` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.components.state.image.repository -- Repository of the sync component Docker image.
@@ -728,6 +744,8 @@ stackstate:
         # stackstate.components.sync.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
         secret: {}
       image:
+        # stackstate.components.sync.image.imageRegistry -- `imageRegistry` used for the `sync` component Docker image; this will override `global.imageRegistry` on a per-service basis.
+        imageRegistry: ""
         # stackstate.components.sync.image.pullPolicy -- `pullPolicy` used for the `sync` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.components.sync.image.repository -- Repository of the sync component Docker image.
@@ -772,6 +790,8 @@ stackstate:
         # stackstate.components.slicing.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
         secret: {}
       image:
+        # stackstate.components.slicing.image.imageRegistry -- `imageRegistry` used for the `slicing` component Docker image; this will override `global.imageRegistry` on a per-service basis.
+        imageRegistry: ""
         # stackstate.components.slicing.image.pullPolicy -- `pullPolicy` used for the `slicing` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.components.slicing.image.repository -- Repository of the slicing component Docker image.
@@ -812,6 +832,8 @@ stackstate:
         # stackstate.components.ui.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
         secret: {}
       image:
+        # stackstate.components.ui.image.imageRegistry -- `imageRegistry` used for the `ui` component Docker image; this will override `global.imageRegistry` on a per-service basis.
+        imageRegistry: ""
         # stackstate.components.ui.image.pullPolicy -- `pullPolicy` used for the `ui` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.components.ui.image.repository -- Repository of the ui component Docker image.
@@ -857,6 +879,8 @@ stackstate:
         # stackstate.components.viewHealth.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
         secret: {}
       image:
+        # stackstate.components.viewHealth.image.imageRegistry -- `imageRegistry` used for the `viewHealth` component Docker image; this will override `global.imageRegistry` on a per-service basis.
+        imageRegistry: ""
         # stackstate.components.viewHealth.image.pullPolicy -- `pullPolicy` used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
         # stackstate.components.viewHealth.image.repository -- Repository of the viewHealth component Docker image.

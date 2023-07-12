@@ -1,4 +1,6 @@
 {{- define "stackstate.ui.deployment.main.container" -}}
+{{- $serviceConfig := dict "ServiceName" "view-health" "ServiceConfig" .Values.stackstate.components.ui }}
+
 env:
 {{- include "stackstate.common.envvars" . }}
 {{- include "stackstate.ui.envvars" . }}
@@ -6,7 +8,7 @@ env:
 command: ["nginx-debug"]
 args: ["-g", "daemon off; error_log /dev/stdout debug;"]
 {{- end }}
-image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.ui.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.ui.image.tag }}"
+image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.ui.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.ui.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.ui.image.pullPolicy | quote }}
 name: ui
 ports:
