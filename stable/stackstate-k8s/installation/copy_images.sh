@@ -51,10 +51,13 @@ shift $((OPTIND -1))
 [ -z "$STS_REGISTRY_USERNAME" ] && echo -e "${red}Provide the StackState repository username with the \$STS_REGISTRY_USERNAME environment variable${nc}" && usage && exit 1
 [ -z "$STS_REGISTRY_PASSWORD" ] && echo -e "${red}Provide the StackState repository password with the \$STS_REGISTRY_PASSWORD environment variable${nc}" && usage && exit 1
 
-docker container run -i --rm --net host -v "$(pwd)/regctl:/home/appuser/.regctl/" ghcr.io/regclient/regctl:latest registry login -u "$STS_REGISTRY_USERNAME" -p "$STS_REGISTRY_PASSWORD" "quay.io"
+# Create the regctl directory for storing the config between docker runs
+CFG_DIR=$(mktemp -d)
+
+docker container run -i --rm --net host -v "${CFG_DIR}:/home/appuser/.regctl/" ghcr.io/regclient/regctl:latest registry login -u "$STS_REGISTRY_USERNAME" -p "$STS_REGISTRY_PASSWORD" "quay.io"
 
 if [ -n "$DST_REGISTRY_USERNAME" ] && [ -n "$DST_REGISTRY_PASSWORD" ]; then
-    docker container run -i --rm --net host -v "$(pwd)/regctl:/home/appuser/.regctl/" ghcr.io/regclient/regctl:latest registry login -u "$DST_REGISTRY_USERNAME" -p "$DST_REGISTRY_PASSWORD" "$dest_registry"
+    docker container run -i --rm --net host -v "${CFG_DIR}:/home/appuser/.regctl/" ghcr.io/regclient/regctl:latest registry login -u "$DST_REGISTRY_USERNAME" -p "$DST_REGISTRY_PASSWORD" "$dest_registry"
 fi
 
 #
@@ -77,10 +80,12 @@ do
                 aws ecr describe-repositories --repository-names "$repo" >/dev/null 2>/dev/null || aws ecr create-repository --repository-name "$repo" > /dev/null
             fi
             echo "Copying $src_image to $dest_image"
-            docker container run -i --rm --net host -v "$(pwd)/regctl:/home/appuser/.regctl/" ghcr.io/regclient/regctl:latest image copy "$src_image" "$dest_image"
+            docker container run -i --rm --net host -v "${CFG_DIR}:/home/appuser/.regctl/" ghcr.io/regclient/regctl:latest image copy "$src_image" "$dest_image"
         fi
     else
         1>&2 echo "Cannot determine repository and tag for $src_image"
         exit 1
     fi
 done
+
+rm -rf "${CFG_DIR}"
