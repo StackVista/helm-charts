@@ -581,3 +581,19 @@ command:
 volumeMounts:
 {{ include "stackstate.service.transactionLog.volumeMount" . }}
 {{- end -}}
+
+{{/*
+Clean up the /tmp directory, some deployments has mounted PV to /tmp directory, so we have to clean it before each restart
+*/}}
+{{- define "stackstate.initContainer.cleanTmpDirectory" -}}
+name: clean-tmp-directory
+image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
+imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
+command:
+- '/bin/bash'
+- '-c'
+- 'rm -Rf /tmp/*'
+volumeMounts:
+  - name: tmp-volume
+    mountPath: /tmp
+{{- end -}}

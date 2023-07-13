@@ -132,6 +132,9 @@ spec:
       {{- if .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled }}
       - {{ include "stackstate.initContainer.cleanTransactionLogsDirectory" . | nindent 8 }}
       {{- end }}
+      {{- if .Values.stackstate.components.healthSync.tmpToPVC }}
+      - {{ include "stackstate.initContainer.cleanTmpDirectory" . | nindent 8 }}
+      {{- end }}
       containers:
       - {{ toYaml $stsStackstateHealthSyncMainContainer | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.state.nodeSelector }}
