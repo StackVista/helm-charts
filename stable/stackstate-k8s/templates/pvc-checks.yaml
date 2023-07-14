@@ -15,7 +15,7 @@ spec:
 {{- toYaml (merge $stackstateChecksPVCTxLog $commonPVC) -}}
 {{- end -}}
 
-{{- if .Values.stackstate.components.checks.tmpToPVC }}
+{{- if and .Values.stackstate.components.checks.tmpToPVC .Values.stackstate.experimental.server.split }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

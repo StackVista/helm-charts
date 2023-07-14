@@ -15,7 +15,7 @@ spec:
 {{- toYaml (merge $stackstateHealthSyncPVCTxLog $commonPVC) -}}
 {{- end -}}
 
-{{- if .Values.stackstate.components.healthSync.tmpToPVC }}
+{{- if and .Values.stackstate.components.healthSync.tmpToPVC .Values.stackstate.experimental.server.split }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
