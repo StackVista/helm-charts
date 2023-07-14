@@ -9,7 +9,7 @@ spec:
       storage: {{ .Values.stackstate.experimental.storeTransactionLogsToPVC.volumeSize }}
 {{- end -}}
 
-{{- if .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled }}
+{{- if and .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled .Values.stackstate.experimental.server.split }}
 {{- $commonPVC := fromYaml (include "common.persistentvolumeclaim" .) -}}
 {{- $stackstateSyncPVCTxLog := fromYaml (include "stackstate.sync.persistentvolumeclaim.txLog" .) -}}
 {{- toYaml (merge $stackstateSyncPVCTxLog $commonPVC) -}}
