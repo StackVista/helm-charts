@@ -303,11 +303,11 @@ stackstate:
       # stackstate.components.correlate.resources -- Resource allocation for `correlate` pods.
       resources:
         limits:
-          memory: "1600Mi"
+          memory: "1800Mi"
           cpu: "2"
           ephemeral-storage: "1Gi"
         requests:
-          memory: "1600Mi"
+          memory: "1800Mi"
           cpu: "2"
           ephemeral-storage: "1Mi"
       sizing:
