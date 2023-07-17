@@ -6,6 +6,12 @@ Current chart version is `1.0.31`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| https://helm-internal.stackstate.io | http-header-injector-webhook(http-header-injector) | 0.0.2 |
+
 ## Required Values
 
 In order to successfully install this chart, you **must** provide the following variables:
@@ -144,6 +150,7 @@ stackstate/stackstate-k8s-agent
 | global.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | global.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | global.imagePullSecrets | list | `[]` | Secrets / credentials needed for container image registry. |
+| http-header-injector-webhook.enabled | bool | `false` |  |
 | logsAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | logsAgent.enabled | bool | `false` | Enable / disable k8s pod log collection |
 | logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
