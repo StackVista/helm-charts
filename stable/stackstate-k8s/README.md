@@ -2,7 +2,7 @@
 
 Helm chart for StackState for Kubernetes
 
-Current chart version is `1.0.3-snapshot.1`
+Current chart version is `1.0.3`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -295,7 +295,7 @@ stackstate/stackstate
 | stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
-| stackstate.components.all.image.tag | string | `"5.2.0-snapshot.20230626084947-master-b7d45eb"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
+| stackstate.components.all.image.tag | string | `"5.2.0-snapshot.20230717091231-master-9eb3494"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metricStore.kafka2PromGroupId | string | `"kafka-to-prom-$vmInstance"` | Kafka consumer group ID of kafka2prom writing to the metric store ($vmInstance is replaced by '0' or '1') |
 | stackstate.components.all.metricStore.queryApiEndpoint | string | `"stackstate-victoriametrics:8428"` | Host and port for promql api |
