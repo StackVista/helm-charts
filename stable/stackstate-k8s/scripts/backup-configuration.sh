@@ -18,7 +18,7 @@ grep '_version:' "${TMP_DIR}/${BACKUP_FILE}" > /dev/null || (
 )
 
 echo "=== Uploading backup \"${BACKUP_FILE}\" to bucket \"${BACKUP_CONFIGURATION_BUCKET_NAME}\"..."
-aws --endpoint-url "http://${MINIO_ENDPOINT}" s3 cp "${TMP_DIR}/${BACKUP_FILE}" "s3://${BACKUP_CONFIGURATION_BUCKET_NAME}/${BACKUP_FILE}"
+aws --endpoint-url "http://${MINIO_ENDPOINT}" --region minio s3 cp "${TMP_DIR}/${BACKUP_FILE}" "s3://${BACKUP_CONFIGURATION_BUCKET_NAME}/${BACKUP_FILE}"
 
 echo "=== Expiring old backups..."
 export BACKUP_BUCKET_NAME=$BACKUP_CONFIGURATION_BUCKET_NAME

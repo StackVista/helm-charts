@@ -12,7 +12,7 @@ def main():
   now = datetime.now()
 
   print('Retrieving backups from bucket "', bucket_name, '"', sep='')
-  backup_files = subprocess.check_output(['aws', '--endpoint-url', minio_endpoint, 's3api', 'list-objects-v2', '--bucket', bucket_name, '--query', 'Contents[].[Key]' , '--output' ,'text'], text=True)
+  backup_files = subprocess.check_output(['aws', '--endpoint-url', minio_endpoint, '--region', 'minio', 's3api', 'list-objects-v2', '--bucket', bucket_name, '--query', 'Contents[].[Key]' , '--output' ,'text'], text=True)
   for backup_file in backup_files.splitlines():
     m = backup_datetime_re.match(backup_file)
     if m:
@@ -20,7 +20,7 @@ def main():
       age = now - backup_datetime
       if age > backup_retention_timedelta:
         print('Purging backup "', backup_file, '"', sep='')
-        delete_backup = subprocess.run(['aws', '--endpoint-url', minio_endpoint, 's3api', 'delete-object', '--bucket', bucket_name, '--key', backup_file], check=True)
+        delete_backup = subprocess.run(['aws', '--endpoint-url', minio_endpoint, '--region', 'minio', 's3api', 'delete-object', '--bucket', bucket_name, '--key', backup_file], check=True)
       else:
         print('Not purging backup "', backup_file, '"', sep='')
 
