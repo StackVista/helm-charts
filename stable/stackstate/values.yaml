@@ -1355,6 +1355,10 @@ kafka:
   persistence:
     # kafka.persistence.size -- Size of persistent volume for each Kafka pod
     size: 50Gi
+
+  # kafka.commonLabels -- Add additional labels to all resources created for kafka
+  commonLabels:
+    app.kubernetes.io/part-of: stackstate
   # kafka.podAnnotations -- Kafka Pod annotations.
   podAnnotations:
     ad.stackstate.com/jmx-exporter.check_names: '["openmetrics"]'
@@ -1452,6 +1456,8 @@ zookeeper:
     ad.stackstate.com/zookeeper.instances: '[ { "prometheus_url": "http://%%host%%:9141/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
   replicaCount: 3
+  commonLabels:
+    app.kubernetes.io/part-of: stackstate
   pdb:
     ## zookeeper.pdb.create Deploy a pdb object for the Zookeeper pod
     create: true
