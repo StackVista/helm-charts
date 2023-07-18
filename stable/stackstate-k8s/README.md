@@ -373,7 +373,7 @@ stackstate/stackstate
 | stackstate.components.correlate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.correlate.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `correlate` pods. |
 | stackstate.components.correlate.replicaCount | int | `1` | Number of `correlate` replicas. |
-| stackstate.components.correlate.resources | object | `{"limits":{"cpu":"2","ephemeral-storage":"1Gi","memory":"1800Mi"},"requests":{"cpu":"2","ephemeral-storage":"1Mi","memory":"1800Mi"}}` | Resource allocation for `correlate` pods. |
+| stackstate.components.correlate.resources | object | `{"limits":{"cpu":"2","ephemeral-storage":"1Gi","memory":"2800Mi"},"requests":{"cpu":"2","ephemeral-storage":"1Mi","memory":"2800Mi"}}` | Resource allocation for `correlate` pods. |
 | stackstate.components.correlate.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
 | stackstate.components.correlate.sizing.javaHeapMemoryFraction | string | `"65"` |  |
 | stackstate.components.correlate.tolerations | list | `[]` | Toleration labels for pod assignment. |
