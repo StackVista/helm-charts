@@ -1398,6 +1398,9 @@ kafka:
   persistence:
     # kafka.persistence.size -- Size of persistent volume for each Kafka pod
     size: 100Gi
+  # kafka.commonLabels -- Add additional labels to all resources created for kafka
+  commonLabels:
+    app.kubernetes.io/part-of: stackstate
   # kafka.podAnnotations -- Kafka Pod annotations.
   podAnnotations:
     ad.stackstate.com/jmx-exporter.check_names: '["openmetrics"]'
@@ -1463,6 +1466,8 @@ zookeeper:
   fullnameOverride: stackstate-zookeeper
   podLabels:
     app.kubernetes.io/part-of: stackstate-k8s
+  commonLabels:
+    app.kubernetes.io/part-of: stackstate
   image:
     # zookeeper.image.registry -- ZooKeeper image registry
     registry: quay.io
