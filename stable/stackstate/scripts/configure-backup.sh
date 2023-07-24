@@ -51,6 +51,7 @@ if [ "${BACKUP_ELASTICSEARCH_RESTORE_ENABLED}" == "true" ] || [ "${BACKUP_ELASTI
         \"type\": \"s3\",
         \"settings\": {
             \"bucket\": \"${BACKUP_ELASTICSEARCH_BUCKET_NAME}\",
+            \"region\": \"minio\",
             \"endpoint\": \"${MINIO_ENDPOINT}\",
             \"protocol\": \"http\",
             \"access_key\": \"${AWS_ACCESS_KEY_ID}\",

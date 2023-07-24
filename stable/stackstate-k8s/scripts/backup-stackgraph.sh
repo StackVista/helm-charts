@@ -18,7 +18,7 @@ echo "=== Exporting StackGraph data to \"${BACKUP_FILE}\"..."
 
 if [ -f "${TMP_DIR}/${BACKUP_FILE}" ]; then
     echo "=== Uploading StackGraph backup \"${BACKUP_FILE}\" to bucket \"${BACKUP_STACKGRAPH_BUCKET_NAME}\"..."
-    aws --endpoint-url "http://${MINIO_ENDPOINT}" s3 cp "${TMP_DIR}/${BACKUP_FILE}" "s3://${BACKUP_STACKGRAPH_BUCKET_NAME}/${BACKUP_FILE}"
+    aws --endpoint-url "http://${MINIO_ENDPOINT}" --region minio s3 cp "${TMP_DIR}/${BACKUP_FILE}" "s3://${BACKUP_STACKGRAPH_BUCKET_NAME}/${BACKUP_FILE}"
     echo "=== Expiring old StackGraph backups..."
     export BACKUP_BUCKET_NAME=$BACKUP_STACKGRAPH_BUCKET_NAME
     export BACKUP_SCHEDULED_BACKUP_NAME_PARSE_REGEXP=$BACKUP_STACKGRAPH_SCHEDULED_BACKUP_NAME_PARSE_REGEXP
