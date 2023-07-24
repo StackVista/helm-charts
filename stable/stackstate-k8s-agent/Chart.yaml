@@ -17,7 +17,7 @@ dependencies:
     # Local debugging: left here for future reference
     # repository: file:///home/bram/stackvista/agent/http-header-injector/charts/http-header-injector
     # version: "*"
-    repository: https://helm-internal.stackstate.io
-    version: 0.0.2
+    repository: https://helm.stackstate.io
+    version: 0.0.3
     # Warning: do not use this condition. this will not play well with the prehooks in the chart
     # condition: http-header-injector-webhook.enabled

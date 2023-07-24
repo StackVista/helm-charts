@@ -1,6 +1,6 @@
 dependencies:
 - name: http-header-injector
-  repository: https://helm-internal.stackstate.io
-  version: 0.0.2
-digest: sha256:8e75abd89f04448f2013c02b08a150ae0854b9ed6d42c81e62678dcb9763a666
-generated: "2023-07-24T11:46:42.750751295+02:00"
+  repository: https://helm.stackstate.io
+  version: 0.0.3
+digest: sha256:5ef40c89819868c1fbdc10d856dcccda101e1664afa72fb671dab313c65b5f71
+generated: "2023-07-24T13:51:54.57376629+02:00"
