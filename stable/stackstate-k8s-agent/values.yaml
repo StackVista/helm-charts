@@ -523,8 +523,8 @@ checksAgent:
 # http-header-injector variables #
 ##################################
 
-http-header-injector-webhook:
-  # http-header-injection-webhook.enabled -- Enable the webhook for injection http header injection sidecar proxy
+httpHeaderInjectorWebhook:
+  # httpHeaderInjectorWebhook.enabled -- Enable the webhook for injection http header injection sidecar proxy
   enabled: false
 
 ########################

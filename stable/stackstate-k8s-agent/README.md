@@ -10,7 +10,7 @@ Current chart version is `1.0.33`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://helm.stackstate.io | http-header-injector-webhook(http-header-injector) | 0.0.3 |
+| https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.3 |
 
 ## Required Values
 
@@ -151,7 +151,7 @@ stackstate/stackstate-k8s-agent
 | global.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | global.imagePullCredentials | object | `{}` | Globally define credentials for pulling images. |
 | global.imagePullSecrets | list | `[]` | Secrets / credentials needed for container image registry. |
-| http-header-injector-webhook.enabled | bool | `false` |  |
+| httpHeaderInjectorWebhook.enabled | bool | `false` | Enable the webhook for injection http header injection sidecar proxy |
 | logsAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | logsAgent.enabled | bool | `false` | Enable / disable k8s pod log collection |
 | logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
