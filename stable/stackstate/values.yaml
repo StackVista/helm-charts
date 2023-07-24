@@ -173,7 +173,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.image.tag to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: 5.1.5-rc.1
+        tag: 5.1.5-rc.2
       metrics:
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
         enabled: true
@@ -1355,7 +1355,6 @@ kafka:
   persistence:
     # kafka.persistence.size -- Size of persistent volume for each Kafka pod
     size: 50Gi
-
   # kafka.commonLabels -- Add additional labels to all resources created for kafka
   commonLabels:
     app.kubernetes.io/part-of: stackstate
