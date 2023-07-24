@@ -149,6 +149,7 @@ stackstate/stackstate-k8s-agent
 | fullnameOverride | string | `""` | Override the fullname of the chart. |
 | global.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | global.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| global.imagePullCredentials | object | `{}` | Globally define credentials for pulling images. |
 | global.imagePullSecrets | list | `[]` | Secrets / credentials needed for container image registry. |
 | http-header-injector-webhook.enabled | bool | `false` |  |
 | logsAgent.affinity | object | `{}` | Affinity settings for pod assignment. |

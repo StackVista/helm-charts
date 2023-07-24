@@ -3,4 +3,4 @@ dependencies:
   repository: https://helm-internal.stackstate.io
   version: 0.0.2
 digest: sha256:8e75abd89f04448f2013c02b08a150ae0854b9ed6d42c81e62678dcb9763a666
-generated: "2023-07-18T15:48:57.549866515+02:00"
+generated: "2023-07-24T11:46:42.750751295+02:00"

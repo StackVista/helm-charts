@@ -105,14 +105,17 @@ Usage:
     {{- end }}
 {{- end -}}
 
+{{- define "stackstate-k8s-agent.pull-secret.name" -}}
+{{ include "stackstate-k8s-agent.fullname" . }}-pull-secret
+{{- end -}}
+
 {{/*
 Return the proper Docker Image Registry Secret Names evaluating values as templates
-{{ include "stackstate-k8s-agent.image.pullSecret.name" ( dict "images" (list .Values.path.to.the.image1, .Values.path.to.the.image2) "context" $) }}
+{{ include "stackstate-k8s-agent.image.pullSecrets" ( dict "images" (list .Values.path.to.the.image1, .Values.path.to.the.image2) "context" $) }}
 */}}
-{{- define "stackstate-k8s-agent.image.pullSecret.name" -}}
+{{- define "stackstate-k8s-agent.image.pullSecrets" -}}
   {{- $pullSecrets := list }}
   {{- $context := .context }}
-
   {{- if $context.Values.global }}
     {{- range $context.Values.global.imagePullSecrets -}}
       {{/* Is plain array of strings, compatible with all bitnami charts */}}
@@ -125,12 +128,10 @@ Return the proper Docker Image Registry Secret Names evaluating values as templa
   {{- range .images -}}
     {{- if .pullSecretName -}}
       {{- $pullSecrets = append $pullSecrets (include "stackstate-k8s-agent.tplvalue.render" (dict "value" .pullSecretName "context" $context)) -}}
-    {{- else if (or .pullSecretUsername .pullSecretDockerConfigJson) -}}
-      {{- $pullSecrets = append $pullSecrets ((list (include "stackstate-k8s-agent.fullname" $context ) "pull-secret") | join "-")  -}}
     {{- end -}}
   {{- end -}}
-
-  {{- if (not (empty $pullSecrets)) }}
+  {{- $pullSecrets = append $pullSecrets (include "stackstate-k8s-agent.pull-secret.name" $context)  -}}
+  {{- if (not (empty $pullSecrets)) -}}
 imagePullSecrets:
     {{- range $pullSecrets | uniq }}
   - name: {{ . }}

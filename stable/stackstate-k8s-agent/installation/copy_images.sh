@@ -9,8 +9,7 @@ nc="\033[0m"
 red="\\033[0;31m"
 helm_release=release
 helm_chart="stackstate/stackstate-k8s-agent"
-helm_repository=https://helm.stackstate.io
-helm_values="stackstate.apiKey=APIKEY,logsAgent.enabled=true,stackstate.cluster.name=dummy-cluster,stackstate.url=http://dummy.stackstate.io"
+helm_values="http-header-injector-webhook.enabled=true,stackstate.apiKey=APIKEY,logsAgent.enabled=true,stackstate.cluster.name=dummy-cluster,stackstate.url=http://dummy.stackstate.io"
 dry_run=false
 
 # usage
@@ -26,7 +25,6 @@ Arguments:
     -c : Helm chart (default: $helm_chart)
     -d : Destination Docker image registry (required)
     -h : Show this help text
-    -r : Helm repository (default: $helm_repository)
     -t : Dry-run
 EOF
 }
@@ -38,7 +36,6 @@ while getopts "c:d:hr:t" opt; do
   c) helm_chart=$OPTARG ;;
   d) dest_registry=$OPTARG ;;
   h) usage; exit ;;
-  r) helm_repository=$OPTARG ;;
   t) dry_run=true ;;
   \?) echo "Unknown option: -$OPTARG" >&2; exit 1;;
   :) echo "Missing option argument for -$OPTARG" >&2; exit 1;;
@@ -57,7 +54,7 @@ fi
 
 #
 images=()
-while IFS='' read -r line; do images+=("$line"); done < <(helm template "$helm_release" "$helm_chart" --set "$helm_values" | grep image: | sed -E 's/^.*image: ['\''"]?([^'\''"]*)['\''"]?.*$/\1/')
+while IFS='' read -r line; do images+=("$line"); done < <(helm template "$helm_release" "$helm_chart" --set "$helm_values" | grep image: | sed -E 's/^.*image: ['\''"]?([^'\''"]*)['\''"]?.*$/\1/' | sort | uniq)
 for src_image in "${images[@]}"
 do
     if [[ "$src_image" =~ $repo_and_tag_re ]]; then
