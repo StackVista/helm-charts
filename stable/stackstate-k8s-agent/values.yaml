@@ -11,7 +11,7 @@ global:
   # global.imagePullSecrets -- Secrets / credentials needed for container image registry.
   imagePullSecrets: []
   # global.imagePullCredentials -- Globally define credentials for pulling images.
-  imagePullCredentials: { }
+  imagePullCredentials: {}
 
 # nameOverride -- Override the name of the chart.
 nameOverride: ""
