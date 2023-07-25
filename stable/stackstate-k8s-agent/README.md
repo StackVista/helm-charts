@@ -10,7 +10,7 @@ Current chart version is `1.0.35`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://helm.stackstate.io | http-header-injector-webhook(http-header-injector) | 0.0.4 |
+| https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.4 |
 
 ## Required Values
 
