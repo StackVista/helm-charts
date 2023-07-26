@@ -22,7 +22,7 @@ func TestSyncParalellismConfigRender(t *testing.T) {
 		}
 	}
 	assert.NotNil(t, stsSyncDeployment)
-	expectedSyncJavaOpts := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_sync_parallelWorkers", Value: "2"}
+	expectedSyncJavaOpts := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_sync_parallelWorkers", Value: "1"}
 	assert.Contains(t, stsSyncDeployment.Spec.Template.Spec.Containers[0].Env, expectedSyncJavaOpts)
 }
 

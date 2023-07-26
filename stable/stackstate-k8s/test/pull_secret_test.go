@@ -30,7 +30,7 @@ func TestPullSecretGlobalNamed(t *testing.T) {
 	}
 }
 func TestImagePullSecretName(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/pull_secret_name.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/pull_secret_name.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "view-health", "e2es", "trace2es", "kafka2prom-0"}
 
@@ -43,7 +43,7 @@ func TestImagePullSecretName(t *testing.T) {
 }
 
 func TestGlobalRegistryLocalPullSecret(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/pull_secret_global_registry.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/pull_secret_global_registry.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "view-health", "e2es", "trace2es", "kafka2prom-0"}
 
@@ -52,7 +52,7 @@ func TestGlobalRegistryLocalPullSecret(t *testing.T) {
 }
 
 func TestGlobalOverridesLocalPullSecretDetails(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/pull_secret_both.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/pull_secret_both.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "view-health", "e2es", "trace2es", "kafka2prom-0"}
 

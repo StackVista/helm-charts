@@ -398,7 +398,7 @@ stackstate:
           ephemeral-storage: "1Gi"
         requests:
           memory: "3500Mi"
-          cpu: "250m"
+          cpu: "400m"
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "450Mi"

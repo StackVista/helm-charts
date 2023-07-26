@@ -42,14 +42,14 @@ func TestSplitServicesJavaHeapRender(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
-	expectedDeployments["stackstate-k8s-api"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1750m -Xmx1750m -Xms1750m"}
+	expectedDeployments["stackstate-k8s-api"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=824m -Xmx824m -Xms824m"}
 	expectedDeployments["stackstate-k8s-checks"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1400m -Xmx2100m -Xms2100m"}
-	expectedDeployments["stackstate-k8s-state"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=510m -Xmx1190m -Xms1190m"}
-	expectedDeployments["stackstate-k8s-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1240m -Xmx1860m -Xms1860m"}
-	expectedDeployments["stackstate-k8s-slicing"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=520m -Xmx780m -Xms780m"}
-	expectedDeployments["stackstate-k8s-view-health"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1035m -Xmx1265m -Xms1265m"}
-	expectedDeployments["stackstate-k8s-health-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=853m -Xmx697m -Xms697m"}
-	expectedDeployments["stackstate-k8s-initializer"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=140m -Xmx260m -Xms260m"}
+	expectedDeployments["stackstate-k8s-state"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=510m -Xmx1190m -Xms865m"}
+	expectedDeployments["stackstate-k8s-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1559m -Xmx2337m -Xms1693m"}
+	expectedDeployments["stackstate-k8s-slicing"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=520m -Xmx780m -Xms621m"}
+	expectedDeployments["stackstate-k8s-view-health"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1035m -Xmx1265m -Xms961m"}
+	expectedDeployments["stackstate-k8s-health-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1678m -Xmx1372m -Xms1372m"}
+	expectedDeployments["stackstate-k8s-initializer"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=140m -Xmx260m -Xms105m"}
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 

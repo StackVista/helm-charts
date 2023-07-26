@@ -406,7 +406,7 @@ stackstate/stackstate
 | stackstate.components.healthSync.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.healthSync.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `healthSync` pods. |
 | stackstate.components.healthSync.replicaCount | int | `1` | Number of `healthSync` replicas. |
-| stackstate.components.healthSync.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1Gi","memory":"3500Mi"},"requests":{"cpu":"250m","ephemeral-storage":"1Mi","memory":"3500Mi"}}` | Resource allocation for `healthSync` pods. |
+| stackstate.components.healthSync.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1Gi","memory":"3500Mi"},"requests":{"cpu":"400m","ephemeral-storage":"1Mi","memory":"3500Mi"}}` | Resource allocation for `healthSync` pods. |
 | stackstate.components.healthSync.sizing.baseMemoryConsumption | string | `"450Mi"` |  |
 | stackstate.components.healthSync.sizing.javaHeapMemoryFraction | string | `"45"` |  |
 | stackstate.components.healthSync.tmpToPVC | object | `{"storageClassName":null,"volumeSize":"2Gi"}` | Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage. |
