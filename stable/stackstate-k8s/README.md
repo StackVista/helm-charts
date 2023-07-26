@@ -268,16 +268,17 @@ stackstate/stackstate
 | stackstate-agent.stackstate.cluster.name | string | `nil` |  |
 | stackstate-agent.stackstate.url | string | `"http://{{ include \"stackstate.hostname.prefix\" . }}-router:8080/receiver/stsAgent"` |  |
 | stackstate.admin.authentication.password | string | `nil` | Password used for default platform "admin" api's (low-level tools) of the various services, username: platformadmin |
-| stackstate.authentication | object | `{"adminPassword":null,"file":{},"keycloak":{},"ldap":{},"oidc":{},"roles":{"admin":[],"custom":{},"guest":[],"platformAdmin":[],"powerUser":[]},"serviceToken":{"bootstrap":{"roles":[],"token":"","ttl":"24h"}},"sessionLifetime":"7d"}` | Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error. |
+| stackstate.authentication | object | `{"adminPassword":null,"file":{},"keycloak":{},"ldap":{},"oidc":{},"roles":{"admin":[],"custom":{},"guest":[],"k8sTroubleshooter":[],"platformAdmin":[],"powerUser":[]},"serviceToken":{"bootstrap":{"roles":[],"token":"","ttl":"24h"}},"sessionLifetime":"7d"}` | Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error. |
 | stackstate.authentication.adminPassword | string | `nil` | Password for the 'admin' user that StackState creates by default |
 | stackstate.authentication.file | object | `{}` | Configure users, their passwords and roles from (config) file |
 | stackstate.authentication.keycloak | object | `{}` | Use Keycloak as authentication provider. See [Configuring Keycloak](#configuring-keycloak). |
 | stackstate.authentication.ldap | object | `{}` | LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap). |
 | stackstate.authentication.oidc | object | `{}` | Use an OpenId Connect provider for authentication. See [Configuring OpenId Connect](#configuring-openid-connect). |
-| stackstate.authentication.roles | object | `{"admin":[],"custom":{},"guest":[],"platformAdmin":[],"powerUser":[]}` | Extend the default role names in StackState |
+| stackstate.authentication.roles | object | `{"admin":[],"custom":{},"guest":[],"k8sTroubleshooter":[],"platformAdmin":[],"powerUser":[]}` | Extend the default role names in StackState |
 | stackstate.authentication.roles.admin | list | `[]` | Extend the role names that have admin permissions (default: 'stackstate-admin') |
-| stackstate.authentication.roles.custom | object | `{}` | Extend the authorization with custom roles {roleName: {systemPermissions: [], viewPermissions: []}} |
+| stackstate.authentication.roles.custom | object | `{}` | Extend the authorization with custom roles {roleName: {systemPermissions: [], viewPermissions: [], scope: ""}} |
 | stackstate.authentication.roles.guest | list | `[]` | Extend the role names that have guest permissions (default: 'stackstate-guest') |
+| stackstate.authentication.roles.k8sTroubleshooter | list | `[]` | Extend the role names that have troubleshooter permissions (default: 'stackstate-k8s-troubleshooter') |
 | stackstate.authentication.roles.platformAdmin | list | `[]` | Extend the role names that have platform admin permissions (default: 'stackstate-platform-admin') |
 | stackstate.authentication.roles.powerUser | list | `[]` | Extend the role names that have power user permissions (default: 'stackstate-power-user') |
 | stackstate.authentication.serviceToken.bootstrap.roles | list | `[]` | The roles the service token assumes when it’s used for authentication |

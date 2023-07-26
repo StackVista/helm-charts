@@ -26,7 +26,11 @@ stackstate.authorization.staticSubjects.{{ . | quote }}: { systemPermissions: ${
 {{- end }}
 
 {{- range .Values.stackstate.authentication.roles.guest }}
-stackstate.authorization.staticSubjects.{{ . | quote }}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.viewPermissions} }
+stackstate.authorization.staticSubjects.{{ . | quote }}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-guest.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-guest.viewPermissions} }
+{{- end }}
+
+{{- range .Values.stackstate.authentication.roles.k8sTroubleshooter }}
+stackstate.authorization.staticSubjects.{{ . | quote }}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter.viewPermissions} }
 {{- end }}
 {{- else }}
 {{/* In SaaS mode, the stackstate.authorization block will be ignored and we will overwrite the reference to it from the stackstate.api.authorization */}}
@@ -218,7 +222,7 @@ for production this should be replaced with one of the other mechanisms.
 {{ $authnPrefix }}.sessionLifetime =  {{ $apiAuth.sessionLifetime | default "7d" | toJson }}
 
 {{- range $k, $v := $apiAuth.roles.custom }}
-{{ $authzPrefix }}.staticSubjects.{{ $k | quote }}: { systemPermissions: {{ $v.systemPermissions | toJson }}, viewPermissions: {{ $v.viewPermissions | toJson }} }
+{{ $authzPrefix }}.staticSubjects.{{ $k | quote }}: { systemPermissions: {{ $v.systemPermissions | toJson }}, viewPermissions: {{ $v.viewPermissions | toJson }}{{ if $v.scope }}, query: {{ $v.scope | quote }}{{end}} }
 {{- end }}
 
 {{- if $apiAuth.serviceToken.bootstrap.token }}
