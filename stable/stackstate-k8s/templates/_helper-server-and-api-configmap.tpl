@@ -222,7 +222,7 @@ for production this should be replaced with one of the other mechanisms.
 {{ $authnPrefix }}.sessionLifetime =  {{ $apiAuth.sessionLifetime | default "7d" | toJson }}
 
 {{- range $k, $v := $apiAuth.roles.custom }}
-{{ $authzPrefix }}.staticSubjects.{{ $k | quote }}: { systemPermissions: {{ $v.systemPermissions | toJson }}, viewPermissions: {{ $v.viewPermissions | toJson }}{{ if $v.scope }}, query: {{ $v.scope | quote }}{{end}} }
+{{ $authzPrefix }}.staticSubjects.{{ $k | quote }}: { systemPermissions: {{ $v.systemPermissions | toJson }}, viewPermissions: {{ $v.viewPermissions | toJson }}{{ if $v.topologyScope }}, query: {{ $v.topologyScope | quote }}{{end}} }
 {{- end }}
 
 {{- if $apiAuth.serviceToken.bootstrap.token }}
