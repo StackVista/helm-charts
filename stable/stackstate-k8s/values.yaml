@@ -248,12 +248,12 @@ stackstate:
       # stackstate.components.api.resources -- Resource allocation for `api` pods.
       resources:
         limits:
-          memory: "4000Mi"
+          memory: "2Gi"
           cpu: "2000m"
           ephemeral-storage: "2Gi"
         requests:
-          memory: "4000Mi"
-          cpu: "1500m"
+          memory: "2Gi"
+          cpu: "1000m"
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
@@ -304,11 +304,11 @@ stackstate:
       resources:
         limits:
           memory: "2800Mi"
-          cpu: "2"
+          cpu: "2000m"
           ephemeral-storage: "1Gi"
         requests:
           memory: "2800Mi"
-          cpu: "2"
+          cpu: "600m"
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "400Mi"
@@ -393,12 +393,12 @@ stackstate:
       # stackstate.components.healthSync.resources -- Resource allocation for `healthSync` pods.
       resources:
         limits:
-          memory: "2000Mi"
+          memory: "3500Mi"
           cpu: "1500m"
           ephemeral-storage: "1Gi"
         requests:
-          memory: "2000Mi"
-          cpu: "1000m"
+          memory: "3500Mi"
+          cpu: "250m"
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "450Mi"
@@ -446,8 +446,8 @@ stackstate:
           cpu: "1500m"
           ephemeral-storage: "1Gi"
         requests:
-          memory: "750Mi"
-          cpu: "500m"
+          memory: "512Mi"
+          cpu: "250m"
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "350Mi"
@@ -524,8 +524,8 @@ stackstate:
           cpu: "500m"
           ephemeral-storage: "1Gi"
         requests:
-          memory: "1500Mi"
-          cpu: "500m"
+          memory: "768Mi"
+          cpu: "250m"
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "300Mi"
@@ -578,7 +578,7 @@ stackstate:
       # stackstate.components.trace2es.affinity -- Affinity settings for pod assignment.
       affinity: {}
       # stackstate.components.trace2es.enabled -- Enable/disable the trace2es service
-      enabled: true
+      enabled: false
       # stackstate.components.trace2es.additionalLogging -- Additional logback config
       additionalLogging: ""
     receiver:
@@ -607,7 +607,7 @@ stackstate:
           ephemeral-storage: "1Gi"
         requests:
           memory: "4Gi"
-          cpu: "3000m"
+          cpu: "1000m"
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "300Mi"
@@ -731,8 +731,8 @@ stackstate:
           memory: "2000Mi"
           ephemeral-storage: "1Gi"
         requests:
-          memory: "2000Mi"
-          cpu: "750m"
+          memory: "1536Mi"
+          cpu: "500m"
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "300Mi"
@@ -776,12 +776,12 @@ stackstate:
       # stackstate.components.sync.resources -- Resource allocation for `sync` pods.
       resources:
         limits:
-          memory: "3500Mi"
+          memory: "4Gi"
           cpu: "3000m"
           ephemeral-storage: "1Gi"
         requests:
-          memory: "3500Mi"
-          cpu: "2000m"
+          memory: "3Gi"
+          cpu: "750m"
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "400Mi"
@@ -829,8 +829,8 @@ stackstate:
           memory: "1800Mi"
           ephemeral-storage: "1Gi"
         requests:
-          memory: "1800Mi"
-          cpu: "1000m"
+          memory: "1536Mi"
+          cpu: "250m"
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
@@ -921,8 +921,8 @@ stackstate:
           cpu: "2000m"
           ephemeral-storage: "1Gi"
         requests:
-          memory: "2700Mi"
-          cpu: "2000m"
+          memory: "2Gi"
+          cpu: "1000m"
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "400Mi"
@@ -1120,7 +1120,7 @@ stackstate:
       # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
       split: true
     storeTransactionLogsToPVC:
-    # stackstate.experimental.storeTransactionLogsToPVC.enabled -- (boolean) Whether the transcation logs for some services, API, Checks, HealthSync, ProblemProducer,State, Sync, and ViewHealth, have to be stored to PVCs instead of pod ephemeral storage.
+    # stackstate.experimental.storeTransactionLogsToPVC.enabled -- (boolean) Whether the transcation logs for some services, API, Checks, HealthSync,State, Sync, and ViewHealth, have to be stored to PVCs instead of pod ephemeral storage.
       enabled: false
     # stackstate.experimental.storeTransactionLogsToPVC.volumeSize -- (string) The size of the persistent volume for the transaction logs.
       volumeSize: 600Mi
@@ -1156,7 +1156,7 @@ elasticsearch:
   # elasticsearch.resources -- Override Elasticsearch resources
   resources:
     requests:
-      cpu: "2000m"
+      cpu: "1000m"
       memory: "4Gi"
       ephemeral-storage: "1Mi"
     limits:
@@ -1235,7 +1235,7 @@ hbase:
           ephemeral-storage: "1Gi"
         requests:
           memory: "3Gi"
-          cpu: "1500m"
+          cpu: "500m"
           ephemeral-storage: "1Mi"
   hdfs:
     # hbase.hdfs.minReplication -- Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead)
@@ -1250,7 +1250,7 @@ hbase:
           ephemeral-storage: "1Gi"
         requests:
           memory: "4Gi"
-          cpu: "300m"
+          cpu: "100m"
           ephemeral-storage: "1Mi"
     namenode:
       resources:
@@ -1260,7 +1260,7 @@ hbase:
           ephemeral-storage: "1Gi"
         requests:
           memory: "1Gi"
-          cpu: "100m"
+          cpu: "50m"
           ephemeral-storage: "1Mi"
     secondarynamenode:
       enabled: true
@@ -1282,7 +1282,7 @@ hbase:
         cpu: "500m"
         ephemeral-storage: "1Gi"
       requests:
-        memory: "2Gi"
+        memory: "3Gi"
         cpu: "250m"
         ephemeral-storage: "1Mi"
   zookeeper:
@@ -1461,7 +1461,7 @@ kafka:
       ephemeral-storage: "1Gi"
     requests:
       memory: "2Gi"
-      cpu: "1000m"
+      cpu: "500m"
       ephemeral-storage: "1Mi"
   # kafka.zookeeper.enabled -- Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**.
   zookeeper:
@@ -1693,7 +1693,7 @@ victoria-metrics-0:
     # victoria-metrics-0.server.resources - CPU/Memory requests and limits
     resources:
       requests:
-        cpu: 200m
+        cpu: 300m
         memory: 3584Mi
       limits:
         memory: 4Gi
@@ -1714,7 +1714,7 @@ victoria-metrics-0:
       # victoria-metrics-0.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
       extraLabels: {}
 victoria-metrics-1:
-  enabled: false
+  enabled: true
   rbac:
     # victoria-metrics-1.pspEnabled -- Pod Security Policy has been deprecated and even removed from 1.25, we're not going to use it anymore
     pspEnabled: false
@@ -1761,7 +1761,7 @@ victoria-metrics-1:
     # victoria-metrics-1.server.resources - CPU/Memory requests and limits
     resources:
       requests:
-        cpu: 200m
+        cpu: 300m
         memory: 3584Mi
       limits:
         memory: 4Gi

@@ -133,7 +133,7 @@ stackstate/stackstate
 | elasticsearch.prometheus-elasticsearch-exporter.serviceMonitor.enabled | bool | `false` |  |
 | elasticsearch.prometheus-elasticsearch-exporter.serviceMonitor.labels | object | `{}` | Labels for the service monitor |
 | elasticsearch.replicas | int | `3` | Number of Elasticsearch replicas. |
-| elasticsearch.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"1Gi","memory":"4Gi"},"requests":{"cpu":"2000m","ephemeral-storage":"1Mi","memory":"4Gi"}}` | Override Elasticsearch resources |
+| elasticsearch.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"1Gi","memory":"4Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"4Gi"}}` | Override Elasticsearch resources |
 | elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"250Gi"}}}` | PVC template defaulting to 250Gi default volumes |
 | global.imagePullSecrets | list | `[]` | List of image pull secret names to be used by all images across all charts. |
 | global.receiverApiKey | string | `""` | API key to be used by the Receiver; if no key is provided, a random one will be generated for you. |
@@ -154,21 +154,21 @@ stackstate/stackstate
 | hbase.hbase.regionserver.resources.limits.cpu | string | `"3000m"` |  |
 | hbase.hbase.regionserver.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | hbase.hbase.regionserver.resources.limits.memory | string | `"3Gi"` |  |
-| hbase.hbase.regionserver.resources.requests.cpu | string | `"1500m"` |  |
+| hbase.hbase.regionserver.resources.requests.cpu | string | `"500m"` |  |
 | hbase.hbase.regionserver.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | hbase.hbase.regionserver.resources.requests.memory | string | `"3Gi"` |  |
 | hbase.hdfs.datanode.replicaCount | int | `3` | Number of HDFS datanode replicas. |
 | hbase.hdfs.datanode.resources.limits.cpu | string | `"500m"` |  |
 | hbase.hdfs.datanode.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | hbase.hdfs.datanode.resources.limits.memory | string | `"4Gi"` |  |
-| hbase.hdfs.datanode.resources.requests.cpu | string | `"300m"` |  |
+| hbase.hdfs.datanode.resources.requests.cpu | string | `"100m"` |  |
 | hbase.hdfs.datanode.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | hbase.hdfs.datanode.resources.requests.memory | string | `"4Gi"` |  |
 | hbase.hdfs.minReplication | int | `2` | Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead) |
 | hbase.hdfs.namenode.resources.limits.cpu | string | `"500m"` |  |
 | hbase.hdfs.namenode.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | hbase.hdfs.namenode.resources.limits.memory | string | `"1Gi"` |  |
-| hbase.hdfs.namenode.resources.requests.cpu | string | `"100m"` |  |
+| hbase.hdfs.namenode.resources.requests.cpu | string | `"50m"` |  |
 | hbase.hdfs.namenode.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | hbase.hdfs.namenode.resources.requests.memory | string | `"1Gi"` |  |
 | hbase.hdfs.secondarynamenode.enabled | bool | `true` |  |
@@ -185,7 +185,7 @@ stackstate/stackstate
 | hbase.tephra.resources.limits.memory | string | `"3Gi"` |  |
 | hbase.tephra.resources.requests.cpu | string | `"250m"` |  |
 | hbase.tephra.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
-| hbase.tephra.resources.requests.memory | string | `"2Gi"` |  |
+| hbase.tephra.resources.requests.memory | string | `"3Gi"` |  |
 | hbase.zookeeper.enabled | bool | `false` | Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**. |
 | hbase.zookeeper.externalServers | string | `"stackstate-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |
@@ -232,7 +232,7 @@ stackstate/stackstate
 | kafka.podLabels."app.kubernetes.io/part-of" | string | `"stackstate-k8s"` |  |
 | kafka.readinessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
 | kafka.replicaCount | int | `3` | Number of Kafka replicas. |
-| kafka.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"2Gi"}}` | Kafka resources per pods. |
+| kafka.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2Gi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2Gi"}}` | Kafka resources per pods. |
 | kafka.topic.stsMetricsV2.partitionCount | int | `10` |  |
 | kafka.topicRetention | string | `"86400000"` | Max time in milliseconds to retain data in each topic. |
 | kafka.transactionStateLogReplicationFactor | int | `2` |  |
@@ -330,7 +330,7 @@ stackstate/stackstate
 | stackstate.components.api.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.api.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `api` pods. |
 | stackstate.components.api.replicaCount | int | `1` | Number of `api` replicas. |
-| stackstate.components.api.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"2Gi","memory":"4000Mi"},"requests":{"cpu":"1500m","ephemeral-storage":"1Mi","memory":"4000Mi"}}` | Resource allocation for `api` pods. |
+| stackstate.components.api.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"2Gi","memory":"2Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"2Gi"}}` | Resource allocation for `api` pods. |
 | stackstate.components.api.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.api.sizing.javaHeapMemoryFraction | string | `"50"` |  |
 | stackstate.components.api.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -375,7 +375,7 @@ stackstate/stackstate
 | stackstate.components.correlate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.correlate.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `correlate` pods. |
 | stackstate.components.correlate.replicaCount | int | `1` | Number of `correlate` replicas. |
-| stackstate.components.correlate.resources | object | `{"limits":{"cpu":"2","ephemeral-storage":"1Gi","memory":"2800Mi"},"requests":{"cpu":"2","ephemeral-storage":"1Mi","memory":"2800Mi"}}` | Resource allocation for `correlate` pods. |
+| stackstate.components.correlate.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"1Gi","memory":"2800Mi"},"requests":{"cpu":"600m","ephemeral-storage":"1Mi","memory":"2800Mi"}}` | Resource allocation for `correlate` pods. |
 | stackstate.components.correlate.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
 | stackstate.components.correlate.sizing.javaHeapMemoryFraction | string | `"65"` |  |
 | stackstate.components.correlate.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -389,7 +389,7 @@ stackstate/stackstate
 | stackstate.components.e2es.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.e2es.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `e2es` pods. |
 | stackstate.components.e2es.replicaCount | int | `1` | Number of `e2es` replicas. |
-| stackstate.components.e2es.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"1500Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"1500Mi"}}` | Resource allocation for `e2es` pods. |
+| stackstate.components.e2es.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"1500Mi"},"requests":{"cpu":"250m","ephemeral-storage":"1Mi","memory":"768Mi"}}` | Resource allocation for `e2es` pods. |
 | stackstate.components.e2es.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
 | stackstate.components.e2es.sizing.javaHeapMemoryFraction | string | `"50"` |  |
 | stackstate.components.e2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -406,7 +406,7 @@ stackstate/stackstate
 | stackstate.components.healthSync.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.healthSync.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `healthSync` pods. |
 | stackstate.components.healthSync.replicaCount | int | `1` | Number of `healthSync` replicas. |
-| stackstate.components.healthSync.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `healthSync` pods. |
+| stackstate.components.healthSync.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1Gi","memory":"3500Mi"},"requests":{"cpu":"250m","ephemeral-storage":"1Mi","memory":"3500Mi"}}` | Resource allocation for `healthSync` pods. |
 | stackstate.components.healthSync.sizing.baseMemoryConsumption | string | `"450Mi"` |  |
 | stackstate.components.healthSync.sizing.javaHeapMemoryFraction | string | `"45"` |  |
 | stackstate.components.healthSync.tmpToPVC | object | `{"storageClassName":null,"volumeSize":"2Gi"}` | Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage. |
@@ -423,7 +423,7 @@ stackstate/stackstate
 | stackstate.components.initializer.image.repository | string | `"stackstate/stackstate-server"` | Repository of the initializer component Docker image. |
 | stackstate.components.initializer.image.tag | string | `""` | Tag used for the `initializer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.initializer.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.initializer.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1Gi","memory":"750Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"750Mi"}}` | Resource allocation for `initializer` pods. |
+| stackstate.components.initializer.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1Gi","memory":"750Mi"},"requests":{"cpu":"250m","ephemeral-storage":"1Mi","memory":"512Mi"}}` | Resource allocation for `initializer` pods. |
 | stackstate.components.initializer.sizing.baseMemoryConsumption | string | `"350Mi"` |  |
 | stackstate.components.initializer.sizing.javaHeapMemoryFraction | string | `"65"` |  |
 | stackstate.components.initializer.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -470,7 +470,7 @@ stackstate/stackstate
 | stackstate.components.receiver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.receiver.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `receiver` pods. |
 | stackstate.components.receiver.replicaCount | int | `1` | Number of `receiver` replicas. |
-| stackstate.components.receiver.resources | object | `{"limits":{"cpu":"3000m","ephemeral-storage":"1Gi","memory":"4Gi"},"requests":{"cpu":"3000m","ephemeral-storage":"1Mi","memory":"4Gi"}}` | Resource allocation for `receiver` pods. |
+| stackstate.components.receiver.resources | object | `{"limits":{"cpu":"3000m","ephemeral-storage":"1Gi","memory":"4Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"4Gi"}}` | Resource allocation for `receiver` pods. |
 | stackstate.components.receiver.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
 | stackstate.components.receiver.sizing.javaHeapMemoryFraction | string | `"65"` |  |
 | stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -514,7 +514,7 @@ stackstate/stackstate
 | stackstate.components.slicing.image.tag | string | `""` | Tag used for the `slicing` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.slicing.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.slicing.replicaCount | int | `1` | Number of `slicing` replicas. |
-| stackstate.components.slicing.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1Gi","memory":"1800Mi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"1800Mi"}}` | Resource allocation for `slicing` pods. |
+| stackstate.components.slicing.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1Gi","memory":"1800Mi"},"requests":{"cpu":"250m","ephemeral-storage":"1Mi","memory":"1536Mi"}}` | Resource allocation for `slicing` pods. |
 | stackstate.components.slicing.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.slicing.sizing.javaHeapMemoryFraction | string | `"60"` |  |
 | stackstate.components.slicing.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -530,7 +530,7 @@ stackstate/stackstate
 | stackstate.components.state.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.state.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `state` pods. |
 | stackstate.components.state.replicaCount | int | `1` | Number of `state` replicas. |
-| stackstate.components.state.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"750m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `state` pods. |
+| stackstate.components.state.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"1536Mi"}}` | Resource allocation for `state` pods. |
 | stackstate.components.state.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
 | stackstate.components.state.sizing.javaHeapMemoryFraction | string | `"70"` |  |
 | stackstate.components.state.tmpToPVC | object | `{"storageClassName":null,"volumeSize":"2Gi"}` | Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage. |
@@ -550,7 +550,7 @@ stackstate/stackstate
 | stackstate.components.sync.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.sync.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `sync` pods. |
 | stackstate.components.sync.replicaCount | int | `1` | Number of `sync` replicas. |
-| stackstate.components.sync.resources | object | `{"limits":{"cpu":"3000m","ephemeral-storage":"1Gi","memory":"3500Mi"},"requests":{"cpu":"2000m","ephemeral-storage":"1Mi","memory":"3500Mi"}}` | Resource allocation for `sync` pods. |
+| stackstate.components.sync.resources | object | `{"limits":{"cpu":"3000m","ephemeral-storage":"1Gi","memory":"4Gi"},"requests":{"cpu":"750m","ephemeral-storage":"1Mi","memory":"3Gi"}}` | Resource allocation for `sync` pods. |
 | stackstate.components.sync.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
 | stackstate.components.sync.sizing.javaHeapMemoryFraction | string | `"60"` |  |
 | stackstate.components.sync.tmpToPVC | object | `{"storageClassName":null,"volumeSize":"2Gi"}` | Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage. |
@@ -559,7 +559,7 @@ stackstate/stackstate
 | stackstate.components.sync.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.trace2es.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.trace2es.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.trace2es.enabled | bool | `true` | Enable/disable the trace2es service |
+| stackstate.components.trace2es.enabled | bool | `false` | Enable/disable the trace2es service |
 | stackstate.components.trace2es.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.trace2es.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.trace2es.image.pullPolicy | string | `""` | `pullPolicy` used for the `trace2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
@@ -603,7 +603,7 @@ stackstate/stackstate
 | stackstate.components.viewHealth.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.viewHealth.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `viewHealth` pods. |
 | stackstate.components.viewHealth.replicaCount | int | `1` | Number of `viewHealth` replicas. |
-| stackstate.components.viewHealth.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"1Gi","memory":"2700Mi"},"requests":{"cpu":"2000m","ephemeral-storage":"1Mi","memory":"2700Mi"}}` | Resource allocation for `viewHealth` pods. |
+| stackstate.components.viewHealth.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"1Gi","memory":"2700Mi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"2Gi"}}` | Resource allocation for `viewHealth` pods. |
 | stackstate.components.viewHealth.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
 | stackstate.components.viewHealth.sizing.javaHeapMemoryFraction | string | `"55"` |  |
 | stackstate.components.viewHealth.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -622,7 +622,7 @@ stackstate/stackstate
 | stackstate.deployment.mode | string | `"SelfHosted"` | Deployment mode of StackState, possible values are 'SaaS' and 'SelfHosted' |
 | stackstate.experimental.enableVMAgent | bool | `true` |  |
 | stackstate.experimental.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |
-| stackstate.experimental.storeTransactionLogsToPVC.enabled | boolean | `false` | Whether the transcation logs for some services, API, Checks, HealthSync, ProblemProducer,State, Sync, and ViewHealth, have to be stored to PVCs instead of pod ephemeral storage. |
+| stackstate.experimental.storeTransactionLogsToPVC.enabled | boolean | `false` | Whether the transcation logs for some services, API, Checks, HealthSync,State, Sync, and ViewHealth, have to be stored to PVCs instead of pod ephemeral storage. |
 | stackstate.experimental.storeTransactionLogsToPVC.volumeSize | string | `"600Mi"` | The size of the persistent volume for the transaction logs. |
 | stackstate.instanceApi.authentication | object | `{}` | Custom authentication settings for the `instance` API, by default the `stackstate.authentication` authentication settings are used. |
 | stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
@@ -645,7 +645,7 @@ stackstate/stackstate
 | victoria-metrics-0.server.podLabels | object | `{"stackstate-service":"victoriametrics"}` | Extra labels for Victoria Metrics pod |
 | victoria-metrics-0.server.resources.limits.cpu | int | `1` |  |
 | victoria-metrics-0.server.resources.limits.memory | string | `"4Gi"` |  |
-| victoria-metrics-0.server.resources.requests.cpu | string | `"200m"` |  |
+| victoria-metrics-0.server.resources.requests.cpu | string | `"300m"` |  |
 | victoria-metrics-0.server.resources.requests.memory | string | `"3584Mi"` |  |
 | victoria-metrics-0.server.retentionPeriod | int | `1` | How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1) |
 | victoria-metrics-0.server.scrape.enabled | bool | `false` | StackState doesn't use the scraping of VictoriaMetrics |
@@ -653,7 +653,7 @@ stackstate/stackstate
 | victoria-metrics-0.server.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` |
 | victoria-metrics-0.server.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
 | victoria-metrics-0.server.serviceMonitor.interval | string | `"15s"` | Scrape interval for service monitor |
-| victoria-metrics-1.enabled | bool | `false` |  |
+| victoria-metrics-1.enabled | bool | `true` |  |
 | victoria-metrics-1.rbac.namespaced | bool | `true` |  |
 | victoria-metrics-1.rbac.pspEnabled | bool | `false` |  |
 | victoria-metrics-1.server.affinity | object | `{}` | Affinity settings for Victoria Metrics pod |
@@ -666,7 +666,7 @@ stackstate/stackstate
 | victoria-metrics-1.server.podLabels | object | `{"stackstate-service":"victoriametrics"}` | Extra arguments for Victoria Metrics pod |
 | victoria-metrics-1.server.resources.limits.cpu | int | `1` |  |
 | victoria-metrics-1.server.resources.limits.memory | string | `"4Gi"` |  |
-| victoria-metrics-1.server.resources.requests.cpu | string | `"200m"` |  |
+| victoria-metrics-1.server.resources.requests.cpu | string | `"300m"` |  |
 | victoria-metrics-1.server.resources.requests.memory | string | `"3584Mi"` |  |
 | victoria-metrics-1.server.retentionPeriod | int | `1` | How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1) |
 | victoria-metrics-1.server.scrape.enabled | bool | `false` | StackState doesn't use the scraping of VictoriaMetrics |
