@@ -7,19 +7,19 @@ dependencies:
   version: 3.4.2
 - name: common
   repository: file://../common/
-  version: 0.4.23
+  version: 0.4.24
 - name: elasticsearch
   repository: file://../elasticsearch/
   version: 8.5.1-stackstate.2
 - name: hbase
   repository: file://../hbase/
-  version: 0.1.155
+  version: 0.1.156
 - name: kafka
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 15.5.1
 - name: kafkaup-operator
   repository: file://../kafkaup-operator/
-  version: 0.1.6
+  version: 0.1.7
 - name: minio
   repository: file://../minio/
   version: 8.0.10-stackstate.8
@@ -35,5 +35,5 @@ dependencies:
 - name: victoria-metrics-single
   repository: https://victoriametrics.github.io/helm-charts
   version: 0.8.53
-digest: sha256:187a8a8ed4e0d3d237cd9535265e42f9fca26baa340634c3a8d939d6fbd4cf03
-generated: "2023-07-04T11:02:45.515530843+02:00"
+digest: sha256:41804fc1d0f59b995893f5e06ee21499a5b61a9577ef77bce629750143c93f4d
+generated: "2023-07-28T12:17:56.719432578+02:00"

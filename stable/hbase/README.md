@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.155`
+Current chart version is `0.1.156`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -48,6 +48,7 @@ Current chart version is `0.1.155`
 | console.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
 | console.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | console.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overriden per PVC. |
 | hbase.master.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hbase.master.experimental.execLivenessProbe.enabled | bool | `false` | Whether to use a new scripted livenessProbe instead of the original HTTP check. Requires >= 4.11.5 version of the StackGraph docker images |
 | hbase.master.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |

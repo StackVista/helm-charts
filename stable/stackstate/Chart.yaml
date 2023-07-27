@@ -22,8 +22,8 @@ dependencies:
     version: "*"
     condition: stackstate-agent.enabled
   - name: common
-    repository: file://../common/
-    version: "*"
+    repository: https://helm.stackstate.io
+    version: "0.4.23"
   - name: elasticsearch
     condition: elasticsearch.enabled
     repository: https://helm.stackstate.io
@@ -40,15 +40,15 @@ dependencies:
     version: 15.5.1
   - name: kafkaup-operator
     condition: kafkaup-operator.enabled
-    repository: file://../kafkaup-operator/
-    version: "*"
+    repository: https://helm.stackstate.io
+    version: "0.1.6"
   - name: minio
     repository: https://helm.stackstate.io
     version: "8.0.10-stackstate.8"
     condition: backup.enabled
   - name: pull-secret
-    version: "*"
-    repository: file://../pull-secret/
+    version: "1.0.0"
+    repository: https://helm.stackstate.io
     condition: pull-secret.enabled
   - name: zookeeper
     version: 8.1.2

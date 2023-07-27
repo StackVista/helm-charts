@@ -6,7 +6,7 @@ dependencies:
   repository: file://../stackstate-agent/
   version: 3.4.2
 - name: common
-  repository: file://../common/
+  repository: https://helm.stackstate.io
   version: 0.4.23
 - name: elasticsearch
   repository: https://helm.stackstate.io
@@ -18,16 +18,16 @@ dependencies:
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 15.5.1
 - name: kafkaup-operator
-  repository: file://../kafkaup-operator/
+  repository: https://helm.stackstate.io
   version: 0.1.6
 - name: minio
   repository: https://helm.stackstate.io
   version: 8.0.10-stackstate.8
 - name: pull-secret
-  repository: file://../pull-secret/
-  version: 1.0.1
+  repository: https://helm.stackstate.io
+  version: 1.0.0
 - name: zookeeper
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 8.1.2
-digest: sha256:7d4fb55adedff85b13f36f2c129d2695620b86fce6b6371558b379f6e4635e47
-generated: "2023-06-22T14:06:45.027735+02:00"
+digest: sha256:6a49be821ebf315205252c85928c12f6f7e815a6617a9cfafdba01b25d5ce713
+generated: "2023-07-28T12:17:26.91791807+02:00"

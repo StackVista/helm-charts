@@ -131,6 +131,7 @@ spec:
       resources:
         requests:
           storage: {{ .Values.stackstate.components.vmagent.persistence.size | quote }}
+      {{ include "common.storage.class" ( dict "persistence" .Values.stackstate.components.vmagent.persistence "global" .Values.global) | nindent 6 }}
 {{- end }}
 
 

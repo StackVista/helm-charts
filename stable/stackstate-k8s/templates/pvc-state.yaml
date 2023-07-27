@@ -27,7 +27,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.stackstate.components.state.tmpToPVC.volumeSize }}
-  {{- if .Values.stackstate.components.state.tmpToPVC.storageClassName }}
-  storageClassName: {{ .Values.stackstate.components.state.tmpToPVC.storageClassName | quote }}
-  {{- end }}
+  {{ include "common.storage.class" ( dict "persistence" .Values.stackstate.components.state.tmpToPVC "global" .Values.global) | nindent 2}}
 {{- end}}

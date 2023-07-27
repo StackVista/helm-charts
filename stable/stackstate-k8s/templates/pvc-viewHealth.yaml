@@ -7,6 +7,7 @@ spec:
   resources:
     requests:
       storage: {{ .Values.stackstate.experimental.storeTransactionLogsToPVC.volumeSize }}
+  {{ include "common.storage.class" ( dict "persistence" .Values.stackstate.experimental.storeTransactionLogsToPVC "global" .Values.global) | nindent 2 }}
 {{- end -}}
 
 {{- if and .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled .Values.stackstate.experimental.server.split }}

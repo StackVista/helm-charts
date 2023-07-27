@@ -6,6 +6,8 @@ global:
   receiverApiKey: ""
   # global.imagePullSecrets -- List of image pull secret names to be used by all images across all charts.
   imagePullSecrets: []
+  # global.storageClass -- StorageClass for all PVCs created by the chart. Can be overriden per PVC.
+  storageClass:
 # commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
 commonLabels: {}
 backup:
@@ -370,8 +372,8 @@ stackstate:
       tmpToPVC:
         # stackstate.components.checks.tmpToPVC.volumeSize -- (string) The size of the PersistentVolume for "/tmp" directory.
         volumeSize: 2Gi
-        # stackstate.components.checks.tmpToPVC.storageClassName -- (string) Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible.
-        storageClassName: null
+        # stackstate.components.checks.tmpToPVC.storageClass -- (string) Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible.
+        storageClass: null
     healthSync:
       extraEnv:
         # stackstate.components.healthSync.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -422,8 +424,8 @@ stackstate:
       tmpToPVC:
         # stackstate.components.healthSync.tmpToPVC.volumeSize -- (string) The size of the PersistentVolume for "/tmp" directory.
         volumeSize: 2Gi
-        # stackstate.components.healthSync.tmpToPVC.storageClassName -- (string) Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible.
-        storageClassName: null
+        # stackstate.components.healthSync.tmpToPVC.storageClass -- (string) Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible.
+        storageClass: null
     initializer:
       extraEnv:
         # stackstate.components.initializer.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -753,8 +755,8 @@ stackstate:
       tmpToPVC:
         # stackstate.components.state.tmpToPVC.volumeSize -- (string) The size of the PersistentVolume for "/tmp" directory.
         volumeSize: 2Gi
-        # stackstate.components.state.tmpToPVC.storageClassName -- (string) Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible.
-        storageClassName: null
+        # stackstate.components.state.tmpToPVC.storageClass -- (string) Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible.
+        storageClass: null
     sync:
       extraEnv:
         # stackstate.components.sync.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -805,8 +807,8 @@ stackstate:
       tmpToPVC:
         # stackstate.components.sync.tmpToPVC.volumeSize -- (string) The size of the PersistentVolume for "/tmp" directory.
         volumeSize: 2Gi
-        # stackstate.components.sync.tmpToPVC.storageClassName -- (string) Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible.
-        storageClassName: null
+        # stackstate.components.sync.tmpToPVC.storageClass -- (string) Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible.
+        storageClass: null
     slicing:
       extraEnv:
         # stackstate.components.slicing.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -1013,6 +1015,7 @@ stackstate:
       extraArgs: {}
       persistence:
         size: 10Gi
+        storageClass:
       # stackstate.components.vmagent.resources -- Resource allocation for vmagent pod.
       resources:
         limits:
@@ -1124,6 +1127,8 @@ stackstate:
       enabled: false
     # stackstate.experimental.storeTransactionLogsToPVC.volumeSize -- (string) The size of the persistent volume for the transaction logs.
       volumeSize: 600Mi
+      # stackstate.experimental.storeTransactionLogsToPVC.storageClass -- (string) Storage class name of PersistentVolume used by transaction logs.
+      storageClass:
   stackpacks:
     # stackstate.stackpacks.installed -- Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks)
     installed: []

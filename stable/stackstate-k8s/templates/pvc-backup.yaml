@@ -8,11 +8,5 @@ spec:
   resources:
     requests:
       storage: {{ tpl .Values.backup.stackGraph.scheduled.tempData.size . }}
-{{- if .Values.backup.stackGraph.scheduled.tempData.storageClass }}
-  {{- if (eq "-" .Values.backup.stackGraph.scheduled.tempData.storageClass) }}
-  storageClassName: ""
-  {{- else }}
-  storageClassName: {{ .Values.backup.stackGraph.scheduled.tempData.storageClass | quote }}
-  {{- end }}
-{{- end }}
+  {{ include "common.storage.class" ( dict "persistence" .Values.backup.stackGraph.scheduled.tempData "global" .Values.global) | nindent 2 }}
 {{- end }}

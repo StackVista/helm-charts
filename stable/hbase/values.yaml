@@ -2,6 +2,10 @@
 # StackState HBase values #
 ###########################
 
+global:
+  # global.storageClass -- StorageClass for all PVCs created by the chart. Can be overriden per PVC.
+  storageClass:
+
 # commonLabels -- Labels that will be applied to all resources created by this helm chart
 commonLabels: {}
 all:
