@@ -1177,9 +1177,9 @@ elasticsearch:
       # elasticsearch.prometheus-elasticsearch-exporter.serviceMonitor.labels -- Labels for the service monitor
       labels: {}
     podAnnotations:
-      ad.stackstate.com/prometheus-elasticsearch-exporter.check_names: '["openmetrics"]'
-      ad.stackstate.com/prometheus-elasticsearch-exporter.init_configs: "[{}]"
-      ad.stackstate.com/prometheus-elasticsearch-exporter.instances: '[ { "prometheus_url": "http://%%host%%:9108/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
+      ad.stackstate.com/exporter.check_names: '["openmetrics"]'
+      ad.stackstate.com/exporter.init_configs: "[{}]"
+      ad.stackstate.com/exporter.instances: '[ { "prometheus_url": "http://%%host%%:9108/metrics", "namespace": "stackstate", "metrics": ["elasticsearch_indices_store_*", "elasticsearch_cluster_health_*"] } ]'
     resources:
       limits:
         cpu: "100m"

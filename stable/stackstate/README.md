@@ -120,9 +120,9 @@ stackstate/stackstate
 | elasticsearch.nodeGroup | string | `"master"` |  |
 | elasticsearch.prometheus-elasticsearch-exporter.enabled | bool | `true` |  |
 | elasticsearch.prometheus-elasticsearch-exporter.es.uri | string | `"http://stackstate-elasticsearch-master:9200"` |  |
-| elasticsearch.prometheus-elasticsearch-exporter.podAnnotations."ad.stackstate.com/prometheus-elasticsearch-exporter.check_names" | string | `"[\"openmetrics\"]"` |  |
-| elasticsearch.prometheus-elasticsearch-exporter.podAnnotations."ad.stackstate.com/prometheus-elasticsearch-exporter.init_configs" | string | `"[{}]"` |  |
-| elasticsearch.prometheus-elasticsearch-exporter.podAnnotations."ad.stackstate.com/prometheus-elasticsearch-exporter.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:9108/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
+| elasticsearch.prometheus-elasticsearch-exporter.podAnnotations."ad.stackstate.com/exporter.check_names" | string | `"[\"openmetrics\"]"` |  |
+| elasticsearch.prometheus-elasticsearch-exporter.podAnnotations."ad.stackstate.com/exporter.init_configs" | string | `"[{}]"` |  |
+| elasticsearch.prometheus-elasticsearch-exporter.podAnnotations."ad.stackstate.com/exporter.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:9108/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"elasticsearch_indices_store_*\", \"elasticsearch_cluster_health_*\"] } ]"` |  |
 | elasticsearch.prometheus-elasticsearch-exporter.resources.limits.cpu | string | `"100m"` |  |
 | elasticsearch.prometheus-elasticsearch-exporter.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | elasticsearch.prometheus-elasticsearch-exporter.resources.limits.memory | string | `"100Mi"` |  |
