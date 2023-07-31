@@ -73,7 +73,7 @@ nodeAgent:
         # nodeAgent.containers.agent.image.repository -- Base container image repository.
         repository: stackstate/stackstate-k8s-agent
         # nodeAgent.containers.agent.image.tag -- Default container image tag.
-        tag: "8ce04a82"
+        tag: "2d6d4d1d"
         # nodeAgent.containers.agent.image.pullPolicy -- Default container image pull policy.
         pullPolicy: IfNotPresent
       processAgent:
@@ -132,7 +132,7 @@ nodeAgent:
         # nodeAgent.containers.processAgent.image.repository -- Process-agent container image repository.
         repository: stackstate/stackstate-k8s-process-agent
         # nodeAgent.containers.processAgent.image.tag -- Default process-agent container image tag.
-        tag: "59e2cb56"
+        tag: "20344e84"
         # nodeAgent.containers.processAgent.image.pullPolicy -- Process-agent container image pull policy.
         pullPolicy: IfNotPresent
       # nodeAgent.containers.processAgent.env -- Additional environment variables for the process-agent container
@@ -295,7 +295,7 @@ clusterAgent:
     # clusterAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-k8s-cluster-agent
     # clusterAgent.image.tag -- Default container image tag.
-    tag: "8ce04a82"
+    tag: "2d6d4d1d"
     # clusterAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -447,7 +447,7 @@ checksAgent:
     # checksAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-k8s-agent
     # checksAgent.image.tag -- Default container image tag.
-    tag: "8ce04a82"
+    tag: "2d6d4d1d"
     # checksAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
