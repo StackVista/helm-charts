@@ -30,12 +30,18 @@ spec:
     spec:
       {{- include "stackstate-k8s-agent.image.pullSecrets" (dict "images" (list .Values.checksAgent.image .Values.all.image) "context" $) | nindent 6 }}
     {{- if .Values.all.hardening.enabled}}
-      terminationGracePeriodSeconds: 120
+      terminationGracePeriodSeconds: 240
     {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ include "stackstate-k8s-agent.imageRegistry" . }}/{{ .Values.checksAgent.image.repository }}:{{ .Values.checksAgent.image.tag }}"
           imagePullPolicy: "{{ .Values.checksAgent.image.pullPolicy }}"
+        {{- if .Values.all.hardening.enabled}}
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "/bin/sh", "-c", "echo 'Giving slim.ai monitor time to submit data...'; sleep 120" ]
+        {{- end }}
           env:
           - name: STS_API_KEY
             valueFrom:
