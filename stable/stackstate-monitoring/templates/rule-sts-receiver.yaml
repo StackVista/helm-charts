@@ -58,4 +58,13 @@ spec:
           labels:
             severity: critical
             alert_resource: {{` '{{ $labels.service }}' `}}
+        - alert: StackStateReceiverLogVolumeRejected
+          annotations:
+            message: {{`StackState logs are rejected when one or more log sources (for example pods) are generating more logs than their budget based on the log retention and disk space available. Solutions:\n - The cause can be an increase in log volume for 1 or more sources, for example because debug logging was enabled for an application. The solution in that case is to reduce the log volume for these pods.\n      - If the log volume is legitimate and not expected to change either the available disk space can be increased or the retention can be decreased. See the Stackstate documentation for mitigations.`}}
+          expr: |
+            rate(stackstate_receiver_events_rejected_size{element_type="k8sLogs"}[1m]) > 0
+          for: 5m
+          labels:
+            severity: warning
+            alert_resource: {{` '{{ $labels.service }}' `}}
 {{- end }}
