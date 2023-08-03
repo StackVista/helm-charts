@@ -47,6 +47,17 @@ Return the image registry for the router container
 {{- end -}}
 
 {{/*
+Return the image registry for the stackpacks containers
+*/}}
+{{- define "stackstate.stackpacks.image.registry" -}}
+  {{- if .Values.global }}
+    {{- .Values.global.imageRegistry | default .Values.stackstate.stackpacks.image.registry -}}
+  {{- else -}}
+    {{- .Values.stackstate.stackpacks.image.registry -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
 Return the image registry for the container-tools containers
 */}}
 {{- define "stackstate.containerTools.image.registry" -}}
@@ -604,7 +615,7 @@ Init container to load stackpacks from docker image
 {{- define "stackstate.initContainer.stackpacks" -}}
 name: init-stackpacks
 image: "{{include "stackstate.stackpacks.image.registry" .}}/{{ .Values.stackstate.stackpacks.image.repository }}:{{ .Values.stackstate.stackpacks.image.tag }}"
-imagePullPolicy: {{ .Values.stackstate.components.stackpacks.image.pullPolicy | quote }}
+imagePullPolicy: {{ .Values.stackstate.stackpacks.image.pullPolicy | quote }}
 args: ["/var/stackpacks"]
 volumeMounts:
 {{ include "stackstate.stackpacks.volumeMount" . }}

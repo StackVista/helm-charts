@@ -65,17 +65,6 @@ Return the image registry for the wait containers
 {{- end -}}
 
 {{/*
-Return the image registry for the stackpacks containers
-*/}}
-{{- define "stackstate.stackpacks.image.registry" -}}
-  {{- if .Values.global }}
-    {{- .Values.global.imageRegistry | default .Values.stackstate.stackpacks.image.registry -}}
-  {{- else -}}
-    {{- .Values.stackstate.stackpacks.image.registry -}}
-  {{- end -}}
-{{- end -}}
-
-{{/*
 Common extra environment variables for all processes inherited through `stackstate.components.all.extraEnv`
 */}}
 {{- define "stackstate.common.envvars" -}}
