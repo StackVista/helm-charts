@@ -649,6 +649,7 @@ stackstate/stackstate
 | stackstate.stackpacks.s3.secretkey | string | `""` | Secret key for the S3 bucket to use as source for stackpacks. |
 | stackstate.stackpacks.source | string | `"docker-image"` | Source of the stackpacks. Can be either 'docker-image' or 's3-bucket'. |
 | stackstate.stackpacks.updateInterval | string | `"5 minutes"` |  |
+| stackstate.stackpacks.upgradeOnStartup | list | `[]` | Specify a list of stackpacks that will, on startup only, be upgraded to the latest version available |
 | victoria-metrics-0.enabled | bool | `true` |  |
 | victoria-metrics-0.rbac.namespaced | bool | `true` |  |
 | victoria-metrics-0.rbac.pspEnabled | bool | `false` |  |

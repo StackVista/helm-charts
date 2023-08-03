@@ -70,9 +70,10 @@ stackstate.stackPacks {
     {{ .name }} = {{- toPrettyJson .configuration | indent 4 }}
     {{- end }}
   }
-
 {{- end }}
-
+  {{- if .Values.stackstate.stackpacks.upgradeOnStartup }}
+  upgradeOnStartup = {{- toPrettyJson .Values.stackstate.stackpacks.upgradeOnStartup }}
+  {{- end }}
 }
 
 stackstate.aws.s3 {

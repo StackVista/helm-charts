@@ -1127,6 +1127,8 @@ stackstate:
   stackpacks:
     # stackstate.stackpacks.installed -- Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks)
     installed: []
+    # stackstate.stackpacks.upgradeOnStartup -- Specify a list of stackpacks that will, on startup only, be upgraded to the latest version available
+    upgradeOnStartup: []
     # stackstate.stackpacks.source -- Source of the stackpacks. Can be either 'docker-image' or 's3-bucket'.
     source: "docker-image"
     updateInterval: "5 minutes"
