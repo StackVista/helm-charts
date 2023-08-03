@@ -634,9 +634,9 @@ stackstate/stackstate
 | stackstate.java.trustStorePassword | string | `nil` | Password to access the Java TrustStore (cacerts) file |
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
 | stackstate.receiver.baseUrl | string | `nil` | **DEPRECATED** Use stackstate.baseUrl instead |
-| stackstate.stackpacks.image | object | `{"imageRegistry":"","pullPolicy":"","repository":"stackstate/stackpacks","tag":"20230803120619-stac-19886-ab123a5-selfhosted"}` | Docker image to use as source for stackpacks. |
-| stackstate.stackpacks.image.imageRegistry | string | `""` | `imageRegistry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
+| stackstate.stackpacks.image | object | `{"pullPolicy":"","registry":"quay.io","repository":"stackstate/stackpacks","tag":"20230803120619-stac-19886-ab123a5-selfhosted"}` | Docker image to use as source for stackpacks. |
 | stackstate.stackpacks.image.pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.stackpacks.image.registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.image.repository | string | `"stackstate/stackpacks"` | Repository of the `stackpacks` Docker image. |
 | stackstate.stackpacks.image.tag | string | `"20230803120619-stac-19886-ab123a5-selfhosted"` | Tag used for the `stackpacks` Docker image; |
 | stackstate.stackpacks.installed | list | `[]` | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) |

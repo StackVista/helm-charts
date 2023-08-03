@@ -46,15 +46,20 @@ stackstate.api.authorization.staticSubjects.stackstate-k8s-troubleshooter: { sys
 {{ include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.instanceApi.authentication "authnPrefix" "stackstate.instanceApi.authentication" "authzPrefix" "stackstate.instanceApi.authorization" "global" .) }}
 {{- end }}
 
-{{- with .Values.stackstate.stackpacks.installed }}
 stackstate.stackPacks {
+  localStackPacksUri = "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
+
   {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
   latestVersionsStackPackStoreUri = "file:///var/stackpacks"
-  {{- else }}
+  {{- else if eq .Values.stackstate.stackpacks.source "s3-bucket"}}
   latestVersionsStackPackStoreUri = "s3://{{ .Values.stackstate.stackpacks.s3.bucket }}"
+  {{- else }}
+  {{- fail "The value for stackstate.stackpacks.source must be one of `docker-image` or `s3-bucket`" -}}
   {{- end }}
 
   updateStackPacksInterval = {{ .Values.stackstate.stackpacks.updateInterval | quote }}
+
+{{- with .Values.stackstate.stackpacks.installed }}
 
   {{- range . }}
   installOnStartUp += {{ .name | quote }}
@@ -65,18 +70,19 @@ stackstate.stackPacks {
     {{ .name }} = {{- toPrettyJson .configuration | indent 4 }}
     {{- end }}
   }
-}
-
-stackstate.aws {
-  accesskey = {{ .Values.stackstate.stackpacks.aws.accesskey | quote }}
-  secretkey = {{ .Values.stackstate.stackpacks.aws.secretkey | quote }}
-  region = {{ .Values.stackstate.stackpacks.aws.region | quote }}
-  {{- if .Values.stackstate.stackpacks.aws.endpoint }}
-  endpoint = {{ .Values.stackstate.stackpacks.aws.endpoint | quote }}
-  {{- end }}
-}
 
 {{- end }}
+
+}
+
+stackstate.aws.s3 {
+  accesskey = {{ .Values.stackstate.stackpacks.s3.accesskey | quote }}
+  secretkey = {{ .Values.stackstate.stackpacks.s3.secretkey | quote }}
+  region = {{ .Values.stackstate.stackpacks.s3.region | quote }}
+  {{- if .Values.stackstate.stackpacks.s3.endpoint }}
+  endpoint = {{ .Values.stackstate.stackpacks.s3.endpoint | quote }}
+  {{- end }}
+}
 
 {{- if .Values.stackstate.components.api.docslink }}
 stackstate.webUIConfig.docLinkUrlPrefix = "{{- .Values.stackstate.components.api.docslink -}}"

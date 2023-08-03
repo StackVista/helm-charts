@@ -1136,8 +1136,8 @@ stackstate:
       storageClass:
     # stackstate.stackpacks.image -- Docker image to use as source for stackpacks.
     image:
-      # stackstate.stackpacks.image.imageRegistry -- `imageRegistry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis.
-      imageRegistry: ""
+      # stackstate.stackpacks.image.registry -- `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis.
+      registry: "quay.io"
       # stackstate.stackpacks.image.pullPolicy -- `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
       pullPolicy: ""
       # stackstate.stackpacks.image.repository -- Repository of the `stackpacks` Docker image.

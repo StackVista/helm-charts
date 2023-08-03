@@ -199,7 +199,7 @@ Volume for stackpacks logs
 {{- define "stackstate.stackpacks.volume" -}}
 - name: stackpacks
   persistentVolumeClaim:
-    claimName: {{ template "common.fullname.short" .root }}-stackpacks
+    claimName: {{ template "common.fullname.short" . }}-stackpacks
 {{- end -}}
 
 {{/*
