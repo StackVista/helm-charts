@@ -6,3 +6,5 @@ stackstate:
           string_value: "one"
           number_value: 10
           bool_value: true
+    upgradeOnStartup:
+      - test-stackpack-1

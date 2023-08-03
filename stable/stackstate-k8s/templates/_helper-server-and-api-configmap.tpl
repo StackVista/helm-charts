@@ -71,9 +71,7 @@ stackstate.stackPacks {
     {{- end }}
   }
 {{- end }}
-  {{- if .Values.stackstate.stackpacks.upgradeOnStartup }}
-  upgradeOnStartup = {{- toPrettyJson .Values.stackstate.stackpacks.upgradeOnStartup }}
-  {{- end }}
+  upgradeOnStartup = {{ toJson .Values.stackstate.stackpacks.upgradeOnStartup }}
 }
 
 stackstate.aws.s3 {
