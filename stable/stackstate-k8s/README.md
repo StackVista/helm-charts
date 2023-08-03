@@ -290,7 +290,7 @@ stackstate/stackstate
 | stackstate.components.all.affinity | object | `{}` | Affinity settings for pod assignment on all components. |
 | stackstate.components.all.deploymentStrategy.type | string | `"RecreateSingletonsOnly"` | Deployment strategy for StackState components. Possible values: `RollingUpdate`, `Recreate` and `RecreateSingletonsOnly`. `RecreateSingletonsOnly` uses `Recreate` for the singleton Deployments and `RollingUpdate` for the other Deployments. |
 | stackstate.components.all.elasticsearchEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster. |
-| stackstate.components.all.extraEnv.open | object | `{"CONFIG_FORCE_stackstate_aws_s3_accesskey":"","CONFIG_FORCE_stackstate_aws_s3_region":"eu-west-1","CONFIG_FORCE_stackstate_aws_s3_secretkey":"","CONFIG_FORCE_stackstate_stackPacks_latestVersionsStackPackStoreUri":"s3://sts-stackpacks-prod","CONFIG_FORCE_stackstate_stackPacks_updateStackPacksInterval":"5 minutes"}` | Extra open environment variables to inject into pods for all components. |
+| stackstate.components.all.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods for all components. |
 | stackstate.components.all.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object for all components. |
 | stackstate.components.all.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below). |
 | stackstate.components.all.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
@@ -624,7 +624,7 @@ stackstate/stackstate
 | stackstate.deployment.mode | string | `"SelfHosted"` | Deployment mode of StackState, possible values are 'SaaS' and 'SelfHosted' |
 | stackstate.experimental.enableVMAgent | bool | `true` |  |
 | stackstate.experimental.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |
-| stackstate.experimental.storeTransactionLogsToPVC.enabled | boolean | `false` | Whether the transcation logs for some services, API, Checks, HealthSync, ProblemProducer,State, Sync, and ViewHealth, have to be stored to PVCs instead of pod ephemeral storage. |
+| stackstate.experimental.storeTransactionLogsToPVC.enabled | boolean | `false` | Whether the transcation logs for some services, API, Checks, HealthSync,State, Sync, and ViewHealth, have to be stored to PVCs instead of pod ephemeral storage. |
 | stackstate.experimental.storeTransactionLogsToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by transaction logs. |
 | stackstate.experimental.storeTransactionLogsToPVC.volumeSize | string | `"600Mi"` | The size of the persistent volume for the transaction logs. |
 | stackstate.instanceApi.authentication | object | `{}` | Custom authentication settings for the `instance` API, by default the `stackstate.authentication` authentication settings are used. |
@@ -634,7 +634,21 @@ stackstate/stackstate
 | stackstate.java.trustStorePassword | string | `nil` | Password to access the Java TrustStore (cacerts) file |
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
 | stackstate.receiver.baseUrl | string | `nil` | **DEPRECATED** Use stackstate.baseUrl instead |
+| stackstate.stackpacks.image | object | `{"imageRegistry":"","pullPolicy":"","repository":"stackstate/stackpacks","tag":"20230803120619-stac-19886-ab123a5-selfhosted"}` | Docker image to use as source for stackpacks. |
+| stackstate.stackpacks.image.imageRegistry | string | `""` | `imageRegistry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
+| stackstate.stackpacks.image.pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.stackpacks.image.repository | string | `"stackstate/stackpacks"` | Repository of the `stackpacks` Docker image. |
+| stackstate.stackpacks.image.tag | string | `"20230803120619-stac-19886-ab123a5-selfhosted"` | Tag used for the `stackpacks` Docker image; |
 | stackstate.stackpacks.installed | list | `[]` | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) |
+| stackstate.stackpacks.pvc.size | string | `"1Gi"` |  |
+| stackstate.stackpacks.pvc.storageClass | string | `nil` |  |
+| stackstate.stackpacks.s3.accesskey | string | `""` | Access key for the S3 bucket to use as source for stackpacks. |
+| stackstate.stackpacks.s3.bucket | string | `"sts-stackpacks-prod"` | Name of the S3 bucket to use as source for stackpacks. |
+| stackstate.stackpacks.s3.endpoint | string | `nil` | AWS S3 Endpoint to use, can be used to point to a local S3 compatible storage. |
+| stackstate.stackpacks.s3.region | string | `"eu-west-1"` | Region of the S3 bucket to use as source for stackpacks. |
+| stackstate.stackpacks.s3.secretkey | string | `""` | Secret key for the S3 bucket to use as source for stackpacks. |
+| stackstate.stackpacks.source | string | `"docker-image"` | Source of the stackpacks. Can be either 'docker-image' or 's3-bucket'. |
+| stackstate.stackpacks.updateInterval | string | `"5 minutes"` |  |
 | victoria-metrics-0.enabled | bool | `true` |  |
 | victoria-metrics-0.rbac.namespaced | bool | `true` |  |
 | victoria-metrics-0.rbac.pspEnabled | bool | `false` |  |

@@ -597,3 +597,15 @@ volumeMounts:
   - name: tmp-volume
     mountPath: /tmp
 {{- end -}}
+
+{{/*
+Init container to load stackpacks from docker image
+*/}}
+{{- define "stackstate.initContainer.stackpacks" -}}
+name: init-stackpacks
+image: "{{include "stackstate.stackpacks.image.registry" .}}/{{ .Values.stackstate.stackpacks.image.repository }}:{{ .Values.stackstate.stackpacks.image.tag }}"
+imagePullPolicy: {{ .Values.stackstate.components.stackpacks.image.pullPolicy | quote }}
+args: ["/var/stackpacks"]
+volumeMounts:
+{{ include "stackstate.stackpacks.volumeMount" . }}
+{{- end -}}

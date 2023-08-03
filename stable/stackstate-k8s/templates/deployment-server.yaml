@@ -72,6 +72,9 @@ resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 volumeMounts:
+{{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
+{{ include "stackstate.stackpacks.volumeMount" . }}
+{{- end }}
 - name: config-secrets-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
@@ -120,6 +123,9 @@ spec:
       initContainers:
       - {{ toYaml $stsstackstateServerInitContainer | nindent 8 }}
       - {{ toYaml $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer | nindent 8 }}
+      {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
+      - {{ include "stackstate.initContainer.stackpacks" . | nindent 8 }}
+      {{- end }}
       containers:
       - {{ toYaml $stsstackstateServerMainContainer | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.server.nodeSelector }}

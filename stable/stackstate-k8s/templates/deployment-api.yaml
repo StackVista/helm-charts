@@ -76,6 +76,9 @@ resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 volumeMounts:
+{{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
+{{ include "stackstate.stackpacks.volumeMount" . }}
+{{- end }}
 - name: config-secrets-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
@@ -126,6 +129,9 @@ spec:
       {{- if .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled }}
       - {{ include "stackstate.initContainer.cleanTransactionLogsDirectory" . | nindent 8 }}
       {{- end }}
+      {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
+      - {{ include "stackstate.initContainer.stackpacks" . | nindent 8 }}
+      {{- end }}
       containers:
       - {{ toYaml $stsStackstateApiMainContainer | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.api.nodeSelector }}
@@ -165,6 +171,9 @@ spec:
         {{- include "stackstate.service.pod.volumes" (dict "pod_name" "api" "root" . ) | nindent 8 }}
         {{- if .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled }}
         {{- include "stackstate.service.transactionLog.volume" (dict "pod_name" "api" "root" . ) | nindent 8 }}
+        {{- end }}
+        {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
+        {{ include "stackstate.stackpacks.volume" . | nindent 8 }}
         {{- end }}
 {{- end -}}
 

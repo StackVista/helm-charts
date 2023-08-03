@@ -48,6 +48,14 @@ stackstate.api.authorization.staticSubjects.stackstate-k8s-troubleshooter: { sys
 
 {{- with .Values.stackstate.stackpacks.installed }}
 stackstate.stackPacks {
+  {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
+  latestVersionsStackPackStoreUri = "file:///var/stackpacks"
+  {{- else }}
+  latestVersionsStackPackStoreUri = "s3://{{ .Values.stackstate.stackpacks.s3.bucket }}"
+  {{- end }}
+
+  updateStackPacksInterval = {{ .Values.stackstate.stackpacks.updateInterval | quote }}
+
   {{- range . }}
   installOnStartUp += {{ .name | quote }}
   {{- end }}
@@ -58,6 +66,16 @@ stackstate.stackPacks {
     {{- end }}
   }
 }
+
+stackstate.aws {
+  accesskey = {{ .Values.stackstate.stackpacks.aws.accesskey | quote }}
+  secretkey = {{ .Values.stackstate.stackpacks.aws.secretkey | quote }}
+  region = {{ .Values.stackstate.stackpacks.aws.region | quote }}
+  {{- if .Values.stackstate.stackpacks.aws.endpoint }}
+  endpoint = {{ .Values.stackstate.stackpacks.aws.endpoint | quote }}
+  {{- end }}
+}
+
 {{- end }}
 
 {{- if .Values.stackstate.components.api.docslink }}
