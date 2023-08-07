@@ -82,7 +82,7 @@ spec:
           - name: STS_COLLECT_KUBERNETES_TOPOLOGY
             value: {{ .Values.clusterAgent.collection.kubernetesTopology | quote }}
           - name: STS_LEADER_ELECTION
-            value: "true"
+            value: "false"
           - name: STS_LOG_LEVEL
             value: {{ .Values.clusterAgent.logLevel | quote }}
           - name: STS_CLUSTER_AGENT_CMD_PORT

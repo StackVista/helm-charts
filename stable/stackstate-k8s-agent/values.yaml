@@ -67,7 +67,6 @@ nodeAgent:
   priorityClassName: ""
 
   containers:
-
     agent:
       image:
         # nodeAgent.containers.agent.image.repository -- Base container image repository.
@@ -83,7 +82,7 @@ nodeAgent:
       env: {}
       # nodeAgent.containers.agent.logLevel -- Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off
       ## If not set, fall back to the value of agent.logLevel.
-      logLevel:  # INFO
+      logLevel: # INFO
 
       resources:
         limits:
@@ -139,7 +138,7 @@ nodeAgent:
       env: {}
       # nodeAgent.containers.processAgent.logLevel -- Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off
       ## If not set, fall back to the value of agent.logLevel.
-      logLevel:  # INFO
+      logLevel: # INFO
 
       resources:
         limits:
@@ -253,6 +252,12 @@ clusterAgent:
       persistentvolumeclaims: true
       # clusterAgent.collection.kubernetesResources.secrets -- Enable / disable collection of Secrets.
       secrets: true
+      # clusterAgent.collection.kubernetesResources.resourcequotas -- Enable / disable collection of Resource Quotas.
+      resourcequotas: true
+      # clusterAgent.collection.kubernetesResources.limitranges -- Enable / disable collection of Limit Ranges.
+      limitranges: true
+      # clusterAgent.collection.kubernetesResources.replicationcontrollers -- Enable / disable collection of Replication Controllers.
+      replicationcontrollers: true
       # clusterAgent.collection.kubernetesResources.daemonsets -- Enable / disable collection of DaemonSets.
       daemonsets: true
       # clusterAgent.collection.kubernetesResources.deployments -- Enable / disable collection of Deployments.
@@ -267,6 +272,12 @@ clusterAgent:
       cronjobs: true
       # clusterAgent.collection.kubernetesResources.jobs -- Enable / disable collection of Jobs.
       jobs: true
+      # clusterAgent.collection.kubernetesResources.storageclasses -- Enable / disable collection of Storage Classes.
+      storageclasses: true
+      # clusterAgent.collection.kubernetesResources.poddisruptionbudgets -- Enable / disable collection of Pod Disruption Budgets.
+      poddisruptionbudgets: true
+      # clusterAgent.collection.kubernetesResources.horizontalpodautoscalers -- Enable / disable collection of Horizontal Pod Autoscalers.
+      horizontalpodautoscalers: true
 
   # clusterAgent.config --
   config:

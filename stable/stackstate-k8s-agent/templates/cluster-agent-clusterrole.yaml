@@ -35,6 +35,15 @@ rules:
   {{- if $kubeRes.secrets }}
   - secrets
   {{- end }}
+  {{- if $kubeRes.resourcequotas }}
+  - resourcequotas
+  {{- end }}
+  {{- if $kubeRes.limitranges }}
+  - limitranges
+  {{- end }}
+  {{- if $kubeRes.replicationcontrollers }}
+  - replicationcontrollers
+  {{- end }}
   verbs:
   - get
   - list
@@ -104,7 +113,30 @@ rules:
     - "storage.k8s.io"
   resources:
   {{- if $kubeRes.volumeattachments }}
-    - volumeattachments
+  - volumeattachments
+  {{- end }}
+  {{- if $kubeRes.storageclasses }}
+  - storageclasses
+  {{- end }}
+  verbs:
+    - get
+    - list
+    - watch
+- apiGroups:
+    - "policy"
+  resources:
+  {{- if $kubeRes.poddisruptionbudgets }}
+  - poddisruptionbudgets
+  {{- end }}
+  verbs:
+    - get
+    - list
+    - watch
+- apiGroups:
+    - "autoscaling"
+  resources:
+  {{- if $kubeRes.horizontalpodautoscalers }}
+  - horizontalpodautoscalers
   {{- end }}
   verbs:
     - get
