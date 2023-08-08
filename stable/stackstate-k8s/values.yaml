@@ -17,9 +17,9 @@ backup:
   enabled: false
   elasticsearch:
     # backup.elasticsearch.bucketName -- Name of the MinIO bucket where ElasticSearch snapshots are stored.
-    bucketName: 'sts-elasticsearch-backup'
+    bucketName: "sts-elasticsearch-backup"
     # backup.elasticsearch.snapshotRepositoryName -- Name of the ElasticSearch snapshot repository.
-    snapshotRepositoryName: 'sts-backup'
+    snapshotRepositoryName: "sts-backup"
     restore:
       # backup.elasticsearch.restore.enabled -- Enable ElasticSearch snapshot restore functionality (if `backup.enabled` is set to `true`).
       enabled: true
@@ -27,11 +27,11 @@ backup:
       # backup.elasticsearch.scheduled.enabled -- Enable scheduled ElasticSearch snapshots (if `backup.enabled` is set to `true`).
       enabled: true
       # backup.elasticsearch.scheduled.schedule -- Cron schedule for automatic ElasticSearch snaphosts in [ElastichSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html).
-      schedule: '0 0 3 * * ?'
+      schedule: "0 0 3 * * ?"
       # backup.elasticsearch.scheduled.indices -- ElasticSearch indices to snapshot in [JSON array format](https://www.w3schools.com/js/js_json_arrays.asp).
       indices: "sts*"
       # backup.elasticsearch.scheduled.snapshotPolicyName -- Name of the ElasticSearch snapshot policy.
-      snapshotPolicyName: 'auto-sts-backup'
+      snapshotPolicyName: "auto-sts-backup"
       # backup.elasticsearch.scheduled.snapshotNameTemplate -- Template for the ElasticSearch snapshot name in [ElasticSearch date math format](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/date-math-index-names.html).
       snapshotNameTemplate: "<sts-backup-{now{yyyyMMdd-HHmm}}>"
       # backup.elasticsearch.scheduled.snapshotRetentionExpireAfter -- Amount of time to keep ElasticSearch snapshots in [ElasticSearch time units](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/common-options.html#time-units). *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule).
@@ -45,7 +45,7 @@ backup:
     maxUnavailable: 0
   stackGraph:
     # backup.stackGraph.bucketName -- Name of the MinIO bucket to store StackGraph backups.
-    bucketName: 'sts-stackgraph-backup'
+    bucketName: "sts-stackgraph-backup"
     restore:
       # backup.stackGraph.restore.enabled -- Enable StackGraph backup restore functionality (if `backup.enabled` is set to `true`).
       enabled: true
@@ -53,27 +53,27 @@ backup:
         # backup.stackGraph.restore.tmpData.accessModes -- Access mode for temporary backup data.
         accessModes: ["ReadWriteOnce"]
         # backup.stackGraph.restore.tmpData.size -- Size of volume for temporary backup data -- must be large enough to store a single backup.
-        size: '{{ .Values.hbase.hdfs.datanode.persistence.size }}'
+        size: "{{ .Values.hbase.hdfs.datanode.persistence.size }}"
         # backup.stackGraph.restore.tmpData.storageClass -- Storage class of the volume for temporary backup data.
         storageClass:
     scheduled:
       # backup.stackGraph.scheduled.enabled -- Enable scheduled StackGraph backups (if `backup.enabled` is set to `true`).
       enabled: true
       # backup.stackGraph.scheduled.schedule -- Cron schedule for automatic StackGraph backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax).
-      schedule: '0 3 * * *'
+      schedule: "0 3 * * *"
       # backup.stackGraph.scheduled.backupNameTemplate -- Template for the StackGraph backup name as a double-quoted shell string value.
-      backupNameTemplate: 'sts-backup-$(date +%Y%m%d-%H%M).graph'
+      backupNameTemplate: "sts-backup-$(date +%Y%m%d-%H%M).graph"
       # backup.stackGraph.scheduled.backupNameParseRegexp -- Regular expression to retrieve date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`.
-      backupNameParseRegexp: 'sts-backup-([0-9]*-[0-9]*).graph'
+      backupNameParseRegexp: "sts-backup-([0-9]*-[0-9]*).graph"
       # backup.stackGraph.scheduled.backupDatetimeParseFormat -- Format to parse date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`.
-      backupDatetimeParseFormat: '%Y%m%d-%H%M'
+      backupDatetimeParseFormat: "%Y%m%d-%H%M"
       # backup.stackGraph.scheduled.backupRetentionTimeDelta -- Time to keep StackGraph backups in [Python timedelta format](https://docs.python.org/3/library/datetime.html#timedelta-objects).
-      backupRetentionTimeDelta: 'days = 30'
+      backupRetentionTimeDelta: "days = 30"
       tempData:
         # backup.stackGraph.scheduled.tmpData.accessModes -- Access mode for temporary backup data.
         accessModes: ["ReadWriteOnce"]
         # backup.stackGraph.scheduled.tmpData.size -- Size of volume for temporary backup data -- must be large enough to store a single backup.
-        size: '{{ .Values.hbase.hdfs.datanode.persistence.size }}'
+        size: "{{ .Values.hbase.hdfs.datanode.persistence.size }}"
         # backup.stackGraph.scheduled.tmpData.storageClass -- Storage class of the volume for temporary backup data.
         storageClass:
     securityContext:
@@ -89,7 +89,7 @@ backup:
       runAsUser: 65534
   configuration:
     # backup.configuration.bucketName -- Name of the MinIO bucket to store configuration backups.
-    bucketName: 'sts-configuration-backup'
+    bucketName: "sts-configuration-backup"
     restore:
       # backup.configuration.restore.enabled -- Enable configuration backup restore functionality (if `backup.enabled` is set to `true`).
       enabled: true
@@ -97,15 +97,15 @@ backup:
       # backup.configuration.scheduled.enabled -- Enable scheduled configuration backups (if `backup.enabled` is set to `true`).
       enabled: true
       # backup.configuration.scheduled.schedule -- Cron schedule for automatic configuration backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax).
-      schedule: '0 4 * * *'
+      schedule: "0 4 * * *"
       # backup.configuration.scheduled.backupNameTemplate -- Template for the configuration backup name as a double-quoted shell string value.
-      backupNameTemplate: 'sts-backup-$(date +%Y%m%d-%H%M).stj'
+      backupNameTemplate: "sts-backup-$(date +%Y%m%d-%H%M).stj"
       # backup.configuration.scheduled.backupNameParseRegexp -- Regular expression to retrieve date/time from configuration backup name. *Note:* This should match the value for `backupNameTemplate`.
-      backupNameParseRegexp: 'sts-backup-([0-9]*-[0-9]*).stj'
+      backupNameParseRegexp: "sts-backup-([0-9]*-[0-9]*).stj"
       # backup.configuration.scheduled.backupDatetimeParseFormat -- Format to parse date/time from configuration backup name. *Note:* This should match the value for `backupNameTemplate`.
-      backupDatetimeParseFormat: '%Y%m%d-%H%M'
+      backupDatetimeParseFormat: "%Y%m%d-%H%M"
       # backup.configuration.scheduled.backupRetentionTimeDelta -- Time to keep configuration backups in [Python timedelta format](https://docs.python.org/3/library/datetime.html#timedelta-objects).
-      backupRetentionTimeDelta: 'days = 365'
+      backupRetentionTimeDelta: "days = 365"
     securityContext:
       # backup.configuration.securityContext.enabled -- Whether or not to enable the securityContext
       enabled: true
@@ -1030,19 +1030,19 @@ stackstate:
       affinity:
         podAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 80
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: app.kubernetes.io/component
-                  operator: In
-                  values:
-                  - receiver
-                - key: app.kubernetes.io/instance
-                  operator: In
-                  values:
-                  - stackstate
-              topologyKey: kubernetes.io/hostname
+            - weight: 80
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/component
+                      operator: In
+                      values:
+                        - receiver
+                    - key: app.kubernetes.io/instance
+                      operator: In
+                      values:
+                        - stackstate
+                topologyKey: kubernetes.io/hostname
       agentMetricsFilter: '["vmagent*"]'
     wait:
       image:
@@ -1123,9 +1123,9 @@ stackstate:
       # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
       split: true
     storeTransactionLogsToPVC:
-    # stackstate.experimental.storeTransactionLogsToPVC.enabled -- (boolean) Whether the transcation logs for some services, API, Checks, HealthSync,State, Sync, and ViewHealth, have to be stored to PVCs instead of pod ephemeral storage.
+      # stackstate.experimental.storeTransactionLogsToPVC.enabled -- (boolean) Whether the transcation logs for some services, API, Checks, HealthSync, State, Sync, and ViewHealth, have to be stored to PVCs instead of pod ephemeral storage.
       enabled: false
-    # stackstate.experimental.storeTransactionLogsToPVC.volumeSize -- (string) The size of the persistent volume for the transaction logs.
+      # stackstate.experimental.storeTransactionLogsToPVC.volumeSize -- (string) The size of the persistent volume for the transaction logs.
       volumeSize: 600Mi
       # stackstate.experimental.storeTransactionLogsToPVC.storageClass -- (string) Storage class name of PersistentVolume used by transaction logs.
       storageClass:
@@ -1383,12 +1383,12 @@ kafka:
   initContainers:
     - name: check-inter-broker-protocol-version
       image: '{{ include "kafka.image" . }}'
-      imagePullPolicy: ''
+      imagePullPolicy: ""
       command:
         - /bin/bash
       args:
         - -c
-        - "while [ -z \"${KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION}\" ]; do echo \"KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION should be set by operator\"; sleep 1; done"
+        - 'while [ -z "${KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION}" ]; do echo "KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION should be set by operator"; sleep 1; done'
       resources:
         limits: {}
         requests: {}
@@ -1647,7 +1647,7 @@ pull-secret:
   # pull-secret.enabled -- Deploy the ImagePullSecret for the chart.
   enabled: false
   # pull-secret.fullNameOverride -- Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart.
-  fullNameOverride: ''
+  fullNameOverride: ""
   # pull-secret.credentials -- Registry and assotiated credentials (username, password) that will be stored in the pull-secret
   credentials: []
 victoria-metrics-0:
