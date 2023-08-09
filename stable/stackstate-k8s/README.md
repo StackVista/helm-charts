@@ -424,7 +424,7 @@ stackstate/stackstate
 | stackstate.components.initializer.image.repository | string | `"stackstate/stackstate-server"` | Repository of the initializer component Docker image. |
 | stackstate.components.initializer.image.tag | string | `""` | Tag used for the `initializer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.initializer.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.initializer.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1Gi","memory":"750Mi"},"requests":{"cpu":"250m","ephemeral-storage":"1Mi","memory":"512Mi"}}` | Resource allocation for `initializer` pods. |
+| stackstate.components.initializer.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1Gi","memory":"1500Mi"},"requests":{"cpu":"250m","ephemeral-storage":"1Mi","memory":"512Mi"}}` | Resource allocation for `initializer` pods. |
 | stackstate.components.initializer.sizing.baseMemoryConsumption | string | `"350Mi"` |  |
 | stackstate.components.initializer.sizing.javaHeapMemoryFraction | string | `"65"` |  |
 | stackstate.components.initializer.tolerations | list | `[]` | Toleration labels for pod assignment. |
