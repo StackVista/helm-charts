@@ -400,7 +400,7 @@ stackstate:
       # stackstate.components.initializer.resources -- Resource allocation for `initializer` pods.
       resources:
         limits:
-          memory: "700Mi"
+          memory: "1500Mi"
           cpu: "500m"
           ephemeral-storage: "1Gi"
         requests:
