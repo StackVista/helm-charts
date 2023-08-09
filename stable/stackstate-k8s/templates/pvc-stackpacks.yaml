@@ -1,0 +1,17 @@
+{{- define "stackstate.stackpacks.persistentvolumeclaim" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-stackpacks
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.stackstate.stackpacks.pvc.size }}
+  {{ include "common.storage.class" ( dict "persistence" .Values.stackstate.stackpacks.pvc "global" .Values.global) | nindent 2 }}
+{{- end -}}
+
+{{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
+{{- $commonPVC := fromYaml (include "common.persistentvolumeclaim" .) -}}
+{{- $stackstateStackpacksPVC := fromYaml (include "stackstate.stackpacks.persistentvolumeclaim" .) -}}
+{{- toYaml (merge $stackstateStackpacksPVC $commonPVC) -}}
+{{- end -}}

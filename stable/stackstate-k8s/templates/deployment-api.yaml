@@ -38,8 +38,6 @@ env:
       key: sts-license-key
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
-- name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
-  value: "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
   # Keep for 1.5 hours, allowing timetravel and having users in analytics keep their results cached
 - name: CONFIG_FORCE_stackgraph_vertex_cache_expireAfterSeconds
   value: "5400"
@@ -76,6 +74,9 @@ resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 volumeMounts:
+{{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
+{{ include "stackstate.stackpacks.volumeMount" . }}
+{{- end }}
 - name: config-secrets-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
@@ -122,6 +123,9 @@ spec:
       serviceAccountName: {{ template "common.fullname.short" . }}-api
       {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
       initContainers:
+      {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
+      - {{ include "stackstate.initContainer.stackpacks" . | nindent 8 }}
+      {{- end }}
       - {{ toYaml $stsStackstateApiInitContainer | nindent 8 }}
       {{- if .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled }}
       - {{ include "stackstate.initContainer.cleanTransactionLogsDirectory" . | nindent 8 }}
@@ -165,6 +169,9 @@ spec:
         {{- include "stackstate.service.pod.volumes" (dict "pod_name" "api" "root" . ) | nindent 8 }}
         {{- if .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled }}
         {{- include "stackstate.service.transactionLog.volume" (dict "pod_name" "api" "root" . ) | nindent 8 }}
+        {{- end }}
+        {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
+        {{ include "stackstate.stackpacks.volume" . | nindent 8 }}
         {{- end }}
 {{- end -}}
 

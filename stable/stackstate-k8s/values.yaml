@@ -160,12 +160,7 @@ stackstate:
         type: RecreateSingletonsOnly
       extraEnv:
         # stackstate.components.all.extraEnv.open -- Extra open environment variables to inject into pods for all components.
-        open:
-          CONFIG_FORCE_stackstate_stackPacks_latestVersionsStackPackStoreUri: "s3://sts-stackpacks-prod"
-          CONFIG_FORCE_stackstate_stackPacks_updateStackPacksInterval: "5 minutes"
-          CONFIG_FORCE_stackstate_aws_s3_accesskey: ""
-          CONFIG_FORCE_stackstate_aws_s3_secretkey: ""
-          CONFIG_FORCE_stackstate_aws_s3_region: "eu-west-1"
+        open: {}
         # stackstate.components.all.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object for all components.
         secret: {}
       image:
@@ -1132,6 +1127,37 @@ stackstate:
   stackpacks:
     # stackstate.stackpacks.installed -- Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks)
     installed: []
+    # stackstate.stackpacks.upgradeOnStartup -- Specify a list of stackpacks that will, on startup only, be upgraded to the latest version available
+    upgradeOnStartup: []
+    # stackstate.stackpacks.source -- Source of the stackpacks. Can be either 'docker-image' or 's3-bucket'.
+    source: "docker-image"
+    updateInterval: "5 minutes"
+    # stackstate.stackpacks.pvcSize -- Size of the Persistent Volume Claim (PVC) used to copy stackpacks from the Docker image.
+    pvc:
+      size: 1Gi
+      storageClass:
+    # stackstate.stackpacks.image -- Docker image to use as source for stackpacks.
+    image:
+      # stackstate.stackpacks.image.registry -- `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis.
+      registry: "quay.io"
+      # stackstate.stackpacks.image.pullPolicy -- `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+      pullPolicy: ""
+      # stackstate.stackpacks.image.repository -- Repository of the `stackpacks` Docker image.
+      repository: stackstate/stackpacks
+      # stackstate.stackpacks.image.tag -- Tag used for the `stackpacks` Docker image;
+      tag: "20230803120619-stac-19886-ab123a5-selfhosted"
+    s3:
+      # stackstate.stackpacks.s3.bucket -- Name of the S3 bucket to use as source for stackpacks.
+      bucket: "sts-stackpacks-prod"
+      # stackstate.stackpacks.s3.accesskey -- Access key for the S3 bucket to use as source for stackpacks.
+      accesskey: ""
+      # stackstate.stackpacks.s3.secretkey -- Secret key for the S3 bucket to use as source for stackpacks.
+      secretkey: ""
+      # stackstate.stackpacks.s3.region -- Region of the S3 bucket to use as source for stackpacks.
+      region: "eu-west-1"
+      # stackstate.stackpacks.s3.endpoint -- AWS S3 Endpoint to use, can be used to point to a local S3 compatible storage.
+      endpoint:
+
 ##############################
 # Dependency chart overrides #
 ##############################

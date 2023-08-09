@@ -37,8 +37,6 @@ env:
       key: sts-license-key
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
-- name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
-  value: "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
 image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.server.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
 livenessProbe:
@@ -72,6 +70,9 @@ resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 volumeMounts:
+{{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
+{{ include "stackstate.stackpacks.volumeMount" . }}
+{{- end }}
 - name: config-secrets-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
@@ -118,6 +119,9 @@ spec:
       serviceAccountName: {{ template "common.fullname.short" . }}-server
       {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
       initContainers:
+      {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
+      - {{ include "stackstate.initContainer.stackpacks" . | nindent 8 }}
+      {{- end }}
       - {{ toYaml $stsstackstateServerInitContainer | nindent 8 }}
       - {{ toYaml $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer | nindent 8 }}
       containers:

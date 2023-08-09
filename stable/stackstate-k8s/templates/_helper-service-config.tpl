@@ -192,3 +192,20 @@ VolumeMount for transaction logs
 - name: application-log
   mountPath: /opt/docker/logs
 {{- end -}}
+
+{{/*
+Volume for stackpacks logs
+*/}}
+{{- define "stackstate.stackpacks.volume" -}}
+- name: stackpacks
+  persistentVolumeClaim:
+    claimName: {{ template "common.fullname.short" . }}-stackpacks
+{{- end -}}
+
+{{/*
+VolumeMount for stackpacks
+*/}}
+{{- define "stackstate.stackpacks.volumeMount" -}}
+- name: stackpacks
+  mountPath: /var/stackpacks
+{{- end -}}

@@ -5,6 +5,10 @@ import (
 )
 
 const expectedStackPackConfig = `stackstate.stackPacks {
+  localStackPacksUri = "hdfs://stackstate-k8s-hbase-hdfs-nn-headful:9000/stackpacks"
+  latestVersionsStackPackStoreUri = "file:///var/stackpacks"
+
+  updateStackPacksInterval = "5 minutes"
   installOnStartUp += "test-stackpack-1"
 
   installOnStartUpConfig {
@@ -14,6 +18,7 @@ const expectedStackPackConfig = `stackstate.stackPacks {
       "string_value": "one"
     }
   }
+  upgradeOnStartup = ["test-stackpack-1"]
 }`
 
 func TestStackPackConfigRenderingApi(t *testing.T) {
