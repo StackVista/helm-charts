@@ -1007,6 +1007,9 @@ stackstate:
       image:
         repository: stackstate/vmagent
         tag: v1.91.0
+      # stackstate.components.vmagent.poddisruptionbudget -- PodDisruptionBudget settings for `vmagent` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
       extraArgs: {}
       persistence:
         size: 10Gi
