@@ -18,7 +18,7 @@ const expectedStackPackConfig = `stackstate.stackPacks {
       "string_value": "one"
     }
   }
-  upgradeOnStartup = ["test-stackpack-1"]
+  upgradeOnStartUp = ["test-stackpack-1"]
 }`
 
 func TestStackPackConfigRenderingApi(t *testing.T) {
