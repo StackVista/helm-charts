@@ -38,6 +38,7 @@ args:
 {{ range $targets.instances }}
   - -remoteWrite.url={{ .url }}
 {{- end -}}
+  - -remoteWrite.relabelConfig=/etc/vmagent/relabel_config.yaml
 {{- range $key, $value := .Values.stackstate.components.vmagent.extraArgs }}
   - -{{ $key }}={{ $value }}
 {{- end }}
@@ -59,6 +60,8 @@ livenessProbe:
 volumeMounts:
   - name: tmpdata
     mountPath: /tmpData
+  - name: relabel_config
+    mountPath: /etc/vmagent
 {{- with .Values.stackstate.components.vmagent.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
@@ -122,6 +125,10 @@ spec:
     {{- if .Values.stackstate.components.all.securityContext.enabled }}
       securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
     {{- end }}
+      volumes:
+        - name: vmagent-config
+          configmap:
+            name: {{ template "common.fullname.short" . }}-vmagent
   volumeClaimTemplates:
   - metadata:
       name: tmpdata

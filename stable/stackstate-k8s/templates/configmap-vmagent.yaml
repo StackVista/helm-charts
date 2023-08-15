@@ -1,0 +1,38 @@
+{{- define "stackstate.vmagent.configmap" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-vmagent
+data:
+  relabel_config.yaml: |
+    relabel_configs:
+    # Rename kube_* metrics to not have the kube_* prefix
+    - action: labelmap
+      regex: "kube_(cluster_name|cronjob|deployment|endpoint|namespace|priority_class|region|service|zone)"
+      replacement: "$1"
+    - action: labelmap
+      regex: "kube_container_name"
+      replacement: "container"
+    - action: labelmap
+      regex: "kube_daemon_set"
+      replacement: "daemonset"
+    - action: labelmap
+      regex: "kube_job"
+      replacement: "job_name"
+    - action: labelmap
+      regex: "kube_replica_set"
+      replacement: "replicaset"
+    - action: labelmap
+      regex: "kube_stateful_set"
+      replacement: "statefulset"
+
+    # Rename other labels to fit with the standard naming scheme
+    - action: labelmap
+      regex: "container_name"
+      replacement: "container"
+    - action: labelmap
+      regex: "pod"
+      replacement: "pod_name"
+{{- end -}}
+
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $vmagentConfigmap := fromYaml (include "stackstate.vmagent.configmap" .) -}}
+{{- toYaml (merge $vmagentConfigmap $commonConfigMap) -}}
