@@ -43,6 +43,7 @@
       'gitlab-steward',
       'helm-reaper',
       'iceman',
+      'k8s-image-list-to-s3',
       'k8s-spot-termination-handler',
       'kommoner-operator',
       'petros-d-kubelet-stats-exporter',

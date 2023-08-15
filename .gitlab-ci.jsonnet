@@ -72,6 +72,7 @@ local validate_and_push_jobs = {
     script:
       ['ct list-changed --config test/ct.yaml'] +
       update_2nd_degree_chart_deps('stackstate') +
+      update_2nd_degree_chart_deps('stackstate-k8s') +
       [
         'ct lint --debug --validate-maintainers=false --charts stable/stackstate --charts stable/stackstate-k8s --config test/ct.yaml',
         '.gitlab/validate_kubeconform.sh',
