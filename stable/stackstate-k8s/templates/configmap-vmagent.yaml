@@ -3,8 +3,7 @@ metadata:
   name: {{ template "common.fullname.short" . }}-vmagent
 data:
   relabel_config.yaml: |
-    relabel_configs:
-    # Rename kube_* metrics to not have the kube_* prefix
+    # Copy kube_* metrics to not have the kube_* prefix
     - action: labelmap
       regex: "kube_(cluster_name|cronjob|deployment|endpoint|namespace|priority_class|region|service|zone)"
       replacement: "$1"
@@ -24,13 +23,34 @@ data:
       regex: "kube_stateful_set"
       replacement: "statefulset"
 
-    # Rename other labels to fit with the standard naming scheme
+    # Copy other labels to fit with the standard naming scheme
     - action: labelmap
       regex: "container_name"
       replacement: "container"
     - action: labelmap
       regex: "pod"
       replacement: "pod_name"
+
+    # Drop kube_* metrics labels
+    - action: labeldrop
+      regex: "kube_(cluster_name|cronjob|deployment|endpoint|namespace|priority_class|region|service|zone)"
+    - action: labeldrop
+      regex: "kube_container_name"
+    - action: labeldrop
+      regex: "kube_daemon_set"
+    - action: labeldrop
+      regex: "kube_job"
+    - action: labeldrop
+      regex: "kube_replica_set"
+    - action: labeldrop
+      regex: "kube_stateful_set"
+
+    # Drop other labels to fit with the standard naming scheme
+    - action: labeldrop
+      regex: "container_name"
+    - action: labeldrop
+      regex: "pod"
+
 {{- end -}}
 
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}

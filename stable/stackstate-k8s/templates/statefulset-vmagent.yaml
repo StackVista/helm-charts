@@ -34,11 +34,11 @@ imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .
 workingDir: /
 args:
   - -remoteWrite.tmpDataPath=/tmpData
+  - -remoteWrite.relabelConfig=/etc/vmagent/relabel_config.yaml
   - -remoteWrite.maxDiskUsagePerURL="{{ div (include "stackstate.storage.to.megabytes" .Values.stackstate.components.vmagent.persistence.size) (len $targets.instances) }}MiB"
 {{ range $targets.instances }}
   - -remoteWrite.url={{ .url }}
 {{- end -}}
-  - -remoteWrite.relabelConfig=/etc/vmagent/relabel_config.yaml
 {{- range $key, $value := .Values.stackstate.components.vmagent.extraArgs }}
   - -{{ $key }}={{ $value }}
 {{- end }}
@@ -60,7 +60,7 @@ livenessProbe:
 volumeMounts:
   - name: tmpdata
     mountPath: /tmpData
-  - name: relabel_config
+  - name: vmagent-config
     mountPath: /etc/vmagent
 {{- with .Values.stackstate.components.vmagent.resources }}
 resources:
@@ -127,7 +127,7 @@ spec:
     {{- end }}
       volumes:
         - name: vmagent-config
-          configmap:
+          configMap:
             name: {{ template "common.fullname.short" . }}-vmagent
   volumeClaimTemplates:
   - metadata:
