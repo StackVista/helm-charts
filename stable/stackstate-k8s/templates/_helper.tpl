@@ -379,6 +379,14 @@ checksum/healthSync-configmap: {{ include (print $.Template.BasePath "/configmap
 {{- end -}}
 
 {{/*
+Vmagent configmap checksum annotations
+*/}}
+{{- define "stackstate.vmagent.configmap.checksum" -}}
+checksum/vmagent-configmap: {{ include (print $.Template.BasePath "/configmap-vmagent.yaml") . | sha256sum }}
+{{- end -}}
+
+
+{{/*
 Ingress paths / routes
 */}}
 {{- define "stackstate.ingress.rules" -}}
