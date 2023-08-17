@@ -161,6 +161,9 @@ spec:
         secret:
           secretName: {{ template "common.fullname.short" . }}-server
       {{- include "stackstate.service.pod.volumes" (dict "pod_name" "server" "root" . ) | nindent 6 }}
+      {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
+      {{ include "stackstate.stackpacks.volume" . | nindent 6 }}
+      {{- end }}
 {{- end -}}
 
 {{- if not .Values.stackstate.experimental.server.split }}
