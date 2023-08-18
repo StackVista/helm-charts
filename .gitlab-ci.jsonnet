@@ -266,8 +266,8 @@ local update_sg_version = {
     ],
     script: [
       '.gitlab/update_sg_version.sh stable/hbase ""',
-      '.gitlab/update_sg_version.sh stable/stackstate "hbase."',
-      '.gitlab/update_chart_version.sh stable/stackstate hbase local:stable/hbase',
+      '.gitlab/update_sg_version.sh stable/stackstate-k8s "hbase."',
+      '.gitlab/update_chart_version.sh stable/stackstate-k8s hbase local:stable/hbase',
       '.gitlab/commit_changes_and_push.sh StackGraph $UPDATE_STACKGRAPH_VERSION',
     ],
   },
@@ -291,7 +291,7 @@ local update_aad_chart_version = {
       },
     ],
     script: [
-      '.gitlab/update_chart_version.sh stable/stackstate anomaly-detection $UPDATE_AAD_CHART_VERSION',
+      '.gitlab/update_chart_version.sh stable/stackstate-k8s anomaly-detection $UPDATE_AAD_CHART_VERSION',
       '.gitlab/commit_changes_and_push.sh anomaly-detection $UPDATE_AAD_CHART_VERSION',
     ],
   },
