@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `1.0.39`
+Current chart version is `1.0.40`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -207,7 +207,7 @@ stackstate/stackstate-k8s-agent
 | nodeAgent.containers.processAgent.resources.limits.memory | string | `"400Mi"` |  |
 | nodeAgent.containers.processAgent.resources.requests.cpu | string | `"25m"` | Memory resource requests. |
 | nodeAgent.containers.processAgent.resources.requests.memory | string | `"128Mi"` |  |
-| nodeAgent.httpTracing.enabled | bool | `false` |  |
+| nodeAgent.httpTracing.enabled | bool | `true` |  |
 | nodeAgent.logLevel | string | `"INFO"` | Logging level for agent processes. |
 | nodeAgent.networkTracing.enabled | bool | `true` | Enable / disable the nodeAgent network tracing module. |
 | nodeAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
