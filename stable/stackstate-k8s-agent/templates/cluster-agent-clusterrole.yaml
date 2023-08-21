@@ -39,15 +39,6 @@ rules:
   - get
   - list
   - watch
-- apiGroups:
-  - ""
-  resources:
-  - configmaps
-  verbs:
-  - create
-  - get
-  - patch
-  - update
 {{- if or $kubeRes.daemonsets $kubeRes.deployments $kubeRes.replicasets $kubeRes.statefulsets }}
 - apiGroups:
   - "apps"
