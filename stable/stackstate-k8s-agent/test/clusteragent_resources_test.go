@@ -117,6 +117,21 @@ func TestMostOfResourcesAreDisabled(t *testing.T) {
 	}
 }
 
+func TestNoClusterWideModificationRights(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s-agent", "values/minimal.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+	assert.Contains(t, resources.ClusterRoles, "stackstate-k8s-agent")
+	illegalVerbs := []string{"create", "patch", "update", "delete"}
+
+	for _, clusterRole := range resources.ClusterRoles {
+		for _, rule := range clusterRole.Rules {
+			for _, verb := range rule.Verbs {
+				assert.NotContains(t, illegalVerbs, verb, "ClusterRole %s should not have %s verb for %s resource", clusterRole.Name, verb, rule.Resources)
+			}
+		}
+	}
+}
+
 func TestServicePortChange(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s-agent", "values/minimal.yaml", "values/clustercheck_service_port_override.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
