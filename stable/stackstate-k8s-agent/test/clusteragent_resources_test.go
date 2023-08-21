@@ -44,12 +44,12 @@ type Rule struct {
 	Verb         string
 }
 
-func assertRuleExistence(t *testing.T, clusterRole v1.ClusterRole, roleDescription string, shouldBePresent bool) {
+func assertRuleExistence(t *testing.T, rules []v1.PolicyRule, roleDescription string, shouldBePresent bool) {
 	match := roleDescriptionRegexp.FindStringSubmatch(roleDescription)
 	assert.NotNil(t, match)
 
 	var roleRules []Rule
-	for _, rule := range clusterRole.Rules {
+	for _, rule := range rules {
 		for _, group := range rule.APIGroups {
 			for _, resource := range rule.Resources {
 				for _, verb := range rule.Verbs {
@@ -85,14 +85,16 @@ func TestAllResourcesAreEnabled(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	assert.Contains(t, resources.ClusterRoles, "stackstate-k8s-agent")
-	caRole := resources.ClusterRoles["stackstate-k8s-agent"]
+	assert.Contains(t, resources.Roles, "stackstate-k8s-agent")
+	rules := resources.ClusterRoles["stackstate-k8s-agent"].Rules
+	rules = append(rules, resources.Roles["stackstate-k8s-agent"].Rules...)
 
 	for _, requiredRole := range requiredRules {
-		assertRuleExistence(t, caRole, requiredRole, true)
+		assertRuleExistence(t, rules, requiredRole, true)
 	}
 	// be default, everything is enabled, so all the optional roles should be present as well
 	for _, optionalRule := range optionalRules {
-		assertRuleExistence(t, caRole, optionalRule, true)
+		assertRuleExistence(t, rules, optionalRule, true)
 	}
 }
 
@@ -101,15 +103,17 @@ func TestMostOfResourcesAreDisabled(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	assert.Contains(t, resources.ClusterRoles, "stackstate-k8s-agent")
-	caRole := resources.ClusterRoles["stackstate-k8s-agent"]
+	assert.Contains(t, resources.Roles, "stackstate-k8s-agent")
+	rules := resources.ClusterRoles["stackstate-k8s-agent"].Rules
+	rules = append(rules, resources.Roles["stackstate-k8s-agent"].Rules...)
 
 	for _, requiredRole := range requiredRules {
-		assertRuleExistence(t, caRole, requiredRole, true)
+		assertRuleExistence(t, rules, requiredRole, true)
 	}
 
 	// we expect all optional resources to be removed from ClusterRole with the given values
 	for _, optionalRule := range optionalRules {
-		assertRuleExistence(t, caRole, optionalRule, false)
+		assertRuleExistence(t, rules, optionalRule, false)
 	}
 }
 
