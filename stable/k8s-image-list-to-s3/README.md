@@ -1,6 +1,6 @@
 # k8s-image-list-to-s3
 
-![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.0.2](https://img.shields.io/badge/Version-0.0.2-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 Get the list of the Docker images deployed to the K8s cluster and uploads it to S3 bucket
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 ## Maintainers
@@ -29,9 +29,9 @@ Get the list of the Docker images deployed to the K8s cluster and uploads it to 
 | reports.gcp.bucket | object | `{"name":null,"prefix":"/"}` | The name of the GCP Storage bucket to store reports |
 | reports.gcp.enabled | bool | `false` | True if the reports should be stored to GCP Storage bucket. Ignored if `reports.aws.enabled` is true |
 | resources.limits.cpu | string | `"100m"` | CPU resource limits. |
-| resources.limits.memory | string | `"128Mi"` | Memory resource limits. |
+| resources.limits.memory | string | `"256Mi"` | Memory resource limits. |
 | resources.requests.cpu | string | `"100m"` | CPU resource requests. |
-| resources.requests.memory | string | `"128Mi"` | Memory resource requests. |
+| resources.requests.memory | string | `"256Mi"` | Memory resource requests. |
 | restartPolicy | string | `"Never"` | For failed jobs, how to handle restarts. |
 | scan.ignoreNamespaceRegex | string | `""` | Skip the namespaces whose names match the regex used by https://jqlang.github.io/jq/manual/#test |
 | scan.ignoreResourceNameRegex | string | `""` | Skip the pods whose names match the regex used by https://jqlang.github.io/jq/manual/#test |

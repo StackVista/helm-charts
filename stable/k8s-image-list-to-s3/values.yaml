@@ -36,12 +36,12 @@ resources:
     # resources.limits.cpu -- CPU resource limits.
     cpu: "100m"
     # resources.limits.memory -- Memory resource limits.
-    memory: "128Mi"
+    memory: "256Mi"
   requests:
     # resources.requests.cpu -- CPU resource requests.
     cpu: "100m"
     # resources.requests.memory -- Memory resource requests.
-    memory: "128Mi"
+    memory: "256Mi"
 
 serviceAccount:
   # serviceAccount.annotations -- Extra annotations for the `ServiceAccount` object.
