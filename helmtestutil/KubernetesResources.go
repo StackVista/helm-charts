@@ -36,6 +36,7 @@ type KubernetesResources struct {
 	Services               map[string]corev1.Service
 	ServiceAccounts        map[string]corev1.ServiceAccount
 	Statefulsets           map[string]appsv1.StatefulSet
+	Unmapped               map[string]string
 }
 
 // NewKubernetesResources creates a new instance of KubernetesResources by parsing the helmOutput and
@@ -59,16 +60,17 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 	services := make(map[string]corev1.Service)
 	serviceAccounts := make(map[string]corev1.ServiceAccount)
 	statefulsets := make(map[string]appsv1.StatefulSet)
+	unmapped := map[string]string{}
 
 	// The K8S unmarshalling only can do a single document
 	// So we split them first by the yaml document separator
 	separateFiles := strings.Split(helmOutput, "\n---\n")
 
 	for _, v := range separateFiles {
-		var metadata metav1.TypeMeta
-		err := helm.UnmarshalK8SYamlE(t, v, &metadata)
+		var partial metav1.PartialObjectMetadata
+		err := helm.UnmarshalK8SYamlE(t, v, &partial)
 		assert.NoError(t, err)
-		switch metadata.Kind {
+		switch partial.Kind {
 		case "ClusterRole":
 			var resource rbacv1.ClusterRole
 			helm.UnmarshalK8SYaml(t, v, &resource)
@@ -149,8 +151,9 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 			helm.UnmarshalK8SYaml(t, v, &resource)
 			statefulsets[resource.Name] = resource
 		default:
-			if metadata.Kind != "" || metadata.APIVersion != "" {
-				t.Errorf("Found unknown kind '%s/%s' in content\n%s\n This can be caused by an incorrect k8s resource type in the helm template or when using a custom resource type.", metadata.APIVersion, metadata.Kind, v)
+			if partial.Kind != "" || partial.APIVersion != "" {
+				t.Logf("Found unknown kind '%s/%s' in content\n%s\n This can be caused by an incorrect k8s resource type in the helm template or when using a custom resource type.", partial.APIVersion, partial.Kind, v)
+				unmapped[partial.Name] = v
 			} else {
 				t.Logf("Skipping empty resource: %s", v)
 			}
@@ -175,5 +178,6 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 		Services:               services,
 		ServiceAccounts:        serviceAccounts,
 		Statefulsets:           statefulsets,
+		Unmapped:               unmapped,
 	}
 }

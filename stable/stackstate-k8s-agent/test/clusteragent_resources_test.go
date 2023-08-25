@@ -118,7 +118,7 @@ func TestMostOfResourcesAreDisabled(t *testing.T) {
 }
 
 func TestNoClusterWideModificationRights(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s-agent", "values/minimal.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s-agent", "values/minimal.yaml", "values/http-header-injector.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	assert.Contains(t, resources.ClusterRoles, "stackstate-k8s-agent")
 	illegalVerbs := []string{"create", "patch", "update", "delete"}
