@@ -1,11 +1,9 @@
 ###########################
 # StackState HBase values #
 ###########################
-
 global:
   # global.storageClass -- StorageClass for all PVCs created by the chart. Can be overriden per PVC.
   storageClass:
-
 # commonLabels -- Labels that will be applied to all resources created by this helm chart
 commonLabels: {}
 all:
@@ -44,7 +42,7 @@ stackgraph:
     # stackgraph.image.pullPolicy -- The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below).
     pullPolicy: IfNotPresent
     # stackgraph.image.tag -- The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below).
-    tag: 4.12.1
+    tag: 4.12.2
 console:
   # console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
   enabled: true
