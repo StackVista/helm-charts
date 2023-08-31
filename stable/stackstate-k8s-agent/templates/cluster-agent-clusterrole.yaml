@@ -35,6 +35,9 @@ rules:
   {{- if $kubeRes.secrets }}
   - secrets
   {{- end }}
+  {{- if $kubeRes.resourcequotas }}
+  - resourcequotas
+  {{- end }}
   verbs:
   - get
   - list

@@ -267,6 +267,8 @@ clusterAgent:
       cronjobs: true
       # clusterAgent.collection.kubernetesResources.jobs -- Enable / disable collection of Jobs.
       jobs: true
+      # clusterAgent.collection.kubernetesResources.resourcequotas -- Enable / disable collection of ResourceQuotas.
+      resourcequotas: true
 
   # clusterAgent.config --
   config:

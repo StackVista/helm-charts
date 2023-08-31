@@ -17,10 +17,10 @@ dependencies:
     version: 5.2.0-snapshot.31
     repository: https://helm.stackstate.io
     condition: anomaly-detection.enabled
-  - name: stackstate-agent
-    repository: file://../stackstate-agent/
+  - name: stackstate-k8s-agent
+    repository: file://../stackstate-k8s-agent/
     version: "*"
-    condition: stackstate-agent.enabled
+    condition: stackstate-k8s-agent.enabled
   - name: common
     repository: file://../common/
     version: "*"

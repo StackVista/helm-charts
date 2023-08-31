@@ -556,9 +556,11 @@ Based on the `common.fullname.short` function
 */}}
 {{- define "stackstate.hostname.prefix" -}}
   {{- $global := default (dict) .Values.global -}}
-  {{- $base := "stackstate" -}}
-  {{- if ne $base .Release.Name -}}
-    {{- $base = (printf "%s-%s" .Release.Name $base) -}}
+  {{- $base := "stackstate-k8s" -}}
+  {{- if .Values.fullnameOverride -}}
+    {{- $base = .Values.fullnameOverride -}}
+  {{- else if ne $base .Release.Name -}}
+    {{- $base = (printf "%s-%s" .Release.Name "stackstate-k8s") -}}
   {{- end -}}
   {{- $gpre := default "" $global.fullnamePrefix -}}
   {{- $pre := default "" .Values.fullnamePrefix -}}
