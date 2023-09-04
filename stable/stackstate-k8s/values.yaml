@@ -1238,7 +1238,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 4.12.2
+      tag: 4.12.3
   console:
     # hbase.console.enabled -- Enabled by default for debugging, but with 0 replicas. Manually scale up to 1 replica and open a shell in the container to access the stackgraph console.
     enabled: true
@@ -1657,7 +1657,7 @@ anomaly-detection:
     tls:
     # - hosts:
     #     - spotlight.local.domain
-stackstate-agent:
+stackstate-k8s-agent:
   # stackstate-agent.enabled -- Deploy the StackState Kubernetes Agent so StackState can monitor the cluster it runs in
   enabled: false
   stackstate:
