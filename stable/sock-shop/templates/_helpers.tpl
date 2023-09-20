@@ -38,6 +38,19 @@ name: {{ . }}
 app.kubernetes.io/component: {{ . }}
 {{- end -}}
 
+{{/*
+Componment annotations
+*/}}
+{{- define "component.custom.annotations" -}}
+{{- $ctx := . -}}
+{{- if $ctx.annotations -}}
+annotations:
+{{- range $key, $value := $ctx.annotations }}
+  {{ $key }}: {{ $value | quote }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
 
 {{/*
 A shortcut for PriorityClass name

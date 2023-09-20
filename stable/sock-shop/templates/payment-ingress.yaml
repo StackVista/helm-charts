@@ -1,0 +1,30 @@
+{{- if .Values.payment.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: payment
+  labels:
+    {{- include "component.common.labels" ("payment") | nindent 4 }}
+    {{- include "sock-shop.common.labels" . | nindent 4 }}
+  annotations:
+    {{- include "component.custom.annotations" .Values.payment.ingress.annotations | nindent 6 }}
+spec:
+  ingressClassName: {{ .Values.payment.ingress.ingressClassName | quote }}
+  rules:
+    - host: {{ (tpl .Values.payment.ingress.hostname .) | quote }}
+      http:
+        paths:
+        - backend:
+            service:
+              name: payment
+              port:
+                number: 80
+          path: /
+          pathType: Prefix
+  {{- if .Values.payment.ingress.tls  }}
+  tls:
+    - hosts:
+        - {{ .Values.payment.ingress.hostname | quote }}
+      secretName: {{ printf "%s-tls" .Values.payment.ingress.hostname }}
+  {{- end }}
+{{- end }}

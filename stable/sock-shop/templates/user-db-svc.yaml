@@ -1,3 +1,4 @@
+{{- if .Values.user.enabled }}
 ---
 apiVersion: v1
 kind: Service
@@ -15,3 +16,4 @@ spec:
     targetPort: 27017
   selector:
     {{- include "component.common.labels" ("user-db") | nindent 4 }}
+{{- end }}

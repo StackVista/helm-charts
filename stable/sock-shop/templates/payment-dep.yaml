@@ -1,3 +1,4 @@
+{{- if .Values.payment.enabled }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -13,6 +14,8 @@ spec:
       {{- include "component.common.labels" ("payment") | nindent 6 }}
   template:
     metadata:
+      {{- include "component.custom.annotations" .Values.payment | nindent 6 }}
+
       labels:
         {{- include "component.common.labels" ("payment") | nindent 8 }}
         api_service: "true"
@@ -53,3 +56,4 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 3
       priorityClassName: {{ template "priority-class-name" . }}
+{{- end }}

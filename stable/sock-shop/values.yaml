@@ -1,7 +1,8 @@
 ###################
 # SOckShop values #
 ###################
-
+global:
+  annotations: {}
 # nameOverride -- A name to prepend the Helm resources, if not specified the name of the chart is used.
 nameOverride: ""
 all:
@@ -11,7 +12,11 @@ all:
     # all.java.options -- The common JAVA_OPTS for all Java microservices.
     options: -Xms512m -Xmx512m -XX:PermSize=32m -XX:MaxPermSize=64m -XX:+UseG1GC -Djava.security.egd=file:/dev/urandom
 
+#######
+# CARTS DOMAIN
+#######
 cartsDB:
+  annotations: {}
   # cartsDB.resources -- Resource allocation for `carts-db` pods.
   resources:
     limits:
@@ -22,8 +27,10 @@ cartsDB:
       memory: 100Mi
 
 carts:
+  enabled: true
   # carts.version -- Custom label (version) value for `carts` pods.
   version: 1
+  annotations: {}
   # carts.resources -- Resource allocation for `carts` pods.
   resources:
     limits:
@@ -35,13 +42,17 @@ carts:
   # carts.affinity -- Affinity settings for carts pods.
   affinity: {}
 
+#######
+# CATALOGUE DOMAIN
+#######
 catalogueDB:
   image:
     # catalogueDB.image.repository -- The container repository for `catalogue-db` images.
     repository: quay.io/stackstate/weaveworksdemo-catalogue-db
     # catalogueDB.image.tag -- The container image tag.
     tag: 0.3.1
-  # catalogueDB.resources -- Resource allocation for `catalogue-db` pods.
+  annotations: {}
+    # catalogueDB.resources -- Resource allocation for `catalogue-db` pods.
   resources:
     limits:
       cpu: 1000m
@@ -51,6 +62,7 @@ catalogueDB:
       memory: 250Mi
 
 catalogue:
+  enabled: true
   # catalogue.resources -- Resource allocation for `catalogue` pods.
   resources:
     limits:
@@ -77,7 +89,11 @@ catalogue:
       # catalogue.demoScenarioSimulation.schedule.fix -- The cron schedule to fix the faulty k8s demo scenario.
       fix: "30 * * * *"
 
+#######
+# FRONTEND DOMAIN
+#######
 frontend:
+  enabled: true
   image:
     # frontend.image.repository -- The container repository for `frontend` images.
     repository: quay.io/stackstate/weaveworksdemo-front-end
@@ -85,6 +101,7 @@ frontend:
     tag: 0.3.13
   # frontend.replicas -- The number or replicas of `frontend` deployment.
   replicas: 1
+  annotations: {}
   # frontend.resources -- Resource allocation for `frontend` pods.
   resources:
     limits:
@@ -93,10 +110,16 @@ frontend:
     requests:
       cpu: 200m
       memory: 1000Mi
+  components:
+    catalogueHost: catalogue
+    cartsHost: carts
+    ordersHost: orders
+    userHost: user
 
 ingress:
   # ingress.replicas -- The number or replicas of `ingress` deployment.
   replicas: 1
+  annotations: {}
   # ingress.resources -- Resource allocation for `ingress` pods.
   resources:
     limits:
@@ -116,6 +139,7 @@ loadgen:
     repository: quay.io/stackstate/loadgen
     # loadgen.image.tag -- The container image tag.
     tag: master-a448026e
+  annotations: {}
   # loadgen.resources -- Resource allocation for `loadgen` pods.
   resources:
     limits:
@@ -125,7 +149,21 @@ loadgen:
       cpu: 100m
       memory: 100Mi
 
+sessionDB:
+  annotations: {}
+  # sessionDB.resources -- Resource allocation for `session-db` pods.
+  limits:
+    cpu: 100m
+    memory: 100Mi
+  requests:
+    cpu: 100m
+    memory: 100Mi
+
+#######
+# ORDERS DOMAIN
+#######
 ordersDB:
+  annotations: {}
   # ordersDB.resources -- Resource allocation for `orders-db` pods.
   resources:
     limits:
@@ -136,6 +174,7 @@ ordersDB:
       memory: 100Mi
 
 orders:
+  enabled: true
   image:
     # orders.image.repository -- The container repository for `orders` images.
     repository: quay.io/stackstate/weaveworksdemo-orders
@@ -147,6 +186,12 @@ orders:
   orderPriority: 0
   # orders.backorderPriority -- whatever it means.
   backorderPriority: 0
+  components:
+    # orders.shippingHost -- Address to the shipping service
+    shippingHost: shipping
+    # orders.paymentHost -- Address to the payment service
+    paymentHost: payment
+  annotations: {}
   # orders.resources -- Resource allocation for `orders` pods.
   resources:
     limits:
@@ -156,7 +201,12 @@ orders:
       cpu: 500m
       memory: 1000Mi
 
+#######
+# PAYMENT DOMAIN
+#######
 payment:
+  enabled: true
+  annotations: {}
   # payment.resources -- Resource allocation for `payment` pods.
   resources:
     limits:
@@ -165,8 +215,19 @@ payment:
     requests:
       cpu: 100m
       memory: 100Mi
+  ingress:
+    # payment.ingress.enabled -- Whether to deploy Ingress resource for payment service
+    enabled: false
+    ingressClassName: ingress-nginx
+    hostname: ""
+    tls: false
+    annotations: {}
 
+#######
+# SHIPPING DOMAIN
+#######
 queueMaster:
+  annotations: {}
   # queueMaster.resources -- Resource allocation for `queue-master` pods.
   resources:
     limits:
@@ -177,6 +238,7 @@ queueMaster:
       memory: 1000Mi
 
 rabbitmq:
+  annotations: {}
   # rabbitmq.resources -- Resource allocation for `rabbitmq` pods.
   resources:
     limits:
@@ -186,16 +248,10 @@ rabbitmq:
       cpu: 100m
       memory: 200Mi
 
-sessionDB:
-  # sessionDB.resources -- Resource allocation for `session-db` pods.
-  limits:
-    cpu: 100m
-    memory: 100Mi
-  requests:
-    cpu: 100m
-    memory: 100Mi
 
 shipping:
+  enabled: true
+  annotations: {}
   # shipping.resources -- Resource allocation for `shipping` pods.
   resources:
     limits:
@@ -204,8 +260,19 @@ shipping:
     requests:
       cpu: 500m
       memory: 1000Mi
+  ingress:
+    # shipping.ingress.enables -- Whether to deploy Ingress resource for shipping service
+    enabled: false
+    ingressClassName: ingress-nginx
+    hostname: ""
+    tls: false
+    annotations: {}
 
+#######
+# USER DOMAIN
+#######
 userDB:
+  annotations: {}
   # userDB.resources -- Resource allocation for `user-db` pods.
   resources:
     limits:
@@ -216,6 +283,8 @@ userDB:
       memory: 100Mi
 
 user:
+  annotations: {}
+  enabled: true
   # user.resources -- Resource allocation for `user` pods.
   limits:
     cpu: 300m

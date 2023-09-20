@@ -1,3 +1,4 @@
+{{- if .Values.payment.enabled }}
 ---
 apiVersion: v1
 kind: Service
@@ -15,3 +16,4 @@ spec:
     targetPort: 80
   selector:
     {{- include "component.common.labels" ("payment") | nindent 4 }}
+{{- end }}

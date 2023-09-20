@@ -1,3 +1,4 @@
+{{- if .Values.shipping.enabled }}
 ---
 apiVersion: v1
 kind: Service
@@ -15,3 +16,4 @@ spec:
     targetPort: 5672
   selector:
     {{- include "component.common.labels" ("rabbitmq") | nindent 4 }}
+{{- end }}

@@ -1,3 +1,4 @@
+{{- if .Values.frontend.enabled }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -13,6 +14,8 @@ spec:
       {{- include "component.common.labels" ("front-end") | nindent 6 }}
   template:
     metadata:
+      {{- include "component.custom.annotations" .Values.frontend | nindent 6 }}
+
       labels:
         {{- include "component.common.labels" ("front-end") | nindent 8 }}
         api_service: "true"
@@ -32,6 +35,24 @@ spec:
         env:
         - name: SESSION_REDIS
           value: "true"
+        - name: CATALOGUE_URL
+          value: "http://{{.Values.frontend.components.catalogueHost}}"
+        - name: TAGS_URL
+          value: "http://{{.Values.frontend.components.catalogueHost}}/tags"
+        - name: CARTS_URL
+          value: "http://{{.Values.frontend.components.cartsHost}}/carts"
+        - name: ORDERS_URL
+          value: "http://{{.Values.frontend.components.ordersHost}}"
+        - name: CUSTOMERS_URL
+          value: "http://{{.Values.frontend.components.userHost}}/customers"
+        - name: ADDRESS_URL
+          value: "http://{{.Values.frontend.components.userHost}}/addresses"
+        - name: CARDS_URL
+          value: "http://{{.Values.frontend.components.userHost}}/cards"
+        - name: LOGIN_URL
+          value: "http://{{.Values.frontend.components.userHost}}/login"
+        - name: REGISTER_URL
+          value: "http://{{.Values.frontend.components.userHost}}/register"
         securityContext:
           runAsNonRoot: true
           runAsUser: 1001
@@ -54,3 +75,4 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 3
       priorityClassName: {{ template "priority-class-name" . }}
+{{- end }}

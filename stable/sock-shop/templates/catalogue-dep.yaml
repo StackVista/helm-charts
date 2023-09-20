@@ -1,3 +1,4 @@
+{{- if .Values.catalogue.enabled }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -15,6 +16,7 @@ spec:
       {{- include "component.common.labels" ("catalogue") | nindent 6 }}
   template:
     metadata:
+      {{- include "component.custom.annotations" .Values.catalogue | nindent 6 }}
       labels:
         {{- include "component.common.labels" ("catalogue") | nindent 8 }}
         {{- include "sock-shop.common.labels" . | nindent 8 }}
@@ -23,8 +25,6 @@ spec:
         domain: business
         go: "true"
         job: catalogue
-      annotations:
-      {{- toYaml .Values.catalogue.annotations | nindent 8 }}
     spec:
       serviceAccountName: sock-shop
       initContainers:
@@ -68,3 +68,4 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 3
       priorityClassName: {{ template "priority-class-name" . }}
+{{- end }}

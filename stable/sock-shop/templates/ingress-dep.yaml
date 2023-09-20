@@ -1,3 +1,4 @@
+{{- if .Values.frontend.enabled }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -16,6 +17,7 @@ spec:
       labels:
         {{- include "component.common.labels" ("ingress") | nindent 8 }}
       annotations:
+        {{- include "component.custom.annotations" .Values.ingress | nindent 6 }}
         checksum/config: {{ include (print $.Template.BasePath "/ingress-cfg.yaml") . | sha256sum }}
     spec:
       serviceAccountName: sock-shop
@@ -58,3 +60,4 @@ spec:
       - name: config
         configMap:
           name: ingress
+{{- end }}

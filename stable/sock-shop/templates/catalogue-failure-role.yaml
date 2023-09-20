@@ -1,5 +1,5 @@
 ---
-{{- if .Values.catalogue.demoScenarioSimulation.enabled }}
+{{- if (and .Values.catalogue.demoScenarioSimulation.enabled .Values.catalogue.enabled) }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:

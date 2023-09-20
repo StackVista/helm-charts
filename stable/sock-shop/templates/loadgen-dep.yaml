@@ -1,4 +1,4 @@
-{{- if .Values.loadgen.enabled }}
+{{- if (and .Values.loadgen.enabled .Values.frontend.enabled) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,6 +13,8 @@ spec:
       {{- include "component.common.labels" ("loadgen") | nindent 6 }}
   template:
     metadata:
+      {{- include "component.custom.annotations" .Values.loadgen | nindent 6 }}
+
       labels:
         {{- include "component.common.labels" ("loadgen") | nindent 8 }}
     spec:
