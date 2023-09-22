@@ -7,7 +7,9 @@ metadata:
     {{- include "component.common.labels" ("payment") | nindent 4 }}
     {{- include "sock-shop.common.labels" . | nindent 4 }}
   annotations:
-    {{- include "component.custom.annotations" .Values.payment.ingress.annotations | nindent 6 }}
+  {{- with .Values.payment.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   ingressClassName: {{ .Values.payment.ingress.ingressClassName | quote }}
   rules:

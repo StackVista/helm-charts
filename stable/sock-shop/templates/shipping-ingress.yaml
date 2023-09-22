@@ -7,7 +7,9 @@ metadata:
     {{- include "component.common.labels" ("shipping") | nindent 4 }}
     {{- include "sock-shop.common.labels" . | nindent 4 }}
   annotations:
-    {{- include "component.custom.annotations" .Values.shipping.ingress.annotations | nindent 6 }}
+  {{- with .Values.shipping.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   ingressClassName: {{ .Values.shipping.ingress.ingressClassName | quote }}
   rules:
