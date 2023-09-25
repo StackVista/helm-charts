@@ -1746,6 +1746,16 @@ victoria-metrics-0:
       interval: 15s
       # victoria-metrics-0.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
       extraLabels: {}
+  backup:
+    # victoria-metrics-0.backup.enabled -- Enable scheduled backups of Victoria Metrics. It requires to be enabled MinIO 'backup.enabled'
+    enabled: false
+    # victoria-metrics-0.backup.bucketName -- Name of the MinIO bucket where Victoria Metrics backups are stored.
+    bucketName: 'sts-victoria-metrics-backup'
+    # victoria-metrics-1.backup.s3Prefix -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
+    s3Prefix: victoria-metrics-0
+    scheduled:
+      # victoria-metrics-0.backup.scheduled.schedule -- Cron schedule for automatic backups of Victoria Metrics
+      schedule: '25 * * * *'
 victoria-metrics-1:
   enabled: true
   rbac:
@@ -1814,3 +1824,13 @@ victoria-metrics-1:
       interval: 15s
       # victoria-metrics-1.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
       extraLabels: {}
+  backup:
+    # victoria-metrics-1.backup.enabled -- Enable scheduled backups of Victoria Metrics. It requires to be enabled MinIO 'backup.enabled'
+    enabled: false
+    # victoria-metrics-1.backup.bucketName -- Name of the MinIO bucket where Victoria Metrics backups are stored.
+    bucketName: 'sts-victoria-metrics-backup'
+    # victoria-metrics-1.backup.s3Prefix -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
+    s3Prefix: victoria-metrics-1
+    scheduled:
+      # victoria-metrics-1.backup.scheduled.schedule -- Cron schedule for automatic backups of Victoria Metrics
+      schedule: '35 * * * *'

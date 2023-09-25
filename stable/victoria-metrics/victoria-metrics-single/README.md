@@ -1,6 +1,6 @@
 # Victoria Metrics Helm Chart for Single Version
 
- ![Version: 0.8.53](https://img.shields.io/badge/Version-0.8.53-informational?style=flat-square)
+ ![Version: 0.8.53-stackstate.1](https://img.shields.io/badge/Version-0.8.53--stackstate.1-informational?style=flat-square)
 
 Victoria Metrics Single version - high-performance, cost-effective and scalable TSDB, long-term remote storage for Prometheus
 
@@ -107,6 +107,24 @@ Change the values according to the need of the environment in ``victoria-metrics
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | automountServiceAccountToken | bool | `true` |  |
+| backup.awsSecrets | string | `"stackstate-minio"` | Name of k8s secrets with Access Key and Secret Key to the MinIO service. |
+| backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the MinIO bucket where Victoria Metrics backups are stored. |
+| backup.enabled | bool | `false` | Enable scheduled backups of Victoria Metrics. |
+| backup.overrideS3Endpoint | string | `"http://stackstate-minio:9000"` | Override location of S3 endpoints, it should point to MinIO service. **Do not change this value! It must base on 'minio.fullnameOverride'** |
+| backup.s3Prefix | string | `nil` | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. |
+| backup.scheduled.schedule | string | `"25 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
+| backup.setupCron.image.repository | string | `"busybox"` | Repository containing busybox image, it is used to prepare th cronjob (create a crontab file). |
+| backup.setupCron.image.tag | string | `"latest"` | Tag of the image for the busybox |
+| backup.setupCron.resources.limits.cpu | string | `"20m"` |  |
+| backup.setupCron.resources.limits.memory | string | `"64Mi"` |  |
+| backup.setupCron.resources.requests.cpu | string | `"20m"` |  |
+| backup.setupCron.resources.requests.memory | string | `"64Mi"` |  |
+| backup.vmbackup.image.repository | string | `"quay.io/stackstate/vmbackup"` | Repository containing the image for the Victoria Metrics backup |
+| backup.vmbackup.image.tag | string | `"v1.87.9-2d6c1857"` | Tag of the image for the Victoria Metrics backup |
+| backup.vmbackup.resources.limits.cpu | string | `"100m"` |  |
+| backup.vmbackup.resources.limits.memory | string | `"512Mi"` |  |
+| backup.vmbackup.resources.requests.cpu | string | `"10m"` |  |
+| backup.vmbackup.resources.requests.memory | string | `"512Mi"` |  |
 | podDisruptionBudget.enabled | bool | `false` | See `kubectl explain poddisruptionbudget.spec` for more. Ref: [https://kubernetes.io/docs/tasks/run-application/configure-pdb/](https://kubernetes.io/docs/tasks/run-application/configure-pdb/) |
 | podDisruptionBudget.extraLabels | object | `{}` |  |
 | printNotes | bool | `true` | Print chart notes |

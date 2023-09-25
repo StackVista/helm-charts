@@ -39,10 +39,34 @@ spec:
       schedulerName: "{{ .Values.server.schedulerName }}"
 {{- end }}
       automountServiceAccountToken: {{ .Values.serviceAccount.automountToken }}
-      {{- if eq (include "victoria-metrics.hasInitContainer" . ) "true" }}
       initContainers:
+        {{- if .Values.backup.enabled }}
+        - name: create-crontab
+          image: "{{ tpl .Values.backup.setupCron.image.repository .}}:{{ tpl .Values.backup.setupCron.image.tag . }}"
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+          args:
+            - -c
+            - 'echo "$INCREMENTAL_PATTERN /vmbackup-prod -storageDataPath=/storage/ -snapshot.createURL=http://localhost:8428/snapshot/create -dst=s3://$BUCKET_NAME/$S3_PREFIX -customS3Endpoint=$S3_ENDPOINT" > /app/crontab/vmbackup'
+          resources:
+{{ toYaml .Values.backup.setupCron.resources | indent 12 }}
+          env:
+            - name: INCREMENTAL_PATTERN
+              value: "{{ tpl .Values.backup.scheduled.schedule . }}"
+            - name: BUCKET_NAME
+              value: "{{ tpl .Values.backup.bucketName . }}"
+            - name: S3_ENDPOINT
+              value: "{{ tpl .Values.backup.overrideS3Endpoint . }}"
+            - name: S3_PREFIX
+              value: {{ tpl .Values.backup.s3Prefix . | quote }}
+          volumeMounts:
+            - name: crontab
+              mountPath: /app/crontab
+        {{- end }}
+        {{- if eq (include "victoria-metrics.hasInitContainer" . ) "true" }}
         {{- include "victoria-metrics.initContiners" . | nindent 8 }}
-      {{- end }}
+        {{- end }}
       containers:
         - name: {{ template "victoria-metrics.name" . }}-{{ .Values.server.name }}
           {{- with  .Values.server.podSecurityContext }}
@@ -146,6 +170,35 @@ spec:
           {{- with .Values.server.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
+        {{- if .Values.backup.enabled }}
+        - name: vmbackup
+          image: "{{ tpl .Values.backup.vmbackup.image.repository .}}:{{ tpl .Values.backup.vmbackup.image.tag . }}"
+          imagePullPolicy: IfNotPresent
+          command:
+            - supercronic
+          args:
+            - -prometheus-listen-address
+            - 0.0.0.0:9746
+            - /app/crontab/vmbackup
+          resources:
+{{ toYaml .Values.backup.vmbackup.resources | indent 12 }}
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ tpl .Values.backup.awsSecrets .}}
+                  key: accesskey
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ tpl .Values.backup.awsSecrets .}}
+                  key: secretkey
+          volumeMounts:
+            - mountPath: /storage
+              name: server-volume
+            - name: crontab
+              mountPath: /app/crontab
+        {{- end }}
         {{- if .Values.server.vmbackupmanager.enable }}
         - name: {{ template "victoria-metrics.name" . }}-vmbackupmanager
           image: "{{ .Values.server.vmbackupmanager.image.repository }}:{{ .Values.server.vmbackupmanager.image.tag }}"
@@ -229,6 +282,10 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Values.server.persistentVolume.existingClaim }}
         {{- end }}
+        {{- end }}
+        {{- if .Values.backup.enabled }}
+        - name: crontab
+          emptyDir: { }
         {{- end }}
         {{- with .Values.server.extraVolumes }}
         {{- toYaml . | nindent 8 }}

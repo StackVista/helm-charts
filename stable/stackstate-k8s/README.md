@@ -17,8 +17,8 @@ Current chart version is `1.0.6-snapshot.5`
 | file://../minio/ | minio | 8.0.10-stackstate.8 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../stackstate-k8s-agent/ | stackstate-k8s-agent | * |
-| file://../victoria-metrics/victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53 |
-| file://../victoria-metrics/victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53 |
+| file://../victoria-metrics/victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.1 |
+| file://../victoria-metrics/victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.1 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.76 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | kafka | 15.5.1 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
@@ -651,6 +651,10 @@ stackstate/stackstate
 | stackstate.stackpacks.source | string | `"docker-image"` | Source of the stackpacks. Can be either 'docker-image' or 's3-bucket'. |
 | stackstate.stackpacks.updateInterval | string | `"5 minutes"` |  |
 | stackstate.stackpacks.upgradeOnStartup | list | `[]` | Specify a list of stackpacks that will, on startup only, be upgraded to the latest version available |
+| victoria-metrics-0.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the MinIO bucket where Victoria Metrics backups are stored. |
+| victoria-metrics-0.backup.enabled | bool | `false` | Enable scheduled backups of Victoria Metrics. It requires to be enabled MinIO 'backup.enabled' |
+| victoria-metrics-0.backup.s3Prefix | string | `"victoria-metrics-0"` |  |
+| victoria-metrics-0.backup.scheduled.schedule | string | `"25 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
 | victoria-metrics-0.enabled | bool | `true` |  |
 | victoria-metrics-0.rbac.namespaced | bool | `true` |  |
 | victoria-metrics-0.rbac.pspEnabled | bool | `false` |  |
@@ -672,6 +676,10 @@ stackstate/stackstate
 | victoria-metrics-0.server.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` |
 | victoria-metrics-0.server.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
 | victoria-metrics-0.server.serviceMonitor.interval | string | `"15s"` | Scrape interval for service monitor |
+| victoria-metrics-1.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the MinIO bucket where Victoria Metrics backups are stored. |
+| victoria-metrics-1.backup.enabled | bool | `false` | Enable scheduled backups of Victoria Metrics. It requires to be enabled MinIO 'backup.enabled' |
+| victoria-metrics-1.backup.s3Prefix | string | `"victoria-metrics-1"` | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. |
+| victoria-metrics-1.backup.scheduled.schedule | string | `"35 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
 | victoria-metrics-1.enabled | bool | `true` |  |
 | victoria-metrics-1.rbac.namespaced | bool | `true` |  |
 | victoria-metrics-1.rbac.pspEnabled | bool | `false` |  |
