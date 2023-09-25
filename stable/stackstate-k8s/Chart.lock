@@ -30,10 +30,10 @@ dependencies:
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 8.1.2
 - name: victoria-metrics-single
-  repository: https://victoriametrics.github.io/helm-charts
+  repository: file://../victoria-metrics/victoria-metrics-single/
   version: 0.8.53
 - name: victoria-metrics-single
-  repository: https://victoriametrics.github.io/helm-charts
+  repository: file://../victoria-metrics/victoria-metrics-single/
   version: 0.8.53
-digest: sha256:1cfa61c838a2854e0151b530927da04fff077ccf8f216cae586b2336c2c19206
-generated: "2023-09-27T16:39:44.411183+02:00"
+digest: sha256:6f04f360e54ada89a14f85e4a1675f323611f9a347f0652c42d1b18bbabde75f
+generated: "2023-09-25T14:42:02.37228853+02:00"
