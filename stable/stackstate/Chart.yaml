@@ -26,12 +26,12 @@ dependencies:
     version: "*"
   - name: elasticsearch
     condition: elasticsearch.enabled
-    repository: https://helm.stackstate.io
-    version: 7.17.2-stackstate.6
+    repository: file://../elasticsearch/
+    version: 8.5.1-stackstate.2
   - name: hbase
     condition: hbase.enabled
-    repository: https://helm.stackstate.io
-    version: "0.1.152"
+    repository: file://../hbase/
+    version: "0.1.156"
   - name: kafka
     condition: kafka.enabled
     # Bitnami official Helm repository stopped serving the old versions of the charts. This is the workaround https://github.com/bitnami/charts/issues/10539
@@ -43,8 +43,8 @@ dependencies:
     repository: file://../kafkaup-operator/
     version: "*"
   - name: minio
-    repository: https://helm.stackstate.io
-    version: "8.0.10-stackstate.8"
+    repository: file://../minio/
+    version: "8.0.10-stackstate.9"
     condition: backup.enabled
   - name: pull-secret
     version: "*"
