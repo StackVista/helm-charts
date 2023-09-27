@@ -8,7 +8,7 @@
 .DS_Store
 .jsonnet-libs/example.json
 
-# IDE 
+# IDE
 .vscode
 
 util/**/*.json

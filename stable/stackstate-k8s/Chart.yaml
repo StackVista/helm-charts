@@ -60,10 +60,10 @@ dependencies:
   - name: victoria-metrics-single
     alias: victoria-metrics-0
     version: "0.8.53-stackstate.1"
-    repository: file://../victoria-metrics/victoria-metrics-single/
+    repository: file://../victoria-metrics-single/
     condition: victoria-metrics-0.enabled
   - name: victoria-metrics-single
     alias: victoria-metrics-1
     version: "0.8.53-stackstate.1"
-    repository: file://../victoria-metrics/victoria-metrics-single/
+    repository: file://../victoria-metrics-single/
     condition: victoria-metrics-1.enabled
