@@ -1,7 +1,7 @@
 dependencies:
 - name: anomaly-detection
   repository: https://helm.stackstate.io
-  version: 5.1.9
+  version: 5.1.10-rc.1
 - name: stackstate-agent
   repository: file://../stackstate-agent/
   version: 3.4.2
@@ -29,5 +29,5 @@ dependencies:
 - name: zookeeper
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 8.1.2
-digest: sha256:1f0560fc520020a8b1a8de991d0fee4d9f900a2f03dbec042137dd1a1ecd7187
-generated: "2023-09-27T10:42:16.203035239+02:00"
+digest: sha256:ed0ad1383d18b4109ff29ef3602492fc8eae1644439df15f4ba9490b4af1f81e
+generated: "2023-09-27T13:04:31.136162806Z"
