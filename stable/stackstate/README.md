@@ -12,9 +12,9 @@ Current chart version is `5.1.9`
 |------------|------|---------|
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.5.1-stackstate.2 |
-| file://../hbase/ | hbase | 0.1.156 |
+| file://../hbase/ | hbase | 0.1.152 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
-| file://../minio/ | minio | 8.0.10-stackstate.9 |
+| file://../minio/ | minio | 8.0.10-stackstate.8 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../stackstate-agent/ | stackstate-agent | * |
 | https://helm.stackstate.io | anomaly-detection | 5.1.9 |
@@ -162,6 +162,7 @@ stackstate/stackstate
 | hbase.hdfs.datanode.resources.requests.cpu | string | `"300m"` |  |
 | hbase.hdfs.datanode.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | hbase.hdfs.datanode.resources.requests.memory | string | `"4Gi"` |  |
+| hbase.hdfs.image.tag | string | `"2.10.2-java11-6-cc17c8c3"` |  |
 | hbase.hdfs.minReplication | int | `2` | Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead) |
 | hbase.hdfs.namenode.resources.limits.cpu | string | `"500m"` |  |
 | hbase.hdfs.namenode.resources.limits.ephemeral-storage | string | `"1Gi"` |  |

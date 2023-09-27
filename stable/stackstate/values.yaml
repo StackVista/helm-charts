@@ -1152,6 +1152,9 @@ hbase:
           cpu: "1500m"
           ephemeral-storage: "1Mi"
   hdfs:
+    # hbase.image.tag -- the tag of the docker image to be used for this chart by default.
+    image:
+      tag: 2.10.2-java11-6-cc17c8c3
     # hbase.hdfs.minReplication -- Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead)
     minReplication: 2
     datanode:
