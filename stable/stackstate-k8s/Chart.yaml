@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: "20230717091231"
-version: 1.0.6-snapshot.4
+version: 1.0.6-snapshot.5
 description: Helm chart for StackState for Kubernetes
 keywords:
   - kubernetes
@@ -14,7 +14,7 @@ maintainers:
 name: stackstate-k8s
 dependencies:
   - name: anomaly-detection
-    version: 5.2.0-snapshot.31
+    version: 5.2.0-snapshot.76
     repository: https://helm.stackstate.io
     condition: anomaly-detection.enabled
   - name: stackstate-k8s-agent
