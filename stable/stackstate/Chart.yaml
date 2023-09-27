@@ -26,11 +26,11 @@ dependencies:
     version: "*"
   - name: elasticsearch
     condition: elasticsearch.enabled
-    repository: file://../elasticsearch/
+    repository: https://helm.stackstate.io
     version: 8.5.1-stackstate.2
   - name: hbase
     condition: hbase.enabled
-    repository: file://../hbase/
+    repository: https://helm.stackstate.io
     version: "0.1.152"
   - name: kafka
     condition: kafka.enabled
@@ -43,7 +43,7 @@ dependencies:
     repository: file://../kafkaup-operator/
     version: "*"
   - name: minio
-    repository: file://../minio/
+    repository: https://helm.stackstate.io
     version: "8.0.10-stackstate.8"
     condition: backup.enabled
   - name: pull-secret
