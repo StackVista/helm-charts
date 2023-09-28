@@ -53,6 +53,14 @@
   value: {{ include "stackstate.router.endpoint" . | quote }}
 - name: ELASTICSEARCH_ENDPOINT
   value: {{ include "stackstate.es.endpoint" . | quote }}
+- name: BACKUP_VICTORIA_METRICS_0_ENABLED
+  value: {{ index .Values "victoria-metrics-0" "backup" "enabled" | quote }}
+- name: BACKUP_VICTORIA_METRICS_0_BUCKET_NAME
+  value: {{ index .Values "victoria-metrics-0" "backup" "bucketName" | quote }}
+- name: BACKUP_VICTORIA_METRICS_1_ENABLED
+  value: {{ index .Values "victoria-metrics-1" "backup" "enabled" | quote }}
+- name: BACKUP_VICTORIA_METRICS_1_BUCKET_NAME
+  value: {{ index .Values "victoria-metrics-1" "backup" "bucketName" | quote }}
 - name: MINIO_ENDPOINT
   value: {{ include "stackstate.minio.endpoint" . | quote }}
 {{- end -}}

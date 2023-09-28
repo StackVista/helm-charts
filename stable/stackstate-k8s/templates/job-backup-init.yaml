@@ -1,4 +1,4 @@
-{{- if and .Values.backup.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticsearch.restore.enabled .Values.backup.elasticsearch.scheduled.enabled) }}
+{{- if and .Values.backup.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticsearch.restore.enabled .Values.backup.elasticsearch.scheduled.enabled (index .Values "victoria-metrics-0" "backup" "enabled") (index .Values "victoria-metrics-1" "backup" "enabled")) }}
 apiVersion: batch/v1
 kind: Job
 metadata:

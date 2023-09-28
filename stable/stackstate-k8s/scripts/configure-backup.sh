@@ -33,6 +33,32 @@ if [ "${BACKUP_CONFIGURATION_RESTORE_ENABLED}" == "true" ] || [ "${BACKUP_CONFIG
     fi
 fi
 
+if [ "${BACKUP_VICTORIA_METRICS_0_ENABLED}" == "true" ]; then
+    echo "=== Testing for existence of MinIO bucket \"${BACKUP_VICTORIA_METRICS_0_BUCKET_NAME}\"..."
+    if ! mc ls "minio/${BACKUP_VICTORIA_METRICS_0_BUCKET_NAME}" >/dev/null ; then
+        if [ "${BACKUP_VICTORIA_METRICS_0_ENABLED}" == "true" ]; then
+            echo "=== Creating MinIO bucket \"${BACKUP_VICTORIA_METRICS_0_BUCKET_NAME}\"..."
+            mc mb "minio/${BACKUP_VICTORIA_METRICS_0_BUCKET_NAME}"
+        else
+            echo "=== ERROR: MinIO bucket \"${BACKUP_VICTORIA_METRICS_0_BUCKET_NAME}\" does not exist. Restore functionality for VictoriaMetrics_0 will not function correctly"
+            exit 1
+        fi
+    fi
+fi
+
+if [ "${BACKUP_VICTORIA_METRICS_1_ENABLED}" == "true" ]; then
+    echo "=== Testing for existence of MinIO bucket \"${BACKUP_VICTORIA_METRICS_1_BUCKET_NAME}\"..."
+    if ! mc ls "minio/${BACKUP_VICTORIA_METRICS_1_BUCKET_NAME}" >/dev/null ; then
+        if [ "${BACKUP_VICTORIA_METRICS_1_ENABLED}" == "true" ]; then
+            echo "=== Creating MinIO bucket \"${BACKUP_VICTORIA_METRICS_1_BUCKET_NAME}\"..."
+            mc mb "minio/${BACKUP_VICTORIA_METRICS_1_BUCKET_NAME}"
+        else
+            echo "=== ERROR: MinIO bucket \"${BACKUP_VICTORIA_METRICS_1_BUCKET_NAME}\" does not exist. Restore functionality for VictoriaMetrics_1 will not function correctly"
+            exit 1
+        fi
+    fi
+fi
+
 if [ "${BACKUP_ELASTICSEARCH_RESTORE_ENABLED}" == "true" ] || [ "${BACKUP_ELASTICSEARCH_SCHEDULED_ENABLED}" == "true" ]; then
     echo "=== Testing for existence of MinIO bucket \"${BACKUP_ELASTICSEARCH_BUCKET_NAME}\"..."
     if ! mc ls "minio/${BACKUP_ELASTICSEARCH_BUCKET_NAME}" >/dev/null ; then
