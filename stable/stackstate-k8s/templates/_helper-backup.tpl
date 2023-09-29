@@ -57,10 +57,14 @@
   value: {{ index .Values "victoria-metrics-0" "backup" "enabled" | quote }}
 - name: BACKUP_VICTORIA_METRICS_0_BUCKET_NAME
   value: {{ index .Values "victoria-metrics-0" "backup" "bucketName" | quote }}
+- name: BACKUP_VICTORIA_METRICS_0_RESTORE_ENABLED
+  value: {{ index .Values "victoria-metrics-0" "restore" "enabled" | quote }}
 - name: BACKUP_VICTORIA_METRICS_1_ENABLED
   value: {{ index .Values "victoria-metrics-1" "backup" "enabled" | quote }}
 - name: BACKUP_VICTORIA_METRICS_1_BUCKET_NAME
   value: {{ index .Values "victoria-metrics-1" "backup" "bucketName" | quote }}
+- name: BACKUP_VICTORIA_METRICS_1_RESTORE_ENABLED
+  value: {{ index .Values "victoria-metrics-1" "restore" "enabled" | quote }}
 - name: MINIO_ENDPOINT
   value: {{ include "stackstate.minio.endpoint" . | quote }}
 {{- end -}}

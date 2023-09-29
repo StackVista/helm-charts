@@ -1756,6 +1756,9 @@ victoria-metrics-0:
     scheduled:
       # victoria-metrics-0.backup.scheduled.schedule -- Cron schedule for automatic backups of Victoria Metrics
       schedule: '25 * * * *'
+  restore:
+    # victoria-metrics-0.restore.enabled -- Enable Victoria Metrics restore functionality (if `backup.enabled` is set to `true`).
+    enabled: false
 victoria-metrics-1:
   enabled: true
   rbac:
@@ -1834,3 +1837,19 @@ victoria-metrics-1:
     scheduled:
       # victoria-metrics-1.backup.scheduled.schedule -- Cron schedule for automatic backups of Victoria Metrics
       schedule: '35 * * * *'
+  restore:
+    # victoria-metrics-1.restore.enabled -- Enable Victoria Metrics restore functionality (if `backup.enabled` is set to `true`).
+    enabled: false
+victoria-metrics:
+  restore:
+    securityContext:
+      # backup.stackGraph.securityContext.enabled -- Whether or not to enable the securityContext
+      enabled: true
+      # backup.stackGraph.securityContext.fsGroup -- The GID (group ID) of all files on all mounted volumes
+      fsGroup: 65534
+      # backup.stackGraph.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
+      runAsGroup: 65534
+      # backup.stackGraph.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
+      runAsNonRoot: true
+      # backup.stackGraph.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
+      runAsUser: 65534

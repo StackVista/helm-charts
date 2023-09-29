@@ -308,7 +308,105 @@ spec:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
 {{- end -}}
 
-{{- if and .Values.backup.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticsearch.restore.enabled .Values.backup.elasticsearch.scheduled.enabled (index .Values "victoria-metrics-0" "backup" "enabled") (index .Values "victoria-metrics-1" "backup" "enabled")) }}
+{{- define "job-victoria-metrics-list-backups.yaml" -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: victoria-metrics-list-backups
+  labels:
+    app.kubernetes.io/component: backup
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: backup
+    spec:
+      initContainers:
+        - name: wait
+          command:
+            - sh
+            - -c
+            - |
+              /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+      containers:
+        - name: list
+          image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.server.image.tag }}"
+          imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
+          command:
+            - '/backup-restore-scripts/list-victoria-metrics-backups.sh'
+          env:
+            {{- include "stackstate.backup.envvars" . | nindent 12 }}
+          {{- with .Values.stackstate.components.backup.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      volumes:
+        {{- include "stackstate.backup.volumes" . | nindent 8 }}
+      restartPolicy: Never
+{{- end -}}
+
+{{- define "job-victoria-metrics-restore-backup.yaml" -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: victoria-metrics-restore-backup
+  labels:
+    app.kubernetes.io/component: backup
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: backup
+    spec:
+      initContainers:
+        - name: wait
+          command:
+            - sh
+            - -c
+            - |
+              /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+      containers:
+        - name: restore
+          image: "victoriametrics/vmrestore:v1.94.0"
+          imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
+          command:
+            - '/backup-restore-scripts/restore-victoria-metrics-backup.sh'
+          args:
+            - "REPLACE_ME_VICTORIA_METRICS_INSTANCE_NAME"
+          env:
+            {{- include "stackstate.backup.envvars" . | nindent 12 }}
+          {{- with .Values.stackstate.components.backup.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
+            - mountPath: /storage
+              name: victoria-metrics-storage
+      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+{{- if index .Values "victoria-metrics" "restore" "securityContext" "enabled" }}
+      securityContext: {{- omit (index .Values "victoria-metrics" "restore" "securityContext") "enabled" | toYaml | nindent 8 }}
+{{- end }}
+      restartPolicy: Never
+      volumes:
+        {{- include "stackstate.backup.volumes" . | nindent 8 }}
+        - name: victoria-metrics-storage
+          persistentVolumeClaim:
+            claimName: server-volume-stackstate-REPLACE_ME_VICTORIA_METRICS_INSTANCE_NAME-0
+{{- end -}}
+
+{{- if and .Values.backup.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticsearch.restore.enabled .Values.backup.elasticsearch.scheduled.enabled (index .Values "victoria-metrics-0" "backup" "enabled") (index .Values "victoria-metrics-1" "backup" "enabled") (index .Values "victoria-metrics-0" "restore" "enabled") (index .Values "victoria-metrics-1" "restore" "enabled")) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -359,5 +457,15 @@ data:
     {{- include "job-configuration-restore-backup.yaml" . | nindent 4 }}
   restore-configuration-backup.sh: |
     {{- .Files.Get "scripts/restore-configuration-backup.sh" | nindent 4 }}
+{{- end }}
+{{- if or (index .Values "victoria-metrics-0" "restore" "enabled") (index .Values "victoria-metrics-1" "restore" "enabled") }}
+  job-victoria-metrics-list-backups.yaml: |
+    {{- include "job-victoria-metrics-list-backups.yaml" . | nindent 4 }}
+  list-victoria-metrics-backups.sh: |
+    {{- .Files.Get "scripts/list-victoria-metrics-backups.sh" | nindent 4 }}
+  job-victoria-metrics-restore-backup.yaml: |
+    {{- include "job-victoria-metrics-restore-backup.yaml" . | nindent 4 }}
+  restore-victoria-metrics-backup.sh: |
+    {{- .Files.Get "scripts/restore-victoria-metrics-backup.sh" | nindent 4 }}
 {{- end }}
 {{- end }}

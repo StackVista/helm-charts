@@ -33,7 +33,7 @@ if [ "${BACKUP_CONFIGURATION_RESTORE_ENABLED}" == "true" ] || [ "${BACKUP_CONFIG
     fi
 fi
 
-if [ "${BACKUP_VICTORIA_METRICS_0_ENABLED}" == "true" ]; then
+if [ "${BACKUP_VICTORIA_METRICS_0_RESTORE_ENABLED}" == "true" ] || [ "${BACKUP_VICTORIA_METRICS_0_ENABLED}" == "true" ]; then
     echo "=== Testing for existence of MinIO bucket \"${BACKUP_VICTORIA_METRICS_0_BUCKET_NAME}\"..."
     if ! mc ls "minio/${BACKUP_VICTORIA_METRICS_0_BUCKET_NAME}" >/dev/null ; then
         if [ "${BACKUP_VICTORIA_METRICS_0_ENABLED}" == "true" ]; then
@@ -46,7 +46,7 @@ if [ "${BACKUP_VICTORIA_METRICS_0_ENABLED}" == "true" ]; then
     fi
 fi
 
-if [ "${BACKUP_VICTORIA_METRICS_1_ENABLED}" == "true" ]; then
+if [ "${BACKUP_VICTORIA_METRICS_1_RESTORE_ENABLED}" == "true" ] || [ "${BACKUP_VICTORIA_METRICS_1_ENABLED}" == "true" ]; then
     echo "=== Testing for existence of MinIO bucket \"${BACKUP_VICTORIA_METRICS_1_BUCKET_NAME}\"..."
     if ! mc ls "minio/${BACKUP_VICTORIA_METRICS_1_BUCKET_NAME}" >/dev/null ; then
         if [ "${BACKUP_VICTORIA_METRICS_1_ENABLED}" == "true" ]; then
