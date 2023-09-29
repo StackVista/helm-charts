@@ -1,14 +1,15 @@
 apiVersion: v2
 appVersion: 2.19.1
-version: 1.0.47
-description: Helm chart for the StackState cluster agent.
+version: 1.0.48
+description: Helm chart for the StackState Agent.
 keywords:
 - monitoring
+- observability
 - stackstate
 home: https://github.com/StackVista/stackstate-agent
 icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
 maintainers:
-- name: Stackstate Lupulus Team
+- name: Stackstate
   email: ops@stackstate.com
 name: stackstate-k8s-agent
 dependencies:

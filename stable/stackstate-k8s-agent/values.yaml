@@ -375,7 +375,7 @@ openShiftLogging:
 
 logsAgent:
   # logsAgent.enabled -- Enable / disable k8s pod log collection
-  enabled: false
+  enabled: true
 
   # logsAgent.priorityClassName -- Priority class for logsAgent pods.
   priorityClassName: ""

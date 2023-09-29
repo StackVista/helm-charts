@@ -1,8 +1,8 @@
 # stackstate-k8s-agent
 
-Helm chart for the StackState cluster agent.
+Helm chart for the StackState Agent.
 
-Current chart version is `1.0.47`
+Current chart version is `1.0.48`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -154,7 +154,7 @@ stackstate/stackstate-k8s-agent
 | global.imagePullSecrets | list | `[]` | Secrets / credentials needed for container image registry. |
 | httpHeaderInjectorWebhook.enabled | bool | `false` | Enable the webhook for injection http header injection sidecar proxy |
 | logsAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
-| logsAgent.enabled | bool | `false` | Enable / disable k8s pod log collection |
+| logsAgent.enabled | bool | `true` | Enable / disable k8s pod log collection |
 | logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | logsAgent.image.repository | string | `"stackstate/promtail"` | Base container image repository. |
 | logsAgent.image.tag | string | `"2.7.1"` | Default container image tag. |
