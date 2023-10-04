@@ -73,6 +73,8 @@ createOrUpdateTopic "sts_topo_trace_agents" "1" "${ephemeralRetention}" &
 PIDS+=($!)
 createOrUpdateTopic "sts_internal_topology" "1" "${ephemeralRetention}" &
 PIDS+=($!)
+createOrUpdateTopic "sts_health_sync_settings" "1" "${ephemeralRetention}" &
+PIDS+=($!)
 
 for pid in "${PIDS[@]}"; do
   wait "$pid"
