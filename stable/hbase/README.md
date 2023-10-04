@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.159`
+Current chart version is `0.1.160`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -125,7 +125,7 @@ Current chart version is `0.1.159`
 | hdfs.volumePermissions.securityContext.runAsUser | int | `0` | Run the volumePermissions init container with the specified UID (Do not change unless instructed) |
 | serviceAccount.create | bool | `true` | Whether to create serviceAccounts and run the statefulsets under them |
 | stackgraph.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below). |
-| stackgraph.image.tag | string | `"4.12.3"` | The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below). |
+| stackgraph.image.tag | string | `"4.12.4"` | The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below). |
 | statefulset.antiAffinity.strategy | string | `"soft"` | AntiAffinity strategy to use for all StatefulSets. |
 | statefulset.antiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | AntiAffinity topology key to use for all StatefulSets. |
 | tephra.affinity | object | `{}` | Affinity settings for pod assignment. |
