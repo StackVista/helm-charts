@@ -19,7 +19,12 @@ if [ -z "${CM_NAME}" ]; then
     exit 1
 fi
 
-# TODO check instance is enabled
+# Checks if restore is enabled for this specific instance
+BACKUP_ENABLED=$(kubectl get configmap "${CM_NAME}" -o jsonpath="{.data.restore-${INSTANCE_NAME}-enabled}")
+if [ "$BACKUP_ENABLED" != "true" ]; then
+  echo "Did you set backup.enabled and ${INSTANCE_NAME}.restore.enabled to true?"
+  exit 1
+fi
 
 if (! (kubectl get configmap "${CM_NAME}" -o jsonpath="{.data.job-${JOB_NAME_TEMPLATE}\.yaml}"  | sed -e "s/${JOB_NAME_TEMPLATE}/${JOB_NAME}/" -e "s/REPLACE_ME_VICTORIA_METRICS_INSTANCE_NAME/${INSTANCE_NAME}/" > "${JOB_YAML_FILE}")) || [ ! -s "${JOB_YAML_FILE}" ]; then
     echo "Did you set backup.enabled and ${INSTANCE_NAME}.restore.enabled to true?"
@@ -41,4 +46,4 @@ echo "kubectl logs --follow job/${JOB_NAME}"
 
 echo "=== After the job has completed clean up the job and scale up the Victoria Metrics instance pods again with the following commands:"
 echo "kubectl delete job ${JOB_NAME}"
-#TODO scale up Victoria Metrics
+echo "kubectl scale statefulsets stackstate-$INSTANCE_NAME --replicas=1"

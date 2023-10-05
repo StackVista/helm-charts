@@ -467,5 +467,7 @@ data:
     {{- include "job-victoria-metrics-restore-backup.yaml" . | nindent 4 }}
   restore-victoria-metrics-backup.sh: |
     {{- .Files.Get "scripts/restore-victoria-metrics-backup.sh" | nindent 4 }}
+  restore-victoria-metrics-0-enabled: {{ index .Values "victoria-metrics-0" "restore" "enabled" | quote }} # It is used by a restore script to check if restore is enabled for this specific instance
+  restore-victoria-metrics-1-enabled: {{ index .Values "victoria-metrics-1" "restore" "enabled" | quote }} # It is used by a restore script to check if restore is enabled for this specific instance
 {{- end }}
 {{- end }}
