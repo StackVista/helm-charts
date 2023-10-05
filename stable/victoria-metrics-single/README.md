@@ -1,6 +1,6 @@
 # Victoria Metrics Helm Chart for Single Version
 
- ![Version: 0.8.53-stackstate.1](https://img.shields.io/badge/Version-0.8.53--stackstate.1-informational?style=flat-square)
+ ![Version: 0.8.53-stackstate.3](https://img.shields.io/badge/Version-0.8.53--stackstate.3-informational?style=flat-square)
 
 Victoria Metrics Single version - high-performance, cost-effective and scalable TSDB, long-term remote storage for Prometheus
 
@@ -118,7 +118,27 @@ cd charts/victoria-metrics-single
 helm-docs
 ```
 
-The markdown generation is entirely go template driven. The tool parses metadata from charts and generates a number of sub-templates that can be referenced in a template file (by default ``README.md.gotmpl``). If no template file is provided, the tool has a default internal template that will generate a reasonably formatted README.
+# Info
+
+We use the single node deployment of Victoria Metrics - each node has own copy of all data.
+
+## Backups
+
+### Motivation
+
+Victoria Metrics provides a tool named `vmbackup` to backup all data stored in the database. The tool requires to have
+access to the same file system used by Victoria Metrics. So we have to options:
+
+- use Volumes with mode `RWX`
+- use `vmbackup` on the same pod as `Victoria Metrics`
+
+We can't use RWX Volumes (at least not now), so we have to deploy everything to the same pod as Victoria Metrics.
+
+Victoria Metrics has provided a helm chart to run the service it also allows to run a side car container with `vmbackup`
+but the configuration isn't flexible so we have to start "coding" inside a `values.yaml`, also we have to repeat the
+same configuration twice (we have to Pods with Victoria Metrics) and also we had to copy the save value into multiple
+places (child helm chart can't use values from the parent chart). Because of these limitations and problems I have
+decided to "fork" original helm chart and add some customization.
 
 # Parameters
 
