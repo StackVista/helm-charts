@@ -80,6 +80,17 @@ Return the image registry for the wait containers
 {{- end -}}
 
 {{/*
+Return the image registry for the vmrestore containers
+*/}}
+{{- define "stackstate.vmrestore.image.registry" -}}
+  {{- if .Values.global }}
+    {{- .Values.global.imageRegistry | default (index .Values "victoria-metrics" "restore" "image" "registry") -}}
+  {{- else -}}
+    {{- index .Values "victoria-metrics" "restore" "image" "registry" -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
 Common extra environment variables for all processes inherited through `stackstate.components.all.extraEnv`
 */}}
 {{- define "stackstate.common.envvars" -}}

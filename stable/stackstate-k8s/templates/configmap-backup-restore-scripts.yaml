@@ -378,8 +378,8 @@ spec:
           imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
       containers:
         - name: restore
-          image: "victoriametrics/vmrestore:v1.94.0"
-          imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
+          image: "{{ include "stackstate.vmrestore.image.registry" . }}/{{ index .Values "victoria-metrics" "restore" "image" "repository" }}:{{ index .Values "victoria-metrics" "restore" "image" "tag" }}"
+          imagePullPolicy: {{ index .Values "victoria-metrics" "restore" "image" "pullPolicy" | quote }}
           command:
             - '/backup-restore-scripts/restore-victoria-metrics-backup.sh'
           args:
