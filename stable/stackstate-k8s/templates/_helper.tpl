@@ -285,27 +285,21 @@ checksum/server-env: {{ include (print $.Template.BasePath "/secret-server.yaml"
 UI secret checksum annotations
 */}}
 {{- define "stackstate.ui.secret.checksum" -}}
-{{- if .Values.stackstate.components.ui.extraEnv.secret }}
 checksum/ui-env: {{ include (print $.Template.BasePath "/secret-ui.yaml") . | sha256sum }}
-{{- end }}
 {{- end -}}
 
 {{/*
 ViewHealth secret checksum annotations
 */}}
 {{- define "stackstate.viewHealth.secret.checksum" -}}
-{{- if .Values.stackstate.components.viewHealth.extraEnv.secret }}
 checksum/viewHealth-env: {{ include (print $.Template.BasePath "/secret-viewHealth.yaml") . | sha256sum }}
-{{- end }}
 {{- end -}}
 
 {{/*
 HealthSync secret checksum annotations
 */}}
 {{- define "stackstate.healthSync.secret.checksum" -}}
-{{- if .Values.stackstate.components.healthSync.extraEnv.secret }}
 checksum/healthSync-env: {{ include (print $.Template.BasePath "/secret-healthSync.yaml") . | sha256sum }}
-{{- end }}
 {{- end -}}
 
 {{/*
