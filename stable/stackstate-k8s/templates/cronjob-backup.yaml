@@ -7,7 +7,7 @@ apiVersion: batch/v1beta1
 {{- end }}
 kind: CronJob
 metadata:
-  name: {{ template "common.fullname.short" . }}-backup-stackgraph
+  name: {{ template "common.fullname.short" . }}-backup-sg
   labels:
     app.kubernetes.io/component: backup
 spec:
