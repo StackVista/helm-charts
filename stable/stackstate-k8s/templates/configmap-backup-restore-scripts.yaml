@@ -406,7 +406,7 @@ spec:
             claimName: server-volume-stackstate-REPLACE_ME_VICTORIA_METRICS_INSTANCE_NAME-0
 {{- end -}}
 
-{{- if and .Values.backup.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticsearch.restore.enabled .Values.backup.elasticsearch.scheduled.enabled (index .Values "victoria-metrics-0" "backup" "enabled") (index .Values "victoria-metrics-1" "backup" "enabled") (index .Values "victoria-metrics-0" "restore" "enabled") (index .Values "victoria-metrics-1" "restore" "enabled")) }}
+{{- if and .Values.backup.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticsearch.restore.enabled .Values.backup.elasticsearch.scheduled.enabled (index .Values "backup" "configuration" "restore" "enabled") (index .Values "backup" "configuration" "scheduled" "enabled") (index .Values "victoria-metrics-0" "backup" "enabled") (index .Values "victoria-metrics-1" "backup" "enabled") (index .Values "victoria-metrics-0" "restore" "enabled") (index .Values "victoria-metrics-1" "restore" "enabled")) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
