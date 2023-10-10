@@ -2,7 +2,7 @@
 
 Helm chart for StackState for Kubernetes
 
-Current chart version is `1.0.6-snapshot.8`
+Current chart version is `1.1.0`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -298,7 +298,7 @@ stackstate/stackstate
 | stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
-| stackstate.components.all.image.tag | string | `"5.2.0-snapshot.20230818093907-master-ff2c570"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
+| stackstate.components.all.image.tag | string | `"6.0.0-snapshot.20231009162833-master-bbb323a"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metricStore.kafka2PromGroupId | string | `"kafka-to-prom-$vmInstance"` | Kafka consumer group ID of kafka2prom writing to the metric store ($vmInstance is replaced by '0' or '1') |
 | stackstate.components.all.metricStore.queryApiEndpoint | string | `"stackstate-victoriametrics:8428"` | Host and port for promql api |
@@ -635,11 +635,11 @@ stackstate/stackstate
 | stackstate.java.trustStorePassword | string | `nil` | Password to access the Java TrustStore (cacerts) file |
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
 | stackstate.receiver.baseUrl | string | `nil` | **DEPRECATED** Use stackstate.baseUrl instead |
-| stackstate.stackpacks.image | object | `{"pullPolicy":"","registry":"quay.io","repository":"stackstate/stackpacks","tag":"20230818073825-master-0f2fb1b-selfhosted"}` | Docker image to use as source for stackpacks. |
+| stackstate.stackpacks.image | object | `{"pullPolicy":"","registry":"quay.io","repository":"stackstate/stackpacks","tag":"20231006103928-master-ab49f65-selfhosted"}` | Docker image to use as source for stackpacks. |
 | stackstate.stackpacks.image.pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.image.registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.image.repository | string | `"stackstate/stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.image.tag | string | `"20230818073825-master-0f2fb1b-selfhosted"` | Tag used for the `stackpacks` Docker image; |
+| stackstate.stackpacks.image.tag | string | `"20231006103928-master-ab49f65-selfhosted"` | Tag used for the `stackpacks` Docker image; |
 | stackstate.stackpacks.installed | list | `[]` | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) |
 | stackstate.stackpacks.pvc.size | string | `"1Gi"` |  |
 | stackstate.stackpacks.pvc.storageClass | string | `nil` |  |
