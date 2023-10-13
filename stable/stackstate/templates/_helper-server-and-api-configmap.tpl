@@ -205,6 +205,8 @@ stackstate.authorization.powerUserGroups = ${stackstate.authorization.powerUserG
 stackstate.authorization.guestGroups = ${stackstate.authorization.guestGroups} {{ .Values.stackstate.authentication.roles.guest | toJson }}
 {{- end }}
 
+stackstate.deploymentMode = "{{- .Values.stackstate.deployment.mode -}}"
+
 {{- if .Values.stackstate.authentication.serviceToken.bootstrap.token }}
 {{- $authTypes = append $authTypes "serviceTokenAuthServer" }}
 stackstate.api.authentication.authServer.serviceTokenAuthServer.bootstrap {

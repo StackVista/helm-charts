@@ -1021,6 +1021,10 @@ stackstate:
     authentication:
       # stackstate.admin.authentication.password -- Password used for default platform "admin" api's (low-level tools) of the various services, username: platformadmin
       password:
+  # stackstate.deployment -- Deployment settings for StackState
+  deployment:
+    # stackstate.deployment.mode -- Deployment mode of StackState, possible values are 'SaaS' and 'SelfHosted'
+    mode: "SelfHosted"
   # stackstate.java -- Extra Java configuration for StackState
   java:
     # stackstate.java.trustStore -- Java TrustStore (cacerts) file to use
