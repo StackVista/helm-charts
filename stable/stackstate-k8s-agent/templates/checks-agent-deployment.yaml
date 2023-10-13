@@ -144,7 +144,7 @@ spec:
           volumeMounts:
           - name: confd-empty-volume
             mountPath: /etc/stackstate-agent/conf.d
-            readOnly: true
+            readOnly: false
           {{- if .Values.checksAgent.config.override }}
           {{- range .Values.checksAgent.config.override }}
           - name: config-override-volume
