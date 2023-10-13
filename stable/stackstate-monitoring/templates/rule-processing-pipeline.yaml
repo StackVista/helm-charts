@@ -67,7 +67,7 @@ spec:
           annotations:
             message: {{`Data ingestion for {{$labels.namespace }}, topic {{$labels.topic}} and service {{ $labels.service }} is lagging behind by {{ $value | humanizeDuration }}.`}}
           expr: |
-            stackstate_kafka2es_received_data_latency_seconds{namespace=~{{ .Values.rules.namespaceRegex | quote}}, quantile="0.75", data_type="MultiMetric"} > 30.0
+            stackstate_kafka2es_received_data_latency_seconds{namespace=~{{ .Values.rules.namespaceRegex | quote}}, quantile="0.5", data_type="MultiMetric"} > 30.0
           for: 5m
           labels:
             severity: warning
