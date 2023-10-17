@@ -43,6 +43,8 @@ We use HDFS_CONF_dfs_namenode_replication_min to ensure the desired amount of re
   value: "/hadoop-data/data"
 - name: HDFS_CONF_dfs_namenode_name_dir
   value: "/hadoop-data/data"
+- name: HDFS_CONF_dfs_namenode_safemode_threshold___pct
+  value: "0.9f"
 - name: HDFS_CONF_dfs_replication
   value: "2"
 - name: HDFS_CONF_dfs_namenode_replication_min
