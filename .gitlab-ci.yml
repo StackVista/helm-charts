@@ -77,7 +77,7 @@ push_artifactory-cleaner_to_internal:
       when: on_success
     - changes:
         - stable/artifactory-cleaner/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -100,7 +100,7 @@ push_artifactory-cleaner_to_public:
       when: on_success
     - changes:
         - stable/artifactory-cleaner/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -121,7 +121,7 @@ push_aws-amicleaner_to_internal:
       when: on_success
     - changes:
         - stable/aws-amicleaner/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -142,7 +142,7 @@ push_aws-nuke_to_internal:
       when: on_success
     - changes:
         - stable/aws-nuke/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -163,7 +163,7 @@ push_aws-pod-identity-webhook_to_internal:
       when: on_success
     - changes:
         - stable/aws-pod-identity-webhook/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -184,7 +184,7 @@ push_beacher-job_to_internal:
       when: on_success
     - changes:
         - stable/beacher-job/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -205,7 +205,7 @@ push_chartmuseum_to_internal:
       when: on_success
     - changes:
         - stable/chartmuseum/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -226,7 +226,7 @@ push_common_to_internal:
       when: on_success
     - changes:
         - stable/common/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -249,7 +249,7 @@ push_common_to_public:
       when: on_success
     - changes:
         - stable/common/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -270,7 +270,7 @@ push_elasticsearch_to_internal:
       when: on_success
     - changes:
         - stable/elasticsearch/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -293,7 +293,7 @@ push_elasticsearch_to_public:
       when: on_success
     - changes:
         - stable/elasticsearch/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -314,7 +314,7 @@ push_gitlab-steward_to_internal:
       when: on_success
     - changes:
         - stable/gitlab-steward/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -335,7 +335,7 @@ push_hbase_to_internal:
       when: on_success
     - changes:
         - stable/hbase/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -358,7 +358,7 @@ push_hbase_to_public:
       when: on_success
     - changes:
         - stable/hbase/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -379,7 +379,7 @@ push_helm-reaper_to_internal:
       when: on_success
     - changes:
         - stable/helm-reaper/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -400,7 +400,7 @@ push_iceman_to_internal:
       when: on_success
     - changes:
         - stable/iceman/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -421,7 +421,7 @@ push_k8s-spot-termination-handler_to_internal:
       when: on_success
     - changes:
         - stable/k8s-spot-termination-handler/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -442,7 +442,7 @@ push_kafkaup-operator_to_internal:
       when: on_success
     - changes:
         - stable/kafkaup-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -465,7 +465,7 @@ push_kafkaup-operator_to_public:
       when: on_success
     - changes:
         - stable/kafkaup-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -486,7 +486,7 @@ push_kommoner-operator_to_internal:
       when: on_success
     - changes:
         - stable/kommoner-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -507,7 +507,7 @@ push_minio_to_internal:
       when: on_success
     - changes:
         - stable/minio/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -530,7 +530,7 @@ push_minio_to_public:
       when: on_success
     - changes:
         - stable/minio/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -551,7 +551,7 @@ push_petros-d-kubelet-stats-exporter_to_internal:
       when: on_success
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -572,7 +572,7 @@ push_pull-secret_to_internal:
       when: on_success
     - changes:
         - stable/pull-secret/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -595,7 +595,7 @@ push_pull-secret_to_public:
       when: on_success
     - changes:
         - stable/pull-secret/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -616,7 +616,7 @@ push_receiveramplifier_to_internal:
       when: on_success
     - changes:
         - stable/receiveramplifier/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -637,7 +637,7 @@ push_sandbox-operator_to_internal:
       when: on_success
     - changes:
         - stable/sandbox-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -658,7 +658,7 @@ push_sock-shop_to_internal:
       when: on_success
     - changes:
         - stable/sock-shop/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -679,7 +679,7 @@ push_stackstate-agent_to_internal:
       when: on_success
     - changes:
         - stable/stackstate-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -702,7 +702,7 @@ push_stackstate-agent_to_public:
       when: on_success
     - changes:
         - stable/stackstate-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -723,7 +723,7 @@ push_stackstate-k8s-agent_to_internal:
       when: on_success
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -746,7 +746,7 @@ push_stackstate-k8s-agent_to_public:
       when: on_success
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -779,7 +779,7 @@ push_stackstate-k8s_to_internal:
       when: on_success
     - changes:
         - stable/stackstate-k8s/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-k8s/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-k8s/%
@@ -815,7 +815,7 @@ push_stackstate-k8s_to_public:
       when: on_success
     - changes:
         - stable/stackstate-k8s/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: manual
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-k8s/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-k8s/%
@@ -837,7 +837,7 @@ push_stackstate-monitoring_to_internal:
       when: on_success
     - changes:
         - stable/stackstate-monitoring/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -860,7 +860,7 @@ push_stackstate-monitoring_to_public:
       when: on_success
     - changes:
         - stable/stackstate-monitoring/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -881,7 +881,7 @@ push_stackstate-standalone_to_internal:
       when: on_success
     - changes:
         - stable/stackstate-standalone/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -904,7 +904,7 @@ push_stackstate-standalone_to_public:
       when: on_success
     - changes:
         - stable/stackstate-standalone/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -997,7 +997,7 @@ push_stackstate_to_internal:
       when: on_success
     - changes:
         - stable/stackstate/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
@@ -1045,7 +1045,7 @@ push_trafficmirror_to_internal:
       when: on_success
     - changes:
         - stable/trafficmirror/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -1068,7 +1068,7 @@ push_trafficmirror_to_public:
       when: on_success
     - changes:
         - stable/trafficmirror/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -2019,7 +2019,6 @@ validate_stackstate_chart:
   script:
     - ct list-changed --config test/ct.yaml
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-k8s/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-k8s/%
     - ct lint --debug --validate-maintainers=false --charts stable/stackstate --charts stable/stackstate-k8s --config test/ct.yaml
     - .gitlab/validate_kubeconform.sh
   stage: validate
