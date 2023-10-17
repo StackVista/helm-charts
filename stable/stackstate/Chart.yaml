@@ -30,8 +30,8 @@ dependencies:
     version: 8.5.1-stackstate.2
   - name: hbase
     condition: hbase.enabled
-    repository: https://helm.stackstate.io
-    version: "0.1.152"
+    repository: file://../hbase/
+    version: "0.1.155+sts.5.1.x.002"
   - name: kafka
     condition: kafka.enabled
     # Bitnami official Helm repository stopped serving the old versions of the charts. This is the workaround https://github.com/bitnami/charts/issues/10539

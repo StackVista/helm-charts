@@ -170,7 +170,7 @@ local push_chart_job(chart, repository_url, repository_username, repository_pass
         when: 'on_success',
       },
       {
-        @'if': '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH =~ /^releasing.*$/',
+        @'if': '$CI_COMMIT_BRANCH == "master"',
         changes: ['stable/' + chart + '/**/*'],
         when: when,
       },

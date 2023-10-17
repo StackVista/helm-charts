@@ -11,12 +11,12 @@ Current chart version is `5.1.10`
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common/ | common | * |
+| file://../hbase/ | hbase | 0.1.155+sts.5.1.x.002 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../pull-secret/ | pull-secret | * |
 | file://../stackstate-agent/ | stackstate-agent | * |
 | https://helm.stackstate.io | anomaly-detection | 5.1.10 |
 | https://helm.stackstate.io | elasticsearch | 8.5.1-stackstate.2 |
-| https://helm.stackstate.io | hbase | 0.1.152 |
 | https://helm.stackstate.io | minio | 8.0.10-stackstate.8 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | kafka | 15.5.1 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
