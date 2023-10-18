@@ -18,7 +18,7 @@ source "$dir/util.sh"
 
 chart=$1
 new_version=${2:-}
-chart_path="stable/$chart/Chart.yaml"
+chart_path="$chart/Chart.yaml"
 
 # Overrides chart version to value provided as a parameter
 if [[ -n "$new_version" ]]; then

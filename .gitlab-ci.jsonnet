@@ -175,6 +175,10 @@ local push_chart_job(chart, repository_url, repository_username, repository_pass
         changes: ['stable/' + chart + '/**/*'],
         when: when,
       },
+      {
+        @'if': '$CI_COMMIT_TAG =~ /^' + chart + '\\/.*/',
+        when: 'on_success',
+      },
     ]
   );
 
@@ -221,8 +225,10 @@ local push_charts_to_internal_jobs = {
  if chart == 'stackstate-k8s-agent' then 'publish-k8s-agent' else 'publish-' + chart) + {
     stage: 'push-charts-to-internal',
   } + (
-    if chart == 'stackstate' || chart == 'stackstate-k8s' then
+  if chart == 'stackstate' then
   { before_script: helm_fetch_dependencies + ['.gitlab/bump_sts_chart_master_version.sh stackstate-internal ' + chart] }
+  else if chart == 'stackstate-k8s' then
+  { before_script: helm_fetch_dependencies + ['.gitlab/bump_sts_chart_master_version_v2.sh stable/' + chart + " $(echo $CI_COMMIT_TAG | sed -E 's/^" + chart + "/(.*)$/\\1/')"] }  //It extracs version from tag, e.g. stackstate-k8s/1.3.2 => 1.3.2
   else {}
   ))
   for chart in (charts + public_charts)

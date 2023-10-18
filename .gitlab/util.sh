@@ -22,7 +22,7 @@ function push_changes() {
   if [[ "${PROMOTION_DRY_RUN}" == 'no' ]]; then
     echo "Pushing changes"
     git pull --rebase origin "${CI_COMMIT_BRANCH}"
-    git push "https://gitlab-ci-token:${gitlab_api_scope_token:?}@gitlab.com/stackvista/devops/saas-tenants.git" HEAD:"${CI_COMMIT_BRANCH}"
+    git push "https://gitlab-ci-token:${gitlab_api_scope_token:?}@gitlab.com/stackvista/devops/helm-charts.git" HEAD:"${CI_COMMIT_BRANCH}"
   else
     echo "Not pushing changes, set PROMOTION_DRY_RUN='no' to commit changes"
   fi
