@@ -1747,7 +1747,7 @@ victoria-metrics-0:
       # victoria-metrics-0.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
       extraLabels: {}
   backup:
-    # victoria-metrics-0.backup.enabled -- Enable scheduled backups of Victoria Metrics. It requires to be enabled MinIO 'backup.enabled'
+    # victoria-metrics-0.backup.enabled -- Enable scheduled backups of Victoria Metrics. It requires to be enabled MinIO 'backup.enabled'.
     enabled: false
     # victoria-metrics-0.backup.bucketName -- Name of the MinIO bucket where Victoria Metrics backups are stored.
     bucketName: 'sts-victoria-metrics-backup'
@@ -1828,7 +1828,7 @@ victoria-metrics-1:
       # victoria-metrics-1.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
       extraLabels: {}
   backup:
-    # victoria-metrics-1.backup.enabled -- Enable scheduled backups of Victoria Metrics. It requires to be enabled MinIO 'backup.enabled'
+    # victoria-metrics-1.backup.enabled -- Enable scheduled backups of Victoria Metrics. It requires to be enabled MinIO 'backup.enabled'.
     enabled: false
     # victoria-metrics-1.backup.bucketName -- Name of the MinIO bucket where Victoria Metrics backups are stored.
     bucketName: 'sts-victoria-metrics-backup'
