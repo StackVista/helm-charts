@@ -1843,11 +1843,11 @@ victoria-metrics-1:
 victoria-metrics:
   restore:
     image:
-      # victoria-metrics.restore.image.registry -- Base container image registry for vmrestore containers.
+      # victoria-metrics.restore.image.registry -- Base container image registry for 'vmrestore' containers.
       registry: quay.io
-      # victoria-metrics.restore.image.repository -- Base container image repository for vmrestore containers.
+      # victoria-metrics.restore.image.repository -- Base container image repository for 'vmrestore' containers.
       repository: stackstate/vmrestore
-      # victoria-metrics.restore.image.tag -- Container image tag for vmrestore containers.
+      # victoria-metrics.restore.image.tag -- Container image tag for 'vmrestore' containers.
       tag: v1.87.9-965f4361
       # victoria-metrics.restore.image.pullPolicy -- Image pull policy for wait containers.
       pullPolicy: IfNotPresent

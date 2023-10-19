@@ -704,9 +704,9 @@ stackstate/stackstate
 | victoria-metrics-1.server.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
 | victoria-metrics-1.server.serviceMonitor.interval | string | `"15s"` | Scrape interval for service monitor |
 | victoria-metrics.restore.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
-| victoria-metrics.restore.image.registry | string | `"quay.io"` | Base container image registry for vmrestore containers. |
-| victoria-metrics.restore.image.repository | string | `"stackstate/vmrestore"` | Base container image repository for vmrestore containers. |
-| victoria-metrics.restore.image.tag | string | `"v1.87.9-965f4361"` | Container image tag for vmrestore containers. |
+| victoria-metrics.restore.image.registry | string | `"quay.io"` | Base container image registry for 'vmrestore' containers. |
+| victoria-metrics.restore.image.repository | string | `"stackstate/vmrestore"` | Base container image repository for 'vmrestore' containers. |
+| victoria-metrics.restore.image.tag | string | `"v1.87.9-965f4361"` | Container image tag for 'vmrestore' containers. |
 | victoria-metrics.restore.securityContext.enabled | bool | `true` |  |
 | victoria-metrics.restore.securityContext.fsGroup | int | `65534` |  |
 | victoria-metrics.restore.securityContext.runAsGroup | int | `65534` |  |
