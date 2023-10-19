@@ -850,6 +850,7 @@ push_stackstate-k8s_to_internal:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
+    - .gitlab/configure_git.sh
     - .gitlab/bump_sts_chart_master_version_v2.sh stable/stackstate-k8s $(echo $CI_COMMIT_TAG | sed -E 's/^stackstate-k8s/(.*)$/\1/')
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
   rules:
