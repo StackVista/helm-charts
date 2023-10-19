@@ -2197,6 +2197,7 @@ validate_stackstate_chart:
   stage: validate
 variables:
   HELM_VERSION: v3.1.2
+  PROMOTION_DRY_RUN: "no"
 workflow:
   rules:
     - if: $CI_MERGE_REQUEST_IID

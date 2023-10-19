@@ -318,6 +318,7 @@ local update_aad_chart_version = {
 
   variables: {
     HELM_VERSION: 'v3.1.2',
+    PROMOTION_DRY_RUN: 'no',
   },
 }
 + test_chart_jobs
