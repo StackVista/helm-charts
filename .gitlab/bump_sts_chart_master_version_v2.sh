@@ -49,6 +49,7 @@ else #Increment current chart version to the next one
 fi
 
 new_version=$(yq ".version" "$chart_path")
+git fetch --all
 git add "$chart_path"
 commit_changes "Updating '$chart' helm chart version to $new_version"
 push_changes
