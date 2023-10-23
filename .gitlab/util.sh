@@ -19,9 +19,7 @@ function commit_changes() {
 }
 
 function push_changes() {
-  # tags don't have CI_COMMIT_BRANCH, so I fetches the current branch(s) for current HEAD (HEAD points to a detached commit)
-  # but there may be multiple branches so I iterate all of them and push a commit to each branch
-  branches=${CI_COMMIT_BRANCH:-$(git for-each-ref --format='%(objectname) %(refname:short)' refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" '$1==branch && $2!="origin" {print $2}' | sed -E 's/^origin\/(.*)$/\1/')}
+  branches=${1:?"Please provide list of branches to push changes"}
 
   for branch in $branches; do
     if [[ "${PROMOTION_DRY_RUN}" == 'no' ]]; then
