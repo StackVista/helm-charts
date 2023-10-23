@@ -20,13 +20,6 @@ chart=$1
 new_version=${2:-}
 chart_path="$chart/Chart.yaml"
 
-last_commit_message=$(git show-branch --no-name HEAD)
-# shellcheck disable=SC2076
-if [[ "$last_commit_message" =~ "Updating '${chart}' helm chart version to" ]]; then
-  echo "Skipping updating version, the last commit has updated the version" # We have to stop an infinitive loop
-  exit 0
-fi
-
 # Overrides chart version to value provided as a parameter
 if [[ -n "$new_version" ]]; then
   if [[ "$new_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -62,5 +55,5 @@ git fetch --all
 branches=${CI_COMMIT_BRANCH:-$(git for-each-ref --format='%(objectname) %(refname:short)' refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" '$1==branch && $2!="origin" {print $2}' | sed -E 's/^origin\/(.*)$/\1/')}
 
 git add "$chart_path"
-commit_changes "Updating '$chart' helm chart version to $new_version"
+commit_changes "Updating '$chart' helm chart version to $new_version [skip ci]"
 push_changes "$branches"
