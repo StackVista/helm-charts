@@ -19,9 +19,7 @@ function commit_changes() {
 }
 
 function push_changes_skip_ci() {
-  branches=${1:?"Please provide list of branches to push changes"}
-
-  for branch in $branches; do
+  for branch in $BRANCHES; do
     if [[ "${PROMOTION_DRY_RUN}" == 'no' ]]; then
       echo "Pushing changes"
       git pull --rebase origin "${branch}"

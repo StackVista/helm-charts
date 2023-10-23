@@ -11,3 +11,6 @@ set -euo pipefail
 # Configure user matching the gitlab account and gpg key
 git config --global user.email "$STACKSTATE_SYSTEM_USER_EMAIL"
 git config --global user.name "$STACKSTATE_SYSTEM_USER_NAME"
+
+# Fetch remotes branches, we need it to find branches to push commits with updated Chart version
+git fetch --all -q
