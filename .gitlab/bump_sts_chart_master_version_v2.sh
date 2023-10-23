@@ -55,5 +55,5 @@ git fetch --all
 branches=${CI_COMMIT_BRANCH:-$(git for-each-ref --format='%(objectname) %(refname:short)' refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" '$1==branch && $2!="origin" {print $2}' | sed -E 's/^origin\/(.*)$/\1/')}
 
 git add "$chart_path"
-commit_changes "Updating '$chart' helm chart version to $new_version [skip ci]"
-push_changes "$branches"
+commit_changes "Updating '$chart' helm chart version to $new_version"
+push_changes_skip_ci "$branches"

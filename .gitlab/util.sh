@@ -18,14 +18,14 @@ function commit_changes() {
   fi
 }
 
-function push_changes() {
+function push_changes_skip_ci() {
   branches=${1:?"Please provide list of branches to push changes"}
 
   for branch in $branches; do
     if [[ "${PROMOTION_DRY_RUN}" == 'no' ]]; then
       echo "Pushing changes"
       git pull --rebase origin "${branch}"
-      git push "https://gitlab-ci-token:${gitlab_api_scope_token:?}@gitlab.com/stackvista/devops/helm-charts.git" HEAD:"${branch}"
+      git push "https://gitlab-ci-token:${gitlab_api_scope_token:?}@gitlab.com/stackvista/devops/helm-charts.git" HEAD:"${branch}" -o ci.skip # I have to use option `ci.skip' instead of a commit message otherwise the pipeline isn't trigger for a tag creation
     else
       echo "Not pushing changes, set PROMOTION_DRY_RUN='no' to commit changes"
     fi
