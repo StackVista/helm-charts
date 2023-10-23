@@ -250,7 +250,7 @@ if chart == 'stackstate-k8s-agent' then 'publish-k8s-agent' else 'publish-' + ch
   else {}
   ))
   for chart in public_charts
-  if chart != 'stackstate'
+  if chart != 'stackstate' && chart != 'stackstate-k8s'
 };
 
 local update_sg_version = {
