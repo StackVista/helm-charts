@@ -13,7 +13,7 @@ dependencies:
   version: 8.5.1-stackstate.2
 - name: hbase
   repository: file://../hbase/
-  version: 0.1.155+sts.5.1.x.002
+  version: 0.1.155+sts.5.1.x.003
 - name: kafka
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 15.5.1
@@ -29,5 +29,5 @@ dependencies:
 - name: zookeeper
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 8.1.2
-digest: sha256:be334fceb0bd4d57f51b4a53e0ce65d03dacfcfbdd1d3db12c641990fc2f5d04
-generated: "2023-10-17T17:24:47.372686226+02:00"
+digest: sha256:4a6de85dd3e3da34087bb2009c6592d3df668abbcf756902953fbc92870d60aa
+generated: "2023-10-24T13:02:32.038930078+02:00"
