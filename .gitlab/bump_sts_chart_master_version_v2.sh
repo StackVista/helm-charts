@@ -15,6 +15,7 @@ source "$dir/util.sh"
 
 chart=$1
 chart_path="$chart/Chart.yaml"
+readme_path="$chart/README.md"
 current_version=$(yq ".version" "$chart_path")
 
 # There is "pre" version like `x.y.z-pre.v` so the new version will be `x.y.z-pre.(v+1)`
@@ -34,7 +35,8 @@ else
 fi
 
 new_version=$(yq ".version" "$chart_path")
+update_chart_version_in_readme_file "$chart"
 
-git add "$chart_path"
+git add "$chart_path" "$readme_path"
 commit_changes "Updating '$chart' helm chart version to $new_version"
 push_changes_skip_ci

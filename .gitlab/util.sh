@@ -29,3 +29,12 @@ function push_changes_skip_ci() {
     fi
   done
 }
+
+function update_chart_version_in_readme_file() {
+  chart=${1:?"Please provide chart name"}
+  chart_path="$chart/Chart.yaml"
+  readme_path="$chart/README.md"
+
+  current_version=$(yq -r ".version" "$chart_path")
+  sed -i -E "s/^(Current chart version is ).*$/\1\`$current_version\`/" "$readme_path"
+}

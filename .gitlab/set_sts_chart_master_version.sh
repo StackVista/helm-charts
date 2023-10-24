@@ -14,13 +14,15 @@ source "$dir/util.sh"
 chart=$1
 new_version=${2:-}
 chart_path="$chart/Chart.yaml"
+readme_path="$chart/README.md"
 
 # Overrides chart version to value provided as a parameter
 if [[ -n "$new_version" ]]; then
   if [[ "$new_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     yq -i eval ".version=\"$new_version\"" "$chart_path"
+    update_chart_version_in_readme_file "$chart"
 
-    git add "$chart_path"
+    git add "$chart_path" "$readme_path"
     commit_changes "Updating '$chart' helm chart version to $new_version"
     push_changes_skip_ci
   else
