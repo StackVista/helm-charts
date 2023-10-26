@@ -138,7 +138,7 @@ loadgen:
     # loadgen.image.repository -- The container repository for `loadgen` images.
     repository: quay.io/stackstate/loadgen
     # loadgen.image.tag -- The container image tag.
-    tag: master-a448026e
+    tag: master-f65782ce
   annotations: {}
   # loadgen.resources -- Resource allocation for `loadgen` pods.
   resources:

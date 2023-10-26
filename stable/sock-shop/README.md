@@ -3,7 +3,7 @@
 This chart deploys [SockShop](https://microservices-demo.github.io/) application. It was forked from [microservices-demo/microservices-demo](https://github.com/microservices-demo/microservices-demo/tree/master/deploy/kubernetes/helm-chart)
 and got some improvements.
 
-![Version: 0.2.4](https://img.shields.io/badge/Version-0.2.4-informational?style=flat-square) ![AppVersion: 0.3.5](https://img.shields.io/badge/AppVersion-0.3.5-informational?style=flat-square)
+![Version: 0.2.5](https://img.shields.io/badge/Version-0.2.5-informational?style=flat-square) ![AppVersion: 0.3.5](https://img.shields.io/badge/AppVersion-0.3.5-informational?style=flat-square)
 A Helm chart for Sock Shop
 
 ## Values
@@ -49,7 +49,7 @@ A Helm chart for Sock Shop
 | loadgen.annotations | object | `{}` |  |
 | loadgen.enabled | bool | `false` |  |
 | loadgen.image.repository | string | `"quay.io/stackstate/loadgen"` | The container repository for `loadgen` images. |
-| loadgen.image.tag | string | `"master-a448026e"` | The container image tag. |
+| loadgen.image.tag | string | `"master-f65782ce"` | The container image tag. |
 | loadgen.replicas | int | `1` | The number or replicas of `loadgen` deployment. |
 | loadgen.resources | object | `{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"100Mi"}}` | Resource allocation for `loadgen` pods. |
 | nameOverride | string | `""` | A name to prepend the Helm resources, if not specified the name of the chart is used. |
