@@ -35,6 +35,9 @@ stackstate.authorization.staticSubjects.{{ . | quote }}: { systemPermissions: ${
 {{- else }}
 {{/* In SaaS mode, the stackstate.authorization block will be ignored and we will overwrite the reference to it from the stackstate.api.authorization */}}
 stackstate.api.authorization: {}
+{{- if index .Values "anomaly-detection" "enabled" }}
+stackstate.api.authorization.staticSubjects.stackstate-aad: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.viewPermissions} }
+{{- end }}
 stackstate.api.authorization.staticSubjects.stackstate-k8s-troubleshooter: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter.viewPermissions} }
 {{ include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.authentication "authnPrefix" "stackstate.api.authentication" "authzPrefix" "stackstate.api.authorization" "global" .) }}
 {{- end }}
