@@ -6,14 +6,7 @@ Shared settings in configmap for server and api
 {{- if and .Values.stackstate.authentication (eq .Values.stackstate.deployment.mode "SelfHosted") }}
 {{- include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.authentication "authnPrefix" "stackstate.api.authentication" "authzPrefix" "stackstate.authorization" "global" .) }}
 {{/* In SelfHosted mode, append any roles to the stackstate.authorization block, so that we keep the defaults delivered with stackstate. */}}
-{{ $admins := list }}
-{{- if index .Values "anomaly-detection" "enabled" }}
-{{ $admins = append $admins "stackstate-aad" }}
-{{- end }}
-{{- range  .Values.stackstate.authentication.roles.admin }}
-{{ $admins = append $admins . }}
-{{- end }}
-{{- range $admins }}
+{{- range .Values.stackstate.authentication.roles.admin }}
 stackstate.authorization.staticSubjects.{{ . | quote }}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.viewPermissions} }
 {{- end }}
 
@@ -32,13 +25,19 @@ stackstate.authorization.staticSubjects.{{ . | quote }}: { systemPermissions: ${
 {{- range .Values.stackstate.authentication.roles.k8sTroubleshooter }}
 stackstate.authorization.staticSubjects.{{ . | quote }}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter.viewPermissions} }
 {{- end }}
+
+{{- if index .Values "anomaly-detection" "enabled" }}
+stackstate.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["manage-annotations", "run-monitors", "view-monitors", "read-metrics", "read-settings"], viewPermissions: [] }
+{{- end }}
 {{- else }}
 {{/* In SaaS mode, the stackstate.authorization block will be ignored and we will overwrite the reference to it from the stackstate.api.authorization */}}
 stackstate.api.authorization: {}
-{{- if index .Values "anomaly-detection" "enabled" }}
-stackstate.api.authorization.staticSubjects.stackstate-aad: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.viewPermissions} }
-{{- end }}
 stackstate.api.authorization.staticSubjects.stackstate-k8s-troubleshooter: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter.viewPermissions} }
+
+{{- if index .Values "anomaly-detection" "enabled" }}
+stackstate.api.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["manage-annotations", "run-monitors", "view-monitors", "read-metrics", "read-settings"], viewPermissions: [] }
+{{- end }}
+
 {{ include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.authentication "authnPrefix" "stackstate.api.authentication" "authzPrefix" "stackstate.api.authorization" "global" .) }}
 {{- end }}
 
