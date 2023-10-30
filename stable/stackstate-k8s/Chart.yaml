@@ -14,7 +14,7 @@ maintainers:
 name: stackstate-k8s
 dependencies:
   - name: anomaly-detection
-    version: 5.2.0-snapshot.91
+    version: 5.2.0-snapshot.93
     repository: https://helm.stackstate.io
     condition: anomaly-detection.enabled
   - name: stackstate-k8s-agent
