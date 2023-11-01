@@ -74,7 +74,7 @@ spec:
           annotations:
             message: {{`The export api in {{ $labels.namespace }}, path {{ $labels.path }}, has high latency {{ $value | humanizeDuration }}.`}}
           expr: |
-            akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="api", path=~"/export||/api/export||/api/script"} > 30
+            akka_http_responses_duration_seconds{quantile="0.99", namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="api", path=~"/export||/api/export||/api/script", product!~"AutonomousAnomalyDetector.*|python-requests"} > 30
           for: 5m
           labels:
             severity: warning
