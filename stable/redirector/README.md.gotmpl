@@ -1,0 +1,31 @@
+{{ template "chart.header" . }}
+{{ template "chart.description" . }}
+
+Current chart version is `{{ template "chart.version" . }}`
+
+{{ template "chart.homepageLine" . }}
+
+{{ template "chart.requirementsSection" . }}
+
+## Example values file
+The defaults should be fine for most cases. Only an ingress configuration needs to be added and possibly a `image.pullSecretName`:
+
+```
+pullSecretName: my-pull-secret
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: ingress-nginx-external
+    nginx.ingress.kubernetes.io/ingress.class: ingress-nginx-external
+    cert-manager.io/cluster-issuer: my-cluster-issuer
+  hosts:
+    - host: redirector.my-test-cluster.stackstate.io
+  tls:
+    - hosts:
+      - redirector.my-test-cluster.stackstate.io
+      secretName: redirector-ecc-tls
+```
+
+## Values
+
+{{ template "chart.valuesSection" . }}

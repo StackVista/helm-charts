@@ -1,0 +1,38 @@
+image:
+  # image.registry -- Registry containing the image for the Kommoner operator
+  registry: quay.io
+  # image.repository -- Repository containing the image for the Kommoner operator
+  repository: stackstate/redirector
+  # image.tag -- Tag of the image for the Kommoner operator
+  tag: v0.0.1
+  # image.pullPolicy -- Pull policy for the image for the Kommoner operator
+  pullPolicy: IfNotPresent
+# nodeSelector:
+resources:
+  limits:
+    cpu: 25m
+    memory: 32Mi
+  requests:
+    cpu: 25m
+    memory: 32Mi
+# tolerations:
+# - effect: NoSchedule
+#   operator: Exists
+# securityContext:
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+replicaCount: 2
+ingress:
+  enabled: false
+  path: /
+affinity:
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+    - labelSelector:
+        matchExpressions:
+        - key: app.kubernetes.io/component
+          operator: In
+          values:
+          - redirector
+      topologyKey: kubernetes.io/hostname

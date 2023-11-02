@@ -1,0 +1,53 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "fullname.short" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/component: redirector
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/name: redirector
+  annotations:
+  {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if .Values.ingress.tls }}
+  {{- $ctx := . }}
+  tls:
+  {{- range .Values.ingress.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ tpl . $ctx | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+    {{- $ctx := . }}
+    {{- if .Values.ingress.hosts }}
+      {{- range .Values.ingress.hosts }}
+    - host: {{ tpl .host $ctx | quote }}
+      http:
+        paths:
+          - path: {{ $.Values.ingress.path | quote }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "fullname.short" $ }}
+                port:
+                  number: 80
+      {{- end }}
+    {{- else }}
+    - http:
+        paths:
+          - path: {{ $.Values.ingress.path | quote }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "fullname.short" $ }}
+                port:
+                  number: 80
+    {{- end }}
+{{- end }}

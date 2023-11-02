@@ -48,6 +48,7 @@
       'k8s-spot-termination-handler',
       'kommoner-operator',
       'petros-d-kubelet-stats-exporter',
+      'redirector',
       'receiveramplifier',
       'sandbox-operator',
       'sock-shop',
