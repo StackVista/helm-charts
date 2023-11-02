@@ -2,7 +2,7 @@
 
 Redirector can help with redirecting users to their own URL.
 
-Current chart version is `0.0.1`
+Current chart version is `0.0.2`
 
 **Homepage:** <https://gitlab.com/StackVista/platform/redirector>
 
@@ -38,7 +38,7 @@ ingress:
 | image.pullPolicy | string | `"IfNotPresent"` | Pull policy for the image for the Kommoner operator |
 | image.registry | string | `"quay.io"` | Registry containing the image for the Kommoner operator |
 | image.repository | string | `"stackstate/redirector"` | Repository containing the image for the Kommoner operator |
-| image.tag | string | `"v0.0.1"` | Tag of the image for the Kommoner operator |
+| image.tag | string | `"v0.0.2"` | Tag of the image for the Kommoner operator |
 | ingress.enabled | bool | `false` |  |
 | ingress.path | string | `"/"` |  |
 | replicaCount | int | `2` |  |

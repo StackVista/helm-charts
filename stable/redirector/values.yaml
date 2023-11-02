@@ -4,7 +4,7 @@ image:
   # image.repository -- Repository containing the image for the Kommoner operator
   repository: stackstate/redirector
   # image.tag -- Tag of the image for the Kommoner operator
-  tag: v0.0.1
+  tag: v0.0.2
   # image.pullPolicy -- Pull policy for the image for the Kommoner operator
   pullPolicy: IfNotPresent
 # nodeSelector:
