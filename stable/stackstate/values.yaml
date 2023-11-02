@@ -173,7 +173,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.image.tag to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: 5.1.10
+        tag: 5.1.11-rc.2
       metrics:
         defaultAgentMetricsFilter: '["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "stackstate*", "receiver*"]'
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
@@ -1129,7 +1129,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 4.9.5
+      tag: 4.9.6
   console:
     # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
     enabled: false
