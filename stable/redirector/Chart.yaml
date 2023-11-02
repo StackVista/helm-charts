@@ -1,8 +1,8 @@
 apiVersion: v2
 name: "redirector"
 description: "Redirector can help with redirecting users to their own URL."
-version: 0.0.2
-appVersion: v0.0.1
+version: 0.0.1
+appVersion: v0.0.2
 home: https://gitlab.com/StackVista/platform/redirector
 maintainers:
 - name: Stackstate Ops Team
