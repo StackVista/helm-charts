@@ -69,7 +69,25 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 	for _, v := range separateFiles {
 		var partial metav1.PartialObjectMetadata
 		err := helm.UnmarshalK8SYamlE(t, v, &partial)
-		assert.NoError(t, err)
+		if err != nil {
+			// See whether we got some warnings
+			whitelisted := []string{
+				// Known issue in zookeeper chart 10.x
+				"coalesce.go:237: warning: skipped value for kafka.zookeeper.topologySpreadConstraints: Not a table.",
+				// Known issue in zookeeper chart:
+				"coalesce.go:237: warning: skipped value for hbase.zookeeper.updateStrategy: Not a table.",
+			}
+
+			for _, line := range strings.Split(v, "\n") {
+				if !contains(whitelisted, line) && line != "" {
+					t.Logf("Unknown resource or unexpected error/warning: %s", v)
+					assert.NoError(t, err)
+				}
+			}
+
+			continue
+		}
+
 		switch partial.Kind {
 		case "ClusterRole":
 			var resource rbacv1.ClusterRole
@@ -180,4 +198,14 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 		Statefulsets:           statefulsets,
 		Unmapped:               unmapped,
 	}
+}
+
+func contains(s []string, str string) bool {
+	for _, v := range s {
+		if v == str {
+			return true
+		}
+	}
+
+	return false
 }
