@@ -73,9 +73,9 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 			// See whether we got some warnings
 			whitelisted := []string{
 				// Known issue in zookeeper chart 10.x
-				"coalesce.go:237: warning: skipped value for kafka.zookeeper.topologySpreadConstraints: Not a table.",
+				"warning: skipped value for kafka.zookeeper.topologySpreadConstraints: Not a table.",
 				// Known issue in zookeeper chart:
-				"coalesce.go:237: warning: skipped value for hbase.zookeeper.updateStrategy: Not a table.",
+				"warning: skipped value for hbase.zookeeper.updateStrategy: Not a table.",
 			}
 
 			for _, line := range strings.Split(v, "\n") {
@@ -202,7 +202,7 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 
 func contains(s []string, str string) bool {
 	for _, v := range s {
-		if v == str {
+		if strings.Contains(str, v) {
 			return true
 		}
 	}
