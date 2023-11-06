@@ -15,8 +15,8 @@ dependencies:
   repository: file://../hbase/
   version: 0.1.162
 - name: kafka
-  repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-  version: 15.5.1
+  repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+  version: 19.1.3
 - name: kafkaup-operator
   repository: file://../kafkaup-operator/
   version: 0.1.7
@@ -35,5 +35,5 @@ dependencies:
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
   version: 0.8.53-stackstate.3
-digest: sha256:80f83c7e083a16cf57515117f9beab6283993eaab0fe409918c7584fd7a05d1d
-generated: "2023-11-01T15:40:14.190341654+01:00"
+digest: sha256:8828bd56fcff6d8ed98ef0c1ca031dabe66da6cb6b83e38c52c1056d4bddc54c
+generated: "2023-11-06T11:43:48.469123878+01:00"
