@@ -10,6 +10,7 @@
     repositories: {
       bitnami: 'https://charts.bitnami.com/bitnami',
       'bitnami-pre-2022': 'https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami',
+      'bitnami-full-archive': 'https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami',
       elastic: 'https://helm.elastic.co',
       stable: 'https://charts.helm.sh/stable',
       stackstate: 'https://helm.stackstate.io',

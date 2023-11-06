@@ -5,6 +5,7 @@ image: quay.io/helmpack/chart-testing:v3.6.0
 integration_test_stackstate:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -35,6 +36,7 @@ integration_test_stackstate:
 integration_test_stackstate_k8s:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -842,6 +844,7 @@ push_stackstate-k8s-agent_to_public:
 push_stackstate-k8s_to_internal:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -976,6 +979,7 @@ push_stackstate-standalone_to_public:
 push_stackstate_release_to_internal:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1008,6 +1012,7 @@ push_stackstate_release_to_internal:
 push_stackstate_release_to_public:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1034,6 +1039,7 @@ push_stackstate_release_to_public:
 push_stackstate_to_internal:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1069,6 +1075,7 @@ push_stackstate_to_internal:
 push_test_charts:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1197,6 +1204,7 @@ stages:
 test_artifactory-cleaner:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1226,6 +1234,7 @@ test_artifactory-cleaner:
 test_aws-amicleaner:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1255,6 +1264,7 @@ test_aws-amicleaner:
 test_aws-nuke:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1284,6 +1294,7 @@ test_aws-nuke:
 test_aws-pod-identity-webhook:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1313,6 +1324,7 @@ test_aws-pod-identity-webhook:
 test_beacher-job:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1342,6 +1354,7 @@ test_beacher-job:
 test_chartmuseum:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1371,6 +1384,7 @@ test_chartmuseum:
 test_common:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1400,6 +1414,7 @@ test_common:
 test_elasticsearch:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1429,6 +1444,7 @@ test_elasticsearch:
 test_gitlab-steward:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1458,6 +1474,7 @@ test_gitlab-steward:
 test_hbase:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1487,6 +1504,7 @@ test_hbase:
 test_helm-reaper:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1516,6 +1534,7 @@ test_helm-reaper:
 test_iceman:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1545,6 +1564,7 @@ test_iceman:
 test_k8s-image-list-to-s3:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1574,6 +1594,7 @@ test_k8s-image-list-to-s3:
 test_k8s-spot-termination-handler:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1603,6 +1624,7 @@ test_k8s-spot-termination-handler:
 test_kafkaup-operator:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1632,6 +1654,7 @@ test_kafkaup-operator:
 test_kommoner-operator:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1661,6 +1684,7 @@ test_kommoner-operator:
 test_minio:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1690,6 +1714,7 @@ test_minio:
 test_petros-d-kubelet-stats-exporter:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1719,6 +1744,7 @@ test_petros-d-kubelet-stats-exporter:
 test_pull-secret:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1748,6 +1774,7 @@ test_pull-secret:
 test_receiveramplifier:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1777,6 +1804,7 @@ test_receiveramplifier:
 test_sandbox-operator:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1806,6 +1834,7 @@ test_sandbox-operator:
 test_sock-shop:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1835,6 +1864,7 @@ test_sock-shop:
 test_stackstate:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1865,6 +1895,7 @@ test_stackstate:
 test_stackstate-agent:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1894,6 +1925,7 @@ test_stackstate-agent:
 test_stackstate-k8s:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1924,6 +1956,7 @@ test_stackstate-k8s:
 test_stackstate-k8s-agent:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1953,6 +1986,7 @@ test_stackstate-k8s-agent:
 test_stackstate-monitoring:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1982,6 +2016,7 @@ test_stackstate-monitoring:
 test_stackstate-standalone:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -2011,6 +2046,7 @@ test_stackstate-standalone:
 test_trafficmirror:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -2040,6 +2076,7 @@ test_trafficmirror:
 test_victoria-metrics-single:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -2069,6 +2106,7 @@ test_victoria-metrics-single:
 update_aad_chart_version:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -2093,6 +2131,7 @@ update_aad_chart_version:
 update_stackgraph_version:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -2138,6 +2177,7 @@ validate_stackstate_chart:
   before_script:
     - .gitlab/validate_before_script.sh
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
