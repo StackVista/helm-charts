@@ -74,6 +74,8 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 			whitelisted := []string{
 				// Known issue in zookeeper chart 10.x
 				"warning: skipped value for kafka.zookeeper.topologySpreadConstraints: Not a table.",
+				// Older helm verison reports this warning:
+				"warning: skipped value for topologySpreadConstraints: Not a table.",
 				// Known issue in zookeeper chart:
 				"warning: skipped value for hbase.zookeeper.updateStrategy: Not a table.",
 			}
