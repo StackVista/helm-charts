@@ -1,7 +1,6 @@
 {{- define "stackstate.k2es.deployment.eventsToEs.container" -}}
 args:
 {{- include "stackstate.service.args" . }}
-- state-events
 - generic-events
 - topology-events
 - sts-events

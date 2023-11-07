@@ -26,17 +26,40 @@ env:
   value: "{{ $replicationFactor  }}"
 - name: CONFIG_FORCE_stackstate_kafkaMultiMetricsToES_elasticsearch_index_replicas
   value: "{{ $replicationFactor  }}"
-- name: CONFIG_FORCE_stackstate_kafkaStateEventsToES_elasticsearch_index_replicas
-  value: "{{ $replicationFactor  }}"
 - name: CONFIG_FORCE_stackstate_kafkaStsEventsToES_elasticsearch_index_replicas
   value: "{{ $replicationFactor  }}"
 - name: CONFIG_FORCE_stackstate_kafkaTraceToES_elasticsearch_index_replicas
   value: "{{ $replicationFactor  }}"
+{{/*
+Run validation of total ESDiskShare
+*/}}
+{{ include "stackstate.elastic.storage.total" . }}
 {{ $diskSpaceMB := (include "stackstate.storage.to.megabytes" .Values.elasticsearch.volumeClaimTemplate.resources.requests.storage) }}
 {{ if $diskSpaceMB  }}
 - name: CONFIG_FORCE_stackstate_elasticsearchDiskSpaceMB
   value: "{{ div (mul (div (mul $diskSpaceMB .Values.elasticsearch.replicas) (add1 $replicationFactor)) .esDiskSpaceShare) 100 }}"
 {{ end }}
+{{- $traceShare := (.Values.stackstate.components.trace2es.enabled) | ternary .Values.stackstate.components.trace2es.esDiskSpaceShare 0 | int -}}
+{{- $k2esShare := add (.Values.stackstate.components.e2es.esDiskSpaceShare | int) $traceShare -}}
+{{- $traces2EsShare := (mulf (divf $traceShare $k2esShare ) 100) | int -}}
+{{- $e2EsShare := (mulf (divf (.Values.stackstate.components.e2es.esDiskSpaceShare | int) (mul 3 $k2esShare)) 100) | int  -}}
+- name: CONFIG_FORCE_stackstate_kafkaGenericEventsToES_elasticsearch_index_diskSpaceWeight
+  value: "{{ $e2EsShare }}"
+- name: CONFIG_FORCE_stackstate_kafkaTopologyEventsToES_elasticsearch_index_diskSpaceWeight
+  value: "{{ $e2EsShare }}"
+- name: CONFIG_FORCE_stackstate_kafkaStsEventsToES_elasticsearch_index_diskSpaceWeight
+  value: "{{ $e2EsShare }}"
+- name: CONFIG_FORCE_stackstate_kafkaTraceToES_elasticsearch_index_diskSpaceWeight
+  value: "{{ $traces2EsShare }}"
+
+- name: CONFIG_FORCE_stackstate_kafkaGenericEventsToES_elasticsearch_index_maxIndicesRetained
+  value: "{{ .Values.stackstate.components.e2es.retention }}"
+- name: CONFIG_FORCE_stackstate_kafkaTopologyEventsToES_elasticsearch_index_maxIndicesRetained
+  value: "{{ .Values.stackstate.components.e2es.retention }}"
+- name: CONFIG_FORCE_stackstate_kafkaStsEventsToES_elasticsearch_index_maxIndicesRetained
+  value: "{{ .Values.stackstate.components.e2es.retention }}"
+- name: CONFIG_FORCE_stackstate_kafkaTraceToES_elasticsearch_index_maxIndicesRetained
+  value: "{{ .Values.stackstate.components.trace2es.retention }}"
 - name: ELASTICSEARCH_URI
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS

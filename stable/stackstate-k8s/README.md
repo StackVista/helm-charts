@@ -382,6 +382,7 @@ stackstate/stackstate
 | stackstate.components.correlate.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.e2es.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.e2es.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.e2es.esDiskSpaceShare | string | `"30"` | How much disk space from ElasticSearch can use for k8s events ingestion |
 | stackstate.components.e2es.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.e2es.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.e2es.image.pullPolicy | string | `""` | `pullPolicy` used for the `e2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
@@ -391,6 +392,7 @@ stackstate/stackstate
 | stackstate.components.e2es.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `e2es` pods. |
 | stackstate.components.e2es.replicaCount | int | `1` | Number of `e2es` replicas. |
 | stackstate.components.e2es.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"1500Mi"},"requests":{"cpu":"250m","ephemeral-storage":"1Mi","memory":"768Mi"}}` | Resource allocation for `e2es` pods. |
+| stackstate.components.e2es.retention | int | `30` | Number of days to keep the events data on Es |
 | stackstate.components.e2es.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
 | stackstate.components.e2es.sizing.javaHeapMemoryFraction | string | `"50"` |  |
 | stackstate.components.e2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -461,7 +463,7 @@ stackstate/stackstate
 | stackstate.components.nginxPrometheusExporter.image.tag | string | `"0.9.0-2738682730"` | Container image tag for nginx-prometheus-exporter containers. |
 | stackstate.components.receiver.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.receiver.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.receiver.esDiskSpaceShare | string | `"30"` | How much disk space from ElasticSearch can use for k8s log ingestion |
+| stackstate.components.receiver.esDiskSpaceShare | string | `"70"` | How much disk space from ElasticSearch can use for k8s log ingestion |
 | stackstate.components.receiver.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.receiver.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.receiver.image.imageRegistry | string | `""` | `imageRegistry` used for the `receiver` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
@@ -472,6 +474,7 @@ stackstate/stackstate
 | stackstate.components.receiver.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `receiver` pods. |
 | stackstate.components.receiver.replicaCount | int | `1` | Number of `receiver` replicas. |
 | stackstate.components.receiver.resources | object | `{"limits":{"cpu":"3000m","ephemeral-storage":"1Gi","memory":"4Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"4Gi"}}` | Resource allocation for `receiver` pods. |
+| stackstate.components.receiver.retention | int | `7` | Number of days to keep the logs data on Es |
 | stackstate.components.receiver.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
 | stackstate.components.receiver.sizing.javaHeapMemoryFraction | string | `"65"` |  |
 | stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -561,6 +564,7 @@ stackstate/stackstate
 | stackstate.components.trace2es.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.trace2es.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.trace2es.enabled | bool | `false` | Enable/disable the trace2es service |
+| stackstate.components.trace2es.esDiskSpaceShare | string | `"0"` | How much disk space from ElasticSearch can use for k8s events ingestion |
 | stackstate.components.trace2es.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.trace2es.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.trace2es.image.pullPolicy | string | `""` | `pullPolicy` used for the `trace2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
@@ -570,6 +574,7 @@ stackstate/stackstate
 | stackstate.components.trace2es.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `trace2es` pods. |
 | stackstate.components.trace2es.replicaCount | int | `1` | Number of `trace2es` replicas. |
 | stackstate.components.trace2es.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"1Gi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"1Gi"}}` | Resource allocation for `trace2es` pods. |
+| stackstate.components.trace2es.retention | int | `7` | Number of days to keep the traces data on Es |
 | stackstate.components.trace2es.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
 | stackstate.components.trace2es.sizing.javaHeapMemoryFraction | string | `"50"` |  |
 | stackstate.components.trace2es.tolerations | list | `[]` | Toleration labels for pod assignment. |

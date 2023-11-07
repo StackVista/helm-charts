@@ -537,6 +537,11 @@ stackstate:
       affinity: {}
       # stackstate.components.e2es.additionalLogging -- Additional logback config
       additionalLogging: ""
+      # stackstate.components.e2es.esDiskSpaceShare -- How much disk space from ElasticSearch can use for k8s events ingestion
+      esDiskSpaceShare: "30"
+      # stackstate.components.e2es.retention -- Number of days to keep the events data on Es
+      retention: 30
+
     trace2es:
       extraEnv:
         # stackstate.components.trace2es.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -578,6 +583,10 @@ stackstate:
       enabled: false
       # stackstate.components.trace2es.additionalLogging -- Additional logback config
       additionalLogging: ""
+      # stackstate.components.trace2es.esDiskSpaceShare -- How much disk space from ElasticSearch can use for k8s events ingestion
+      esDiskSpaceShare: "0"
+      # stackstate.components.trace2es.retention -- Number of days to keep the traces data on Es
+      retention: 7
     receiver:
       extraEnv:
         # stackstate.components.receiver.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -620,7 +629,9 @@ stackstate:
       # stackstate.components.receiver.additionalLogging -- Additional logback config
       additionalLogging: ""
       # stackstate.components.receiver.esDiskSpaceShare -- How much disk space from ElasticSearch can use for k8s log ingestion
-      esDiskSpaceShare: "30"
+      esDiskSpaceShare: "70"
+      # stackstate.components.receiver.retention -- Number of days to keep the logs data on Es
+      retention: 7
     router:
       accesslog:
         # stackstate.components.router.accesslog.enabled -- Enable access logging on the router

@@ -1,0 +1,6 @@
+stackstate:
+  components:
+    e2es:
+      esDiskSpaceShare: "10"
+    trace2es:
+      esDiskSpaceShare: "20"

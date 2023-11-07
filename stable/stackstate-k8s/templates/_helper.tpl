@@ -519,6 +519,19 @@ spec:
 {{- toYaml (merge $sserviceSpecPdb $commonPdb) -}}
 {{- end -}}
 
+{{/*
+Logic validate the total shares of Es disk
+*/}}
+{{- define "stackstate.elastic.storage.total" -}}
+{{- $receiverDs := .Values.stackstate.components.receiver.esDiskSpaceShare | int -}}
+{{- $eventsDs := .Values.stackstate.components.e2es.esDiskSpaceShare | int -}}
+{{- $traceDs := (.Values.stackstate.components.trace2es.enabled) | ternary .Values.stackstate.components.trace2es.esDiskSpaceShare 0 | int -}}
+{{- $total := (add $receiverDs $eventsDs $traceDs) | int -}}
+{{- if ne $total 100 }}
+{{- fail "The share of ElasticSearch disk on receiver.esDiskSpaceShare, e2es.esDiskSpaceShare, trace2es.esDiskSpaceShare should be 100." }}
+{{- end }}
+{{- end -}}
+
 {{- define "stackstate.storage.to.megabytes" -}}
 {{- if hasSuffix "Ti" . -}}
     {{- $ti := trimSuffix "Ti" . | int -}}

@@ -1,0 +1,9 @@
+stackstate:
+  components:
+    receiver:
+      esDiskSpaceShare: "70"
+    e2es:
+      esDiskSpaceShare: "10"
+    trace2es:
+      esDiskSpaceShare: "20"
+      enabled: false
