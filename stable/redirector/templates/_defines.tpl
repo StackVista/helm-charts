@@ -8,8 +8,8 @@
 {{- end -}}
 
 {{- define "image-registry" -}}
-  {{- if ((.ContainerConfig).image).registry -}}
-    {{- tpl .ContainerConfig.image.registry . -}}
+  {{- if .Values.image.registry -}}
+    {{- .Values.image.registry  -}}
   {{- else -}}
     {{- include "image-registry-global" . }}
   {{- end -}}
