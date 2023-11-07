@@ -28,6 +28,12 @@ imagePullSecrets:
   {{- end -}}
 {{- end -}}
 
+{{- define "redirector-labels" -}}
+app.kubernetes.io/component: redirector
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/name: redirector
+{{- end -}}
+
 
 {{- /*
 fullname defines a suitably unique name for a resource by combining

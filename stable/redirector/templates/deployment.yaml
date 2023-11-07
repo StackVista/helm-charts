@@ -4,22 +4,16 @@ metadata:
   name: {{ include "fullname.short" . }}
   namespace: {{.Release.Namespace}}
   labels:
-    app.kubernetes.io/component: redirector
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/name: redirector
+  {{- include "redirector-labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/component: redirector
-      app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/name: redirector
-  replicas: {{ default 1 .Values.replicaCount | int }}
+    {{- include "redirector-labels" . | nindent 6 }}
+  replicas: {{ .Values.replicaCount | int }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/component: redirector
-        app.kubernetes.io/instance: {{ .Release.Name }}
-        app.kubernetes.io/name: redirector
+        {{- include "redirector-labels" . | nindent 8 }}
     spec:
       {{- include "image-pull-secrets" . | nindent 6 }}
       containers:
@@ -48,7 +42,3 @@ spec:
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
 {{- end }}
-      volumes:
-      - name: config-volume
-        configMap:
-          name: {{ template "fullname.short" . }}-config

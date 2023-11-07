@@ -4,13 +4,9 @@ metadata:
   name: {{ include "fullname.short" . }}
   namespace: {{.Release.Namespace }}
   labels:
-    app.kubernetes.io/component: redirector
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/name: redirector
+    {{- include "redirector-labels" . | nindent 4 }}
 spec:
   maxUnavailable: 1
   selector:
     matchLabels:
-      app.kubernetes.io/component: redirector
-      app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/name: redirector
+      {{- include "redirector-labels" . | nindent 6 }}

@@ -5,9 +5,7 @@ metadata:
   name: {{ include "fullname.short" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app.kubernetes.io/component: redirector
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/name: redirector
+    {{- include "redirector-labels" . | nindent 4 }}
   annotations:
   {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
