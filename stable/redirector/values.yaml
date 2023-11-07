@@ -1,13 +1,17 @@
+global:
+  # global.imageRegistry -- Globally override the image registry that is used. Can be overridden by specific containers. Defaults to quay.io
+  imageRegistry: null
+  # global.imagePullSecrets -- Globally add image pull secrets that are used.
+  imagePullSecrets: []
 image:
-  # image.registry -- Registry containing the image for the Kommoner operator
-  registry: quay.io
-  # image.repository -- Repository containing the image for the Kommoner operator
+  # image.registry -- Registry containing the image for the Redirector
+  registry:
+  # image.repository -- Repository containing the image for the Redirector
   repository: stackstate/redirector
-  # image.tag -- Tag of the image for the Kommoner operator
+  # image.tag -- Tag of the image for the Redirector
   tag: v0.0.2
-  # image.pullPolicy -- Pull policy for the image for the Kommoner operator
+  # image.pullPolicy -- Pull policy for the image for the Redirector
   pullPolicy: IfNotPresent
-# nodeSelector:
 resources:
   limits:
     cpu: 25m
@@ -15,10 +19,8 @@ resources:
   requests:
     cpu: 25m
     memory: 32Mi
-# tolerations:
-# - effect: NoSchedule
-#   operator: Exists
-# securityContext:
+# tolerations -- Tolerations for the pods
+tolerations: null
 securityContext:
   runAsNonRoot: true
   runAsUser: 65532

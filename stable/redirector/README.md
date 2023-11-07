@@ -2,7 +2,7 @@
 
 Redirector can help with redirecting users to their own URL.
 
-Current chart version is `0.0.2`
+Current chart version is `0.0.1`
 
 **Homepage:** <https://gitlab.com/StackVista/platform/redirector>
 
@@ -35,10 +35,12 @@ ingress:
 | affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].operator | string | `"In"` |  |
 | affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].values[0] | string | `"redirector"` |  |
 | affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].topologyKey | string | `"kubernetes.io/hostname"` |  |
-| image.pullPolicy | string | `"IfNotPresent"` | Pull policy for the image for the Kommoner operator |
-| image.registry | string | `"quay.io"` | Registry containing the image for the Kommoner operator |
-| image.repository | string | `"stackstate/redirector"` | Repository containing the image for the Kommoner operator |
-| image.tag | string | `"v0.0.2"` | Tag of the image for the Kommoner operator |
+| global.imagePullSecrets | list | `[]` | Globally add image pull secrets that are used. |
+| global.imageRegistry | string | `nil` | Globally override the image registry that is used. Can be overridden by specific containers. Defaults to quay.io |
+| image.pullPolicy | string | `"IfNotPresent"` | Pull policy for the image for the Redirector |
+| image.registry | string | `nil` | Registry containing the image for the Redirector |
+| image.repository | string | `"stackstate/redirector"` | Repository containing the image for the Redirector |
+| image.tag | string | `"v0.0.2"` | Tag of the image for the Redirector |
 | ingress.enabled | bool | `false` |  |
 | ingress.path | string | `"/"` |  |
 | replicaCount | int | `2` |  |
@@ -48,3 +50,4 @@ ingress:
 | resources.requests.memory | string | `"32Mi"` |  |
 | securityContext.runAsNonRoot | bool | `true` |  |
 | securityContext.runAsUser | int | `65532` |  |
+| tolerations | string | `nil` | Tolerations for the pods |

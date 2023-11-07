@@ -21,16 +21,10 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/name: redirector
     spec:
-    {{- if .Values.image.pullSecretName }}
-      imagePullSecrets:
-      - name: '{{ .Values.image.pullSecretName }}'
-    {{- else if .Values.image.pullSecretUsername }}
-      imagePullSecrets:
-      - name: '{{ template "fullname.short" . }}-pull-secret'
-    {{- end }}
+      {{- include "image-pull-secrets" . | nindent 6 }}
       containers:
       - name: redirector
-        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ include "image-registry" . }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
           - containerPort: 8080

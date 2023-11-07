@@ -1,3 +1,34 @@
+
+{{- define "image-registry-global" -}}
+  {{- if .Values.global }}
+    {{- .Values.global.imageRegistry | default "quay.io" -}}
+  {{- else -}}
+    quay.io
+  {{- end -}}
+{{- end -}}
+
+{{- define "image-registry" -}}
+  {{- if ((.ContainerConfig).image).registry -}}
+    {{- tpl .ContainerConfig.image.registry . -}}
+  {{- else -}}
+    {{- include "image-registry-global" . }}
+  {{- end -}}
+{{- end -}}
+
+{{- define "image-pull-secrets" -}}
+  {{- $pullSecrets := list }}
+  {{- range .Values.global.imagePullSecrets -}}
+    {{- $pullSecrets = append $pullSecrets .  -}}
+  {{- end -}}
+  {{- if (not (empty $pullSecrets)) -}}
+imagePullSecrets:
+    {{- range $pullSecrets | uniq }}
+  - name: {{ . }}
+    {{- end }}
+  {{- end -}}
+{{- end -}}
+
+
 {{- /*
 fullname defines a suitably unique name for a resource by combining
 the release name and the chart name.
