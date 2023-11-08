@@ -61,8 +61,6 @@ createOrUpdateTopic "sts_generic_events" "1" "${ephemeralRetention}" &
 PIDS+=($!)
 createOrUpdateTopic "sts_internal_events" "1" "${ephemeralRetention}" &
 PIDS+=($!)
-createOrUpdateTopic "sts_multi_metrics" "1" "${ephemeralRetention}" &
-PIDS+=($!)
 createOrUpdateTopic "sts_metrics_v2" "$STS_METRICS_V2_PARTITION_COUNT" "${ephemeralRetention}" &
 PIDS+=($!)
 createOrUpdateTopic "sts_topo_process_agents" "1" "${ephemeralRetention}" &
