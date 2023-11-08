@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "fullname.short" . }}
+  name: {{ include "fullname" . }}
   namespace: {{.Release.Namespace}}
   labels:
   {{- include "redirector-labels" . | nindent 4 }}
