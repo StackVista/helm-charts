@@ -64,6 +64,8 @@ Run validation of total ESDiskShare
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
+- name: PROMETHEUS_WRITE_ENDPOINT
+  value: http://{{ template "common.fullname.short" . }}-vmagent:8429/api/v1/write
 image: "{{ include "stackstate.image.registry" . }}/{{ .K2esConfig.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .K2esConfig.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .K2esConfig.image.pullPolicy | quote }}
 livenessProbe:

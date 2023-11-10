@@ -9,7 +9,6 @@ stackstate:
       metricStore:
         remoteWriteEndpoint: "test-$vmInstance:8148"
         queryApiEndpoint: "test:8148"
-        kafka2promGroupId: "kafka-to-prom-test-$vmInstance"
     server:
       java:
         trustStorePassword: "secretTrustStorePassword"

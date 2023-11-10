@@ -17,8 +17,8 @@ Current chart version is `1.1.10-pre.7`
 | file://../minio/ | minio | 8.0.10-stackstate.8 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../stackstate-k8s-agent/ | stackstate-k8s-agent | * |
-| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.3 |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.3 |
+| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.3 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.93 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
@@ -300,7 +300,6 @@ stackstate/stackstate
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
 | stackstate.components.all.image.tag | string | `"6.0.0-snapshot.20231009162833-master-bbb323a"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
-| stackstate.components.all.metricStore.kafka2PromGroupId | string | `"kafka-to-prom-$vmInstance"` | Kafka consumer group ID of kafka2prom writing to the metric store ($vmInstance is replaced by '0' or '1') |
 | stackstate.components.all.metricStore.queryApiEndpoint | string | `"stackstate-victoriametrics:8428"` | Host and port for promql api |
 | stackstate.components.all.metricStore.queryApiPath | string | `""` | Path under which `/api/v1/query` etc.. are accessible, the default ("") is fine for most stores |
 | stackstate.components.all.metricStore.remoteWriteEndpoint | string | `"stackstate-victoria-metrics-$vmInstance:8428"` | Host and port for prometheus remote write endpoint ($vmInstance is replaced by '0' or '1') |
@@ -430,20 +429,6 @@ stackstate/stackstate
 | stackstate.components.initializer.sizing.baseMemoryConsumption | string | `"350Mi"` |  |
 | stackstate.components.initializer.sizing.javaHeapMemoryFraction | string | `"65"` |  |
 | stackstate.components.initializer.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| stackstate.components.kafka2prom.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.kafka2prom.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.kafka2prom.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.kafka2prom.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.kafka2prom.image.pullPolicy | string | `""` | `pullPolicy` used for the `kafka2prom` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.kafka2prom.image.repository | string | `"stackstate/stackstate-kafka-to-prom"` | Repository of the kafka2prom component Docker image. |
-| stackstate.components.kafka2prom.image.tag | string | `""` | Tag used for the `kafka2prom` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.kafka2prom.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.kafka2prom.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `kafka2prom` pods. |
-| stackstate.components.kafka2prom.replicaCount | int | `1` | Number of `kafka2prom` replicas. |
-| stackstate.components.kafka2prom.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"1500Mi"},"requests":{"cpu":"300m","ephemeral-storage":"1Mi","memory":"1500Mi"}}` | Resource allocation for `kafka2prom` pods. |
-| stackstate.components.kafka2prom.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
-| stackstate.components.kafka2prom.sizing.javaHeapMemoryFraction | string | `"50"` |  |
-| stackstate.components.kafka2prom.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.kafkaTopicCreate.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.kafkaTopicCreate.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.registry | string | `"quay.io"` | Base container image registry for kafka-topic-create containers. |
