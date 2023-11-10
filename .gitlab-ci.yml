@@ -42,7 +42,7 @@ push_artifactory-cleaner_to_internal:
       when: never
     - changes:
         - stable/artifactory-cleaner/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -61,7 +61,7 @@ push_artifactory-cleaner_to_public:
       when: never
     - changes:
         - stable/artifactory-cleaner/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -78,7 +78,7 @@ push_aws-amicleaner_to_internal:
       when: never
     - changes:
         - stable/aws-amicleaner/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -95,7 +95,7 @@ push_aws-nuke_to_internal:
       when: never
     - changes:
         - stable/aws-nuke/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -112,7 +112,7 @@ push_aws-pod-identity-webhook_to_internal:
       when: never
     - changes:
         - stable/aws-pod-identity-webhook/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -129,7 +129,7 @@ push_beacher-job_to_internal:
       when: never
     - changes:
         - stable/beacher-job/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -146,7 +146,7 @@ push_chartmuseum_to_internal:
       when: never
     - changes:
         - stable/chartmuseum/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -163,7 +163,7 @@ push_common_to_internal:
       when: never
     - changes:
         - stable/common/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -182,7 +182,7 @@ push_common_to_public:
       when: never
     - changes:
         - stable/common/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -199,7 +199,7 @@ push_elasticsearch_to_internal:
       when: never
     - changes:
         - stable/elasticsearch/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -218,7 +218,7 @@ push_elasticsearch_to_public:
       when: never
     - changes:
         - stable/elasticsearch/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -235,7 +235,7 @@ push_gitlab-steward_to_internal:
       when: never
     - changes:
         - stable/gitlab-steward/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -252,7 +252,7 @@ push_hbase_to_internal:
       when: never
     - changes:
         - stable/hbase/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -271,7 +271,7 @@ push_hbase_to_public:
       when: never
     - changes:
         - stable/hbase/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -288,7 +288,7 @@ push_helm-reaper_to_internal:
       when: never
     - changes:
         - stable/helm-reaper/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -305,7 +305,7 @@ push_iceman_to_internal:
       when: never
     - changes:
         - stable/iceman/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -322,7 +322,7 @@ push_kafkaup-operator_to_internal:
       when: never
     - changes:
         - stable/kafkaup-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -341,7 +341,7 @@ push_kafkaup-operator_to_public:
       when: never
     - changes:
         - stable/kafkaup-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -358,7 +358,7 @@ push_kommoner-operator_to_internal:
       when: never
     - changes:
         - stable/kommoner-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -375,7 +375,7 @@ push_minio_to_internal:
       when: never
     - changes:
         - stable/minio/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -394,7 +394,7 @@ push_minio_to_public:
       when: never
     - changes:
         - stable/minio/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -411,7 +411,7 @@ push_petros-d-kubelet-stats-exporter_to_internal:
       when: never
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -428,7 +428,7 @@ push_pull-secret_to_internal:
       when: never
     - changes:
         - stable/pull-secret/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -447,7 +447,7 @@ push_pull-secret_to_public:
       when: never
     - changes:
         - stable/pull-secret/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -464,7 +464,7 @@ push_receiveramplifier_to_internal:
       when: never
     - changes:
         - stable/receiveramplifier/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -481,7 +481,7 @@ push_sandbox-operator_to_internal:
       when: never
     - changes:
         - stable/sandbox-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -498,7 +498,7 @@ push_stackstate-agent_to_internal:
       when: never
     - changes:
         - stable/stackstate-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -517,7 +517,7 @@ push_stackstate-agent_to_public:
       when: never
     - changes:
         - stable/stackstate-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -534,7 +534,7 @@ push_stackstate-monitoring_to_internal:
       when: never
     - changes:
         - stable/stackstate-monitoring/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -553,7 +553,7 @@ push_stackstate-monitoring_to_public:
       when: never
     - changes:
         - stable/stackstate-monitoring/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -570,7 +570,7 @@ push_stackstate-standalone_to_internal:
       when: never
     - changes:
         - stable/stackstate-standalone/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -589,7 +589,7 @@ push_stackstate-standalone_to_public:
       when: never
     - changes:
         - stable/stackstate-standalone/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -678,7 +678,7 @@ push_stackstate_to_internal:
       when: never
     - changes:
         - stable/stackstate/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
@@ -701,7 +701,7 @@ push_test_charts:
     - helm repo update
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-4dab71c9
   rules:
-    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: never
     - if: $CI_COMMIT_TAG
       when: never
@@ -722,7 +722,7 @@ push_trafficmirror_to_internal:
       when: never
     - changes:
         - stable/trafficmirror/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: on_success
   script:
     - helm dependencies update ${CHART}
@@ -741,7 +741,7 @@ push_trafficmirror_to_public:
       when: never
     - changes:
         - stable/trafficmirror/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: manual
   script:
     - helm dependencies update ${CHART}
@@ -1537,7 +1537,7 @@ validate_charts:
       when: never
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
-    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: never
     - when: always
   script:
@@ -1564,7 +1564,7 @@ validate_stackstate_chart:
       when: never
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
-    - if: $CI_COMMIT_BRANCH == "master"
+    - if: $CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"
       when: never
     - when: always
   script:

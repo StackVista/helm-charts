@@ -46,7 +46,7 @@ local validate_and_push_jobs = {
     environment: 'stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}',
     rules: [
       {
-        @'if': '$CI_COMMIT_BRANCH == "master"',
+        @'if': '$CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"',
         when: 'never',
       },
       { when: 'always' },
@@ -64,7 +64,7 @@ local validate_and_push_jobs = {
     environment: 'stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}',
     rules: [
       {
-        @'if': '$CI_COMMIT_BRANCH == "master"',
+        @'if': '$CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"',
         when: 'never',
       },
       { when: 'always' },
@@ -81,7 +81,7 @@ local validate_and_push_jobs = {
   push_test_charts: sync_charts_template {
     rules: [
       {
-        @'if': '$CI_COMMIT_BRANCH == "master"',
+        @'if': '$CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"',
         when: 'never',
       },
       {
@@ -165,7 +165,7 @@ local push_chart_job(chart, repository_url, repository_username, repository_pass
     repository_password,
     [
       {
-        @'if': '$CI_COMMIT_BRANCH == "master"',
+        @'if': '$CI_COMMIT_BRANCH == "master" || $IC_COMMIT_BRANCH == "legacy-agent-support"',
         changes: ['stable/' + chart + '/**/*'],
         when: when,
       },
