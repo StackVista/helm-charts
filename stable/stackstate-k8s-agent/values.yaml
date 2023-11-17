@@ -187,8 +187,10 @@ processAgent:
   softMemoryLimit:
     # processAgent.softMemoryLimit.goMemLimit -- Soft-limit for golang heap allocation, for sanity, must be around 85% of nodeAgent.containers.processAgent.resources.limits.cpu.
     goMemLimit: 340MiB
-    # processAgent.softMemoryLimit.httpStatsBufferSize -- Sets a maximum for the number of http stats to keep in memory between check runs, to use 40k requires around 400Mib of memory.
+    # processAgent.softMemoryLimit.httpStatsBufferSize -- Sets a maximum for the number of http stats to keep in memory between check runs, to use 40k requires around ~400Mib of memory.
     httpStatsBufferSize: 40000
+    # processAgent.softMemoryLimit.httpObservationsBufferSize -- Sets a maximum for the number of http observations to keep in memory between check runs, to use 40k requires around ~400Mib of memory.
+    httpObservationsBufferSize: 40000
 
   checkIntervals:
     # processAgent.checkIntervals.container -- Override the default value of the container check interval in seconds.
