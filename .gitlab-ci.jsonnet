@@ -27,9 +27,12 @@ local skip_when_dependency_upgrade = {
     @'if': '$UPDATE_AAD_CHART_VERSION',
     when: 'never',
   }, {
-     @'if': '$UPDATE_STACKSTATE_DOCKER_VERSION',
-     when: 'never',
-   }] + super.rules,
+    @'if': '$UPDATE_STACKSTATE_DOCKER_VERSION',
+    when: 'never',
+  }, {
+    @'if': '$UPDATE_STACKPACKS_DOCKER_VERSION',
+    when: 'never',
+  }] + super.rules,
 };
 
 local sync_charts_template = {
@@ -315,7 +318,7 @@ local update_aad_chart_version = {
 };
 
 local update_docker_images = {
-  update_stackstate_version_to_latest: {
+  local job(requiredEnvName, scripts) = {
     image: variables.images.stackstate_devops,
     stage: 'update',
     variables: {
@@ -332,14 +335,18 @@ local update_docker_images = {
     ],
     rules: [
       {
-        @'if': '$UPDATE_STACKSTATE_DOCKER_VERSION',
+        @'if': '$' + requiredEnvName,
         when: 'always',
       },
+      {
+        when: 'never',
+      },
     ],
-    script: [
-      '.gitlab/stackstate-k8s/update_stackstate_version_to_latest.sh',
-    ],
+    script: scripts,
   },
+
+  update_stackstate_version_to_latest: job('UPDATE_STACKSTATE_DOCKER_VERSION', ['.gitlab/stackstate-k8s/update_stackstate_version_to_latest.sh']),
+  update_stackpacks_version_to_latest: job('UPDATE_STACKPACKS_DOCKER_VERSION', ['.gitlab/stackstate-k8s/update_stackpacks_version_to_latest.sh']),
 };
 
 // Main

@@ -13,7 +13,7 @@ values_path="stable/stackstate-k8s/values.yaml"
 
 echo "Latest stackpack master tag: $full_stackpacks_master_tag"
 
-yq -i eval ".stackstate.stackpacks.image.tag=\"$full_stackpacks_master_tag-selfhosted\"" "$values_path"
+yq -i eval ".stackstate.stackpacks.image.tag=\"$full_stackpacks_master_tag\"" "$values_path"
 
 git add "$values_path"
 commit_changes "Updating stackpacks version to $full_stackpacks_master_tag"

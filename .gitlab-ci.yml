@@ -24,6 +24,8 @@ integration_test_stackstate:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/stackstate/**/*
       exists:
@@ -57,6 +59,8 @@ integration_test_stackstate_k8s:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/stackstate-k8s/**/*
       exists:
@@ -76,6 +80,8 @@ push_artifactory-cleaner_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/artifactory-cleaner/**/*
@@ -104,6 +110,8 @@ push_artifactory-cleaner_to_public:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/artifactory-cleaner/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-artifactory-cleaner]/
@@ -128,6 +136,8 @@ push_aws-amicleaner_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/aws-amicleaner/**/*
@@ -154,6 +164,8 @@ push_aws-nuke_to_internal:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/aws-nuke/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-aws-nuke]/
@@ -178,6 +190,8 @@ push_aws-pod-identity-webhook_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/aws-pod-identity-webhook/**/*
@@ -204,6 +218,8 @@ push_beacher-job_to_internal:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/beacher-job/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-beacher-job]/
@@ -229,6 +245,8 @@ push_chartmuseum_to_internal:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/chartmuseum/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-chartmuseum]/
@@ -253,6 +271,8 @@ push_common_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/common/**/*
@@ -281,6 +301,8 @@ push_common_to_public:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/common/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-common]/
@@ -305,6 +327,8 @@ push_elasticsearch_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/elasticsearch/**/*
@@ -333,6 +357,8 @@ push_elasticsearch_to_public:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/elasticsearch/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-elasticsearch]/
@@ -358,6 +384,8 @@ push_gitlab-steward_to_internal:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/gitlab-steward/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-gitlab-steward]/
@@ -382,6 +410,8 @@ push_hbase_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/hbase/**/*
@@ -410,6 +440,8 @@ push_hbase_to_public:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/hbase/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-hbase]/
@@ -434,6 +466,8 @@ push_helm-reaper_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/helm-reaper/**/*
@@ -460,6 +494,8 @@ push_iceman_to_internal:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/iceman/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-iceman]/
@@ -484,6 +520,8 @@ push_k8s-image-list-to-s3_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/k8s-image-list-to-s3/**/*
@@ -510,6 +548,8 @@ push_k8s-spot-termination-handler_to_internal:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/k8s-spot-termination-handler/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-spot-termination-handler]/
@@ -534,6 +574,8 @@ push_kafkaup-operator_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/kafkaup-operator/**/*
@@ -562,6 +604,8 @@ push_kafkaup-operator_to_public:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/kafkaup-operator/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-kafkaup-operator]/
@@ -587,6 +631,8 @@ push_kommoner-operator_to_internal:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/kommoner-operator/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-kommoner-operator]/
@@ -611,6 +657,8 @@ push_minio_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/minio/**/*
@@ -639,6 +687,8 @@ push_minio_to_public:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/minio/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-minio]/
@@ -664,6 +714,8 @@ push_petros-d-kubelet-stats-exporter_to_internal:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-petros-d-kubelet-stats-exporter]/
@@ -688,6 +740,8 @@ push_pull-secret_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/pull-secret/**/*
@@ -716,6 +770,8 @@ push_pull-secret_to_public:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/pull-secret/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-pull-secret]/
@@ -740,6 +796,8 @@ push_receiveramplifier_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/receiveramplifier/**/*
@@ -766,6 +824,8 @@ push_redirector_to_internal:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/redirector/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-redirector]/
@@ -790,6 +850,8 @@ push_sandbox-operator_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/sandbox-operator/**/*
@@ -816,6 +878,8 @@ push_sock-shop_to_internal:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/sock-shop/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-sock-shop]/
@@ -840,6 +904,8 @@ push_stackstate-agent_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/stackstate-agent/**/*
@@ -868,6 +934,8 @@ push_stackstate-agent_to_public:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/stackstate-agent/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-agent]/
@@ -892,6 +960,8 @@ push_stackstate-k8s-agent_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
@@ -919,6 +989,8 @@ push_stackstate-k8s-agent_to_public:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
@@ -959,6 +1031,8 @@ push_stackstate-k8s_to_internal:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/stackstate-k8s/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-k8s]/
@@ -985,6 +1059,8 @@ push_stackstate-monitoring_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/stackstate-monitoring/**/*
@@ -1013,6 +1089,8 @@ push_stackstate-monitoring_to_public:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/stackstate-monitoring/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-monitoring]/
@@ -1037,6 +1115,8 @@ push_stackstate-standalone_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/stackstate-standalone/**/*
@@ -1064,6 +1144,8 @@ push_stackstate-standalone_to_public:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/stackstate-standalone/**/*
@@ -1101,6 +1183,8 @@ push_stackstate_release_to_internal:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)-pre\.(\d+)\.rc\.(\d+)$/
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)-rc\.(\d+)$/
@@ -1136,6 +1220,8 @@ push_stackstate_release_to_public:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)$/
       when: on_success
   script:
@@ -1165,6 +1251,8 @@ push_stackstate_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/stackstate/**/*
@@ -1218,6 +1306,8 @@ push_trafficmirror_to_internal:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/trafficmirror/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-trafficmirror]/
@@ -1245,6 +1335,8 @@ push_trafficmirror_to_public:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/trafficmirror/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-trafficmirror]/
@@ -1269,6 +1361,8 @@ push_victoria-metrics-single_to_internal:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/victoria-metrics-single/**/*
@@ -1296,6 +1390,8 @@ push_victoria-metrics-single_to_public:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/victoria-metrics-single/**/*
@@ -1341,6 +1437,8 @@ test_artifactory-cleaner:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/artifactory-cleaner/**/*
       exists:
@@ -1372,6 +1470,8 @@ test_aws-amicleaner:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/aws-amicleaner/**/*
@@ -1405,6 +1505,8 @@ test_aws-nuke:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/aws-nuke/**/*
       exists:
@@ -1436,6 +1538,8 @@ test_aws-pod-identity-webhook:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/aws-pod-identity-webhook/**/*
@@ -1469,6 +1573,8 @@ test_beacher-job:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/beacher-job/**/*
       exists:
@@ -1500,6 +1606,8 @@ test_chartmuseum:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/chartmuseum/**/*
@@ -1533,6 +1641,8 @@ test_common:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/common/**/*
       exists:
@@ -1564,6 +1674,8 @@ test_elasticsearch:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/elasticsearch/**/*
@@ -1597,6 +1709,8 @@ test_gitlab-steward:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/gitlab-steward/**/*
       exists:
@@ -1628,6 +1742,8 @@ test_hbase:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/hbase/**/*
@@ -1661,6 +1777,8 @@ test_helm-reaper:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/helm-reaper/**/*
       exists:
@@ -1692,6 +1810,8 @@ test_iceman:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/iceman/**/*
@@ -1725,6 +1845,8 @@ test_k8s-image-list-to-s3:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/k8s-image-list-to-s3/**/*
       exists:
@@ -1756,6 +1878,8 @@ test_k8s-spot-termination-handler:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/k8s-spot-termination-handler/**/*
@@ -1789,6 +1913,8 @@ test_kafkaup-operator:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/kafkaup-operator/**/*
       exists:
@@ -1820,6 +1946,8 @@ test_kommoner-operator:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/kommoner-operator/**/*
@@ -1853,6 +1981,8 @@ test_minio:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/minio/**/*
       exists:
@@ -1884,6 +2014,8 @@ test_petros-d-kubelet-stats-exporter:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
@@ -1917,6 +2049,8 @@ test_pull-secret:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/pull-secret/**/*
       exists:
@@ -1948,6 +2082,8 @@ test_receiveramplifier:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/receiveramplifier/**/*
@@ -1981,6 +2117,8 @@ test_redirector:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/redirector/**/*
       exists:
@@ -2013,6 +2151,8 @@ test_sandbox-operator:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/sandbox-operator/**/*
       exists:
@@ -2044,6 +2184,8 @@ test_sock-shop:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/sock-shop/**/*
@@ -2078,6 +2220,8 @@ test_stackstate:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/stackstate/**/*
       exists:
@@ -2109,6 +2253,8 @@ test_stackstate-agent:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/stackstate-agent/**/*
@@ -2143,6 +2289,8 @@ test_stackstate-k8s:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/stackstate-k8s/**/*
       exists:
@@ -2174,6 +2322,8 @@ test_stackstate-k8s-agent:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
@@ -2207,6 +2357,8 @@ test_stackstate-monitoring:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/stackstate-monitoring/**/*
       exists:
@@ -2238,6 +2390,8 @@ test_stackstate-standalone:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/stackstate-standalone/**/*
@@ -2271,6 +2425,8 @@ test_trafficmirror:
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
     - changes:
         - stable/trafficmirror/**/*
       exists:
@@ -2302,6 +2458,8 @@ test_victoria-metrics-single:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
         - stable/victoria-metrics-single/**/*
@@ -2366,6 +2524,23 @@ update_stackgraph_version:
     GIT_AUTHOR_NAME: stackstate-system-user
     GIT_COMMITTER_EMAIL: sts-admin@stackstate.com
     GIT_COMMITTER_NAME: stackstate-system-user
+update_stackpacks_version_to_latest:
+  before_script:
+    - .gitlab/configure_git.sh
+    - export BRANCHES=${CI_COMMIT_BRANCH:-$(git for-each-ref --format="%(objectname) %(refname:short)" refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" '$1==branch && $2!="origin" {print $2}' | sed -E "s/^origin\/(.*)$/\1/")}
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  rules:
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: always
+    - when: never
+  script:
+    - .gitlab/stackstate-k8s/update_stackpacks_version_to_latest.sh
+  stage: update
+  variables:
+    GIT_AUTHOR_EMAIL: sts-admin@stackstate.com
+    GIT_AUTHOR_NAME: stackstate-system-user
+    GIT_COMMITTER_EMAIL: sts-admin@stackstate.com
+    GIT_COMMITTER_NAME: stackstate-system-user
 update_stackstate_version_to_latest:
   before_script:
     - .gitlab/configure_git.sh
@@ -2374,6 +2549,7 @@ update_stackstate_version_to_latest:
   rules:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: always
+    - when: never
   script:
     - .gitlab/stackstate-k8s/update_stackstate_version_to_latest.sh
   stage: update
@@ -2392,6 +2568,8 @@ validate_charts:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - if: $CI_COMMIT_BRANCH == "master"
       when: never
@@ -2421,6 +2599,8 @@ validate_stackstate_chart:
     - if: $UPDATE_AAD_CHART_VERSION
       when: never
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - if: $CI_COMMIT_BRANCH == "master"
       when: never
