@@ -4,32 +4,32 @@ Shared settings in configmap for server and api
 {{- define "stackstate.configmap.server-and-api" }}
 {{ $files := .Files }}
 {{- if and .Values.stackstate.authentication (eq .Values.stackstate.deployment.mode "SelfHosted") }}
-stackstate.authorization.staticSubjects.stackstate-platform-admin: {{- $files.Get "sts-authz-permissions/stackstate-platform-admin.txt"}}
-stackstate.authorization.staticSubjects.stackstate-admin: {{- $files.Get "sts-authz-permissions/stackstate-admin.txt" }}
-stackstate.authorization.staticSubjects.stackstate-power-user: {{- $files.Get "sts-authz-permissions/stackstate-power-user.txt"}}
-stackstate.authorization.staticSubjects.stackstate-guest: {{- $files.Get "sts-authz-permissions/stackstate-guest.txt"}}
-stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter: {{- $files.Get "sts-authz-permissions/stackstate-k8s-troubleshooter.txt"}}
+stackstate.authorization.staticSubjects.stackstate-platform-admin: {{- $files.Get "sts-authz-permissions/stackstate-platform-admin.json"}}
+stackstate.authorization.staticSubjects.stackstate-admin: {{- $files.Get "sts-authz-permissions/stackstate-admin.json" }}
+stackstate.authorization.staticSubjects.stackstate-power-user: {{- $files.Get "sts-authz-permissions/stackstate-power-user.json"}}
+stackstate.authorization.staticSubjects.stackstate-guest: {{- $files.Get "sts-authz-permissions/stackstate-guest.json"}}
+stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter: {{- $files.Get "sts-authz-permissions/stackstate-k8s-troubleshooter.json"}}
 {{ println "" }}
 {{- include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.authentication "authnPrefix" "stackstate.api.authentication" "authzPrefix" "stackstate.authorization" "global" .) }}
 {{/* In SelfHosted mode, append any roles to the stackstate.authorization block, so that we keep the defaults delivered with stackstate. */}}
 {{- range .Values.stackstate.authentication.roles.admin }}
-stackstate.authorization.staticSubjects.{{ . | quote }}: {{- $files.Get "sts-authz-permissions/stackstate-admin.txt" }}
+stackstate.authorization.staticSubjects.{{ . | quote }}: {{- $files.Get "sts-authz-permissions/stackstate-admin.json" }}
 {{- end }}
 
 {{- range .Values.stackstate.authentication.roles.platformAdmin }}
-stackstate.authorization.staticSubjects.{{ . | quote }}: {{- $files.Get "sts-authz-permissions/stackstate-platform-admin.txt" }}
+stackstate.authorization.staticSubjects.{{ . | quote }}: {{- $files.Get "sts-authz-permissions/stackstate-platform-admin.json" }}
 {{- end }}
 
 {{- range .Values.stackstate.authentication.roles.powerUser }}
-stackstate.authorization.staticSubjects.{{ . | quote }}: {{- $files.Get "sts-authz-permissions/stackstate-power-user.txt" }}
+stackstate.authorization.staticSubjects.{{ . | quote }}: {{- $files.Get "sts-authz-permissions/stackstate-power-user.json" }}
 {{- end }}
 
 {{- range .Values.stackstate.authentication.roles.guest }}
-stackstate.authorization.staticSubjects.{{ . | quote }}: {{- $files.Get "sts-authz-permissions/stackstate-guest.txt" }}
+stackstate.authorization.staticSubjects.{{ . | quote }}: {{- $files.Get "sts-authz-permissions/stackstate-guest.json" }}
 {{- end }}
 
 {{- range .Values.stackstate.authentication.roles.k8sTroubleshooter }}
-stackstate.authorization.staticSubjects.{{ . | quote }}: {{- $files.Get "sts-authz-permissions/stackstate-k8s-troubleshooter.txt" }}
+stackstate.authorization.staticSubjects.{{ . | quote }}: {{- $files.Get "sts-authz-permissions/stackstate-k8s-troubleshooter.json" }}
 {{- end }}
 
 {{- if index .Values "anomaly-detection" "enabled" }}
@@ -38,8 +38,8 @@ stackstate.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["m
 {{- else }}
 {{/* In SaaS mode, the stackstate.authorization block will be ignored and we will overwrite the reference to it from the stackstate.api.authorization */}}
 stackstate.api.authorization: {}
-stackstate.api.authorization.staticSubjects.stackstate-k8s-troubleshooter: {{- $files.Get "sts-authz-permissions/stackstate-k8s-troubleshooter.txt" }}
-stackstate.api.authorization.staticSubjects.stackstate-k8s-admin: {{- $files.Get "sts-authz-permissions/stackstate-k8s-admin.txt" }}
+stackstate.api.authorization.staticSubjects.stackstate-k8s-troubleshooter: {{- $files.Get "sts-authz-permissions/stackstate-k8s-troubleshooter.json" }}
+stackstate.api.authorization.staticSubjects.stackstate-k8s-admin: {{- $files.Get "sts-authz-permissions/stackstate-k8s-admin.json" }}
 
 {{- if index .Values "anomaly-detection" "enabled" }}
 stackstate.api.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["manage-annotations", "run-monitors", "view-monitors", "read-metrics", "read-settings"], viewPermissions: [] }
