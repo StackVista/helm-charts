@@ -316,7 +316,7 @@ local update_aad_chart_version = {
 
 local update_docker_images = {
   update_stackstate_version_to_latest: {
-    image: variables.images.stackstate_helm_test,
+    image: variables.images.stackstate_devops,
     stage: 'update',
     variables: {
       GIT_AUTHOR_EMAIL: 'sts-admin@stackstate.com',
