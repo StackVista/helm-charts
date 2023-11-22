@@ -2367,6 +2367,9 @@ update_stackgraph_version:
     GIT_COMMITTER_EMAIL: sts-admin@stackstate.com
     GIT_COMMITTER_NAME: stackstate-system-user
 update_stackstate_version_to_latest:
+  before_script:
+    - .gitlab/configure_git.sh
+    - export BRANCHES=${CI_COMMIT_BRANCH:-$(git for-each-ref --format="%(objectname) %(refname:short)" refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" '$1==branch && $2!="origin" {print $2}' | sed -E "s/^origin\/(.*)$/\1/")}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
   rules:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
