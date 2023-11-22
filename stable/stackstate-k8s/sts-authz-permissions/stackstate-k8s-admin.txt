@@ -1,0 +1,28 @@
+{
+    "systemPermissions": [
+        "create-views",
+        "manage-topology-elements",
+        "access-cli",
+        "access-explore",
+        "update-visualization",
+        "perform-custom-query",
+        "read-permissions",
+        "manage-star-view",
+        "read-stackpacks",
+        "manage-stackpacks",
+        "execute-component-templates",
+        "access-synchronization-data",
+        "execute-node-sync",
+        "read-telemetry-streams",
+        "manage-telemetry-streams",
+        "execute-component-actions",
+        "manage-annotations",
+        "manage-event-handlers",
+        "manage-monitors",
+        "run-monitors",
+        "read-metrics",
+        "update-permissions",
+        "manage-service-tokens"
+    ],
+    "viewPermissions" : [ "access-view", "save-view", "delete-view" ]
+}

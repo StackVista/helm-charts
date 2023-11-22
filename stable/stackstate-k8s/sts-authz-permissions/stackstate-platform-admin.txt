@@ -1,0 +1,10 @@
+{
+    "systemPermissions": [
+        "access-admin-api",
+        "access-cli",
+        "access-log-data",
+        "manage-star-view",
+        "unlock-node"
+    ],
+    "viewPermissions": ["access-view"]
+}
