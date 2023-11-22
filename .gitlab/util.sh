@@ -30,6 +30,18 @@ function push_changes_skip_ci() {
   done
 }
 
+function push_changes() {
+  for branch in $BRANCHES; do
+    if [[ "${PROMOTION_DRY_RUN}" == 'no' ]]; then
+      echo "Pushing changes"
+      git pull --rebase origin "${branch}"
+      git push "https://gitlab-ci-token:${gitlab_api_scope_token:?}@gitlab.com/stackvista/devops/helm-charts.git" HEAD:"${branch}"
+    else
+      echo "Not pushing changes, set PROMOTION_DRY_RUN='no' to commit changes"
+    fi
+  done
+}
+
 function update_chart_version_in_readme_file() {
   chart=${1:?"Please provide chart name"}
   chart_path="$chart/Chart.yaml"

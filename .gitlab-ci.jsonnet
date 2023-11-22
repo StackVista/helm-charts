@@ -26,7 +26,10 @@ local skip_when_dependency_upgrade = {
   }, {
     @'if': '$UPDATE_AAD_CHART_VERSION',
     when: 'never',
-  }] + super.rules,
+  }, {
+     @'if': '$UPDATE_STACKSTATE_DOCKER_VERSION',
+     when: 'never',
+   }] + super.rules,
 };
 
 local sync_charts_template = {
@@ -311,6 +314,28 @@ local update_aad_chart_version = {
   },
 };
 
+local update_docker_images = {
+  update_stackstate_version_to_latest: {
+    image: variables.images.stackstate_helm_test,
+    stage: 'update',
+    variables: {
+      GIT_AUTHOR_EMAIL: 'sts-admin@stackstate.com',
+      GIT_AUTHOR_NAME: 'stackstate-system-user',
+      GIT_COMMITTER_EMAIL: 'sts-admin@stackstate.com',
+      GIT_COMMITTER_NAME: 'stackstate-system-user',
+    },
+    rules: [
+      {
+        @'if': '$UPDATE_STACKSTATE_DOCKER_VERSION',
+        when: 'always',
+      },
+    ],
+    script: [
+      '.gitlab/stackstate-k8s/update_stackstate_version_to_latest.sh',
+    ],
+  },
+};
+
 // Main
 {
   // Only run for merge requests, tags, or the default (master) branch
@@ -337,3 +362,4 @@ local update_aad_chart_version = {
 + itest_stackstate
 + update_sg_version
 + update_aad_chart_version
++ update_docker_images
