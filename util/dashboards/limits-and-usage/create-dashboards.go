@@ -2,12 +2,15 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	grafana "gitlab.com/StackVista/DevOps/helm-charts/util/dashboards/limits-and-usage/grafana"
 	agent "gitlab.com/StackVista/DevOps/helm-charts/util/dashboards/limits-and-usage/stackstate-k8s-agent-dashboard"
 	"io/ioutil"
+	"math/rand"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // Global incremental counter to never let panel ids overlap
@@ -20,6 +23,20 @@ const (
 	CPU LimitOrRequestType = iota
 	Memory
 )
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
+func randSeq(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = alphaNumericRunes[rand.Intn(len(alphaNumericRunes))]
+	}
+	return string(b)
+}
+
+var alphaNumericRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
 
 // Base panel when adding a low level graph
 var basePanel = grafana.Panel{
@@ -85,7 +102,7 @@ func getRequestUsageAverage(id int, requestValue string, targetType LimitOrReque
 		title = "Memory" + title
 		requestValueFloat, _ = strconv.ParseFloat(strings.Replace(requestValue, "Mi", "", -1), 32)
 		expression = fmt.Sprintf("avg(container_memory_working_set_bytes{namespace=\"%s\", container=\"%s\"}) / 1000000", namespace, containerName)
-		measurementUnit = "Mebibytes"
+		measurementUnit = "mbytes"
 		measurementUnitShort = "m"
 	}
 
@@ -149,7 +166,7 @@ func getLimitUsageMax(id int, limitValue string, targetType LimitOrRequestType, 
 		title = "Memory" + title
 		limitValueFloat, _ = strconv.ParseFloat(strings.Replace(limitValue, "Mi", "", -1), 32)
 		expression = fmt.Sprintf("max(container_memory_working_set_bytes{namespace=\"%s\", container=\"%s\"}) / 1000000", namespace, containerName)
-		measurementUnit = "Mebibytes"
+		measurementUnit = "mbytes"
 		measurementUnitShort = "M"
 	}
 
@@ -248,12 +265,19 @@ func createGrafanaBlockPanel(id int, namespace string, containerTarget string, r
 }
 
 func main() {
-	fmt.Println("Enter the namespace you want to observe for the K8S Agent: ")
+	fmt.Println("Enter the namespace you want to observe for the K8S Agent (default: monitoring): ")
 	var namespace string
+	unexNl := errors.New("unexpected newline")
 	_, err := fmt.Scanln(&namespace)
 	if err != nil {
-		fmt.Println("Unable to get the namespace from the user input.")
-		return
+		if err.Error() != unexNl.Error() {
+			fmt.Println(err)
+			fmt.Println(unexNl)
+			fmt.Println("Unable to get the namespace from the user input.")
+			return
+		}
+		fmt.Println("No value entered, using monitoring")
+		namespace = "monitoring"
 	}
 
 	data, err := agent.ParseValuesYaml()
@@ -306,16 +330,15 @@ func main() {
 		Timepicker: grafana.Timepicker{},
 		Timezone:   "",
 		Title:      "CPU & Mem (Request and Limits)",
-		UID:        "Q4RgQel4k",
+		UID:        randSeq(9), //"Q4RgQel4k",
 		Version:    9,
 		WeekStart:  "",
 	}
 
-	dashboardBytes, err := json.Marshal(dashboard)
+	indentedData, err := json.MarshalIndent(dashboard, "", "  ")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-
-	_ = ioutil.WriteFile("util/dashboards/limits-and-usage/agent-usage-and-limits-dashboard.json", dashboardBytes, 0644)
+	_ = ioutil.WriteFile("util/dashboards/limits-and-usage/agent-usage-and-limits-dashboard.json", indentedData, 0644)
 }
