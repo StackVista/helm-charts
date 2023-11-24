@@ -26,6 +26,10 @@ spec:
           cpu: {{ .Values.nodeAgent.scaling.autoscalerLimits.processAgent.maximum.cpu }}
           memory: {{ .Values.nodeAgent.scaling.autoscalerLimits.processAgent.maximum.memory }}
         controlledResources: ["cpu", "memory"]
+        controlledValues: RequestsAndLimits
+  updatePolicy:
+    updateMode: "Auto"
+
 ---
 apiVersion: apps/v1
 kind: DaemonSet
