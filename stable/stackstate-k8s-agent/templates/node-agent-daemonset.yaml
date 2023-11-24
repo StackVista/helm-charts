@@ -18,6 +18,7 @@ spec:
           cpu: {{ .Values.nodeAgent.scaling.autoscalerLimits.agent.maximum.cpu }}
           memory: {{ .Values.nodeAgent.scaling.autoscalerLimits.agent.maximum.memory }}
         controlledResources: ["cpu", "memory"]
+        controlledValues: RequestsAndLimits
       - containerName: 'process-agent'
         minAllowed:
           cpu: {{ .Values.nodeAgent.scaling.autoscalerLimits.processAgent.minimum.cpu }}
