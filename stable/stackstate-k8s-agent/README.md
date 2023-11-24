@@ -2,7 +2,7 @@
 
 Helm chart for the StackState Agent.
 
-Current chart version is `1.0.57`
+Current chart version is `1.0.58`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -170,6 +170,7 @@ stackstate/stackstate-k8s-agent
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | nodeAgent.apm.enabled | bool | `true` | Enable / disable the nodeAgent APM module. |
+| nodeAgent.autoScalingEnabled | bool | `false` | Enable / disable autoscaling for the node agent pods. |
 | nodeAgent.checksTagCardinality | string | `"orchestrator"` | low, orchestrator or high. Orchestrator level adds pod_name, high adds display_container_name |
 | nodeAgent.config | object | `{"override":[]}` |  |
 | nodeAgent.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |

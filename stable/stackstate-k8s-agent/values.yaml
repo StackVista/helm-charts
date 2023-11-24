@@ -30,6 +30,8 @@ all:
     enabled: false
 
 nodeAgent:
+  # nodeAgent.autoScalingEnabled -- Enable / disable autoscaling for the node agent pods.
+  autoScalingEnabled: false
   containerRuntime:
     # nodeAgent.containerRuntime.customSocketPath -- If the container socket path does not match the default for CRI-O, Containerd or Docker, supply a custom socket path.
     customSocketPath: ""

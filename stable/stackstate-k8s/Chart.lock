@@ -4,7 +4,7 @@ dependencies:
   version: 5.2.0-snapshot.93
 - name: stackstate-k8s-agent
   repository: file://../stackstate-k8s-agent/
-  version: 1.0.57
+  version: 1.0.58
 - name: common
   repository: file://../common/
   version: 0.4.24
@@ -35,5 +35,5 @@ dependencies:
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
   version: 0.8.53-stackstate.4
-digest: sha256:d422ff3bf34075761464c5454121169331bb84085c1b0dc5a2a45e2bfb7a3b30
-generated: "2023-11-24T11:01:45.74029573+01:00"
+digest: sha256:1cc349ddd93ae8e7f8c199823dac8c6ea580c69c7622b8f855d6c362f7567ef5
+generated: "2023-11-24T16:53:38.952213546+01:00"
