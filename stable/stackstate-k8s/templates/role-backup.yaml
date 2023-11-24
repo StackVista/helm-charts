@@ -2,7 +2,7 @@
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: stackstate-admin
+  name: stackstate-k8s-backup
   labels:
     app.kubernetes.io/component: backup
 {{- end -}}
