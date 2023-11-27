@@ -305,6 +305,14 @@ checksum/healthSync-env: {{ include (print $.Template.BasePath "/secret-healthSy
 {{- end -}}
 
 {{/*
+Notification secret checksum annotations
+*/}}
+{{- define "stackstate.notification.secret.checksum" -}}
+checksum/notification-env: {{ include (print $.Template.BasePath "/secret-notification.yaml") . | sha256sum }}
+{{- end -}}
+
+
+{{/*
 Router configmap checksum annotations
 */}}
 {{- define "stackstate.router.configmap.checksum" -}}
@@ -373,6 +381,14 @@ HealthSync configmap checksum annotations
 {{- define "stackstate.healthSync.configmap.checksum" -}}
 checksum/healthSync-configmap: {{ include (print $.Template.BasePath "/configmap-healthSync.yaml") . | sha256sum }}
 {{- end -}}
+
+{{/*
+Notification configmap checksum annotations
+*/}}
+{{- define "stackstate.notification.configmap.checksum" -}}
+checksum/notification-configmap: {{ include (print $.Template.BasePath "/configmap-notification.yaml") . | sha256sum }}
+{{- end -}}
+
 
 {{/*
 Vmagent configmap checksum annotations

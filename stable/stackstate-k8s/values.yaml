@@ -545,6 +545,50 @@ stackstate:
       esDiskSpaceShare: "0"
       # stackstate.components.trace2es.retention -- Number of days to keep the traces data on Es
       retention: 7
+    notification:
+      extraEnv:
+        # stackstate.components.notification.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.notification.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.notification.image.imageRegistry -- `imageRegistry` used for the `notification` component Docker image; this will override `global.imageRegistry` on a per-service basis.
+        imageRegistry: ""
+        # stackstate.components.notification.image.pullPolicy -- `pullPolicy` used for the `notification` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.notification.image.repository -- Repository of the notification component Docker image.
+        repository: stackstate/stackstate-server
+        # stackstate.components.notification.image.tag -- Tag used for the `notification` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.notification.poddisruptionbudget -- PodDisruptionBudget settings for `notification` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.notification.resources -- Resource allocation for `notification` pods.
+      resources:
+        limits:
+          memory: "1500Mi"
+          cpu: "500m"
+          ephemeral-storage: "1Gi"
+        requests:
+          memory: "1500Mi"
+          cpu: "200m"
+          ephemeral-storage: "1Mi"
+      sizing:
+        baseMemoryConsumption: "350Mi"
+        javaHeapMemoryFraction: "60"
+      # stackstate.components.notification.replicaCount -- Number of `notification` replicas.
+      replicaCount: 1
+      # stackstate.components.notification.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.notification.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.notification.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.notification.config -- Configuration file contents to customize the default StackState notification configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
+      config: ""
+      # stackstate.components.notification.additionalLogging -- Additional logback config
+      additionalLogging: ""
+      # stackstate.components.notification.tmpToPVC -- Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage.
     receiver:
       extraEnv:
         # stackstate.components.receiver.extraEnv.open -- Extra open environment variables to inject into pods.

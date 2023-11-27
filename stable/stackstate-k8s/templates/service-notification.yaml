@@ -1,0 +1,23 @@
+{{- define "stackstate.notification.service" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-notification
+  labels:
+    app.kubernetes.io/component: notification
+spec:
+  clusterIP: None
+  ports:
+  {{- if .Values.stackstate.components.all.metrics.enabled }}
+    - name: metrics
+      port: 9404
+      protocol: TCP
+      targetPort: metrics
+  {{- end }}
+  selector:
+    app.kubernetes.io/component: notification
+{{- end -}}
+
+{{- if .Values.stackstate.experimental.server.split }}
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $stsStackstateNotificationService := fromYaml (include "stackstate.notification.service" .) -}}
+{{- toYaml (merge $stsStackstateNotificationService $commonService) -}}
+{{- end }}

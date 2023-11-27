@@ -446,6 +446,22 @@ stackstate/stackstate
 | stackstate.components.nginxPrometheusExporter.image.registry | string | `"quay.io"` | Base container image registry for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.repository | string | `"stackstate/nginx-prometheus-exporter"` | Base container image repository for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.tag | string | `"0.9.0-2738682730"` | Container image tag for nginx-prometheus-exporter containers. |
+| stackstate.components.notification.additionalLogging | string | `""` | Additional logback config |
+| stackstate.components.notification.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.notification.config | string | `""` | Configuration file contents to customize the default StackState notification configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
+| stackstate.components.notification.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| stackstate.components.notification.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.notification.image.imageRegistry | string | `""` | `imageRegistry` used for the `notification` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
+| stackstate.components.notification.image.pullPolicy | string | `""` | `pullPolicy` used for the `notification` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.components.notification.image.repository | string | `"stackstate/stackstate-server"` | Repository of the notification component Docker image. |
+| stackstate.components.notification.image.tag | string | `""` | Tag used for the `notification` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.notification.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.notification.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `notification` pods. |
+| stackstate.components.notification.replicaCount | int | `1` | Number of `notification` replicas. |
+| stackstate.components.notification.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"1500Mi"},"requests":{"cpu":"200m","ephemeral-storage":"1Mi","memory":"1500Mi"}}` | Resource allocation for `notification` pods. |
+| stackstate.components.notification.sizing.baseMemoryConsumption | string | `"350Mi"` |  |
+| stackstate.components.notification.sizing.javaHeapMemoryFraction | string | `"60"` |  |
+| stackstate.components.notification.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.receiver.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.receiver.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.receiver.esDiskSpaceShare | string | `"70"` | How much disk space from ElasticSearch can use for k8s log ingestion |
@@ -625,11 +641,11 @@ stackstate/stackstate
 | stackstate.java.trustStorePassword | string | `nil` | Password to access the Java TrustStore (cacerts) file |
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
 | stackstate.receiver.baseUrl | string | `nil` | **DEPRECATED** Use stackstate.baseUrl instead |
-| stackstate.stackpacks.image | object | `{"pullPolicy":"","registry":"quay.io","repository":"stackstate/stackpacks","tag":"20231113132536-master-1b6f96b-selfhosted"}` | Docker image to use as source for stackpacks. |
+| stackstate.stackpacks.image | object | `{"pullPolicy":"","registry":"quay.io","repository":"stackstate/stackpacks","tag":"20231127095649-master-515c177-selfhosted"}` | Docker image to use as source for stackpacks. |
 | stackstate.stackpacks.image.pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.image.registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.image.repository | string | `"stackstate/stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.image.tag | string | `"20231113132536-master-1b6f96b-selfhosted"` | Tag used for the `stackpacks` Docker image; |
+| stackstate.stackpacks.image.tag | string | `"20231127095649-master-515c177-selfhosted"` | Tag used for the `stackpacks` Docker image; |
 | stackstate.stackpacks.installed | list | `[]` | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) |
 | stackstate.stackpacks.pvc.size | string | `"1Gi"` |  |
 | stackstate.stackpacks.pvc.storageClass | string | `nil` |  |

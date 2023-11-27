@@ -1,0 +1,13 @@
+{{- define "stackstate.notification.configmap-log" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-notification-log
+data:
+  logback.groovy: |
+{{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "WARN" "AdditionalLogging" .Values.stackstate.components.notification.additionalLogging) .) | nindent 4 -}}
+{{- end -}}
+
+{{- if .Values.stackstate.experimental.server.split }}
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $stackstateNotificationLogConfigMap := fromYaml (include "stackstate.notification.configmap-log" .) -}}
+{{- toYaml (merge $stackstateNotificationLogConfigMap $commonConfigMap) -}}
+{{- end -}}
