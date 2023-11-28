@@ -9,7 +9,7 @@ image:
   # image.repository -- Repository containing the image for the Redirector
   repository: stackstate/redirector
   # image.tag -- Tag of the image for the Redirector
-  tag: v0.0.2
+  tag: v0.0.3
   # image.pullPolicy -- Pull policy for the image for the Redirector
   pullPolicy: IfNotPresent
 resources:

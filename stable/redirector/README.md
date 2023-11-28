@@ -2,7 +2,7 @@
 
 Redirector can help with redirecting users to their own URL.
 
-Current chart version is `0.0.1`
+Current chart version is `0.0.2`
 
 **Homepage:** <https://gitlab.com/StackVista/platform/redirector>
 
@@ -40,7 +40,7 @@ ingress:
 | image.pullPolicy | string | `"IfNotPresent"` | Pull policy for the image for the Redirector |
 | image.registry | string | `nil` | Registry containing the image for the Redirector |
 | image.repository | string | `"stackstate/redirector"` | Repository containing the image for the Redirector |
-| image.tag | string | `"v0.0.2"` | Tag of the image for the Redirector |
+| image.tag | string | `"v0.0.3"` | Tag of the image for the Redirector |
 | ingress.enabled | bool | `false` |  |
 | ingress.path | string | `"/"` |  |
 | replicaCount | int | `2` |  |
