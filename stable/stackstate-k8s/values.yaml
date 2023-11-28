@@ -1711,6 +1711,9 @@ victoria-metrics-0:
       ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
       ad.stackstate.com/victoria-metrics-0-server.init_configs: "[{}]"
       ad.stackstate.com/victoria-metrics-0-server.instances: '[ { "prometheus_url": "http://%%host%%:8428/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
+      ad.stackstate.com/vmbackup.check_names: '["openmetrics"]'
+      ad.stackstate.com/vmbackup.init_configs: "[{}]"
+      ad.stackstate.com/vmbackup.instances: '[ { "prometheus_url": "http://%%host%%:9746/metrics", "namespace": "stackstate", "metrics": ["supercronic_*"] } ]'
     # victoria-metrics-0.server.affinity -- Affinity settings for Victoria Metrics pod
     affinity: {}
     # podAntiAffinity:
@@ -1792,6 +1795,9 @@ victoria-metrics-1:
       ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
       ad.stackstate.com/victoria-metrics-0-server.init_configs: "[{}]"
       ad.stackstate.com/victoria-metrics-0-server.instances: '[ { "prometheus_url": "http://%%host%%:8428/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
+      ad.stackstate.com/vmbackup.check_names: '["openmetrics"]'
+      ad.stackstate.com/vmbackup.init_configs: "[{}]"
+      ad.stackstate.com/vmbackup.instances: '[ { "prometheus_url": "http://%%host%%:9746/metrics", "namespace": "stackstate", "metrics": ["supercronic_*"] } ]'
     # victoria-metrics-1.server.affinity -- Affinity settings for Victoria Metrics pod
     affinity: {}
     # podAntiAffinity:
