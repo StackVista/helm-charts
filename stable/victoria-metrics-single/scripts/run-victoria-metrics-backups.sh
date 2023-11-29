@@ -14,8 +14,8 @@ if [ -s $TMP_READ_GENERATION ]; then
   VM_GENERATION=$(cat $TMP_READ_GENERATION | jq -e '.values | last')
 else
   # Generate timestamp as the vm_generation
-  VM_GENERATION=$(date +%s)
-  wget --post-data "$METRIC_NAME $VM_GENERATION" http://127.0.0.1:8428/api/v1/import/prometheus -O /tmp/new-vm-generation
+  VM_GENERATION=$(date +"%Y%m%d%H%M%S")
+  wget --post-data "$METRIC_NAME $VM_GENERATION" http://127.0.0.1:8428/api/v1/import/prometheus -O /dev/null
   WRITE_GENERATION_CODE=$?
   if [ $WRITE_GENERATION_CODE -ne 0 ]; then
     echo "Error persisting $METRIC_NAME with value $VM_GENERATION and exit code $WRITE_GENERATION_CODE"
