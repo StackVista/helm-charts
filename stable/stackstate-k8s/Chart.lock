@@ -31,9 +31,9 @@ dependencies:
   version: 8.1.2
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.4
+  version: 0.8.53-stackstate.5
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.4
-digest: sha256:1a4a934f13769c4bba16f6e6f4695a02d1409e67ee825922949dc3fb9fa9a254
-generated: "2023-11-28T11:25:40.905291611Z"
+  version: 0.8.53-stackstate.5
+digest: sha256:3b22df77ae23e2ad288fa8dd6338279adadcdfc9027e24ab5b338ea7696ff5a6
+generated: "2023-11-29T11:29:15.105867868+01:00"

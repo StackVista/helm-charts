@@ -11,16 +11,23 @@ function fetchBackupDate() {
   BUCKET=$1
   INSTANCE_NAME=$2
   set +e
-  BACKUP_DATE=$(aws --endpoint-url "http://${MINIO_ENDPOINT}" --region minio s3api head-object --bucket "$BUCKET" --key "$INSTANCE_NAME/backup_complete.ignore" --query "LastModified")
-  BACKUP_EXISTS=$?
+  ALL_S3_prefixes=$(aws --endpoint-url "http://${MINIO_ENDPOINT}" --region minio s3api list-objects --bucket "$BACKUP_VICTORIA_METRICS_0_BUCKET_NAME" --prefix "$INSTANCE_NAME" --delimiter '/' --query 'CommonPrefixes[].[Prefix]' --output text )
+  for S3_PREFIX in $ALL_S3_prefixes
+  do
+    if [ "$S3_PREFIX" != "None" ]; then
+      BACKUP_DATE=$(aws --endpoint-url "http://${MINIO_ENDPOINT}" --region minio s3api head-object --bucket "$BUCKET" --key "${S3_PREFIX}backup_complete.ignore" --query "LastModified")
+      BACKUP_EXISTS=$?
+      set -e
+      if [ $BACKUP_EXISTS -eq 0 ]; then
+        echo "${INSTANCE_NAME} ${S3_PREFIX::-1} $BACKUP_DATE"
+      elif [ $BACKUP_EXISTS -eq 254 ]; then
+        echo "Backup not found for '${S3_PREFIX::-1}'"
+      else
+        echo "Unexpected status code $BACKUP_EXISTS when querying ${S3_PREFIX::-1}"
+      fi
+    fi
+  done
   set -e
-  if [ $BACKUP_EXISTS -eq 0 ]; then
-    echo "$INSTANCE_NAME: $BACKUP_DATE"
-  elif [ $BACKUP_EXISTS -eq 254 ]; then
-    echo "Backup not found for '$INSTANCE_NAME'"
-  else
-    echo "Unexpected status code $BACKUP_EXISTS"
-  fi
 }
 
 echo "=== Fetching timestamps of last completed incremental backups"

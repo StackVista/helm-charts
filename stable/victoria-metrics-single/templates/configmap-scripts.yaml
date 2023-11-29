@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "victoria-metrics.server.fullname" . }}-scripts
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "victoria-metrics.server.labels" . | nindent 4 }}
+data:
+  run-victoria-metrics-backup.sh: |
+    {{- .Files.Get "scripts/run-victoria-metrics-backups.sh" | nindent 4 }}

@@ -384,6 +384,7 @@ spec:
             - '/backup-restore-scripts/restore-victoria-metrics-backup.sh'
           args:
             - "REPLACE_ME_VICTORIA_METRICS_INSTANCE_NAME"
+            - "REPLACE_ME_VICTORIA_METRICS_S3_PREFIX"
           env:
             {{- include "stackstate.backup.envvars" . | nindent 12 }}
           {{- with .Values.stackstate.components.backup.resources }}
