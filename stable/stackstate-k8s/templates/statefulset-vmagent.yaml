@@ -35,7 +35,7 @@ workingDir: /
 args:
   - -remoteWrite.tmpDataPath=/tmpData
   - -remoteWrite.relabelConfig=/etc/vmagent/relabel_config.yaml
-  - -remoteWrite.maxDiskUsagePerURL="{{ div (include "stackstate.storage.to.megabytes" .Values.stackstate.components.vmagent.persistence.size) (len $targets.instances) }}MiB"
+  - -remoteWrite.maxDiskUsagePerURL="{{ div (include "stackstate.storage.to.megabytes" .Values.stackstate.components.vmagent.persistence.size) (len $targets.instances) }}MB"
 {{ range $targets.instances }}
   - -remoteWrite.url={{ .url }}
 {{- end -}}

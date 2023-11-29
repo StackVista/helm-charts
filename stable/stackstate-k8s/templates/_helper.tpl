@@ -548,7 +548,7 @@ Logic validate the total shares of Es disk
     {{- mul $t 1000000 -}}
 {{- else if hasSuffix "Gi" . -}}
     {{- $gi := trimSuffix "Gi" . | int -}}
-    {{- mul $gi 1074 -}}
+    {{- mul $gi 1073.74 -}}
 {{- else if hasSuffix "G" . -}}
     {{- $g := trimSuffix "G" . | int -}}
     {{- mul $g 1000 -}}

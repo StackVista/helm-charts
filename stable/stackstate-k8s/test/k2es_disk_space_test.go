@@ -30,12 +30,12 @@ func TestK2ESDiskSpaceRender(t *testing.T) {
 	require.NotNil(t, stackstateE2esDeployment)
 	require.NotNil(t, stackstateReceiverDeployment)
 
-	expectedDiskE2esSpace := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_elasticsearchDiskSpaceMB", Value: "120825"}
+	expectedDiskE2esSpace := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_elasticsearchDiskSpaceMB", Value: "120712"}
 	expectedGeWeightsPerIndex := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_kafkaGenericEventsToES_elasticsearch_index_diskSpaceWeight", Value: "33"}
 	expectedTeWeightsPerIndex := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_kafkaTopologyEventsToES_elasticsearch_index_diskSpaceWeight", Value: "33"}
 	expectedEWeightsPerIndex := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_kafkaStsEventsToES_elasticsearch_index_diskSpaceWeight", Value: "33"}
 	expectedTracesWeightsPerIndex := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_kafkaTraceToES_elasticsearch_index_diskSpaceWeight", Value: "0"}
-	expectedDiskReceiverSpace := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_receiver_elasticsearchDiskSpaceMB", Value: "281925"}
+	expectedDiskReceiverSpace := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_receiver_elasticsearchDiskSpaceMB", Value: "281662"}
 
 	require.Contains(t, stackstateE2esDeployment.Spec.Template.Spec.Containers[0].Env, expectedDiskE2esSpace)
 	require.Contains(t, stackstateE2esDeployment.Spec.Template.Spec.Containers[0].Env, expectedGeWeightsPerIndex)
@@ -69,12 +69,12 @@ func TestK2ESDiskSpaceForTraces(t *testing.T) {
 	require.NotNil(t, stackstateE2esDeployment)
 	require.NotNil(t, stackstateReceiverDeployment)
 
-	expectedDiskE2esSpace := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_elasticsearchDiskSpaceMB", Value: "120825"}
+	expectedDiskE2esSpace := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_elasticsearchDiskSpaceMB", Value: "120712"}
 	expectedGeWeightsPerIndex := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_kafkaGenericEventsToES_elasticsearch_index_diskSpaceWeight", Value: "11"}
 	expectedTeWeightsPerIndex := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_kafkaTopologyEventsToES_elasticsearch_index_diskSpaceWeight", Value: "11"}
 	expectedEWeightsPerIndex := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_kafkaStsEventsToES_elasticsearch_index_diskSpaceWeight", Value: "11"}
 	expectedTracesWeightsPerIndex := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_kafkaTraceToES_elasticsearch_index_diskSpaceWeight", Value: "66"}
-	expectedDiskReceiverSpace := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_receiver_elasticsearchDiskSpaceMB", Value: "281925"}
+	expectedDiskReceiverSpace := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_receiver_elasticsearchDiskSpaceMB", Value: "281662"}
 
 	require.Contains(t, stackstateE2esDeployment.Spec.Template.Spec.Containers[0].Env, expectedDiskE2esSpace)
 	require.Contains(t, stackstateE2esDeployment.Spec.Template.Spec.Containers[0].Env, expectedGeWeightsPerIndex)
