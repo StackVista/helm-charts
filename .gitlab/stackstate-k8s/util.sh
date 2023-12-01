@@ -19,6 +19,23 @@ function updateChartValue() {
   new_value=${2:?"Please provide a new value"}
   values_path=${3:?"Please provide a path to values.yaml file"}
   readme_path=${4:?"Please provide a path to README.md file"}
+
+  # checks if value exists in the README file
+  set +e
+  grep -q "$value_path" "$readme_path"
+  value_exists_readme=$?
+  set -e
+  if ! [[ "$value_exists_readme" -eq "0" ]]; then
+    echo "not found $value_path in the $readme_path file"
+    return 1
+  fi
+
+  # checks if value exists in the values.yaml file
+  if [[ "$(yq ".$value_path" "$values_path")" = "null" ]]; then
+    echo "not found $value_path in the $values_path file"
+    return 1
+  fi
+
   yq -i eval ".${value_path}=\"${new_value}\"" "$values_path"
   # Replaces value in the README file to the new value, e.g.
   # | stackstate.stackpacks.image.tag | string | `"20231129143410-master-630ae63-selfhosted"` | Tag used for the `stackpacks` Docker image; |
