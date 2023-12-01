@@ -12,3 +12,16 @@ function get_latest_master_version() {
   version_regex=${2:?"Please provide the version regex"}
   curl -s -H "Authorization: Bearer ${quay_token}" -X GET "https://quay.io/api/v1/repository/stackstate/${image}/tag/?limit=100" | jq -r --arg REGEX "$version_regex" '.tags[] | select(.name | test($REGEX)) | .name' | sort -V | tail -n 1
 }
+
+# Updates a helm chart value to new new one and also updates README file.
+function updateChartValue() {
+  value_path=${1:?"Please provide path to value"}
+  new_value=${2:?"Please provide a new value"}
+  values_path=${3:?"Please provide a path to values.yaml file"}
+  readme_path=${4:?"Please provide a path to README.md file"}
+  yq -i eval ".${value_path}=\"${new_value}\"" "$values_path"
+  # Replaces value in the README file to the new value, e.g.
+  # | stackstate.stackpacks.image.tag | string | `"20231129143410-master-630ae63-selfhosted"` | Tag used for the `stackpacks` Docker image; |
+  #                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ - will be replaced to the new value
+  sed -i -E "s/^(\| ${value_path} \| string \| \`\").*(\"\` \|.*)$/\1${new_value}\2/" "$readme_path"
+}

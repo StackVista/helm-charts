@@ -10,10 +10,11 @@ source "${dir}/../util.sh"
 
 full_stackpacks_master_tag=$(get_latest_master_version stackpacks "$STACKPACKS_VERSION_REGEX")
 values_path="stable/stackstate-k8s/values.yaml"
+readme_path="stable/stackstate-k8s/README.md"
 
 echo "Latest stackpack master tag: $full_stackpacks_master_tag"
 
-yq -i eval ".stackstate.stackpacks.image.tag=\"$full_stackpacks_master_tag\"" "$values_path"
+updateChartValue "stackstate.stackpacks.image.tag" "$full_stackpacks_master_tag" "$values_path" "$readme_path"
 
 git add "$values_path"
 commit_changes "Updating stackpacks version to $full_stackpacks_master_tag"
