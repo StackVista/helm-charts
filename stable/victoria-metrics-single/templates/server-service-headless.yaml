@@ -67,6 +67,12 @@ spec:
       port: {{ include "split-host-port" .Values.server.extraArgs.opentsdbListenAddr }}
       targetPort: opentsdb-tcp
 {{- end }}
+{{- if .Values.backup.enabled }}
+    - name: supercronic
+      protocol: TCP
+      port: {{ .Values.backup.supercronic.metrics.port }}
+      targetPort: supercronic
+{{- end }}
   selector:
     {{- include "victoria-metrics.server.matchLabels" . | nindent 4 }}
 {{- end -}}

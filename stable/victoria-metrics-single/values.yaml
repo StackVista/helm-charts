@@ -696,6 +696,12 @@ backup:
       limits:
         cpu: 20m
         memory: 64Mi
+  supercronic:
+    metrics:
+      # Port used by supercronic to expose Prometheus metrics
+      port: 9746
+      # Prometheus scrape interval for supercronic component
+      interval: 10m
   vmbackup:
     image:
       # -- Repository containing the image for the Victoria Metrics backup

@@ -178,7 +178,7 @@ spec:
             - supercronic
           args:
             - -prometheus-listen-address
-            - 0.0.0.0:9746
+            - 0.0.0.0:{{ .Values.backup.supercronic.metrics.port }}
             - /app/crontab/vmbackup
           resources:
 {{ toYaml .Values.backup.vmbackup.resources | indent 12 }}
@@ -193,6 +193,9 @@ spec:
                 secretKeyRef:
                   name: {{ tpl .Values.backup.awsSecrets .}}
                   key: secretkey
+          ports:
+            - containerPort: {{ .Values.backup.supercronic.metrics.port }}
+              name: supercronic
           volumeMounts:
             - mountPath: /storage
               name: server-volume

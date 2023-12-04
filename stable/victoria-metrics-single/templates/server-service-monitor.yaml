@@ -41,4 +41,8 @@ spec:
       relabelings:
           {{- toYaml . | nindent 8 }}
       {{- end }}
+    {{- if .Values.backup.enabled }}
+    - port: supercronic
+      interval: {{ .Values.backup.supercronic.metrics.interval }}
+    {{- end }}
   {{- end }}
