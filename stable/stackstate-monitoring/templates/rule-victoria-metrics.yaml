@@ -149,4 +149,13 @@ spec:
              correctly or that clients which send these metrics aren't misbehaving." `}}
             runbook_url: https://www.notion.so/stackstate/Runbook-VictoriaMetrics-0f65e5e29fd74e829bb3da7bd4062144
 
+        - alert: VictoriaMetricsBackupsPerformed
+          expr: increase(supercronic_successful_executions{namespace=~{{ .Values.rules.namespaceRegex | quote }}, pod=~".*victoria-metrics-.*"}[3h]) == 0
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: {{` 'Backup for instance ({{ $labels.instance }}) has not been exectued for at least 3h' `}}
+            description: {{` "Backups haven't been performed for at least 3h, you should check logs of 'vmbackup' container, logn/status of MinIO pods or if backups are enabled at all" `}}
+            runbook_url: https://docs.stackstate.com/self-hosted-setup/data-management/backup_restore/kubernetes_backup#metrics-victoria-metrics
 {{- end }}
