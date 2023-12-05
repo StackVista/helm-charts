@@ -78,9 +78,9 @@ nodeAgent:
           memory: "180Mi"
         maximum:
           # nodeAgent.scaling.autoscalerLimits.agent.maximum.cpu -- Maximum CPU resource limits for main agent.
-          cpu: "500m"
+          cpu: "200m"
           # nodeAgent.scaling.autoscalerLimits.agent.maximum.memory -- Maximum memory resource limits for main agent.
-          memory: "750Mi"
+          memory: "450Mi"
       processAgent:
         minimum:
           # nodeAgent.scaling.autoscalerLimits.processAgent.minimum.cpu -- Minimum CPU resource limits for process agent.
@@ -89,9 +89,9 @@ nodeAgent:
           memory: "100Mi"
         maximum:
           # nodeAgent.scaling.autoscalerLimits.processAgent.maximum.cpu -- Maximum CPU resource limits for process agent.
-          cpu: "1000m"
+          cpu: "200m"
           # nodeAgent.scaling.autoscalerLimits.processAgent.maximum.memory -- Maximum memory resource limits for process agent.
-          memory: "1500Mi"
+          memory: "500Mi"
 
   containers:
     agent:

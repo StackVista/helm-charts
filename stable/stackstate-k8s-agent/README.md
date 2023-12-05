@@ -215,12 +215,12 @@ stackstate/stackstate-k8s-agent
 | nodeAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | nodeAgent.priorityClassName | string | `""` | Priority class for nodeAgent pods. |
 | nodeAgent.protocolInspection.enabled | bool | `true` | Enable / disable the nodeAgent protocol inspection. |
-| nodeAgent.scaling.autoscalerLimits.agent.maximum.cpu | string | `"500m"` | Maximum CPU resource limits for main agent. |
-| nodeAgent.scaling.autoscalerLimits.agent.maximum.memory | string | `"750Mi"` | Maximum memory resource limits for main agent. |
+| nodeAgent.scaling.autoscalerLimits.agent.maximum.cpu | string | `"200m"` | Maximum CPU resource limits for main agent. |
+| nodeAgent.scaling.autoscalerLimits.agent.maximum.memory | string | `"450Mi"` | Maximum memory resource limits for main agent. |
 | nodeAgent.scaling.autoscalerLimits.agent.minimum.cpu | string | `"20m"` | Minimum CPU resource limits for main agent. |
 | nodeAgent.scaling.autoscalerLimits.agent.minimum.memory | string | `"180Mi"` | Minimum memory resource limits for main agent. |
-| nodeAgent.scaling.autoscalerLimits.processAgent.maximum.cpu | string | `"1000m"` | Maximum CPU resource limits for process agent. |
-| nodeAgent.scaling.autoscalerLimits.processAgent.maximum.memory | string | `"1500Mi"` | Maximum memory resource limits for process agent. |
+| nodeAgent.scaling.autoscalerLimits.processAgent.maximum.cpu | string | `"200m"` | Maximum CPU resource limits for process agent. |
+| nodeAgent.scaling.autoscalerLimits.processAgent.maximum.memory | string | `"500Mi"` | Maximum memory resource limits for process agent. |
 | nodeAgent.scaling.autoscalerLimits.processAgent.minimum.cpu | string | `"25m"` | Minimum CPU resource limits for process agent. |
 | nodeAgent.scaling.autoscalerLimits.processAgent.minimum.memory | string | `"100Mi"` | Minimum memory resource limits for process agent. |
 | nodeAgent.scc.enabled | bool | `false` | Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift. |
