@@ -16,6 +16,6 @@ echo "Latest stackpack master tag: $full_stackpacks_master_tag"
 
 updateChartValue "stackstate.stackpacks.image.tag" "$full_stackpacks_master_tag" "$values_path" "$readme_path"
 
-git add "$values_path"
+git add "$values_path" "$readme_path"
 commit_changes "Updating stackpacks version to $full_stackpacks_master_tag"
 push_changes
