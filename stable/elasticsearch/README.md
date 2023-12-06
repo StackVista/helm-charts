@@ -84,7 +84,7 @@ Official Elastic helm chart for Elasticsearch
 | prometheus-elasticsearch-exporter.enabled | bool | `false` | Enable to expose prometheus metrics |
 | prometheus-elasticsearch-exporter.es.uri | string | `"http://elasticsearch-master:9200"` | URI of Elasticsearch to monitor, override when changing clusterName or nodeGroup (format is <protocol>://<clusterName>-<nodegroup>:<httpPort>) |
 | prometheus-elasticsearch-exporter.image.repository | string | `"quay.io/stackstate/elasticsearch-exporter"` | Elastichsearch Prometheus exporter image repository |
-| prometheus-elasticsearch-exporter.image.tag | string | `"v1.2.1-2738680411"` | Elastichsearch Prometheus exporter image tag |
+| prometheus-elasticsearch-exporter.image.tag | string | `"v1.2.1-279b423b"` | Elastichsearch Prometheus exporter image tag |
 | prometheus-elasticsearch-exporter.podAnnotations | object | `{}` | custom annotations on the pod |
 | prometheus-elasticsearch-exporter.securityContext.enabled | bool | `true` | Set to `false` for OpenShift compatibility |
 | prometheus-elasticsearch-exporter.servicemonitor.enabled | bool | `false` | enable to create a servicemonitor for prometheus operator |
