@@ -458,7 +458,7 @@ stackstate/stackstate
 | stackstate.components.notification.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.notification.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `notification` pods. |
 | stackstate.components.notification.replicaCount | int | `1` | Number of `notification` replicas. |
-| stackstate.components.notification.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"1500Mi"},"requests":{"cpu":"200m","ephemeral-storage":"1Mi","memory":"1500Mi"}}` | Resource allocation for `notification` pods. |
+| stackstate.components.notification.resources | object | `{"limits":{"cpu":"750m","ephemeral-storage":"1Gi","memory":"1500Mi"},"requests":{"cpu":"250m","ephemeral-storage":"1Mi","memory":"1500Mi"}}` | Resource allocation for `notification` pods. |
 | stackstate.components.notification.sizing.baseMemoryConsumption | string | `"350Mi"` |  |
 | stackstate.components.notification.sizing.javaHeapMemoryFraction | string | `"60"` |  |
 | stackstate.components.notification.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -641,7 +641,7 @@ stackstate/stackstate
 | stackstate.java.trustStorePassword | string | `nil` | Password to access the Java TrustStore (cacerts) file |
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
 | stackstate.receiver.baseUrl | string | `nil` | **DEPRECATED** Use stackstate.baseUrl instead |
-| stackstate.stackpacks.image | object | `{"pullPolicy":"","registry":"quay.io","repository":"stackstate/stackpacks","tag":"20231129143410-master-630ae63-selfhosted"}` | Docker image to use as source for stackpacks. |
+| stackstate.stackpacks.image | object | `{"pullPolicy":"","registry":"quay.io","repository":"stackstate/stackpacks","tag":"20231205134147-master-9b148fa-selfhosted"}` | Docker image to use as source for stackpacks. |
 | stackstate.stackpacks.image.pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.image.registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.image.repository | string | `"stackstate/stackpacks"` | Repository of the `stackpacks` Docker image. |
