@@ -200,6 +200,12 @@ stackstate.deploymentMode = "{{- .Values.stackstate.deployment.mode -}}"
   {{- else }}
   redirectUri = "{{ $global.Values.stackstate.baseUrl | default $global.Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is a required value." }}/loginCallback"
   {{- end }}
+  {{- if $apiAuth.keycloak.scope }}
+  {{- if not (kindIs "slice" $apiAuth.keycloak.scope) -}}
+    {{- fail "stackstate.authentication.keycloak.scope must be an array of scopes" -}}
+  {{- end }}
+  scope = {{ $apiAuth.keycloak.scope | toJson }}
+  {{- end }}
   {{- if $apiAuth.keycloak.authenticationMethod }}
   authenticationMethod = {{ $apiAuth.keycloak.authenticationMethod | quote }}
   {{- end }}

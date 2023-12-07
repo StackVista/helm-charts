@@ -92,6 +92,7 @@ const expectedKeycloakAuthConfig = `stackstate.api.authentication.authServer.key
   clientId = "stackstate-client-id"
   secret = "some-secret"
   redirectUri = "http://localhost/loginCallback"
+  scope = ["openid","profile","email"]
   authenticationMethod = "client_secret_basic"
   jwsAlgorithm = "RS256"
   jwtClaims {
