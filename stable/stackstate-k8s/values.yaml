@@ -1561,6 +1561,24 @@ zookeeper:
     app.kubernetes.io/part-of: stackstate-k8s
   commonLabels:
     app.kubernetes.io/part-of: stackstate
+  livenessProbe:
+    # zookeeper.livenessProbe.enabled -- it must be disabled to apply the custom probe, the probe adds "-q" option to nc to wait 1sec until close the connection, it fixes problem of failing the probed
+    enabled: false
+  customLivenessProbe:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - echo "ruok" | timeout 2 nc -w 2 -q 1 localhost 2181 | grep imok
+  readinessProbe:
+    # zookeeper.readinessProbe.enabled -- it must be disabled to apply the custom probe, the probe adds "-q" option to nc to wait 1sec until close the connection, it fixes problem of failing the probed
+    enabled: false
+  customReadinessProbe:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - echo "ruok" | timeout 2 nc -w 2 -q 1 localhost 2181 | grep imok
   image:
     # zookeeper.image.registry -- ZooKeeper image registry
     registry: quay.io

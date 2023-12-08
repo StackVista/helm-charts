@@ -719,6 +719,12 @@ stackstate/stackstate
 | victoria-metrics.restore.securityContext.runAsNonRoot | bool | `true` |  |
 | victoria-metrics.restore.securityContext.runAsUser | int | `65534` |  |
 | zookeeper.commonLabels."app.kubernetes.io/part-of" | string | `"stackstate"` |  |
+| zookeeper.customLivenessProbe.exec.command[0] | string | `"/bin/bash"` |  |
+| zookeeper.customLivenessProbe.exec.command[1] | string | `"-c"` |  |
+| zookeeper.customLivenessProbe.exec.command[2] | string | `"echo \"ruok\" | timeout 2 nc -w 2 -q 1 localhost 2181 | grep imok"` |  |
+| zookeeper.customReadinessProbe.exec.command[0] | string | `"/bin/bash"` |  |
+| zookeeper.customReadinessProbe.exec.command[1] | string | `"-c"` |  |
+| zookeeper.customReadinessProbe.exec.command[2] | string | `"echo \"ruok\" | timeout 2 nc -w 2 -q 1 localhost 2181 | grep imok"` |  |
 | zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
 | zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |
 | zookeeper.fourlwCommandsWhitelist | string | `"mntr, ruok, stat, srvr"` | Zookeeper four-letter-word (FLW) commands that are enabled. |
@@ -727,6 +733,7 @@ stackstate/stackstate
 | zookeeper.image.registry | string | `"quay.io"` | ZooKeeper image registry |
 | zookeeper.image.repository | string | `"stackstate/zookeeper"` | ZooKeeper image repository |
 | zookeeper.image.tag | string | `"3.6.3-d3a5efbc"` | ZooKeeper image tag |
+| zookeeper.livenessProbe.enabled | bool | `false` | it must be disabled to apply the custom probe, the probe adds "-q" option to nc to wait 1sec until close the connection, it fixes problem of failing the probed |
 | zookeeper.metrics.enabled | bool | `true` | Enable / disable Zookeeper Prometheus metrics. |
 | zookeeper.metrics.serviceMonitor | object | `{"enabled":false,"selector":{}}` |  |
 | zookeeper.metrics.serviceMonitor.enabled | bool | `false` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |
@@ -736,6 +743,7 @@ stackstate/stackstate
 | zookeeper.pdb.minAvailable | string | `""` |  |
 | zookeeper.podAnnotations | object | `{"ad.stackstate.com/zookeeper.check_names":"[\"openmetrics\"]","ad.stackstate.com/zookeeper.init_configs":"[{}]","ad.stackstate.com/zookeeper.instances":"[ { \"prometheus_url\": \"http://%%host%%:9141/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Annotations for ZooKeeper pod. |
 | zookeeper.podLabels."app.kubernetes.io/part-of" | string | `"stackstate-k8s"` |  |
+| zookeeper.readinessProbe.enabled | bool | `false` | it must be disabled to apply the custom probe, the probe adds "-q" option to nc to wait 1sec until close the connection, it fixes problem of failing the probed |
 | zookeeper.replicaCount | int | `3` | Default amount of Zookeeper replicas to provision. |
 | zookeeper.resources.limits.cpu | string | `"250m"` |  |
 | zookeeper.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
