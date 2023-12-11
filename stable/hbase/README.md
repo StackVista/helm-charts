@@ -150,7 +150,7 @@ Current chart version is `0.1.164`
 | zookeeper.fourlwCommandsWhitelist | string | `"mntr, ruok, stat, srvr"` | Zookeeper four-letter-word (FLW) commands that are enabled. |
 | zookeeper.image.registry | string | `"quay.io"` | ZooKeeper image registry |
 | zookeeper.image.repository | string | `"stackstate/zookeeper"` | ZooKeeper image repository |
-| zookeeper.image.tag | string | `"3.6.3-d3a5efbc"` | ZooKeeper image tag |
+| zookeeper.image.tag | string | `"3.6.3-5767b505"` | ZooKeeper image tag |
 | zookeeper.metrics.enabled | bool | `true` | Enable / disable Zookeeper Prometheus metrics. |
 | zookeeper.metrics.serviceMonitor.enabled | bool | `false` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |
 | zookeeper.metrics.serviceMonitor.selector | object | `{"release":"prometheus-operator"}` | Default selector to use to target a certain Prometheus instance. |
