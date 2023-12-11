@@ -618,7 +618,7 @@ stackstate/stackstate
 | stackstate.components.vmagent.agentMetricsFilter | string | `"[\"vmagent*\"]"` |  |
 | stackstate.components.vmagent.extraArgs | object | `{}` |  |
 | stackstate.components.vmagent.image.repository | string | `"stackstate/vmagent"` |  |
-| stackstate.components.vmagent.image.tag | string | `"v1.93.7"` |  |
+| stackstate.components.vmagent.image.tag | string | `"v1.93.7-2e42e9fc"` |  |
 | stackstate.components.vmagent.persistence.size | string | `"10Gi"` |  |
 | stackstate.components.vmagent.persistence.storageClass | string | `nil` |  |
 | stackstate.components.vmagent.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `vmagent` pods. |

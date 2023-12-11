@@ -1019,7 +1019,7 @@ stackstate:
     vmagent:
       image:
         repository: stackstate/vmagent
-        tag: v1.93.7
+        tag: v1.93.7-2e42e9fc
       # stackstate.components.vmagent.poddisruptionbudget -- PodDisruptionBudget settings for `vmagent` pods.
       poddisruptionbudget:
         maxUnavailable: 1
