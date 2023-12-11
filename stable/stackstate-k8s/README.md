@@ -11,8 +11,8 @@ Current chart version is `1.5.1-pre.13`
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common/ | common | * |
-| file://../elasticsearch/ | elasticsearch | 8.5.1-stackstate.2 |
-| file://../hbase/ | hbase | 0.1.164 |
+| file://../elasticsearch/ | elasticsearch | 8.5.1-stackstate.3 |
+| file://../hbase/ | hbase | 0.1.165 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.8 |
 | file://../pull-secret/ | pull-secret | * |
