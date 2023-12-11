@@ -626,7 +626,7 @@ stackstate/stackstate
 | stackstate.components.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | stackstate.components.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
-| stackstate.components.wait.image.tag | string | `"1.0.8-a6ec1609"` | Container image tag for wait containers. |
+| stackstate.components.wait.image.tag | string | `"1.0.9-104f3090"` | Container image tag for wait containers. |
 | stackstate.deployment | object | `{"mode":"SelfHosted"}` | Deployment settings for StackState |
 | stackstate.deployment.mode | string | `"SelfHosted"` | Deployment mode of StackState, possible values are 'SaaS' and 'SelfHosted' |
 | stackstate.experimental.enableVMAgent | bool | `true` |  |
