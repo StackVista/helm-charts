@@ -1152,7 +1152,6 @@ stackstate:
     pvc:
       size: 1Gi
       storageClass:
-    # stackstate.stackpacks.image -- Docker image to use as source for stackpacks.
     image:
       # stackstate.stackpacks.image.registry -- `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis.
       registry: "quay.io"
