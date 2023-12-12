@@ -641,7 +641,7 @@ stackstate/stackstate
 | stackstate.java.trustStorePassword | string | `nil` | Password to access the Java TrustStore (cacerts) file |
 | stackstate.license.key | string | `nil` | **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server. |
 | stackstate.receiver.baseUrl | string | `nil` | **DEPRECATED** Use stackstate.baseUrl instead |
-| stackstate.stackpacks.image | object | `{"pullPolicy":"","registry":"quay.io","repository":"stackstate/stackpacks","tag":"20231207083709-master-2067fc3-selfhosted"}` | Docker image to use as source for stackpacks. |
+| stackstate.stackpacks.image | object | `{"pullPolicy":"","registry":"quay.io","repository":"stackstate/stackpacks","tag":"20231212110039-master-265bb14-selfhosted"}` | Docker image to use as source for stackpacks. |
 | stackstate.stackpacks.image.pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.image.registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.image.repository | string | `"stackstate/stackpacks"` | Repository of the `stackpacks` Docker image. |
@@ -722,9 +722,19 @@ stackstate/stackstate
 | zookeeper.customLivenessProbe.exec.command[0] | string | `"/bin/bash"` |  |
 | zookeeper.customLivenessProbe.exec.command[1] | string | `"-c"` |  |
 | zookeeper.customLivenessProbe.exec.command[2] | string | `"echo \"ruok\" | timeout 2 nc -w 2 -q 1 localhost 2181 | grep imok"` |  |
+| zookeeper.customLivenessProbe.failureThreshold | int | `6` |  |
+| zookeeper.customLivenessProbe.initialDelaySeconds | int | `30` |  |
+| zookeeper.customLivenessProbe.periodSeconds | int | `10` |  |
+| zookeeper.customLivenessProbe.successThreshold | int | `1` |  |
+| zookeeper.customLivenessProbe.timeoutSeconds | int | `5` |  |
 | zookeeper.customReadinessProbe.exec.command[0] | string | `"/bin/bash"` |  |
 | zookeeper.customReadinessProbe.exec.command[1] | string | `"-c"` |  |
 | zookeeper.customReadinessProbe.exec.command[2] | string | `"echo \"ruok\" | timeout 2 nc -w 2 -q 1 localhost 2181 | grep imok"` |  |
+| zookeeper.customReadinessProbe.failureThreshold | int | `6` |  |
+| zookeeper.customReadinessProbe.initialDelaySeconds | int | `5` |  |
+| zookeeper.customReadinessProbe.periodSeconds | int | `10` |  |
+| zookeeper.customReadinessProbe.successThreshold | int | `1` |  |
+| zookeeper.customReadinessProbe.timeoutSeconds | int | `5` |  |
 | zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
 | zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |
 | zookeeper.fourlwCommandsWhitelist | string | `"mntr, ruok, stat, srvr"` | Zookeeper four-letter-word (FLW) commands that are enabled. |

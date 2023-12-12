@@ -1570,6 +1570,11 @@ zookeeper:
         - /bin/bash
         - -c
         - echo "ruok" | timeout 2 nc -w 2 -q 1 localhost 2181 | grep imok
+    failureThreshold: 6
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 5
   readinessProbe:
     # zookeeper.readinessProbe.enabled -- it must be disabled to apply the custom probe, the probe adds "-q" option to nc to wait 1sec until close the connection, it fixes problem of failing the probed
     enabled: false
@@ -1579,6 +1584,11 @@ zookeeper:
         - /bin/bash
         - -c
         - echo "ruok" | timeout 2 nc -w 2 -q 1 localhost 2181 | grep imok
+    failureThreshold: 6
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 5
   image:
     # zookeeper.image.registry -- ZooKeeper image registry
     registry: quay.io
