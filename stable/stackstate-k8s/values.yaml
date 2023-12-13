@@ -1701,17 +1701,6 @@ anomaly-detection:
     tls:
     # - hosts:
     #     - spotlight.local.domain
-stackstate-k8s-agent:
-  # stackstate-agent.enabled -- Deploy the StackState Kubernetes Agent so StackState can monitor the cluster it runs in
-  enabled: false
-  stackstate:
-    cluster:
-      # stackstate.cluster.name -- (string) **PROVIDE KUBERNETES CLUSTER NAME HERE** Name of the Kubernetes cluster where the agent will be installed.
-      name:
-      # stackstate.cluster.authToken -- Provide a token to enable secure communication between the agent and the cluster agent.
-      authToken:
-    # stackstate.url -- (string) **PROVIDE STACKSTATE URL HERE** URL of the StackState installation to receive data from the agent.
-    url: 'http://{{ include "stackstate.hostname.prefix" . }}-router:8080/receiver/stsAgent'
 cluster-role:
   # cluster-role.enabled -- Deploy the ClusterRole(s) and ClusterRoleBinding(s) together with the chart. Can be disabled if these need to be installed by an administrator of the Kubernetes cluster.
   enabled: true
