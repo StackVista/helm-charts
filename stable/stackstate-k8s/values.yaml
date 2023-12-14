@@ -1750,6 +1750,10 @@ victoria-metrics-0:
     # victoria-metrics-0.server.podLabels -- Extra labels for Victoria Metrics pod
     podLabels:
       stackstate-service: victoriametrics
+      app.kubernetes.io/part-of: stackstate-k8s
+    # victoria-metrics-0.server.extraLabels -- Extra labels for Victoria Metrics StatefulSet
+    extraLabels:
+      app.kubernetes.io/part-of: stackstate-k8s
     # victoria-metrics-0.server.extraArgs -- Extra arguments for Victoria Metrics
     extraArgs:
       dedup.minScrapeInterval: 1ms
@@ -1834,6 +1838,10 @@ victoria-metrics-1:
     # victoria-metrics-1.server.podLabels -- Extra arguments for Victoria Metrics pod
     podLabels:
       stackstate-service: victoriametrics
+      app.kubernetes.io/part-of: stackstate-k8s
+    # victoria-metrics-0.server.extraLabels -- Extra labels for Victoria Metrics StatefulSet
+    extraLabels:
+      app.kubernetes.io/part-of: stackstate-k8s
     # victoria-metrics-1.server.extraArgs -- Extra arguments for Victoria Metrics
     extraArgs:
       dedup.minScrapeInterval: 1ms

@@ -661,12 +661,13 @@ stackstate/stackstate
 | victoria-metrics-0.restore.enabled | bool | `false` | Enable Victoria Metrics restore functionality (if `backup.enabled` is set to `true`). |
 | victoria-metrics-0.server.affinity | object | `{}` | Affinity settings for Victoria Metrics pod |
 | victoria-metrics-0.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":35}` | Extra arguments for Victoria Metrics |
+| victoria-metrics-0.server.extraLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s"}` | Extra labels for Victoria Metrics StatefulSet |
 | victoria-metrics-0.server.fullnameOverride | string | `"stackstate-victoria-metrics-0"` | Full name override |
 | victoria-metrics-0.server.image.repository | string | `"quay.io/stackstate/victoria-metrics"` | Victoriametrics repository |
 | victoria-metrics-0.server.image.tag | string | `"v1.93.7-5c5a4296"` |  |
 | victoria-metrics-0.server.persistentVolume.size | string | `"250Gi"` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
 | victoria-metrics-0.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]","ad.stackstate.com/vmbackup.check_names":"[\"openmetrics\"]","ad.stackstate.com/vmbackup.init_configs":"[{}]","ad.stackstate.com/vmbackup.instances":"[ { \"prometheus_url\": \"http://%%host%%:9746/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"supercronic_*\"] } ]"}` | Annotations for Victoria Metrics server pod |
-| victoria-metrics-0.server.podLabels | object | `{"stackstate-service":"victoriametrics"}` | Extra labels for Victoria Metrics pod |
+| victoria-metrics-0.server.podLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s","stackstate-service":"victoriametrics"}` | Extra labels for Victoria Metrics pod |
 | victoria-metrics-0.server.resources.limits.cpu | int | `1` |  |
 | victoria-metrics-0.server.resources.limits.memory | string | `"4Gi"` |  |
 | victoria-metrics-0.server.resources.requests.cpu | string | `"300m"` |  |
@@ -687,12 +688,13 @@ stackstate/stackstate
 | victoria-metrics-1.restore.enabled | bool | `false` | Enable Victoria Metrics restore functionality (if `backup.enabled` is set to `true`). |
 | victoria-metrics-1.server.affinity | object | `{}` | Affinity settings for Victoria Metrics pod |
 | victoria-metrics-1.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":35}` | Extra arguments for Victoria Metrics |
+| victoria-metrics-1.server.extraLabels."app.kubernetes.io/part-of" | string | `"stackstate-k8s"` |  |
 | victoria-metrics-1.server.fullnameOverride | string | `"stackstate-victoria-metrics-1"` | Full name override |
 | victoria-metrics-1.server.image.repository | string | `"quay.io/stackstate/victoria-metrics"` | Victoriametrics repository |
 | victoria-metrics-1.server.image.tag | string | `"v1.93.7-5c5a4296"` |  |
 | victoria-metrics-1.server.persistentVolume.size | string | `"250Gi"` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
 | victoria-metrics-1.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]","ad.stackstate.com/vmbackup.check_names":"[\"openmetrics\"]","ad.stackstate.com/vmbackup.init_configs":"[{}]","ad.stackstate.com/vmbackup.instances":"[ { \"prometheus_url\": \"http://%%host%%:9746/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"supercronic_*\"] } ]"}` | Annotations for Victoria Metrics server pod |
-| victoria-metrics-1.server.podLabels | object | `{"stackstate-service":"victoriametrics"}` | Extra arguments for Victoria Metrics pod |
+| victoria-metrics-1.server.podLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s","stackstate-service":"victoriametrics"}` | Extra arguments for Victoria Metrics pod |
 | victoria-metrics-1.server.resources.limits.cpu | int | `1` |  |
 | victoria-metrics-1.server.resources.limits.memory | string | `"4Gi"` |  |
 | victoria-metrics-1.server.resources.requests.cpu | string | `"300m"` |  |
