@@ -1160,7 +1160,7 @@ stackstate:
       # stackstate.stackpacks.image.repository -- Repository of the `stackpacks` Docker image.
       repository: stackstate/stackpacks
       # stackstate.stackpacks.image.tag -- Tag used for the `stackpacks` Docker image;
-      tag: "20231215090610-master-7e9f42b-selfhosted"
+      tag: "20231218125242-master-64f90ad-selfhosted"
     s3:
       # stackstate.stackpacks.s3.bucket -- Name of the S3 bucket to use as source for stackpacks.
       bucket: "sts-stackpacks-prod"
