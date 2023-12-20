@@ -183,7 +183,7 @@ hdfs:
     # hdfs.image.repository -- Base container image repository for HDFS datanode.
     repository: stackstate/hadoop
     # hdfs.image.tag -- Default container image tag for HDFS datanode.
-    tag: 2.10.2-java11-6-a7f77e93
+    tag: 2.10.2-java11-6-ad889210
   volumePermissions:
     # hdfs.volumePermissions.enabled -- Whether to explicitly change the volume permissions for the data/name nodes. If permissions on volume mounts are not correct for whatever reason this can be used to set them properly. Usually also requires enabling the securityContext because root user is required.
     enabled: false
@@ -370,4 +370,4 @@ zookeeper:
     # zookeeper.image.repository -- ZooKeeper image repository
     repository: stackstate/zookeeper
     # zookeeper.image.tag -- ZooKeeper image tag
-    tag: 3.6.3-11a7319d
+    tag: 3.6.3-5e3ee3c0
