@@ -123,6 +123,9 @@
   - name: dockersocket
     mountPath: /var/run/docker.sock
     readOnly: true
+  - name: etcdir
+    mountPath: /host/etc
+    readOnly: true
   - name: procdir
     mountPath: /host/proc
     readOnly: true
