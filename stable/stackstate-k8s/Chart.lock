@@ -1,7 +1,7 @@
 dependencies:
 - name: anomaly-detection
   repository: https://helm.stackstate.io
-  version: 5.2.0-snapshot.96
+  version: 5.2.0-snapshot.100
 - name: common
   repository: file://../common/
   version: 0.4.24
@@ -32,5 +32,5 @@ dependencies:
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
   version: 0.8.53-stackstate.6
-digest: sha256:fae36159f88eced5b8cc39e5f2b260b5124a24b971f2e02fe1d87d63ec319186
-generated: "2023-12-22T12:13:12.641086119Z"
+digest: sha256:93c57697f255e41981481b410b2998a35faed28c9e499efa6d8cfc3bbb193863
+generated: "2023-12-29T07:05:55.883727084Z"
