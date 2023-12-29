@@ -93,6 +93,9 @@ spec:
           path: /etc
         name: etcdir
       - hostPath:
+          path: /var/log
+        name: varlogdir
+      - hostPath:
           path: /etc/passwd
         name: passwd
       - hostPath:

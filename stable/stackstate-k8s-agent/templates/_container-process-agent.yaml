@@ -32,6 +32,8 @@
       value: "/host/proc"
     - name: HOST_SYS
       value: "/host/sys"
+    - name: HOST_ETC
+      value: "/host/etc"
     - name: KUBERNETES
       value: "true"
     - name: STS_CLUSTER_AGENT_ENABLED
@@ -123,12 +125,15 @@
   - name: dockersocket
     mountPath: /var/run/docker.sock
     readOnly: true
+  # The agent needs access to /etc to figure out what os it is running on.
   - name: etcdir
     mountPath: /host/etc
     readOnly: true
   - name: procdir
     mountPath: /host/proc
-    readOnly: true
+  # We need access to the /proc file system to set /proc/sys/net/core/bpf_jit_harden to 0 on gke (it is set to 2)
+  # We need this to make our probe work on gke.
+    readOnly: false
   - name: passwd
     mountPath: /etc/passwd
     readOnly: true
