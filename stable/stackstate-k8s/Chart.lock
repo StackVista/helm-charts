@@ -1,7 +1,7 @@
 dependencies:
 - name: anomaly-detection
   repository: https://helm.stackstate.io
-  version: 5.2.0-snapshot.96
+  version: 5.2.0-snapshot.100
 - name: common
   repository: file://../common/
   version: 0.4.24
@@ -10,7 +10,7 @@ dependencies:
   version: 8.5.1-stackstate.4
 - name: hbase
   repository: file://../hbase/
-  version: 0.1.168
+  version: 0.1.169
 - name: kafka
   repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
   version: 19.1.3
@@ -32,5 +32,5 @@ dependencies:
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
   version: 0.8.53-stackstate.6
-digest: sha256:6b45c646fa621861c811e6b133b2bdcc9798c6b63bbc868dc65c5cb292884ac4
-generated: "2023-12-21T10:02:14.413597+01:00"
+digest: sha256:93c57697f255e41981481b410b2998a35faed28c9e499efa6d8cfc3bbb193863
+generated: "2023-12-29T07:05:55.883727084Z"
