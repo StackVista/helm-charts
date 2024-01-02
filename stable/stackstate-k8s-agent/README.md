@@ -205,7 +205,7 @@ stackstate/stackstate-k8s-agent
 | nodeAgent.containers.processAgent.image.repository | string | `"stackstate/stackstate-k8s-process-agent"` | Process-agent container image repository. |
 | nodeAgent.containers.processAgent.image.tag | string | `"e3c8f57c"` | Default process-agent container image tag. |
 | nodeAgent.containers.processAgent.logLevel | string | `nil` | Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off # If not set, fall back to the value of agent.logLevel. |
-| nodeAgent.containers.processAgent.procVolumeWritable | bool | `false` | Allow writing to /host/proc from the process agent container |
+| nodeAgent.containers.processAgent.procVolumeReadOnly | bool | `false` | Allow writing to /host/proc from the process agent container |
 | nodeAgent.containers.processAgent.resources.limits.cpu | string | `"125m"` | Memory resource limits. |
 | nodeAgent.containers.processAgent.resources.limits.memory | string | `"400Mi"` |  |
 | nodeAgent.containers.processAgent.resources.requests.cpu | string | `"25m"` | Memory resource requests. |

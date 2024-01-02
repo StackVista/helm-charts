@@ -133,7 +133,7 @@
     mountPath: /host/proc
   # We have an agent option STS_DISABLE_BPF_JIT_HARDEN that write to /proc. this is a debug setting but if we want to use
   # it, we have the option to make /proc writable.
-    readOnly: {{ .Values.nodeAgent.containers.processAgent.procVolumeWritable }}
+    readOnly: {{ .Values.nodeAgent.containers.processAgent.procVolumeReadOnly }}
   - name: passwd
     mountPath: /etc/passwd
     readOnly: true
