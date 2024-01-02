@@ -167,8 +167,8 @@ nodeAgent:
       ## If not set, fall back to the value of agent.logLevel.
       logLevel:  # INFO
 
-      # nodeAgent.containers.processAgent.procVolumeReadOnly -- Allow writing to /host/proc from the process agent container
-      procVolumeReadOnly: false
+      # nodeAgent.containers.processAgent.procVolumeReadOnly -- Configure whether /host/proc is read only for the process agent container
+      procVolumeReadOnly: true
 
       resources:
         limits:
