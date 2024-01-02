@@ -131,9 +131,9 @@
     readOnly: true
   - name: procdir
     mountPath: /host/proc
-  # We need access to the /proc file system to set /proc/sys/net/core/bpf_jit_harden to 0 on gke (it is set to 2)
-  # We need this to make our probe work on gke.
-    readOnly: false
+  # We have an agent option STS_DISABLE_BPF_JIT_HARDEN that write to /proc. this is a debug setting but if we want to use
+  # it, we have the option to make /proc writable.
+    readOnly: {{ .Values.nodeAgent.containers.processAgent.procVolumeWritable }}
   - name: passwd
     mountPath: /etc/passwd
     readOnly: true

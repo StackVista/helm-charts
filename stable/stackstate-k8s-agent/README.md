@@ -2,7 +2,7 @@
 
 Helm chart for the StackState Agent.
 
-Current chart version is `1.0.63`
+Current chart version is `1.0.64`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -205,6 +205,7 @@ stackstate/stackstate-k8s-agent
 | nodeAgent.containers.processAgent.image.repository | string | `"stackstate/stackstate-k8s-process-agent"` | Process-agent container image repository. |
 | nodeAgent.containers.processAgent.image.tag | string | `"8c00acf0"` | Default process-agent container image tag. |
 | nodeAgent.containers.processAgent.logLevel | string | `nil` | Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off # If not set, fall back to the value of agent.logLevel. |
+| nodeAgent.containers.processAgent.procVolumeWritable | bool | `false` | Allow writing to /host/proc from the process agent container |
 | nodeAgent.containers.processAgent.resources.limits.cpu | string | `"125m"` | Memory resource limits. |
 | nodeAgent.containers.processAgent.resources.limits.memory | string | `"400Mi"` |  |
 | nodeAgent.containers.processAgent.resources.requests.cpu | string | `"25m"` | Memory resource requests. |

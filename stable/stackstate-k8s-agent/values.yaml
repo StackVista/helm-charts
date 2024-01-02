@@ -167,6 +167,9 @@ nodeAgent:
       ## If not set, fall back to the value of agent.logLevel.
       logLevel:  # INFO
 
+      # nodeAgent.containers.processAgent.procVolumeWritable -- Allow writing to /host/proc from the process agent container
+      procVolumeWritable: false
+
       resources:
         limits:
           # nodeAgent.containers.processAgent.resources.limits.cpu -- CPU resource limits.
