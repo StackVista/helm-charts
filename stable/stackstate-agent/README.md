@@ -2,17 +2,9 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `3.4.2`
+Current chart version is `3.5.0`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
-
-## Requirements
-
-| Repository | Name | Version |
-|------------|------|---------|
-| https://charts.bitnami.com/bitnami | kube-state-metrics | 3.2.2 |
-
-If you already have the `kube-state-metrics` application installed in your Kubernetes cluster, set `dependencies.kubeStateMetrics.enabled` to `false` to disable installation via this Helm chart.
 
 ## Required Values
 
@@ -62,8 +54,7 @@ stackstate/stackstate-agent
 | checksAgent.enabled | bool | `true` | Enable / disable runnning cluster checks in a separately deployed pod |
 | checksAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | checksAgent.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
-| checksAgent.image.tag | string | `"2.19.3"` | Default container image tag. |
-| checksAgent.kubeStateMetrics.url | string | `""` | URL of the KubeStateMetrics server. This needs to be configured if the KubeStateMetrics server is not enabled by default in this Helm chart. |
+| checksAgent.image.tag | string | `"3.0.2"` | Default container image tag. |
 | checksAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | checksAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | checksAgent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -121,7 +112,7 @@ stackstate/stackstate-agent
 | clusterAgent.enabled | bool | `true` | Enable / disable the cluster agent. |
 | clusterAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | clusterAgent.image.repository | string | `"stackstate/stackstate-cluster-agent"` | Base container image repository. |
-| clusterAgent.image.tag | string | `"2.19.3"` | Default container image tag. |
+| clusterAgent.image.tag | string | `"3.0.2"` | Default container image tag. |
 | clusterAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | clusterAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | clusterAgent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |
@@ -147,15 +138,10 @@ stackstate/stackstate-agent
 | clusterAgent.serviceaccount.annotations | object | `{}` | Annotations for the service account for the cluster agent pods |
 | clusterAgent.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | clusterAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| dependencies.kubeStateMetrics.enabled | bool | `false` | Whether or not to install the `kube-state-metrics` Deployment along with the StackState cluster agent. Set to `false` if you have `kube-state-metrics` already installed on the cluster. This is due to be deprecated in coming releases, replaced by kube-state-metrics core check clusterAgent.collection.kubeStateMetrics. |
 | fullnameOverride | string | `""` | Override the fullname of the chart. |
 | global.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | global.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | global.imagePullSecrets | list | `[]` | Secrets / credentials needed for container image registry. |
-| kube-state-metrics.image | object | `{"registry":"quay.io","repository":"stackstate/kube-state-metrics","tag":"2.6.0-focal-20220826-r2.20220923.1321"}` | Details about the docker image to be used for this component. This overrides the value in the bitnami chart. |
-| kube-state-metrics.image.registry | string | `"quay.io"` | Registry where docker image will be pulled from. This overrides the value in the bitnami chart. |
-| kube-state-metrics.image.repository | string | `"stackstate/kube-state-metrics"` | The path inside the registry where the image is hosted. This overrides the value in the bitnami chart. |
-| kube-state-metrics.image.tag | string | `"2.6.0-focal-20220826-r2.20220923.1321"` | The version tag of the image to be used during deployment. This overrides the value in the bitnami chart. |
 | logsAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | logsAgent.enabled | bool | `false` | Enable / disable k8s pod log collection |
 | logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
@@ -179,7 +165,7 @@ stackstate/stackstate-agent
 | nodeAgent.containers.agent.env | object | `{}` | Additional environment variables for the agent container |
 | nodeAgent.containers.agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | nodeAgent.containers.agent.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
-| nodeAgent.containers.agent.image.tag | string | `"2.19.3"` | Default container image tag. |
+| nodeAgent.containers.agent.image.tag | string | `"3.0.2"` | Default container image tag. |
 | nodeAgent.containers.agent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | nodeAgent.containers.agent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
 | nodeAgent.containers.agent.livenessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the liveness probe. |

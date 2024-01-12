@@ -1,6 +1,4 @@
 {{- define "container-agent" -}}
-{{- $kubeStateOverridden := (include "stackstate-agent.nodeAgent.kube-state-metrics.overridden" $) }}
-{{- $checksAgentKSM1 := and (and .Values.checksAgent.enabled (or .Values.dependencies.kubeStateMetrics.enabled .Values.checksAgent.kubeStateMetrics.url)) (not $kubeStateOverridden) }}
 - name: node-agent
   image: "{{ include "stackstate-agent.imageRegistry" . }}/{{ .Values.nodeAgent.containers.agent.image.repository }}:{{ .Values.nodeAgent.containers.agent.image.tag }}"
   imagePullPolicy: "{{ .Values.nodeAgent.containers.agent.image.pullPolicy }}"
@@ -153,11 +151,6 @@
     mountPath: {{ .path }}/{{ .name }}
     subPath: {{ .path | replace "/" "_"}}_{{ .name }}
   {{- end }}
-  {{- end }}
-  {{- if $checksAgentKSM1 }}
-  - name: config-override-volume
-    mountPath: /etc/stackstate-agent/conf.d/kubernetes_state.d/auto_conf.yaml
-    subPath: _etc_stackstate-agent_conf.d_kubernetes_state.d_auto_conf.yaml
   {{- end }}
   securityContext:
     privileged: true

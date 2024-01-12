@@ -1,5 +1,3 @@
-{{- $kubeStateOverridden := (include "stackstate-agent.nodeAgent.kube-state-metrics.overridden" $) }}
-{{- $checksAgentKSM := and (and .Values.checksAgent.enabled (or .Values.dependencies.kubeStateMetrics.enabled .Values.checksAgent.kubeStateMetrics.url)) (not $kubeStateOverridden) }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -81,7 +79,7 @@ spec:
       - hostPath:
           path: /sys/fs/cgroup
         name: cgroups
-      {{- if or .Values.nodeAgent.config.override $checksAgentKSM }}
+      {{- if .Values.nodeAgent.config.override }}
       - name: config-override-volume
         configMap:
           name: {{ .Release.Name }}-node-agent

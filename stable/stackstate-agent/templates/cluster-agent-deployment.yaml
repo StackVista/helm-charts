@@ -1,5 +1,3 @@
-{{- $kubeStateOverridden := (include "stackstate-agent.kube-state-metrics.overridden" $) }}
-{{- $checksAgentKSM := and (and .Values.checksAgent.enabled (or .Values.dependencies.kubeStateMetrics.enabled .Values.checksAgent.kubeStateMetrics.url)) (not $kubeStateOverridden) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -115,11 +113,6 @@ spec:
             mountPath: {{ .path }}/{{ .name }}
             subPath: {{ .path | replace "/" "_"}}_{{ .name }}
           {{- end }}
-          {{- end }}
-          {{- if $checksAgentKSM }}
-          - name: config-override-volume
-            mountPath: /etc/stackstate-agent/conf.d/kubernetes_state.d/conf.yaml
-            subPath: kubernetes_state_conf
           {{- end }}
       nodeSelector:
         {{ template "label.os" . }}: {{ .Values.targetSystem }}
