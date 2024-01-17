@@ -1054,7 +1054,7 @@ stackstate:
                       values:
                         - stackstate
                 topologyKey: kubernetes.io/hostname
-      agentMetricsFilter: '["vmagent*, vm*, go*"]'
+      agentMetricsFilter: '["vmagent*", "vm*", "go*"]'
     wait:
       image:
         # stackstate.components.wait.image.registry -- Base container image registry for wait containers.
@@ -1730,7 +1730,7 @@ victoria-metrics-0:
     podAnnotations:
       ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
       ad.stackstate.com/victoria-metrics-0-server.init_configs: "[{}]"
-      ad.stackstate.com/victoria-metrics-0-server.instances: '[ { "prometheus_url": "http://%%host%%:8428/metrics", "namespace": "stackstate", "metrics": ["vm*, go*", ] } ]'
+      ad.stackstate.com/victoria-metrics-0-server.instances: '[ { "prometheus_url": "http://%%host%%:8428/metrics", "namespace": "stackstate", "metrics": ["vm*", "go*"] } ]'
       ad.stackstate.com/vmbackup.check_names: '["openmetrics"]'
       ad.stackstate.com/vmbackup.init_configs: "[{}]"
       ad.stackstate.com/vmbackup.instances: '[ { "prometheus_url": "http://%%host%%:9746/metrics", "namespace": "stackstate", "metrics": ["supercronic_*"] } ]'
