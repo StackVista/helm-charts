@@ -1054,7 +1054,7 @@ stackstate:
                       values:
                         - stackstate
                 topologyKey: kubernetes.io/hostname
-      agentMetricsFilter: '["vmagent*", "vm*", "go*"]'
+      agentMetricsFilter: '["vm*", "go*"]'
     wait:
       image:
         # stackstate.components.wait.image.registry -- Base container image registry for wait containers.
