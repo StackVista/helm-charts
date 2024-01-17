@@ -25,7 +25,6 @@
         "manage-telemetry-streams",
         "execute-component-actions",
         "manage-annotations",
-        "manage-event-handlers",
         "manage-monitors",
         "run-monitors",
         "view-monitors",

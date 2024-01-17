@@ -4,7 +4,6 @@
         "export-settings",
         "update-visualization",
         "manage-stackpacks",
-        "manage-event-handlers",
         "manage-monitors",
         "run-monitors",
         "view-monitors",
@@ -12,7 +11,7 @@
         "read-permissions",
         "read-metrics",
         "read-settings",
-        "perform-custom-query"
+        "perform-custom-query",
         "manage-star-view",
         "create-views",
         "access-cli",
