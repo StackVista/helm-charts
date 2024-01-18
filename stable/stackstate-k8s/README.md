@@ -16,8 +16,8 @@ Current chart version is `1.7.1-pre.8`
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.8 |
 | file://../pull-secret/ | pull-secret | * |
-| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.6 |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.6 |
+| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.6 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.100 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
@@ -610,7 +610,7 @@ stackstate/stackstate
 | stackstate.components.viewHealth.sizing.javaHeapMemoryFraction | string | `"55"` |  |
 | stackstate.components.viewHealth.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.vmagent.affinity | object | `{"podAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app.kubernetes.io/component","operator":"In","values":["receiver"]},{"key":"app.kubernetes.io/instance","operator":"In","values":["stackstate"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":80}]}}` | Affinity settings for vmagent pod. |
-| stackstate.components.vmagent.agentMetricsFilter | string | `"[\"vmagent*\"]"` |  |
+| stackstate.components.vmagent.agentMetricsFilter | string | `"[\"vm*\", \"go*\"]"` |  |
 | stackstate.components.vmagent.extraArgs | object | `{}` |  |
 | stackstate.components.vmagent.image.repository | string | `"stackstate/vmagent"` |  |
 | stackstate.components.vmagent.image.tag | string | `"v1.93.7-37ef8c51"` |  |
@@ -660,13 +660,13 @@ stackstate/stackstate
 | victoria-metrics-0.rbac.pspEnabled | bool | `false` |  |
 | victoria-metrics-0.restore.enabled | bool | `false` | Enable Victoria Metrics restore functionality (if `backup.enabled` is set to `true`). |
 | victoria-metrics-0.server.affinity | object | `{}` | Affinity settings for Victoria Metrics pod |
-| victoria-metrics-0.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":35}` | Extra arguments for Victoria Metrics |
+| victoria-metrics-0.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":60}` | Extra arguments for Victoria Metrics |
 | victoria-metrics-0.server.extraLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s"}` | Extra labels for Victoria Metrics StatefulSet |
 | victoria-metrics-0.server.fullnameOverride | string | `"stackstate-victoria-metrics-0"` | Full name override |
 | victoria-metrics-0.server.image.repository | string | `"quay.io/stackstate/victoria-metrics"` | Victoriametrics repository |
 | victoria-metrics-0.server.image.tag | string | `"v1.93.7-3f3a60fc"` |  |
 | victoria-metrics-0.server.persistentVolume.size | string | `"250Gi"` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
-| victoria-metrics-0.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]","ad.stackstate.com/vmbackup.check_names":"[\"openmetrics\"]","ad.stackstate.com/vmbackup.init_configs":"[{}]","ad.stackstate.com/vmbackup.instances":"[ { \"prometheus_url\": \"http://%%host%%:9746/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"supercronic_*\"] } ]"}` | Annotations for Victoria Metrics server pod |
+| victoria-metrics-0.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\"] } ]","ad.stackstate.com/vmbackup.check_names":"[\"openmetrics\"]","ad.stackstate.com/vmbackup.init_configs":"[{}]","ad.stackstate.com/vmbackup.instances":"[ { \"prometheus_url\": \"http://%%host%%:9746/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"supercronic_*\"] } ]"}` | Annotations for Victoria Metrics server pod |
 | victoria-metrics-0.server.podLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s","stackstate-service":"victoriametrics"}` | Extra labels for Victoria Metrics pod |
 | victoria-metrics-0.server.resources.limits.cpu | int | `1` |  |
 | victoria-metrics-0.server.resources.limits.memory | string | `"4Gi"` |  |
@@ -687,7 +687,7 @@ stackstate/stackstate
 | victoria-metrics-1.rbac.pspEnabled | bool | `false` |  |
 | victoria-metrics-1.restore.enabled | bool | `false` | Enable Victoria Metrics restore functionality (if `backup.enabled` is set to `true`). |
 | victoria-metrics-1.server.affinity | object | `{}` | Affinity settings for Victoria Metrics pod |
-| victoria-metrics-1.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":35}` | Extra arguments for Victoria Metrics |
+| victoria-metrics-1.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":60}` | Extra arguments for Victoria Metrics |
 | victoria-metrics-1.server.extraLabels."app.kubernetes.io/part-of" | string | `"stackstate-k8s"` |  |
 | victoria-metrics-1.server.fullnameOverride | string | `"stackstate-victoria-metrics-1"` | Full name override |
 | victoria-metrics-1.server.image.repository | string | `"quay.io/stackstate/victoria-metrics"` | Victoriametrics repository |

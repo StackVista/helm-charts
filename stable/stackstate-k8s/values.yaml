@@ -1757,7 +1757,7 @@ victoria-metrics-0:
     # victoria-metrics-0.server.extraArgs -- Extra arguments for Victoria Metrics
     extraArgs:
       dedup.minScrapeInterval: 1ms
-      maxLabelsPerTimeseries: 35
+      maxLabelsPerTimeseries: 60
     persistentVolume:
       # victoria-metrics-0.server.persistentVolume.size -- Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times
       size: 250Gi
@@ -1845,7 +1845,7 @@ victoria-metrics-1:
     # victoria-metrics-1.server.extraArgs -- Extra arguments for Victoria Metrics
     extraArgs:
       dedup.minScrapeInterval: 1ms
-      maxLabelsPerTimeseries: 35
+      maxLabelsPerTimeseries: 60
     persistentVolume:
       # victoria-metrics-1.server.persistentVolume.size -- Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times
       size: 250Gi
