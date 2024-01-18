@@ -3,6 +3,7 @@ module gitlab.com/StackVista/DevOps/helm-charts
 go 1.17
 
 require (
+	github.com/caspr-io/yamlpath v0.0.1
 	github.com/gruntwork-io/terratest v0.28.10
 	github.com/stretchr/testify v1.7.0
 	gopkg.in/yaml.v2 v2.4.0
