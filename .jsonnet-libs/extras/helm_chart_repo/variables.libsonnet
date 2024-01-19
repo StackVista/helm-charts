@@ -30,6 +30,7 @@
       'pull-secret',
       'stackstate',
       'stackstate-k8s',
+      'stackstate-values',
       'stackstate-monitoring',
       'stackstate-standalone',
       'trafficmirror',
