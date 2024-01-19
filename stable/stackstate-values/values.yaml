@@ -16,7 +16,7 @@ license:
 # baseUrl -- The base URL of the StackState instance.
 baseUrl: ""
 
-# adminApiPassword -- The password for the default 'admin' user used for authenticating with the StackState Admin API. If not provided a random password is generated.
+# adminApiPassword -- The password for the default 'admin' user used for authenticating with the StackState Admin API. If not provided a random password is generated. If the password is not a bcrypt hash, but provided in plaintext, the value will be bcrypt hashed in the output.
 adminApiPassword: ""
-# adminPassword -- The password for the default 'admin' user used for authenticating with the StackState UI. If not provided a random password is generated.
+# adminPassword -- The password for the default 'admin' user used for authenticating with the StackState UI. If not provided a random password is generated.  If the password is not a bcrypt hash, but provided in plaintext, the value will be bcrypt hashed in the output.
 adminPassword: ""

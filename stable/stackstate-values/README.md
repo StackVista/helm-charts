@@ -44,8 +44,8 @@ The following values can be optionally set.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| adminApiPassword | string | `""` | The password for the default 'admin' user used for authenticating with the StackState Admin API. If not provided a random password is generated. |
-| adminPassword | string | `""` | The password for the default 'admin' user used for authenticating with the StackState UI. If not provided a random password is generated. |
+| adminApiPassword | string | `""` | The password for the default 'admin' user used for authenticating with the StackState Admin API. If not provided a random password is generated. If the password is not a bcrypt hash, but provided in plaintext, the value will be bcrypt hashed in the output. |
+| adminPassword | string | `""` | The password for the default 'admin' user used for authenticating with the StackState UI. If not provided a random password is generated.  If the password is not a bcrypt hash, but provided in plaintext, the value will be bcrypt hashed in the output. |
 | baseUrl | string | `""` | The base URL of the StackState instance. |
 | imageRegistry | string | `"quay.io"` | The registry to pull the StackState images from. |
 | license | string | `nil` | The StackState license key. |
