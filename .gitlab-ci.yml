@@ -375,6 +375,33 @@ push_elasticsearch_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/elasticsearch
+push_falco-reporter_to_internal:
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/falco-reporter/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-falco-reporter]/
+      when: on_success
+    - changes:
+        - stable/falco-reporter/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - if: $CI_COMMIT_TAG =~ /^falco-reporter\/.*/
+      when: on_success
+  script:
+    - helm dependencies update ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/falco-reporter
 push_gitlab-steward_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
   rules:
@@ -1744,6 +1771,40 @@ test_elasticsearch:
   variables:
     CGO_ENABLED: 0
     CHART: stable/elasticsearch
+test_falco-reporter:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/falco-reporter/**/*
+      exists:
+        - stable/falco-reporter/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/falco-reporter/test/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/falco-reporter
 test_gitlab-steward:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami

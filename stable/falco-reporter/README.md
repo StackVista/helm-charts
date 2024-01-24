@@ -1,6 +1,6 @@
 # falco-reporter
 
-![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.0.2](https://img.shields.io/badge/Version-0.0.2-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 Process Falco output: remove sensitive data, store to Cloud and send sanitized report to Slack
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 ## Maintainers
