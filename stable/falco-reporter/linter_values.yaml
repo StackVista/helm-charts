@@ -1,0 +1,6 @@
+slackWebhook: https://hooks.slack.com/services/XXXXXXX/YYYYYYYYY/ZZZZZ
+cluster: test
+storageProvider: gcp
+gcp:
+  project: test
+  bucket: test
