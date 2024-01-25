@@ -53,7 +53,7 @@ spec:
             message: {{`The \# of active requests for StackState receiver in {{ $labels.namespace }} has only been growing for the last 5 minutes.`}}
             runbook_url: https://www.notion.so/stackstate/Runbook-Receiver-increasing-active-requests-count-2486fb1560a44f85b107c5a69e29d66d
           expr: |
-            sum(delta(akka_http_requests_active{namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="receiver"}[1m])) > 0
+            sum(delta(akka_http_requests_active{namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="receiver"}[1m])) by (namespace, service) > 0
           for: 5m
           labels:
             severity: critical
