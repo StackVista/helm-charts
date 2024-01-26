@@ -252,7 +252,7 @@ stackstate:
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
-        javaHeapMemoryFraction: "50"
+        javaHeapMemoryFraction: "45"
       # stackstate.components.api.replicaCount -- Number of `api` replicas.
       replicaCount: 1
       # stackstate.components.api.nodeSelector -- Node labels for pod assignment.
