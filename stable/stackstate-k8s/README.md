@@ -16,8 +16,9 @@ Current chart version is `1.7.1-pre.26`
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.8 |
 | file://../pull-secret/ | pull-secret | * |
-| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.6 |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.6 |
+| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.6 |
+| https://charts.bitnami.com/bitnami | clickhouse | 3.6.9 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.100 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
@@ -108,6 +109,20 @@ stackstate/stackstate
 | backup.stackGraph.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
 | backup.stackGraph.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | backup.stackGraph.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
+| clickhouse.auth.password | string | `""` | ClickHouse Admin password. If left empty the random value is generated. |
+| clickhouse.auth.username | string | `"admin"` | ClickHouse Admin username |
+| clickhouse.enabled | bool | `false` | Enable / disable chart-based Clickhouse. |
+| clickhouse.externalZookeeper.port | int | `2181` |  |
+| clickhouse.externalZookeeper.servers | list | `["stackstate-zookeeper-headless"]` | External Zookeeper configuration. |
+| clickhouse.fullnameOverride | string | `"stackstate-clickhouse"` | Name override for clickhouse child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
+| clickhouse.persistence.size | string | `"50Gi"` | Size of persistent volume for each clickhouse pod |
+| clickhouse.replicaCount | int | `1` | Number of ClickHouse replicas per shard to deploy |
+| clickhouse.resources.requests.cpu | string | `"500m"` |  |
+| clickhouse.resources.requests.memory | string | `"1Gi"` |  |
+| clickhouse.shards | int | `1` | Number of ClickHouse shards to deploy |
+| clickhouse.usersExtraOverrides | string | `"<clickhouse>\n  <users>\n    <stackstate>\n        <no_password></no_password>\n        <grants>\n            <query>GRANT ALL ON *.*</query>\n        </grants>\n    </stackstate>\n  </users>\n</clickhouse>\n"` | Users extra configuration overrides. |
+| clickhouse.volumePermissions.enabled | bool | `false` |  |
+| clickhouse.zookeeper.enabled | bool | `false` | Disable Zookeeper from the clickhouse chart **Don't change unless otherwise specified**. |
 | cluster-role.enabled | bool | `true` | Deploy the ClusterRole(s) and ClusterRoleBinding(s) together with the chart. Can be disabled if these need to be installed by an administrator of the Kubernetes cluster. |
 | commonLabels | object | `{}` | Labels that will be added to all resources created by the stackstate chart (not the subcharts though) |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` | The Elasticsearch cluster health status params that will be used by readinessProbe command |

@@ -32,5 +32,8 @@ dependencies:
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
   version: 0.8.53-stackstate.6
-digest: sha256:93c57697f255e41981481b410b2998a35faed28c9e499efa6d8cfc3bbb193863
-generated: "2023-12-29T07:05:55.883727084Z"
+- name: clickhouse
+  repository: https://charts.bitnami.com/bitnami
+  version: 3.6.9
+digest: sha256:331b9fde147897048df0c17ad28cb399befc0ce6f099a34ed6e83b219a55e268
+generated: "2024-01-29T10:32:13.724417+01:00"

@@ -1909,3 +1909,49 @@ victoria-metrics:
       runAsNonRoot: true
       # backup.stackGraph.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
       runAsUser: 65534
+
+clickhouse:
+  # clickhouse.enabled -- Enable / disable chart-based Clickhouse.
+  enabled: false
+  # clickhouse.shards -- Number of ClickHouse shards to deploy
+  shards: 1
+  # clickhouse.replicaCount -- Number of ClickHouse replicas per shard to deploy
+  replicaCount: 1
+  externalZookeeper:
+    # clickhouse.externalZookeeper.servers -- External Zookeeper configuration.
+    servers:
+    - stackstate-zookeeper-headless
+    port: 2181
+  # podLabels:
+  #   app.kubernetes.io/part-of: stackstate-k8s
+  volumePermissions:
+    enabled: false
+  # clickhouse.fullnameOverride -- Name override for clickhouse child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
+  fullnameOverride: stackstate-clickhouse
+  persistence:
+    # clickhouse.persistence.size -- Size of persistent volume for each clickhouse pod
+    size: 50Gi
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+  # clickhouse.zookeeper.enabled -- Disable Zookeeper from the clickhouse chart **Don't change unless otherwise specified**.
+  zookeeper:
+    enabled: false
+  auth:
+    # clickhouse.auth.username -- ClickHouse Admin username
+    username: admin
+    # clickhouse.auth.password -- ClickHouse Admin password. If left empty the random value is generated.
+    password: ""
+  # clickhouse.usersExtraOverrides -- Users extra configuration overrides.
+  usersExtraOverrides: |
+    <clickhouse>
+      <users>
+        <stackstate>
+            <no_password></no_password>
+            <grants>
+                <query>GRANT ALL ON *.*</query>
+            </grants>
+        </stackstate>
+      </users>
+    </clickhouse>
