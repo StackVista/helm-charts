@@ -178,7 +178,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.image.tag to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: 6.0.0-snapshot.20240125141102-master-1577505
+        tag: 6.0.0-snapshot.20240129173624-master-d7ed67f
       metrics:
         defaultAgentMetricsFilter: '["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "akka_http_requests_active", "stackstate*", "receiver*", "stackgraph*"]'
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
@@ -1909,7 +1909,6 @@ victoria-metrics:
       runAsNonRoot: true
       # backup.stackGraph.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
       runAsUser: 65534
-
 clickhouse:
   # clickhouse.enabled -- Enable / disable chart-based Clickhouse.
   enabled: false
@@ -1920,7 +1919,7 @@ clickhouse:
   externalZookeeper:
     # clickhouse.externalZookeeper.servers -- External Zookeeper configuration.
     servers:
-    - stackstate-zookeeper-headless
+      - stackstate-zookeeper-headless
     port: 2181
   # podLabels:
   #   app.kubernetes.io/part-of: stackstate-k8s
