@@ -575,7 +575,7 @@ stackstate:
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "350Mi"
-        javaHeapMemoryFraction: "60"
+        javaHeapMemoryFraction: "55"
       # stackstate.components.notification.replicaCount -- Number of `notification` replicas.
       replicaCount: 1
       # stackstate.components.notification.nodeSelector -- Node labels for pod assignment.
@@ -746,7 +746,7 @@ stackstate:
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "300Mi"
-        javaHeapMemoryFraction: "70"
+        javaHeapMemoryFraction: "65"
       # stackstate.components.state.replicaCount -- Number of `state` replicas.
       replicaCount: 1
       # stackstate.components.state.nodeSelector -- Node labels for pod assignment.
