@@ -20,6 +20,7 @@ Current chart version is `1.7.1-pre.32`
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.6 |
 | https://charts.bitnami.com/bitnami | clickhouse | 3.6.9 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.100 |
+| https://open-telemetry.github.io/opentelemetry-helm-charts | opentelemetry-collector | 0.80.0 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
 
@@ -109,7 +110,7 @@ stackstate/stackstate
 | backup.stackGraph.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
 | backup.stackGraph.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | backup.stackGraph.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
-| clickhouse.auth.password | string | `""` | ClickHouse Admin password. If left empty the random value is generated. |
+| clickhouse.auth.password | string | `"admin"` | ClickHouse Admin password. If left empty the random value is generated. |
 | clickhouse.auth.username | string | `"admin"` | ClickHouse Admin username |
 | clickhouse.enabled | bool | `false` | Enable / disable chart-based Clickhouse. |
 | clickhouse.externalZookeeper.port | int | `2181` |  |
@@ -274,6 +275,17 @@ stackstate/stackstate
 | minio.secretKey | string | `"setme"` |  |
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
+| opentelemetry-collector.config | object | `{"exporters":{"clickhouse":{"database":"otel","endpoint":"tcp://stackstate-clickhouse:9000?dial_timeout=10s&compress=lz4","logs_table_name":"otel_logs","metrics_table_name":"otel_metrics","password":"admin","retry_on_failure":{"enabled":true,"initial_interval":"5s","max_elapsed_time":"300s","max_interval":"30s"},"timeout":"5s","traces_table_name":"otel_traces","ttl":"72h","username":"admin"}},"extensions":{"health_check":{"endpoint":"${env:MY_POD_IP}:13133"},"memory_ballast":{}},"processors":{"batch":{"send_batch_size":100000,"timeout":"2s"}},"receivers":{"otlp":{"protocols":{"grpc":{"endpoint":"${env:MY_POD_IP}:4317"},"http":{"endpoint":"${env:MY_POD_IP}:4318"}}}},"service":{"extensions":["health_check","memory_ballast"],"pipelines":{"traces":{"exporters":["clickhouse"],"processors":["batch"],"receivers":["otlp"]}},"telemetry":{"metrics":{"address":"${env:MY_POD_IP}:8888"}}}}` | Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/) |
+| opentelemetry-collector.fullnameOverride | string | `"stackstate-otel-collector"` | Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
+| opentelemetry-collector.mode | string | `"statefulset"` | deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset". |
+| opentelemetry-collector.ports.jaeger-compact.enabled | bool | `false` |  |
+| opentelemetry-collector.ports.jaeger-grpc.enabled | bool | `false` |  |
+| opentelemetry-collector.ports.jaeger-thrift.enabled | bool | `false` |  |
+| opentelemetry-collector.ports.zipkin.enabled | bool | `false` |  |
+| opentelemetry-collector.replicaCount | int | `1` | only used with deployment mode |
+| opentelemetry-collector.resources.limits.cpu | string | `"250m"` |  |
+| opentelemetry-collector.resources.limits.memory | string | `"512Mi"` |  |
+| opentelemetry.enabled | bool | `false` | Enable / disable chart-based OTEL. |
 | pull-secret.credentials | list | `[]` | Registry and assotiated credentials (username, password) that will be stored in the pull-secret |
 | pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |
 | pull-secret.fullNameOverride | string | `""` | Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart. |

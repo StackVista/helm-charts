@@ -17,6 +17,7 @@
       stackstate_internal: 'https://helm-internal.stackstate.io',
       stackstate_test: 'https://helm-test.stackstate.io',
       prometheus: 'https://prometheus-community.github.io/helm-charts',
+      opentelemetry: 'https://open-telemetry.github.io/opentelemetry-helm-charts',
     },
     public_charts: [
       'stackstate-agent',

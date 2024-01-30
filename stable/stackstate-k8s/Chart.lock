@@ -35,5 +35,8 @@ dependencies:
 - name: clickhouse
   repository: https://charts.bitnami.com/bitnami
   version: 3.6.9
-digest: sha256:331b9fde147897048df0c17ad28cb399befc0ce6f099a34ed6e83b219a55e268
-generated: "2024-01-29T10:32:13.724417+01:00"
+- name: opentelemetry-collector
+  repository: https://open-telemetry.github.io/opentelemetry-helm-charts
+  version: 0.80.0
+digest: sha256:7fc554f79733f7dcfcbb58025c6bc284a14127756007f3386e33cd0225113e1b
+generated: "2024-01-30T15:51:38.717945628+01:00"
