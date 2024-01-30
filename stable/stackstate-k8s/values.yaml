@@ -178,7 +178,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.image.tag to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: 6.0.0-snapshot.20240130103340-master-1f0556e
+        tag: 6.0.0-snapshot.20240130161627-master-5b208b5
       metrics:
         defaultAgentMetricsFilter: '["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "akka_http_requests_active", "stackstate*", "receiver*", "stackgraph*"]'
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
@@ -1954,11 +1954,9 @@ clickhouse:
         </stackstate>
       </users>
     </clickhouse>
-
 opentelemetry:
   # opentelemetry.enabled -- Enable / disable chart-based OTEL.
   enabled: false
-
 opentelemetry-collector:
   # opentelemetry-collector.fullnameOverride -- Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
   fullnameOverride: stackstate-otel-collector
@@ -1966,7 +1964,6 @@ opentelemetry-collector:
   mode: statefulset
   # opentelemetry-collector.replicaCount -- only used with deployment mode
   replicaCount: 1
-
   # opentelemetry-collector.config -- Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/)
   config:
     receivers:
