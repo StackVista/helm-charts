@@ -1130,6 +1130,8 @@ stackstate:
     baseUrl:
   experimental:
     enableVMAgent: true
+    # stackstate.experimental.traces -- (boolean) Enable new traces UI and API
+    traces: false
     server:
       # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
       split: true

@@ -660,6 +660,7 @@ stackstate/stackstate
 | stackstate.experimental.storeTransactionLogsToPVC.enabled | boolean | `false` | Whether the transcation logs for some services, API, Checks, HealthSync,State, Sync, and ViewHealth, have to be stored to PVCs instead of pod ephemeral storage. |
 | stackstate.experimental.storeTransactionLogsToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by transaction logs. |
 | stackstate.experimental.storeTransactionLogsToPVC.volumeSize | string | `"600Mi"` | The size of the persistent volume for the transaction logs. |
+| stackstate.experimental.traces | boolean | `false` | Enable new traces UI and API |
 | stackstate.instanceApi.authentication | object | `{}` | Custom authentication settings for the `instance` API, by default the `stackstate.authentication` authentication settings are used. |
 | stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
