@@ -1910,6 +1910,11 @@ victoria-metrics:
       # backup.stackGraph.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
       runAsUser: 65534
 clickhouse:
+  image:
+    # clickhouse.image.repository -- Repository where to get the image from.
+    repository: stackstate/clickhouse
+    # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
+    tag: 23.7.4-debian-11-r5-4df85f35
   # clickhouse.enabled -- Enable / disable chart-based Clickhouse.
   enabled: false
   # clickhouse.shards -- Number of ClickHouse shards to deploy
@@ -1958,6 +1963,11 @@ opentelemetry:
   # opentelemetry.enabled -- Enable / disable chart-based OTEL.
   enabled: false
 opentelemetry-collector:
+  image:
+    # opentelemetry-collector.image.repository -- Repository where to get the image from.
+    repository: quay.io/stackstate/opentelemetry-collector-contrib
+    # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
+    tag: 0.93.0-3ffa653c
   # opentelemetry-collector.fullnameOverride -- Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
   fullnameOverride: stackstate-otel-collector
   # opentelemetry-collector.mode -- deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset".

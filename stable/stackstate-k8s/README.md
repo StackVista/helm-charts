@@ -116,6 +116,8 @@ stackstate/stackstate
 | clickhouse.externalZookeeper.port | int | `2181` |  |
 | clickhouse.externalZookeeper.servers | list | `["stackstate-zookeeper-headless"]` | External Zookeeper configuration. |
 | clickhouse.fullnameOverride | string | `"stackstate-clickhouse"` | Name override for clickhouse child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
+| clickhouse.image.repository | string | `"stackstate/clickhouse"` | Repository where to get the image from. |
+| clickhouse.image.tag | string | `"23.7.4-debian-11-r5-4df85f35"` | Container image tag for 'clickhouse' containers. |
 | clickhouse.persistence.size | string | `"50Gi"` | Size of persistent volume for each clickhouse pod |
 | clickhouse.replicaCount | int | `1` | Number of ClickHouse replicas per shard to deploy |
 | clickhouse.resources.requests.cpu | string | `"500m"` |  |
@@ -277,6 +279,8 @@ stackstate/stackstate
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
 | opentelemetry-collector.config | object | `{"exporters":{"clickhouse":{"database":"otel","endpoint":"tcp://stackstate-clickhouse:9000?dial_timeout=10s&compress=lz4","logs_table_name":"otel_logs","metrics_table_name":"otel_metrics","password":"admin","retry_on_failure":{"enabled":true,"initial_interval":"5s","max_elapsed_time":"300s","max_interval":"30s"},"timeout":"5s","traces_table_name":"otel_traces","ttl":"72h","username":"admin"}},"extensions":{"health_check":{"endpoint":"${env:MY_POD_IP}:13133"},"memory_ballast":{}},"processors":{"batch":{"send_batch_size":100000,"timeout":"2s"}},"receivers":{"otlp":{"protocols":{"grpc":{"endpoint":"${env:MY_POD_IP}:4317"},"http":{"endpoint":"${env:MY_POD_IP}:4318"}}}},"service":{"extensions":["health_check","memory_ballast"],"pipelines":{"traces":{"exporters":["clickhouse"],"processors":["batch"],"receivers":["otlp"]}},"telemetry":{"metrics":{"address":"${env:MY_POD_IP}:8888"}}}}` | Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/) |
 | opentelemetry-collector.fullnameOverride | string | `"stackstate-otel-collector"` | Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
+| opentelemetry-collector.image.repository | string | `"quay.io/stackstate/opentelemetry-collector-contrib"` | Repository where to get the image from. |
+| opentelemetry-collector.image.tag | string | `"0.93.0-3ffa653c"` | Container image tag for 'opentelemetry-collector' containers. |
 | opentelemetry-collector.mode | string | `"statefulset"` | deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset". |
 | opentelemetry-collector.ports.jaeger-compact.enabled | bool | `false` |  |
 | opentelemetry-collector.ports.jaeger-grpc.enabled | bool | `false` |  |
