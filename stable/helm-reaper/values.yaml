@@ -15,9 +15,12 @@ tolerations: []
 affinity: {}
 # schedule -- The cron schedule for the Helm reaper cron job.
 schedule: "0 */1 * * *"
-# reapNamespace -- The namespace to reap Helm releases from.
-reapNamespace: default
-# systemNamespaces -- Namespaces that are considered system and off-limits to the Helm reaper cron job.
+# reapNamespaceLabels -- The comma-separated list of the labels to filter namespaces to reap
+reapNamespaceLabels: saas.stackstate.io/performance-test=true,saas.stackstate.io/branch-deployment=true
+# reapNamespaceExcludeLabel -- The namespaces having this label will be ignored
+reapNamespaceExcludeLabel: helm-reaper.stackstate.io/exclude=true
+# Delete Helm charts that haven't been updated for the specified number of days.
+deleteOlderThan: 3
 resources:
   limits:
     cpu: 50m
