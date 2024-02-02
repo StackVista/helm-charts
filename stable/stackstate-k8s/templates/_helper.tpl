@@ -402,79 +402,45 @@ checksum/vmagent-configmap: {{ include (print $.Template.BasePath "/configmap-vm
 Ingress paths / routes
 */}}
 {{- define "stackstate.ingress.rules" -}}
-{{- $ctx := . }}
-{{- if .Values.ingress.hosts }}
-  {{- range .Values.ingress.hosts }}
-- host: {{ tpl .host $ctx | quote }}
+{{- $ctx := .global }}
+{{- if .global.Values.ingress.hosts }}
+  {{- range .global.Values.ingress.hosts }}
+- host: {{ print $.hostPrefix (tpl .host $ctx) | quote }}
   http:
     paths:
-      - path: {{ $.Values.ingress.path | quote }}
+      - path: {{ $.global.Values.ingress.path | quote }}
     {{- if $ctx.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
         pathType: Prefix
         backend:
           service:
-            name: {{ include "common.fullname.short" $ }}-router
+            name: {{ $.serviceName }}
             port:
-              number: 8080
+              number: {{ $.port }}
     {{- else }}
         backend:
-          serviceName: {{ include "common.fullname.short" $ }}-router
-          servicePort: 8080
-    {{- end }}
-    {{- if $.Values.opentelemetry.enabled }}
-- host: otlp.{{ tpl .host $ctx | quote }}
-  http:
-    paths:
-      - path: {{ $.Values.ingress.path | quote }}
-    {{- if $ctx.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ include "stackstate.otel.http.host" $ }}
-            port:
-              number: 4317
-    {{- else }}
-        backend:
-          serviceName: {{ include "stackstate.otel.http.host" $ }}
-          servicePort: 4317
-    {{- end }}
+          serviceName: {{ $.serviceName }}
+          servicePort: {{ $.port }}
     {{- end }}
   {{- end }}
 {{- else }}
 - http:
     paths:
-      - path: {{ $.Values.ingress.path | quote }}
+      - path: {{ $.global.Values.ingress.path | quote }}
     {{- if $ctx.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
         pathType: Prefix
         backend:
           service:
-            name: {{ include "common.fullname.short" $ }}-router
+            name: {{ $.serviceName }}
             port:
-              number: 8080
+              number: {{ $.port }}
     {{- else }}
         backend:
-          serviceName: {{ include "common.fullname.short" $ }}-router
-          servicePort: 8080
-    {{- end }}
-    {{- if $.Values.opentelemetry.enabled }}
-- http:
-    paths:
-      - path: {{ $.Values.ingress.path | quote }}
-    {{- if $ctx.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ include "stackstate.otel.http.host" $ }}
-            port:
-              number: 4317
-    {{- else }}
-        backend:
-          name: {{ include "stackstate.otel.http.host" $ }}
-          servicePort: 4317
-    {{- end }}
+          serviceName: {{ $.serviceName }}
+          servicePort: {{ $.port }}
     {{- end }}
 {{- end }}
 {{- end -}}
+
 {{- define "stackstate.servicemonitor.extraLabels" -}}
 podTargetLabels:
   - __meta_kubernetes_pod_label_app_kubernetes_io_name
