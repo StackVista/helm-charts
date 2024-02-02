@@ -21,6 +21,9 @@ spec:
     - hosts:
       {{- range .hosts }}
         - {{ tpl . $ctx | quote }}
+        {{- if $.Values.opentelemetry.enabled }}
+        - otlp.{{ tpl . $ctx | quote }}
+        {{- end }}
       {{- end }}
       secretName: {{ .secretName }}
   {{- end }}

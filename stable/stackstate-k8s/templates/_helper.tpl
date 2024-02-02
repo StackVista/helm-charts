@@ -421,6 +421,24 @@ Ingress paths / routes
           serviceName: {{ include "common.fullname.short" $ }}-router
           servicePort: 8080
     {{- end }}
+    {{- if $.Values.opentelemetry.enabled }}
+- host: otlp.{{ tpl .host $ctx | quote }}
+  http:
+    paths:
+      - path: {{ $.Values.ingress.path | quote }}
+    {{- if $ctx.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "stackstate.otel.http.host" $ }}
+            port:
+              number: 4317
+    {{- else }}
+        backend:
+          serviceName: {{ include "stackstate.otel.http.host" $ }}
+          servicePort: 4317
+    {{- end }}
+    {{- end }}
   {{- end }}
 {{- else }}
 - http:
@@ -437,6 +455,23 @@ Ingress paths / routes
         backend:
           serviceName: {{ include "common.fullname.short" $ }}-router
           servicePort: 8080
+    {{- end }}
+    {{- if $.Values.opentelemetry.enabled }}
+- http:
+    paths:
+      - path: {{ $.Values.ingress.path | quote }}
+    {{- if $ctx.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "stackstate.otel.http.host" $ }}
+            port:
+              number: 4317
+    {{- else }}
+        backend:
+          name: {{ include "stackstate.otel.http.host" $ }}
+          servicePort: 4317
+    {{- end }}
     {{- end }}
 {{- end }}
 {{- end -}}

@@ -95,6 +95,17 @@ Clickhouse endpoint.
 {{- end -}}
 
 {{/*
+Logic to determine otel collector endpoint.
+*/}}
+{{- define "stackstate.otel.http.host" -}}
+{{- if .Values.opentelemetry.enabled -}}
+{{- index .Values "opentelemetry-collector" "fullnameOverride" }}
+{{- else -}}
+{{- .Values.stackstate.components.all.otelCollectorEndpoint -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Comma-separated list of the endpoints that need to be up and running before the initializer can be started.
 */}}
 {{ define "stackstate.initializer.prerequisites" -}}
