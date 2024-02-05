@@ -1,0 +1,16 @@
+metadata:
+  labels:
+    app.kubernetes.io/version: 1.7.0-sts
+  annotations:
+    vcs: https://gitlab.com/stackvista/demo/microservices-demo/catalogue/-/commit/a76de6420a0d58993788a8fad3abc05d5aa39199
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/version: 1.7.0-sts
+      annotations:
+        vcs: https://gitlab.com/stackvista/demo/microservices-demo/catalogue/-/commit/a76de6420a0d58993788a8fad3abc05d5aa39199
+    spec:
+      containers:
+        - name: featureflagservice
+          image: quay.io/stackstate/opentelemetry-demo:dev-d1314aa7-featureflagservice

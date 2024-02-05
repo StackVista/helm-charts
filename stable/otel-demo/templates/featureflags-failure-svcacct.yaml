@@ -1,0 +1,7 @@
+---
+{{- if .Values.featureflags.demoScenarioSimulation.enabled }}
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: featureflags-failure-deployment
+{{- end }}

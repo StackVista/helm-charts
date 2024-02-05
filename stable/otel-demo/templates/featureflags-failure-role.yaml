@@ -1,0 +1,13 @@
+---
+{{- if .Values.featureflags.demoScenarioSimulation.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: featureflags-failure-deployment
+rules:
+  - apiGroups: ["apps", "extensions"]
+    resources: ["deployments"]
+    resourceNames:
+      ["otel-demo-featureflagservice"]
+    verbs: ["get", "update", "patch", "create", "list", "watch"]
+{{- end }}

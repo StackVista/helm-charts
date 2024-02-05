@@ -1,0 +1,14 @@
+---
+{{- if .Values.featureflags.demoScenarioSimulation.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: featureflags-failure-script
+data:
+  deploy-featureflags-demo-scenario.sh: |
+    {{- .Files.Get "scripts/deploy-featureflags-demo-scenario.sh" | nindent 4 }}
+  featureflags-failure-patch.yaml: |
+    {{- .Files.Get "scripts/featureflags-failure-patch.yaml" | nindent 4 }}
+  featureflags-fix-patch.yaml: |
+    {{- .Files.Get "scripts/featureflags-fix-patch.yaml" | nindent 4 }}
+{{- end }}

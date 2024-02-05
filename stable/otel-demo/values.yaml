@@ -1,0 +1,78 @@
+opentelemetry-demo:
+  default:
+    podSecurityContext:
+      runAsGroup: 65534
+      runAsNonRoot: true
+      runAsUser: 65534
+  components:
+    featureflagService:
+      envOverrides:
+        - name: DISABLE_FEATURE_FLAGS
+          value: "false"
+      resources:
+        limits:
+          memory: null
+      imageOverride:
+        repository: quay.io/stackstate/opentelemetry-demo
+        tag: dev-d1314aa7-featureflagservice
+    ffsPostgres:
+      mountedConfigMaps:
+        - name: init-scripts
+          mountPath: /docker-entrypoint-initdb.d
+          data:
+            10-ffs_schema.sql: |
+              CREATE TABLE public.featureflags (
+                  name character varying(255),
+                  description character varying(255),
+                  enabled double precision DEFAULT 0.0 NOT NULL
+              );
+              ALTER TABLE ONLY public.featureflags ADD CONSTRAINT featureflags_pkey PRIMARY KEY (name);
+              CREATE UNIQUE INDEX featureflags_name_index ON public.featureflags USING btree (name);
+            20-ffs_data.sql: |
+              -- Feature Flags created and initialized on startup
+              INSERT INTO public.featureflags (name, description, enabled)
+              VALUES
+                  ('productCatalogFailure', 'Fail product catalog service on a specific product', 0),
+                  ('recommendationCache', 'Cache recommendations', 0),
+                  ('adServiceFailure', 'Fail ad service requests', 0),
+                  ('cartServiceFailure', 'Fail cart service requests', 0);
+    # Temporary fix until new demo is released:
+    adService:
+      imageOverride:
+        repository: wolverminion/demo
+        tag: 1.7.0-adservice
+    frauddetectionService:
+      imageOverride:
+        repository: wolverminion/demo
+        tag: 1.7.0-frauddetectionservice
+
+  opentelemetry-collector:
+    config:
+      processors:
+        resource/addk8scluster:
+          attributes:
+            - key: k8s.cluster.name
+              action: insert
+              value: gke-demo-dev
+      # These are only additions to the default config from the helm chart
+      exporters:
+        # Exporter for traces to traffic mirror (i.e. StackState dev environments
+        otlphttp/trafficmirror:
+          endpoint: https://trafficmirror.gke-demo-dev.gcp.stackstate.io/otlp
+      service:
+        pipelines:
+          # Extend existing traces pipeline with traffic mirror exporter, the metrics pipeline is left as-is
+          traces:
+            processors: [memory_limiter, resource, batch]
+            exporters: [otlp, debug, spanmetrics, otlphttp/trafficmirror]
+
+featureflags:
+  demoScenarioSimulation:
+    # featureflags.demoScenarioSimulation.enabled -- Whether the k8s demo scenario should be enabled.
+    enabled: true
+    # featureflags.demoScenarioSimulation.schedule -- The cron schedule to trigger the k8s demo scenario.
+    schedule:
+      # featureflags.demoScenarioSimulation.schedule.failure -- The cron schedule to trigger the faulty k8s demo scenario.
+      failure: "0 * * * *"
+      # featureflags.demoScenarioSimulation.schedule.fix -- The cron schedule to fix the faulty k8s demo scenario.
+      fix: "30 * * * *"

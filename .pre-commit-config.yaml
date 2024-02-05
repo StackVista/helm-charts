@@ -9,6 +9,7 @@ repos:
   - id: check-merge-conflict
   - id: detect-private-key
   - id: end-of-file-fixer
+    exclude: stable/.*/README.md
   - id: trailing-whitespace
   - id: detect-aws-credentials
     args:

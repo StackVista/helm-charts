@@ -12,12 +12,12 @@
       'bitnami-pre-2022': 'https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami',
       'bitnami-full-archive': 'https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami',
       elastic: 'https://helm.elastic.co',
+      opentelemetry: 'https://open-telemetry.github.io/opentelemetry-helm-charts',
       stable: 'https://charts.helm.sh/stable',
       stackstate: 'https://helm.stackstate.io',
       stackstate_internal: 'https://helm-internal.stackstate.io',
       stackstate_test: 'https://helm-test.stackstate.io',
       prometheus: 'https://prometheus-community.github.io/helm-charts',
-      opentelemetry: 'https://open-telemetry.github.io/opentelemetry-helm-charts',
     },
     public_charts: [
       'stackstate-agent',
