@@ -1012,6 +1012,8 @@ stackstate:
       powerUser: []
       # stackstate.authentication.roles.guest -- Extend the role names that have guest permissions (default: 'stackstate-guest')
       guest: []
+      # stackstate.authentication.roles.custom -- Extend the authorization with custom roles {roleName: {systemPermissions: [], viewPermissions: []}}
+      custom: {}
     serviceToken:
       bootstrap:
         # stackstate.authentication.serviceToken.bootstrap.token -- The service token to set as bootstrap token
@@ -1020,6 +1022,9 @@ stackstate:
         roles: []
         # stackstate.authentication.serviceToken.bootstrap.ttl -- The amount of time the service token is valid for
         ttl: 24h
+  instanceApi:
+    # stackstate.instanceApi.authentication -- Custom authentication settings for the `instance` API, by default the `stackstate.authentication` authentication settings are used.
+    authentication: {}
   admin:
     authentication:
       # stackstate.admin.authentication.password -- Password used for default platform "admin" api's (low-level tools) of the various services, username: platformadmin
