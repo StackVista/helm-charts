@@ -40,6 +40,7 @@ Helm chart for Opentelemetry Demo
 | opentelemetry-demo.default.podSecurityContext.runAsGroup | int | `65534` |  |
 | opentelemetry-demo.default.podSecurityContext.runAsNonRoot | bool | `true` |  |
 | opentelemetry-demo.default.podSecurityContext.runAsUser | int | `65534` |  |
+| opentelemetry-demo.opentelemetry-collector.config.connectors.spanmetrics.exemplars.enabled | bool | `false` |  |
 | opentelemetry-demo.opentelemetry-collector.config.exporters.otlphttp/trafficmirror.endpoint | string | `"https://trafficmirror.gke-demo-dev.gcp.stackstate.io/otlp"` |  |
 | opentelemetry-demo.opentelemetry-collector.config.processors.resource/addk8scluster.attributes[0].action | string | `"insert"` |  |
 | opentelemetry-demo.opentelemetry-collector.config.processors.resource/addk8scluster.attributes[0].key | string | `"k8s.cluster.name"` |  |

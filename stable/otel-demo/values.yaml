@@ -54,6 +54,12 @@ opentelemetry-demo:
             - key: k8s.cluster.name
               action: insert
               value: gke-demo-dev
+      # the spanmetrics connector gets lost without at least some config present
+      # a (semi)random property (exemplars.enabled) is used here with its default value
+      connectors:
+        spanmetrics:
+          exemplars:
+            enabled: false
       # These are only additions to the default config from the helm chart
       exporters:
         # Exporter for traces to traffic mirror (i.e. StackState dev environments
