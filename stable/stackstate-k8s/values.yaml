@@ -1913,6 +1913,8 @@ victoria-metrics:
       runAsUser: 65534
 clickhouse:
   image:
+    # clickhouse.image.registry -- Registry where to get the image from.
+    registry: quay.io
     # clickhouse.image.repository -- Repository where to get the image from.
     repository: stackstate/clickhouse
     # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.

@@ -116,6 +116,7 @@ stackstate/stackstate
 | clickhouse.externalZookeeper.port | int | `2181` |  |
 | clickhouse.externalZookeeper.servers | list | `["stackstate-zookeeper-headless"]` | External Zookeeper configuration. |
 | clickhouse.fullnameOverride | string | `"stackstate-clickhouse"` | Name override for clickhouse child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
+| clickhouse.image.registry | string | `"quay.io"` | Registry where to get the image from. |
 | clickhouse.image.repository | string | `"stackstate/clickhouse"` | Repository where to get the image from. |
 | clickhouse.image.tag | string | `"23.7.4-debian-11-r5-4df85f35"` | Container image tag for 'clickhouse' containers. |
 | clickhouse.persistence.size | string | `"50Gi"` | Size of persistent volume for each clickhouse pod |
