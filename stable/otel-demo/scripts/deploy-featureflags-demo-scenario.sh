@@ -15,7 +15,7 @@ DIR=${BASH_SOURCE%/*}
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 if [[ "$DIR" = "." ]]; then DIR="$PWD"; fi
 FAULTY_IMAGE="quay.io/stackstate/opentelemetry-demo:dev-d1314aa7-featureflagservice"
-ORG_IMAGE="quay.io/stackstate/opentelemetry-demo:dev-a5d06ec5-featureflagservice"
+GOOD_IMAGE="quay.io/stackstate/opentelemetry-demo:dev-a5d06ec5-featureflagservice"
 
 SCENARIO=${1:?First argument must be the scenario name: <failure> or <fix>}
 
@@ -25,7 +25,7 @@ echo "Current image found is: $IMAGE"
 
 case $SCENARIO in
   "fix")
-    if [ "$IMAGE" == "$ORG_IMAGE" ] ; then
+    if [ "$IMAGE" == "$GOOD_IMAGE" ] ; then
       echo "The current image is already the good one. Doing nothing."
     else
       echo "Deploying the good version"
