@@ -63,14 +63,23 @@ opentelemetry-demo:
       # These are only additions to the default config from the helm chart
       exporters:
         # Exporter for traces to traffic mirror (i.e. StackState dev environments
-        otlphttp/trafficmirror:
-          endpoint: https://trafficmirror.gke-demo-dev.gcp.stackstate.io/otlp
+        otlp/trafficmirror:
+          endpoint: trafficmirror-otel.gke-demo-dev.gcp.stackstate.io:443
       service:
         pipelines:
           # Extend existing traces pipeline with traffic mirror exporter, the metrics pipeline is left as-is
+          logs:
+            receivers: [otlp]
+            processors: [k8sattributes, memory_limiter, batch]
+            exporters: [debug]
           traces:
-            processors: [memory_limiter, resource, batch]
-            exporters: [otlp, debug, spanmetrics, otlphttp/trafficmirror]
+            receivers: [otlp, jaeger, zipkin]
+            processors: [k8sattributes, memory_limiter, resource, resource/addk8scluster, batch]
+            exporters: [otlp, debug, spanmetrics, otlp/trafficmirror]
+          metrics:
+            receivers: [otlp, spanmetrics]
+            processors: [k8sattributes, memory_limiter, filter/ottl, transform, resource, batch]
+            exporters: [otlphttp/prometheus, debug]
 
 featureflags:
   demoScenarioSimulation:
