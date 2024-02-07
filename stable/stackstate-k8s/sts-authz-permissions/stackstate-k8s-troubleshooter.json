@@ -10,6 +10,7 @@
         "read-telemetry-streams",
         "read-permissions",
         "read-metrics",
+        "read-traces",
         "read-settings",
         "perform-custom-query",
         "manage-star-view",

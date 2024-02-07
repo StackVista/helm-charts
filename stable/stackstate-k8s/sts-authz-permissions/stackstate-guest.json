@@ -9,6 +9,7 @@
         "read-telemetry-streams",
         "execute-component-actions",
         "read-metrics",
+        "read-traces",
         "view-monitors",
         "read-settings",
         "view-notifications"
