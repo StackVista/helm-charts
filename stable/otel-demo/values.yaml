@@ -14,7 +14,7 @@ opentelemetry-demo:
           memory: null
       imageOverride:
         repository: quay.io/stackstate/opentelemetry-demo
-        tag: dev-d1314aa7-featureflagservice
+        tag: dev-11b1c878-featureflagservice
     ffsPostgres:
       mountedConfigMaps:
         - name: init-scripts
@@ -39,12 +39,12 @@ opentelemetry-demo:
     # Temporary fix until new demo is released:
     adService:
       imageOverride:
-        repository: wolverminion/demo
-        tag: 1.7.0-adservice
+        repository: quay.io/stackstate/opentelemetry-demo
+        tag: dev-11b1c878-adservice
     frauddetectionService:
       imageOverride:
-        repository: wolverminion/demo
-        tag: 1.7.0-frauddetectionservice
+        repository: quay.io/stackstate/opentelemetry-demo
+        tag: dev-11b1c878--frauddetectionservice
 
   opentelemetry-collector:
     config:

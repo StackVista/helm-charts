@@ -14,7 +14,7 @@ set -o xtrace
 DIR=${BASH_SOURCE%/*}
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 if [[ "$DIR" = "." ]]; then DIR="$PWD"; fi
-FAULTY_IMAGE="quay.io/stackstate/opentelemetry-demo:dev-d1314aa7-featureflagservice"
+FAULTY_IMAGE="quay.io/stackstate/opentelemetry-demo:dev-11b1c878-featureflagservice"
 GOOD_IMAGE="quay.io/stackstate/opentelemetry-demo:dev-a5d06ec5-featureflagservice"
 
 SCENARIO=${1:?First argument must be the scenario name: <failure> or <fix>}
