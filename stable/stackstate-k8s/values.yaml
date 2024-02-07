@@ -1980,6 +1980,12 @@ clickhouse:
         </stackstate>
       </users>
     </clickhouse>
+  metrics:
+    enabled: true
+  podAnnotations:
+    ad.stackstate.com/clickhouse.check_names: '["openmetrics"]'
+    ad.stackstate.com/clickhouse.init_configs: "[{}]"
+    ad.stackstate.com/clickhouse.instances: '[ { "prometheus_url": "http://%%host%%:8001/metrics", "namespace": "stackstate", "metrics": ["ClickHouseAsyncMetrics_*", "ClickHouseMetrics_*", "ClickHouseProfileEvents_*"] } ]'
 opentelemetry:
   # opentelemetry.enabled -- Enable / disable chart-based OTEL.
   enabled: false

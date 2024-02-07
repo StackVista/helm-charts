@@ -119,7 +119,11 @@ stackstate/stackstate
 | clickhouse.image.registry | string | `"quay.io"` | Registry where to get the image from. |
 | clickhouse.image.repository | string | `"stackstate/clickhouse"` | Repository where to get the image from. |
 | clickhouse.image.tag | string | `"23.7.4-debian-11-r5-4df85f35"` | Container image tag for 'clickhouse' containers. |
+| clickhouse.metrics.enabled | bool | `true` |  |
 | clickhouse.persistence.size | string | `"50Gi"` | Size of persistent volume for each clickhouse pod |
+| clickhouse.podAnnotations."ad.stackstate.com/clickhouse.check_names" | string | `"[\"openmetrics\"]"` |  |
+| clickhouse.podAnnotations."ad.stackstate.com/clickhouse.init_configs" | string | `"[{}]"` |  |
+| clickhouse.podAnnotations."ad.stackstate.com/clickhouse.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8001/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"ClickHouseAsyncMetrics_*\", \"ClickHouseMetrics_*\", \"ClickHouseProfileEvents_*\"] } ]"` |  |
 | clickhouse.replicaCount | int | `1` | Number of ClickHouse replicas per shard to deploy |
 | clickhouse.resources.requests.cpu | string | `"500m"` |  |
 | clickhouse.resources.requests.memory | string | `"1Gi"` |  |
