@@ -29,6 +29,7 @@
         "run-monitors",
         "view-monitors",
         "read-metrics",
+        "read-traces",
         "update-permissions",
         "upload-stackpacks",
         "execute-restricted-scripts",
