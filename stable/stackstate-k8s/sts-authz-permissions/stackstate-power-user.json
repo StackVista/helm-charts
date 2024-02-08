@@ -29,7 +29,6 @@
         "run-monitors",
         "view-monitors",
         "read-metrics",
-        "read-traces",
         "manage-notifications",
         "view-notifications"
     ],
