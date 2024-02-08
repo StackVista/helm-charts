@@ -203,6 +203,23 @@ stackstate:
         runAsUser: 65534
       # stackstate.components.all.elasticsearchEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster.
       elasticsearchEndpoint: ""
+      # stackstate.components.all.clickhouse -- Configuration for connecting to ClickHouse store, used for traces
+      clickhouse:
+        ## stackstate.components.all.clickhouse.hostnames - The hostnames for Clickhouse, can be multiple comma-seperated hostnames
+        hostnames: stackstate-clickhouse-headless
+        ## stackstate.components.all.clickhouse.port -- The default port on Clickhouse is 8123
+        port: 8123
+        ## stackstate.components.all.clickhouse.database -- Which database to use
+        database: otel
+        ## stackstate.components.all.clickhouse.username -- The Clickhouse username
+        username: stackstate
+        ## stackstate.components.all.clickhouse.password-- The Clickhouse password
+        password: ""
+        ## stackstate.components.all.clickhouse.protocol -- Either http or https
+        protocol: http
+        ## stackstate.components.all.clickhouse.parameters -- Extra client configuration options, see https://github.com/ClickHouse/clickhouse-java/blob/main/clickhouse-client/src/main/java/com/clickhouse/client/config/ClickHouseClientOption.java
+        parameters:
+          health_check_interval: "5000"
       metricStore:
         # stackstate.components.all.metricStore.remoteWriteEndpoint -- Host and port for prometheus remote write endpoint ($vmInstance is replaced by '0' or '1')
         remoteWriteEndpoint: "stackstate-victoria-metrics-$vmInstance:8428"
