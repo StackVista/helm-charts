@@ -162,7 +162,7 @@ stackstate:
         # stackstate.components.all.image.registry -- Base container image registry for all StackState containers, except for the wait container and the container-tools container
         registry: quay.io
         # stackstate.components.all.image.repositorySuffix - String to append to repositories for StackState components
-        repositorySuffix: ""
+        repositorySuffix: "-stable"
         # stackstate.components.all.image.pullSecretName -- Name of ImagePullSecret to use for all pods.
         pullSecretName:
         # all.image.pullSecretUsername -- Username used to login to the registry to pull Docker images of all pods.
@@ -173,7 +173,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.image.tag to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: 5.1.13-rc.2
+        tag: 5.1.13
       metrics:
         defaultAgentMetricsFilter: '["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "stackstate*", "receiver*"]'
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
