@@ -20,7 +20,7 @@ env:
 - name: CORRELATE_WRITE_PROMETHEUS
   value: "{{ .Values.stackstate.experimental.enableVMAgent }}"
 - name: PROMETHEUS_WRITE_ENDPOINT
-  value: http://{{ template "common.fullname.short" . }}-vmagent:8429/api/v1/write
+  value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
 image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.correlate.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.correlate.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.correlate.image.pullPolicy | quote }}
 livenessProbe:

@@ -22,7 +22,7 @@ env:
 - name: RECEIVER_WRITE_PROMETHEUS
   value: "{{ .Values.stackstate.experimental.enableVMAgent }}"
 - name: PROMETHEUS_WRITE_ENDPOINT
-  value: http://{{ template "common.fullname.short" . }}-vmagent:8429/api/v1/write
+  value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
 {{ $replicationFactor := ternary "1" "0" (gt .Values.elasticsearch.replicas 2.0) }}
 - name: CONFIG_FORCE_stackstate_receiver_k8sLogs_replicas
   value: "{{ $replicationFactor  }}"

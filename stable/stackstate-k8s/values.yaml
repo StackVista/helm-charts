@@ -1034,6 +1034,8 @@ stackstate:
           memory: "2000Mi"
           ephemeral-storage: "1Mi"
     vmagent:
+      # stackstate.components.vmagent.fullNameOverride -- Name for the service
+      fullNameOverride: stackstate-vmagent
       image:
         repository: stackstate/vmagent
         tag: v1.93.7-37ef8c51
@@ -2030,6 +2032,8 @@ opentelemetry-collector:
           initial_interval: 5s
           max_interval: 30s
           max_elapsed_time: 300s
+      prometheusremotewrite/victoria-metrics:
+        endpoint: 'http://stackstate-vmagent:8429/api/v1/write'
     extensions:
       # The health_check extension is mandatory for this chart.
       # Without the health_check extension the collector will fail the readiness and liveliness probes.
@@ -2052,6 +2056,13 @@ opentelemetry-collector:
             - batch
           exporters:
             - clickhouse
+        metrics:
+          receivers:
+            - otlp
+          processors:
+            - batch
+          exporters:
+            - prometheusremotewrite/victoria-metrics
   ports:
     jaeger-compact:
       enabled: false

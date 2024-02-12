@@ -116,3 +116,14 @@ Comma-separated list of the endpoints that need to be up and running before the 
 {{- include "stackstate.zookeeper.endpoint" . -}},
 {{- .Release.Name }}-hbase-hdfs-nn-headful:9000
 {{- end -}}
+
+{{/*
+Logic to determine Kafka endpoint.
+*/}}
+{{- define "stackstate.vmagent.endpoint" -}}
+{{- if .Values.stackstate.components.vmagent.fullNameOverride -}}
+{{- .Values.stackstate.components.vmagent.fullNameOverride -}}
+{{- else -}}
+http://{{ template "common.fullname.short" . }}-vmagent
+{{- end -}}
+{{- end -}}

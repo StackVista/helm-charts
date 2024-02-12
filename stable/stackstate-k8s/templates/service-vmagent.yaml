@@ -1,6 +1,6 @@
 {{- define "stackstate.vmagent.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-vmagent
+  name: {{ include "stackstate.vmagent.endpoint" . }}
   labels:
     app.kubernetes.io/component: vmagent
 spec:

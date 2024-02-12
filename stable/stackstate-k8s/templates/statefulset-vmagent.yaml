@@ -75,7 +75,7 @@ resources:
 {{- $overrideContainer := fromYaml (include "stackstate.vmagent.container.init" .) -}}
 {{- $stsstackstateVmagentInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-vmagent
+  name: {{ include "stackstate.vmagent.endpoint" . }}
   labels:
     app.kubernetes.io/component: vmagent
 spec:

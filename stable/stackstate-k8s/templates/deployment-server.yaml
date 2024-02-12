@@ -29,7 +29,7 @@ env:
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
 - name: PROMETHEUS_WRITE_ENDPOINT
-  value: http://{{ template "common.fullname.short" . }}-vmagent:8429/api/v1/write
+  value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
 - name: HADOOP_USER_NAME
   value: nobody
 - name: LICENSE_KEY
