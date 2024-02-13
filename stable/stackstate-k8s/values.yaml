@@ -2034,6 +2034,8 @@ opentelemetry-collector:
           max_elapsed_time: 300s
       prometheusremotewrite/victoria-metrics:
         endpoint: 'http://stackstate-vmagent:8429/api/v1/write'
+        resource_to_telemetry_conversion:
+          enabled: true
     extensions:
       # The health_check extension is mandatory for this chart.
       # Without the health_check extension the collector will fail the readiness and liveliness probes.
