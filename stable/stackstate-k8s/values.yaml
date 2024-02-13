@@ -2007,7 +2007,7 @@ opentelemetry-collector:
     service:
       telemetry:
         metrics:
-          address: ${env:MY_POD_IP}:8888
+          address: 0.0.0.0:8888
       extensions:
         - health_check
         - memory_ballast
@@ -2035,6 +2035,12 @@ opentelemetry-collector:
       enabled: false
     zipkin:
       enabled: false
+    metrics:
+      enabled: true
+  podAnnotations:
+    ad.stackstate.com/opentelemetry-collector.check_names: '["openmetrics"]'
+    ad.stackstate.com/opentelemetry-collector.init_configs: "[{}]"
+    ad.stackstate.com/opentelemetry-collector.instances: '[ { "prometheus_url": "http://%%host%%:8888/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
   resources:
     limits:
       cpu: 250m
