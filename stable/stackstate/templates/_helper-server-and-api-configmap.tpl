@@ -3,56 +3,54 @@ Shared settings in configmap for server and api
 */}}
 {{- define "stackstate.configmap.server-and-api" }}
 
-{{- if and .Values.stackstate.authentication }}
-{{- include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.authentication "authnPrefix" "stackstate.api.authentication" "authzPrefix" "stackstate.authorization" "global" .) }}
-{{ $admins := list }}
-{{- if and (index .Values "anomaly-detection" "enabled" ) (eq .Values.stackstate.deployment.mode "SelfHosted") }}
-{{ $admins = append $admins "stackstate-aad" }}
-{{- end }}
-{{- range  .Values.stackstate.authentication.roles.admin }}
-{{ $admins = append $admins . }}
-{{- end }}
-{{- range $admins }}
-stackstate.authorization.staticSubjects.{{ . | quote }}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-admin.viewPermissions} }
-{{- end }}
+  {{- if and .Values.stackstate.authentication }}
+    {{- include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.authentication "authnPrefix" "stackstate.api.authentication" "authzPrefix" "stackstate.authorization" "global" .) }}
+    {{ $admins := list }}
+    {{- if  (eq .Values.stackstate.deployment.mode "SelfHosted") }}
+      {{- if and .Values.stackstate.authentication.roles.admin (index .Values "anomaly-detection" "enabled" ) }}
+stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} {{ append .Values.stackstate.authentication.roles.admin "stackstate-aad" | toJson }}
+      {{- else }}
+stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["stackstate-aad"]
+      {{- end }}
 
-{{- range .Values.stackstate.authentication.roles.platformAdmin }}
-stackstate.authorization.staticSubjects.{{ . | quote }}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-platform-admin.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-platform-admin.viewPermissions} }
-{{- end }}
+      {{- if .Values.stackstate.authentication.roles.platformAdmin }}
+stackstate.authorization.platformAdminGroups = ${stackstate.authorization.platformAdminGroups} {{ .Values.stackstate.authentication.roles.platformAdmin | toJson }}
+      {{- end }}
 
-{{- range .Values.stackstate.authentication.roles.powerUser }}
-stackstate.authorization.staticSubjects.{{ . | quote }}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-power-user.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-power-user.viewPermissions} }
-{{- end }}
+      {{- if .Values.stackstate.authentication.roles.powerUser }}
+stackstate.authorization.powerUserGroups = ${stackstate.authorization.powerUserGroups} {{ .Values.stackstate.authentication.roles.powerUser | toJson }}
+      {{- end }}
 
-{{- range .Values.stackstate.authentication.roles.guest }}
-stackstate.authorization.staticSubjects.{{ . | quote }}: { systemPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.systemPermissions}, viewPermissions: ${stackstate.authorization.staticSubjects.stackstate-trial.viewPermissions} }
-{{- end }}
-{{- end }}
-
-{{- if gt (len .Values.stackstate.admin.authentication) 1 }}
-{{ include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.admin.authentication "authnPrefix" "stackstate.adminApi.authentication" "authzPrefix" "stackstate.adminApi.authorization" "global" .) }}
-{{- end }}
-{{- if .Values.stackstate.instanceApi.authentication }}
-{{ include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.instanceApi.authentication "authnPrefix" "stackstate.instanceApi.authentication" "authzPrefix" "stackstate.instanceApi.authorization" "global" .) }}
-{{- end }}
-
-{{- with .Values.stackstate.stackpacks.installed }}
-stackstate.stackPacks {
-  {{- range . }}
-  installOnStartUp += {{ .name | quote }}
+      {{- if .Values.stackstate.authentication.roles.guest }}
+stackstate.authorization.guestGroups = ${stackstate.authorization.guestGroups} {{ .Values.stackstate.authentication.roles.guest | toJson }}
+      {{- end }}
+    {{- end }}
   {{- end }}
 
-  installOnStartUpConfig {
+  {{- if gt (len .Values.stackstate.admin.authentication) 1 }}
+{{include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.admin.authentication "authnPrefix" "stackstate.adminApi.authentication" "authzPrefix" "stackstate.adminApi.authorization" "global" .) }}
+  {{- end }}
+  {{- if .Values.stackstate.instanceApi.authentication }}
+{{include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.instanceApi.authentication "authnPrefix" "stackstate.instanceApi.authentication" "authzPrefix" "stackstate.instanceApi.authorization" "global" .) }}
+  {{- end }}
+
+  {{- with .Values.stackstate.stackpacks.installed }}
+stackstate.stackPacks {
     {{- range . }}
-    {{ .name }} = {{- toPrettyJson .configuration | indent 4 }}
+  installOnStartUp += {{ .name | quote }}
     {{- end }}
+
+  installOnStartUpConfig {
+      {{- range . }}
+    {{ .name }} = {{- toPrettyJson .configuration | indent 4 }}
+      {{- end }}
   }
 }
-{{- end }}
+  {{- end }}
 
-{{- if .Values.stackstate.components.api.docslink }}
+  {{- if .Values.stackstate.components.api.docslink }}
 stackstate.webUIConfig.docLinkUrlPrefix = "{{- .Values.stackstate.components.api.docslink -}}"
-{{- end }}
+  {{- end }}
 
 stackstate.deploymentMode = "{{- .Values.stackstate.deployment.mode -}}"
 
