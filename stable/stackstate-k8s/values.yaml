@@ -1949,9 +1949,11 @@ opentelemetry:
 opentelemetry-collector:
   image:
     # opentelemetry-collector.image.repository -- Repository where to get the image from.
-    repository: quay.io/stackstate/opentelemetry-collector-contrib
+    repository: ghcr.io/stackvista/sts-opentelemetry-collector
     # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: 0.93.0-3ffa653c
+    tag: v0.0.2
+  command:
+    name: usr/bin/sts-opentelemetry-collector
   # opentelemetry-collector.fullnameOverride -- Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
   fullnameOverride: stackstate-otel-collector
   # opentelemetry-collector.mode -- deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset".
@@ -1967,12 +1969,15 @@ opentelemetry-collector:
             endpoint: ${env:MY_POD_IP}:4317
           http:
             endpoint: ${env:MY_POD_IP}:4318
+      zipkin: null
+      prometheus: null
+      jaeger: null
     processors:
       batch:
         timeout: 2s
         send_batch_size: 100000
     exporters:
-      clickhouse:
+      clickhousests:
         endpoint: tcp://stackstate-clickhouse:9000?dial_timeout=10s&compress=lz4
         username: admin
         password: admin
@@ -1991,6 +1996,7 @@ opentelemetry-collector:
         endpoint: 'http://stackstate-vmagent:8429/api/v1/write'
         resource_to_telemetry_conversion:
           enabled: true
+      logging: null
     extensions:
       # The health_check extension is mandatory for this chart.
       # Without the health_check extension the collector will fail the readiness and liveliness probes.
@@ -2012,7 +2018,7 @@ opentelemetry-collector:
           processors:
             - batch
           exporters:
-            - clickhouse
+            - clickhousests
         metrics:
           receivers:
             - otlp
