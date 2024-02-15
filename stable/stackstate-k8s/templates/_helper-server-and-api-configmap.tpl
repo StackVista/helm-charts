@@ -101,11 +101,7 @@ stackstate.webUIConfig.docLinkUrlPrefix = "{{- .Values.stackstate.components.api
 {{- end }}
 
 stackstate.deploymentMode = "{{- .Values.stackstate.deployment.mode -}}"
-
-{{- if .Values.stackstate.experimental.traces }}
-stackstate.traces.clickhouse = {{- .Values.stackstate.components.all.clickhouse | toPrettyJson }}
-{{- end }}
-
+{{- include "stackstate.service.secret.clickhouseconfig" . }}
 {{- end -}}
 
 {{- define "stackstate.auth.config" }}

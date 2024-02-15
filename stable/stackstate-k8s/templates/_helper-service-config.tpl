@@ -111,6 +111,12 @@ stringData:
 {{- end }}
 {{- end -}}
 
+{{- define "stackstate.service.secret.clickhouseconfig" -}}
+{{- if .Values.stackstate.experimental.traces }}
+stackstate.traces.clickHouse = {{- .Values.stackstate.components.all.clickHouse | toPrettyJson }}
+{{- end }}
+{{- end -}}
+
 {{/*
 Secrets dict for custom certificates for stackstate services
 */}}

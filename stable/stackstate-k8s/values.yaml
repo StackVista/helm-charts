@@ -204,7 +204,7 @@ stackstate:
       # stackstate.components.all.elasticsearchEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster.
       elasticsearchEndpoint: ""
       # stackstate.components.all.clickhouse -- Configuration for connecting to ClickHouse store, used for traces
-      clickhouse:
+      clickHouse:
         ## stackstate.components.all.clickhouse.hostnames - The hostnames for Clickhouse, can be multiple comma-seperated hostnames
         hostnames: stackstate-clickhouse-headless
         ## stackstate.components.all.clickhouse.port -- The default port on Clickhouse is 8123
