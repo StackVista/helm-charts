@@ -600,23 +600,6 @@ stackstate/stackstate
 | stackstate.components.sync.tmpToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible. |
 | stackstate.components.sync.tmpToPVC.volumeSize | string | `"2Gi"` | The size of the PersistentVolume for "/tmp" directory. |
 | stackstate.components.sync.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| stackstate.components.trace2es.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.trace2es.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.trace2es.enabled | bool | `false` | Enable/disable the trace2es service |
-| stackstate.components.trace2es.esDiskSpaceShare | string | `"0"` | How much disk space from ElasticSearch can use for k8s events ingestion |
-| stackstate.components.trace2es.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.trace2es.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.trace2es.image.pullPolicy | string | `""` | `pullPolicy` used for the `trace2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.trace2es.image.repository | string | `"stackstate/stackstate-kafka-to-es"` | Repository of the trace2es component Docker image. |
-| stackstate.components.trace2es.image.tag | string | `""` | Tag used for the `trace2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.trace2es.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.trace2es.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `trace2es` pods. |
-| stackstate.components.trace2es.replicaCount | int | `1` | Number of `trace2es` replicas. |
-| stackstate.components.trace2es.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"1Gi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"1Gi"}}` | Resource allocation for `trace2es` pods. |
-| stackstate.components.trace2es.retention | int | `7` | Number of days to keep the traces data on Es |
-| stackstate.components.trace2es.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
-| stackstate.components.trace2es.sizing.javaHeapMemoryFraction | string | `"50"` |  |
-| stackstate.components.trace2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.ui.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.ui.agentMetricsFilter | string | `"[\"nginx*\"]"` |  |
 | stackstate.components.ui.debug | bool | `false` |  |
