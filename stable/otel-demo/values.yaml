@@ -48,38 +48,12 @@ opentelemetry-demo:
 
   opentelemetry-collector:
     config:
-      processors:
-        resource/addk8scluster:
-          attributes:
-            - key: k8s.cluster.name
-              action: insert
-              value: gke-demo-dev.gcp.stackstate.io
       # the spanmetrics connector gets lost without at least some config present
       # a (semi)random property (exemplars.enabled) is used here with its default value
       connectors:
         spanmetrics:
           exemplars:
             enabled: false
-      # These are only additions to the default config from the helm chart
-      exporters:
-        # Exporter for traces to traffic mirror (i.e. StackState dev environments
-        otlp/trafficmirror:
-          endpoint: trafficmirror-otel.gke-demo-dev.gcp.stackstate.io:443
-      service:
-        pipelines:
-          # Extend existing traces pipeline with traffic mirror exporter, the metrics pipeline is left as-is
-          logs:
-            receivers: [otlp]
-            processors: [k8sattributes, memory_limiter, batch]
-            exporters: [debug]
-          traces:
-            receivers: [otlp, jaeger, zipkin]
-            processors: [k8sattributes, memory_limiter, resource, resource/addk8scluster, batch]
-            exporters: [otlp, debug, spanmetrics, otlp/trafficmirror]
-          metrics:
-            receivers: [otlp, spanmetrics]
-            processors: [k8sattributes, memory_limiter, filter/ottl, transform, resource, batch]
-            exporters: [otlphttp/prometheus, debug]
 
 featureflags:
   demoScenarioSimulation:
