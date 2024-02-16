@@ -44,7 +44,7 @@ Helm chart for Opentelemetry Demo
 | opentelemetry-demo.opentelemetry-collector.config.exporters.otlp/trafficmirror.endpoint | string | `"trafficmirror-otel.gke-demo-dev.gcp.stackstate.io:443"` |  |
 | opentelemetry-demo.opentelemetry-collector.config.processors.resource/addk8scluster.attributes[0].action | string | `"insert"` |  |
 | opentelemetry-demo.opentelemetry-collector.config.processors.resource/addk8scluster.attributes[0].key | string | `"k8s.cluster.name"` |  |
-| opentelemetry-demo.opentelemetry-collector.config.processors.resource/addk8scluster.attributes[0].value | string | `"gke-demo-dev"` |  |
+| opentelemetry-demo.opentelemetry-collector.config.processors.resource/addk8scluster.attributes[0].value | string | `"gke-demo-dev.gcp.stackstate.io"` |  |
 | opentelemetry-demo.opentelemetry-collector.config.service.pipelines.logs.exporters[0] | string | `"debug"` |  |
 | opentelemetry-demo.opentelemetry-collector.config.service.pipelines.logs.processors[0] | string | `"k8sattributes"` |  |
 | opentelemetry-demo.opentelemetry-collector.config.service.pipelines.logs.processors[1] | string | `"memory_limiter"` |  |

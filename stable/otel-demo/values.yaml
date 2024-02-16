@@ -53,7 +53,7 @@ opentelemetry-demo:
           attributes:
             - key: k8s.cluster.name
               action: insert
-              value: gke-demo-dev
+              value: gke-demo-dev.gcp.stackstate.io
       # the spanmetrics connector gets lost without at least some config present
       # a (semi)random property (exemplars.enabled) is used here with its default value
       connectors:
