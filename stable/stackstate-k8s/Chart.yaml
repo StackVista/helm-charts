@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: "6.0.0-snapshot.20240219080643-master-ab6eb9c"
+appVersion: "6.0.0-snapshot.20240220074939-master-0d097af"
 version: 1.7.1-pre.86
 description: Helm chart for StackState for Kubernetes
 keywords:
