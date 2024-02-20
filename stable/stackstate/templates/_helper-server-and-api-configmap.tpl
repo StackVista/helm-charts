@@ -5,12 +5,21 @@ Shared settings in configmap for server and api
 
   {{- if and .Values.stackstate.authentication }}
     {{- include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.authentication "authnPrefix" "stackstate.api.authentication" "authzPrefix" "stackstate.authorization" "global" .) }}
-    {{ $admins := list }}
     {{- if  (eq .Values.stackstate.deployment.mode "SelfHosted") }}
-      {{- if and .Values.stackstate.authentication.roles.admin (index .Values "anomaly-detection" "enabled" ) }}
-stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} {{ append .Values.stackstate.authentication.roles.admin "stackstate-aad" | toJson }}
-      {{- else }}
-stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["stackstate-aad"]
+      {{ $admins := list }}
+
+      {{- if index .Values "anomaly-detection" "enabled" }}
+          {{ $admins = append $admins "stackstate-aad" }}
+      {{- end }}
+      {{- if and .Values.backup.enabled .Values.backup.configuration.scheduled.enabled }}
+          {{ $admins = append $admins "stackstate-backup" }}
+      {{- end }}
+      {{- range  .Values.stackstate.authentication.roles.admin }}
+        {{ $admins = append $admins . }}
+      {{- end }}
+
+      {{- if ne (len $admins) 0 }}
+stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} {{ $admins | toJson }}
       {{- end }}
 
       {{- if .Values.stackstate.authentication.roles.platformAdmin }}
@@ -27,11 +36,13 @@ stackstate.authorization.guestGroups = ${stackstate.authorization.guestGroups} {
     {{- end }}
   {{- end }}
 
-  {{- if gt (len .Values.stackstate.admin.authentication) 1 }}
+  {{- if eq .Values.stackstate.deployment.mode "Saas" }}
+    {{- if gt (len .Values.stackstate.admin.authentication) 1 }}
 {{include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.admin.authentication "authnPrefix" "stackstate.adminApi.authentication" "authzPrefix" "stackstate.adminApi.authorization" "global" .) }}
-  {{- end }}
-  {{- if .Values.stackstate.instanceApi.authentication }}
+    {{- end }}
+    {{- if .Values.stackstate.instanceApi.authentication }}
 {{include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.instanceApi.authentication "authnPrefix" "stackstate.instanceApi.authentication" "authzPrefix" "stackstate.instanceApi.authorization" "global" .) }}
+    {{- end }}
   {{- end }}
 
   {{- with .Values.stackstate.stackpacks.installed }}
@@ -211,6 +222,12 @@ for production this should be replaced with one of the other mechanisms.
 
 {{- range $k, $v := $apiAuth.roles.custom }}
 {{ $authzPrefix }}.staticSubjects.{{ $k | quote }}: { systemPermissions: {{ $v.systemPermissions | toJson }}, viewPermissions: {{ $v.viewPermissions | toJson }} }
+{{- end }}
+
+{{- if and (eq $global.Values.stackstate.deployment.mode "Saas") (eq $authzPrefix "stackstate.authorization") }}
+  {{- if and $global.Values.backup.enabled $global.Values.backup.configuration.scheduled.enabled }}
+{{ $authzPrefix }}.staticSubjects."stackstate-backup": { systemPermissions: ["export-settings"] }
+  {{- end }}
 {{- end }}
 
 {{- if $apiAuth.serviceToken.bootstrap.token }}
