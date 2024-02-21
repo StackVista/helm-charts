@@ -1951,7 +1951,7 @@ opentelemetry-collector:
     # opentelemetry-collector.image.repository -- Repository where to get the image from.
     repository: quay.io/stackstate/sts-opentelemetry-collector
     # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: v0.0.4
+    tag: v0.0.5
   command:
     name: usr/bin/sts-opentelemetry-collector
   # opentelemetry-collector.fullnameOverride -- Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
@@ -1986,6 +1986,7 @@ opentelemetry-collector:
         logs_table_name: otel_logs
         traces_table_name: otel_traces
         metrics_table_name: otel_metrics
+        create_traces_table: false
         timeout: 5s
         retry_on_failure:
           enabled: true
