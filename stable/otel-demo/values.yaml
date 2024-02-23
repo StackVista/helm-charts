@@ -44,7 +44,7 @@ opentelemetry-demo:
     frauddetectionService:
       imageOverride:
         repository: quay.io/stackstate/opentelemetry-demo
-        tag: dev-11b1c878--frauddetectionservice
+        tag: dev-11b1c878-frauddetectionservice
 
   opentelemetry-collector:
     config:
