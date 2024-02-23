@@ -1,6 +1,6 @@
 # otel-demo
 
-![Version: 0.0.3](https://img.shields.io/badge/Version-0.0.3-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.0.4](https://img.shields.io/badge/Version-0.0.4-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
 Helm chart for Opentelemetry Demo
 
@@ -36,7 +36,7 @@ Helm chart for Opentelemetry Demo
 | opentelemetry-demo.components.ffsPostgres.mountedConfigMaps[0].mountPath | string | `"/docker-entrypoint-initdb.d"` |  |
 | opentelemetry-demo.components.ffsPostgres.mountedConfigMaps[0].name | string | `"init-scripts"` |  |
 | opentelemetry-demo.components.frauddetectionService.imageOverride.repository | string | `"quay.io/stackstate/opentelemetry-demo"` |  |
-| opentelemetry-demo.components.frauddetectionService.imageOverride.tag | string | `"dev-11b1c878--frauddetectionservice"` |  |
+| opentelemetry-demo.components.frauddetectionService.imageOverride.tag | string | `"dev-11b1c878-frauddetectionservice"` |  |
 | opentelemetry-demo.default.podSecurityContext.runAsGroup | int | `65534` |  |
 | opentelemetry-demo.default.podSecurityContext.runAsNonRoot | bool | `true` |  |
 | opentelemetry-demo.default.podSecurityContext.runAsUser | int | `65534` |  |
