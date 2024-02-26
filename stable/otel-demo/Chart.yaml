@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: "0.0.1"
-version: 0.0.4
+version: 0.0.5
 description: Helm chart for Opentelemetry Demo
 keywords:
   - opentelemetry
@@ -12,5 +12,5 @@ maintainers:
 name: otel-demo
 dependencies:
   - name: opentelemetry-demo
-    version: 0.28.1
+    version: 0.29.0
     repository: https://open-telemetry.github.io/opentelemetry-helm-charts
