@@ -693,7 +693,7 @@ stackstate/stackstate
 | victoria-metrics-0.rbac.pspEnabled | bool | `false` |  |
 | victoria-metrics-0.restore.enabled | bool | `false` | Enable Victoria Metrics restore functionality (if `backup.enabled` is set to `true`). |
 | victoria-metrics-0.server.affinity | object | `{}` | Affinity settings for Victoria Metrics pod |
-| victoria-metrics-0.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":60}` | Extra arguments for Victoria Metrics |
+| victoria-metrics-0.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":60,"search.cacheTimestampOffset":"10m"}` | Extra arguments for Victoria Metrics |
 | victoria-metrics-0.server.extraLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s"}` | Extra labels for Victoria Metrics StatefulSet |
 | victoria-metrics-0.server.fullnameOverride | string | `"stackstate-victoria-metrics-0"` | Full name override |
 | victoria-metrics-0.server.image.repository | string | `"quay.io/stackstate/victoria-metrics"` | Victoriametrics repository |

@@ -1734,6 +1734,7 @@ victoria-metrics-0:
     extraArgs:
       dedup.minScrapeInterval: 1ms
       maxLabelsPerTimeseries: 60
+      search.cacheTimestampOffset: 10m
     persistentVolume:
       # victoria-metrics-0.server.persistentVolume.size -- Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times
       size: 250Gi
