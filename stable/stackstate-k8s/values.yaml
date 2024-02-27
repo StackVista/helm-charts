@@ -46,6 +46,10 @@ backup:
   stackGraph:
     # backup.stackGraph.bucketName -- Name of the MinIO bucket to store StackGraph backups.
     bucketName: 'sts-stackgraph-backup'
+    # backup.stackGraph.splitArchiveSize -- Split the Stackgraph dump into chunks of the specified size in bytes.
+    # Accepts an integer greater or equal to 0 with optional suffix K,M,G (powers of 1024) or KB,MB,GB (powers of 1000)
+    # If set to 0, the dump is not split.
+    splitArchiveSize: 0
     restore:
       # backup.stackGraph.restore.enabled -- Enable StackGraph backup restore functionality (if `backup.enabled` is set to `true`).
       enabled: true

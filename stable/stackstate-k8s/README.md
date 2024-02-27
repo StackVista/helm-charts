@@ -110,6 +110,7 @@ stackstate/stackstate
 | backup.stackGraph.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
 | backup.stackGraph.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | backup.stackGraph.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
+| backup.stackGraph.splitArchiveSize | int | `0` | Split the Stackgraph dump into chunks of the specified size in bytes. Accepts an integer greater or equal to 0 with optional suffix K,M,G (powers of 1024) or KB,MB,GB (powers of 1000) If set to 0, the dump is not split. |
 | clickhouse.auth.password | string | `"admin"` | ClickHouse Admin password. If left empty the random value is generated. |
 | clickhouse.auth.username | string | `"admin"` | ClickHouse Admin username |
 | clickhouse.enabled | bool | `false` | Enable / disable chart-based Clickhouse. |
