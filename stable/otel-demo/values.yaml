@@ -22,7 +22,8 @@ opentelemetry-demo:
         runAsUser: 70
       mountedConfigMaps:
         - name: init-scripts
-          mountPath: /docker-entrypoint-initdb.d
+          mountPath: /docker-entrypoint-initdb.d/99-ffs_update.sql
+          subPath: 99-ffs_update.sql
           data:
             99-ffs_update.sql: |
               UPDATE public.featureflags SET enabled = 1 WHERE name = 'adServiceFailure';
