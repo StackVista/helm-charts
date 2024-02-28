@@ -402,44 +402,45 @@ checksum/vmagent-configmap: {{ include (print $.Template.BasePath "/configmap-vm
 Ingress paths / routes
 */}}
 {{- define "stackstate.ingress.rules" -}}
-{{- $ctx := . }}
-{{- if .Values.ingress.hosts }}
-  {{- range .Values.ingress.hosts }}
-- host: {{ tpl .host $ctx | quote }}
+{{- $ctx := .global }}
+{{- if .global.Values.ingress.hosts }}
+  {{- range .global.Values.ingress.hosts }}
+- host: {{ print $.hostPrefix (tpl .host $ctx) | quote }}
   http:
     paths:
-      - path: {{ $.Values.ingress.path | quote }}
+      - path: {{ $.global.Values.ingress.path | quote }}
     {{- if $ctx.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
         pathType: Prefix
         backend:
           service:
-            name: {{ include "common.fullname.short" $ }}-router
+            name: {{ $.serviceName }}
             port:
-              number: 8080
+              number: {{ $.port }}
     {{- else }}
         backend:
-          serviceName: {{ include "common.fullname.short" $ }}-router
-          servicePort: 8080
+          serviceName: {{ $.serviceName }}
+          servicePort: {{ $.port }}
     {{- end }}
   {{- end }}
 {{- else }}
 - http:
     paths:
-      - path: {{ $.Values.ingress.path | quote }}
+      - path: {{ $.global.Values.ingress.path | quote }}
     {{- if $ctx.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
         pathType: Prefix
         backend:
           service:
-            name: {{ include "common.fullname.short" $ }}-router
+            name: {{ $.serviceName }}
             port:
-              number: 8080
+              number: {{ $.port }}
     {{- else }}
         backend:
-          serviceName: {{ include "common.fullname.short" $ }}-router
-          servicePort: 8080
+          serviceName: {{ $.serviceName }}
+          servicePort: {{ $.port }}
     {{- end }}
 {{- end }}
 {{- end -}}
+
 {{- define "stackstate.servicemonitor.extraLabels" -}}
 podTargetLabels:
   - __meta_kubernetes_pod_label_app_kubernetes_io_name
@@ -532,10 +533,9 @@ Logic validate the total shares of Es disk
 {{- define "stackstate.elastic.storage.total" -}}
 {{- $receiverDs := .Values.stackstate.components.receiver.esDiskSpaceShare | int -}}
 {{- $eventsDs := .Values.stackstate.components.e2es.esDiskSpaceShare | int -}}
-{{- $traceDs := (.Values.stackstate.components.trace2es.enabled) | ternary .Values.stackstate.components.trace2es.esDiskSpaceShare 0 | int -}}
-{{- $total := (add $receiverDs $eventsDs $traceDs) | int -}}
+{{- $total := (add $receiverDs $eventsDs) | int -}}
 {{- if ne $total 100 }}
-{{- fail "The share of ElasticSearch disk on receiver.esDiskSpaceShare, e2es.esDiskSpaceShare, trace2es.esDiskSpaceShare should be 100." }}
+{{- fail "The share of ElasticSearch disk on receiver.esDiskSpaceShare, e2es.esDiskSpaceShare should be 100." }}
 {{- end }}
 {{- end -}}
 

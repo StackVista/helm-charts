@@ -2,9 +2,9 @@
   local Variable = self,
 
   images: {
-    stackstate_helm_test: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6',
-    stackstate_devops: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18',
-    chart_testing: 'quay.io/helmpack/chart-testing:v3.6.0',
+    stackstate_helm_test: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792',
+    stackstate_devops: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f',
+    chart_testing: 'quay.io/helmpack/chart-testing:v3.10.1',
   },
   helm: {
     repositories: {
@@ -12,6 +12,7 @@
       'bitnami-pre-2022': 'https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami',
       'bitnami-full-archive': 'https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami',
       elastic: 'https://helm.elastic.co',
+      opentelemetry: 'https://open-telemetry.github.io/opentelemetry-helm-charts',
       stable: 'https://charts.helm.sh/stable',
       stackstate: 'https://helm.stackstate.io',
       stackstate_internal: 'https://helm-internal.stackstate.io',
@@ -30,6 +31,7 @@
       'pull-secret',
       'stackstate',
       'stackstate-k8s',
+      'stackstate-values',
       'stackstate-monitoring',
       'stackstate-standalone',
       'trafficmirror',
@@ -41,12 +43,14 @@
       'aws-pod-identity-webhook',
       'beacher-job',
       'chartmuseum',
+      'falco-reporter',
       'gitlab-steward',
       'helm-reaper',
       'iceman',
       'k8s-image-list-to-s3',
       'k8s-spot-termination-handler',
       'kommoner-operator',
+      'otel-demo',
       'petros-d-kubelet-stats-exporter',
       'redirector',
       'receiveramplifier',

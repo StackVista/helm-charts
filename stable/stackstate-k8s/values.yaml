@@ -46,6 +46,10 @@ backup:
   stackGraph:
     # backup.stackGraph.bucketName -- Name of the MinIO bucket to store StackGraph backups.
     bucketName: 'sts-stackgraph-backup'
+    # backup.stackGraph.splitArchiveSize -- Split the Stackgraph dump into chunks of the specified size in bytes.
+    # Accepts an integer greater or equal to 0 with optional suffix K,M,G (powers of 1024) or KB,MB,GB (powers of 1000)
+    # If set to 0, the dump is not split.
+    splitArchiveSize: 0
     restore:
       # backup.stackGraph.restore.enabled -- Enable StackGraph backup restore functionality (if `backup.enabled` is set to `true`).
       enabled: true
@@ -178,7 +182,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.image.tag to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: 6.0.0-snapshot.20231214144836-master-b3d0ce5
+        tag: 6.0.0-snapshot.20240228090335-master-a002d0e
       metrics:
         defaultAgentMetricsFilter: '["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "akka_http_requests_active", "stackstate*", "receiver*", "stackgraph*"]'
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
@@ -203,6 +207,23 @@ stackstate:
         runAsUser: 65534
       # stackstate.components.all.elasticsearchEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster.
       elasticsearchEndpoint: ""
+      # stackstate.components.all.clickhouse -- Configuration for connecting to ClickHouse store, used for traces
+      clickHouse:
+        ## stackstate.components.all.clickhouse.hostnames - The hostnames for Clickhouse, can be multiple comma-seperated hostnames
+        hostnames: stackstate-clickhouse-headless
+        ## stackstate.components.all.clickhouse.port -- The default port on Clickhouse is 8123
+        port: 8123
+        ## stackstate.components.all.clickhouse.database -- Which database to use
+        database: otel
+        ## stackstate.components.all.clickhouse.username -- The Clickhouse username
+        username: stackstate
+        ## stackstate.components.all.clickhouse.password-- The Clickhouse password
+        password: ""
+        ## stackstate.components.all.clickhouse.protocol -- Either http or https
+        protocol: http
+        ## stackstate.components.all.clickhouse.parameters -- Extra client configuration options, see https://github.com/ClickHouse/clickhouse-java/blob/main/clickhouse-client/src/main/java/com/clickhouse/client/config/ClickHouseClientOption.java
+        parameters:
+          health_check_interval: "5000"
       metricStore:
         # stackstate.components.all.metricStore.remoteWriteEndpoint -- Host and port for prometheus remote write endpoint ($vmInstance is replaced by '0' or '1')
         remoteWriteEndpoint: "stackstate-victoria-metrics-$vmInstance:8428"
@@ -252,7 +273,7 @@ stackstate:
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
-        javaHeapMemoryFraction: "50"
+        javaHeapMemoryFraction: "45"
       # stackstate.components.api.replicaCount -- Number of `api` replicas.
       replicaCount: 1
       # stackstate.components.api.nodeSelector -- Node labels for pod assignment.
@@ -500,51 +521,6 @@ stackstate:
       esDiskSpaceShare: "30"
       # stackstate.components.e2es.retention -- Number of days to keep the events data on Es
       retention: 30
-    trace2es:
-      extraEnv:
-        # stackstate.components.trace2es.extraEnv.open -- Extra open environment variables to inject into pods.
-        open: {}
-        # stackstate.components.trace2es.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
-        secret: {}
-      image:
-        # stackstate.components.trace2es.image.pullPolicy -- `pullPolicy` used for the `trace2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
-        pullPolicy: ""
-        # stackstate.components.trace2es.image.repository -- Repository of the trace2es component Docker image.
-        repository: stackstate/stackstate-kafka-to-es
-        # stackstate.components.trace2es.image.tag -- Tag used for the `trace2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: ""
-      # stackstate.components.trace2es.poddisruptionbudget -- PodDisruptionBudget settings for `trace2es` pods.
-      poddisruptionbudget:
-        maxUnavailable: 1
-      # stackstate.components.trace2es.resources -- Resource allocation for `trace2es` pods.
-      resources:
-        limits:
-          memory: "1Gi"
-          cpu: "500m"
-          ephemeral-storage: "1Gi"
-        requests:
-          memory: "1Gi"
-          cpu: "500m"
-          ephemeral-storage: "1Mi"
-      sizing:
-        baseMemoryConsumption: "300Mi"
-        javaHeapMemoryFraction: "50"
-      # stackstate.components.trace2es.replicaCount -- Number of `trace2es` replicas.
-      replicaCount: 1
-      # stackstate.components.trace2es.nodeSelector -- Node labels for pod assignment.
-      nodeSelector: {}
-      # stackstate.components.trace2es.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
-      # stackstate.components.trace2es.affinity -- Affinity settings for pod assignment.
-      affinity: {}
-      # stackstate.components.trace2es.enabled -- Enable/disable the trace2es service
-      enabled: false
-      # stackstate.components.trace2es.additionalLogging -- Additional logback config
-      additionalLogging: ""
-      # stackstate.components.trace2es.esDiskSpaceShare -- How much disk space from ElasticSearch can use for k8s events ingestion
-      esDiskSpaceShare: "0"
-      # stackstate.components.trace2es.retention -- Number of days to keep the traces data on Es
-      retention: 7
     notification:
       extraEnv:
         # stackstate.components.notification.extraEnv.open -- Extra open environment variables to inject into pods.
@@ -575,7 +551,7 @@ stackstate:
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "350Mi"
-        javaHeapMemoryFraction: "60"
+        javaHeapMemoryFraction: "55"
       # stackstate.components.notification.replicaCount -- Number of `notification` replicas.
       replicaCount: 1
       # stackstate.components.notification.nodeSelector -- Node labels for pod assignment.
@@ -651,7 +627,7 @@ stackstate:
         # stackstate.components.router.image.repository -- Repository of the router component Docker image.
         repository: stackstate/envoy
         # stackstate.components.router.image.tag -- Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: v1.19.1-66d4d31b
+        tag: v1.19.1-e418b2bd
       # stackstate.components.router.poddisruptionbudget -- PodDisruptionBudget settings for `router` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -746,7 +722,7 @@ stackstate:
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "300Mi"
-        javaHeapMemoryFraction: "70"
+        javaHeapMemoryFraction: "65"
       # stackstate.components.state.replicaCount -- Number of `state` replicas.
       replicaCount: 1
       # stackstate.components.state.nodeSelector -- Node labels for pod assignment.
@@ -956,7 +932,7 @@ stackstate:
         # stackstate.components.kafkaTopicCreate.image.repository -- Base container image repository for kafka-topic-create containers.
         repository: stackstate/kafka
         # stackstate.components.kafkaTopicCreate.image.tag -- Container image tag for kafka-topic-create containers.
-        tag: 3.3.1-f2c6b50d
+        tag: 3.3.1-08305c25
         # stackstate.components.kafkaTopicCreate.image.pullPolicy -- Image pull policy for kafka-topic-create containers.
         pullPolicy: IfNotPresent
       # stackstate.components.kafkaTopicCreate.resources -- Resource allocation for `kafkaTopicCreate` pods.
@@ -1017,9 +993,11 @@ stackstate:
           memory: "2000Mi"
           ephemeral-storage: "1Mi"
     vmagent:
+      # stackstate.components.vmagent.fullNameOverride -- Name for the service
+      fullNameOverride: stackstate-vmagent
       image:
         repository: stackstate/vmagent
-        tag: v1.93.7-2e42e9fc
+        tag: v1.93.7-37ef8c51
       # stackstate.components.vmagent.poddisruptionbudget -- PodDisruptionBudget settings for `vmagent` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -1054,7 +1032,7 @@ stackstate:
                       values:
                         - stackstate
                 topologyKey: kubernetes.io/hostname
-      agentMetricsFilter: '["vmagent*"]'
+      agentMetricsFilter: '["vm*", "go*"]'
     wait:
       image:
         # stackstate.components.wait.image.registry -- Base container image registry for wait containers.
@@ -1062,7 +1040,7 @@ stackstate:
         # stackstate.components.wait.image.repository -- Base container image repository for wait containers.
         repository: stackstate/wait
         # stackstate.components.wait.image.tag -- Container image tag for wait containers.
-        tag: 1.0.9-104f3090
+        tag: 1.0.9-b6a3cb01
         # stackstate.components.wait.image.pullPolicy -- Image pull policy for wait containers.
         pullPolicy: IfNotPresent
   # stackstate.authentication -- Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error.
@@ -1130,6 +1108,8 @@ stackstate:
     baseUrl:
   experimental:
     enableVMAgent: true
+    # stackstate.experimental.traces -- (boolean) Enable new traces UI and API
+    traces: false
     server:
       # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
       split: true
@@ -1160,7 +1140,7 @@ stackstate:
       # stackstate.stackpacks.image.repository -- Repository of the `stackpacks` Docker image.
       repository: stackstate/stackpacks
       # stackstate.stackpacks.image.tag -- Tag used for the `stackpacks` Docker image;
-      tag: "20231214165825-master-1b55e2b-selfhosted"
+      tag: "20240227152241-master-bcd4059-selfhosted"
     s3:
       # stackstate.stackpacks.s3.bucket -- Name of the S3 bucket to use as source for stackpacks.
       bucket: "sts-stackpacks-prod"
@@ -1250,7 +1230,7 @@ hbase:
   stackgraph:
     image:
       # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 4.14.0
+      tag: 4.14.1
   console:
     # hbase.console.enabled -- Enabled by default for debugging, but with 0 replicas. Manually scale up to 1 replica and open a shell in the container to access the stackgraph console.
     enabled: true
@@ -1442,7 +1422,7 @@ kafka:
     # kafka.image.tag -- Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.**
     # When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order
     # for the kafkaup operator to upgrade the inter broker protocol version
-    tag: 3.3.1-f2c6b50d
+    tag: 3.3.1-08305c25
   livenessProbe:
     # kafka.livenessProbe.initialDelaySeconds -- Delay before readiness probe is initiated.
     initialDelaySeconds: 240
@@ -1461,7 +1441,7 @@ kafka:
         # kafka.metrics.jmx.image.repository -- Kafka JMX exporter image repository
         repository: stackstate/jmx-exporter
         # kafka.metrics.jmx.image.tag -- Kafka JMX exporter image tag
-        tag: 0.17.0-c73ad127
+        tag: 0.17.0-129c430a
       resources:
         limits:
           cpu: "1"
@@ -1534,7 +1514,7 @@ minio:
     registry: quay.io
     # minio.image.repository -- MinIO image repository
     repository: stackstate/minio
-    tag: RELEASE.2021-02-14T04-01-33Z-46e9b6c9
+    tag: RELEASE.2021-02-14T04-01-33Z-ade00eeb
   # minio.accessKey -- Access key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
   accessKey: setme
   # minio.accessKey -- Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
@@ -1594,7 +1574,7 @@ zookeeper:
     # zookeeper.image.repository -- ZooKeeper image repository
     repository: stackstate/zookeeper
     # zookeeper.image.tag -- ZooKeeper image tag
-    tag: 3.6.3-5767b505
+    tag: 3.6.3-5e3ee3c0
   metrics:
     # zookeeper.metrics.enabled -- Enable / disable Zookeeper Prometheus metrics.
     enabled: true
@@ -1725,12 +1705,12 @@ victoria-metrics-0:
       # victoria-metrics-0.server.image.repository -- Victoriametrics repository
       repository: quay.io/stackstate/victoria-metrics
       # 1.93.x is the LTS version
-      tag: "v1.93.7-5c5a4296"
+      tag: "v1.93.7-3f3a60fc"
     # victoria-metrics-0.server.podAnnotations -- Annotations for Victoria Metrics server pod
     podAnnotations:
       ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
       ad.stackstate.com/victoria-metrics-0-server.init_configs: "[{}]"
-      ad.stackstate.com/victoria-metrics-0-server.instances: '[ { "prometheus_url": "http://%%host%%:8428/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
+      ad.stackstate.com/victoria-metrics-0-server.instances: '[ { "prometheus_url": "http://%%host%%:8428/metrics", "namespace": "stackstate", "metrics": ["vm*", "go*"] } ]'
       ad.stackstate.com/vmbackup.check_names: '["openmetrics"]'
       ad.stackstate.com/vmbackup.init_configs: "[{}]"
       ad.stackstate.com/vmbackup.instances: '[ { "prometheus_url": "http://%%host%%:9746/metrics", "namespace": "stackstate", "metrics": ["supercronic_*"] } ]'
@@ -1757,7 +1737,8 @@ victoria-metrics-0:
     # victoria-metrics-0.server.extraArgs -- Extra arguments for Victoria Metrics
     extraArgs:
       dedup.minScrapeInterval: 1ms
-      maxLabelsPerTimeseries: 35
+      maxLabelsPerTimeseries: 60
+      search.cacheTimestampOffset: 10m
     persistentVolume:
       # victoria-metrics-0.server.persistentVolume.size -- Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times
       size: 250Gi
@@ -1813,7 +1794,7 @@ victoria-metrics-1:
       # victoria-metrics-1.server.image.repository -- Victoriametrics repository
       repository: quay.io/stackstate/victoria-metrics
       # 1.93.x is the LTS version
-      tag: "v1.93.7-5c5a4296"
+      tag: "v1.93.7-3f3a60fc"
     # victoria-metrics-1.server.podAnnotations -- Annotations for Victoria Metrics server pod
     podAnnotations:
       ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
@@ -1845,7 +1826,7 @@ victoria-metrics-1:
     # victoria-metrics-1.server.extraArgs -- Extra arguments for Victoria Metrics
     extraArgs:
       dedup.minScrapeInterval: 1ms
-      maxLabelsPerTimeseries: 35
+      maxLabelsPerTimeseries: 60
     persistentVolume:
       # victoria-metrics-1.server.persistentVolume.size -- Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times
       size: 250Gi
@@ -1909,3 +1890,164 @@ victoria-metrics:
       runAsNonRoot: true
       # backup.stackGraph.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
       runAsUser: 65534
+clickhouse:
+  image:
+    # clickhouse.image.registry -- Registry where to get the image from.
+    registry: quay.io
+    # clickhouse.image.repository -- Repository where to get the image from.
+    repository: stackstate/clickhouse
+    # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
+    tag: 23.7.4-debian-11-r5-4df85f35
+  # clickhouse.enabled -- Enable / disable chart-based Clickhouse.
+  enabled: false
+  # clickhouse.shards -- Number of ClickHouse shards to deploy
+  shards: 1
+  # clickhouse.replicaCount -- Number of ClickHouse replicas per shard to deploy
+  replicaCount: 1
+  externalZookeeper:
+    # clickhouse.externalZookeeper.servers -- External Zookeeper configuration.
+    servers:
+      - stackstate-zookeeper-headless
+    port: 2181
+  # podLabels:
+  #   app.kubernetes.io/part-of: stackstate-k8s
+  volumePermissions:
+    enabled: false
+  # clickhouse.fullnameOverride -- Name override for clickhouse child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
+  fullnameOverride: stackstate-clickhouse
+  persistence:
+    # clickhouse.persistence.size -- Size of persistent volume for each clickhouse pod
+    size: 50Gi
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+  # clickhouse.zookeeper.enabled -- Disable Zookeeper from the clickhouse chart **Don't change unless otherwise specified**.
+  zookeeper:
+    enabled: false
+  auth:
+    # clickhouse.auth.username -- ClickHouse Admin username
+    username: admin
+    # clickhouse.auth.password -- ClickHouse Admin password. If left empty the random value is generated.
+    password: admin
+  # clickhouse.usersExtraOverrides -- Users extra configuration overrides.
+  usersExtraOverrides: |
+    <clickhouse>
+      <users>
+        <stackstate>
+            <no_password></no_password>
+            <grants>
+                <query>GRANT ALL ON *.*</query>
+            </grants>
+        </stackstate>
+      </users>
+    </clickhouse>
+  metrics:
+    enabled: true
+  podAnnotations:
+    ad.stackstate.com/clickhouse.check_names: '["openmetrics"]'
+    ad.stackstate.com/clickhouse.init_configs: "[{}]"
+    ad.stackstate.com/clickhouse.instances: '[ { "prometheus_url": "http://%%host%%:8001/metrics", "namespace": "stackstate", "metrics": ["ClickHouseAsyncMetrics_*", "ClickHouseMetrics_*", "ClickHouseProfileEvents_*"] } ]'
+opentelemetry:
+  # opentelemetry.enabled -- Enable / disable chart-based OTEL.
+  enabled: false
+opentelemetry-collector:
+  image:
+    # opentelemetry-collector.image.repository -- Repository where to get the image from.
+    repository: quay.io/stackstate/sts-opentelemetry-collector
+    # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
+    tag: v0.0.5
+  command:
+    name: usr/bin/sts-opentelemetry-collector
+  # opentelemetry-collector.fullnameOverride -- Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
+  fullnameOverride: stackstate-otel-collector
+  # opentelemetry-collector.mode -- deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset".
+  mode: statefulset
+  # opentelemetry-collector.replicaCount -- only used with deployment mode
+  replicaCount: 1
+  # opentelemetry-collector.config -- Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/)
+  config:
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: ${env:MY_POD_IP}:4317
+          http:
+            endpoint: ${env:MY_POD_IP}:4318
+      zipkin: null
+      prometheus: null
+      jaeger: null
+    processors:
+      batch:
+        timeout: 2s
+        send_batch_size: 100000
+    exporters:
+      clickhousests:
+        endpoint: tcp://stackstate-clickhouse:9000?dial_timeout=10s&compress=lz4
+        username: admin
+        password: admin
+        database: otel
+        ttl: 72h
+        logs_table_name: otel_logs
+        traces_table_name: otel_traces
+        metrics_table_name: otel_metrics
+        create_traces_table: false
+        timeout: 5s
+        retry_on_failure:
+          enabled: true
+          initial_interval: 5s
+          max_interval: 30s
+          max_elapsed_time: 300s
+      prometheusremotewrite/victoria-metrics:
+        endpoint: 'http://stackstate-vmagent:8429/api/v1/write'
+        resource_to_telemetry_conversion:
+          enabled: true
+      logging: null
+    extensions:
+      # The health_check extension is mandatory for this chart.
+      # Without the health_check extension the collector will fail the readiness and liveliness probes.
+      # The health_check extension can be modified, but should never be removed.
+      health_check:
+        endpoint: ${env:MY_POD_IP}:13133
+      memory_ballast: {}
+    service:
+      telemetry:
+        metrics:
+          address: 0.0.0.0:8888
+      extensions:
+        - health_check
+        - memory_ballast
+      pipelines:
+        traces:
+          receivers:
+            - otlp
+          processors:
+            - batch
+          exporters:
+            - clickhousests
+        metrics:
+          receivers:
+            - otlp
+          processors:
+            - batch
+          exporters:
+            - prometheusremotewrite/victoria-metrics
+  ports:
+    jaeger-compact:
+      enabled: false
+    jaeger-thrift:
+      enabled: false
+    jaeger-grpc:
+      enabled: false
+    zipkin:
+      enabled: false
+    metrics:
+      enabled: true
+  podAnnotations:
+    ad.stackstate.com/opentelemetry-collector.check_names: '["openmetrics"]'
+    ad.stackstate.com/opentelemetry-collector.init_configs: "[{}]"
+    ad.stackstate.com/opentelemetry-collector.instances: '[ { "prometheus_url": "http://%%host%%:8888/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
+  resources:
+    limits:
+      cpu: 250m
+      memory: 512Mi

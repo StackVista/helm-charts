@@ -1,6 +1,6 @@
 stackstate:
   components:
+    receiver:
+      esDiskSpaceShare: "20"
     e2es:
       esDiskSpaceShare: "10"
-    trace2es:
-      esDiskSpaceShare: "20"

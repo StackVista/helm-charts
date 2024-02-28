@@ -11,11 +11,6 @@ global:
   # global.imagePullSecrets -- Secrets / credentials needed for container image registry.
   imagePullSecrets: []
 
-dependencies:
-  kubeStateMetrics:
-    # dependencies.kubeStateMetrics.enabled -- Whether or not to install the `kube-state-metrics` Deployment along with the StackState cluster agent. Set to `false` if you have `kube-state-metrics` already installed on the cluster. This is due to be deprecated in coming releases, replaced by kube-state-metrics core check clusterAgent.collection.kubeStateMetrics.
-    enabled: false
-
 # nameOverride -- Override the name of the chart.
 nameOverride: ""
 # fullnameOverride -- Override the fullname of the chart.
@@ -66,7 +61,7 @@ nodeAgent:
         # nodeAgent.containers.agent.image.repository -- Base container image repository.
         repository: stackstate/stackstate-agent-2
         # nodeAgent.containers.agent.image.tag -- Default container image tag.
-        tag: 2.19.3
+        tag: 3.0.2
         # nodeAgent.containers.agent.image.pullPolicy -- Default container image pull policy.
         pullPolicy: IfNotPresent
       processAgent:
@@ -284,7 +279,7 @@ clusterAgent:
     # clusterAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-cluster-agent
     # clusterAgent.image.tag -- Default container image tag.
-    tag: 2.19.3
+    tag: 3.0.2
     # clusterAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -434,7 +429,7 @@ checksAgent:
     # checksAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-agent-2
     # checksAgent.image.tag -- Default container image tag.
-    tag: 2.19.3
+    tag: 3.0.2
     # checksAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -505,20 +500,6 @@ checksAgent:
 
   # checksAgent.affinity -- Affinity settings for pod assignment.
   affinity: {}
-
-  kubeStateMetrics:
-    # checksAgent.kubeStateMetrics.url -- URL of the KubeStateMetrics server. This needs to be configured if the KubeStateMetrics server is not enabled by default in this Helm chart.
-    url: ""
-
-kube-state-metrics:
-  # kube-state-metrics.image -- Details about the docker image to be used for this component. This overrides the value in the bitnami chart.
-  image:
-    # kube-state-metrics.image.registry -- Registry where docker image will be pulled from. This overrides the value in the bitnami chart.
-    registry: quay.io
-    # kube-state-metrics.image.repository -- The path inside the registry where the image is hosted. This overrides the value in the bitnami chart.
-    repository: stackstate/kube-state-metrics
-    # kube-state-metrics.image.tag -- The version tag of the image to be used during deployment. This overrides the value in the bitnami chart.
-    tag: 2.6.0-focal-20220826-r2.20220923.1321
 
 ########################
 # StackState variables #

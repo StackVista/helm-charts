@@ -39,9 +39,7 @@ Run validation of total ESDiskShare
 - name: CONFIG_FORCE_stackstate_elasticsearchDiskSpaceMB
   value: "{{ div (mul (div (mul $diskSpaceMB .Values.elasticsearch.replicas) (add1 $replicationFactor)) .esDiskSpaceShare) 100 }}"
 {{ end }}
-{{- $traceShare := (.Values.stackstate.components.trace2es.enabled) | ternary .Values.stackstate.components.trace2es.esDiskSpaceShare 0 | int -}}
-{{- $k2esShare := add (.Values.stackstate.components.e2es.esDiskSpaceShare | int) $traceShare -}}
-{{- $traces2EsShare := (mulf (divf $traceShare $k2esShare ) 100) | int -}}
+{{- $k2esShare := .Values.stackstate.components.e2es.esDiskSpaceShare | int -}}
 {{- $e2EsShare := (mulf (divf (.Values.stackstate.components.e2es.esDiskSpaceShare | int) (mul 3 $k2esShare)) 100) | int  -}}
 - name: CONFIG_FORCE_stackstate_kafkaGenericEventsToES_elasticsearch_index_diskSpaceWeight
   value: "{{ $e2EsShare }}"
@@ -49,23 +47,18 @@ Run validation of total ESDiskShare
   value: "{{ $e2EsShare }}"
 - name: CONFIG_FORCE_stackstate_kafkaStsEventsToES_elasticsearch_index_diskSpaceWeight
   value: "{{ $e2EsShare }}"
-- name: CONFIG_FORCE_stackstate_kafkaTraceToES_elasticsearch_index_diskSpaceWeight
-  value: "{{ $traces2EsShare }}"
-
 - name: CONFIG_FORCE_stackstate_kafkaGenericEventsToES_elasticsearch_index_maxIndicesRetained
   value: "{{ .Values.stackstate.components.e2es.retention }}"
 - name: CONFIG_FORCE_stackstate_kafkaTopologyEventsToES_elasticsearch_index_maxIndicesRetained
   value: "{{ .Values.stackstate.components.e2es.retention }}"
 - name: CONFIG_FORCE_stackstate_kafkaStsEventsToES_elasticsearch_index_maxIndicesRetained
   value: "{{ .Values.stackstate.components.e2es.retention }}"
-- name: CONFIG_FORCE_stackstate_kafkaTraceToES_elasticsearch_index_maxIndicesRetained
-  value: "{{ .Values.stackstate.components.trace2es.retention }}"
 - name: ELASTICSEARCH_URI
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
 - name: PROMETHEUS_WRITE_ENDPOINT
-  value: http://{{ template "common.fullname.short" . }}-vmagent:8429/api/v1/write
+  value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
 image: "{{ include "stackstate.image.registry" . }}/{{ .K2esConfig.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .K2esConfig.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .K2esConfig.image.pullPolicy | quote }}
 livenessProbe:

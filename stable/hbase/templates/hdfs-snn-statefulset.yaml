@@ -135,13 +135,7 @@ spec:
       resources:
         requests:
           storage: {{ .Values.hdfs.secondarynamenode.persistence.size }}
-    {{- if .Values.hdfs.secondarynamenode.persistence.storageClass }}
-      {{- if (eq "-" .Values.hdfs.secondarynamenode.persistence.storageClass) }}
-      storageClassName: ""
-      {{- else }}
-      storageClassName: {{ .Values.hdfs.secondarynamenode.persistence.storageClass | quote }}
-      {{- end }}
-    {{- end }}
+      {{ include "common.storage.class" ( dict "persistence" .Values.hdfs.secondarynamenode.persistence "global" .Values.global) | nindent 6 }}
 {{- end }}
 {{- end -}}
 

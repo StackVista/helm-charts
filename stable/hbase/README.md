@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.165`
+Current chart version is `0.1.169`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -89,7 +89,7 @@ Current chart version is `0.1.165`
 | hdfs.datanode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.image.pullPolicy | string | `"IfNotPresent"` | Pull policy for HDFS datanode. |
 | hdfs.image.repository | string | `"stackstate/hadoop"` | Base container image repository for HDFS datanode. |
-| hdfs.image.tag | string | `"2.10.2-java11-6-cc17c8c3"` | Default container image tag for HDFS datanode. |
+| hdfs.image.tag | string | `"2.10.2-java11-6-ad889210"` | Default container image tag for HDFS datanode. |
 | hdfs.minReplication | int | `1` | Sets the minimum synchronous replication that the namenode will enforce when writing a block. This gives guarantees about the amount of copies of a single block. (If hdfs.datanode.replicaCount is set to a value less than this, the replicationfactor will be equal to the replicaCount.) |
 | hdfs.namenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.namenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -125,7 +125,7 @@ Current chart version is `0.1.165`
 | hdfs.volumePermissions.securityContext.runAsUser | int | `0` | Run the volumePermissions init container with the specified UID (Do not change unless instructed) |
 | serviceAccount.create | bool | `true` | Whether to create serviceAccounts and run the statefulsets under them |
 | stackgraph.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below). |
-| stackgraph.image.tag | string | `"4.14.0"` | The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below). |
+| stackgraph.image.tag | string | `"4.14.1"` | The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below). |
 | statefulset.antiAffinity.strategy | string | `"soft"` | AntiAffinity strategy to use for all StatefulSets. |
 | statefulset.antiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | AntiAffinity topology key to use for all StatefulSets. |
 | tephra.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -144,13 +144,13 @@ Current chart version is `0.1.165`
 | wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | wait.image.repository | string | `"stackstate/wait"` | Container image tag for wait containers. |
-| wait.image.tag | string | `"1.0.9-104f3090"` |  |
+| wait.image.tag | string | `"1.0.9-b6a3cb01"` |  |
 | zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
 | zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |
 | zookeeper.fourlwCommandsWhitelist | string | `"mntr, ruok, stat, srvr"` | Zookeeper four-letter-word (FLW) commands that are enabled. |
 | zookeeper.image.registry | string | `"quay.io"` | ZooKeeper image registry |
 | zookeeper.image.repository | string | `"stackstate/zookeeper"` | ZooKeeper image repository |
-| zookeeper.image.tag | string | `"3.6.3-5767b505"` | ZooKeeper image tag |
+| zookeeper.image.tag | string | `"3.6.3-5e3ee3c0"` | ZooKeeper image tag |
 | zookeeper.metrics.enabled | bool | `true` | Enable / disable Zookeeper Prometheus metrics. |
 | zookeeper.metrics.serviceMonitor.enabled | bool | `false` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |
 | zookeeper.metrics.serviceMonitor.selector | object | `{"release":"prometheus-operator"}` | Default selector to use to target a certain Prometheus instance. |

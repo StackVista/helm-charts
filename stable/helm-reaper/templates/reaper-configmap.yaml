@@ -11,12 +11,31 @@ data:
 
     set -euo pipefail
 
-    echo "Going to reap namespace {{.Values.reapNamespace}}"
+    exclude_label_name=$(echo $EXCLUDE_LABEL | cut -d'=' -f1)
+    exclude_label_value=$(echo $EXCLUDE_LABEL | cut -d'=' -f2)
 
-    cut_off_date=$(date --iso-8601=hours --date="3 days ago")
-    releases=$(helm list --namespace {{.Values.reapNamespace}} -o json | jq -r --arg cut_off_date "$cut_off_date" '.[] | select(.name != "master" and .updated < $cut_off_date) | .name')
+    IFS=',' read -ra labels_array <<< "${NAMESPACE_LABELS}"
+    for label in ${labels_array[@]}
+    do
+      echo "Looking for namespaces with label: $label"
+      for ns in $(kubectl get namespace -l $label -o json | jq -r --arg exclude_label_name "${exclude_label_name}" --arg exclude_label_value "${exclude_label_value}" '.items[] | select (.metadata.labels[$exclude_label_name]!=$exclude_label_value) | .metadata.name')
+      do
+        echo "Going to reap namespace ${ns}"
 
-    for release in $releases; do
-      echo "Deleting release $release"
-      helm --namespace {{.Values.reapNamespace}} delete $release
+        cut_off_date=$(date --iso-8601=hours --date="${DELETE_OLDER_THAN} days ago")
+        releases=$(helm list --namespace ${ns} -o json | jq -r --arg cut_off_date "$cut_off_date" '.[] | select(.name != "branch-master" and .updated < $cut_off_date) | .name')
+
+        # Delete outdated Helm releases
+        for release in ${releases}; do
+          echo "Deleting release ${release}"
+          helm --namespace ${ns} delete --timeout 10m --wait ${release}
+        done
+
+        # Delete namespace if no Helm releases are found
+        releases=$(helm list --namespace ${ns} -o json | jq -r '.[]')
+        if [ -z "$releases" ]; then
+          echo "Deleting namespace ${ns}"
+          kubectl delete namespace ${ns}
+        fi
+      done
     done

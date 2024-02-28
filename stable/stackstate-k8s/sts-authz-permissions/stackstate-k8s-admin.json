@@ -17,10 +17,10 @@
         "manage-telemetry-streams",
         "execute-component-actions",
         "manage-annotations",
-        "manage-event-handlers",
         "manage-monitors",
         "run-monitors",
         "read-metrics",
+        "read-traces",
         "update-permissions",
         "manage-service-tokens"
     ],

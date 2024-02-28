@@ -3,6 +3,7 @@ Shared settings in configmap for server and api
 */}}
 {{- define "stackstate.configmap.server-and-api" }}
 {{ $files := .Files }}
+
 {{- if and .Values.stackstate.authentication (eq .Values.stackstate.deployment.mode "SelfHosted") }}
 stackstate.authorization.staticSubjects.stackstate-platform-admin: {{- $files.Get "sts-authz-permissions/stackstate-platform-admin.json"}}
 stackstate.authorization.staticSubjects.stackstate-admin: {{- $files.Get "sts-authz-permissions/stackstate-admin.json" }}
@@ -36,6 +37,7 @@ stackstate.authorization.staticSubjects.{{ . | quote }}: {{- $files.Get "sts-aut
 {{- if index .Values "anomaly-detection" "enabled" }}
 stackstate.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["manage-annotations", "run-monitors", "view-monitors", "read-metrics", "read-settings"], viewPermissions: [] }
 {{- end }}
+
 {{- else }}
 {{/* In SaaS mode, the stackstate.authorization block will be ignored and we will overwrite the reference to it from the stackstate.api.authorization */}}
 stackstate.api.authorization: {}
@@ -99,7 +101,7 @@ stackstate.webUIConfig.docLinkUrlPrefix = "{{- .Values.stackstate.components.api
 {{- end }}
 
 stackstate.deploymentMode = "{{- .Values.stackstate.deployment.mode -}}"
-
+{{- include "stackstate.service.secret.clickhouseconfig" . }}
 {{- end -}}
 
 {{- define "stackstate.auth.config" }}

@@ -86,3 +86,44 @@ Logic to determine Zookeeper endpoint.
 {{- .Values.stackstate.components.all.zookeeperEndpoint -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Clickhouse endpoint.
+*/}}
+{{- define "stackstate.clickhouse.endpoint" -}}
+{{- .Values.clickhouse.fullnameOverride }}-headless:8123
+{{- end -}}
+
+{{/*
+Logic to determine otel collector endpoint.
+*/}}
+{{- define "stackstate.otel.http.host" -}}
+{{- if .Values.opentelemetry.enabled -}}
+{{- index .Values "opentelemetry-collector" "fullnameOverride" }}
+{{- else -}}
+{{- .Values.stackstate.components.all.otelCollectorEndpoint -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Comma-separated list of the endpoints that need to be up and running before the initializer can be started.
+*/}}
+{{ define "stackstate.initializer.prerequisites" -}}
+{{- if .Values.clickhouse.enabled -}}
+{{- include "stackstate.clickhouse.endpoint" . -}},
+{{- end -}}
+{{- include "stackstate.kafka.endpoint" . -}},
+{{- include "stackstate.zookeeper.endpoint" . -}},
+{{- .Release.Name }}-hbase-hdfs-nn-headful:9000
+{{- end -}}
+
+{{/*
+Logic to determine Kafka endpoint.
+*/}}
+{{- define "stackstate.vmagent.endpoint" -}}
+{{- if .Values.stackstate.components.vmagent.fullNameOverride -}}
+{{- .Values.stackstate.components.vmagent.fullNameOverride -}}
+{{- else -}}
+http://{{ template "common.fullname.short" . }}-vmagent
+{{- end -}}
+{{- end -}}

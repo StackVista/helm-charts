@@ -20,6 +20,13 @@ spec:
             - /bin/sh
             - -c
             - "/opt/reaper/reap.sh"
+            env:
+            - name: NAMESPACE_LABELS
+              value: {{ .Values.reapNamespaceLabels }}
+            - name: EXCLUDE_LABEL
+              value: {{ .Values.reapNamespaceExcludeLabel }}
+            - name: DELETE_OLDER_THAN
+              value: {{ .Values.deleteOlderThan | quote }}
             volumeMounts:
             - name: script-volume
               mountPath: /opt/reaper

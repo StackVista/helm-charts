@@ -2,7 +2,7 @@
 
 Helm chart for StackState for Kubernetes
 
-Current chart version is `1.6.2-pre.13`
+Current chart version is `1.8.1-pre.11`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -11,14 +11,16 @@ Current chart version is `1.6.2-pre.13`
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common/ | common | * |
-| file://../elasticsearch/ | elasticsearch | 8.5.1-stackstate.3 |
-| file://../hbase/ | hbase | 0.1.165 |
+| file://../elasticsearch/ | elasticsearch | 8.5.1-stackstate.4 |
+| file://../hbase/ | hbase | 0.1.169 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.8 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.6 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.6 |
-| https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.93 |
+| https://charts.bitnami.com/bitnami | clickhouse | 3.6.9 |
+| https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.102 |
+| https://open-telemetry.github.io/opentelemetry-helm-charts | opentelemetry-collector | 0.80.0 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
 
@@ -108,6 +110,28 @@ stackstate/stackstate
 | backup.stackGraph.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
 | backup.stackGraph.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | backup.stackGraph.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
+| backup.stackGraph.splitArchiveSize | int | `0` | Split the Stackgraph dump into chunks of the specified size in bytes. Accepts an integer greater or equal to 0 with optional suffix K,M,G (powers of 1024) or KB,MB,GB (powers of 1000) If set to 0, the dump is not split. |
+| clickhouse.auth.password | string | `"admin"` | ClickHouse Admin password. If left empty the random value is generated. |
+| clickhouse.auth.username | string | `"admin"` | ClickHouse Admin username |
+| clickhouse.enabled | bool | `false` | Enable / disable chart-based Clickhouse. |
+| clickhouse.externalZookeeper.port | int | `2181` |  |
+| clickhouse.externalZookeeper.servers | list | `["stackstate-zookeeper-headless"]` | External Zookeeper configuration. |
+| clickhouse.fullnameOverride | string | `"stackstate-clickhouse"` | Name override for clickhouse child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
+| clickhouse.image.registry | string | `"quay.io"` | Registry where to get the image from. |
+| clickhouse.image.repository | string | `"stackstate/clickhouse"` | Repository where to get the image from. |
+| clickhouse.image.tag | string | `"23.7.4-debian-11-r5-4df85f35"` | Container image tag for 'clickhouse' containers. |
+| clickhouse.metrics.enabled | bool | `true` |  |
+| clickhouse.persistence.size | string | `"50Gi"` | Size of persistent volume for each clickhouse pod |
+| clickhouse.podAnnotations."ad.stackstate.com/clickhouse.check_names" | string | `"[\"openmetrics\"]"` |  |
+| clickhouse.podAnnotations."ad.stackstate.com/clickhouse.init_configs" | string | `"[{}]"` |  |
+| clickhouse.podAnnotations."ad.stackstate.com/clickhouse.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8001/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"ClickHouseAsyncMetrics_*\", \"ClickHouseMetrics_*\", \"ClickHouseProfileEvents_*\"] } ]"` |  |
+| clickhouse.replicaCount | int | `1` | Number of ClickHouse replicas per shard to deploy |
+| clickhouse.resources.requests.cpu | string | `"500m"` |  |
+| clickhouse.resources.requests.memory | string | `"1Gi"` |  |
+| clickhouse.shards | int | `1` | Number of ClickHouse shards to deploy |
+| clickhouse.usersExtraOverrides | string | `"<clickhouse>\n  <users>\n    <stackstate>\n        <no_password></no_password>\n        <grants>\n            <query>GRANT ALL ON *.*</query>\n        </grants>\n    </stackstate>\n  </users>\n</clickhouse>\n"` | Users extra configuration overrides. |
+| clickhouse.volumePermissions.enabled | bool | `false` |  |
+| clickhouse.zookeeper.enabled | bool | `false` | Disable Zookeeper from the clickhouse chart **Don't change unless otherwise specified**. |
 | cluster-role.enabled | bool | `true` | Deploy the ClusterRole(s) and ClusterRoleBinding(s) together with the chart. Can be disabled if these need to be installed by an administrator of the Kubernetes cluster. |
 | commonLabels | object | `{}` | Labels that will be added to all resources created by the stackstate chart (not the subcharts though) |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` | The Elasticsearch cluster health status params that will be used by readinessProbe command |
@@ -178,7 +202,7 @@ stackstate/stackstate
 | hbase.hdfs.secondarynamenode.resources.requests.cpu | string | `"50m"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.memory | string | `"1Gi"` |  |
-| hbase.stackgraph.image.tag | string | `"4.14.0"` | The StackGraph server version, must be compatible with the StackState version |
+| hbase.stackgraph.image.tag | string | `"4.14.1"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
 | hbase.tephra.resources.limits.cpu | string | `"500m"` |  |
 | hbase.tephra.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
@@ -205,14 +229,14 @@ stackstate/stackstate
 | kafka.fullnameOverride | string | `"stackstate-kafka"` | Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | kafka.image.registry | string | `"quay.io"` | Kafka image registry |
 | kafka.image.repository | string | `"stackstate/kafka"` | Kafka image repository |
-| kafka.image.tag | string | `"3.3.1-f2c6b50d"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order for the kafkaup operator to upgrade the inter broker protocol version |
+| kafka.image.tag | string | `"3.3.1-08305c25"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order for the kafkaup operator to upgrade the inter broker protocol version |
 | kafka.initContainers | list | `[{"args":["-c","while [ -z \"${KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION}\" ]; do echo \"KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION should be set by operator\"; sleep 1; done"],"command":["/bin/bash"],"image":"{{ include \"kafka.image\" . }}","imagePullPolicy":"","name":"check-inter-broker-protocol-version","resources":{"limits":{},"requests":{}}}]` | required to make the kafka versionup operator work |
 | kafka.livenessProbe.initialDelaySeconds | int | `240` | Delay before readiness probe is initiated. |
 | kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
 | kafka.metrics.jmx.enabled | bool | `true` | Whether or not to expose JMX metrics to Prometheus. |
 | kafka.metrics.jmx.image.registry | string | `"quay.io"` | Kafka JMX exporter image registry |
 | kafka.metrics.jmx.image.repository | string | `"stackstate/jmx-exporter"` | Kafka JMX exporter image repository |
-| kafka.metrics.jmx.image.tag | string | `"0.17.0-c73ad127"` | Kafka JMX exporter image tag |
+| kafka.metrics.jmx.image.tag | string | `"0.17.0-129c430a"` | Kafka JMX exporter image tag |
 | kafka.metrics.jmx.resources.limits.cpu | string | `"1"` |  |
 | kafka.metrics.jmx.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | kafka.metrics.jmx.resources.limits.memory | string | `"300Mi"` |  |
@@ -252,13 +276,31 @@ stackstate/stackstate
 | minio.fullnameOverride | string | `"stackstate-minio"` | **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components. |
 | minio.image.registry | string | `"quay.io"` | MinIO image registry |
 | minio.image.repository | string | `"stackstate/minio"` | MinIO image repository |
-| minio.image.tag | string | `"RELEASE.2021-02-14T04-01-33Z-46e9b6c9"` |  |
+| minio.image.tag | string | `"RELEASE.2021-02-14T04-01-33Z-ade00eeb"` |  |
 | minio.persistence.enabled | bool | `false` | Enables MinIO persistence. Must be enabled when MinIO is not configured as a gateway to AWS S3 or Azure Blob Storage. |
 | minio.replicas | int | `1` | Number of MinIO replicas. |
 | minio.s3gateway.replicas | int | `1` |  |
 | minio.secretKey | string | `"setme"` |  |
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
+| opentelemetry-collector.command.name | string | `"usr/bin/sts-opentelemetry-collector"` |  |
+| opentelemetry-collector.config | object | `{"exporters":{"clickhousests":{"create_traces_table":false,"database":"otel","endpoint":"tcp://stackstate-clickhouse:9000?dial_timeout=10s&compress=lz4","logs_table_name":"otel_logs","metrics_table_name":"otel_metrics","password":"admin","retry_on_failure":{"enabled":true,"initial_interval":"5s","max_elapsed_time":"300s","max_interval":"30s"},"timeout":"5s","traces_table_name":"otel_traces","ttl":"72h","username":"admin"},"logging":null,"prometheusremotewrite/victoria-metrics":{"endpoint":"http://stackstate-vmagent:8429/api/v1/write","resource_to_telemetry_conversion":{"enabled":true}}},"extensions":{"health_check":{"endpoint":"${env:MY_POD_IP}:13133"},"memory_ballast":{}},"processors":{"batch":{"send_batch_size":100000,"timeout":"2s"}},"receivers":{"jaeger":null,"otlp":{"protocols":{"grpc":{"endpoint":"${env:MY_POD_IP}:4317"},"http":{"endpoint":"${env:MY_POD_IP}:4318"}}},"prometheus":null,"zipkin":null},"service":{"extensions":["health_check","memory_ballast"],"pipelines":{"metrics":{"exporters":["prometheusremotewrite/victoria-metrics"],"processors":["batch"],"receivers":["otlp"]},"traces":{"exporters":["clickhousests"],"processors":["batch"],"receivers":["otlp"]}},"telemetry":{"metrics":{"address":"0.0.0.0:8888"}}}}` | Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/) |
+| opentelemetry-collector.fullnameOverride | string | `"stackstate-otel-collector"` | Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
+| opentelemetry-collector.image.repository | string | `"quay.io/stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
+| opentelemetry-collector.image.tag | string | `"v0.0.5"` | Container image tag for 'opentelemetry-collector' containers. |
+| opentelemetry-collector.mode | string | `"statefulset"` | deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset". |
+| opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.check_names" | string | `"[\"openmetrics\"]"` |  |
+| opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.init_configs" | string | `"[{}]"` |  |
+| opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8888/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
+| opentelemetry-collector.ports.jaeger-compact.enabled | bool | `false` |  |
+| opentelemetry-collector.ports.jaeger-grpc.enabled | bool | `false` |  |
+| opentelemetry-collector.ports.jaeger-thrift.enabled | bool | `false` |  |
+| opentelemetry-collector.ports.metrics.enabled | bool | `true` |  |
+| opentelemetry-collector.ports.zipkin.enabled | bool | `false` |  |
+| opentelemetry-collector.replicaCount | int | `1` | only used with deployment mode |
+| opentelemetry-collector.resources.limits.cpu | string | `"250m"` |  |
+| opentelemetry-collector.resources.limits.memory | string | `"512Mi"` |  |
+| opentelemetry.enabled | bool | `false` | Enable / disable chart-based OTEL. |
 | pull-secret.credentials | list | `[]` | Registry and assotiated credentials (username, password) that will be stored in the pull-secret |
 | pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |
 | pull-secret.fullNameOverride | string | `""` | Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart. |
@@ -283,6 +325,13 @@ stackstate/stackstate
 | stackstate.authentication.sessionLifetime | string | `"7d"` | Amount of time to keep a session when a user does not log in |
 | stackstate.baseUrl | string | `nil` |  |
 | stackstate.components.all.affinity | object | `{}` | Affinity settings for pod assignment on all components. |
+| stackstate.components.all.clickHouse.database | string | `"otel"` |  |
+| stackstate.components.all.clickHouse.hostnames | string | `"stackstate-clickhouse-headless"` |  |
+| stackstate.components.all.clickHouse.parameters.health_check_interval | string | `"5000"` |  |
+| stackstate.components.all.clickHouse.password | string | `""` |  |
+| stackstate.components.all.clickHouse.port | int | `8123` |  |
+| stackstate.components.all.clickHouse.protocol | string | `"http"` |  |
+| stackstate.components.all.clickHouse.username | string | `"stackstate"` |  |
 | stackstate.components.all.deploymentStrategy.type | string | `"RecreateSingletonsOnly"` | Deployment strategy for StackState components. Possible values: `RollingUpdate`, `Recreate` and `RecreateSingletonsOnly`. `RecreateSingletonsOnly` uses `Recreate` for the singleton Deployments and `RollingUpdate` for the other Deployments. |
 | stackstate.components.all.elasticsearchEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster. |
 | stackstate.components.all.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods for all components. |
@@ -293,7 +342,7 @@ stackstate/stackstate
 | stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
-| stackstate.components.all.image.tag | string | `"6.0.0-snapshot.20231214144836-master-b3d0ce5"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
+| stackstate.components.all.image.tag | string | `"6.0.0-snapshot.20240228090335-master-a002d0e"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metricStore.queryApiEndpoint | string | `"stackstate-victoriametrics:8428"` | Host and port for promql api |
 | stackstate.components.all.metricStore.queryApiPath | string | `""` | Path under which `/api/v1/query` etc.. are accessible, the default ("") is fine for most stores |
@@ -327,7 +376,7 @@ stackstate/stackstate
 | stackstate.components.api.replicaCount | int | `1` | Number of `api` replicas. |
 | stackstate.components.api.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"2Gi","memory":"2Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"2Gi"}}` | Resource allocation for `api` pods. |
 | stackstate.components.api.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
-| stackstate.components.api.sizing.javaHeapMemoryFraction | string | `"50"` |  |
+| stackstate.components.api.sizing.javaHeapMemoryFraction | string | `"45"` |  |
 | stackstate.components.api.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.backup.resources.limits.cpu | string | `"3000m"` |  |
 | stackstate.components.backup.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
@@ -428,7 +477,7 @@ stackstate/stackstate
 | stackstate.components.kafkaTopicCreate.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.registry | string | `"quay.io"` | Base container image registry for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.repository | string | `"stackstate/kafka"` | Base container image repository for kafka-topic-create containers. |
-| stackstate.components.kafkaTopicCreate.image.tag | string | `"3.3.1-f2c6b50d"` | Container image tag for kafka-topic-create containers. |
+| stackstate.components.kafkaTopicCreate.image.tag | string | `"3.3.1-08305c25"` | Container image tag for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.kafkaTopicCreate.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `kafkaTopicCreate` pods. |
 | stackstate.components.kafkaTopicCreate.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
@@ -455,7 +504,7 @@ stackstate/stackstate
 | stackstate.components.notification.replicaCount | int | `1` | Number of `notification` replicas. |
 | stackstate.components.notification.resources | object | `{"limits":{"cpu":"750m","ephemeral-storage":"1Gi","memory":"1500Mi"},"requests":{"cpu":"250m","ephemeral-storage":"1Mi","memory":"1500Mi"}}` | Resource allocation for `notification` pods. |
 | stackstate.components.notification.sizing.baseMemoryConsumption | string | `"350Mi"` |  |
-| stackstate.components.notification.sizing.javaHeapMemoryFraction | string | `"60"` |  |
+| stackstate.components.notification.sizing.javaHeapMemoryFraction | string | `"55"` |  |
 | stackstate.components.notification.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.receiver.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.receiver.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -481,7 +530,7 @@ stackstate/stackstate
 | stackstate.components.router.image.pullPolicy | string | `""` | `pullPolicy` used for the `router` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.router.image.registry | string | `"quay.io"` | Registry of the router component Docker image. |
 | stackstate.components.router.image.repository | string | `"stackstate/envoy"` | Repository of the router component Docker image. |
-| stackstate.components.router.image.tag | string | `"v1.19.1-66d4d31b"` | Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.router.image.tag | string | `"v1.19.1-e418b2bd"` | Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.router.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.router.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `router` pods. |
 | stackstate.components.router.replicaCount | int | `1` | Number of `router` replicas. |
@@ -532,7 +581,7 @@ stackstate/stackstate
 | stackstate.components.state.replicaCount | int | `1` | Number of `state` replicas. |
 | stackstate.components.state.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"1536Mi"}}` | Resource allocation for `state` pods. |
 | stackstate.components.state.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
-| stackstate.components.state.sizing.javaHeapMemoryFraction | string | `"70"` |  |
+| stackstate.components.state.sizing.javaHeapMemoryFraction | string | `"65"` |  |
 | stackstate.components.state.tmpToPVC | object | `{"storageClass":null,"volumeSize":"2Gi"}` | Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage. |
 | stackstate.components.state.tmpToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible. |
 | stackstate.components.state.tmpToPVC.volumeSize | string | `"2Gi"` | The size of the PersistentVolume for "/tmp" directory. |
@@ -557,23 +606,6 @@ stackstate/stackstate
 | stackstate.components.sync.tmpToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible. |
 | stackstate.components.sync.tmpToPVC.volumeSize | string | `"2Gi"` | The size of the PersistentVolume for "/tmp" directory. |
 | stackstate.components.sync.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| stackstate.components.trace2es.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.trace2es.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.trace2es.enabled | bool | `false` | Enable/disable the trace2es service |
-| stackstate.components.trace2es.esDiskSpaceShare | string | `"0"` | How much disk space from ElasticSearch can use for k8s events ingestion |
-| stackstate.components.trace2es.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.trace2es.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.trace2es.image.pullPolicy | string | `""` | `pullPolicy` used for the `trace2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.trace2es.image.repository | string | `"stackstate/stackstate-kafka-to-es"` | Repository of the trace2es component Docker image. |
-| stackstate.components.trace2es.image.tag | string | `""` | Tag used for the `trace2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.trace2es.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.trace2es.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `trace2es` pods. |
-| stackstate.components.trace2es.replicaCount | int | `1` | Number of `trace2es` replicas. |
-| stackstate.components.trace2es.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"1Gi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"1Gi"}}` | Resource allocation for `trace2es` pods. |
-| stackstate.components.trace2es.retention | int | `7` | Number of days to keep the traces data on Es |
-| stackstate.components.trace2es.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
-| stackstate.components.trace2es.sizing.javaHeapMemoryFraction | string | `"50"` |  |
-| stackstate.components.trace2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.ui.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.ui.agentMetricsFilter | string | `"[\"nginx*\"]"` |  |
 | stackstate.components.ui.debug | bool | `false` |  |
@@ -610,10 +642,11 @@ stackstate/stackstate
 | stackstate.components.viewHealth.sizing.javaHeapMemoryFraction | string | `"55"` |  |
 | stackstate.components.viewHealth.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.vmagent.affinity | object | `{"podAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app.kubernetes.io/component","operator":"In","values":["receiver"]},{"key":"app.kubernetes.io/instance","operator":"In","values":["stackstate"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":80}]}}` | Affinity settings for vmagent pod. |
-| stackstate.components.vmagent.agentMetricsFilter | string | `"[\"vmagent*\"]"` |  |
+| stackstate.components.vmagent.agentMetricsFilter | string | `"[\"vm*\", \"go*\"]"` |  |
 | stackstate.components.vmagent.extraArgs | object | `{}` |  |
+| stackstate.components.vmagent.fullNameOverride | string | `"stackstate-vmagent"` | Name for the service |
 | stackstate.components.vmagent.image.repository | string | `"stackstate/vmagent"` |  |
-| stackstate.components.vmagent.image.tag | string | `"v1.93.7-2e42e9fc"` |  |
+| stackstate.components.vmagent.image.tag | string | `"v1.93.7-37ef8c51"` |  |
 | stackstate.components.vmagent.persistence.size | string | `"10Gi"` |  |
 | stackstate.components.vmagent.persistence.storageClass | string | `nil` |  |
 | stackstate.components.vmagent.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `vmagent` pods. |
@@ -621,7 +654,7 @@ stackstate/stackstate
 | stackstate.components.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | stackstate.components.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
-| stackstate.components.wait.image.tag | string | `"1.0.9-104f3090"` | Container image tag for wait containers. |
+| stackstate.components.wait.image.tag | string | `"1.0.9-b6a3cb01"` | Container image tag for wait containers. |
 | stackstate.deployment | object | `{"mode":"SelfHosted"}` | Deployment settings for StackState |
 | stackstate.deployment.mode | string | `"SelfHosted"` | Deployment mode of StackState, possible values are 'SaaS' and 'SelfHosted' |
 | stackstate.experimental.enableVMAgent | bool | `true` |  |
@@ -629,6 +662,7 @@ stackstate/stackstate
 | stackstate.experimental.storeTransactionLogsToPVC.enabled | boolean | `false` | Whether the transcation logs for some services, API, Checks, HealthSync,State, Sync, and ViewHealth, have to be stored to PVCs instead of pod ephemeral storage. |
 | stackstate.experimental.storeTransactionLogsToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by transaction logs. |
 | stackstate.experimental.storeTransactionLogsToPVC.volumeSize | string | `"600Mi"` | The size of the persistent volume for the transaction logs. |
+| stackstate.experimental.traces | boolean | `false` | Enable new traces UI and API |
 | stackstate.instanceApi.authentication | object | `{}` | Custom authentication settings for the `instance` API, by default the `stackstate.authentication` authentication settings are used. |
 | stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
@@ -639,7 +673,7 @@ stackstate/stackstate
 | stackstate.stackpacks.image.pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.image.registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.image.repository | string | `"stackstate/stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.image.tag | string | `"20231214165825-master-1b55e2b-selfhosted"` | Tag used for the `stackpacks` Docker image; |
+| stackstate.stackpacks.image.tag | string | `"20240227152241-master-bcd4059-selfhosted"` | Tag used for the `stackpacks` Docker image; |
 | stackstate.stackpacks.installed | list | `[]` | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) |
 | stackstate.stackpacks.pvc.size | string | `"1Gi"` |  |
 | stackstate.stackpacks.pvc.storageClass | string | `nil` |  |
@@ -660,13 +694,13 @@ stackstate/stackstate
 | victoria-metrics-0.rbac.pspEnabled | bool | `false` |  |
 | victoria-metrics-0.restore.enabled | bool | `false` | Enable Victoria Metrics restore functionality (if `backup.enabled` is set to `true`). |
 | victoria-metrics-0.server.affinity | object | `{}` | Affinity settings for Victoria Metrics pod |
-| victoria-metrics-0.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":35}` | Extra arguments for Victoria Metrics |
+| victoria-metrics-0.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":60,"search.cacheTimestampOffset":"10m"}` | Extra arguments for Victoria Metrics |
 | victoria-metrics-0.server.extraLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s"}` | Extra labels for Victoria Metrics StatefulSet |
 | victoria-metrics-0.server.fullnameOverride | string | `"stackstate-victoria-metrics-0"` | Full name override |
 | victoria-metrics-0.server.image.repository | string | `"quay.io/stackstate/victoria-metrics"` | Victoriametrics repository |
-| victoria-metrics-0.server.image.tag | string | `"v1.93.7-5c5a4296"` |  |
+| victoria-metrics-0.server.image.tag | string | `"v1.93.7-3f3a60fc"` |  |
 | victoria-metrics-0.server.persistentVolume.size | string | `"250Gi"` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
-| victoria-metrics-0.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]","ad.stackstate.com/vmbackup.check_names":"[\"openmetrics\"]","ad.stackstate.com/vmbackup.init_configs":"[{}]","ad.stackstate.com/vmbackup.instances":"[ { \"prometheus_url\": \"http://%%host%%:9746/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"supercronic_*\"] } ]"}` | Annotations for Victoria Metrics server pod |
+| victoria-metrics-0.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\"] } ]","ad.stackstate.com/vmbackup.check_names":"[\"openmetrics\"]","ad.stackstate.com/vmbackup.init_configs":"[{}]","ad.stackstate.com/vmbackup.instances":"[ { \"prometheus_url\": \"http://%%host%%:9746/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"supercronic_*\"] } ]"}` | Annotations for Victoria Metrics server pod |
 | victoria-metrics-0.server.podLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s","stackstate-service":"victoriametrics"}` | Extra labels for Victoria Metrics pod |
 | victoria-metrics-0.server.resources.limits.cpu | int | `1` |  |
 | victoria-metrics-0.server.resources.limits.memory | string | `"4Gi"` |  |
@@ -687,11 +721,11 @@ stackstate/stackstate
 | victoria-metrics-1.rbac.pspEnabled | bool | `false` |  |
 | victoria-metrics-1.restore.enabled | bool | `false` | Enable Victoria Metrics restore functionality (if `backup.enabled` is set to `true`). |
 | victoria-metrics-1.server.affinity | object | `{}` | Affinity settings for Victoria Metrics pod |
-| victoria-metrics-1.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":35}` | Extra arguments for Victoria Metrics |
+| victoria-metrics-1.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":60}` | Extra arguments for Victoria Metrics |
 | victoria-metrics-1.server.extraLabels."app.kubernetes.io/part-of" | string | `"stackstate-k8s"` |  |
 | victoria-metrics-1.server.fullnameOverride | string | `"stackstate-victoria-metrics-1"` | Full name override |
 | victoria-metrics-1.server.image.repository | string | `"quay.io/stackstate/victoria-metrics"` | Victoriametrics repository |
-| victoria-metrics-1.server.image.tag | string | `"v1.93.7-5c5a4296"` |  |
+| victoria-metrics-1.server.image.tag | string | `"v1.93.7-3f3a60fc"` |  |
 | victoria-metrics-1.server.persistentVolume.size | string | `"250Gi"` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
 | victoria-metrics-1.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]","ad.stackstate.com/vmbackup.check_names":"[\"openmetrics\"]","ad.stackstate.com/vmbackup.init_configs":"[{}]","ad.stackstate.com/vmbackup.instances":"[ { \"prometheus_url\": \"http://%%host%%:9746/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"supercronic_*\"] } ]"}` | Annotations for Victoria Metrics server pod |
 | victoria-metrics-1.server.podLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s","stackstate-service":"victoriametrics"}` | Extra arguments for Victoria Metrics pod |
@@ -738,7 +772,7 @@ stackstate/stackstate
 | zookeeper.heapSize | int | `512` | HeapSize Size (in MB) for the Java Heap options (Xmx and Xms) |
 | zookeeper.image.registry | string | `"quay.io"` | ZooKeeper image registry |
 | zookeeper.image.repository | string | `"stackstate/zookeeper"` | ZooKeeper image repository |
-| zookeeper.image.tag | string | `"3.6.3-5767b505"` | ZooKeeper image tag |
+| zookeeper.image.tag | string | `"3.6.3-5e3ee3c0"` | ZooKeeper image tag |
 | zookeeper.livenessProbe.enabled | bool | `false` | it must be disabled to apply the custom probe, the probe adds "-q" option to nc to wait 1sec until close the connection, it fixes problem of failing the probed |
 | zookeeper.metrics.enabled | bool | `true` | Enable / disable Zookeeper Prometheus metrics. |
 | zookeeper.metrics.serviceMonitor | object | `{"enabled":false,"selector":{}}` |  |

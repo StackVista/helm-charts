@@ -1,0 +1,64 @@
+---
+{{- if .Values.featureflags.demoScenarioSimulation.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: featureflags-failure-deployment
+spec:
+  concurrencyPolicy: Forbid
+  schedule: "{{ .Values.featureflags.demoScenarioSimulation.schedule.failure }}"
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 600
+      template:
+        spec:
+          serviceAccountName: featureflags-failure-deployment
+          restartPolicy: Never
+          containers:
+            - name: kubectl
+              image: bitnami/kubectl
+              command:
+                - bash
+                - -c
+                - /opt/featureflags/deploy-featureflags-demo-scenario.sh failure
+              volumeMounts:
+                  - mountPath: /opt/featureflags/
+                    name: featureflags-failure-script
+          volumes:
+            - name: featureflags-failure-script
+              configMap:
+                name: featureflags-failure-script
+                defaultMode: 0755
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: featureflags-successful-deployment
+spec:
+  concurrencyPolicy: Forbid
+  schedule: "{{ .Values.featureflags.demoScenarioSimulation.schedule.fix }}"
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 600
+      template:
+        spec:
+          serviceAccountName: featureflags-failure-deployment
+          restartPolicy: Never
+          containers:
+            - name: kubectl
+              image: bitnami/kubectl
+              command:
+                - bash
+                - -c
+                - /opt/featureflags/deploy-featureflags-demo-scenario.sh fix
+              volumeMounts:
+                  - mountPath: /opt/featureflags/
+                    name: featureflags-failure-script
+          volumes:
+            - name: featureflags-failure-script
+              configMap:
+                name: featureflags-failure-script
+                defaultMode: 0755
+{{- end }}

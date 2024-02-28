@@ -1,13 +1,14 @@
 ################################################################
 # THIS FILE WAS GENERATED AUTOMATICALLY! DO NOT EDIT MANUALLY! #
 ################################################################
-image: quay.io/helmpack/chart-testing:v3.6.0
+image: quay.io/helmpack/chart-testing:v3.10.1
 integration_test_stackstate:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -16,7 +17,7 @@ integration_test_stackstate:
     - helm repo update
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -43,6 +44,7 @@ integration_test_stackstate_k8s:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -51,7 +53,7 @@ integration_test_stackstate_k8s:
     - helm repo update
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-k8s/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-k8s/%
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -73,7 +75,7 @@ integration_test_stackstate_k8s:
     CGO_ENABLED: 0
     CHART: stable/stackstate-k8s
 push_artifactory-cleaner_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -100,7 +102,7 @@ push_artifactory-cleaner_to_internal:
   variables:
     CHART: stable/artifactory-cleaner
 push_artifactory-cleaner_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   needs:
     - push_artifactory-cleaner_to_internal
   rules:
@@ -129,7 +131,7 @@ push_artifactory-cleaner_to_public:
   variables:
     CHART: stable/artifactory-cleaner
 push_aws-amicleaner_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -156,7 +158,7 @@ push_aws-amicleaner_to_internal:
   variables:
     CHART: stable/aws-amicleaner
 push_aws-nuke_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -183,7 +185,7 @@ push_aws-nuke_to_internal:
   variables:
     CHART: stable/aws-nuke
 push_aws-pod-identity-webhook_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -210,7 +212,7 @@ push_aws-pod-identity-webhook_to_internal:
   variables:
     CHART: stable/aws-pod-identity-webhook
 push_beacher-job_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -237,7 +239,7 @@ push_beacher-job_to_internal:
   variables:
     CHART: stable/beacher-job
 push_chartmuseum_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -264,7 +266,7 @@ push_chartmuseum_to_internal:
   variables:
     CHART: stable/chartmuseum
 push_common_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -291,7 +293,7 @@ push_common_to_internal:
   variables:
     CHART: stable/common
 push_common_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   needs:
     - push_common_to_internal
   rules:
@@ -320,7 +322,7 @@ push_common_to_public:
   variables:
     CHART: stable/common
 push_elasticsearch_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -347,7 +349,7 @@ push_elasticsearch_to_internal:
   variables:
     CHART: stable/elasticsearch
 push_elasticsearch_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   needs:
     - push_elasticsearch_to_internal
   rules:
@@ -375,8 +377,35 @@ push_elasticsearch_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/elasticsearch
+push_falco-reporter_to_internal:
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/falco-reporter/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-falco-reporter]/
+      when: on_success
+    - changes:
+        - stable/falco-reporter/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - if: $CI_COMMIT_TAG =~ /^falco-reporter\/.*/
+      when: on_success
+  script:
+    - helm dependencies update ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/falco-reporter
 push_gitlab-steward_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -403,7 +432,7 @@ push_gitlab-steward_to_internal:
   variables:
     CHART: stable/gitlab-steward
 push_hbase_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -430,7 +459,7 @@ push_hbase_to_internal:
   variables:
     CHART: stable/hbase
 push_hbase_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   needs:
     - push_hbase_to_internal
   rules:
@@ -459,7 +488,7 @@ push_hbase_to_public:
   variables:
     CHART: stable/hbase
 push_helm-reaper_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -486,7 +515,7 @@ push_helm-reaper_to_internal:
   variables:
     CHART: stable/helm-reaper
 push_iceman_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -513,7 +542,7 @@ push_iceman_to_internal:
   variables:
     CHART: stable/iceman
 push_k8s-image-list-to-s3_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -540,7 +569,7 @@ push_k8s-image-list-to-s3_to_internal:
   variables:
     CHART: stable/k8s-image-list-to-s3
 push_k8s-spot-termination-handler_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -567,7 +596,7 @@ push_k8s-spot-termination-handler_to_internal:
   variables:
     CHART: stable/k8s-spot-termination-handler
 push_kafkaup-operator_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -594,7 +623,7 @@ push_kafkaup-operator_to_internal:
   variables:
     CHART: stable/kafkaup-operator
 push_kafkaup-operator_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   needs:
     - push_kafkaup-operator_to_internal
   rules:
@@ -623,7 +652,7 @@ push_kafkaup-operator_to_public:
   variables:
     CHART: stable/kafkaup-operator
 push_kommoner-operator_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -650,7 +679,7 @@ push_kommoner-operator_to_internal:
   variables:
     CHART: stable/kommoner-operator
 push_minio_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -677,7 +706,7 @@ push_minio_to_internal:
   variables:
     CHART: stable/minio
 push_minio_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   needs:
     - push_minio_to_internal
   rules:
@@ -705,8 +734,35 @@ push_minio_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/minio
+push_otel-demo_to_internal:
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/otel-demo/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-otel-demo]/
+      when: on_success
+    - changes:
+        - stable/otel-demo/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - if: $CI_COMMIT_TAG =~ /^otel-demo\/.*/
+      when: on_success
+  script:
+    - helm dependencies update ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/otel-demo
 push_petros-d-kubelet-stats-exporter_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -733,7 +789,7 @@ push_petros-d-kubelet-stats-exporter_to_internal:
   variables:
     CHART: stable/petros-d-kubelet-stats-exporter
 push_pull-secret_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -760,7 +816,7 @@ push_pull-secret_to_internal:
   variables:
     CHART: stable/pull-secret
 push_pull-secret_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   needs:
     - push_pull-secret_to_internal
   rules:
@@ -789,7 +845,7 @@ push_pull-secret_to_public:
   variables:
     CHART: stable/pull-secret
 push_receiveramplifier_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -816,7 +872,7 @@ push_receiveramplifier_to_internal:
   variables:
     CHART: stable/receiveramplifier
 push_redirector_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -843,7 +899,7 @@ push_redirector_to_internal:
   variables:
     CHART: stable/redirector
 push_sandbox-operator_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -870,7 +926,7 @@ push_sandbox-operator_to_internal:
   variables:
     CHART: stable/sandbox-operator
 push_sock-shop_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -897,7 +953,7 @@ push_sock-shop_to_internal:
   variables:
     CHART: stable/sock-shop
 push_stackstate-agent_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -924,7 +980,7 @@ push_stackstate-agent_to_internal:
   variables:
     CHART: stable/stackstate-agent
 push_stackstate-agent_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   needs:
     - push_stackstate-agent_to_internal
   rules:
@@ -953,7 +1009,7 @@ push_stackstate-agent_to_public:
   variables:
     CHART: stable/stackstate-agent
 push_stackstate-k8s-agent_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -980,7 +1036,7 @@ push_stackstate-k8s-agent_to_internal:
   variables:
     CHART: stable/stackstate-k8s-agent
 push_stackstate-k8s-agent_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   needs:
     - push_stackstate-k8s-agent_to_internal
   rules:
@@ -1014,6 +1070,7 @@ push_stackstate-k8s_to_internal:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1023,7 +1080,7 @@ push_stackstate-k8s_to_internal:
     - .gitlab/configure_git.sh
     - export BRANCHES=${CI_COMMIT_BRANCH:-$(git for-each-ref --format="%(objectname) %(refname:short)" refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" '$1==branch && $2!="origin" {print $2}' | sed -E "s/^origin\/(.*)$/\1/")}
     - .gitlab/set_sts_chart_master_version.sh stable/stackstate-k8s $(echo $CI_COMMIT_TAG | sed -E 's/^stackstate-k8s\/(.*)$/\1/')
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1052,7 +1109,7 @@ push_stackstate-k8s_to_internal:
   variables:
     CHART: stable/stackstate-k8s
 push_stackstate-monitoring_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1079,7 +1136,7 @@ push_stackstate-monitoring_to_internal:
   variables:
     CHART: stable/stackstate-monitoring
 push_stackstate-monitoring_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   needs:
     - push_stackstate-monitoring_to_internal
   rules:
@@ -1108,7 +1165,7 @@ push_stackstate-monitoring_to_public:
   variables:
     CHART: stable/stackstate-monitoring
 push_stackstate-standalone_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1135,7 +1192,7 @@ push_stackstate-standalone_to_internal:
   variables:
     CHART: stable/stackstate-standalone
 push_stackstate-standalone_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   needs:
     - push_stackstate-standalone_to_internal
   rules:
@@ -1163,19 +1220,76 @@ push_stackstate-standalone_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/stackstate-standalone
+push_stackstate-values_to_internal:
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/stackstate-values/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-values]/
+      when: on_success
+    - changes:
+        - stable/stackstate-values/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - if: $CI_COMMIT_TAG =~ /^stackstate-values\/.*/
+      when: on_success
+  script:
+    - helm dependencies update ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/stackstate-values
+push_stackstate-values_to_public:
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
+  needs:
+    - push_stackstate-values_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/stackstate-values/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-values]/
+      when: on_success
+    - changes:
+        - stable/stackstate-values/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^stackstate-values\/.*/
+      when: on_success
+  script:
+    - helm dependencies update ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/stackstate-values
 push_stackstate_release_to_internal:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1206,13 +1320,14 @@ push_stackstate_release_to_public:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1237,6 +1352,7 @@ push_stackstate_to_internal:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1244,7 +1360,7 @@ push_stackstate_to_internal:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - .gitlab/bump_sts_chart_master_version.sh stackstate-internal stackstate
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1277,13 +1393,14 @@ push_test_charts:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $CI_COMMIT_BRANCH == "master"
       when: never
@@ -1298,7 +1415,7 @@ push_test_charts:
     AWS_BUCKET: s3://helm-test.stackstate.io
     REPO_URL: https://helm-test.stackstate.io/
 push_trafficmirror_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1325,7 +1442,7 @@ push_trafficmirror_to_internal:
   variables:
     CHART: stable/trafficmirror
 push_trafficmirror_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   needs:
     - push_trafficmirror_to_internal
   rules:
@@ -1354,7 +1471,7 @@ push_trafficmirror_to_public:
   variables:
     CHART: stable/trafficmirror
 push_victoria-metrics-single_to_internal:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1381,7 +1498,7 @@ push_victoria-metrics-single_to_internal:
   variables:
     CHART: stable/victoria-metrics-single
 push_victoria-metrics-single_to_public:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   needs:
     - push_victoria-metrics-single_to_internal
   rules:
@@ -1422,6 +1539,7 @@ test_artifactory-cleaner:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1429,7 +1547,7 @@ test_artifactory-cleaner:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1456,6 +1574,7 @@ test_aws-amicleaner:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1463,7 +1582,7 @@ test_aws-amicleaner:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1490,6 +1609,7 @@ test_aws-nuke:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1497,7 +1617,7 @@ test_aws-nuke:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1524,6 +1644,7 @@ test_aws-pod-identity-webhook:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1531,7 +1652,7 @@ test_aws-pod-identity-webhook:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1558,6 +1679,7 @@ test_beacher-job:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1565,7 +1687,7 @@ test_beacher-job:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1592,6 +1714,7 @@ test_chartmuseum:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1599,7 +1722,7 @@ test_chartmuseum:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1626,6 +1749,7 @@ test_common:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1633,7 +1757,7 @@ test_common:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1660,6 +1784,7 @@ test_elasticsearch:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1667,7 +1792,7 @@ test_elasticsearch:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1688,12 +1813,13 @@ test_elasticsearch:
   variables:
     CGO_ENABLED: 0
     CHART: stable/elasticsearch
-test_gitlab-steward:
+test_falco-reporter:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1701,7 +1827,42 @@ test_gitlab-steward:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/falco-reporter/**/*
+      exists:
+        - stable/falco-reporter/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/falco-reporter/test/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/falco-reporter
+test_gitlab-steward:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1728,6 +1889,7 @@ test_hbase:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1735,7 +1897,7 @@ test_hbase:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1762,6 +1924,7 @@ test_helm-reaper:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1769,7 +1932,7 @@ test_helm-reaper:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1796,6 +1959,7 @@ test_iceman:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1803,7 +1967,7 @@ test_iceman:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1830,6 +1994,7 @@ test_k8s-image-list-to-s3:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1837,7 +2002,7 @@ test_k8s-image-list-to-s3:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1864,6 +2029,7 @@ test_k8s-spot-termination-handler:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1871,7 +2037,7 @@ test_k8s-spot-termination-handler:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1898,6 +2064,7 @@ test_kafkaup-operator:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1905,7 +2072,7 @@ test_kafkaup-operator:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1932,6 +2099,7 @@ test_kommoner-operator:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1939,7 +2107,7 @@ test_kommoner-operator:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1966,6 +2134,7 @@ test_minio:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -1973,7 +2142,7 @@ test_minio:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1994,12 +2163,13 @@ test_minio:
   variables:
     CGO_ENABLED: 0
     CHART: stable/minio
-test_petros-d-kubelet-stats-exporter:
+test_otel-demo:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -2007,7 +2177,42 @@ test_petros-d-kubelet-stats-exporter:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/otel-demo/**/*
+      exists:
+        - stable/otel-demo/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/otel-demo/test/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/otel-demo
+test_petros-d-kubelet-stats-exporter:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2034,6 +2239,7 @@ test_pull-secret:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -2041,7 +2247,7 @@ test_pull-secret:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2068,6 +2274,7 @@ test_receiveramplifier:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -2075,7 +2282,7 @@ test_receiveramplifier:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2102,6 +2309,7 @@ test_redirector:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -2109,7 +2317,7 @@ test_redirector:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2136,6 +2344,7 @@ test_sandbox-operator:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -2143,7 +2352,7 @@ test_sandbox-operator:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2170,6 +2379,7 @@ test_sock-shop:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -2177,7 +2387,7 @@ test_sock-shop:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2204,6 +2414,7 @@ test_stackstate:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -2212,7 +2423,7 @@ test_stackstate:
     - helm repo update
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2239,6 +2450,7 @@ test_stackstate-agent:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -2246,7 +2458,7 @@ test_stackstate-agent:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2273,6 +2485,7 @@ test_stackstate-k8s:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -2281,7 +2494,7 @@ test_stackstate-k8s:
     - helm repo update
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-k8s/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-k8s/%
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2308,6 +2521,7 @@ test_stackstate-k8s-agent:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -2315,7 +2529,7 @@ test_stackstate-k8s-agent:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2342,6 +2556,7 @@ test_stackstate-monitoring:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -2349,7 +2564,7 @@ test_stackstate-monitoring:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2376,6 +2591,7 @@ test_stackstate-standalone:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -2383,7 +2599,7 @@ test_stackstate-standalone:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2404,12 +2620,13 @@ test_stackstate-standalone:
   variables:
     CGO_ENABLED: 0
     CHART: stable/stackstate-standalone
-test_trafficmirror:
+test_stackstate-values:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -2417,7 +2634,42 @@ test_trafficmirror:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/stackstate-values/**/*
+      exists:
+        - stable/stackstate-values/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/stackstate-values/test/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+    CHART: stable/stackstate-values
+test_trafficmirror:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo update
+    - helm dependencies update ${CHART}
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2444,6 +2696,7 @@ test_victoria-metrics-single:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
@@ -2451,7 +2704,7 @@ test_victoria-metrics-single:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
     - helm dependencies update ${CHART}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -2478,13 +2731,14 @@ update_aad_chart_version:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_AAD_CHART_VERSION
       when: always
@@ -2503,13 +2757,14 @@ update_stackgraph_version:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo update
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-7f8a4dd6
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: always
@@ -2528,7 +2783,7 @@ update_stackpacks_version_to_latest:
   before_script:
     - .gitlab/configure_git.sh
     - export BRANCHES=${CI_COMMIT_BRANCH:-$(git for-each-ref --format="%(objectname) %(refname:short)" refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" '$1==branch && $2!="origin" {print $2}' | sed -E "s/^origin\/(.*)$/\1/")}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: always
@@ -2545,7 +2800,7 @@ update_stackstate_version_to_latest:
   before_script:
     - .gitlab/configure_git.sh
     - export BRANCHES=${CI_COMMIT_BRANCH:-$(git for-each-ref --format="%(objectname) %(refname:short)" refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" '$1==branch && $2!="origin" {print $2}' | sed -E "s/^origin\/(.*)$/\1/")}
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-0ccefe18
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-10281c3f
   rules:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: always
@@ -2587,6 +2842,7 @@ validate_stackstate_chart:
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io

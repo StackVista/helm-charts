@@ -9,6 +9,8 @@ charts=$(ct list-changed --config test/ct.yaml)
 for chartPath in "${charts[@]}"; do
   if [ "${chartPath}" == "stable/stackstate" ]; then
     printf "\nNOT running 'kubeconform' on '%s' because kubeconform cannot validate v1/List objects...\n" "${chartPath}"
+  elif [ "${chartPath}" == "stable/stackstate-values" ]; then
+    printf "\nNOT running 'kubeconform' on '%s' because this Helm chart does not output Kubernetes objects, but a values file.\n" "${chartPath}"
   else
     printf "\nRunning 'kubeconform' on '%s'...\n" "${chartPath}"
 

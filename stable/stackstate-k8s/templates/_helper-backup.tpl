@@ -1,4 +1,11 @@
+
 {{- define "stackstate.backup.envvars" -}}
+{{/*
+Check if the backup.stackGraph.splitArchiveSize has a valid value.
+*/}}
+{{- if not (regexMatch "^[0-9]+([KMG]?|[KMG]?[B]?)$" (toString .Values.backup.stackGraph.splitArchiveSize)) }}
+  {{- fail (printf ".Values.backup.stackGraph.splitArchiveSize (%v) has to be an integer greater or equal to 0 with an optional suffix K,M,G,KB,MB,GB" .Values.backup.stackGraph.splitArchiveSize)}}
+{{- end }}
 - name: BACKUP_ELASTICSEARCH_BUCKET_NAME
   value: {{ .Values.backup.elasticsearch.bucketName | quote }}
 - name: BACKUP_ELASTICSEARCH_RESTORE_ENABLED
@@ -27,6 +34,8 @@
   value: {{ .Values.backup.stackGraph.restore.enabled | quote }}
 - name: BACKUP_STACKGRAPH_SCHEDULED_ENABLED
   value: {{ .Values.backup.stackGraph.scheduled.enabled | quote }}
+- name: BACKUP_STACKGRAPH_ARCHIVE_SPLIT_SIZE
+  value: {{ .Values.backup.stackGraph.splitArchiveSize | quote }}
 - name: BACKUP_STACKGRAPH_SCHEDULED_BACKUP_NAME_TEMPLATE
   value: {{ .Values.backup.stackGraph.scheduled.backupNameTemplate | quote }}
 - name: BACKUP_STACKGRAPH_SCHEDULED_BACKUP_NAME_PARSE_REGEXP

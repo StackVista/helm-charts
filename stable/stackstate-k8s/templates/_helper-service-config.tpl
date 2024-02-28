@@ -36,6 +36,9 @@
 {{- else }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_singleWriter_releaseRevision" "1" }}
 {{- end -}}
+{{- if .Values.stackstate.experimental.traces }}
+  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_traces" "true" }}
+{{- end -}}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_newMetrics" "true" }}
 {{/*
 Memory used by a JVM process can be calculated as follows:
@@ -105,6 +108,12 @@ stringData:
   application_stackstate.conf: |
 {{- if .service.config }}
 {{- .service.config | nindent 4 -}}
+{{- end }}
+{{- end -}}
+
+{{- define "stackstate.service.secret.clickhouseconfig" -}}
+{{- if .Values.stackstate.experimental.traces }}
+stackstate.traces.clickHouse = {{- .Values.stackstate.components.all.clickHouse | toPrettyJson }}
 {{- end }}
 {{- end -}}
 
