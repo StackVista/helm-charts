@@ -22,10 +22,15 @@ opentelemetry-demo:
         runAsUser: 70
       mountedConfigMaps:
         - name: init-scripts
-          mountPath: /docker-entrypoint-initdb.d
+          mountPath: /docker-entrypoint-initdb.d/99-ffs_update.sql
+          subPath: 99-ffs_update.sql
           data:
             99-ffs_update.sql: |
               UPDATE public.featureflags SET enabled = 1 WHERE name = 'adServiceFailure';
+    loadgenerator:
+      imageOverride:
+        repository: quay.io/stackstate/opentelemetry-demo
+        tag: dev-7a35e404-loadgenerator
   opentelemetry-collector:
     config:
       # the spanmetrics connector gets lost without at least some config present

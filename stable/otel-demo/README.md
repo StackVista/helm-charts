@@ -1,6 +1,6 @@
 # otel-demo
 
-![Version: 0.0.6](https://img.shields.io/badge/Version-0.0.6-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.0.8](https://img.shields.io/badge/Version-0.0.8-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
 Helm chart for Opentelemetry Demo
 
@@ -30,11 +30,14 @@ Helm chart for Opentelemetry Demo
 | opentelemetry-demo.components.featureflagService.imageOverride.tag | string | `"dev-11b1c878-featureflagservice"` |  |
 | opentelemetry-demo.components.featureflagService.resources.limits.memory | string | `nil` |  |
 | opentelemetry-demo.components.ffsPostgres.mountedConfigMaps[0].data."99-ffs_update.sql" | string | `"UPDATE public.featureflags SET enabled = 1 WHERE name = 'adServiceFailure';\n"` |  |
-| opentelemetry-demo.components.ffsPostgres.mountedConfigMaps[0].mountPath | string | `"/docker-entrypoint-initdb.d"` |  |
+| opentelemetry-demo.components.ffsPostgres.mountedConfigMaps[0].mountPath | string | `"/docker-entrypoint-initdb.d/99-ffs_update.sql"` |  |
 | opentelemetry-demo.components.ffsPostgres.mountedConfigMaps[0].name | string | `"init-scripts"` |  |
+| opentelemetry-demo.components.ffsPostgres.mountedConfigMaps[0].subPath | string | `"99-ffs_update.sql"` |  |
 | opentelemetry-demo.components.ffsPostgres.podSecurityContext.runAsGroup | int | `70` |  |
 | opentelemetry-demo.components.ffsPostgres.podSecurityContext.runAsNonRoot | bool | `true` |  |
 | opentelemetry-demo.components.ffsPostgres.podSecurityContext.runAsUser | int | `70` |  |
+| opentelemetry-demo.components.loadgenerator.imageOverride.repository | string | `"quay.io/stackstate/opentelemetry-demo"` |  |
+| opentelemetry-demo.components.loadgenerator.imageOverride.tag | string | `"dev-7a35e404-loadgenerator"` |  |
 | opentelemetry-demo.default.podSecurityContext.runAsGroup | int | `65534` |  |
 | opentelemetry-demo.default.podSecurityContext.runAsNonRoot | bool | `true` |  |
 | opentelemetry-demo.default.podSecurityContext.runAsUser | int | `65534` |  |
