@@ -8,13 +8,10 @@ opentelemetry-demo:
     featureflagService:
       envOverrides:
         - name: DISABLE_FEATURE_FLAGS
-          value: "false"
+          value: "true"
       resources:
         limits:
           memory: null
-      imageOverride:
-        repository: quay.io/stackstate/opentelemetry-demo
-        tag: dev-11b1c878-featureflagservice
     ffsPostgres:
       podSecurityContext:
         runAsGroup: 70
@@ -50,3 +47,5 @@ featureflags:
       failure: "0 * * * *"
       # featureflags.demoScenarioSimulation.schedule.fix -- The cron schedule to fix the faulty k8s demo scenario.
       fix: "30 * * * *"
+  # featureflags.fixImage -- Image for the featureflags service that fixes any of the issues triggered by feature flags (i.e. it ignores all feature flags)
+  fixImage: quay.io/stackstate/opentelemetry-demo:dev-26760863-featureflagservice

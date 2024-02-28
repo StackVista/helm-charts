@@ -14,10 +14,9 @@ set -o xtrace
 DIR=${BASH_SOURCE%/*}
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 if [[ "$DIR" = "." ]]; then DIR="$PWD"; fi
-FAULTY_IMAGE="quay.io/stackstate/opentelemetry-demo:dev-11b1c878-featureflagservice"
-GOOD_IMAGE="quay.io/stackstate/opentelemetry-demo:dev-a5d06ec5-featureflagservice"
 
 SCENARIO=${1:?First argument must be the scenario name: <failure> or <fix>}
+NEW_IMAGE="${2:?Second argumnet must be the expected image}"
 
 # Read the current deployment image and based on that switch the scenario
 IMAGE=$(kubectl get deployment otel-demo-featureflagservice -o=jsonpath='{$.spec.template.spec.containers[:1].image}')
@@ -25,7 +24,7 @@ echo "Current image found is: $IMAGE"
 
 case $SCENARIO in
   "fix")
-    if [ "$IMAGE" == "$GOOD_IMAGE" ] ; then
+    if [ "$IMAGE" == "$NEW_IMAGE" ] ; then
       echo "The current image is already the good one. Doing nothing."
     else
       echo "Deploying the good version"
@@ -34,7 +33,7 @@ case $SCENARIO in
     ;;
 
   "failure")
-    if [ "$IMAGE" == "$FAULTY_IMAGE" ] ; then
+    if [ "$IMAGE" == "$NEW_IMAGE" ] ; then
       echo "The current image is already the faulty one. Doing nothing."
     else
       echo "Deploying the faulty version"

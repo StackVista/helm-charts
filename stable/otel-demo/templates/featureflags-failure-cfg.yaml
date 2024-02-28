@@ -1,5 +1,5 @@
----
 {{- if .Values.featureflags.demoScenarioSimulation.enabled }}
+{{- $subchart := (index .Subcharts "opentelemetry-demo") }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,8 +7,38 @@ metadata:
 data:
   deploy-featureflags-demo-scenario.sh: |
     {{- .Files.Get "scripts/deploy-featureflags-demo-scenario.sh" | nindent 4 }}
-  featureflags-failure-patch.yaml: |
-    {{- .Files.Get "scripts/featureflags-failure-patch.yaml" | nindent 4 }}
   featureflags-fix-patch.yaml: |
-    {{- .Files.Get "scripts/featureflags-fix-patch.yaml" | nindent 4 }}
+    metadata:
+      labels:
+        app.kubernetes.io/version: {{ $subchart.Chart.AppVersion }}-sts
+      annotations:
+        vcs: https://gitlab.com/stackvista/demo/opentelemetry-demo/-/commit/b00c4eac2ae77cfb61268f3efd84acc92766cc3e
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/version: {{ $subchart.Chart.AppVersion }}-sts
+          annotations:
+            vcs: https://gitlab.com/stackvista/demo/opentelemetry-demo/-/commit/b00c4eac2ae77cfb61268f3efd84acc92766cc3e
+        spec:
+          containers:
+            - name: featureflagservice
+              image: {{ .Values.featureflags.fixImage }}
+  featureflags-failure-patch.yaml: |
+    metadata:
+      labels:
+        app.kubernetes.io/version: {{ $subchart.Chart.AppVersion }}
+      annotations:
+        vcs: https://gitlab.com/stackvista/demo/opentelemetry-demo/-/commit/a5d06ec558733f298bdd4e9f7466e9bbb9a917a3
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/version: {{ $subchart.Chart.AppVersion }}
+          annotations:
+            vcs: https://gitlab.com/stackvista/demo/opentelemetry-demo/-/commit/a5d06ec558733f298bdd4e9f7466e9bbb9a917a3
+        spec:
+          containers:
+            - name: featureflagservice
+              image: '{{ $subchart.Values.default.image.repository }}:{{ printf "%s-featureflagservice" (default $subchart.Chart.AppVersion $subchart.Values.default.image.tag) }}'
 {{- end }}

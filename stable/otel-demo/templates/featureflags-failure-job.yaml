@@ -1,5 +1,6 @@
 ---
 {{- if .Values.featureflags.demoScenarioSimulation.enabled }}
+{{- $subchart := (index .Subcharts "opentelemetry-demo") }}
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -21,7 +22,7 @@ spec:
               command:
                 - bash
                 - -c
-                - /opt/featureflags/deploy-featureflags-demo-scenario.sh failure
+                - /opt/featureflags/deploy-featureflags-demo-scenario.sh failure "{{ $subchart.Values.default.image.repository }}:{{ printf "%s-featureflagservice" (default $subchart.Chart.AppVersion $subchart.Values.default.image.tag) }}"
               volumeMounts:
                   - mountPath: /opt/featureflags/
                     name: featureflags-failure-script
@@ -52,7 +53,7 @@ spec:
               command:
                 - bash
                 - -c
-                - /opt/featureflags/deploy-featureflags-demo-scenario.sh fix
+                - /opt/featureflags/deploy-featureflags-demo-scenario.sh fix "{{.Values.featureflags.fixImage}}"
               volumeMounts:
                   - mountPath: /opt/featureflags/
                     name: featureflags-failure-script
