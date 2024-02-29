@@ -5,6 +5,14 @@ opentelemetry-demo:
       runAsNonRoot: true
       runAsUser: 65534
   components:
+    frontend:
+      service:
+        annotations:
+          monitor.kubernetes-v2.stackstate.io/http-error-ratio-for-service: |
+            {
+              "criticalThreshold": 0.05,
+              "deviatingThreshold": 0.001
+            }
     featureflagService:
       envOverrides:
         - name: DISABLE_FEATURE_FLAGS
