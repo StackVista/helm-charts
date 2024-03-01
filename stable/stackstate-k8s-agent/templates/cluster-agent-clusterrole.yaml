@@ -119,7 +119,7 @@ rules:
     - list
     - watch
 - apiGroups:
-    - "replicationcontrollers"
+    - ""
   resources:
   {{- if $kubeRes.replicationcontrollers }}
     - replicationcontrollers
