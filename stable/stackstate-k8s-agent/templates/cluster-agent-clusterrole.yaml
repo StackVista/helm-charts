@@ -109,7 +109,7 @@ rules:
     - list
     - watch
 - apiGroups:
-    - "poddisruptionbudgets.policy"
+    - "policy"
   resources:
   {{- if $kubeRes.poddisruptionbudgets }}
     - poddisruptionbudgets
