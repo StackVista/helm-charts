@@ -6,6 +6,8 @@ opentelemetry-demo:
       runAsUser: 65534
   components:
     frontend:
+      podAnnotations:
+        monitor.kubernetes-v2.stackstate.io/pod-span-error-ratio: '{ "threshold": 0.01 }'
       service:
         annotations:
           monitor.kubernetes-v2.stackstate.io/http-error-ratio-for-service: |

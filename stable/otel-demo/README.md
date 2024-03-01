@@ -36,6 +36,7 @@ Helm chart for Opentelemetry Demo
 | opentelemetry-demo.components.ffsPostgres.podSecurityContext.runAsGroup | int | `70` |  |
 | opentelemetry-demo.components.ffsPostgres.podSecurityContext.runAsNonRoot | bool | `true` |  |
 | opentelemetry-demo.components.ffsPostgres.podSecurityContext.runAsUser | int | `70` |  |
+| opentelemetry-demo.components.frontend.podAnnotations."monitor.kubernetes-v2.stackstate.io/pod-span-error-ratio" | string | `"{ \"threshold\": 0.01 }"` |  |
 | opentelemetry-demo.components.frontend.service.annotations."monitor.kubernetes-v2.stackstate.io/http-error-ratio-for-service" | string | `"{\n  \"criticalThreshold\": 0.05,\n  \"deviatingThreshold\": 0.001\n}\n"` |  |
 | opentelemetry-demo.components.loadgenerator.imageOverride.repository | string | `"quay.io/stackstate/opentelemetry-demo"` |  |
 | opentelemetry-demo.components.loadgenerator.imageOverride.tag | string | `"dev-7a35e404-loadgenerator"` |  |
