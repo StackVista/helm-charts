@@ -13,6 +13,9 @@ opentelemetry-demo:
               "criticalThreshold": 0.05,
               "deviatingThreshold": 0.001
             }
+    cartService:
+      podAnnotations:
+        monitor.kubernetes-v2.stackstate.io/pod-span-error-ratio: '{ "threshold": 0.02 }'
     featureflagService:
       envOverrides:
         - name: DISABLE_FEATURE_FLAGS
@@ -56,4 +59,4 @@ featureflags:
       # featureflags.demoScenarioSimulation.schedule.fix -- The cron schedule to fix the faulty k8s demo scenario.
       fix: "30 * * * *"
   # featureflags.fixImage -- Image for the featureflags service that fixes any of the issues triggered by feature flags (i.e. it ignores all feature flags)
-  fixImage: quay.io/stackstate/opentelemetry-demo:dev-26760863-featureflagservice
+  fixImage: quay.io/stackstate/opentelemetry-demo:dev-d9a921e3-featureflagservice
