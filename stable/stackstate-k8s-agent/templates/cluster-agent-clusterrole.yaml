@@ -96,7 +96,6 @@ rules:
   - get
 - apiGroups:
     - "storage.k8s.io"
-    - "storageclasses.storage.k8s.io"
   resources:
   {{- if $kubeRes.volumeattachments }}
     - volumeattachments
