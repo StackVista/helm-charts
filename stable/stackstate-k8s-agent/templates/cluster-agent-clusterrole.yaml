@@ -129,7 +129,7 @@ rules:
     - list
     - watch
 - apiGroups:
-    - "horizontalpodautoscalers.autoscaling"
+    - "autoscaling"
   resources:
   {{- if $kubeRes.horizontalpodautoscalers }}
     - horizontalpodautoscalers
