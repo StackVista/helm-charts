@@ -2,7 +2,7 @@
 
 Helm chart for the StackState Agent.
 
-Current chart version is `1.0.71`
+Current chart version is `1.0.72`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -101,15 +101,20 @@ stackstate/stackstate-k8s-agent
 | clusterAgent.collection.kubernetesResources.daemonsets | bool | `true` | Enable / disable collection of DaemonSets. |
 | clusterAgent.collection.kubernetesResources.deployments | bool | `true` | Enable / disable collection of Deployments. |
 | clusterAgent.collection.kubernetesResources.endpoints | bool | `true` | Enable / disable collection of Endpoints. If endpoints are disabled then StackState won't be able to connect a Service to Pods that serving it |
+| clusterAgent.collection.kubernetesResources.horizontalpodautoscalers | bool | `true` | Enable / disable collection of HorizontalPodAutoscalers. |
 | clusterAgent.collection.kubernetesResources.ingresses | bool | `true` | Enable / disable collection of Ingresses. |
 | clusterAgent.collection.kubernetesResources.jobs | bool | `true` | Enable / disable collection of Jobs. |
+| clusterAgent.collection.kubernetesResources.limitranges | bool | `true` | Enable / disable collection of LimitRanges. |
 | clusterAgent.collection.kubernetesResources.namespaces | bool | `true` | Enable / disable collection of Namespaces. |
 | clusterAgent.collection.kubernetesResources.persistentvolumeclaims | bool | `true` | Enable / disable collection of PersistentVolumeClaims. Disabling these will not let StackState connect PersistentVolumes to pods they are attached to |
 | clusterAgent.collection.kubernetesResources.persistentvolumes | bool | `true` | Enable / disable collection of PersistentVolumes. |
+| clusterAgent.collection.kubernetesResources.poddisruptionbudgets | bool | `true` | Enable / disable collection of PodDisruptionBudgets. |
 | clusterAgent.collection.kubernetesResources.replicasets | bool | `true` | Enable / disable collection of ReplicaSets. |
+| clusterAgent.collection.kubernetesResources.replicationcontrollers | bool | `true` | Enable / disable collection of ReplicationControllers. |
 | clusterAgent.collection.kubernetesResources.resourcequotas | bool | `true` | Enable / disable collection of ResourceQuotas. |
 | clusterAgent.collection.kubernetesResources.secrets | bool | `true` | Enable / disable collection of Secrets. |
 | clusterAgent.collection.kubernetesResources.statefulsets | bool | `true` | Enable / disable collection of StatefulSets. |
+| clusterAgent.collection.kubernetesResources.storageclasses | bool | `true` | Enable / disable collection of StorageClasses. |
 | clusterAgent.collection.kubernetesResources.volumeattachments | bool | `true` | Enable / disable collection of Volume Attachments. Used to bind Nodes to Persistent Volumes. |
 | clusterAgent.collection.kubernetesTimeout | int | `10` | Default timeout (in seconds) when obtaining information from the Kubernetes API. |
 | clusterAgent.collection.kubernetesTopology | bool | `true` | Enable / disable the cluster agent topology collection. |

@@ -96,9 +96,53 @@ rules:
   - get
 - apiGroups:
     - "storage.k8s.io"
+    - "storageclasses.storage.k8s.io"
   resources:
   {{- if $kubeRes.volumeattachments }}
     - volumeattachments
+  {{- end }}
+  {{- if $kubeRes.storageclasses }}
+    - storageclasses
+  {{- end }}
+  verbs:
+    - get
+    - list
+    - watch
+- apiGroups:
+    - "poddisruptionbudgets.policy"
+  resources:
+  {{- if $kubeRes.poddisruptionbudgets }}
+    - poddisruptionbudgets
+  {{- end }}
+  verbs:
+    - get
+    - list
+    - watch
+- apiGroups:
+    - "replicationcontrollers"
+  resources:
+  {{- if $kubeRes.replicationcontrollers }}
+    - replicationcontrollers
+  {{- end }}
+  verbs:
+    - get
+    - list
+    - watch
+- apiGroups:
+    - "horizontalpodautoscalers.autoscaling"
+  resources:
+  {{- if $kubeRes.horizontalpodautoscalers }}
+    - horizontalpodautoscalers
+  {{- end }}
+  verbs:
+    - get
+    - list
+    - watch
+- apiGroups:
+    - "limitranges"
+  resources:
+  {{- if $kubeRes.limitranges }}
+    - limitranges
   {{- end }}
   verbs:
     - get

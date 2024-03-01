@@ -276,6 +276,16 @@ clusterAgent:
       ## for example tags.stackstate/version becomes tags_stackstate_version.
       annotationsAsTags: {}
     kubernetesResources:
+      # clusterAgent.collection.kubernetesResources.limitranges -- Enable / disable collection of LimitRanges.
+      limitranges: true
+      # clusterAgent.collection.kubernetesResources.horizontalpodautoscalers -- Enable / disable collection of HorizontalPodAutoscalers.
+      horizontalpodautoscalers: true
+      # clusterAgent.collection.kubernetesResources.replicationcontrollers -- Enable / disable collection of ReplicationControllers.
+      replicationcontrollers: true
+      # clusterAgent.collection.kubernetesResources.poddisruptionbudgets -- Enable / disable collection of PodDisruptionBudgets.
+      poddisruptionbudgets: true
+      # clusterAgent.collection.kubernetesResources.storageclasses -- Enable / disable collection of StorageClasses.
+      storageclasses: true
       # clusterAgent.collection.kubernetesResources.volumeattachments -- Enable / disable collection of Volume Attachments. Used to bind Nodes to Persistent Volumes.
       volumeattachments: true
       # clusterAgent.collection.kubernetesResources.namespaces -- Enable / disable collection of Namespaces.
