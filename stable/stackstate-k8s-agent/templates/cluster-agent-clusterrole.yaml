@@ -139,7 +139,7 @@ rules:
     - list
     - watch
 - apiGroups:
-    - "limitranges"
+    - ""
   resources:
   {{- if $kubeRes.limitranges }}
     - limitranges
