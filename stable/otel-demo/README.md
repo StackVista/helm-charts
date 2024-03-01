@@ -25,6 +25,8 @@ Helm chart for Opentelemetry Demo
 | featureflags.demoScenarioSimulation.schedule.failure | string | `"0 * * * *"` | The cron schedule to trigger the faulty k8s demo scenario. |
 | featureflags.demoScenarioSimulation.schedule.fix | string | `"30 * * * *"` | The cron schedule to fix the faulty k8s demo scenario. |
 | featureflags.fixImage | string | `"quay.io/stackstate/opentelemetry-demo:dev-d9a921e3-featureflagservice"` | Image for the featureflags service that fixes any of the issues triggered by feature flags (i.e. it ignores all feature flags) |
+| opentelemetry-demo.components.adService.imageOverride.repository | string | `"quay.io/stackstate/opentelemetry-demo"` |  |
+| opentelemetry-demo.components.adService.imageOverride.tag | string | `"dev-bb5b07ef-adservice"` |  |
 | opentelemetry-demo.components.cartService.podAnnotations."monitor.kubernetes-v2.stackstate.io/pod-span-error-ratio" | string | `"{ \"threshold\": 0.02 }"` |  |
 | opentelemetry-demo.components.featureflagService.envOverrides[0].name | string | `"DISABLE_FEATURE_FLAGS"` |  |
 | opentelemetry-demo.components.featureflagService.envOverrides[0].value | string | `"true"` |  |
