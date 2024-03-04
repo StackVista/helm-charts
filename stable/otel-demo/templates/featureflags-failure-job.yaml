@@ -7,6 +7,8 @@ metadata:
   name: featureflags-failure-deployment
 spec:
   concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 0
   schedule: "{{ .Values.featureflags.demoScenarioSimulation.schedule.failure }}"
   jobTemplate:
     spec:
@@ -38,6 +40,8 @@ metadata:
   name: featureflags-successful-deployment
 spec:
   concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 0
   schedule: "{{ .Values.featureflags.demoScenarioSimulation.schedule.fix }}"
   jobTemplate:
     spec:
