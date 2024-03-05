@@ -2,7 +2,7 @@
 
 Helm chart for the StackState Agent.
 
-Current chart version is `1.0.73`
+Current chart version is `1.0.74`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -165,6 +165,13 @@ stackstate/stackstate-k8s-agent
 | logsAgent.image.tag | string | `"2.7.1-4b6ae2af"` | Default container image tag. |
 | logsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | logsAgent.priorityClassName | string | `""` | Priority class for logsAgent pods. |
+| logsAgent.proxyConfig.certConfig.caFile | string | `""` | The CA file to use to verify the server |
+| logsAgent.proxyConfig.certConfig.certFile | string | `""` | The cert file to send to the server for client auth |
+| logsAgent.proxyConfig.certConfig.keyFile | string | `""` | The key file to send to the server for client auth |
+| logsAgent.proxyConfig.certConfig.serverName | string | `""` | Validates that the server name in the server's certificate is this value. |
+| logsAgent.proxyConfig.hasCert | bool | `false` | Set to true if a verifiable certificate is available. |
+| logsAgent.proxyConfig.insecureSkipVerify | bool | `false` | If true, ignores the server certificate being signed by an unknown authority. |
+| logsAgent.proxyConfig.proxyUrl | string | `""` | The URL of the proxy to use for log shipping |
 | logsAgent.resources.limits.cpu | string | `"1300m"` | Memory resource limits. |
 | logsAgent.resources.limits.memory | string | `"192Mi"` |  |
 | logsAgent.resources.requests.cpu | string | `"20m"` | Memory resource requests. |
@@ -172,6 +179,7 @@ stackstate/stackstate-k8s-agent
 | logsAgent.serviceaccount.annotations | object | `{}` | Annotations for the service account for the daemonset pods |
 | logsAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | logsAgent.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":100},"type":"RollingUpdate"}` | The update strategy for the DaemonSet object. |
+| logsAgent.useProxy | bool | `false` | Enable / disable the use of a proxy for log shipping |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | nodeAgent.apm.enabled | bool | `true` | Enable / disable the nodeAgent APM module. |
