@@ -150,6 +150,7 @@ stackstate/stackstate-k8s-agent
 | clusterAgent.service.port | int | `5005` | Change the Cluster Agent service port |
 | clusterAgent.service.targetPort | int | `5005` | Change the Cluster Agent service targetPort |
 | clusterAgent.serviceaccount.annotations | object | `{}` | Annotations for the service account for the cluster agent pods |
+| clusterAgent.skipSslValidation | bool | `false` | If true, ignores the server certificate being signed by an unknown authority. |
 | clusterAgent.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | clusterAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | fullnameOverride | string | `""` | Override the fullname of the chart. |
@@ -157,6 +158,8 @@ stackstate/stackstate-k8s-agent
 | global.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | global.imagePullCredentials | object | `{}` | Globally define credentials for pulling images. |
 | global.imagePullSecrets | list | `[]` | Secrets / credentials needed for container image registry. |
+| global.proxy.url | string | `""` | Proxy for all traffic to stackstate |
+| global.skipSslValidation | bool | `false` | Enable tls validation from client |
 | httpHeaderInjectorWebhook.enabled | bool | `false` | Enable the webhook for injection http header injection sidecar proxy |
 | logsAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | logsAgent.enabled | bool | `true` | Enable / disable k8s pod log collection |
@@ -165,21 +168,14 @@ stackstate/stackstate-k8s-agent
 | logsAgent.image.tag | string | `"2.7.1-4b6ae2af"` | Default container image tag. |
 | logsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | logsAgent.priorityClassName | string | `""` | Priority class for logsAgent pods. |
-| logsAgent.proxyConfig.certConfig.caFile | string | `""` | The CA file to use to verify the server |
-| logsAgent.proxyConfig.certConfig.certFile | string | `""` | The cert file to send to the server for client auth |
-| logsAgent.proxyConfig.certConfig.keyFile | string | `""` | The key file to send to the server for client auth |
-| logsAgent.proxyConfig.certConfig.serverName | string | `""` | Validates that the server name in the server's certificate is this value. |
-| logsAgent.proxyConfig.hasCert | bool | `false` | Set to true if a verifiable certificate is available. |
-| logsAgent.proxyConfig.insecureSkipVerify | bool | `false` | If true, ignores the server certificate being signed by an unknown authority. |
-| logsAgent.proxyConfig.proxyUrl | string | `""` | The URL of the proxy to use for log shipping |
 | logsAgent.resources.limits.cpu | string | `"1300m"` | Memory resource limits. |
 | logsAgent.resources.limits.memory | string | `"192Mi"` |  |
 | logsAgent.resources.requests.cpu | string | `"20m"` | Memory resource requests. |
 | logsAgent.resources.requests.memory | string | `"100Mi"` |  |
 | logsAgent.serviceaccount.annotations | object | `{}` | Annotations for the service account for the daemonset pods |
+| logsAgent.skipSslValidation | bool | `false` | If true, ignores the server certificate being signed by an unknown authority. |
 | logsAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | logsAgent.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":100},"type":"RollingUpdate"}` | The update strategy for the DaemonSet object. |
-| logsAgent.useProxy | bool | `false` | Enable / disable the use of a proxy for log shipping |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | nodeAgent.apm.enabled | bool | `true` | Enable / disable the nodeAgent APM module. |
