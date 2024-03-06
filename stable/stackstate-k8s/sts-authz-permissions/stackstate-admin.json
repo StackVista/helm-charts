@@ -35,6 +35,7 @@
         "execute-restricted-scripts",
         "manage-service-tokens",
         "manage-notifications",
+        "manage-ingestion-api-keys",
         "view-notifications"
     ],
     "viewPermissions" : [ "access-view", "save-view", "delete-view" ]

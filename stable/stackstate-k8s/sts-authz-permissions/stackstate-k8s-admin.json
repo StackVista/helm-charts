@@ -22,7 +22,8 @@
         "read-metrics",
         "read-traces",
         "update-permissions",
-        "manage-service-tokens"
+        "manage-service-tokens",
+        "manage-ingestion-api-keys"
     ],
     "viewPermissions" : [ "access-view", "save-view", "delete-view" ]
 }
