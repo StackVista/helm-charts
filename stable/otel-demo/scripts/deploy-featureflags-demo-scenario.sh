@@ -16,10 +16,11 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 if [[ "$DIR" = "." ]]; then DIR="$PWD"; fi
 
 SCENARIO=${1:?First argument must be the scenario name: <failure> or <fix>}
-NEW_IMAGE="${2:?Second argumnet must be the expected image}"
+NEW_IMAGE="${2:?Second argument must be the expected image}"
+DEPLOYMENT_NAME="${3:?Third argument must be the deployment name of the feature flag service}"
 
 # Read the current deployment image and based on that switch the scenario
-IMAGE=$(kubectl get deployment otel-demo-featureflagservice -o=jsonpath='{$.spec.template.spec.containers[:1].image}')
+IMAGE=$(kubectl get deployment "$DEPLOYMENT_NAME" -o=jsonpath='{$.spec.template.spec.containers[:1].image}')
 echo "Current image found is: $IMAGE"
 
 case $SCENARIO in
@@ -28,7 +29,7 @@ case $SCENARIO in
       echo "The current image is already the good one. Doing nothing."
     else
       echo "Deploying the good version"
-      kubectl patch deployment otel-demo-featureflagservice --patch-file "$DIR"/featureflags-fix-patch.yaml
+      kubectl patch deployment "$DEPLOYMENT_NAME" --patch-file "$DIR"/featureflags-fix-patch.yaml
     fi
     ;;
 
@@ -37,7 +38,7 @@ case $SCENARIO in
       echo "The current image is already the faulty one. Doing nothing."
     else
       echo "Deploying the faulty version"
-      kubectl patch deployment otel-demo-featureflagservice --patch-file "$DIR"/featureflags-failure-patch.yaml
+      kubectl patch deployment "$DEPLOYMENT_NAME" --patch-file "$DIR"/featureflags-failure-patch.yaml
     fi
   ;;
 
