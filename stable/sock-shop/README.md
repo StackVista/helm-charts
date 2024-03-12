@@ -3,7 +3,7 @@
 This chart deploys [SockShop](https://microservices-demo.github.io/) application. It was forked from [microservices-demo/microservices-demo](https://github.com/microservices-demo/microservices-demo/tree/master/deploy/kubernetes/helm-chart)
 and got some improvements.
 
-![Version: 0.2.6](https://img.shields.io/badge/Version-0.2.6-informational?style=flat-square) ![AppVersion: 0.3.5](https://img.shields.io/badge/AppVersion-0.3.5-informational?style=flat-square)
+![Version: 0.2.7](https://img.shields.io/badge/Version-0.2.7-informational?style=flat-square) ![AppVersion: 0.3.5](https://img.shields.io/badge/AppVersion-0.3.5-informational?style=flat-square)
 A Helm chart for Sock Shop
 
 ## Values
@@ -17,7 +17,7 @@ A Helm chart for Sock Shop
 | carts.enabled | bool | `true` |  |
 | carts.resources | object | `{"limits":{"cpu":"500m","memory":"1000Mi"},"requests":{"cpu":"500m","memory":"1000Mi"}}` | Resource allocation for `carts` pods. |
 | carts.version | int | `1` | Custom label (version) value for `carts` pods. |
-| cartsDB.annotations | object | `{}` |  |
+| cartsDB.annotations."monitor.kubernetes-v2.stackstate.io/pod-cpu-throttling" | string | `"{\"enabled\":false}"` |  |
 | cartsDB.resources | object | `{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"100Mi"}}` | Resource allocation for `carts-db` pods. |
 | catalogue.annotations | object | `{"vcs":"https://gitlab.com/stackvista/demo/microservices-demo/catalogue/-/commit/e9e5338599dbda30366b38d00794c34aaa4221a7"}` | Custom annotations for `catalogue` pods. |
 | catalogue.demoScenarioSimulation.enabled | bool | `false` | Whether the k8s demo scenario should be enabled. |
@@ -28,7 +28,7 @@ A Helm chart for Sock Shop
 | catalogue.image.repository | string | `"quay.io/stackstate/weaveworksdemo-catalogue"` | The container repository for `catalogue` images. |
 | catalogue.image.tag | string | `"0.3.5"` | The container image tag. |
 | catalogue.resources | object | `{"limits":{"cpu":"100m","memory":"200Mi"},"requests":{"cpu":"100m","memory":"200Mi"}}` | Resource allocation for `catalogue` pods. |
-| catalogueDB.annotations | object | `{}` |  |
+| catalogueDB.annotations."monitor.kubernetes-v2.stackstate.io/pod-cpu-throttling" | string | `"{\"enabled\":false}"` |  |
 | catalogueDB.image.repository | string | `"quay.io/stackstate/weaveworksdemo-catalogue-db"` | The container repository for `catalogue-db` images. |
 | catalogueDB.image.tag | string | `"0.3.1"` | The container image tag. |
 | catalogueDB.resources | object | `{"limits":{"cpu":"1000m","memory":"500Mi"},"requests":{"cpu":"500m","memory":"250Mi"}}` | Resource allocation for `catalogue-db` pods. |

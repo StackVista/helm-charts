@@ -16,7 +16,8 @@ all:
 # CARTS DOMAIN
 #######
 cartsDB:
-  annotations: {}
+  annotations:
+    monitor.kubernetes-v2.stackstate.io/pod-cpu-throttling: '{"enabled":false}'
   # cartsDB.resources -- Resource allocation for `carts-db` pods.
   resources:
     limits:
@@ -51,7 +52,8 @@ catalogueDB:
     repository: quay.io/stackstate/weaveworksdemo-catalogue-db
     # catalogueDB.image.tag -- The container image tag.
     tag: 0.3.1
-  annotations: {}
+  annotations:
+    monitor.kubernetes-v2.stackstate.io/pod-cpu-throttling: '{"enabled":false}'
     # catalogueDB.resources -- Resource allocation for `catalogue-db` pods.
   resources:
     limits:
