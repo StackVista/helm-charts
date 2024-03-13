@@ -24,7 +24,7 @@ spec:
               command:
                 - bash
                 - -c
-                - /opt/featureflags/deploy-featureflags-demo-scenario.sh failure "{{ $subchart.Values.default.image.repository }}:{{ printf "%s-featureflagservice" (default $subchart.Chart.AppVersion $subchart.Values.default.image.tag) }} {{ .Release.Name }}-featureflagservice"
+                - /opt/featureflags/deploy-featureflags-demo-scenario.sh failure "{{ $subchart.Values.default.image.repository }}:{{ printf "%s-featureflagservice" (default $subchart.Chart.AppVersion $subchart.Values.default.image.tag) }}" "{{ .Release.Name }}-featureflagservice"
               volumeMounts:
                   - mountPath: /opt/featureflags/
                     name: featureflags-failure-script
