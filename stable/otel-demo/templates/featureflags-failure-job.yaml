@@ -57,7 +57,7 @@ spec:
               command:
                 - bash
                 - -c
-                - /opt/featureflags/deploy-featureflags-demo-scenario.sh fix "{{.Values.featureflags.fixImage}}"
+                - /opt/featureflags/deploy-featureflags-demo-scenario.sh fix "{{.Values.featureflags.fixImage}}" "{{ .Release.Name }}-featureflagservice"
               volumeMounts:
                   - mountPath: /opt/featureflags/
                     name: featureflags-failure-script
