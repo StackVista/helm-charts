@@ -33,6 +33,8 @@ env:
 {{ end }}
 - name: CONFIG_FORCE_stackstate_receiver_k8sLogs.indexMaxAge
   value: "{{ .Values.stackstate.components.receiver.retention }} days"
+- name: CONFIG_FORCE_stackstate_receiver_ingestionApiKeys_authorizeServiceUri
+  value: "http://{{ include "stackstate.hostname.prefix" . }}-router:8080/api/security/ingestion/authorize"
 - name: API_KEY
   valueFrom:
     secretKeyRef:
