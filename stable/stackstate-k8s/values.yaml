@@ -1951,12 +1951,14 @@ clickhouse:
 opentelemetry:
   # opentelemetry.enabled -- Enable / disable chart-based OTEL.
   enabled: false
+  # opentelemetry.apiKey -- Api key to validate requests with, if undefined falls back to a global.receiverApiKey
+  apiKey: null
 opentelemetry-collector:
   image:
     # opentelemetry-collector.image.repository -- Repository where to get the image from.
     repository: quay.io/stackstate/sts-opentelemetry-collector
     # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: v0.0.5
+    tag: v0.0.6
   command:
     name: usr/bin/sts-opentelemetry-collector
   # opentelemetry-collector.fullnameOverride -- Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
@@ -1966,13 +1968,20 @@ opentelemetry-collector:
   # opentelemetry-collector.replicaCount -- only used with deployment mode
   replicaCount: 1
   # opentelemetry-collector.config -- Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/)
+  extraEnvsFrom:
+  - secretRef:
+      name: stackstate-otel-collector
   config:
     receivers:
       otlp:
         protocols:
           grpc:
+            auth:
+              authenticator: bearertokenauth
             endpoint: ${env:MY_POD_IP}:4317
           http:
+            auth:
+              authenticator: bearertokenauth
             endpoint: ${env:MY_POD_IP}:4318
       zipkin: null
       prometheus: null
@@ -2004,6 +2013,9 @@ opentelemetry-collector:
           enabled: true
       logging: null
     extensions:
+      bearertokenauth:
+        scheme: StackState
+        token: "${env:API_KEY}"
       # The health_check extension is mandatory for this chart.
       # Without the health_check extension the collector will fail the readiness and liveliness probes.
       # The health_check extension can be modified, but should never be removed.
@@ -2017,6 +2029,7 @@ opentelemetry-collector:
       extensions:
         - health_check
         - memory_ballast
+        - bearertokenauth
       pipelines:
         traces:
           receivers:
