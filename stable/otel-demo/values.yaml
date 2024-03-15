@@ -12,7 +12,7 @@ opentelemetry-demo:
         tag: dev-bb5b07ef-adservice
     frontend:
       podAnnotations:
-        monitor.kubernetes-v2.stackstate.io/pod-span-error-ratio: '{ "threshold": 0.01 }'
+        monitor.kubernetes-v2.stackstate.io/pod-span-error-ratio: '{ "threshold": 0.25 }'
       service:
         annotations:
           monitor.kubernetes-v2.stackstate.io/http-error-ratio-for-service: |
@@ -20,6 +20,7 @@ opentelemetry-demo:
               "criticalThreshold": 0.05,
               "deviatingThreshold": 0.001
             }
+          monitor.kubernetes-v2.stackstate.io/k8s-service-span-error-ratio: '{ "threshold": 0.25 }'
     cartService:
       podAnnotations:
         monitor.kubernetes-v2.stackstate.io/pod-span-error-ratio: '{ "threshold": 0.02 }'

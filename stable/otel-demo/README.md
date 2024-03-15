@@ -1,6 +1,6 @@
 # otel-demo
 
-![Version: 0.0.14](https://img.shields.io/badge/Version-0.0.14-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.0.15](https://img.shields.io/badge/Version-0.0.15-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
 Helm chart for Opentelemetry Demo
 
@@ -38,8 +38,9 @@ Helm chart for Opentelemetry Demo
 | opentelemetry-demo.components.ffsPostgres.podSecurityContext.runAsGroup | int | `70` |  |
 | opentelemetry-demo.components.ffsPostgres.podSecurityContext.runAsNonRoot | bool | `true` |  |
 | opentelemetry-demo.components.ffsPostgres.podSecurityContext.runAsUser | int | `70` |  |
-| opentelemetry-demo.components.frontend.podAnnotations."monitor.kubernetes-v2.stackstate.io/pod-span-error-ratio" | string | `"{ \"threshold\": 0.01 }"` |  |
+| opentelemetry-demo.components.frontend.podAnnotations."monitor.kubernetes-v2.stackstate.io/pod-span-error-ratio" | string | `"{ \"threshold\": 0.25 }"` |  |
 | opentelemetry-demo.components.frontend.service.annotations."monitor.kubernetes-v2.stackstate.io/http-error-ratio-for-service" | string | `"{\n  \"criticalThreshold\": 0.05,\n  \"deviatingThreshold\": 0.001\n}\n"` |  |
+| opentelemetry-demo.components.frontend.service.annotations."monitor.kubernetes-v2.stackstate.io/k8s-service-span-error-ratio" | string | `"{ \"threshold\": 0.25 }"` |  |
 | opentelemetry-demo.components.loadgenerator.imageOverride.repository | string | `"quay.io/stackstate/opentelemetry-demo"` |  |
 | opentelemetry-demo.components.loadgenerator.imageOverride.tag | string | `"dev-7a35e404-loadgenerator"` |  |
 | opentelemetry-demo.default.podSecurityContext.runAsGroup | int | `65534` |  |
