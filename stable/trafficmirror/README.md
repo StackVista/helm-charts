@@ -1,6 +1,6 @@
 # trafficmirror
 
-![Version: 2.0.5](https://img.shields.io/badge/Version-2.0.5-informational?style=flat-square) ![AppVersion: 2.2.0](https://img.shields.io/badge/AppVersion-2.2.0-informational?style=flat-square)
+![Version: 2.0.6](https://img.shields.io/badge/Version-2.0.6-informational?style=flat-square) ![AppVersion: 2.4.0](https://img.shields.io/badge/AppVersion-2.4.0-informational?style=flat-square)
 Trafficmirror -- mirror traffic to various endpoints.
 **Homepage:** <https://github.com/rb3ckers/trafficmirror>
 ## Maintainers
@@ -23,7 +23,7 @@ Trafficmirror -- mirror traffic to various endpoints.
 | deployment.securityContext.runAsNonRoot | bool | `true` |  |
 | deployment.securityContext.runAsUser | int | `65534` |  |
 | image.repository | string | `"quay.io/stackstate/trafficmirror"` | Base container image repository. |
-| image.tag | string | `"v2.2.0"` | Default container image tag. |
+| image.tag | string | `"v2.4.0"` | Default container image tag. |
 | ingress.enabled | bool | `false` | Enable use of ingress controllers. |
 | trafficmirror.failAfterMinutes | int | `30` | Remove a target when it has been failing for this many minutes. |
 | trafficmirror.mainUrl | string | `""` | The default URL to receive the mirrored traffic. |
