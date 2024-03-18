@@ -344,7 +344,7 @@ stackstate/stackstate
 | stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
-| stackstate.components.all.image.tag | string | `"6.0.0-snapshot.20240318131317-master-efed2f8"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
+| stackstate.components.all.image.tag | string | `"6.0.0-snapshot.20240318135436-master-85395c7"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metricStore.queryApiEndpoint | string | `"stackstate-victoriametrics:8428"` | Host and port for promql api |
 | stackstate.components.all.metricStore.queryApiPath | string | `""` | Path under which `/api/v1/query` etc.. are accessible, the default ("") is fine for most stores |
