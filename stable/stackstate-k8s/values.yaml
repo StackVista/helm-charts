@@ -2048,6 +2048,9 @@ opentelemetry-collector:
     ad.stackstate.com/opentelemetry-collector.init_configs: "[{}]"
     ad.stackstate.com/opentelemetry-collector.instances: '[ { "prometheus_url": "http://%%host%%:8888/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
   resources:
-    limits:
+    requests:
       cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 500m
       memory: 512Mi
