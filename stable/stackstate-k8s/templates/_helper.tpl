@@ -565,12 +565,13 @@ Logic validate the total shares of Es disk
 {{- end -}}
 
 {{- define "stackstate.cpu_resource.to.cpu_core" -}}
-{{- if hasSuffix "m" . -}}
-    {{- $ti := trimSuffix "m" . | int -}}
+{{ $cpu := . | toString}}
+{{- if hasSuffix "m" $cpu -}}
+    {{- $ti := trimSuffix "m" $cpu | int -}}
     {{- floor (div $ti 1000) -}}
 {{- else -}}
-    {{- if regexMatch "^[0-9]*$" . -}}
-        {{ . | int }}
+    {{- if regexMatch "^[0-9]*$" $cpu -}}
+        {{ $cpu | int }}
     {{- end -}}
 {{- end -}}
 {{- end -}}
