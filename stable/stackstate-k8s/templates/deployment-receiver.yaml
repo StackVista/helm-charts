@@ -1,3 +1,6 @@
+{{- define "stackstate.router.api.name" -}}
+  {{- if .Values.stackstate.experimental.server.split }}api{{ else }}server{{ end }}
+{{- end -}}
 {{- define "stackstate.receiver.deployment.container.init" -}}
 name: receiver-init
 command:
@@ -34,7 +37,7 @@ env:
 - name: CONFIG_FORCE_stackstate_receiver_k8sLogs.indexMaxAge
   value: "{{ .Values.stackstate.components.receiver.retention }} days"
 - name: CONFIG_FORCE_stackstate_receiver_ingestionApiKeys_authorizeServiceUri
-  value: "http://{{ include "stackstate.hostname.prefix" . }}-router:8080/api/security/ingestion/authorize"
+  value: "http://{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-headless:7070/internal/api/security/ingestion/authorize"
 - name: API_KEY
   valueFrom:
     secretKeyRef:
