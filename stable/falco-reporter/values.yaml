@@ -9,7 +9,7 @@ image:
   # image.repository -- Base container image registry. Any image with kubectl, jq, aws-cli and gsutil will do.
   repository: stackstate/falco-reporter
   # image.tag -- Default container image tag.
-  tag: 6bf28661
+  tag: e3a0435d
   # image.pullPolicy -- Default container image pull policy.
   pullPolicy: IfNotPresent
 
@@ -48,6 +48,11 @@ tolerations: []
 # affinity -- Affinity settings for pod assignment.
 affinity: {}
 
+securityContext:
+  fsGroup: 1000
+  runAsUser: 1000
+  runAsGroup: 1000
+
 ingress:
   # ingress.enabled -- Whether to deploy Ingress resource.
   enabled: false
@@ -61,22 +66,34 @@ ingress:
     # ingress.tls.secretName -- The name of K8s secrets containing SSL certificate for ingress.
     secretName:
 
-# slackWebhook -- Slack incoming webhook to send notifications to.
-slackWebhook:
+slack:
+  # slack.token -- Slack token to send message.
+  token:
+  # slack.channel -- Slack channel to send message to.
+  channel:
+
 
 # baseUrl -- Is used to build links in Slack reports. If not set ingress.host is used. If ingress.host is not set then the Kubernetes service is used.
 baseUrl:
 
-# storageProvider -- Where to save Falco reports: gcp or aws
+# storageProvider -- Where to save Falco reports: gcp, aws, or local.
 storageProvider:
 
 gcp:
-  # gcp.bucket -- Google Cloud Storage bucket to store Falco reports
+  # gcp.bucket -- Google Cloud Storage bucket to store Falco reports.
   bucket:
-  # gcp.bucket -- GCP project where the bucket resides
+  # gcp.bucket -- GCP project where the bucket resides.
   project:
 aws:
-  # aws.bucket -- AWS S3 bucket to store Falco reports
+  # aws.bucket -- AWS S3 bucket to store Falco reports.
   bucket:
-  # aws.region -- AWS region where the bucket resides
+  # aws.region -- AWS region where the bucket resides.
   region:
+local:
+  # local.directory -- The path to the local directory to store Falco reports.
+  directory:
+  persistent:
+    # local.persistent.accessMode -- PV access mode.
+    accessMode: ReadWriteOnce
+    # local.persistent.storageSize -- PV size.
+    storageSize: 1Gi
