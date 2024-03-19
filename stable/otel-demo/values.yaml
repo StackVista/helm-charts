@@ -5,33 +5,80 @@ opentelemetry-demo:
       runAsNonRoot: true
       runAsUser: 65534
   components:
+    accountingService:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 20Mi
+        limits:
+          cpu: 300m
+          memory: 20Mi
     adService:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 300Mi
+        limits:
+          cpu: 300m
+          memory: 300Mi
       # Temporary custom image until PR is merged and released on actual otel demo
       imageOverride:
         repository: quay.io/stackstate/opentelemetry-demo
         tag: dev-bb5b07ef-adservice
-    frontend:
-      podAnnotations:
-        monitor.kubernetes-v2.stackstate.io/pod-span-error-ratio: '{ "threshold": 0.25 }'
-      service:
-        annotations:
-          monitor.kubernetes-v2.stackstate.io/http-error-ratio-for-service: |
-            {
-              "criticalThreshold": 0.05,
-              "deviatingThreshold": 0.001
-            }
-          monitor.kubernetes-v2.stackstate.io/k8s-service-span-error-ratio: '{ "threshold": 0.25 }'
+
     cartService:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 160Mi
+        limits:
+          cpu: 300m
+          memory: 160Mi
       podAnnotations:
         monitor.kubernetes-v2.stackstate.io/pod-span-error-ratio: '{ "threshold": 0.02 }'
+    checkoutService:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 20Mi
+        limits:
+          cpu: 300m
+          memory: 20Mi
+    currencyService:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 20Mi
+        limits:
+          cpu: 300m
+          memory: 20Mi
+    emailService:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 100Mi
+        limits:
+          cpu: 300m
+          memory: 100Mi
     featureflagService:
       envOverrides:
         - name: DISABLE_FEATURE_FLAGS
           value: "true"
       resources:
+        requests:
+          cpu: 50m
+          memory: 250Mi
         limits:
-          memory: null
+          cpu: 300m
+          memory: 250Mi
     ffsPostgres:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 120Mi
+        limits:
+          cpu: 300m
+          memory: 120Mi
       podSecurityContext:
         runAsGroup: 70
         runAsNonRoot: true
@@ -43,10 +90,101 @@ opentelemetry-demo:
           data:
             99-ffs_update.sql: |
               UPDATE public.featureflags SET enabled = 1 WHERE name = 'adServiceFailure';
+    frauddetectionService:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 200Mi
+        limits:
+          cpu: 300m
+          memory: 200Mi
+    frontend:
+      resources:
+        requests:
+          cpu: 150m
+          memory: 200Mi
+        limits:
+          cpu: 500m
+          memory: 200Mi
+      podAnnotations:
+        monitor.kubernetes-v2.stackstate.io/pod-span-error-ratio: '{ "threshold": 0.25 }'
+      service:
+        annotations:
+          monitor.kubernetes-v2.stackstate.io/http-error-ratio-for-service: |
+            {
+              "criticalThreshold": 0.05,
+              "deviatingThreshold": 0.001
+            }
+          monitor.kubernetes-v2.stackstate.io/k8s-service-span-error-ratio: '{ "threshold": 0.25 }'
+    frontendProxy:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 50Mi
+        limits:
+          cpu: 300m
+          memory: 50Mi
+    kafka:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 500Mi
+        limits:
+          cpu: 300m
+          memory: 500Mi
     loadgenerator:
       imageOverride:
         repository: quay.io/stackstate/opentelemetry-demo
         tag: dev-7a35e404-loadgenerator
+    paymentService:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 120Mi
+        limits:
+          cpu: 300m
+          memory: 120Mi
+    productCatalogService:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 20Mi
+        limits:
+          cpu: 300m
+          memory: 20Mi
+    quoteService:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 40Mi
+        limits:
+          cpu: 300m
+          memory: 40Mi
+    recommendationService:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 500Mi
+        limits:
+          cpu: 300m
+          memory: 500Mi
+    redis:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 20Mi
+        limits:
+          cpu: 300m
+          memory: 20Mi
+    shippingService:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 20Mi
+        limits:
+          cpu: 300m
+          memory: 20Mi
+
   opentelemetry-collector:
     config:
       # the spanmetrics connector gets lost without at least some config present
@@ -68,3 +206,21 @@ featureflags:
       fix: "30 * * * *"
   # featureflags.fixImage -- Image for the featureflags service that fixes any of the issues triggered by feature flags (i.e. it ignores all feature flags)
   fixImage: quay.io/stackstate/opentelemetry-demo:dev-11cf2533-featureflagservice
+  # featureflags.resouces -- Resource for the CronJobs.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+    limits:
+      cpu: 200m
+      memory: 200Mi
+
+resourceQuota:
+  # resourceQuota.enabled -- Whether the ResourceQuota should be created for the demo namespace.
+  enabled: true
+  # resourceQuota.hard -- Hard is the set of desired hard limits for each named resource.
+  hard:
+    requests.cpu: "10"
+    requests.memory: 20Gi
+    limits.cpu: "30"
+    limits.memory: 50Gi

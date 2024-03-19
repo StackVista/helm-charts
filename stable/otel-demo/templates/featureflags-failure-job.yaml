@@ -28,6 +28,10 @@ spec:
               volumeMounts:
                   - mountPath: /opt/featureflags/
                     name: featureflags-failure-script
+              {{- with .Values.featureflags.resources }}
+              resources:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
           volumes:
             - name: featureflags-failure-script
               configMap:
@@ -61,6 +65,10 @@ spec:
               volumeMounts:
                   - mountPath: /opt/featureflags/
                     name: featureflags-failure-script
+              {{- with .Values.featureflags.resources }}
+              resources:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
           volumes:
             - name: featureflags-failure-script
               configMap:
