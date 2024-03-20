@@ -224,3 +224,14 @@ resourceQuota:
     requests.memory: 20Gi
     limits.cpu: "30"
     limits.memory: 50Gi
+
+limitRange:
+  # limitRange.default -- limitRange set the default resources if container does not have ones. Used if resourceQuota.enabled is true.
+  default:
+    - default:
+        cpu: 200m
+        memory: 256Mi
+      defaultRequest:
+        cpu: 200m
+        memory: 256Mi
+      type: Container

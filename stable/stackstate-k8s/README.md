@@ -301,9 +301,9 @@ stackstate/stackstate
 | opentelemetry-collector.replicaCount | int | `1` | only used with deployment mode |
 | opentelemetry-collector.resources.limits.cpu | string | `"500m"` |  |
 | opentelemetry-collector.resources.limits.memory | string | `"512Mi"` |  |
-| opentelemetry.apiKey | string | `nil` | Api key to validate requests with, if undefined falls back to a global.receiverApiKey |
 | opentelemetry-collector.resources.requests.cpu | string | `"250m"` |  |
 | opentelemetry-collector.resources.requests.memory | string | `"512Mi"` |  |
+| opentelemetry.apiKey | string | `nil` | Api key to validate requests with, if undefined falls back to a global.receiverApiKey |
 | opentelemetry.enabled | bool | `false` | Enable / disable chart-based OTEL. |
 | pull-secret.credentials | list | `[]` | Registry and assotiated credentials (username, password) that will be stored in the pull-secret |
 | pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |

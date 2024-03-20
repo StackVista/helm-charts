@@ -8,4 +8,14 @@ spec:
   hard:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: {{ .Release.Name }}-default
+spec:
+  {{- with .Values.limitRange.default }}
+  limits:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 {{- end }}

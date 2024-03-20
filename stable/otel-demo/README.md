@@ -1,6 +1,6 @@
 # otel-demo
 
-![Version: 0.0.16](https://img.shields.io/badge/Version-0.0.16-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.0.17](https://img.shields.io/badge/Version-0.0.17-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
 Helm chart for Opentelemetry Demo
 
@@ -29,6 +29,7 @@ Helm chart for Opentelemetry Demo
 | featureflags.resources.limits.memory | string | `"200Mi"` |  |
 | featureflags.resources.requests.cpu | string | `"100m"` |  |
 | featureflags.resources.requests.memory | string | `"100Mi"` |  |
+| limitRange.default | list | `[{"default":{"cpu":"200m","memory":"256Mi"},"defaultRequest":{"cpu":"200m","memory":"256Mi"},"type":"Container"}]` | limitRange set the default resources if container does not have ones. Used if resourceQuota.enabled is true. |
 | opentelemetry-demo.components.accountingService.resources.limits.cpu | string | `"300m"` |  |
 | opentelemetry-demo.components.accountingService.resources.limits.memory | string | `"20Mi"` |  |
 | opentelemetry-demo.components.accountingService.resources.requests.cpu | string | `"50m"` |  |
