@@ -37,7 +37,7 @@ Run validation of total ESDiskShare
 {{ $diskSpaceMB := (include "stackstate.storage.to.megabytes" .Values.elasticsearch.volumeClaimTemplate.resources.requests.storage) }}
 {{ if $diskSpaceMB  }}
 - name: CONFIG_FORCE_stackstate_elasticsearchDiskSpaceMB
-  value: "{{ div (mul (div (mul $diskSpaceMB .Values.elasticsearch.replicas) (add1 $replicationFactor)) .esDiskSpaceShare) 100 }}"
+  value: "{{ divf (mulf (divf (mulf $diskSpaceMB .Values.elasticsearch.replicas) (add1 $replicationFactor)) .esDiskSpaceShare) 100 | int }}"
 {{ end }}
 {{- $k2esShare := .Values.stackstate.components.e2es.esDiskSpaceShare | int -}}
 {{- $e2EsShare := (mulf (divf (.Values.stackstate.components.e2es.esDiskSpaceShare | int) (mul 3 $k2esShare)) 100) | int  -}}

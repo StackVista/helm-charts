@@ -15,9 +15,9 @@ func TestServerJavaHeapRender(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
-	expectedDeployments["stackstate-k8s-server"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=2426m -Xmx5658m -Xms5658m"}
-	expectedDeployments["stackstate-k8s-receiver"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1398m -Xmx2594m -Xms2594m"}
-	expectedDeployments["stackstate-k8s-correlate"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=840m -Xmx1560m -Xms1560m"}
+	expectedDeployments["stackstate-k8s-server"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=2420m -Xmx5645m -Xms5645m"}
+	expectedDeployments["stackstate-k8s-receiver"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1393m -Xmx2587m -Xms2587m"}
+	expectedDeployments["stackstate-k8s-correlate"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=881m -Xmx1635m -Xms1635m"}
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 
@@ -40,15 +40,15 @@ func TestSplitServicesJavaHeapRender(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
-	expectedDeployments["stackstate-k8s-api"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=906m -Xmx740m -Xms740m"}
-	expectedDeployments["stackstate-k8s-checks"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1400m -Xmx2100m -Xms2100m"}
-	expectedDeployments["stackstate-k8s-state"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=595m -Xmx1105m -Xms803m"}
-	expectedDeployments["stackstate-k8s-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1557m -Xmx2335m -Xms1691m"}
-	expectedDeployments["stackstate-k8s-slicing"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=520m -Xmx780m -Xms621m"}
-	expectedDeployments["stackstate-k8s-view-health"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1035m -Xmx1265m -Xms960m"}
-	expectedDeployments["stackstate-k8s-health-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1678m -Xmx1372m -Xms1372m"}
-	expectedDeployments["stackstate-k8s-notification"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=518m -Xmx632m -Xms632m"}
-	expectedDeployments["stackstate-k8s-initializer"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=403m -Xmx747m -Xms105m"}
+	expectedDeployments["stackstate-k8s-api"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=893m -Xmx730m -Xms730m"}
+	expectedDeployments["stackstate-k8s-checks"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1468m -Xmx2202m -Xms2202m"}
+	expectedDeployments["stackstate-k8s-state"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=624m -Xmx1158m -Xms842m"}
+	expectedDeployments["stackstate-k8s-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1550m -Xmx2325m -Xms1680m"}
+	expectedDeployments["stackstate-k8s-slicing"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=546m -Xmx817m -Xms651m"}
+	expectedDeployments["stackstate-k8s-view-health"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1085m -Xmx1326m -Xms950m"}
+	expectedDeployments["stackstate-k8s-health-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1759m -Xmx1439m -Xms1439m"}
+	expectedDeployments["stackstate-k8s-notification"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=543m -Xmx662m -Xms662m"}
+	expectedDeployments["stackstate-k8s-initializer"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=422m -Xmx783m -Xms109m"}
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 
@@ -80,7 +80,7 @@ func TestServerJavaHeapRenderWithAllJavaOptsOverride(t *testing.T) {
 
 	assert.NotNil(t, stsServerDeployment)
 
-	expectedServerJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=2426m -Xmx5658m -Xms5658m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"}
+	expectedServerJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=2420m -Xmx5645m -Xms5645m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"}
 
 	AssertJavaOpts(t, stsServerDeployment.Spec.Template.Spec.Containers[0].Env, expectedServerJavaOpts)
 }
@@ -100,7 +100,7 @@ func TestServerJavaHeapRenderWithServerJavaOptsOverride(t *testing.T) {
 
 	assert.NotNil(t, stsServerDeployment)
 
-	expectedServerJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=2426m -Xmx5658m -Xms5658m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5000"}
+	expectedServerJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=2420m -Xmx5645m -Xms5645m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5000"}
 
 	AssertJavaOpts(t, stsServerDeployment.Spec.Template.Spec.Containers[0].Env, expectedServerJavaOpts)
 }
@@ -121,7 +121,7 @@ func TestServerJavaHeapRenderWithBothJavaOptsOverride(t *testing.T) {
 	assert.NotNil(t, stsServerDeployment)
 
 	// The service specific overrides the common JAVA_OPTS
-	expectedServerJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=2426m -Xmx5658m -Xms5658m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5000"}
+	expectedServerJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=2420m -Xmx5645m -Xms5645m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5000"}
 
 	AssertJavaOpts(t, stsServerDeployment.Spec.Template.Spec.Containers[0].Env, expectedServerJavaOpts)
 }

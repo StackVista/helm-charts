@@ -382,6 +382,7 @@ stackstate/stackstate
 | stackstate.components.api.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.api.sizing.javaHeapMemoryFraction | string | `"45"` |  |
 | stackstate.components.api.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.api.yaml | object | `{}` |  |
 | stackstate.components.backup.resources.limits.cpu | string | `"3000m"` |  |
 | stackstate.components.backup.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | stackstate.components.backup.resources.limits.memory | string | `"4000Mi"` |  |

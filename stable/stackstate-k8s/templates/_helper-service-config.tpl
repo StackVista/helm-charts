@@ -1,15 +1,15 @@
 {{- define "stackstate.server.memory.resource" -}}
 {{- $podMemoryLimitMB := (include "stackstate.storage.to.megabytes" .Mem) -}}
-{{- $grossMemoryLimit := (sub $podMemoryLimitMB .BaseMemoryConsumptionMB) | int -}}
-{{- $javaHeapMemory := (div (mul $grossMemoryLimit (.JavaHeapFraction | int)) 100) | int -}}
+{{- $grossMemoryLimit := (subf $podMemoryLimitMB .BaseMemoryConsumptionMB) | int -}}
+{{- $javaHeapMemory := (divf (mulf $grossMemoryLimit (.JavaHeapFraction | int)) 100) | int -}}
 {{- max $javaHeapMemory 0 -}}
 {{- end -}}
 
 {{- define "stackstate.server.cache.memory.limit" -}}
 {{- $podMemoryLimitMB := ( include "stackstate.storage.to.megabytes" .Mem ) -}}
-{{- $podMemoryLimitBytes := (mul (mul $podMemoryLimitMB 1000) 1000) -}}
+{{- $podMemoryLimitBytes := (mulf (mulf $podMemoryLimitMB 1000) 1000) -}}
 {{- $thisMemoryFactor := (sub 100 .JavaHeapFraction) -}}
-{{- $cacheSize := (div (mul $podMemoryLimitBytes $thisMemoryFactor) 100) | int -}}
+{{- $cacheSize := (divf (mulf $podMemoryLimitBytes $thisMemoryFactor) 100) | int -}}
 {{- max (sub $cacheSize .BaseMem) 0 }}
 {{- end -}}
 
@@ -57,7 +57,7 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
 {{- $xms := include "stackstate.server.memory.resource" $xmsConfig | int }}
 {{- $xmxParam := ( (gt $xmx 0) | ternary (printf "-Xmx%dm" $xmx) "") }}
 {{- $xmsParam := ( (gt $xms 0) | ternary (printf "-Xms%dm" $xms) "") }}
-{{- $directMem := (sub (sub (include "stackstate.storage.to.megabytes" .ServiceConfig.resources.limits.memory) $baseMemoryConsumptionMB) $xmx) | int }}
+{{- $directMem := (subf (subf (include "stackstate.storage.to.megabytes" .ServiceConfig.resources.limits.memory) $baseMemoryConsumptionMB) $xmx) | int }}
 {{- $directMemParam := ( (gt $directMem 0) | ternary ( printf "-XX:MaxDirectMemorySize=%dm" $directMem) "") }}
 {{- if .Values.stackstate.java.trustStorePassword }}
 - name: JAVA_TRUSTSTORE_PASSWORD
