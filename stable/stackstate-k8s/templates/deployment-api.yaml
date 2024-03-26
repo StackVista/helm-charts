@@ -21,9 +21,8 @@ env:
 {{- include "stackstate.baseurls.envvars" . }}
 {{- include "stackstate.metricstore.envvar" . }}
 {{ if .Values.stackstate.components.api.yaml.maxSizeLimit }}
-{{ $maxSizeYamlMB := (include "stackstate.storage.to.megabytes" .Values.stackstate.components.api.yaml.maxSizeLimit) }}
 - name: CONFIG_FORCE_stackstate_yaml_codePointLimit
-  value: "{{ mulf $maxSizeYamlMB 1000000 | int}}"
+  value: "{{ include "stackstate.server.yaml.maxSizeLimit" . }}"
 {{ end }}
 - name: API_KEY
   valueFrom:

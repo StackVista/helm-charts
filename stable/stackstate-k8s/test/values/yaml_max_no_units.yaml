@@ -1,0 +1,5 @@
+stackstate:
+  components:
+    api:
+      yaml:
+        maxSizeLimit: "5000000"

@@ -218,3 +218,15 @@ VolumeMount for stackpacks
 - name: stackpacks
   mountPath: /var/stackpacks
 {{- end -}}
+
+{{/*
+yaml vars
+*/}}
+{{- define "stackstate.server.yaml.maxSizeLimit" -}}
+{{- $maxSizeYamlMB := (include "stackstate.storage.to.megabytes" .Values.stackstate.components.api.yaml.maxSizeLimit) -}}
+{{- if eq $maxSizeYamlMB .Values.stackstate.components.api.yaml.maxSizeLimit -}}
+{{- .Values.stackstate.components.api.yaml.maxSizeLimit -}}
+{{- else -}}
+{{- mulf $maxSizeYamlMB 1000000  | int -}}
+{{- end -}}
+{{- end -}}

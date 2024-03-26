@@ -32,6 +32,29 @@ func TestYamlMaxRender(t *testing.T) {
 	}
 }
 
+func TestYamlMaxNoUnitRender(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/split_disabled.yaml", "values/yaml_max_no_units.yaml")
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	var expectedDeployments = make(map[string]v1.EnvVar)
+	expectedDeployments["stackstate-k8s-server"] = v1.EnvVar{Name: "CONFIG_FORCE_stackstate_yaml_codePointLimit", Value: "5000000"}
+
+	var foundDeployments = make(map[string]appsv1.Deployment)
+
+	for _, deployment := range resources.Deployments {
+		if _, ok := expectedDeployments[deployment.Name]; ok {
+			foundDeployments[deployment.Name] = deployment
+		}
+	}
+
+	assert.Equal(t, len(expectedDeployments), len(foundDeployments))
+
+	for deploymentName, expectedJavaOpts := range expectedDeployments {
+		AssertEnvValue(t, foundDeployments[deploymentName].Spec.Template.Spec.Containers[0].Env, expectedJavaOpts)
+	}
+}
+
 func TestSplitYamlMaxRender(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/yaml_max.yaml")
 
@@ -39,6 +62,29 @@ func TestSplitYamlMaxRender(t *testing.T) {
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
 	expectedDeployments["stackstate-k8s-api"] = v1.EnvVar{Name: "CONFIG_FORCE_stackstate_yaml_codePointLimit", Value: "3145728"}
+
+	var foundDeployments = make(map[string]appsv1.Deployment)
+
+	for _, deployment := range resources.Deployments {
+		if _, ok := expectedDeployments[deployment.Name]; ok {
+			foundDeployments[deployment.Name] = deployment
+		}
+	}
+
+	assert.Equal(t, len(expectedDeployments), len(foundDeployments))
+
+	for deploymentName, expectedJavaOpts := range expectedDeployments {
+		AssertEnvValue(t, foundDeployments[deploymentName].Spec.Template.Spec.Containers[0].Env, expectedJavaOpts)
+	}
+}
+
+func TestSplitYamlMaxNoUnitRender(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/yaml_max_no_units.yaml")
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	var expectedDeployments = make(map[string]v1.EnvVar)
+	expectedDeployments["stackstate-k8s-api"] = v1.EnvVar{Name: "CONFIG_FORCE_stackstate_yaml_codePointLimit", Value: "5000000"}
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 
