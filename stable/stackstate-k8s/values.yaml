@@ -290,7 +290,7 @@ stackstate:
       docslink: ""
       yaml: {}
       # stackstate.components.api.yaml.maxSizeLimit -- Max size of the sty file that will be imported or installed via a stackpack
-        #maxSizeLimit: "1Mi"
+      # maxSizeLimit: "1Mi"
     backup:
       resources:
         limits:
