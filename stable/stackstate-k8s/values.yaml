@@ -2007,21 +2007,24 @@ opentelemetry-collector:
   mode: statefulset
   # opentelemetry-collector.replicaCount -- only used with deployment mode
   replicaCount: 1
-  # opentelemetry-collector.config -- Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/)
-  extraEnvsFrom:
-    - secretRef:
-        name: stackstate-otel-collector
+  # opentelemetry-collector.extraEnvs -- Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/). Contains API_URL with path to api server used to authorize requests
+  extraEnvs:
+    - name: API_URL
+      valueFrom:
+        configMapKeyRef:
+          name: stackstate-otel-collector
+          key: api.url
   config:
     receivers:
       otlp:
         protocols:
           grpc:
             auth:
-              authenticator: bearertokenauth
+              authenticator: ingestion_api_key_auth
             endpoint: ${env:MY_POD_IP}:4317
           http:
             auth:
-              authenticator: bearertokenauth
+              authenticator: ingestion_api_key_auth
             endpoint: ${env:MY_POD_IP}:4318
       zipkin: null
       prometheus: null
@@ -2055,9 +2058,13 @@ opentelemetry-collector:
           enabled: true
       logging: null
     extensions:
-      bearertokenauth:
-        scheme: StackState
-        token: "${env:API_KEY}"
+      ingestion_api_key_auth:
+        endpoint:
+          url: "${env:API_URL}"
+        cache:
+          valid_size: 100
+          valid_ttl: 5m
+          invalid_size: 100
       # The health_check extension is mandatory for this chart.
       # Without the health_check extension the collector will fail the readiness and liveliness probes.
       # The health_check extension can be modified, but should never be removed.
@@ -2071,7 +2078,7 @@ opentelemetry-collector:
       extensions:
         - health_check
         - memory_ballast
-        - bearertokenauth
+        - ingestion_api_key_auth
       pipelines:
         traces:
           receivers:
