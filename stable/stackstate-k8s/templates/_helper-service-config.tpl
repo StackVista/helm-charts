@@ -59,6 +59,8 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
 {{- $xmsParam := ( (gt $xms 0) | ternary (printf "-Xms%dm" $xms) "") }}
 {{- $directMem := (subf (subf (include "stackstate.storage.to.megabytes" .ServiceConfig.resources.limits.memory) $baseMemoryConsumptionMB) $xmx) | int }}
 {{- $directMemParam := ( (gt $directMem 0) | ternary ( printf "-XX:MaxDirectMemorySize=%dm" $directMem) "") }}
+{{- $otelInstrumentationServiceConfig := .ServiceConfig.otelInstrumentation | default dict }}
+{{- $otelJavaAgentOpt := or .Values.stackstate.components.all.otelInstrumentation.enabled $otelInstrumentationServiceConfig.enabled | default false | ternary " -javaagent:/opt/docker/opentelemetry-javaagent.jar" "" }}
 {{- if .Values.stackstate.java.trustStorePassword }}
 - name: JAVA_TRUSTSTORE_PASSWORD
   valueFrom:
@@ -66,15 +68,28 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
       name: {{ template "common.fullname.short" . }}-common
       key: javaTrustStorePassword
 {{- end }}
+{{- if or .Values.stackstate.components.all.otelInstrumentation.enabled $otelInstrumentationServiceConfig.enabled }}
+- name: "OTEL_EXPORTER_OTLP_ENDPOINT"
+  value: {{ index $otelInstrumentationServiceConfig "otlpExporterEndpoint" | default .Values.stackstate.components.all.otelInstrumentation.otlpExporterEndpoint | quote }}
+- name: "OTEL_EXPORTER_OTLP_PROTOCOL"
+  value: {{ index $otelInstrumentationServiceConfig "otlpExporterProtocol" | default .Values.stackstate.components.all.otelInstrumentation.otlpExporterProtocol | quote }}
+- name: "STS_SERVICE_NAME"
+  valueFrom:
+    fieldRef:
+      apiVersion: v1
+      fieldPath: metadata.labels['app.kubernetes.io/component']
+- name: "OTEL_SERVICE_NAME"
+  value: "stackstate-$(STS_SERVICE_NAME)"
+{{- end }}
 {{- if not $openEnvVars.JAVA_OPTS }}
 - name: "JAVA_OPTS"
-  value: "{{ $directMemParam }} {{ $xmxParam }} {{ $xmsParam }}"
+  value: "{{ $directMemParam }} {{ $xmxParam }} {{ $xmsParam }}{{ $otelJavaAgentOpt }}"
 {{- end }}
 {{- if $openEnvVars }}
   {{- range $key, $value := $openEnvVars }}
   {{- if eq $key "JAVA_OPTS" }}
 - name: {{ $key }}
-  value: "{{ $directMemParam }} {{ $xmxParam }} {{ $xmsParam }} {{ $value }}"
+  value: "{{ $directMemParam }} {{ $xmxParam }} {{ $xmsParam }}{{ $otelJavaAgentOpt }} {{ $value }}"
   {{- else }}
 - name: {{ $key }}
   value: {{ $value | quote }}

@@ -194,6 +194,10 @@ stackstate:
           additionalLabels: {}
           # stackstate.components.all.metrics.servicemonitor.enabled -- Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled.
           enabled: false
+      otelInstrumentation:
+        enabled: false
+        otlpExporterEndpoint: ""
+        otlpExporterProtocol: grpc
       securityContext:
         # stackstate.components.all.securityContext.enabled -- Whether or not to enable the securityContext
         enabled: true
