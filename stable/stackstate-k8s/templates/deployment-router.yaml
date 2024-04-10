@@ -52,6 +52,12 @@ spec:
     metadata:
       annotations:
         {{- include "stackstate.router.configmap.checksum" . | nindent 8 }}
+        {{- with .Values.stackstate.components.all.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.stackstate.components.router.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
         app.kubernetes.io/component: router
     spec:

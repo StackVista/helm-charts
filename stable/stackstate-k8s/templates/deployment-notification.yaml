@@ -109,6 +109,12 @@ spec:
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.notification.secret.checksum" . | nindent 8 }}
+        {{- with .Values.stackstate.components.all.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.stackstate.components.notification.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
         app.kubernetes.io/component: notification
         stackstate.com/connects-to-stackgraph: "true"

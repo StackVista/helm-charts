@@ -118,6 +118,12 @@ spec:
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.server.secret.checksum" . | nindent 8 }}
+        {{- with .Values.stackstate.components.all.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.stackstate.components.server.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
         app.kubernetes.io/component: server
         stackstate.com/connects-to-stackgraph: "true"

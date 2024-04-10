@@ -92,6 +92,12 @@ spec:
         {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9113" "container_name" "exporter" "filter" .Values.stackstate.components.ui.agentMetricsFilter) | indent 8 }}
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.ui.secret.checksum" . | nindent 8 }}
+        {{- with .Values.stackstate.components.all.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.stackstate.components.ui.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
         app.kubernetes.io/component: ui
     spec:
