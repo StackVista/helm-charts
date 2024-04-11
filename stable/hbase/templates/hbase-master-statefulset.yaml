@@ -11,7 +11,7 @@ imagePullPolicy: {{ .Values.wait.image.pullPolicy | quote }}
 
 {{- define "hbase.hbase.master.container.main" -}}
 name: master
-image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.hbase.master.image.repository }}:{{.Values.version}}-{{ default .Values.stackgraph.image.tag .Values.hbase.master.image.tag }}"
+image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.hbase.master.image.repository }}:{{ .Values.version }}-{{ default .Values.stackgraph.image.tag .Values.hbase.master.image.tag }}"
 imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.hbase.master.image.pullPolicy | quote  }}
 env:
 {{- include "hbase.hdfs.commonEnv" . }}
