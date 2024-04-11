@@ -36,11 +36,7 @@ spec:
           - -config.file=/etc/promtail/promtail.yaml
           imagePullPolicy: "{{ .Values.logsAgent.image.pullPolicy }}"
           env:
-          - name: STS_API_KEY
-            valueFrom:
-              secretKeyRef:
-                name: {{ include "stackstate-k8s-agent.fullname" . }}
-                key: sts-api-key
+          {{ include "stackstate-k8s-agent.apiKeyEnv" . | nindent 10 }}
           - name: "HOSTNAME" # needed when using kubernetes_sd_configs
             valueFrom:
               fieldRef:

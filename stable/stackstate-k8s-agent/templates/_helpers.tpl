@@ -173,3 +173,29 @@ kubernetes.io/os
 beta.kubernetes.io/os
 {{- end -}}
 {{- end -}}
+
+{{- define "stackstate-k8s-agent.apiKeyEnv" -}}
+- name: STS_API_KEY
+  valueFrom:
+    secretKeyRef:
+{{- if not .Values.stackstate.manageOwnSecrets }}
+      name: {{ include "stackstate-k8s-agent.fullname" . }}
+      key: sts-api-key
+{{- else }}
+      name: {{ .Values.stackstate.customSecretName | quote }}
+      key: {{ .Values.stackstate.customApiKeySecretKey | quote }}
+{{- end }}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.clusterAgentAuthTokenEnv" -}}
+- name: STS_CLUSTER_AGENT_AUTH_TOKEN
+  valueFrom:
+    secretKeyRef:
+{{- if not .Values.stackstate.manageOwnSecrets }}
+      name: {{ include "stackstate-k8s-agent.fullname" . }}
+      key: sts-cluster-auth-token
+{{- else }}
+      name: {{ .Values.stackstate.customSecretName | quote }}
+      key: {{ .Values.stackstate.customClusterAuthTokenSecretKey | quote }}
+{{- end }}
+{{- end -}}

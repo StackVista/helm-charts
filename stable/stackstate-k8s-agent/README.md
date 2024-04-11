@@ -2,7 +2,7 @@
 
 Helm chart for the StackState Agent.
 
-Current chart version is `1.0.78`
+Current chart version is `1.0.79`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -253,5 +253,9 @@ stackstate/stackstate-k8s-agent
 | stackstate.apiKey | string | `nil` | **PROVIDE YOUR API KEY HERE** API key to be used by the StackState agent. |
 | stackstate.cluster.authToken | string | `""` | Provide a token to enable secure communication between the agent and the cluster agent. |
 | stackstate.cluster.name | string | `nil` | **PROVIDE KUBERNETES CLUSTER NAME HERE** Name of the Kubernetes cluster where the agent will be installed. |
+| stackstate.customApiKeySecretKey | string | `"sts-api-key"` | Key in the secret containing the receiver API key. |
+| stackstate.customClusterAuthTokenSecretKey | string | `"sts-cluster-auth-token"` | Key in the secret containing the cluster auth token. |
+| stackstate.customSecretName | string | `""` | Name of the secret containing the receiver API key. |
+| stackstate.manageOwnSecrets | bool | `false` | Set to true if you don't want this helm chart to create secrets for you. |
 | stackstate.url | string | `nil` | **PROVIDE STACKSTATE URL HERE** URL of the StackState installation to receive data from the agent. |
 | targetSystem | string | `"linux"` | Target OS for this deployment (possible values: linux) |
