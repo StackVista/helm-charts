@@ -125,7 +125,7 @@ Current chart version is `0.2.0`
 | hdfs.volumePermissions.securityContext.runAsUser | int | `0` | Run the volumePermissions init container with the specified UID (Do not change unless instructed) |
 | serviceAccount.create | bool | `true` | Whether to create serviceAccounts and run the statefulsets under them |
 | stackgraph.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below). |
-| stackgraph.version | string | `"7.1.1"` | Version of stackgrpah to use |
+| stackgraph.version | string | `"7.1.1"` | Version of stackgraph to use |
 | statefulset.antiAffinity.strategy | string | `"soft"` | AntiAffinity strategy to use for all StatefulSets. |
 | statefulset.antiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | AntiAffinity topology key to use for all StatefulSets. |
 | tephra.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -141,7 +141,7 @@ Current chart version is `0.2.0`
 | tephra.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | tephra.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
 | tephra.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| version | float | `1.2` |  |
+| version | float | `1.2` | Version of hbase to use |
 | wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | wait.image.repository | string | `"stackstate/wait"` | Container image tag for wait containers. |
