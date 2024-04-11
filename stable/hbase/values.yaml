@@ -42,8 +42,8 @@ stackgraph:
   image:
     # stackgraph.image.pullPolicy -- The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below).
     pullPolicy: IfNotPresent
-    # stackgraph.image.tag -- The default tag used for all omponents of hbase that are stackgraph version dependent; invividual service `tag`s can be overriden (see below).
-    tag: 7.0.0
+  # stackgraph.version -- Version of stackgrpah to use
+  version: 7.0.0
 console:
   # console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
   enabled: true
@@ -64,7 +64,7 @@ console:
     pullPolicy:
     # console.image.repository -- Base container image repository for console pods.
     repository: stackstate/stackgraph-console
-    # console.image.tag -- Container image tag for console pods, defaults to `stackgraph.image.tag`
+    # console.image.tag -- Container image tag for console pods, defaults to `version`-`stackgraph.version`
     tag:
   # console.resources -- Resources to allocate for HDFS console.
   resources:
@@ -121,7 +121,7 @@ hbase:
       pullPolicy:
       # hbase.master.image.repository -- Base container image repository for HBase masters.
       repository: stackstate/hbase-master
-      # hbase.master.image.tag -- Container image tag for HBase masters, defaults to `stackgraph.image.tag`
+      # hbase.master.image.tag -- Container image tag for HBase masters, defaults to `version`-`stackgraph.version`
       tag:
     livenessProbe:
       # hbase.master.livenessProbe.httpPort -- The port of the Hbase master service to perform HTTP health checks upon.
@@ -152,7 +152,7 @@ hbase:
       pullPolicy:
       # hbase.regionserver.image.repository -- Base container image repository for HBase region servers.
       repository: stackstate/hbase-regionserver
-      # hbase.regionserver.image.tag -- Container image tag for HBase region servers, defaults to `stackgraph.image.tag`
+      # hbase.regionserver.image.tag -- Container image tag for HBase region servers, defaults to `version`-`stackgraph.version`
       tag:
     # hbase.regionserver.replicaCount -- Number of HBase regionserver nodes.
     replicaCount: 1
@@ -315,7 +315,7 @@ tephra:
     pullPolicy:
     # tephra.image.repository -- Base container image repository for Tephra pods.
     repository: stackstate/tephra-server
-    # tephra.image.tag -- Container image tag for Tephra pods, defaults to `stackgraph.image.tag`
+    # tephra.image.tag -- Container image tag for Tephra pods, defaults to `version`-`stackgraph.version`
     tag:
   # tephra.replicaCount -- Number of pods for Tephra pods.
   replicaCount: 1

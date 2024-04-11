@@ -180,7 +180,7 @@ stackstate:
         pullSecretPassword:
         # stackstate.components.all.image.pullPolicy -- The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below).
         pullPolicy: IfNotPresent
-        # When changing this value make sure to also update hbase.stackgraph.image.tag to the matching StackGraph version
+        # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
         tag: 6.0.0-snapshot.20240410121926-master-015906a
       metrics:
@@ -1237,9 +1237,8 @@ hbase:
       # stackstate.components.all.metrics.agentAnnotationsEnabled -- Put annotations on each pod to instruct the stackstate agent to scrape the metrics
       agentAnnotationsEnabled: true
   stackgraph:
-    image:
-      # hbase.stackgraph.image.tag -- The StackGraph server version, must be compatible with the StackState version
-      tag: 7.0.0
+    # hbase.stackgraph.version -- The StackGraph server version, must be compatible with the StackState version
+    version: 7.0.0
   console:
     # hbase.console.enabled -- Enabled by default for debugging, but with 0 replicas. Manually scale up to 1 replica and open a shell in the container to access the stackgraph console.
     enabled: true
