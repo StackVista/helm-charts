@@ -1,6 +1,6 @@
 {{- define "hbase.console.container.main" -}}
 name: console
-image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.console.image.repository }}:{{ default .Values.stackgraph.image.tag .Values.console.image.tag }}"
+image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.console.image.repository }}:{{.Values.version}}-{{ default .Values.stackgraph.image.tag .Values.console.image.tag }}"
 imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.console.image.pullPolicy | quote }}
 args:
 - /bin/bash

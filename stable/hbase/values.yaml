@@ -6,6 +6,7 @@ global:
   storageClass:
 # commonLabels -- Labels that will be applied to all resources created by this helm chart
 commonLabels: {}
+version: 1.2
 all:
   image:
     # all.image.registry -- Base container image registry for all containers, except for the wait container

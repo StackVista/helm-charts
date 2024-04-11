@@ -11,7 +11,7 @@ imagePullPolicy: {{ .Values.wait.image.pullPolicy | quote }}
 
 {{- define "hbase.tephra.container.main" -}}
 name: tephra
-image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.tephra.image.repository }}:{{ default .Values.stackgraph.image.tag .Values.tephra.image.tag }}"
+image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.tephra.image.repository }}:{{.Values.version}}-{{ default .Values.stackgraph.image.tag .Values.tephra.image.tag }}"
 imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.tephra.image.pullPolicy | quote  }}
 env:
 {{- include "hbase.hdfs.commonEnv" . }}

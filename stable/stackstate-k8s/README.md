@@ -210,6 +210,7 @@ stackstate/stackstate
 | hbase.tephra.resources.requests.cpu | string | `"250m"` |  |
 | hbase.tephra.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | hbase.tephra.resources.requests.memory | string | `"3Gi"` |  |
+| hbase.version | float | `1.2` | Version of hbase to use |
 | hbase.zookeeper.enabled | bool | `false` | Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**. |
 | hbase.zookeeper.externalServers | string | `"stackstate-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |

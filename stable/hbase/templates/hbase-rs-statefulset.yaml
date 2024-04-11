@@ -11,7 +11,7 @@ imagePullPolicy: {{ .Values.wait.image.pullPolicy | quote }}
 
 {{- define "hbase.hbase.regionserver.container.main" -}}
 name: regionserver
-image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.hbase.regionserver.image.repository }}:{{ default .Values.stackgraph.image.tag .Values.hbase.regionserver.image.tag }}"
+image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.hbase.regionserver.image.repository }}:{{.Values.version}}-{{ default .Values.stackgraph.image.tag .Values.hbase.regionserver.image.tag }}"
 imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.hbase.regionserver.image.pullPolicy | quote  }}
 env:
 {{- include "hbase.hdfs.commonEnv" . }}

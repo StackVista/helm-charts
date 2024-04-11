@@ -1229,6 +1229,8 @@ hbase:
   # hbase.commonLabels -- Add additional labels to all resources created for all hbase resources
   commonLabels:
     app.kubernetes.io/part-of: stackstate-k8s
+  # hbase.version -- Version of hbase to use
+  version: 1.2
   all:
     metrics:
       enabled: true
