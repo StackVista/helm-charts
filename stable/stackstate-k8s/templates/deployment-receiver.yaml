@@ -104,12 +104,7 @@ spec:
         {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "receiver" "filter" .Values.stackstate.components.receiver.agentMetricsFilter) | indent 8 }}
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.receiver.secret.checksum" . | nindent 8 }}
-        {{- with .Values.stackstate.components.all.podAnnotations }}
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
-        {{- with .Values.stackstate.components.receiver.podAnnotations }}
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
+        {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "receiver") .) }}
       labels:
         app.kubernetes.io/component: receiver
     spec:

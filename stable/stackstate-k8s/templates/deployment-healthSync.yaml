@@ -122,12 +122,7 @@ spec:
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.healthSync.secret.checksum" . | nindent 8 }}
-        {{- with .Values.stackstate.components.all.podAnnotations }}
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
-        {{- with .Values.stackstate.components.healthSync.podAnnotations }}
-          {{- toYaml . | nindent 8 }}
-        {{- end }}
+        {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "healthSync") .) }}
       labels:
         app.kubernetes.io/component: health-sync
         stackstate.com/connects-to-stackgraph: "true"

@@ -656,3 +656,15 @@ args: ["/var/stackpacks"]
 volumeMounts:
 {{ include "stackstate.stackpacks.volumeMount" . }}
 {{- end -}}
+
+{{/*
+Returns a YAML with extra annotations for StackState service, it contains annotations for "all" and service provided within "Name" parameter
+*/}}
+{{- define "stackstate.component.podExtraAnnotations" -}}
+{{- with .Values.stackstate.components.all.podAnnotations }}
+{{- toYaml . | nindent 8}}
+{{- end }}
+{{- with (index .Values.stackstate.components .Name "podAnnotations") }}
+{{- toYaml . | nindent 8}}
+{{- end }}
+{{- end -}}
