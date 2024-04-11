@@ -368,7 +368,7 @@ stackstate:
         # stackstate.components.checks.image.tag -- Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
       # stackstate.components.checks.podAnnotations -- Extra annotations
-      podAnnotations: { }
+      podAnnotations: {}
       # stackstate.components.checks.poddisruptionbudget -- PodDisruptionBudget settings for `checks` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -419,7 +419,7 @@ stackstate:
         # stackstate.components.healthSync.image.tag -- Tag used for the `healthSync` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
       # stackstate.components.healthSync.podAnnotations -- Extra annotations
-      podAnnotations: { }
+      podAnnotations: {}
       # stackstate.components.healthSync.poddisruptionbudget -- PodDisruptionBudget settings for `healthSync` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -473,7 +473,7 @@ stackstate:
         # stackstate.components.initializer.image.tag -- Tag used for the `initializer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
       # stackstate.components.initializer.podAnnotations -- Extra annotations
-      podAnnotations: { }
+      podAnnotations: {}
       # stackstate.components.initializer.resources -- Resource allocation for `initializer` pods.
       resources:
         limits:
@@ -511,7 +511,7 @@ stackstate:
         # stackstate.components.e2es.image.tag -- Tag used for the `e2es` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
       # stackstate.components.e2es.podAnnotations -- Extra annotations
-      podAnnotations: { }
+      podAnnotations: {}
       # stackstate.components.e2es.poddisruptionbudget -- PodDisruptionBudget settings for `e2es` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -558,7 +558,7 @@ stackstate:
         # stackstate.components.notification.image.tag -- Tag used for the `notification` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
       # stackstate.components.notification.podAnnotations -- Extra annotations
-      podAnnotations: { }
+      podAnnotations: {}
       # stackstate.components.notification.poddisruptionbudget -- PodDisruptionBudget settings for `notification` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -604,7 +604,7 @@ stackstate:
         # stackstate.components.receiver.image.tag -- Tag used for the `receiver` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
       # stackstate.components.receiver.podAnnotations -- Extra annotations
-      podAnnotations: { }
+      podAnnotations: {}
       # stackstate.components.receiver.poddisruptionbudget -- PodDisruptionBudget settings for `receiver` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -654,7 +654,7 @@ stackstate:
         # stackstate.components.router.image.tag -- Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: v1.19.1-e418b2bd
       # stackstate.components.router.podAnnotations -- Extra annotations
-      podAnnotations: { }
+      podAnnotations: {}
       # stackstate.components.router.poddisruptionbudget -- PodDisruptionBudget settings for `router` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -692,7 +692,7 @@ stackstate:
         # stackstate.components.server.image.tag -- Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
       # stackstate.components.server.podAnnotations -- Extra annotations
-      podAnnotations: { }
+      podAnnotations: {}
       # stackstate.components.server.poddisruptionbudget -- PodDisruptionBudget settings for `server` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -737,7 +737,7 @@ stackstate:
         # stackstate.components.state.image.tag -- Tag used for the `state` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
       # stackstate.components.state.podAnnotations -- Extra annotations
-      podAnnotations: { }
+      podAnnotations: {}
       # stackstate.components.state.poddisruptionbudget -- PodDisruptionBudget settings for `state` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -788,7 +788,7 @@ stackstate:
         # stackstate.components.sync.image.tag -- Tag used for the `sync` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
       # stackstate.components.sync.podAnnotations -- Extra annotations
-      podAnnotations: { }
+      podAnnotations: {}
       # stackstate.components.sync.poddisruptionbudget -- PodDisruptionBudget settings for `sync` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -842,7 +842,7 @@ stackstate:
         # stackstate.components.slicing.image.tag -- Tag used for the `slicing` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
       # stackstate.components.slicing.podAnnotations -- Extra annotations
-      podAnnotations: { }
+      podAnnotations: {}
       # stackstate.components.slicing.resources -- Resource allocation for `slicing` pods.
       resources:
         limits:
@@ -886,7 +886,7 @@ stackstate:
         # stackstate.components.ui.image.tag -- Tag used for the `ui` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
       # stackstate.components.ui.podAnnotations -- Extra annotations
-      podAnnotations: { }
+      podAnnotations: {}
       # stackstate.components.ui.poddisruptionbudget -- PodDisruptionBudget settings for `ui` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -935,7 +935,7 @@ stackstate:
         # stackstate.components.viewHealth.image.tag -- Tag used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: ""
       # stackstate.components.viewHealth.podAnnotations -- Extra annotations
-      podAnnotations: { }
+      podAnnotations: {}
       # stackstate.components.viewHealth.poddisruptionbudget -- PodDisruptionBudget settings for `viewHealth` pods.
       poddisruptionbudget:
         maxUnavailable: 1
