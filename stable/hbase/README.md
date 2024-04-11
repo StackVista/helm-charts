@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.1.172`
+Current chart version is `0.2.0`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
