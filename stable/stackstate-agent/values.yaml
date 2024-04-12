@@ -59,7 +59,7 @@ nodeAgent:
     agent:
       image:
         # nodeAgent.containers.agent.image.repository -- Base container image repository.
-        repository: stackstate/stackstate-agent-2
+        repository: stackstate/stackstate-agent
         # nodeAgent.containers.agent.image.tag -- Default container image tag.
         tag: 3.0.2
         # nodeAgent.containers.agent.image.pullPolicy -- Default container image pull policy.
@@ -427,7 +427,7 @@ checksAgent:
 
   image:
     # checksAgent.image.repository -- Base container image repository.
-    repository: stackstate/stackstate-agent-2
+    repository: stackstate/stackstate-agent
     # checksAgent.image.tag -- Default container image tag.
     tag: 3.0.2
     # checksAgent.image.pullPolicy -- Default container image pull policy.

@@ -2,7 +2,7 @@
 
 Helm chart for the StackState cluster agent.
 
-Current chart version is `3.5.1`
+Current chart version is `3.5.2`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -53,7 +53,7 @@ stackstate/stackstate-agent
 | checksAgent.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
 | checksAgent.enabled | bool | `true` | Enable / disable runnning cluster checks in a separately deployed pod |
 | checksAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
-| checksAgent.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
+| checksAgent.image.repository | string | `"stackstate/stackstate-agent"` | Base container image repository. |
 | checksAgent.image.tag | string | `"3.0.2"` | Default container image tag. |
 | checksAgent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | checksAgent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
@@ -164,7 +164,7 @@ stackstate/stackstate-agent
 | nodeAgent.containerRuntime.customSocketPath | string | `""` | If the container socket path does not match the default for CRI-O, Containerd or Docker, supply a custom socket path. |
 | nodeAgent.containers.agent.env | object | `{}` | Additional environment variables for the agent container |
 | nodeAgent.containers.agent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
-| nodeAgent.containers.agent.image.repository | string | `"stackstate/stackstate-agent-2"` | Base container image repository. |
+| nodeAgent.containers.agent.image.repository | string | `"stackstate/stackstate-agent"` | Base container image repository. |
 | nodeAgent.containers.agent.image.tag | string | `"3.0.2"` | Default container image tag. |
 | nodeAgent.containers.agent.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
 | nodeAgent.containers.agent.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |

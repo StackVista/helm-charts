@@ -4,7 +4,7 @@ dependencies:
   version: 5.1.4
 - name: stackstate-agent
   repository: file://../stackstate-agent/
-  version: 3.5.1
+  version: 3.5.2
 - name: common
   repository: https://helm.stackstate.io
   version: 0.4.23
@@ -29,5 +29,5 @@ dependencies:
 - name: zookeeper
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 8.1.2
-digest: sha256:8f611890b0e0b4b661621073f7007fa8b89f983bb3f3512a6f1d67835ed9e5c5
-generated: "2024-01-30T14:50:36.1364651+01:00"
+digest: sha256:849dc96ebe8c64869c57723df0b0b3474a2db8e1001a9d5c616bf564ce759e29
+generated: "2024-04-12T11:04:25.633178449+02:00"
