@@ -2,7 +2,7 @@
 
 Helm chart for the StackState Agent.
 
-Current chart version is `1.0.79`
+Current chart version is `1.0.80`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -154,8 +154,10 @@ stackstate/stackstate-k8s-agent
 | clusterAgent.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | clusterAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | fullnameOverride | string | `""` | Override the fullname of the chart. |
+| global.extraAnnotations | object | `{}` | Extra annotations added ta all resources created by the helm chart |
 | global.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | global.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| global.extraLabels | object | `{}` | Extra labels added ta all resources created by the helm chart |
 | global.imagePullCredentials | object | `{}` | Globally define credentials for pulling images. |
 | global.imagePullSecrets | list | `[]` | Secrets / credentials needed for container image registry. |
 | global.proxy.url | string | `""` | Proxy for all traffic to stackstate |

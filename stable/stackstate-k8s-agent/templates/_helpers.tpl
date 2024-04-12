@@ -174,6 +174,24 @@ beta.kubernetes.io/os
 {{- end -}}
 {{- end -}}
 
+{{/*
+Returns a YAML with extra annotations
+*/}}
+{{- define "stackstate-k8s-agent.global.extraAnnotations" -}}
+{{- with .Values.global.extraAnnotations }}
+{{- toYaml . }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Returns a YAML with extra labels
+*/}}
+{{- define "stackstate-k8s-agent.global.extraLabels" -}}
+{{- with .Values.global.extraLabels }}
+{{- toYaml . }}
+{{- end }}
+{{- end -}}
+
 {{- define "stackstate-k8s-agent.apiKeyEnv" -}}
 - name: STS_API_KEY
   valueFrom:

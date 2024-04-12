@@ -18,6 +18,11 @@ global:
   # global.skipSslValidation -- Enable tls validation from client
   skipSslValidation: false
 
+  # global.extraLabels -- Extra labels added ta all resources created by the helm chart
+  extraLabels: {}
+  # global.extraAnnotations -- Extra annotations added ta all resources created by the helm chart
+  extraAnnotations: {}
+
 # nameOverride -- Override the name of the chart.
 nameOverride: ""
 # fullnameOverride -- Override the fullname of the chart.
