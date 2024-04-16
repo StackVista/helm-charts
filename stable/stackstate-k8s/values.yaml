@@ -2040,7 +2040,9 @@ opentelemetry-collector:
         logs_table_name: otel_logs
         traces_table_name: otel_traces
         metrics_table_name: otel_metrics
+        resources_table_name: otel_resources
         create_traces_table: false
+        create_resources_table: false
         timeout: 5s
         retry_on_failure:
           enabled: true
