@@ -285,8 +285,51 @@ stackstate/stackstate
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
 | opentelemetry-collector.command.name | string | `"usr/bin/sts-opentelemetry-collector"` |  |
-| opentelemetry-collector.config | object | `{"exporters":{"clickhousests":{"create_resources_table":false,"create_traces_table":false,"database":"otel","endpoint":"tcp://stackstate-clickhouse:9000?dial_timeout=10s&compress=lz4","logs_table_name":"otel_logs","metrics_table_name":"otel_metrics","password":"admin","resources_table_name":"otel_resources","retry_on_failure":{"enabled":true,"initial_interval":"5s","max_elapsed_time":"300s","max_interval":"30s"},"timeout":"5s","traces_table_name":"otel_traces","ttl":"72h","username":"admin"},"logging":null,"prometheusremotewrite/victoria-metrics":{"endpoint":"http://stackstate-vmagent:8429/api/v1/write","resource_to_telemetry_conversion":{"enabled":true}}},"extensions":{"bearertokenauth":{"scheme":"StackState","token":"${env:API_KEY}"},"health_check":{"endpoint":"${env:MY_POD_IP}:13133"},"memory_ballast":{}},"processors":{"batch":{"send_batch_size":100000,"timeout":"2s"}},"receivers":{"jaeger":null,"otlp":{"protocols":{"grpc":{"auth":{"authenticator":"bearertokenauth"},"endpoint":"${env:MY_POD_IP}:4317"},"http":{"auth":{"authenticator":"bearertokenauth"},"endpoint":"${env:MY_POD_IP}:4318"}}},"prometheus":null,"zipkin":null},"service":{"extensions":["health_check","memory_ballast","bearertokenauth"],"pipelines":{"metrics":{"exporters":["prometheusremotewrite/victoria-metrics"],"processors":["batch"],"receivers":["otlp"]},"traces":{"exporters":["clickhousests"],"processors":["batch"],"receivers":["otlp"]}},"telemetry":{"metrics":{"address":"0.0.0.0:8888"}}}}` | Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/) |
-| opentelemetry-collector.extraEnvsFrom[0].secretRef.name | string | `"stackstate-otel-collector"` |  |
+| opentelemetry-collector.config.exporters.clickhousests.create_resources_table | bool | `false` |  |
+| opentelemetry-collector.config.exporters.clickhousests.create_traces_table | bool | `false` |  |
+| opentelemetry-collector.config.exporters.clickhousests.database | string | `"otel"` |  |
+| opentelemetry-collector.config.exporters.clickhousests.endpoint | string | `"tcp://stackstate-clickhouse:9000?dial_timeout=10s&compress=lz4"` |  |
+| opentelemetry-collector.config.exporters.clickhousests.logs_table_name | string | `"otel_logs"` |  |
+| opentelemetry-collector.config.exporters.clickhousests.metrics_table_name | string | `"otel_metrics"` |  |
+| opentelemetry-collector.config.exporters.clickhousests.password | string | `"admin"` |  |
+| opentelemetry-collector.config.exporters.clickhousests.resources_table_name | string | `"otel_resources"` |  |
+| opentelemetry-collector.config.exporters.clickhousests.retry_on_failure.enabled | bool | `true` |  |
+| opentelemetry-collector.config.exporters.clickhousests.retry_on_failure.initial_interval | string | `"5s"` |  |
+| opentelemetry-collector.config.exporters.clickhousests.retry_on_failure.max_elapsed_time | string | `"300s"` |  |
+| opentelemetry-collector.config.exporters.clickhousests.retry_on_failure.max_interval | string | `"30s"` |  |
+| opentelemetry-collector.config.exporters.clickhousests.timeout | string | `"5s"` |  |
+| opentelemetry-collector.config.exporters.clickhousests.traces_table_name | string | `"otel_traces"` |  |
+| opentelemetry-collector.config.exporters.clickhousests.ttl | string | `"72h"` |  |
+| opentelemetry-collector.config.exporters.clickhousests.username | string | `"admin"` |  |
+| opentelemetry-collector.config.exporters.logging | string | `nil` |  |
+| opentelemetry-collector.config.exporters.prometheusremotewrite/victoria-metrics.endpoint | string | `"http://stackstate-vmagent:8429/api/v1/write"` |  |
+| opentelemetry-collector.config.exporters.prometheusremotewrite/victoria-metrics.resource_to_telemetry_conversion.enabled | bool | `true` |  |
+| opentelemetry-collector.config.extensions.health_check.endpoint | string | `"${env:MY_POD_IP}:13133"` |  |
+| opentelemetry-collector.config.extensions.ingestion_api_key_auth.cache.invalid_size | int | `100` |  |
+| opentelemetry-collector.config.extensions.ingestion_api_key_auth.cache.valid_size | int | `100` |  |
+| opentelemetry-collector.config.extensions.ingestion_api_key_auth.cache.valid_ttl | string | `"5m"` |  |
+| opentelemetry-collector.config.extensions.ingestion_api_key_auth.endpoint.url | string | `"${env:API_URL}"` |  |
+| opentelemetry-collector.config.extensions.memory_ballast | object | `{}` |  |
+| opentelemetry-collector.config.processors.batch.send_batch_size | int | `100000` |  |
+| opentelemetry-collector.config.processors.batch.timeout | string | `"2s"` |  |
+| opentelemetry-collector.config.receivers.jaeger | string | `nil` |  |
+| opentelemetry-collector.config.receivers.otlp.protocols.grpc.auth.authenticator | string | `"ingestion_api_key_auth"` |  |
+| opentelemetry-collector.config.receivers.otlp.protocols.grpc.endpoint | string | `"${env:MY_POD_IP}:4317"` |  |
+| opentelemetry-collector.config.receivers.otlp.protocols.http.auth.authenticator | string | `"ingestion_api_key_auth"` |  |
+| opentelemetry-collector.config.receivers.otlp.protocols.http.endpoint | string | `"${env:MY_POD_IP}:4318"` |  |
+| opentelemetry-collector.config.receivers.prometheus | string | `nil` |  |
+| opentelemetry-collector.config.receivers.zipkin | string | `nil` |  |
+| opentelemetry-collector.config.service.extensions[0] | string | `"health_check"` |  |
+| opentelemetry-collector.config.service.extensions[1] | string | `"memory_ballast"` |  |
+| opentelemetry-collector.config.service.extensions[2] | string | `"ingestion_api_key_auth"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics.exporters[0] | string | `"prometheusremotewrite/victoria-metrics"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics.processors[0] | string | `"batch"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics.receivers[0] | string | `"otlp"` |  |
+| opentelemetry-collector.config.service.pipelines.traces.exporters[0] | string | `"clickhousests"` |  |
+| opentelemetry-collector.config.service.pipelines.traces.processors[0] | string | `"batch"` |  |
+| opentelemetry-collector.config.service.pipelines.traces.receivers[0] | string | `"otlp"` |  |
+| opentelemetry-collector.config.service.telemetry.metrics.address | string | `"0.0.0.0:8888"` |  |
+| opentelemetry-collector.extraEnvs | list | `[{"name":"API_URL","valueFrom":{"configMapKeyRef":{"key":"api.url","name":"stackstate-otel-collector"}}}]` | Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/). Contains API_URL with path to api server used to authorize requests |
 | opentelemetry-collector.fullnameOverride | string | `"stackstate-otel-collector"` | Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | opentelemetry-collector.image.repository | string | `"quay.io/stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
 | opentelemetry-collector.image.tag | string | `"v0.0.9"` | Container image tag for 'opentelemetry-collector' containers. |
@@ -418,7 +461,7 @@ stackstate/stackstate
 | stackstate.components.containerTools.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for container-tools containers. |
 | stackstate.components.containerTools.image.registry | string | `"quay.io"` | Base container image registry for container-tools containers. |
 | stackstate.components.containerTools.image.repository | string | `"stackstate/container-tools"` | Base container image repository for container-tools containers. |
-| stackstate.components.containerTools.image.tag | string | `"1.2.0"` | Container image tag for container-tools containers. |
+| stackstate.components.containerTools.image.tag | string | `"1.2.1"` | Container image tag for container-tools containers. |
 | stackstate.components.containerTools.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `kafkaTopicCreate` pods. |
 | stackstate.components.correlate.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.correlate.affinity | object | `{}` | Affinity settings for pod assignment. |
