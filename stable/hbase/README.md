@@ -145,7 +145,7 @@ Current chart version is `0.2.3`
 | wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | wait.image.repository | string | `"stackstate/wait"` | Container image tag for wait containers. |
-| wait.image.tag | string | `"1.0.9-b6a3cb01"` |  |
+| wait.image.tag | string | `"1.0.10-025450d9"` |  |
 | zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
 | zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |
 | zookeeper.fourlwCommandsWhitelist | string | `"mntr, ruok, stat, srvr"` | Zookeeper four-letter-word (FLW) commands that are enabled. |

@@ -95,7 +95,7 @@ wait:
     # wait.image.repository -- Base container image repository for wait containers.
     repository: stackstate/wait
     # wait.image.repository -- Container image tag for wait containers.
-    tag: 1.0.9-b6a3cb01
+    tag: 1.0.10-025450d9
     # wait.image.pullPolicy -- Image pull policy for wait containers.
     pullPolicy: IfNotPresent
 hbase:
