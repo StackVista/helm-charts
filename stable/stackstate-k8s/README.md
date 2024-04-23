@@ -285,6 +285,27 @@ stackstate/stackstate
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
 | opentelemetry-collector.command.name | string | `"usr/bin/sts-opentelemetry-collector"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.dimensions[0] | string | `"service.instance.id"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.dimensions[1] | string | `"service.namespace"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[0] | string | `"2ms"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[10] | string | `"1s"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[11] | string | `"1400ms"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[12] | string | `"2s"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[13] | string | `"5s"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[14] | string | `"10s"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[15] | string | `"15s"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[16] | string | `"30s"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[1] | string | `"4ms"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[2] | string | `"6ms"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[3] | string | `"8ms"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[4] | string | `"10ms"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[5] | string | `"50ms"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[6] | string | `"100ms"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[7] | string | `"200ms"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[8] | string | `"400ms"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[9] | string | `"800ms"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.store.max_items | int | `50000` |  |
+| opentelemetry-collector.config.connectors.servicegraph.store.ttl | string | `"30s"` |  |
 | opentelemetry-collector.config.exporters.clickhousests.create_resources_table | bool | `false` |  |
 | opentelemetry-collector.config.exporters.clickhousests.create_traces_table | bool | `false` |  |
 | opentelemetry-collector.config.exporters.clickhousests.database | string | `"otel"` |  |
@@ -331,7 +352,9 @@ stackstate/stackstate
 | opentelemetry-collector.config.service.pipelines.metrics.processors[0] | string | `"resource"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics.processors[1] | string | `"batch"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics.receivers[0] | string | `"otlp"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics.receivers[1] | string | `"servicegraph"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.exporters[0] | string | `"clickhousests"` |  |
+| opentelemetry-collector.config.service.pipelines.traces.exporters[1] | string | `"servicegraph"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.processors[0] | string | `"resource"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.processors[1] | string | `"batch"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.receivers[0] | string | `"otlp"` |  |

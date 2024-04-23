@@ -2034,6 +2034,15 @@ opentelemetry-collector:
       zipkin: null
       prometheus: null
       jaeger: null
+    connectors:
+      servicegraph:
+        latency_histogram_buckets: [2ms, 4ms, 6ms, 8ms, 10ms, 50ms, 100ms, 200ms, 400ms, 800ms, 1s, 1400ms, 2s, 5s, 10s, 15s, 30s]
+        dimensions:
+          - service.instance.id
+          - service.namespace
+        store:
+          ttl: 30s
+          max_items: 50000
     processors:
       batch:
         timeout: 2s
@@ -2100,9 +2109,11 @@ opentelemetry-collector:
             - batch
           exporters:
             - clickhousests
+            - servicegraph
         metrics:
           receivers:
             - otlp
+            - servicegraph
           processors:
             - resource
             - batch
