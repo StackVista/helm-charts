@@ -1998,7 +1998,7 @@ opentelemetry-collector:
     # opentelemetry-collector.image.repository -- Repository where to get the image from.
     repository: quay.io/stackstate/sts-opentelemetry-collector
     # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: STAC-21209-export-relations-from-servicegraph-metrics@sha256:90e6493a248d0ebbd19895ce6b5f8c1da4cccafa3230251f06ab015179ef951e
+    tag: STAC-21209-export-relations-from-servicegraph-metrics
   command:
     name: usr/bin/sts-opentelemetry-collector
   # opentelemetry-collector.fullnameOverride -- Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
@@ -2127,9 +2127,11 @@ opentelemetry-collector:
             - resource/removeStsApiKey
           exporters:
             - clickhousests
+            - servicegraph
         metrics:
           receivers:
             - otlp
+            - servicegraph
           processors:
             - resource/addStsApiKey
             - batch
