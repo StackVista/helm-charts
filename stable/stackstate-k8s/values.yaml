@@ -1036,7 +1036,7 @@ stackstate:
       fullNameOverride: stackstate-vmagent
       image:
         repository: stackstate/vmagent
-        tag: vd14-4d02eee6
+        tag: v1.93.14-f69ecbeb
       # stackstate.components.vmagent.poddisruptionbudget -- PodDisruptionBudget settings for `vmagent` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -1363,7 +1363,7 @@ kafkaup-operator:
     # kafkaup.image.repository -- Repository containing the image for the KafkaUp operator
     repository: stackstate/kafkaup-operator
     # kafkaup.image.tag -- Tag of the image for the KafkaUp operator
-    tag: 0.0.2
+    tag: 0.0.3
     # kafkaup.image.pullPolicy -- Pull policy for the image:pod for the KafkaUp operator
     pullPolicy: ""
   kafkaSelectors:
