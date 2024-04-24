@@ -304,6 +304,7 @@ stackstate/stackstate
 | opentelemetry-collector.config.exporters.logging | string | `nil` |  |
 | opentelemetry-collector.config.exporters.prometheusremotewrite/victoria-metrics.endpoint | string | `"http://stackstate-vmagent:8429/api/v1/write"` |  |
 | opentelemetry-collector.config.exporters.prometheusremotewrite/victoria-metrics.resource_to_telemetry_conversion.enabled | bool | `true` |  |
+| opentelemetry-collector.config.exporters.ststopology.endpoint | string | `"${env:INTAKE_URL}"` |  |
 | opentelemetry-collector.config.extensions.health_check.endpoint | string | `"${env:MY_POD_IP}:13133"` |  |
 | opentelemetry-collector.config.extensions.ingestion_api_key_auth.cache.invalid_size | int | `100` |  |
 | opentelemetry-collector.config.extensions.ingestion_api_key_auth.cache.valid_size | int | `100` |  |
@@ -312,6 +313,9 @@ stackstate/stackstate
 | opentelemetry-collector.config.extensions.memory_ballast | object | `{}` |  |
 | opentelemetry-collector.config.processors.batch.send_batch_size | int | `100000` |  |
 | opentelemetry-collector.config.processors.batch.timeout | string | `"2s"` |  |
+| opentelemetry-collector.config.processors.resource.attributes[0].action | string | `"upsert"` |  |
+| opentelemetry-collector.config.processors.resource.attributes[0].from_context | string | `"auth.apiKey"` |  |
+| opentelemetry-collector.config.processors.resource.attributes[0].key | string | `"sts_api_key"` |  |
 | opentelemetry-collector.config.receivers.jaeger | string | `nil` |  |
 | opentelemetry-collector.config.receivers.otlp.protocols.grpc.auth.authenticator | string | `"ingestion_api_key_auth"` |  |
 | opentelemetry-collector.config.receivers.otlp.protocols.grpc.endpoint | string | `"${env:MY_POD_IP}:4317"` |  |
@@ -323,16 +327,19 @@ stackstate/stackstate
 | opentelemetry-collector.config.service.extensions[1] | string | `"memory_ballast"` |  |
 | opentelemetry-collector.config.service.extensions[2] | string | `"ingestion_api_key_auth"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics.exporters[0] | string | `"prometheusremotewrite/victoria-metrics"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics.processors[0] | string | `"batch"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics.exporters[1] | string | `"ststopology"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics.processors[0] | string | `"resource"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics.processors[1] | string | `"batch"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics.receivers[0] | string | `"otlp"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.exporters[0] | string | `"clickhousests"` |  |
-| opentelemetry-collector.config.service.pipelines.traces.processors[0] | string | `"batch"` |  |
+| opentelemetry-collector.config.service.pipelines.traces.processors[0] | string | `"resource"` |  |
+| opentelemetry-collector.config.service.pipelines.traces.processors[1] | string | `"batch"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.receivers[0] | string | `"otlp"` |  |
 | opentelemetry-collector.config.service.telemetry.metrics.address | string | `"0.0.0.0:8888"` |  |
-| opentelemetry-collector.extraEnvs | list | `[{"name":"API_URL","valueFrom":{"configMapKeyRef":{"key":"api.url","name":"stackstate-otel-collector"}}}]` | Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/). Contains API_URL with path to api server used to authorize requests |
+| opentelemetry-collector.extraEnvs | list | `[{"name":"API_URL","valueFrom":{"configMapKeyRef":{"key":"api.url","name":"stackstate-otel-collector"}}},{"name":"INTAKE_URL","valueFrom":{"configMapKeyRef":{"key":"intake.url","name":"stackstate-otel-collector"}}}]` | Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/). Contains API_URL with path to api server used to authorize requests |
 | opentelemetry-collector.fullnameOverride | string | `"stackstate-otel-collector"` | Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | opentelemetry-collector.image.repository | string | `"quay.io/stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
-| opentelemetry-collector.image.tag | string | `"v0.0.9"` | Container image tag for 'opentelemetry-collector' containers. |
+| opentelemetry-collector.image.tag | string | `"STAC-21205-export-resources-as-components"` | Container image tag for 'opentelemetry-collector' containers. |
 | opentelemetry-collector.mode | string | `"statefulset"` | deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset". |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.check_names" | string | `"[\"openmetrics\"]"` |  |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.init_configs" | string | `"[{}]"` |  |
@@ -347,7 +354,6 @@ stackstate/stackstate
 | opentelemetry-collector.resources.limits.memory | string | `"512Mi"` |  |
 | opentelemetry-collector.resources.requests.cpu | string | `"250m"` |  |
 | opentelemetry-collector.resources.requests.memory | string | `"512Mi"` |  |
-| opentelemetry.apiKey | string | `nil` | Api key to validate requests with, if undefined falls back to a global.receiverApiKey |
 | opentelemetry.enabled | bool | `false` | Enable / disable chart-based OTEL. |
 | pull-secret.credentials | list | `[]` | Registry and assotiated credentials (username, password) that will be stored in the pull-secret |
 | pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |

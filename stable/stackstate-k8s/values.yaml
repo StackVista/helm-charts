@@ -1993,14 +1993,12 @@ clickhouse:
 opentelemetry:
   # opentelemetry.enabled -- Enable / disable chart-based OTEL.
   enabled: false
-  # opentelemetry.apiKey -- Api key to validate requests with, if undefined falls back to a global.receiverApiKey
-  apiKey: null
 opentelemetry-collector:
   image:
     # opentelemetry-collector.image.repository -- Repository where to get the image from.
     repository: quay.io/stackstate/sts-opentelemetry-collector
     # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: v0.0.9
+    tag: STAC-21205-export-resources-as-components
   command:
     name: usr/bin/sts-opentelemetry-collector
   # opentelemetry-collector.fullnameOverride -- Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
@@ -2016,6 +2014,11 @@ opentelemetry-collector:
         configMapKeyRef:
           name: stackstate-otel-collector
           key: api.url
+    - name: INTAKE_URL
+      valueFrom:
+        configMapKeyRef:
+          name: stackstate-otel-collector
+          key: intake.url
   config:
     receivers:
       otlp:
@@ -2035,6 +2038,11 @@ opentelemetry-collector:
       batch:
         timeout: 2s
         send_batch_size: 100000
+      resource:
+        attributes:
+          - key: sts_api_key
+            action: upsert
+            from_context: auth.apiKey
     exporters:
       clickhousests:
         endpoint: tcp://stackstate-clickhouse:9000?dial_timeout=10s&compress=lz4
@@ -2058,6 +2066,8 @@ opentelemetry-collector:
         endpoint: 'http://stackstate-vmagent:8429/api/v1/write'
         resource_to_telemetry_conversion:
           enabled: true
+      ststopology:
+        endpoint: "${env:INTAKE_URL}"
       logging: null
     extensions:
       ingestion_api_key_auth:
@@ -2086,6 +2096,7 @@ opentelemetry-collector:
           receivers:
             - otlp
           processors:
+            - resource
             - batch
           exporters:
             - clickhousests
@@ -2093,9 +2104,11 @@ opentelemetry-collector:
           receivers:
             - otlp
           processors:
+            - resource
             - batch
           exporters:
             - prometheusremotewrite/victoria-metrics
+            - ststopology
   ports:
     jaeger-compact:
       enabled: false
