@@ -13,6 +13,12 @@
 {{- max (sub $cacheSize .BaseMem) 0 }}
 {{- end -}}
 
+{{- define "stackstate.server.image.tag" -}}
+{{- $hbaseVersionImagePrefix := ternary "2.5-" "" .Values.stackstate.experimental.hbase25 -}}
+{{- $image := default .Values.stackstate.components.all.image.tag .ImageTag  -}}
+{{- $hbaseVersionImagePrefix -}}{{- $image -}}
+{{- end -}}
+
 {{/*
     Include the parallelism env var which is derived from the CPU requests on the deployment
     Receives the CPU requests string as argument and uses it to calc the effective parallelism on the sync service.

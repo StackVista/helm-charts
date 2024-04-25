@@ -15,6 +15,7 @@ args:
 - -start
 env:
 {{- $serviceConfig := dict "ServiceName" "server" "ServiceConfig" .Values.stackstate.components.server }}
+{{- $imageTagConfig := dict .Values.stackstate.components.server.image.tag }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.authentication.envvars" . }}
 {{- include "stackstate.baseurls.envvars" . }}
@@ -43,7 +44,7 @@ env:
       key: sts-license-key
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
-image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.server.image.tag }}"
+image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
 livenessProbe:
   httpGet:

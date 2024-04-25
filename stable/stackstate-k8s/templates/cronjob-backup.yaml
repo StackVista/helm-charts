@@ -1,5 +1,6 @@
 {{- if .Values.backup.enabled }}
 {{- if .Values.backup.stackGraph.scheduled.enabled }}
+{{- $imageTagConfig := dict .Values.stackstate.components.server.image.tag }}
 {{- if .Capabilities.APIVersions.Has "batch/v1/CronJob" }}
 apiVersion: batch/v1
 {{- else }}
@@ -36,7 +37,7 @@ spec:
               imagePullPolicy: Always
           containers:
             - name: backup-stackgraph
-              image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.server.image.tag }}"
+              image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
               imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
               command:
                 - '/backup-restore-scripts/backup-stackgraph.sh'

@@ -16,6 +16,7 @@ args:
 - api
 env:
 {{- $serviceConfig := dict "ServiceName" "api" "ServiceConfig" .Values.stackstate.components.api }}
+{{- $imageTagConfig := dict .Values.stackstate.components.api.image.tag }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.authentication.envvars" . }}
 {{- include "stackstate.baseurls.envvars" . }}
@@ -47,7 +48,7 @@ env:
   # Keep for 1.5 hours, allowing timetravel and having users in analytics keep their results cached
 - name: CONFIG_FORCE_stackgraph_vertex_cache_expireAfterSeconds
   value: "5400"
-image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.api.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.api.image.tag }}"
+image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.api.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.api.image.pullPolicy | quote }}
 name: api
 ports:

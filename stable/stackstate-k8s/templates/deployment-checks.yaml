@@ -16,6 +16,7 @@ args:
 - checks
 env:
 {{- $serviceConfig := dict "ServiceName" "checks" "ServiceConfig" .Values.stackstate.components.checks }}
+{{- $imageTagConfig := dict .Values.stackstate.components.checks.image.tag }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.authentication.envvars" . }}
 {{- include "stackstate.baseurls.envvars" . }}
@@ -47,7 +48,7 @@ env:
   value: "10"
 - name: CONFIG_FORCE_stackstate_domainActorPool_fractionOfMemoryReservedForChecks
   value: "0.80"
-image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.checks.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.checks.image.tag }}"
+image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.checks.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.checks.image.pullPolicy | quote }}
 name: checks
 ports:
