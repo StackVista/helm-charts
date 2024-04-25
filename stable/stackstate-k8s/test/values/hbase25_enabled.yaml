@@ -1,0 +1,3 @@
+stackstate:
+  experimental:
+    hbase25: true
