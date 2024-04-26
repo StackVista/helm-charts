@@ -359,7 +359,6 @@ stackstate/stackstate
 | opentelemetry-collector.config.service.pipelines.metrics.processors[0] | string | `"resource/addStsApiKey"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics.processors[1] | string | `"batch"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics.receivers[0] | string | `"otlp"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics.receivers[1] | string | `"servicegraph"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics/topology.exporters[0] | string | `"ststopology"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics/topology.receivers[0] | string | `"forward"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics/topology.receivers[1] | string | `"servicegraph"` |  |
@@ -373,7 +372,6 @@ stackstate/stackstate
 | opentelemetry-collector.config.service.pipelines.traces.processors[1] | string | `"batch"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.receivers[0] | string | `"otlp"` |  |
 | opentelemetry-collector.config.service.pipelines.traces/clickhouse.exporters[0] | string | `"clickhousests"` |  |
-| opentelemetry-collector.config.service.pipelines.traces/clickhouse.exporters[1] | string | `"servicegraph"` |  |
 | opentelemetry-collector.config.service.pipelines.traces/clickhouse.processors[0] | string | `"resource/removeStsApiKey"` |  |
 | opentelemetry-collector.config.service.pipelines.traces/clickhouse.receivers[0] | string | `"forward"` |  |
 | opentelemetry-collector.config.service.telemetry.metrics.address | string | `"0.0.0.0:8888"` |  |

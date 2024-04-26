@@ -2127,11 +2127,9 @@ opentelemetry-collector:
             - resource/removeStsApiKey
           exporters:
             - clickhousests
-            - servicegraph
         metrics:
           receivers:
             - otlp
-            - servicegraph
           processors:
             - resource/addStsApiKey
             - batch
