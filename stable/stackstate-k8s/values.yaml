@@ -1998,7 +1998,7 @@ opentelemetry-collector:
     # opentelemetry-collector.image.repository -- Repository where to get the image from.
     repository: quay.io/stackstate/sts-opentelemetry-collector
     # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: STAC-21205-export-resources-as-components
+    tag: v0.0.10
   command:
     name: usr/bin/sts-opentelemetry-collector
   # opentelemetry-collector.fullnameOverride -- Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**

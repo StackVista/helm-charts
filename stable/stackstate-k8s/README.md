@@ -372,7 +372,7 @@ stackstate/stackstate
 | opentelemetry-collector.extraEnvs | list | `[{"name":"API_URL","valueFrom":{"configMapKeyRef":{"key":"api.url","name":"stackstate-otel-collector"}}},{"name":"INTAKE_URL","valueFrom":{"configMapKeyRef":{"key":"intake.url","name":"stackstate-otel-collector"}}}]` | Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/). Contains API_URL with path to api server used to authorize requests |
 | opentelemetry-collector.fullnameOverride | string | `"stackstate-otel-collector"` | Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | opentelemetry-collector.image.repository | string | `"quay.io/stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
-| opentelemetry-collector.image.tag | string | `"STAC-21205-export-resources-as-components"` | Container image tag for 'opentelemetry-collector' containers. |
+| opentelemetry-collector.image.tag | string | `"v0.0.10"` | Container image tag for 'opentelemetry-collector' containers. |
 | opentelemetry-collector.mode | string | `"statefulset"` | deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset". |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.check_names" | string | `"[\"openmetrics\"]"` |  |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.init_configs" | string | `"[{}]"` |  |
