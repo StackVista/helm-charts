@@ -285,6 +285,7 @@ stackstate/stackstate
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
 | opentelemetry-collector.command.name | string | `"usr/bin/sts-opentelemetry-collector"` |  |
+| opentelemetry-collector.config.connectors.forward | string | `nil` |  |
 | opentelemetry-collector.config.connectors.servicegraph.dimensions[0] | string | `"service.instance.id"` |  |
 | opentelemetry-collector.config.connectors.servicegraph.dimensions[1] | string | `"service.namespace"` |  |
 | opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[0] | string | `"2ms"` |  |
@@ -334,9 +335,11 @@ stackstate/stackstate
 | opentelemetry-collector.config.extensions.memory_ballast | object | `{}` |  |
 | opentelemetry-collector.config.processors.batch.send_batch_size | int | `100000` |  |
 | opentelemetry-collector.config.processors.batch.timeout | string | `"2s"` |  |
-| opentelemetry-collector.config.processors.resource.attributes[0].action | string | `"upsert"` |  |
-| opentelemetry-collector.config.processors.resource.attributes[0].from_context | string | `"auth.apiKey"` |  |
-| opentelemetry-collector.config.processors.resource.attributes[0].key | string | `"sts_api_key"` |  |
+| opentelemetry-collector.config.processors.resource/addStsApiKey.attributes[0].action | string | `"upsert"` |  |
+| opentelemetry-collector.config.processors.resource/addStsApiKey.attributes[0].from_context | string | `"auth.apiKey"` |  |
+| opentelemetry-collector.config.processors.resource/addStsApiKey.attributes[0].key | string | `"sts_api_key"` |  |
+| opentelemetry-collector.config.processors.resource/removeStsApiKey.attributes[0].action | string | `"delete"` |  |
+| opentelemetry-collector.config.processors.resource/removeStsApiKey.attributes[0].key | string | `"sts_api_key"` |  |
 | opentelemetry-collector.config.receivers.jaeger | string | `nil` |  |
 | opentelemetry-collector.config.receivers.otlp.protocols.grpc.auth.authenticator | string | `"ingestion_api_key_auth"` |  |
 | opentelemetry-collector.config.receivers.otlp.protocols.grpc.endpoint | string | `"${env:MY_POD_IP}:4317"` |  |
@@ -347,17 +350,24 @@ stackstate/stackstate
 | opentelemetry-collector.config.service.extensions[0] | string | `"health_check"` |  |
 | opentelemetry-collector.config.service.extensions[1] | string | `"memory_ballast"` |  |
 | opentelemetry-collector.config.service.extensions[2] | string | `"ingestion_api_key_auth"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics.exporters[0] | string | `"prometheusremotewrite/victoria-metrics"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics.exporters[1] | string | `"ststopology"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics.processors[0] | string | `"resource"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics.exporters[0] | string | `"forward"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics.processors[0] | string | `"resource/addStsApiKey"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics.processors[1] | string | `"batch"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics.receivers[0] | string | `"otlp"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics.receivers[1] | string | `"servicegraph"` |  |
-| opentelemetry-collector.config.service.pipelines.traces.exporters[0] | string | `"clickhousests"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics/topology.exporters[0] | string | `"ststopology"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics/topology.receivers[0] | string | `"forward"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics/topology.receivers[1] | string | `"servicegraph"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics/victoria-metrics.exporters[0] | string | `"prometheusremotewrite/victoria-metrics"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics/victoria-metrics.processors[0] | string | `"resource/removeStsApiKey"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics/victoria-metrics.receivers[0] | string | `"forward"` |  |
+| opentelemetry-collector.config.service.pipelines.traces.exporters[0] | string | `"forward"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.exporters[1] | string | `"servicegraph"` |  |
-| opentelemetry-collector.config.service.pipelines.traces.processors[0] | string | `"resource"` |  |
+| opentelemetry-collector.config.service.pipelines.traces.processors[0] | string | `"resource/addStsApiKey"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.processors[1] | string | `"batch"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.receivers[0] | string | `"otlp"` |  |
+| opentelemetry-collector.config.service.pipelines.traces/clickhouse.exporters[0] | string | `"clickhousests"` |  |
+| opentelemetry-collector.config.service.pipelines.traces/clickhouse.processors[0] | string | `"resource/removeStsApiKey"` |  |
+| opentelemetry-collector.config.service.pipelines.traces/clickhouse.receivers[0] | string | `"forward"` |  |
 | opentelemetry-collector.config.service.telemetry.metrics.address | string | `"0.0.0.0:8888"` |  |
 | opentelemetry-collector.extraEnvs | list | `[{"name":"API_URL","valueFrom":{"configMapKeyRef":{"key":"api.url","name":"stackstate-otel-collector"}}},{"name":"INTAKE_URL","valueFrom":{"configMapKeyRef":{"key":"intake.url","name":"stackstate-otel-collector"}}}]` | Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/). Contains API_URL with path to api server used to authorize requests |
 | opentelemetry-collector.fullnameOverride | string | `"stackstate-otel-collector"` | Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
