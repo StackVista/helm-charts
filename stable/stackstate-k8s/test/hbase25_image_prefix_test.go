@@ -38,14 +38,14 @@ func TestRegularImageSplit(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]string)
-	expectedDeployments["stackstate-k8s-api"] = "stackstate-server:6.0.0"
-	expectedDeployments["stackstate-k8s-checks"] = "stackstate-server:6.0.0"
-	expectedDeployments["stackstate-k8s-health-sync"] = "stackstate-server:6.0.0"
-	expectedDeployments["stackstate-k8s-initializer"] = "stackstate-server:6.0.0"
-	expectedDeployments["stackstate-k8s-notification"] = "stackstate-server:6.0.0"
-	expectedDeployments["stackstate-k8s-state"] = "stackstate-server:6.0.0"
-	expectedDeployments["stackstate-k8s-sync"] = "stackstate-server:6.0.0"
-	expectedDeployments["stackstate-k8s-view-health"] = "stackstate-server:6.0.0"
+	expectedDeployments["stackstate-k8s-api"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["stackstate-k8s-checks"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["stackstate-k8s-health-sync"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["stackstate-k8s-initializer"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["stackstate-k8s-notification"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["stackstate-k8s-state"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["stackstate-k8s-sync"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["stackstate-k8s-view-health"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
 
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
@@ -58,8 +58,8 @@ func TestRegularImageSplit(t *testing.T) {
 
 	assert.Equal(t, len(expectedDeployments), len(foundDeployments))
 
-	for deploymentName, expectedImagePrefix := range expectedDeployments {
-		assert.Contains(t, foundDeployments[deploymentName].Spec.Template.Spec.Containers[0].Image, expectedImagePrefix)
+	for deploymentName, expectedImageRegex := range expectedDeployments {
+		assert.NotRegexp(t, expectedImageRegex, foundDeployments[deploymentName].Spec.Template.Spec.Containers[0].Image)
 	}
 }
 
@@ -69,14 +69,14 @@ func TestHbase25ImageSplit(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]string)
-	expectedDeployments["stackstate-k8s-api"] = "stackstate-server:2.5-6.0.0"
-	expectedDeployments["stackstate-k8s-checks"] = "stackstate-server:2.5-6.0.0"
-	expectedDeployments["stackstate-k8s-health-sync"] = "stackstate-server:2.5-6.0.0"
-	expectedDeployments["stackstate-k8s-initializer"] = "stackstate-server:2.5-6.0.0"
-	expectedDeployments["stackstate-k8s-notification"] = "stackstate-server:2.5-6.0.0"
-	expectedDeployments["stackstate-k8s-state"] = "stackstate-server:2.5-6.0.0"
-	expectedDeployments["stackstate-k8s-sync"] = "stackstate-server:2.5-6.0.0"
-	expectedDeployments["stackstate-k8s-view-health"] = "stackstate-server:2.5-6.0.0"
+	expectedDeployments["stackstate-k8s-api"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["stackstate-k8s-checks"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["stackstate-k8s-health-sync"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["stackstate-k8s-initializer"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["stackstate-k8s-notification"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["stackstate-k8s-state"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["stackstate-k8s-sync"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["stackstate-k8s-view-health"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
 
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
@@ -89,7 +89,7 @@ func TestHbase25ImageSplit(t *testing.T) {
 
 	assert.Equal(t, len(expectedDeployments), len(foundDeployments))
 
-	for deploymentName, expectedImagePrefix := range expectedDeployments {
-		assert.Contains(t, foundDeployments[deploymentName].Spec.Template.Spec.Containers[0].Image, expectedImagePrefix)
+	for deploymentName, expectedImageRegex := range expectedDeployments {
+		assert.Regexp(t, expectedImageRegex, foundDeployments[deploymentName].Spec.Template.Spec.Containers[0].Image)
 	}
 }
