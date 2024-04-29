@@ -14,9 +14,9 @@
 {{- end -}}
 
 {{- define "stackstate.server.image.tag" -}}
-{{- $hbaseVersionImagePrefix := ternary "-2.5" "" .Values.stackstate.experimental.hbase25 -}}
+{{- $hbaseVersionImageSuffix := ternary "-2.5" "" .Values.stackstate.experimental.hbase25 -}}
 {{- $image := default .Values.stackstate.components.all.image.tag .ImageTag  -}}
-{{- $image -}}{{- $hbaseVersionImagePrefix -}}
+{{- $image -}}{{- $hbaseVersionImageSuffix -}}
 {{- end -}}
 
 {{/*
