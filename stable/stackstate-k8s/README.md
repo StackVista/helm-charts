@@ -286,8 +286,9 @@ stackstate/stackstate
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
 | opentelemetry-collector.command.name | string | `"usr/bin/sts-opentelemetry-collector"` |  |
 | opentelemetry-collector.config.connectors.forward | string | `nil` |  |
-| opentelemetry-collector.config.connectors.servicegraph.dimensions[0] | string | `"service.instance.id"` |  |
-| opentelemetry-collector.config.connectors.servicegraph.dimensions[1] | string | `"service.namespace"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.dimensions[0] | string | `"service.namespace"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.dimensions[1] | string | `"service.instance.id"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.dimensions[2] | string | `"sts_api_key"` |  |
 | opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[0] | string | `"2ms"` |  |
 | opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[10] | string | `"1s"` |  |
 | opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[11] | string | `"1400ms"` |  |
@@ -340,6 +341,10 @@ stackstate/stackstate
 | opentelemetry-collector.config.processors.resource/addStsApiKey.attributes[0].key | string | `"sts_api_key"` |  |
 | opentelemetry-collector.config.processors.resource/removeStsApiKey.attributes[0].action | string | `"delete"` |  |
 | opentelemetry-collector.config.processors.resource/removeStsApiKey.attributes[0].key | string | `"sts_api_key"` |  |
+| opentelemetry-collector.config.processors.resource/removeStsApiKey.attributes[1].action | string | `"delete"` |  |
+| opentelemetry-collector.config.processors.resource/removeStsApiKey.attributes[1].key | string | `"client_sts_api_key"` |  |
+| opentelemetry-collector.config.processors.resource/removeStsApiKey.attributes[2].action | string | `"delete"` |  |
+| opentelemetry-collector.config.processors.resource/removeStsApiKey.attributes[2].key | string | `"server_sts_api_key"` |  |
 | opentelemetry-collector.config.receivers.jaeger | string | `nil` |  |
 | opentelemetry-collector.config.receivers.otlp.protocols.grpc.auth.authenticator | string | `"ingestion_api_key_auth"` |  |
 | opentelemetry-collector.config.receivers.otlp.protocols.grpc.endpoint | string | `"${env:MY_POD_IP}:4317"` |  |
@@ -360,6 +365,7 @@ stackstate/stackstate
 | opentelemetry-collector.config.service.pipelines.metrics/victoria-metrics.exporters[0] | string | `"prometheusremotewrite/victoria-metrics"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics/victoria-metrics.processors[0] | string | `"resource/removeStsApiKey"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics/victoria-metrics.receivers[0] | string | `"forward"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics/victoria-metrics.receivers[1] | string | `"servicegraph"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.exporters[0] | string | `"forward"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.exporters[1] | string | `"servicegraph"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.processors[0] | string | `"resource/addStsApiKey"` |  |
@@ -372,7 +378,7 @@ stackstate/stackstate
 | opentelemetry-collector.extraEnvs | list | `[{"name":"API_URL","valueFrom":{"configMapKeyRef":{"key":"api.url","name":"stackstate-otel-collector"}}},{"name":"INTAKE_URL","valueFrom":{"configMapKeyRef":{"key":"intake.url","name":"stackstate-otel-collector"}}}]` | Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/). Contains API_URL with path to api server used to authorize requests |
 | opentelemetry-collector.fullnameOverride | string | `"stackstate-otel-collector"` | Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | opentelemetry-collector.image.repository | string | `"quay.io/stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
-| opentelemetry-collector.image.tag | string | `"v0.0.10"` | Container image tag for 'opentelemetry-collector' containers. |
+| opentelemetry-collector.image.tag | string | `"STAC-21209-export-relations-from-servicegraph-metrics@sha256:90e6493a248d0ebbd19895ce6b5f8c1da4cccafa3230251f06ab015179ef951e"` | Container image tag for 'opentelemetry-collector' containers. |
 | opentelemetry-collector.mode | string | `"statefulset"` | deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset". |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.check_names" | string | `"[\"openmetrics\"]"` |  |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.init_configs" | string | `"[{}]"` |  |
