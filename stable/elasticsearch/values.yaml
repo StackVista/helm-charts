@@ -55,7 +55,7 @@ secretMounts: []
 
 imageRegistry: "quay.io"
 imageRepository: "stackstate/elasticsearch"
-imageTag: "8.7.1-3a5b64a5"
+imageTag: "8.11.4-cf68e2fa"
 imagePullPolicy: "IfNotPresent"
 
 podAnnotations: {}
@@ -285,7 +285,7 @@ prometheus-elasticsearch-exporter:
     # prometheus-elasticsearch-exporter.image.repository -- Elastichsearch Prometheus exporter image repository
     repository: quay.io/stackstate/elasticsearch-exporter
     # prometheus-elasticsearch-exporter.image.tag -- Elastichsearch Prometheus exporter image tag
-    tag: v1.2.1-279b423b
+    tag: v1.7.0-03d6f56d
   securityContext:
     # prometheus-elasticsearch-exporter.securityContext.enabled -- Set to `false` for OpenShift compatibility
     enabled: true

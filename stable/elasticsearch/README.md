@@ -1,6 +1,6 @@
 # elasticsearch
 
-![Version: 8.5.1-stackstate.4](https://img.shields.io/badge/Version-8.5.1--stackstate.4-informational?style=flat-square) ![AppVersion: 8.5.1](https://img.shields.io/badge/AppVersion-8.5.1-informational?style=flat-square)
+![Version: 8.11.4-stackstate.1](https://img.shields.io/badge/Version-8.11.4--stackstate.1-informational?style=flat-square) ![AppVersion: 8.11.4](https://img.shields.io/badge/AppVersion-8.11.4-informational?style=flat-square)
 Official Elastic helm chart for Elasticsearch
 **Homepage:** <https://github.com/elastic/helm-charts>
 ## Maintainers
@@ -41,7 +41,7 @@ Official Elastic helm chart for Elasticsearch
 | imagePullSecrets | list | `[]` |  |
 | imageRegistry | string | `"quay.io"` |  |
 | imageRepository | string | `"stackstate/elasticsearch"` |  |
-| imageTag | string | `"8.7.1-3a5b64a5"` |  |
+| imageTag | string | `"8.11.4-cf68e2fa"` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.enabled | bool | `false` |  |
 | ingress.hosts[0] | string | `"chart-example.local"` |  |
@@ -84,7 +84,7 @@ Official Elastic helm chart for Elasticsearch
 | prometheus-elasticsearch-exporter.enabled | bool | `false` | Enable to expose prometheus metrics |
 | prometheus-elasticsearch-exporter.es.uri | string | `"http://elasticsearch-master:9200"` | URI of Elasticsearch to monitor, override when changing clusterName or nodeGroup (format is <protocol>://<clusterName>-<nodegroup>:<httpPort>) |
 | prometheus-elasticsearch-exporter.image.repository | string | `"quay.io/stackstate/elasticsearch-exporter"` | Elastichsearch Prometheus exporter image repository |
-| prometheus-elasticsearch-exporter.image.tag | string | `"v1.2.1-279b423b"` | Elastichsearch Prometheus exporter image tag |
+| prometheus-elasticsearch-exporter.image.tag | string | `"v1.7.0-03d6f56d"` | Elastichsearch Prometheus exporter image tag |
 | prometheus-elasticsearch-exporter.podAnnotations | object | `{}` | custom annotations on the pod |
 | prometheus-elasticsearch-exporter.securityContext.enabled | bool | `true` | Set to `false` for OpenShift compatibility |
 | prometheus-elasticsearch-exporter.servicemonitor.enabled | bool | `false` | enable to create a servicemonitor for prometheus operator |

@@ -2,8 +2,8 @@ apiVersion: v2
 description: Official Elastic helm chart for Elasticsearch
 home: https://github.com/elastic/helm-charts
 name: elasticsearch
-version: 8.5.1-stackstate.4
-appVersion: 8.5.1
+version: 8.11.4-stackstate.1
+appVersion: 8.11.4
 sources:
   - https://github.com/elastic/elasticsearch
 icon: https://helm.elastic.co/icons/elasticsearch.png
