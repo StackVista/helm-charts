@@ -1,7 +1,7 @@
 dependencies:
 - name: anomaly-detection
   repository: https://helm.stackstate.io
-  version: 5.2.0-snapshot.127
+  version: 5.2.0-snapshot.135
 - name: common
   repository: file://../common/
   version: 0.4.24
@@ -38,5 +38,5 @@ dependencies:
 - name: opentelemetry-collector
   repository: https://open-telemetry.github.io/opentelemetry-helm-charts
   version: 0.80.0
-digest: sha256:c6f62f330137992dcad8c48dc82db272f7727e8815f1f54c443308f1c778938e
-generated: "2024-04-29T14:45:59.058426+02:00"
+digest: sha256:267a39cedfcf9808c4441f0ca939cbc1b6f1bc664c5bc5c5162e576d5385a697
+generated: "2024-04-29T17:35:59.817333404Z"
