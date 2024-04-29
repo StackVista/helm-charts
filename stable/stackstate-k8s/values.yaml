@@ -1998,7 +1998,7 @@ opentelemetry-collector:
     # opentelemetry-collector.image.repository -- Repository where to get the image from.
     repository: quay.io/stackstate/sts-opentelemetry-collector
     # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: v0.0.10
+    tag: STAC-21209-export-relations-from-servicegraph-metrics@sha256:90e6493a248d0ebbd19895ce6b5f8c1da4cccafa3230251f06ab015179ef951e
   command:
     name: usr/bin/sts-opentelemetry-collector
   # opentelemetry-collector.fullnameOverride -- Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
@@ -2038,8 +2038,9 @@ opentelemetry-collector:
       servicegraph:
         latency_histogram_buckets: [2ms, 4ms, 6ms, 8ms, 10ms, 50ms, 100ms, 200ms, 400ms, 800ms, 1s, 1400ms, 2s, 5s, 10s, 15s, 30s]
         dimensions:
-          - service.instance.id
           - service.namespace
+          - service.instance.id
+          - sts_api_key
         store:
           ttl: 30s
           max_items: 50000
@@ -2056,6 +2057,10 @@ opentelemetry-collector:
       resource/removeStsApiKey:
         attributes:
           - key: sts_api_key
+            action: delete
+          - key: client_sts_api_key
+            action: delete
+          - key: server_sts_api_key
             action: delete
     exporters:
       clickhousests:
@@ -2133,6 +2138,7 @@ opentelemetry-collector:
         metrics/victoria-metrics:
           receivers:
             - forward
+            - servicegraph
           processors:
             - resource/removeStsApiKey
           exporters:
