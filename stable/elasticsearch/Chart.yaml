@@ -2,7 +2,7 @@ apiVersion: v2
 description: Official Elastic helm chart for Elasticsearch
 home: https://github.com/elastic/helm-charts
 name: elasticsearch
-version: 8.11.4-stackstate.1
+version: 8.11.4-stackstate.2
 appVersion: 8.11.4
 sources:
   - https://github.com/elastic/elasticsearch
@@ -12,6 +12,6 @@ maintainers:
   email: ops@stackstate.com
 dependencies:
   - name: prometheus-elasticsearch-exporter
-    version: 4.13.0
+    version: 5.7.0
     repository: https://prometheus-community.github.io/helm-charts
     condition: prometheus-elasticsearch-exporter.enabled

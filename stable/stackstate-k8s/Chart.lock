@@ -7,7 +7,7 @@ dependencies:
   version: 0.4.24
 - name: elasticsearch
   repository: file://../elasticsearch/
-  version: 8.11.4-stackstate.1
+  version: 8.11.4-stackstate.2
 - name: hbase
   repository: file://../hbase/
   version: 0.2.4
@@ -38,5 +38,5 @@ dependencies:
 - name: opentelemetry-collector
   repository: https://open-telemetry.github.io/opentelemetry-helm-charts
   version: 0.80.0
-digest: sha256:1516f084207817f9ba98dd4ad2930bceea5f88b3bf2de80ae34147854bd1f956
-generated: "2024-04-29T08:53:31.080003+02:00"
+digest: sha256:c6f62f330137992dcad8c48dc82db272f7727e8815f1f54c443308f1c778938e
+generated: "2024-04-29T14:45:59.058426+02:00"
