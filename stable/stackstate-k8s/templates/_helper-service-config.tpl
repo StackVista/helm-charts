@@ -92,7 +92,7 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
 - name: "OTEL_SERVICE_NAME"
   value: "stackstate-$(STS_SERVICE_NAME)"
 - name: "OTEL_RESOURCE_ATTRIBUTES"
-  value: service.name={{ tpl (default .Values.stackstate.components.all.otelInstrumentation.serviceNamespace $otelInstrumentationServiceConfig.serviceNamespace) . }},service.instance.id=$(POD_NAME)
+  value: service.namespace={{ tpl (default .Values.stackstate.components.all.otelInstrumentation.serviceNamespace $otelInstrumentationServiceConfig.serviceNamespace) . }},service.instance.id=$(POD_NAME)
 {{- end }}
 {{- if not $openEnvVars.JAVA_OPTS }}
 - name: "JAVA_OPTS"
