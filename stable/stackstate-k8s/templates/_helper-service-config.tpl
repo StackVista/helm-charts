@@ -84,8 +84,15 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
     fieldRef:
       apiVersion: v1
       fieldPath: metadata.labels['app.kubernetes.io/component']
+- name: "POD_NAME"
+  valueFrom:
+    fieldRef:
+      apiVersion: v1
+      fieldPath: metadata.name
 - name: "OTEL_SERVICE_NAME"
   value: "stackstate-$(STS_SERVICE_NAME)"
+- name: "OTEL_RESOURCE_ATTRIBUTES"
+  value: service.name={{ tpl (default .Values.stackstate.components.all.otelInstrumentation.serviceNamespace $otelInstrumentationServiceConfig.serviceNamespace) . }},service.instance.id=$(POD_NAME)
 {{- end }}
 {{- if not $openEnvVars.JAVA_OPTS }}
 - name: "JAVA_OPTS"

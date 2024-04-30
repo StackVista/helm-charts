@@ -450,6 +450,7 @@ stackstate/stackstate
 | stackstate.components.all.otelInstrumentation.enabled | bool | `false` |  |
 | stackstate.components.all.otelInstrumentation.otlpExporterEndpoint | string | `""` |  |
 | stackstate.components.all.otelInstrumentation.otlpExporterProtocol | string | `"grpc"` |  |
+| stackstate.components.all.otelInstrumentation.serviceNamespace | string | `"{{ printf \"%s-%s\" .Chart.Name .Release.Namespace }}"` |  |
 | stackstate.components.all.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.all.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
 | stackstate.components.all.securityContext.fsGroup | int | `65534` | The GID (group ID) used to mount volumes |
