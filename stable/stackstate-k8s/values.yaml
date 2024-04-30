@@ -182,7 +182,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: 6.0.0-snapshot.20240430100701-master-c4a5164-2.5
+        tag: 6.0.0-snapshot.20240430110323-master-9fc3e76
       # stackstate.components.all.podAnnotations -- Extra annotations
       podAnnotations: {}
       metrics:
@@ -1181,7 +1181,7 @@ stackstate:
       # stackstate.stackpacks.image.repository -- Repository of the `stackpacks` Docker image.
       repository: stackstate/stackpacks
       # stackstate.stackpacks.image.tag -- Tag used for the `stackpacks` Docker image;
-      tag: "20240417064719-master-f0aab11-selfhosted"
+      tag: "20240430121009-master-5d81746-saas"
     s3:
       # stackstate.stackpacks.s3.bucket -- Name of the S3 bucket to use as source for stackpacks.
       bucket: "sts-stackpacks-prod"
