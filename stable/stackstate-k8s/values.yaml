@@ -200,6 +200,7 @@ stackstate:
         enabled: false
         otlpExporterEndpoint: ""
         otlpExporterProtocol: grpc
+        serviceNamespace: '{{ printf "%s-%s" .Chart.Name .Release.Namespace }}'
       securityContext:
         # stackstate.components.all.securityContext.enabled -- Whether or not to enable the securityContext
         enabled: true
