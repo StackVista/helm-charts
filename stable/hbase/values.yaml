@@ -183,9 +183,9 @@ hdfs:
     # hdfs.image.pullPolicy -- Pull policy for HDFS datanode.
     pullPolicy: IfNotPresent
     # hdfs.image.repository -- Base container image repository for HDFS datanode.
-    repository: stackstate/hadoop
+    repository: stackstate/hadoop-test
     # hdfs.image.tag -- Default container image tag for HDFS datanode.
-    tag: 2.10.2-java11-6-ad889210
+    tag: 6797359275-2.10.2-java11-6-6e17db2f
   volumePermissions:
     # hdfs.volumePermissions.enabled -- Whether to explicitly change the volume permissions for the data/name nodes. If permissions on volume mounts are not correct for whatever reason this can be used to set them properly. Usually also requires enabling the securityContext because root user is required.
     enabled: false

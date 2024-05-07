@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.2.6`
+Current chart version is `0.2.6-bram`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -88,8 +88,8 @@ Current chart version is `0.2.6`
 | hdfs.datanode.terminationGracePeriodSeconds | int | `600` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
 | hdfs.datanode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.image.pullPolicy | string | `"IfNotPresent"` | Pull policy for HDFS datanode. |
-| hdfs.image.repository | string | `"stackstate/hadoop"` | Base container image repository for HDFS datanode. |
-| hdfs.image.tag | string | `"2.10.2-java11-6-ad889210"` | Default container image tag for HDFS datanode. |
+| hdfs.image.repository | string | `"stackstate/hadoop-test"` | Base container image repository for HDFS datanode. |
+| hdfs.image.tag | string | `"6797359275-2.10.2-java11-6-6e17db2f"` | Default container image tag for HDFS datanode. |
 | hdfs.minReplication | int | `1` | Sets the minimum synchronous replication that the namenode will enforce when writing a block. This gives guarantees about the amount of copies of a single block. (If hdfs.datanode.replicaCount is set to a value less than this, the replicationfactor will be equal to the replicaCount.) |
 | hdfs.namenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.namenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
