@@ -2,7 +2,7 @@
 
 Helm chart for StackState for Kubernetes
 
-Current chart version is `1.10.1-pre.40`
+Current chart version is `1.10.1-pre.59`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -12,7 +12,7 @@ Current chart version is `1.10.1-pre.40`
 |------------|------|---------|
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.11.4-stackstate.2 |
-| file://../hbase/ | hbase | 0.2.4 |
+| file://../hbase/ | hbase | 0.2.6 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.8 |
 | file://../pull-secret/ | pull-secret | * |
@@ -202,7 +202,7 @@ stackstate/stackstate
 | hbase.hdfs.secondarynamenode.resources.requests.cpu | string | `"50m"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.memory | string | `"1Gi"` |  |
-| hbase.stackgraph.version | string | `"7.2.1"` | The StackGraph server version, must be compatible with the StackState version |
+| hbase.stackgraph.version | string | `"7.3.1"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
 | hbase.tephra.resources.limits.cpu | string | `"500m"` |  |
 | hbase.tephra.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
@@ -286,8 +286,9 @@ stackstate/stackstate
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
 | opentelemetry-collector.command.name | string | `"usr/bin/sts-opentelemetry-collector"` |  |
 | opentelemetry-collector.config.connectors.forward | string | `nil` |  |
-| opentelemetry-collector.config.connectors.servicegraph.dimensions[0] | string | `"service.instance.id"` |  |
-| opentelemetry-collector.config.connectors.servicegraph.dimensions[1] | string | `"service.namespace"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.dimensions[0] | string | `"service.namespace"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.dimensions[1] | string | `"service.instance.id"` |  |
+| opentelemetry-collector.config.connectors.servicegraph.dimensions[2] | string | `"sts_api_key"` |  |
 | opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[0] | string | `"2ms"` |  |
 | opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[10] | string | `"1s"` |  |
 | opentelemetry-collector.config.connectors.servicegraph.latency_histogram_buckets[11] | string | `"1400ms"` |  |
@@ -340,6 +341,10 @@ stackstate/stackstate
 | opentelemetry-collector.config.processors.resource/addStsApiKey.attributes[0].key | string | `"sts_api_key"` |  |
 | opentelemetry-collector.config.processors.resource/removeStsApiKey.attributes[0].action | string | `"delete"` |  |
 | opentelemetry-collector.config.processors.resource/removeStsApiKey.attributes[0].key | string | `"sts_api_key"` |  |
+| opentelemetry-collector.config.processors.resource/removeStsApiKey.attributes[1].action | string | `"delete"` |  |
+| opentelemetry-collector.config.processors.resource/removeStsApiKey.attributes[1].key | string | `"client_sts_api_key"` |  |
+| opentelemetry-collector.config.processors.resource/removeStsApiKey.attributes[2].action | string | `"delete"` |  |
+| opentelemetry-collector.config.processors.resource/removeStsApiKey.attributes[2].key | string | `"server_sts_api_key"` |  |
 | opentelemetry-collector.config.receivers.jaeger | string | `nil` |  |
 | opentelemetry-collector.config.receivers.otlp.protocols.grpc.auth.authenticator | string | `"ingestion_api_key_auth"` |  |
 | opentelemetry-collector.config.receivers.otlp.protocols.grpc.endpoint | string | `"${env:MY_POD_IP}:4317"` |  |
@@ -360,6 +365,7 @@ stackstate/stackstate
 | opentelemetry-collector.config.service.pipelines.metrics/victoria-metrics.exporters[0] | string | `"prometheusremotewrite/victoria-metrics"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics/victoria-metrics.processors[0] | string | `"resource/removeStsApiKey"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics/victoria-metrics.receivers[0] | string | `"forward"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics/victoria-metrics.receivers[1] | string | `"servicegraph"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.exporters[0] | string | `"forward"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.exporters[1] | string | `"servicegraph"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.processors[0] | string | `"resource/addStsApiKey"` |  |
@@ -372,7 +378,7 @@ stackstate/stackstate
 | opentelemetry-collector.extraEnvs | list | `[{"name":"API_URL","valueFrom":{"configMapKeyRef":{"key":"api.url","name":"stackstate-otel-collector"}}},{"name":"INTAKE_URL","valueFrom":{"configMapKeyRef":{"key":"intake.url","name":"stackstate-otel-collector"}}}]` | Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/). Contains API_URL with path to api server used to authorize requests |
 | opentelemetry-collector.fullnameOverride | string | `"stackstate-otel-collector"` | Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | opentelemetry-collector.image.repository | string | `"quay.io/stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
-| opentelemetry-collector.image.tag | string | `"v0.0.10"` | Container image tag for 'opentelemetry-collector' containers. |
+| opentelemetry-collector.image.tag | string | `"v0.0.11"` | Container image tag for 'opentelemetry-collector' containers. |
 | opentelemetry-collector.mode | string | `"statefulset"` | deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset". |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.check_names" | string | `"[\"openmetrics\"]"` |  |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.init_configs" | string | `"[{}]"` |  |
@@ -429,7 +435,7 @@ stackstate/stackstate
 | stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
-| stackstate.components.all.image.tag | string | `"6.0.0-snapshot.20240429182929-master-c400198"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
+| stackstate.components.all.image.tag | string | `"6.0.0-snapshot.20240506143049-master-7516b5c"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metricStore.queryApiEndpoint | string | `"stackstate-victoriametrics:8428"` | Host and port for promql api |
 | stackstate.components.all.metricStore.queryApiPath | string | `""` | Path under which `/api/v1/query` etc.. are accessible, the default ("") is fine for most stores |
@@ -444,6 +450,7 @@ stackstate/stackstate
 | stackstate.components.all.otelInstrumentation.enabled | bool | `false` |  |
 | stackstate.components.all.otelInstrumentation.otlpExporterEndpoint | string | `""` |  |
 | stackstate.components.all.otelInstrumentation.otlpExporterProtocol | string | `"grpc"` |  |
+| stackstate.components.all.otelInstrumentation.serviceNamespace | string | `"{{ printf \"%s-%s\" .Chart.Name .Release.Namespace }}"` |  |
 | stackstate.components.all.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.all.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
 | stackstate.components.all.securityContext.fsGroup | int | `65534` | The GID (group ID) used to mount volumes |
@@ -781,7 +788,7 @@ stackstate/stackstate
 | stackstate.stackpacks.image.pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.image.registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.image.repository | string | `"stackstate/stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.image.tag | string | `"20240417064719-master-f0aab11-selfhosted"` | Tag used for the `stackpacks` Docker image; |
+| stackstate.stackpacks.image.tag | string | `"20240501132616-master-1986372-selfhosted"` | Tag used for the `stackpacks` Docker image; |
 | stackstate.stackpacks.installed | list | `[]` | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) |
 | stackstate.stackpacks.pvc.size | string | `"1Gi"` |  |
 | stackstate.stackpacks.pvc.storageClass | string | `nil` |  |

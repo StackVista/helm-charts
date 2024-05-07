@@ -8,7 +8,7 @@ source "${dir}/util.sh"
 # shellcheck disable=SC1091
 source "${dir}/../util.sh"
 
-stackstate_master_tag=$(get_latest_master_version stackstate-server "$STACKSTATE_VERSION_REGEX")
+stackstate_master_tag=$(get_latest_master_version stackstate-receiver "$STACKSTATE_VERSION_REGEX")
 values_path="stable/stackstate-k8s/values.yaml"
 chart_path="stable/stackstate-k8s/Chart.yaml"
 readme_path="stable/stackstate-k8s/README.md"

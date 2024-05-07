@@ -182,7 +182,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: 6.0.0-snapshot.20240429182929-master-c400198
+        tag: 6.0.0-snapshot.20240506143049-master-7516b5c
       # stackstate.components.all.podAnnotations -- Extra annotations
       podAnnotations: {}
       metrics:
@@ -200,6 +200,7 @@ stackstate:
         enabled: false
         otlpExporterEndpoint: ""
         otlpExporterProtocol: grpc
+        serviceNamespace: '{{ printf "%s-%s" .Chart.Name .Release.Namespace }}'
       securityContext:
         # stackstate.components.all.securityContext.enabled -- Whether or not to enable the securityContext
         enabled: true
@@ -1181,7 +1182,7 @@ stackstate:
       # stackstate.stackpacks.image.repository -- Repository of the `stackpacks` Docker image.
       repository: stackstate/stackpacks
       # stackstate.stackpacks.image.tag -- Tag used for the `stackpacks` Docker image;
-      tag: "20240417064719-master-f0aab11-selfhosted"
+      tag: "20240501132616-master-1986372-selfhosted"
     s3:
       # stackstate.stackpacks.s3.bucket -- Name of the S3 bucket to use as source for stackpacks.
       bucket: "sts-stackpacks-prod"
@@ -1272,7 +1273,7 @@ hbase:
       agentAnnotationsEnabled: true
   stackgraph:
     # hbase.stackgraph.version -- The StackGraph server version, must be compatible with the StackState version
-    version: 7.2.1
+    version: 7.3.1
   console:
     # hbase.console.enabled -- Enabled by default for debugging, but with 0 replicas. Manually scale up to 1 replica and open a shell in the container to access the stackgraph console.
     enabled: true
@@ -1998,7 +1999,7 @@ opentelemetry-collector:
     # opentelemetry-collector.image.repository -- Repository where to get the image from.
     repository: quay.io/stackstate/sts-opentelemetry-collector
     # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: v0.0.10
+    tag: v0.0.11
   command:
     name: usr/bin/sts-opentelemetry-collector
   # opentelemetry-collector.fullnameOverride -- Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
@@ -2038,8 +2039,9 @@ opentelemetry-collector:
       servicegraph:
         latency_histogram_buckets: [2ms, 4ms, 6ms, 8ms, 10ms, 50ms, 100ms, 200ms, 400ms, 800ms, 1s, 1400ms, 2s, 5s, 10s, 15s, 30s]
         dimensions:
-          - service.instance.id
           - service.namespace
+          - service.instance.id
+          - sts_api_key
         store:
           ttl: 30s
           max_items: 50000
@@ -2056,6 +2058,10 @@ opentelemetry-collector:
       resource/removeStsApiKey:
         attributes:
           - key: sts_api_key
+            action: delete
+          - key: client_sts_api_key
+            action: delete
+          - key: server_sts_api_key
             action: delete
     exporters:
       clickhousests:
@@ -2133,6 +2139,7 @@ opentelemetry-collector:
         metrics/victoria-metrics:
           receivers:
             - forward
+            - servicegraph
           processors:
             - resource/removeStsApiKey
           exporters:
