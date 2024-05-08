@@ -2,7 +2,7 @@
 
 Helm chart for StackState for Kubernetes
 
-Current chart version is `1.10.1-bram`
+Current chart version is `1.10.1-pre.60`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -12,14 +12,14 @@ Current chart version is `1.10.1-bram`
 |------------|------|---------|
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.11.4-stackstate.2 |
-| file://../hbase/ | hbase | 0.2.6-bram |
+| file://../hbase/ | hbase | 0.2.7 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.8 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.6 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.6 |
 | https://charts.bitnami.com/bitnami | clickhouse | 3.6.9 |
-| https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.137 |
+| https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.141 |
 | https://open-telemetry.github.io/opentelemetry-helm-charts | opentelemetry-collector | 0.80.0 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
