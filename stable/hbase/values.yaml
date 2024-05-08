@@ -44,7 +44,7 @@ stackgraph:
     # stackgraph.image.pullPolicy -- The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below).
     pullPolicy: IfNotPresent
   # stackgraph.version -- Version of stackgraph to use
-  version: 7.3.1
+  version: 7.3.2
 console:
   # console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
   enabled: true
