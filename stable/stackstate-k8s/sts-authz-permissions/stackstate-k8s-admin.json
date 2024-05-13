@@ -7,9 +7,11 @@
         "execute-component-actions",
         "execute-component-templates",
         "execute-node-sync",
+        "export-settings",
         "manage-annotations",
         "manage-ingestion-api-keys",
         "manage-monitors",
+        "manage-notifications",
         "manage-service-tokens",
         "manage-stackpacks",
         "manage-star-view",
@@ -18,12 +20,15 @@
         "perform-custom-query",
         "read-metrics",
         "read-permissions",
+        "read-settings",
         "read-stackpacks",
         "read-telemetry-streams",
         "read-traces",
         "run-monitors",
         "update-permissions",
-        "update-visualization"
+        "update-visualization",
+        "view-monitors",
+        "view-notifications"
     ],
     "viewPermissions" : [ "access-view", "save-view", "delete-view" ]
 }
