@@ -1,6 +1,7 @@
 {
     "systemPermissions": [
         "export-settings",
+        "view-metric-bindings",
         "view-monitors",
         "view-notifications"
     ],

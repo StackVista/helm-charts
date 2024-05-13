@@ -10,6 +10,7 @@
         "export-settings",
         "manage-annotations",
         "manage-ingestion-api-keys",
+        "manage-metric-bindings",
         "manage-monitors",
         "manage-notifications",
         "manage-service-tokens",
@@ -27,6 +28,7 @@
         "run-monitors",
         "update-permissions",
         "update-visualization",
+        "view-metric-bindings",
         "view-monitors",
         "view-notifications"
     ],

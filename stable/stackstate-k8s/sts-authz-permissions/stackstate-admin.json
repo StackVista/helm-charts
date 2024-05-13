@@ -16,6 +16,7 @@
         "import-settings",
         "manage-annotations",
         "manage-ingestion-api-keys",
+        "manage-metric-bindings",
         "manage-monitors",
         "manage-notifications",
         "manage-service-tokens",
@@ -35,6 +36,7 @@
         "update-settings",
         "update-visualization",
         "upload-stackpacks",
+        "view-metric-bindings",
         "view-monitors",
         "view-notifications"
     ],

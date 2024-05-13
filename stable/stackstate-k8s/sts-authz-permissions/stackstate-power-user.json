@@ -14,6 +14,7 @@
         "export-settings",
         "import-settings",
         "manage-annotations",
+        "manage-metric-bindings",
         "manage-monitors",
         "manage-notifications",
         "manage-stackpacks",
@@ -30,6 +31,7 @@
         "run-monitors",
         "update-settings",
         "update-visualization",
+        "view-metric-bindings",
         "view-monitors",
         "view-notifications"
     ],

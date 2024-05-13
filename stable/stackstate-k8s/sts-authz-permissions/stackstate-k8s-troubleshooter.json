@@ -16,6 +16,7 @@
         "read-traces",
         "run-monitors",
         "update-visualization",
+        "view-metric-bindings",
         "view-monitors",
         "view-notifications"
     ],
