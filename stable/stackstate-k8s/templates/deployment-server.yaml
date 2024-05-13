@@ -24,11 +24,7 @@ env:
 - name: CONFIG_FORCE_stackstate_yaml_codePointLimit
   value: "{{ include "stackstate.server.yaml.maxSizeLimit" . }}"
 {{ end }}
-- name: API_KEY
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" . }}-receiver
-      key: sts-receiver-api-key
+{{- include "stackstate.deployment.optional.apiKey.env" . }}
 - name: ELASTICSEARCH_URI
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS

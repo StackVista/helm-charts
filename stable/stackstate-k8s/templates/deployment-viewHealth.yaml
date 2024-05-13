@@ -21,11 +21,7 @@ env:
 {{- include "stackstate.authentication.envvars" . }}
 {{- include "stackstate.baseurls.envvars" . }}
 {{- include "stackstate.metricstore.envvar" . }}
-- name: API_KEY
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" . }}-receiver
-      key: sts-receiver-api-key
+{{- include "stackstate.deployment.optional.apiKey.env" . }}
 - name: ELASTICSEARCH_URI
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS

@@ -4,6 +4,8 @@
 global:
   # global.receiverApiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
   receiverApiKey: ""
+  # global.onlyIngestionApiKey -- Disable Receiver  API Key, the application will accept only Ingestion API Keys
+  onlyIngestionApiKey: false
   # global.imagePullSecrets -- List of image pull secret names to be used by all images across all charts.
   imagePullSecrets: []
   # global.storageClass -- StorageClass for all PVCs created by the chart. Can be overriden per PVC.
