@@ -1,8 +1,8 @@
 {
     "systemPermissions": [
         "export-settings",
-        "view-notifications",
-        "view-monitors"
+        "view-monitors",
+        "view-notifications"
     ],
     "viewPermissions" : []
 }

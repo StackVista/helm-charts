@@ -1,17 +1,17 @@
 {
     "systemPermissions": [
-        "access-explore",
         "access-cli",
-        "perform-custom-query",
-        "manage-star-view",
-        "read-permissions",
-        "update-visualization",
-        "read-telemetry-streams",
+        "access-explore",
         "execute-component-actions",
+        "manage-star-view",
+        "perform-custom-query",
         "read-metrics",
-        "read-traces",
-        "view-monitors",
+        "read-permissions",
         "read-settings",
+        "read-telemetry-streams",
+        "read-traces",
+        "update-visualization",
+        "view-monitors",
         "view-notifications"
     ],
     "viewPermissions": ["access-view"]
