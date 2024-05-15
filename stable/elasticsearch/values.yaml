@@ -286,9 +286,6 @@ prometheus-elasticsearch-exporter:
     repository: quay.io/stackstate/elasticsearch-exporter
     # prometheus-elasticsearch-exporter.image.tag -- Elastichsearch Prometheus exporter image tag
     tag: v1.7.0-03d6f56d
-  securityContext:
-    # prometheus-elasticsearch-exporter.securityContext.enabled -- Set to `false` for OpenShift compatibility
-    enabled: true
   servicemonitor:
   # prometheus-elasticsearch-exporter.servicemonitor.enabled -- enable to create a servicemonitor for prometheus operator
     enabled: false

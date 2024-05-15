@@ -1,6 +1,6 @@
 # elasticsearch
 
-![Version: 8.11.4-stackstate.2](https://img.shields.io/badge/Version-8.11.4--stackstate.2-informational?style=flat-square) ![AppVersion: 8.11.4](https://img.shields.io/badge/AppVersion-8.11.4-informational?style=flat-square)
+![Version: 8.11.4-stackstate.3](https://img.shields.io/badge/Version-8.11.4--stackstate.3-informational?style=flat-square) ![AppVersion: 8.11.4](https://img.shields.io/badge/AppVersion-8.11.4-informational?style=flat-square)
 Official Elastic helm chart for Elasticsearch
 **Homepage:** <https://github.com/elastic/helm-charts>
 ## Maintainers
@@ -86,7 +86,6 @@ Official Elastic helm chart for Elasticsearch
 | prometheus-elasticsearch-exporter.image.repository | string | `"quay.io/stackstate/elasticsearch-exporter"` | Elastichsearch Prometheus exporter image repository |
 | prometheus-elasticsearch-exporter.image.tag | string | `"v1.7.0-03d6f56d"` | Elastichsearch Prometheus exporter image tag |
 | prometheus-elasticsearch-exporter.podAnnotations | object | `{}` | custom annotations on the pod |
-| prometheus-elasticsearch-exporter.securityContext.enabled | bool | `true` | Set to `false` for OpenShift compatibility |
 | prometheus-elasticsearch-exporter.servicemonitor.enabled | bool | `false` | enable to create a servicemonitor for prometheus operator |
 | protocol | string | `"http"` |  |
 | rbac.create | bool | `false` |  |

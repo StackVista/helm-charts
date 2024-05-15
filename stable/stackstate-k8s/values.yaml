@@ -1241,6 +1241,8 @@ elasticsearch:
         storage: 250Gi
   prometheus-elasticsearch-exporter:
     enabled: true
+    # elasticsearch.prometheus-elasticsearch-exporter.podSecurityContext -- Set to "" for OpenShift compatibility
+    # podSecurityContext: ""
     serviceMonitor:
       enabled: false
       # elasticsearch.prometheus-elasticsearch-exporter.serviceMonitor.labels -- Labels for the service monitor
