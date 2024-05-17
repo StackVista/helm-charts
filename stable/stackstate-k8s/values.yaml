@@ -184,7 +184,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: 6.0.0-snapshot.20240517120700-master-02fc190
+        tag: 6.0.0-snapshot.20240517145735-master-83b8504
       # stackstate.components.all.podAnnotations -- Extra annotations
       podAnnotations: {}
       metrics:
@@ -2070,7 +2070,7 @@ opentelemetry-collector:
             action: delete
           - key: server_sts_api_key
             action: delete
-      transform/semconv:  # extension point to massage data so it conforms to the semantic conventions
+      transform/semconv: # extension point to massage data so it conforms to the semantic conventions
         error_mode: ignore
     exporters:
       clickhousests:
