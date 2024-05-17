@@ -107,14 +107,14 @@ spec:
         - alert: VictoriaMetricsTooHighChurnRate24h
           expr: |
             sum(increase(vm_new_timeseries_created_total[24h])) by(instance,namespace)
-            >
-            (sum(vm_cache_entries{type="storage/hour_metric_ids"}) by(instance,namespace) * 4)
+            /
+            sum(max_over_time(vm_cache_entries{type="storage/hour_metric_ids"}[24h])*4) by (instance,namespace) > 1
           for: 15m
           labels:
             severity: warning
           annotations:
             summary: {{` 'Too high number of new series on {{ $labels.namespace }}/{{ $labels.instance }} created over last 24h' `}}
-            description: {{` "The number of created new time series over last 24h is 3x times higher than
+            description: {{` "The number of created new time series over last 24h is 4x times higher than
               current number of active series on {{ $labels.namespace }}/{{ $labels.instance }}.\n
               This effect is known as Churn Rate.\n
               High Churn Rate tightly connected with database performance and may
