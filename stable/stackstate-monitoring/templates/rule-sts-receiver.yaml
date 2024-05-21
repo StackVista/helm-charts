@@ -35,7 +35,7 @@ spec:
             message: {{`The receiver in {{ $labels.namespace }}, path {{ $labels.path }}, has high element hourly budget saturation level {{ $value }}.`}}
           expr: |
             stackstate_receiver_element_create_passed_count{namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="receiver"} / stackstate_receiver_element_create_passed_max{namespace=~{{ .Values.rules.namespaceRegex | quote }}, app_component="receiver"} > 0.95
-          for: 30Mm
+          for: 30m
           labels:
             severity: warning
             alert_resource: {{` '{{ $labels.service }}' `}}
