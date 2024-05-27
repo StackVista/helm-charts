@@ -70,6 +70,9 @@ spec:
           labels:
             severity: warning
             alert_resource: {{` '{{ $labels.service }}' `}}
+{{- end }}
+
+{{/* Disabled until the alert or metric is fixed
         - alert: StackStateCorrelateLatency
           annotations:
             message: {{`Data ingestion for {{$labels.namespace }}, topic {{$labels.topic}} and service {{ $labels.service }} is lagging behind by {{ $value | humanizeDuration }}.`}}
@@ -79,4 +82,4 @@ spec:
           labels:
             severity: warning
             alert_resource: {{` '{{ $labels.service }}' `}}
-{{- end }}
+*/}}

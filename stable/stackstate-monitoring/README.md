@@ -2,7 +2,7 @@
 
 Helm chart for Monitoring Dashboards
 
-Current chart version is `1.1.9`
+Current chart version is `1.1.10`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
