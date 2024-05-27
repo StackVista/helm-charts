@@ -2055,7 +2055,7 @@ clickhouse:
   # clickhouse.shards -- Number of ClickHouse shards to deploy
   shards: 1
   # clickhouse.replicaCount -- Number of ClickHouse replicas per shard to deploy
-  replicaCount: 1
+  replicaCount: 3
   externalZookeeper:
     # clickhouse.externalZookeeper.servers -- External Zookeeper configuration.
     servers:
@@ -2082,6 +2082,31 @@ clickhouse:
     username: admin
     # clickhouse.auth.password -- ClickHouse Admin password. If left empty the random value is generated.
     password: admin
+
+  # clickhouse.extraOverrides -- Extra configuration overrides (evaluated as a template) apart from the default. This configuration deploys ClickHouse in the cluster mode even if there is only one node.
+  extraOverrides: |
+    <clickhouse>
+      <!-- Cluster configuration - Any update of the shards and replicas requires helm upgrade -->
+      <remote_servers>
+        <default>
+          {{- $shards := $.Values.shards | int }}
+          {{- range $shard, $e := until $shards }}
+          <shard>
+              {{- $replicas := $.Values.replicaCount | int }}
+              {{- range $i, $_e := until $replicas }}
+              <replica>
+                  <host>{{ printf "%s-shard%d-%d.%s.%s.svc.%s" (include "common.names.fullname" $ ) $shard $i (include "clickhouse.headlessServiceName" $) (include "common.names.namespace" $) $.Values.clusterDomain }}</host>
+                  <port>{{ $.Values.service.ports.tcp }}</port>
+                  <user from_env="CLICKHOUSE_ADMIN_USER"></user>
+                  <password from_env="CLICKHOUSE_ADMIN_PASSWORD"></password>
+              </replica>
+              {{- end }}
+          </shard>
+          {{- end }}
+        </default>
+      </remote_servers>
+    </clickhouse>
+
   # clickhouse.usersExtraOverrides -- Users extra configuration overrides.
   usersExtraOverrides: |
     <clickhouse>

@@ -123,6 +123,7 @@ stackstate/stackstate
 | clickhouse.enabled | bool | `false` | Enable / disable chart-based Clickhouse. |
 | clickhouse.externalZookeeper.port | int | `2181` |  |
 | clickhouse.externalZookeeper.servers | list | `["stackstate-zookeeper-headless"]` | External Zookeeper configuration. |
+| clickhouse.extraOverrides | string | `"<clickhouse>\n  <!-- Cluster configuration - Any update of the shards and replicas requires helm upgrade -->\n  <remote_servers>\n    <default>\n      {{- $shards := $.Values.shards | int }}\n      {{- range $shard, $e := until $shards }}\n      <shard>\n          {{- $replicas := $.Values.replicaCount | int }}\n          {{- range $i, $_e := until $replicas }}\n          <replica>\n              <host>{{ printf \"%s-shard%d-%d.%s.%s.svc.%s\" (include \"common.names.fullname\" $ ) $shard $i (include \"clickhouse.headlessServiceName\" $) (include \"common.names.namespace\" $) $.Values.clusterDomain }}</host>\n              <port>{{ $.Values.service.ports.tcp }}</port>\n              <user from_env=\"CLICKHOUSE_ADMIN_USER\"></user>\n              <password from_env=\"CLICKHOUSE_ADMIN_PASSWORD\"></password>\n          </replica>\n          {{- end }}\n      </shard>\n      {{- end }}\n    </default>\n  </remote_servers>\n</clickhouse>\n"` | Extra configuration overrides (evaluated as a template) apart from the default. This configuration deploys ClickHouse in the cluster mode even if there is only one node. |
 | clickhouse.extraVolumes | list | `[{"configMap":{"name":"stackstate-clickhouse-backup"},"name":"clickhouse-backup-config"},{"configMap":{"defaultMode":360,"name":"stackstate-clickhouse-backup"},"name":"clickhouse-backup-scripts"}]` | extra volumes for ClickHouse Pods |
 | clickhouse.fullnameOverride | string | `"stackstate-clickhouse"` | Name override for clickhouse child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | clickhouse.image.registry | string | `"quay.io"` | Registry where to get the image from, the same registry will be used by clickhouse image and the backup tool. |
@@ -137,7 +138,7 @@ stackstate/stackstate
 | clickhouse.podAnnotations."ad.stackstate.com/clickhouse.init_configs" | string | `"[{}]"` |  |
 | clickhouse.podAnnotations."ad.stackstate.com/clickhouse.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8001/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"ClickHouseAsyncMetrics_*\", \"ClickHouseMetrics_*\", \"ClickHouseProfileEvents_*\"] } ]"` |  |
 | clickhouse.podAnnotations.checksum/stackstate-backup-config | string | `"{{ toJson .Values.backup | sha256sum }}"` |  |
-| clickhouse.replicaCount | int | `1` | Number of ClickHouse replicas per shard to deploy |
+| clickhouse.replicaCount | int | `3` | Number of ClickHouse replicas per shard to deploy |
 | clickhouse.resources.requests.cpu | string | `"500m"` |  |
 | clickhouse.resources.requests.memory | string | `"1Gi"` |  |
 | clickhouse.restore.enabled | bool | `false` | Enable ClickHouse restore functionality (if `backup.enabled` is set to `true`). |
