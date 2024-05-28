@@ -2070,7 +2070,8 @@ opentelemetry-collector:
             action: delete
           - key: server_sts_api_key
             action: delete
-      transform/semconv: # extension point to massage data so it conforms to the semantic conventions
+      # extension point to massage data so it conforms to the semantic conventions
+      transform/semconv:
         error_mode: ignore
     exporters:
       clickhousests:
