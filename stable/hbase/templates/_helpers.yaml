@@ -248,3 +248,14 @@ Console extra environment variables for all processes inherited through `console
   {{- end }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Derive hadoop version
+*/}}
+{{- define "hdfs.version" -}}
+{{- if eq .Values.version "2.5" }}
+{{- "3.3.5" }}
+{{- else }}
+{{- "2.10.2" }}
+{{- end }}
+{{- end -}}

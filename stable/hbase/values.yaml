@@ -174,6 +174,7 @@ hbase:
     # hbase.zookeeper.quorum -- Zookeeper quorum used for single-node Zookeeper installations; not used if `zookeeper.replicaCount` is more than `1`.
     quorum: hbase
 hdfs:
+  version: java11-7-6a50c2a4
   # hdfs.minReplication -- Sets the minimum synchronous replication that the namenode will enforce when writing a block. This gives guarantees about the amount of copies of a single block. (If hdfs.datanode.replicaCount is set to a value less than this, the replicationfactor will be equal to the replicaCount.)
   minReplication: 1
   scc:
@@ -185,7 +186,7 @@ hdfs:
     # hdfs.image.repository -- Base container image repository for HDFS datanode.
     repository: stackstate/hadoop
     # hdfs.image.tag -- Default container image tag for HDFS datanode.
-    tag: 2.10.2-java11-7-6a50c2a4
+    tag:
   volumePermissions:
     # hdfs.volumePermissions.enabled -- Whether to explicitly change the volume permissions for the data/name nodes. If permissions on volume mounts are not correct for whatever reason this can be used to set them properly. Usually also requires enabling the securityContext because root user is required.
     enabled: false

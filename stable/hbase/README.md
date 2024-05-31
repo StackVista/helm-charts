@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.2.9`
+Current chart version is `0.2.10`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -89,7 +89,7 @@ Current chart version is `0.2.9`
 | hdfs.datanode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.image.pullPolicy | string | `"IfNotPresent"` | Pull policy for HDFS datanode. |
 | hdfs.image.repository | string | `"stackstate/hadoop"` | Base container image repository for HDFS datanode. |
-| hdfs.image.tag | string | `"2.10.2-java11-7-6a50c2a4"` | Default container image tag for HDFS datanode. |
+| hdfs.image.tag | string | `nil` | Default container image tag for HDFS datanode. |
 | hdfs.minReplication | int | `1` | Sets the minimum synchronous replication that the namenode will enforce when writing a block. This gives guarantees about the amount of copies of a single block. (If hdfs.datanode.replicaCount is set to a value less than this, the replicationfactor will be equal to the replicaCount.) |
 | hdfs.namenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.namenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -117,6 +117,7 @@ Current chart version is `0.2.9`
 | hdfs.securityContext.fsGroup | int | `65534` |  |
 | hdfs.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | hdfs.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
+| hdfs.version | string | `"java11-7-6a50c2a4"` |  |
 | hdfs.volumePermissions.enabled | bool | `false` | Whether to explicitly change the volume permissions for the data/name nodes. If permissions on volume mounts are not correct for whatever reason this can be used to set them properly. Usually also requires enabling the securityContext because root user is required. |
 | hdfs.volumePermissions.securityContext.allowPrivilegeEscalation | bool | `true` | Run the volumePermissions init container with privilege escalation mode (Do not change unless instructed) |
 | hdfs.volumePermissions.securityContext.enabled | bool | `false` | Whether to add a securityContext to the volumePermissions init container |
