@@ -584,6 +584,7 @@ stackstate/stackstate
 | stackstate.components.initializer.sizing.javaHeapMemoryFraction | string | `"65"` |  |
 | stackstate.components.initializer.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.kafkaTopicCreate.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.kafkaTopicCreate.extraEnv.open | object | `{}` | Add additional environment variables to the pod |
 | stackstate.components.kafkaTopicCreate.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.registry | string | `"quay.io"` | Base container image registry for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.repository | string | `"stackstate/kafka"` | Base container image repository for kafka-topic-create containers. |

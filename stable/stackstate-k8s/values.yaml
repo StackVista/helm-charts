@@ -968,6 +968,9 @@ stackstate:
       # stackstate.components.viewHealth.additionalLogging -- Additional logback config
       additionalLogging: ""
     kafkaTopicCreate:
+      extraEnv:
+        # stackstate.components.kafkaTopicCreate.extraEnv.open -- Add additional environment variables to the pod
+        open: {}
       image:
         # stackstate.components.kafkaTopicCreate.image.registry -- Base container image registry for kafka-topic-create containers.
         registry: quay.io
