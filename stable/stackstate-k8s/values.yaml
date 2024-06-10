@@ -1478,6 +1478,14 @@ kafka:
     initialDelaySeconds: 240
   # kafka.logRetentionHours -- The minimum age of a log file to be eligible for deletion due to age.
   logRetentionHours: 24
+  service:
+    annotations:
+      # Change http metric threshold, because kafka jmx metrics can become wuite slow. Now something we fix now, it does not do harm: https://github.com/prometheus/jmx_exporter/issues/955
+      monitor.kubernetes-v2.stackstate.io/http-response-time: '{ "threshold": 10.0 }'
+    headless:
+      annotations:
+        # Change http metric threshold, because kafka jmx metrics can become wuite slow. Now something we fix now, it does not do harm: https://github.com/prometheus/jmx_exporter/issues/955
+        monitor.kubernetes-v2.stackstate.io/http-response-time: '{ "threshold": 10.0 }'
   metrics:
     kafka:
       # kafka.metrics.kafka.enabled -- Whether or not to create a standalone Kafka exporter to expose Kafka metrics.
@@ -1485,6 +1493,10 @@ kafka:
     jmx:
       # kafka.metrics.jmx.enabled -- Whether or not to expose JMX metrics to Prometheus.
       enabled: true
+      service:
+        annotations:
+          # Change http metric threshold, because kafka jmx metrics can become wuite slow. Now something we fix now, it does not do harm: https://github.com/prometheus/jmx_exporter/issues/955
+          monitor.kubernetes-v2.stackstate.io/http-response-time: '{ "threshold": 10.0 }'
       image:
         # kafka.metrics.jmx.image.registry -- Kafka JMX exporter image registry
         registry: quay.io

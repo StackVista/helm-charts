@@ -245,6 +245,7 @@ stackstate/stackstate
 | kafka.metrics.jmx.resources.requests.cpu | string | `"200m"` |  |
 | kafka.metrics.jmx.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | kafka.metrics.jmx.resources.requests.memory | string | `"300Mi"` |  |
+| kafka.metrics.jmx.service.annotations."monitor.kubernetes-v2.stackstate.io/http-response-time" | string | `"{ \"threshold\": 10.0 }"` |  |
 | kafka.metrics.kafka.enabled | bool | `false` | Whether or not to create a standalone Kafka exporter to expose Kafka metrics. |
 | kafka.metrics.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` (also requires `kafka.metrics.kafka.enabled` or `kafka.metrics.jmx.enabled` to be `true`). |
 | kafka.metrics.serviceMonitor.interval | string | `"20s"` | How frequently to scrape metrics. |
@@ -259,6 +260,8 @@ stackstate/stackstate
 | kafka.readinessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
 | kafka.replicaCount | int | `3` | Number of Kafka replicas. |
 | kafka.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2Gi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2Gi"}}` | Kafka resources per pods. |
+| kafka.service.annotations."monitor.kubernetes-v2.stackstate.io/http-response-time" | string | `"{ \"threshold\": 10.0 }"` |  |
+| kafka.service.headless.annotations."monitor.kubernetes-v2.stackstate.io/http-response-time" | string | `"{ \"threshold\": 10.0 }"` |  |
 | kafka.topic.stsMetricsV2.partitionCount | int | `10` |  |
 | kafka.topicRetention | string | `"86400000"` | Max time in milliseconds to retain data in each topic. |
 | kafka.transactionStateLogReplicationFactor | int | `2` |  |
