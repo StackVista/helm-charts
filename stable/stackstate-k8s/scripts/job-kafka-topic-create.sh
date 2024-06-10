@@ -22,7 +22,7 @@ function createOrUpdateTopic() {
   PARTITION_ENV="KAFKA_PARTITIONS_$1"
 
   local topic=$1
-  local partitions=${!PARTITION_ENV:-2}
+  local partitions=${!PARTITION_ENV:-$2}
   local property=$3
 
   # shellcheck disable=SC2086
