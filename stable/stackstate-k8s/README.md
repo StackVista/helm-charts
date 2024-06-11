@@ -113,9 +113,14 @@ stackstate/stackstate
 | backup.stackGraph.splitArchiveSize | int | `0` | Split the Stackgraph dump into chunks of the specified size in bytes. Accepts an integer greater or equal to 0 with optional suffix K,M,G (powers of 1024) or KB,MB,GB (powers of 1000) If set to 0, the dump is not split. |
 | clickhouse.auth.password | string | `"admin"` | ClickHouse Admin password. If left empty the random value is generated. |
 | clickhouse.auth.username | string | `"admin"` | ClickHouse Admin username |
+| clickhouse.backup.bucketName | string | `"sts-clickhouse-backup"` | Name of the MinIO bucket where ClickHouse backups are stored. |
+| clickhouse.backup.config.keep_remote | int | `14` | how many latest backup should be kept on remote storage, 0 means all uploaded backups will be stored on remote storage. |
+| clickhouse.backup.enabled | bool | `false` | Enable scheduled backups of ClickHouse. It requires to be enabled MinIO 'backup.enabled'. |
+| clickhouse.backup.scheduled.schedule | string | `"45 * * * *"` | Cron schedule for automatic backups of ClickHouse |
 | clickhouse.enabled | bool | `false` | Enable / disable chart-based Clickhouse. |
 | clickhouse.externalZookeeper.port | int | `2181` |  |
 | clickhouse.externalZookeeper.servers | list | `["stackstate-zookeeper-headless"]` | External Zookeeper configuration. |
+| clickhouse.extraVolumes | list | `[{"configMap":{"name":"stackstate-clickhouse-backup"},"name":"clickhouse-backup-config"},{"configMap":{"defaultMode":360,"name":"stackstate-clickhouse-backup"},"name":"clickhouse-backup-scripts"}]` | extra volumes for ClickHouse Pods |
 | clickhouse.fullnameOverride | string | `"stackstate-clickhouse"` | Name override for clickhouse child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | clickhouse.image.registry | string | `"quay.io"` | Registry where to get the image from. |
 | clickhouse.image.repository | string | `"stackstate/clickhouse"` | Repository where to get the image from. |
@@ -128,7 +133,9 @@ stackstate/stackstate
 | clickhouse.replicaCount | int | `1` | Number of ClickHouse replicas per shard to deploy |
 | clickhouse.resources.requests.cpu | string | `"500m"` |  |
 | clickhouse.resources.requests.memory | string | `"1Gi"` |  |
+| clickhouse.restore.enabled | bool | `false` | Enable ClickHouse restore functionality (if `backup.enabled` is set to `true`). |
 | clickhouse.shards | int | `1` | Number of ClickHouse shards to deploy |
+| clickhouse.sidecars | list | `[{"command":["/app/entrypoint.sh"],"env":[{"name":"BACKUP_CLICKHOUSE_ENABLED","valueFrom":{"configMapKeyRef":{"key":"backup_enabled","name":"stackstate-clickhouse-backup"}}}],"image":"quay.io/stackstate/clickhouse-backup:2.5.13-b14dd66c","imagePullPolicy":"IfNotPresent","name":"backup","ports":[{"containerPort":9746,"name":"supercronic"}],"securityContext":{"runAsUser":1001},"volumeMounts":[{"mountPath":"/bitnami/clickhouse","name":"data"},{"mountPath":"/bitnami/clickhouse/etc/conf.d/default","name":"config"},{"mountPath":"/bitnami/clickhouse/etc/users.d/users-extra-configmap","name":"users-extra-config"},{"mountPath":"/etc/clickhouse-backup.yaml","name":"clickhouse-backup-config","subPath":"config.yaml"},{"mountPath":"/app/crontab/clickhouse-backup","name":"clickhouse-backup-config","subPath":"supercronic"},{"mountPath":"/app/entrypoint.sh","name":"clickhouse-backup-scripts","subPath":"entrypoint.sh"}]}]` | sidecar containers to run backups |
 | clickhouse.usersExtraOverrides | string | `"<clickhouse>\n  <users>\n    <stackstate>\n        <no_password></no_password>\n        <grants>\n            <query>GRANT ALL ON *.*</query>\n        </grants>\n    </stackstate>\n  </users>\n</clickhouse>\n"` | Users extra configuration overrides. |
 | clickhouse.volumePermissions.enabled | bool | `false` |  |
 | clickhouse.zookeeper.enabled | bool | `false` | Disable Zookeeper from the clickhouse chart **Don't change unless otherwise specified**. |

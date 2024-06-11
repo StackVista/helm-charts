@@ -59,6 +59,19 @@ if [ "${BACKUP_VICTORIA_METRICS_1_RESTORE_ENABLED}" == "true" ] || [ "${BACKUP_V
     fi
 fi
 
+if [ "${BACKUP_CLICKHOUSE_RESTORE_ENABLED}" == "true" ] || [ "${BACKUP_CLICKHOUSE_SCHEDULED_ENABLED}" == "true" ]; then
+    echo "=== Testing for existence of MinIO bucket \"${BACKUP_CLICKHOUSE_BUCKET_NAME}\"..."
+    if ! mc ls "minio/${BACKUP_CLICKHOUSE_BUCKET_NAME}" >/dev/null ; then
+        if [ "${BACKUP_CLICKHOUSE_SCHEDULED_ENABLED}" == "true" ]; then
+            echo "=== Creating MinIO bucket \"${BACKUP_CLICKHOUSE_BUCKET_NAME}\"..."
+            mc mb "minio/${BACKUP_CLICKHOUSE_BUCKET_NAME}"
+        else
+            echo "=== ERROR: MinIO bucket \"${BACKUP_CLICKHOUSE_BUCKET_NAME}\" does not exist. Restore functionality for ClickHouse will not function correctly"
+            exit 1
+        fi
+    fi
+fi
+
 if [ "${BACKUP_ELASTICSEARCH_RESTORE_ENABLED}" == "true" ] || [ "${BACKUP_ELASTICSEARCH_SCHEDULED_ENABLED}" == "true" ]; then
     echo "=== Testing for existence of MinIO bucket \"${BACKUP_ELASTICSEARCH_BUCKET_NAME}\"..."
     if ! mc ls "minio/${BACKUP_ELASTICSEARCH_BUCKET_NAME}" >/dev/null ; then

@@ -74,6 +74,12 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   value: {{ index .Values "victoria-metrics-1" "backup" "bucketName" | quote }}
 - name: BACKUP_VICTORIA_METRICS_1_RESTORE_ENABLED
   value: {{ index .Values "victoria-metrics-1" "restore" "enabled" | quote }}
+- name: BACKUP_CLICKHOUSE_BUCKET_NAME
+  value: {{ .Values.clickhouse.backup.bucketName | quote }}
+- name: BACKUP_CLICKHOUSE_RESTORE_ENABLED
+  value: {{ .Values.clickhouse.restore.enabled | quote }}
+- name: BACKUP_CLICKHOUSE_SCHEDULED_ENABLED
+  value: {{ .Values.clickhouse.backup.enabled | quote }}
 - name: MINIO_ENDPOINT
   value: {{ include "stackstate.minio.endpoint" . | quote }}
 {{- end -}}

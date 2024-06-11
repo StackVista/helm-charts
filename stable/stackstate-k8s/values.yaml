@@ -2100,6 +2100,67 @@ clickhouse:
     ad.stackstate.com/clickhouse.check_names: '["openmetrics"]'
     ad.stackstate.com/clickhouse.init_configs: "[{}]"
     ad.stackstate.com/clickhouse.instances: '[ { "prometheus_url": "http://%%host%%:8001/metrics", "namespace": "stackstate", "metrics": ["ClickHouseAsyncMetrics_*", "ClickHouseMetrics_*", "ClickHouseProfileEvents_*"] } ]'
+
+  # clickhouse.extraVolumes -- extra volumes for ClickHouse Pods
+  extraVolumes:
+    - name: clickhouse-backup-config
+      configMap:
+        name: stackstate-clickhouse-backup
+    - name: clickhouse-backup-scripts
+      configMap:
+        name: stackstate-clickhouse-backup
+        defaultMode: 0550
+  # clickhouse.sidecars -- sidecar containers to run backups
+  sidecars:
+    - name: backup
+      image: quay.io/stackstate/clickhouse-backup:2.5.13-b14dd66c
+      imagePullPolicy: IfNotPresent
+      command:
+        - /app/entrypoint.sh
+      securityContext:
+        runAsUser: 1001
+      ports:
+        - containerPort: 9746
+          name: supercronic
+      env:
+        - name: BACKUP_CLICKHOUSE_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              name: stackstate-clickhouse-backup
+              key: backup_enabled
+      volumeMounts:
+        - mountPath: /bitnami/clickhouse
+          name: data
+        - mountPath: /bitnami/clickhouse/etc/conf.d/default
+          name: config
+        # Uncomment when cluster is enabled
+#        - mountPath: /bitnami/clickhouse/etc/conf.d/extra-configmap
+#          name: extra-config
+        - mountPath: /bitnami/clickhouse/etc/users.d/users-extra-configmap
+          name: users-extra-config
+        - mountPath: /etc/clickhouse-backup.yaml
+          name: clickhouse-backup-config
+          subPath: config.yaml
+        - mountPath: /app/crontab/clickhouse-backup
+          name: clickhouse-backup-config
+          subPath: supercronic
+        - mountPath: /app/entrypoint.sh
+          name: clickhouse-backup-scripts
+          subPath: entrypoint.sh
+  backup:
+    # clickhouse.backup.enabled -- Enable scheduled backups of ClickHouse. It requires to be enabled MinIO 'backup.enabled'.
+    enabled: false
+    # clickhouse.backup.bucketName -- Name of the MinIO bucket where ClickHouse backups are stored.
+    bucketName: 'sts-clickhouse-backup'
+    config:
+      # clickhouse.backup.config.keep_remote -- how many latest backup should be kept on remote storage, 0 means all uploaded backups will be stored on remote storage.
+      keep_remote: 14
+    scheduled:
+      # clickhouse.backup.scheduled.schedule -- Cron schedule for automatic backups of ClickHouse
+      schedule: '45 * * * *'
+  restore:
+    # clickhouse.restore.enabled -- Enable ClickHouse restore functionality (if `backup.enabled` is set to `true`).
+    enabled: false
 opentelemetry:
   # opentelemetry.enabled -- Enable / disable chart-based OTEL.
   enabled: false
