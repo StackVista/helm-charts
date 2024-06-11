@@ -1480,11 +1480,11 @@ kafka:
   logRetentionHours: 24
   service:
     annotations:
-      # Change http metric threshold, because kafka jmx metrics can become wuite slow. Now something we fix now, it does not do harm: https://github.com/prometheus/jmx_exporter/issues/955
+      # Change http metric threshold, because kafka jmx metrics can become quite slow. Now something we fix now, it does not do harm: https://github.com/prometheus/jmx_exporter/issues/955
       monitor.kubernetes-v2.stackstate.io/http-response-time: '{ "deviatingThreshold": 10.0, "criticalThreshold": 10.0 }'
     headless:
       annotations:
-        # Change http metric threshold, because kafka jmx metrics can become wuite slow. Now something we fix now, it does not do harm: https://github.com/prometheus/jmx_exporter/issues/955
+        # Change http metric threshold, because kafka jmx metrics can become quite slow. Now something we fix now, it does not do harm: https://github.com/prometheus/jmx_exporter/issues/955
         monitor.kubernetes-v2.stackstate.io/http-response-time: '{ "deviatingThreshold": 10.0, "criticalThreshold": 10.0 }'
   metrics:
     kafka:
@@ -1495,7 +1495,7 @@ kafka:
       enabled: true
       service:
         annotations:
-          # Change http metric threshold, because kafka jmx metrics can become wuite slow. Now something we fix now, it does not do harm: https://github.com/prometheus/jmx_exporter/issues/955
+          # Change http metric threshold, because kafka jmx metrics can become quite slow. Now something we fix now, it does not do harm: https://github.com/prometheus/jmx_exporter/issues/955
           monitor.kubernetes-v2.stackstate.io/http-response-time: '{ "deviatingThreshold": 10.0, "criticalThreshold": 10.0 }'
       image:
         # kafka.metrics.jmx.image.registry -- Kafka JMX exporter image registry
