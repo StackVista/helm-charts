@@ -6,10 +6,8 @@
 metadata:
   name: {{ template "common.fullname.short" . }}-receiver{{ template "stackstate.receiver.name.postfix" .  }}
   labels:
-    app.kubernetes.io/component: receiver
-    {{- if .ReceiverType }}
-    app.kubernetes.io/role: {{ .ReceiverType }}
-    {{- end }}
+    app.kubernetes.io/component: receiver{{ template "stackstate.receiver.name.postfix" .  }}
+    app.kubernetes.io/component-group: receiver
 spec:
   ports:
     - name: receiver
@@ -23,10 +21,7 @@ spec:
       targetPort: metrics
   {{- end }}
   selector:
-    app.kubernetes.io/component: receiver
-    {{- if .ReceiverType }}
-    app.kubernetes.io/role: {{ .ReceiverType }}
-    {{- end }}
+    app.kubernetes.io/component: receiver{{ template "stackstate.receiver.name.postfix" .  }}
 {{- end -}}
 
 {{- $commonService := fromYaml (include "common.service" .) -}}
@@ -44,7 +39,7 @@ spec:
 {{- $stsstackstateReceiverProcessAgentService := fromYaml (include "stackstate.receiver.service" $receiverProcessAgentArgs) -}}
 {{ toYaml (merge $stsstackstateReceiverProcessAgentService $commonService) -}}
 {{ else }}
-{{- $receiverArgs := merge (dict "ReceiverType" "single") . -}}
+{{- $receiverArgs := merge (dict "ReceiverType" "") . -}}
 {{- $stsstackstateReceiverService := fromYaml (include "stackstate.receiver.service" $receiverArgs) -}}
 {{- toYaml (merge $stsstackstateReceiverService $commonService) }}
 {{- end -}}

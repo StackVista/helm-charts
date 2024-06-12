@@ -86,18 +86,13 @@ resources:
 metadata:
   name: {{ template "common.fullname.short" . }}-receiver{{ template "stackstate.receiver.name.postfix" . }}
   labels:
-    app.kubernetes.io/component: receiver
-    {{- if .ReceiverType }}
-    app.kubernetes.io/role: {{ .ReceiverType }}
-    {{- end }}
+    app.kubernetes.io/component: receiver{{ template "stackstate.receiver.name.postfix" . }}
+    app.kubernetes.io/component-group: receiver
 spec:
   replicas: {{ .Values.stackstate.components.receiver.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/component: receiver
-      {{- if .ReceiverType }}
-      app.kubernetes.io/role: {{ .ReceiverType }}
-      {{- end }}
+      app.kubernetes.io/component: receiver{{ template "stackstate.receiver.name.postfix" . }}
   strategy:
 {{- if eq (lower .Values.stackstate.components.all.deploymentStrategy.type) "recreatesingletonsonly" }}
     type: RollingUpdate
@@ -112,10 +107,8 @@ spec:
         {{- include "stackstate.receiver.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "receiver") .) }}
       labels:
-        app.kubernetes.io/component: receiver
-        {{- if .ReceiverType }}
-        app.kubernetes.io/role: {{ .ReceiverType }}
-        {{- end }}
+        app.kubernetes.io/component: receiver{{ template "stackstate.receiver.name.postfix" . }}
+        app.kubernetes.io/component-group: receiver
     spec:
       {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
       initContainers:
@@ -171,7 +164,7 @@ spec:
 {{- $receiverProcessAgentDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverProcessAgentArgs) -}}
 {{ toYaml (merge $receiverProcessAgentDeployment $commonDeployment) }}
 {{ else }}
-{{- $receiverArgs := merge (dict "ReceiverType" "single") . -}}
+{{- $receiverArgs := merge (dict "ReceiverType" "") . -}}
 {{- $receiverDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverArgs) -}}
 {{- toYaml (merge $receiverDeployment $commonDeployment) }}
 {{- end }}

@@ -130,12 +130,12 @@ data:
                       prefix: "/stsAgent"
                     route:
                       timeout: 0s
-                      cluster: "{{ template "common.fullname.short" . }}-receiver-single"
+                      cluster: "{{ template "common.fullname.short" . }}-receiver"
                   - match:
                       prefix: "/receiver/"
                     route:
                       timeout: 0s
-                      cluster: "{{ template "common.fullname.short" . }}-receiver-single"
+                      cluster: "{{ template "common.fullname.short" . }}-receiver"
                       prefix_rewrite: "/"
                   {{- end }}
                   - match:
@@ -220,18 +220,18 @@ data:
                     address: "{{ template "common.fullname.short" . }}-receiver-base"
                     port_value: 7077
       {{- else }}
-      - name: "{{ template "common.fullname.short" . }}-receiver-single"
+      - name: "{{ template "common.fullname.short" . }}-receiver"
         type: STRICT_DNS
         lb_policy: LEAST_REQUEST
         connect_timeout: 2s
         load_assignment:
-          cluster_name: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-receiver-single"
+          cluster_name: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-receiver"
           endpoints:
           - lb_endpoints:
             - endpoint:
                 address:
                   socket_address:
-                    address: "{{ template "common.fullname.short" . }}-receiver-single"
+                    address: "{{ template "common.fullname.short" . }}-receiver"
                     port_value: 7077
       {{- end }}
       - name: "{{ template "common.fullname.short" . }}-ui"
