@@ -88,7 +88,7 @@ metadata:
   labels:
     app.kubernetes.io/component: receiver
     {{- if .ReceiverType }}
-    app.stackstate.io/receiver-type: {{ .ReceiverType }}
+    app.kubernetes.io/role: {{ .ReceiverType }}
     {{- end }}
 spec:
   replicas: {{ .Values.stackstate.components.receiver.replicaCount }}
@@ -96,7 +96,7 @@ spec:
     matchLabels:
       app.kubernetes.io/component: receiver
       {{- if .ReceiverType }}
-      app.stackstate.io/receiver-type: {{ .ReceiverType }}
+      app.kubernetes.io/role: {{ .ReceiverType }}
       {{- end }}
   strategy:
 {{- if eq (lower .Values.stackstate.components.all.deploymentStrategy.type) "recreatesingletonsonly" }}
@@ -114,7 +114,7 @@ spec:
       labels:
         app.kubernetes.io/component: receiver
         {{- if .ReceiverType }}
-        app.stackstate.io/receiver-type: {{ .ReceiverType }}
+        app.kubernetes.io/role: {{ .ReceiverType }}
         {{- end }}
     spec:
       {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
@@ -159,19 +159,19 @@ spec:
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 
 {{- if .Values.stackstate.components.receiver.split }}
-{{- $receiverBaseArgs := merge (dict "ReceiverType" "base" "ReceiverPostfix" "-base") . -}}
+{{- $receiverBaseArgs := merge (dict "ReceiverType" "base") . -}}
 {{- $receiverBaseDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverBaseArgs) -}}
 {{- toYaml (merge $receiverBaseDeployment $commonDeployment) }}
 ---
-{{- $receiverLogsArgs := merge (dict "ReceiverType" "logs" "ReceiverPostfix" "-logs") . -}}
+{{- $receiverLogsArgs := merge (dict "ReceiverType" "logs") . -}}
 {{- $receiverLogsDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverLogsArgs) -}}
 {{- toYaml (merge $receiverLogsDeployment $commonDeployment) }}
 ---
-{{- $receiverProcessAgentArgs := merge (dict "ReceiverType" "process-agent" "ReceiverPostfix" "-process-agent") . -}}
+{{- $receiverProcessAgentArgs := merge (dict "ReceiverType" "process-agent") . -}}
 {{- $receiverProcessAgentDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverProcessAgentArgs) -}}
 {{ toYaml (merge $receiverProcessAgentDeployment $commonDeployment) }}
 {{ else }}
-{{- $receiverArgs := merge (dict "ReceiverType" "" "ReceiverPostfix" "") . -}}
+{{- $receiverArgs := merge (dict "ReceiverType" "single") . -}}
 {{- $receiverDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverArgs) -}}
 {{- toYaml (merge $receiverDeployment $commonDeployment) }}
 {{- end }}
