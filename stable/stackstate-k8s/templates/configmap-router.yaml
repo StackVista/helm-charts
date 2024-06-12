@@ -69,6 +69,63 @@ data:
                       timeout: 0s
                       cluster: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
                       prefix_rewrite: "/api/metrics/"
+                  {{ if .Values.stackstate.components.receiver.split -}}
+                  - match:
+                      prefix: "/stsAgent/api/v1/connections"
+                    route:
+                      timeout: 0s
+                      cluster: "{{ template "common.fullname.short" . }}-receiver-process-agent"
+                  - match:
+                      prefix: "/receiver/stsAgent/api/v1/connections"
+                    route:
+                      timeout: 0s
+                      cluster: "{{ template "common.fullname.short" . }}-receiver-process-agent"
+                      prefix_rewrite: "/stsAgent/api/v1/connections"
+                  - match:
+                      prefix: "/stsAgent/api/v1/collector"
+                    route:
+                      timeout: 0s
+                      cluster: "{{ template "common.fullname.short" . }}-receiver-process-agent"
+                  - match:
+                      prefix: "/receiver/stsAgent/api/v1/collector"
+                    route:
+                      timeout: 0s
+                      cluster: "{{ template "common.fullname.short" . }}-receiver-process-agent"
+                      prefix_rewrite: "/stsAgent/api/v1/collector"
+                  - match:
+                      prefix: "/stsAgent/logs/k8s"
+                    route:
+                      timeout: 0s
+                      cluster: "{{ template "common.fullname.short" . }}-receiver-logs"
+                  - match:
+                      prefix: "/receiver/stsAgent/logs/k8s"
+                    route:
+                      timeout: 0s
+                      cluster: "{{ template "common.fullname.short" . }}-receiver-logs"
+                      prefix_rewrite: "/stsAgent/logs/k8s"
+                  - match:
+                      prefix: "/stsAgent/logs/openshift/loki/api/v1/push"
+                    route:
+                      timeout: 0s
+                      cluster: "{{ template "common.fullname.short" . }}-receiver-logs"
+                  - match:
+                      prefix: "/receiver/stsAgent/logs/openshift/loki/api/v1/push"
+                    route:
+                      timeout: 0s
+                      cluster: "{{ template "common.fullname.short" . }}-receiver-logs"
+                      prefix_rewrite: "/stsAgent/logs/openshift/loki/api/v1/push"
+                  - match:
+                      prefix: "/stsAgent"
+                    route:
+                      timeout: 0s
+                      cluster: "{{ template "common.fullname.short" . }}-receiver-base"
+                  - match:
+                      prefix: "/receiver/"
+                    route:
+                      timeout: 0s
+                      cluster: "{{ template "common.fullname.short" . }}-receiver-base"
+                      prefix_rewrite: "/"
+                  {{- else }}
                   - match:
                       prefix: "/stsAgent"
                     route:
@@ -80,6 +137,7 @@ data:
                       timeout: 0s
                       cluster: "{{ template "common.fullname.short" . }}-receiver"
                       prefix_rewrite: "/"
+                  {{- end }}
                   - match:
                       prefix: "/"
                     route:
@@ -121,6 +179,47 @@ data:
                   socket_address:
                     address: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-headless"
                     port_value: 7071
+      {{- if .Values.stackstate.components.receiver.split }}
+      - name: "{{ template "common.fullname.short" . }}-receiver-logs"
+        type: STRICT_DNS
+        lb_policy: LEAST_REQUEST
+        connect_timeout: 2s
+        load_assignment:
+          cluster_name: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-receiver-logs"
+          endpoints:
+          - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    address: "{{ template "common.fullname.short" . }}-receiver-logs"
+                    port_value: 7077
+      - name: "{{ template "common.fullname.short" . }}-receiver-process-agent"
+        type: STRICT_DNS
+        lb_policy: LEAST_REQUEST
+        connect_timeout: 2s
+        load_assignment:
+          cluster_name: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-receiver-process-agent"
+          endpoints:
+          - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    address: "{{ template "common.fullname.short" . }}-receiver-process-agent"
+                    port_value: 7077
+      - name: "{{ template "common.fullname.short" . }}-receiver-base"
+        type: STRICT_DNS
+        lb_policy: LEAST_REQUEST
+        connect_timeout: 2s
+        load_assignment:
+          cluster_name: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-receiver-base"
+          endpoints:
+          - lb_endpoints:
+            - endpoint:
+                address:
+                  socket_address:
+                    address: "{{ template "common.fullname.short" . }}-receiver-base"
+                    port_value: 7077
+      {{- else }}
       - name: "{{ template "common.fullname.short" . }}-receiver"
         type: STRICT_DNS
         lb_policy: LEAST_REQUEST
@@ -134,6 +233,7 @@ data:
                   socket_address:
                     address: "{{ template "common.fullname.short" . }}-receiver"
                     port_value: 7077
+      {{- end }}
       - name: "{{ template "common.fullname.short" . }}-ui"
         type: STRICT_DNS
         lb_policy: LEAST_REQUEST

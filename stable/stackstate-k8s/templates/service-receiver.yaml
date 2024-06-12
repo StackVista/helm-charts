@@ -1,8 +1,15 @@
+{{- define "stackstate.receiver.name.postfix" -}}
+  {{- if .ReceiverType }}-{{ .ReceiverType }}{{ else }}{{ end }}
+{{- end -}}
+
 {{- define "stackstate.receiver.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-receiver
+  name: {{ template "common.fullname.short" . }}-receiver{{ template "stackstate.receiver.name.postfix" .  }}
   labels:
     app.kubernetes.io/component: receiver
+    {{- if .ReceiverType }}
+    app.stackstate.io/receiver-type: {{ .ReceiverType }}
+    {{- end }}
 spec:
   ports:
     - name: receiver
@@ -17,8 +24,27 @@ spec:
   {{- end }}
   selector:
     app.kubernetes.io/component: receiver
+    {{- if .ReceiverType }}
+    app.stackstate.io/receiver-type: {{ .ReceiverType }}
+    {{- end }}
 {{- end -}}
 
 {{- $commonService := fromYaml (include "common.service" .) -}}
-{{- $stsstackstateReceiverService := fromYaml (include "stackstate.receiver.service" .) -}}
-{{- toYaml (merge $stsstackstateReceiverService $commonService) -}}
+
+{{- if .Values.stackstate.components.receiver.split }}
+{{- $receiverBaseArgs := merge (dict "ReceiverType" "base" "ReceiverPostfix" "-base") . -}}
+{{- $stsstackstateReceiverBaseService := fromYaml (include "stackstate.receiver.service" $receiverBaseArgs) -}}
+{{- toYaml (merge $stsstackstateReceiverBaseService $commonService) }}
+---
+{{- $receiverLogsArgs := merge (dict "ReceiverType" "logs" "ReceiverPostfix" "-logs") . -}}
+{{- $stsstackstateReceiverLogsService := fromYaml (include "stackstate.receiver.service" $receiverLogsArgs) -}}
+{{ toYaml (merge $stsstackstateReceiverLogsService $commonService) }}
+---
+{{- $receiverProcessAgentArgs := merge (dict "ReceiverType" "process-agent" "ReceiverPostfix" "-process-agent") . -}}
+{{- $stsstackstateReceiverProcessAgentService := fromYaml (include "stackstate.receiver.service" $receiverProcessAgentArgs) -}}
+{{ toYaml (merge $stsstackstateReceiverProcessAgentService $commonService) -}}
+{{ else }}
+{{- $receiverArgs := merge (dict "ReceiverType" "" "ReceiverPostfix" "") . -}}
+{{- $stsstackstateReceiverService := fromYaml (include "stackstate.receiver.service" $receiverArgs) -}}
+{{- toYaml (merge $stsstackstateReceiverService $commonService) }}
+{{- end -}}

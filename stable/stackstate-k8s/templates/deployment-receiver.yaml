@@ -1,6 +1,10 @@
 {{- define "stackstate.api.name" -}}
   {{- if .Values.stackstate.experimental.server.split }}api{{ else }}server{{ end }}
 {{- end -}}
+
+{{- define "stackstate.receiver.name.postfix" -}}
+  {{- if .ReceiverType }}-{{ .ReceiverType }}{{ else }}{{ end }}
+{{- end -}}
 {{- define "stackstate.receiver.deployment.container.init" -}}
 name: receiver-init
 command:
@@ -80,14 +84,20 @@ resources:
 {{- $overrideContainer := fromYaml (include "stackstate.receiver.deployment.container.init" .) -}}
 {{- $stsstackstateReceiverInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-receiver
+  name: {{ template "common.fullname.short" . }}-receiver{{ template "stackstate.receiver.name.postfix" . }}
   labels:
     app.kubernetes.io/component: receiver
+    {{- if .ReceiverType }}
+    app.stackstate.io/receiver-type: {{ .ReceiverType }}
+    {{- end }}
 spec:
   replicas: {{ .Values.stackstate.components.receiver.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/component: receiver
+      {{- if .ReceiverType }}
+      app.stackstate.io/receiver-type: {{ .ReceiverType }}
+      {{- end }}
   strategy:
 {{- if eq (lower .Values.stackstate.components.all.deploymentStrategy.type) "recreatesingletonsonly" }}
     type: RollingUpdate
@@ -103,6 +113,9 @@ spec:
         {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "receiver") .) }}
       labels:
         app.kubernetes.io/component: receiver
+        {{- if .ReceiverType }}
+        app.stackstate.io/receiver-type: {{ .ReceiverType }}
+        {{- end }}
     spec:
       {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
       initContainers:
@@ -144,5 +157,21 @@ spec:
 {{- end -}}
 
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
-{{- $receiverDeployment := fromYaml (include "stackstate.receiver.deployment" .) -}}
-{{- toYaml (merge $receiverDeployment $commonDeployment) -}}
+
+{{- if .Values.stackstate.components.receiver.split }}
+{{- $receiverBaseArgs := merge (dict "ReceiverType" "base" "ReceiverPostfix" "-base") . -}}
+{{- $receiverBaseDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverBaseArgs) -}}
+{{- toYaml (merge $receiverBaseDeployment $commonDeployment) }}
+---
+{{- $receiverLogsArgs := merge (dict "ReceiverType" "logs" "ReceiverPostfix" "-logs") . -}}
+{{- $receiverLogsDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverLogsArgs) -}}
+{{- toYaml (merge $receiverLogsDeployment $commonDeployment) }}
+---
+{{- $receiverProcessAgentArgs := merge (dict "ReceiverType" "process-agent" "ReceiverPostfix" "-process-agent") . -}}
+{{- $receiverProcessAgentDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverProcessAgentArgs) -}}
+{{ toYaml (merge $receiverProcessAgentDeployment $commonDeployment) }}
+{{ else }}
+{{- $receiverArgs := merge (dict "ReceiverType" "" "ReceiverPostfix" "") . -}}
+{{- $receiverDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverArgs) -}}
+{{- toYaml (merge $receiverDeployment $commonDeployment) }}
+{{- end }}

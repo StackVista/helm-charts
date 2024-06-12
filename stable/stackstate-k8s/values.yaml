@@ -592,6 +592,8 @@ stackstate:
       additionalLogging: ""
       # stackstate.components.notification.tmpToPVC -- Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage.
     receiver:
+      # stackstate.components.receiver.split -- Split the receiver into functional units for logs, intake and agent
+      split: false
       extraEnv:
         # stackstate.components.receiver.extraEnv.open -- Extra open environment variables to inject into pods.
         open: {}

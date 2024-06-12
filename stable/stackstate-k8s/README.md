@@ -638,6 +638,7 @@ stackstate/stackstate
 | stackstate.components.receiver.retention | int | `7` | Number of days to keep the logs data on Es |
 | stackstate.components.receiver.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
 | stackstate.components.receiver.sizing.javaHeapMemoryFraction | string | `"65"` |  |
+| stackstate.components.receiver.split | bool | `false` | Split the receiver into functional units for logs, intake and agent |
 | stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.router.accesslog.enabled | bool | `false` | Enable access logging on the router |
 | stackstate.components.router.affinity | object | `{}` | Affinity settings for pod assignment. |
