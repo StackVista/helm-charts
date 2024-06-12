@@ -644,11 +644,11 @@ stackstate:
         base:
           extraEnv:
             # stackstate.components.receiver.base.extraEnv.open -- Extra open environment variables to inject into pods. Will merge with stackstate.components.receiver.extraEnv.open
-            open: { }
+            open: {}
             # stackstate.components.receiver.base.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.receiver.extraEnv.secret
-            secret: { }
+            secret: {}
           # stackstate.components.receiver.basepodAnnotations -- Extra annotations
-          podAnnotations: { }
+          podAnnotations: {}
           # stackstate.components.receiver.base.resources -- Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources
           resources:
             limits:
@@ -665,19 +665,19 @@ stackstate:
           # stackstate.components.receiver.base.replicaCount -- Number of `base receiver` replicas.
           replicaCount: 1
           # stackstate.components.receiver.base.nodeSelector -- Additional dode labels for pod assignment.
-          nodeSelector: { }
+          nodeSelector: {}
           # stackstate.components.receiver.base.tolerations -- Additional toleration labels for pod assignment.
-          tolerations: [ ]
+          tolerations: []
           # stackstate.components.receiver.base.affinity -- Additional affinity settings for pod assignment.
-          affinity: { }
+          affinity: {}
         processAgent:
           extraEnv:
             # stackstate.components.receiver.processAgent.extraEnv.open -- Extra open environment variables to inject into pods. Will merge with stackstate.components.receiver.extraEnv.open
-            open: { }
+            open: {}
             # stackstate.components.receiver.processAgent.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.receiver.extraEnv.secret
-            secret: { }
+            secret: {}
           # stackstate.components.receiver.processAgentpodAnnotations -- Extra annotations
-          podAnnotations: { }
+          podAnnotations: {}
           # stackstate.components.receiver.processAgent.resources -- Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources
           resources:
             limits:
@@ -694,19 +694,19 @@ stackstate:
           # stackstate.components.receiver.processAgent.replicaCount -- Number of `processAgent receiver` replicas.
           replicaCount: 1
           # stackstate.components.receiver.processAgent.nodeSelector -- Additional dode labels for pod assignment.
-          nodeSelector: { }
+          nodeSelector: {}
           # stackstate.components.receiver.processAgent.tolerations -- Additional toleration labels for pod assignment.
-          tolerations: [ ]
+          tolerations: []
           # stackstate.components.receiver.processAgent.affinity -- Additional affinity settings for pod assignment.
-          affinity: { }
+          affinity: {}
         logs:
           extraEnv:
             # stackstate.components.receiver.logs.extraEnv.open -- Extra open environment variables to inject into pods. Will merge with stackstate.components.receiver.extraEnv.open
-            open: { }
+            open: {}
             # stackstate.components.receiver.logs.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.receiver.extraEnv.secret
-            secret: { }
+            secret: {}
           # stackstate.components.receiver.logspodAnnotations -- Extra annotations
-          podAnnotations: { }
+          podAnnotations: {}
           # stackstate.components.receiver.logs.resources -- Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources
           resources:
             limits:
@@ -723,11 +723,11 @@ stackstate:
           # stackstate.components.receiver.logs.replicaCount -- Number of `logs receiver` replicas.
           replicaCount: 1
           # stackstate.components.receiver.logs.nodeSelector -- Additional dode labels for pod assignment.
-          nodeSelector: { }
+          nodeSelector: {}
           # stackstate.components.receiver.logs.tolerations -- Additional toleration labels for pod assignment.
-          tolerations: [ ]
+          tolerations: []
           # stackstate.components.receiver.logs.affinity -- Additional affinity settings for pod assignment.
-          affinity: { }
+          affinity: {}
     router:
       accesslog:
         # stackstate.components.router.accesslog.enabled -- Enable access logging on the router
