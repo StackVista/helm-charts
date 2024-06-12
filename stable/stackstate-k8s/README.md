@@ -638,7 +638,52 @@ stackstate/stackstate
 | stackstate.components.receiver.retention | int | `7` | Number of days to keep the logs data on Es |
 | stackstate.components.receiver.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
 | stackstate.components.receiver.sizing.javaHeapMemoryFraction | string | `"65"` |  |
-| stackstate.components.receiver.split | bool | `false` | Split the receiver into functional units for logs, intake and agent |
+| stackstate.components.receiver.split.base.affinity | object | `{}` |  |
+| stackstate.components.receiver.split.base.extraEnv.open | object | `{}` |  |
+| stackstate.components.receiver.split.base.extraEnv.secret | object | `{}` |  |
+| stackstate.components.receiver.split.base.nodeSelector | object | `{}` |  |
+| stackstate.components.receiver.split.base.podAnnotations | object | `{}` |  |
+| stackstate.components.receiver.split.base.replicaCount | int | `1` |  |
+| stackstate.components.receiver.split.base.resources.limits.cpu | string | `nil` |  |
+| stackstate.components.receiver.split.base.resources.limits.ephemeral-storage | string | `nil` |  |
+| stackstate.components.receiver.split.base.resources.limits.memory | string | `nil` |  |
+| stackstate.components.receiver.split.base.resources.requests.cpu | string | `nil` |  |
+| stackstate.components.receiver.split.base.resources.requests.ephemeral-storage | string | `nil` |  |
+| stackstate.components.receiver.split.base.resources.requests.memory | string | `nil` |  |
+| stackstate.components.receiver.split.base.sizing.baseMemoryConsumption | string | `nil` |  |
+| stackstate.components.receiver.split.base.sizing.javaHeapMemoryFraction | string | `nil` |  |
+| stackstate.components.receiver.split.base.tolerations | list | `[]` |  |
+| stackstate.components.receiver.split.enabled | bool | `false` | Split the receiver into functional units for logs, intake and agent |
+| stackstate.components.receiver.split.logs.affinity | object | `{}` |  |
+| stackstate.components.receiver.split.logs.extraEnv.open | object | `{}` |  |
+| stackstate.components.receiver.split.logs.extraEnv.secret | object | `{}` |  |
+| stackstate.components.receiver.split.logs.nodeSelector | object | `{}` |  |
+| stackstate.components.receiver.split.logs.podAnnotations | object | `{}` |  |
+| stackstate.components.receiver.split.logs.replicaCount | int | `1` |  |
+| stackstate.components.receiver.split.logs.resources.limits.cpu | string | `nil` |  |
+| stackstate.components.receiver.split.logs.resources.limits.ephemeral-storage | string | `nil` |  |
+| stackstate.components.receiver.split.logs.resources.limits.memory | string | `nil` |  |
+| stackstate.components.receiver.split.logs.resources.requests.cpu | string | `nil` |  |
+| stackstate.components.receiver.split.logs.resources.requests.ephemeral-storage | string | `nil` |  |
+| stackstate.components.receiver.split.logs.resources.requests.memory | string | `nil` |  |
+| stackstate.components.receiver.split.logs.sizing.javaHeapMemoryFraction | string | `nil` |  |
+| stackstate.components.receiver.split.logs.sizing.logsMemoryConsumption | string | `nil` |  |
+| stackstate.components.receiver.split.logs.tolerations | list | `[]` |  |
+| stackstate.components.receiver.split.processAgent.affinity | object | `{}` |  |
+| stackstate.components.receiver.split.processAgent.extraEnv.open | object | `{}` |  |
+| stackstate.components.receiver.split.processAgent.extraEnv.secret | object | `{}` |  |
+| stackstate.components.receiver.split.processAgent.nodeSelector | object | `{}` |  |
+| stackstate.components.receiver.split.processAgent.podAnnotations | object | `{}` |  |
+| stackstate.components.receiver.split.processAgent.replicaCount | int | `1` |  |
+| stackstate.components.receiver.split.processAgent.resources.limits.cpu | string | `nil` |  |
+| stackstate.components.receiver.split.processAgent.resources.limits.ephemeral-storage | string | `nil` |  |
+| stackstate.components.receiver.split.processAgent.resources.limits.memory | string | `nil` |  |
+| stackstate.components.receiver.split.processAgent.resources.requests.cpu | string | `nil` |  |
+| stackstate.components.receiver.split.processAgent.resources.requests.ephemeral-storage | string | `nil` |  |
+| stackstate.components.receiver.split.processAgent.resources.requests.memory | string | `nil` |  |
+| stackstate.components.receiver.split.processAgent.sizing.javaHeapMemoryFraction | string | `nil` |  |
+| stackstate.components.receiver.split.processAgent.sizing.processAgentMemoryConsumption | string | `nil` |  |
+| stackstate.components.receiver.split.processAgent.tolerations | list | `[]` |  |
 | stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.router.accesslog.enabled | bool | `false` | Enable access logging on the router |
 | stackstate.components.router.affinity | object | `{}` | Affinity settings for pod assignment. |

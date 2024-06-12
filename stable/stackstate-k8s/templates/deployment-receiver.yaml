@@ -16,9 +16,11 @@ image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.com
 imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
 {{- end -}}
 
+
 {{- define "stackstate.receiver.deployment.container.main" -}}
 env:
-{{- $serviceConfig := dict "ServiceName" "receiver" "ServiceConfig" .Values.stackstate.components.receiver }}
+{{- $serviceTypeConfig := merge .TypeConfig (omit .Values.stackstate.components.receiver "split") }}
+{{- $serviceConfig := dict "ServiceName" "receiver" "ServiceConfig" $serviceTypeConfig }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 - name: ELASTICSEARCH_URI
   value: "http://{{ include "stackstate.es.endpoint" . }}"
@@ -71,7 +73,7 @@ readinessProbe:
     port: health
   initialDelaySeconds: 10
   timeoutSeconds: 5
-{{- with .Values.stackstate.components.receiver.resources }}
+{{- with (merge .TypeConfig.resources .Values.stackstate.components.receiver.resources) }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -89,7 +91,7 @@ metadata:
     app.kubernetes.io/component: receiver{{ template "stackstate.receiver.name.postfix" . }}
     app.kubernetes.io/component-group: receiver
 spec:
-  replicas: {{ .Values.stackstate.components.receiver.replicaCount }}
+  replicas: {{ .TypeConfig.replicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/component: receiver{{ template "stackstate.receiver.name.postfix" . }}
@@ -106,6 +108,9 @@ spec:
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.receiver.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "receiver") .) }}
+        {{- with .TypeConfig.podAnnotations }}
+        {{- toYaml . | nindent 8}}
+        {{- end }}
       labels:
         app.kubernetes.io/component: receiver{{ template "stackstate.receiver.name.postfix" . }}
         app.kubernetes.io/component-group: receiver
@@ -117,7 +122,7 @@ spec:
       - {{ toYaml $stsstackstateReceiverMainContainer | nindent 8 }}
       volumes:
         {{- include "stackstate.service.pod.volumes" (dict "pod_name" "receiver" "root" . ) | nindent 8 }}
-    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.receiver.nodeSelector }}
+    {{- if or .Values.stackstate.components.all.nodeSelector (or .Values.stackstate.components.receiver.nodeSelector .TypeConfig.nodeSelector) }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}
         {{- toYaml . | nindent 8 }}
@@ -125,8 +130,11 @@ spec:
       {{- with .Values.stackstate.components.receiver.nodeSelector }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .TypeConfig.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.receiver.affinity }}
+    {{- if or .Values.stackstate.components.all.affinity (or .Values.stackstate.components.receiver.affinity .TypeConfig.affinity) }}
       affinity:
       {{- with .Values.stackstate.components.all.affinity }}
         {{- toYaml . | nindent 8 }}
@@ -134,13 +142,19 @@ spec:
       {{- with .Values.stackstate.components.receiver.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .TypeConfig.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.receiver.tolerations }}
+    {{- if or .Values.stackstate.components.all.tolerations (or .Values.stackstate.components.receiver.tolerations .TypeConfig.tolerations) }}
       tolerations:
       {{- with .Values.stackstate.components.all.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.stackstate.components.receiver.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .TypeConfig.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
@@ -151,20 +165,20 @@ spec:
 
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 
-{{- if .Values.stackstate.components.receiver.split }}
-{{- $receiverBaseArgs := merge (dict "ReceiverType" "base") . -}}
+{{- if .Values.stackstate.components.receiver.split.enabled }}
+{{- $receiverBaseArgs := merge (dict "ReceiverType" "base" "TypeConfig" .Values.stackstate.components.receiver.split.base) . -}}
 {{- $receiverBaseDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverBaseArgs) -}}
 {{- toYaml (merge $receiverBaseDeployment $commonDeployment) }}
 ---
-{{- $receiverLogsArgs := merge (dict "ReceiverType" "logs") . -}}
+{{- $receiverLogsArgs := merge (dict "ReceiverType" "logs" "TypeConfig" .Values.stackstate.components.receiver.split.logs) . -}}
 {{- $receiverLogsDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverLogsArgs) -}}
 {{- toYaml (merge $receiverLogsDeployment $commonDeployment) }}
 ---
-{{- $receiverProcessAgentArgs := merge (dict "ReceiverType" "process-agent") . -}}
+{{- $receiverProcessAgentArgs := merge (dict "ReceiverType" "process-agent" "TypeConfig" .Values.stackstate.components.receiver.split.processAgent) . -}}
 {{- $receiverProcessAgentDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverProcessAgentArgs) -}}
 {{ toYaml (merge $receiverProcessAgentDeployment $commonDeployment) }}
 {{ else }}
-{{- $receiverArgs := merge (dict "ReceiverType" "") . -}}
+{{- $receiverArgs := merge (dict "ReceiverType" "" "TypeConfig" .Values.stackstate.components.receiver) . -}}
 {{- $receiverDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverArgs) -}}
 {{- toYaml (merge $receiverDeployment $commonDeployment) }}
 {{- end }}

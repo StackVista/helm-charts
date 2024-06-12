@@ -26,7 +26,7 @@ spec:
 
 {{- $commonService := fromYaml (include "common.service" .) -}}
 
-{{- if .Values.stackstate.components.receiver.split }}
+{{- if .Values.stackstate.components.receiver.split.enabled }}
 {{- $receiverBaseArgs := merge (dict "ReceiverType" "base") . -}}
 {{- $stsstackstateReceiverBaseService := fromYaml (include "stackstate.receiver.service" $receiverBaseArgs) -}}
 {{- toYaml (merge $stsstackstateReceiverBaseService $commonService) }}

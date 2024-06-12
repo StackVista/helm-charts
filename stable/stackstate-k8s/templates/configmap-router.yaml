@@ -69,7 +69,7 @@ data:
                       timeout: 0s
                       cluster: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
                       prefix_rewrite: "/api/metrics/"
-                  {{- if .Values.stackstate.components.receiver.split }}
+                  {{- if .Values.stackstate.components.receiver.split.enabled }}
                   - match:
                       prefix: "/stsAgent/api/v1/connections"
                     route:
