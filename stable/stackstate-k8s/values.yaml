@@ -2044,7 +2044,7 @@ victoria-metrics:
       runAsUser: 65534
 clickhouse:
   image:
-    # clickhouse.image.registry -- Registry where to get the image from.
+    # clickhouse.image.registry -- Registry where to get the image from, the same registry will be used by clickhouse image and the backup tool.
     registry: quay.io
     # clickhouse.image.repository -- Repository where to get the image from.
     repository: stackstate/clickhouse
@@ -2113,7 +2113,7 @@ clickhouse:
   # clickhouse.sidecars -- sidecar containers to run backups
   sidecars:
     - name: backup
-      image: quay.io/stackstate/clickhouse-backup:2.5.13-b14dd66c
+      image: "{{ .Values.image.registry }}/stackstate/clickhouse-backup:2.5.13-b14dd66c"
       imagePullPolicy: IfNotPresent
       command:
         - /app/entrypoint.sh
@@ -2128,6 +2128,13 @@ clickhouse:
             configMapKeyRef:
               name: stackstate-clickhouse-backup
               key: backup_enabled
+      resources:
+        requests:
+          memory: "{{ .Values.backup.resources.requests.memory }}"
+          cpu: "{{ .Values.backup.resources.requests.cpu }}"
+        limit:
+          memory: "{{ .Values.backup.resources.limit.memory }}"
+          cpu: "{{ .Values.backup.resources.limit.cpu }}"
       volumeMounts:
         - mountPath: /bitnami/clickhouse
           name: data
@@ -2153,11 +2160,19 @@ clickhouse:
     # clickhouse.backup.bucketName -- Name of the MinIO bucket where ClickHouse backups are stored.
     bucketName: 'sts-clickhouse-backup'
     config:
-      # clickhouse.backup.config.keep_remote -- how many latest backup should be kept on remote storage, 0 means all uploaded backups will be stored on remote storage.
+      # clickhouse.backup.config.keep_remote -- How many latest backup should be kept on remote storage, 0 means all uploaded backups will be stored on remote storage.
       keep_remote: 14
     scheduled:
       # clickhouse.backup.scheduled.schedule -- Cron schedule for automatic backups of ClickHouse
-      schedule: '45 * * * *'
+      schedule: '45 0 * * *'
+    # clickhouse.backup.resources -- Resources of the backup tool
+    resources:
+      requests:
+        memory: "250Mi"
+        cpu: "50m"
+      limit:
+        memory: "250Mi"
+        cpu: "100m"
   restore:
     # clickhouse.restore.enabled -- Enable ClickHouse restore functionality (if `backup.enabled` is set to `true`).
     enabled: false
