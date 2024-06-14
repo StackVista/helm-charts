@@ -2100,7 +2100,6 @@ clickhouse:
     ad.stackstate.com/clickhouse.check_names: '["openmetrics"]'
     ad.stackstate.com/clickhouse.init_configs: "[{}]"
     ad.stackstate.com/clickhouse.instances: '[ { "prometheus_url": "http://%%host%%:8001/metrics", "namespace": "stackstate", "metrics": ["ClickHouseAsyncMetrics_*", "ClickHouseMetrics_*", "ClickHouseProfileEvents_*"] } ]'
-
   # clickhouse.extraVolumes -- extra volumes for ClickHouse Pods
   extraVolumes:
     - name: clickhouse-backup-config
@@ -2140,10 +2139,11 @@ clickhouse:
           name: data
         - mountPath: /bitnami/clickhouse/etc/conf.d/default
           name: config
-        # Uncomment when cluster is enabled
-#        - mountPath: /bitnami/clickhouse/etc/conf.d/extra-configmap
-#          name: extra-config
+          # Uncomment when cluster is enabled
         - mountPath: /bitnami/clickhouse/etc/users.d/users-extra-configmap
+          #        - mountPath: /bitnami/clickhouse/etc/conf.d/extra-configmap
+          #          name: extra-config
+
           name: users-extra-config
         - mountPath: /etc/clickhouse-backup.yaml
           name: clickhouse-backup-config
