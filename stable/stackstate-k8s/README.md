@@ -851,7 +851,7 @@ stackstate/stackstate
 | stackstate.stackpacks.image.pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.image.registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.image.repository | string | `"stackstate/stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.image.tag | string | `"20240613115139-master-5a8e688-selfhosted"` | Tag used for the `stackpacks` Docker image; |
+| stackstate.stackpacks.image.tag | string | `"20240614085436-master-236f7a9-selfhosted"` | Tag used for the `stackpacks` Docker image; |
 | stackstate.stackpacks.installed | list | `[]` | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) |
 | stackstate.stackpacks.pvc.size | string | `"1Gi"` |  |
 | stackstate.stackpacks.pvc.storageClass | string | `nil` |  |
