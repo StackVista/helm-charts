@@ -4,9 +4,14 @@ metadata:
 data:
   backup_enabled: {{ .Values.clickhouse.backup.enabled | quote }}
   entrypoint.sh: |
-    {{- .Files.Get "scripts/clickhouse-backup-entrypoint.sh" | nindent 4 }}
+    {{- .Files.Get "scripts/backup-clickhouse-entrypoint.sh" | nindent 4 }}
+  full-backup.sh: |
+    {{- .Files.Get "scripts/backup-clickhouse-full-backup.sh" | nindent 4 }}
+  incremental-backup.sh: |
+    {{- .Files.Get "scripts/backup-clickhouse-incremental-backup.sh" | nindent 4 }}
   supercronic: |
-    {{ .Values.clickhouse.backup.scheduled.schedule }} clickhouse-backup --config /etc/clickhouse-backup.yaml create_remote
+    {{ .Values.clickhouse.backup.scheduled.full_schedule }} /app/scripts/full-backup.sh
+    {{ .Values.clickhouse.backup.scheduled.incremental_schedule }} /app/scripts/incremental-backup.sh
   config.yaml: |
     general:
       remote_storage: s3             # REMOTE_STORAGE, choice from: `azblob`,`gcs`,`s3`, etc; if `none` then `upload` and `download` commands will fail.

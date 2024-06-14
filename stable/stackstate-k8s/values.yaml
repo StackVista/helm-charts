@@ -2154,6 +2154,12 @@ clickhouse:
         - mountPath: /app/entrypoint.sh
           name: clickhouse-backup-scripts
           subPath: entrypoint.sh
+        - mountPath: /app/scripts/full-backup.sh
+          name: clickhouse-backup-scripts
+          subPath: full-backup.sh
+        - mountPath: /app/scripts/incremental-backup.sh
+          name: clickhouse-backup-scripts
+          subPath: incremental-backup.sh
   backup:
     # clickhouse.backup.enabled -- Enable scheduled backups of ClickHouse. It requires to be enabled MinIO 'backup.enabled'.
     enabled: false
@@ -2163,8 +2169,10 @@ clickhouse:
       # clickhouse.backup.config.keep_remote -- How many latest backup should be kept on remote storage, 0 means all uploaded backups will be stored on remote storage.
       keep_remote: 14
     scheduled:
-      # clickhouse.backup.scheduled.schedule -- Cron schedule for automatic backups of ClickHouse
-      schedule: '45 0 * * *'
+      # clickhouse.backup.scheduled.full_schedule -- Cron schedule for automatic full backups of ClickHouse
+      full_schedule: '45 0 * * *'
+      # clickhouse.backup.scheduled.incremental_schedule -- Cron schedule for automatic incremental backups of ClickHouse. IMPORTANT: incremental and full backup CAN NOT overlap.
+      incremental_schedule: '45 3-23 * * *'
     # clickhouse.backup.resources -- Resources of the backup tool
     resources:
       requests:
