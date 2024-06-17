@@ -129,6 +129,9 @@ stackstate/stackstate
 | clickhouse.image.tag | string | `"23.8.13-debian-12-r0-b9530c97"` | Container image tag for 'clickhouse' containers. |
 | clickhouse.metrics.enabled | bool | `true` |  |
 | clickhouse.persistence.size | string | `"50Gi"` | Size of persistent volume for each clickhouse pod |
+| clickhouse.podAnnotations."ad.stackstate.com/backup.check_names" | string | `"[\"openmetrics\"]"` |  |
+| clickhouse.podAnnotations."ad.stackstate.com/backup.init_configs" | string | `"[{}]"` |  |
+| clickhouse.podAnnotations."ad.stackstate.com/backup.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:9746/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"supercronic_*\"] } ]"` |  |
 | clickhouse.podAnnotations."ad.stackstate.com/clickhouse.check_names" | string | `"[\"openmetrics\"]"` |  |
 | clickhouse.podAnnotations."ad.stackstate.com/clickhouse.init_configs" | string | `"[{}]"` |  |
 | clickhouse.podAnnotations."ad.stackstate.com/clickhouse.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8001/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"ClickHouseAsyncMetrics_*\", \"ClickHouseMetrics_*\", \"ClickHouseProfileEvents_*\"] } ]"` |  |
