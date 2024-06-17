@@ -11,11 +11,19 @@ latest="$(LOG_LEVEL=error clickhouse-backup --config /etc/clickhouse-backup.yaml
 latest_backup_exists=$?
 set -e
 
+if [[ -z "${BACKUP_TABLES}" ]]; then
+  tables=""
+else
+  tables="--tables ${BACKUP_TABLES}"
+fi
+
 if [ $latest_backup_exists -eq 0 ]; then
   backup_name="incremental_$now"
-  clickhouse-backup --config /etc/clickhouse-backup.yaml create_remote --diff-from-remote "$latest" "$backup_name"
+  # shellcheck disable=SC2086
+  clickhouse-backup --config /etc/clickhouse-backup.yaml create_remote --diff-from-remote "$latest" ${tables} "$backup_name"
 else
   echo "Not found any previous backup, starting full backup"
   backup_name="full_$now"
-  clickhouse-backup --config /etc/clickhouse-backup.yaml create_remote "$backup_name"
+  # shellcheck disable=SC2086
+  clickhouse-backup --config /etc/clickhouse-backup.yaml create_remote ${tables} "$backup_name"
 fi

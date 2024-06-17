@@ -5,4 +5,12 @@ set -Eeuo pipefail
 
 now="$(date +'%Y-%m-%dT%H-%M-%S')"
 backup_name="full_$now"
-clickhouse-backup --config /etc/clickhouse-backup.yaml create_remote "$backup_name"
+
+if [[ -z "${BACKUP_TABLES}" ]]; then
+  tables=""
+else
+  tables="--tables ${BACKUP_TABLES}"
+fi
+
+# shellcheck disable=SC2086
+clickhouse-backup --config /etc/clickhouse-backup.yaml create_remote ${tables} "$backup_name"

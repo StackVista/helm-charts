@@ -2130,6 +2130,8 @@ clickhouse:
             configMapKeyRef:
               name: stackstate-clickhouse-backup
               key: backup_enabled
+        - name: BACKUP_TABLES
+          value: "{{ .Values.backup.config.tables }}"
       resources:
         requests:
           memory: "{{ .Values.backup.resources.requests.memory }}"
@@ -2169,14 +2171,16 @@ clickhouse:
     # clickhouse.backup.bucketName -- Name of the MinIO bucket where ClickHouse backups are stored.
     bucketName: 'sts-clickhouse-backup'
     config:
+      # clickhouse.backup.config.tables -- Create and upload backup only matched with table name patterns, separated by comma, allow ? and * as wildcard.
+      tables: "otel.*"
       # clickhouse.backup.config.keep_remote -- How many latest backup should be kept on remote storage, 0 means all uploaded backups will be stored on remote storage.
       keep_remote: 14
     scheduled:
-      # clickhouse.backup.scheduled.full_schedule -- Cron schedule for automatic full backups of ClickHouse
+      # clickhouse.backup.scheduled.full_schedule -- Cron schedule for automatic full backups of ClickHouse.
       full_schedule: '45 0 * * *'
       # clickhouse.backup.scheduled.incremental_schedule -- Cron schedule for automatic incremental backups of ClickHouse. IMPORTANT: incremental and full backup CAN NOT overlap.
       incremental_schedule: '45 3-23 * * *'
-    # clickhouse.backup.resources -- Resources of the backup tool
+    # clickhouse.backup.resources -- Resources of the backup tool.
     resources:
       requests:
         memory: "250Mi"
