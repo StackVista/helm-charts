@@ -114,7 +114,7 @@ stackstate/stackstate
 | clickhouse.auth.password | string | `"admin"` | ClickHouse Admin password. If left empty the random value is generated. |
 | clickhouse.auth.username | string | `"admin"` | ClickHouse Admin username |
 | clickhouse.backup.bucketName | string | `"sts-clickhouse-backup"` | Name of the MinIO bucket where ClickHouse backups are stored. |
-| clickhouse.backup.config.keep_remote | int | `14` | How many latest backup should be kept on remote storage, 0 means all uploaded backups will be stored on remote storage. |
+| clickhouse.backup.config.keep_remote | int | `308` | How many latest backup should be kept on remote storage, 0 means all uploaded backups will be stored on remote storage. Incremental backups are executed every one 1h so the value 308 = ~14 days. |
 | clickhouse.backup.config.tables | string | `"otel.*"` | Create and upload backup only matched with table name patterns, separated by comma, allow ? and * as wildcard. |
 | clickhouse.backup.enabled | bool | `false` | Enable scheduled backups of ClickHouse. It requires to be enabled MinIO 'backup.enabled'. |
 | clickhouse.backup.resources | object | `{"limit":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"50m","memory":"250Mi"}}` | Resources of the backup tool. |
