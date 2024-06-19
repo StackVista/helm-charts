@@ -2103,6 +2103,7 @@ clickhouse:
     ad.stackstate.com/backup.check_names: '["openmetrics"]'
     ad.stackstate.com/backup.init_configs: "[{}]"
     ad.stackstate.com/backup.instances: '[ { "prometheus_url": "http://%%host%%:9746/metrics", "namespace": "stackstate", "metrics": ["supercronic_*"] } ]'
+    checksum/stackstate-backup-config: "{{ toJson .Values.backup | sha256sum }}"
   # clickhouse.extraVolumes -- extra volumes for ClickHouse Pods
   extraVolumes:
     - name: clickhouse-backup-config
