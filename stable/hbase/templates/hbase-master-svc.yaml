@@ -19,6 +19,8 @@ spec:
     app.kubernetes.io/component: hbase-master
 {{- end -}}
 
+{{- if .Values.experimental.split -}}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $stackstateHbaseMasterService := fromYaml (include "hbase.hbase.master.service" .) -}}
 {{- toYaml (merge $stackstateHbaseMasterService $commonService) -}}
+{{- end -}}

@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.2.18`
+Current chart version is `0.2.19`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -48,6 +48,7 @@ Current chart version is `0.2.18`
 | console.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
 | console.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | console.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| experimental.split | bool | `true` |  |
 | global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overriden per PVC. |
 | hbase.master.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hbase.master.experimental.execLivenessProbe.enabled | bool | `false` | Whether to use a new scripted livenessProbe instead of the original HTTP check. Requires >= 4.11.5 version of the StackGraph docker images |
@@ -126,6 +127,8 @@ Current chart version is `0.2.18`
 | hdfs.volumePermissions.securityContext.runAsUser | int | `0` | Run the volumePermissions init container with the specified UID (Do not change unless instructed) |
 | serviceAccount.create | bool | `true` | Whether to create serviceAccounts and run the statefulsets under them |
 | stackgraph.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below). |
+| stackgraph.image.repository | string | `"stackstate/hbase-testcontainer"` | The default repository used for the single service stackgraph image |
+| stackgraph.image.tag | string | `nil` | The default tag used for the single service stackgraph image |
 | stackgraph.version | string | `"7.6.0"` | Version of stackgraph to use |
 | statefulset.antiAffinity.strategy | string | `"soft"` | AntiAffinity strategy to use for all StatefulSets. |
 | statefulset.antiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | AntiAffinity topology key to use for all StatefulSets. |

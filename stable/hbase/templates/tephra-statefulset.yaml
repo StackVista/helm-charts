@@ -1,10 +1,18 @@
 {{- define "hbase.tephra.container.init" -}}
 name: tephra-init
+{{- if .Values.experimental.split }}
 command:
 - sh
 - -c
 - |
   /entrypoint -c {{ include "hbase.zookeeper.endpoint" . }}:2181,{{ template "common.fullname.short" . }}-hdfs-nn-headful:9000,{{ template "common.fullname.short" . }}-hdfs-dn:50010 -t 300
+{{- else }}
+command:
+  - sh
+  - -c
+  - |
+    /entrypoint -c {{ template "common.fullname.short" . }}-stackgraph:2182, {{ template "common.fullname.short" . }}-stackgraph:10021 -t 300
+{{- end }}
 image: "{{ include "common.image.registry" (dict "image" .Values.wait.image "context" .) }}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
 imagePullPolicy: {{ .Values.wait.image.pullPolicy | quote }}
 {{- end -}}
@@ -14,12 +22,36 @@ name: tephra
 image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.tephra.image.repository }}:{{ default (printf "%s-%s" .Values.version .Values.stackgraph.version) .Values.tephra.image.tag }}"
 imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.tephra.image.pullPolicy | quote  }}
 env:
+{{- if .Values.experimental.split }}
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "hbase.hbase.commonEnv" . }}
 {{- include "all.commonEnv" . }}
 {{- include "tephra.commonEnv" . }}
 - name: HBASE_CONF_hbase_master_hostname
   value: "{{ template "common.fullname.short" . }}-hbase-master"
+{{- else }}
+{{- include "all.commonEnv" . }}
+{{- include "tephra.commonEnv" . }}
+- name: HBASE_CONF_data_tx_snapshot_use_local
+  value: "true"
+- name: HBASE_CONF_data_tx_snapshot_dir
+  value: "/opt/tephra-server"
+- name: HBASE_CONF_data_tx_snapshot_local_dir
+  value: "/opt/tephra-server"
+- name: HBASE_CONF_hbase_master_hostname
+  value: "{{ template "common.fullname.short" . }}-stackgraph"
+- name: HBASE_CONF_data_tx_zookeeper_quorum
+  value: {{ template "common.fullname.short" . }}-stackgraph:2182
+- name: HBASE_CONF_hbase_zookeeper_quorum
+  value: {{ template "common.fullname.short" . }}-stackgraph:2182
+- name: HBASE_CONF_data_tx_snapshot_local_ftp_mirror
+  value: "anonymous@{{ template "common.fullname.short" . }}-stackgraph:10021"
+- name: HBASE_CONF_zookeeper_session_timeout_localHBaseCluster
+  value: "180000"
+- name: HBASE_CONF_hbase_zookeeper_property_dataDir
+  value: /hadoop-data/data/zookeeper
+
+{{- end }}
 ports:
 - containerPort: 15165
   name: tephra

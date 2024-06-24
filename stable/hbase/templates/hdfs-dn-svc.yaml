@@ -19,6 +19,8 @@ spec:
     app.kubernetes.io/component: hdfs-dn
 {{- end -}}
 
+{{- if .Values.experimental.split -}}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $stackstateHbaseHdfsDatanodeService := fromYaml (include "hbase.hdfs.datanode.service" .) -}}
 {{- toYaml (merge $stackstateHbaseHdfsDatanodeService $commonService) -}}
+{{- end -}}

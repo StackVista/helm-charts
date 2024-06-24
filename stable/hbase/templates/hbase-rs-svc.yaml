@@ -19,6 +19,8 @@ spec:
     app.kubernetes.io/component: hbase-rs
 {{- end -}}
 
+{{- if .Values.experimental.split -}}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $stackstateHbaseRegionServerService := fromYaml (include "hbase.hbase.regionserver.service" .) -}}
 {{- toYaml (merge $stackstateHbaseRegionServerService $commonService) -}}
+{{- end -}}

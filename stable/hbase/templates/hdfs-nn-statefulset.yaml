@@ -143,6 +143,8 @@ spec:
 {{- end }}
 {{- end -}}
 
+{{- if .Values.experimental.split -}}
 {{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
 {{- $stackstateHbaseHdfsNamenodeStatefulSet := fromYaml (include "hbase.hdfs.namenode.statefulset" .) -}}
 {{- toYaml (merge $stackstateHbaseHdfsNamenodeStatefulSet $commonStatefulSet) -}}
+{{- end -}}

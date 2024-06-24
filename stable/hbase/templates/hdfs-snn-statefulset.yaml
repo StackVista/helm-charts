@@ -140,8 +140,10 @@ spec:
 {{- end }}
 {{- end -}}
 
+{{- if .Values.experimental.split -}}
 {{- if .Values.hdfs.secondarynamenode.enabled -}}
 {{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
 {{- $stackstateHbaseHdfsSecondaryNamenodeStatefulSet := fromYaml (include "hbase.hdfs.secondarynamenode.statefulset" .) -}}
 {{- toYaml (merge $stackstateHbaseHdfsSecondaryNamenodeStatefulSet $commonStatefulSet) -}}
+{{- end -}}
 {{- end -}}

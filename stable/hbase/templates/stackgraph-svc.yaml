@@ -1,0 +1,36 @@
+{{- define "stackgraph.service" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-stackgraph
+  labels:
+    app.kubernetes.io/component: stackgraph
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+{{- range untilStep 10125 10225 1 }}
+  - port: {{ . }}
+    name: ftp-{{ . }}
+{{- end }}
+  - port: 10021
+    name: ftp
+  - port: 2182
+    name: zk
+  - port: 16021
+    name: rs
+  - port: 16001
+    name: master
+  - port: 16010
+    name: masterinfo
+{{- if .Values.all.metrics.enabled }}
+  - port: 9404
+    name: metrics
+{{- end }}
+  selector:
+    app.kubernetes.io/component: stackgraph
+{{- end -}}
+
+{{- if not .Values.experimental.split -}}
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $stackgraphService := fromYaml (include "stackgraph.service" .) -}}
+{{- toYaml (merge $stackgraphService $commonService) -}}
+{{- end -}}
