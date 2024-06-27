@@ -2156,6 +2156,11 @@ clickhouse:
               key: backup_enabled
         - name: BACKUP_TABLES
           value: "{{ .Values.backup.config.tables }}"
+        - name: CLICKHOUSE_REPLICA_ID
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
       resources:
         requests:
           memory: "{{ .Values.backup.resources.requests.memory }}"
