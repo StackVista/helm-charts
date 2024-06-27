@@ -184,7 +184,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: 6.0.0-snapshot.20240627072807-master-bf8c6c3
+        tag: 6.0.0-snapshot.20240627130601-master-be43d83
       # stackstate.components.all.podAnnotations -- Extra annotations
       podAnnotations: {}
       metrics:
@@ -2082,7 +2082,6 @@ clickhouse:
     username: admin
     # clickhouse.auth.password -- ClickHouse Admin password. If left empty the random value is generated.
     password: admin
-
   # clickhouse.extraOverrides -- Extra configuration overrides (evaluated as a template) apart from the default. This configuration deploys ClickHouse in the cluster mode even if there is only one node.
   extraOverrides: |
     <clickhouse>
@@ -2106,7 +2105,6 @@ clickhouse:
         </default>
       </remote_servers>
     </clickhouse>
-
   # clickhouse.usersExtraOverrides -- Users extra configuration overrides.
   usersExtraOverrides: |
     <clickhouse>
