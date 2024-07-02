@@ -43,6 +43,12 @@ all:
   # all.affinity -- Affinity settings for pod assignment on all components.
   affinity: {}
 stackgraph:
+  # stackgraph.affinity -- Affinity settings for pod assignment.
+  affinity: {}
+  # stackgraph.agentMetricsFilter -- Configure metrics scraped by the agent
+  agentMetricsFilter: ""
+  # stackgraph.nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
   image:
     # stackgraph.image.repository -- The default repository used for the single service stackgraph image
     repository: stackstate/hbase-testcontainer
@@ -50,6 +56,33 @@ stackgraph:
     tag:
     # stackgraph.image.pullPolicy -- The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below).
     pullPolicy: IfNotPresent
+    # stackgraph.resources -- Resources to allocate for Stackgraph mono image.
+  persistence:
+    # stackgraph.persistence.accessModes -- Access mode for stackgraph.
+    accessModes: ["ReadWriteOnce"]
+    # stackgraph.persistence.enabled -- Enable persistence for HDFS data nodes.
+    enabled: true
+    # stackgraph.persistence.size -- Size of volume for HDFS data nodes.
+    size: 250Gi
+    # stackgraph.persistence.storageClass -- Storage class of the volume for HDFS data nodes.
+    storageClass:
+  resources:
+    limits:
+      memory: "3Gi"
+    requests:
+      memory: "2Gi"
+      cpu: "1000m"
+  securityContext:
+    # stackgraph.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.
+    enabled: true
+    # stackgraph.securityContext.runAsGroup -- GID of the Linux group to use for all pod.
+    runAsGroup: 65534
+    # stackgraph.securityContext.runAsUser -- UID of the Linux user to use for all pod.
+    runAsUser: 65534
+    # stackgraph.securityContext.fsGroup -- UID of the Linux user to use for all pod.
+    fsGroup: 65534
+  # stackgraph.tolerations -- Toleration labels for pod assignment.
+  tolerations: []
   # stackgraph.version -- Version of stackgraph to use
   version: 7.6.0
 console:

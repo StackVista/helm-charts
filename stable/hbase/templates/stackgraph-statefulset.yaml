@@ -69,7 +69,7 @@ readinessProbe:
   httpGet:
     path: /
     port: masterinfo
-{{- with .Values.hbase.regionserver.resources }}
+{{- with .Values.stackgraph.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -102,43 +102,43 @@ spec:
       labels:
         app.kubernetes.io/component: stackgraph
       annotations:
-      {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404" "container_name" "master" "filter" .Values.hbase.master.agentMetricsFilter ) | indent 8 }}
+      {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404" "container_name" "master" "filter" .Values.stackgraph.agentMetricsFilter ) | indent 8 }}
     spec:
       {{- include "common.image.pullSecret.name" (dict "images" (list .Values.all.image) "context" $) | nindent 6 }}
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ template "common.fullname.short" . }}-hbase
       {{- end }}
       {{- if .Values.hbase.securityContext.enabled }}
-      securityContext: {{- omit .Values.hbase.securityContext "enabled" | toYaml | nindent 8 }}
+      securityContext: {{- omit .Values.stackgraph.securityContext "enabled" | toYaml | nindent 8 }}
       {{- end }}
       initContainers:
       - {{ toYaml $stackgraphInitContainer | nindent 8 }}
       containers:
       - {{ toYaml $stackgraphMainContainer | nindent 8 }}
-    {{- if or .Values.all.nodeSelector .Values.hbase.master.nodeSelector }}
+    {{- if or .Values.all.nodeSelector .Values.stackgraph.nodeSelector }}
       nodeSelector:
       {{- with .Values.all.nodeSelector }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.hbase.master.nodeSelector }}
+      {{- with .Values.stackgraph.nodeSelector }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.all.affinity .Values.hbase.master.affinity }}
+    {{- if or .Values.all.affinity .Values.stackgraph.affinity }}
       affinity:
       {{- with .Values.all.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.hbase.master.affinity }}
+      {{- with .Values.stackgraph.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.all.tolerations .Values.hbase.master.tolerations }}
+    {{- if or .Values.all.tolerations .Values.stackgraph.tolerations }}
       tolerations:
       {{- with .Values.all.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.hbase.master.tolerations }}
+      {{- with .Values.stackgraph.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
@@ -147,11 +147,11 @@ spec:
     - metadata:
         name: data
       spec:
-        accessModes: {{ .Values.hdfs.datanode.persistence.accessModes }}
+        accessModes: {{ .Values.stackgraph.persistence.accessModes }}
         resources:
           requests:
-            storage: {{ .Values.hdfs.datanode.persistence.size }}
-      {{ include "common.storage.class" ( dict "persistence" .Values.hdfs.datanode.persistence "global" .Values.global) | nindent 6 }}
+            storage: {{ .Values.stackgraph.persistence.size }}
+      {{ include "common.storage.class" ( dict "persistence" .Values.stackgraph.persistence "global" .Values.global) | nindent 6 }}
 {{- end }}
 {{- end -}}
 

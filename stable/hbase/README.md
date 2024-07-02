@@ -126,9 +126,22 @@ Current chart version is `0.2.19`
 | hdfs.volumePermissions.securityContext.runAsNonRoot | bool | `false` | Run the volumePermissions init container in non-root required mode (Do not change unless instructed) |
 | hdfs.volumePermissions.securityContext.runAsUser | int | `0` | Run the volumePermissions init container with the specified UID (Do not change unless instructed) |
 | serviceAccount.create | bool | `true` | Whether to create serviceAccounts and run the statefulsets under them |
+| stackgraph.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackgraph.agentMetricsFilter | string | `""` | Configure metrics scraped by the agent |
 | stackgraph.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below). |
 | stackgraph.image.repository | string | `"stackstate/hbase-testcontainer"` | The default repository used for the single service stackgraph image |
 | stackgraph.image.tag | string | `nil` | The default tag used for the single service stackgraph image |
+| stackgraph.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackgraph.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for stackgraph. |
+| stackgraph.persistence.enabled | bool | `true` | Enable persistence for HDFS data nodes. |
+| stackgraph.persistence.size | string | `"250Gi"` | Size of volume for HDFS data nodes. |
+| stackgraph.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS data nodes. |
+| stackgraph.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"1000m","memory":"2Gi"}}` | Resources to allocate for Stackgraph mono image. |
+| stackgraph.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
+| stackgraph.securityContext.fsGroup | int | `65534` | UID of the Linux user to use for all pod. |
+| stackgraph.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
+| stackgraph.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
+| stackgraph.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackgraph.version | string | `"7.6.0"` | Version of stackgraph to use |
 | statefulset.antiAffinity.strategy | string | `"soft"` | AntiAffinity strategy to use for all StatefulSets. |
 | statefulset.antiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | AntiAffinity topology key to use for all StatefulSets. |
