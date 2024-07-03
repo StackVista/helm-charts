@@ -11,7 +11,7 @@ import (
 func TestPullSecret(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
-	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "view-health", "e2es"}
+	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "e2es"}
 
 	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "stackstate-k8s-pull-secret")
 	CheckPullSecret(t, resources, "stackstate-k8s-pull-secret", "test", "secret", "quay.io")
@@ -20,7 +20,7 @@ func TestPullSecret(t *testing.T) {
 func TestPullSecretGlobalNamed(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/pull_secret_global_named.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
-	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "view-health", "e2es"}
+	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "e2es"}
 
 	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "my-existing-secret")
 	for _, secret := range resources.Secrets {
@@ -32,7 +32,7 @@ func TestPullSecretGlobalNamed(t *testing.T) {
 func TestImagePullSecretName(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/pull_secret_name.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
-	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "view-health", "e2es"}
+	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "e2es"}
 
 	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "my-pull-secret")
 	for _, secret := range resources.Secrets {
@@ -45,7 +45,7 @@ func TestImagePullSecretName(t *testing.T) {
 func TestGlobalRegistryLocalPullSecret(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/pull_secret_global_registry.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
-	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "view-health", "e2es"}
+	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "e2es"}
 
 	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "stackstate-k8s-pull-secret")
 	CheckPullSecret(t, resources, "stackstate-k8s-pull-secret", "test", "secret", "my.registry.com")
@@ -54,7 +54,7 @@ func TestGlobalRegistryLocalPullSecret(t *testing.T) {
 func TestGlobalOverridesLocalPullSecretDetails(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/pull_secret_both.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
-	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "view-health", "e2es"}
+	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "e2es"}
 
 	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "stackstate-k8s-pull-secret", "test-secret")
 	CheckPullSecret(t, resources, "stackstate-k8s-pull-secret", "test", "secret", "my.registry.com")

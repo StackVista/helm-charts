@@ -16,7 +16,6 @@ func TestRegularImageNonSplit(t *testing.T) {
 	var expectedDeployments = make(map[string]string)
 	expectedDeployments["stackstate-k8s-server"] = "stackstate-server:6.0.0"
 
-
 	var foundDeployments = make(map[string]appsv1.Deployment)
 
 	for _, deployment := range resources.Deployments {
@@ -45,8 +44,6 @@ func TestRegularImageSplit(t *testing.T) {
 	expectedDeployments["stackstate-k8s-notification"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
 	expectedDeployments["stackstate-k8s-state"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
 	expectedDeployments["stackstate-k8s-sync"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
-	expectedDeployments["stackstate-k8s-view-health"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
-
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 
@@ -76,8 +73,6 @@ func TestHbase25ImageSplit(t *testing.T) {
 	expectedDeployments["stackstate-k8s-notification"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
 	expectedDeployments["stackstate-k8s-state"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
 	expectedDeployments["stackstate-k8s-sync"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
-	expectedDeployments["stackstate-k8s-view-health"] = ".*stackstate-server:6\\.0\\.0-snapshot.*-2\\.5"
-
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 

@@ -1,5 +1,5 @@
 {{- define "stackstate.ui.deployment.main.container" -}}
-{{- $serviceConfig := dict "ServiceName" "view-health" "ServiceConfig" .Values.stackstate.components.ui }}
+{{- $serviceConfig := dict "ServiceName" "ui" "ServiceConfig" .Values.stackstate.components.ui }}
 
 env:
 {{- include "stackstate.common.envvars" . }}
