@@ -810,23 +810,6 @@ stackstate/stackstate
 | stackstate.components.ui.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | stackstate.components.ui.securityContext.runAsUser | int | `101` | The UID (user ID) of the owning user of the process |
 | stackstate.components.ui.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| stackstate.components.viewHealth.additionalLogging | string | `""` | Additional logback config |
-| stackstate.components.viewHealth.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.viewHealth.config | string | `""` | Configuration file contents to customize the default StackState viewHealth configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
-| stackstate.components.viewHealth.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
-| stackstate.components.viewHealth.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.viewHealth.image.imageRegistry | string | `""` | `imageRegistry` used for the `viewHealth` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.components.viewHealth.image.pullPolicy | string | `""` | `pullPolicy` used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.viewHealth.image.repository | string | `"stackstate/stackstate-server"` | Repository of the viewHealth component Docker image. |
-| stackstate.components.viewHealth.image.tag | string | `""` | Tag used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.viewHealth.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.viewHealth.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.viewHealth.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `viewHealth` pods. |
-| stackstate.components.viewHealth.replicaCount | int | `1` | Number of `viewHealth` replicas. |
-| stackstate.components.viewHealth.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"1Gi","memory":"2700Mi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"2Gi"}}` | Resource allocation for `viewHealth` pods. |
-| stackstate.components.viewHealth.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
-| stackstate.components.viewHealth.sizing.javaHeapMemoryFraction | string | `"55"` |  |
-| stackstate.components.viewHealth.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.vmagent.affinity | object | `{"podAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app.kubernetes.io/component","operator":"In","values":["receiver"]},{"key":"app.kubernetes.io/instance","operator":"In","values":["stackstate"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":80}]}}` | Affinity settings for vmagent pod. |
 | stackstate.components.vmagent.agentMetricsFilter | string | `"[\"vm*\", \"go*\"]"` |  |
 | stackstate.components.vmagent.extraArgs | object | `{}` |  |

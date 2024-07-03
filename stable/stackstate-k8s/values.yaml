@@ -1014,51 +1014,6 @@ stackstate:
       tolerations: []
       # stackstate.components.ui.affinity -- Affinity settings for pod assignment.
       affinity: {}
-    viewHealth:
-      extraEnv:
-        # stackstate.components.viewHealth.extraEnv.open -- Extra open environment variables to inject into pods.
-        open: {}
-        # stackstate.components.viewHealth.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
-        secret: {}
-      image:
-        # stackstate.components.viewHealth.image.imageRegistry -- `imageRegistry` used for the `viewHealth` component Docker image; this will override `global.imageRegistry` on a per-service basis.
-        imageRegistry: ""
-        # stackstate.components.viewHealth.image.pullPolicy -- `pullPolicy` used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
-        pullPolicy: ""
-        # stackstate.components.viewHealth.image.repository -- Repository of the viewHealth component Docker image.
-        repository: stackstate/stackstate-server
-        # stackstate.components.viewHealth.image.tag -- Tag used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: ""
-      # stackstate.components.viewHealth.podAnnotations -- Extra annotations
-      podAnnotations: {}
-      # stackstate.components.viewHealth.poddisruptionbudget -- PodDisruptionBudget settings for `viewHealth` pods.
-      poddisruptionbudget:
-        maxUnavailable: 1
-      # stackstate.components.viewHealth.resources -- Resource allocation for `viewHealth` pods.
-      resources:
-        limits:
-          memory: "2700Mi"
-          cpu: "2000m"
-          ephemeral-storage: "1Gi"
-        requests:
-          memory: "2Gi"
-          cpu: "1000m"
-          ephemeral-storage: "1Mi"
-      sizing:
-        baseMemoryConsumption: "400Mi"
-        javaHeapMemoryFraction: "55"
-      # stackstate.components.viewHealth.replicaCount -- Number of `viewHealth` replicas.
-      replicaCount: 1
-      # stackstate.components.viewHealth.nodeSelector -- Node labels for pod assignment.
-      nodeSelector: {}
-      # stackstate.components.viewHealth.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
-      # stackstate.components.viewHealth.affinity -- Affinity settings for pod assignment.
-      affinity: {}
-      # stackstate.components.viewHealth.config -- Configuration file contents to customize the default StackState viewHealth configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
-      config: ""
-      # stackstate.components.viewHealth.additionalLogging -- Additional logback config
-      additionalLogging: ""
     kafkaTopicCreate:
       # stackstate.components.kafkaTopicCreate.jobAnnotations -- Annotations for KafkaTopicCreate job.
       jobAnnotations: {}
