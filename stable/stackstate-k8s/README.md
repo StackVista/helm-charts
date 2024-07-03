@@ -90,6 +90,7 @@ stackstate/stackstate
 | backup.elasticsearch.scheduled.snapshotRetentionMinCount | string | `"5"` | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
 | backup.elasticsearch.snapshotRepositoryName | string | `"sts-backup"` | Name of the ElasticSearch snapshot repository. |
 | backup.enabled | bool | `false` | Enables backup/restore, including the MinIO subsystem. |
+| backup.initJobAnnotations | object | `{}` | Annotations for Backup-init Job. |
 | backup.poddisruptionbudget.maxUnavailable | int | `0` | Maximum number of pods that can be unavailable during the backup. |
 | backup.stackGraph.bucketName | string | `"sts-stackgraph-backup"` | Name of the MinIO bucket to store StackGraph backups. |
 | backup.stackGraph.restore.enabled | bool | `true` | Enable StackGraph backup restore functionality (if `backup.enabled` is set to `true`). |
@@ -607,6 +608,7 @@ stackstate/stackstate
 | stackstate.components.kafkaTopicCreate.image.registry | string | `"quay.io"` | Base container image registry for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.repository | string | `"stackstate/kafka"` | Base container image repository for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.tag | string | `"3.3.1-08305c25"` | Container image tag for kafka-topic-create containers. |
+| stackstate.components.kafkaTopicCreate.jobAnnotations | object | `{}` | Annotations for KafkaTopicCreate job. |
 | stackstate.components.kafkaTopicCreate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.kafkaTopicCreate.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `kafkaTopicCreate` pods. |
 | stackstate.components.kafkaTopicCreate.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |

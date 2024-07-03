@@ -45,10 +45,17 @@ resources:
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $overrideContainer := fromYaml (include "stackstate.kafkaTopicCreate.job.container.main" .) -}}
 {{- $stsstackstateKafkaTopicCreateMainContainer := (merge $overrideContainer $commonContainer) -}}
+apiVersion: batch/v1
+kind: Job
 metadata:
-  name: {{ template "common.fullname.short" . }}-topic-create-{{ now | date "20060102t150405" }}
+  generateName: topic-create-
   labels:
     app.kubernetes.io/component: topic-create
+    {{- include "common.labels.standard" . | nindent 4 }}
+  {{- with .Values.stackstate.components.kafkaTopicCreate.jobAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4}}
+  {{- end }}
 spec:
   backoffLimit: 20
   ttlSecondsAfterFinished: 600
@@ -60,6 +67,7 @@ spec:
       labels:
         app.kubernetes.io/component: topic-create
     spec:
+      restartPolicy: OnFailure
       initContainers:
       - {{ include "stackstate.kafkaTopicCreate.job.initContainer.main" . | nindent 8 }}
       containers:
@@ -97,6 +105,4 @@ spec:
     {{- end }}
 {{- end -}}
 
-{{- $commonJob := fromYaml (include "common.job" .) -}}
-{{- $kafkaTopicCreateJob := fromYaml (include "stackstate.kafkaTopicCreate.job" .) -}}
-{{- toYaml (merge $kafkaTopicCreateJob $commonJob) -}}
+{{ include "stackstate.kafkaTopicCreate.job" . }}

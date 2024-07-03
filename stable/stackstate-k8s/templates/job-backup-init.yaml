@@ -2,9 +2,13 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "common.fullname.short" . }}-backup-init-{{ now | date "20060102t150405" }}
+  generateName: backup-init-
   labels:
     app.kubernetes.io/component: backup
+  {{- with .Values.backup.initJobAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4}}
+  {{- end }}
 spec:
   ttlSecondsAfterFinished: 600
   template:

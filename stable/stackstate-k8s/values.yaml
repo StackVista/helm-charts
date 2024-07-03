@@ -17,6 +17,8 @@ backup:
   additionalLogging: ""
   # backup.enabled -- Enables backup/restore, including the MinIO subsystem.
   enabled: false
+  # backup.initJobAnnotations -- Annotations for Backup-init Job.
+  initJobAnnotations: {}
   elasticsearch:
     # backup.elasticsearch.bucketName -- Name of the MinIO bucket where ElasticSearch snapshots are stored.
     bucketName: 'sts-elasticsearch-backup'
@@ -1058,6 +1060,8 @@ stackstate:
       # stackstate.components.viewHealth.additionalLogging -- Additional logback config
       additionalLogging: ""
     kafkaTopicCreate:
+      # stackstate.components.kafkaTopicCreate.jobAnnotations -- Annotations for KafkaTopicCreate job.
+      jobAnnotations: {}
       extraEnv:
         # stackstate.components.kafkaTopicCreate.extraEnv.open -- Add additional environment variables to the pod
         open: {}
