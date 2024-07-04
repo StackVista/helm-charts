@@ -48,12 +48,19 @@ resources:
 apiVersion: batch/v1
 kind: Job
 metadata:
+  {{- if .Values.deployment.compatibleWithArgoCD }}
   generateName: topic-create-
+  {{- else }}
+  name: {{ template "common.fullname.short" . }}-topic-create-{{ now | date "20060102t150405" }}
+  {{- end }}
   labels:
     app.kubernetes.io/component: topic-create
     {{- include "common.labels.standard" . | nindent 4 }}
-  {{- with .Values.stackstate.components.kafkaTopicCreate.jobAnnotations }}
   annotations:
+    {{- if .Values.deployment.compatibleWithArgoCD }}
+    argocd.argoproj.io/hook: Sync
+    {{- end }}
+  {{- with .Values.stackstate.components.kafkaTopicCreate.jobAnnotations }}
     {{- toYaml . | nindent 4}}
   {{- end }}
 spec:

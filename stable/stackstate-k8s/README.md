@@ -150,6 +150,7 @@ stackstate/stackstate
 | clickhouse.zookeeper.enabled | bool | `false` | Disable Zookeeper from the clickhouse chart **Don't change unless otherwise specified**. |
 | cluster-role.enabled | bool | `true` | Deploy the ClusterRole(s) and ClusterRoleBinding(s) together with the chart. Can be disabled if these need to be installed by an administrator of the Kubernetes cluster. |
 | commonLabels | object | `{}` | Labels that will be added to all resources created by the stackstate chart (not the subcharts though) |
+| deployment.compatibleWithArgoCD | bool | `false` | Whether to adjust the Chart to be compatible with ArgoCD |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` | The Elasticsearch cluster health status params that will be used by readinessProbe command |
 | elasticsearch.clusterName | string | `"stackstate-elasticsearch"` | Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | elasticsearch.commonLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s"}` | Add additional labels to all resources created for elasticsearch |

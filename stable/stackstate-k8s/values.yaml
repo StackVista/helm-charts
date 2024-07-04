@@ -125,6 +125,9 @@ backup:
       runAsNonRoot: true
       # backup.configuration.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
       runAsUser: 65534
+# deployment.compatibleWithArgoCD -- Whether to adjust the Chart to be compatible with ArgoCD
+deployment:
+  compatibleWithArgoCD: false
 ingress:
   # ingress.annotations -- Annotations for ingress objects.
   annotations: {}
