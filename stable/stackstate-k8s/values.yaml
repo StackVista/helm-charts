@@ -1648,6 +1648,10 @@ zookeeper:
   heapSize: 512
   # zookeeper.fourlwCommandsWhitelist -- Zookeeper four-letter-word (FLW) commands that are enabled.
   fourlwCommandsWhitelist: "mntr, ruok, stat, srvr"
+  # zookeeper.autopurge -- configurations of ZooKeeper auto purge, it deletes old snapshot and log files. ClickHouse creates a lot of operation and it should be purged to avoud out of disk space.
+  autopurge:
+    snapRetainCount: 5
+    purgeInterval: 3
   # zookeeper.fullnameOverride -- Name override for Zookeeper child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
   fullnameOverride: stackstate-zookeeper
   podLabels:
@@ -2127,7 +2131,7 @@ clickhouse:
         requests:
           memory: "{{ .Values.backup.resources.requests.memory }}"
           cpu: "{{ .Values.backup.resources.requests.cpu }}"
-        limit:
+        limits:
           memory: "{{ .Values.backup.resources.limit.memory }}"
           cpu: "{{ .Values.backup.resources.limit.cpu }}"
       volumeMounts:
