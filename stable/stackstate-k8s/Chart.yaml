@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: "6.0.0-snapshot.20240704192226-master-d11a429"
-version: 1.10.1-pre.203
+version: 1.10.1-pre.204
 description: Helm chart for StackState for Kubernetes
 keywords:
   - kubernetes
@@ -28,7 +28,7 @@ dependencies:
   - name: hbase
     condition: hbase.enabled
     repository: file://../hbase/
-    version: "0.2.20"
+    version: "0.2.21"
   - name: kafka
     condition: kafka.enabled
     # Bitnami official Helm repository stopped serving the old versions of the charts. This is the workaround https://github.com/bitnami/charts/issues/10539
