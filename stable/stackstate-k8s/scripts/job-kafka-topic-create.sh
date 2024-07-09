@@ -47,8 +47,6 @@ createOrUpdateTopic "sts_correlated_connections" "10" "${ephemeralRetention}" &
 PIDS+=($!)
 createOrUpdateTopic "sts_correlate_endpoints" "10" "${ephemeralRetention}" &
 PIDS+=($!)
-createOrUpdateTopic "sts_trace_events" "10" "${ephemeralRetention}" &
-PIDS+=($!)
 createOrUpdateTopic "sts_correlate_http_trace_observations" "10" "${ephemeralRetention}" &
 PIDS+=($!)
 
@@ -59,15 +57,9 @@ PIDS+=($!)
 
 createOrUpdateTopic "sts_topology_events" "1" "${ephemeralRetention}" &
 PIDS+=($!)
-createOrUpdateTopic "sts_generic_events" "1" "${ephemeralRetention}" &
-PIDS+=($!)
 createOrUpdateTopic "sts_internal_events" "1" "${ephemeralRetention}" &
 PIDS+=($!)
-createOrUpdateTopic "sts_metrics_v2" "$STS_METRICS_V2_PARTITION_COUNT" "${ephemeralRetention}" &
-PIDS+=($!)
 createOrUpdateTopic "sts_topo_process_agents" "1" "${ephemeralRetention}" &
-PIDS+=($!)
-createOrUpdateTopic "sts_topo_trace_agents" "1" "${ephemeralRetention}" &
 PIDS+=($!)
 createOrUpdateTopic "sts_internal_topology" "1" "${ephemeralRetention}" &
 PIDS+=($!)
