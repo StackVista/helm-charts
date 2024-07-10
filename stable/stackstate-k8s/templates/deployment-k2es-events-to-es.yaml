@@ -1,9 +1,7 @@
 {{- define "stackstate.k2es.deployment.eventsToEs.container" -}}
 args:
 {{- include "stackstate.service.args" . }}
-- generic-events
 - topology-events
-- sts-events
 name: e2es
 volumeMounts:
 {{- include "stackstate.service.container.volumes" . }}
