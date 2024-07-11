@@ -371,9 +371,9 @@ stackstate:
               CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers: "0"
               CONFIG_FORCE_stackstate_correlate_aggregation_workers: "0"
             # stackstate.components.correlate.split.connection.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.receiver.extraEnv.secret
-            secret: { }
+            secret: {}
           # stackstate.components.correlate.split.connection.podAnnotations -- Extra annotations
-          podAnnotations: { }
+          podAnnotations: {}
           # stackstate.components.correlate.split.connection.resources -- Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources
           resources:
             limits:
@@ -390,11 +390,11 @@ stackstate:
           # stackstate.components.correlate.split.connection.replicaCount -- Number of `base receiver` replicas.
           replicaCount: 1
           # stackstate.components.correlate.split.connection.nodeSelector -- Additional dode labels for pod assignment.
-          nodeSelector: { }
+          nodeSelector: {}
           # stackstate.components.correlate.split.connection.tolerations -- Additional toleration labels for pod assignment.
-          tolerations: [ ]
+          tolerations: []
           # stackstate.components.correlate.split.connection.affinity -- Additional affinity settings for pod assignment.
-          affinity: { }
+          affinity: {}
         httpTracing:
           extraEnv:
             # stackstate.components.correlate.split.httpTracing.extraEnv.open -- Extra open environment variables to inject into pods. Will merge with stackstate.components.receiver.extraEnv.open
@@ -403,9 +403,9 @@ stackstate:
               CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers: "3"
               CONFIG_FORCE_stackstate_correlate_aggregation_workers: "0"
             # stackstate.components.correlate.split.httpTracing.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.receiver.extraEnv.secret
-            secret: { }
+            secret: {}
           # stackstate.components.correlate.split.httpTracing.podAnnotations -- Extra annotations
-          podAnnotations: { }
+          podAnnotations: {}
           # stackstate.components.correlate.split.httpTracing.resources -- Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources
           resources:
             limits:
@@ -422,11 +422,11 @@ stackstate:
           # stackstate.components.correlate.split.httpTracing.replicaCount -- Number of `processAgent receiver` replicas.
           replicaCount: 1
           # stackstate.components.correlate.split.httpTracing.nodeSelector -- Additional dode labels for pod assignment.
-          nodeSelector: { }
+          nodeSelector: {}
           # stackstate.components.correlate.split.httpTracing.tolerations -- Additional toleration labels for pod assignment.
-          tolerations: [ ]
+          tolerations: []
           # stackstate.components.correlate.split.httpTracing.affinity -- Additional affinity settings for pod assignment.
-          affinity: { }
+          affinity: {}
         aggregator:
           extraEnv:
             # stackstate.components.correlate.split.aggregator.extraEnv.open -- Extra open environment variables to inject into pods. Will merge with stackstate.components.receiver.extraEnv.open
@@ -435,9 +435,9 @@ stackstate:
               CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers: "0"
               CONFIG_FORCE_stackstate_correlate_aggregation_workers: "3"
             # stackstate.components.correlate.split.aggregator.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.receiver.extraEnv.secret
-            secret: { }
+            secret: {}
           # stackstate.components.correlate.split.aggregator.podAnnotations -- Extra annotations
-          podAnnotations: { }
+          podAnnotations: {}
           # stackstate.components.correlate.split.aggregator.resources -- Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources
           resources:
             limits:
@@ -454,11 +454,11 @@ stackstate:
           # stackstate.components.correlate.split.aggregator.replicaCount -- Number of `logs receiver` replicas.
           replicaCount: 1
           # stackstate.components.correlate.split.aggregator.nodeSelector -- Additional dode labels for pod assignment.
-          nodeSelector: { }
+          nodeSelector: {}
           # stackstate.components.correlate.split.aggregator.tolerations -- Additional toleration labels for pod assignment.
-          tolerations: [ ]
+          tolerations: []
           # stackstate.components.correlate.split.aggregator.affinity -- Additional affinity settings for pod assignment.
-          affinity: { }
+          affinity: {}
     checks:
       extraEnv:
         # stackstate.components.checks.extraEnv.open -- Extra open environment variables to inject into pods.
