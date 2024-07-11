@@ -550,33 +550,33 @@ stackstate/stackstate
 | stackstate.components.correlate.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
 | stackstate.components.correlate.sizing.javaHeapMemoryFraction | string | `"65"` |  |
 | stackstate.components.correlate.split.aggregator.affinity | object | `{}` | Additional affinity settings for pod assignment. |
-| stackstate.components.correlate.split.aggregator.extraEnv.open | object | `{"CONFIG_FORCE_stackstate_correlate_aggregation_workers":"3","CONFIG_FORCE_stackstate_correlate_correlateConnections_workers":"0","CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers":"0"}` | Extra open environment variables to inject into pods. Will merge with stackstate.components.receiver.extraEnv.open |
-| stackstate.components.correlate.split.aggregator.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.receiver.extraEnv.secret |
+| stackstate.components.correlate.split.aggregator.extraEnv.open | object | `{"CONFIG_FORCE_stackstate_correlate_aggregation_workers":"3","CONFIG_FORCE_stackstate_correlate_correlateConnections_workers":"0","CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers":"0"}` | Extra open environment variables to inject into pods. Will merge with stackstate.components.correlate.extraEnv.open |
+| stackstate.components.correlate.split.aggregator.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.correlate.extraEnv.secret |
 | stackstate.components.correlate.split.aggregator.nodeSelector | object | `{}` | Additional dode labels for pod assignment. |
 | stackstate.components.correlate.split.aggregator.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.correlate.split.aggregator.replicaCount | int | `1` | Number of `logs receiver` replicas. |
-| stackstate.components.correlate.split.aggregator.resources | object | `{"limits":{"cpu":null,"ephemeral-storage":null,"memory":null},"requests":{"cpu":null,"ephemeral-storage":null,"memory":null}}` | Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources |
+| stackstate.components.correlate.split.aggregator.replicaCount | int | `1` | Number of `aggregator correlate` replicas. |
+| stackstate.components.correlate.split.aggregator.resources | object | `{"limits":{"cpu":null,"ephemeral-storage":null,"memory":null},"requests":{"cpu":null,"ephemeral-storage":null,"memory":null}}` | Resource allocation for pods. If not defined, will take from stackstate.components.correlate.resources |
 | stackstate.components.correlate.split.aggregator.sizing.javaHeapMemoryFraction | string | `nil` |  |
 | stackstate.components.correlate.split.aggregator.sizing.logsMemoryConsumption | string | `nil` |  |
 | stackstate.components.correlate.split.aggregator.tolerations | list | `[]` | Additional toleration labels for pod assignment. |
 | stackstate.components.correlate.split.connection.affinity | object | `{}` | Additional affinity settings for pod assignment. |
-| stackstate.components.correlate.split.connection.extraEnv.open | object | `{"CONFIG_FORCE_stackstate_correlate_aggregation_workers":"0","CONFIG_FORCE_stackstate_correlate_correlateConnections_workers":"3","CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers":"0"}` | Extra open environment variables to inject into pods. Will merge with stackstate.components.receiver.extraEnv.open |
-| stackstate.components.correlate.split.connection.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.receiver.extraEnv.secret |
+| stackstate.components.correlate.split.connection.extraEnv.open | object | `{"CONFIG_FORCE_stackstate_correlate_aggregation_workers":"0","CONFIG_FORCE_stackstate_correlate_correlateConnections_workers":"3","CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers":"0"}` | Extra open environment variables to inject into pods. Will merge with stackstate.components.correlate.extraEnv.open |
+| stackstate.components.correlate.split.connection.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.correlate.extraEnv.secret |
 | stackstate.components.correlate.split.connection.nodeSelector | object | `{}` | Additional dode labels for pod assignment. |
 | stackstate.components.correlate.split.connection.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.correlate.split.connection.replicaCount | int | `1` | Number of `base receiver` replicas. |
-| stackstate.components.correlate.split.connection.resources | object | `{"limits":{"cpu":null,"ephemeral-storage":null,"memory":null},"requests":{"cpu":null,"ephemeral-storage":null,"memory":null}}` | Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources |
+| stackstate.components.correlate.split.connection.replicaCount | int | `1` | Number of `connection correlate` replicas. |
+| stackstate.components.correlate.split.connection.resources | object | `{"limits":{"cpu":null,"ephemeral-storage":null,"memory":null},"requests":{"cpu":null,"ephemeral-storage":null,"memory":null}}` | Resource allocation for pods. If not defined, will take from stackstate.components.correlate.resources |
 | stackstate.components.correlate.split.connection.sizing.baseMemoryConsumption | string | `nil` |  |
 | stackstate.components.correlate.split.connection.sizing.javaHeapMemoryFraction | string | `nil` |  |
 | stackstate.components.correlate.split.connection.tolerations | list | `[]` | Additional toleration labels for pod assignment. |
 | stackstate.components.correlate.split.enabled | bool | `false` | Split the correlate into the connection connection correlator, http correlator and aggregator |
 | stackstate.components.correlate.split.httpTracing.affinity | object | `{}` | Additional affinity settings for pod assignment. |
-| stackstate.components.correlate.split.httpTracing.extraEnv.open | object | `{"CONFIG_FORCE_stackstate_correlate_aggregation_workers":"0","CONFIG_FORCE_stackstate_correlate_correlateConnections_workers":"0","CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers":"3"}` | Extra open environment variables to inject into pods. Will merge with stackstate.components.receiver.extraEnv.open |
-| stackstate.components.correlate.split.httpTracing.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.receiver.extraEnv.secret |
+| stackstate.components.correlate.split.httpTracing.extraEnv.open | object | `{"CONFIG_FORCE_stackstate_correlate_aggregation_workers":"0","CONFIG_FORCE_stackstate_correlate_correlateConnections_workers":"0","CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers":"3"}` | Extra open environment variables to inject into pods. Will merge with stackstate.components.correlate.extraEnv.open |
+| stackstate.components.correlate.split.httpTracing.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. Will merge with stackstate.components.correlate.extraEnv.secret |
 | stackstate.components.correlate.split.httpTracing.nodeSelector | object | `{}` | Additional dode labels for pod assignment. |
 | stackstate.components.correlate.split.httpTracing.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.correlate.split.httpTracing.replicaCount | int | `1` | Number of `processAgent receiver` replicas. |
-| stackstate.components.correlate.split.httpTracing.resources | object | `{"limits":{"cpu":null,"ephemeral-storage":null,"memory":null},"requests":{"cpu":null,"ephemeral-storage":null,"memory":null}}` | Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources |
+| stackstate.components.correlate.split.httpTracing.replicaCount | int | `1` | Number of `httpTracing correlate` replicas. |
+| stackstate.components.correlate.split.httpTracing.resources | object | `{"limits":{"cpu":null,"ephemeral-storage":null,"memory":null},"requests":{"cpu":null,"ephemeral-storage":null,"memory":null}}` | Resource allocation for pods. If not defined, will take from stackstate.components.correlate.resources |
 | stackstate.components.correlate.split.httpTracing.sizing.javaHeapMemoryFraction | string | `nil` |  |
 | stackstate.components.correlate.split.httpTracing.sizing.processAgentMemoryConsumption | string | `nil` |  |
 | stackstate.components.correlate.split.httpTracing.tolerations | list | `[]` | Additional toleration labels for pod assignment. |

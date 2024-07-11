@@ -28,18 +28,18 @@ spec:
 
 {{- if .Values.stackstate.components.receiver.split.enabled }}
 {{- $receiverBaseArgs := merge (dict "ReceiverType" "base") . -}}
-{{- $stsstackstateReceiverBaseService := fromYaml (include "stackstate.receiver.service" $receiverBaseArgs) -}}
-{{- toYaml (merge $stsstackstateReceiverBaseService $commonService) }}
+{{- $stackstateReceiverBaseService := fromYaml (include "stackstate.receiver.service" $receiverBaseArgs) -}}
+{{- toYaml (merge $stackstateReceiverBaseService $commonService) }}
 ---
 {{- $receiverLogsArgs := merge (dict "ReceiverType" "logs") . -}}
-{{- $stsstackstateReceiverLogsService := fromYaml (include "stackstate.receiver.service" $receiverLogsArgs) -}}
-{{ toYaml (merge $stsstackstateReceiverLogsService $commonService) }}
+{{- $stackstateReceiverLogsService := fromYaml (include "stackstate.receiver.service" $receiverLogsArgs) -}}
+{{ toYaml (merge $stackstateReceiverLogsService $commonService) }}
 ---
 {{- $receiverProcessAgentArgs := merge (dict "ReceiverType" "process-agent") . -}}
-{{- $stsstackstateReceiverProcessAgentService := fromYaml (include "stackstate.receiver.service" $receiverProcessAgentArgs) -}}
-{{ toYaml (merge $stsstackstateReceiverProcessAgentService $commonService) -}}
+{{- $stackstateReceiverProcessAgentService := fromYaml (include "stackstate.receiver.service" $receiverProcessAgentArgs) -}}
+{{ toYaml (merge $stackstateReceiverProcessAgentService $commonService) -}}
 {{ else }}
 {{- $receiverArgs := merge (dict "ReceiverType" "") . -}}
-{{- $stsstackstateReceiverService := fromYaml (include "stackstate.receiver.service" $receiverArgs) -}}
-{{- toYaml (merge $stsstackstateReceiverService $commonService) }}
+{{- $stackstateReceiverService := fromYaml (include "stackstate.receiver.service" $receiverArgs) -}}
+{{- toYaml (merge $stackstateReceiverService $commonService) }}
 {{- end -}}

@@ -26,18 +26,18 @@ spec:
 
 {{- if .Values.stackstate.components.correlate.split.enabled }}
 {{- $correlateConnectionArgs := merge (dict "CorrelateType" "connection") . -}}
-{{- $stsstackstateReceiverConnectionService := fromYaml (include "stackstate.correlate.service" $correlateConnectionArgs) -}}
-{{- toYaml (merge $stsstackstateReceiverConnectionService $commonService) }}
+{{- $stackstateCorrelateConnectionService := fromYaml (include "stackstate.correlate.service" $correlateConnectionArgs) -}}
+{{- toYaml (merge $stackstateCorrelateConnectionService $commonService) }}
 ---
 {{- $correlateHTTPTracingArgs := merge (dict "CorrelateType" "http-tracing") . -}}
-{{- $stsstackstateReceiverHTTPTracingService := fromYaml (include "stackstate.correlate.service" $correlateHTTPTracingArgs) -}}
-{{ toYaml (merge $stsstackstateReceiverHTTPTracingService $commonService) }}
+{{- $stackstateCorrelateHTTPTracingService := fromYaml (include "stackstate.correlate.service" $correlateHTTPTracingArgs) -}}
+{{ toYaml (merge $stackstateCorrelateHTTPTracingService $commonService) }}
 ---
 {{- $correlateAggregatorArgs := merge (dict "CorrelateType" "aggregator") . -}}
-{{- $stsstackstateReceiverAggregatorService := fromYaml (include "stackstate.correlate.service" $correlateAggregatorArgs) -}}
-{{ toYaml (merge $stsstackstateReceiverAggregatorService $commonService) -}}
+{{- $stackstateCorrelateAggregatorService := fromYaml (include "stackstate.correlate.service" $correlateAggregatorArgs) -}}
+{{ toYaml (merge $stackstateCorrelateAggregatorService $commonService) -}}
 {{ else }}
 {{- $correlateArgs := merge (dict "CorrelateType" "") . -}}
-{{- $stsstackstateReceiverService := fromYaml (include "stackstate.correlate.service" $correlateArgs) -}}
-{{- toYaml (merge $stsstackstateReceiverService $commonService) }}
+{{- $stackstateCorrelateService := fromYaml (include "stackstate.correlate.service" $correlateArgs) -}}
+{{- toYaml (merge $stackstateCorrelateService $commonService) }}
 {{- end -}}
