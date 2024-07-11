@@ -2,9 +2,20 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
+  {{- if .Values.deployment.compatibleWithArgoCD }}
+  generateName: backup-init-
+  {{- else }}
   name: {{ template "common.fullname.short" . }}-backup-init-{{ now | date "20060102t150405" }}
+  {{- end }}
   labels:
     app.kubernetes.io/component: backup
+  annotations:
+    {{- if .Values.deployment.compatibleWithArgoCD }}
+    argocd.argoproj.io/hook: Sync
+    {{- end }}
+  {{- with .Values.backup.initJobAnnotations }}
+    {{- toYaml . | nindent 4}}
+  {{- end }}
 spec:
   ttlSecondsAfterFinished: 600
   template:

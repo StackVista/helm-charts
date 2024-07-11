@@ -10,7 +10,7 @@ import (
 func TestAllServicesRenderedSplit(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/dummy_trust_store.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
-	podsToCheck := append([]string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "view-health", "e2es"})
+	podsToCheck := append([]string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "e2es"})
 
 	assertTrustStoreOnPods(t, resources, podsToCheck)
 }

@@ -21,8 +21,6 @@ subjects:
 - kind: ServiceAccount
   name: {{ template "common.fullname.short" . }}-sync
 - kind: ServiceAccount
-  name: {{ template "common.fullname.short" . }}-view-health
-- kind: ServiceAccount
   name: {{ template "common.fullname.short" . }}-notification
 - kind: ServiceAccount
   name: {{ template "common.fullname.short" . }}-health-sync

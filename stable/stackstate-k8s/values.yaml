@@ -17,6 +17,8 @@ backup:
   additionalLogging: ""
   # backup.enabled -- Enables backup/restore, including the MinIO subsystem.
   enabled: false
+  # backup.initJobAnnotations -- Annotations for Backup-init Job.
+  initJobAnnotations: {}
   elasticsearch:
     # backup.elasticsearch.bucketName -- Name of the MinIO bucket where ElasticSearch snapshots are stored.
     bucketName: 'sts-elasticsearch-backup'
@@ -123,6 +125,9 @@ backup:
       runAsNonRoot: true
       # backup.configuration.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
       runAsUser: 65534
+# deployment.compatibleWithArgoCD -- Whether to adjust the Chart to be compatible with ArgoCD
+deployment:
+  compatibleWithArgoCD: false
 ingress:
   # ingress.annotations -- Annotations for ingress objects.
   annotations: {}
@@ -184,7 +189,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: 6.0.0-snapshot.20240627072807-master-bf8c6c3
+        tag: 6.0.0-snapshot.20240711104738-master-bdc1225
       # stackstate.components.all.podAnnotations -- Extra annotations
       podAnnotations: {}
       metrics:
@@ -1012,52 +1017,9 @@ stackstate:
       tolerations: []
       # stackstate.components.ui.affinity -- Affinity settings for pod assignment.
       affinity: {}
-    viewHealth:
-      extraEnv:
-        # stackstate.components.viewHealth.extraEnv.open -- Extra open environment variables to inject into pods.
-        open: {}
-        # stackstate.components.viewHealth.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
-        secret: {}
-      image:
-        # stackstate.components.viewHealth.image.imageRegistry -- `imageRegistry` used for the `viewHealth` component Docker image; this will override `global.imageRegistry` on a per-service basis.
-        imageRegistry: ""
-        # stackstate.components.viewHealth.image.pullPolicy -- `pullPolicy` used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
-        pullPolicy: ""
-        # stackstate.components.viewHealth.image.repository -- Repository of the viewHealth component Docker image.
-        repository: stackstate/stackstate-server
-        # stackstate.components.viewHealth.image.tag -- Tag used for the `viewHealth` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: ""
-      # stackstate.components.viewHealth.podAnnotations -- Extra annotations
-      podAnnotations: {}
-      # stackstate.components.viewHealth.poddisruptionbudget -- PodDisruptionBudget settings for `viewHealth` pods.
-      poddisruptionbudget:
-        maxUnavailable: 1
-      # stackstate.components.viewHealth.resources -- Resource allocation for `viewHealth` pods.
-      resources:
-        limits:
-          memory: "2700Mi"
-          cpu: "2000m"
-          ephemeral-storage: "1Gi"
-        requests:
-          memory: "2Gi"
-          cpu: "1000m"
-          ephemeral-storage: "1Mi"
-      sizing:
-        baseMemoryConsumption: "400Mi"
-        javaHeapMemoryFraction: "55"
-      # stackstate.components.viewHealth.replicaCount -- Number of `viewHealth` replicas.
-      replicaCount: 1
-      # stackstate.components.viewHealth.nodeSelector -- Node labels for pod assignment.
-      nodeSelector: {}
-      # stackstate.components.viewHealth.tolerations -- Toleration labels for pod assignment.
-      tolerations: []
-      # stackstate.components.viewHealth.affinity -- Affinity settings for pod assignment.
-      affinity: {}
-      # stackstate.components.viewHealth.config -- Configuration file contents to customize the default StackState viewHealth configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
-      config: ""
-      # stackstate.components.viewHealth.additionalLogging -- Additional logback config
-      additionalLogging: ""
     kafkaTopicCreate:
+      # stackstate.components.kafkaTopicCreate.jobAnnotations -- Annotations for KafkaTopicCreate job.
+      jobAnnotations: {}
       extraEnv:
         # stackstate.components.kafkaTopicCreate.extraEnv.open -- Add additional environment variables to the pod
         open: {}
@@ -1251,7 +1213,7 @@ stackstate:
       # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
       split: true
     storeTransactionLogsToPVC:
-      # stackstate.experimental.storeTransactionLogsToPVC.enabled -- (boolean) Whether the transcation logs for some services, API, Checks, HealthSync,State, Sync, and ViewHealth, have to be stored to PVCs instead of pod ephemeral storage.
+      # stackstate.experimental.storeTransactionLogsToPVC.enabled -- (boolean) Whether the transcation logs for some services, API, Checks, HealthSync,State and Sync have to be stored to PVCs instead of pod ephemeral storage.
       enabled: false
       # stackstate.experimental.storeTransactionLogsToPVC.volumeSize -- (string) The size of the persistent volume for the transaction logs.
       volumeSize: 600Mi
@@ -1277,7 +1239,7 @@ stackstate:
       # stackstate.stackpacks.image.repository -- Repository of the `stackpacks` Docker image.
       repository: stackstate/stackpacks
       # stackstate.stackpacks.image.tag -- Tag used for the `stackpacks` Docker image;
-      tag: "20240620110345-master-aef4f3b-selfhosted"
+      tag: "20240703152707-master-fc6af35-selfhosted"
     s3:
       # stackstate.stackpacks.s3.bucket -- Name of the S3 bucket to use as source for stackpacks.
       bucket: "sts-stackpacks-prod"
@@ -1370,7 +1332,7 @@ hbase:
       agentAnnotationsEnabled: true
   stackgraph:
     # hbase.stackgraph.version -- The StackGraph server version, must be compatible with the StackState version
-    version: 7.6.0
+    version: 7.6.3
   console:
     # hbase.console.enabled -- Enabled by default for debugging, but with 0 replicas. Manually scale up to 1 replica and open a shell in the container to access the stackgraph console.
     enabled: true
@@ -1686,6 +1648,10 @@ zookeeper:
   heapSize: 512
   # zookeeper.fourlwCommandsWhitelist -- Zookeeper four-letter-word (FLW) commands that are enabled.
   fourlwCommandsWhitelist: "mntr, ruok, stat, srvr"
+  # zookeeper.autopurge -- configurations of ZooKeeper auto purge, it deletes old snapshot and log files. ClickHouse creates a lot of operation and it should be purged to avoud out of disk space.
+  autopurge:
+    snapRetainCount: 5
+    purgeInterval: 3
   # zookeeper.fullnameOverride -- Name override for Zookeeper child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
   fullnameOverride: stackstate-zookeeper
   podLabels:
@@ -2082,7 +2048,6 @@ clickhouse:
     username: admin
     # clickhouse.auth.password -- ClickHouse Admin password. If left empty the random value is generated.
     password: admin
-
   # clickhouse.extraOverrides -- Extra configuration overrides (evaluated as a template) apart from the default. This configuration deploys ClickHouse in the cluster mode even if there is only one node.
   extraOverrides: |
     <clickhouse>
@@ -2106,7 +2071,6 @@ clickhouse:
         </default>
       </remote_servers>
     </clickhouse>
-
   # clickhouse.usersExtraOverrides -- Users extra configuration overrides.
   usersExtraOverrides: |
     <clickhouse>
@@ -2158,11 +2122,16 @@ clickhouse:
               key: backup_enabled
         - name: BACKUP_TABLES
           value: "{{ .Values.backup.config.tables }}"
+        - name: CLICKHOUSE_REPLICA_ID
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
       resources:
         requests:
           memory: "{{ .Values.backup.resources.requests.memory }}"
           cpu: "{{ .Values.backup.resources.requests.cpu }}"
-        limit:
+        limits:
           memory: "{{ .Values.backup.resources.limit.memory }}"
           cpu: "{{ .Values.backup.resources.limit.cpu }}"
       volumeMounts:

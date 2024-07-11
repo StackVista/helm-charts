@@ -38,7 +38,7 @@ data:
       # RESTORE_SCHEMA_ON_CLUSTER, execute all schema related SQL queries with `ON CLUSTER` clause as Distributed DDL.
       # Check `system.clusters` table for the correct cluster name, also `system.macros` can be used.
       # This isn't applicable when `use_embedded_backup_restore: true`
-      restore_schema_on_cluster: ""
+      restore_schema_on_cluster: "default"
       upload_by_part: true           # UPLOAD_BY_PART
       download_by_part: true         # DOWNLOAD_BY_PART
       use_resumable_state: true      # USE_RESUMABLE_STATE, allow resume upload and download according to the <backup_name>.resumable file

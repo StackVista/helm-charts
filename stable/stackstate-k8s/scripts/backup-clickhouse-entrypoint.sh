@@ -9,7 +9,12 @@ set -Eeuo pipefail
 # - eventually we want to backup only the first instance of each replica - so with we need that kind of script to check if a Pod is the first one from the StatefulSet.
 
 if [ "${BACKUP_CLICKHOUSE_ENABLED}" == "true" ]; then
-  supercronic -prometheus-listen-address 0.0.0.0:9746 /app/crontab/clickhouse-backup
+  if [[ "${CLICKHOUSE_REPLICA_ID}" == *-0 ]]; then
+    supercronic -prometheus-listen-address 0.0.0.0:9746 /app/crontab/clickhouse-backup
+  else
+    echo "This is a stub container doing nothing. For backup/supercronic logs please check the first Pod of the StatefulSet where the backups are performed."
+    sleep inf
+  fi
 else
   echo "Backup is disabled"
   sleep inf

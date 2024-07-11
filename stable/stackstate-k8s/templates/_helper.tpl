@@ -291,13 +291,6 @@ checksum/ui-env: {{ include (print $.Template.BasePath "/secret-ui.yaml") . | sh
 {{- end -}}
 
 {{/*
-ViewHealth secret checksum annotations
-*/}}
-{{- define "stackstate.viewHealth.secret.checksum" -}}
-checksum/viewHealth-env: {{ include (print $.Template.BasePath "/secret-viewHealth.yaml") . | sha256sum }}
-{{- end -}}
-
-{{/*
 HealthSync secret checksum annotations
 */}}
 {{- define "stackstate.healthSync.secret.checksum" -}}
@@ -366,13 +359,6 @@ State configmap checksum annotations
 */}}
 {{- define "stackstate.state.configmap.checksum" -}}
 checksum/state-configmap: {{ include (print $.Template.BasePath "/configmap-state.yaml") . | sha256sum }}
-{{- end -}}
-
-{{/*
-ViewHealth configmap checksum annotations
-*/}}
-{{- define "stackstate.viewHealth.configmap.checksum" -}}
-checksum/viewHealth-configmap: {{ include (print $.Template.BasePath "/configmap-viewHealth.yaml") . | sha256sum }}
 {{- end -}}
 
 {{/*
