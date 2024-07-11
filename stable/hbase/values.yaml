@@ -8,9 +8,9 @@ global:
 commonLabels: {}
 # version -- Version of hbase to use
 version: "1.2"
-# stackstate.experimental.stackgraph.split -- (boolean) Run a single stackgraph service or split in multiple sub services as hbase-master, hbase-rs ....
-experimental:
-  split: true
+# stackstate.deployment.mode -- (Distributed, Mono) Run a single stackgraph service or split in multiple sub services as hbase-master, hbase-rs ....
+deployment:
+  mode: "Distributed"
 all:
   image:
     # all.image.registry -- Base container image registry for all containers, except for the wait container

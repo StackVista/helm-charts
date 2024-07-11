@@ -122,7 +122,7 @@ spec:
     {{- end }}
 {{- end -}}
 
-{{- if .Values.experimental.split -}}
+{{- if eq .Values.deployment.mode "Distributed" -}}
 {{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
 {{- $stackstateHbaseMasterStatefulSet := fromYaml (include "hbase.hbase.master.statefulset" .) -}}
 {{- toYaml (merge $stackstateHbaseMasterStatefulSet $commonStatefulSet) -}}

@@ -34,7 +34,11 @@ env:
       name: {{ template "common.fullname.short" . }}-license
       key: sts-license-key
 - name: ZOOKEEPER_QUORUM
+{{- if eq .Values.hbase.deployment.mode "Distributed" }}
   value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
+{{- else }}
+  value: "{{- .Release.Name }}-hbase-stackgraph:2182"
+{{- end }}
 image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.notification.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.notification.image.pullPolicy | quote }}
 name: notification

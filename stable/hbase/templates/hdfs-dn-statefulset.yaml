@@ -157,7 +157,7 @@ spec:
 {{- end }}
 {{- end -}}
 
-{{- if .Values.experimental.split -}}
+{{- if eq .Values.deployment.mode "Distributed" -}}
 {{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
 {{- $stackstateHbaseHdfsDatanodeStatefulSet := fromYaml (include "hbase.hdfs.datanode.statefulset" .) -}}
 {{- toYaml (merge $stackstateHbaseHdfsDatanodeStatefulSet $commonStatefulSet) -}}

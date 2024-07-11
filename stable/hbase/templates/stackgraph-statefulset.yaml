@@ -155,7 +155,7 @@ spec:
 {{- end }}
 {{- end -}}
 
-{{- if not .Values.experimental.split -}}
+{{- if eq .Values.deployment.mode "Mono" -}}
 {{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
 {{- $stackgraphStatefulSet := fromYaml (include "stackgraph.statefulset" .) -}}
 {{- toYaml (merge $stackgraphStatefulSet $commonStatefulSet) -}}

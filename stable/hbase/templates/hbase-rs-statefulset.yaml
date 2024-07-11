@@ -128,7 +128,7 @@ spec:
     {{- end }}
 {{- end -}}
 
-{{- if .Values.experimental.split -}}
+{{- if eq .Values.deployment.mode "Distributed" -}}
 {{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
 {{- $stackstateHbaseRegionServerStatefulSet := fromYaml (include "hbase.hbase.regionserver.statefulset" .) -}}
 {{- toYaml (merge $stackstateHbaseRegionServerStatefulSet $commonStatefulSet) -}}

@@ -60,7 +60,7 @@ stackstate.api.authorization.staticSubjects.stackstate-aad: { systemPermissions:
 {{- end }}
 
 stackstate.stackPacks {
-  {{- if .Values.hbase.experimental.split }}
+  {{- if eq .Values.hbase.deployment.mode "Distributed" }}
   localStackPacksUri = "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
   {{- end }}
 

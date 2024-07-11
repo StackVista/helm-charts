@@ -1,6 +1,6 @@
 {{- define "hbase.tephra.container.init" -}}
 name: tephra-init
-{{- if .Values.experimental.split }}
+{{- if eq .Values.deployment.mode "Distributed" }}
 command:
 - sh
 - -c
@@ -22,7 +22,7 @@ name: tephra
 image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.tephra.image.repository }}:{{ default (printf "%s-%s" .Values.version .Values.stackgraph.version) .Values.tephra.image.tag }}"
 imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.tephra.image.pullPolicy | quote  }}
 env:
-{{- if .Values.experimental.split }}
+{{- if eq .Values.deployment.mode "Distributed" }}
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "hbase.hbase.commonEnv" . }}
 {{- include "all.commonEnv" . }}

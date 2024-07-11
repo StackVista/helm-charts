@@ -173,7 +173,11 @@ spec:
             - name: FORCE_DELETE
               value: "REPLACE_ME_FORCE_DELETE_REPLACE_ME"
             - name: ZOOKEEPER_QUORUM
+              {{- if eq .Values.hbase.deployment.mode "Distributed" }}
               value: stackstate-zookeeper-headless:2181
+              {{- else }}
+              value: "stackstate-hbase-stackgraph:2182"
+              {{- end }}
           {{- with .Values.stackstate.components.backup.resources }}
           resources:
             {{- toYaml . | nindent 12 }}

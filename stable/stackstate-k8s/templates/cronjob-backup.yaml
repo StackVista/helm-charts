@@ -44,7 +44,11 @@ spec:
               env:
                 {{- include "stackstate.backup.envvars" . | nindent 16 }}
                 - name: ZOOKEEPER_QUORUM
+                  {{- if eq .Values.hbase.deployment.mode "Distributed" }}
                   value: stackstate-zookeeper-headless:2181
+                  {{- else }}
+                  value: "stackstate-hbase-stackgraph:2182"
+                  {{- end }}
               {{- with .Values.stackstate.components.backup.resources }}
               resources:
                 {{- toYaml . | nindent 16 }}
