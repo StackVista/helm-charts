@@ -18,6 +18,7 @@ spec:
   {{ include "stackstate.servicemonitor.extraLabels" . | nindent 2 }}
 {{- end -}}
 
+{{- if and ( .Values.stackstate.components.all.metrics.enabled ) ( .Values.stackstate.components.all.metrics.servicemonitor.enabled ) }}
 {{- $commonServiceMonitor := fromYaml (include "common.servicemonitor" .) -}}
 
 {{- if .Values.stackstate.components.receiver.split.enabled }}
@@ -36,4 +37,5 @@ spec:
 {{- $receiverMonitorArgs := merge (dict "ReceiverType" "") . -}}
 {{- $stsstackstateReceiverServiceMonitor := fromYaml (include "stackstate.receiver.servicemonitor" $receiverMonitorArgs) -}}
 {{- toYaml (merge $stsstackstateReceiverServiceMonitor $commonServiceMonitor) }}
+{{- end -}}
 {{- end -}}
