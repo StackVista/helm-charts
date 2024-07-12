@@ -1,8 +1,13 @@
+{{- define "stackstate.correlate.name.postfix" -}}
+  {{- if .CorrelateType }}-{{ .CorrelateType }}{{ else }}{{ end }}
+{{- end -}}
+
 {{- define "stackstate.correlate.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-correlate
+  name: {{ template "common.fullname.short" . }}-correlate{{ template "stackstate.correlate.name.postfix" . }}
   labels:
-    app.kubernetes.io/component: correlate
+    app.kubernetes.io/component: correlate{{ template "stackstate.correlate.name.postfix" . }}
+    app.kubernetes.io/component-group: correlate
 spec:
   clusterIP: None
 {{- if .Values.stackstate.components.all.metrics.enabled }}
@@ -13,10 +18,26 @@ spec:
       targetPort: metrics
 {{- end }}
   selector:
-    app.kubernetes.io/component: correlate
+    app.kubernetes.io/component: correlate{{ template "stackstate.correlate.name.postfix" . }}
   type: ClusterIP
 {{- end -}}
 
 {{- $commonService := fromYaml (include "common.service" .) -}}
-{{- $stsstackstateCorrelateService := fromYaml (include "stackstate.correlate.service" .) -}}
-{{- toYaml (merge $stsstackstateCorrelateService $commonService) -}}
+
+{{- if .Values.stackstate.components.correlate.split.enabled }}
+{{- $correlateConnectionArgs := merge (dict "CorrelateType" "connection") . -}}
+{{- $stackstateCorrelateConnectionService := fromYaml (include "stackstate.correlate.service" $correlateConnectionArgs) -}}
+{{- toYaml (merge $stackstateCorrelateConnectionService $commonService) }}
+---
+{{- $correlateHTTPTracingArgs := merge (dict "CorrelateType" "http-tracing") . -}}
+{{- $stackstateCorrelateHTTPTracingService := fromYaml (include "stackstate.correlate.service" $correlateHTTPTracingArgs) -}}
+{{ toYaml (merge $stackstateCorrelateHTTPTracingService $commonService) }}
+---
+{{- $correlateAggregatorArgs := merge (dict "CorrelateType" "aggregator") . -}}
+{{- $stackstateCorrelateAggregatorService := fromYaml (include "stackstate.correlate.service" $correlateAggregatorArgs) -}}
+{{ toYaml (merge $stackstateCorrelateAggregatorService $commonService) -}}
+{{ else }}
+{{- $correlateArgs := merge (dict "CorrelateType" "") . -}}
+{{- $stackstateCorrelateService := fromYaml (include "stackstate.correlate.service" $correlateArgs) -}}
+{{- toYaml (merge $stackstateCorrelateService $commonService) }}
+{{- end -}}
