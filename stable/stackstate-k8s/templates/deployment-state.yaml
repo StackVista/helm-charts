@@ -1,10 +1,18 @@
 {{- define "stackstate.state.deployment.container.init" -}}
 name: server-init
+{{- if eq .Values.deployment.mode "Distributed" }}
 command:
 - sh
 - -c
 - |
   /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn-headful:9000,{{ template "common.fullname.short" . }}-initializer:1618 -t 300
+{{- else }}
+command:
+  - sh
+  - -c
+  - |
+    /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{- .Release.Name }}-hbase-stackgraph:2182,{{ template "common.fullname.short" . }}-initializer:1618 -t 300
+{{- end }}
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
 imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
 {{- end -}}
