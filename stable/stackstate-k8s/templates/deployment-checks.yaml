@@ -1,6 +1,6 @@
 {{- define "stackstate.checks.deployment.container.init" -}}
 name: server-init
-{{- if eq .Values.deployment.mode "Distributed" }}
+{{- if eq .Values.hbase.deployment.mode "Distributed" }}
 command:
 - sh
 - -c
