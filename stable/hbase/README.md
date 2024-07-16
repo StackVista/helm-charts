@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.2.23`
+Current chart version is `0.2.24`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -129,7 +129,7 @@ Current chart version is `0.2.23`
 | stackgraph.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackgraph.agentMetricsFilter | string | `""` | Configure metrics scraped by the agent |
 | stackgraph.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below). |
-| stackgraph.image.repository | string | `"stackstate/hbase-testcontainer"` | The default repository used for the single service stackgraph image |
+| stackgraph.image.repository | string | `"stackstate/stackgraph-hbase"` | The default repository used for the single service stackgraph image |
 | stackgraph.image.tag | string | `nil` | The default tag used for the single service stackgraph image |
 | stackgraph.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackgraph.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for stackgraph. |

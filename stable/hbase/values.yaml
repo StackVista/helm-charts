@@ -51,7 +51,7 @@ stackgraph:
   nodeSelector: {}
   image:
     # stackgraph.image.repository -- The default repository used for the single service stackgraph image
-    repository: stackstate/hbase-testcontainer
+    repository: stackstate/stackgraph-hbase
     # stackgraph.image.tag -- The default tag used for the single service stackgraph image
     tag:
     # stackgraph.image.pullPolicy -- The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below).
