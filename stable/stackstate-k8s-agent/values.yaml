@@ -1,3 +1,4 @@
+---
 #####################
 # General variables #
 #####################
@@ -125,12 +126,12 @@ nodeAgent:
         limits:
           # nodeAgent.containers.agent.resources.limits.cpu -- CPU resource limits.
           cpu: "270m"
-          # nodeAgent.containers.agent.resources.limits.cpu -- Memory resource limits.
+          # nodeAgent.containers.agent.resources.limits.memory -- Memory resource limits.
           memory: "420Mi"
         requests:
           # nodeAgent.containers.agent.resources.requests.cpu -- CPU resource requests.
           cpu: "20m"
-          # nodeAgent.containers.agent.resources.requests.cpu -- Memory resource requests.
+          # nodeAgent.containers.agent.resources.requests.memory -- Memory resource requests.
           memory: "180Mi"
       livenessProbe:
         # nodeAgent.containers.agent.livenessProbe.enabled -- Enable use of livenessProbe check.
@@ -184,12 +185,12 @@ nodeAgent:
         limits:
           # nodeAgent.containers.processAgent.resources.limits.cpu -- CPU resource limits.
           cpu: "125m"
-          # nodeAgent.containers.processAgent.resources.limits.cpu -- Memory resource limits.
+          # nodeAgent.containers.processAgent.resources.limits.memory -- Memory resource limits.
           memory: "400Mi"
         requests:
           # nodeAgent.containers.processAgent.resources.requests.cpu -- CPU resource requests.
           cpu: "25m"
-          # nodeAgent.containers.processAgent.resources.requests.cpu -- Memory resource requests.
+          # nodeAgent.containers.processAgent.resources.requests.memory -- Memory resource requests.
           memory: "128Mi"
   # nodeAgent.service -- The Kubernetes service for the agent
   service:
@@ -455,12 +456,12 @@ logsAgent:
     limits:
       # logsAgent.resources.limits.cpu -- CPU resource limits.
       cpu: "1300m"
-      # logsAgent.resources.limits.cpu -- Memory resource limits.
+      # logsAgent.resources.limits.memory -- Memory resource limits.
       memory: "192Mi"
     requests:
       # logsAgent.resources.requests.cpu -- CPU resource requests.
       cpu: "20m"
-      # logsAgent.resources.requests.cpu -- Memory resource requests.
+      # logsAgent.resources.requests.memory -- Memory resource requests.
       memory: "100Mi"
 
   # logsAgent.updateStrategy -- The update strategy for the DaemonSet object.
@@ -557,12 +558,12 @@ checksAgent:
     limits:
       # checksAgent.resources.limits.cpu -- CPU resource limits.
       cpu: "400m"
-      # checksAgent.resources.limits.cpu -- Memory resource limits.
+      # checksAgent.resources.limits.memory -- Memory resource limits.
       memory: "600Mi"
     requests:
       # checksAgent.resources.requests.cpu -- CPU resource requests.
       cpu: "20m"
-      # checksAgent.resources.requests.cpu -- Memory resource requests.
+      # checksAgent.resources.requests.memory -- Memory resource requests.
       memory: "512Mi"
 
   serviceaccount:

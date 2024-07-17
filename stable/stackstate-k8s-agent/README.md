@@ -2,7 +2,7 @@
 
 Helm chart for the StackState Agent.
 
-Current chart version is `1.0.90`
+Current chart version is `1.0.91`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -80,10 +80,10 @@ stackstate/stackstate-k8s-agent
 | checksAgent.readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
 | checksAgent.readinessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the readiness probe. |
 | checksAgent.replicas | int | `1` | Number of clusterchecks agent pods to schedule |
-| checksAgent.resources.limits.cpu | string | `"400m"` | Memory resource limits. |
-| checksAgent.resources.limits.memory | string | `"600Mi"` |  |
-| checksAgent.resources.requests.cpu | string | `"20m"` | Memory resource requests. |
-| checksAgent.resources.requests.memory | string | `"512Mi"` |  |
+| checksAgent.resources.limits.cpu | string | `"400m"` | CPU resource limits. |
+| checksAgent.resources.limits.memory | string | `"600Mi"` | Memory resource limits. |
+| checksAgent.resources.requests.cpu | string | `"20m"` | CPU resource requests. |
+| checksAgent.resources.requests.memory | string | `"512Mi"` | Memory resource requests. |
 | checksAgent.scc.enabled | bool | `false` | Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift |
 | checksAgent.serviceaccount.annotations | object | `{}` | Annotations for the service account for the cluster checks pods |
 | checksAgent.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
@@ -170,10 +170,10 @@ stackstate/stackstate-k8s-agent
 | logsAgent.image.tag | string | `"2.9.8-5b179aee"` | Default container image tag. |
 | logsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | logsAgent.priorityClassName | string | `""` | Priority class for logsAgent pods. |
-| logsAgent.resources.limits.cpu | string | `"1300m"` | Memory resource limits. |
-| logsAgent.resources.limits.memory | string | `"192Mi"` |  |
-| logsAgent.resources.requests.cpu | string | `"20m"` | Memory resource requests. |
-| logsAgent.resources.requests.memory | string | `"100Mi"` |  |
+| logsAgent.resources.limits.cpu | string | `"1300m"` | CPU resource limits. |
+| logsAgent.resources.limits.memory | string | `"192Mi"` | Memory resource limits. |
+| logsAgent.resources.requests.cpu | string | `"20m"` | CPU resource requests. |
+| logsAgent.resources.requests.memory | string | `"100Mi"` | Memory resource requests. |
 | logsAgent.serviceaccount.annotations | object | `{}` | Annotations for the service account for the daemonset pods |
 | logsAgent.skipSslValidation | bool | `false` | If true, ignores the server certificate being signed by an unknown authority. |
 | logsAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -205,10 +205,10 @@ stackstate/stackstate-k8s-agent
 | nodeAgent.containers.agent.readinessProbe.periodSeconds | int | `15` | `periodSeconds` for the readiness probe. |
 | nodeAgent.containers.agent.readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
 | nodeAgent.containers.agent.readinessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the readiness probe. |
-| nodeAgent.containers.agent.resources.limits.cpu | string | `"270m"` | Memory resource limits. |
-| nodeAgent.containers.agent.resources.limits.memory | string | `"420Mi"` |  |
-| nodeAgent.containers.agent.resources.requests.cpu | string | `"20m"` | Memory resource requests. |
-| nodeAgent.containers.agent.resources.requests.memory | string | `"180Mi"` |  |
+| nodeAgent.containers.agent.resources.limits.cpu | string | `"270m"` | CPU resource limits. |
+| nodeAgent.containers.agent.resources.limits.memory | string | `"420Mi"` | Memory resource limits. |
+| nodeAgent.containers.agent.resources.requests.cpu | string | `"20m"` | CPU resource requests. |
+| nodeAgent.containers.agent.resources.requests.memory | string | `"180Mi"` | Memory resource requests. |
 | nodeAgent.containers.processAgent.enabled | bool | `true` | Enable / disable the process agent container. |
 | nodeAgent.containers.processAgent.env | object | `{}` | Additional environment variables for the process-agent container |
 | nodeAgent.containers.processAgent.image.pullPolicy | string | `"IfNotPresent"` | Process-agent container image pull policy. |
@@ -217,10 +217,10 @@ stackstate/stackstate-k8s-agent
 | nodeAgent.containers.processAgent.image.tag | string | `"a0e29732"` | Default process-agent container image tag. |
 | nodeAgent.containers.processAgent.logLevel | string | `nil` | Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off # If not set, fall back to the value of agent.logLevel. |
 | nodeAgent.containers.processAgent.procVolumeReadOnly | bool | `true` | Configure whether /host/proc is read only for the process agent container |
-| nodeAgent.containers.processAgent.resources.limits.cpu | string | `"125m"` | Memory resource limits. |
-| nodeAgent.containers.processAgent.resources.limits.memory | string | `"400Mi"` |  |
-| nodeAgent.containers.processAgent.resources.requests.cpu | string | `"25m"` | Memory resource requests. |
-| nodeAgent.containers.processAgent.resources.requests.memory | string | `"128Mi"` |  |
+| nodeAgent.containers.processAgent.resources.limits.cpu | string | `"125m"` | CPU resource limits. |
+| nodeAgent.containers.processAgent.resources.limits.memory | string | `"400Mi"` | Memory resource limits. |
+| nodeAgent.containers.processAgent.resources.requests.cpu | string | `"25m"` | CPU resource requests. |
+| nodeAgent.containers.processAgent.resources.requests.memory | string | `"128Mi"` | Memory resource requests. |
 | nodeAgent.httpTracing.enabled | bool | `true` |  |
 | nodeAgent.logLevel | string | `"INFO"` | Logging level for agent processes. |
 | nodeAgent.networkTracing.enabled | bool | `true` | Enable / disable the nodeAgent network tracing module. |
