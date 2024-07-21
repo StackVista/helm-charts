@@ -1,0 +1,13 @@
+{{- define "stackstate.clickhouse-backup-scripts.configmap" -}}
+metadata:
+  name: stackstate-clickhouse-backup-scripts
+data:
+  full-backup.sh: |
+    {{- .Files.Get "scripts/backup-clickhouse-full-backup.sh" | nindent 4 }}
+  incremental-backup.sh: |
+    {{- .Files.Get "scripts/backup-clickhouse-incremental-backup.sh" | nindent 4 }}
+{{- end -}}
+
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $clickHouseBackuConfigmap := fromYaml (include "stackstate.clickhouse-backup-scripts.configmap" .) -}}
+{{- toYaml (merge $clickHouseBackuConfigmap $commonConfigMap) -}}

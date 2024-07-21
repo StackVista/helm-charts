@@ -5,13 +5,6 @@ data:
   backup_enabled: {{ .Values.clickhouse.backup.enabled | quote }}
   entrypoint.sh: |
     {{- .Files.Get "scripts/backup-clickhouse-entrypoint.sh" | nindent 4 }}
-  full-backup.sh: |
-    {{- .Files.Get "scripts/backup-clickhouse-full-backup.sh" | nindent 4 }}
-  incremental-backup.sh: |
-    {{- .Files.Get "scripts/backup-clickhouse-incremental-backup.sh" | nindent 4 }}
-  supercronic: |
-    {{ .Values.clickhouse.backup.scheduled.full_schedule }} /app/scripts/full-backup.sh
-    {{ .Values.clickhouse.backup.scheduled.incremental_schedule }} /app/scripts/incremental-backup.sh
   config.yaml: |
     general:
       remote_storage: s3             # REMOTE_STORAGE, choice from: `azblob`,`gcs`,`s3`, etc; if `none` then `upload` and `download` commands will fail.
@@ -158,6 +151,25 @@ data:
       # S3_REQUEST_PAYER, define who will pay to request, look https://docs.aws.amazon.com/AmazonS3/latest/userguide/RequesterPaysBuckets.html for details, possible values requester, if empty then bucket owner
       request_payer: ""
       debug: false                     # S3_DEBUG
+    api:
+      listen: "0.0.0.0:7171"     # API_LISTEN
+      enable_metrics: true         # API_ENABLE_METRICS
+      enable_pprof: false          # API_ENABLE_PPROF
+      username: ""                 # API_USERNAME, basic authorization for API endpoint
+      password: ""                 # API_PASSWORD
+      secure: false                # API_SECURE, use TLS for listen API socket
+      ca_cert_file: ""             # API_CA_CERT_FILE
+        # openssl genrsa -out /etc/clickhouse-backup/ca-key.pem 4096
+      # openssl req -subj "/O=altinity" -x509 -new -nodes -key /etc/clickhouse-backup/ca-key.pem -sha256 -days 365 -out /etc/clickhouse-backup/ca-cert.pem
+      private_key_file: ""         # API_PRIVATE_KEY_FILE, openssl genrsa -out /etc/clickhouse-backup/server-key.pem 4096
+      certificate_file: ""         # API_CERTIFICATE_FILE,
+        # openssl req -subj "/CN=localhost" -addext "subjectAltName = DNS:localhost,DNS:*.cluster.local" -new -key /etc/clickhouse-backup/server-key.pem -out /etc/clickhouse-backup/server-req.csr
+      # openssl x509 -req -days 365000 -extensions SAN -extfile <(printf "\n[SAN]\nsubjectAltName=DNS:localhost,DNS:*.cluster.local") -in /etc/clickhouse-backup/server-req.csr -out /etc/clickhouse-backup/server-cert.pem -CA /etc/clickhouse-backup/ca-cert.pem -CAkey /etc/clickhouse-backup/ca-key.pem -CAcreateserial
+      integration_tables_host: ""  # API_INTEGRATION_TABLES_HOST, allow using DNS name to connect in `system.backup_list` and `system.backup_actions`
+      allow_parallel: false        # API_ALLOW_PARALLEL, enable parallel operations, this allows for significant memory allocation and spawns go-routines, don't enable it if you are not sure
+      create_integration_tables: true # API_CREATE_INTEGRATION_TABLES, create `system.backup_list` and `system.backup_actions`
+      complete_resumable_after_restart: true # API_COMPLETE_RESUMABLE_AFTER_RESTART, after API server startup, if `/var/lib/clickhouse/backup/*/(upload|download).state` present, then operation will continue in the background
+      watch_is_main_process: false # WATCH_IS_MAIN_PROCESS, treats 'watch' command as a main api process, if it is stopped unexpectedly, api server is also stopped. Does not stop api server if 'watch' command canceled by the user.
 {{- end -}}
 
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}

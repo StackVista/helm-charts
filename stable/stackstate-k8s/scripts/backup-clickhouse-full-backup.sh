@@ -6,11 +6,5 @@ set -Eeuo pipefail
 now="$(date +'%Y-%m-%dT%H-%M-%S')"
 backup_name="full_$now"
 
-if [[ -z "${BACKUP_TABLES}" ]]; then
-  tables=""
-else
-  tables="--tables ${BACKUP_TABLES}"
-fi
-
-# shellcheck disable=SC2086
-clickhouse-backup --config /etc/clickhouse-backup.yaml create_remote ${tables} "$backup_name"
+# shellcheck disable=SC2140
+curl -v -s -X POST --fail-with-body http://stackstate-clickhouse-backup:7171/backup/create?name="$backup_name"\&table="$BACKUP_TABLES"\&callback="http://localhost:7171/backup/upload/$backup_name"

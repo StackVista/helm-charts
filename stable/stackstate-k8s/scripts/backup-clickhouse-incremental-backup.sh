@@ -6,24 +6,16 @@ set -Eeuo pipefail
 
 now="$(date +'%Y-%m-%dT%H-%M-%S')"
 
-set +e
-latest="$(LOG_LEVEL=error clickhouse-backup --config /etc/clickhouse-backup.yaml list remote latest)"
-latest_backup_exists=$?
-set -e
+latest_remote_backup="$(curl -s http://stackstate-clickhouse-backup:7171/backup/list/remote | jq -s . | jq -r '.[-1].name')"
 
-if [[ -z "${BACKUP_TABLES}" ]]; then
-  tables=""
-else
-  tables="--tables ${BACKUP_TABLES}"
-fi
-
-if [ $latest_backup_exists -eq 0 ]; then
-  backup_name="incremental_$now"
-  # shellcheck disable=SC2086
-  clickhouse-backup --config /etc/clickhouse-backup.yaml create_remote --diff-from-remote "$latest" ${tables} "$backup_name"
-else
-  echo "Not found any previous backup, starting full backup"
+if [[ "$latest_remote_backup" = "null" ]]; then
+  echo "not found any backup, create the first full backup"
   backup_name="full_$now"
-  # shellcheck disable=SC2086
-  clickhouse-backup --config /etc/clickhouse-backup.yaml create_remote ${tables} "$backup_name"
+  # shellcheck disable=SC2140
+  curl -v -s -X POST --fail-with-body http://stackstate-clickhouse-backup:7171/backup/create?name="$backup_name"\&table="$BACKUP_TABLES"\&callback="http://localhost:7171/backup/upload/$backup_name"
+else
+  echo "create an incremental backup, the parent backup $latest_remote_backup}"
+  backup_name="incremental_$now"
+  # shellcheck disable=SC2140
+  curl -v -s -X POST --fail-with-body http://stackstate-clickhouse-backup:7171/backup/create?name="$backup_name"\&table="$BACKUP_TABLES"\&callback="http://localhost:7171/backup/upload/$backup_name?diff-from-remote=$latest_remote_backup"
 fi

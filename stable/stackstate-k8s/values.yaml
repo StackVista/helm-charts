@@ -2190,7 +2190,7 @@ clickhouse:
     ad.stackstate.com/clickhouse.instances: '[ { "prometheus_url": "http://%%host%%:8001/metrics", "namespace": "stackstate", "metrics": ["ClickHouseAsyncMetrics_*", "ClickHouseMetrics_*", "ClickHouseProfileEvents_*"] } ]'
     ad.stackstate.com/backup.check_names: '["openmetrics"]'
     ad.stackstate.com/backup.init_configs: "[{}]"
-    ad.stackstate.com/backup.instances: '[ { "prometheus_url": "http://%%host%%:9746/metrics", "namespace": "stackstate", "metrics": ["supercronic_*"] } ]'
+    ad.stackstate.com/backup.instances: '[ { "prometheus_url": "http://%%host%%:7171/metrics", "namespace": "stackstate", "metrics": ["clickhouse_backup_*"] } ]'
     checksum/stackstate-backup-config: "{{ toJson .Values.backup | sha256sum }}"
   # clickhouse.extraVolumes -- extra volumes for ClickHouse Pods
   extraVolumes:
@@ -2204,7 +2204,7 @@ clickhouse:
   # clickhouse.sidecars -- sidecar containers to run backups
   sidecars:
     - name: backup
-      image: "{{ .Values.image.registry }}/stackstate/clickhouse-backup:2.5.13-b14dd66c"
+      image: "{{ .Values.image.registry }}/stackstate/clickhouse-backup:2.5.20-2b2c95ed"
       imagePullPolicy: IfNotPresent
       command:
         - /app/entrypoint.sh
@@ -2213,6 +2213,8 @@ clickhouse:
       ports:
         - containerPort: 9746
           name: supercronic
+        - containerPort: 7171
+          name: backup-api
       env:
         - name: BACKUP_CLICKHOUSE_ENABLED
           valueFrom:
@@ -2238,27 +2240,16 @@ clickhouse:
           name: data
         - mountPath: /bitnami/clickhouse/etc/conf.d/default
           name: config
-          # Uncomment when cluster is enabled
+        - mountPath: /bitnami/clickhouse/etc/conf.d/extra-configmap
+          name: extra-config
         - mountPath: /bitnami/clickhouse/etc/users.d/users-extra-configmap
-          #        - mountPath: /bitnami/clickhouse/etc/conf.d/extra-configmap
-          #          name: extra-config
-
           name: users-extra-config
         - mountPath: /etc/clickhouse-backup.yaml
           name: clickhouse-backup-config
           subPath: config.yaml
-        - mountPath: /app/crontab/clickhouse-backup
-          name: clickhouse-backup-config
-          subPath: supercronic
         - mountPath: /app/entrypoint.sh
           name: clickhouse-backup-scripts
           subPath: entrypoint.sh
-        - mountPath: /app/scripts/full-backup.sh
-          name: clickhouse-backup-scripts
-          subPath: full-backup.sh
-        - mountPath: /app/scripts/incremental-backup.sh
-          name: clickhouse-backup-scripts
-          subPath: incremental-backup.sh
   backup:
     # clickhouse.backup.enabled -- Enable scheduled backups of ClickHouse. It requires to be enabled MinIO 'backup.enabled'.
     enabled: false

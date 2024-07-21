@@ -10,9 +10,9 @@ set -Eeuo pipefail
 
 if [ "${BACKUP_CLICKHOUSE_ENABLED}" == "true" ]; then
   if [[ "${CLICKHOUSE_REPLICA_ID}" == *-0 ]]; then
-    supercronic -prometheus-listen-address 0.0.0.0:9746 /app/crontab/clickhouse-backup
+    clickhouse-backup --config /etc/clickhouse-backup.yaml server
   else
-    echo "This is a stub container doing nothing. For backup/supercronic logs please check the first Pod of the StatefulSet where the backups are performed."
+    echo "This is a stub container doing nothing. For backup logs please check the first Pod of the StatefulSet where the backups are performed."
     sleep inf
   fi
 else
