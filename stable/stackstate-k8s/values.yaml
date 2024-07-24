@@ -2201,6 +2201,11 @@ clickhouse:
       configMap:
         name: stackstate-clickhouse-backup
         defaultMode: 0550
+  # clickhouse.extraVolumeMounts -- extra VolumeMounts for the ClickHouse container
+  extraVolumeMounts:
+    - mountPath: /app/post_restore.sh
+      name: clickhouse-backup-scripts
+      subPath: post_restore.sh
   # clickhouse.sidecars -- sidecar containers to run backups
   sidecars:
     - name: backup

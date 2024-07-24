@@ -5,6 +5,8 @@ data:
   backup_enabled: {{ .Values.clickhouse.backup.enabled | quote }}
   entrypoint.sh: |
     {{- .Files.Get "scripts/backup-clickhouse-entrypoint.sh" | nindent 4 }}
+  post_restore.sh: |
+    {{- .Files.Get "scripts/backup-clickhouse-post-restore.sh" | nindent 4 }}
   config.yaml: |
     general:
       remote_storage: s3             # REMOTE_STORAGE, choice from: `azblob`,`gcs`,`s3`, etc; if `none` then `upload` and `download` commands will fail.

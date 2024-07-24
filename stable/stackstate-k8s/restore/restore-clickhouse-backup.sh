@@ -25,6 +25,13 @@ do
   sleep 5
 done
 
+# ClickHouse has a problem with Mark cache after deletion of a table, it can throw an error 'Unknown codec family code'
+# The solution is to drop the cache on ALL nodes
+for clickhouse_pod in $(kubectl get pods -l app.kubernetes.io/component=clickhouse -o json | jq -r '.items[].metadata.name')
+do
+  kubectl exec "$clickhouse_pod" -c clickhouse -- bash -c "/app/post_restore.sh"
+done
+
 echo "=== Scaling up all OTel collectors"
 kubectl scale statefulsets "stackstate-otel-collector" --replicas="${collectorReplicas}"
 echo "=== Make sure that there is at least on replica of opentelemetry-collector"
