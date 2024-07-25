@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{- include "labels" . | nindent 4 }}
+data:
+  tenantmanager.yaml: |
+    ListenAddr: "{{ .Values.config.ListenAddr | required "config.ListenAddr is required" }}"
+    TmpDir: "{{ .Values.config.TmpDir | required "config.TmpDir is required" }}"
+    Git:
+      RepoURL: "{{ .Values.config.Git.RepoURL | required "config.Git.RepoURL is required" }}"
+      Branch: "{{ .Values.config.Git.Branch | required "config.Git.Branch is required" }}"
+      Auth:
+        Username: "{{ .Values.config.Git.Auth.Username | required "config.Git.Auth.Username is required" }}"
+      CommitAuthor:
+        Name: "{{ .Values.config.Git.CommitAuthor.Name | required "config.Git.CommitAuthor.Name is required" }}"
+        Email: "{{ .Values.config.Git.CommitAuthor.Email | required "config.Git.CommitAuthor.Email is required" }}"
+      PGPKeyPath: /config/private.key
+    Clusters:
+{{- range $index, $cluster := .Values.config.Clusters }}
+    - Name: "{{ $cluster.Name | required "config.Clusters[$index].Name is required" }}"
+      Region: "{{ $cluster.Region | required "config.Clusters[$index].Region is required" }}"
+      AvailabilityZones:
+{{- range $zone := $cluster.availabilityZones }}
+      - "{{ $zone | required "config.Clusters[$index].AvailabilityZones is required" }}"
+{{- end }}
+{{- end }}

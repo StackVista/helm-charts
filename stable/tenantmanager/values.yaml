@@ -1,0 +1,104 @@
+global:
+  # global.imageRegistry -- Globally override the image registry that is used. Can be overridden by specific containers. Defaults to quay.io
+  imageRegistry: null
+  # global.imagePullSecrets -- Globally add image pull secrets that are used.
+  imagePullSecrets: []
+image:
+  # image.registry -- Registry containing the image for the Redirector
+  registry:
+  # image.repository -- Base container image registry. Any image with kubectl, jq, aws-cli and gsutil will do.
+  repository: stackstate/o11y-tooling
+  # image.tag -- Default container image tag.
+  tag: 8c9aade1
+  # image.pullPolicy -- Default container image pull policy.
+  pullPolicy: IfNotPresent
+
+# imagePullSecrets -- Extra secrets / credentials needed for container image registry.
+imagePullSecrets: []
+# nameOverride -- Override the name of the chart.
+nameOverride: ""
+# fullnameOverride -- Override the fullname of the chart.
+fullnameOverride: ""
+
+# replicaCount -- number of replicas to serve webhook
+replicaCount: 1
+
+resources:
+  limits:
+    # resources.limits.cpu -- CPU resource limits.
+    cpu: "100m"
+    # resources.limits.memory -- Memory resource limits.
+    memory: "256Mi"
+  requests:
+    # resources.requests.cpu -- CPU resource requests.
+    cpu: "100m"
+    # resources.requests.memory -- Memory resource requests.
+    memory: "256Mi"
+
+serviceAccount:
+  # serviceAccount.annotations -- Extra annotations for the `ServiceAccount` object.
+  annotations: {}
+
+# nodeSelector -- Node labels for pod assignment.
+nodeSelector: {}
+
+# tolerations -- Toleration labels for pod assignment.
+tolerations: []
+
+# affinity -- Affinity settings for pod assignment.
+affinity: {}
+
+securityContext:
+  fsGroup: 1000
+  runAsUser: 1000
+  runAsGroup: 1000
+
+ingress:
+  # ingress.enabled -- Whether to deploy Ingress resource.
+  enabled: false
+  # ingress.annotations - K8s annotations for the Ingress resource.
+  annotations:
+  # ingress.host -- HTTP host for the ingress.
+  host:
+  tls:
+    # ingress.tls.enabled -- Whether to enable TLS for ingress.
+    enabled: false
+    # ingress.tls.secretName -- The name of K8s secrets containing SSL certificate for ingress.
+    secretName:
+
+config:
+  # config.ListenAddr -- Address and port to listen on.
+  ListenAddr: "0.0.0.0:8080"
+  # config.TmpDir -- Temporary directory for the application.
+  TmpDir: "/tmp"
+  # config.HubspotAPIToken -- Token to interact with Hubspot API.
+  HubspotAPIToken:
+  # config.HubspotClientSecret -- Secret to authenticate Hubspot webhook.
+  HubspotClientSecret:
+  # config.GenericWebhookAuthToken -- Token to protect Generic webhook endpoint with.
+  GenericWebhookAuthToken:
+  Git:
+    # config.Git.RepoURL -- URL of the Git repository.
+    RepoURL:
+    # config.Git.Branch -- Branch to check out.
+    Branch:
+    Auth:
+      # config.Git.Auth.Username -- Username for Git authentication.
+      Username:
+      # config.Git.Auth.Password -- Password for Git authentication.
+      Password:
+    CommitAuthor:
+      # config.Git.CommitAuthor.Name -- Name of the commit author.
+      Name:
+      # config.Git.CommitAuthor.Email -- Email of the commit author.
+      Email:
+  # config.Clusters -- Clusters configuration.
+  Clusters:
+    # config.Clusters[0].Name -- cluster name.
+  - Name:
+    # config.Clusters[0].Region -- cluster region.
+    Region:
+    # config.Clusters[0].AvailabilityZones -- cluster availability zones.
+    AvailabilityZones: []
+  # config.PrivateGPGKeyBase64Encoded -- Base64-encoded private GPG key to sign commits. Must not be protected with passphrase.
+  PrivateGPGKeyBase64Encoded:
