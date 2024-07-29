@@ -8,7 +8,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-    {{- include "labels" . | nindent 6 }}
+    {{- include "tenantmanager-labels" . | nindent 6 }}
   replicas: {{ .Values.replicaCount | int }}
   template:
     metadata:
@@ -17,6 +17,7 @@ spec:
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
       labels:
         {{- include "labels" . | nindent 8 }}
+        {{- include "tenantmanager-labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "fullname" . }}
       {{- include "image-pull-secrets" . | nindent 6 }}

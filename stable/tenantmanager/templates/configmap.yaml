@@ -23,7 +23,7 @@ data:
     - Name: "{{ $cluster.Name | required "config.Clusters[$index].Name is required" }}"
       Region: "{{ $cluster.Region | required "config.Clusters[$index].Region is required" }}"
       AvailabilityZones:
-{{- range $zone := $cluster.availabilityZones }}
+{{- range $zone := $cluster.AvailabilityZones }}
       - "{{ $zone | required "config.Clusters[$index].AvailabilityZones is required" }}"
 {{- end }}
 {{- end }}
