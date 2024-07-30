@@ -38,7 +38,9 @@
         "upload-stackpacks",
         "view-metric-bindings",
         "view-monitors",
-        "view-notifications"
+        "view-notifications",
+        "read-agents",
+        "read-system-notifications"
     ],
     "viewPermissions" : [ "access-view", "save-view", "delete-view" ]
 }

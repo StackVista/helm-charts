@@ -12,7 +12,8 @@
         "read-traces",
         "update-visualization",
         "view-monitors",
-        "view-notifications"
+        "view-notifications",
+        "read-system-notifications"
     ],
     "viewPermissions": ["access-view"]
 }
