@@ -1,3 +1,2 @@
-stackstate:
-  experimental:
-    hbase25: true
+hbase:
+  version: "2.5"

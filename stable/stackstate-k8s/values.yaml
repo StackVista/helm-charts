@@ -1304,8 +1304,6 @@ stackstate:
     baseUrl:
   experimental:
     enableVMAgent: true
-    # stackstate.experimental.hbase25 -- (boolean) Use Hbase 2.5 stackstate images
-    hbase25: false
     # stackstate.experimental.traces -- (boolean) Enable new traces UI and API
     traces: false
     server:
