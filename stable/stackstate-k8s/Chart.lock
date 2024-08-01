@@ -32,11 +32,14 @@ dependencies:
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
   version: 0.8.53-stackstate.6
+- name: victoria-metrics-cluster
+  repository: https://victoriametrics.github.io/helm-charts
+  version: 0.11.20
 - name: clickhouse
   repository: https://charts.bitnami.com/bitnami
   version: 3.6.9
 - name: opentelemetry-collector
   repository: https://open-telemetry.github.io/opentelemetry-helm-charts
   version: 0.80.0
-digest: sha256:eee04889c937915b804a3a45d2fefefaa2a5f405b3ee95af73b6371f85557766
-generated: "2024-07-30T19:28:24.924124049Z"
+digest: sha256:5251d6f59977daebad7f64eeb352f6bce521a75637e0ca1e96a377ebb160a290
+generated: "2024-08-02T13:51:06.731183782+02:00"

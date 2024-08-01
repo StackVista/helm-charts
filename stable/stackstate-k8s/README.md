@@ -925,10 +925,47 @@ stackstate/stackstate
 | victoria-metrics-1.server.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
 | victoria-metrics-1.server.serviceMonitor.interval | string | `"15s"` | Scrape interval for service monitor |
 | victoria-metrics-cluster.enabled | bool | `false` | Enables deployment of the Victoria Metric in the cluster mode, it deploys three StatefulSets: vmstorage, vminstert, vmselect. When enabled you should disabled `victoria-metrics-0.enabled` and `victoria-metrics-1.enabled`. |
+| victoria-metrics-cluster.rbac.namespaced | bool | `true` | Make sure all resources are namespaced |
+| victoria-metrics-cluster.rbac.pspEnabled | bool | `false` | Pod Security Policy has been deprecated and even removed from 1.25, we're not going to use it anymore |
+| victoria-metrics-cluster.vminsert.affinity | object | `{}` | Affinity settings for vminsert pod |
+| victoria-metrics-cluster.vminsert.extraArgs | object | `{"maxLabelsPerTimeseries":60}` | Extra arguments for vminsert |
+| victoria-metrics-cluster.vminsert.extraLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s"}` | Extra labels for vminsert Deployment |
+| victoria-metrics-cluster.vminsert.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-cluster-vminsert.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-cluster-vminsert.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-cluster-vminsert.instances":"[ { \"prometheus_url\": \"http://%%host%%:8480/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\", \"vminsert*\"] } ]"}` | Annotations for vminsert pod |
+| victoria-metrics-cluster.vminsert.replicaCount | int | `2` | Number of replicas of vminsert in the Deployment |
+| victoria-metrics-cluster.vminsert.resources.limits.cpu | int | `1` |  |
+| victoria-metrics-cluster.vminsert.resources.limits.memory | string | `"1Gi"` |  |
+| victoria-metrics-cluster.vminsert.resources.requests.cpu | string | `"300m"` |  |
+| victoria-metrics-cluster.vminsert.resources.requests.memory | string | `"1Gi"` |  |
 | victoria-metrics-cluster.vminsert.securityContext | object | `{"enabled":true,"runAsGroup":65534,"runAsUser":65534}` | Security context of vminsert containers |
+| victoria-metrics-cluster.vminsert.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` |
+| victoria-metrics-cluster.vminsert.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
+| victoria-metrics-cluster.vmselect.affinity | object | `{}` | Affinity settings for vmselect pod |
+| victoria-metrics-cluster.vmselect.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","search.cacheTimestampOffset":"10m"}` | Extra arguments for vmselect |
+| victoria-metrics-cluster.vmselect.extraLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s"}` | Extra labels for vmselect Deployment |
+| victoria-metrics-cluster.vmselect.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-cluster-vmselect.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-cluster-vmselect.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-cluster-vmselect.instances":"[ { \"prometheus_url\": \"http://%%host%%:8481/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\", \"vmselect*\"] } ]"}` | Annotations for vmselect pod |
+| victoria-metrics-cluster.vmselect.replicaCount | int | `2` | Number of replicas of vmselect in the Deployment |
+| victoria-metrics-cluster.vmselect.resources.limits.cpu | int | `1` |  |
+| victoria-metrics-cluster.vmselect.resources.limits.memory | string | `"1Gi"` |  |
+| victoria-metrics-cluster.vmselect.resources.requests.cpu | string | `"300m"` |  |
+| victoria-metrics-cluster.vmselect.resources.requests.memory | string | `"1Gi"` |  |
 | victoria-metrics-cluster.vmselect.securityContext | object | `{"enabled":true,"runAsGroup":65534,"runAsUser":65534}` | Security context of vmselect containers |
+| victoria-metrics-cluster.vmselect.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` |
+| victoria-metrics-cluster.vmselect.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
+| victoria-metrics-cluster.vmstorage.affinity | object | `{}` | Affinity settings for vmstorage pod |
+| victoria-metrics-cluster.vmstorage.extraArgs | object | `{"dedup.minScrapeInterval":"1ms"}` | Extra arguments for vmstorage |
+| victoria-metrics-cluster.vmstorage.extraLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s"}` | Extra labels for vmstorage Deployment |
+| victoria-metrics-cluster.vmstorage.persistentVolume.size | string | `"250Gi"` | Size of storage for vmstorage, ideally 20% of free space remains available at all times |
+| victoria-metrics-cluster.vmstorage.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-cluster-vmstorage.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-cluster-vmstorage.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-cluster-vmstorage.instances":"[ { \"prometheus_url\": \"http://%%host%%:8482/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\"] } ]"}` | Annotations for vmstorage pod |
 | victoria-metrics-cluster.vmstorage.podSecurityContext | object | `{"enabled":true,"fsGroup":65534}` | Security context of vmstorage pods |
+| victoria-metrics-cluster.vmstorage.replicaCount | int | `4` | Number of replicas of vmstorage in the StatefulSet |
+| victoria-metrics-cluster.vmstorage.resources.limits.cpu | int | `1` |  |
+| victoria-metrics-cluster.vmstorage.resources.limits.memory | string | `"2Gi"` |  |
+| victoria-metrics-cluster.vmstorage.resources.requests.cpu | string | `"300m"` |  |
+| victoria-metrics-cluster.vmstorage.resources.requests.memory | string | `"2Gi"` |  |
+| victoria-metrics-cluster.vmstorage.retentionPeriod | int | `1` | How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1) |
 | victoria-metrics-cluster.vmstorage.securityContext | object | `{"enabled":true,"runAsGroup":65534,"runAsNonRoot":true,"runAsUser":65534}` | Security context of vmstorage containers |
+| victoria-metrics-cluster.vmstorage.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` |
+| victoria-metrics-cluster.vmstorage.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
 | victoria-metrics.restore.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for `vmrestore` containers. |
 | victoria-metrics.restore.image.registry | string | `"quay.io"` | Base container image registry for 'vmrestore' containers. |
 | victoria-metrics.restore.image.repository | string | `"stackstate/vmrestore"` | Base container image repository for 'vmrestore' containers. |
