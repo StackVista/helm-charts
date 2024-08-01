@@ -15,7 +15,7 @@ func TestServerJavaHeapRender(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
-	expectedDeployments["stackstate-k8s-server"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=2420m -Xmx5645m -Xms5645m"}
+	expectedDeployments["stackstate-k8s-server"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=3630m -Xmx4435m -Xms4435m"}
 	expectedDeployments["stackstate-k8s-receiver"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1393m -Xmx2587m -Xms2587m"}
 	expectedDeployments["stackstate-k8s-correlate"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=881m -Xmx1635m -Xms1635m"}
 
@@ -79,7 +79,7 @@ func TestServerJavaHeapRenderWithAllJavaOptsOverride(t *testing.T) {
 
 	assert.NotNil(t, stsServerDeployment)
 
-	expectedServerJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=2420m -Xmx5645m -Xms5645m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"}
+	expectedServerJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=3630m -Xmx4435m -Xms4435m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"}
 
 	AssertJavaOpts(t, stsServerDeployment.Spec.Template.Spec.Containers[0].Env, expectedServerJavaOpts)
 }
@@ -99,7 +99,7 @@ func TestServerJavaHeapRenderWithServerJavaOptsOverride(t *testing.T) {
 
 	assert.NotNil(t, stsServerDeployment)
 
-	expectedServerJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=2420m -Xmx5645m -Xms5645m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5000"}
+	expectedServerJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=3630m -Xmx4435m -Xms4435m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5000"}
 
 	AssertJavaOpts(t, stsServerDeployment.Spec.Template.Spec.Containers[0].Env, expectedServerJavaOpts)
 }
@@ -120,7 +120,7 @@ func TestServerJavaHeapRenderWithBothJavaOptsOverride(t *testing.T) {
 	assert.NotNil(t, stsServerDeployment)
 
 	// The service specific overrides the common JAVA_OPTS
-	expectedServerJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=2420m -Xmx5645m -Xms5645m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5000"}
+	expectedServerJavaOpts := v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=3630m -Xmx4435m -Xms4435m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5000"}
 
 	AssertJavaOpts(t, stsServerDeployment.Spec.Template.Spec.Containers[0].Env, expectedServerJavaOpts)
 }
