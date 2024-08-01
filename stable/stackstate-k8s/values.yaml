@@ -239,14 +239,8 @@ stackstate:
         parameters:
           health_check_interval: "5000"
       metricStore:
-        # stackstate.components.all.metricStore.remoteWriteEndpoint -- Host and port for prometheus remote write endpoint ($vmInstance is replaced by '0' or '1')
-        remoteWriteEndpoint: "stackstate-victoria-metrics-$vmInstance:8428"
         # stackstate.components.all.metricStore.remoteWritePath -- Remote write path used to ingest metrics, /api/v1/write is most common
         remoteWritePath: "/api/v1/write"
-        # stackstate.components.all.metricStore.queryApiEndpoint -- Host and port for promql api
-        queryApiEndpoint: "stackstate-victoriametrics:8428"
-        # stackstate.components.all.metricStore.queryApiPath -- Path under which `/api/v1/query` etc.. are accessible, the default ("") is fine for most stores
-        queryApiPath: ""
       # stackstate.components.all.kafkaEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker.
       kafkaEndpoint: ""
       # stackstate.components.all.zookeeperEndpoint -- **Required if `zookeeper.enabled` is `false`** Endpoint for shared Zookeeper nodes.
@@ -2083,6 +2077,33 @@ victoria-metrics-1:
   restore:
     # victoria-metrics-1.restore.enabled -- Enable Victoria Metrics restore functionality (if `backup.enabled` is set to `true`).
     enabled: false
+victoria-metrics-cluster:
+  # victoria-metrics-cluster.enabled -- Enables deployment of the Victoria Metric in the cluster mode, it deploys three StatefulSets: vmstorage, vminstert, vmselect. When enabled you should disabled `victoria-metrics-0.enabled` and `victoria-metrics-1.enabled`.
+  enabled: false
+  vmstorage:
+    # victoria-metrics-cluster.vmstorage.securityContext -- Security context of vmstorage containers
+    securityContext:
+      enabled: true
+      runAsGroup: 65534
+      runAsNonRoot: true
+      runAsUser: 65534
+    # victoria-metrics-cluster.vmstorage.podSecurityContext -- Security context of vmstorage pods
+    podSecurityContext:
+      enabled: true
+      fsGroup: 65534
+  vminsert:
+    # victoria-metrics-cluster.vminsert.securityContext -- Security context of vminsert containers
+    securityContext:
+      enabled: true
+      runAsUser: 65534
+      runAsGroup: 65534
+  vmselect:
+    # victoria-metrics-cluster.vmselect.securityContext -- Security context of vmselect containers
+    securityContext:
+      enabled: true
+      runAsUser: 65534
+      runAsGroup: 65534
+
 victoria-metrics:
   restore:
     image:

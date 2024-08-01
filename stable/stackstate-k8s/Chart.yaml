@@ -63,6 +63,10 @@ dependencies:
     version: "0.8.53-stackstate.6"
     repository: file://../victoria-metrics-single/
     condition: victoria-metrics-1.enabled
+  - name: victoria-metrics-cluster
+    repository: https://victoriametrics.github.io/helm-charts
+    version: 0.11.20
+    condition: victoria-metrics-cluster.enabled
   - name: clickhouse
     version: 3.6.9
     repository: https://charts.bitnami.com/bitnami

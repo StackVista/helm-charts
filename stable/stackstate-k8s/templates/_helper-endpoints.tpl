@@ -1,29 +1,40 @@
 {{/*
-Logic to determine remote write endpoint.
+Logic to determine remote write endpoint for single node deployment of Victoria Metrics.
 */}}
-{{- define "stackstate.metrics.remotewrite.url" -}}
-http://{{- include "stackstate.metrics.remoteWriteEndpoint" . -}}{{.Values.stackstate.components.all.metricStore.remoteWritePath}}
+{{- define "stackstate.metrics.victoriametrics.singleNode.remotewrite.url" -}}
+http://{{- include "stackstate.metrics.victoriametrics.singleNode.remoteWriteEndpoint" . -}}{{.Values.stackstate.components.all.metricStore.remoteWritePath}}
 {{- end -}}
 
 {{/*
-Logic to determine promql query endpoint.
+Logic to determine remote write endpoint for cluster of Victoria Metrics.
+*/}}
+{{- define "stackstate.metrics.victoriametrics.cluster.remotewrite.url" -}}
+http://{{- include "stackstate.metrics.victoriametrics.cluster.remoteWriteEndpoint" . -}}/insert/0{{.Values.stackstate.components.all.metricStore.remoteWritePath}}
+{{- end -}}
+
+{{/*
+Logic to determine promql query endpoint. It
 */}}
 {{- define "stackstate.metrics.query.url" -}}
-http://{{- include "stackstate.metrics.queryApiEndpoint" . -}}{{.Values.stackstate.components.all.metricStore.queryApiPath}}
+{{- if or (index .Values "victoria-metrics-cluster" "enabled") -}}
+http://stackstate-victoria-metrics-cluster-vmselect:8481/select/0/prometheus
+{{- else -}}
+http://stackstate-victoriametrics:8428
+{{- end -}}
 {{- end -}}
 
 {{/*
-Logic to determine metric store host and port
+Logic to determine metric store host and port for single node deployment of Victoria Metrics.
 */}}
-{{- define "stackstate.metrics.remoteWriteEndpoint" -}}
-{{- .Values.stackstate.components.all.metricStore.remoteWriteEndpoint | required "stackstate.components.all.metricStore.remoteWriteEndpoint is a required value." -}}
+{{- define "stackstate.metrics.victoriametrics.singleNode.remoteWriteEndpoint" -}}
+stackstate-victoria-metrics-{{ .instanceIndex }}:8428
 {{- end -}}
 
 {{/*
-Logic to determine metric store host and port
+Logic to determine metric store host and port for cluster of Victoria Metrics.
 */}}
-{{- define "stackstate.metrics.queryApiEndpoint" -}}
-{{- .Values.stackstate.components.all.metricStore.queryApiEndpoint | required "stackstate.components.all.metricStore.queryApiEndpoint is a required value." -}}
+{{- define "stackstate.metrics.victoriametrics.cluster.remoteWriteEndpoint" -}}
+stackstate-victoria-metrics-cluster-vminsert:8480
 {{- end -}}
 
 {{/*

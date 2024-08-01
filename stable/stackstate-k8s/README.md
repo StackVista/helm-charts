@@ -23,6 +23,7 @@ Current chart version is `1.11.1-pre.35`
 | https://open-telemetry.github.io/opentelemetry-helm-charts | opentelemetry-collector | 0.80.0 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
+| https://victoriametrics.github.io/helm-charts | victoria-metrics-cluster | 0.11.20 |
 
 ## Required Values
 
@@ -463,9 +464,6 @@ stackstate/stackstate
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
 | stackstate.components.all.image.tag | string | `"6.0.0-snapshot.20240802095614-master-b74f9f7"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
-| stackstate.components.all.metricStore.queryApiEndpoint | string | `"stackstate-victoriametrics:8428"` | Host and port for promql api |
-| stackstate.components.all.metricStore.queryApiPath | string | `""` | Path under which `/api/v1/query` etc.. are accessible, the default ("") is fine for most stores |
-| stackstate.components.all.metricStore.remoteWriteEndpoint | string | `"stackstate-victoria-metrics-$vmInstance:8428"` | Host and port for prometheus remote write endpoint ($vmInstance is replaced by '0' or '1') |
 | stackstate.components.all.metricStore.remoteWritePath | string | `"/api/v1/write"` | Remote write path used to ingest metrics, /api/v1/write is most common |
 | stackstate.components.all.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | stackstate.components.all.metrics.defaultAgentMetricsFilter | string | `"[\"kafka_consumer_consumer_fetch_manager_metrics*\", \"kafka_producer_producer_topic_metrics*\", \"jvm*\", \"akka_http_requests_active\", \"stackstate*\", \"receiver*\", \"stackgraph*\", \"caffeine*\"]"` |  |
@@ -926,6 +924,11 @@ stackstate/stackstate
 | victoria-metrics-1.server.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` |
 | victoria-metrics-1.server.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
 | victoria-metrics-1.server.serviceMonitor.interval | string | `"15s"` | Scrape interval for service monitor |
+| victoria-metrics-cluster.enabled | bool | `false` | Enables deployment of the Victoria Metric in the cluster mode, it deploys three StatefulSets: vmstorage, vminstert, vmselect. When enabled you should disabled `victoria-metrics-0.enabled` and `victoria-metrics-1.enabled`. |
+| victoria-metrics-cluster.vminsert.securityContext | object | `{"enabled":true,"runAsGroup":65534,"runAsUser":65534}` | Security context of vminsert containers |
+| victoria-metrics-cluster.vmselect.securityContext | object | `{"enabled":true,"runAsGroup":65534,"runAsUser":65534}` | Security context of vmselect containers |
+| victoria-metrics-cluster.vmstorage.podSecurityContext | object | `{"enabled":true,"fsGroup":65534}` | Security context of vmstorage pods |
+| victoria-metrics-cluster.vmstorage.securityContext | object | `{"enabled":true,"runAsGroup":65534,"runAsNonRoot":true,"runAsUser":65534}` | Security context of vmstorage containers |
 | victoria-metrics.restore.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for `vmrestore` containers. |
 | victoria-metrics.restore.image.registry | string | `"quay.io"` | Base container image registry for 'vmrestore' containers. |
 | victoria-metrics.restore.image.repository | string | `"stackstate/vmrestore"` | Base container image repository for 'vmrestore' containers. |
