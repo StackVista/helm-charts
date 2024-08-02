@@ -2094,7 +2094,7 @@ victoria-metrics-cluster:
       ad.stackstate.com/victoria-metrics-cluster-vmstorage.init_configs: "[{}]"
       ad.stackstate.com/victoria-metrics-cluster-vmstorage.instances: '[ { "prometheus_url": "http://%%host%%:8482/metrics", "namespace": "stackstate", "metrics": ["vm*", "go*"] } ]'
     # victoria-metrics-cluster.vmstorage.affinity -- Affinity settings for vmstorage pod
-    affinity: { }
+    affinity: {}
     # podAntiAffinity:
     #   preferredDuringSchedulingIgnoredDuringExecution:
     #   - podAffinityTerm:
@@ -2129,7 +2129,7 @@ victoria-metrics-cluster:
       # victoria-metrics-cluster.vmstorage.serviceMonitor.enabled -- If `true`, creates a Prometheus Operator `ServiceMonitor`
       enabled: false
       # victoria-metrics-cluster.vmstorage.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
-      extraLabels: { }
+      extraLabels: {}
     # victoria-metrics-cluster.vmstorage.securityContext -- Security context of vmstorage containers
     securityContext:
       enabled: true
@@ -2149,7 +2149,7 @@ victoria-metrics-cluster:
       ad.stackstate.com/victoria-metrics-cluster-vminsert.init_configs: "[{}]"
       ad.stackstate.com/victoria-metrics-cluster-vminsert.instances: '[ { "prometheus_url": "http://%%host%%:8480/metrics", "namespace": "stackstate", "metrics": ["vm*", "go*", "vminsert*"] } ]'
     # victoria-metrics-cluster.vminsert.affinity -- Affinity settings for vminsert pod
-    affinity: { }
+    affinity: {}
     # podAntiAffinity:
     #   preferredDuringSchedulingIgnoredDuringExecution:
     #   - podAffinityTerm:
@@ -2179,7 +2179,7 @@ victoria-metrics-cluster:
       # victoria-metrics-cluster.vminsert.serviceMonitor.enabled -- If `true`, creates a Prometheus Operator `ServiceMonitor`
       enabled: false
       # victoria-metrics-cluster.vminsert.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
-      extraLabels: { }
+      extraLabels: {}
     # victoria-metrics-cluster.vminsert.securityContext -- Security context of vminsert containers
     securityContext:
       enabled: true
@@ -2194,7 +2194,7 @@ victoria-metrics-cluster:
       ad.stackstate.com/victoria-metrics-cluster-vmselect.init_configs: "[{}]"
       ad.stackstate.com/victoria-metrics-cluster-vmselect.instances: '[ { "prometheus_url": "http://%%host%%:8481/metrics", "namespace": "stackstate", "metrics": ["vm*", "go*", "vmselect*"] } ]'
     # victoria-metrics-cluster.vmselect.affinity -- Affinity settings for vmselect pod
-    affinity: { }
+    affinity: {}
     # podAntiAffinity:
     #   preferredDuringSchedulingIgnoredDuringExecution:
     #   - podAffinityTerm:
@@ -2225,7 +2225,7 @@ victoria-metrics-cluster:
       # victoria-metrics-cluster.vmselect.serviceMonitor.enabled -- If `true`, creates a Prometheus Operator `ServiceMonitor`
       enabled: false
       # victoria-metrics-cluster.vmselect.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
-      extraLabels: { }
+      extraLabels: {}
     # victoria-metrics-cluster.vmselect.securityContext -- Security context of vmselect containers
     securityContext:
       enabled: true
