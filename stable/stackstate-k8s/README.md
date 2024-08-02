@@ -928,19 +928,18 @@ stackstate/stackstate
 | victoria-metrics-cluster.rbac.namespaced | bool | `true` | Make sure all resources are namespaced |
 | victoria-metrics-cluster.rbac.pspEnabled | bool | `false` | Pod Security Policy has been deprecated and even removed from 1.25, we're not going to use it anymore |
 | victoria-metrics-cluster.vminsert.affinity | object | `{}` | Affinity settings for vminsert pod |
-| victoria-metrics-cluster.vminsert.extraArgs | object | `{"maxLabelsPerTimeseries":60}` | Extra arguments for vminsert |
+| victoria-metrics-cluster.vminsert.extraArgs | object | `{"maxLabelsPerTimeseries":60,"replicationFactor":2}` | Extra arguments for vminsert |
+| victoria-metrics-cluster.vminsert.extraArgs.replicationFactor | int | `2` | Replication factor for the ingested data, i.e. how many copies to make among distinct vmstorage instances. |
 | victoria-metrics-cluster.vminsert.extraLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s"}` | Extra labels for vminsert Deployment |
 | victoria-metrics-cluster.vminsert.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-cluster-vminsert.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-cluster-vminsert.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-cluster-vminsert.instances":"[ { \"prometheus_url\": \"http://%%host%%:8480/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\", \"vminsert*\"] } ]"}` | Annotations for vminsert pod |
 | victoria-metrics-cluster.vminsert.replicaCount | int | `2` | Number of replicas of vminsert in the Deployment |
-| victoria-metrics-cluster.vminsert.resources.limits.cpu | int | `1` |  |
-| victoria-metrics-cluster.vminsert.resources.limits.memory | string | `"1Gi"` |  |
-| victoria-metrics-cluster.vminsert.resources.requests.cpu | string | `"300m"` |  |
-| victoria-metrics-cluster.vminsert.resources.requests.memory | string | `"1Gi"` |  |
+| victoria-metrics-cluster.vminsert.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":"300m","memory":"1Gi"}}` | CPU/Memory requests and limits |
 | victoria-metrics-cluster.vminsert.securityContext | object | `{"enabled":true,"runAsGroup":65534,"runAsUser":65534}` | Security context of vminsert containers |
 | victoria-metrics-cluster.vminsert.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` |
 | victoria-metrics-cluster.vminsert.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
 | victoria-metrics-cluster.vmselect.affinity | object | `{}` | Affinity settings for vmselect pod |
-| victoria-metrics-cluster.vmselect.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","search.cacheTimestampOffset":"10m"}` | Extra arguments for vmselect |
+| victoria-metrics-cluster.vmselect.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","replicationFactor":2,"search.cacheTimestampOffset":"10m"}` | Extra arguments for vmselect |
+| victoria-metrics-cluster.vmselect.extraArgs.replicationFactor | int | `2` | How many copies of every ingested sample is available across vmstorage nodes. vmselect continues returning full responses when up to replicationFactor-1 vmstorage nodes are temporarily unavailable. |
 | victoria-metrics-cluster.vmselect.extraLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s"}` | Extra labels for vmselect Deployment |
 | victoria-metrics-cluster.vmselect.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-cluster-vmselect.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-cluster-vmselect.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-cluster-vmselect.instances":"[ { \"prometheus_url\": \"http://%%host%%:8481/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\", \"vmselect*\"] } ]"}` | Annotations for vmselect pod |
 | victoria-metrics-cluster.vmselect.replicaCount | int | `2` | Number of replicas of vmselect in the Deployment |

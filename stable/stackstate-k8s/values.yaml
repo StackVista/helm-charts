@@ -2167,7 +2167,9 @@ victoria-metrics-cluster:
     # victoria-metrics-cluster.vminsert.extraArgs -- Extra arguments for vminsert
     extraArgs:
       maxLabelsPerTimeseries: 60
-    # victoria-metrics-cluster.vminsert.resources - CPU/Memory requests and limits
+      # victoria-metrics-cluster.vminsert.extraArgs.replicationFactor -- Replication factor for the ingested data, i.e. how many copies to make among distinct vmstorage instances.
+      replicationFactor: 2
+    # victoria-metrics-cluster.vminsert.resources -- CPU/Memory requests and limits
     resources:
       requests:
         cpu: 300m
@@ -2211,6 +2213,8 @@ victoria-metrics-cluster:
       app.kubernetes.io/part-of: stackstate-k8s
     # victoria-metrics-cluster.vmselect.extraArgs -- Extra arguments for vmselect
     extraArgs:
+      # victoria-metrics-cluster.vmselect.extraArgs.replicationFactor -- How many copies of every ingested sample is available across vmstorage nodes. vmselect continues returning full responses when up to replicationFactor-1 vmstorage nodes are temporarily unavailable.
+      replicationFactor: 2
       dedup.minScrapeInterval: 1ms
       search.cacheTimestampOffset: 10m
     # victoria-metrics-cluster.vmselect.resources - CPU/Memory requests and limits
