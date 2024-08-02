@@ -14,6 +14,7 @@ integration_test_stackstate:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - helm dependencies update ${CHART}
@@ -50,6 +51,7 @@ integration_test_stackstate_k8s:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-k8s/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-k8s/%
     - helm dependencies update ${CHART}
@@ -1076,6 +1078,7 @@ push_stackstate-k8s_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - .gitlab/configure_git.sh
     - export BRANCHES=${CI_COMMIT_BRANCH:-$(git for-each-ref --format="%(objectname) %(refname:short)" refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" '$1==branch && $2!="origin" {print $2}' | sed -E "s/^origin\/(.*)$/\1/")}
@@ -1288,6 +1291,7 @@ push_stackstate_release_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-e879ea6c
   rules:
@@ -1326,6 +1330,7 @@ push_stackstate_release_to_public:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-e879ea6c
   rules:
@@ -1358,6 +1363,7 @@ push_stackstate_to_internal:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - .gitlab/bump_sts_chart_master_version.sh stackstate-internal stackstate
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-e879ea6c
@@ -1426,6 +1432,7 @@ push_test_charts:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-e879ea6c
   rules:
@@ -1572,6 +1579,7 @@ test_artifactory-cleaner:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -1607,6 +1615,7 @@ test_aws-amicleaner:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -1642,6 +1651,7 @@ test_aws-nuke:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -1677,6 +1687,7 @@ test_aws-pod-identity-webhook:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -1712,6 +1723,7 @@ test_beacher-job:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -1747,6 +1759,7 @@ test_chartmuseum:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -1782,6 +1795,7 @@ test_common:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -1817,6 +1831,7 @@ test_elasticsearch:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -1852,6 +1867,7 @@ test_falco-reporter:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -1887,6 +1903,7 @@ test_gitlab-steward:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -1922,6 +1939,7 @@ test_hbase:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -1957,6 +1975,7 @@ test_helm-reaper:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -1992,6 +2011,7 @@ test_iceman:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2027,6 +2047,7 @@ test_k8s-image-list-to-s3:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2062,6 +2083,7 @@ test_k8s-spot-termination-handler:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2097,6 +2119,7 @@ test_kafkaup-operator:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2132,6 +2155,7 @@ test_kommoner-operator:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2167,6 +2191,7 @@ test_minio:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2202,6 +2227,7 @@ test_otel-demo:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2237,6 +2263,7 @@ test_petros-d-kubelet-stats-exporter:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2272,6 +2299,7 @@ test_pull-secret:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2307,6 +2335,7 @@ test_receiveramplifier:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2342,6 +2371,7 @@ test_redirector:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2377,6 +2407,7 @@ test_sandbox-operator:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2412,6 +2443,7 @@ test_sock-shop:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2447,6 +2479,7 @@ test_stackstate:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - helm dependencies update ${CHART}
@@ -2483,6 +2516,7 @@ test_stackstate-agent:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2518,6 +2552,7 @@ test_stackstate-k8s:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-k8s/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-k8s/%
     - helm dependencies update ${CHART}
@@ -2554,6 +2589,7 @@ test_stackstate-k8s-agent:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2589,6 +2625,7 @@ test_stackstate-monitoring:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2624,6 +2661,7 @@ test_stackstate-standalone:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2659,6 +2697,7 @@ test_stackstate-values:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2694,6 +2733,7 @@ test_tenantmanager:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2729,6 +2769,7 @@ test_trafficmirror:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2764,6 +2805,7 @@ test_victoria-metrics-single:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
@@ -2799,6 +2841,7 @@ update_aad_chart_version:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
@@ -2825,6 +2868,7 @@ update_stackgraph_version:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
@@ -2910,6 +2954,7 @@ validate_stackstate_chart:
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
   environment: stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
