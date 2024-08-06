@@ -30,6 +30,8 @@ env:
   value: "{{ template "common.fullname.short" . }}-stackgraph:2182"
 - name: HBASE_CONF_hbase_rootdir
   value: /hadoop-data/data/hbase
+- name: HBASE_CONF_hbase_zookeeper_property_dataDir
+  value: /hadoop-data/data/zookeeper
 - name: HBASE_CONF_data_tx_snapshot_local_dir
   value: /hadoop-data/data/tephra
 - name: HBASE_CONF_hbase_master_info_port

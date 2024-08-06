@@ -46,10 +46,6 @@ env:
   value: {{ template "common.fullname.short" . }}-stackgraph:2182
 - name: HBASE_CONF_data_tx_snapshot_local_ftp_mirror
   value: "anonymous@{{ template "common.fullname.short" . }}-stackgraph:10021"
-- name: HBASE_CONF_zookeeper_session_timeout_localHBaseCluster
-  value: "180000"
-- name: HBASE_CONF_hbase_zookeeper_property_dataDir
-  value: /hadoop-data/data/zookeeper
 
 {{- end }}
 ports:
