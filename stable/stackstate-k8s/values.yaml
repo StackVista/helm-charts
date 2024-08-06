@@ -2235,7 +2235,6 @@ victoria-metrics-cluster:
       enabled: true
       runAsUser: 65534
       runAsGroup: 65534
-
 victoria-metrics:
   restore:
     image:
