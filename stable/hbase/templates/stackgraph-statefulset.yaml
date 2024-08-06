@@ -84,7 +84,7 @@ metadata:
   name: {{ template "common.fullname.short" . }}-stackgraph
 spec:
   podManagementPolicy: Parallel
-  replicas: "1"
+  replicas: 1
   serviceName: {{ template "common.fullname.short" . }}-stackgraph
   selector:
     matchLabels:
