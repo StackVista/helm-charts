@@ -31,14 +31,10 @@ func TestK2ESDiskSpaceRender(t *testing.T) {
 	require.NotNil(t, stackstateReceiverDeployment)
 
 	expectedDiskE2esSpace := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_elasticsearchDiskSpaceMB", Value: "120795"}
-	expectedGeWeightsPerIndex := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_kafkaGenericEventsToES_elasticsearch_index_diskSpaceWeight", Value: "33"}
-	expectedTeWeightsPerIndex := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_kafkaTopologyEventsToES_elasticsearch_index_diskSpaceWeight", Value: "33"}
-	expectedEWeightsPerIndex := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_kafkaStsEventsToES_elasticsearch_index_diskSpaceWeight", Value: "33"}
+	expectedTeWeightsPerIndex := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_kafkaTopologyEventsToES_elasticsearch_index_diskSpaceWeight", Value: "100"}
 	expectedDiskReceiverSpace := v1.EnvVar{Name: "CONFIG_FORCE_stackstate_receiver_elasticsearchDiskSpaceMB", Value: "281856"}
 
 	require.Contains(t, stackstateE2esDeployment.Spec.Template.Spec.Containers[0].Env, expectedDiskE2esSpace)
-	require.Contains(t, stackstateE2esDeployment.Spec.Template.Spec.Containers[0].Env, expectedGeWeightsPerIndex)
-	require.Contains(t, stackstateE2esDeployment.Spec.Template.Spec.Containers[0].Env, expectedEWeightsPerIndex)
 	require.Contains(t, stackstateE2esDeployment.Spec.Template.Spec.Containers[0].Env, expectedTeWeightsPerIndex)
 	require.Contains(t, stackstateE2esDeployment.Spec.Template.Spec.Containers[0].Env, expectedDiskE2esSpace)
 
