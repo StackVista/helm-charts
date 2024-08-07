@@ -23,7 +23,7 @@ spec:
       {{- include "image-pull-secrets" . | nindent 6 }}
       containers:
       - name: main
-        image: "{{ include "image-registry" . }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: {{ include "image-registry" . }}/{{ .Values.image.repository }}:{{ .Values.image.tag | toString }}
         command: ["/app/o11y-tooling", "tenantmanager", "--config", "/config/tenantmanager.yaml"]
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         envFrom:

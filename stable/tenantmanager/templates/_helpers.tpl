@@ -95,3 +95,8 @@ imagePullSecrets:
     {{- end }}
   {{- end -}}
 {{- end -}}
+
+{{- define "imageTag" -}}
+{{- $tag := .Values.image.tag | quote -}}
+{{- $tag | replace "\"" "" -}}
+{{- end -}}
