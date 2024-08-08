@@ -86,7 +86,12 @@ stackstate.stackPacks {
     {{- end }}
   }
 {{- end }}
+
   upgradeOnStartUp = {{ toJson .Values.stackstate.stackpacks.upgradeOnStartup }}
+
+  {{ $editionStackPack := printf "%s-kubernetes" (lower .Values.stackstate.deployment.edition) }}
+  installOnStartUp += {{ $editionStackPack | quote }}
+  upgradeOnStartUp += {{ $editionStackPack | quote }}
 }
 
 stackstate.aws.s3 {

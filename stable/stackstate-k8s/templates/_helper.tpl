@@ -636,7 +636,8 @@ Init container to load stackpacks from docker image
 */}}
 {{- define "stackstate.initContainer.stackpacks" -}}
 name: init-stackpacks
-image: "{{include "stackstate.stackpacks.image.registry" . }}/{{ .Values.stackstate.stackpacks.image.repository }}:{{ .Values.stackstate.stackpacks.image.tag }}"
+{{- $tag := printf "%s-%s-%s" .Values.stackstate.stackpacks.image.version (lower .Values.stackstate.deployment.edition ) (lower .Values.stackstate.deployment.mode ) }}
+image: "{{ include "stackstate.stackpacks.image.registry" . }}/{{ .Values.stackstate.stackpacks.image.repository }}:{{ $tag }}"
 imagePullPolicy: {{ .Values.stackstate.stackpacks.image.pullPolicy | quote }}
 args: ["/var/stackpacks"]
 volumeMounts:

@@ -1280,6 +1280,8 @@ stackstate:
   deployment:
     # stackstate.deployment.mode -- Deployment mode of StackState, possible values are 'SaaS' and 'SelfHosted'
     mode: "SelfHosted"
+    # stackstate.deployment.edition -- StackState edition, one of 'Community' or 'Prime'
+    edition: "Prime"
   # stackstate.java -- Extra Java configuration for StackState
   java:
     # stackstate.java.trustStore -- Java TrustStore (cacerts) file to use
@@ -1329,8 +1331,8 @@ stackstate:
       pullPolicy: ""
       # stackstate.stackpacks.image.repository -- Repository of the `stackpacks` Docker image.
       repository: stackstate/stackpacks
-      # stackstate.stackpacks.image.tag -- Tag used for the `stackpacks` Docker image;
-      tag: "20240807122312-master-c598021-selfhosted"
+      # stackstate.stackpacks.image.version -- Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode
+      version: "20240807122312-master-c598021"
     s3:
       # stackstate.stackpacks.s3.bucket -- Name of the S3 bucket to use as source for stackpacks.
       bucket: "sts-stackpacks-prod"
