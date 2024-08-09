@@ -8,14 +8,14 @@ source "${dir}/util.sh"
 # shellcheck disable=SC1091
 source "${dir}/../util.sh"
 
-full_stackpacks_master_tag=$(get_latest_master_version stackpacks "$STACKPACKS_VERSION_REGEX")
+stackpacks_master_version=$(get_latest_master_version stackpacks "$STACKPACKS_VERSION_REGEX")
 values_path="stable/stackstate-k8s/values.yaml"
 readme_path="stable/stackstate-k8s/README.md"
 
-echo "Latest stackpack master tag: $full_stackpacks_master_tag"
+echo "Latest stackpack master version: $stackpacks_master_version"
 
-updateChartValue "stackstate.stackpacks.image.tag" "$full_stackpacks_master_tag" "$values_path" "$readme_path"
+updateChartValue "stackstate.stackpacks.image.version" "$stackpacks_master_version" "$values_path" "$readme_path"
 
 git add "$values_path" "$readme_path"
-commit_changes "Updating stackpacks version to $full_stackpacks_master_tag"
+commit_changes "Updating stackpacks version to $stackpacks_master_version"
 push_changes
