@@ -18,7 +18,10 @@ const expectedStackPackConfig = `stackstate.stackPacks {
       "string_value": "one"
     }
   }
+
   upgradeOnStartUp = ["test-stackpack-1"]
+  installOnStartUp += "prime-kubernetes"
+  upgradeOnStartUp += "prime-kubernetes"
 }`
 
 func TestStackPackConfigRenderingApi(t *testing.T) {
