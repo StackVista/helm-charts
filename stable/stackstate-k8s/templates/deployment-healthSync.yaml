@@ -56,6 +56,8 @@ env:
 {{- else }}
   value: "{{- .Release.Name }}-hbase-stackgraph:2182"
 {{- end }}
+{{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
+{{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.healthSync.envsFromExistingSecrets }}
 image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.healthSync.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.healthSync.image.pullPolicy | quote }}
 name: health-sync

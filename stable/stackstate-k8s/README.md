@@ -454,6 +454,7 @@ stackstate/stackstate
 | stackstate.components.all.clickHouse.username | string | `"stackstate"` |  |
 | stackstate.components.all.deploymentStrategy.type | string | `"RecreateSingletonsOnly"` | Deployment strategy for StackState components. Possible values: `RollingUpdate`, `Recreate` and `RecreateSingletonsOnly`. `RecreateSingletonsOnly` uses `Recreate` for the singleton Deployments and `RollingUpdate` for the other Deployments. |
 | stackstate.components.all.elasticsearchEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster. |
+| stackstate.components.all.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
 | stackstate.components.all.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods for all components. |
 | stackstate.components.all.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object for all components. |
 | stackstate.components.all.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below). |
@@ -487,6 +488,7 @@ stackstate/stackstate
 | stackstate.components.api.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.api.config | string | `""` | Configuration file contents to customize the default StackState api configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.api.docslink | string | `""` | Documentation URL root to use in the product help page & tooltips. |
+| stackstate.components.api.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
 | stackstate.components.api.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.api.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.api.image.imageRegistry | string | `""` | `imageRegistry` used for the `api` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
@@ -511,6 +513,7 @@ stackstate/stackstate
 | stackstate.components.checks.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.checks.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.checks.config | string | `""` | Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
+| stackstate.components.checks.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
 | stackstate.components.checks.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.checks.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.checks.image.imageRegistry | string | `""` | `imageRegistry` used for the `checks` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
@@ -535,6 +538,7 @@ stackstate/stackstate
 | stackstate.components.containerTools.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `kafkaTopicCreate` pods. |
 | stackstate.components.correlate.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.correlate.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.correlate.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
 | stackstate.components.correlate.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.correlate.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.correlate.image.imageRegistry | string | `""` | `imageRegistry` used for the `correlate` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
@@ -601,6 +605,7 @@ stackstate/stackstate
 | stackstate.components.healthSync.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.healthSync.cache.backend | string | `"mapdb"` | Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory |
 | stackstate.components.healthSync.config | string | `""` | Configuration file contents to customize the default StackState healthSync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
+| stackstate.components.healthSync.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
 | stackstate.components.healthSync.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.healthSync.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.healthSync.image.imageRegistry | string | `""` | `imageRegistry` used for the `healthSync` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
@@ -621,6 +626,7 @@ stackstate/stackstate
 | stackstate.components.initializer.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.initializer.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.initializer.config | string | `""` | Configuration file contents to customize the default StackState initializer configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
+| stackstate.components.initializer.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
 | stackstate.components.initializer.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.initializer.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.initializer.image.imageRegistry | string | `""` | `imageRegistry` used for the `initializer` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
@@ -655,6 +661,7 @@ stackstate/stackstate
 | stackstate.components.notification.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.notification.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.notification.config | string | `""` | Configuration file contents to customize the default StackState notification configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
+| stackstate.components.notification.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
 | stackstate.components.notification.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.notification.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.notification.image.imageRegistry | string | `""` | `imageRegistry` used for the `notification` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
@@ -671,6 +678,7 @@ stackstate/stackstate
 | stackstate.components.notification.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.receiver.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.receiver.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.receiver.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
 | stackstate.components.receiver.esDiskSpaceShare | string | `"70"` | How much disk space from ElasticSearch can use for k8s log ingestion |
 | stackstate.components.receiver.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.receiver.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
@@ -720,6 +728,7 @@ stackstate/stackstate
 | stackstate.components.receiver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.router.accesslog.enabled | bool | `false` | Enable access logging on the router |
 | stackstate.components.router.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.router.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
 | stackstate.components.router.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.router.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.router.image.pullPolicy | string | `""` | `pullPolicy` used for the `router` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
@@ -735,6 +744,7 @@ stackstate/stackstate
 | stackstate.components.server.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.server.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.server.config | string | `""` | Configuration file contents to customize the default StackState configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
+| stackstate.components.server.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
 | stackstate.components.server.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.server.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.server.image.imageRegistry | string | `""` | `imageRegistry` used for the `server` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
@@ -752,6 +762,7 @@ stackstate/stackstate
 | stackstate.components.slicing.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.slicing.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.slicing.config | string | `""` | Configuration file contents to customize the default StackState slicing configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
+| stackstate.components.slicing.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
 | stackstate.components.slicing.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.slicing.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.slicing.image.imageRegistry | string | `""` | `imageRegistry` used for the `slicing` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
@@ -768,6 +779,7 @@ stackstate/stackstate
 | stackstate.components.state.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.state.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.state.config | string | `""` | Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
+| stackstate.components.state.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
 | stackstate.components.state.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.state.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.state.image.imageRegistry | string | `""` | `imageRegistry` used for the `state` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
@@ -789,6 +801,7 @@ stackstate/stackstate
 | stackstate.components.sync.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.sync.cache.backend | string | `"mapdb"` | Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory |
 | stackstate.components.sync.config | string | `""` | Configuration file contents to customize the default StackState sync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
+| stackstate.components.sync.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
 | stackstate.components.sync.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.sync.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.sync.image.imageRegistry | string | `""` | `imageRegistry` used for the `sync` component Docker image; this will override `global.imageRegistry` on a per-service basis. |

@@ -655,3 +655,16 @@ Returns a YAML with extra annotations for StackState service, it contains annota
 {{- toYaml . | nindent 8}}
 {{- end }}
 {{- end -}}
+
+{{/*
+Return env entries to mount existing secret with the custom keys.
+*/}}
+{{- define "stackstate.component.envsFromExistingSecrets" -}}
+{{- range . }}
+- name: {{ .name }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ .secretName }}
+      key: {{ .secretKey }}
+{{- end -}}
+{{- end -}}

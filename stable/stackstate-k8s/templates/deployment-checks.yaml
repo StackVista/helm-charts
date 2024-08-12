@@ -55,6 +55,8 @@ env:
   value: "10"
 - name: CONFIG_FORCE_stackstate_domainActorPool_fractionOfMemoryReservedForChecks
   value: "0.80"
+{{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
+{{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.checks.envsFromExistingSecrets }}
 image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.checks.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.checks.image.pullPolicy | quote }}
 name: checks

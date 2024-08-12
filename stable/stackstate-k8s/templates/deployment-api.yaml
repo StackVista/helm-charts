@@ -56,6 +56,8 @@ env:
   # Keep for 1.5 hours, allowing timetravel and having users in analytics keep their results cached
 - name: CONFIG_FORCE_stackgraph_vertex_cache_expireAfterSeconds
   value: "5400"
+{{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
+{{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.api.envsFromExistingSecrets }}
 image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.api.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.api.image.pullPolicy | quote }}
 name: api

@@ -5,6 +5,8 @@ imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .
 env:
 {{- include "stackstate.common.envvars" . }}
 {{- include "stackstate.router.envvars" . }}
+{{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
+{{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.router.envsFromExistingSecrets }}
 ports:
 - containerPort: 8080
   name: router
