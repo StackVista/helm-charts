@@ -1,6 +1,6 @@
 {{- if .Values.backup.enabled }}
 {{- if .Values.backup.stackGraph.scheduled.enabled }}
-{{- $imageTagConfig := dict .Values.stackstate.components.server.image.tag }}
+{{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
 {{- if .Capabilities.APIVersions.Has "batch/v1/CronJob" }}
 apiVersion: batch/v1
 {{- else }}

@@ -16,7 +16,7 @@ args:
 - initializer
 env:
 {{- $serviceConfig := dict "ServiceName" "initializer" "ServiceConfig" .Values.stackstate.components.initializer }}
-{{- $imageTagConfig := dict .Values.stackstate.components.initializer.image.tag }}
+{{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.initializer.image.tag }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.authentication.envvars" . }}
 {{- include "stackstate.baseurls.envvars" . }}

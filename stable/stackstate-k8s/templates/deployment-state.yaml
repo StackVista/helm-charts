@@ -24,7 +24,7 @@ args:
 - state
 env:
 {{- $serviceConfig := dict "ServiceName" "state" "ServiceConfig" .Values.stackstate.components.state }}
-{{- $imageTagConfig := dict .Values.stackstate.components.state.image.tag }}
+{{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.state.image.tag }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.authentication.envvars" . }}
 {{- include "stackstate.baseurls.envvars" . }}

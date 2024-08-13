@@ -91,7 +91,7 @@ spec:
 {{- end -}}
 
 {{- define "job-stackgraph-list-backups.yaml" -}}
-{{- $imageTagConfig := dict .Values.stackstate.components.server.image.tag }}
+{{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -136,7 +136,7 @@ spec:
 {{- end -}}
 
 {{- define "job-stackgraph-restore-backup.yaml" -}}
-{{- $imageTagConfig := dict .Values.stackstate.components.server.image.tag }}
+{{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -219,7 +219,7 @@ spec:
 
 
 {{- define "job-configuration-list-backups.yaml" -}}
-{{- $imageTagConfig := dict .Values.stackstate.components.server.image.tag }}
+{{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -316,7 +316,7 @@ spec:
 {{- end -}}
 
 {{- define "job-victoria-metrics-list-backups.yaml" -}}
-{{- $imageTagConfig := dict .Values.stackstate.components.server.image.tag }}
+{{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
 apiVersion: batch/v1
 kind: Job
 metadata:
