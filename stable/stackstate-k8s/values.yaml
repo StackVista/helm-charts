@@ -1450,6 +1450,8 @@ stackstate:
       repository: stackstate/stackpacks
       # stackstate.stackpacks.image.version -- Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode
       version: "20240813130453-master-eddae99"
+      # stackstate.stackpacks.image.deploymentModeOverride -- Use the stackpacks from another deployment mode than StackState is running in
+      deploymentModeOverride: ""
     s3:
       # stackstate.stackpacks.s3.bucket -- Name of the S3 bucket to use as source for stackpacks.
       bucket: "sts-stackpacks-prod"
