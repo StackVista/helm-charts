@@ -586,7 +586,7 @@ stackstate/stackstate
 | stackstate.components.correlate.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.e2es.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.e2es.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.e2es.esDiskSpaceShare | string | `"30"` | How much disk space from ElasticSearch can use for k8s events ingestion |
+| stackstate.components.e2es.esDiskSpaceShare | string | `"10"` | How much disk space from ElasticSearch can use for k8s events ingestion |
 | stackstate.components.e2es.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.e2es.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.e2es.image.pullPolicy | string | `""` | `pullPolicy` used for the `e2es` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
@@ -679,7 +679,7 @@ stackstate/stackstate
 | stackstate.components.receiver.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.receiver.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.receiver.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
-| stackstate.components.receiver.esDiskSpaceShare | string | `"70"` | How much disk space from ElasticSearch can use for k8s log ingestion |
+| stackstate.components.receiver.esDiskSpaceShare | string | `"90"` | How much disk space from ElasticSearch can use for k8s log ingestion |
 | stackstate.components.receiver.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.receiver.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.receiver.image.imageRegistry | string | `""` | `imageRegistry` used for the `receiver` component Docker image; this will override `global.imageRegistry` on a per-service basis. |

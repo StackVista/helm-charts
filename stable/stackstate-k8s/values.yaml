@@ -694,7 +694,7 @@ stackstate:
       # stackstate.components.e2es.additionalLogging -- Additional logback config
       additionalLogging: ""
       # stackstate.components.e2es.esDiskSpaceShare -- How much disk space from ElasticSearch can use for k8s events ingestion
-      esDiskSpaceShare: "30"
+      esDiskSpaceShare: "10"
       # stackstate.components.e2es.retention -- Number of days to keep the events data on Es
       retention: 30
     notification:
@@ -805,7 +805,7 @@ stackstate:
       # stackstate.components.receiver.additionalLogging -- Additional logback config
       additionalLogging: ""
       # stackstate.components.receiver.esDiskSpaceShare -- How much disk space from ElasticSearch can use for k8s log ingestion
-      esDiskSpaceShare: "70"
+      esDiskSpaceShare: "90"
       # stackstate.components.receiver.retention -- Number of days to keep the logs data on Es
       retention: 7
       split:
