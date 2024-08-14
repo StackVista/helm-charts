@@ -10,7 +10,12 @@ env:
 {{- include "all.commonEnv" . }}
 {{- include "console.commonEnv" . }}
 - name: ZOOKEEPER_QUORUM
+{{- if eq .Values.deployment.mode "Distributed" }}
   value: {{ include "hbase.zookeeper.endpoint" . | quote }}
+{{- else }}
+  value: {{ template "common.fullname.short" . }}-stackgraph
+{{- end }}
+
 {{- with .Values.console.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
