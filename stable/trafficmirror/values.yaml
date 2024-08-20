@@ -8,9 +8,9 @@ container:
 
 image:
   # image.repository -- Base container image repository.
-  repository: quay.io/stackstate/trafficmirror
+  repository: ghcr.io/rb3ckers/trafficmirror
   # image.tag -- Default container image tag.
-  tag: v2.4.0
+  tag: v2.5.0
 
 ingress:
   # ingress.enabled -- Enable use of ingress controllers.
@@ -29,6 +29,8 @@ trafficmirror:
   failAfterMinutes: 30
   # trafficmirror.retryAfterMinutes -- After 5 successive failures a target is temporarily disabled, it will be retried after this many minutes.
   retryAfterMinutes: 1
+  # trafficmirror.maxQueuedRequests -- Max requests that gets queued per mirror target.
+  maxQueuedRequests: 500
 deployment:
   securityContext:
     runAsUser: 65534

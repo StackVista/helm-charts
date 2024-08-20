@@ -14,6 +14,8 @@ args:
   - {{ .Values.trafficmirror.failAfterMinutes | quote }}
   - "--retry-after"
   - {{ .Values.trafficmirror.retryAfterMinutes | quote }}
+  - "--maxQueuedRequests"
+  - {{ .Values.trafficmirror.maxQueuedRequests | quote }}
 env:
 - name: TRAFFICMIRROR_USERNAME
   valueFrom:
