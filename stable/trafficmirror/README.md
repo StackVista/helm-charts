@@ -29,7 +29,7 @@ Trafficmirror -- mirror traffic to various endpoints.
 | trafficmirror.failAfterMinutes | int | `30` | Remove a target when it has been failing for this many minutes. |
 | trafficmirror.mainTargetDelayMs | int | `200` | Delay executions to main target, this gives the mirror time to catch up, and increases parallelism. |
 | trafficmirror.mainUrl | string | `""` | The default URL to receive the mirrored traffic. |
-| trafficmirror.maxQueuedRequests | int | `500` | Max requests that gets queued per mirror target. |
+| trafficmirror.maxQueuedRequests | int | `3000` | Max requests that gets queued per mirror target. |
 | trafficmirror.mirrorUrls | list | `[]` | The additional URLs that should also receive mirrored traffic. |
 | trafficmirror.password | string | `""` | Basic auth password for the Trafficmirror service. |
 | trafficmirror.retryAfterMinutes | int | `1` | After 5 successive failures a target is temporarily disabled, it will be retried after this many minutes. |

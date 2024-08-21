@@ -30,7 +30,7 @@ trafficmirror:
   # trafficmirror.retryAfterMinutes -- After 5 successive failures a target is temporarily disabled, it will be retried after this many minutes.
   retryAfterMinutes: 1
   # trafficmirror.maxQueuedRequests -- Max requests that gets queued per mirror target.
-  maxQueuedRequests: 500
+  maxQueuedRequests: 3000
   # trafficmirror.mainTargetDelayMs -- Delay executions to main target, this gives the mirror time to catch up, and increases parallelism.
   mainTargetDelayMs: 200
   # trafficmirror.enablePProf -- Enable pprof profiling
