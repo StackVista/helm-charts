@@ -1,6 +1,6 @@
 # trafficmirror
 
-![Version: 2.1.0](https://img.shields.io/badge/Version-2.1.0-informational?style=flat-square) ![AppVersion: 2.5.3](https://img.shields.io/badge/AppVersion-2.5.3-informational?style=flat-square)
+![Version: 2.1.0](https://img.shields.io/badge/Version-2.1.0-informational?style=flat-square) ![AppVersion: 2.5.4](https://img.shields.io/badge/AppVersion-2.5.4-informational?style=flat-square)
 Trafficmirror -- mirror traffic to various endpoints.
 **Homepage:** <https://github.com/rb3ckers/trafficmirror>
 ## Maintainers
@@ -23,8 +23,9 @@ Trafficmirror -- mirror traffic to various endpoints.
 | deployment.securityContext.runAsNonRoot | bool | `true` |  |
 | deployment.securityContext.runAsUser | int | `65534` |  |
 | image.repository | string | `"ghcr.io/rb3ckers/trafficmirror"` | Base container image repository. |
-| image.tag | string | `"v2.5.3"` | Default container image tag. |
+| image.tag | string | `"v2.5.4"` | Default container image tag. |
 | ingress.enabled | bool | `false` | Enable use of ingress controllers. |
+| trafficmirror.enablePProf | bool | `false` | Enable pprof profiling |
 | trafficmirror.failAfterMinutes | int | `30` | Remove a target when it has been failing for this many minutes. |
 | trafficmirror.mainTargetDelayMs | int | `200` | Delay executions to main target, this gives the mirror time to catch up, and increases parallelism. |
 | trafficmirror.mainUrl | string | `""` | The default URL to receive the mirrored traffic. |

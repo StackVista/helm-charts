@@ -10,7 +10,7 @@ image:
   # image.repository -- Base container image repository.
   repository: ghcr.io/rb3ckers/trafficmirror
   # image.tag -- Default container image tag.
-  tag: v2.5.3
+  tag: v2.5.4
 
 ingress:
   # ingress.enabled -- Enable use of ingress controllers.
@@ -33,6 +33,8 @@ trafficmirror:
   maxQueuedRequests: 500
   # trafficmirror.mainTargetDelayMs -- Delay executions to main target, this gives the mirror time to catch up, and increases parallelism.
   mainTargetDelayMs: 200
+  # trafficmirror.enablePProf -- Enable pprof profiling
+  enablePProf: false
 deployment:
   securityContext:
     runAsUser: 65534

@@ -18,6 +18,9 @@ args:
   - {{ .Values.trafficmirror.maxQueuedRequests | quote }}
   - "--main-target-delay-ms"
   - {{ .Values.trafficmirror.mainTargetDelayMs | quote }}
+{{- if .Values.trafficmirror.enablePProf }}
+  - "--enable-pprof"
+{{- end }}
 env:
 - name: TRAFFICMIRROR_USERNAME
   valueFrom:
