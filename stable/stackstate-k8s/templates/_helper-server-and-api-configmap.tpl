@@ -108,6 +108,7 @@ stackstate.webUIConfig.docLinkUrlPrefix = "{{- .Values.stackstate.components.api
 {{- end }}
 
 stackstate.deploymentMode = "{{- .Values.stackstate.deployment.mode -}}"
+stackstate.edition = "{{- .Values.stackstate.deployment.edition -}}"
 {{- include "stackstate.service.secret.clickhouseconfig" . }}
 {{- end -}}
 

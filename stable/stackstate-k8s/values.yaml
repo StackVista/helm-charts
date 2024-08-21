@@ -198,7 +198,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: 6.0.0-snapshot.20240813135645-master-0e3fd7a
+        tag: 6.0.0-snapshot.20240821111619-master-a703b3b
       # stackstate.components.all.podAnnotations -- Extra annotations
       podAnnotations: {}
       metrics:
@@ -694,7 +694,7 @@ stackstate:
       # stackstate.components.e2es.additionalLogging -- Additional logback config
       additionalLogging: ""
       # stackstate.components.e2es.esDiskSpaceShare -- How much disk space from ElasticSearch can use for k8s events ingestion
-      esDiskSpaceShare: "30"
+      esDiskSpaceShare: "10"
       # stackstate.components.e2es.retention -- Number of days to keep the events data on Es
       retention: 30
     notification:
@@ -805,7 +805,7 @@ stackstate:
       # stackstate.components.receiver.additionalLogging -- Additional logback config
       additionalLogging: ""
       # stackstate.components.receiver.esDiskSpaceShare -- How much disk space from ElasticSearch can use for k8s log ingestion
-      esDiskSpaceShare: "70"
+      esDiskSpaceShare: "90"
       # stackstate.components.receiver.retention -- Number of days to keep the logs data on Es
       retention: 7
       split:
@@ -1449,7 +1449,9 @@ stackstate:
       # stackstate.stackpacks.image.repository -- Repository of the `stackpacks` Docker image.
       repository: stackstate/stackpacks
       # stackstate.stackpacks.image.version -- Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode
-      version: "20240813130453-master-eddae99"
+      version: "20240814095550-master-169769e"
+      # stackstate.stackpacks.image.deploymentModeOverride -- Use the stackpacks from another deployment mode than StackState is running in
+      deploymentModeOverride: ""
     s3:
       # stackstate.stackpacks.s3.bucket -- Name of the S3 bucket to use as source for stackpacks.
       bucket: "sts-stackpacks-prod"
@@ -1542,7 +1544,7 @@ hbase:
       agentAnnotationsEnabled: true
   stackgraph:
     # hbase.stackgraph.version -- The StackGraph server version, must be compatible with the StackState version
-    version: 7.6.9
+    version: 7.7.0
   console:
     # hbase.console.enabled -- Enabled by default for debugging, but with 0 replicas. Manually scale up to 1 replica and open a shell in the container to access the stackgraph console.
     enabled: true
