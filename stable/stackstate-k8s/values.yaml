@@ -1155,15 +1155,15 @@ stackstate:
       resources:
         limits:
           cpu: "1500m"
-          memory: "1800Mi"
+          memory: "2000Mi"
           ephemeral-storage: "1Gi"
         requests:
-          memory: "1536Mi"
+          memory: "1800Mi"
           cpu: "250m"
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
-        javaHeapMemoryFraction: "60"
+        javaHeapMemoryFraction: "50"
       # stackstate.components.slicing.replicaCount -- Number of `slicing` replicas.
       replicaCount: 1
       # stackstate.components.slicing.nodeSelector -- Node labels for pod assignment.

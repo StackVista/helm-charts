@@ -772,9 +772,9 @@ stackstate/stackstate
 | stackstate.components.slicing.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.slicing.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.slicing.replicaCount | int | `1` | Number of `slicing` replicas. |
-| stackstate.components.slicing.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1Gi","memory":"1800Mi"},"requests":{"cpu":"250m","ephemeral-storage":"1Mi","memory":"1536Mi"}}` | Resource allocation for `slicing` pods. |
+| stackstate.components.slicing.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"250m","ephemeral-storage":"1Mi","memory":"1800Mi"}}` | Resource allocation for `slicing` pods. |
 | stackstate.components.slicing.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
-| stackstate.components.slicing.sizing.javaHeapMemoryFraction | string | `"60"` |  |
+| stackstate.components.slicing.sizing.javaHeapMemoryFraction | string | `"50"` |  |
 | stackstate.components.slicing.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.state.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.state.affinity | object | `{}` | Affinity settings for pod assignment. |
