@@ -75,8 +75,8 @@ backup:
       backupNameParseRegexp: 'sts-backup-([0-9]*-[0-9]*).graph'
       # backup.stackGraph.scheduled.backupDatetimeParseFormat -- Format to parse date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`.
       backupDatetimeParseFormat: '%Y%m%d-%H%M'
-      # backup.stackGraph.scheduled.backupRetentionTimeDelta -- Time to keep StackGraph backups in [Python timedelta format](https://docs.python.org/3/library/datetime.html#timedelta-objects).
-      backupRetentionTimeDelta: 'days = 30'
+      # backup.stackGraph.scheduled.backupRetentionTimeDelta -- Time to keep StackGraph backups in. The value is passed to GNU date tool  to determine a specific date, and files older than this date will be deleted.
+      backupRetentionTimeDelta: '30 days ago'
       tempData:
         # backup.stackGraph.scheduled.tmpData.accessModes -- Access mode for temporary backup data.
         accessModes: ["ReadWriteOnce"]
@@ -112,8 +112,8 @@ backup:
       backupNameParseRegexp: 'sts-backup-([0-9]*-[0-9]*).stj'
       # backup.configuration.scheduled.backupDatetimeParseFormat -- Format to parse date/time from configuration backup name. *Note:* This should match the value for `backupNameTemplate`.
       backupDatetimeParseFormat: '%Y%m%d-%H%M'
-      # backup.configuration.scheduled.backupRetentionTimeDelta -- Time to keep configuration backups in [Python timedelta format](https://docs.python.org/3/library/datetime.html#timedelta-objects).
-      backupRetentionTimeDelta: 'days = 365'
+      # backup.configuration.scheduled.backupRetentionTimeDelta -- Time to keep configuration backups. The value is passed to GNU date tool to determine a specific date, and files older than this date will be deleted.
+      backupRetentionTimeDelta: '365 days ago'
     securityContext:
       # backup.configuration.securityContext.enabled -- Whether or not to enable the securityContext
       enabled: true
@@ -1286,7 +1286,7 @@ stackstate:
         # stackstate.components.containerTools.image.repository -- Base container image repository for container-tools containers.
         repository: stackstate/container-tools
         # stackstate.components.containerTools.image.tag -- Container image tag for container-tools containers.
-        tag: 1.4.0
+        tag: 1.4.1
         # stackstate.components.containerTools.image.pullPolicy -- Image pull policy for container-tools containers.
         pullPolicy: IfNotPresent
       # stackstate.components.containerTools.resources -- Resource allocation for `kafkaTopicCreate` pods.

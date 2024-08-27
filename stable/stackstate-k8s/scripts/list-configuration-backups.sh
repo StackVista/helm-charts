@@ -7,5 +7,5 @@ export AWS_SECRET_ACCESS_KEY
 AWS_SECRET_ACCESS_KEY="$(cat /aws-keys/secretkey)"
 
 echo "=== Listing StackGraph backups in bucket \"${BACKUP_CONFIGURATION_BUCKET_NAME}\"..."
-aws --endpoint-url "http://${MINIO_ENDPOINT}" --region minio s3api list-objects-v2 --bucket "${BACKUP_CONFIGURATION_BUCKET_NAME}" --query "Contents[].[Key]" --output text
+sts-toolbox aws s3 ls --endpoint "http://${MINIO_ENDPOINT}" --region minio --bucket "${BACKUP_CONFIGURATION_BUCKET_NAME}" --prefix /
 echo "==="

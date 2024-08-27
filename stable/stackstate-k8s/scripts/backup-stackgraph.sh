@@ -6,7 +6,7 @@ function uploadFileToS3() {
     destObject=$2
     s3_endpoint=$3
     echo "=== Uploading StackGraph backup \"${srcFile}\" to bucket \"${destObject}\"..."
-    aws --endpoint-url "${s3_endpoint}" --region minio s3 cp "${srcFile}" "${destObject}"
+    sts-toolbox aws s3 cp --endpoint "${s3_endpoint}" --region minio "${srcFile}" "${destObject}"
 }
 
 export TMP_DIR=/tmp-data
@@ -42,8 +42,8 @@ else
 fi
 
 echo "=== Expiring old StackGraph backups..."
-export BACKUP_BUCKET_NAME=$BACKUP_STACKGRAPH_BUCKET_NAME
-export BACKUP_SCHEDULED_BACKUP_NAME_PARSE_REGEXP=$BACKUP_STACKGRAPH_SCHEDULED_BACKUP_NAME_PARSE_REGEXP
-export BACKUP_SCHEDULED_BACKUP_DATETIME_PARSE_FORMAT=$BACKUP_STACKGRAPH_SCHEDULED_BACKUP_DATETIME_PARSE_FORMAT
-export BACKUP_SCHEDULED_BACKUP_RETENTION_TIME_DELTA=$BACKUP_STACKGRAPH_SCHEDULED_BACKUP_RETENTION_TIME_DELTA
-/backup-restore-scripts/expire-s3-backups.py
+export BACKUP_BUCKET_NAME=${BACKUP_STACKGRAPH_BUCKET_NAME}
+export BACKUP_SCHEDULED_BACKUP_NAME_PARSE_REGEXP=${BACKUP_STACKGRAPH_SCHEDULED_BACKUP_NAME_PARSE_REGEXP}
+export BACKUP_SCHEDULED_BACKUP_DATETIME_PARSE_FORMAT=${BACKUP_STACKGRAPH_SCHEDULED_BACKUP_DATETIME_PARSE_FORMAT}
+export BACKUP_SCHEDULED_BACKUP_RETENTION_TIME_DELTA=${BACKUP_STACKGRAPH_SCHEDULED_BACKUP_RETENTION_TIME_DELTA}
+/backup-restore-scripts/expire-s3-backups.sh

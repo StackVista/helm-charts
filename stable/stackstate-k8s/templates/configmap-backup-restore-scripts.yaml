@@ -117,8 +117,8 @@ spec:
           imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
       containers:
         - name: list
-          image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
-          imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
+          image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
+          imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
           command:
             - '/backup-restore-scripts/list-stackgraph-backups.sh'
           env:
@@ -245,8 +245,8 @@ spec:
           imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
       containers:
         - name: list
-          image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
-          imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
+          image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
+          imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
           command:
             - '/backup-restore-scripts/list-configuration-backups.sh'
           env:
@@ -342,8 +342,8 @@ spec:
           imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
       containers:
         - name: list
-          image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
-          imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
+          image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
+          imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
           command:
             - '/backup-restore-scripts/list-victoria-metrics-backups.sh'
           env:
@@ -425,8 +425,8 @@ metadata:
 data:
   configure-backup.sh: |
     {{- .Files.Get "scripts/configure-backup.sh" | nindent 4 }}
-  expire-s3-backups.py: |
-    {{- .Files.Get "scripts/expire-s3-backups.py" | nindent 4 }}
+  expire-s3-backups.sh: |
+    {{- .Files.Get "scripts/expire-s3-backups.sh" | nindent 4 }}
 {{- if .Values.backup.stackGraph.scheduled.enabled }}
   backup-stackgraph.sh: |
     {{- .Files.Get "scripts/backup-stackgraph.sh" | nindent 4 }}
