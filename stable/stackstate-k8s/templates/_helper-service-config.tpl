@@ -67,6 +67,8 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
 {{- $directMemParam := ( (gt $directMem 0) | ternary ( printf "-XX:MaxDirectMemorySize=%dm" $directMem) "") }}
 {{- $otelInstrumentationServiceConfig := .ServiceConfig.otelInstrumentation | default dict }}
 {{- $otelJavaAgentOpt := or .Values.stackstate.components.all.otelInstrumentation.enabled $otelInstrumentationServiceConfig.enabled | default false | ternary " -javaagent:/opt/docker/opentelemetry-javaagent.jar" "" }}
+- name: STACKSTATE_EDITION
+  value: "{{- .Values.stackstate.deployment.edition -}}"
 {{- if .Values.stackstate.java.trustStorePassword }}
 - name: JAVA_TRUSTSTORE_PASSWORD
   valueFrom:
