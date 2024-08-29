@@ -1395,7 +1395,7 @@ stackstate:
     authentication: {}
   # stackstate.deployment -- Deployment settings for StackState
   deployment:
-    # stackstate.deployment.mode -- Deployment mode of StackState, possible values are 'SaaS' and 'SelfHosted'
+    # stackstate.deployment.mode -- Deployment mode of StackState, possible values are 'Saas' and 'SelfHosted'
     mode: "SelfHosted"
     # stackstate.deployment.edition -- StackState edition, one of 'Community' or 'Prime'
     edition: "Prime"
