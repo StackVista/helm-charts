@@ -1101,6 +1101,10 @@ push_stackstate-k8s_to_internal:
         - stable/stackstate-k8s/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
+    - changes:
+        - stable/stackstate-k8s/**/*
+      if: $CI_COMMIT_BRANCH == "stackstate-6.x"
+      when: on_success
     - if: $CI_COMMIT_TAG =~ /^stackstate-k8s\/.*/
       when: on_success
   script:
