@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 OLDER_THAN=$(date -d "${BACKUP_SCHEDULED_BACKUP_RETENTION_TIME_DELTA}" +"%Y%m%d-%H%M")
+if [ -z "${OLDER_THAN}" ]; then
+  echo "Failed to calculate the backup expiration date. Exiting."
+  exit 1
+fi
 
 sts-toolbox aws s3 ls --endpoint "http://${MINIO_ENDPOINT}" --region minio --bucket "${BACKUP_BUCKET_NAME}" --prefix / | while read -r backup_file
 do
