@@ -1,6 +1,6 @@
 # stackstate-k8s
 
-Helm chart for StackState for Kubernetes (version 6.x)
+Helm chart for StackState for Kubernetes (StackState version 6.x)
 
 Current chart version is `1.11.4-pre.31`
 
