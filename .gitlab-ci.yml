@@ -1085,18 +1085,18 @@ push_stackstate-k8s_to_internal:
     - .gitlab/set_sts_chart_master_version.sh stable/stackstate-k8s $(echo $CI_COMMIT_TAG | sed -E 's/^stackstate-k8s\/(.*)$/\1/')
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-e879ea6c
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - changes:
-        - stable/stackstate-k8s/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-k8s]/
-      when: on_success
+#    - if: $UPDATE_STACKGRAPH_VERSION
+#      when: never
+#    - if: $UPDATE_AAD_CHART_VERSION
+#      when: never
+#    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+#      when: never
+#    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+#      when: never
+#    - changes:
+#        - stable/stackstate-k8s/**/*
+#      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-k8s]/
+#      when: on_success
     - changes:
         - stable/stackstate-k8s/**/*
       if: $CI_COMMIT_BRANCH == "master"
