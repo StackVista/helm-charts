@@ -174,7 +174,7 @@ spec:
               value: "REPLACE_ME_FORCE_DELETE_REPLACE_ME"
             - name: ZOOKEEPER_QUORUM
               {{- if eq .Values.hbase.deployment.mode "Distributed" }}
-              value: stackstate-zookeeper-headless:2181
+              value: suse-observability-otel-zookeeper-headless:2181
               {{- else }}
               value: "stackstate-hbase-stackgraph:2182"
               {{- end }}

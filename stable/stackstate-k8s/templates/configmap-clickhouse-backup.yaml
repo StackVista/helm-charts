@@ -1,6 +1,6 @@
 {{- define "stackstate.clickhouse-backup.configmap" -}}
 metadata:
-  name: stackstate-clickhouse-backup
+  name: suse-observability-clickhouse-backup
 data:
   backup_enabled: {{ .Values.clickhouse.backup.enabled | quote }}
   entrypoint.sh: |

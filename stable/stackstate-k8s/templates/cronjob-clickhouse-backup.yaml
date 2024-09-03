@@ -6,7 +6,7 @@ apiVersion: batch/v1beta1
 {{- end }}
 kind: CronJob
 metadata:
-  name: stackstate-clickhouse-{{ .job_name }}
+  name: suse-observability-clickhouse-{{ .job_name }}
   labels:
     app.kubernetes.io/component: backup
 spec:
@@ -42,7 +42,7 @@ spec:
           volumes:
             - name: clickhouse-backup-scripts
               configMap:
-                name: stackstate-clickhouse-backup-scripts
+                name: suse-observability-clickhouse-backup-scripts
                 defaultMode: 0550
           restartPolicy: Never
 {{- end -}}

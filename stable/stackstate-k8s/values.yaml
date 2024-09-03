@@ -239,7 +239,7 @@ stackstate:
       # stackstate.components.all.clickhouse -- Configuration for connecting to ClickHouse store, used for traces
       clickHouse:
         ## stackstate.components.all.clickhouse.hostnames - The hostnames for Clickhouse, can be multiple comma-seperated hostnames
-        hostnames: stackstate-clickhouse-headless
+        hostnames: suse-observability-clickhouse-headless
         ## stackstate.components.all.clickhouse.port -- The default port on Clickhouse is 8123
         port: 8123
         ## stackstate.components.all.clickhouse.database -- Which database to use
@@ -1307,7 +1307,7 @@ stackstate:
           ephemeral-storage: "1Mi"
     vmagent:
       # stackstate.components.vmagent.fullNameOverride -- Name for the service
-      fullNameOverride: stackstate-vmagent
+      fullNameOverride: suse-observability-vmagent
       image:
         repository: stackstate/vmagent
         tag: v1.93.14-f69ecbeb
@@ -1476,7 +1476,7 @@ elasticsearch:
   # elasticsearch.clusterHealthCheckParams -- The Elasticsearch cluster health status params that will be used by readinessProbe command
   clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
   # elasticsearch.clusterName -- Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
-  clusterName: stackstate-elasticsearch
+  clusterName: suse-observability-elasticsearch
   # elasticsearch.enabled -- Enable / disable chart-based Elasticsearch.
   enabled: true
   # elasticsearch.esJavaOpts -- JVM options
@@ -1534,7 +1534,7 @@ elasticsearch:
         memory: "100Mi"
         ephemeral-storage: "1Mi"
     es:
-      uri: http://stackstate-elasticsearch-master:9200
+      uri: http://suse-observability-elasticsearch-master:9200
 hbase:
   # hbase.enabled -- Enable / disable chart-based HBase.
   enabled: true
@@ -1634,7 +1634,7 @@ hbase:
     # hbase.zookeeper.enabled -- Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**.
     enabled: false
     # hbase.zookeeper.externalServers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
-    externalServers: stackstate-zookeeper-headless
+    externalServers: suse-observability-zookeeper-headless
 kafkaup-operator:
   enabled: true
   image:
@@ -1648,7 +1648,7 @@ kafkaup-operator:
     pullPolicy: ""
   kafkaSelectors:
     # kafkaup.kafkaSelectors.statefulSetName -- name of the statefulSet to operate on
-    statefulSetName: "stackstate-kafka"
+    statefulSetName: "suse-observability-kafka"
     # kafkaup.kafkaSelectors.podLabel -- pod label of kafka pods to operate on
     podLabel:
       key: "app.kubernetes.io/component"
@@ -1662,7 +1662,7 @@ kafka:
     - "/scripts/custom-setup.sh"
   externalZookeeper:
     # kafka.externalZookeeper.servers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
-    servers: stackstate-zookeeper-headless
+    servers: suse-observability-zookeeper-headless
   # kafka.enabled -- Enable / disable chart-based Kafka.
   enabled: true
   podLabels:
@@ -1733,7 +1733,7 @@ kafka:
         limits: {}
         requests: {}
   # kafka.fullnameOverride -- Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
-  fullnameOverride: stackstate-kafka
+  fullnameOverride: suse-observability-kafka
   image:
     # kafka.image.registry -- Kafka image registry
     registry: quay.io
@@ -1840,7 +1840,7 @@ minio:
     # minio.persistence.enabled -- Enables MinIO persistence. Must be enabled when MinIO is not configured as a gateway to AWS S3 or Azure Blob Storage.
     enabled: false
   # minio.fullnameOverride -- **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components.
-  fullnameOverride: stackstate-minio
+  fullnameOverride: suse-observability-minio
   image:
     # minio.image.registry -- MinIO image registry
     registry: quay.io
@@ -1871,7 +1871,7 @@ zookeeper:
     snapRetainCount: 5
     purgeInterval: 3
   # zookeeper.fullnameOverride -- Name override for Zookeeper child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
-  fullnameOverride: stackstate-zookeeper
+  fullnameOverride: suse-observability-zookeeper
   podLabels:
     app.kubernetes.io/part-of: stackstate-k8s
   commonLabels:
@@ -2036,7 +2036,7 @@ victoria-metrics-0:
     namespaced: true
   server:
     # victoria-metrics-0.server.fullnameOverride -- Full name override
-    fullnameOverride: stackstate-victoria-metrics-0
+    fullnameOverride: suse-observability-victoria-metrics-0
     image:
       # victoria-metrics-0.server.image.repository -- Victoriametrics repository
       repository: quay.io/stackstate/victoria-metrics
@@ -2125,7 +2125,7 @@ victoria-metrics-1:
     namespaced: true
   server:
     # victoria-metrics-1.server.fullnameOverride -- Full name override
-    fullnameOverride: stackstate-victoria-metrics-1
+    fullnameOverride: suse-observability-victoria-metrics-1
     image:
       # victoria-metrics-1.server.image.repository -- Victoriametrics repository
       repository: quay.io/stackstate/victoria-metrics
@@ -2401,14 +2401,14 @@ clickhouse:
   externalZookeeper:
     # clickhouse.externalZookeeper.servers -- External Zookeeper configuration.
     servers:
-      - stackstate-zookeeper-headless
+      - suse-observability-zookeeper-headless
     port: 2181
   # podLabels:
   #   app.kubernetes.io/part-of: stackstate-k8s
   volumePermissions:
     enabled: false
   # clickhouse.fullnameOverride -- Name override for clickhouse child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
-  fullnameOverride: stackstate-clickhouse
+  fullnameOverride: suse-observability-clickhouse
   persistence:
     # clickhouse.persistence.size -- Size of persistent volume for each clickhouse pod
     size: 50Gi
@@ -2473,10 +2473,10 @@ clickhouse:
   extraVolumes:
     - name: clickhouse-backup-config
       configMap:
-        name: stackstate-clickhouse-backup
+        name: suse-observability-clickhouse-backup
     - name: clickhouse-backup-scripts
       configMap:
-        name: stackstate-clickhouse-backup
+        name: suse-observability-clickhouse-backup
         defaultMode: 0550
   # clickhouse.extraVolumeMounts -- extra VolumeMounts for the ClickHouse container
   extraVolumeMounts:
@@ -2501,7 +2501,7 @@ clickhouse:
         - name: BACKUP_CLICKHOUSE_ENABLED
           valueFrom:
             configMapKeyRef:
-              name: stackstate-clickhouse-backup
+              name: suse-observability-clickhouse-backup
               key: backup_enabled
         - name: BACKUP_TABLES
           value: "{{ .Values.backup.config.tables }}"
@@ -2572,7 +2572,7 @@ opentelemetry-collector:
   command:
     name: usr/bin/sts-opentelemetry-collector
   # opentelemetry-collector.fullnameOverride -- Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
-  fullnameOverride: stackstate-otel-collector
+  fullnameOverride: suse-observability-otel-collector
   # opentelemetry-collector.mode -- deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset".
   mode: statefulset
   # opentelemetry-collector.replicaCount -- only used with deployment mode
@@ -2582,12 +2582,12 @@ opentelemetry-collector:
     - name: API_URL
       valueFrom:
         configMapKeyRef:
-          name: stackstate-otel-collector
+          name: suse-observability-otel-collector
           key: api.url
     - name: INTAKE_URL
       valueFrom:
         configMapKeyRef:
-          name: stackstate-otel-collector
+          name: suse-observability-otel-collector
           key: intake.url
   config:
     receivers:
@@ -2640,7 +2640,7 @@ opentelemetry-collector:
         error_mode: ignore
     exporters:
       clickhousests:
-        endpoint: tcp://stackstate-clickhouse:9000?dial_timeout=10s&compress=lz4
+        endpoint: tcp://suse-observability-clickhouse:9000?dial_timeout=10s&compress=lz4
         username: admin
         password: admin
         database: otel
@@ -2658,7 +2658,7 @@ opentelemetry-collector:
           max_interval: 30s
           max_elapsed_time: 300s
       prometheusremotewrite/victoria-metrics:
-        endpoint: 'http://stackstate-vmagent:8429/api/v1/write'
+        endpoint: 'http://suse-observability-vmagent:8429/api/v1/write'
         resource_to_telemetry_conversion:
           enabled: true
       ststopology:

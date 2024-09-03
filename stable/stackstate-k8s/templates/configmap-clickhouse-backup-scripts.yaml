@@ -1,6 +1,6 @@
 {{- define "stackstate.clickhouse-backup-scripts.configmap" -}}
 metadata:
-  name: stackstate-clickhouse-backup-scripts
+  name: suse-observability-clickhouse-backup-scripts
 data:
   full-backup.sh: |
     {{- .Files.Get "scripts/backup-clickhouse-full-backup.sh" | nindent 4 }}
