@@ -943,47 +943,6 @@ stackstate/stackstate
 | victoria-metrics-1.server.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` |
 | victoria-metrics-1.server.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
 | victoria-metrics-1.server.serviceMonitor.interval | string | `"15s"` | Scrape interval for service monitor |
-| victoria-metrics-cluster.enabled | bool | `false` | Enables deployment of the Victoria Metric in the cluster mode, it deploys three StatefulSets: vmstorage, vminstert, vmselect. When enabled you should disabled `victoria-metrics-0.enabled` and `victoria-metrics-1.enabled`. |
-| victoria-metrics-cluster.rbac.namespaced | bool | `true` | Make sure all resources are namespaced |
-| victoria-metrics-cluster.rbac.pspEnabled | bool | `false` | Pod Security Policy has been deprecated and even removed from 1.25, we're not going to use it anymore |
-| victoria-metrics-cluster.vminsert.affinity | object | `{}` | Affinity settings for vminsert pod |
-| victoria-metrics-cluster.vminsert.extraArgs | object | `{"maxLabelsPerTimeseries":60,"replicationFactor":2}` | Extra arguments for vminsert |
-| victoria-metrics-cluster.vminsert.extraArgs.replicationFactor | int | `2` | Replication factor for the ingested data, i.e. how many copies to make among distinct vmstorage instances. |
-| victoria-metrics-cluster.vminsert.extraLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Extra labels for vminsert Deployment |
-| victoria-metrics-cluster.vminsert.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-cluster-vminsert.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-cluster-vminsert.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-cluster-vminsert.instances":"[ { \"prometheus_url\": \"http://%%host%%:8480/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\", \"vminsert*\"] } ]"}` | Annotations for vminsert pod |
-| victoria-metrics-cluster.vminsert.replicaCount | int | `2` | Number of replicas of vminsert in the Deployment |
-| victoria-metrics-cluster.vminsert.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":"300m","memory":"1Gi"}}` | CPU/Memory requests and limits |
-| victoria-metrics-cluster.vminsert.securityContext | object | `{"enabled":true,"runAsGroup":65534,"runAsUser":65534}` | Security context of vminsert containers |
-| victoria-metrics-cluster.vminsert.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` |
-| victoria-metrics-cluster.vminsert.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
-| victoria-metrics-cluster.vmselect.affinity | object | `{}` | Affinity settings for vmselect pod |
-| victoria-metrics-cluster.vmselect.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","replicationFactor":2,"search.cacheTimestampOffset":"10m"}` | Extra arguments for vmselect |
-| victoria-metrics-cluster.vmselect.extraArgs.replicationFactor | int | `2` | How many copies of every ingested sample is available across vmstorage nodes. vmselect continues returning full responses when up to replicationFactor-1 vmstorage nodes are temporarily unavailable. |
-| victoria-metrics-cluster.vmselect.extraLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Extra labels for vmselect Deployment |
-| victoria-metrics-cluster.vmselect.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-cluster-vmselect.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-cluster-vmselect.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-cluster-vmselect.instances":"[ { \"prometheus_url\": \"http://%%host%%:8481/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\", \"vmselect*\"] } ]"}` | Annotations for vmselect pod |
-| victoria-metrics-cluster.vmselect.replicaCount | int | `2` | Number of replicas of vmselect in the Deployment |
-| victoria-metrics-cluster.vmselect.resources.limits.cpu | int | `1` |  |
-| victoria-metrics-cluster.vmselect.resources.limits.memory | string | `"1Gi"` |  |
-| victoria-metrics-cluster.vmselect.resources.requests.cpu | string | `"300m"` |  |
-| victoria-metrics-cluster.vmselect.resources.requests.memory | string | `"1Gi"` |  |
-| victoria-metrics-cluster.vmselect.securityContext | object | `{"enabled":true,"runAsGroup":65534,"runAsUser":65534}` | Security context of vmselect containers |
-| victoria-metrics-cluster.vmselect.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` |
-| victoria-metrics-cluster.vmselect.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
-| victoria-metrics-cluster.vmstorage.affinity | object | `{}` | Affinity settings for vmstorage pod |
-| victoria-metrics-cluster.vmstorage.extraArgs | object | `{"dedup.minScrapeInterval":"1ms"}` | Extra arguments for vmstorage |
-| victoria-metrics-cluster.vmstorage.extraLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Extra labels for vmstorage Deployment |
-| victoria-metrics-cluster.vmstorage.persistentVolume.size | string | `"250Gi"` | Size of storage for vmstorage, ideally 20% of free space remains available at all times |
-| victoria-metrics-cluster.vmstorage.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-cluster-vmstorage.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-cluster-vmstorage.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-cluster-vmstorage.instances":"[ { \"prometheus_url\": \"http://%%host%%:8482/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\"] } ]"}` | Annotations for vmstorage pod |
-| victoria-metrics-cluster.vmstorage.podSecurityContext | object | `{"enabled":true,"fsGroup":65534}` | Security context of vmstorage pods |
-| victoria-metrics-cluster.vmstorage.replicaCount | int | `4` | Number of replicas of vmstorage in the StatefulSet |
-| victoria-metrics-cluster.vmstorage.resources.limits.cpu | int | `1` |  |
-| victoria-metrics-cluster.vmstorage.resources.limits.memory | string | `"2Gi"` |  |
-| victoria-metrics-cluster.vmstorage.resources.requests.cpu | string | `"300m"` |  |
-| victoria-metrics-cluster.vmstorage.resources.requests.memory | string | `"2Gi"` |  |
-| victoria-metrics-cluster.vmstorage.retentionPeriod | int | `1` | How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1) |
-| victoria-metrics-cluster.vmstorage.securityContext | object | `{"enabled":true,"runAsGroup":65534,"runAsNonRoot":true,"runAsUser":65534}` | Security context of vmstorage containers |
-| victoria-metrics-cluster.vmstorage.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` |
-| victoria-metrics-cluster.vmstorage.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
 | victoria-metrics.restore.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for `vmrestore` containers. |
 | victoria-metrics.restore.image.registry | string | `"quay.io"` | Base container image registry for 'vmrestore' containers. |
 | victoria-metrics.restore.image.repository | string | `"stackstate/vmrestore"` | Base container image repository for 'vmrestore' containers. |
@@ -993,6 +952,65 @@ stackstate/stackstate
 | victoria-metrics.restore.securityContext.runAsGroup | int | `65534` |  |
 | victoria-metrics.restore.securityContext.runAsNonRoot | bool | `true` |  |
 | victoria-metrics.restore.securityContext.runAsUser | int | `65534` |  |
+| victoriametrics-cluster.enabled | bool | `false` |  |
+| victoriametrics-cluster.rbac.namespaced | bool | `true` |  |
+| victoriametrics-cluster.rbac.pspEnabled | bool | `false` |  |
+| victoriametrics-cluster.vminsert.affinity | object | `{}` |  |
+| victoriametrics-cluster.vminsert.extraArgs.maxLabelsPerTimeseries | int | `60` |  |
+| victoriametrics-cluster.vminsert.extraArgs.replicationFactor | int | `2` |  |
+| victoriametrics-cluster.vminsert.extraLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
+| victoriametrics-cluster.vminsert.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vminsert.check_names" | string | `"[\"openmetrics\"]"` |  |
+| victoriametrics-cluster.vminsert.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vminsert.init_configs" | string | `"[{}]"` |  |
+| victoriametrics-cluster.vminsert.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vminsert.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8480/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\", \"vminsert*\"] } ]"` |  |
+| victoriametrics-cluster.vminsert.replicaCount | int | `2` |  |
+| victoriametrics-cluster.vminsert.resources.limits.cpu | int | `1` |  |
+| victoriametrics-cluster.vminsert.resources.limits.memory | string | `"1Gi"` |  |
+| victoriametrics-cluster.vminsert.resources.requests.cpu | string | `"300m"` |  |
+| victoriametrics-cluster.vminsert.resources.requests.memory | string | `"1Gi"` |  |
+| victoriametrics-cluster.vminsert.securityContext.enabled | bool | `true` |  |
+| victoriametrics-cluster.vminsert.securityContext.runAsGroup | int | `65534` |  |
+| victoriametrics-cluster.vminsert.securityContext.runAsUser | int | `65534` |  |
+| victoriametrics-cluster.vminsert.serviceMonitor.enabled | bool | `false` |  |
+| victoriametrics-cluster.vminsert.serviceMonitor.extraLabels | object | `{}` |  |
+| victoriametrics-cluster.vmselect.affinity | object | `{}` |  |
+| victoriametrics-cluster.vmselect.extraArgs."dedup.minScrapeInterval" | string | `"1ms"` |  |
+| victoriametrics-cluster.vmselect.extraArgs."search.cacheTimestampOffset" | string | `"10m"` |  |
+| victoriametrics-cluster.vmselect.extraArgs.replicationFactor | int | `2` |  |
+| victoriametrics-cluster.vmselect.extraLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
+| victoriametrics-cluster.vmselect.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmselect.check_names" | string | `"[\"openmetrics\"]"` |  |
+| victoriametrics-cluster.vmselect.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmselect.init_configs" | string | `"[{}]"` |  |
+| victoriametrics-cluster.vmselect.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmselect.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8481/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\", \"vmselect*\"] } ]"` |  |
+| victoriametrics-cluster.vmselect.replicaCount | int | `2` |  |
+| victoriametrics-cluster.vmselect.resources.limits.cpu | int | `1` |  |
+| victoriametrics-cluster.vmselect.resources.limits.memory | string | `"1Gi"` |  |
+| victoriametrics-cluster.vmselect.resources.requests.cpu | string | `"300m"` |  |
+| victoriametrics-cluster.vmselect.resources.requests.memory | string | `"1Gi"` |  |
+| victoriametrics-cluster.vmselect.securityContext.enabled | bool | `true` |  |
+| victoriametrics-cluster.vmselect.securityContext.runAsGroup | int | `65534` |  |
+| victoriametrics-cluster.vmselect.securityContext.runAsUser | int | `65534` |  |
+| victoriametrics-cluster.vmselect.serviceMonitor.enabled | bool | `false` |  |
+| victoriametrics-cluster.vmselect.serviceMonitor.extraLabels | object | `{}` |  |
+| victoriametrics-cluster.vmstorage.affinity | object | `{}` |  |
+| victoriametrics-cluster.vmstorage.extraArgs."dedup.minScrapeInterval" | string | `"1ms"` |  |
+| victoriametrics-cluster.vmstorage.extraLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
+| victoriametrics-cluster.vmstorage.persistentVolume.size | string | `"250Gi"` |  |
+| victoriametrics-cluster.vmstorage.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmstorage.check_names" | string | `"[\"openmetrics\"]"` |  |
+| victoriametrics-cluster.vmstorage.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmstorage.init_configs" | string | `"[{}]"` |  |
+| victoriametrics-cluster.vmstorage.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmstorage.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8482/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\"] } ]"` |  |
+| victoriametrics-cluster.vmstorage.podSecurityContext.enabled | bool | `true` |  |
+| victoriametrics-cluster.vmstorage.podSecurityContext.fsGroup | int | `65534` |  |
+| victoriametrics-cluster.vmstorage.replicaCount | int | `4` |  |
+| victoriametrics-cluster.vmstorage.resources.limits.cpu | int | `1` |  |
+| victoriametrics-cluster.vmstorage.resources.limits.memory | string | `"2Gi"` |  |
+| victoriametrics-cluster.vmstorage.resources.requests.cpu | string | `"300m"` |  |
+| victoriametrics-cluster.vmstorage.resources.requests.memory | string | `"2Gi"` |  |
+| victoriametrics-cluster.vmstorage.retentionPeriod | int | `1` |  |
+| victoriametrics-cluster.vmstorage.securityContext.enabled | bool | `true` |  |
+| victoriametrics-cluster.vmstorage.securityContext.runAsGroup | int | `65534` |  |
+| victoriametrics-cluster.vmstorage.securityContext.runAsNonRoot | bool | `true` |  |
+| victoriametrics-cluster.vmstorage.securityContext.runAsUser | int | `65534` |  |
+| victoriametrics-cluster.vmstorage.serviceMonitor.enabled | bool | `false` |  |
+| victoriametrics-cluster.vmstorage.serviceMonitor.extraLabels | object | `{}` |  |
 | zookeeper.autopurge | object | `{"purgeInterval":3,"snapRetainCount":5}` | configurations of ZooKeeper auto purge, it deletes old snapshot and log files. ClickHouse creates a lot of operation and it should be purged to avoud out of disk space. |
 | zookeeper.commonLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | zookeeper.customLivenessProbe.exec.command[0] | string | `"/bin/bash"` |  |

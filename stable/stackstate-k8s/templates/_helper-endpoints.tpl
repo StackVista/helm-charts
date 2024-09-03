@@ -16,8 +16,8 @@ http://{{- include "stackstate.metrics.victoriametrics.cluster.remoteWriteEndpoi
 Logic to determine promql query endpoint. It
 */}}
 {{- define "stackstate.metrics.query.url" -}}
-{{- if or (index .Values "victoria-metrics-cluster" "enabled") -}}
-http://suse-observability-victoria-metrics-cluster-vmselect:8481/select/0/prometheus
+{{- if or (index .Values "victoriametrics-cluster" "enabled") -}}
+http://suse-observability-victoriametrics-cluster-vmselect:8481/select/0/prometheus
 {{- else -}}
 http://suse-observability-victoriametrics:8428
 {{- end -}}
@@ -34,7 +34,7 @@ suse-observability-victoria-metrics-{{ .instanceIndex }}:8428
 Logic to determine metric store host and port for cluster of Victoria Metrics.
 */}}
 {{- define "stackstate.metrics.victoriametrics.cluster.remoteWriteEndpoint" -}}
-suse-observability-victoria-metrics-cluster-vminsert:8480
+suse-observability-victoriametrics-cluster-vminsert:8480
 {{- end -}}
 
 {{/*

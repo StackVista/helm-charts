@@ -2204,7 +2204,7 @@ victoria-metrics-1:
   restore:
     # victoria-metrics-1.restore.enabled -- Enable Victoria Metrics restore functionality (if `backup.enabled` is set to `true`).
     enabled: false
-victoria-metrics-cluster:
+victoriametrics-cluster:
   # victoria-metrics-cluster.enabled -- Enables deployment of the Victoria Metric in the cluster mode, it deploys three StatefulSets: vmstorage, vminstert, vmselect. When enabled you should disabled `victoria-metrics-0.enabled` and `victoria-metrics-1.enabled`.
   enabled: false
   rbac:
@@ -2217,9 +2217,9 @@ victoria-metrics-cluster:
     replicaCount: 4
     # victoria-metrics-cluster.vmstorage.podAnnotations -- Annotations for vmstorage pod
     podAnnotations:
-      ad.stackstate.com/victoria-metrics-cluster-vmstorage.check_names: '["openmetrics"]'
-      ad.stackstate.com/victoria-metrics-cluster-vmstorage.init_configs: "[{}]"
-      ad.stackstate.com/victoria-metrics-cluster-vmstorage.instances: '[ { "prometheus_url": "http://%%host%%:8482/metrics", "namespace": "stackstate", "metrics": ["vm*", "go*"] } ]'
+      ad.stackstate.com/victoriametrics-cluster-vmstorage.check_names: '["openmetrics"]'
+      ad.stackstate.com/victoriametrics-cluster-vmstorage.init_configs: "[{}]"
+      ad.stackstate.com/victoriametrics-cluster-vmstorage.instances: '[ { "prometheus_url": "http://%%host%%:8482/metrics", "namespace": "stackstate", "metrics": ["vm*", "go*"] } ]'
     # victoria-metrics-cluster.vmstorage.affinity -- Affinity settings for vmstorage pod
     affinity: {}
     # podAntiAffinity:
@@ -2272,9 +2272,9 @@ victoria-metrics-cluster:
     replicaCount: 2
     # victoria-metrics-cluster.vminsert.podAnnotations -- Annotations for vminsert pod
     podAnnotations:
-      ad.stackstate.com/victoria-metrics-cluster-vminsert.check_names: '["openmetrics"]'
-      ad.stackstate.com/victoria-metrics-cluster-vminsert.init_configs: "[{}]"
-      ad.stackstate.com/victoria-metrics-cluster-vminsert.instances: '[ { "prometheus_url": "http://%%host%%:8480/metrics", "namespace": "stackstate", "metrics": ["vm*", "go*", "vminsert*"] } ]'
+      ad.stackstate.com/victoriametrics-cluster-vminsert.check_names: '["openmetrics"]'
+      ad.stackstate.com/victoriametrics-cluster-vminsert.init_configs: "[{}]"
+      ad.stackstate.com/victoriametrics-cluster-vminsert.instances: '[ { "prometheus_url": "http://%%host%%:8480/metrics", "namespace": "stackstate", "metrics": ["vm*", "go*", "vminsert*"] } ]'
     # victoria-metrics-cluster.vminsert.affinity -- Affinity settings for vminsert pod
     affinity: {}
     # podAntiAffinity:
@@ -2319,9 +2319,9 @@ victoria-metrics-cluster:
     replicaCount: 2
     # victoria-metrics-cluster.vmselect.podAnnotations -- Annotations for vmselect pod
     podAnnotations:
-      ad.stackstate.com/victoria-metrics-cluster-vmselect.check_names: '["openmetrics"]'
-      ad.stackstate.com/victoria-metrics-cluster-vmselect.init_configs: "[{}]"
-      ad.stackstate.com/victoria-metrics-cluster-vmselect.instances: '[ { "prometheus_url": "http://%%host%%:8481/metrics", "namespace": "stackstate", "metrics": ["vm*", "go*", "vmselect*"] } ]'
+      ad.stackstate.com/victoriametrics-cluster-vmselect.check_names: '["openmetrics"]'
+      ad.stackstate.com/victoriametrics-cluster-vmselect.init_configs: "[{}]"
+      ad.stackstate.com/victoriametrics-cluster-vmselect.instances: '[ { "prometheus_url": "http://%%host%%:8481/metrics", "namespace": "stackstate", "metrics": ["vm*", "go*", "vmselect*"] } ]'
     # victoria-metrics-cluster.vmselect.affinity -- Affinity settings for vmselect pod
     affinity: {}
     # podAntiAffinity:

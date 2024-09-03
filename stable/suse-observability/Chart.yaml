@@ -64,9 +64,10 @@ dependencies:
     repository: file://../victoria-metrics-single/
     condition: victoria-metrics-1.enabled
   - name: victoria-metrics-cluster
+    alias: victoriametrics-cluster
     repository: https://victoriametrics.github.io/helm-charts
     version: 0.11.20
-    condition: victoria-metrics-cluster.enabled
+    condition: victoriametrics-cluster.enabled
   - name: clickhouse
     version: 3.6.9
     repository: https://charts.bitnami.com/bitnami
