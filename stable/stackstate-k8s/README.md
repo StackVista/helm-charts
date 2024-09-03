@@ -2,7 +2,7 @@
 
 Helm chart for StackState for Kubernetes (version 6.x)
 
-Current chart version is `1.11.4-pre.31`
+Current chart version is `1.11.4`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
