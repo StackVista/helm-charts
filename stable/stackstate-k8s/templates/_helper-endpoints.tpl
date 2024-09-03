@@ -19,7 +19,7 @@ Logic to determine promql query endpoint. It
 {{- if or (index .Values "victoria-metrics-cluster" "enabled") -}}
 http://suse-observability-victoria-metrics-cluster-vmselect:8481/select/0/prometheus
 {{- else -}}
-http://stackstate-victoriametrics:8428
+http://suse-observability-victoriametrics:8428
 {{- end -}}
 {{- end -}}
 

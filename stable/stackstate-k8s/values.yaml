@@ -1483,7 +1483,7 @@ elasticsearch:
   esJavaOpts: "-Xmx3g -Xms3g -Des.allow_insecure_settings=true -Xlog:disable -Xlog:gc*,gc+age=trace,safepoint:file=logs/gc.log:utctime,pid,tags:filecount=8,filesize=16m"
   # elasticsearch.commonLabels -- Add additional labels to all resources created for elasticsearch
   commonLabels:
-    app.kubernetes.io/part-of: stackstate-k8s
+    app.kubernetes.io/part-of: suse-observability
   # elasticsearch.extraEnvs -- Extra settings that StackState uses for Elasticsearch.
   extraEnvs:
     - name: action.auto_create_index
@@ -1540,7 +1540,7 @@ hbase:
   enabled: true
   # hbase.commonLabels -- Add additional labels to all resources created for all hbase resources
   commonLabels:
-    app.kubernetes.io/part-of: stackstate-k8s
+    app.kubernetes.io/part-of: suse-observability
   # hbase.version -- Version of hbase to use
   version: "2.5"
   all:
@@ -1666,7 +1666,7 @@ kafka:
   # kafka.enabled -- Enable / disable chart-based Kafka.
   enabled: true
   podLabels:
-    app.kubernetes.io/part-of: stackstate-k8s
+    app.kubernetes.io/part-of: suse-observability
   volumePermissions:
     enabled: false
   ## kafka.defaultReplicationFactor -- Default replication factors for automatically created topics
@@ -1802,7 +1802,7 @@ kafka:
     size: 100Gi
   # kafka.commonLabels -- Add additional labels to all resources created for kafka
   commonLabels:
-    app.kubernetes.io/part-of: stackstate
+    app.kubernetes.io/part-of: suse-observability
   # kafka.podAnnotations -- Kafka Pod annotations.
   podAnnotations:
     ad.stackstate.com/jmx-exporter.check_names: '["openmetrics"]'
@@ -1873,9 +1873,9 @@ zookeeper:
   # zookeeper.fullnameOverride -- Name override for Zookeeper child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
   fullnameOverride: suse-observability-zookeeper
   podLabels:
-    app.kubernetes.io/part-of: stackstate-k8s
+    app.kubernetes.io/part-of: suse-observability
   commonLabels:
-    app.kubernetes.io/part-of: stackstate
+    app.kubernetes.io/part-of: suse-observability
   livenessProbe:
     # zookeeper.livenessProbe.enabled -- it must be disabled to apply the custom probe, the probe adds "-q" option to nc to wait 1sec until close the connection, it fixes problem of failing the probed
     enabled: false
@@ -2066,10 +2066,10 @@ victoria-metrics-0:
     # victoria-metrics-0.server.podLabels -- Extra labels for Victoria Metrics pod
     podLabels:
       stackstate-service: victoriametrics
-      app.kubernetes.io/part-of: stackstate-k8s
+      app.kubernetes.io/part-of: suse-observability
     # victoria-metrics-0.server.extraLabels -- Extra labels for Victoria Metrics StatefulSet
     extraLabels:
-      app.kubernetes.io/part-of: stackstate-k8s
+      app.kubernetes.io/part-of: suse-observability
     # victoria-metrics-0.server.extraArgs -- Extra arguments for Victoria Metrics
     extraArgs:
       dedup.minScrapeInterval: 1ms
@@ -2155,10 +2155,10 @@ victoria-metrics-1:
     # victoria-metrics-1.server.podLabels -- Extra arguments for Victoria Metrics pod
     podLabels:
       stackstate-service: victoriametrics
-      app.kubernetes.io/part-of: stackstate-k8s
+      app.kubernetes.io/part-of: suse-observability
     # victoria-metrics-0.server.extraLabels -- Extra labels for Victoria Metrics StatefulSet
     extraLabels:
-      app.kubernetes.io/part-of: stackstate-k8s
+      app.kubernetes.io/part-of: suse-observability
     # victoria-metrics-1.server.extraArgs -- Extra arguments for Victoria Metrics
     extraArgs:
       dedup.minScrapeInterval: 1ms
@@ -2235,7 +2235,7 @@ victoria-metrics-cluster:
     #     weight: 1
     # victoria-metrics-cluster.vmstorage.extraLabels -- Extra labels for vmstorage Deployment
     extraLabels:
-      app.kubernetes.io/part-of: stackstate-k8s
+      app.kubernetes.io/part-of: suse-observability
     # victoria-metrics-cluster.vmstorage.extraArgs -- Extra arguments for vmstorage
     extraArgs:
       dedup.minScrapeInterval: 1ms
@@ -2290,7 +2290,7 @@ victoria-metrics-cluster:
     #     weight: 1
     # victoria-metrics-cluster.vminsert.extraLabels -- Extra labels for vminsert Deployment
     extraLabels:
-      app.kubernetes.io/part-of: stackstate-k8s
+      app.kubernetes.io/part-of: suse-observability
     # victoria-metrics-cluster.vminsert.extraArgs -- Extra arguments for vminsert
     extraArgs:
       maxLabelsPerTimeseries: 60
@@ -2337,7 +2337,7 @@ victoria-metrics-cluster:
     #     weight: 1
     # victoria-metrics-cluster.vmselect.extraLabels -- Extra labels for vmselect Deployment
     extraLabels:
-      app.kubernetes.io/part-of: stackstate-k8s
+      app.kubernetes.io/part-of: suse-observability
     # victoria-metrics-cluster.vmselect.extraArgs -- Extra arguments for vmselect
     extraArgs:
       # victoria-metrics-cluster.vmselect.extraArgs.replicationFactor -- How many copies of every ingested sample is available across vmstorage nodes. vmselect continues returning full responses when up to replicationFactor-1 vmstorage nodes are temporarily unavailable.
@@ -2404,7 +2404,7 @@ clickhouse:
       - suse-observability-zookeeper-headless
     port: 2181
   # podLabels:
-  #   app.kubernetes.io/part-of: stackstate-k8s
+  #   app.kubernetes.io/part-of: suse-observability
   volumePermissions:
     enabled: false
   # clickhouse.fullnameOverride -- Name override for clickhouse child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**

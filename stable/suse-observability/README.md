@@ -155,7 +155,7 @@ stackstate/stackstate
 | deployment.compatibleWithArgoCD | bool | `false` | Whether to adjust the Chart to be compatible with ArgoCD |
 | elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` | The Elasticsearch cluster health status params that will be used by readinessProbe command |
 | elasticsearch.clusterName | string | `"suse-observability-elasticsearch"` | Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
-| elasticsearch.commonLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s"}` | Add additional labels to all resources created for elasticsearch |
+| elasticsearch.commonLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Add additional labels to all resources created for elasticsearch |
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
 | elasticsearch.esJavaOpts | string | `"-Xmx3g -Xms3g -Des.allow_insecure_settings=true -Xlog:disable -Xlog:gc*,gc+age=trace,safepoint:file=logs/gc.log:utctime,pid,tags:filecount=8,filesize=16m"` | JVM options |
 | elasticsearch.extraEnvs | list | `[{"name":"action.auto_create_index","value":"true"},{"name":"indices.query.bool.max_clause_count","value":"10000"}]` | Extra settings that StackState uses for Elasticsearch. |
@@ -183,7 +183,7 @@ stackstate/stackstate
 | global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overriden per PVC. |
 | hbase.all.metrics.agentAnnotationsEnabled | bool | `true` |  |
 | hbase.all.metrics.enabled | bool | `true` |  |
-| hbase.commonLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s"}` | Add additional labels to all resources created for all hbase resources |
+| hbase.commonLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Add additional labels to all resources created for all hbase resources |
 | hbase.console.enabled | bool | `true` | Enabled by default for debugging, but with 0 replicas. Manually scale up to 1 replica and open a shell in the container to access the stackgraph console. |
 | hbase.enabled | bool | `true` | Enable / disable chart-based HBase. |
 | hbase.hbase.master.experimental.execLivenessProbe.enabled | bool | `true` |  |
@@ -239,7 +239,7 @@ stackstate/stackstate
 | ingress.path | string | `"/"` |  |
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
 | kafka.command | list | `["/scripts/custom-setup.sh"]` | Override kafka container command. |
-| kafka.commonLabels | object | `{"app.kubernetes.io/part-of":"stackstate"}` | Add additional labels to all resources created for kafka |
+| kafka.commonLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Add additional labels to all resources created for kafka |
 | kafka.defaultReplicationFactor | int | `2` |  |
 | kafka.enabled | bool | `true` | Enable / disable chart-based Kafka. |
 | kafka.externalZookeeper.servers | string | `"suse-observability-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
@@ -275,7 +275,7 @@ stackstate/stackstate
 | kafka.pdb.minAvailable | string | `""` |  |
 | kafka.persistence.size | string | `"100Gi"` | Size of persistent volume for each Kafka pod |
 | kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]","stackstate.com/kafkaup-operator.kafka_version":"3.3.1"}` | Kafka Pod annotations. |
-| kafka.podLabels."app.kubernetes.io/part-of" | string | `"stackstate-k8s"` |  |
+| kafka.podLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | kafka.readinessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
 | kafka.replicaCount | int | `3` | Number of Kafka replicas. |
 | kafka.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2Gi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2Gi"}}` | Kafka resources per pods. |
@@ -895,13 +895,13 @@ stackstate/stackstate
 | victoria-metrics-0.restore.enabled | bool | `false` | Enable Victoria Metrics restore functionality (if `backup.enabled` is set to `true`). |
 | victoria-metrics-0.server.affinity | object | `{}` | Affinity settings for Victoria Metrics pod |
 | victoria-metrics-0.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":60,"search.cacheTimestampOffset":"10m"}` | Extra arguments for Victoria Metrics |
-| victoria-metrics-0.server.extraLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s"}` | Extra labels for Victoria Metrics StatefulSet |
+| victoria-metrics-0.server.extraLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Extra labels for Victoria Metrics StatefulSet |
 | victoria-metrics-0.server.fullnameOverride | string | `"suse-observability-victoria-metrics-0"` | Full name override |
 | victoria-metrics-0.server.image.repository | string | `"quay.io/stackstate/victoria-metrics"` | Victoriametrics repository |
 | victoria-metrics-0.server.image.tag | string | `"v1.93.14-e17e24af"` |  |
 | victoria-metrics-0.server.persistentVolume.size | string | `"250Gi"` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
 | victoria-metrics-0.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\"] } ]","ad.stackstate.com/vmbackup.check_names":"[\"openmetrics\"]","ad.stackstate.com/vmbackup.init_configs":"[{}]","ad.stackstate.com/vmbackup.instances":"[ { \"prometheus_url\": \"http://%%host%%:9746/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"supercronic_*\"] } ]"}` | Annotations for Victoria Metrics server pod |
-| victoria-metrics-0.server.podLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s","stackstate-service":"victoriametrics"}` | Extra labels for Victoria Metrics pod |
+| victoria-metrics-0.server.podLabels | object | `{"app.kubernetes.io/part-of":"suse-observability","stackstate-service":"victoriametrics"}` | Extra labels for Victoria Metrics pod |
 | victoria-metrics-0.server.resources.limits.cpu | int | `1` |  |
 | victoria-metrics-0.server.resources.limits.memory | string | `"4Gi"` |  |
 | victoria-metrics-0.server.resources.requests.cpu | string | `"300m"` |  |
@@ -922,13 +922,13 @@ stackstate/stackstate
 | victoria-metrics-1.restore.enabled | bool | `false` | Enable Victoria Metrics restore functionality (if `backup.enabled` is set to `true`). |
 | victoria-metrics-1.server.affinity | object | `{}` | Affinity settings for Victoria Metrics pod |
 | victoria-metrics-1.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":60}` | Extra arguments for Victoria Metrics |
-| victoria-metrics-1.server.extraLabels."app.kubernetes.io/part-of" | string | `"stackstate-k8s"` |  |
+| victoria-metrics-1.server.extraLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | victoria-metrics-1.server.fullnameOverride | string | `"suse-observability-victoria-metrics-1"` | Full name override |
 | victoria-metrics-1.server.image.repository | string | `"quay.io/stackstate/victoria-metrics"` | Victoriametrics repository |
 | victoria-metrics-1.server.image.tag | string | `"v1.93.14-e17e24af"` |  |
 | victoria-metrics-1.server.persistentVolume.size | string | `"250Gi"` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
 | victoria-metrics-1.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]","ad.stackstate.com/vmbackup.check_names":"[\"openmetrics\"]","ad.stackstate.com/vmbackup.init_configs":"[{}]","ad.stackstate.com/vmbackup.instances":"[ { \"prometheus_url\": \"http://%%host%%:9746/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"supercronic_*\"] } ]"}` | Annotations for Victoria Metrics server pod |
-| victoria-metrics-1.server.podLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s","stackstate-service":"victoriametrics"}` | Extra arguments for Victoria Metrics pod |
+| victoria-metrics-1.server.podLabels | object | `{"app.kubernetes.io/part-of":"suse-observability","stackstate-service":"victoriametrics"}` | Extra arguments for Victoria Metrics pod |
 | victoria-metrics-1.server.resources.limits.cpu | int | `1` |  |
 | victoria-metrics-1.server.resources.limits.memory | string | `"4Gi"` |  |
 | victoria-metrics-1.server.resources.requests.cpu | string | `"300m"` |  |
@@ -945,7 +945,7 @@ stackstate/stackstate
 | victoria-metrics-cluster.vminsert.affinity | object | `{}` | Affinity settings for vminsert pod |
 | victoria-metrics-cluster.vminsert.extraArgs | object | `{"maxLabelsPerTimeseries":60,"replicationFactor":2}` | Extra arguments for vminsert |
 | victoria-metrics-cluster.vminsert.extraArgs.replicationFactor | int | `2` | Replication factor for the ingested data, i.e. how many copies to make among distinct vmstorage instances. |
-| victoria-metrics-cluster.vminsert.extraLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s"}` | Extra labels for vminsert Deployment |
+| victoria-metrics-cluster.vminsert.extraLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Extra labels for vminsert Deployment |
 | victoria-metrics-cluster.vminsert.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-cluster-vminsert.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-cluster-vminsert.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-cluster-vminsert.instances":"[ { \"prometheus_url\": \"http://%%host%%:8480/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\", \"vminsert*\"] } ]"}` | Annotations for vminsert pod |
 | victoria-metrics-cluster.vminsert.replicaCount | int | `2` | Number of replicas of vminsert in the Deployment |
 | victoria-metrics-cluster.vminsert.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":"300m","memory":"1Gi"}}` | CPU/Memory requests and limits |
@@ -955,7 +955,7 @@ stackstate/stackstate
 | victoria-metrics-cluster.vmselect.affinity | object | `{}` | Affinity settings for vmselect pod |
 | victoria-metrics-cluster.vmselect.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","replicationFactor":2,"search.cacheTimestampOffset":"10m"}` | Extra arguments for vmselect |
 | victoria-metrics-cluster.vmselect.extraArgs.replicationFactor | int | `2` | How many copies of every ingested sample is available across vmstorage nodes. vmselect continues returning full responses when up to replicationFactor-1 vmstorage nodes are temporarily unavailable. |
-| victoria-metrics-cluster.vmselect.extraLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s"}` | Extra labels for vmselect Deployment |
+| victoria-metrics-cluster.vmselect.extraLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Extra labels for vmselect Deployment |
 | victoria-metrics-cluster.vmselect.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-cluster-vmselect.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-cluster-vmselect.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-cluster-vmselect.instances":"[ { \"prometheus_url\": \"http://%%host%%:8481/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\", \"vmselect*\"] } ]"}` | Annotations for vmselect pod |
 | victoria-metrics-cluster.vmselect.replicaCount | int | `2` | Number of replicas of vmselect in the Deployment |
 | victoria-metrics-cluster.vmselect.resources.limits.cpu | int | `1` |  |
@@ -967,7 +967,7 @@ stackstate/stackstate
 | victoria-metrics-cluster.vmselect.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
 | victoria-metrics-cluster.vmstorage.affinity | object | `{}` | Affinity settings for vmstorage pod |
 | victoria-metrics-cluster.vmstorage.extraArgs | object | `{"dedup.minScrapeInterval":"1ms"}` | Extra arguments for vmstorage |
-| victoria-metrics-cluster.vmstorage.extraLabels | object | `{"app.kubernetes.io/part-of":"stackstate-k8s"}` | Extra labels for vmstorage Deployment |
+| victoria-metrics-cluster.vmstorage.extraLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Extra labels for vmstorage Deployment |
 | victoria-metrics-cluster.vmstorage.persistentVolume.size | string | `"250Gi"` | Size of storage for vmstorage, ideally 20% of free space remains available at all times |
 | victoria-metrics-cluster.vmstorage.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-cluster-vmstorage.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-cluster-vmstorage.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-cluster-vmstorage.instances":"[ { \"prometheus_url\": \"http://%%host%%:8482/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\"] } ]"}` | Annotations for vmstorage pod |
 | victoria-metrics-cluster.vmstorage.podSecurityContext | object | `{"enabled":true,"fsGroup":65534}` | Security context of vmstorage pods |
@@ -990,7 +990,7 @@ stackstate/stackstate
 | victoria-metrics.restore.securityContext.runAsNonRoot | bool | `true` |  |
 | victoria-metrics.restore.securityContext.runAsUser | int | `65534` |  |
 | zookeeper.autopurge | object | `{"purgeInterval":3,"snapRetainCount":5}` | configurations of ZooKeeper auto purge, it deletes old snapshot and log files. ClickHouse creates a lot of operation and it should be purged to avoud out of disk space. |
-| zookeeper.commonLabels."app.kubernetes.io/part-of" | string | `"stackstate"` |  |
+| zookeeper.commonLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | zookeeper.customLivenessProbe.exec.command[0] | string | `"/bin/bash"` |  |
 | zookeeper.customLivenessProbe.exec.command[1] | string | `"-c"` |  |
 | zookeeper.customLivenessProbe.exec.command[2] | string | `"echo \"ruok\" | timeout 2 nc -w 2 -q 1 localhost 2181 | grep imok"` |  |
@@ -1024,7 +1024,7 @@ stackstate/stackstate
 | zookeeper.pdb.maxUnavailable | int | `1` |  |
 | zookeeper.pdb.minAvailable | string | `""` |  |
 | zookeeper.podAnnotations | object | `{"ad.stackstate.com/zookeeper.check_names":"[\"openmetrics\"]","ad.stackstate.com/zookeeper.init_configs":"[{}]","ad.stackstate.com/zookeeper.instances":"[ { \"prometheus_url\": \"http://%%host%%:9141/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Annotations for ZooKeeper pod. |
-| zookeeper.podLabels."app.kubernetes.io/part-of" | string | `"stackstate-k8s"` |  |
+| zookeeper.podLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | zookeeper.readinessProbe.enabled | bool | `false` | it must be disabled to apply the custom probe, the probe adds "-q" option to nc to wait 1sec until close the connection, it fixes problem of failing the probed |
 | zookeeper.replicaCount | int | `3` | Default amount of Zookeeper replicas to provision. |
 | zookeeper.resources.limits.cpu | string | `"250m"` |  |

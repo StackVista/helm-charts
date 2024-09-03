@@ -1,6 +1,6 @@
 {{- define "stackstate.victoriametrics.service" -}}
 metadata:
-  name: stackstate-victoriametrics
+  name: suse-observability-victoriametrics
   labels:
     app.kubernetes.io/component: victoriametrics
 spec:
