@@ -22,11 +22,13 @@ func TestClusterRoleDeployedToSameNamespaceAsChartName(t *testing.T) {
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	require.Equal(t, 2, len(resources.ClusterRoleBindings))
+	require.Equal(t, 3, len(resources.ClusterRoleBindings))
 	require.Contains(t, resources.ClusterRoleBindings, "stackstate-k8s-authentication")
 	require.Contains(t, resources.ClusterRoleBindings, "stackstate-k8s-authorization")
-	require.Equal(t, 1, len(resources.ClusterRoles))
+	require.Contains(t, resources.ClusterRoleBindings, "stackstate-k8s-victoria-metrics-cluster-clusterrolebinding")
+	require.Equal(t, 2, len(resources.ClusterRoles))
 	require.Contains(t, resources.ClusterRoles, "stackstate-k8s-authorization")
+	require.Contains(t, resources.ClusterRoles, "stackstate-k8s-victoria-metrics-cluster-clusterrole")
 }
 func TestClusterRoleDeployedToDifferentNamespaceAsChartName(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "stackstate-k8s", &helm.Options{
@@ -40,11 +42,13 @@ func TestClusterRoleDeployedToDifferentNamespaceAsChartName(t *testing.T) {
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	require.Equal(t, 2, len(resources.ClusterRoleBindings))
+	require.Equal(t, 3, len(resources.ClusterRoleBindings))
 	require.Contains(t, resources.ClusterRoleBindings, "devver-stackstate-k8s-authentication")
 	require.Contains(t, resources.ClusterRoleBindings, "devver-stackstate-k8s-authorization")
-	require.Equal(t, 1, len(resources.ClusterRoles))
+	require.Contains(t, resources.ClusterRoleBindings, "stackstate-k8s-victoria-metrics-cluster-clusterrolebinding")
+	require.Equal(t, 2, len(resources.ClusterRoles))
 	require.Contains(t, resources.ClusterRoles, "devver-stackstate-k8s-authorization")
+	require.Contains(t, resources.ClusterRoles, "stackstate-k8s-victoria-metrics-cluster-clusterrole")
 }
 
 func TestClusterRoleNameWhenNamespaceReleaseNameAndChartNameAllDifferent(t *testing.T) {
@@ -59,11 +63,13 @@ func TestClusterRoleNameWhenNamespaceReleaseNameAndChartNameAllDifferent(t *test
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	require.Equal(t, 2, len(resources.ClusterRoleBindings))
+	require.Equal(t, 3, len(resources.ClusterRoleBindings))
 	require.Contains(t, resources.ClusterRoleBindings, "devver-stacky-stackstate-k8s-authentication")
 	require.Contains(t, resources.ClusterRoleBindings, "devver-stacky-stackstate-k8s-authorization")
-	require.Equal(t, 1, len(resources.ClusterRoles))
+	require.Contains(t, resources.ClusterRoleBindings, "stacky-victoria-metrics-cluster-clusterrolebinding")
+	require.Equal(t, 2, len(resources.ClusterRoles))
 	require.Contains(t, resources.ClusterRoles, "devver-stacky-stackstate-k8s-authorization")
+	require.Contains(t, resources.ClusterRoles, "stacky-victoria-metrics-cluster-clusterrole")
 }
 
 func TestResourcesNamesLength(t *testing.T) {
