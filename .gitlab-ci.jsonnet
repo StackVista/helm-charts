@@ -60,7 +60,7 @@ local validate_and_push_jobs = {
     script: [
       'ct list-changed --config test/ct.yaml',
       'if [[ "${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" =~ ^releasing*|^developing* ]] || [[ -n "${CI_COMMIT_TAG}" ]] ; then export VERSION_INCREMENT_CHECK="--check-version-increment=false" ; fi',
-      'ct lint --debug --validate-maintainers=false ${VERSION_INCREMENT_CHECK} --excluded-charts stackstate --excluded-charts stackstate-k8s --excluded-charts gitlab-runner --config test/ct.yaml',
+      'ct lint --debug --validate-maintainers=false ${VERSION_INCREMENT_CHECK} --excluded-charts stackstate --excluded-charts stackstate-k8s --excluded-charts suse-observability --excluded-charts gitlab-runner --config test/ct.yaml',
       '.gitlab/validate_kubeconform.sh',
     ],
     stage: 'validate',
@@ -79,8 +79,9 @@ local validate_and_push_jobs = {
       ['ct list-changed --config test/ct.yaml'] +
       update_2nd_degree_chart_deps('stackstate') +
       update_2nd_degree_chart_deps('stackstate-k8s') +
+      update_2nd_degree_chart_deps('suse-observability') +
       [
-        'ct lint --debug --validate-maintainers=false --charts stable/stackstate --charts stable/stackstate-k8s --config test/ct.yaml',
+        'ct lint --debug --validate-maintainers=false --charts stable/stackstate --charts stable/stackstate-k8s --charts stable/suse-observability --config test/ct.yaml',
         '.gitlab/validate_kubeconform.sh',
       ],
     stage: 'validate',
@@ -107,7 +108,7 @@ local validate_and_push_jobs = {
 local test_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   before_script: helm_fetch_dependencies + (
-    if chart == 'stackstate' || chart == 'stackstate-k8s' then update_2nd_degree_chart_deps(chart) else []
+    if chart == 'stackstate' || chart == 'stackstate-k8s' || chart == 'suse-observability' then update_2nd_degree_chart_deps(chart) else []
   ) +
   ['helm dependencies update ${CHART}'],
   script: [
@@ -130,7 +131,7 @@ local test_chart_job(chart) = {
 local itest_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   before_script: helm_fetch_dependencies + (
-    if chart == 'stackstate' || chart == 'stackstate-k8s' then update_2nd_degree_chart_deps(chart) else []
+    if chart == 'stackstate' || chart == 'stackstate-k8s' || chart == 'suse-observability' then update_2nd_degree_chart_deps(chart) else []
   ) +
   ['helm dependencies update ${CHART}'],
   script: [
@@ -152,7 +153,7 @@ local itest_chart_job(chart) = {
 
 local push_chart_job_if(chart, repository_url, repository_username, repository_password, rules) = {
   script: (
-    if chart == 'stackstate' || chart == 'stackstate-k8s' then update_2nd_degree_chart_deps(chart) else []
+    if chart == 'stackstate' || chart == 'stackstate-k8s' || chart == 'suse-observability' then update_2nd_degree_chart_deps(chart) else []
   ) + [
     'helm dependencies update ${CHART}',
     'helm cm-push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
@@ -220,6 +221,7 @@ local test_chart_jobs = {
 local itest_stackstate = {
   integration_test_stackstate: itest_chart_job('stackstate'),
   integration_test_stackstate_k8s: itest_chart_job('stackstate-k8s'),
+  integration_test_suse_observability: itest_chart_job('suse-observability'),
 };
 
 local push_charts_to_internal_jobs = {
@@ -233,7 +235,7 @@ local push_charts_to_internal_jobs = {
   } + (
   if chart == 'stackstate' then
   { before_script: helm_fetch_dependencies + ['.gitlab/bump_sts_chart_master_version.sh stackstate-internal ' + chart] }
-  else if chart == 'stackstate-k8s' then
+  else if chart == 'stackstate-k8s' || chart == 'suse-observability' then
   { before_script: helm_fetch_dependencies + [
     '.gitlab/configure_git.sh',
     // tags don't have CI_COMMIT_BRANCH, so I fetches the current branch(s) for current HEAD (HEAD points to a detached commit)
@@ -259,12 +261,12 @@ if chart == 'stackstate-k8s-agent' then 'publish-k8s-agent' else 'publish-' + ch
 
     needs: ['push_%s_to_internal' % chart],
   } + (
-    if chart == 'stackstate' || chart == 'stackstate-k8s' then
+    if chart == 'stackstate' || chart == 'stackstate-k8s' || chart == 'suse-observability' then
   { before_script: helm_fetch_dependencies + ['.gitlab/bump_sts_chart_master_version.sh stackstate ' + chart] }
   else {}
   ))
   for chart in public_charts
-  if chart != 'stackstate' && chart != 'stackstate-k8s'
+  if chart != 'stackstate' && chart != 'stackstate-k8s' && chart != 'suse-observability'
 };
 
 local update_sg_version = {
