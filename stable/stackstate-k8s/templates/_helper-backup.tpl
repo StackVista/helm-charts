@@ -1,3 +1,20 @@
+{{- /*
+  Adding a trailing slash to a value if it is not empty.
+*/ -}}
+{{- define "ensureTrailingSlashIfNotEmpty" -}}
+  {{- if . -}}
+    {{- printf "%s/" (. | trimSuffix "/") -}}
+  {{- else -}}
+    {{- "" -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /*
+  Removing trailing slashes if any from the string.
+*/ -}}
+{{- define "trimTrailingSlashes" -}}
+{{- . | trimSuffix "/" -}}
+{{- end -}}
 
 {{- define "stackstate.backup.envvars" -}}
 {{/*
@@ -8,6 +25,8 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
 {{- end }}
 - name: BACKUP_ELASTICSEARCH_BUCKET_NAME
   value: {{ .Values.backup.elasticsearch.bucketName | quote }}
+- name: BACKUP_ELASTICSEARCH_S3_PREFIX
+  value: {{ include "trimTrailingSlashes" .Values.backup.elasticsearch.s3Prefix | quote }}
 - name: BACKUP_ELASTICSEARCH_RESTORE_ENABLED
   value: {{ .Values.backup.elasticsearch.restore.enabled | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_ENABLED
@@ -30,6 +49,8 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   value: {{ .Values.backup.elasticsearch.scheduled.snapshotRetentionMaxCount | quote }}
 - name: BACKUP_STACKGRAPH_BUCKET_NAME
   value: {{ .Values.backup.stackGraph.bucketName | quote }}
+- name: BACKUP_STACKGRAPH_S3_PREFIX
+  value: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.stackGraph.s3Prefix }}
 - name: BACKUP_STACKGRAPH_RESTORE_ENABLED
   value: {{ .Values.backup.stackGraph.restore.enabled | quote }}
 - name: BACKUP_STACKGRAPH_SCHEDULED_ENABLED
@@ -46,6 +67,8 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   value: {{ .Values.backup.stackGraph.scheduled.backupRetentionTimeDelta | quote }}
 - name: BACKUP_CONFIGURATION_BUCKET_NAME
   value: {{ .Values.backup.configuration.bucketName | quote }}
+- name: BACKUP_CONFIGURATION_S3_PREFIX
+  value: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.configuration.s3Prefix }}
 - name: BACKUP_CONFIGURATION_RESTORE_ENABLED
   value: {{ .Values.backup.configuration.restore.enabled | quote }}
 - name: BACKUP_CONFIGURATION_SCHEDULED_ENABLED
@@ -66,16 +89,22 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   value: {{ index .Values "victoria-metrics-0" "backup" "enabled" | quote }}
 - name: BACKUP_VICTORIA_METRICS_0_BUCKET_NAME
   value: {{ index .Values "victoria-metrics-0" "backup" "bucketName" | quote }}
+- name: BACKUP_VICTORIA_METRICS_0_S3_PREFIX
+  value: {{ include "trimTrailingSlashes" (index .Values "victoria-metrics-0" "backup" "s3Prefix") }}
 - name: BACKUP_VICTORIA_METRICS_0_RESTORE_ENABLED
   value: {{ index .Values "victoria-metrics-0" "restore" "enabled" | quote }}
 - name: BACKUP_VICTORIA_METRICS_1_ENABLED
   value: {{ index .Values "victoria-metrics-1" "backup" "enabled" | quote }}
 - name: BACKUP_VICTORIA_METRICS_1_BUCKET_NAME
   value: {{ index .Values "victoria-metrics-1" "backup" "bucketName" | quote }}
+- name: BACKUP_VICTORIA_METRICS_1_S3_PREFIX
+  value: {{ include "trimTrailingSlashes" (index .Values  "victoria-metrics-1" "backup" "s3Prefix") }}
 - name: BACKUP_VICTORIA_METRICS_1_RESTORE_ENABLED
   value: {{ index .Values "victoria-metrics-1" "restore" "enabled" | quote }}
 - name: BACKUP_CLICKHOUSE_BUCKET_NAME
   value: {{ .Values.clickhouse.backup.bucketName | quote }}
+- name: BACKUP_CLICKHOUSE_S3_PREFIX
+  value: {{ include "ensureTrailingSlashIfNotEmpty" .Values.clickhouse.backup.s3Prefix }}
 - name: BACKUP_CLICKHOUSE_RESTORE_ENABLED
   value: {{ .Values.clickhouse.restore.enabled | quote }}
 - name: BACKUP_CLICKHOUSE_SCHEDULED_ENABLED

@@ -23,6 +23,8 @@ backup:
     # backup.elasticsearch.bucketName -- Name of the MinIO bucket where ElasticSearch snapshots are stored.
     bucketName: 'sts-elasticsearch-backup'
     # backup.elasticsearch.snapshotRepositoryName -- Name of the ElasticSearch snapshot repository.
+    # backup.elasticsearch.s3Prefix -- Prefix (dir name) used to store backup files.
+    s3Prefix: ""
     snapshotRepositoryName: 'sts-backup'
     restore:
       # backup.elasticsearch.restore.enabled -- Enable ElasticSearch snapshot restore functionality (if `backup.enabled` is set to `true`).
@@ -50,6 +52,8 @@ backup:
   stackGraph:
     # backup.stackGraph.bucketName -- Name of the MinIO bucket to store StackGraph backups.
     bucketName: 'sts-stackgraph-backup'
+    # backup.stackGraph.s3Prefix -- Prefix (dir name) used to store backup files.
+    s3Prefix: ""
     # backup.stackGraph.splitArchiveSize -- Split the Stackgraph dump into chunks of the specified size in bytes.
     # Accepts an integer greater or equal to 0 with optional suffix K,M,G (powers of 1024) or KB,MB,GB (powers of 1000)
     # If set to 0, the dump is not split.
@@ -98,6 +102,8 @@ backup:
   configuration:
     # backup.configuration.bucketName -- Name of the MinIO bucket to store configuration backups.
     bucketName: 'sts-configuration-backup'
+    # backup.configuration.s3Prefix -- Prefix (dir name) used to store backup files.
+    s3Prefix: ""
     restore:
       # backup.configuration.restore.enabled -- Enable configuration backup restore functionality (if `backup.enabled` is set to `true`).
       enabled: true
@@ -2531,6 +2537,8 @@ clickhouse:
     enabled: false
     # clickhouse.backup.bucketName -- Name of the MinIO bucket where ClickHouse backups are stored.
     bucketName: 'sts-clickhouse-backup'
+    # backup.clickhouse.s3Prefix -- Prefix (dir name) used to store backup files.
+    s3Prefix: ""
     config:
       # clickhouse.backup.config.tables -- Create and upload backup only matched with table name patterns, separated by comma, allow ? and * as wildcard.
       tables: "otel.*"

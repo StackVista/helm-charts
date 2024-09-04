@@ -9,9 +9,9 @@ AWS_SECRET_ACCESS_KEY="$(cat /aws-keys/secretkey)"
 echo "=== Listing StackGraph backups in bucket \"${BACKUP_STACKGRAPH_BUCKET_NAME}\"..."
 if [ "${BACKUP_STACKGRAPH_ARCHIVE_SPLIT_SIZE:-0}" == "0" ]; then
   # Exclude all multipart arhives if present
-  sts-toolbox aws s3 ls --endpoint "http://${MINIO_ENDPOINT}" --region minio --bucket "${BACKUP_STACKGRAPH_BUCKET_NAME}" --prefix / | grep -v "\.[0-9]\+$"
+  sts-toolbox aws s3 ls --endpoint "http://${MINIO_ENDPOINT}" --region minio --bucket "${BACKUP_STACKGRAPH_BUCKET_NAME}" --prefix "${BACKUP_STACKGRAPH_S3_PREFIX}" | grep -v "\.[0-9]\+$"
 else
   # Only show the first file of the multipart arhive
-  sts-toolbox aws s3 ls --endpoint "http://${MINIO_ENDPOINT}" --region minio --bucket "${BACKUP_STACKGRAPH_BUCKET_NAME}" --prefix / | grep "\.00$"
+  sts-toolbox aws s3 ls --endpoint "http://${MINIO_ENDPOINT}" --region minio --bucket "${BACKUP_STACKGRAPH_BUCKET_NAME}" --prefix "${BACKUP_STACKGRAPH_S3_PREFIX}" | grep "\.00$"
 fi
 echo "==="

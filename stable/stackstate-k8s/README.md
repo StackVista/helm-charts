@@ -68,6 +68,7 @@ stackstate/stackstate
 | backup.additionalLogging | string | `""` | Additional logback config for backup components |
 | backup.configuration.bucketName | string | `"sts-configuration-backup"` | Name of the MinIO bucket to store configuration backups. |
 | backup.configuration.restore.enabled | bool | `true` | Enable configuration backup restore functionality (if `backup.enabled` is set to `true`). |
+| backup.configuration.s3Prefix | string | `""` | Prefix (dir name) used to store backup files. |
 | backup.configuration.scheduled.backupDatetimeParseFormat | string | `"%Y%m%d-%H%M"` | Format to parse date/time from configuration backup name. *Note:* This should match the value for `backupNameTemplate`. |
 | backup.configuration.scheduled.backupNameParseRegexp | string | `"sts-backup-([0-9]*-[0-9]*).stj"` | Regular expression to retrieve date/time from configuration backup name. *Note:* This should match the value for `backupNameTemplate`. |
 | backup.configuration.scheduled.backupNameTemplate | string | `"sts-backup-$(date +%Y%m%d-%H%M).stj"` | Template for the configuration backup name as a double-quoted shell string value. |
@@ -81,6 +82,7 @@ stackstate/stackstate
 | backup.configuration.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
 | backup.elasticsearch.bucketName | string | `"sts-elasticsearch-backup"` | Name of the MinIO bucket where ElasticSearch snapshots are stored. |
 | backup.elasticsearch.restore.enabled | bool | `true` | Enable ElasticSearch snapshot restore functionality (if `backup.enabled` is set to `true`). |
+| backup.elasticsearch.s3Prefix | string | `""` |  |
 | backup.elasticsearch.scheduled.enabled | bool | `true` | Enable scheduled ElasticSearch snapshots (if `backup.enabled` is set to `true`). |
 | backup.elasticsearch.scheduled.indices | string | `"sts*"` | ElasticSearch indices to snapshot in [JSON array format](https://www.w3schools.com/js/js_json_arrays.asp). |
 | backup.elasticsearch.scheduled.schedule | string | `"0 0 3 * * ?"` | Cron schedule for automatic ElasticSearch snaphosts in [ElastichSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html). |
@@ -89,7 +91,7 @@ stackstate/stackstate
 | backup.elasticsearch.scheduled.snapshotRetentionExpireAfter | string | `"30d"` | Amount of time to keep ElasticSearch snapshots in [ElasticSearch time units](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/common-options.html#time-units). *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
 | backup.elasticsearch.scheduled.snapshotRetentionMaxCount | string | `"30"` | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
 | backup.elasticsearch.scheduled.snapshotRetentionMinCount | string | `"5"` | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
-| backup.elasticsearch.snapshotRepositoryName | string | `"sts-backup"` | Name of the ElasticSearch snapshot repository. |
+| backup.elasticsearch.snapshotRepositoryName | string | `"sts-backup"` | Name of the ElasticSearch snapshot repository. backup.elasticsearch.s3Prefix -- Prefix (dir name) used to store backup files. |
 | backup.enabled | bool | `false` | Enables backup/restore, including the MinIO subsystem. |
 | backup.initJobAnnotations | object | `{}` | Annotations for Backup-init Job. |
 | backup.poddisruptionbudget.maxUnavailable | int | `0` | Maximum number of pods that can be unavailable during the backup. |
@@ -98,6 +100,7 @@ stackstate/stackstate
 | backup.stackGraph.restore.tempData.accessModes[0] | string | `"ReadWriteOnce"` |  |
 | backup.stackGraph.restore.tempData.size | string | `"{{ .Values.hbase.hdfs.datanode.persistence.size }}"` |  |
 | backup.stackGraph.restore.tempData.storageClass | string | `nil` |  |
+| backup.stackGraph.s3Prefix | string | `""` | Prefix (dir name) used to store backup files. |
 | backup.stackGraph.scheduled.backupDatetimeParseFormat | string | `"%Y%m%d-%H%M"` | Format to parse date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`. |
 | backup.stackGraph.scheduled.backupNameParseRegexp | string | `"sts-backup-([0-9]*-[0-9]*).graph"` | Regular expression to retrieve date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`. |
 | backup.stackGraph.scheduled.backupNameTemplate | string | `"sts-backup-$(date +%Y%m%d-%H%M).graph"` | Template for the StackGraph backup name as a double-quoted shell string value. |
@@ -120,6 +123,7 @@ stackstate/stackstate
 | clickhouse.backup.config.tables | string | `"otel.*"` | Create and upload backup only matched with table name patterns, separated by comma, allow ? and * as wildcard. |
 | clickhouse.backup.enabled | bool | `false` | Enable scheduled backups of ClickHouse. It requires to be enabled MinIO 'backup.enabled'. |
 | clickhouse.backup.resources | object | `{"limit":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"50m","memory":"250Mi"}}` | Resources of the backup tool. |
+| clickhouse.backup.s3Prefix | string | `""` |  |
 | clickhouse.backup.scheduled.full_schedule | string | `"45 0 * * *"` | Cron schedule for automatic full backups of ClickHouse. |
 | clickhouse.backup.scheduled.incremental_schedule | string | `"45 3-23 * * *"` | Cron schedule for automatic incremental backups of ClickHouse. IMPORTANT: incremental and full backup CAN NOT overlap. |
 | clickhouse.enabled | bool | `false` | Enable / disable chart-based Clickhouse. |
