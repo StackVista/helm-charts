@@ -1,6 +1,6 @@
 apiVersion: v1
 appVersion: 0.0.1
-version: 0.0.2
+version: 0.0.3
 description: Artifactory Cleaner -- Clean up artifacts according to retention policies.
 keywords:
   - artifactory
