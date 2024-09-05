@@ -81,13 +81,13 @@ func assertRuleExistence(t *testing.T, rules []v1.PolicyRule, roleDescription st
 }
 
 func TestAllResourcesAreEnabled(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s-agent", "values/minimal.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	assert.Contains(t, resources.ClusterRoles, "stackstate-k8s-agent")
-	assert.Contains(t, resources.Roles, "stackstate-k8s-agent")
-	rules := resources.ClusterRoles["stackstate-k8s-agent"].Rules
-	rules = append(rules, resources.Roles["stackstate-k8s-agent"].Rules...)
+	assert.Contains(t, resources.ClusterRoles, "suse-observability-agent")
+	assert.Contains(t, resources.Roles, "suse-observability-agent")
+	rules := resources.ClusterRoles["suse-observability-agent"].Rules
+	rules = append(rules, resources.Roles["suse-observability-agent"].Rules...)
 
 	for _, requiredRole := range requiredRules {
 		assertRuleExistence(t, rules, requiredRole, true)
@@ -99,13 +99,13 @@ func TestAllResourcesAreEnabled(t *testing.T) {
 }
 
 func TestMostOfResourcesAreDisabled(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s-agent", "values/minimal.yaml", "values/disable-all-resource.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/disable-all-resource.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	assert.Contains(t, resources.ClusterRoles, "stackstate-k8s-agent")
-	assert.Contains(t, resources.Roles, "stackstate-k8s-agent")
-	rules := resources.ClusterRoles["stackstate-k8s-agent"].Rules
-	rules = append(rules, resources.Roles["stackstate-k8s-agent"].Rules...)
+	assert.Contains(t, resources.ClusterRoles, "suse-observability-agent")
+	assert.Contains(t, resources.Roles, "suse-observability-agent")
+	rules := resources.ClusterRoles["suse-observability-agent"].Rules
+	rules = append(rules, resources.Roles["suse-observability-agent"].Rules...)
 
 	for _, requiredRole := range requiredRules {
 		assertRuleExistence(t, rules, requiredRole, true)
@@ -118,9 +118,9 @@ func TestMostOfResourcesAreDisabled(t *testing.T) {
 }
 
 func TestNoClusterWideModificationRights(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s-agent", "values/minimal.yaml", "values/http-header-injector.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/http-header-injector.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
-	assert.Contains(t, resources.ClusterRoles, "stackstate-k8s-agent")
+	assert.Contains(t, resources.ClusterRoles, "suse-observability-agent")
 	illegalVerbs := []string{"create", "patch", "update", "delete"}
 
 	for _, clusterRole := range resources.ClusterRoles {
@@ -133,10 +133,10 @@ func TestNoClusterWideModificationRights(t *testing.T) {
 }
 
 func TestServicePortChange(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s-agent", "values/minimal.yaml", "values/clustercheck_service_port_override.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/clustercheck_service_port_override.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	cluster_agent_service := resources.Services["stackstate-k8s-agent-cluster-agent"]
+	cluster_agent_service := resources.Services["suse-observability-agent-cluster-agent"]
 
 	port := cluster_agent_service.Spec.Ports[0]
 	assert.Equal(t, port.Name, "clusteragent")
