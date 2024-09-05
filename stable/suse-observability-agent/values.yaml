@@ -3,6 +3,8 @@
 #####################
 
 global:
+  # global.imageRegistry -- The image registry to use.
+  imageRegistry: "quay.io"
   extraEnv:
     # global.extraEnv.open -- Extra open environment variables to inject into pods.
     open: {}
@@ -34,7 +36,7 @@ targetSystem: "linux"
 all:
   image:
     # all.image.registry -- The image registry to use.
-    registry: "quay.io"
+    registry: null
   hardening:
     # all.hardening.enabled -- An indication of whether the containers will be evaluated for hardening at runtime
     enabled: false
@@ -591,6 +593,30 @@ checksAgent:
 httpHeaderInjectorWebhook:
   # httpHeaderInjectorWebhook.enabled -- Enable the webhook for injection http header injection sidecar proxy
   enabled: false
+
+  # proxy -- Proxy being injected into pods for rewriting http headers
+  proxy:
+    image:
+      # proxy.image.repository - Repository for the docker image
+      repository: "stackstate/http-header-injector-proxy"
+
+  # proxyInit -- InitContainer within pod which redirects traffic to the proxy container.
+  proxyInit:
+    image:
+      # proxyInit.image.repository - Repository for the docker image
+      repository: "stackstate/http-header-injector-proxy-init"
+
+  # sidecarInjector -- Service for injecting the proxy sidecar into pods
+  sidecarInjector:
+    image:
+      # sidecarInjector.image.repository - Repository for the docker image
+      repository: "stackstate/generic-sidecar-injector"
+
+  # certificatePrehook -- Helm prehook to setup/remove a certificate for the sidecarInjector mutationwebhook
+  certificatePrehook:
+    image:
+      # certificatePrehook.image.repository - Repository for the docker image.
+      repository: stackstate/container-tools
 
 ########################
 # StackState variables #

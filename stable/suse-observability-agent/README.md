@@ -52,7 +52,7 @@ stackstate/stackstate-k8s-agent
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | all.hardening.enabled | bool | `false` | An indication of whether the containers will be evaluated for hardening at runtime |
-| all.image.registry | string | `"quay.io"` | The image registry to use. |
+| all.image.registry | string | `nil` | The image registry to use. |
 | checksAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | checksAgent.apm.enabled | bool | `true` | Enable / disable the agent APM module. |
 | checksAgent.checksTagCardinality | string | `"orchestrator"` |  |
@@ -160,9 +160,14 @@ stackstate/stackstate-k8s-agent
 | global.extraLabels | object | `{}` | Extra labels added ta all resources created by the helm chart |
 | global.imagePullCredentials | object | `{}` | Globally define credentials for pulling images. |
 | global.imagePullSecrets | list | `[]` | Secrets / credentials needed for container image registry. |
+| global.imageRegistry | string | `"quay.io"` | The image registry to use. |
 | global.proxy.url | string | `""` | Proxy for all traffic to stackstate |
 | global.skipSslValidation | bool | `false` | Enable tls validation from client |
+| httpHeaderInjectorWebhook.certificatePrehook.image.repository | string | `"stackstate/container-tools"` |  |
 | httpHeaderInjectorWebhook.enabled | bool | `false` | Enable the webhook for injection http header injection sidecar proxy |
+| httpHeaderInjectorWebhook.proxy.image.repository | string | `"stackstate/http-header-injector-proxy"` |  |
+| httpHeaderInjectorWebhook.proxyInit.image.repository | string | `"stackstate/http-header-injector-proxy-init"` |  |
+| httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
 | logsAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | logsAgent.enabled | bool | `true` | Enable / disable k8s pod log collection |
 | logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
