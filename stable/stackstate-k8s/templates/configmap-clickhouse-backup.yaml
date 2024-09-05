@@ -119,7 +119,7 @@ data:
       # use `acl: ""` if you see "api error AccessControlListNotSupported: The bucket does not allow ACLs"
       acl: private                     # S3_ACL
       assume_role_arn: ""              # S3_ASSUME_ROLE_ARN
-      force_path_style: false          # S3_FORCE_PATH_STYLE
+      force_path_style: true           # S3_FORCE_PATH_STYLE
       path: "{{ include "ensureTrailingSlashIfNotEmpty" .Values.clickhouse.backup.s3Prefix }}" # S3_PATH, `system.macros` values can be applied as {macro_name}
       object_disk_path: ""             # S3_OBJECT_DISK_PATH, path for backup of part from `s3` object disk, if disk present, then shall not be zero and shall not be prefixed by `path`
       disable_ssl: true               # S3_DISABLE_SSL
