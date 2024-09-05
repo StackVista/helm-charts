@@ -1,6 +1,6 @@
-# stackstate-k8s
+# suse-observability
 
-Helm chart for StackState for Kubernetes
+Helm chart for SUSE Observability
 
 Current chart version is `2.0.0-pre.15`
 
@@ -23,7 +23,7 @@ Current chart version is `2.0.0-pre.15`
 | https://open-telemetry.github.io/opentelemetry-helm-charts | opentelemetry-collector | 0.80.0 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
-| https://victoriametrics.github.io/helm-charts | victoria-metrics-cluster | 0.11.20 |
+| https://victoriametrics.github.io/helm-charts | victoriametrics-cluster(victoria-metrics-cluster) | 0.11.20 |
 
 ## Required Values
 

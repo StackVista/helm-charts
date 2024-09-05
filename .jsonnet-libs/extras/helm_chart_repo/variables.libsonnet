@@ -32,7 +32,6 @@
       'pull-secret',
       'stackstate',
       'stackstate-k8s',
-      'suse-observability',
       'stackstate-values',
       'stackstate-monitoring',
       'stackstate-standalone',
