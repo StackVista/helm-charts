@@ -229,7 +229,7 @@ local push_charts_to_internal_jobs = {
 '${CHARTMUSEUM_INTERNAL_USERNAME}',
 '${CHARTMUSEUM_INTERNAL_PASSWORD}',
 'on_success',
- if chart == 'stackstate-k8s-agent' then 'publish-k8s-agent' else 'publish-' + chart) + {
+ if chart == 'suse-observability-agent' then 'publish-suse-observability-agent' else if chart == 'stackstate-k8s-agent' then 'publish-k8s-agent' else 'publish-' + chart) + {
     stage: 'push-charts-to-internal',
   } + (
   if chart == 'stackstate' then
@@ -255,7 +255,7 @@ local push_charts_to_public_jobs = {
 '${CHARTMUSEUM_USERNAME}',
 '${CHARTMUSEUM_PASSWORD}',
 'manual',
-if chart == 'stackstate-k8s-agent' then 'publish-k8s-agent' else 'publish-' + chart) + {
+if chart == 'suse-observability-agent' then 'publish-suse-observability-agent' else if chart == 'stackstate-k8s-agent' then 'publish-k8s-agent' else 'publish-' + chart) + {
     stage: 'push-charts-to-public',
 
     needs: ['push_%s_to_internal' % chart],

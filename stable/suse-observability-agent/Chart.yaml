@@ -1,0 +1,24 @@
+apiVersion: v2
+appVersion: 3.0.0
+version: 1.0.0
+description: Helm chart for the SUSE observability Agent.
+keywords:
+- monitoring
+- observability
+- SUSE
+home: https://github.com/StackVista/stackstate-agent
+icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
+maintainers:
+- name: SUSE
+  email: ops@stackstate.com
+name: suse-observability-agent
+dependencies:
+- name: http-header-injector
+  alias: httpHeaderInjectorWebhook
+  # Local debugging: left here for future reference
+  # repository: file:///home/bram/stackvista/agent/http-header-injector/charts/http-header-injector
+  # version: "*"
+  repository: https://helm.stackstate.io
+  version: 0.0.11
+  # Warning: do not use this condition. this will not play well with the prehooks in the chart
+  # condition: http-header-injector-webhook.enabled
