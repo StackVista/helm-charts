@@ -1449,6 +1449,34 @@ push_suse-observability-agent_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/suse-observability-agent
+push_suse-observability-agent_to_rancher:
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-e879ea6c
+  needs:
+    - push_suse-observability-agent_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/suse-observability-agent/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
+      when: on_success
+    - changes:
+        - stable/suse-observability-agent/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^suse-observability-agent\/.*/
+      when: on_success
+  script:
+    - .gitlab/publish-suse-agent-to-rancher.sh
+  stage: push-charts-to-rancher
+  variables:
+    CHART: stable/suse-observability-agent
 push_tenantmanager_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-e879ea6c
   rules:
@@ -1623,6 +1651,7 @@ stages:
   - build
   - push-charts-to-internal
   - push-charts-to-public
+  - push-charts-to-rancher
 test_artifactory-cleaner:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami

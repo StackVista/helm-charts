@@ -150,13 +150,8 @@ local itest_chart_job(chart) = {
   },
 } + skip_when_dependency_upgrade;
 
-local push_chart_job_if(chart, repository_url, repository_username, repository_password, rules) = {
-  script: (
-    if chart == 'stackstate' || chart == 'stackstate-k8s' then update_2nd_degree_chart_deps(chart) else []
-  ) + [
-    'helm dependencies update ${CHART}',
-    'helm cm-push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
-  ],
+local push_chart_job_if(chart, script, rules) = {
+  script: script,
   image: variables.images.stackstate_devops,
   rules: rules,
   variables: {
@@ -164,12 +159,10 @@ local push_chart_job_if(chart, repository_url, repository_username, repository_p
   },
 } + skip_when_dependency_upgrade;
 
-local push_chart_job(chart, repository_url, repository_username, repository_password, when, autoTriggerOnCommitMsg) =
+local push_chart_job(chart, script, when, autoTriggerOnCommitMsg) =
   push_chart_job_if(
     chart,
-    repository_url,
-    repository_username,
-    repository_password,
+    script,
     [
       {
         @'if': '$CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\\[' + autoTriggerOnCommitMsg + ']/',
@@ -188,13 +181,24 @@ local push_chart_job(chart, repository_url, repository_username, repository_pass
     ]
   );
 
+local push_chart_script(chart, repository_url, repository_username, repository_password) =
+
+   (if chart == 'stackstate' || chart == 'stackstate-k8s' then update_2nd_degree_chart_deps(chart) else [])
+   + [
+    'helm dependencies update ${CHART}',
+    'helm cm-push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
+  ];
+
 local push_stackstate_chart_releases =
 {
  push_stackstate_release_to_internal: push_chart_job_if(
     'stackstate',
-    '${CHARTMUSEUM_INTERNAL_URL}',
-    '${CHARTMUSEUM_INTERNAL_USERNAME}',
-    '${CHARTMUSEUM_INTERNAL_PASSWORD}',
+    push_chart_script(
+      'stackstate',
+      '${CHARTMUSEUM_INTERNAL_URL}',
+      '${CHARTMUSEUM_INTERNAL_USERNAME}',
+      '${CHARTMUSEUM_INTERNAL_PASSWORD}',
+    ),
     variables.rules.tag.all_release_rules,
     ) {
     before_script: helm_fetch_dependencies,
@@ -202,9 +206,12 @@ local push_stackstate_chart_releases =
   },
   push_stackstate_release_to_public: push_chart_job_if(
     'stackstate',
-    '${CHARTMUSEUM_URL}',
-    '${CHARTMUSEUM_USERNAME}',
-    '${CHARTMUSEUM_PASSWORD}',
+    push_chart_script(
+'stackstate',
+      '${CHARTMUSEUM_URL}',
+      '${CHARTMUSEUM_USERNAME}',
+      '${CHARTMUSEUM_PASSWORD}',
+    ),
     [variables.rules.tag.release_rule],
     ) {
     before_script: helm_fetch_dependencies,
@@ -224,12 +231,17 @@ local itest_stackstate = {
 };
 
 local push_charts_to_internal_jobs = {
-  ['push_%s_to_internal' % chart]: (push_chart_job(chart,
-      '${CHARTMUSEUM_INTERNAL_URL}',
-'${CHARTMUSEUM_INTERNAL_USERNAME}',
-'${CHARTMUSEUM_INTERNAL_PASSWORD}',
+  ['push_%s_to_internal' % chart]: (push_chart_job(
+    chart,
+    push_chart_script(
+chart,
+    '${CHARTMUSEUM_INTERNAL_URL}',
+    '${CHARTMUSEUM_INTERNAL_USERNAME}',
+    '${CHARTMUSEUM_INTERNAL_PASSWORD}',
+    ),
 'on_success',
- if chart == 'suse-observability-agent' then 'publish-suse-observability-agent' else if chart == 'stackstate-k8s-agent' then 'publish-k8s-agent' else 'publish-' + chart) + {
+ if chart == 'suse-observability-agent' then 'publish-suse-observability-agent' else if chart == 'stackstate-k8s-agent' then 'publish-k8s-agent' else 'publish-' + chart
+) + {
     stage: 'push-charts-to-internal',
   } + (
   if chart == 'stackstate' then
@@ -250,12 +262,17 @@ local push_charts_to_internal_jobs = {
 };
 
 local push_charts_to_public_jobs = {
-  ['push_%s_to_public' % chart]: (push_chart_job(chart,
+  ['push_%s_to_public' % chart]: (push_chart_job(
+    chart,
+    push_chart_script(
+chart,
       '${CHARTMUSEUM_URL}',
 '${CHARTMUSEUM_USERNAME}',
 '${CHARTMUSEUM_PASSWORD}',
+    ),
 'manual',
-if chart == 'suse-observability-agent' then 'publish-suse-observability-agent' else if chart == 'stackstate-k8s-agent' then 'publish-k8s-agent' else 'publish-' + chart) + {
+if chart == 'suse-observability-agent' then 'publish-suse-observability-agent' else if chart == 'stackstate-k8s-agent' then 'publish-k8s-agent' else 'publish-' + chart
+) + {
     stage: 'push-charts-to-public',
 
     needs: ['push_%s_to_internal' % chart],
@@ -266,6 +283,22 @@ if chart == 'suse-observability-agent' then 'publish-suse-observability-agent' e
   ))
   for chart in public_charts
   if chart != 'stackstate' && chart != 'stackstate-k8s'
+};
+
+
+local push_suse_observability_to_rancher_registry = {
+  'push_suse-observability-agent_to_rancher': (push_chart_job(
+    'suse-observability-agent',
+    [
+      '.gitlab/publish-suse-agent-to-rancher.sh',
+    ],
+'manual',
+'publish-suse-observability-agent'
+) + {
+    stage: 'push-charts-to-rancher',
+
+    needs: ['push_suse-observability-agent_to_internal'],
+  }),
 };
 
 local update_sg_version = {
@@ -361,7 +394,7 @@ local update_docker_images = {
     ],
   },
   image: variables.images.chart_testing,
-  stages: ['validate', 'test', 'update', 'build', 'push-charts-to-internal', 'push-charts-to-public'],
+  stages: ['validate', 'test', 'update', 'build', 'push-charts-to-internal', 'push-charts-to-public', 'push-charts-to-rancher'],
 
   variables: {
     HELM_VERSION: 'v3.1.2',
@@ -377,3 +410,4 @@ local update_docker_images = {
 + update_sg_version
 + update_aad_chart_version
 + update_docker_images
++ push_suse_observability_to_rancher_registry
