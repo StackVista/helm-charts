@@ -1450,7 +1450,7 @@ push_suse-observability-agent_to_public:
   variables:
     CHART: stable/suse-observability-agent
 push_suse-observability-agent_to_rancher:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-e879ea6c
+  image: ${DOCKER_PROXY_URL}/stackstate/container-tools:1.4.1
   needs:
     - push_suse-observability-agent_to_internal
   rules:
@@ -1474,9 +1474,17 @@ push_suse-observability-agent_to_rancher:
       when: on_success
   script:
     - .gitlab/publish-suse-agent-to-rancher.sh
+  services:
+    - alias: docker
+      command:
+        - --experimental
+        - --tls=false
+      name: ${DOCKER_PROXY_URL}/docker:20-dind
   stage: push-charts-to-rancher
   variables:
-    CHART: stable/suse-observability-agent
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
 push_tenantmanager_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-e879ea6c
   rules:

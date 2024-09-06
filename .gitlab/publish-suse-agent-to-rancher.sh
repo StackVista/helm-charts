@@ -14,7 +14,7 @@ if [ -n "$RANCHER_CONTAINER_REGISTRY_USERNAME" ] && [ -n "$RANCHER_CONTAINER_REG
   docker login -u "$RANCHER_CONTAINER_REGISTRY_USERNAME" -p "$RANCHER_CONTAINER_REGISTRY_PASSWORD" "$RANCHER_CONTAINER_REGISTRY_URL"
 fi
 
-# Pull the images from the list
+# Pull and push the images from the list
 while IFS= read -r image; do
   # Simple check if the image is in the format <registry>/<namespace>/<repository>:<tag>
   if [[ $image =~ ^([^/]+)/([^/]+)/(.*):([^:]+)$ ]]; then
@@ -35,9 +35,6 @@ while IFS= read -r image; do
     else
       echo -e "${RED}Failed to push ${dest_image}${NO_COLOR}"
     fi
-
-    # Remove the image again to not fill up all diskspace on the runner
-    docker rmi "${image}"
   else
       echo -e "${RED}Image url ${image} is not valid. Skipping...${NO_COLOR}"
   fi
