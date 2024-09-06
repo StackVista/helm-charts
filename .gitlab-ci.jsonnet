@@ -295,22 +295,6 @@ local push_suse_observability_to_rancher_registry = {
 'manual',
 'publish-suse-observability-agent'
 ) + {
-    image: '${DOCKER_PROXY_URL}/stackstate/container-tools:1.4.1',
-    variables: {
-      DOCKER_DRIVER: 'overlay2',
-      DOCKER_HOST: 'tcp://docker:2375',
-      DOCKER_TLS_CERTDIR: '',
-    },
-    services: [
-      {
-alias: 'docker',
-        command: [
-      '--experimental',
-      '--tls=false',
-        ],
-      name: '${DOCKER_PROXY_URL}/docker:20-dind',
-      },
-    ],
     stage: 'push-charts-to-rancher',
 
     needs: ['push_suse-observability-agent_to_internal'],
