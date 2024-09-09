@@ -4,6 +4,10 @@ set -euo pipefail
 
 build_root=$(pwd)
 
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NO_COLOR='\033[0m'
+
 cd stable/suse-observability-agent || exit
 
 echo "Pushing container images to Rancher container registry"
