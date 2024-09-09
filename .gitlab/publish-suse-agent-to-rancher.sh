@@ -1,5 +1,7 @@
 #!/bin/bash
 
+build_root=$(pwd)
+
 cd stable/suse-observability-agent || exit
 
 echo "Pushing container images to Rancher container registry"
@@ -37,5 +39,6 @@ echo "Reconfiguring container images registry in values.yaml"
 yq -i -e  '.global.imageRegistry = env(RANCHER_CONTAINER_REGISTRY_URL)' values.yaml
 sed -i -r "s|(\s+repository:\s+)stackstate/|\1${RANCHER_CONTAINER_REGISTRY_NAMESPACE}/|g" values.yaml
 
-echo "Packaging and publishing helm chart..."
-# TBD how to push charts
+cd "${build_root}" || exit
+
+.gitlab/package-and-push-chart-for-rancher.sh suse-observability-agent
