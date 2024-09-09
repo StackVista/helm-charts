@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 build_root=$(pwd)
 
 cd stable/suse-observability-agent || exit
