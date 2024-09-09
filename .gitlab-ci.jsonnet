@@ -287,13 +287,27 @@ if chart == 'suse-observability-agent' then 'publish-suse-observability-agent' e
 
 
 local push_suse_observability_to_rancher_registry = {
-  'push_suse-observability-agent_to_rancher': (push_chart_job(
+  'push_suse-observability-agent_to_rancher': (push_chart_job_if(
     'suse-observability-agent',
     [
       '.gitlab/publish-suse-agent-to-rancher.sh',
     ],
-'manual',
-'publish-suse-observability-agent'
+[
+          {
+        @'if': '$CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\\[publish-suse-observability-agent]/',
+        changes: ['stable/' + 'suse-observability-agent' + '/**/*'],
+        when: 'on_success',
+      },
+      {
+        @'if': '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "stac-21659-fix-publish-agent"',
+        changes: ['stable/' + 'suse-observability-agent' + '/**/*'],
+        when: 'manual',
+      },
+      {
+        @'if': '$CI_COMMIT_TAG =~ /^' + 'suse-observability-agent' + '\\/.*/',
+        when: 'on_success',
+      },
+    ],
 ) + {
     stage: 'push-charts-to-rancher',
     variables: {
@@ -302,7 +316,7 @@ local push_suse_observability_to_rancher_registry = {
       RANCHER_HELM_REGISTRY_USERNAME: '${RANCHER_HELM_REGISTRY_OPTIMUS_USERNAME}',
       RANCHER_HELM_REGISTRY_PASSWORD: '${RANCHER_HELM_REGISTRY_OPTIMUS_PASSWORD}',
     },
-    needs: ['push_suse-observability-agent_to_internal'],
+    // needs: ['push_suse-observability-agent_to_internal'],
   }),
 };
 

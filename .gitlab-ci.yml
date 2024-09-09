@@ -1451,8 +1451,6 @@ push_suse-observability-agent_to_public:
     CHART: stable/suse-observability-agent
 push_suse-observability-agent_to_rancher:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  needs:
-    - push_suse-observability-agent_to_internal
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: never
@@ -1468,7 +1466,7 @@ push_suse-observability-agent_to_rancher:
       when: on_success
     - changes:
         - stable/suse-observability-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master"
+      if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "stac-21659-fix-publish-agent"
       when: manual
     - if: $CI_COMMIT_TAG =~ /^suse-observability-agent\/.*/
       when: on_success
