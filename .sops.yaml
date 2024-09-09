@@ -1,0 +1,2 @@
+creation_rules:
+- kms: "arn:aws:kms:eu-west-1:669835386582:key/4544b8e7-6ff6-4968-8d57-2b4639f7a3e9+arn:aws:iam::669835386582:role/KmsUser"
