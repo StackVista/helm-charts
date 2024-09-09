@@ -12,7 +12,7 @@ function usage() {
 Get the list of Docker images used by the SUSE Observability Agent chart
 
 Usage:
-  $0 -f suse-observability-X.Y.Z.tgz
+  $0 -f suse-observability-agent-X.Y.Z.tgz
 
 Arguments:
     -f : TGZ archive with the SUSE Observability Agent chart (one of -f or -d is required)
