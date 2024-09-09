@@ -287,25 +287,13 @@ if chart == 'suse-observability-agent' then 'publish-suse-observability-agent' e
 
 
 local push_suse_observability_to_rancher_registry = {
-  'push_suse-observability-agent_to_rancher': (push_chart_job_if(
+  'push_suse-observability-agent_to_rancher': (push_chart_job(
     'suse-observability-agent',
     [
       '.gitlab/publish-suse-agent-to-rancher.sh',
     ],
-[
-          {
-        @'if': '$CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\\[publish-suse-observability-agent]/',
-        changes: ['stable/' + 'suse-observability-agent' + '/**/*'],
-        when: 'on_success',
-      },
-      {
-        when: 'manual',
-      },
-      {
-        @'if': '$CI_COMMIT_TAG =~ /^' + 'suse-observability-agent' + '\\/.*/',
-        when: 'on_success',
-      },
-    ],
+    'manual',
+    'publish-suse-observability-agent',
 ) + {
     stage: 'push-charts-to-rancher',
     variables: {

@@ -1464,7 +1464,10 @@ push_suse-observability-agent_to_rancher:
         - stable/suse-observability-agent/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
       when: on_success
-    - when: manual
+    - changes:
+        - stable/suse-observability-agent/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
     - if: $CI_COMMIT_TAG =~ /^suse-observability-agent\/.*/
       when: on_success
   script:
