@@ -299,8 +299,6 @@ local push_suse_observability_to_rancher_registry = {
         when: 'on_success',
       },
       {
-        @'if': '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "stac-21659-fix-publish-agent"',
-        changes: ['stable/' + 'suse-observability-agent' + '/**/*'],
         when: 'manual',
       },
       {
