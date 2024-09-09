@@ -1477,6 +1477,9 @@ push_suse-observability-agent_to_rancher:
   stage: push-charts-to-rancher
   variables:
     CHART: stable/suse-observability-agent
+    RANCHER_HELM_REGISTRY_BUCKET: ${RANCHER_HELM_REGISTRY_OPTIMUS_BUCKET}
+    RANCHER_HELM_REGISTRY_PASSWORD: ${RANCHER_HELM_REGISTRY_OPTIMUS_PASSWORD}
+    RANCHER_HELM_REGISTRY_USERNAME: ${RANCHER_HELM_REGISTRY_OPTIMUS_USERNAME}
 push_tenantmanager_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   rules:

@@ -296,7 +296,12 @@ local push_suse_observability_to_rancher_registry = {
 'publish-suse-observability-agent'
 ) + {
     stage: 'push-charts-to-rancher',
-
+    variables: {
+      CHART: 'stable/suse-observability-agent',
+      RANCHER_HELM_REGISTRY_BUCKET: '${RANCHER_HELM_REGISTRY_OPTIMUS_BUCKET}',
+      RANCHER_HELM_REGISTRY_USERNAME: '${RANCHER_HELM_REGISTRY_OPTIMUS_USERNAME}',
+      RANCHER_HELM_REGISTRY_PASSWORD: '${RANCHER_HELM_REGISTRY_OPTIMUS_PASSWORD}',
+    },
     needs: ['push_suse-observability-agent_to_internal'],
   }),
 };
