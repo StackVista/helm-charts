@@ -13,11 +13,6 @@ image_list_file="o11y-agent-images.txt"
 
 ./installation/o11y-agent-get-images.sh -d . > "${image_list_file}"
 
-# Login to the rancher registry
-if [ -n "$RANCHER_CONTAINER_REGISTRY_USERNAME" ] && [ -n "$RANCHER_CONTAINER_REGISTRY_PASSWORD" ]; then
-  skopeo login -u "$RANCHER_CONTAINER_REGISTRY_USERNAME" -p "$RANCHER_CONTAINER_REGISTRY_PASSWORD" "$RANCHER_CONTAINER_REGISTRY_URL"
-fi
-
 # Pull and push the images from the list
 while IFS= read -r image; do
   # Simple check if the image is in the format <registry>/<namespace>/<repository>:<tag>
@@ -25,7 +20,7 @@ while IFS= read -r image; do
     repository_and_tag=$(echo "${image}" | cut -d'/' -f3-)
     dest_image="$RANCHER_CONTAINER_REGISTRY_URL/$RANCHER_CONTAINER_REGISTRY_NAMESPACE/${repository_and_tag}"
     echo "Copying docker://${image} to docker://${dest_image}"
-    skopeo copy --all "docker://${image}" "docker://${dest_image}"
+    skopeo copy --all --dest-username "$RANCHER_CONTAINER_REGISTRY_USERNAME" --dest-password "$RANCHER_CONTAINER_REGISTRY_PASSWORD" "docker://${image}" "docker://${dest_image}"
     # shellcheck disable=SC2181
     if [ $? -eq 0 ]; then
       echo -e "${GREEN}Successfully copied ${dest_image}${NO_COLOR}"
