@@ -1,22 +1,22 @@
-# receiverApiKey -- The StackState Receiver API Key, used for sending telemetry data to StackState's Receiver API.
+# receiverApiKey -- The SUSE Observability Receiver API Key, used for sending telemetry data to the server.
 receiverApiKey: ""
 
-# imageRegistry -- The registry to pull the StackState images from.
+# imageRegistry -- The registry to pull the SUSE Observability images from.
 imageRegistry: "quay.io"
 
 pullSecret:
-  # pullSecret.username -- The username used for pulling all StackState images from the registry.
+  # pullSecret.username -- The username used for pulling all SUSE Observability images from the registry.
   username: ""
-  # pullSecret.password -- The password used for pulling all StackState images from the registry.
+  # pullSecret.password -- The password used for pulling all SUSE Observability images from the registry.
   password: ""
 
-# license -- The StackState license key.
+# license -- The SUSE Observability license key.
 license:
 
-# baseUrl -- The base URL of the StackState instance.
+# baseUrl -- The base URL of the SUSE Observability instance.
 baseUrl: ""
 
-# adminApiPassword -- The password for the default 'admin' user used for authenticating with the StackState Admin API. If not provided a random password is generated. If the password is not a bcrypt hash, but provided in plaintext, the value will be bcrypt hashed in the output.
+# adminApiPassword -- The password for the default 'admin' user used for authenticating with the SUSE Observability Admin API. If not provided a random password is generated. If the password is not a bcrypt hash, but provided in plaintext, the value will be bcrypt hashed in the output.
 adminApiPassword: ""
-# adminPassword -- The password for the default 'admin' user used for authenticating with the StackState UI. If not provided a random password is generated.  If the password is not a bcrypt hash, but provided in plaintext, the value will be bcrypt hashed in the output.
+# adminPassword -- The password for the default 'admin' user used for authenticating with the SUSE Observability UI. If not provided a random password is generated.  If the password is not a bcrypt hash, but provided in plaintext, the value will be bcrypt hashed in the output.
 adminPassword: ""

@@ -9,20 +9,20 @@ Current chart version is `{{ template "chart.version" . }}`
 
 ## Usage
 
-This chart is used to generate a StackState values file that can be used with the StackState Helm Chart to deploy the StackState platform.
+This chart is used to generate a SUSE Observability values file that can be used with the SUSE Observability Helm Chart to deploy the SUSE Observability platform.
 You can use this by running the following command:
 
 ```shell
 helm template \
-  --name stackstate \
+  --name suse-observability \
   --set license=<your-license-key> \
-  --set baseUrl=<your-stackstate-base-url> \
+  --set baseUrl=<your-suse-observability-base-url> \
   --set pullSecret.username=<your-docker-registry-username> \
   --set pullSecret.password=<your-docker-registry-password> \
-  stackstate/stackstate-values
+  suse-observability/suse-observability-values
 ```
 
-The output of this file can be used as the values file for the StackState Helm Chart.
+The output of this file can be used as the values file for the SUSE Observability Helm Chart.
 
 ## Required Values
 
