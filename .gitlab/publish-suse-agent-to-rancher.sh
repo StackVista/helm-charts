@@ -2,17 +2,15 @@
 
 set -euo pipefail
 
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+# shellcheck disable=SC1091
+source "$dir/util.sh"
+
 build_root=$(pwd)
 
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 NO_COLOR='\033[0m'
-
-function get_secret_values() {
-  # This function extracts credentials, etc and sets them as environment variables.
-  secret_file=$1
-  eval "$(sops -d "$secret_file" | awk -F ": " '{print $1" "$2}' | while read -r key value; do echo export "${key}"="$value" ; done)"
-}
 
 cd stable/suse-observability-agent || exit
 

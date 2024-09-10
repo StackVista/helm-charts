@@ -285,7 +285,6 @@ if chart == 'suse-observability-agent' then 'publish-suse-observability-agent' e
   if chart != 'stackstate' && chart != 'stackstate-k8s'
 };
 
-
 local push_suse_observability_to_rancher_registry = {
   'push_suse-observability-agent_to_rancher': (push_chart_job(
     'suse-observability-agent',
@@ -296,13 +295,18 @@ local push_suse_observability_to_rancher_registry = {
     'publish-suse-observability-agent',
 ) + {
     stage: 'push-charts-to-rancher',
-    variables: {
-      CHART: 'stable/suse-observability-agent',
-      RANCHER_HELM_REGISTRY_BUCKET: '${RANCHER_HELM_REGISTRY_OPTIMUS_BUCKET}',
-      RANCHER_HELM_REGISTRY_USERNAME: '${RANCHER_HELM_REGISTRY_OPTIMUS_USERNAME}',
-      RANCHER_HELM_REGISTRY_PASSWORD: '${RANCHER_HELM_REGISTRY_OPTIMUS_PASSWORD}',
-    },
-    // needs: ['push_suse-observability-agent_to_internal'],
+    needs: ['push_suse-observability-agent_to_internal'],
+  }),
+  'push_suse-observability-values_to_rancher': (push_chart_job(
+    'suse-observability-values',
+    [
+      '.gitlab/publish-suse-observability-values-to-rancher.sh',
+    ],
+    'manual',
+    'publish-suse-observability-values',
+) + {
+    stage: 'push-charts-to-rancher',
+    needs: ['push_suse-observability-values_to_internal'],
   }),
 };
 

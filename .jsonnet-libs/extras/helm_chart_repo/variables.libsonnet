@@ -34,6 +34,7 @@
       'stackstate',
       'stackstate-k8s',
       'stackstate-values',
+      'suse-observability-values',
       'stackstate-monitoring',
       'stackstate-standalone',
       'trafficmirror',
