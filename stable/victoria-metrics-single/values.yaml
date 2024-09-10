@@ -676,9 +676,9 @@ backup:
   # -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
   s3Prefix: null
   # -- Override location of S3 endpoints, it should point to MinIO service. **Do not change this value! It must base on 'minio.fullnameOverride'**
-  overrideS3Endpoint: "http://stackstate-minio:9000"
+  overrideS3Endpoint: "http://suse-observability-minio:9000"
   # -- Name of k8s secrets with Access Key and Secret Key to the MinIO service.
-  awsSecrets: "stackstate-minio"
+  awsSecrets: "suse-observability-minio"
   scheduled:
     # -- Cron schedule for automatic backups of Victoria Metrics
     schedule: '25 * * * *'
