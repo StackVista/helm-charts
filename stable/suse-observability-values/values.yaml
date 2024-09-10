@@ -2,13 +2,13 @@
 receiverApiKey: ""
 
 # imageRegistry -- The registry to pull the SUSE Observability images from.
-imageRegistry: "quay.io"
+imageRegistry: "registry.rancher.com"
 
 pullSecret:
   # pullSecret.username -- The username used for pulling all SUSE Observability images from the registry.
-  username: ""
+  username: nil
   # pullSecret.password -- The password used for pulling all SUSE Observability images from the registry.
-  password: ""
+  password: nil
 
 # license -- The SUSE Observability license key.
 license:

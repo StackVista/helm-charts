@@ -28,8 +28,6 @@ The output of this file can be used as the values file for the SUSE Observabilit
 In order to successfully install this chart, you **must** provide the following variables:
 * `license`
 * `baseUrl`
-* `pullSecret.username`
-* `pullSecret.password`
 
 ## Optional Values
 
@@ -39,6 +37,8 @@ The following values can be optionally set.
 * `adminPassword` - If omitted, a random password will be generated and will be output in a separate Yaml document.
 * `adminApiPassword` - If omitted, a random password will be generated and will be output in a separate Yaml document.
 * `imageRegistry` - If omitted, the default value of `quay.io` will be used.
+* `pullSecret.username` - If pullSecret username or password is omitted no pull secret will be configured
+* `pullSecret.password` - If pullSecret username or password is omitted no pull secret will be configured
 
 ## Values
 
@@ -47,8 +47,8 @@ The following values can be optionally set.
 | adminApiPassword | string | `""` | The password for the default 'admin' user used for authenticating with the SUSE Observability Admin API. If not provided a random password is generated. If the password is not a bcrypt hash, but provided in plaintext, the value will be bcrypt hashed in the output. |
 | adminPassword | string | `""` | The password for the default 'admin' user used for authenticating with the SUSE Observability UI. If not provided a random password is generated.  If the password is not a bcrypt hash, but provided in plaintext, the value will be bcrypt hashed in the output. |
 | baseUrl | string | `""` | The base URL of the SUSE Observability instance. |
-| imageRegistry | string | `"quay.io"` | The registry to pull the SUSE Observability images from. |
+| imageRegistry | string | `"registry.rancher.com"` | The registry to pull the SUSE Observability images from. |
 | license | string | `nil` | The SUSE Observability license key. |
-| pullSecret.password | string | `""` | The password used for pulling all SUSE Observability images from the registry. |
-| pullSecret.username | string | `""` | The username used for pulling all SUSE Observability images from the registry. |
+| pullSecret.password | string | `"nil"` | The password used for pulling all SUSE Observability images from the registry. |
+| pullSecret.username | string | `"nil"` | The username used for pulling all SUSE Observability images from the registry. |
 | receiverApiKey | string | `""` | The SUSE Observability Receiver API Key, used for sending telemetry data to the server. |

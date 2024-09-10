@@ -1,29 +1,33 @@
 global:
   receiverApiKey: {{ template "sts.values.receiverKey" . }}
+{{- if and .Values.pullSecret.username .Values.pullSecret.password }}
   imagePullSecrets:
-    - stackstate-pull-secret
+    - suse-observability-pull-secret
+{{- end }}
 
+{{- if and .Values.pullSecret.username .Values.pullSecret.password }}
 pull-secret:
   credentials:
-    - password: {{ .Values.pullSecret.password | required "Please provide your StackState password for pulling images from the StackState registry in 'pullSecret.password'" | quote }}
+    - password: {{ .Values.pullSecret.password | quote }}
       registry: {{ .Values.imageRegistry }}
-      username: {{ .Values.pullSecret.username | required "Please provide your StackState username for pulling images from the StackState registry in 'pullSecret.username'" | quote }}
+      username: {{ .Values.pullSecret.username | quote }}
   enabled: true
-  fullnameOverride: stackstate-pull-secret
+  fullnameOverride: suse-observability-pull-secret
+{{- end }}
 
 stackstate:
-  baseUrl: {{ .Values.baseUrl | required "Please provide your StackState base URL in 'baseUrl'" | quote }}
+  baseUrl: {{ .Values.baseUrl | required "Please provide your SUSE Observability base URL in 'baseUrl'" | quote }}
   admin:
     authentication:
       password: {{ template "sts.values.getOrGenerateAdminApiPassword" . }}
   authentication:
     adminPassword: {{ template "sts.values.getOrGenerateAdminPassword" . }}
   license:
-    key: {{ .Values.license | required "Please provide your StackState license key in 'license'" | quote }}
+    key: {{ .Values.license | required "Please provide your SUSE Observability license key in 'license'" | quote }}
 ---
 {{ if .Values.generatedAdminPassword -}}
-# Your StackState admin password is: {{ .Values.generatedAdminPassword }}
+# Your SUSE Observability admin password is: {{ .Values.generatedAdminPassword }}
 {{- end }}
 {{ if .Values.generatedAdminApiPassword -}}
-# Your StackState admin API password is: {{ .Values.generatedAdminApiPassword }}
+# Your SUSE Observability admin API password is: {{ .Values.generatedAdminApiPassword }}
 {{- end }}

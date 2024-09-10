@@ -28,6 +28,25 @@ func TestGenerateValuesWithGeneratesBcryptPasswords(t *testing.T) {
 
 }
 
+func TestGenerateValuesWithPullSecret(t *testing.T) {
+	values := renderAsYaml(t, []string{"values/required.yaml", "values/pullsecret.yaml"})
+	v, err := yamlpath.YamlPath(values, "global.imagePullSecrets[0]")
+	assert.NoError(t, err)
+	assert.Contains(t, v, "suse-observability-pull-secret")
+
+	v, err = yamlpath.YamlPath(values, "pull-secret.credentials[0].username")
+	assert.NoError(t, err)
+	assert.Contains(t, v, "john")
+
+	v, err = yamlpath.YamlPath(values, "pull-secret.credentials[0].password")
+	assert.NoError(t, err)
+	assert.Contains(t, v, "doe")
+
+	v, err = yamlpath.YamlPath(values, "pull-secret.credentials[0].registry")
+	assert.NoError(t, err)
+	assert.Contains(t, v, "registry.rancher.com")
+}
+
 func TestGenerateValuesWithPlaintextPasswords(t *testing.T) {
 	values := renderAsYaml(t, []string{"values/required.yaml", "values/plaintextpasswords.yaml"})
 	v, err := yamlpath.YamlPath(values, "stackstate.admin.authentication.password")
