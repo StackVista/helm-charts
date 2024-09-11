@@ -9,17 +9,17 @@ fi
 BACKUP_NAME=$1
 
 echo "=== Scaling down all OTel collectors"
-collectorReplicas=$(kubectl get statefulset "stackstate-otel-collector" --output=jsonpath="{.spec.replicas}")
-kubectl scale statefulsets "stackstate-otel-collector" --replicas=0
+collectorReplicas=$(kubectl get statefulset "suse-observability-otel-collector" --output=jsonpath="{.spec.replicas}")
+kubectl scale statefulsets "suse-observability-otel-collector" --replicas=0
 
 echo "=== Allowing pods to terminate"
 sleep 15
 
 echo "=== Starting the restore operation"
-kubectl exec "stackstate-clickhouse-shard0-0" -c backup -- bash -c "curl -s -X POST http://localhost:7171/backup/download/${BACKUP_NAME}?callback=http://localhost:7171/backup/restore/${BACKUP_NAME}"
+kubectl exec "suse-observability-clickhouse-shard0-0" -c backup -- bash -c "curl -s -X POST http://localhost:7171/backup/download/${BACKUP_NAME}?callback=http://localhost:7171/backup/restore/${BACKUP_NAME}"
 
 echo "=== Restore operation is async, waiting until completion ..."
-until kubectl exec "stackstate-clickhouse-shard0-0" -c backup -- bash -c "curl -s localhost:7171/backup/actions?filter=restore | jq 'select(.command==\"restore ${BACKUP_NAME}\")' | jq -s . | jq -e -r '.[-1].status == \"success\"'"
+until kubectl exec "suse-observability-clickhouse-shard0-0" -c backup -- bash -c "curl -s localhost:7171/backup/actions?filter=restore | jq 'select(.command==\"restore ${BACKUP_NAME}\")' | jq -s . | jq -e -r '.[-1].status == \"success\"'"
 do
   echo "waiting..."
   sleep 5
@@ -33,5 +33,5 @@ do
 done
 
 echo "=== Scaling up all OTel collectors"
-kubectl scale statefulsets "stackstate-otel-collector" --replicas="${collectorReplicas}"
+kubectl scale statefulsets "suse-observability-otel-collector" --replicas="${collectorReplicas}"
 echo "=== Make sure that there is at least on replica of opentelemetry-collector"
