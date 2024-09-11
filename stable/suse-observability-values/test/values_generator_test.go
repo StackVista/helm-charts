@@ -17,6 +17,16 @@ func TestGenerateValuesNoReceiverApiKey(t *testing.T) {
 	assert.NotEmpty(t, v)
 }
 
+func TestGenerateValuesPullSecretNotGenerated(t *testing.T) {
+	values := renderAsYaml(t, []string{"values/required.yaml"})
+	v, err := yamlpath.YamlPath(values, "pull-secret")
+	assert.NoError(t, err)
+	assert.Empty(t, v)
+	v, err = yamlpath.YamlPath(values, "global.imagePullSecrets")
+	assert.Empty(t, v)
+	assert.NoError(t, err)
+}
+
 func TestGenerateValuesWithGeneratesBcryptPasswords(t *testing.T) {
 	values := renderAsYaml(t, []string{"values/required.yaml"})
 	v, err := yamlpath.YamlPath(values, "stackstate.admin.authentication.password")

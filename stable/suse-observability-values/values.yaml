@@ -6,9 +6,9 @@ imageRegistry: "registry.rancher.com"
 
 pullSecret:
   # pullSecret.username -- The username used for pulling all SUSE Observability images from the registry.
-  username: nil
+  username: null
   # pullSecret.password -- The password used for pulling all SUSE Observability images from the registry.
-  password: nil
+  password: null
 
 # license -- The SUSE Observability license key.
 license:

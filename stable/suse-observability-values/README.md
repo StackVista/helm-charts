@@ -2,7 +2,7 @@
 
 Helm Chart for rendering SUSE Observability Values
 
-Current chart version is `1.0.0`
+Current chart version is `1.0.1`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -49,6 +49,6 @@ The following values can be optionally set.
 | baseUrl | string | `""` | The base URL of the SUSE Observability instance. |
 | imageRegistry | string | `"registry.rancher.com"` | The registry to pull the SUSE Observability images from. |
 | license | string | `nil` | The SUSE Observability license key. |
-| pullSecret.password | string | `"nil"` | The password used for pulling all SUSE Observability images from the registry. |
-| pullSecret.username | string | `"nil"` | The username used for pulling all SUSE Observability images from the registry. |
+| pullSecret.password | string | `nil` | The password used for pulling all SUSE Observability images from the registry. |
+| pullSecret.username | string | `nil` | The username used for pulling all SUSE Observability images from the registry. |
 | receiverApiKey | string | `""` | The SUSE Observability Receiver API Key, used for sending telemetry data to the server. |
