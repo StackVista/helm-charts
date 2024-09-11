@@ -33,7 +33,7 @@ if (! (kubectl get configmap "${CM_NAME}" -o jsonpath="{.data.job-${JOB_NAME_TEM
 fi
 
 echo "=== Scaling down the Victoria Metrics instance"
-kubectl scale statefulsets "stackstate-$INSTANCE_NAME" --replicas=0
+kubectl scale statefulsets "suse-observability-$INSTANCE_NAME" --replicas=0
 
 echo "=== Allowing pods to terminate"
 sleep 15
@@ -47,4 +47,4 @@ echo "kubectl logs --follow job/${JOB_NAME}"
 
 echo "=== After the job has completed clean up the job and scale up the Victoria Metrics instance pods again with the following commands:"
 echo "kubectl delete job ${JOB_NAME}"
-echo "kubectl scale statefulsets stackstate-$INSTANCE_NAME --replicas=1"
+echo "kubectl scale statefulsets suse-observability-$INSTANCE_NAME --replicas=1"
