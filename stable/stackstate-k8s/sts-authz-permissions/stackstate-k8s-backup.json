@@ -3,7 +3,12 @@
         "export-settings",
         "view-metric-bindings",
         "view-monitors",
-        "view-notifications"
+        "view-notifications",
+        "manage-stackpacks",
+        "import-settings",
+        "manage-monitors",
+        "manage-notifications",
+        "manage-metric-bindings"
     ],
     "viewPermissions" : []
 }
