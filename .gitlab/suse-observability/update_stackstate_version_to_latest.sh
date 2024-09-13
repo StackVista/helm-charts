@@ -9,9 +9,9 @@ source "${dir}/util.sh"
 source "${dir}/../util.sh"
 
 stackstate_master_tag=$(get_latest_master_version stackstate-receiver "$STACKSTATE_VERSION_REGEX")
-values_path="stable/stackstate-k8s/values.yaml"
-chart_path="stable/stackstate-k8s/Chart.yaml"
-readme_path="stable/stackstate-k8s/README.md"
+values_path="stable/suse-observability/values.yaml"
+chart_path="stable/suse-observability/Chart.yaml"
+readme_path="stable/suse-observability/README.md"
 
 echo "Latest stackstate master tag: $stackstate_master_tag"
 

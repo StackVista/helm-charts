@@ -60,7 +60,7 @@ local validate_and_push_jobs = {
     script: [
       'ct list-changed --config test/ct.yaml',
       'if [[ "${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" =~ ^releasing*|^developing* ]] || [[ -n "${CI_COMMIT_TAG}" ]] ; then export VERSION_INCREMENT_CHECK="--check-version-increment=false" ; fi',
-      'ct lint --debug --validate-maintainers=false ${VERSION_INCREMENT_CHECK} --excluded-charts stackstate --excluded-charts stackstate-k8s --excluded-charts gitlab-runner --config test/ct.yaml',
+      'ct lint --debug --validate-maintainers=false ${VERSION_INCREMENT_CHECK} --excluded-charts stackstate --excluded-charts suse-observability --excluded-charts gitlab-runner --config test/ct.yaml',
       '.gitlab/validate_kubeconform.sh',
     ],
     stage: 'validate',
@@ -78,9 +78,9 @@ local validate_and_push_jobs = {
     script:
       ['ct list-changed --config test/ct.yaml'] +
       update_2nd_degree_chart_deps('stackstate') +
-      update_2nd_degree_chart_deps('stackstate-k8s') +
+      update_2nd_degree_chart_deps('suse-observability') +
       [
-        'ct lint --debug --validate-maintainers=false --charts stable/stackstate --charts stable/stackstate-k8s --config test/ct.yaml',
+        'ct lint --debug --validate-maintainers=false --charts stable/stackstate --charts stable/suse-observability --config test/ct.yaml',
         '.gitlab/validate_kubeconform.sh',
       ],
     stage: 'validate',
@@ -107,7 +107,7 @@ local validate_and_push_jobs = {
 local test_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   before_script: helm_fetch_dependencies + (
-    if chart == 'stackstate' || chart == 'stackstate-k8s' then update_2nd_degree_chart_deps(chart) else []
+    if chart == 'stackstate' || chart == 'suse-observability' then update_2nd_degree_chart_deps(chart) else []
   ) +
   ['helm dependencies update ${CHART}'],
   script: [
@@ -130,7 +130,7 @@ local test_chart_job(chart) = {
 local itest_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   before_script: helm_fetch_dependencies + (
-    if chart == 'stackstate' || chart == 'stackstate-k8s' then update_2nd_degree_chart_deps(chart) else []
+    if chart == 'stackstate' || chart == 'suse-observability' then update_2nd_degree_chart_deps(chart) else []
   ) +
   ['helm dependencies update ${CHART}'],
   script: [
@@ -183,7 +183,7 @@ local push_chart_job(chart, script, when, autoTriggerOnCommitMsg) =
 
 local push_chart_script(chart, repository_url, repository_username, repository_password) =
 
-   (if chart == 'stackstate' || chart == 'stackstate-k8s' then update_2nd_degree_chart_deps(chart) else [])
+   (if chart == 'stackstate' || chart == 'suse-observability' then update_2nd_degree_chart_deps(chart) else [])
    + [
     'helm dependencies update ${CHART}',
     'helm cm-push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
@@ -222,12 +222,12 @@ local push_stackstate_chart_releases =
 local test_chart_jobs = {
   ['test_%s' % chart]: (test_chart_job(chart))
   for chart in (charts + public_charts)
-  if chart != 'stackstate-k8s'
+  if chart != 'suse-observability'
 };
 
 local itest_stackstate = {
   integration_test_stackstate: itest_chart_job('stackstate'),
-  integration_test_stackstate_k8s: itest_chart_job('stackstate-k8s'),
+  integration_test_stackstate_k8s: itest_chart_job('suse-observability'),
 };
 
 local push_charts_to_internal_jobs = {
@@ -246,13 +246,13 @@ chart,
   } + (
   if chart == 'stackstate' then
   { before_script: helm_fetch_dependencies + ['.gitlab/bump_sts_chart_master_version.sh stackstate-internal ' + chart] }
-  else if chart == 'stackstate-k8s' then
+  else if chart == 'suse-observability' then
   { before_script: helm_fetch_dependencies + [
     '.gitlab/configure_git.sh',
     // tags don't have CI_COMMIT_BRANCH, so I fetches the current branch(s) for current HEAD (HEAD points to a detached commit)
     // but there may be multiple branches so I iterate all of them and push a commit to each branch
     'export BRANCHES=${CI_COMMIT_BRANCH:-$(git for-each-ref --format="%(objectname) %(refname:short)" refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" \'$1==branch && $2!="origin" {print $2}\' | sed -E "s/^origin\\/(.*)$/\\1/")}',
-    // It extracts version from tag, e.g. stackstate-k8s/1.3.2 => 1.3.2
+    // It extracts version from tag, e.g. suse-observability/1.3.2 => 1.3.2
     '.gitlab/set_sts_chart_master_version.sh stable/' + chart + " $(echo $CI_COMMIT_TAG | sed -E 's/^" + chart + "\\/(.*)$/\\1/')",
   ] }
   { script+: ['.gitlab/bump_sts_chart_master_version_v2.sh stable/' + chart] }
@@ -277,12 +277,12 @@ if chart == 'suse-observability-agent' then 'publish-suse-observability-agent' e
 
     needs: ['push_%s_to_internal' % chart],
   } + (
-    if chart == 'stackstate' || chart == 'stackstate-k8s' then
+    if chart == 'stackstate' || chart == 'suse-observability' then
   { before_script: helm_fetch_dependencies + ['.gitlab/bump_sts_chart_master_version.sh stackstate ' + chart] }
   else {}
   ))
   for chart in public_charts
-  if chart != 'stackstate' && chart != 'stackstate-k8s'
+  if chart != 'stackstate' && chart != 'suse-observability'
 };
 
 local push_suse_observability_to_rancher_registry = {
@@ -329,8 +329,8 @@ local update_sg_version = {
     ],
     script: [
       '.gitlab/update_sg_version.sh stable/hbase ""',
-      '.gitlab/update_sg_version.sh stable/stackstate-k8s "hbase."',
-      '.gitlab/update_chart_version.sh stable/stackstate-k8s hbase local:stable/hbase',
+      '.gitlab/update_sg_version.sh stable/suse-observability "hbase."',
+      '.gitlab/update_chart_version.sh stable/suse-observability hbase local:stable/hbase',
       '.gitlab/commit_changes_and_push.sh StackGraph $UPDATE_STACKGRAPH_VERSION',
     ],
   },
@@ -354,7 +354,7 @@ local update_aad_chart_version = {
       },
     ],
     script: [
-      '.gitlab/update_chart_version.sh stable/stackstate-k8s anomaly-detection $UPDATE_AAD_CHART_VERSION',
+      '.gitlab/update_chart_version.sh stable/suse-observability anomaly-detection $UPDATE_AAD_CHART_VERSION',
       '.gitlab/commit_changes_and_push.sh anomaly-detection $UPDATE_AAD_CHART_VERSION',
     ],
   },
@@ -388,8 +388,8 @@ local update_docker_images = {
     script: scripts,
   },
 
-  update_stackstate_version_to_latest: job('UPDATE_STACKSTATE_DOCKER_VERSION', ['.gitlab/stackstate-k8s/update_stackstate_version_to_latest.sh']),
-  update_stackpacks_version_to_latest: job('UPDATE_STACKPACKS_DOCKER_VERSION', ['.gitlab/stackstate-k8s/update_stackpacks_version_to_latest.sh']),
+  update_stackstate_version_to_latest: job('UPDATE_STACKSTATE_DOCKER_VERSION', ['.gitlab/suse-observability/update_stackstate_version_to_latest.sh']),
+  update_stackpacks_version_to_latest: job('UPDATE_STACKPACKS_DOCKER_VERSION', ['.gitlab/suse-observability/update_stackpacks_version_to_latest.sh']),
 };
 
 // Main

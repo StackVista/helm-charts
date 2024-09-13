@@ -9,8 +9,8 @@ source "${dir}/util.sh"
 source "${dir}/../util.sh"
 
 stackpacks_master_version=$(get_latest_master_version stackpacks "$STACKPACKS_VERSION_REGEX")
-values_path="stable/stackstate-k8s/values.yaml"
-readme_path="stable/stackstate-k8s/README.md"
+values_path="stable/suse-observability/values.yaml"
+readme_path="stable/suse-observability/README.md"
 
 echo "Latest stackpack master version: $stackpacks_master_version"
 

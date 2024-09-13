@@ -53,7 +53,7 @@ integration_test_stackstate_k8s:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-k8s/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-k8s/%
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability/Chart.yaml  | xargs -I % helm dependencies build stable/suse-observability/%
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
@@ -66,16 +66,16 @@ integration_test_stackstate_k8s:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
-        - stable/stackstate-k8s/**/*
+        - stable/suse-observability/**/*
       exists:
-        - stable/stackstate-k8s/itest/*.go
+        - stable/suse-observability/itest/*.go
       if: $CI_COMMIT_TAG
   script:
-    - go test ./stable/stackstate-k8s/itest/...
+    - go test ./stable/suse-observability/itest/...
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/stackstate-k8s
+    CHART: stable/suse-observability
 push_artifactory-cleaner_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   rules:
@@ -1066,51 +1066,6 @@ push_stackstate-k8s-agent_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/stackstate-k8s-agent
-push_stackstate-k8s_to_internal:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - .gitlab/configure_git.sh
-    - export BRANCHES=${CI_COMMIT_BRANCH:-$(git for-each-ref --format="%(objectname) %(refname:short)" refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" '$1==branch && $2!="origin" {print $2}' | sed -E "s/^origin\/(.*)$/\1/")}
-    - .gitlab/set_sts_chart_master_version.sh stable/stackstate-k8s $(echo $CI_COMMIT_TAG | sed -E 's/^stackstate-k8s\/(.*)$/\1/')
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - changes:
-        - stable/stackstate-k8s/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-k8s]/
-      when: on_success
-    - changes:
-        - stable/stackstate-k8s/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^stackstate-k8s\/.*/
-      when: on_success
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-k8s/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-k8s/%
-    - helm dependencies update ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-    - .gitlab/bump_sts_chart_master_version_v2.sh stable/stackstate-k8s
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/stackstate-k8s
 push_stackstate-monitoring_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   rules:
@@ -1561,6 +1516,51 @@ push_suse-observability-values_to_rancher:
   stage: push-charts-to-rancher
   variables:
     CHART: stable/suse-observability-values
+push_suse-observability_to_internal:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+    - .gitlab/configure_git.sh
+    - export BRANCHES=${CI_COMMIT_BRANCH:-$(git for-each-ref --format="%(objectname) %(refname:short)" refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" '$1==branch && $2!="origin" {print $2}' | sed -E "s/^origin\/(.*)$/\1/")}
+    - .gitlab/set_sts_chart_master_version.sh stable/suse-observability $(echo $CI_COMMIT_TAG | sed -E 's/^suse-observability\/(.*)$/\1/')
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/suse-observability/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability]/
+      when: on_success
+    - changes:
+        - stable/suse-observability/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - if: $CI_COMMIT_TAG =~ /^suse-observability\/.*/
+      when: on_success
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability/Chart.yaml  | xargs -I % helm dependencies build stable/suse-observability/%
+    - helm dependencies update ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+    - .gitlab/bump_sts_chart_master_version_v2.sh stable/suse-observability
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/suse-observability
 push_tenantmanager_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   rules:
@@ -3052,7 +3052,7 @@ update_aad_chart_version:
     - if: $UPDATE_AAD_CHART_VERSION
       when: always
   script:
-    - .gitlab/update_chart_version.sh stable/stackstate-k8s anomaly-detection $UPDATE_AAD_CHART_VERSION
+    - .gitlab/update_chart_version.sh stable/suse-observability anomaly-detection $UPDATE_AAD_CHART_VERSION
     - .gitlab/commit_changes_and_push.sh anomaly-detection $UPDATE_AAD_CHART_VERSION
   stage: update
   variables:
@@ -3080,8 +3080,8 @@ update_stackgraph_version:
       when: always
   script:
     - .gitlab/update_sg_version.sh stable/hbase ""
-    - .gitlab/update_sg_version.sh stable/stackstate-k8s "hbase."
-    - .gitlab/update_chart_version.sh stable/stackstate-k8s hbase local:stable/hbase
+    - .gitlab/update_sg_version.sh stable/suse-observability "hbase."
+    - .gitlab/update_chart_version.sh stable/suse-observability hbase local:stable/hbase
     - .gitlab/commit_changes_and_push.sh StackGraph $UPDATE_STACKGRAPH_VERSION
   stage: update
   variables:
@@ -3099,7 +3099,7 @@ update_stackpacks_version_to_latest:
       when: always
     - when: never
   script:
-    - .gitlab/stackstate-k8s/update_stackpacks_version_to_latest.sh
+    - .gitlab/suse-observability/update_stackpacks_version_to_latest.sh
   stage: update
   variables:
     GIT_AUTHOR_EMAIL: sts-admin@stackstate.com
@@ -3116,7 +3116,7 @@ update_stackstate_version_to_latest:
       when: always
     - when: never
   script:
-    - .gitlab/stackstate-k8s/update_stackstate_version_to_latest.sh
+    - .gitlab/suse-observability/update_stackstate_version_to_latest.sh
   stage: update
   variables:
     GIT_AUTHOR_EMAIL: sts-admin@stackstate.com
@@ -3142,7 +3142,7 @@ validate_charts:
   script:
     - ct list-changed --config test/ct.yaml
     - if [[ "${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" =~ ^releasing*|^developing* ]] || [[ -n "${CI_COMMIT_TAG}" ]] ; then export VERSION_INCREMENT_CHECK="--check-version-increment=false" ; fi
-    - ct lint --debug --validate-maintainers=false ${VERSION_INCREMENT_CHECK} --excluded-charts stackstate --excluded-charts stackstate-k8s --excluded-charts gitlab-runner --config test/ct.yaml
+    - ct lint --debug --validate-maintainers=false ${VERSION_INCREMENT_CHECK} --excluded-charts stackstate --excluded-charts suse-observability --excluded-charts gitlab-runner --config test/ct.yaml
     - .gitlab/validate_kubeconform.sh
   stage: validate
 validate_stackstate_chart:
@@ -3175,8 +3175,8 @@ validate_stackstate_chart:
   script:
     - ct list-changed --config test/ct.yaml
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-k8s/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-k8s/%
-    - ct lint --debug --validate-maintainers=false --charts stable/stackstate --charts stable/stackstate-k8s --config test/ct.yaml
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability/Chart.yaml  | xargs -I % helm dependencies build stable/suse-observability/%
+    - ct lint --debug --validate-maintainers=false --charts stable/stackstate --charts stable/suse-observability --config test/ct.yaml
     - .gitlab/validate_kubeconform.sh
   stage: validate
 variables:

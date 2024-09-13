@@ -32,7 +32,7 @@
       'minio',
       'pull-secret',
       'stackstate',
-      'stackstate-k8s',
+      'suse-observability',
       'stackstate-values',
       'suse-observability-values',
       'stackstate-monitoring',
