@@ -10,14 +10,14 @@ import (
 )
 
 func TestSyncWithInMemoryCache(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/sync_inmemory.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/sync_inmemory.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stsSyncDeployment appsv1.Deployment
 
 	for _, deployment := range resources.Deployments {
-		if deployment.Name == "stackstate-k8s-sync" {
+		if deployment.Name == "suse-observability-sync" {
 			stsSyncDeployment = deployment
 		}
 	}
@@ -27,14 +27,14 @@ func TestSyncWithInMemoryCache(t *testing.T) {
 }
 
 func TestSyncWithMapDbCache(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/sync_mapdb.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/sync_mapdb.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stsSyncDeployment appsv1.Deployment
 
 	for _, deployment := range resources.Deployments {
-		if deployment.Name == "stackstate-k8s-sync" {
+		if deployment.Name == "suse-observability-sync" {
 			stsSyncDeployment = deployment
 		}
 	}
@@ -44,14 +44,14 @@ func TestSyncWithMapDbCache(t *testing.T) {
 }
 
 func TestSyncWithRocksDbCache(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/sync_rocksdb.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/sync_rocksdb.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stsSyncDeployment appsv1.Deployment
 
 	for _, deployment := range resources.Deployments {
-		if deployment.Name == "stackstate-k8s-sync" {
+		if deployment.Name == "suse-observability-sync" {
 			stsSyncDeployment = deployment
 		}
 	}
@@ -63,14 +63,14 @@ func TestSyncWithRocksDbCache(t *testing.T) {
 }
 
 func TestHealthSyncWithInMemoryCache(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/healthsync_inmemory.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/healthsync_inmemory.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stsSyncDeployment appsv1.Deployment
 
 	for _, deployment := range resources.Deployments {
-		if deployment.Name == "stackstate-k8s-health-sync" {
+		if deployment.Name == "suse-observability-health-sync" {
 			stsSyncDeployment = deployment
 		}
 	}
@@ -80,14 +80,14 @@ func TestHealthSyncWithInMemoryCache(t *testing.T) {
 }
 
 func TestHealthSyncWithMapDbCache(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/healthsync_mapdb.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/healthsync_mapdb.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stsSyncDeployment appsv1.Deployment
 
 	for _, deployment := range resources.Deployments {
-		if deployment.Name == "stackstate-k8s-health-sync" {
+		if deployment.Name == "suse-observability-health-sync" {
 			stsSyncDeployment = deployment
 		}
 	}
@@ -97,14 +97,14 @@ func TestHealthSyncWithMapDbCache(t *testing.T) {
 }
 
 func TestHealthSyncWithRocksDbCache(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/healthsync_rocksdb.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/healthsync_rocksdb.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stsSyncDeployment appsv1.Deployment
 
 	for _, deployment := range resources.Deployments {
-		if deployment.Name == "stackstate-k8s-health-sync" {
+		if deployment.Name == "suse-observability-health-sync" {
 			stsSyncDeployment = deployment
 		}
 	}

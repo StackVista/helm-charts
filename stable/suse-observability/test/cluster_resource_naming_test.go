@@ -11,27 +11,25 @@ import (
 )
 
 func TestClusterRoleDeployedToSameNamespaceAsChartName(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "stackstate-k8s", &helm.Options{
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
 		},
 		KubectlOptions: &k8s.KubectlOptions{
-			Namespace: "stackstate-k8s",
+			Namespace: "suse-observability",
 		},
 	})
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	require.Equal(t, 3, len(resources.ClusterRoleBindings))
-	require.Contains(t, resources.ClusterRoleBindings, "stackstate-k8s-authentication")
-	require.Contains(t, resources.ClusterRoleBindings, "stackstate-k8s-authorization")
-	require.Contains(t, resources.ClusterRoleBindings, "stackstate-k8s-victoria-metrics-cluster-clusterrolebinding")
-	require.Equal(t, 2, len(resources.ClusterRoles))
-	require.Contains(t, resources.ClusterRoles, "stackstate-k8s-authorization")
-	require.Contains(t, resources.ClusterRoles, "stackstate-k8s-victoria-metrics-cluster-clusterrole")
+	require.Equal(t, 2, len(resources.ClusterRoleBindings))
+	require.Contains(t, resources.ClusterRoleBindings, "suse-observability-authentication")
+	require.Contains(t, resources.ClusterRoleBindings, "suse-observability-authorization")
+	require.Equal(t, 1, len(resources.ClusterRoles))
+	require.Contains(t, resources.ClusterRoles, "suse-observability-authorization")
 }
 func TestClusterRoleDeployedToDifferentNamespaceAsChartName(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "stackstate-k8s", &helm.Options{
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
 		},
@@ -42,13 +40,11 @@ func TestClusterRoleDeployedToDifferentNamespaceAsChartName(t *testing.T) {
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	require.Equal(t, 3, len(resources.ClusterRoleBindings))
-	require.Contains(t, resources.ClusterRoleBindings, "devver-stackstate-k8s-authentication")
-	require.Contains(t, resources.ClusterRoleBindings, "devver-stackstate-k8s-authorization")
-	require.Contains(t, resources.ClusterRoleBindings, "stackstate-k8s-victoria-metrics-cluster-clusterrolebinding")
-	require.Equal(t, 2, len(resources.ClusterRoles))
-	require.Contains(t, resources.ClusterRoles, "devver-stackstate-k8s-authorization")
-	require.Contains(t, resources.ClusterRoles, "stackstate-k8s-victoria-metrics-cluster-clusterrole")
+	require.Equal(t, 2, len(resources.ClusterRoleBindings))
+	require.Contains(t, resources.ClusterRoleBindings, "devver-suse-observability-authentication")
+	require.Contains(t, resources.ClusterRoleBindings, "devver-suse-observability-authorization")
+	require.Equal(t, 1, len(resources.ClusterRoles))
+	require.Contains(t, resources.ClusterRoles, "devver-suse-observability-authorization")
 }
 
 func TestClusterRoleNameWhenNamespaceReleaseNameAndChartNameAllDifferent(t *testing.T) {
@@ -63,19 +59,16 @@ func TestClusterRoleNameWhenNamespaceReleaseNameAndChartNameAllDifferent(t *test
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	require.Equal(t, 3, len(resources.ClusterRoleBindings))
-	require.Contains(t, resources.ClusterRoleBindings, "devver-stacky-stackstate-k8s-authentication")
-	require.Contains(t, resources.ClusterRoleBindings, "devver-stacky-stackstate-k8s-authorization")
-	require.Contains(t, resources.ClusterRoleBindings, "stacky-victoria-metrics-cluster-clusterrolebinding")
-	require.Equal(t, 2, len(resources.ClusterRoles))
-	require.Contains(t, resources.ClusterRoles, "devver-stacky-stackstate-k8s-authorization")
-	require.Contains(t, resources.ClusterRoles, "stacky-victoria-metrics-cluster-clusterrole")
+	require.Equal(t, 2, len(resources.ClusterRoleBindings))
+	require.Contains(t, resources.ClusterRoleBindings, "devver-stacky-suse-observability-authentication")
+	require.Contains(t, resources.ClusterRoleBindings, "devver-stacky-suse-observability-authorization")
+	require.Equal(t, 1, len(resources.ClusterRoles))
+	require.Contains(t, resources.ClusterRoles, "devver-stacky-suse-observability-authorization")
 }
 
 func TestResourcesNamesLength(t *testing.T) {
-	// 23 chars is the max release name length
-	// 12 chars is the max tenant name length
-	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "maximum-length-name", &helm.Options{
+	// 15 chars is the max release name length
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "max-length-name", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
 		},

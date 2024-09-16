@@ -21,7 +21,7 @@ func RunSecretsConfigTest(t *testing.T, secretKey string, extraValues []string, 
 func RunSecretsConfigTestF(t *testing.T, secretKey string, extraValues []string, f func(stringData string)) {
 	values := append([]string{"values/full.yaml"}, extraValues...)
 
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", values...)
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", values...)
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 

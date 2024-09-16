@@ -8,7 +8,7 @@ import (
 )
 
 func TestAllServicesRenderedSplit(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/dummy_trust_store.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/dummy_trust_store.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	podsToCheck := append([]string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "e2es"})
 
@@ -16,7 +16,7 @@ func TestAllServicesRenderedSplit(t *testing.T) {
 }
 
 func TestAllServicesRenderedServer(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/dummy_trust_store.yaml", "values/split_disabled.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/dummy_trust_store.yaml", "values/split_disabled.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	podsToCheck := append([]string{"server", "correlate", "receiver", "e2es"})
 
@@ -28,7 +28,7 @@ func assertTrustStoreOnPods(t *testing.T, resources helmtestutil.KubernetesResou
 	for _, deployment := range resources.Deployments {
 		var podName string
 		for _, name := range podsToCheck {
-			if ("stackstate-k8s-" + name) == deployment.Name {
+			if ("suse-observability-" + name) == deployment.Name {
 				checked = append(checked, name)
 				podName = name
 			}
@@ -62,8 +62,8 @@ func assertTrustStoreOnPods(t *testing.T, resources helmtestutil.KubernetesResou
 					secretName = volume.Secret.SecretName
 				}
 			}
-			assert.Equal(t, "stackstate-k8s-"+podName+"-log", logConfigMapName, "For pod "+podName)
-			assert.Equal(t, "stackstate-k8s-common", secretName, "For pod "+podName)
+			assert.Equal(t, "suse-observability-"+podName+"-log", logConfigMapName, "For pod "+podName)
+			assert.Equal(t, "suse-observability-common", secretName, "For pod "+podName)
 		}
 	}
 	assert.ElementsMatch(t, podsToCheck, checked, "Not all expected deployments were found")

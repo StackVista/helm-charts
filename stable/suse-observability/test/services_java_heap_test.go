@@ -10,14 +10,14 @@ import (
 )
 
 func TestServerJavaHeapRender(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/split_disabled.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
-	expectedDeployments["stackstate-k8s-server"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=3630m -Xmx4435m -Xms4435m"}
-	expectedDeployments["stackstate-k8s-receiver"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1393m -Xmx2587m -Xms2587m"}
-	expectedDeployments["stackstate-k8s-correlate"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=881m -Xmx1635m -Xms1635m"}
+	expectedDeployments["suse-observability-server"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=3630m -Xmx4435m -Xms4435m"}
+	expectedDeployments["suse-observability-receiver"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1393m -Xmx2587m -Xms2587m"}
+	expectedDeployments["suse-observability-correlate"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=881m -Xmx1635m -Xms1635m"}
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 
@@ -35,19 +35,19 @@ func TestServerJavaHeapRender(t *testing.T) {
 }
 
 func TestSplitServicesJavaHeapRender(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
-	expectedDeployments["stackstate-k8s-api"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=893m -Xmx730m -Xms730m"}
-	expectedDeployments["stackstate-k8s-checks"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1468m -Xmx2202m -Xms2202m"}
-	expectedDeployments["stackstate-k8s-state"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=624m -Xmx1158m -Xms842m"}
-	expectedDeployments["stackstate-k8s-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1550m -Xmx2325m -Xms1680m"}
-	expectedDeployments["stackstate-k8s-slicing"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=786m -Xmx786m -Xms681m"}
-	expectedDeployments["stackstate-k8s-health-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1759m -Xmx1439m -Xms1439m"}
-	expectedDeployments["stackstate-k8s-notification"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=543m -Xmx662m -Xms662m"}
-	expectedDeployments["stackstate-k8s-initializer"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=422m -Xmx783m -Xms109m"}
+	expectedDeployments["suse-observability-api"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=893m -Xmx730m -Xms730m"}
+	expectedDeployments["suse-observability-checks"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1468m -Xmx2202m -Xms2202m"}
+	expectedDeployments["suse-observability-state"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=624m -Xmx1158m -Xms842m"}
+	expectedDeployments["suse-observability-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1550m -Xmx2325m -Xms1680m"}
+	expectedDeployments["suse-observability-slicing"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=786m -Xmx786m -Xms681m"}
+	expectedDeployments["suse-observability-health-sync"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=1759m -Xmx1439m -Xms1439m"}
+	expectedDeployments["suse-observability-notification"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=543m -Xmx662m -Xms662m"}
+	expectedDeployments["suse-observability-initializer"] = v1.EnvVar{Name: "JAVA_OPTS", Value: "-XX:MaxDirectMemorySize=422m -Xmx783m -Xms109m"}
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 
@@ -65,14 +65,14 @@ func TestSplitServicesJavaHeapRender(t *testing.T) {
 }
 
 func TestServerJavaHeapRenderWithAllJavaOptsOverride(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/components_all_javaopts.yaml", "values/split_disabled.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/components_all_javaopts.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stsServerDeployment appsv1.Deployment
 
 	for _, deployment := range resources.Deployments {
-		if deployment.Name == "stackstate-k8s-server" {
+		if deployment.Name == "suse-observability-server" {
 			stsServerDeployment = deployment
 		}
 	}
@@ -85,14 +85,14 @@ func TestServerJavaHeapRenderWithAllJavaOptsOverride(t *testing.T) {
 }
 
 func TestServerJavaHeapRenderWithServerJavaOptsOverride(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/components_server_javaopts.yaml", "values/split_disabled.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/components_server_javaopts.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stsServerDeployment appsv1.Deployment
 
 	for _, deployment := range resources.Deployments {
-		if deployment.Name == "stackstate-k8s-server" {
+		if deployment.Name == "suse-observability-server" {
 			stsServerDeployment = deployment
 		}
 	}
@@ -105,14 +105,14 @@ func TestServerJavaHeapRenderWithServerJavaOptsOverride(t *testing.T) {
 }
 
 func TestServerJavaHeapRenderWithBothJavaOptsOverride(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/components_all_javaopts.yaml", "values/components_server_javaopts.yaml", "values/split_disabled.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/components_all_javaopts.yaml", "values/components_server_javaopts.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stsServerDeployment appsv1.Deployment
 
 	for _, deployment := range resources.Deployments {
-		if deployment.Name == "stackstate-k8s-server" {
+		if deployment.Name == "suse-observability-server" {
 			stsServerDeployment = deployment
 		}
 	}

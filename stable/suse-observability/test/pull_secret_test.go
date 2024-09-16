@@ -9,16 +9,16 @@ import (
 )
 
 func TestPullSecret(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "e2es"}
 
-	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "stackstate-k8s-pull-secret")
-	CheckPullSecret(t, resources, "stackstate-k8s-pull-secret", "test", "secret", "quay.io")
+	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "suse-observability-pull-secret")
+	CheckPullSecret(t, resources, "suse-observability-pull-secret", "test", "secret", "quay.io")
 }
 
 func TestPullSecretGlobalNamed(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/pull_secret_global_named.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/pull_secret_global_named.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "e2es"}
 
@@ -30,7 +30,7 @@ func TestPullSecretGlobalNamed(t *testing.T) {
 	}
 }
 func TestImagePullSecretName(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/pull_secret_name.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/pull_secret_name.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "e2es"}
 
@@ -43,28 +43,28 @@ func TestImagePullSecretName(t *testing.T) {
 }
 
 func TestGlobalRegistryLocalPullSecret(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/pull_secret_global_registry.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/pull_secret_global_registry.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "e2es"}
 
-	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "stackstate-k8s-pull-secret")
-	CheckPullSecret(t, resources, "stackstate-k8s-pull-secret", "test", "secret", "my.registry.com")
+	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "suse-observability-pull-secret")
+	CheckPullSecret(t, resources, "suse-observability-pull-secret", "test", "secret", "my.registry.com")
 }
 
 func TestGlobalOverridesLocalPullSecretDetails(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/pull_secret_both.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/pull_secret_both.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "e2es"}
 
-	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "stackstate-k8s-pull-secret", "test-secret")
-	CheckPullSecret(t, resources, "stackstate-k8s-pull-secret", "test", "secret", "my.registry.com")
+	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "suse-observability-pull-secret", "test-secret")
+	CheckPullSecret(t, resources, "suse-observability-pull-secret", "test", "secret", "my.registry.com")
 }
 
 func CheckDeploymentsForPullSecret(t *testing.T, resources helmtestutil.KubernetesResources, deploymentsToCheck []string, pullSecretName ...string) {
 	checked := []string{}
 	for _, deployment := range resources.Deployments {
 		for _, name := range deploymentsToCheck {
-			if ("stackstate-k8s-" + name) == deployment.Name {
+			if ("suse-observability-" + name) == deployment.Name {
 				checked = append(checked, name)
 				assert.Len(t, deployment.Spec.Template.Spec.ImagePullSecrets, len(pullSecretName))
 				for _, secret := range deployment.Spec.Template.Spec.ImagePullSecrets {

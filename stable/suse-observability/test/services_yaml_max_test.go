@@ -10,12 +10,12 @@ import (
 )
 
 func TestYamlMaxRender(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/split_disabled.yaml", "values/yaml_max.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/split_disabled.yaml", "values/yaml_max.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
-	expectedDeployments["stackstate-k8s-server"] = v1.EnvVar{Name: "CONFIG_FORCE_stackstate_yaml_codePointLimit", Value: "3145728"}
+	expectedDeployments["suse-observability-server"] = v1.EnvVar{Name: "CONFIG_FORCE_stackstate_yaml_codePointLimit", Value: "3145728"}
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 
@@ -33,12 +33,12 @@ func TestYamlMaxRender(t *testing.T) {
 }
 
 func TestYamlMaxNoUnitRender(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/split_disabled.yaml", "values/yaml_max_no_units.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/split_disabled.yaml", "values/yaml_max_no_units.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
-	expectedDeployments["stackstate-k8s-server"] = v1.EnvVar{Name: "CONFIG_FORCE_stackstate_yaml_codePointLimit", Value: "5000000"}
+	expectedDeployments["suse-observability-server"] = v1.EnvVar{Name: "CONFIG_FORCE_stackstate_yaml_codePointLimit", Value: "5000000"}
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 
@@ -56,12 +56,12 @@ func TestYamlMaxNoUnitRender(t *testing.T) {
 }
 
 func TestSplitYamlMaxRender(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/yaml_max.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/yaml_max.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
-	expectedDeployments["stackstate-k8s-api"] = v1.EnvVar{Name: "CONFIG_FORCE_stackstate_yaml_codePointLimit", Value: "3145728"}
+	expectedDeployments["suse-observability-api"] = v1.EnvVar{Name: "CONFIG_FORCE_stackstate_yaml_codePointLimit", Value: "3145728"}
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 
@@ -79,12 +79,12 @@ func TestSplitYamlMaxRender(t *testing.T) {
 }
 
 func TestSplitYamlMaxNoUnitRender(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/yaml_max_no_units.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/yaml_max_no_units.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]v1.EnvVar)
-	expectedDeployments["stackstate-k8s-api"] = v1.EnvVar{Name: "CONFIG_FORCE_stackstate_yaml_codePointLimit", Value: "5000000"}
+	expectedDeployments["suse-observability-api"] = v1.EnvVar{Name: "CONFIG_FORCE_stackstate_yaml_codePointLimit", Value: "5000000"}
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 

@@ -9,12 +9,12 @@ import (
 )
 
 func TestRegularImageNonSplit(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/split_disabled.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/split_disabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]string)
-	expectedDeployments["stackstate-k8s-server"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["suse-observability-server"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 
@@ -32,18 +32,18 @@ func TestRegularImageNonSplit(t *testing.T) {
 }
 
 func TestRegularImageSplit(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]string)
-	expectedDeployments["stackstate-k8s-api"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
-	expectedDeployments["stackstate-k8s-checks"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
-	expectedDeployments["stackstate-k8s-health-sync"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
-	expectedDeployments["stackstate-k8s-initializer"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
-	expectedDeployments["stackstate-k8s-notification"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
-	expectedDeployments["stackstate-k8s-state"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
-	expectedDeployments["stackstate-k8s-sync"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["suse-observability-api"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["suse-observability-checks"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["suse-observability-health-sync"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["suse-observability-initializer"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["suse-observability-notification"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["suse-observability-state"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["suse-observability-sync"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 
@@ -61,18 +61,18 @@ func TestRegularImageSplit(t *testing.T) {
 }
 
 func TestHbase12ImageSplit(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "stackstate-k8s", "values/full.yaml", "values/hbase12_enabled.yaml")
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/hbase12_enabled.yaml")
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var expectedDeployments = make(map[string]string)
-	expectedDeployments["stackstate-k8s-api"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
-	expectedDeployments["stackstate-k8s-checks"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
-	expectedDeployments["stackstate-k8s-health-sync"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
-	expectedDeployments["stackstate-k8s-initializer"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
-	expectedDeployments["stackstate-k8s-notification"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
-	expectedDeployments["stackstate-k8s-state"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
-	expectedDeployments["stackstate-k8s-sync"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["suse-observability-api"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["suse-observability-checks"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["suse-observability-health-sync"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["suse-observability-initializer"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["suse-observability-notification"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["suse-observability-state"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
+	expectedDeployments["suse-observability-sync"] = ".*stackstate-server:\\d\\.0\\.0-snapshot.*-2\\.5"
 
 	var foundDeployments = make(map[string]appsv1.Deployment)
 
