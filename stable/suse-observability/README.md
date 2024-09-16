@@ -959,6 +959,8 @@ stackstate/stackstate
 | victoriametrics-cluster.vminsert.extraArgs.maxLabelsPerTimeseries | int | `60` |  |
 | victoriametrics-cluster.vminsert.extraArgs.replicationFactor | int | `2` |  |
 | victoriametrics-cluster.vminsert.extraLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
+| victoriametrics-cluster.vminsert.image.repository | string | `"quay.io/stackstate/vminsert"` | Repository for vminsert |
+| victoriametrics-cluster.vminsert.image.tag | string | `"v1.103.0-cluster-d94345cb"` | Tag of vminsert image |
 | victoriametrics-cluster.vminsert.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vminsert.check_names" | string | `"[\"openmetrics\"]"` |  |
 | victoriametrics-cluster.vminsert.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vminsert.init_configs" | string | `"[{}]"` |  |
 | victoriametrics-cluster.vminsert.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vminsert.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8480/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\", \"vminsert*\"] } ]"` |  |
@@ -977,6 +979,8 @@ stackstate/stackstate
 | victoriametrics-cluster.vmselect.extraArgs."search.cacheTimestampOffset" | string | `"10m"` |  |
 | victoriametrics-cluster.vmselect.extraArgs.replicationFactor | int | `2` |  |
 | victoriametrics-cluster.vmselect.extraLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
+| victoriametrics-cluster.vmselect.image.repository | string | `"quay.io/stackstate/vmselect"` | Repository for vmselect |
+| victoriametrics-cluster.vmselect.image.tag | string | `"v1.103.0-cluster-cf63b26d"` | Tag of vmselect image |
 | victoriametrics-cluster.vmselect.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmselect.check_names" | string | `"[\"openmetrics\"]"` |  |
 | victoriametrics-cluster.vmselect.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmselect.init_configs" | string | `"[{}]"` |  |
 | victoriametrics-cluster.vmselect.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmselect.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8481/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\", \"vmselect*\"] } ]"` |  |
@@ -993,6 +997,8 @@ stackstate/stackstate
 | victoriametrics-cluster.vmstorage.affinity | object | `{}` |  |
 | victoriametrics-cluster.vmstorage.extraArgs."dedup.minScrapeInterval" | string | `"1ms"` |  |
 | victoriametrics-cluster.vmstorage.extraLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
+| victoriametrics-cluster.vmstorage.image.repository | string | `"quay.io/stackstate/vmstorage"` | Repository for vmstorage |
+| victoriametrics-cluster.vmstorage.image.tag | string | `"v1.103.0-cluster-dc396072"` | Tag of vmstorage image |
 | victoriametrics-cluster.vmstorage.persistentVolume.size | string | `"250Gi"` |  |
 | victoriametrics-cluster.vmstorage.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmstorage.check_names" | string | `"[\"openmetrics\"]"` |  |
 | victoriametrics-cluster.vmstorage.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmstorage.init_configs" | string | `"[{}]"` |  |
