@@ -222,7 +222,6 @@ local push_stackstate_chart_releases =
 local test_chart_jobs = {
   ['test_%s' % chart]: (test_chart_job(chart))
   for chart in (charts + public_charts)
-  if chart != 'suse-observability'
 };
 
 local itest_stackstate = {
