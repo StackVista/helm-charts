@@ -995,7 +995,7 @@ stackstate:
           ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "500Mi"
-        javaHeapMemoryFraction: "55"
+        javaHeapMemoryFraction: "45"
       # stackstate.components.server.replicaCount -- Number of `server` replicas.
       replicaCount: 1
       # stackstate.components.server.nodeSelector -- Node labels for pod assignment.
