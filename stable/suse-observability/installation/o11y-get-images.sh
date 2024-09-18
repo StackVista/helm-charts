@@ -57,7 +57,7 @@ if [ ! -f "${helm_chart_archive}" ]; then
 fi
 
 # Helm values to enable non-deafult features and get their images.
-helm_values="backup.enabled=true,minio.accessKey=ABCDEFGH,minio.secretKey=ABCDEFGHABCDEFGH,stackstate.baseUrl=http://dummy.stackstate.io,stackstate.admin.authentication.password=dummy,stackstate.authentication.adminPassword=dummy,stackstate.license.key=dummy,global.receiverApiKey=dummy,stackstate.experimental.traces=true,opentelemetry.enabled=true,clickhouse.enabled=true"
+helm_values="anomaly-detection.enabled=true,backup.enabled=true,minio.accessKey=ABCDEFGH,minio.secretKey=ABCDEFGHABCDEFGH,stackstate.baseUrl=http://dummy.stackstate.io,stackstate.admin.authentication.password=dummy,stackstate.authentication.adminPassword=dummy,stackstate.license.key=dummy,global.receiverApiKey=dummy,stackstate.experimental.traces=true,opentelemetry.enabled=true,clickhouse.enabled=true"
 helm_release=release
 
 # Render the manifests from the Helm chart, skipping known warnings.
