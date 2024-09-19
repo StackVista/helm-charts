@@ -1,3 +1,8 @@
 baseUrl: "https://some-test-helm-render.stackstate.io"
 
 license: "some-test-license-key"
+
+baseConfig:
+  generate: true
+sizing:
+  generate: false

@@ -11,14 +11,14 @@ import (
 )
 
 func TestGenerateValuesNoReceiverApiKey(t *testing.T) {
-	values := renderAsYaml(t, []string{"values/required.yaml"})
+	values := renderAsYaml(t, []string{"values/baseConfig.yaml"})
 	v, err := yamlpath.YamlPath(values, "global.receiverApiKey")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, v)
 }
 
 func TestGenerateValuesPullSecretNotGenerated(t *testing.T) {
-	values := renderAsYaml(t, []string{"values/required.yaml"})
+	values := renderAsYaml(t, []string{"values/baseConfig.yaml"})
 	v, err := yamlpath.YamlPath(values, "pull-secret")
 	assert.NoError(t, err)
 	assert.Empty(t, v)
@@ -28,7 +28,7 @@ func TestGenerateValuesPullSecretNotGenerated(t *testing.T) {
 }
 
 func TestGenerateValuesWithGeneratesBcryptPasswords(t *testing.T) {
-	values := renderAsYaml(t, []string{"values/required.yaml"})
+	values := renderAsYaml(t, []string{"values/baseConfig.yaml"})
 	v, err := yamlpath.YamlPath(values, "stackstate.admin.authentication.password")
 	assert.NoError(t, err)
 	assert.Contains(t, v, "$2a$10$")
@@ -39,7 +39,7 @@ func TestGenerateValuesWithGeneratesBcryptPasswords(t *testing.T) {
 }
 
 func TestGenerateValuesWithPullSecret(t *testing.T) {
-	values := renderAsYaml(t, []string{"values/required.yaml", "values/pullsecret.yaml"})
+	values := renderAsYaml(t, []string{"values/baseConfig.yaml", "values/pullsecret.yaml"})
 	v, err := yamlpath.YamlPath(values, "global.imagePullSecrets[0]")
 	assert.NoError(t, err)
 	assert.Contains(t, v, "suse-observability-pull-secret")
@@ -58,7 +58,7 @@ func TestGenerateValuesWithPullSecret(t *testing.T) {
 }
 
 func TestGenerateValuesWithPlaintextPasswords(t *testing.T) {
-	values := renderAsYaml(t, []string{"values/required.yaml", "values/plaintextpasswords.yaml"})
+	values := renderAsYaml(t, []string{"values/baseConfig.yaml", "values/plaintextpasswords.yaml"})
 	v, err := yamlpath.YamlPath(values, "stackstate.admin.authentication.password")
 	assert.NoError(t, err)
 	assert.Contains(t, v, "$2a$10$")
@@ -68,7 +68,7 @@ func TestGenerateValuesWithPlaintextPasswords(t *testing.T) {
 }
 
 func TestGenerateValuesWithBcryptPasswords(t *testing.T) {
-	values := renderAsYaml(t, []string{"values/required.yaml", "values/bcryptpasswords.yaml"})
+	values := renderAsYaml(t, []string{"values/baseConfig.yaml", "values/bcryptpasswords.yaml"})
 	v, err := yamlpath.YamlPath(values, "stackstate.admin.authentication.password")
 	assert.NoError(t, err)
 	assert.Equal(t, v, "$2a$10$qCWqX0H9E1crJ3tibX7ChuPSmkd2T6sBcSEzZc6gPBYH7Vm.qQKH.")
@@ -78,10 +78,24 @@ func TestGenerateValuesWithBcryptPasswords(t *testing.T) {
 }
 
 func TestGenerateValuesSetReceiverApiKey(t *testing.T) {
-	values := renderAsYaml(t, []string{"values/required.yaml", "values/apikey.yaml"})
+	values := renderAsYaml(t, []string{"values/baseConfig.yaml", "values/apikey.yaml"})
 	v, err := yamlpath.YamlPath(values, "global.receiverApiKey")
 	assert.NoError(t, err)
 	assert.Equal(t, "stackstate-api-key-1234", v)
+}
+
+func TestGenerateValuesForSizing(t *testing.T) {
+	values := renderAsYaml(t, []string{"values/sizing.yaml"})
+	v, err := yamlpath.YamlPath(values, "clickhouse.replicaCount")
+	assert.NoError(t, err)
+	assert.NotEmpty(t, v)
+}
+
+func TestGenerateValuesForAffinity(t *testing.T) {
+	values := renderAsYaml(t, []string{"values/affinity.yaml"})
+	v, err := yamlpath.YamlPath(values, "clickhouse.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution")
+	assert.NoError(t, err)
+	assert.NotEmpty(t, v)
 }
 
 func renderAsYaml(t *testing.T, values []string) map[string]interface{} {
