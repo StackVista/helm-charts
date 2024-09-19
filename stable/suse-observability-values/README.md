@@ -2,7 +2,7 @@
 
 Helm Chart for rendering SUSE Observability Values
 
-Current chart version is `1.0.1`
+Current chart version is `1.0.2`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -46,9 +46,14 @@ The following values can be optionally set.
 |-----|------|---------|-------------|
 | adminApiPassword | string | `""` | The password for the default 'admin' user used for authenticating with the SUSE Observability Admin API. If not provided a random password is generated. If the password is not a bcrypt hash, but provided in plaintext, the value will be bcrypt hashed in the output. |
 | adminPassword | string | `""` | The password for the default 'admin' user used for authenticating with the SUSE Observability UI. If not provided a random password is generated.  If the password is not a bcrypt hash, but provided in plaintext, the value will be bcrypt hashed in the output. |
+| affinity.generate | bool | `false` | If we want to generate affinity values |
+| affinity.nodeAffinity | string | `nil` | Node Affinity settings |
+| baseConfig.generate | bool | `false` | If we want to generate the base configuration |
 | baseUrl | string | `""` | The base URL of the SUSE Observability instance. |
 | imageRegistry | string | `"registry.rancher.com"` | The registry to pull the SUSE Observability images from. |
 | license | string | `nil` | The SUSE Observability license key. |
 | pullSecret.password | string | `nil` | The password used for pulling all SUSE Observability images from the registry. |
 | pullSecret.username | string | `nil` | The username used for pulling all SUSE Observability images from the registry. |
 | receiverApiKey | string | `""` | The SUSE Observability Receiver API Key, used for sending telemetry data to the server. |
+| sizing.generate | bool | `true` | If we want to generate the sizing values that match the amount of nodes we are monitoring |
+| sizing.profile | string | `nil` | Profile. OneOf 10-nonha, 20-nonha, 50-nonha, 100-nonha, 150-ha, 250-ha, 500-ha |

@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "required": [
+  ],
+  "properties": {
+    "sizing": {
+      "type": "object",
+      "required": [
+        "generate"
+      ],
+      "properties": {
+        "generate": {
+          "type": "boolean"
+        },
+        "profile": {
+          "type": "string",
+          "enum": [
+            "10-nonha",
+            "20-nonha",
+            "50-nonha",
+            "150-ha",
+            "250-ha",
+            "500-ha"
+          ]
+        }
+      }
+    }
+  }
+}

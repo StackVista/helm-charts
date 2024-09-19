@@ -1,0 +1,70 @@
+{{- if .Values.affinity.generate }}
+{{- $nodeAffinity := .Values.affinity.nodeAffinity | required "Please provide your affinity rules to be applied" }}
+clickhouse:
+  affinity:
+    nodeAffinity:
+{{- with $nodeAffinity }}
+  {{- toYaml . | nindent 6 }}
+{{- end }}
+
+elasticsearch:
+  nodeAffinity:
+{{- with $nodeAffinity }}
+  {{- toYaml . | nindent 4 }}
+{{- end }}
+
+hbase:
+  all:
+    affinity:
+      nodeAffinity:
+{{- with $nodeAffinity }}
+  {{- toYaml . | nindent 8 }}
+{{- end }}
+
+kafka:
+  affinity:
+    nodeAffinity:
+{{- with $nodeAffinity }}
+  {{- toYaml . | nindent 8 }}
+{{- end }}
+
+opentelemetry-collector:
+  affinity:
+    nodeAffinity:
+{{- with $nodeAffinity }}
+  {{- toYaml . | nindent 8 }}
+{{- end }}
+
+stackstate:
+  components:
+    all:
+      affinity:
+        nodeAffinity:
+{{- with $nodeAffinity }}
+  {{- toYaml . | nindent 10 }}
+{{- end }}
+
+victoria-metrics-0:
+  server:
+    affinity:
+      nodeAffinity:
+{{- with $nodeAffinity }}
+  {{- toYaml . | nindent 8 }}
+{{- end }}
+
+victoria-metrics-1:
+  server:
+    affinity:
+      nodeAffinity:
+{{- with $nodeAffinity }}
+  {{- toYaml . | nindent 8 }}
+{{- end }}
+
+zookeeper:
+  affinity:
+    nodeAffinity:
+{{- with $nodeAffinity }}
+  {{- toYaml . | nindent 8 }}
+{{- end }}
+
+{{- end }}

@@ -20,3 +20,16 @@ baseUrl: ""
 adminApiPassword: ""
 # adminPassword -- The password for the default 'admin' user used for authenticating with the SUSE Observability UI. If not provided a random password is generated.  If the password is not a bcrypt hash, but provided in plaintext, the value will be bcrypt hashed in the output.
 adminPassword: ""
+baseConfig:
+  # baseConfig.generate -- If we want to generate the base configuration
+  generate: false
+sizing:
+  # sizing.generate -- If we want to generate the sizing values that match the amount of nodes we are monitoring
+  generate: true
+  # sizing.profile -- Profile. OneOf 10-nonha, 20-nonha, 50-nonha, 100-nonha, 150-ha, 250-ha, 500-ha
+  profile: null
+affinity:
+  # affinity.generate -- If we want to generate affinity values
+  generate: false
+  # affinity.nodeAffinity --  Node Affinity settings
+  nodeAffinity: null

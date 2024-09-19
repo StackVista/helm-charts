@@ -1,3 +1,4 @@
+{{- if .Values.baseConfig.generate }}
 global:
   receiverApiKey: {{ template "sts.values.receiverKey" . }}
 {{- if and .Values.pullSecret.username .Values.pullSecret.password }}
@@ -30,4 +31,5 @@ stackstate:
 {{- end }}
 {{ if .Values.generatedAdminApiPassword -}}
 # Your SUSE Observability admin API password is: {{ .Values.generatedAdminApiPassword }}
+{{- end }}
 {{- end }}
