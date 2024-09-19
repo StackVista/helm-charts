@@ -1,54 +1,44 @@
-# community10-nonha
+# community100-nonha
 clickhouse:
   replicaCount: 1
   persistence:
     size: 50Gi
 
 elasticsearch:
-  prometheus-elasticsearch-exporter:
-    resources:
-      limits:
-        cpu: "50m"
-        memory: "50Mi"
-      requests:
-        cpu: "50m"
-        memory: "50Mi"
   minimumMasterNodes: 1
   replicas: 1
-  # Only overriding memory settings
-  esJavaOpts: "-Xmx1500m -Xms1500m -Des.allow_insecure_settings=true -Xlog:disable -Xlog:gc*,gc+age=trace,safepoint:file=logs/gc.log:utctime,pid,tags:filecount=8,filesize=16m"
   resources:
     requests:
-      cpu: 500m
-      memory: 2500Mi
+      cpu: "750m"
+      memory: "7Gi"
     limits:
-      memory: 2500Mi
+      memory: "7Gi"
   volumeClaimTemplate:
     resources:
       requests:
-        storage: 50Gi
+        storage: 200Gi
+
 hbase:
   version: "2.5"
   deployment:
     mode: "Mono"
   stackgraph:
-    podAnnotations:
-      app.kubernetes.io/part-of: 'stackstate-k8s'
     persistence:
       size: 100Gi
     resources:
       requests:
-        memory: "2250Mi"
-        cpu: "500m"
+        memory: "4500Mi"
+        cpu: "2000m"
       limits:
-        memory: "2250Mi"
+        memory: "4500Mi"
+        cpu: null
   tephra:
     resources:
       limits:
-        memory: "512Mi"
+        memory: "1Gi"
       requests:
-        memory: "512Mi"
-        cpu: "50m"
+        memory: "1Gi"
+        cpu: "100m"
     replicaCount: 1
 kafka:
   defaultReplicationFactor: 1
@@ -57,11 +47,11 @@ kafka:
   transactionStateLogReplicationFactor: 1
   resources:
     requests:
-      cpu: "800m"
-      memory: "2048Mi"
+      cpu: "2000m"
+      memory: "3000Mi"
     limits:
-      memory: "2048Mi"
-      cpu: null
+      memory: "3000Mi"
+
 stackstate:
   experimental:
     server:
@@ -74,16 +64,13 @@ stackstate:
     upgradeOnStartup:
       - kubernetes-v2
       - stackstate-k8s-agent-v2
+
   components:
     all:
-      podAnnotations:
-        app.kubernetes.io/name: 'stackstate-k8s'
       extraEnv:
         open:
-          CONFIG_FORCE_stackstate_topologyQueryService_maxStackElementsPerQuery: "1000"
-          CONFIG_FORCE_stackstate_topologyQueryService_maxLoadedElementsPerQuery: "1000"
           CONFIG_FORCE_stackgraph_retentionWindowMs: 86400000
-          CONFIG_FORCE_stackstate_agents_agentLimit: "10"
+          CONFIG_FORCE_stackstate_agents_agentLimit: "100"
           CONFIG_FORCE_stackstate_traces_retentionDays: "1"
     server:
       extraEnv:
@@ -94,10 +81,12 @@ stackstate:
       resources:
         limits:
           ephemeral-storage: 5Gi
-          memory: 5Gi
+          memory: 8Gi
         requests:
-          cpu: 1500m
-          memory: 5Gi
+          cpu: 4000m
+          memory: 8Gi
+      sizing:
+        javaHeapMemoryFraction: "45"
     e2es:
       retention: 1
       resources:
@@ -109,10 +98,10 @@ stackstate:
     correlate:
       resources:
         requests:
-          memory: "1250Mi"
-          cpu: "500m"
+          memory: "4000Mi"
+          cpu: "5000m"
         limits:
-          memory: "1250Mi"
+          memory: "4000Mi"
     receiver:
       split:
         enabled: false
@@ -122,36 +111,31 @@ stackstate:
       retention: 1
       resources:
         requests:
-          memory: "1000Mi"
-          cpu: "1000m"
+          memory: "4Gi"
+          cpu: "5500m"
         limits:
-          memory: "1000Mi"
+          memory: "4Gi"
     vmagent:
       resources:
         limits:
-          memory: "512Mi"
+          cpu: null
+          memory: "1250Mi"
         requests:
-          memory: "384Mi"
+          cpu: "1250m"
+          memory: "1250Mi"
     ui:
       replicaCount: 1
 victoria-metrics-0:
   server:
     resources:
       requests:
-        cpu: "500m"
-        memory: 1500Mi
+        cpu: "1500m"
+        memory: 8Gi
       limits:
-        memory: 1750Mi
+        memory: 8Gi
     retentionPeriod: 1d
     persistentVolume:
       size: 100Gi
-  backup:
-    vmbackup:
-      resources:
-        requests:
-          memory: 50Mi
-        limits:
-          memory: 50Mi
 victoria-metrics-1:
   enabled: false
   server:

@@ -1,0 +1,242 @@
+# community150-ha
+clickhouse:
+  replicaCount: 1
+  persistence:
+    size: 100Gi
+
+elasticsearch:
+  volumeClaimTemplate:
+    resources:
+      requests:
+        storage: 200Gi
+
+hbase:
+  version: "2.5"
+  deployment:
+    mode: "Distributed"
+  hbase:
+    console:
+      resources:
+        requests:
+          cpu: "20m"
+    master:
+      resources:
+        requests:
+          cpu: "500m"
+        limits:
+          ephemeral-storage: "20Mi"
+      experimental:
+        execLivenessProbe:
+          enabled: true
+    regionserver:
+      resources:
+        requests:
+          cpu: "2000m"
+        limits:
+          ephemeral-storage: "100Mi"
+  hdfs:
+    datanode:
+      persistence:
+        size: 100Gi
+      resources:
+        requests:
+          cpu: "600m"
+        limits:
+          ephemeral-storage: "70Mi"
+    namenode:
+      resources:
+        requests:
+          cpu: "200m"
+        limits:
+          ephemeral-storage: "70Mi"
+    secondarynamenode:
+      enabled: true
+      resources:
+        requests:
+          cpu: "10m"
+        limits:
+          ephemeral-storage: "70Mi"
+  tephra:
+    resources:
+      limits:
+        memory: "1Gi"
+      requests:
+        memory: "1Gi"
+        cpu: "500m"
+    replicaCount: 2
+kafka:
+  transactionStateLogReplicationFactor: 1
+  resources:
+    requests:
+      cpu: "1"
+      memory: "3Gi"
+    limits:
+      memory: "4Gi"
+      ephemeral-storage: "70Mi"
+
+stackstate:
+  experimental:
+    server:
+      split: true
+  stackpacks:
+    source: docker-image
+    updateStackPacksInterval: 30 seconds
+    s3:
+      bucket: "sts-stackpacks-prod"
+    upgradeOnStartup:
+      - kubernetes-v2
+      - stackstate-k8s-agent-v2
+  components:
+    all:
+      extraEnv:
+        open:
+          CONFIG_FORCE_stackgraph_retentionWindowMs: 86400000
+          CONFIG_FORCE_stackstate_agents_agentLimit: "150"
+          CONFIG_FORCE_stackstate_traces_retentionDays: "1"
+    api:
+      resources:
+        requests:
+          cpu: "1500m"
+          memory: "4Gi"
+        limits:
+          ephemeral-storage: "800Mi"
+          memory: "4Gi"
+    checks:
+      resources:
+        requests:
+          cpu: "3000m"
+          memory: 5Gi
+        limits:
+          memory: 5Gi
+          ephemeral-storage: "700Mi"
+    healthSync:
+      resources:
+        limits:
+          memory: 5Gi
+          ephemeral-storage: "650Mi"
+        requests:
+          memory: 5Gi
+          cpu: "1000m"
+      sizing:
+        baseMemoryConsumption: "1200Mi"
+    initializer:
+      resources:
+        requests:
+          cpu: "50m"
+        limits:
+          ephemeral-storage: "60Mi"
+    notification:
+      resources:
+        requests:
+          cpu: 500m
+          memory: "3000Mi"
+        limits:
+          memory: "3000Mi"
+    router:
+      resources:
+        requests:
+          cpu: "120m"
+        limits:
+          ephemeral-storage: "60Mi"
+    slicing:
+      resources:
+        requests:
+          cpu: "300m"
+        limits:
+          ephemeral-storage: "60Mi"
+    state:
+      resources:
+        limits:
+          memory: "4000Mi"
+          ephemeral-storage: "700Mi"
+        requests:
+          cpu: "2"
+          memory: "4000Mi"
+    sync:
+      tmpToPVC:
+        volumeSize: 10Gi
+      resources:
+        limits:
+          memory: "6500Mi"
+          ephemeral-storage: "700Mi"
+        requests:
+          cpu: "2000m"
+          memory: "6500Mi"
+    e2es:
+      retention: 1
+      resources:
+        requests:
+          memory: "512Mi"
+          cpu: "50m"
+        limits:
+          memory: "512Mi"
+    correlate:
+      replicaCount: 3
+      resources:
+        limits:
+          memory: 3500Mi
+        requests:
+          cpu: 3
+          memory: 3500Mi
+          ephemeral-storage: "60Mi"
+    receiver:
+      split:
+        enabled: true
+        base:
+          resources:
+            requests:
+              memory: "5500Mi"
+              cpu: "4000m"
+            limits:
+              memory: "5500Mi"
+        processAgent:
+          resources:
+            requests:
+              memory: "2500Mi"
+              cpu: "1000m"
+            limits:
+              memory: "2500Mi"
+        logs:
+          resources:
+            requests:
+              memory: "3Gi"
+              cpu: "1000m"
+            limits:
+              memory: "3Gi"
+      extraEnv:
+        open:
+          CONFIG_FORCE_akka_http_host__connection__pool_max__open__requests: "256"
+      retention: 1
+    vmagent:
+      resources:
+        limits:
+          cpu: null
+          memory: "1500Mi"
+        requests:
+          cpu: 1500m
+          memory: "1500Mi"
+    ui:
+      replicaCount: 2
+victoria-metrics-0:
+  server:
+    resources:
+      requests:
+        cpu: 2
+        memory: 9Gi
+      limits:
+        memory: 9Gi
+    retentionPeriod: 1d
+    persistentVolume:
+      size: 200Gi
+victoria-metrics-1:
+  enabled: true
+  server:
+    resources:
+      requests:
+        cpu: 2
+        memory: 9Gi
+      limits:
+        memory: 9Gi
+    retentionPeriod: 1d
+    persistentVolume:
+      size: 200Gi

@@ -1,4 +1,4 @@
-# community10-nonha
+# community20-nonha
 clickhouse:
   replicaCount: 1
   persistence:
@@ -20,34 +20,33 @@ elasticsearch:
   resources:
     requests:
       cpu: 500m
-      memory: 2500Mi
+      memory: 3000Mi
     limits:
-      memory: 2500Mi
+      memory: 3000Mi
   volumeClaimTemplate:
     resources:
       requests:
         storage: 50Gi
+
 hbase:
   version: "2.5"
   deployment:
     mode: "Mono"
   stackgraph:
-    podAnnotations:
-      app.kubernetes.io/part-of: 'stackstate-k8s'
     persistence:
       size: 100Gi
     resources:
       requests:
-        memory: "2250Mi"
-        cpu: "500m"
+        memory: "2500Mi"
+        cpu: "1000m"
       limits:
-        memory: "2250Mi"
+        memory: "2500Mi"
   tephra:
     resources:
       limits:
-        memory: "512Mi"
+        memory: "600Mi"
       requests:
-        memory: "512Mi"
+        memory: "600Mi"
         cpu: "50m"
     replicaCount: 1
 kafka:
@@ -57,11 +56,12 @@ kafka:
   transactionStateLogReplicationFactor: 1
   resources:
     requests:
-      cpu: "800m"
+      cpu: "1000m"
       memory: "2048Mi"
     limits:
       memory: "2048Mi"
       cpu: null
+
 stackstate:
   experimental:
     server:
@@ -76,14 +76,12 @@ stackstate:
       - stackstate-k8s-agent-v2
   components:
     all:
-      podAnnotations:
-        app.kubernetes.io/name: 'stackstate-k8s'
       extraEnv:
         open:
           CONFIG_FORCE_stackstate_topologyQueryService_maxStackElementsPerQuery: "1000"
           CONFIG_FORCE_stackstate_topologyQueryService_maxLoadedElementsPerQuery: "1000"
           CONFIG_FORCE_stackgraph_retentionWindowMs: 86400000
-          CONFIG_FORCE_stackstate_agents_agentLimit: "10"
+          CONFIG_FORCE_stackstate_agents_agentLimit: "20"
           CONFIG_FORCE_stackstate_traces_retentionDays: "1"
     server:
       extraEnv:
@@ -94,10 +92,10 @@ stackstate:
       resources:
         limits:
           ephemeral-storage: 5Gi
-          memory: 5Gi
+          memory: 6Gi
         requests:
-          cpu: 1500m
-          memory: 5Gi
+          cpu: 2000m
+          memory: 6Gi
     e2es:
       retention: 1
       resources:
@@ -109,10 +107,10 @@ stackstate:
     correlate:
       resources:
         requests:
-          memory: "1250Mi"
-          cpu: "500m"
+          memory: "1750Mi"
+          cpu: "1500m"
         limits:
-          memory: "1250Mi"
+          memory: "1750Mi"
     receiver:
       split:
         enabled: false
@@ -122,16 +120,17 @@ stackstate:
       retention: 1
       resources:
         requests:
-          memory: "1000Mi"
+          memory: "1750Mi"
           cpu: "1000m"
         limits:
-          memory: "1000Mi"
+          memory: "1750Mi"
     vmagent:
       resources:
         limits:
-          memory: "512Mi"
+          memory: "600Mi"
         requests:
-          memory: "384Mi"
+          memory: "600Mi"
+          cpu: "300m"
     ui:
       replicaCount: 1
 victoria-metrics-0:
@@ -139,9 +138,9 @@ victoria-metrics-0:
     resources:
       requests:
         cpu: "500m"
-        memory: 1500Mi
+        memory: 2Gi
       limits:
-        memory: 1750Mi
+        memory: 2500Mi
     retentionPeriod: 1d
     persistentVolume:
       size: 100Gi
@@ -149,9 +148,9 @@ victoria-metrics-0:
     vmbackup:
       resources:
         requests:
-          memory: 50Mi
+          memory: 100Mi
         limits:
-          memory: 50Mi
+          memory: 100Mi
 victoria-metrics-1:
   enabled: false
   server:
