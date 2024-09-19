@@ -4,6 +4,7 @@ license: "some-test-license-key"
 baseConfig:
   generate: true
 sizing:
+  generate: true
   profile: "10-nonha"
 affinity:
   generate: true

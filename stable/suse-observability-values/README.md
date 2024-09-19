@@ -56,4 +56,4 @@ The following values can be optionally set.
 | pullSecret.username | string | `nil` | The username used for pulling all SUSE Observability images from the registry. |
 | receiverApiKey | string | `""` | The SUSE Observability Receiver API Key, used for sending telemetry data to the server. |
 | sizing.generate | bool | `true` | If we want to generate the sizing values that match the amount of nodes we are monitoring |
-| sizing.profile | string | `nil` | Profile. OneOf 10-nonha, 20-nonha, 50-nonha, 100-nonha, 150-ha, 250-ha, 500-ha |
+| sizing.profile | string | `""` | Profile. OneOf 10-nonha, 20-nonha, 50-nonha, 100-nonha, 150-ha, 250-ha, 500-ha |

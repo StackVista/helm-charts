@@ -27,7 +27,7 @@ sizing:
   # sizing.generate -- If we want to generate the sizing values that match the amount of nodes we are monitoring
   generate: true
   # sizing.profile -- Profile. OneOf 10-nonha, 20-nonha, 50-nonha, 100-nonha, 150-ha, 250-ha, 500-ha
-  profile: null
+  profile: ""
 affinity:
   # affinity.generate -- If we want to generate affinity values
   generate: false
