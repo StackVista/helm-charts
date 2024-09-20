@@ -32,8 +32,6 @@ hbase:
   deployment:
     mode: "Mono"
   stackgraph:
-    podAnnotations:
-      app.kubernetes.io/part-of: 'stackstate-k8s'
     persistence:
       size: 100Gi
     resources:
@@ -76,8 +74,6 @@ stackstate:
       - stackstate-k8s-agent-v2
   components:
     all:
-      podAnnotations:
-        app.kubernetes.io/name: 'stackstate-k8s'
       extraEnv:
         open:
           CONFIG_FORCE_stackstate_topologyQueryService_maxStackElementsPerQuery: "1000"
