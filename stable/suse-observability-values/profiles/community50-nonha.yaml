@@ -65,14 +65,7 @@ stackstate:
   experimental:
     server:
       split: false
-  stackpacks:
-    source: docker-image
-    updateStackPacksInterval: 30 seconds
-    s3:
-      bucket: "sts-stackpacks-prod"
-    upgradeOnStartup:
-      - kubernetes-v2
-      - stackstate-k8s-agent-v2
+
   components:
     all:
       extraEnv:
