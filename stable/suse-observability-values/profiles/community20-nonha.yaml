@@ -22,6 +22,7 @@ elasticsearch:
       cpu: 500m
       memory: 3000Mi
     limits:
+      cpu: 1000m
       memory: 3000Mi
   volumeClaimTemplate:
     resources:
@@ -41,9 +42,11 @@ hbase:
         cpu: "1000m"
       limits:
         memory: "2500Mi"
+        cpu: "2000m"
   tephra:
     resources:
       limits:
+        cpu: "100m"
         memory: "600Mi"
       requests:
         memory: "600Mi"
@@ -60,7 +63,7 @@ kafka:
       memory: "2048Mi"
     limits:
       memory: "2048Mi"
-      cpu: null
+      cpu: "2000m"
 
 stackstate:
   experimental:
@@ -73,9 +76,7 @@ stackstate:
         open:
           CONFIG_FORCE_stackstate_topologyQueryService_maxStackElementsPerQuery: "1000"
           CONFIG_FORCE_stackstate_topologyQueryService_maxLoadedElementsPerQuery: "1000"
-          CONFIG_FORCE_stackgraph_retentionWindowMs: 86400000
           CONFIG_FORCE_stackstate_agents_agentLimit: "20"
-          CONFIG_FORCE_stackstate_traces_retentionDays: "1"
     server:
       extraEnv:
         open:
@@ -85,18 +86,19 @@ stackstate:
       resources:
         limits:
           ephemeral-storage: 5Gi
+          cpu: 4000m
           memory: 6Gi
         requests:
           cpu: 2000m
           memory: 6Gi
     e2es:
-      retention: 1
       resources:
         requests:
           memory: "512Mi"
           cpu: "50m"
         limits:
           memory: "512Mi"
+          cpu: "100m"
     correlate:
       resources:
         requests:
@@ -104,23 +106,25 @@ stackstate:
           cpu: "1500m"
         limits:
           memory: "1750Mi"
+          cpu: "3000m"
     receiver:
       split:
         enabled: false
       extraEnv:
         open:
           CONFIG_FORCE_akka_http_host__connection__pool_max__open__requests: "256"
-      retention: 1
       resources:
         requests:
           memory: "1750Mi"
           cpu: "1000m"
         limits:
           memory: "1750Mi"
+          cpu: "2000m"
     vmagent:
       resources:
         limits:
           memory: "600Mi"
+          cpu: "600m"
         requests:
           memory: "600Mi"
           cpu: "300m"
@@ -133,8 +137,8 @@ victoria-metrics-0:
         cpu: "500m"
         memory: 2Gi
       limits:
+        cpu: "1000m"
         memory: 2500Mi
-    retentionPeriod: 1d
     persistentVolume:
       size: 100Gi
   backup:
@@ -147,7 +151,6 @@ victoria-metrics-0:
 victoria-metrics-1:
   enabled: false
   server:
-    retentionPeriod: 1d
     persistentVolume:
       size: 100Gi
 

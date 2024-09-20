@@ -1,2 +1,4 @@
+baseConfig:
+  generate: false
 sizing:
   profile: "10-nonha"

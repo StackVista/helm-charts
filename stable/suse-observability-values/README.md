@@ -48,7 +48,7 @@ The following values can be optionally set.
 | adminPassword | string | `""` | The password for the default 'admin' user used for authenticating with the SUSE Observability UI. If not provided a random password is generated.  If the password is not a bcrypt hash, but provided in plaintext, the value will be bcrypt hashed in the output. |
 | affinity.generate | bool | `false` | If we want to generate affinity values |
 | affinity.nodeAffinity | string | `nil` | Node Affinity settings |
-| baseConfig.generate | bool | `false` | If we want to generate the base configuration |
+| baseConfig.generate | bool | `true` | If we want to generate the base configuration |
 | baseUrl | string | `""` | The base URL of the SUSE Observability instance. |
 | imageRegistry | string | `"registry.rancher.com"` | The registry to pull the SUSE Observability images from. |
 | license | string | `nil` | The SUSE Observability license key. |

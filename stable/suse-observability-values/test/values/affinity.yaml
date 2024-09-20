@@ -1,3 +1,5 @@
+baseConfig:
+  generate: false
 sizing:
   generate: false
 affinity:

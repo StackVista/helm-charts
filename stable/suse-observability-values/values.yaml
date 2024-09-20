@@ -22,7 +22,7 @@ adminApiPassword: ""
 adminPassword: ""
 baseConfig:
   # baseConfig.generate -- If we want to generate the base configuration
-  generate: false
+  generate: true
 sizing:
   # sizing.generate -- If we want to generate the sizing values that match the amount of nodes we are monitoring
   generate: true

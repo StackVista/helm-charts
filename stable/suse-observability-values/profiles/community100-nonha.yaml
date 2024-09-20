@@ -12,6 +12,7 @@ elasticsearch:
       cpu: "750m"
       memory: "7Gi"
     limits:
+      cpu: "1500m"
       memory: "7Gi"
   volumeClaimTemplate:
     resources:
@@ -31,11 +32,12 @@ hbase:
         cpu: "2000m"
       limits:
         memory: "4500Mi"
-        cpu: null
+        cpu: "4000m"
   tephra:
     resources:
       limits:
         memory: "1Gi"
+        cpu: "200m"
       requests:
         memory: "1Gi"
         cpu: "100m"
@@ -50,6 +52,7 @@ kafka:
       cpu: "2000m"
       memory: "3000Mi"
     limits:
+      cpu: "4000m"
       memory: "3000Mi"
 
 stackstate:
@@ -61,9 +64,7 @@ stackstate:
     all:
       extraEnv:
         open:
-          CONFIG_FORCE_stackgraph_retentionWindowMs: 86400000
           CONFIG_FORCE_stackstate_agents_agentLimit: "100"
-          CONFIG_FORCE_stackstate_traces_retentionDays: "1"
     server:
       extraEnv:
         open:
@@ -73,6 +74,7 @@ stackstate:
       resources:
         limits:
           ephemeral-storage: 5Gi
+          cpu: 8000m
           memory: 8Gi
         requests:
           cpu: 4000m
@@ -80,13 +82,13 @@ stackstate:
       sizing:
         javaHeapMemoryFraction: "45"
     e2es:
-      retention: 1
       resources:
         requests:
           memory: "512Mi"
           cpu: "50m"
         limits:
           memory: "512Mi"
+          cpu: "100m"
     correlate:
       resources:
         requests:
@@ -94,23 +96,24 @@ stackstate:
           cpu: "5000m"
         limits:
           memory: "4000Mi"
+          cpu: "10000m"
     receiver:
       split:
         enabled: false
       extraEnv:
         open:
           CONFIG_FORCE_akka_http_host__connection__pool_max__open__requests: "256"
-      retention: 1
       resources:
         requests:
           memory: "4Gi"
           cpu: "5500m"
         limits:
           memory: "4Gi"
+          cpu: "11000m"
     vmagent:
       resources:
         limits:
-          cpu: null
+          cpu: "2500m"
           memory: "1250Mi"
         requests:
           cpu: "1250m"
@@ -124,14 +127,13 @@ victoria-metrics-0:
         cpu: "1500m"
         memory: 8Gi
       limits:
+        cpu: "3000m"
         memory: 8Gi
-    retentionPeriod: 1d
     persistentVolume:
       size: 100Gi
 victoria-metrics-1:
   enabled: false
   server:
-    retentionPeriod: 1d
     persistentVolume:
       size: 100Gi
 

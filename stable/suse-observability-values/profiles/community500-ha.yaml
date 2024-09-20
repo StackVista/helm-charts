@@ -20,6 +20,7 @@ hbase:
         requests:
           cpu: "500m"
         limits:
+          cpu: "1000m"
           ephemeral-storage: "20Mi"
       experimental:
         execLivenessProbe:
@@ -29,6 +30,7 @@ hbase:
         requests:
           cpu: "4000m"
         limits:
+          cpu: "8000m"
           ephemeral-storage: "100Mi"
   hdfs:
     datanode:
@@ -38,12 +40,14 @@ hbase:
         requests:
           cpu: "600m"
         limits:
+          cpu: "1200m"
           ephemeral-storage: "70Mi"
     namenode:
       resources:
         requests:
           cpu: "200m"
         limits:
+          cpu: "400m"
           ephemeral-storage: "70Mi"
     secondarynamenode:
       enabled: true
@@ -56,6 +60,7 @@ hbase:
     resources:
       limits:
         memory: "1Gi"
+        cpu: "1000m"
       requests:
         memory: "1Gi"
         cpu: "500m"
@@ -67,6 +72,7 @@ kafka:
       cpu: "3"
       memory: "3Gi"
     limits:
+      cpu: "6"
       memory: "4Gi"
       ephemeral-storage: "70Mi"
   # Need more kafka due to increased partition count
@@ -80,20 +86,9 @@ stackstate:
 
   components:
     all:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: topology.kubernetes.io/zone
-                    operator: In
-                    values:
-                      - "${AVAILABILITY_ZONE}"
       extraEnv:
         open:
-          CONFIG_FORCE_stackgraph_retentionWindowMs: 86400000
           CONFIG_FORCE_stackstate_agents_agentLimit: "500"
-          CONFIG_FORCE_stackstate_traces_retentionDays: "1"
     kafkaTopicCreate:
       extraEnv:
         open:
@@ -107,6 +102,7 @@ stackstate:
           memory: "6Gi"
         limits:
           ephemeral-storage: "800Mi"
+          cpu: "6000m"
           memory: "6Gi"
     checks:
       resources:
@@ -114,12 +110,14 @@ stackstate:
           cpu: "3000m"
           memory: 5Gi
         limits:
+          cpu: "6000m"
           memory: 5Gi
           ephemeral-storage: "700Mi"
     healthSync:
       resources:
         limits:
           memory: 8Gi
+          cpu: "8000m"
           ephemeral-storage: "650Mi"
         requests:
           memory: 8Gi
@@ -138,12 +136,14 @@ stackstate:
           cpu: 1500m
           memory: "3000Mi"
         limits:
+          cpu: 3000m
           memory: "3000Mi"
     router:
       resources:
         requests:
           cpu: "120m"
         limits:
+          cpu: "240m"
           ephemeral-storage: "60Mi"
     slicing:
       resources:
@@ -154,6 +154,7 @@ stackstate:
     state:
       resources:
         limits:
+          cpu: "4"
           memory: "4000Mi"
           ephemeral-storage: "700Mi"
         requests:
@@ -164,13 +165,13 @@ stackstate:
         volumeSize: 10Gi
       resources:
         limits:
+          cpu: "8000m"
           memory: 8Gi
           ephemeral-storage: "700Mi"
         requests:
           cpu: "4000m"
           memory: 8Gi
     e2es:
-      retention: 1
       resources:
         requests:
           memory: "512Mi"
@@ -184,7 +185,7 @@ stackstate:
           cpu: 2000m
           memory: 3000Mi
         limits:
-          cpu: null
+          cpu: 4000m
           memory: 3000Mi
       extraEnv:
         open:
@@ -200,6 +201,7 @@ stackstate:
               memory: "7Gi"
               cpu: "6000m"
             limits:
+              cpu: "12000m"
               memory: "7Gi"
         processAgent:
           resources:
@@ -208,6 +210,7 @@ stackstate:
               cpu: "1000m"
             limits:
               memory: "3Gi"
+              cpu: "2000m"
         logs:
           resources:
             requests:
@@ -215,14 +218,14 @@ stackstate:
               cpu: "1000m"
             limits:
               memory: "3Gi"
+              cpu: "2000m"
       extraEnv:
         open:
           CONFIG_FORCE_akka_http_host__connection__pool_max__open__requests: "256"
-      retention: 1
     vmagent:
       resources:
         limits:
-          cpu: null
+          cpu: 5000m
           memory: "2Gi"
         requests:
           cpu: 2500m
@@ -236,8 +239,8 @@ victoria-metrics-0:
         cpu: 3
         memory: 10Gi
       limits:
+        cpu: 6
         memory: 10Gi
-    retentionPeriod: 1d
     persistentVolume:
       size: 200Gi
 victoria-metrics-1:
@@ -248,7 +251,7 @@ victoria-metrics-1:
         cpu: 3
         memory: 10Gi
       limits:
+        cpu: 6
         memory: 10Gi
-    retentionPeriod: 1d
     persistentVolume:
       size: 200Gi
