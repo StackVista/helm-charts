@@ -170,7 +170,6 @@ stackstate:
           cpu: "50m"
         limits:
           memory: "512Mi"
-          cpu: "100m"
     correlate:
       replicaCount: 3
       resources:

@@ -34,13 +34,13 @@ hbase:
     mode: "Mono"
   stackgraph:
     persistence:
-      size: 100Gi
+      size: 20Gi
     resources:
       requests:
         memory: "2250Mi"
         cpu: "500m"
       limits:
-        cpu: "1000m"
+        cpu: "1500m"
         memory: "2250Mi"
   tephra:
     resources:
@@ -81,6 +81,7 @@ stackstate:
           CONFIG_FORCE_stackstate_sync_initializationBatchParallelism: "1"
           CONFIG_FORCE_stackstate_healthSync_initialLoadParallelism: "1"
           CONFIG_FORCE_stackstate_stateService_initializationParallelism: "1"
+          CONFIG_FORCE_stackstate_stateService_initialLoadTransactionSize: "2500"
       resources:
         limits:
           ephemeral-storage: 5Gi
@@ -95,7 +96,6 @@ stackstate:
           memory: "512Mi"
           cpu: "50m"
         limits:
-          cpu: "100m"
           memory: "512Mi"
     correlate:
       resources:
