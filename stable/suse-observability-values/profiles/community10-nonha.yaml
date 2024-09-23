@@ -34,7 +34,7 @@ hbase:
     mode: "Mono"
   stackgraph:
     persistence:
-      size: 20Gi
+      size: 50Gi
     resources:
       requests:
         memory: "2250Mi"
@@ -136,7 +136,7 @@ victoria-metrics-0:
         cpu: "1000m"
         memory: 1750Mi
     persistentVolume:
-      size: 100Gi
+      size: 50Gi
   backup:
     vmbackup:
       resources:
@@ -148,7 +148,7 @@ victoria-metrics-1:
   enabled: false
   server:
     persistentVolume:
-      size: 100Gi
+      size: 50Gi
 
 zookeeper:
   replicaCount: 1

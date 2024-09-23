@@ -140,7 +140,7 @@ victoria-metrics-0:
         cpu: "1000m"
         memory: 2500Mi
     persistentVolume:
-      size: 100Gi
+      size: 50Gi
   backup:
     vmbackup:
       resources:
@@ -152,7 +152,7 @@ victoria-metrics-1:
   enabled: false
   server:
     persistentVolume:
-      size: 100Gi
+      size: 50Gi
 
 zookeeper:
   replicaCount: 1
