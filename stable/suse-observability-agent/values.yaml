@@ -53,9 +53,6 @@ nodeAgent:
   scc:
     # nodeAgent.scc.enabled -- Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift.
     enabled: false
-  apm:
-    # nodeAgent.apm.enabled -- Enable / disable the nodeAgent APM module.
-    enabled: true
   networkTracing:
     # nodeAgent.networkTracing.enabled -- Enable / disable the nodeAgent network tracing module.
     enabled: true
@@ -487,9 +484,6 @@ checksAgent:
   scc:
     # checksAgent.scc.enabled -- Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift
     enabled: false
-  apm:
-    # checksAgent.apm.enabled -- Enable / disable the agent APM module.
-    enabled: true
   networkTracing:
     # checksAgent.networkTracing.enabled -- Enable / disable the agent network tracing module.
     enabled: true

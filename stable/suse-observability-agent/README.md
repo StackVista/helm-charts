@@ -54,7 +54,6 @@ stackstate/stackstate-k8s-agent
 | all.hardening.enabled | bool | `false` | An indication of whether the containers will be evaluated for hardening at runtime |
 | all.image.registry | string | `nil` | The image registry to use. |
 | checksAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
-| checksAgent.apm.enabled | bool | `true` | Enable / disable the agent APM module. |
 | checksAgent.checksTagCardinality | string | `"orchestrator"` |  |
 | checksAgent.config | object | `{"override":[]}` |  |
 | checksAgent.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
@@ -185,7 +184,6 @@ stackstate/stackstate-k8s-agent
 | logsAgent.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":100},"type":"RollingUpdate"}` | The update strategy for the DaemonSet object. |
 | nameOverride | string | `""` | Override the name of the chart. |
 | nodeAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
-| nodeAgent.apm.enabled | bool | `true` | Enable / disable the nodeAgent APM module. |
 | nodeAgent.autoScalingEnabled | bool | `false` | Enable / disable autoscaling for the node agent pods. |
 | nodeAgent.checksTagCardinality | string | `"orchestrator"` | low, orchestrator or high. Orchestrator level adds pod_name, high adds display_container_name |
 | nodeAgent.config | object | `{"override":[]}` |  |
