@@ -1,6 +1,6 @@
 # Victoria Metrics Helm Chart for Single Version
 
- ![Version: 0.8.53-stackstate.7](https://img.shields.io/badge/Version-0.8.53--stackstate.7-informational?style=flat-square)
+ ![Version: 0.8.53-stackstate.8](https://img.shields.io/badge/Version-0.8.53--stackstate.8-informational?style=flat-square)
 
 Victoria Metrics Single version - high-performance, cost-effective and scalable TSDB, long-term remote storage for Prometheus
 
@@ -155,8 +155,8 @@ Change the values according to the need of the environment in ``victoria-metrics
 | backup.overrideS3Endpoint | string | `"http://suse-observability-minio:9000"` | Override location of S3 endpoints, it should point to MinIO service. **Do not change this value! It must base on 'minio.fullnameOverride'** |
 | backup.s3Prefix | string | `nil` | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. |
 | backup.scheduled.schedule | string | `"25 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
-| backup.setupCron.image.repository | string | `"busybox"` | Repository containing busybox image, it is used to prepare th cronjob (create a crontab file). |
-| backup.setupCron.image.tag | string | `"latest"` | Tag of the image for the busybox |
+| backup.setupCron.image.repository | string | `"quay.io/stackstate/container-tools"` | Repository containing busybox image, it is used to prepare th cronjob (create a crontab file). |
+| backup.setupCron.image.tag | string | `"1.4.1"` | Tag of the image for the busybox |
 | backup.setupCron.resources.limits.cpu | string | `"20m"` |  |
 | backup.setupCron.resources.limits.memory | string | `"64Mi"` |  |
 | backup.setupCron.resources.requests.cpu | string | `"20m"` |  |
