@@ -114,9 +114,6 @@ nodeAgent:
         tag: "c4caacef"
         # nodeAgent.containers.agent.image.pullPolicy -- Default container image pull policy.
         pullPolicy: IfNotPresent
-      processAgent:
-        # nodeAgent.containers.agent.processAgent.enabled -- Enable / disable the agent process agent module. - deprecated
-        enabled: false
       # nodeAgent.containers.agent.env -- Additional environment variables for the agent container
       env: {}
       # nodeAgent.containers.agent.logLevel -- Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off

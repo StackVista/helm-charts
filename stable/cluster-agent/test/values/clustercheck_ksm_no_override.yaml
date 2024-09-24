@@ -1,5 +1,0 @@
-clusterCheck:
-  enabled: true
-dependencies:
-  kubeStateMetrics:
-    enabled: true

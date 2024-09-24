@@ -203,7 +203,6 @@ stackstate/stackstate-k8s-agent
 | nodeAgent.containers.agent.livenessProbe.successThreshold | int | `1` | `successThreshold` for the liveness probe. |
 | nodeAgent.containers.agent.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
 | nodeAgent.containers.agent.logLevel | string | `nil` | Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off # If not set, fall back to the value of agent.logLevel. |
-| nodeAgent.containers.agent.processAgent.enabled | bool | `false` | Enable / disable the agent process agent module. - deprecated |
 | nodeAgent.containers.agent.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
 | nodeAgent.containers.agent.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
 | nodeAgent.containers.agent.readinessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the readiness probe. |
