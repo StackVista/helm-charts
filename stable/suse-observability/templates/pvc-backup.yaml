@@ -7,6 +7,10 @@ spec:
   accessModes: {{ .Values.backup.stackGraph.scheduled.tempData.accessModes }}
   resources:
     requests:
-      storage: {{ tpl .Values.backup.stackGraph.scheduled.tempData.size . }}
+      {{- if eq .Values.hbase.deployment.mode "Distributed" }}
+      storage: {{ .Values.backup.stackGraph.scheduled.tempData.size | default .Values.hbase.hdfs.datanode.persistence.size }}
+      {{- else}}
+      storage: {{ .Values.backup.stackGraph.scheduled.tempData.size | default .Values.hbase.stackgraph.persistence.size }}
+      {{- end }}
   {{ include "common.storage.class" ( dict "persistence" .Values.backup.stackGraph.scheduled.tempData "global" .Values.global) | nindent 2 }}
 {{- end }}

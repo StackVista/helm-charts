@@ -1,14 +1,6 @@
 # community500-ha
 clickhouse:
   replicaCount: 1
-  persistence:
-    size: 100Gi
-
-elasticsearch:
-  volumeClaimTemplate:
-    resources:
-      requests:
-        storage: 200Gi
 
 hbase:
   version: "2.5"
@@ -34,8 +26,6 @@ hbase:
           ephemeral-storage: "100Mi"
   hdfs:
     datanode:
-      persistence:
-        size: 100Gi
       resources:
         requests:
           cpu: "600m"
@@ -241,8 +231,6 @@ victoria-metrics-0:
       limits:
         cpu: 6
         memory: 10Gi
-    persistentVolume:
-      size: 200Gi
 victoria-metrics-1:
   enabled: true
   server:
@@ -253,5 +241,3 @@ victoria-metrics-1:
       limits:
         cpu: 6
         memory: 10Gi
-    persistentVolume:
-      size: 200Gi

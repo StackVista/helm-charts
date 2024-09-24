@@ -98,7 +98,7 @@ stackstate/stackstate
 | backup.stackGraph.bucketName | string | `"sts-stackgraph-backup"` | Name of the MinIO bucket to store StackGraph backups. |
 | backup.stackGraph.restore.enabled | bool | `true` | Enable StackGraph backup restore functionality (if `backup.enabled` is set to `true`). |
 | backup.stackGraph.restore.tempData.accessModes[0] | string | `"ReadWriteOnce"` |  |
-| backup.stackGraph.restore.tempData.size | string | `"{{ .Values.hbase.hdfs.datanode.persistence.size }}"` |  |
+| backup.stackGraph.restore.tempData.size | string | `""` |  |
 | backup.stackGraph.restore.tempData.storageClass | string | `nil` |  |
 | backup.stackGraph.s3Prefix | string | `""` | Prefix (dir name) used to store backup files. |
 | backup.stackGraph.scheduled.backupDatetimeParseFormat | string | `"%Y%m%d-%H%M"` | Format to parse date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`. |
@@ -108,7 +108,7 @@ stackstate/stackstate
 | backup.stackGraph.scheduled.enabled | bool | `true` | Enable scheduled StackGraph backups (if `backup.enabled` is set to `true`). |
 | backup.stackGraph.scheduled.schedule | string | `"0 3 * * *"` | Cron schedule for automatic StackGraph backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax). |
 | backup.stackGraph.scheduled.tempData.accessModes[0] | string | `"ReadWriteOnce"` |  |
-| backup.stackGraph.scheduled.tempData.size | string | `"{{ .Values.hbase.hdfs.datanode.persistence.size }}"` |  |
+| backup.stackGraph.scheduled.tempData.size | string | `""` |  |
 | backup.stackGraph.scheduled.tempData.storageClass | string | `nil` |  |
 | backup.stackGraph.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
 | backup.stackGraph.securityContext.fsGroup | int | `65534` | The GID (group ID) of all files on all mounted volumes |
@@ -149,6 +149,8 @@ stackstate/stackstate
 | clickhouse.podAnnotations."ad.stackstate.com/clickhouse.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8001/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"ClickHouseAsyncMetrics_*\", \"ClickHouseMetrics_*\", \"ClickHouseProfileEvents_*\"] } ]"` |  |
 | clickhouse.podAnnotations.checksum/stackstate-backup-config | string | `"{{ toJson .Values.backup | sha256sum }}"` |  |
 | clickhouse.replicaCount | int | `3` | Number of ClickHouse replicas per shard to deploy |
+| clickhouse.resources.limits.cpu | string | `"1000m"` |  |
+| clickhouse.resources.limits.memory | string | `"1500Mi"` |  |
 | clickhouse.resources.requests.cpu | string | `"500m"` |  |
 | clickhouse.resources.requests.memory | string | `"1Gi"` |  |
 | clickhouse.restore.enabled | bool | `false` | Enable ClickHouse restore functionality (if `backup.enabled` is set to `true`). |

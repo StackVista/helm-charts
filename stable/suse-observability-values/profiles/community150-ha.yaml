@@ -35,8 +35,6 @@ hbase:
           cpu: "4000m"
   hdfs:
     datanode:
-      persistence:
-        size: 100Gi
       resources:
         requests:
           cpu: "600m"
@@ -229,8 +227,6 @@ victoria-metrics-0:
       limits:
         cpu: 4
         memory: 9Gi
-    persistentVolume:
-      size: 200Gi
 victoria-metrics-1:
   enabled: true
   server:
@@ -241,5 +237,3 @@ victoria-metrics-1:
       limits:
         cpu: 4
         memory: 9Gi
-    persistentVolume:
-      size: 200Gi

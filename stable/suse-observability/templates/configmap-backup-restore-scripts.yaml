@@ -207,7 +207,11 @@ spec:
   accessModes: {{ .Values.backup.stackGraph.restore.tempData.accessModes }}
   resources:
     requests:
-      storage: {{ tpl .Values.backup.stackGraph.restore.tempData.size . }}
+      {{- if eq .Values.hbase.deployment.mode "Distributed" }}
+      storage: {{ .Values.backup.stackGraph.restore.tempData.size | default .Values.hbase.hdfs.datanode.persistence.size }}
+      {{- else}}
+      storage: {{ .Values.backup.stackGraph.restore.tempData.size | default .Values.hbase.stackgraph.persistence.size }}
+      {{- end }}
 {{- if .Values.backup.stackGraph.restore.tempData.storageClass }}
   {{- if (eq "-" .Values.backup.stackGraph.restore.tempData.storageClass) }}
   storageClassName: ""

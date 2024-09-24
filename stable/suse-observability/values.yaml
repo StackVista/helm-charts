@@ -65,7 +65,7 @@ backup:
         # backup.stackGraph.restore.tmpData.accessModes -- Access mode for temporary backup data.
         accessModes: ["ReadWriteOnce"]
         # backup.stackGraph.restore.tmpData.size -- Size of volume for temporary backup data -- must be large enough to store a single backup.
-        size: '{{ .Values.hbase.hdfs.datanode.persistence.size }}'
+        size: ''
         # backup.stackGraph.restore.tmpData.storageClass -- Storage class of the volume for temporary backup data.
         storageClass:
     scheduled:
@@ -85,7 +85,7 @@ backup:
         # backup.stackGraph.scheduled.tmpData.accessModes -- Access mode for temporary backup data.
         accessModes: ["ReadWriteOnce"]
         # backup.stackGraph.scheduled.tmpData.size -- Size of volume for temporary backup data -- must be large enough to store a single backup.
-        size: '{{ .Values.hbase.hdfs.datanode.persistence.size }}'
+        size: ''
         # backup.stackGraph.scheduled.tmpData.storageClass -- Storage class of the volume for temporary backup data.
         storageClass:
     securityContext:
@@ -2428,6 +2428,9 @@ clickhouse:
     # clickhouse.persistence.size -- Size of persistent volume for each clickhouse pod
     size: 50Gi
   resources:
+    limits:
+      memory: "1500Mi"
+      cpu: "1000m"
     requests:
       memory: "1Gi"
       cpu: "500m"
