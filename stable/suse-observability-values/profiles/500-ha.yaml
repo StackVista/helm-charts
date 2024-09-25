@@ -1,4 +1,4 @@
-# community250-ha
+# profile 500-ha
 clickhouse:
   replicaCount: 1
 
@@ -7,10 +7,6 @@ hbase:
   deployment:
     mode: "Distributed"
   hbase:
-    console:
-      resources:
-        requests:
-          cpu: "20m"
     master:
       resources:
         requests:
@@ -18,12 +14,15 @@ hbase:
         limits:
           cpu: "1000m"
           ephemeral-storage: "20Mi"
+      experimental:
+        execLivenessProbe:
+          enabled: true
     regionserver:
       resources:
         requests:
-          cpu: "3000m"
+          cpu: "4000m"
         limits:
-          cpu: "6000m"
+          cpu: "8000m"
           ephemeral-storage: "100Mi"
   hdfs:
     datanode:
@@ -60,12 +59,15 @@ kafka:
   transactionStateLogReplicationFactor: 1
   resources:
     requests:
-      cpu: "2"
+      cpu: "3"
       memory: "3Gi"
     limits:
-      cpu: "4"
+      cpu: "6"
       memory: "4Gi"
       ephemeral-storage: "70Mi"
+  # Need more kafka due to increased partition count
+  persistence:
+    size: 400Gi
 
 stackstate:
   experimental:
@@ -76,16 +78,22 @@ stackstate:
     all:
       extraEnv:
         open:
-          CONFIG_FORCE_stackstate_agents_agentLimit: "250"
+          CONFIG_FORCE_stackstate_agents_agentLimit: "500"
+    kafkaTopicCreate:
+      extraEnv:
+        open:
+          KAFKA_PARTITIONS_sts_correlated_connections: "40"
+          KAFKA_PARTITIONS_sts_correlate_endpoints: "40"
+          KAFKA_PARTITIONS_sts_correlate_http_trace_observations: "40"
     api:
       resources:
         requests:
-          cpu: "2000m"
-          memory: "5Gi"
+          cpu: "3000m"
+          memory: "6Gi"
         limits:
           ephemeral-storage: "800Mi"
-          cpu: "4000m"
-          memory: "5Gi"
+          cpu: "6000m"
+          memory: "6Gi"
     checks:
       resources:
         requests:
@@ -98,12 +106,12 @@ stackstate:
     healthSync:
       resources:
         limits:
-          memory: 6Gi
-          cpu: "3000m"
+          memory: 8Gi
+          cpu: "8000m"
           ephemeral-storage: "650Mi"
         requests:
-          memory: 6Gi
-          cpu: "1500m"
+          memory: 8Gi
+          cpu: "4000m"
       sizing:
         baseMemoryConsumption: "1200Mi"
     initializer:
@@ -115,10 +123,10 @@ stackstate:
     notification:
       resources:
         requests:
-          cpu: 1000m
+          cpu: 1500m
           memory: "3000Mi"
         limits:
-          cpu: 2000m
+          cpu: 3000m
           memory: "3000Mi"
     router:
       resources:
@@ -131,10 +139,7 @@ stackstate:
       resources:
         requests:
           cpu: "300m"
-          memory: 1500Mi
         limits:
-          cpu: "600m"
-          memory: 1500Mi
           ephemeral-storage: "60Mi"
     state:
       resources:
@@ -150,11 +155,11 @@ stackstate:
         volumeSize: 10Gi
       resources:
         limits:
-          cpu: "6000m"
+          cpu: "8000m"
           memory: 8Gi
           ephemeral-storage: "700Mi"
         requests:
-          cpu: "3000m"
+          cpu: "4000m"
           memory: 8Gi
     e2es:
       resources:
@@ -164,31 +169,30 @@ stackstate:
         limits:
           memory: "512Mi"
     correlate:
-      replicaCount: 5
+      replicaCount: 10
       resources:
-        limits:
-          cpu: "4000m"
-          memory: 3Gi
         requests:
-          cpu: "2000m"
-          memory: 3Gi
-          ephemeral-storage: "60Mi"
+          cpu: 2000m
+          memory: 3000Mi
+        limits:
+          cpu: 4000m
+          memory: 3000Mi
       extraEnv:
         open:
-          CONFIG_FORCE_stackstate_correlate_correlateConnections_workers: "2"
-          CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers: "2"
-          CONFIG_FORCE_stackstate_correlate_aggregation_workers: "2"
+          CONFIG_FORCE_stackstate_correlate_correlateConnections_workers: "4"
+          CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers: "4"
+          CONFIG_FORCE_stackstate_correlate_aggregation_workers: "4"
     receiver:
       split:
         enabled: true
         base:
           resources:
             requests:
-              memory: "6500Mi"
-              cpu: "4000m"
+              memory: "7Gi"
+              cpu: "6000m"
             limits:
-              memory: "6500Mi"
-              cpu: "8000m"
+              cpu: "12000m"
+              memory: "7Gi"
         processAgent:
           resources:
             requests:
@@ -211,10 +215,10 @@ stackstate:
     vmagent:
       resources:
         limits:
-          cpu: 4
+          cpu: 5000m
           memory: "2Gi"
         requests:
-          cpu: 2
+          cpu: 2500m
           memory: "2Gi"
     ui:
       replicaCount: 2

@@ -1,23 +1,33 @@
-# community100-nonha
+# profile 20-nonha
 clickhouse:
   replicaCount: 1
   persistence:
     size: 50Gi
 
 elasticsearch:
+  prometheus-elasticsearch-exporter:
+    resources:
+      limits:
+        cpu: "50m"
+        memory: "50Mi"
+      requests:
+        cpu: "50m"
+        memory: "50Mi"
   minimumMasterNodes: 1
   replicas: 1
+  # Only overriding memory settings
+  esJavaOpts: "-Xmx1500m -Xms1500m -Des.allow_insecure_settings=true -Xlog:disable -Xlog:gc*,gc+age=trace,safepoint:file=logs/gc.log:utctime,pid,tags:filecount=8,filesize=16m"
   resources:
     requests:
-      cpu: "750m"
-      memory: "7Gi"
+      cpu: 500m
+      memory: 3000Mi
     limits:
-      cpu: "1500m"
-      memory: "7Gi"
+      cpu: 1000m
+      memory: 3000Mi
   volumeClaimTemplate:
     resources:
       requests:
-        storage: 100Gi
+        storage: 50Gi
 
 hbase:
   version: "2.5"
@@ -25,22 +35,22 @@ hbase:
     mode: "Mono"
   stackgraph:
     persistence:
-      size: 100Gi
+      size: 50Gi
     resources:
       requests:
-        memory: "4500Mi"
-        cpu: "2000m"
+        memory: "2500Mi"
+        cpu: "1000m"
       limits:
-        memory: "4500Mi"
-        cpu: "4000m"
+        memory: "2500Mi"
+        cpu: "2000m"
   tephra:
     resources:
       limits:
-        memory: "1Gi"
-        cpu: "200m"
-      requests:
-        memory: "1Gi"
         cpu: "100m"
+        memory: "600Mi"
+      requests:
+        memory: "600Mi"
+        cpu: "50m"
     replicaCount: 1
 kafka:
   defaultReplicationFactor: 1
@@ -49,11 +59,11 @@ kafka:
   transactionStateLogReplicationFactor: 1
   resources:
     requests:
-      cpu: "2000m"
-      memory: "3000Mi"
+      cpu: "1000m"
+      memory: "2048Mi"
     limits:
-      cpu: "4000m"
-      memory: "3000Mi"
+      memory: "2048Mi"
+      cpu: "2000m"
 
 stackstate:
   experimental:
@@ -64,7 +74,9 @@ stackstate:
     all:
       extraEnv:
         open:
-          CONFIG_FORCE_stackstate_agents_agentLimit: "100"
+          CONFIG_FORCE_stackstate_topologyQueryService_maxStackElementsPerQuery: "1000"
+          CONFIG_FORCE_stackstate_topologyQueryService_maxLoadedElementsPerQuery: "1000"
+          CONFIG_FORCE_stackstate_agents_agentLimit: "20"
           # 14 day retention as NONHA is not completely meant for prod installations
           CONFIG_FORCE_stackgraph_retentionWindowMs: 1209600000
           CONFIG_FORCE_stackstate_traces_retentionDays: "14"
@@ -74,18 +86,17 @@ stackstate:
           CONFIG_FORCE_stackstate_sync_initializationBatchParallelism: "1"
           CONFIG_FORCE_stackstate_healthSync_initialLoadParallelism: "1"
           CONFIG_FORCE_stackstate_stateService_initializationParallelism: "1"
+          CONFIG_FORCE_stackstate_stateService_initialLoadTransactionSize: "2500"
       resources:
         limits:
           ephemeral-storage: 5Gi
-          cpu: 8000m
-          memory: 8Gi
-        requests:
           cpu: 4000m
-          memory: 8Gi
-      sizing:
-        javaHeapMemoryFraction: "45"
+          memory: 6Gi
+        requests:
+          cpu: 2000m
+          memory: 6Gi
     e2es:
-      retention: 1
+      retention: 14
       resources:
         requests:
           memory: "512Mi"
@@ -95,13 +106,13 @@ stackstate:
     correlate:
       resources:
         requests:
-          memory: "4000Mi"
-          cpu: "5000m"
+          memory: "1750Mi"
+          cpu: "1500m"
         limits:
-          memory: "4000Mi"
-          cpu: "10000m"
+          memory: "1750Mi"
+          cpu: "3000m"
     receiver:
-      retention: 1
+      retention: 14
       split:
         enabled: false
       extraEnv:
@@ -109,33 +120,40 @@ stackstate:
           CONFIG_FORCE_akka_http_host__connection__pool_max__open__requests: "256"
       resources:
         requests:
-          memory: "4Gi"
-          cpu: "5500m"
+          memory: "1750Mi"
+          cpu: "1000m"
         limits:
-          memory: "4Gi"
-          cpu: "11000m"
+          memory: "1750Mi"
+          cpu: "2000m"
     vmagent:
       resources:
         limits:
-          cpu: "2500m"
-          memory: "1250Mi"
+          memory: "600Mi"
+          cpu: "600m"
         requests:
-          cpu: "1250m"
-          memory: "1250Mi"
+          memory: "600Mi"
+          cpu: "300m"
     ui:
       replicaCount: 1
 victoria-metrics-0:
   server:
     resources:
       requests:
-        cpu: "1500m"
-        memory: 8Gi
+        cpu: "500m"
+        memory: 2Gi
       limits:
-        cpu: "3000m"
-        memory: 8Gi
+        cpu: "1000m"
+        memory: 2500Mi
     persistentVolume:
       size: 50Gi
     retentionPeriod: 14d
+  backup:
+    vmbackup:
+      resources:
+        requests:
+          memory: 100Mi
+        limits:
+          memory: 100Mi
 victoria-metrics-1:
   enabled: false
   server:

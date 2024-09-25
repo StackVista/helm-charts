@@ -1,6 +1,6 @@
 {{- if .Values.sizing.generate }}
   {{- $sizingProfile := .Values.sizing.profile | required "Please provide your SUSE Observability profile for sizing purposes"  }}
-  {{- $sizing := .Files.Get (printf "profiles/community%s.yaml" $sizingProfile) }}
+  {{- $sizing := .Files.Get (printf "profiles/%s.yaml" $sizingProfile) }}
   {{- if $sizing }}
   {{ $sizing }}
   {{- else }}

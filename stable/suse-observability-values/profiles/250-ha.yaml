@@ -1,14 +1,6 @@
-# community150-ha
+# profile 250-ha
 clickhouse:
   replicaCount: 1
-  persistence:
-    size: 100Gi
-
-elasticsearch:
-  volumeClaimTemplate:
-    resources:
-      requests:
-        storage: 200Gi
 
 hbase:
   version: "2.5"
@@ -24,30 +16,30 @@ hbase:
         requests:
           cpu: "500m"
         limits:
-          ephemeral-storage: "20Mi"
           cpu: "1000m"
+          ephemeral-storage: "20Mi"
     regionserver:
       resources:
         requests:
-          cpu: "2000m"
+          cpu: "3000m"
         limits:
+          cpu: "6000m"
           ephemeral-storage: "100Mi"
-          cpu: "4000m"
   hdfs:
     datanode:
       resources:
         requests:
           cpu: "600m"
         limits:
-          ephemeral-storage: "70Mi"
           cpu: "1200m"
+          ephemeral-storage: "70Mi"
     namenode:
       resources:
         requests:
           cpu: "200m"
         limits:
-          ephemeral-storage: "70Mi"
           cpu: "400m"
+          ephemeral-storage: "70Mi"
     secondarynamenode:
       enabled: true
       resources:
@@ -68,10 +60,10 @@ kafka:
   transactionStateLogReplicationFactor: 1
   resources:
     requests:
-      cpu: "1"
+      cpu: "2"
       memory: "3Gi"
     limits:
-      cpu: "2"
+      cpu: "4"
       memory: "4Gi"
       ephemeral-storage: "70Mi"
 
@@ -84,16 +76,16 @@ stackstate:
     all:
       extraEnv:
         open:
-          CONFIG_FORCE_stackstate_agents_agentLimit: "150"
+          CONFIG_FORCE_stackstate_agents_agentLimit: "250"
     api:
       resources:
         requests:
-          cpu: "1500m"
-          memory: "4Gi"
+          cpu: "2000m"
+          memory: "5Gi"
         limits:
           ephemeral-storage: "800Mi"
-          cpu: "3000m"
-          memory: "4Gi"
+          cpu: "4000m"
+          memory: "5Gi"
     checks:
       resources:
         requests:
@@ -106,12 +98,12 @@ stackstate:
     healthSync:
       resources:
         limits:
-          memory: 5Gi
-          cpu: "2000m"
+          memory: 6Gi
+          cpu: "3000m"
           ephemeral-storage: "650Mi"
         requests:
-          memory: 5Gi
-          cpu: "1000m"
+          memory: 6Gi
+          cpu: "1500m"
       sizing:
         baseMemoryConsumption: "1200Mi"
     initializer:
@@ -123,10 +115,10 @@ stackstate:
     notification:
       resources:
         requests:
-          cpu: 500m
+          cpu: 1000m
           memory: "3000Mi"
         limits:
-          cpu: 1000m
+          cpu: 2000m
           memory: "3000Mi"
     router:
       resources:
@@ -139,7 +131,10 @@ stackstate:
       resources:
         requests:
           cpu: "300m"
+          memory: 1500Mi
         limits:
+          cpu: "600m"
+          memory: 1500Mi
           ephemeral-storage: "60Mi"
     state:
       resources:
@@ -155,12 +150,12 @@ stackstate:
         volumeSize: 10Gi
       resources:
         limits:
-          cpu: "4000m"
-          memory: "6500Mi"
+          cpu: "6000m"
+          memory: 8Gi
           ephemeral-storage: "700Mi"
         requests:
-          cpu: "2000m"
-          memory: "6500Mi"
+          cpu: "3000m"
+          memory: 8Gi
     e2es:
       resources:
         requests:
@@ -169,33 +164,38 @@ stackstate:
         limits:
           memory: "512Mi"
     correlate:
-      replicaCount: 3
+      replicaCount: 5
       resources:
         limits:
-          cpu: 6
-          memory: 3500Mi
+          cpu: "4000m"
+          memory: 3Gi
         requests:
-          cpu: 3
-          memory: 3500Mi
+          cpu: "2000m"
+          memory: 3Gi
           ephemeral-storage: "60Mi"
+      extraEnv:
+        open:
+          CONFIG_FORCE_stackstate_correlate_correlateConnections_workers: "2"
+          CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers: "2"
+          CONFIG_FORCE_stackstate_correlate_aggregation_workers: "2"
     receiver:
       split:
         enabled: true
         base:
           resources:
             requests:
-              memory: "5500Mi"
+              memory: "6500Mi"
               cpu: "4000m"
             limits:
-              memory: "5500Mi"
+              memory: "6500Mi"
               cpu: "8000m"
         processAgent:
           resources:
             requests:
-              memory: "2500Mi"
+              memory: "3Gi"
               cpu: "1000m"
             limits:
-              memory: "2500Mi"
+              memory: "3Gi"
               cpu: "2000m"
         logs:
           resources:
@@ -211,29 +211,29 @@ stackstate:
     vmagent:
       resources:
         limits:
-          cpu: 3000m
-          memory: "1500Mi"
+          cpu: 4
+          memory: "2Gi"
         requests:
-          cpu: 1500m
-          memory: "1500Mi"
+          cpu: 2
+          memory: "2Gi"
     ui:
       replicaCount: 2
 victoria-metrics-0:
   server:
     resources:
       requests:
-        cpu: 2
-        memory: 9Gi
+        cpu: 3
+        memory: 10Gi
       limits:
-        cpu: 4
-        memory: 9Gi
+        cpu: 6
+        memory: 10Gi
 victoria-metrics-1:
   enabled: true
   server:
     resources:
       requests:
-        cpu: 2
-        memory: 9Gi
+        cpu: 3
+        memory: 10Gi
       limits:
-        cpu: 4
-        memory: 9Gi
+        cpu: 6
+        memory: 10Gi
