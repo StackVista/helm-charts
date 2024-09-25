@@ -2401,7 +2401,7 @@ victoria-metrics:
       runAsUser: 65534
 clickhouse:
   image:
-    # clickhouse.image.registry -- Registry where to get the image from, the same registry will be used by clickhouse image and the backup tool.
+    # clickhouse.image.registry -- Registry where to get the image from
     registry: quay.io
     # clickhouse.image.repository -- Repository where to get the image from.
     repository: stackstate/clickhouse
@@ -2501,7 +2501,7 @@ clickhouse:
   # clickhouse.sidecars -- sidecar containers to run backups
   sidecars:
     - name: backup
-      image: "{{ .Values.image.registry }}/stackstate/clickhouse-backup:2.5.20-2b2c95ed"
+      image: "{{ .Values.backup.image.registry }}/{{ .Values.backup.image.repository }}:{{ .Values.backup.image.tag }}"
       imagePullPolicy: IfNotPresent
       command:
         - /app/entrypoint.sh
@@ -2548,6 +2548,13 @@ clickhouse:
           name: clickhouse-backup-scripts
           subPath: entrypoint.sh
   backup:
+    image:
+      # clickhouse.backup.image.registry -- Registry where to get the image from.
+      registry: quay.io
+      # clickhouse.backup.image.repository -- Repository where to get the image from.
+      repository: stackstate/clickhouse-backup
+      # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
+      tag: 2.5.20-2b2c95ed
     # clickhouse.backup.enabled -- Enable scheduled backups of ClickHouse. It requires to be enabled MinIO 'backup.enabled'.
     enabled: false
     # clickhouse.backup.bucketName -- Name of the MinIO bucket where ClickHouse backups are stored.
