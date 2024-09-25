@@ -16,6 +16,7 @@
         "profile": {
           "type": "string",
           "enum": [
+            "trial",
             "10-nonha",
             "20-nonha",
             "50-nonha",

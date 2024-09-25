@@ -1,8 +1,8 @@
-# profile 10-nonha
+# profile trial
 clickhouse:
   replicaCount: 1
   persistence:
-    size: 50Gi
+    size: 5Gi
 
 elasticsearch:
   prometheus-elasticsearch-exporter:
@@ -27,14 +27,14 @@ elasticsearch:
   volumeClaimTemplate:
     resources:
       requests:
-        storage: 50Gi
+        storage: 20Gi
 hbase:
   version: "2.5"
   deployment:
     mode: "Mono"
   stackgraph:
     persistence:
-      size: 50Gi
+      size: 20Gi
     resources:
       requests:
         memory: "2250Mi"
@@ -77,6 +77,9 @@ stackstate:
           CONFIG_FORCE_stackstate_topologyQueryService_maxStackElementsPerQuery: "1000"
           CONFIG_FORCE_stackstate_topologyQueryService_maxLoadedElementsPerQuery: "1000"
           CONFIG_FORCE_stackstate_agents_agentLimit: "10"
+          # 14 day retention as NONHA is not completely meant for prod installations
+          CONFIG_FORCE_stackgraph_retentionWindowMs: 259200000
+          CONFIG_FORCE_stackstate_traces_retentionDays: "3"
     server:
       extraEnv:
         open:
@@ -93,6 +96,7 @@ stackstate:
           cpu: 1500m
           memory: 5Gi
     e2es:
+      retention: 3
       resources:
         requests:
           memory: "512Mi"
@@ -108,6 +112,7 @@ stackstate:
           cpu: "1000m"
           memory: "1250Mi"
     receiver:
+      retention: 3
       split:
         enabled: false
       extraEnv:
@@ -138,7 +143,8 @@ victoria-metrics-0:
         cpu: "1000m"
         memory: 1750Mi
     persistentVolume:
-      size: 50Gi
+      size: 10Gi
+    retentionPeriod: 3d
   backup:
     vmbackup:
       resources:
@@ -150,7 +156,10 @@ victoria-metrics-1:
   enabled: false
   server:
     persistentVolume:
-      size: 50Gi
+      size: 10Gi
+    retentionPeriod: 3d
 
 zookeeper:
   replicaCount: 1
+  persistence:
+    size: 2Gi

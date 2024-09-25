@@ -76,9 +76,6 @@ stackstate:
           CONFIG_FORCE_stackstate_topologyQueryService_maxStackElementsPerQuery: "1000"
           CONFIG_FORCE_stackstate_topologyQueryService_maxLoadedElementsPerQuery: "1000"
           CONFIG_FORCE_stackstate_agents_agentLimit: "50"
-          # 14 day retention as NONHA is not completely meant for prod installations
-          CONFIG_FORCE_stackgraph_retentionWindowMs: 1209600000
-          CONFIG_FORCE_stackstate_traces_retentionDays: "14"
     server:
       extraEnv:
         open:
@@ -95,7 +92,6 @@ stackstate:
           cpu: 2500m
           memory: 6500Mi
     e2es:
-      retention: 14
       resources:
         requests:
           memory: "512Mi"
@@ -111,7 +107,6 @@ stackstate:
           memory: "2000Mi"
           cpu: "4000m"
     receiver:
-      retention: 14
       split:
         enabled: false
       extraEnv:
@@ -145,7 +140,6 @@ victoria-metrics-0:
         memory: 3500Mi
     persistentVolume:
       size: 50Gi
-    retentionPeriod: 14d
   backup:
     vmbackup:
       resources:
@@ -158,7 +152,6 @@ victoria-metrics-1:
   server:
     persistentVolume:
       size: 50Gi
-    retentionPeriod: 14d
 
 zookeeper:
   replicaCount: 1
