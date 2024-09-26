@@ -64,8 +64,8 @@ backup:
       tempData:
         # backup.stackGraph.restore.tmpData.accessModes -- Access mode for temporary backup data.
         accessModes: ["ReadWriteOnce"]
-        # backup.stackGraph.restore.tmpData.size -- Size of volume for temporary backup data -- must be large enough to store a single backup.
-        size: ''
+        # backup.stackGraph.restore.tmpData.size -- Size of volume for temporary backup data -- must be large enough to store a single backup. It defaults to a datanode size on Distributed Mode and to the stackgraph size on Mono mode.
+        size: null
         # backup.stackGraph.restore.tmpData.storageClass -- Storage class of the volume for temporary backup data.
         storageClass:
     scheduled:
@@ -84,8 +84,8 @@ backup:
       tempData:
         # backup.stackGraph.scheduled.tmpData.accessModes -- Access mode for temporary backup data.
         accessModes: ["ReadWriteOnce"]
-        # backup.stackGraph.scheduled.tmpData.size -- Size of volume for temporary backup data -- must be large enough to store a single backup.
-        size: ''
+        # backup.stackGraph.scheduled.tmpData.size -- Size of volume for temporary backup data -- must be large enough to store a single backup. It defaults to a datanode size on Distributed Mode and to the stackgraph size on Mono mode.
+        size: null
         # backup.stackGraph.scheduled.tmpData.storageClass -- Storage class of the volume for temporary backup data.
         storageClass:
     securityContext:
