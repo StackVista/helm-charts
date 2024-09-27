@@ -123,7 +123,7 @@ stackstate:
     vmagent:
       resources:
         limits:
-          memory: "600Mi"
+          memory: "768Mi"
           cpu: "600m"
         requests:
           memory: "600Mi"
