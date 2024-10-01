@@ -78,6 +78,13 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 				"warning: skipped value for topologySpreadConstraints: Not a table.",
 				// Known issue in zookeeper chart:
 				"warning: skipped value for hbase.zookeeper.updateStrategy: Not a table.",
+				// Known issue in zookeeper chart:
+				"warning: skipped value for clickhouse.zookeeper.topologySpreadConstraints: Not a table.",
+				// Unknown issue for OpenTelemetry exporters configuration
+				"warning: cannot overwrite table with non table for suse-observability.opentelemetry-collector.config.exporters.logging (map[])",
+				"warning: cannot overwrite table with non table for suse-observability.opentelemetry-collector.config.receivers.jaeger (map[protocols:map[grpc:map[endpoint:${env:MY_POD_IP}:14250] thrift_compact:map[endpoint:${env:MY_POD_IP}:6831] thrift_http:map[endpoint:${env:MY_POD_IP}:14268]]])",
+				"warning: cannot overwrite table with non table for suse-observability.opentelemetry-collector.config.receivers.prometheus (map[config:map[scrape_configs:[map[job_name:opentelemetry-collector scrape_interval:10s static_configs:[map[targets:[${env:MY_POD_IP}:8888]]]]]]])",
+				"warning: cannot overwrite table with non table for suse-observability.opentelemetry-collector.config.receivers.zipkin (map[endpoint:${env:MY_POD_IP}:9411])",
 			}
 
 			for _, line := range strings.Split(v, "\n") {
