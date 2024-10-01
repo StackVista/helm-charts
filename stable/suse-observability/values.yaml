@@ -1436,7 +1436,7 @@ stackstate:
   experimental:
     enableVMAgent: true
     # stackstate.experimental.traces -- (boolean) Enable new traces UI and API
-    traces: false
+    traces: true
     server:
       # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
       split: true
@@ -2420,7 +2420,7 @@ clickhouse:
     # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
     tag: 23.8.13-debian-12-r0-b9530c97
   # clickhouse.enabled -- Enable / disable chart-based Clickhouse.
-  enabled: false
+  enabled: true
   # clickhouse.shards -- Number of ClickHouse shards to deploy
   shards: 1
   # clickhouse.replicaCount -- Number of ClickHouse replicas per shard to deploy
@@ -2599,7 +2599,7 @@ clickhouse:
     enabled: false
 opentelemetry:
   # opentelemetry.enabled -- Enable / disable chart-based OTEL.
-  enabled: false
+  enabled: true
 opentelemetry-collector:
   image:
     # opentelemetry-collector.image.repository -- Repository where to get the image from.

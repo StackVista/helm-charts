@@ -134,7 +134,7 @@ stackstate/stackstate
 | clickhouse.backup.s3Prefix | string | `""` |  |
 | clickhouse.backup.scheduled.full_schedule | string | `"45 0 * * *"` | Cron schedule for automatic full backups of ClickHouse. |
 | clickhouse.backup.scheduled.incremental_schedule | string | `"45 3-23 * * *"` | Cron schedule for automatic incremental backups of ClickHouse. IMPORTANT: incremental and full backup CAN NOT overlap. |
-| clickhouse.enabled | bool | `false` | Enable / disable chart-based Clickhouse. |
+| clickhouse.enabled | bool | `true` | Enable / disable chart-based Clickhouse. |
 | clickhouse.externalZookeeper.port | int | `2181` |  |
 | clickhouse.externalZookeeper.servers | list | `["suse-observability-zookeeper-headless"]` | External Zookeeper configuration. |
 | clickhouse.extraOverrides | string | `"<clickhouse>\n  <!-- Cluster configuration - Any update of the shards and replicas requires helm upgrade -->\n  <remote_servers>\n    <default>\n      {{- $shards := $.Values.shards | int }}\n      {{- range $shard, $e := until $shards }}\n      <shard>\n          {{- $replicas := $.Values.replicaCount | int }}\n          {{- range $i, $_e := until $replicas }}\n          <replica>\n              <host>{{ printf \"%s-shard%d-%d.%s.%s.svc.%s\" (include \"common.names.fullname\" $ ) $shard $i (include \"clickhouse.headlessServiceName\" $) (include \"common.names.namespace\" $) $.Values.clusterDomain }}</host>\n              <port>{{ $.Values.service.ports.tcp }}</port>\n              <user from_env=\"CLICKHOUSE_ADMIN_USER\"></user>\n              <password from_env=\"CLICKHOUSE_ADMIN_PASSWORD\"></password>\n          </replica>\n          {{- end }}\n      </shard>\n      {{- end }}\n    </default>\n  </remote_servers>\n</clickhouse>\n"` | Extra configuration overrides (evaluated as a template) apart from the default. This configuration deploys ClickHouse in the cluster mode even if there is only one node. |
@@ -434,7 +434,7 @@ stackstate/stackstate
 | opentelemetry-collector.resources.limits.memory | string | `"512Mi"` |  |
 | opentelemetry-collector.resources.requests.cpu | string | `"250m"` |  |
 | opentelemetry-collector.resources.requests.memory | string | `"512Mi"` |  |
-| opentelemetry.enabled | bool | `false` | Enable / disable chart-based OTEL. |
+| opentelemetry.enabled | bool | `true` | Enable / disable chart-based OTEL. |
 | pull-secret.credentials | list | `[]` | Registry and assotiated credentials (username, password) that will be stored in the pull-secret |
 | pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |
 | pull-secret.fullNameOverride | string | `""` | Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart. |
@@ -875,7 +875,7 @@ stackstate/stackstate
 | stackstate.experimental.storeTransactionLogsToPVC.enabled | boolean | `false` | Whether the transcation logs for some services, API, Checks, HealthSync,State and Sync have to be stored to PVCs instead of pod ephemeral storage. |
 | stackstate.experimental.storeTransactionLogsToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by transaction logs. |
 | stackstate.experimental.storeTransactionLogsToPVC.volumeSize | string | `"600Mi"` | The size of the persistent volume for the transaction logs. |
-| stackstate.experimental.traces | boolean | `false` | Enable new traces UI and API |
+| stackstate.experimental.traces | boolean | `true` | Enable new traces UI and API |
 | stackstate.instanceApi.authentication | object | `{}` | Custom authentication settings for the `instance` API, by default the `stackstate.authentication` authentication settings are used. |
 | stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
