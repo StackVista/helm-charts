@@ -24,6 +24,15 @@ if (! (kubectl get configmap "${CM_NAME}" -o jsonpath="{.data.job-${JOB_NAME_TEM
     exit 1
 fi
 
+if [ -z "$FORCE_DELETE" ]; then
+  echo "WARNING: Restoring a settings backup will remove all topology (including history) and existing settings. It will also stop (scale down) SUSE Observability. It will be down until a manual trigger to scale it up again (using the \"./scale-up\" script). Are you sure you want to continue? (yes/no)"
+  read -r answer
+  if [ "$answer" != "yes" ]; then
+    echo "Exiting without restoring backup."
+    exit 0
+  fi
+fi
+
 echo "=== Scaling down deployments for pods that connect to StackGraph"
 kubectl scale --replicas=0 deployments --selector=stackstate.com/connects-to-stackgraph=true
 
@@ -35,6 +44,7 @@ kubectl create -f "${JOB_YAML_FILE}"
 rm -rf "${JOB_YAML_DIR}"
 
 echo "=== Restore job started..."
+echo "=== After the settings have been restored run the \"scale-up.sh\" script to start all deployments again."
 echo "=== Showing the restore job logs (hit ctrl-c to stop following the logs, this will not cancel the job)..."
 
 while ! kubectl logs "job/${JOB_NAME}" >/dev/null 2>/dev/null ; do echo "Waiting for job to start..."; sleep 2; done; kubectl logs "job/${JOB_NAME}" --follow=true
