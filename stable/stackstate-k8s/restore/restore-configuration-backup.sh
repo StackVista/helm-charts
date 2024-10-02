@@ -24,10 +24,17 @@ if (! (kubectl get configmap "${CM_NAME}" -o jsonpath="{.data.job-${JOB_NAME_TEM
     exit 1
 fi
 
+echo "=== Scaling down deployments for pods that connect to StackGraph"
+kubectl scale --replicas=0 deployments --selector=stackstate.com/connects-to-stackgraph=true
+
+echo "=== Allowing pods to terminate"
+sleep 15
+
 echo "=== Starting restore job"
 kubectl create -f "${JOB_YAML_FILE}"
 rm -rf "${JOB_YAML_DIR}"
 
-echo "=== Restore job started. Follow the logs and clean up the job with the following commands:"
-echo "kubectl logs --follow job/${JOB_NAME}"
-echo "kubectl delete job/${JOB_NAME}"
+echo "=== Restore job started..."
+echo "=== Showing the restore job logs (hit ctrl-c to stop following the logs, this will not cancel the job)..."
+
+while ! kubectl logs "job/${JOB_NAME}" >/dev/null 2>/dev/null ; do echo "Waiting for job to start..."; sleep 2; done; kubectl logs "job/${JOB_NAME}" --follow=true

@@ -258,3 +258,13 @@ yaml vars
 {{- mulf $maxSizeYamlMB 1000000  | int -}}
 {{- end -}}
 {{- end -}}
+
+{{- define "stackstate.backup.yaml.maxSizeLimit" -}}
+{{- $maxSizeYamlMB := (include "stackstate.storage.to.megabytes" .Values.backup.configuration.yaml.maxSizeLimit) -}}
+{{- if eq $maxSizeYamlMB .Values.backup.configuration.yaml.maxSizeLimit -}}
+{{- .Values.backup.configuration.yaml.maxSizeLimit -}}
+{{- else -}}
+{{- mulf $maxSizeYamlMB 1000000  | int -}}
+{{- end -}}
+
+{{- end -}}

@@ -1,6 +1,6 @@
 # stackstate-k8s
 
-Helm chart for StackState for Kubernetes (version 6.x)
+Helm chart for StackState for Kubernetes
 
 Current chart version is `1.11.6-pre.1`
 
@@ -67,18 +67,24 @@ stackstate/stackstate
 | anomaly-detection.threadWorkers | int | `3` | The number of worker threads. |
 | backup.additionalLogging | string | `""` | Additional logback config for backup components |
 | backup.configuration.bucketName | string | `"sts-configuration-backup"` | Name of the MinIO bucket to store configuration backups. |
+| backup.configuration.maxLocalFiles | int | `10` | The maximum number of configuration backup files stored on the PVC for the configuration backup (which is only of limited size, see backup.configuration.scheduled.pvc.size. |
 | backup.configuration.restore.enabled | bool | `true` | Enable configuration backup restore functionality (if `backup.enabled` is set to `true`). |
+| backup.configuration.s3Prefix | string | `""` | Prefix (dir name) used to store backup files. |
 | backup.configuration.scheduled.backupDatetimeParseFormat | string | `"%Y%m%d-%H%M"` | Format to parse date/time from configuration backup name. *Note:* This should match the value for `backupNameTemplate`. |
-| backup.configuration.scheduled.backupNameParseRegexp | string | `"sts-backup-([0-9]*-[0-9]*).stj"` | Regular expression to retrieve date/time from configuration backup name. *Note:* This should match the value for `backupNameTemplate`. |
-| backup.configuration.scheduled.backupNameTemplate | string | `"sts-backup-$(date +%Y%m%d-%H%M).stj"` | Template for the configuration backup name as a double-quoted shell string value. |
+| backup.configuration.scheduled.backupNameParseRegexp | string | `"sts-backup-([0-9]*-[0-9]*).sty"` | Regular expression to retrieve date/time from configuration backup name. *Note:* This should match the value for `backupNameTemplate`. |
+| backup.configuration.scheduled.backupNameTemplate | string | `"sts-backup-$(date +%Y%m%d-%H%M).sty"` | Template for the configuration backup name as a double-quoted shell string value. |
 | backup.configuration.scheduled.backupRetentionTimeDelta | string | `"365 days ago"` | Time to keep configuration backups. The value is passed to GNU date tool to determine a specific date, and files older than this date will be deleted. |
 | backup.configuration.scheduled.enabled | bool | `true` | Enable scheduled configuration backups (if `backup.enabled` is set to `true`). |
+| backup.configuration.scheduled.pvc.accessModes | list | `["ReadWriteOnce"]` | Access mode for settings backup data. |
+| backup.configuration.scheduled.pvc.size | string | `"1Gi"` | Size of volume for settings backup |
+| backup.configuration.scheduled.pvc.storageClass | string | `nil` | Storage class of the volume for settings backup data. |
 | backup.configuration.scheduled.schedule | string | `"0 4 * * *"` | Cron schedule for automatic configuration backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax). |
 | backup.configuration.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
 | backup.configuration.securityContext.fsGroup | int | `65534` | The GID (group ID) of all files on all mounted volumes |
 | backup.configuration.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
 | backup.configuration.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | backup.configuration.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
+| backup.configuration.yaml.maxSizeLimit | string | `"100Mi"` | Max size of the settings backup or installed via a stackpack |
 | backup.elasticsearch.bucketName | string | `"sts-elasticsearch-backup"` | Name of the MinIO bucket where ElasticSearch snapshots are stored. |
 | backup.elasticsearch.restore.enabled | bool | `true` | Enable ElasticSearch snapshot restore functionality (if `backup.enabled` is set to `true`). |
 | backup.elasticsearch.scheduled.enabled | bool | `true` | Enable scheduled ElasticSearch snapshots (if `backup.enabled` is set to `true`). |

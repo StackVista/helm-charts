@@ -44,6 +44,8 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   value: {{ .Values.backup.stackGraph.scheduled.backupDatetimeParseFormat | quote }}
 - name: BACKUP_STACKGRAPH_SCHEDULED_BACKUP_RETENTION_TIME_DELTA
   value: {{ .Values.backup.stackGraph.scheduled.backupRetentionTimeDelta | quote }}
+- name: BACKUP_CONFIGURATION_UPLOAD_REMOTE
+  value: {{ .Values.backup.enabled | toString | lower | quote }}
 - name: BACKUP_CONFIGURATION_BUCKET_NAME
   value: {{ .Values.backup.configuration.bucketName | quote }}
 - name: BACKUP_CONFIGURATION_RESTORE_ENABLED
@@ -58,6 +60,8 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   value: {{ .Values.backup.configuration.scheduled.backupDatetimeParseFormat | quote }}
 - name: BACKUP_CONFIGURATION_SCHEDULED_BACKUP_RETENTION_TIME_DELTA
   value: {{ .Values.backup.configuration.scheduled.backupRetentionTimeDelta | quote }}
+- name: BACKUP_CONFIGURATION_MAX_LOCAL_FILES
+  value: {{ .Values.backup.configuration.maxLocalFiles | quote }}
 - name: STACKSTATE_ROUTER_ENDPOINT
   value: {{ include "stackstate.router.endpoint" . | quote }}
 - name: ELASTICSEARCH_ENDPOINT
@@ -89,8 +93,10 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   mountPath: /opt/docker/etc_log
 - name: backup-restore-scripts
   mountPath: /backup-restore-scripts
+{{- if .Values.backup.enabled }}
 - name: minio-keys
   mountPath: /aws-keys
+{{- end -}}
 {{- end -}}
 
 {{- define "stackstate.backup.volumes" -}}
@@ -101,7 +107,9 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   configMap:
     name: {{ template "common.fullname.short" . }}-backup-restore-scripts
     defaultMode: 0755
+{{- if .Values.backup.enabled }}
 - name: minio-keys
   secret:
     secretName: {{ include "stackstate.minio.keys" . }}
+{{- end -}}
 {{- end -}}
