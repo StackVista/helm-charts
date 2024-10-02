@@ -14,3 +14,16 @@ spec:
       {{- end }}
   {{ include "common.storage.class" ( dict "persistence" .Values.backup.stackGraph.scheduled.tempData "global" .Values.global) | nindent 2 }}
 {{- end }}
+
+{{- if .Values.backup.configuration.scheduled.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "common.fullname.short" . }}-settings-backup-data
+spec:
+  accessModes: {{ .Values.backup.stackGraph.scheduled.tempData.accessModes }}
+  resources:
+    requests:
+      storage: {{ tpl .Values.backup.configuration.scheduled.pvc.size . }}
+  {{ include "common.storage.class" ( dict "persistence" .Values.backup.configuration.scheduled.pvc "global" .Values.global) | nindent 2 }}
+{{- end }}

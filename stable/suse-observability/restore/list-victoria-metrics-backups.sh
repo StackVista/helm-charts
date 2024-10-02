@@ -17,8 +17,14 @@ if (! (kubectl get configmap "${CM_NAME}" -o jsonpath="{.data.job-${JOB_NAME_TEM
     exit 1
 fi
 
+# Ensure the job is deleted when the script exits
+cleanup() {
+  echo "=== Cleaning up job ${JOB_NAME}"
+  kubectl delete job "${JOB_NAME}" || true
+}
+trap cleanup EXIT
+
 kubectl create -f "${JOB_YAML_FILE}"
 rm -rf "${JOB_YAML_DIR}"
 
 while ! kubectl logs "job/${JOB_NAME}"  --container=list >/dev/null 2>/dev/null ; do echo "Waiting for job to start..."; sleep 2; done; kubectl logs "job/${JOB_NAME}"  --container=list --follow=true
-kubectl delete job "${JOB_NAME}"

@@ -104,6 +104,11 @@ backup:
     bucketName: 'sts-configuration-backup'
     # backup.configuration.s3Prefix -- Prefix (dir name) used to store backup files.
     s3Prefix: ""
+    yaml:
+      # backup.configuration.yaml.maxSizeLimit -- Max size of the settings backup or installed via a stackpack
+      maxSizeLimit: "100Mi"
+    # backup.configuration.maxLocalFiles -- The maximum number of configuration backup files stored on the PVC for the configuration backup (which is only of limited size, see backup.configuration.scheduled.pvc.size.
+    maxLocalFiles: 10
     restore:
       # backup.configuration.restore.enabled -- Enable configuration backup restore functionality (if `backup.enabled` is set to `true`).
       enabled: true
@@ -113,13 +118,20 @@ backup:
       # backup.configuration.scheduled.schedule -- Cron schedule for automatic configuration backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax).
       schedule: '0 4 * * *'
       # backup.configuration.scheduled.backupNameTemplate -- Template for the configuration backup name as a double-quoted shell string value.
-      backupNameTemplate: 'sts-backup-$(date +%Y%m%d-%H%M).stj'
+      backupNameTemplate: 'sts-backup-$(date +%Y%m%d-%H%M).sty'
       # backup.configuration.scheduled.backupNameParseRegexp -- Regular expression to retrieve date/time from configuration backup name. *Note:* This should match the value for `backupNameTemplate`.
-      backupNameParseRegexp: 'sts-backup-([0-9]*-[0-9]*).stj'
+      backupNameParseRegexp: 'sts-backup-([0-9]*-[0-9]*).sty'
       # backup.configuration.scheduled.backupDatetimeParseFormat -- Format to parse date/time from configuration backup name. *Note:* This should match the value for `backupNameTemplate`.
       backupDatetimeParseFormat: '%Y%m%d-%H%M'
       # backup.configuration.scheduled.backupRetentionTimeDelta -- Time to keep configuration backups. The value is passed to GNU date tool to determine a specific date, and files older than this date will be deleted.
       backupRetentionTimeDelta: '365 days ago'
+      pvc:
+        # backup.configuration.scheduled.pvc.accessModes -- Access mode for settings backup data.
+        accessModes: ["ReadWriteOnce"]
+        # backup.configuration.scheduled.pvc.size -- Size of volume for settings backup
+        size: '1Gi'
+        # backup.configuration.scheduled.pvc.storageClass -- Storage class of the volume for settings backup data.
+        storageClass:
     securityContext:
       # backup.configuration.securityContext.enabled -- Whether or not to enable the securityContext
       enabled: true
