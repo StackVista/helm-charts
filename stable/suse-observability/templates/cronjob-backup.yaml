@@ -10,7 +10,8 @@ kind: CronJob
 metadata:
   name: {{ template "common.fullname.short" . }}-backup-sg
   labels:
-    app.kubernetes.io/component: backup
+    app.kubernetes.io/name: suse-observability
+    app.kubernetes.io/component: backup-sg
 spec:
   concurrencyPolicy: Forbid
   schedule: {{ .Values.backup.stackGraph.scheduled.schedule | quote }}
@@ -82,7 +83,8 @@ kind: CronJob
 metadata:
   name: {{ template "common.fullname.short" . }}-backup-conf
   labels:
-    app.kubernetes.io/component: backup
+    app.kubernetes.io/name: suse-observability
+    app.kubernetes.io/component: backup-settings
 spec:
   concurrencyPolicy: Forbid
   schedule: {{ .Values.backup.configuration.scheduled.schedule | quote }}
