@@ -25,7 +25,7 @@ if (! (kubectl get configmap "${CM_NAME}" -o jsonpath="{.data.job-${JOB_NAME_TEM
 fi
 
 if [ -z "$FORCE_DELETE" ]; then
-  echo "WARNING: Restoring a settings backup will remove all topology (including history) and existing settings. It will also stop (scale down) SUSE Observability. It will be down until a manual trigger to scale it up again (using the \"./scale-up\" script). Are you sure you want to continue? (yes/no)"
+  echo "WARNING: Restoring a settings backup will remove all topology (including history) and existing settings. It will also stop (scale down) the api and topology synchronization. It will be down until a manual trigger to scale it up again (using the \"./scale-up\" script). Are you sure you want to continue? (yes/no)"
   read -r answer
   if [ "$answer" != "yes" ]; then
     echo "Exiting without restoring backup."

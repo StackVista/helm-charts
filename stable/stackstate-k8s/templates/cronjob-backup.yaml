@@ -10,7 +10,8 @@ kind: CronJob
 metadata:
   name: {{ template "common.fullname.short" . }}-backup-sg
   labels:
-    app.kubernetes.io/component: backup
+    app.kubernetes.io/name: stackstate-k8s
+    app.kubernetes.io/component: backup-stackgraph
 spec:
   concurrencyPolicy: Forbid
   schedule: {{ .Values.backup.stackGraph.scheduled.schedule | quote }}
@@ -47,7 +48,7 @@ spec:
                   {{- if eq .Values.hbase.deployment.mode "Distributed" }}
                   value: stackstate-zookeeper-headless:2181
                   {{- else }}
-                  value: "suse-observability-hbase-stackgraph:2182"
+                  value: "stackstate-hbase-stackgraph:2182"
                   {{- end }}
               {{- with .Values.stackstate.components.backup.resources }}
               resources:
@@ -82,7 +83,8 @@ kind: CronJob
 metadata:
   name: {{ template "common.fullname.short" . }}-backup-conf
   labels:
-    app.kubernetes.io/component: backup
+    app.kubernetes.io/name: stackstate-k8s
+    app.kubernetes.io/component: backup-settings
 spec:
   concurrencyPolicy: Forbid
   schedule: {{ .Values.backup.configuration.scheduled.schedule | quote }}
@@ -132,9 +134,9 @@ spec:
                   value: nobody
                 - name: ZOOKEEPER_QUORUM
                   {{- if eq .Values.hbase.deployment.mode "Distributed" }}
-                  value: suse-observability-zookeeper-headless:2181
+                  value: stackstate-zookeeper-headless:2181
                   {{- else }}
-                  value: "suse-observability-hbase-stackgraph:2182"
+                  value: "stackstate-hbase-stackgraph:2182"
                   {{- end }}
                 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
               {{- with .Values.stackstate.components.backup.resources }}
