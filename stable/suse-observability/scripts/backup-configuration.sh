@@ -5,16 +5,16 @@ export BACKUP_DIR=/settings-backup-data
 BACKUP_CONFIGURATION_MAX_LOCAL_FILES=${BACKUP_CONFIGURATION_MAX_LOCAL_FILES:-10}
 
 echo "=== Removing oldest backups from local storage \"${BACKUP_DIR}\", keeping at most $BACKUP_CONFIGURATION_MAX_LOCAL_FILES..."
-# shellcheck disable=SC2012
-current_count=$(ls -1t "${BACKUP_DIR}" | wc -l)
-if [ "$current_count" -gt "$BACKUP_CONFIGURATION_MAX_LOCAL_FILES" ]; then
-  files_to_remove=$((current_count - BACKUP_CONFIGURATION_MAX_LOCAL_FILES))
-  # shellcheck disable=SC2012
-  ls -1t "${BACKUP_DIR}" | tail -n "$files_to_remove" | xargs -I {} rm -f "${BACKUP_DIR}/{}"
+
+# Removing oldest backups (files only, there can be directories like `lost+found` that we want to ignore)
+current_count=$(find "${BACKUP_DIR}" -maxdepth 1 -type f | wc -l)
+if [ "$current_count" -ge "$BACKUP_CONFIGURATION_MAX_LOCAL_FILES" ]; then
+  files_to_remove=$((current_count - BACKUP_CONFIGURATION_MAX_LOCAL_FILES + 1))
+  find "${BACKUP_DIR}" -maxdepth 1 -type f -printf '%T@ %p\n' | sort -n | head -n "$files_to_remove" | awk '{print $2}' | xargs -I {} rm -f "{}"
 fi
 
 echo "=== Listing contents of \"${BACKUP_DIR}\"..."
-ls -lat "${BACKUP_DIR:?}"
+find "${BACKUP_DIR}" -maxdepth 1 -type f -printf '%T@ %f\n' | sort -n | awk '{print $2}'
 
 eval "BACKUP_FILE=\"${BACKUP_DIR}/${BACKUP_CONFIGURATION_SCHEDULED_BACKUP_NAME_TEMPLATE}\""
 

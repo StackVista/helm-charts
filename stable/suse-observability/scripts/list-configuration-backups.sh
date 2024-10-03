@@ -3,8 +3,8 @@ set -Eeuo pipefail
 
 export BACKUP_DIR=/settings-backup-data
 echo "=== Listing StackGraph backups in local persistent volume..."
-# shellcheck disable=SC2010
-ls -t "${BACKUP_DIR}" | grep -v 'lost+found'
+
+find "${BACKUP_DIR}" -maxdepth 1 -type f -printf '%T@ %f\n' | sort -n | awk '{print $2}'
 
 echo "==="
 
