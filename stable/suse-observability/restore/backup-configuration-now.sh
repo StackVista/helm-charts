@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-CRONJOB_NAME=$(get cronjob -l app.kubernetes.io/component=backup-settings -l app.kubernetes.io/name=suse-observability)
+CRONJOB_NAME=$(kubectl get cronjob -l app.kubernetes.io/component=backup-settings -l app.kubernetes.io/name=suse-observability -o name)
 JOB_NAME="suse-observability-manual-$(date +%Y%m%dt%H%M%S)"
 
 kubectl create job --from="${CRONJOB_NAME}" "${JOB_NAME}"
