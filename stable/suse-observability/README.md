@@ -517,6 +517,7 @@ stackstate/stackstate
 | stackstate.components.api.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"2Gi","memory":"2Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"2Gi"}}` | Resource allocation for `api` pods. |
 | stackstate.components.api.sizing.baseMemoryConsumption | string | `"500Mi"` |  |
 | stackstate.components.api.sizing.javaHeapMemoryFraction | string | `"45"` |  |
+| stackstate.components.api.supportMode | string | `""` | Mode of support, either Documentation or ContactStackstate |
 | stackstate.components.api.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.api.yaml | object | `{}` |  |
 | stackstate.components.backup.resources.limits.cpu | string | `"3000m"` |  |

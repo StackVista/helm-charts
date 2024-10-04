@@ -334,6 +334,8 @@ stackstate:
       additionalLogging: ""
       # stackstate.components.api.docslink -- Documentation URL root to use in the product help page & tooltips.
       docslink: ""
+      # stackstate.components.api.supportMode -- Mode of support, either Documentation or ContactStackstate
+      supportMode: ""
       yaml: {}
       # stackstate.components.api.yaml.maxSizeLimit -- Max size of the sty file that will be imported or installed via a stackpack
       # maxSizeLimit: "1Mi"

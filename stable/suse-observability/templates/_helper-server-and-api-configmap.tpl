@@ -105,6 +105,10 @@ stackstate.aws.s3 {
 stackstate.webUIConfig.docLinkUrlPrefix = "{{- .Values.stackstate.components.api.docslink -}}"
 {{- end }}
 
+{{- if .Values.stackstate.components.api.supportMode }}
+stackstate.webUIConfig.supportMode = "{{- .Values.stackstate.components.api.supportMode -}}"
+{{- end }}
+
 stackstate.deploymentMode = "{{- .Values.stackstate.deployment.mode -}}"
 stackstate.edition = "{{- .Values.stackstate.deployment.edition -}}"
 {{- include "stackstate.service.secret.clickhouseconfig" . }}
