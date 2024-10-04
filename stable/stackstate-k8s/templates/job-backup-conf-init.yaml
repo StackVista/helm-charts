@@ -1,0 +1,55 @@
+{{- if .Values.backup.configuration.scheduled.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  {{- if .Values.deployment.compatibleWithArgoCD }}
+  generateName: backup-init-conf-
+  {{- else }}
+  name: {{ template "common.fullname.short" . }}-backup-init-conf-{{ now | date "20060102t150405" }}
+  {{- end }}
+  labels:
+    app.kubernetes.io/component: backup-settings-init
+  annotations:
+    {{- if .Values.deployment.compatibleWithArgoCD }}
+    argocd.argoproj.io/hook: Sync
+    {{- end }}
+  {{- with .Values.backup.initJobAnnotations }}
+    {{- toYaml . | nindent 4}}
+  {{- end }}
+spec:
+  ttlSecondsAfterFinished: 10
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: backup
+    spec:
+      containers:
+        - name: init
+          image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
+          imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
+          command:
+            - "echo"
+            - "Init settings backup pvc"
+          {{- with .Values.stackstate.components.containerTools.resources }}
+          resources:
+            limits:
+              cpu: 10m
+              memory: 10Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+          {{- end }}
+          volumeMounts:
+            - name: settings-backup-data
+              mountPath: /settings-backup-data
+
+      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      restartPolicy: Never
+{{- if .Values.backup.stackGraph.securityContext.enabled }}
+      securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 8 }}
+{{- end }}
+      volumes:
+      - name: settings-backup-data
+        persistentVolumeClaim:
+          claimName: {{ template "common.fullname.short" . }}-settings-backup-data
+{{- end }}
