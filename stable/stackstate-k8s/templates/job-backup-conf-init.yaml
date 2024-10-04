@@ -3,9 +3,9 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   {{- if .Values.deployment.compatibleWithArgoCD }}
-  generateName: backup-init-conf-
+  generateName: backup-conf-
   {{- else }}
-  name: {{ template "common.fullname.short" . }}-backup-init-conf-{{ now | date "20060102t150405" }}
+  name: {{ template "common.fullname.short" . }}-backup-conf-{{ now | date "20060102t150405" }}
   {{- end }}
   labels:
     app.kubernetes.io/component: backup-settings-init
