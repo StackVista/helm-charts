@@ -16,12 +16,13 @@ fi
 echo "=== Listing contents of \"${BACKUP_DIR}\"..."
 find "${BACKUP_DIR}" -maxdepth 1 -type f -printf '%T@ %f\n' | sort -n | awk '{print $2}'
 
-eval "BACKUP_FILE=\"${BACKUP_DIR}/${BACKUP_CONFIGURATION_SCHEDULED_BACKUP_NAME_TEMPLATE}\""
+eval "BACKUP_FILE=\"${BACKUP_CONFIGURATION_SCHEDULED_BACKUP_NAME_TEMPLATE}\""
+BACKUP_FILE_WITH_PATH="${BACKUP_DIR}/${BACKUP_FILE}"
 
 echo "=== Creating settings backup to \"${BACKUP_FILE}\"..."
 /opt/docker/bin/settings-backup -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy -create "${BACKUP_FILE}"
 
-grep '_version:' "${BACKUP_FILE}" > /dev/null || (
+grep '_version:' "${BACKUP_FILE_WITH_PATH}" > /dev/null || (
   echo "Exported file is probably not in STY format, exiting..."
   exit 1
 )
@@ -33,7 +34,7 @@ if [ "$BACKUP_CONFIGURATION_UPLOAD_REMOTE" == "true" ]; then
     AWS_SECRET_ACCESS_KEY="$(cat /aws-keys/secretkey)"
 
     echo "=== Uploading backup \"${BACKUP_FILE}\" to bucket \"${BACKUP_CONFIGURATION_BUCKET_NAME}\"..."
-    sts-toolbox aws s3 cp --endpoint "http://${MINIO_ENDPOINT}" --region minio "${BACKUP_FILE}" "s3://${BACKUP_CONFIGURATION_BUCKET_NAME}/${BACKUP_CONFIGURATION_S3_PREFIX}${BACKUP_FILE}"
+    sts-toolbox aws s3 cp --endpoint "http://${MINIO_ENDPOINT}" --region minio "${BACKUP_FILE_WITH_PATH}" "s3://${BACKUP_CONFIGURATION_BUCKET_NAME}/${BACKUP_CONFIGURATION_S3_PREFIX}${BACKUP_FILE}"
 
     echo "=== Expiring old settings backups..."
     export BACKUP_BUCKET_NAME=${BACKUP_CONFIGURATION_BUCKET_NAME}
