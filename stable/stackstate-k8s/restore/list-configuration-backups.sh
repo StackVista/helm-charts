@@ -27,4 +27,16 @@ trap cleanup EXIT
 kubectl create -f "${JOB_YAML_FILE}"
 rm -rf "${JOB_YAML_DIR}"
 
-while ! kubectl logs "job/${JOB_NAME}"  --container=list >/dev/null 2>/dev/null ; do echo "Waiting for job to start..."; sleep 2; done; kubectl logs "job/${JOB_NAME}"  --container=list --follow=true
+while true; do
+    # Get the pod name for the job (pending pods will exit kubectl log without an error, but also without showing the logs)
+    POD_NAME=$(kubectl get pods --selector=job-name="${JOB_NAME}" --field-selector=status.phase!=Pending -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)
+
+    if [ -z "${POD_NAME}" ]; then
+        echo "=== Waiting for pod to start..."
+        sleep 1
+        continue
+    fi
+    break
+done
+
+kubectl logs "job/${JOB_NAME}"  --container=list --follow=true

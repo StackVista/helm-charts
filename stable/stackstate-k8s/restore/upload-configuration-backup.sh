@@ -40,6 +40,7 @@ while true; do
 
     if [ -z "${POD_NAME}" ]; then
         echo "=== Waiting for pod to start..."
+        sleep 1
         continue
     fi
 
