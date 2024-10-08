@@ -63,4 +63,13 @@ while true; do
     break
 done
 
-kubectl logs "job/${JOB_NAME}" --follow=true
+# Follow the logs and cancel when a line with "===" is found
+kubectl logs "job/${JOB_NAME}" --follow=true | while IFS= read -r line; do
+    echo "$line"
+    if [[ "$line" == "===" ]]; then
+        pkill -P $$ kubectl
+        break
+    fi
+done
+
+echo "Run ./scale-up.sh to start all deployments again."
