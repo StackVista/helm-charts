@@ -55,6 +55,9 @@ checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha25
 StackState URL function
 */}}
 {{- define "stackstate-k8s-agent.stackstate.url" -}}
+{{- if not (hasPrefix "http" (tpl .Values.stackstate.url .)) -}}
+{{- fail "SUSE Observability Ingest URL should start with the http or https protocol." -}}
+{{- end -}}
 {{ tpl .Values.stackstate.url . | quote }}
 {{- end }}
 

@@ -6,6 +6,15 @@ keywords:
 - monitoring
 - observability
 - SUSE
+annotations:
+  catalog.cattle.io/display-name: SUSE Observability Agent
+  # This fixes the release name, we fix this for ease of use of the user. Ideally we'd be able to set a default here but
+  # allow the user to change this, however, ranger does not support this. If the user wants to change release name
+  # that should go through helm
+  catalog.cattle.io/release-name: suse-observability
+  # We would like to put a default namespace here, much like the release name, but fixing both namespace and release name
+  # hides does fields and allows selecting a project on rancher, which is not what we want. For now this is configurable.
+  # catalog.cattle.io/namespace: suse-observability
 home: https://github.com/StackVista/stackstate-agent
 icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
 maintainers:
