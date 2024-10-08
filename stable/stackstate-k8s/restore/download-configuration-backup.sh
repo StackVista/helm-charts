@@ -35,7 +35,7 @@ rm -rf "${JOB_YAML_DIR}"
 
 while true; do
     # Get the pod name for the job
-    POD_NAME=$(kubectl get pods --selector=job-name="${JOB_NAME}" --field-selector=status.phase==Running -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)
+    POD_NAME=$(kubectl get pods --selector=job-name="${JOB_NAME}" --field-selector=status.phase!=Pending -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true)
 
     if [ -z "${POD_NAME}" ]; then
         echo "=== Waiting for pod to start..."
