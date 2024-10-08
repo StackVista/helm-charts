@@ -371,6 +371,7 @@ stackstate/stackstate
 | opentelemetry-collector.config.extensions.ingestion_api_key_auth.cache.valid_size | int | `100` |  |
 | opentelemetry-collector.config.extensions.ingestion_api_key_auth.cache.valid_ttl | string | `"5m"` |  |
 | opentelemetry-collector.config.extensions.ingestion_api_key_auth.endpoint.url | string | `"${env:API_URL}"` |  |
+| opentelemetry-collector.config.extensions.ingestion_api_key_auth.schema | string | `"SUSE-Observability"` |  |
 | opentelemetry-collector.config.extensions.memory_ballast | object | `{}` |  |
 | opentelemetry-collector.config.processors.attributes/removeStsApiKey.actions[0].action | string | `"delete"` |  |
 | opentelemetry-collector.config.processors.attributes/removeStsApiKey.actions[0].key | string | `"client_sts_api_key"` |  |
