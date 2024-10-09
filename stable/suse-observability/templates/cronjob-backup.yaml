@@ -1,11 +1,51 @@
+
+{{- define "stackstate.backup.stackgraph.container.init" }}
+name: wait
+command:
+  - sh
+  - -c
+  - |
+    /entrypoint -c {{ include "stackstate.minio.endpoint" . }},{{- if eq .Values.hbase.deployment.mode "Distributed" }}{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn-headful:9000{{- else -}}{{- .Release.Name }}-hbase-stackgraph:2182{{- end -}},{{ template "common.fullname.short" . }}-{{- if .Values.stackstate.experimental.server.split }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
+image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+imagePullPolicy: Always
+{{- end }}
+{{- define "stackstate.backup.stackgraph.container.main" }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
-{{- if .Values.backup.enabled }}
-{{- if .Values.backup.stackGraph.scheduled.enabled }}
+name: backup-stackgraph
+image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
+command:
+  - '/backup-restore-scripts/backup-stackgraph.sh'
+env:
+  {{- include "stackstate.backup.envvars" . | nindent 16 }}
+  - name: ZOOKEEPER_QUORUM
+    {{- if eq .Values.hbase.deployment.mode "Distributed" }}
+    value: suse-observability-zookeeper-headless:2181
+    {{- else }}
+    value: "suse-observability-hbase-stackgraph:2182"
+    {{- end }}
+{{- with .Values.stackstate.components.backup.resources }}
+resources:
+  {{- toYaml . | nindent 16 }}
+{{- end }}
+volumeMounts:
+  {{- include "stackstate.backup.volumeMounts" . | nindent 16 }}
+  - name: tmp-data
+    mountPath: /tmp-data
+{{- end }}
+
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.backup.stackgraph.container.main" .) -}}
+{{- $stackgraphBackupMainContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.backup.stackgraph.container.init" .) -}}
+{{- $stackgraphBackupInitContainer := (merge $overrideContainer $commonContainer) -}}
 {{- if .Capabilities.APIVersions.Has "batch/v1/CronJob" }}
 apiVersion: batch/v1
 {{- else }}
 apiVersion: batch/v1beta1
 {{- end }}
+{{- if .Values.backup.enabled }}
+{{- if .Values.backup.stackGraph.scheduled.enabled }}
 kind: CronJob
 metadata:
   name: {{ template "common.fullname.short" . }}-backup-sg
@@ -28,36 +68,9 @@ spec:
             app.kubernetes.io/component: backup
         spec:
           initContainers:
-            - name: wait
-              command:
-                - sh
-                - -c
-                - |
-                  /entrypoint -c {{ include "stackstate.minio.endpoint" . }},{{- if eq .Values.hbase.deployment.mode "Distributed" }}{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn-headful:9000{{- else -}}{{- .Release.Name }}-hbase-stackgraph:2182{{- end -}},{{ template "common.fullname.short" . }}-{{- if .Values.stackstate.experimental.server.split }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
-              image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-              imagePullPolicy: Always
+          - {{ toYaml $stackgraphBackupInitContainer | nindent 10 }}
           containers:
-            - name: backup-stackgraph
-              image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
-              imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
-              command:
-                - '/backup-restore-scripts/backup-stackgraph.sh'
-              env:
-                {{- include "stackstate.backup.envvars" . | nindent 16 }}
-                - name: ZOOKEEPER_QUORUM
-                  {{- if eq .Values.hbase.deployment.mode "Distributed" }}
-                  value: suse-observability-zookeeper-headless:2181
-                  {{- else }}
-                  value: "suse-observability-hbase-stackgraph:2182"
-                  {{- end }}
-              {{- with .Values.stackstate.components.backup.resources }}
-              resources:
-                {{- toYaml . | nindent 16 }}
-              {{- end }}
-              volumeMounts:
-                {{- include "stackstate.backup.volumeMounts" . | nindent 16 }}
-                - name: tmp-data
-                  mountPath: /tmp-data
+          - {{ toYaml $stackgraphBackupMainContainer | nindent 10 }}
           {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 10 }}
           volumes:
             {{- include "stackstate.backup.volumes" . | nindent 12 }}
@@ -73,7 +86,63 @@ spec:
 ---
 {{- end }}
 
+{{- define "stackstate.backup.configuration.container.init" }}
+name: wait
+command:
+  - sh
+  - -c
+  - |
+    /entrypoint -c {{- if .Values.backup.enabled -}}{{ include "stackstate.minio.endpoint" . }},{{- end -}}{{- if eq .Values.hbase.deployment.mode "Distributed" }}{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn-headful:9000{{- else -}}{{- .Release.Name }}-hbase-stackgraph:2182{{- end -}},{{ template "common.fullname.short" . }}-{{- if .Values.stackstate.experimental.server.split }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
+image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+imagePullPolicy: Always
+{{- end }}
+{{- define "stackstate.backup.configuration.container.main" }}
+{{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
+name: backup-settings
+image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
+command:
+  - '/backup-restore-scripts/backup-configuration.sh'
+env:
+  {{- include "stackstate.backup.envvars" . | nindent 16 }}
+  {{- include "stackstate.authentication.envvars" .  | nindent 16 }}
+  {{- include "stackstate.baseurls.envvars" .  | nindent 16 }}
+  - name: LICENSE_KEY
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "common.fullname.short" . }}-license
+        key: sts-license-key
+  {{ if .Values.backup.configuration.yaml.maxSizeLimit }}
+  - name: CONFIG_FORCE_stackstate_yaml_codePointLimit
+    value: "{{ include "stackstate.backup.yaml.maxSizeLimit" . }}"
+  {{ end }}
+  - name: PROMETHEUS_WRITE_ENDPOINT
+    value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
+  - name: HADOOP_USER_NAME
+    value: nobody
+  - name: ZOOKEEPER_QUORUM
+    {{- if eq .Values.hbase.deployment.mode "Distributed" }}
+    value: suse-observability-zookeeper-headless:2181
+    {{- else }}
+    value: "suse-observability-hbase-stackgraph:2182"
+    {{- end }}
+  {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
+{{- with .Values.stackstate.components.configurationBackup.resources }}
+resources:
+  {{- toYaml . | nindent 16 }}
+{{- end }}
+volumeMounts:
+  {{- include "stackstate.backup.volumeMounts" . | nindent 16 }}
+  - name: settings-backup-data
+    mountPath: /settings-backup-data
+{{- end }}
+
 {{- if .Values.backup.configuration.scheduled.enabled }}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.backup.configuration.container.main" .) -}}
+{{- $configBackupMainContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.backup.configuration.container.init" .) -}}
+{{- $configBackupInitContainer := (merge $overrideContainer $commonContainer) -}}
 {{- if .Capabilities.APIVersions.Has "batch/v1/CronJob" }}
 apiVersion: batch/v1
 {{- else }}
@@ -101,52 +170,9 @@ spec:
             app.kubernetes.io/component: backup
         spec:
           initContainers:
-            - name: wait
-              command:
-                - sh
-                - -c
-                - |
-                  /entrypoint -c {{- if .Values.backup.enabled -}}{{ include "stackstate.minio.endpoint" . }},{{- end -}}{{- if eq .Values.hbase.deployment.mode "Distributed" }}{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn-headful:9000{{- else -}}{{- .Release.Name }}-hbase-stackgraph:2182{{- end -}},{{ template "common.fullname.short" . }}-{{- if .Values.stackstate.experimental.server.split }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
-              image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-              imagePullPolicy: Always
+          - {{ toYaml $configBackupInitContainer | nindent 10 }}
           containers:
-            - name: backup-settings
-              image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
-              imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
-              command:
-                - '/backup-restore-scripts/backup-configuration.sh'
-              env:
-                {{- include "stackstate.backup.envvars" . | nindent 16 }}
-                {{- include "stackstate.authentication.envvars" .  | nindent 16 }}
-                {{- include "stackstate.baseurls.envvars" .  | nindent 16 }}
-                - name: LICENSE_KEY
-                  valueFrom:
-                    secretKeyRef:
-                      name: {{ template "common.fullname.short" . }}-license
-                      key: sts-license-key
-                {{ if .Values.backup.configuration.yaml.maxSizeLimit }}
-                - name: CONFIG_FORCE_stackstate_yaml_codePointLimit
-                  value: "{{ include "stackstate.backup.yaml.maxSizeLimit" . }}"
-                {{ end }}
-                - name: PROMETHEUS_WRITE_ENDPOINT
-                  value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
-                - name: HADOOP_USER_NAME
-                  value: nobody
-                - name: ZOOKEEPER_QUORUM
-                  {{- if eq .Values.hbase.deployment.mode "Distributed" }}
-                  value: suse-observability-zookeeper-headless:2181
-                  {{- else }}
-                  value: "suse-observability-hbase-stackgraph:2182"
-                  {{- end }}
-                {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
-              {{- with .Values.stackstate.components.backup.resources }}
-              resources:
-                {{- toYaml . | nindent 16 }}
-              {{- end }}
-              volumeMounts:
-                {{- include "stackstate.backup.volumeMounts" . | nindent 16 }}
-                - name: settings-backup-data
-                  mountPath: /settings-backup-data
+          - {{ toYaml $configBackupMainContainer | nindent 10 }}
           {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 10 }}
           volumes:
             {{- include "stackstate.backup.volumes" . | nindent 12 }}

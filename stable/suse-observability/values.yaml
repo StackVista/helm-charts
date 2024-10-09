@@ -349,6 +349,16 @@ stackstate:
           memory: "4000Mi"
           cpu: "1000m"
           ephemeral-storage: "1Mi"
+    configurationBackup:
+      resources:
+        limits:
+          memory: "1000Mi"
+          cpu: "1000m"
+          ephemeral-storage: "1Gi"
+        requests:
+          memory: "1000Mi"
+          cpu: "1000m"
+          ephemeral-storage: "100Mi"
     correlate:
       # stackstate.components.correlate.envsFromExistingSecrets -- Configure environment variables from existing secrets.
       # envsFromExistingSecret
