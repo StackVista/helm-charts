@@ -20,7 +20,7 @@ questions:
   - variable: all.registry.override
     label: "Override Default Image Registry"
     type: boolean
-    description: "Whether or not to override the default image registry."
+    description: "Override the default image registry."
     default: false
     group: "General"
     show_subquestions_if: true
@@ -41,7 +41,7 @@ questions:
   - variable: nodeAgent.containers.agent.resources.override
     label: "Override Node Agent Resource Allocation"
     type: boolean
-    description: "Whether or not to override the default resources."
+    description: "Override the default resources for the node agent, which collects metrics and topology from the kubelet and host on each node it is installed."
     default: "false"
     group: "Node Agent"
     show_subquestions_if: true
@@ -69,19 +69,19 @@ questions:
   - variable: nodeAgent.containers.processAgent.enabled
     label: "Enable Process Agent"
     type: boolean
-    description: "Whether or not to enable the Process Agent."
+    description: "Enable the Process Agent, which collects process and network connectivity information from all hosts in the cluster."
     default: "true"
     group: "Process Agent"
   - variable: nodeAgent.skipKubeletTLSVerify
     label: "Skip Kubelet TLS Verify"
     type: boolean
-    description: "Whether or not to skip TLS verification when connecting to the kubelet API."
+    description: "Skip TLS verification when connecting to the kubelet API."
     default: "true"
     group: "Process Agent"
   - variable: nodeAgent.containers.processAgent.resources.override
     label: "Override Process Agent Resource Allocation"
     type: boolean
-    description: "Whether or not to override the default resources."
+    description: "Override the default resources."
     default: "false"
     group: "Process Agent"
     show_subquestions_if: true
@@ -109,21 +109,21 @@ questions:
   - variable: clusterAgent.enabled
     label: "Enable Cluster Agent"
     type: boolean
-    description: "Whether or not to enable the Cluster Agent."
+    description: "Enable the Cluster Agent, which collects and forwards cluster-wide information from kubernetes."
     default: "true"
     group: "Cluster Agent"
   - variable: clusterAgent.collection.kubernetesResources.secrets
     label: "Collect Secret Resources"
     type: boolean
     description: |
-      Whether or not to collect Kubernetes Secrets.
+      Collect Kubernetes Secrets.
       NOTE: StackState will not send the actual data of the secrets, only the metadata and a secure hash of the data.
     default: "true"
     group: "Cluster Agent"
   - variable: clusterAgent.resources.override
     label: "Override Cluster Agent Resource Allocation"
     type: boolean
-    description: "Whether or not to override the default resources."
+    description: "Override the default resources."
     default: "false"
     group: "Cluster Agent"
     show_subquestions_if: true
@@ -151,13 +151,13 @@ questions:
   - variable: logsAgent.enabled
     label: "Enable Logs Agent"
     type: boolean
-    description: "Whether or not to enable the Logs Agent."
+    description: "Enable the Logs Agent, which installs a logs collector on each node in the cluster."
     default: "true"
     group: "Logs Agent"
   - variable: logsAgent.resources.override
     label: "Override Logs Agent Resource Allocation"
     type: boolean
-    description: "Whether or not to override the default resources."
+    description: "Override the default resources."
     default: "false"
     group: "Logs Agent"
     show_subquestions_if: true
