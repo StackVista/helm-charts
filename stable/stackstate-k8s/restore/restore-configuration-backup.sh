@@ -72,4 +72,10 @@ kubectl logs "job/${JOB_NAME}" --follow=true | while IFS= read -r line; do
     fi
 done
 
+pod_phase=$(kubectl get pod "${POD_NAME}" -o jsonpath='{.status.phase}')
+if [ "$pod_phase" != "Succeeded" ]; then
+    echo "=== Restore job failed. Exiting..."
+    exit 1
+fi
+
 echo "Run ./scale-up.sh to start all deployments again."
