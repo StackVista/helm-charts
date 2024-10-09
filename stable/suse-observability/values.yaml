@@ -2711,7 +2711,7 @@ opentelemetry-collector:
           valid_size: 100
           valid_ttl: 5m
           invalid_size: 100
-        schema: "SUSE-Observability"
+        schema: "SUSEObservability"
       # The health_check extension is mandatory for this chart.
       # Without the health_check extension the collector will fail the readiness and liveliness probes.
       # The health_check extension can be modified, but should never be removed.
