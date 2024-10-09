@@ -537,6 +537,12 @@ stackstate/stackstate
 | stackstate.components.checks.tmpToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible. |
 | stackstate.components.checks.tmpToPVC.volumeSize | string | `"2Gi"` | The size of the PersistentVolume for "/tmp" directory. |
 | stackstate.components.checks.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.configurationBackup.resources.limits.cpu | string | `"1000m"` |  |
+| stackstate.components.configurationBackup.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
+| stackstate.components.configurationBackup.resources.limits.memory | string | `"1000Mi"` |  |
+| stackstate.components.configurationBackup.resources.requests.cpu | string | `"1000m"` |  |
+| stackstate.components.configurationBackup.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
+| stackstate.components.configurationBackup.resources.requests.memory | string | `"1000Mi"` |  |
 | stackstate.components.containerTools.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for container-tools containers. |
 | stackstate.components.containerTools.image.registry | string | `"quay.io"` | Base container image registry for container-tools containers. |
 | stackstate.components.containerTools.image.repository | string | `"stackstate/container-tools"` | Base container image repository for container-tools containers. |
