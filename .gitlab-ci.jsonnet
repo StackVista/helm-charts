@@ -45,6 +45,28 @@ local sync_charts_template = {
   image: variables.images.stackstate_devops,
 } + skip_when_dependency_upgrade;
 
+local build_chart_job(chart) = {
+  image: variables.images.stackstate_helm_test,
+  before_script: helm_config_dependencies,
+  script: [
+    update_2nd_degree_chart_deps(chart),
+    'helm dependencies build stable/' + chart,
+  ],
+  stage: 'build_chart',
+  rules: [
+    {
+      @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
+      changes: ['stable/' + chart + '/**/*'],
+      exists: ['stable/' + chart + '/test/*.go'],
+    },
+  ],
+};
+
+local build_chart_jobs = {
+  ['build_%s' % chart]: (build_chart_job(chart))
+  for chart in (charts + public_charts)
+};
+
 
 local validate_and_push_jobs = {
   validate_charts: {
@@ -402,13 +424,14 @@ local update_docker_images = {
     ],
   },
   image: variables.images.chart_testing,
-  stages: ['validate', 'test', 'update', 'build', 'push-charts-to-internal', 'push-charts-to-public', 'push-charts-to-rancher'],
+  stages: ['build_chart', 'validate', 'test', 'update', 'build', 'push-charts-to-internal', 'push-charts-to-public', 'push-charts-to-rancher'],
 
   variables: {
     HELM_VERSION: 'v3.1.2',
     PROMOTION_DRY_RUN: 'no',
   },
 }
++ build_chart_jobs
 + test_chart_jobs
 + push_charts_to_internal_jobs
 + push_charts_to_public_jobs
