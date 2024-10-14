@@ -35,6 +35,8 @@ local skip_when_dependency_upgrade = {
   }] + super.rules,
 };
 
+// Build a chart with all dependencies and then share it as an artifact with next jobs in the pipepline
+// This step is the most expensive step so we want to execute it only once
 local build_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   before_script: helm_config_dependencies,
@@ -53,14 +55,14 @@ local build_chart_job(chart) = {
     paths: ['stable/' + chart + '/charts/'],
   },
 };
-
 local build_chart_jobs = {
   ['build_%s' % chart]: (build_chart_job(chart))
   for chart in (charts + public_charts)
 };
 
+// Validates modified charts: formats files, execute lint commands
 //TODO check if version is bumped
-local lint_chart_job(chart) = {
+local validate_chart_job(chart) = {
   image: variables.images.chart_testing,
   before_script: ['.gitlab/validate_before_script.sh'],
   script: [
@@ -79,12 +81,12 @@ local lint_chart_job(chart) = {
     },
   ],
 };
-
-local lint_chart_jobs = {
-  ['lint_%s' % chart]: (lint_chart_job(chart))
+local validate_chart_jobs = {
+  ['validate_%s' % chart]: (validate_chart_job(chart))
   for chart in (charts + public_charts)
 };
 
+// Runs unit tests on all charts with "test" directory
 local test_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   script: [
@@ -102,12 +104,12 @@ local test_chart_job(chart) = {
     CGO_ENABLED: 0,
   },
 };
-
 local test_chart_jobs = {
   ['test_%s' % chart]: (test_chart_job(chart))
   for chart in (charts + public_charts)
 };
 
+// Push charts to `helm-test.stackstate.io` registry
 local push_test_charts = {
   push_test_charts: {
     image: variables.images.stackstate_devops,
@@ -384,7 +386,7 @@ local update_docker_images = {
   },
 }
 + build_chart_jobs
-+ lint_chart_jobs
++ validate_chart_jobs
 + test_chart_jobs
 + push_test_charts
 
