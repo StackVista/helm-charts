@@ -43,6 +43,13 @@ while PODS=$(kubectl get pods --selector=stackstate.com/connects-to-stackgraph=t
   sleep 2
 done
 
+# Ensure the job is deleted when the script exits
+cleanup() {
+  echo "=== Cleaning up job ${JOB_NAME}"
+  kubectl delete job "${JOB_NAME}" || true
+}
+trap cleanup EXIT
+
 echo "=== Starting restore job"
 kubectl create -f "${JOB_YAML_FILE}"
 rm -rf "${JOB_YAML_DIR}"
