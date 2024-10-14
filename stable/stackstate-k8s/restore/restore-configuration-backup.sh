@@ -63,6 +63,7 @@ while true; do
     break
 done
 
+set +e
 # Follow the logs and cancel when a line with "===" is found
 kubectl logs "job/${JOB_NAME}" --follow=true | while IFS= read -r line; do
     echo "$line"
@@ -71,7 +72,19 @@ kubectl logs "job/${JOB_NAME}" --follow=true | while IFS= read -r line; do
         break
     fi
 done
+set -e
 
+# Wait until the pod is not in Running phase anymore
+while true; do
+    pod_phase=$(kubectl get pod "${POD_NAME}" -o jsonpath='{.status.phase}')
+    if [ "$pod_phase" != "Running" ]; then
+        break
+    fi
+    echo "=== Waiting for pod to complete."
+    sleep 2
+done
+
+# Check the final phase of the pod
 pod_phase=$(kubectl get pod "${POD_NAME}" -o jsonpath='{.status.phase}')
 if [ "$pod_phase" != "Succeeded" ]; then
     echo "=== Restore job failed. Exiting..."
