@@ -139,29 +139,6 @@ local test_chart_jobs = {
   for chart in (charts + public_charts)
 };
 
-local itest_chart_job(chart) = {
-  image: variables.images.stackstate_helm_test,
-  before_script: helm_fetch_dependencies + (
-    if chart == 'stackstate' || chart == 'suse-observability' then update_2nd_degree_chart_deps(chart) else []
-  ) +
-  ['helm dependencies update ${CHART}'],
-  script: [
-    'go test ./stable/' + chart + '/itest/...',
-  ],
-  stage: 'test',
-  rules: [
-    {
-      @'if': '$CI_COMMIT_TAG',
-      changes: ['stable/' + chart + '/**/*'],
-      exists: ['stable/' + chart + '/itest/*.go'],
-    },
-  ],
-  variables: {
-    CHART: 'stable/' + chart,
-    CGO_ENABLED: 0,
-  },
-};
-
 local push_chart_job_if(chart, script, rules) = {
   script: script,
   image: variables.images.stackstate_devops,
@@ -229,12 +206,6 @@ local push_stackstate_chart_releases =
     before_script: helm_fetch_dependencies,
     stage: 'push-charts-to-public',
   },
-};
-
-
-local itest_stackstate = {
-  integration_test_stackstate: itest_chart_job('stackstate'),
-  integration_test_stackstate_k8s: itest_chart_job('suse-observability'),
 };
 
 local push_charts_to_internal_jobs = {
@@ -424,7 +395,6 @@ local update_docker_images = {
 + push_charts_to_public_jobs
 + validate_and_push_jobs
 + push_stackstate_chart_releases
-+ itest_stackstate
 + update_sg_version
 + update_aad_chart_version
 + update_docker_images
