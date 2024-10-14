@@ -57,7 +57,6 @@ local build_chart_job(chart) = {
     {
       @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
       changes: ['stable/' + chart + '/**/*'],
-      exists: ['stable/' + chart + '/test/*.go'],
     },
   ],
   artifacts: {
@@ -70,7 +69,6 @@ local build_chart_jobs = {
   for chart in (charts + public_charts)
 };
 
-//TODO test if files exists
 //TODO check if version is bumped
 local lint_chart_job(chart) = {
   image: variables.images.chart_testing,
@@ -79,8 +77,8 @@ local lint_chart_job(chart) = {
     'yamale --schema /etc/ct/chart_schema.yaml stable/' + chart + '/Chart.yaml',
     'yamllint --config-file /etc/ct/lintconf.yaml stable/' + chart + '/Chart.yaml',
     'yamllint --config-file /etc/ct/lintconf.yaml stable/' + chart + '/values.yaml',
-    'yamllint --config-file /etc/ct/lintconf.yaml stable/' + chart + '/ci/default-values.yaml',
-    'helm lint stable/' + chart + ' --values stable/' + chart + '/ci/default-values.yaml',
+    'if [ -f stable/' + chart + '/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/' + chart + '/ci/default-values.yaml; fi',
+    'if [ -f stable/' + chart + '/ci/default-values.yaml ]; then helm lint stable/' + chart + ' --values stable/' + chart + '/ci/default-values.yaml; fi',
     '.gitlab/validate_kubeconform.sh',
   ],
   stage: 'validate',
@@ -88,7 +86,6 @@ local lint_chart_job(chart) = {
     {
       @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
       changes: ['stable/' + chart + '/**/*'],
-      exists: ['stable/' + chart + '/test/*.go'],
     },
   ],
 };

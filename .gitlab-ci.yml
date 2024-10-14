@@ -21,8 +21,6 @@ build_artifactory-cleaner:
   rules:
     - changes:
         - stable/artifactory-cleaner/**/*
-      exists:
-        - stable/artifactory-cleaner/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/artifactory-cleaner/Chart.yaml  | xargs -I % helm dependencies build stable/artifactory-cleaner/%
@@ -48,8 +46,6 @@ build_aws-amicleaner:
   rules:
     - changes:
         - stable/aws-amicleaner/**/*
-      exists:
-        - stable/aws-amicleaner/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/aws-amicleaner/Chart.yaml  | xargs -I % helm dependencies build stable/aws-amicleaner/%
@@ -75,8 +71,6 @@ build_aws-nuke:
   rules:
     - changes:
         - stable/aws-nuke/**/*
-      exists:
-        - stable/aws-nuke/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/aws-nuke/Chart.yaml  | xargs -I % helm dependencies build stable/aws-nuke/%
@@ -102,8 +96,6 @@ build_aws-pod-identity-webhook:
   rules:
     - changes:
         - stable/aws-pod-identity-webhook/**/*
-      exists:
-        - stable/aws-pod-identity-webhook/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/aws-pod-identity-webhook/Chart.yaml  | xargs -I % helm dependencies build stable/aws-pod-identity-webhook/%
@@ -129,8 +121,6 @@ build_beacher-job:
   rules:
     - changes:
         - stable/beacher-job/**/*
-      exists:
-        - stable/beacher-job/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/beacher-job/Chart.yaml  | xargs -I % helm dependencies build stable/beacher-job/%
@@ -156,8 +146,6 @@ build_chartmuseum:
   rules:
     - changes:
         - stable/chartmuseum/**/*
-      exists:
-        - stable/chartmuseum/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/chartmuseum/Chart.yaml  | xargs -I % helm dependencies build stable/chartmuseum/%
@@ -183,8 +171,6 @@ build_common:
   rules:
     - changes:
         - stable/common/**/*
-      exists:
-        - stable/common/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/common/Chart.yaml  | xargs -I % helm dependencies build stable/common/%
@@ -210,8 +196,6 @@ build_elasticsearch:
   rules:
     - changes:
         - stable/elasticsearch/**/*
-      exists:
-        - stable/elasticsearch/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/elasticsearch/Chart.yaml  | xargs -I % helm dependencies build stable/elasticsearch/%
@@ -237,8 +221,6 @@ build_falco-reporter:
   rules:
     - changes:
         - stable/falco-reporter/**/*
-      exists:
-        - stable/falco-reporter/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/falco-reporter/Chart.yaml  | xargs -I % helm dependencies build stable/falco-reporter/%
@@ -264,8 +246,6 @@ build_gitlab-steward:
   rules:
     - changes:
         - stable/gitlab-steward/**/*
-      exists:
-        - stable/gitlab-steward/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/gitlab-steward/Chart.yaml  | xargs -I % helm dependencies build stable/gitlab-steward/%
@@ -291,8 +271,6 @@ build_hbase:
   rules:
     - changes:
         - stable/hbase/**/*
-      exists:
-        - stable/hbase/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/hbase/Chart.yaml  | xargs -I % helm dependencies build stable/hbase/%
@@ -318,8 +296,6 @@ build_helm-reaper:
   rules:
     - changes:
         - stable/helm-reaper/**/*
-      exists:
-        - stable/helm-reaper/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/helm-reaper/Chart.yaml  | xargs -I % helm dependencies build stable/helm-reaper/%
@@ -345,8 +321,6 @@ build_iceman:
   rules:
     - changes:
         - stable/iceman/**/*
-      exists:
-        - stable/iceman/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/iceman/Chart.yaml  | xargs -I % helm dependencies build stable/iceman/%
@@ -372,8 +346,6 @@ build_k8s-image-list-to-s3:
   rules:
     - changes:
         - stable/k8s-image-list-to-s3/**/*
-      exists:
-        - stable/k8s-image-list-to-s3/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/k8s-image-list-to-s3/Chart.yaml  | xargs -I % helm dependencies build stable/k8s-image-list-to-s3/%
@@ -399,8 +371,6 @@ build_k8s-spot-termination-handler:
   rules:
     - changes:
         - stable/k8s-spot-termination-handler/**/*
-      exists:
-        - stable/k8s-spot-termination-handler/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/k8s-spot-termination-handler/Chart.yaml  | xargs -I % helm dependencies build stable/k8s-spot-termination-handler/%
@@ -426,8 +396,6 @@ build_kafkaup-operator:
   rules:
     - changes:
         - stable/kafkaup-operator/**/*
-      exists:
-        - stable/kafkaup-operator/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/kafkaup-operator/Chart.yaml  | xargs -I % helm dependencies build stable/kafkaup-operator/%
@@ -453,8 +421,6 @@ build_kommoner-operator:
   rules:
     - changes:
         - stable/kommoner-operator/**/*
-      exists:
-        - stable/kommoner-operator/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/kommoner-operator/Chart.yaml  | xargs -I % helm dependencies build stable/kommoner-operator/%
@@ -480,8 +446,6 @@ build_minio:
   rules:
     - changes:
         - stable/minio/**/*
-      exists:
-        - stable/minio/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/minio/Chart.yaml  | xargs -I % helm dependencies build stable/minio/%
@@ -507,8 +471,6 @@ build_otel-demo:
   rules:
     - changes:
         - stable/otel-demo/**/*
-      exists:
-        - stable/otel-demo/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/otel-demo/Chart.yaml  | xargs -I % helm dependencies build stable/otel-demo/%
@@ -534,8 +496,6 @@ build_petros-d-kubelet-stats-exporter:
   rules:
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
-      exists:
-        - stable/petros-d-kubelet-stats-exporter/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/petros-d-kubelet-stats-exporter/Chart.yaml  | xargs -I % helm dependencies build stable/petros-d-kubelet-stats-exporter/%
@@ -561,8 +521,6 @@ build_pull-secret:
   rules:
     - changes:
         - stable/pull-secret/**/*
-      exists:
-        - stable/pull-secret/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/pull-secret/Chart.yaml  | xargs -I % helm dependencies build stable/pull-secret/%
@@ -588,8 +546,6 @@ build_receiveramplifier:
   rules:
     - changes:
         - stable/receiveramplifier/**/*
-      exists:
-        - stable/receiveramplifier/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/receiveramplifier/Chart.yaml  | xargs -I % helm dependencies build stable/receiveramplifier/%
@@ -615,8 +571,6 @@ build_redirector:
   rules:
     - changes:
         - stable/redirector/**/*
-      exists:
-        - stable/redirector/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/redirector/Chart.yaml  | xargs -I % helm dependencies build stable/redirector/%
@@ -642,8 +596,6 @@ build_sandbox-operator:
   rules:
     - changes:
         - stable/sandbox-operator/**/*
-      exists:
-        - stable/sandbox-operator/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/sandbox-operator/Chart.yaml  | xargs -I % helm dependencies build stable/sandbox-operator/%
@@ -669,8 +621,6 @@ build_sock-shop:
   rules:
     - changes:
         - stable/sock-shop/**/*
-      exists:
-        - stable/sock-shop/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/sock-shop/Chart.yaml  | xargs -I % helm dependencies build stable/sock-shop/%
@@ -696,8 +646,6 @@ build_stackstate:
   rules:
     - changes:
         - stable/stackstate/**/*
-      exists:
-        - stable/stackstate/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
@@ -723,8 +671,6 @@ build_stackstate-agent:
   rules:
     - changes:
         - stable/stackstate-agent/**/*
-      exists:
-        - stable/stackstate-agent/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-agent/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-agent/%
@@ -750,8 +696,6 @@ build_stackstate-k8s-agent:
   rules:
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      exists:
-        - stable/stackstate-k8s-agent/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-k8s-agent/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-k8s-agent/%
@@ -777,8 +721,6 @@ build_stackstate-monitoring:
   rules:
     - changes:
         - stable/stackstate-monitoring/**/*
-      exists:
-        - stable/stackstate-monitoring/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-monitoring/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-monitoring/%
@@ -804,8 +746,6 @@ build_stackstate-standalone:
   rules:
     - changes:
         - stable/stackstate-standalone/**/*
-      exists:
-        - stable/stackstate-standalone/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-standalone/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-standalone/%
@@ -831,8 +771,6 @@ build_stackstate-values:
   rules:
     - changes:
         - stable/stackstate-values/**/*
-      exists:
-        - stable/stackstate-values/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-values/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-values/%
@@ -858,8 +796,6 @@ build_suse-observability:
   rules:
     - changes:
         - stable/suse-observability/**/*
-      exists:
-        - stable/suse-observability/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability/Chart.yaml  | xargs -I % helm dependencies build stable/suse-observability/%
@@ -885,8 +821,6 @@ build_suse-observability-agent:
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
-      exists:
-        - stable/suse-observability-agent/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability-agent/Chart.yaml  | xargs -I % helm dependencies build stable/suse-observability-agent/%
@@ -912,8 +846,6 @@ build_suse-observability-values:
   rules:
     - changes:
         - stable/suse-observability-values/**/*
-      exists:
-        - stable/suse-observability-values/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability-values/Chart.yaml  | xargs -I % helm dependencies build stable/suse-observability-values/%
@@ -939,8 +871,6 @@ build_tenantmanager:
   rules:
     - changes:
         - stable/tenantmanager/**/*
-      exists:
-        - stable/tenantmanager/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/tenantmanager/Chart.yaml  | xargs -I % helm dependencies build stable/tenantmanager/%
@@ -966,8 +896,6 @@ build_trafficmirror:
   rules:
     - changes:
         - stable/trafficmirror/**/*
-      exists:
-        - stable/trafficmirror/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/trafficmirror/Chart.yaml  | xargs -I % helm dependencies build stable/trafficmirror/%
@@ -993,8 +921,6 @@ build_victoria-metrics-single:
   rules:
     - changes:
         - stable/victoria-metrics-single/**/*
-      exists:
-        - stable/victoria-metrics-single/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/victoria-metrics-single/Chart.yaml  | xargs -I % helm dependencies build stable/victoria-metrics-single/%
@@ -1082,15 +1008,13 @@ lint_artifactory-cleaner:
   rules:
     - changes:
         - stable/artifactory-cleaner/**/*
-      exists:
-        - stable/artifactory-cleaner/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/artifactory-cleaner/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/artifactory-cleaner/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/artifactory-cleaner/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/artifactory-cleaner/ci/default-values.yaml
-    - helm lint stable/artifactory-cleaner --values stable/artifactory-cleaner/ci/default-values.yaml
+    - if [ -f stable/artifactory-cleaner/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/artifactory-cleaner/ci/default-values.yaml; fi
+    - if [ -f stable/artifactory-cleaner/ci/default-values.yaml ]; then helm lint stable/artifactory-cleaner --values stable/artifactory-cleaner/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_aws-amicleaner:
@@ -1100,15 +1024,13 @@ lint_aws-amicleaner:
   rules:
     - changes:
         - stable/aws-amicleaner/**/*
-      exists:
-        - stable/aws-amicleaner/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/aws-amicleaner/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-amicleaner/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-amicleaner/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-amicleaner/ci/default-values.yaml
-    - helm lint stable/aws-amicleaner --values stable/aws-amicleaner/ci/default-values.yaml
+    - if [ -f stable/aws-amicleaner/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/aws-amicleaner/ci/default-values.yaml; fi
+    - if [ -f stable/aws-amicleaner/ci/default-values.yaml ]; then helm lint stable/aws-amicleaner --values stable/aws-amicleaner/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_aws-nuke:
@@ -1118,15 +1040,13 @@ lint_aws-nuke:
   rules:
     - changes:
         - stable/aws-nuke/**/*
-      exists:
-        - stable/aws-nuke/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/aws-nuke/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-nuke/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-nuke/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-nuke/ci/default-values.yaml
-    - helm lint stable/aws-nuke --values stable/aws-nuke/ci/default-values.yaml
+    - if [ -f stable/aws-nuke/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/aws-nuke/ci/default-values.yaml; fi
+    - if [ -f stable/aws-nuke/ci/default-values.yaml ]; then helm lint stable/aws-nuke --values stable/aws-nuke/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_aws-pod-identity-webhook:
@@ -1136,15 +1056,13 @@ lint_aws-pod-identity-webhook:
   rules:
     - changes:
         - stable/aws-pod-identity-webhook/**/*
-      exists:
-        - stable/aws-pod-identity-webhook/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/aws-pod-identity-webhook/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-pod-identity-webhook/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-pod-identity-webhook/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-pod-identity-webhook/ci/default-values.yaml
-    - helm lint stable/aws-pod-identity-webhook --values stable/aws-pod-identity-webhook/ci/default-values.yaml
+    - if [ -f stable/aws-pod-identity-webhook/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/aws-pod-identity-webhook/ci/default-values.yaml; fi
+    - if [ -f stable/aws-pod-identity-webhook/ci/default-values.yaml ]; then helm lint stable/aws-pod-identity-webhook --values stable/aws-pod-identity-webhook/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_beacher-job:
@@ -1154,15 +1072,13 @@ lint_beacher-job:
   rules:
     - changes:
         - stable/beacher-job/**/*
-      exists:
-        - stable/beacher-job/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/beacher-job/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/beacher-job/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/beacher-job/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/beacher-job/ci/default-values.yaml
-    - helm lint stable/beacher-job --values stable/beacher-job/ci/default-values.yaml
+    - if [ -f stable/beacher-job/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/beacher-job/ci/default-values.yaml; fi
+    - if [ -f stable/beacher-job/ci/default-values.yaml ]; then helm lint stable/beacher-job --values stable/beacher-job/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_chartmuseum:
@@ -1172,15 +1088,13 @@ lint_chartmuseum:
   rules:
     - changes:
         - stable/chartmuseum/**/*
-      exists:
-        - stable/chartmuseum/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/chartmuseum/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/chartmuseum/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/chartmuseum/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/chartmuseum/ci/default-values.yaml
-    - helm lint stable/chartmuseum --values stable/chartmuseum/ci/default-values.yaml
+    - if [ -f stable/chartmuseum/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/chartmuseum/ci/default-values.yaml; fi
+    - if [ -f stable/chartmuseum/ci/default-values.yaml ]; then helm lint stable/chartmuseum --values stable/chartmuseum/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_common:
@@ -1190,15 +1104,13 @@ lint_common:
   rules:
     - changes:
         - stable/common/**/*
-      exists:
-        - stable/common/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/common/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/common/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/common/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/common/ci/default-values.yaml
-    - helm lint stable/common --values stable/common/ci/default-values.yaml
+    - if [ -f stable/common/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/common/ci/default-values.yaml; fi
+    - if [ -f stable/common/ci/default-values.yaml ]; then helm lint stable/common --values stable/common/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_elasticsearch:
@@ -1208,15 +1120,13 @@ lint_elasticsearch:
   rules:
     - changes:
         - stable/elasticsearch/**/*
-      exists:
-        - stable/elasticsearch/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/elasticsearch/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/elasticsearch/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/elasticsearch/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/elasticsearch/ci/default-values.yaml
-    - helm lint stable/elasticsearch --values stable/elasticsearch/ci/default-values.yaml
+    - if [ -f stable/elasticsearch/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/elasticsearch/ci/default-values.yaml; fi
+    - if [ -f stable/elasticsearch/ci/default-values.yaml ]; then helm lint stable/elasticsearch --values stable/elasticsearch/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_falco-reporter:
@@ -1226,15 +1136,13 @@ lint_falco-reporter:
   rules:
     - changes:
         - stable/falco-reporter/**/*
-      exists:
-        - stable/falco-reporter/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/falco-reporter/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/falco-reporter/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/falco-reporter/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/falco-reporter/ci/default-values.yaml
-    - helm lint stable/falco-reporter --values stable/falco-reporter/ci/default-values.yaml
+    - if [ -f stable/falco-reporter/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/falco-reporter/ci/default-values.yaml; fi
+    - if [ -f stable/falco-reporter/ci/default-values.yaml ]; then helm lint stable/falco-reporter --values stable/falco-reporter/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_gitlab-steward:
@@ -1244,15 +1152,13 @@ lint_gitlab-steward:
   rules:
     - changes:
         - stable/gitlab-steward/**/*
-      exists:
-        - stable/gitlab-steward/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/gitlab-steward/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/gitlab-steward/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/gitlab-steward/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/gitlab-steward/ci/default-values.yaml
-    - helm lint stable/gitlab-steward --values stable/gitlab-steward/ci/default-values.yaml
+    - if [ -f stable/gitlab-steward/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/gitlab-steward/ci/default-values.yaml; fi
+    - if [ -f stable/gitlab-steward/ci/default-values.yaml ]; then helm lint stable/gitlab-steward --values stable/gitlab-steward/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_hbase:
@@ -1262,15 +1168,13 @@ lint_hbase:
   rules:
     - changes:
         - stable/hbase/**/*
-      exists:
-        - stable/hbase/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/hbase/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/hbase/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/hbase/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/hbase/ci/default-values.yaml
-    - helm lint stable/hbase --values stable/hbase/ci/default-values.yaml
+    - if [ -f stable/hbase/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/hbase/ci/default-values.yaml; fi
+    - if [ -f stable/hbase/ci/default-values.yaml ]; then helm lint stable/hbase --values stable/hbase/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_helm-reaper:
@@ -1280,15 +1184,13 @@ lint_helm-reaper:
   rules:
     - changes:
         - stable/helm-reaper/**/*
-      exists:
-        - stable/helm-reaper/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/helm-reaper/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/helm-reaper/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/helm-reaper/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/helm-reaper/ci/default-values.yaml
-    - helm lint stable/helm-reaper --values stable/helm-reaper/ci/default-values.yaml
+    - if [ -f stable/helm-reaper/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/helm-reaper/ci/default-values.yaml; fi
+    - if [ -f stable/helm-reaper/ci/default-values.yaml ]; then helm lint stable/helm-reaper --values stable/helm-reaper/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_iceman:
@@ -1298,15 +1200,13 @@ lint_iceman:
   rules:
     - changes:
         - stable/iceman/**/*
-      exists:
-        - stable/iceman/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/iceman/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/iceman/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/iceman/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/iceman/ci/default-values.yaml
-    - helm lint stable/iceman --values stable/iceman/ci/default-values.yaml
+    - if [ -f stable/iceman/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/iceman/ci/default-values.yaml; fi
+    - if [ -f stable/iceman/ci/default-values.yaml ]; then helm lint stable/iceman --values stable/iceman/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_k8s-image-list-to-s3:
@@ -1316,15 +1216,13 @@ lint_k8s-image-list-to-s3:
   rules:
     - changes:
         - stable/k8s-image-list-to-s3/**/*
-      exists:
-        - stable/k8s-image-list-to-s3/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/k8s-image-list-to-s3/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-image-list-to-s3/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-image-list-to-s3/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-image-list-to-s3/ci/default-values.yaml
-    - helm lint stable/k8s-image-list-to-s3 --values stable/k8s-image-list-to-s3/ci/default-values.yaml
+    - if [ -f stable/k8s-image-list-to-s3/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-image-list-to-s3/ci/default-values.yaml; fi
+    - if [ -f stable/k8s-image-list-to-s3/ci/default-values.yaml ]; then helm lint stable/k8s-image-list-to-s3 --values stable/k8s-image-list-to-s3/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_k8s-spot-termination-handler:
@@ -1334,15 +1232,13 @@ lint_k8s-spot-termination-handler:
   rules:
     - changes:
         - stable/k8s-spot-termination-handler/**/*
-      exists:
-        - stable/k8s-spot-termination-handler/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/k8s-spot-termination-handler/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-spot-termination-handler/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-spot-termination-handler/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-spot-termination-handler/ci/default-values.yaml
-    - helm lint stable/k8s-spot-termination-handler --values stable/k8s-spot-termination-handler/ci/default-values.yaml
+    - if [ -f stable/k8s-spot-termination-handler/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-spot-termination-handler/ci/default-values.yaml; fi
+    - if [ -f stable/k8s-spot-termination-handler/ci/default-values.yaml ]; then helm lint stable/k8s-spot-termination-handler --values stable/k8s-spot-termination-handler/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_kafkaup-operator:
@@ -1352,15 +1248,13 @@ lint_kafkaup-operator:
   rules:
     - changes:
         - stable/kafkaup-operator/**/*
-      exists:
-        - stable/kafkaup-operator/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/kafkaup-operator/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/kafkaup-operator/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/kafkaup-operator/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/kafkaup-operator/ci/default-values.yaml
-    - helm lint stable/kafkaup-operator --values stable/kafkaup-operator/ci/default-values.yaml
+    - if [ -f stable/kafkaup-operator/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/kafkaup-operator/ci/default-values.yaml; fi
+    - if [ -f stable/kafkaup-operator/ci/default-values.yaml ]; then helm lint stable/kafkaup-operator --values stable/kafkaup-operator/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_kommoner-operator:
@@ -1370,15 +1264,13 @@ lint_kommoner-operator:
   rules:
     - changes:
         - stable/kommoner-operator/**/*
-      exists:
-        - stable/kommoner-operator/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/kommoner-operator/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/kommoner-operator/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/kommoner-operator/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/kommoner-operator/ci/default-values.yaml
-    - helm lint stable/kommoner-operator --values stable/kommoner-operator/ci/default-values.yaml
+    - if [ -f stable/kommoner-operator/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/kommoner-operator/ci/default-values.yaml; fi
+    - if [ -f stable/kommoner-operator/ci/default-values.yaml ]; then helm lint stable/kommoner-operator --values stable/kommoner-operator/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_minio:
@@ -1388,15 +1280,13 @@ lint_minio:
   rules:
     - changes:
         - stable/minio/**/*
-      exists:
-        - stable/minio/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/minio/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/minio/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/minio/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/minio/ci/default-values.yaml
-    - helm lint stable/minio --values stable/minio/ci/default-values.yaml
+    - if [ -f stable/minio/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/minio/ci/default-values.yaml; fi
+    - if [ -f stable/minio/ci/default-values.yaml ]; then helm lint stable/minio --values stable/minio/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_otel-demo:
@@ -1406,15 +1296,13 @@ lint_otel-demo:
   rules:
     - changes:
         - stable/otel-demo/**/*
-      exists:
-        - stable/otel-demo/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/otel-demo/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/otel-demo/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/otel-demo/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/otel-demo/ci/default-values.yaml
-    - helm lint stable/otel-demo --values stable/otel-demo/ci/default-values.yaml
+    - if [ -f stable/otel-demo/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/otel-demo/ci/default-values.yaml; fi
+    - if [ -f stable/otel-demo/ci/default-values.yaml ]; then helm lint stable/otel-demo --values stable/otel-demo/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_petros-d-kubelet-stats-exporter:
@@ -1424,15 +1312,13 @@ lint_petros-d-kubelet-stats-exporter:
   rules:
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
-      exists:
-        - stable/petros-d-kubelet-stats-exporter/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/petros-d-kubelet-stats-exporter/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/petros-d-kubelet-stats-exporter/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/petros-d-kubelet-stats-exporter/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml
-    - helm lint stable/petros-d-kubelet-stats-exporter --values stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml
+    - if [ -f stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml; fi
+    - if [ -f stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml ]; then helm lint stable/petros-d-kubelet-stats-exporter --values stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_pull-secret:
@@ -1442,15 +1328,13 @@ lint_pull-secret:
   rules:
     - changes:
         - stable/pull-secret/**/*
-      exists:
-        - stable/pull-secret/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/pull-secret/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/pull-secret/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/pull-secret/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/pull-secret/ci/default-values.yaml
-    - helm lint stable/pull-secret --values stable/pull-secret/ci/default-values.yaml
+    - if [ -f stable/pull-secret/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/pull-secret/ci/default-values.yaml; fi
+    - if [ -f stable/pull-secret/ci/default-values.yaml ]; then helm lint stable/pull-secret --values stable/pull-secret/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_receiveramplifier:
@@ -1460,15 +1344,13 @@ lint_receiveramplifier:
   rules:
     - changes:
         - stable/receiveramplifier/**/*
-      exists:
-        - stable/receiveramplifier/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/receiveramplifier/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/receiveramplifier/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/receiveramplifier/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/receiveramplifier/ci/default-values.yaml
-    - helm lint stable/receiveramplifier --values stable/receiveramplifier/ci/default-values.yaml
+    - if [ -f stable/receiveramplifier/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/receiveramplifier/ci/default-values.yaml; fi
+    - if [ -f stable/receiveramplifier/ci/default-values.yaml ]; then helm lint stable/receiveramplifier --values stable/receiveramplifier/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_redirector:
@@ -1478,15 +1360,13 @@ lint_redirector:
   rules:
     - changes:
         - stable/redirector/**/*
-      exists:
-        - stable/redirector/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/redirector/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/redirector/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/redirector/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/redirector/ci/default-values.yaml
-    - helm lint stable/redirector --values stable/redirector/ci/default-values.yaml
+    - if [ -f stable/redirector/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/redirector/ci/default-values.yaml; fi
+    - if [ -f stable/redirector/ci/default-values.yaml ]; then helm lint stable/redirector --values stable/redirector/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_sandbox-operator:
@@ -1496,15 +1376,13 @@ lint_sandbox-operator:
   rules:
     - changes:
         - stable/sandbox-operator/**/*
-      exists:
-        - stable/sandbox-operator/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/sandbox-operator/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/sandbox-operator/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/sandbox-operator/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/sandbox-operator/ci/default-values.yaml
-    - helm lint stable/sandbox-operator --values stable/sandbox-operator/ci/default-values.yaml
+    - if [ -f stable/sandbox-operator/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/sandbox-operator/ci/default-values.yaml; fi
+    - if [ -f stable/sandbox-operator/ci/default-values.yaml ]; then helm lint stable/sandbox-operator --values stable/sandbox-operator/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_sock-shop:
@@ -1514,15 +1392,13 @@ lint_sock-shop:
   rules:
     - changes:
         - stable/sock-shop/**/*
-      exists:
-        - stable/sock-shop/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/sock-shop/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/sock-shop/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/sock-shop/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/sock-shop/ci/default-values.yaml
-    - helm lint stable/sock-shop --values stable/sock-shop/ci/default-values.yaml
+    - if [ -f stable/sock-shop/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/sock-shop/ci/default-values.yaml; fi
+    - if [ -f stable/sock-shop/ci/default-values.yaml ]; then helm lint stable/sock-shop --values stable/sock-shop/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_stackstate:
@@ -1532,15 +1408,13 @@ lint_stackstate:
   rules:
     - changes:
         - stable/stackstate/**/*
-      exists:
-        - stable/stackstate/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/stackstate/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate/ci/default-values.yaml
-    - helm lint stable/stackstate --values stable/stackstate/ci/default-values.yaml
+    - if [ -f stable/stackstate/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate/ci/default-values.yaml; fi
+    - if [ -f stable/stackstate/ci/default-values.yaml ]; then helm lint stable/stackstate --values stable/stackstate/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_stackstate-agent:
@@ -1550,15 +1424,13 @@ lint_stackstate-agent:
   rules:
     - changes:
         - stable/stackstate-agent/**/*
-      exists:
-        - stable/stackstate-agent/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/stackstate-agent/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-agent/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-agent/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-agent/ci/default-values.yaml
-    - helm lint stable/stackstate-agent --values stable/stackstate-agent/ci/default-values.yaml
+    - if [ -f stable/stackstate-agent/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-agent/ci/default-values.yaml; fi
+    - if [ -f stable/stackstate-agent/ci/default-values.yaml ]; then helm lint stable/stackstate-agent --values stable/stackstate-agent/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_stackstate-k8s-agent:
@@ -1568,15 +1440,13 @@ lint_stackstate-k8s-agent:
   rules:
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      exists:
-        - stable/stackstate-k8s-agent/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/stackstate-k8s-agent/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-k8s-agent/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-k8s-agent/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-k8s-agent/ci/default-values.yaml
-    - helm lint stable/stackstate-k8s-agent --values stable/stackstate-k8s-agent/ci/default-values.yaml
+    - if [ -f stable/stackstate-k8s-agent/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-k8s-agent/ci/default-values.yaml; fi
+    - if [ -f stable/stackstate-k8s-agent/ci/default-values.yaml ]; then helm lint stable/stackstate-k8s-agent --values stable/stackstate-k8s-agent/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_stackstate-monitoring:
@@ -1586,15 +1456,13 @@ lint_stackstate-monitoring:
   rules:
     - changes:
         - stable/stackstate-monitoring/**/*
-      exists:
-        - stable/stackstate-monitoring/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/stackstate-monitoring/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-monitoring/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-monitoring/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-monitoring/ci/default-values.yaml
-    - helm lint stable/stackstate-monitoring --values stable/stackstate-monitoring/ci/default-values.yaml
+    - if [ -f stable/stackstate-monitoring/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-monitoring/ci/default-values.yaml; fi
+    - if [ -f stable/stackstate-monitoring/ci/default-values.yaml ]; then helm lint stable/stackstate-monitoring --values stable/stackstate-monitoring/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_stackstate-standalone:
@@ -1604,15 +1472,13 @@ lint_stackstate-standalone:
   rules:
     - changes:
         - stable/stackstate-standalone/**/*
-      exists:
-        - stable/stackstate-standalone/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/stackstate-standalone/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-standalone/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-standalone/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-standalone/ci/default-values.yaml
-    - helm lint stable/stackstate-standalone --values stable/stackstate-standalone/ci/default-values.yaml
+    - if [ -f stable/stackstate-standalone/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-standalone/ci/default-values.yaml; fi
+    - if [ -f stable/stackstate-standalone/ci/default-values.yaml ]; then helm lint stable/stackstate-standalone --values stable/stackstate-standalone/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_stackstate-values:
@@ -1622,15 +1488,13 @@ lint_stackstate-values:
   rules:
     - changes:
         - stable/stackstate-values/**/*
-      exists:
-        - stable/stackstate-values/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/stackstate-values/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-values/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-values/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-values/ci/default-values.yaml
-    - helm lint stable/stackstate-values --values stable/stackstate-values/ci/default-values.yaml
+    - if [ -f stable/stackstate-values/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-values/ci/default-values.yaml; fi
+    - if [ -f stable/stackstate-values/ci/default-values.yaml ]; then helm lint stable/stackstate-values --values stable/stackstate-values/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_suse-observability:
@@ -1640,15 +1504,13 @@ lint_suse-observability:
   rules:
     - changes:
         - stable/suse-observability/**/*
-      exists:
-        - stable/suse-observability/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/suse-observability/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability/ci/default-values.yaml
-    - helm lint stable/suse-observability --values stable/suse-observability/ci/default-values.yaml
+    - if [ -f stable/suse-observability/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability/ci/default-values.yaml; fi
+    - if [ -f stable/suse-observability/ci/default-values.yaml ]; then helm lint stable/suse-observability --values stable/suse-observability/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_suse-observability-agent:
@@ -1658,15 +1520,13 @@ lint_suse-observability-agent:
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
-      exists:
-        - stable/suse-observability-agent/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/suse-observability-agent/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-agent/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-agent/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-agent/ci/default-values.yaml
-    - helm lint stable/suse-observability-agent --values stable/suse-observability-agent/ci/default-values.yaml
+    - if [ -f stable/suse-observability-agent/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-agent/ci/default-values.yaml; fi
+    - if [ -f stable/suse-observability-agent/ci/default-values.yaml ]; then helm lint stable/suse-observability-agent --values stable/suse-observability-agent/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_suse-observability-values:
@@ -1676,15 +1536,13 @@ lint_suse-observability-values:
   rules:
     - changes:
         - stable/suse-observability-values/**/*
-      exists:
-        - stable/suse-observability-values/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/suse-observability-values/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-values/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-values/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-values/ci/default-values.yaml
-    - helm lint stable/suse-observability-values --values stable/suse-observability-values/ci/default-values.yaml
+    - if [ -f stable/suse-observability-values/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-values/ci/default-values.yaml; fi
+    - if [ -f stable/suse-observability-values/ci/default-values.yaml ]; then helm lint stable/suse-observability-values --values stable/suse-observability-values/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_tenantmanager:
@@ -1694,15 +1552,13 @@ lint_tenantmanager:
   rules:
     - changes:
         - stable/tenantmanager/**/*
-      exists:
-        - stable/tenantmanager/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/tenantmanager/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/tenantmanager/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/tenantmanager/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/tenantmanager/ci/default-values.yaml
-    - helm lint stable/tenantmanager --values stable/tenantmanager/ci/default-values.yaml
+    - if [ -f stable/tenantmanager/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/tenantmanager/ci/default-values.yaml; fi
+    - if [ -f stable/tenantmanager/ci/default-values.yaml ]; then helm lint stable/tenantmanager --values stable/tenantmanager/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_trafficmirror:
@@ -1712,15 +1568,13 @@ lint_trafficmirror:
   rules:
     - changes:
         - stable/trafficmirror/**/*
-      exists:
-        - stable/trafficmirror/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/trafficmirror/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/trafficmirror/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/trafficmirror/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/trafficmirror/ci/default-values.yaml
-    - helm lint stable/trafficmirror --values stable/trafficmirror/ci/default-values.yaml
+    - if [ -f stable/trafficmirror/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/trafficmirror/ci/default-values.yaml; fi
+    - if [ -f stable/trafficmirror/ci/default-values.yaml ]; then helm lint stable/trafficmirror --values stable/trafficmirror/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 lint_victoria-metrics-single:
@@ -1730,15 +1584,13 @@ lint_victoria-metrics-single:
   rules:
     - changes:
         - stable/victoria-metrics-single/**/*
-      exists:
-        - stable/victoria-metrics-single/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - yamale --schema /etc/ct/chart_schema.yaml stable/victoria-metrics-single/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/victoria-metrics-single/Chart.yaml
     - yamllint --config-file /etc/ct/lintconf.yaml stable/victoria-metrics-single/values.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/victoria-metrics-single/ci/default-values.yaml
-    - helm lint stable/victoria-metrics-single --values stable/victoria-metrics-single/ci/default-values.yaml
+    - if [ -f stable/victoria-metrics-single/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/victoria-metrics-single/ci/default-values.yaml; fi
+    - if [ -f stable/victoria-metrics-single/ci/default-values.yaml ]; then helm lint stable/victoria-metrics-single --values stable/victoria-metrics-single/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 push_artifactory-cleaner_to_internal:
