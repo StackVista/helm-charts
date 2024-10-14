@@ -25,7 +25,7 @@ build_artifactory-cleaner:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/artifactory-cleaner/Chart.yaml  | xargs -I % helm dependencies build stable/artifactory-cleaner/%
     - helm dependencies build stable/artifactory-cleaner
-  stage: build_chart
+  stage: build
 build_aws-amicleaner:
   artifacts:
     paths:
@@ -50,7 +50,7 @@ build_aws-amicleaner:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/aws-amicleaner/Chart.yaml  | xargs -I % helm dependencies build stable/aws-amicleaner/%
     - helm dependencies build stable/aws-amicleaner
-  stage: build_chart
+  stage: build
 build_aws-nuke:
   artifacts:
     paths:
@@ -75,7 +75,7 @@ build_aws-nuke:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/aws-nuke/Chart.yaml  | xargs -I % helm dependencies build stable/aws-nuke/%
     - helm dependencies build stable/aws-nuke
-  stage: build_chart
+  stage: build
 build_aws-pod-identity-webhook:
   artifacts:
     paths:
@@ -100,7 +100,7 @@ build_aws-pod-identity-webhook:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/aws-pod-identity-webhook/Chart.yaml  | xargs -I % helm dependencies build stable/aws-pod-identity-webhook/%
     - helm dependencies build stable/aws-pod-identity-webhook
-  stage: build_chart
+  stage: build
 build_beacher-job:
   artifacts:
     paths:
@@ -125,7 +125,7 @@ build_beacher-job:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/beacher-job/Chart.yaml  | xargs -I % helm dependencies build stable/beacher-job/%
     - helm dependencies build stable/beacher-job
-  stage: build_chart
+  stage: build
 build_chartmuseum:
   artifacts:
     paths:
@@ -150,7 +150,7 @@ build_chartmuseum:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/chartmuseum/Chart.yaml  | xargs -I % helm dependencies build stable/chartmuseum/%
     - helm dependencies build stable/chartmuseum
-  stage: build_chart
+  stage: build
 build_common:
   artifacts:
     paths:
@@ -175,7 +175,7 @@ build_common:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/common/Chart.yaml  | xargs -I % helm dependencies build stable/common/%
     - helm dependencies build stable/common
-  stage: build_chart
+  stage: build
 build_elasticsearch:
   artifacts:
     paths:
@@ -200,7 +200,7 @@ build_elasticsearch:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/elasticsearch/Chart.yaml  | xargs -I % helm dependencies build stable/elasticsearch/%
     - helm dependencies build stable/elasticsearch
-  stage: build_chart
+  stage: build
 build_falco-reporter:
   artifacts:
     paths:
@@ -225,7 +225,7 @@ build_falco-reporter:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/falco-reporter/Chart.yaml  | xargs -I % helm dependencies build stable/falco-reporter/%
     - helm dependencies build stable/falco-reporter
-  stage: build_chart
+  stage: build
 build_gitlab-steward:
   artifacts:
     paths:
@@ -250,7 +250,7 @@ build_gitlab-steward:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/gitlab-steward/Chart.yaml  | xargs -I % helm dependencies build stable/gitlab-steward/%
     - helm dependencies build stable/gitlab-steward
-  stage: build_chart
+  stage: build
 build_hbase:
   artifacts:
     paths:
@@ -275,7 +275,7 @@ build_hbase:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/hbase/Chart.yaml  | xargs -I % helm dependencies build stable/hbase/%
     - helm dependencies build stable/hbase
-  stage: build_chart
+  stage: build
 build_helm-reaper:
   artifacts:
     paths:
@@ -300,7 +300,7 @@ build_helm-reaper:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/helm-reaper/Chart.yaml  | xargs -I % helm dependencies build stable/helm-reaper/%
     - helm dependencies build stable/helm-reaper
-  stage: build_chart
+  stage: build
 build_iceman:
   artifacts:
     paths:
@@ -325,7 +325,7 @@ build_iceman:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/iceman/Chart.yaml  | xargs -I % helm dependencies build stable/iceman/%
     - helm dependencies build stable/iceman
-  stage: build_chart
+  stage: build
 build_k8s-image-list-to-s3:
   artifacts:
     paths:
@@ -350,7 +350,7 @@ build_k8s-image-list-to-s3:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/k8s-image-list-to-s3/Chart.yaml  | xargs -I % helm dependencies build stable/k8s-image-list-to-s3/%
     - helm dependencies build stable/k8s-image-list-to-s3
-  stage: build_chart
+  stage: build
 build_k8s-spot-termination-handler:
   artifacts:
     paths:
@@ -375,7 +375,7 @@ build_k8s-spot-termination-handler:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/k8s-spot-termination-handler/Chart.yaml  | xargs -I % helm dependencies build stable/k8s-spot-termination-handler/%
     - helm dependencies build stable/k8s-spot-termination-handler
-  stage: build_chart
+  stage: build
 build_kafkaup-operator:
   artifacts:
     paths:
@@ -400,7 +400,7 @@ build_kafkaup-operator:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/kafkaup-operator/Chart.yaml  | xargs -I % helm dependencies build stable/kafkaup-operator/%
     - helm dependencies build stable/kafkaup-operator
-  stage: build_chart
+  stage: build
 build_kommoner-operator:
   artifacts:
     paths:
@@ -425,7 +425,7 @@ build_kommoner-operator:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/kommoner-operator/Chart.yaml  | xargs -I % helm dependencies build stable/kommoner-operator/%
     - helm dependencies build stable/kommoner-operator
-  stage: build_chart
+  stage: build
 build_minio:
   artifacts:
     paths:
@@ -450,7 +450,7 @@ build_minio:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/minio/Chart.yaml  | xargs -I % helm dependencies build stable/minio/%
     - helm dependencies build stable/minio
-  stage: build_chart
+  stage: build
 build_otel-demo:
   artifacts:
     paths:
@@ -475,7 +475,7 @@ build_otel-demo:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/otel-demo/Chart.yaml  | xargs -I % helm dependencies build stable/otel-demo/%
     - helm dependencies build stable/otel-demo
-  stage: build_chart
+  stage: build
 build_petros-d-kubelet-stats-exporter:
   artifacts:
     paths:
@@ -500,7 +500,7 @@ build_petros-d-kubelet-stats-exporter:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/petros-d-kubelet-stats-exporter/Chart.yaml  | xargs -I % helm dependencies build stable/petros-d-kubelet-stats-exporter/%
     - helm dependencies build stable/petros-d-kubelet-stats-exporter
-  stage: build_chart
+  stage: build
 build_pull-secret:
   artifacts:
     paths:
@@ -525,7 +525,7 @@ build_pull-secret:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/pull-secret/Chart.yaml  | xargs -I % helm dependencies build stable/pull-secret/%
     - helm dependencies build stable/pull-secret
-  stage: build_chart
+  stage: build
 build_receiveramplifier:
   artifacts:
     paths:
@@ -550,7 +550,7 @@ build_receiveramplifier:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/receiveramplifier/Chart.yaml  | xargs -I % helm dependencies build stable/receiveramplifier/%
     - helm dependencies build stable/receiveramplifier
-  stage: build_chart
+  stage: build
 build_redirector:
   artifacts:
     paths:
@@ -575,7 +575,7 @@ build_redirector:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/redirector/Chart.yaml  | xargs -I % helm dependencies build stable/redirector/%
     - helm dependencies build stable/redirector
-  stage: build_chart
+  stage: build
 build_sandbox-operator:
   artifacts:
     paths:
@@ -600,7 +600,7 @@ build_sandbox-operator:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/sandbox-operator/Chart.yaml  | xargs -I % helm dependencies build stable/sandbox-operator/%
     - helm dependencies build stable/sandbox-operator
-  stage: build_chart
+  stage: build
 build_sock-shop:
   artifacts:
     paths:
@@ -625,7 +625,7 @@ build_sock-shop:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/sock-shop/Chart.yaml  | xargs -I % helm dependencies build stable/sock-shop/%
     - helm dependencies build stable/sock-shop
-  stage: build_chart
+  stage: build
 build_stackstate:
   artifacts:
     paths:
@@ -650,7 +650,7 @@ build_stackstate:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - helm dependencies build stable/stackstate
-  stage: build_chart
+  stage: build
 build_stackstate-agent:
   artifacts:
     paths:
@@ -675,7 +675,7 @@ build_stackstate-agent:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-agent/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-agent/%
     - helm dependencies build stable/stackstate-agent
-  stage: build_chart
+  stage: build
 build_stackstate-k8s-agent:
   artifacts:
     paths:
@@ -700,7 +700,7 @@ build_stackstate-k8s-agent:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-k8s-agent/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-k8s-agent/%
     - helm dependencies build stable/stackstate-k8s-agent
-  stage: build_chart
+  stage: build
 build_stackstate-monitoring:
   artifacts:
     paths:
@@ -725,7 +725,7 @@ build_stackstate-monitoring:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-monitoring/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-monitoring/%
     - helm dependencies build stable/stackstate-monitoring
-  stage: build_chart
+  stage: build
 build_stackstate-standalone:
   artifacts:
     paths:
@@ -750,7 +750,7 @@ build_stackstate-standalone:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-standalone/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-standalone/%
     - helm dependencies build stable/stackstate-standalone
-  stage: build_chart
+  stage: build
 build_stackstate-values:
   artifacts:
     paths:
@@ -775,7 +775,7 @@ build_stackstate-values:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-values/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-values/%
     - helm dependencies build stable/stackstate-values
-  stage: build_chart
+  stage: build
 build_suse-observability:
   artifacts:
     paths:
@@ -800,7 +800,7 @@ build_suse-observability:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability/Chart.yaml  | xargs -I % helm dependencies build stable/suse-observability/%
     - helm dependencies build stable/suse-observability
-  stage: build_chart
+  stage: build
 build_suse-observability-agent:
   artifacts:
     paths:
@@ -825,7 +825,7 @@ build_suse-observability-agent:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability-agent/Chart.yaml  | xargs -I % helm dependencies build stable/suse-observability-agent/%
     - helm dependencies build stable/suse-observability-agent
-  stage: build_chart
+  stage: build
 build_suse-observability-values:
   artifacts:
     paths:
@@ -850,7 +850,7 @@ build_suse-observability-values:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability-values/Chart.yaml  | xargs -I % helm dependencies build stable/suse-observability-values/%
     - helm dependencies build stable/suse-observability-values
-  stage: build_chart
+  stage: build
 build_tenantmanager:
   artifacts:
     paths:
@@ -875,7 +875,7 @@ build_tenantmanager:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/tenantmanager/Chart.yaml  | xargs -I % helm dependencies build stable/tenantmanager/%
     - helm dependencies build stable/tenantmanager
-  stage: build_chart
+  stage: build
 build_trafficmirror:
   artifacts:
     paths:
@@ -900,7 +900,7 @@ build_trafficmirror:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/trafficmirror/Chart.yaml  | xargs -I % helm dependencies build stable/trafficmirror/%
     - helm dependencies build stable/trafficmirror
-  stage: build_chart
+  stage: build
 build_victoria-metrics-single:
   artifacts:
     paths:
@@ -925,7 +925,392 @@ build_victoria-metrics-single:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/victoria-metrics-single/Chart.yaml  | xargs -I % helm dependencies build stable/victoria-metrics-single/%
     - helm dependencies build stable/victoria-metrics-single
-  stage: build_chart
+  stage: build
+check_artifactory-cleaner_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/artifactory-cleaner/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh artifactory-cleaner
+  stage: validate
+check_aws-amicleaner_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/aws-amicleaner/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh aws-amicleaner
+  stage: validate
+check_aws-nuke_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/aws-nuke/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh aws-nuke
+  stage: validate
+check_aws-pod-identity-webhook_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/aws-pod-identity-webhook/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh aws-pod-identity-webhook
+  stage: validate
+check_beacher-job_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/beacher-job/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh beacher-job
+  stage: validate
+check_chartmuseum_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/chartmuseum/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh chartmuseum
+  stage: validate
+check_common_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/common/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh common
+  stage: validate
+check_elasticsearch_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/elasticsearch/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh elasticsearch
+  stage: validate
+check_falco-reporter_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/falco-reporter/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh falco-reporter
+  stage: validate
+check_gitlab-steward_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/gitlab-steward/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh gitlab-steward
+  stage: validate
+check_hbase_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/hbase/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh hbase
+  stage: validate
+check_helm-reaper_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/helm-reaper/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh helm-reaper
+  stage: validate
+check_iceman_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/iceman/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh iceman
+  stage: validate
+check_k8s-image-list-to-s3_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/k8s-image-list-to-s3/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh k8s-image-list-to-s3
+  stage: validate
+check_k8s-spot-termination-handler_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/k8s-spot-termination-handler/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh k8s-spot-termination-handler
+  stage: validate
+check_kafkaup-operator_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/kafkaup-operator/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh kafkaup-operator
+  stage: validate
+check_kommoner-operator_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/kommoner-operator/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh kommoner-operator
+  stage: validate
+check_minio_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/minio/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh minio
+  stage: validate
+check_otel-demo_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/otel-demo/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh otel-demo
+  stage: validate
+check_petros-d-kubelet-stats-exporter_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/petros-d-kubelet-stats-exporter/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh petros-d-kubelet-stats-exporter
+  stage: validate
+check_pull-secret_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/pull-secret/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh pull-secret
+  stage: validate
+check_receiveramplifier_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/receiveramplifier/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh receiveramplifier
+  stage: validate
+check_redirector_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/redirector/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh redirector
+  stage: validate
+check_sandbox-operator_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/sandbox-operator/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh sandbox-operator
+  stage: validate
+check_sock-shop_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/sock-shop/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh sock-shop
+  stage: validate
+check_stackstate-agent_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/stackstate-agent/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh stackstate-agent
+  stage: validate
+check_stackstate-k8s-agent_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/stackstate-k8s-agent/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh stackstate-k8s-agent
+  stage: validate
+check_stackstate-monitoring_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/stackstate-monitoring/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh stackstate-monitoring
+  stage: validate
+check_stackstate-standalone_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/stackstate-standalone/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh stackstate-standalone
+  stage: validate
+check_stackstate-values_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/stackstate-values/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh stackstate-values
+  stage: validate
+check_suse-observability-agent_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/suse-observability-agent/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh suse-observability-agent
+  stage: validate
+check_suse-observability-values_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/suse-observability-values/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh suse-observability-values
+  stage: validate
+check_tenantmanager_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/tenantmanager/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh tenantmanager
+  stage: validate
+check_trafficmirror_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/trafficmirror/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh trafficmirror
+  stage: validate
+check_victoria-metrics-single_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/victoria-metrics-single/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh victoria-metrics-single
+  stage: validate
 image: quay.io/helmpack/chart-testing:v3.10.1
 push_artifactory-cleaner_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2446,11 +2831,11 @@ push_test_charts:
       when: never
     - if: $CI_COMMIT_TAG
       when: never
-    - when: always
+    - when: on_success
   script:
     - source .gitlab/aws_auth_setup.sh
     - sh test/sync-repo.sh
-  stage: build
+  stage: push-charts-to-test
   variables:
     AWS_BUCKET: s3://helm-test.stackstate.io
     REPO_URL: https://helm-test.stackstate.io/
@@ -2567,11 +2952,11 @@ push_victoria-metrics-single_to_public:
   variables:
     CHART: stable/victoria-metrics-single
 stages:
-  - build_chart
+  - build
   - validate
   - test
   - update
-  - build
+  - push-charts-to-test
   - push-charts-to-internal
   - push-charts-to-public
   - push-charts-to-rancher

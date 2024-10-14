@@ -44,7 +44,7 @@ local build_chart_job(chart) = {
     update_2nd_degree_chart_deps(chart),
     'helm dependencies build stable/' + chart,
   ],
-  stage: 'build_chart',
+  stage: 'build',
   rules: [
     {
       @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
@@ -61,7 +61,6 @@ local build_chart_jobs = {
 };
 
 // Validates modified charts: formats files, execute lint commands
-//TODO check if version is bumped
 local validate_chart_job(chart) = {
   image: variables.images.chart_testing,
   before_script: ['.gitlab/validate_before_script.sh'],
@@ -84,6 +83,27 @@ local validate_chart_job(chart) = {
 local validate_chart_jobs = {
   ['validate_%s' % chart]: (validate_chart_job(chart))
   for chart in (charts + public_charts)
+};
+
+// Checks if a chart version has been updated, if not then return an error
+local check_chart_version_job(chart) = {
+  image: variables.images.chart_testing,
+  before_script: ['.gitlab/validate_before_script.sh'],
+  script: [
+    '.gitlab/verify_versions_bumped.sh ' + chart,
+  ],
+  stage: 'validate',
+  rules: [
+    {
+      @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
+      changes: ['stable/' + chart + '/**/*'],
+    },
+  ],
+};
+local check_chart_version_jobs = {
+  ['check_%s_version' % chart]: (check_chart_version_job(chart))
+  for chart in (charts + public_charts)
+  if chart != 'stackstate' && chart != 'suse-observability'
 };
 
 // Runs unit tests on all charts with "test" directory
@@ -110,7 +130,7 @@ local test_chart_jobs = {
 };
 
 // Push charts to `helm-test.stackstate.io` registry
-local push_test_charts = {
+local push_test_charts_jobs = {
   push_test_charts: {
     image: variables.images.stackstate_devops,
     script: [
@@ -132,7 +152,7 @@ local push_test_charts = {
       AWS_BUCKET: 's3://helm-test.stackstate.io',
       REPO_URL: 'https://helm-test.stackstate.io/',
     },
-    stage: 'build',
+    stage: 'push-charts-to-test',
   },
 };
 
@@ -378,7 +398,7 @@ local update_docker_images = {
     ],
   },
   image: variables.images.chart_testing,
-  stages: ['build_chart', 'validate', 'test', 'update', 'build', 'push-charts-to-internal', 'push-charts-to-public', 'push-charts-to-rancher'],
+  stages: ['build', 'validate', 'test', 'update', 'push-charts-to-test', 'push-charts-to-internal', 'push-charts-to-public', 'push-charts-to-rancher'],
 
   variables: {
     HELM_VERSION: 'v3.1.2',
@@ -387,8 +407,9 @@ local update_docker_images = {
 }
 + build_chart_jobs
 + validate_chart_jobs
++ check_chart_version_jobs
 + test_chart_jobs
-+ push_test_charts
++ push_test_charts_jobs
 
 + push_charts_to_internal_jobs
 + push_charts_to_public_jobs
