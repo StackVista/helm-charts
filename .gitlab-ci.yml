@@ -2,6 +2,9 @@
 # THIS FILE WAS GENERATED AUTOMATICALLY! DO NOT EDIT MANUALLY! #
 ################################################################
 build_artifactory-cleaner:
+  artifacts:
+    paths:
+      - stable/artifactory-cleaner/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -26,6 +29,9 @@ build_artifactory-cleaner:
     - helm dependencies build stable/artifactory-cleaner
   stage: build_chart
 build_aws-amicleaner:
+  artifacts:
+    paths:
+      - stable/aws-amicleaner/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -50,6 +56,9 @@ build_aws-amicleaner:
     - helm dependencies build stable/aws-amicleaner
   stage: build_chart
 build_aws-nuke:
+  artifacts:
+    paths:
+      - stable/aws-nuke/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -74,6 +83,9 @@ build_aws-nuke:
     - helm dependencies build stable/aws-nuke
   stage: build_chart
 build_aws-pod-identity-webhook:
+  artifacts:
+    paths:
+      - stable/aws-pod-identity-webhook/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -98,6 +110,9 @@ build_aws-pod-identity-webhook:
     - helm dependencies build stable/aws-pod-identity-webhook
   stage: build_chart
 build_beacher-job:
+  artifacts:
+    paths:
+      - stable/beacher-job/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -122,6 +137,9 @@ build_beacher-job:
     - helm dependencies build stable/beacher-job
   stage: build_chart
 build_chartmuseum:
+  artifacts:
+    paths:
+      - stable/chartmuseum/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -146,6 +164,9 @@ build_chartmuseum:
     - helm dependencies build stable/chartmuseum
   stage: build_chart
 build_common:
+  artifacts:
+    paths:
+      - stable/common/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -170,6 +191,9 @@ build_common:
     - helm dependencies build stable/common
   stage: build_chart
 build_elasticsearch:
+  artifacts:
+    paths:
+      - stable/elasticsearch/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -194,6 +218,9 @@ build_elasticsearch:
     - helm dependencies build stable/elasticsearch
   stage: build_chart
 build_falco-reporter:
+  artifacts:
+    paths:
+      - stable/falco-reporter/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -218,6 +245,9 @@ build_falco-reporter:
     - helm dependencies build stable/falco-reporter
   stage: build_chart
 build_gitlab-steward:
+  artifacts:
+    paths:
+      - stable/gitlab-steward/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -242,6 +272,9 @@ build_gitlab-steward:
     - helm dependencies build stable/gitlab-steward
   stage: build_chart
 build_hbase:
+  artifacts:
+    paths:
+      - stable/hbase/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -266,6 +299,9 @@ build_hbase:
     - helm dependencies build stable/hbase
   stage: build_chart
 build_helm-reaper:
+  artifacts:
+    paths:
+      - stable/helm-reaper/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -290,6 +326,9 @@ build_helm-reaper:
     - helm dependencies build stable/helm-reaper
   stage: build_chart
 build_iceman:
+  artifacts:
+    paths:
+      - stable/iceman/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -314,6 +353,9 @@ build_iceman:
     - helm dependencies build stable/iceman
   stage: build_chart
 build_k8s-image-list-to-s3:
+  artifacts:
+    paths:
+      - stable/k8s-image-list-to-s3/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -338,6 +380,9 @@ build_k8s-image-list-to-s3:
     - helm dependencies build stable/k8s-image-list-to-s3
   stage: build_chart
 build_k8s-spot-termination-handler:
+  artifacts:
+    paths:
+      - stable/k8s-spot-termination-handler/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -362,6 +407,9 @@ build_k8s-spot-termination-handler:
     - helm dependencies build stable/k8s-spot-termination-handler
   stage: build_chart
 build_kafkaup-operator:
+  artifacts:
+    paths:
+      - stable/kafkaup-operator/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -386,6 +434,9 @@ build_kafkaup-operator:
     - helm dependencies build stable/kafkaup-operator
   stage: build_chart
 build_kommoner-operator:
+  artifacts:
+    paths:
+      - stable/kommoner-operator/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -410,6 +461,9 @@ build_kommoner-operator:
     - helm dependencies build stable/kommoner-operator
   stage: build_chart
 build_minio:
+  artifacts:
+    paths:
+      - stable/minio/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -434,6 +488,9 @@ build_minio:
     - helm dependencies build stable/minio
   stage: build_chart
 build_otel-demo:
+  artifacts:
+    paths:
+      - stable/otel-demo/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -458,6 +515,9 @@ build_otel-demo:
     - helm dependencies build stable/otel-demo
   stage: build_chart
 build_petros-d-kubelet-stats-exporter:
+  artifacts:
+    paths:
+      - stable/petros-d-kubelet-stats-exporter/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -482,6 +542,9 @@ build_petros-d-kubelet-stats-exporter:
     - helm dependencies build stable/petros-d-kubelet-stats-exporter
   stage: build_chart
 build_pull-secret:
+  artifacts:
+    paths:
+      - stable/pull-secret/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -506,6 +569,9 @@ build_pull-secret:
     - helm dependencies build stable/pull-secret
   stage: build_chart
 build_receiveramplifier:
+  artifacts:
+    paths:
+      - stable/receiveramplifier/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -530,6 +596,9 @@ build_receiveramplifier:
     - helm dependencies build stable/receiveramplifier
   stage: build_chart
 build_redirector:
+  artifacts:
+    paths:
+      - stable/redirector/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -554,6 +623,9 @@ build_redirector:
     - helm dependencies build stable/redirector
   stage: build_chart
 build_sandbox-operator:
+  artifacts:
+    paths:
+      - stable/sandbox-operator/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -578,6 +650,9 @@ build_sandbox-operator:
     - helm dependencies build stable/sandbox-operator
   stage: build_chart
 build_sock-shop:
+  artifacts:
+    paths:
+      - stable/sock-shop/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -602,6 +677,9 @@ build_sock-shop:
     - helm dependencies build stable/sock-shop
   stage: build_chart
 build_stackstate:
+  artifacts:
+    paths:
+      - stable/stackstate/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -626,6 +704,9 @@ build_stackstate:
     - helm dependencies build stable/stackstate
   stage: build_chart
 build_stackstate-agent:
+  artifacts:
+    paths:
+      - stable/stackstate-agent/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -650,6 +731,9 @@ build_stackstate-agent:
     - helm dependencies build stable/stackstate-agent
   stage: build_chart
 build_stackstate-k8s-agent:
+  artifacts:
+    paths:
+      - stable/stackstate-k8s-agent/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -674,6 +758,9 @@ build_stackstate-k8s-agent:
     - helm dependencies build stable/stackstate-k8s-agent
   stage: build_chart
 build_stackstate-monitoring:
+  artifacts:
+    paths:
+      - stable/stackstate-monitoring/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -698,6 +785,9 @@ build_stackstate-monitoring:
     - helm dependencies build stable/stackstate-monitoring
   stage: build_chart
 build_stackstate-standalone:
+  artifacts:
+    paths:
+      - stable/stackstate-standalone/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -722,6 +812,9 @@ build_stackstate-standalone:
     - helm dependencies build stable/stackstate-standalone
   stage: build_chart
 build_stackstate-values:
+  artifacts:
+    paths:
+      - stable/stackstate-values/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -746,6 +839,9 @@ build_stackstate-values:
     - helm dependencies build stable/stackstate-values
   stage: build_chart
 build_suse-observability:
+  artifacts:
+    paths:
+      - stable/suse-observability/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -770,6 +866,9 @@ build_suse-observability:
     - helm dependencies build stable/suse-observability
   stage: build_chart
 build_suse-observability-agent:
+  artifacts:
+    paths:
+      - stable/suse-observability-agent/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -794,6 +893,9 @@ build_suse-observability-agent:
     - helm dependencies build stable/suse-observability-agent
   stage: build_chart
 build_suse-observability-values:
+  artifacts:
+    paths:
+      - stable/suse-observability-values/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -818,6 +920,9 @@ build_suse-observability-values:
     - helm dependencies build stable/suse-observability-values
   stage: build_chart
 build_tenantmanager:
+  artifacts:
+    paths:
+      - stable/tenantmanager/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -842,6 +947,9 @@ build_tenantmanager:
     - helm dependencies build stable/tenantmanager
   stage: build_chart
 build_trafficmirror:
+  artifacts:
+    paths:
+      - stable/trafficmirror/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -866,6 +974,9 @@ build_trafficmirror:
     - helm dependencies build stable/trafficmirror
   stage: build_chart
 build_victoria-metrics-single:
+  artifacts:
+    paths:
+      - stable/victoria-metrics-single/charts/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -964,6 +1075,672 @@ integration_test_stackstate_k8s:
   variables:
     CGO_ENABLED: 0
     CHART: stable/suse-observability
+lint_artifactory-cleaner:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/artifactory-cleaner/**/*
+      exists:
+        - stable/artifactory-cleaner/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/artifactory-cleaner/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/artifactory-cleaner/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/artifactory-cleaner/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/artifactory-cleaner/ci/default-values.yaml
+    - helm lint stable/artifactory-cleaner --values stable/artifactory-cleaner/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_aws-amicleaner:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/aws-amicleaner/**/*
+      exists:
+        - stable/aws-amicleaner/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/aws-amicleaner/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-amicleaner/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-amicleaner/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-amicleaner/ci/default-values.yaml
+    - helm lint stable/aws-amicleaner --values stable/aws-amicleaner/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_aws-nuke:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/aws-nuke/**/*
+      exists:
+        - stable/aws-nuke/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/aws-nuke/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-nuke/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-nuke/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-nuke/ci/default-values.yaml
+    - helm lint stable/aws-nuke --values stable/aws-nuke/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_aws-pod-identity-webhook:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/aws-pod-identity-webhook/**/*
+      exists:
+        - stable/aws-pod-identity-webhook/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/aws-pod-identity-webhook/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-pod-identity-webhook/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-pod-identity-webhook/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-pod-identity-webhook/ci/default-values.yaml
+    - helm lint stable/aws-pod-identity-webhook --values stable/aws-pod-identity-webhook/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_beacher-job:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/beacher-job/**/*
+      exists:
+        - stable/beacher-job/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/beacher-job/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/beacher-job/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/beacher-job/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/beacher-job/ci/default-values.yaml
+    - helm lint stable/beacher-job --values stable/beacher-job/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_chartmuseum:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/chartmuseum/**/*
+      exists:
+        - stable/chartmuseum/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/chartmuseum/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/chartmuseum/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/chartmuseum/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/chartmuseum/ci/default-values.yaml
+    - helm lint stable/chartmuseum --values stable/chartmuseum/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_common:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/common/**/*
+      exists:
+        - stable/common/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/common/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/common/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/common/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/common/ci/default-values.yaml
+    - helm lint stable/common --values stable/common/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_elasticsearch:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/elasticsearch/**/*
+      exists:
+        - stable/elasticsearch/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/elasticsearch/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/elasticsearch/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/elasticsearch/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/elasticsearch/ci/default-values.yaml
+    - helm lint stable/elasticsearch --values stable/elasticsearch/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_falco-reporter:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/falco-reporter/**/*
+      exists:
+        - stable/falco-reporter/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/falco-reporter/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/falco-reporter/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/falco-reporter/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/falco-reporter/ci/default-values.yaml
+    - helm lint stable/falco-reporter --values stable/falco-reporter/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_gitlab-steward:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/gitlab-steward/**/*
+      exists:
+        - stable/gitlab-steward/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/gitlab-steward/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/gitlab-steward/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/gitlab-steward/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/gitlab-steward/ci/default-values.yaml
+    - helm lint stable/gitlab-steward --values stable/gitlab-steward/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_hbase:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/hbase/**/*
+      exists:
+        - stable/hbase/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/hbase/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/hbase/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/hbase/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/hbase/ci/default-values.yaml
+    - helm lint stable/hbase --values stable/hbase/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_helm-reaper:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/helm-reaper/**/*
+      exists:
+        - stable/helm-reaper/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/helm-reaper/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/helm-reaper/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/helm-reaper/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/helm-reaper/ci/default-values.yaml
+    - helm lint stable/helm-reaper --values stable/helm-reaper/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_iceman:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/iceman/**/*
+      exists:
+        - stable/iceman/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/iceman/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/iceman/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/iceman/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/iceman/ci/default-values.yaml
+    - helm lint stable/iceman --values stable/iceman/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_k8s-image-list-to-s3:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/k8s-image-list-to-s3/**/*
+      exists:
+        - stable/k8s-image-list-to-s3/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/k8s-image-list-to-s3/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-image-list-to-s3/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-image-list-to-s3/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-image-list-to-s3/ci/default-values.yaml
+    - helm lint stable/k8s-image-list-to-s3 --values stable/k8s-image-list-to-s3/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_k8s-spot-termination-handler:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/k8s-spot-termination-handler/**/*
+      exists:
+        - stable/k8s-spot-termination-handler/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/k8s-spot-termination-handler/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-spot-termination-handler/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-spot-termination-handler/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-spot-termination-handler/ci/default-values.yaml
+    - helm lint stable/k8s-spot-termination-handler --values stable/k8s-spot-termination-handler/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_kafkaup-operator:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/kafkaup-operator/**/*
+      exists:
+        - stable/kafkaup-operator/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/kafkaup-operator/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/kafkaup-operator/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/kafkaup-operator/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/kafkaup-operator/ci/default-values.yaml
+    - helm lint stable/kafkaup-operator --values stable/kafkaup-operator/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_kommoner-operator:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/kommoner-operator/**/*
+      exists:
+        - stable/kommoner-operator/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/kommoner-operator/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/kommoner-operator/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/kommoner-operator/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/kommoner-operator/ci/default-values.yaml
+    - helm lint stable/kommoner-operator --values stable/kommoner-operator/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_minio:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/minio/**/*
+      exists:
+        - stable/minio/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/minio/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/minio/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/minio/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/minio/ci/default-values.yaml
+    - helm lint stable/minio --values stable/minio/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_otel-demo:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/otel-demo/**/*
+      exists:
+        - stable/otel-demo/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/otel-demo/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/otel-demo/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/otel-demo/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/otel-demo/ci/default-values.yaml
+    - helm lint stable/otel-demo --values stable/otel-demo/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_petros-d-kubelet-stats-exporter:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/petros-d-kubelet-stats-exporter/**/*
+      exists:
+        - stable/petros-d-kubelet-stats-exporter/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/petros-d-kubelet-stats-exporter/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/petros-d-kubelet-stats-exporter/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/petros-d-kubelet-stats-exporter/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml
+    - helm lint stable/petros-d-kubelet-stats-exporter --values stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_pull-secret:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/pull-secret/**/*
+      exists:
+        - stable/pull-secret/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/pull-secret/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/pull-secret/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/pull-secret/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/pull-secret/ci/default-values.yaml
+    - helm lint stable/pull-secret --values stable/pull-secret/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_receiveramplifier:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/receiveramplifier/**/*
+      exists:
+        - stable/receiveramplifier/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/receiveramplifier/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/receiveramplifier/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/receiveramplifier/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/receiveramplifier/ci/default-values.yaml
+    - helm lint stable/receiveramplifier --values stable/receiveramplifier/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_redirector:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/redirector/**/*
+      exists:
+        - stable/redirector/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/redirector/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/redirector/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/redirector/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/redirector/ci/default-values.yaml
+    - helm lint stable/redirector --values stable/redirector/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_sandbox-operator:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/sandbox-operator/**/*
+      exists:
+        - stable/sandbox-operator/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/sandbox-operator/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/sandbox-operator/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/sandbox-operator/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/sandbox-operator/ci/default-values.yaml
+    - helm lint stable/sandbox-operator --values stable/sandbox-operator/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_sock-shop:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/sock-shop/**/*
+      exists:
+        - stable/sock-shop/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/sock-shop/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/sock-shop/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/sock-shop/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/sock-shop/ci/default-values.yaml
+    - helm lint stable/sock-shop --values stable/sock-shop/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_stackstate:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/stackstate/**/*
+      exists:
+        - stable/stackstate/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/stackstate/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate/ci/default-values.yaml
+    - helm lint stable/stackstate --values stable/stackstate/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_stackstate-agent:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/stackstate-agent/**/*
+      exists:
+        - stable/stackstate-agent/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/stackstate-agent/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-agent/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-agent/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-agent/ci/default-values.yaml
+    - helm lint stable/stackstate-agent --values stable/stackstate-agent/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_stackstate-k8s-agent:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/stackstate-k8s-agent/**/*
+      exists:
+        - stable/stackstate-k8s-agent/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/stackstate-k8s-agent/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-k8s-agent/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-k8s-agent/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-k8s-agent/ci/default-values.yaml
+    - helm lint stable/stackstate-k8s-agent --values stable/stackstate-k8s-agent/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_stackstate-monitoring:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/stackstate-monitoring/**/*
+      exists:
+        - stable/stackstate-monitoring/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/stackstate-monitoring/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-monitoring/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-monitoring/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-monitoring/ci/default-values.yaml
+    - helm lint stable/stackstate-monitoring --values stable/stackstate-monitoring/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_stackstate-standalone:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/stackstate-standalone/**/*
+      exists:
+        - stable/stackstate-standalone/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/stackstate-standalone/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-standalone/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-standalone/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-standalone/ci/default-values.yaml
+    - helm lint stable/stackstate-standalone --values stable/stackstate-standalone/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_stackstate-values:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/stackstate-values/**/*
+      exists:
+        - stable/stackstate-values/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/stackstate-values/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-values/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-values/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/stackstate-values/ci/default-values.yaml
+    - helm lint stable/stackstate-values --values stable/stackstate-values/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_suse-observability:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/suse-observability/**/*
+      exists:
+        - stable/suse-observability/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/suse-observability/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability/ci/default-values.yaml
+    - helm lint stable/suse-observability --values stable/suse-observability/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_suse-observability-agent:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/suse-observability-agent/**/*
+      exists:
+        - stable/suse-observability-agent/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/suse-observability-agent/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-agent/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-agent/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-agent/ci/default-values.yaml
+    - helm lint stable/suse-observability-agent --values stable/suse-observability-agent/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_suse-observability-values:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/suse-observability-values/**/*
+      exists:
+        - stable/suse-observability-values/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/suse-observability-values/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-values/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-values/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-values/ci/default-values.yaml
+    - helm lint stable/suse-observability-values --values stable/suse-observability-values/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_tenantmanager:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/tenantmanager/**/*
+      exists:
+        - stable/tenantmanager/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/tenantmanager/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/tenantmanager/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/tenantmanager/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/tenantmanager/ci/default-values.yaml
+    - helm lint stable/tenantmanager --values stable/tenantmanager/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_trafficmirror:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/trafficmirror/**/*
+      exists:
+        - stable/trafficmirror/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/trafficmirror/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/trafficmirror/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/trafficmirror/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/trafficmirror/ci/default-values.yaml
+    - helm lint stable/trafficmirror --values stable/trafficmirror/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+lint_victoria-metrics-single:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/victoria-metrics-single/**/*
+      exists:
+        - stable/victoria-metrics-single/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/victoria-metrics-single/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/victoria-metrics-single/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/victoria-metrics-single/values.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/victoria-metrics-single/ci/default-values.yaml
+    - helm lint stable/victoria-metrics-single --values stable/victoria-metrics-single/ci/default-values.yaml
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
 push_artifactory-cleaner_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   rules:

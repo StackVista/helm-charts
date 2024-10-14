@@ -60,10 +60,39 @@ local build_chart_job(chart) = {
       exists: ['stable/' + chart + '/test/*.go'],
     },
   ],
+  artifacts: {
+    paths: ['stable/' + chart + '/charts/'],
+  },
 };
 
 local build_chart_jobs = {
   ['build_%s' % chart]: (build_chart_job(chart))
+  for chart in (charts + public_charts)
+};
+
+local lint_chart_job(chart) = {
+  image: variables.images.chart_testing,
+  before_script: ['.gitlab/validate_before_script.sh'],
+  script: [
+    'yamale --schema /etc/ct/chart_schema.yaml stable/' + chart + '/Chart.yaml',
+    'yamllint --config-file /etc/ct/lintconf.yaml stable/' + chart + '/Chart.yaml',
+    'yamllint --config-file /etc/ct/lintconf.yaml stable/' + chart + '/values.yaml',
+    'yamllint --config-file /etc/ct/lintconf.yaml stable/' + chart + '/ci/default-values.yaml',
+    'helm lint stable/' + chart + ' --values stable/' + chart + '/ci/default-values.yaml',
+    '.gitlab/validate_kubeconform.sh',
+  ],
+  stage: 'validate',
+  rules: [
+    {
+      @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
+      changes: ['stable/' + chart + '/**/*'],
+      exists: ['stable/' + chart + '/test/*.go'],
+    },
+  ],
+};
+
+local lint_chart_jobs = {
+  ['lint_%s' % chart]: (lint_chart_job(chart))
   for chart in (charts + public_charts)
 };
 
@@ -432,6 +461,7 @@ local update_docker_images = {
   },
 }
 + build_chart_jobs
++ lint_chart_jobs
 + test_chart_jobs
 + push_charts_to_internal_jobs
 + push_charts_to_public_jobs
