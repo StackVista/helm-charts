@@ -118,10 +118,6 @@ local validate_and_push_jobs = {
 
 local test_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
-  before_script: helm_fetch_dependencies + (
-    if chart == 'stackstate' || chart == 'suse-observability' then update_2nd_degree_chart_deps(chart) else []
-  ) +
-  ['helm dependencies update ${CHART}'],
   script: [
     'go test ./stable/' + chart + '/test/...',
   ],
@@ -134,10 +130,14 @@ local test_chart_job(chart) = {
     },
   ],
   variables: {
-    CHART: 'stable/' + chart,
     CGO_ENABLED: 0,
   },
-} + skip_when_dependency_upgrade;
+};
+
+local test_chart_jobs = {
+  ['test_%s' % chart]: (test_chart_job(chart))
+  for chart in (charts + public_charts)
+};
 
 local itest_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
@@ -160,7 +160,7 @@ local itest_chart_job(chart) = {
     CHART: 'stable/' + chart,
     CGO_ENABLED: 0,
   },
-} + skip_when_dependency_upgrade;
+};
 
 local push_chart_job_if(chart, script, rules) = {
   script: script,
@@ -231,10 +231,6 @@ local push_stackstate_chart_releases =
   },
 };
 
-local test_chart_jobs = {
-  ['test_%s' % chart]: (test_chart_job(chart))
-  for chart in (charts + public_charts)
-};
 
 local itest_stackstate = {
   integration_test_stackstate: itest_chart_job('stackstate'),

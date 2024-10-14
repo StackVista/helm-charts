@@ -945,14 +945,6 @@ integration_test_stackstate:
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/stackstate/**/*
       exists:
@@ -982,14 +974,6 @@ integration_test_stackstate_k8s:
     - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/suse-observability/**/*
       exists:
@@ -3255,30 +3239,8 @@ stages:
   - push-charts-to-public
   - push-charts-to-rancher
 test_artifactory-cleaner:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/artifactory-cleaner/**/*
       exists:
@@ -3289,32 +3251,9 @@ test_artifactory-cleaner:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/artifactory-cleaner
 test_aws-amicleaner:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/aws-amicleaner/**/*
       exists:
@@ -3325,32 +3264,9 @@ test_aws-amicleaner:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/aws-amicleaner
 test_aws-nuke:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/aws-nuke/**/*
       exists:
@@ -3361,32 +3277,9 @@ test_aws-nuke:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/aws-nuke
 test_aws-pod-identity-webhook:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/aws-pod-identity-webhook/**/*
       exists:
@@ -3397,32 +3290,9 @@ test_aws-pod-identity-webhook:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/aws-pod-identity-webhook
 test_beacher-job:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/beacher-job/**/*
       exists:
@@ -3433,32 +3303,9 @@ test_beacher-job:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/beacher-job
 test_chartmuseum:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/chartmuseum/**/*
       exists:
@@ -3469,32 +3316,9 @@ test_chartmuseum:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/chartmuseum
 test_common:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/common/**/*
       exists:
@@ -3505,32 +3329,9 @@ test_common:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/common
 test_elasticsearch:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/elasticsearch/**/*
       exists:
@@ -3541,32 +3342,9 @@ test_elasticsearch:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/elasticsearch
 test_falco-reporter:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/falco-reporter/**/*
       exists:
@@ -3577,32 +3355,9 @@ test_falco-reporter:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/falco-reporter
 test_gitlab-steward:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/gitlab-steward/**/*
       exists:
@@ -3613,32 +3368,9 @@ test_gitlab-steward:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/gitlab-steward
 test_hbase:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/hbase/**/*
       exists:
@@ -3649,32 +3381,9 @@ test_hbase:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/hbase
 test_helm-reaper:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/helm-reaper/**/*
       exists:
@@ -3685,32 +3394,9 @@ test_helm-reaper:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/helm-reaper
 test_iceman:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/iceman/**/*
       exists:
@@ -3721,32 +3407,9 @@ test_iceman:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/iceman
 test_k8s-image-list-to-s3:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/k8s-image-list-to-s3/**/*
       exists:
@@ -3757,32 +3420,9 @@ test_k8s-image-list-to-s3:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/k8s-image-list-to-s3
 test_k8s-spot-termination-handler:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/k8s-spot-termination-handler/**/*
       exists:
@@ -3793,32 +3433,9 @@ test_k8s-spot-termination-handler:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/k8s-spot-termination-handler
 test_kafkaup-operator:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/kafkaup-operator/**/*
       exists:
@@ -3829,32 +3446,9 @@ test_kafkaup-operator:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/kafkaup-operator
 test_kommoner-operator:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/kommoner-operator/**/*
       exists:
@@ -3865,32 +3459,9 @@ test_kommoner-operator:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/kommoner-operator
 test_minio:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/minio/**/*
       exists:
@@ -3901,32 +3472,9 @@ test_minio:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/minio
 test_otel-demo:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/otel-demo/**/*
       exists:
@@ -3937,32 +3485,9 @@ test_otel-demo:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/otel-demo
 test_petros-d-kubelet-stats-exporter:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
       exists:
@@ -3973,32 +3498,9 @@ test_petros-d-kubelet-stats-exporter:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/petros-d-kubelet-stats-exporter
 test_pull-secret:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/pull-secret/**/*
       exists:
@@ -4009,32 +3511,9 @@ test_pull-secret:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/pull-secret
 test_receiveramplifier:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/receiveramplifier/**/*
       exists:
@@ -4045,32 +3524,9 @@ test_receiveramplifier:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/receiveramplifier
 test_redirector:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/redirector/**/*
       exists:
@@ -4081,32 +3537,9 @@ test_redirector:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/redirector
 test_sandbox-operator:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/sandbox-operator/**/*
       exists:
@@ -4117,32 +3550,9 @@ test_sandbox-operator:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/sandbox-operator
 test_sock-shop:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/sock-shop/**/*
       exists:
@@ -4153,33 +3563,9 @@ test_sock-shop:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/sock-shop
 test_stackstate:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/stackstate/**/*
       exists:
@@ -4190,32 +3576,9 @@ test_stackstate:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/stackstate
 test_stackstate-agent:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/stackstate-agent/**/*
       exists:
@@ -4226,32 +3589,9 @@ test_stackstate-agent:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/stackstate-agent
 test_stackstate-k8s-agent:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
       exists:
@@ -4262,32 +3602,9 @@ test_stackstate-k8s-agent:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/stackstate-k8s-agent
 test_stackstate-monitoring:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/stackstate-monitoring/**/*
       exists:
@@ -4298,32 +3615,9 @@ test_stackstate-monitoring:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/stackstate-monitoring
 test_stackstate-standalone:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/stackstate-standalone/**/*
       exists:
@@ -4334,32 +3628,9 @@ test_stackstate-standalone:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/stackstate-standalone
 test_stackstate-values:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/stackstate-values/**/*
       exists:
@@ -4370,33 +3641,9 @@ test_stackstate-values:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/stackstate-values
 test_suse-observability:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability/Chart.yaml  | xargs -I % helm dependencies build stable/suse-observability/%
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/suse-observability/**/*
       exists:
@@ -4407,32 +3654,9 @@ test_suse-observability:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/suse-observability
 test_suse-observability-agent:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/suse-observability-agent/**/*
       exists:
@@ -4443,32 +3667,9 @@ test_suse-observability-agent:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/suse-observability-agent
 test_suse-observability-values:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/suse-observability-values/**/*
       exists:
@@ -4479,32 +3680,9 @@ test_suse-observability-values:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/suse-observability-values
 test_tenantmanager:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/tenantmanager/**/*
       exists:
@@ -4515,32 +3693,9 @@ test_tenantmanager:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/tenantmanager
 test_trafficmirror:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/trafficmirror/**/*
       exists:
@@ -4551,32 +3706,9 @@ test_trafficmirror:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/trafficmirror
 test_victoria-metrics-single:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-    - helm dependencies update ${CHART}
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
     - changes:
         - stable/victoria-metrics-single/**/*
       exists:
@@ -4587,7 +3719,6 @@ test_victoria-metrics-single:
   stage: test
   variables:
     CGO_ENABLED: 0
-    CHART: stable/victoria-metrics-single
 update_aad_chart_version:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
