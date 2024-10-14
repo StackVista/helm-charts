@@ -3032,19 +3032,6 @@ push_tenantmanager_to_internal:
   variables:
     CHART: stable/tenantmanager
 push_test_charts:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   rules:
     - if: $CI_COMMIT_BRANCH == "master"

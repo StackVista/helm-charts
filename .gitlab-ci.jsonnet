@@ -35,16 +35,6 @@ local skip_when_dependency_upgrade = {
   }] + super.rules,
 };
 
-local sync_charts_template = {
-  before_script: helm_fetch_dependencies,
-  script: [
-    'source .gitlab/aws_auth_setup.sh',
-    'sh test/sync-repo.sh',
-    ],
-  stage: 'build',
-  image: variables.images.stackstate_devops,
-} + skip_when_dependency_upgrade;
-
 local build_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   before_script: helm_config_dependencies,
@@ -95,27 +85,6 @@ local lint_chart_jobs = {
   for chart in (charts + public_charts)
 };
 
-
-local validate_and_push_jobs = {
-  push_test_charts: sync_charts_template {
-    rules: [
-      {
-        @'if': '$CI_COMMIT_BRANCH == "master"',
-        when: 'never',
-      },
-      {
-        @'if': '$CI_COMMIT_TAG',
-        when: 'never',
-      },
-      { when: 'always' },
-    ],
-    variables: {
-      AWS_BUCKET: 's3://helm-test.stackstate.io',
-      REPO_URL: 'https://helm-test.stackstate.io/',
-    },
-  },
-};
-
 local test_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   script: [
@@ -137,6 +106,32 @@ local test_chart_job(chart) = {
 local test_chart_jobs = {
   ['test_%s' % chart]: (test_chart_job(chart))
   for chart in (charts + public_charts)
+};
+
+local push_test_charts = {
+  push_test_charts: {
+    image: variables.images.stackstate_devops,
+    script: [
+      'source .gitlab/aws_auth_setup.sh',
+      'sh test/sync-repo.sh',
+    ],
+    rules: [
+      {
+        @'if': '$CI_COMMIT_BRANCH == "master"',
+        when: 'never',
+      },
+      {
+        @'if': '$CI_COMMIT_TAG',
+        when: 'never',
+      },
+      { when: 'always' },
+    ],
+    variables: {
+      AWS_BUCKET: 's3://helm-test.stackstate.io',
+      REPO_URL: 'https://helm-test.stackstate.io/',
+    },
+    stage: 'build',
+  },
 };
 
 local push_chart_job_if(chart, script, rules) = {
@@ -391,9 +386,10 @@ local update_docker_images = {
 + build_chart_jobs
 + lint_chart_jobs
 + test_chart_jobs
++ push_test_charts
+
 + push_charts_to_internal_jobs
 + push_charts_to_public_jobs
-+ validate_and_push_jobs
 + push_stackstate_chart_releases
 + update_sg_version
 + update_aad_chart_version
