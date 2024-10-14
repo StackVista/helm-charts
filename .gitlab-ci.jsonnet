@@ -70,6 +70,8 @@ local build_chart_jobs = {
   for chart in (charts + public_charts)
 };
 
+//TODO test if files exists
+//TODO check if version is bumped
 local lint_chart_job(chart) = {
   image: variables.images.chart_testing,
   before_script: ['.gitlab/validate_before_script.sh'],
@@ -98,44 +100,6 @@ local lint_chart_jobs = {
 
 
 local validate_and_push_jobs = {
-  validate_charts: {
-    before_script: ['.gitlab/validate_before_script.sh'],
-    environment: 'stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}',
-    rules: [
-      {
-        @'if': '$CI_COMMIT_BRANCH == "master"',
-        when: 'never',
-      },
-      { when: 'always' },
-    ],
-    script: [
-      'ct list-changed --config test/ct.yaml',
-      'if [[ "${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" =~ ^releasing*|^developing* ]] || [[ -n "${CI_COMMIT_TAG}" ]] ; then export VERSION_INCREMENT_CHECK="--check-version-increment=false" ; fi',
-      'ct lint --debug --validate-maintainers=false ${VERSION_INCREMENT_CHECK} --excluded-charts stackstate --excluded-charts suse-observability --excluded-charts gitlab-runner --config test/ct.yaml',
-      '.gitlab/validate_kubeconform.sh',
-    ],
-    stage: 'validate',
-  } + skip_when_dependency_upgrade,
-  validate_stackstate_chart: {
-    before_script: ['.gitlab/validate_before_script.sh'] + helm_config_dependencies,
-    environment: 'stseuw1-sandbox-main-eks-sandbox/${CI_COMMIT_REF_NAME}',
-    rules: [
-      {
-        @'if': '$CI_COMMIT_BRANCH == "master"',
-        when: 'never',
-      },
-      { when: 'always' },
-    ],
-    script:
-      ['ct list-changed --config test/ct.yaml'] +
-      update_2nd_degree_chart_deps('stackstate') +
-      update_2nd_degree_chart_deps('suse-observability') +
-      [
-        'ct lint --debug --validate-maintainers=false --charts stable/stackstate --charts stable/suse-observability --config test/ct.yaml',
-        '.gitlab/validate_kubeconform.sh',
-      ],
-    stage: 'validate',
-  } + skip_when_dependency_upgrade,
   push_test_charts: sync_charts_template {
     rules: [
       {
