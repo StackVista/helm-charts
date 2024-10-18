@@ -94,7 +94,7 @@ done
 # Check the final phase of the pod
 pod_phase=$(kubectl get pod "${POD_NAME}" -o jsonpath='{.status.phase}')
 if [ "$pod_phase" != "Succeeded" ]; then
-    echo "=== Restore job failed. Exiting..."
+    echo "=== Restore job ($JOB_NAME) failed with pod ($POD_NAME). Exiting..."
     exit 1
 fi
 
