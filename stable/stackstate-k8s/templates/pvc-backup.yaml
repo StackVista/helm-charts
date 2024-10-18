@@ -10,7 +10,7 @@ spec:
       storage: {{ tpl .Values.backup.stackGraph.scheduled.tempData.size . }}
   {{ include "common.storage.class" ( dict "persistence" .Values.backup.stackGraph.scheduled.tempData "global" .Values.global) | nindent 2 }}
 {{- end }}
-
+---
 {{- if .Values.backup.configuration.scheduled.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim

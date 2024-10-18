@@ -17,7 +17,7 @@ imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .
 command:
   - '/backup-restore-scripts/backup-stackgraph.sh'
 env:
-  {{- include "stackstate.backup.envvars" . | nindent 16 }}
+  {{- include "stackstate.backup.envvars" . | nindent 2 }}
   - name: ZOOKEEPER_QUORUM
     {{- if eq .Values.hbase.deployment.mode "Distributed" }}
     value: suse-observability-zookeeper-headless:2181
@@ -26,10 +26,10 @@ env:
     {{- end }}
 {{- with .Values.stackstate.components.backup.resources }}
 resources:
-  {{- toYaml . | nindent 16 }}
+  {{- toYaml . | nindent 2 }}
 {{- end }}
 volumeMounts:
-  {{- include "stackstate.backup.volumeMounts" . | nindent 16 }}
+  {{- include "stackstate.backup.volumeMounts" . | nindent 2 }}
   - name: tmp-data
     mountPath: /tmp-data
 {{- end }}
@@ -39,13 +39,13 @@ volumeMounts:
 {{- $stackgraphBackupMainContainer := (merge $overrideContainer $commonContainer) -}}
 {{- $overrideContainer := fromYaml (include "stackstate.backup.stackgraph.container.init" .) -}}
 {{- $stackgraphBackupInitContainer := (merge $overrideContainer $commonContainer) -}}
+{{- if .Values.backup.enabled }}
+{{- if .Values.backup.stackGraph.scheduled.enabled }}
 {{- if .Capabilities.APIVersions.Has "batch/v1/CronJob" }}
 apiVersion: batch/v1
 {{- else }}
 apiVersion: batch/v1beta1
 {{- end }}
-{{- if .Values.backup.enabled }}
-{{- if .Values.backup.stackGraph.scheduled.enabled }}
 kind: CronJob
 metadata:
   name: {{ template "common.fullname.short" . }}-backup-sg
@@ -68,9 +68,9 @@ spec:
             app.kubernetes.io/component: backup
         spec:
           initContainers:
-          - {{ toYaml $stackgraphBackupInitContainer | nindent 10 }}
+          - {{- toYaml $stackgraphBackupInitContainer | nindent 12 }}
           containers:
-          - {{ toYaml $stackgraphBackupMainContainer | nindent 10 }}
+          - {{- toYaml $stackgraphBackupMainContainer | nindent 12 }}
           {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 10 }}
           volumes:
             {{- include "stackstate.backup.volumes" . | nindent 12 }}
@@ -104,9 +104,9 @@ imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .
 command:
   - '/backup-restore-scripts/backup-configuration.sh'
 env:
-  {{- include "stackstate.backup.envvars" . | nindent 16 }}
-  {{- include "stackstate.authentication.envvars" .  | nindent 16 }}
-  {{- include "stackstate.baseurls.envvars" .  | nindent 16 }}
+  {{- include "stackstate.backup.envvars" . | nindent 2 }}
+  {{- include "stackstate.authentication.envvars" .  | nindent 2 }}
+  {{- include "stackstate.baseurls.envvars" .  | nindent 2 }}
   - name: LICENSE_KEY
     valueFrom:
       secretKeyRef:
@@ -129,10 +129,10 @@ env:
   {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- with .Values.stackstate.components.configurationBackup.resources }}
 resources:
-  {{- toYaml . | nindent 16 }}
+  {{- toYaml . | nindent 2 }}
 {{- end }}
 volumeMounts:
-  {{- include "stackstate.backup.volumeMounts" . | nindent 16 }}
+  {{- include "stackstate.backup.volumeMounts" . | nindent 2 }}
   - name: settings-backup-data
     mountPath: /settings-backup-data
 {{- end }}
@@ -170,9 +170,9 @@ spec:
             app.kubernetes.io/component: backup
         spec:
           initContainers:
-          - {{ toYaml $configBackupInitContainer | nindent 10 }}
+          - {{- toYaml $configBackupInitContainer | nindent 12 }}
           containers:
-          - {{ toYaml $configBackupMainContainer | nindent 10 }}
+          - {{- toYaml $configBackupMainContainer | nindent 12 }}
           {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 10 }}
           volumes:
             {{- include "stackstate.backup.volumes" . | nindent 12 }}
