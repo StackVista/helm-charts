@@ -44,7 +44,7 @@ env:
       name: {{ template "common.fullname.short" . }}-license
       key: sts-license-key
 - name: ZOOKEEPER_QUORUM
-  value: {{ include "stackgraph.zookeeper.endpoint" . }}
+  value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
 - name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
   value: "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
   # Keep data for a longlong time (a day), we actually want to run stateservice from cache

@@ -23,7 +23,7 @@ env:
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
 - name: ZOOKEEPER_QUORUM
-  value: {{ include "stackgraph.zookeeper.endpoint" . }}
+  value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
 - name: STS_METRICS_V2_PARTITION_COUNT
   value: {{ .Values.kafka.topic.stsMetricsV2.partitionCount | quote }}
 {{- if .Values.stackstate.components.kafkaTopicCreate.extraEnv.open }}

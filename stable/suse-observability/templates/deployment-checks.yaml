@@ -43,7 +43,7 @@ env:
       name: {{ template "common.fullname.short" . }}-license
       key: sts-license-key
 - name: ZOOKEEPER_QUORUM
-  value: {{ include "stackgraph.zookeeper.endpoint" . }}
+  value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
   # No need to keep cached items for a long time
 - name: CONFIG_FORCE_stackgraph_vertex_cache_expireAfterSeconds
   value: "600"

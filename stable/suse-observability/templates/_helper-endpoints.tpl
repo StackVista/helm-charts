@@ -121,8 +121,7 @@ Comma-separated list of the endpoints that need to be up to consider hdfs runnin
 */}}
 {{ define "stackgraph.hbase.waitfor" -}}
 {{- if eq .Values.hbase.deployment.mode "Distributed" -}}
-{{- include "stackstate.zookeeper.endpoint" . -}},
-{{- .Release.Name }}-hbase-hdfs-nn-headful:9000
+{{- include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn-headful:9000
 {{- else -}}
 {{- .Release.Name }}-hbase-stackgraph:2182
 {{- end -}}
@@ -155,7 +154,7 @@ Logic to determine Zookeeper endpoint for stackgraph.
 */}}
 {{- define "stackgraph.zookeeper.endpoint" -}}
 {{- if eq .Values.hbase.deployment.mode "Distributed" }}
-{{ include "stackstate.zookeeper.endpoint" . | quote }}
+{{- include "stackstate.zookeeper.endpoint" . }}
 {{- else }}
 {{- .Release.Name }}-hbase-stackgraph:2182
 {{- end }}

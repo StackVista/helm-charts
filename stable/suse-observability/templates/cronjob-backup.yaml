@@ -19,7 +19,7 @@ command:
 env:
   {{- include "stackstate.backup.envvars" . | nindent 2 }}
   - name: ZOOKEEPER_QUORUM
-    value: {{ include "stackgraph.zookeeper.endpoint" . }}
+    value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
 {{- with .Values.stackstate.components.backup.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
@@ -117,7 +117,7 @@ env:
   - name: HADOOP_USER_NAME
     value: nobody
   - name: ZOOKEEPER_QUORUM
-    value: {{ include "stackgraph.zookeeper.endpoint" . }}
+    value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
   {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- with .Values.stackstate.components.configurationBackup.resources }}
 resources:

@@ -39,7 +39,7 @@ env:
       name: {{ template "common.fullname.short" . }}-license
       key: sts-license-key
 - name: ZOOKEEPER_QUORUM
-  value: {{ include "stackgraph.zookeeper.endpoint" . }}
+  value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.server.envsFromExistingSecrets }}
 image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"

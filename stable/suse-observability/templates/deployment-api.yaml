@@ -48,7 +48,7 @@ env:
       name: {{ template "common.fullname.short" . }}-license
       key: sts-license-key
 - name: ZOOKEEPER_QUORUM
-  value: {{ include "stackgraph.zookeeper.endpoint" . }}
+  value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
   # Keep for 1.5 hours, allowing timetravel and having users in analytics keep their results cached
 - name: CONFIG_FORCE_stackgraph_vertex_cache_expireAfterSeconds
   value: "5400"

@@ -173,7 +173,7 @@ spec:
             - name: FORCE_DELETE
               value: "REPLACE_ME_FORCE_DELETE_REPLACE_ME"
             - name: ZOOKEEPER_QUORUM
-              value: {{ include "stackgraph.zookeeper.endpoint" . }}
+              value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
           {{- with .Values.stackstate.components.backup.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
@@ -320,7 +320,7 @@ spec:
             - name: HADOOP_USER_NAME
               value: nobody
             - name: ZOOKEEPER_QUORUM
-              value: {{ include "stackgraph.zookeeper.endpoint" . }}
+              value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
               {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets | nindent 12}}
             - name: BACKUP_FILE
               value: "REPLACE_ME_BACKUP_FILE_REPLACE_ME"
