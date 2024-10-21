@@ -20,9 +20,9 @@ env:
   {{- include "stackstate.backup.envvars" . | nindent 2 }}
   - name: ZOOKEEPER_QUORUM
     {{- if eq .Values.hbase.deployment.mode "Distributed" }}
-    value: suse-observability-zookeeper-headless:2181
+    value: stackstate-zookeeper-headless:2181
     {{- else }}
-    value: "suse-observability-hbase-stackgraph:2182"
+    value: "stackstate-hbase-stackgraph:2182"
     {{- end }}
 {{- with .Values.stackstate.components.backup.resources }}
 resources:
@@ -122,9 +122,9 @@ env:
     value: nobody
   - name: ZOOKEEPER_QUORUM
     {{- if eq .Values.hbase.deployment.mode "Distributed" }}
-    value: suse-observability-zookeeper-headless:2181
+    value: stackstate-zookeeper-headless:2181
     {{- else }}
-    value: "suse-observability-hbase-stackgraph:2182"
+    value: "stackstate-hbase-stackgraph:2182"
     {{- end }}
   {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- with .Values.stackstate.components.configurationBackup.resources }}
