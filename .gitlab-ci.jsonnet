@@ -43,6 +43,8 @@ local build_chart_job(chart) = {
   script: [
     update_2nd_degree_chart_deps(chart),
     'helm dependencies build stable/' + chart,
+    // To avoid a race condition with index.yaml mondifaction in the push_test_charts_jobs job, I package all modifed charts now and then upload only modified charts to s3
+    'mkdir -p stable/' + chart + '/build; helm package --destination stable/' + chart + '/build stable/' + chart,
   ],
   stage: 'build',
   rules: [
@@ -52,7 +54,10 @@ local build_chart_job(chart) = {
     },
   ],
   artifacts: {
-    paths: ['stable/' + chart + '/charts/'],
+    paths: [
+      'stable/' + chart + '/charts/',
+      'stable/' + chart + '/build/',
+    ],
   },
 };
 local build_chart_jobs = {
@@ -146,7 +151,7 @@ local push_test_charts_jobs = {
         @'if': '$CI_COMMIT_TAG',
         when: 'never',
       },
-      { when: 'always' },
+      { when: 'on_success' },
     ],
     variables: {
       AWS_BUCKET: 's3://helm-test.stackstate.io',

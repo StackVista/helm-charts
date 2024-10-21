@@ -5,6 +5,7 @@ build_artifactory-cleaner:
   artifacts:
     paths:
       - stable/artifactory-cleaner/charts/
+      - stable/artifactory-cleaner/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -25,11 +26,13 @@ build_artifactory-cleaner:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/artifactory-cleaner/Chart.yaml  | xargs -I % helm dependencies build stable/artifactory-cleaner/%
     - helm dependencies build stable/artifactory-cleaner
+    - mkdir -p stable/artifactory-cleaner/build; helm package --destination stable/artifactory-cleaner/build stable/artifactory-cleaner
   stage: build
 build_aws-amicleaner:
   artifacts:
     paths:
       - stable/aws-amicleaner/charts/
+      - stable/aws-amicleaner/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -50,11 +53,13 @@ build_aws-amicleaner:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/aws-amicleaner/Chart.yaml  | xargs -I % helm dependencies build stable/aws-amicleaner/%
     - helm dependencies build stable/aws-amicleaner
+    - mkdir -p stable/aws-amicleaner/build; helm package --destination stable/aws-amicleaner/build stable/aws-amicleaner
   stage: build
 build_aws-nuke:
   artifacts:
     paths:
       - stable/aws-nuke/charts/
+      - stable/aws-nuke/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -75,11 +80,13 @@ build_aws-nuke:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/aws-nuke/Chart.yaml  | xargs -I % helm dependencies build stable/aws-nuke/%
     - helm dependencies build stable/aws-nuke
+    - mkdir -p stable/aws-nuke/build; helm package --destination stable/aws-nuke/build stable/aws-nuke
   stage: build
 build_aws-pod-identity-webhook:
   artifacts:
     paths:
       - stable/aws-pod-identity-webhook/charts/
+      - stable/aws-pod-identity-webhook/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -100,11 +107,13 @@ build_aws-pod-identity-webhook:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/aws-pod-identity-webhook/Chart.yaml  | xargs -I % helm dependencies build stable/aws-pod-identity-webhook/%
     - helm dependencies build stable/aws-pod-identity-webhook
+    - mkdir -p stable/aws-pod-identity-webhook/build; helm package --destination stable/aws-pod-identity-webhook/build stable/aws-pod-identity-webhook
   stage: build
 build_beacher-job:
   artifacts:
     paths:
       - stable/beacher-job/charts/
+      - stable/beacher-job/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -125,11 +134,13 @@ build_beacher-job:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/beacher-job/Chart.yaml  | xargs -I % helm dependencies build stable/beacher-job/%
     - helm dependencies build stable/beacher-job
+    - mkdir -p stable/beacher-job/build; helm package --destination stable/beacher-job/build stable/beacher-job
   stage: build
 build_chartmuseum:
   artifacts:
     paths:
       - stable/chartmuseum/charts/
+      - stable/chartmuseum/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -150,11 +161,13 @@ build_chartmuseum:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/chartmuseum/Chart.yaml  | xargs -I % helm dependencies build stable/chartmuseum/%
     - helm dependencies build stable/chartmuseum
+    - mkdir -p stable/chartmuseum/build; helm package --destination stable/chartmuseum/build stable/chartmuseum
   stage: build
 build_common:
   artifacts:
     paths:
       - stable/common/charts/
+      - stable/common/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -175,11 +188,13 @@ build_common:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/common/Chart.yaml  | xargs -I % helm dependencies build stable/common/%
     - helm dependencies build stable/common
+    - mkdir -p stable/common/build; helm package --destination stable/common/build stable/common
   stage: build
 build_elasticsearch:
   artifacts:
     paths:
       - stable/elasticsearch/charts/
+      - stable/elasticsearch/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -200,11 +215,13 @@ build_elasticsearch:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/elasticsearch/Chart.yaml  | xargs -I % helm dependencies build stable/elasticsearch/%
     - helm dependencies build stable/elasticsearch
+    - mkdir -p stable/elasticsearch/build; helm package --destination stable/elasticsearch/build stable/elasticsearch
   stage: build
 build_falco-reporter:
   artifacts:
     paths:
       - stable/falco-reporter/charts/
+      - stable/falco-reporter/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -225,11 +242,13 @@ build_falco-reporter:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/falco-reporter/Chart.yaml  | xargs -I % helm dependencies build stable/falco-reporter/%
     - helm dependencies build stable/falco-reporter
+    - mkdir -p stable/falco-reporter/build; helm package --destination stable/falco-reporter/build stable/falco-reporter
   stage: build
 build_gitlab-steward:
   artifacts:
     paths:
       - stable/gitlab-steward/charts/
+      - stable/gitlab-steward/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -250,11 +269,13 @@ build_gitlab-steward:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/gitlab-steward/Chart.yaml  | xargs -I % helm dependencies build stable/gitlab-steward/%
     - helm dependencies build stable/gitlab-steward
+    - mkdir -p stable/gitlab-steward/build; helm package --destination stable/gitlab-steward/build stable/gitlab-steward
   stage: build
 build_hbase:
   artifacts:
     paths:
       - stable/hbase/charts/
+      - stable/hbase/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -275,11 +296,13 @@ build_hbase:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/hbase/Chart.yaml  | xargs -I % helm dependencies build stable/hbase/%
     - helm dependencies build stable/hbase
+    - mkdir -p stable/hbase/build; helm package --destination stable/hbase/build stable/hbase
   stage: build
 build_helm-reaper:
   artifacts:
     paths:
       - stable/helm-reaper/charts/
+      - stable/helm-reaper/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -300,11 +323,13 @@ build_helm-reaper:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/helm-reaper/Chart.yaml  | xargs -I % helm dependencies build stable/helm-reaper/%
     - helm dependencies build stable/helm-reaper
+    - mkdir -p stable/helm-reaper/build; helm package --destination stable/helm-reaper/build stable/helm-reaper
   stage: build
 build_iceman:
   artifacts:
     paths:
       - stable/iceman/charts/
+      - stable/iceman/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -325,11 +350,13 @@ build_iceman:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/iceman/Chart.yaml  | xargs -I % helm dependencies build stable/iceman/%
     - helm dependencies build stable/iceman
+    - mkdir -p stable/iceman/build; helm package --destination stable/iceman/build stable/iceman
   stage: build
 build_k8s-image-list-to-s3:
   artifacts:
     paths:
       - stable/k8s-image-list-to-s3/charts/
+      - stable/k8s-image-list-to-s3/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -350,11 +377,13 @@ build_k8s-image-list-to-s3:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/k8s-image-list-to-s3/Chart.yaml  | xargs -I % helm dependencies build stable/k8s-image-list-to-s3/%
     - helm dependencies build stable/k8s-image-list-to-s3
+    - mkdir -p stable/k8s-image-list-to-s3/build; helm package --destination stable/k8s-image-list-to-s3/build stable/k8s-image-list-to-s3
   stage: build
 build_k8s-spot-termination-handler:
   artifacts:
     paths:
       - stable/k8s-spot-termination-handler/charts/
+      - stable/k8s-spot-termination-handler/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -375,11 +404,13 @@ build_k8s-spot-termination-handler:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/k8s-spot-termination-handler/Chart.yaml  | xargs -I % helm dependencies build stable/k8s-spot-termination-handler/%
     - helm dependencies build stable/k8s-spot-termination-handler
+    - mkdir -p stable/k8s-spot-termination-handler/build; helm package --destination stable/k8s-spot-termination-handler/build stable/k8s-spot-termination-handler
   stage: build
 build_kafkaup-operator:
   artifacts:
     paths:
       - stable/kafkaup-operator/charts/
+      - stable/kafkaup-operator/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -400,11 +431,13 @@ build_kafkaup-operator:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/kafkaup-operator/Chart.yaml  | xargs -I % helm dependencies build stable/kafkaup-operator/%
     - helm dependencies build stable/kafkaup-operator
+    - mkdir -p stable/kafkaup-operator/build; helm package --destination stable/kafkaup-operator/build stable/kafkaup-operator
   stage: build
 build_kommoner-operator:
   artifacts:
     paths:
       - stable/kommoner-operator/charts/
+      - stable/kommoner-operator/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -425,11 +458,13 @@ build_kommoner-operator:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/kommoner-operator/Chart.yaml  | xargs -I % helm dependencies build stable/kommoner-operator/%
     - helm dependencies build stable/kommoner-operator
+    - mkdir -p stable/kommoner-operator/build; helm package --destination stable/kommoner-operator/build stable/kommoner-operator
   stage: build
 build_minio:
   artifacts:
     paths:
       - stable/minio/charts/
+      - stable/minio/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -450,11 +485,13 @@ build_minio:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/minio/Chart.yaml  | xargs -I % helm dependencies build stable/minio/%
     - helm dependencies build stable/minio
+    - mkdir -p stable/minio/build; helm package --destination stable/minio/build stable/minio
   stage: build
 build_otel-demo:
   artifacts:
     paths:
       - stable/otel-demo/charts/
+      - stable/otel-demo/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -475,11 +512,13 @@ build_otel-demo:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/otel-demo/Chart.yaml  | xargs -I % helm dependencies build stable/otel-demo/%
     - helm dependencies build stable/otel-demo
+    - mkdir -p stable/otel-demo/build; helm package --destination stable/otel-demo/build stable/otel-demo
   stage: build
 build_petros-d-kubelet-stats-exporter:
   artifacts:
     paths:
       - stable/petros-d-kubelet-stats-exporter/charts/
+      - stable/petros-d-kubelet-stats-exporter/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -500,11 +539,13 @@ build_petros-d-kubelet-stats-exporter:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/petros-d-kubelet-stats-exporter/Chart.yaml  | xargs -I % helm dependencies build stable/petros-d-kubelet-stats-exporter/%
     - helm dependencies build stable/petros-d-kubelet-stats-exporter
+    - mkdir -p stable/petros-d-kubelet-stats-exporter/build; helm package --destination stable/petros-d-kubelet-stats-exporter/build stable/petros-d-kubelet-stats-exporter
   stage: build
 build_pull-secret:
   artifacts:
     paths:
       - stable/pull-secret/charts/
+      - stable/pull-secret/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -525,11 +566,13 @@ build_pull-secret:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/pull-secret/Chart.yaml  | xargs -I % helm dependencies build stable/pull-secret/%
     - helm dependencies build stable/pull-secret
+    - mkdir -p stable/pull-secret/build; helm package --destination stable/pull-secret/build stable/pull-secret
   stage: build
 build_receiveramplifier:
   artifacts:
     paths:
       - stable/receiveramplifier/charts/
+      - stable/receiveramplifier/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -550,11 +593,13 @@ build_receiveramplifier:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/receiveramplifier/Chart.yaml  | xargs -I % helm dependencies build stable/receiveramplifier/%
     - helm dependencies build stable/receiveramplifier
+    - mkdir -p stable/receiveramplifier/build; helm package --destination stable/receiveramplifier/build stable/receiveramplifier
   stage: build
 build_redirector:
   artifacts:
     paths:
       - stable/redirector/charts/
+      - stable/redirector/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -575,11 +620,13 @@ build_redirector:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/redirector/Chart.yaml  | xargs -I % helm dependencies build stable/redirector/%
     - helm dependencies build stable/redirector
+    - mkdir -p stable/redirector/build; helm package --destination stable/redirector/build stable/redirector
   stage: build
 build_sandbox-operator:
   artifacts:
     paths:
       - stable/sandbox-operator/charts/
+      - stable/sandbox-operator/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -600,11 +647,13 @@ build_sandbox-operator:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/sandbox-operator/Chart.yaml  | xargs -I % helm dependencies build stable/sandbox-operator/%
     - helm dependencies build stable/sandbox-operator
+    - mkdir -p stable/sandbox-operator/build; helm package --destination stable/sandbox-operator/build stable/sandbox-operator
   stage: build
 build_sock-shop:
   artifacts:
     paths:
       - stable/sock-shop/charts/
+      - stable/sock-shop/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -625,11 +674,13 @@ build_sock-shop:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/sock-shop/Chart.yaml  | xargs -I % helm dependencies build stable/sock-shop/%
     - helm dependencies build stable/sock-shop
+    - mkdir -p stable/sock-shop/build; helm package --destination stable/sock-shop/build stable/sock-shop
   stage: build
 build_stackstate:
   artifacts:
     paths:
       - stable/stackstate/charts/
+      - stable/stackstate/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -650,11 +701,13 @@ build_stackstate:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate/%
     - helm dependencies build stable/stackstate
+    - mkdir -p stable/stackstate/build; helm package --destination stable/stackstate/build stable/stackstate
   stage: build
 build_stackstate-agent:
   artifacts:
     paths:
       - stable/stackstate-agent/charts/
+      - stable/stackstate-agent/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -675,11 +728,13 @@ build_stackstate-agent:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-agent/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-agent/%
     - helm dependencies build stable/stackstate-agent
+    - mkdir -p stable/stackstate-agent/build; helm package --destination stable/stackstate-agent/build stable/stackstate-agent
   stage: build
 build_stackstate-k8s-agent:
   artifacts:
     paths:
       - stable/stackstate-k8s-agent/charts/
+      - stable/stackstate-k8s-agent/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -700,11 +755,13 @@ build_stackstate-k8s-agent:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-k8s-agent/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-k8s-agent/%
     - helm dependencies build stable/stackstate-k8s-agent
+    - mkdir -p stable/stackstate-k8s-agent/build; helm package --destination stable/stackstate-k8s-agent/build stable/stackstate-k8s-agent
   stage: build
 build_stackstate-monitoring:
   artifacts:
     paths:
       - stable/stackstate-monitoring/charts/
+      - stable/stackstate-monitoring/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -725,11 +782,13 @@ build_stackstate-monitoring:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-monitoring/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-monitoring/%
     - helm dependencies build stable/stackstate-monitoring
+    - mkdir -p stable/stackstate-monitoring/build; helm package --destination stable/stackstate-monitoring/build stable/stackstate-monitoring
   stage: build
 build_stackstate-standalone:
   artifacts:
     paths:
       - stable/stackstate-standalone/charts/
+      - stable/stackstate-standalone/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -750,11 +809,13 @@ build_stackstate-standalone:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-standalone/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-standalone/%
     - helm dependencies build stable/stackstate-standalone
+    - mkdir -p stable/stackstate-standalone/build; helm package --destination stable/stackstate-standalone/build stable/stackstate-standalone
   stage: build
 build_stackstate-values:
   artifacts:
     paths:
       - stable/stackstate-values/charts/
+      - stable/stackstate-values/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -775,11 +836,13 @@ build_stackstate-values:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/stackstate-values/Chart.yaml  | xargs -I % helm dependencies build stable/stackstate-values/%
     - helm dependencies build stable/stackstate-values
+    - mkdir -p stable/stackstate-values/build; helm package --destination stable/stackstate-values/build stable/stackstate-values
   stage: build
 build_suse-observability:
   artifacts:
     paths:
       - stable/suse-observability/charts/
+      - stable/suse-observability/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -800,11 +863,13 @@ build_suse-observability:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability/Chart.yaml  | xargs -I % helm dependencies build stable/suse-observability/%
     - helm dependencies build stable/suse-observability
+    - mkdir -p stable/suse-observability/build; helm package --destination stable/suse-observability/build stable/suse-observability
   stage: build
 build_suse-observability-agent:
   artifacts:
     paths:
       - stable/suse-observability-agent/charts/
+      - stable/suse-observability-agent/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -825,11 +890,13 @@ build_suse-observability-agent:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability-agent/Chart.yaml  | xargs -I % helm dependencies build stable/suse-observability-agent/%
     - helm dependencies build stable/suse-observability-agent
+    - mkdir -p stable/suse-observability-agent/build; helm package --destination stable/suse-observability-agent/build stable/suse-observability-agent
   stage: build
 build_suse-observability-values:
   artifacts:
     paths:
       - stable/suse-observability-values/charts/
+      - stable/suse-observability-values/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -850,11 +917,13 @@ build_suse-observability-values:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability-values/Chart.yaml  | xargs -I % helm dependencies build stable/suse-observability-values/%
     - helm dependencies build stable/suse-observability-values
+    - mkdir -p stable/suse-observability-values/build; helm package --destination stable/suse-observability-values/build stable/suse-observability-values
   stage: build
 build_tenantmanager:
   artifacts:
     paths:
       - stable/tenantmanager/charts/
+      - stable/tenantmanager/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -875,11 +944,13 @@ build_tenantmanager:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/tenantmanager/Chart.yaml  | xargs -I % helm dependencies build stable/tenantmanager/%
     - helm dependencies build stable/tenantmanager
+    - mkdir -p stable/tenantmanager/build; helm package --destination stable/tenantmanager/build stable/tenantmanager
   stage: build
 build_trafficmirror:
   artifacts:
     paths:
       - stable/trafficmirror/charts/
+      - stable/trafficmirror/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -900,11 +971,13 @@ build_trafficmirror:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/trafficmirror/Chart.yaml  | xargs -I % helm dependencies build stable/trafficmirror/%
     - helm dependencies build stable/trafficmirror
+    - mkdir -p stable/trafficmirror/build; helm package --destination stable/trafficmirror/build stable/trafficmirror
   stage: build
 build_victoria-metrics-single:
   artifacts:
     paths:
       - stable/victoria-metrics-single/charts/
+      - stable/victoria-metrics-single/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -925,6 +998,7 @@ build_victoria-metrics-single:
   script:
     - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/victoria-metrics-single/Chart.yaml  | xargs -I % helm dependencies build stable/victoria-metrics-single/%
     - helm dependencies build stable/victoria-metrics-single
+    - mkdir -p stable/victoria-metrics-single/build; helm package --destination stable/victoria-metrics-single/build stable/victoria-metrics-single
   stage: build
 check_artifactory-cleaner_version:
   before_script:
