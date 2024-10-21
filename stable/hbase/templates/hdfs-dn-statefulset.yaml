@@ -146,14 +146,14 @@ spec:
           defaultMode: 0755
 {{- if .Values.hdfs.datanode.persistence.enabled }}
   volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes: {{ .Values.hdfs.datanode.persistence.accessModes }}
-      resources:
-        requests:
-          storage: {{ .Values.hdfs.datanode.persistence.size }}
-      {{ include "common.storage.class" ( dict "persistence" .Values.hdfs.datanode.persistence "global" .Values.global) | nindent 6 }}
+    - metadata:
+        name: data
+      spec:
+        accessModes: {{ .Values.hdfs.datanode.persistence.accessModes }}
+        resources:
+          requests:
+            storage: {{ .Values.hdfs.datanode.persistence.size }}
+        {{ include "common.storage.class" ( dict "persistence" .Values.hdfs.datanode.persistence "global" .Values.global) | nindent 8 }}
 {{- end }}
 {{- end -}}
 

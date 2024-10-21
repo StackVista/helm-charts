@@ -173,11 +173,7 @@ spec:
             - name: FORCE_DELETE
               value: "REPLACE_ME_FORCE_DELETE_REPLACE_ME"
             - name: ZOOKEEPER_QUORUM
-              {{- if eq .Values.hbase.deployment.mode "Distributed" }}
-              value: suse-observability-zookeeper-headless:2181
-              {{- else }}
-              value: "suse-observability-hbase-stackgraph:2182"
-              {{- end }}
+              value: {{ include "stackgraph.zookeeper.endpoint" . }}
           {{- with .Values.stackstate.components.backup.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
@@ -297,7 +293,7 @@ spec:
             - sh
             - -c
             - |
-              /entrypoint -c {{- if .Values.backup.enabled -}}{{ include "stackstate.minio.endpoint" . }},{{- end -}}{{- if eq .Values.hbase.deployment.mode "Distributed" }}{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn-headful:9000{{- else -}}{{- .Release.Name }}-hbase-stackgraph:2182{{- end }} -t 300
+              /entrypoint -c {{- if .Values.backup.enabled -}}{{ include "stackstate.minio.endpoint" . }},{{- end -}}{{ include "stackgraph.hbase.waitfor" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
           imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
       containers:
@@ -324,11 +320,7 @@ spec:
             - name: HADOOP_USER_NAME
               value: nobody
             - name: ZOOKEEPER_QUORUM
-              {{- if eq .Values.hbase.deployment.mode "Distributed" }}
-              value: suse-observability-zookeeper-headless:2181
-              {{- else }}
-              value: "suse-observability-hbase-stackgraph:2182"
-              {{- end }}
+              value: {{ include "stackgraph.zookeeper.endpoint" . }}
               {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets | nindent 12}}
             - name: BACKUP_FILE
               value: "REPLACE_ME_BACKUP_FILE_REPLACE_ME"

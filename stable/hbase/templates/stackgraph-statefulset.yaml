@@ -145,7 +145,7 @@ spec:
         resources:
           requests:
             storage: {{ .Values.stackgraph.persistence.size }}
-      {{ include "common.storage.class" ( dict "persistence" .Values.stackgraph.persistence "global" .Values.global) | nindent 6 }}
+      {{ include "common.storage.class" ( dict "persistence" .Values.stackgraph.persistence "global" .Values.global) | nindent 8 }}
 {{- end }}
 {{- end -}}
 

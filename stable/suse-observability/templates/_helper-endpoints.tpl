@@ -117,6 +117,18 @@ Logic to determine otel collector endpoint.
 {{- end -}}
 
 {{/*
+Comma-separated list of the endpoints that need to be up to consider hdfs running
+*/}}
+{{ define "stackgraph.hbase.waitfor" -}}
+{{- if eq .Values.hbase.deployment.mode "Distributed" -}}
+{{- include "stackstate.zookeeper.endpoint" . -}},
+{{- .Release.Name }}-hbase-hdfs-nn-headful:9000
+{{- else -}}
+{{- .Release.Name }}-hbase-stackgraph:2182
+{{- end -}}
+{{- end -}}
+
+{{/*
 Comma-separated list of the endpoints that need to be up and running before the initializer can be started.
 */}}
 {{ define "stackstate.initializer.prerequisites" -}}
@@ -124,12 +136,7 @@ Comma-separated list of the endpoints that need to be up and running before the 
 {{- include "stackstate.clickhouse.endpoint" . -}},
 {{- end -}}
 {{- include "stackstate.kafka.endpoint" . -}},
-{{- if eq .Values.hbase.deployment.mode "Distributed" -}}
-{{- include "stackstate.zookeeper.endpoint" . -}},
-{{- .Release.Name }}-hbase-hdfs-nn-headful:9000
-{{- else -}}
-{{- .Release.Name }}-hbase-stackgraph:2182,
-{{- end -}}
+{{- include "stackgraph.hbase.waitfor" . -}}
 {{- end -}}
 
 {{/*
@@ -141,4 +148,15 @@ Logic to determine Kafka endpoint.
 {{- else -}}
 http://{{ template "common.fullname.short" . }}-vmagent
 {{- end -}}
+{{- end -}}
+
+{{/*
+Logic to determine Zookeeper endpoint for stackgraph.
+*/}}
+{{- define "stackgraph.zookeeper.endpoint" -}}
+{{- if eq .Values.hbase.deployment.mode "Distributed" }}
+{{ include "stackstate.zookeeper.endpoint" . | quote }}
+{{- else }}
+{{- .Release.Name }}-hbase-stackgraph:2182
+{{- end }}
 {{- end -}}

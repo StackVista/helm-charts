@@ -135,15 +135,15 @@ spec:
           configMap:
             name: {{ template "common.fullname.short" . }}-vmagent
   volumeClaimTemplates:
-  - metadata:
-      name: tmpdata
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: {{ .Values.stackstate.components.vmagent.persistence.size | quote }}
-      {{ include "common.storage.class" ( dict "persistence" .Values.stackstate.components.vmagent.persistence "global" .Values.global) | nindent 6 }}
+    - metadata:
+        name: tmpdata
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.stackstate.components.vmagent.persistence.size | quote }}
+        {{ include "common.storage.class" ( dict "persistence" .Values.stackstate.components.vmagent.persistence "global" .Values.global) | nindent 8 }}
 {{- end }}
 
 

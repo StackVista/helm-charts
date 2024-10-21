@@ -5,7 +5,7 @@ command:
   - sh
   - -c
   - |
-    /entrypoint -c {{ include "stackstate.minio.endpoint" . }},{{- if eq .Values.hbase.deployment.mode "Distributed" }}{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn-headful:9000{{- else -}}{{- .Release.Name }}-hbase-stackgraph:2182{{- end -}},{{ template "common.fullname.short" . }}-{{- if .Values.stackstate.experimental.server.split }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
+    /entrypoint -c {{ include "stackstate.minio.endpoint" . }},{{ include "stackgraph.hbase.waitfor" . }},{{ template "common.fullname.short" . }}-{{- if .Values.stackstate.experimental.server.split }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
 imagePullPolicy: Always
 {{- end }}
@@ -19,11 +19,7 @@ command:
 env:
   {{- include "stackstate.backup.envvars" . | nindent 2 }}
   - name: ZOOKEEPER_QUORUM
-    {{- if eq .Values.hbase.deployment.mode "Distributed" }}
-    value: suse-observability-zookeeper-headless:2181
-    {{- else }}
-    value: "suse-observability-hbase-stackgraph:2182"
-    {{- end }}
+    value: {{ include "stackgraph.zookeeper.endpoint" . }}
 {{- with .Values.stackstate.components.backup.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
@@ -92,7 +88,7 @@ command:
   - sh
   - -c
   - |
-    /entrypoint -c {{- if .Values.backup.enabled -}}{{ include "stackstate.minio.endpoint" . }},{{- end -}}{{- if eq .Values.hbase.deployment.mode "Distributed" }}{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn-headful:9000{{- else -}}{{- .Release.Name }}-hbase-stackgraph:2182{{- end -}},{{ template "common.fullname.short" . }}-{{- if .Values.stackstate.experimental.server.split }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
+    /entrypoint -c {{- if .Values.backup.enabled -}}{{ include "stackstate.minio.endpoint" . }},{{- end -}}{{ include "stackgraph.hbase.waitfor" . }},{{ template "common.fullname.short" . }}-{{- if .Values.stackstate.experimental.server.split }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
 imagePullPolicy: Always
 {{- end }}
@@ -121,11 +117,7 @@ env:
   - name: HADOOP_USER_NAME
     value: nobody
   - name: ZOOKEEPER_QUORUM
-    {{- if eq .Values.hbase.deployment.mode "Distributed" }}
-    value: suse-observability-zookeeper-headless:2181
-    {{- else }}
-    value: "suse-observability-hbase-stackgraph:2182"
-    {{- end }}
+    value: {{ include "stackgraph.zookeeper.endpoint" . }}
   {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- with .Values.stackstate.components.configurationBackup.resources }}
 resources:

@@ -5,7 +5,7 @@ command:
 - sh
 - -c
 - |
-  /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn-headful:9000,{{ template "common.fullname.short" . }}-initializer:1618 -t 300
+  /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackgraph.hbase.waitfor" . }},{{ template "common.fullname.short" . }}-initializer:1618 -t 300
 {{- else }}
 command:
   - sh
@@ -42,11 +42,7 @@ env:
       name: {{ template "common.fullname.short" . }}-license
       key: sts-license-key
 - name: ZOOKEEPER_QUORUM
-{{- if eq .Values.hbase.deployment.mode "Distributed" }}
-  value: {{ include "stackstate.zookeeper.endpoint" . | quote }}
-{{- else }}
-  value: "{{- .Release.Name }}-hbase-stackgraph:2182"
-{{- end }}
+  value: {{ include "stackgraph.zookeeper.endpoint" . }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.notification.envsFromExistingSecrets }}
 image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.notification.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
