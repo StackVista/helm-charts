@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-CRONJOB_NAME=$(kubectl get cronjob -l app.kubernetes.io/component=backup-settings -l app.kubernetes.io/name=stackstate-k8s -o name)
+CRONJOB_NAME=$(kubectl get cronjob -l app.kubernetes.io/component=backup-settings,app.kubernetes.io/name=stackstate-k8s -o name)
 JOB_NAME="stackstate-backup-conf-manual-$(date +%Y%m%dt%H%M%S)"
 
 kubectl create job --from="${CRONJOB_NAME}" "${JOB_NAME}"
