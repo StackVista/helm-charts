@@ -13,6 +13,7 @@ data:
 
 {{- if .Values.opentelemetry.enabled -}}
 {{- if lt (semver "3.13.1" | (semver .Capabilities.HelmVersion.Version).Compare) 0 -}}
+# See https://stackstate.atlassian.net/browse/STAC-21869 for more context
 {{- fail "Helm version should at least be 3.13.1 to support opentelemetry. Upgrade helm or disable opentelemetry through opentelementry.enabled." -}}
 {{- end -}}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
