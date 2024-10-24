@@ -155,7 +155,8 @@ Change the values according to the need of the environment in ``victoria-metrics
 | backup.overrideS3Endpoint | string | `"http://suse-observability-minio:9000"` | Override location of S3 endpoints, it should point to MinIO service. **Do not change this value! It must base on 'minio.fullnameOverride'** |
 | backup.s3Prefix | string | `nil` | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. |
 | backup.scheduled.schedule | string | `"25 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
-| backup.setupCron.image.repository | string | `"quay.io/stackstate/container-tools"` | Repository containing busybox image, it is used to prepare th cronjob (create a crontab file). |
+| backup.setupCron.image.registry | string | `"quay.io"` |  |
+| backup.setupCron.image.repository | string | `"stackstate/container-tools"` | Repository containing busybox image, it is used to prepare th cronjob (create a crontab file). |
 | backup.setupCron.image.tag | string | `"1.4.1"` | Tag of the image for the busybox |
 | backup.setupCron.resources.limits.cpu | string | `"20m"` |  |
 | backup.setupCron.resources.limits.memory | string | `"64Mi"` |  |
@@ -163,7 +164,8 @@ Change the values according to the need of the environment in ``victoria-metrics
 | backup.setupCron.resources.requests.memory | string | `"64Mi"` |  |
 | backup.supercronic.metrics.interval | string | `"10m"` |  |
 | backup.supercronic.metrics.port | int | `9746` |  |
-| backup.vmbackup.image.repository | string | `"quay.io/stackstate/vmbackup"` | Repository containing the image for the Victoria Metrics backup |
+| backup.vmbackup.image.registry | string | `"quay.io"` |  |
+| backup.vmbackup.image.repository | string | `"stackstate/vmbackup"` | Repository containing the image for the Victoria Metrics backup |
 | backup.vmbackup.image.tag | string | `"v1.93.7-b11ba275"` | Tag of the image for the Victoria Metrics backup |
 | backup.vmbackup.resources.limits.cpu | string | `"100m"` |  |
 | backup.vmbackup.resources.limits.memory | string | `"512Mi"` |  |
@@ -190,6 +192,7 @@ Change the values according to the need of the environment in ``victoria-metrics
 | server.extraVolumes | list | `[]` |  |
 | server.fullnameOverride | string | `nil` | Overrides the full name of server component |
 | server.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
+| server.image.registry | string | `"quay.io"` |  |
 | server.image.repository | string | `"victoriametrics/victoria-metrics"` | Image repository |
 | server.image.tag | string | `"v1.87.1"` | Image tag |
 | server.ingress.annotations | object | `{}` | Ingress annotations |

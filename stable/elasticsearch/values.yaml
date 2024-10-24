@@ -282,8 +282,9 @@ prometheus-elasticsearch-exporter:
   # prometheus-elasticsearch-exporter.enabled -- Enable to expose prometheus metrics
   enabled: false
   image:
+    registry: quay.io
     # prometheus-elasticsearch-exporter.image.repository -- Elastichsearch Prometheus exporter image repository
-    repository: quay.io/stackstate/elasticsearch-exporter
+    repository: stackstate/elasticsearch-exporter
     # prometheus-elasticsearch-exporter.image.tag -- Elastichsearch Prometheus exporter image tag
     tag: v1.7.0-03d6f56d
   servicemonitor:

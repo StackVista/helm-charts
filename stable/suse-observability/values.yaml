@@ -1533,6 +1533,7 @@ elasticsearch:
   volumeClaimTemplate:
     accessModes:
       - "ReadWriteOnce"
+    storageClassName: "{{ .Values.global.storageClass }}"
     resources:
       requests:
         storage: 250Gi
@@ -2062,8 +2063,6 @@ victoria-metrics-0:
     # victoria-metrics-0.server.fullnameOverride -- Full name override
     fullnameOverride: suse-observability-victoria-metrics-0
     image:
-      # victoria-metrics-0.server.image.repository -- Victoriametrics repository
-      repository: quay.io/stackstate/victoria-metrics
       # 1.93.x is the LTS version
       tag: "v1.93.14-e17e24af"
     # victoria-metrics-0.server.podAnnotations -- Annotations for Victoria Metrics server pod
@@ -2151,8 +2150,6 @@ victoria-metrics-1:
     # victoria-metrics-1.server.fullnameOverride -- Full name override
     fullnameOverride: suse-observability-victoria-metrics-1
     image:
-      # victoria-metrics-1.server.image.repository -- Victoriametrics repository
-      repository: quay.io/stackstate/victoria-metrics
       # 1.93.x is the LTS version
       tag: "v1.93.14-e17e24af"
     # victoria-metrics-1.server.podAnnotations -- Annotations for Victoria Metrics server pod

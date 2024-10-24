@@ -37,6 +37,7 @@ server:
   # -- Server container name
   name: server
   image:
+    registry: quay.io
     # -- Image repository
     repository: victoriametrics/victoria-metrics
     # -- Image tag
@@ -685,8 +686,9 @@ backup:
   # Configuration of an init container to create resources (crontab file) used by a cronjob tool to create backups
   setupCron:
     image:
+      registry: quay.io
       # -- Repository containing busybox image, it is used to prepare th cronjob (create a crontab file).
-      repository: quay.io/stackstate/container-tools
+      repository: stackstate/container-tools
       # -- Tag of the image for the busybox
       tag: 1.4.1
     resources:
@@ -704,8 +706,9 @@ backup:
       interval: 10m
   vmbackup:
     image:
+      registry: quay.io
       # -- Repository containing the image for the Victoria Metrics backup
-      repository: quay.io/stackstate/vmbackup
+      repository: stackstate/vmbackup
       # -- Tag of the image for the Victoria Metrics backup
       tag: v1.93.7-b11ba275
     resources:
