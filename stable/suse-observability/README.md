@@ -14,7 +14,7 @@ Current chart version is `2.1.0`
 | file://../elasticsearch/ | elasticsearch | 8.11.4-stackstate.3 |
 | file://../hbase/ | hbase | 0.2.44 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
-| file://../minio/ | minio | 8.0.10-stackstate.8 |
+| file://../minio/ | minio | 8.0.10-stackstate.9 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.8 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.8 |

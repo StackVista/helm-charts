@@ -158,9 +158,7 @@ spec:
         name: export-{{ $diskId }}
       spec:
         accessModes: [ {{ $accessMode | quote }} ]
-        {{- if $storageClass }}
-        storageClassName: {{ $storageClass }}
-        {{- end }}
+        {{ include "common.storage.class" ( dict "persistence" .Values.persistence "global" .Values.global) | nindent 8 }}
         resources:
           requests:
             storage: {{ $psize }}
@@ -170,9 +168,7 @@ spec:
         name: export
       spec:
         accessModes: [ {{ $accessMode | quote }} ]
-        {{- if $storageClass }}
-        storageClassName: {{ $storageClass }}
-        {{- end }}
+        {{ include "common.storage.class" ( dict "persistence" .Values.persistence "global" .Values.global) | nindent 8 }}
         resources:
           requests:
             storage: {{ $psize }}

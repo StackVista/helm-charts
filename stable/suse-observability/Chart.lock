@@ -19,7 +19,7 @@ dependencies:
   version: 0.1.7
 - name: minio
   repository: file://../minio/
-  version: 8.0.10-stackstate.8
+  version: 8.0.10-stackstate.9
 - name: pull-secret
   repository: file://../pull-secret/
   version: 1.0.1
@@ -41,5 +41,5 @@ dependencies:
 - name: opentelemetry-collector
   repository: https://open-telemetry.github.io/opentelemetry-helm-charts
   version: 0.80.0
-digest: sha256:1f6fa99661fe2daf6a9c1277ad155dd3686326702e086b689fc1a72e611b790b
-generated: "2024-10-28T13:44:26.164165401Z"
+digest: sha256:479dc32f36bf29c019556fc2a083fea325bf6b9c7141195355c81bd4bf1f4b80
+generated: "2024-10-23T15:41:00.268409+02:00"
