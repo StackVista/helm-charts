@@ -252,10 +252,7 @@ spec:
       {{- with .Values.server.extraContainers }}
       {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- if .Values.imagePullSecrets }}
-      imagePullSecrets:
-       {{ toYaml .Values.imagePullSecrets | indent 2 }}
-    {{- end }}
+{{- include "victoria-metrics.image.pullSecret.name" (dict "images" (list .Values.server.image) "context" $) | indent 6 }}
     {{- if .Values.server.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}
@@ -314,13 +311,7 @@ spec:
         resources:
           requests:
             storage: "{{ .Values.server.persistentVolume.size }}"
-      {{- if .Values.server.persistentVolume.storageClass }}
-      {{- if (eq "-" .Values.server.persistentVolume.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: "{{ .Values.server.persistentVolume.storageClass }}"
-      {{- end }}
-      {{- end }}
+       {{ include "common.storage.class" ( dict "persistence" .Values.server.persistentVolume "global" .Values.global) | nindent 8 }}
       {{- with .Values.server.persistentVolume.matchLabels }}
         selector:
           matchLabels:

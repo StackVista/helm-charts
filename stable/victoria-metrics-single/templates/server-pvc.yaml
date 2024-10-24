@@ -21,7 +21,7 @@ spec:
     requests:
       storage: {{ .Values.server.persistentVolume.size | quote }}
 {{- if .Values.server.persistentVolume.storageClass }}
-  storageClassName: {{ .Values.server.persistentVolume.storageClass | quote }}
+  {{ include "common.storage.class" ( dict "persistence" .Values.server.persistentVolume "global" .Values.global) | nindent 2 }}
 {{- end }}
 {{- with .Values.server.persistentVolume.matchLabels }}
   selector:
