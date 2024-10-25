@@ -2525,7 +2525,7 @@ clickhouse:
   # clickhouse.sidecars -- sidecar containers to run backups
   sidecars:
     - name: backup
-      image: "{{ .Values.backup.image.registry }}/{{ .Values.backup.image.repository }}:{{ .Values.backup.image.tag }}"
+      image: "{{ default .Values.backup.image.registry .Values.global.imageRegistry }}/{{ .Values.backup.image.repository }}:{{ .Values.backup.image.tag }}"
       imagePullPolicy: IfNotPresent
       command:
         - /app/entrypoint.sh
