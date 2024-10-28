@@ -1533,7 +1533,6 @@ elasticsearch:
   volumeClaimTemplate:
     accessModes:
       - "ReadWriteOnce"
-    storageClassName: "{{ .Values.global.storageClass }}"
     resources:
       requests:
         storage: 250Gi
