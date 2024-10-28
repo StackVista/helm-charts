@@ -19,7 +19,7 @@ Current chart version is `2.1.0`
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.9 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.9 |
 | https://charts.bitnami.com/bitnami | clickhouse | 3.6.9 |
-| https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.141 |
+| https://helm-test.stackstate.io | anomaly-detection | 5.2.0-snapshot.142.stac-21825-stora.7f33e130 |
 | https://open-telemetry.github.io/opentelemetry-helm-charts | opentelemetry-collector | 0.80.0 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |

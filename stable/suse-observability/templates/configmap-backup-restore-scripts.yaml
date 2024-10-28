@@ -208,13 +208,7 @@ spec:
       {{- else}}
       storage: {{ .Values.backup.stackGraph.restore.tempData.size | default .Values.hbase.stackgraph.persistence.size }}
       {{- end }}
-{{- if .Values.backup.stackGraph.restore.tempData.storageClass }}
-  {{- if (eq "-" .Values.backup.stackGraph.restore.tempData.storageClass) }}
-  storageClassName: ""
-  {{- else }}
-  storageClassName: {{ .Values.backup.stackGraph.restore.tempData.storageClass | quote }}
-  {{- end }}
-{{- end }}
+{{ include "common.storage.class" ( dict "persistence" .Values.backup.stackGraph.restore.tempData "global" .Values.global) | nindent 2 }}
 {{- end -}}
 
 
