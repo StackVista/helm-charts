@@ -13,7 +13,7 @@ env:
 {{- if eq .Values.deployment.mode "Distributed" }}
   value: {{ include "hbase.zookeeper.endpoint" . | quote }}
 {{- else }}
-  value: {{ template "common.fullname.short" . }}-stackgraph
+  value: {{ template "common.fullname.short" . }}-stackgraph:2182
 {{- end }}
 
 {{- with .Values.console.resources }}
