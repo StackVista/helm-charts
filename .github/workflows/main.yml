@@ -1,0 +1,20 @@
+name: Main
+
+on:
+  push:
+    tags:
+      - "suse-observability/*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Create backup scripts zip file
+        run: |
+          tar czf backup-scripts-${GITHUB_REF_NAME#suse-observability/}.tar.gz -C stable/suse-observability/restore *.sh
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: backup-scripts-${GITHUB_REF_NAME#suse-observability/}.tar.gz
