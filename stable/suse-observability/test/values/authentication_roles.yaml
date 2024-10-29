@@ -3,8 +3,6 @@ stackstate:
     roles:
       # stackstate.authentication.roles.admin -- Extend the role names that have admin permissions (default: 'stackstate-admin')
       admin: ["extra-admin"]
-      # stackstate.authentication.roles.platformAdmin -- Extend the role names that have admin permissions (default: 'stackstate-platform-admin')
-      platformAdmin: ["extra-platform-admin"]
       # stackstate.authentication.roles.powerUser -- Extend the role names that have power user permissions (default: 'stackstate-power-user')
       powerUser: ["extra-power"]
       # stackstate.authentication.roles.guest -- Extend the role names that have guest permissions (default: 'stackstate-guest')

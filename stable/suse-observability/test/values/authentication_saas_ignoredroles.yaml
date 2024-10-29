@@ -2,7 +2,6 @@ stackstate:
   authentication:
     roles:
       admin: ["extra-admin"]
-      platformAdmin: ["extra-platform-admin"]
       guest: ["guest1"]
       powerUser: ["extra-power-user"]
       custom: {}

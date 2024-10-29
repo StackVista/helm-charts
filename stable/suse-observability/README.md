@@ -440,19 +440,17 @@ stackstate/stackstate
 | pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |
 | pull-secret.fullNameOverride | string | `""` | Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart. |
 | scc.enabled | bool | `false` | Create `SecurityContextConstraints` resource to manage Openshift security constraints for Stackstate. Has to be enabled when installing to Openshift >= 4.12 The resource is deployed as a Helm pre-install hook to avoid any warning for the first deployment. Because `helm uninstall` does not consider Helm hooks, the resource must be manually deleted after the Helm release is removed. |
-| stackstate.admin.authentication.password | string | `nil` | Password used for default platform "admin" api's (low-level tools) of the various services, username: platformadmin |
-| stackstate.authentication | object | `{"adminPassword":null,"file":{},"keycloak":{},"ldap":{},"oidc":{},"roles":{"admin":[],"custom":{},"guest":[],"k8sTroubleshooter":[],"platformAdmin":[],"powerUser":[]},"serviceToken":{"bootstrap":{"roles":[],"token":"","ttl":"24h"}},"sessionLifetime":"7d"}` | Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error. |
+| stackstate.authentication | object | `{"adminPassword":null,"file":{},"keycloak":{},"ldap":{},"oidc":{},"roles":{"admin":[],"custom":{},"guest":[],"k8sTroubleshooter":[],"powerUser":[]},"serviceToken":{"bootstrap":{"roles":[],"token":"","ttl":"24h"}},"sessionLifetime":"7d"}` | Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error. |
 | stackstate.authentication.adminPassword | string | `nil` | Password for the 'admin' user that StackState creates by default |
 | stackstate.authentication.file | object | `{}` | Configure users, their passwords and roles from (config) file |
 | stackstate.authentication.keycloak | object | `{}` | Use Keycloak as authentication provider. See [Configuring Keycloak](#configuring-keycloak). |
 | stackstate.authentication.ldap | object | `{}` | LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap). |
 | stackstate.authentication.oidc | object | `{}` | Use an OpenId Connect provider for authentication. See [Configuring OpenId Connect](#configuring-openid-connect). |
-| stackstate.authentication.roles | object | `{"admin":[],"custom":{},"guest":[],"k8sTroubleshooter":[],"platformAdmin":[],"powerUser":[]}` | Extend the default role names in StackState |
+| stackstate.authentication.roles | object | `{"admin":[],"custom":{},"guest":[],"k8sTroubleshooter":[],"powerUser":[]}` | Extend the default role names in StackState |
 | stackstate.authentication.roles.admin | list | `[]` | Extend the role names that have admin permissions (default: 'stackstate-admin') |
 | stackstate.authentication.roles.custom | object | `{}` | Extend the authorization with custom roles {roleName: {systemPermissions: [], viewPermissions: [], topologyScope: ""}} |
 | stackstate.authentication.roles.guest | list | `[]` | Extend the role names that have guest permissions (default: 'stackstate-guest') |
 | stackstate.authentication.roles.k8sTroubleshooter | list | `[]` | Extend the role names that have troubleshooter permissions (default: 'stackstate-k8s-troubleshooter') |
-| stackstate.authentication.roles.platformAdmin | list | `[]` | Extend the role names that have platform admin permissions (default: 'stackstate-platform-admin') |
 | stackstate.authentication.roles.powerUser | list | `[]` | Extend the role names that have power user permissions (default: 'stackstate-power-user') |
 | stackstate.authentication.serviceToken.bootstrap.roles | list | `[]` | The roles the service token assumes when it’s used for authentication |
 | stackstate.authentication.serviceToken.bootstrap.token | string | `""` | The service token to set as bootstrap token |
@@ -875,7 +873,6 @@ stackstate/stackstate
 | stackstate.components.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
 | stackstate.components.wait.image.tag | string | `"1.0.10-025450d9"` | Container image tag for wait containers. |
-| stackstate.deployment | object | `{"edition":"Prime","mode":"SelfHosted"}` | Deployment settings for StackState |
 | stackstate.deployment.edition | string | `"Prime"` | StackState edition, one of 'Community' or 'Prime' |
 | stackstate.deployment.mode | string | `"SelfHosted"` | Deployment mode of StackState, possible values are 'Saas' and 'SelfHosted' |
 | stackstate.experimental.enableVMAgent | bool | `true` |  |
@@ -884,7 +881,7 @@ stackstate/stackstate
 | stackstate.experimental.storeTransactionLogsToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by transaction logs. |
 | stackstate.experimental.storeTransactionLogsToPVC.volumeSize | string | `"600Mi"` | The size of the persistent volume for the transaction logs. |
 | stackstate.experimental.traces | boolean | `true` | Enable new traces UI and API |
-| stackstate.instanceApi.authentication | object | `{}` | Custom authentication settings for the `instance` API, by default the `stackstate.authentication` authentication settings are used. |
+| stackstate.instanceDebugApi.enabled | bool | `false` |  |
 | stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |
 | stackstate.java.trustStoreBase64Encoded | string | `nil` | Base64 encoded Java TrustStore (cacerts) file to use. Ignored if stackstate.java.trustStore is set. |
@@ -907,6 +904,7 @@ stackstate/stackstate
 | stackstate.stackpacks.source | string | `"docker-image"` | Source of the stackpacks. Can be either 'docker-image' or 's3-bucket'. |
 | stackstate.stackpacks.updateInterval | string | `"5 minutes"` |  |
 | stackstate.stackpacks.upgradeOnStartup | list | `[]` | Specify a list of stackpacks that will, on startup only, be upgraded to the latest version available |
+| stackstate.topology.retentionHours | integer | `nil` | Number of hours topology will be retained. |
 | victoria-metrics-0.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the MinIO bucket where Victoria Metrics backups are stored. |
 | victoria-metrics-0.backup.enabled | bool | `false` | Enable scheduled backups of Victoria Metrics. It requires to be enabled MinIO 'backup.enabled'. |
 | victoria-metrics-0.backup.s3Prefix | string | `"victoria-metrics-0"` |  |

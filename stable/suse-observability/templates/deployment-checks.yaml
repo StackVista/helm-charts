@@ -26,7 +26,6 @@ env:
 {{- $serviceConfig := dict "ServiceName" "checks" "ServiceConfig" .Values.stackstate.components.checks }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.checks.image.tag }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
-{{- include "stackstate.authentication.envvars" . }}
 {{- include "stackstate.baseurls.envvars" . }}
 {{- include "stackstate.metricstore.envvar" . }}
 - name: ELASTICSEARCH_URI

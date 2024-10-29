@@ -26,7 +26,6 @@ env:
 {{- $serviceConfig := dict "ServiceName" "slicing" "ServiceConfig" .Values.stackstate.components.slicing }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.slicing.image.tag }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
-{{- include "stackstate.authentication.envvars" . }}
 {{- include "stackstate.baseurls.envvars" . }}
 {{- include "stackstate.deployment.optional.apiKey.env" . }}
 - name: ELASTICSEARCH_URI

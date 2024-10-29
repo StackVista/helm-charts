@@ -5,7 +5,6 @@ Shared settings in configmap for server and api
 {{ $files := .Files }}
 
 {{- if and .Values.stackstate.authentication (eq .Values.stackstate.deployment.mode "SelfHosted") }}
-stackstate.authorization.staticSubjects.stackstate-platform-admin: {{- $files.Get "sts-authz-permissions/stackstate-platform-admin.json"}}
 stackstate.authorization.staticSubjects.stackstate-admin: {{- $files.Get "sts-authz-permissions/stackstate-admin.json" }}
 stackstate.authorization.staticSubjects.stackstate-power-user: {{- $files.Get "sts-authz-permissions/stackstate-power-user.json"}}
 stackstate.authorization.staticSubjects.stackstate-guest: {{- $files.Get "sts-authz-permissions/stackstate-guest.json"}}
@@ -15,10 +14,6 @@ stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter: {{- $file
 {{/* In SelfHosted mode, append any roles to the stackstate.authorization block, so that we keep the defaults delivered with stackstate. */}}
 {{- range .Values.stackstate.authentication.roles.admin }}
 stackstate.authorization.staticSubjects.{{ . | quote }}: {{- $files.Get "sts-authz-permissions/stackstate-admin.json" }}
-{{- end }}
-
-{{- range .Values.stackstate.authentication.roles.platformAdmin }}
-stackstate.authorization.staticSubjects.{{ . | quote }}: {{- $files.Get "sts-authz-permissions/stackstate-platform-admin.json" }}
 {{- end }}
 
 {{- range .Values.stackstate.authentication.roles.powerUser }}
@@ -48,13 +43,6 @@ stackstate.api.authorization.staticSubjects.stackstate-aad: { systemPermissions:
 {{- end }}
 
 {{ include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.authentication "authnPrefix" "stackstate.api.authentication" "authzPrefix" "stackstate.api.authorization" "global" .) }}
-{{- end }}
-
-{{- if gt (len .Values.stackstate.admin.authentication) 1 }}
-{{ include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.admin.authentication "authnPrefix" "stackstate.adminApi.authentication" "authzPrefix" "stackstate.adminApi.authorization" "global" .) }}
-{{- end }}
-{{- if .Values.stackstate.instanceApi.authentication }}
-{{ include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.instanceApi.authentication "authnPrefix" "stackstate.instanceApi.authentication" "authzPrefix" "stackstate.instanceApi.authorization" "global" .) }}
 {{- end }}
 
 stackstate.stackPacks {
