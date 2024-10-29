@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: "7.0.0-snapshot.20241023133226-master-a9f30a7"
-version: 2.1.0
+version: 2.1.1
 description: Helm chart for SUSE Observability
 keywords:
   - kubernetes
@@ -28,7 +28,7 @@ dependencies:
   - name: hbase
     condition: hbase.enabled
     repository: file://../hbase/
-    version: "0.2.44"
+    version: "0.2.45"
   - name: kafka
     condition: kafka.enabled
     # Bitnami official Helm repository stopped serving the old versions of the charts. This is the workaround https://github.com/bitnami/charts/issues/10539
