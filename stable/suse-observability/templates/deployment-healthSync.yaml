@@ -26,7 +26,6 @@ env:
 {{- $serviceConfig := dict "ServiceName" "health-sync" "ServiceConfig" .Values.stackstate.components.healthSync }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.healthSync.image.tag }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
-{{- include "stackstate.authentication.envvars" . }}
 {{- include "stackstate.baseurls.envvars" . }}
 {{- include "stackstate.metricstore.envvar" . }}
 - name: CONFIG_FORCE_stackstate_cacheStorage_backend

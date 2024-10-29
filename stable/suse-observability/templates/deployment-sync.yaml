@@ -26,7 +26,6 @@ env:
 {{- $serviceConfig := dict "ServiceName" "sync" "ServiceConfig" .Values.stackstate.components.sync }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.sync.image.tag }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
-{{- include "stackstate.authentication.envvars" . }}
 {{- include "stackstate.baseurls.envvars" . }}
 {{- include "stackstate.metricstore.envvar" . }}
 {{- include "stackstate.server.cpu.parallelism" .Values.stackstate.components.sync.resources.requests.cpu }}

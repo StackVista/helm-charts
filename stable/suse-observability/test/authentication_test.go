@@ -123,7 +123,6 @@ func TestAuthenticationKeycloakInvalid(t *testing.T) {
 
 const expectedFileAuthConfig = `stackstate.api.authentication.authServer.stackstateAuthServer.logins = [
   { username = "administrator", password = "098f6bcd4621d373cade4e832627b4f6", roles = ["stackstate-admin"] },
-  { username = "platformadmin", password = "098f6bcd4621d373cade4e832627b4f6", roles = ["stackstate-platform-admin"] },
   { username = "guest1", password = "098f6bcd4621d373cade4e832627b4f6", roles = ["stackstate-guest"] },
   { username = "guest2", password = "098f6bcd4621d373cade4e832627b4f6", roles = ["stackstate-guest"] },
   { username = "maintainer", password = "098f6bcd4621d373cade4e832627b4f6", roles = ["stackstate-power-user","stackstate-guest"] },
@@ -170,7 +169,6 @@ func TestAuthenticationFallbackInvalid(t *testing.T) {
 }
 
 const expectedRolesAuthConfig = `stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["extra-admin","stackstate-aad"]
-stackstate.authorization.platformAdminGroups = ${stackstate.authorization.platformAdminGroups} ["extra-platform-admin"]
 stackstate.authorization.powerUserGroups = ${stackstate.authorization.powerUserGroups} ["extra-power"]
 stackstate.authorization.guestGroups = ${stackstate.authorization.guestGroups} ["guest1","guest2"]`
 
@@ -179,7 +177,6 @@ func TestAuthenticationRolesSplit(t *testing.T) {
 		// check that the roles are added
 		require.NotContains(t, stringData, "stackstate-aad")
 		require.Contains(t, stringData, "extra-admin")
-		require.Contains(t, stringData, "extra-platform-admin")
 		require.Contains(t, stringData, "extra-power")
 		require.Contains(t, stringData, "guest1")
 		require.Contains(t, stringData, "guest2")
@@ -217,7 +214,6 @@ func TestIgnoredAuthenticationRolesSaaS(t *testing.T) {
 		require.NotContains(t, stringData, "stackstate-aad")
 		require.NotContains(t, stringData, "extra-admin")
 		require.NotContains(t, stringData, "guest1")
-		require.NotContains(t, stringData, "extra-platform-admin")
 		require.NotContains(t, stringData, "extra-power-user")
 	})
 }
@@ -235,7 +231,6 @@ func TestAuthenticationRoles(t *testing.T) {
 		// check that the roles are added
 		require.NotContains(t, stringData, "stackstate-aad")
 		require.Contains(t, stringData, "extra-admin")
-		require.Contains(t, stringData, "extra-platform-admin")
 		require.Contains(t, stringData, "extra-power")
 		require.Contains(t, stringData, "guest1")
 		require.Contains(t, stringData, "guest2")
@@ -245,7 +240,6 @@ func TestAuthenticationRoles(t *testing.T) {
 func TestAuthenticationRolesWithDots(t *testing.T) {
 	RunSecretsConfigTestF(t, "suse-observability-server", []string{"values/authentication_roles_dots.yaml", "values/split_disabled.yaml"}, func(stringData string) {
 		require.Contains(t, stringData, "stackstate.authorization.staticSubjects.\"extra.admin\"")
-		require.Contains(t, stringData, "stackstate.authorization.staticSubjects.\"extra.platform.admin\"")
 		require.Contains(t, stringData, "stackstate.authorization.staticSubjects.\"extra.power\"")
 		require.Contains(t, stringData, "stackstate.authorization.staticSubjects.\"guest.1\"")
 		require.Contains(t, stringData, "stackstate.authorization.staticSubjects.\"guest.2\"")

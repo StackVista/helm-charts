@@ -1398,8 +1398,6 @@ stackstate:
     roles:
       # stackstate.authentication.roles.admin -- Extend the role names that have admin permissions (default: 'stackstate-admin')
       admin: []
-      # stackstate.authentication.roles.platformAdmin -- Extend the role names that have platform admin permissions (default: 'stackstate-platform-admin')
-      platformAdmin: []
       # stackstate.authentication.roles.powerUser -- Extend the role names that have power user permissions (default: 'stackstate-power-user')
       powerUser: []
       # stackstate.authentication.roles.guest -- Extend the role names that have guest permissions (default: 'stackstate-guest')
@@ -1416,14 +1414,6 @@ stackstate:
         roles: []
         # stackstate.authentication.serviceToken.bootstrap.ttl -- The amount of time the service token is valid for
         ttl: 24h
-  admin:
-    authentication:
-      # stackstate.admin.authentication.password -- Password used for default platform "admin" api's (low-level tools) of the various services, username: platformadmin
-      password:
-  instanceApi:
-    # stackstate.instanceApi.authentication -- Custom authentication settings for the `instance` API, by default the `stackstate.authentication` authentication settings are used.
-    authentication: {}
-  # stackstate.deployment -- Deployment settings for StackState
   deployment:
     # stackstate.deployment.mode -- Deployment mode of StackState, possible values are 'Saas' and 'SelfHosted'
     mode: "SelfHosted"
@@ -1459,6 +1449,11 @@ stackstate:
       volumeSize: 600Mi
       # stackstate.experimental.storeTransactionLogsToPVC.storageClass -- (string) Storage class name of PersistentVolume used by transaction logs.
       storageClass:
+  topology:
+    # stackstate.topology.retentionHours -- (integer) Number of hours topology will be retained.
+    retentionHours:
+  instanceDebugApi:
+    enabled: false
   stackpacks:
     # stackstate.stackpacks.installed -- Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks)
     installed: []

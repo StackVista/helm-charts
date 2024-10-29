@@ -5,9 +5,6 @@ stackstate:
         - username: administrator
           passwordHash: 098f6bcd4621d373cade4e832627b4f6
           roles: [stackstate-admin]
-        - username: platformadmin
-          passwordMd5: 098f6bcd4621d373cade4e832627b4f6
-          roles: [stackstate-platform-admin]
         - username: guest1
           passwordHash: 098f6bcd4621d373cade4e832627b4f6
           roles: [stackstate-guest]

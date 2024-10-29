@@ -304,7 +304,6 @@ spec:
             - '/backup-restore-scripts/restore-configuration-backup.sh'
           env:
             {{- include "stackstate.backup.envvars" . | nindent 12 }}
-            {{- include "stackstate.authentication.envvars" .  | nindent 12 }}
             {{- include "stackstate.baseurls.envvars" .  | nindent 12 }}
             - name: LICENSE_KEY
               valueFrom:

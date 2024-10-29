@@ -101,7 +101,6 @@ command:
   - '/backup-restore-scripts/backup-configuration.sh'
 env:
   {{- include "stackstate.backup.envvars" . | nindent 2 }}
-  {{- include "stackstate.authentication.envvars" .  | nindent 2 }}
   {{- include "stackstate.baseurls.envvars" .  | nindent 2 }}
   - name: LICENSE_KEY
     valueFrom:

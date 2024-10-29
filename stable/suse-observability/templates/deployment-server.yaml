@@ -17,7 +17,6 @@ env:
 {{- $serviceConfig := dict "ServiceName" "server" "ServiceConfig" .Values.stackstate.components.server }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
-{{- include "stackstate.authentication.envvars" . }}
 {{- include "stackstate.baseurls.envvars" . }}
 {{- include "stackstate.metricstore.envvar" . }}
 {{ if .Values.stackstate.components.api.yaml.maxSizeLimit }}

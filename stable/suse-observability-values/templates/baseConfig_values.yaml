@@ -18,9 +18,6 @@ pull-secret:
 
 stackstate:
   baseUrl: {{ .Values.baseUrl | required "Please provide your SUSE Observability base URL in 'baseUrl'" | quote }}
-  admin:
-    authentication:
-      password: {{ template "sts.values.getOrGenerateAdminApiPassword" . }}
   authentication:
     adminPassword: {{ template "sts.values.getOrGenerateAdminPassword" . }}
   license:

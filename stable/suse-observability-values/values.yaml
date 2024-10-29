@@ -16,8 +16,6 @@ license:
 # baseUrl -- The base URL of the SUSE Observability instance.
 baseUrl: ""
 
-# adminApiPassword -- The password for the default 'admin' user used for authenticating with the SUSE Observability Admin API. If not provided a random password is generated. If the password is not a bcrypt hash, but provided in plaintext, the value will be bcrypt hashed in the output.
-adminApiPassword: ""
 # adminPassword -- The password for the default 'admin' user used for authenticating with the SUSE Observability UI. If not provided a random password is generated.  If the password is not a bcrypt hash, but provided in plaintext, the value will be bcrypt hashed in the output.
 adminPassword: ""
 baseConfig:

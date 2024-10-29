@@ -133,17 +133,6 @@ Router extra environment variables for ui pods inherited through `stackstate.com
 {{- end -}}
 
 {{/*
-Environment variables to enable authentication with safe defaults
-*/}}
-{{- define "stackstate.authentication.envvars" }}
-- name: CONFIG_FORCE_stackstate_api_authentication_authServer_stackstateAuthServer_defaultPlatformPassword
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" $ }}-common
-      key: platformAdminPassword
-{{- end -}}
-
-{{/*
 Environment variables containing the properly sanitized StackState Base URLs
 */}}
 {{- define "stackstate.baseurls.envvars" }}
