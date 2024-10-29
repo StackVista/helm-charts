@@ -100,9 +100,9 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
 - name: "JAVA_OPTS"
   value: "{{ $directMemParam }} {{ $xmxParam }} {{ $xmsParam }}{{ $otelJavaAgentOpt }}"
 {{- end }}
-{{- if .Values.stackstate.topology.retentionHours -}}
+{{- if .Values.stackstate.topology.retentionHours }}
 - name: "CONFIG_FORCE_stackgraph_retentionWindowMs"
-  value: {{ mul .Values.stackstate.topology.retentionHours 60 60 1000 | toString | quote }}
+  value: "{{ mul (.Values.stackstate.topology.retentionHours | int) (mul 60 (mul 60 1000)) }}"
 {{- end }}
 - name: "CONFIG_FORCE_stackstate_featureSwitches_instanceDebugApi"
   value: {{ .Values.stackstate.instanceDebugApi.enabled | toString | quote }}

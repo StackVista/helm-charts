@@ -55,8 +55,6 @@ ports:
   name: health
 - containerPort: 7070
   name: api
-- containerPort: 7071
-  name: admin
 - containerPort: 7080
   name: instance
 {{- if .Values.stackstate.components.all.metrics.enabled }}
