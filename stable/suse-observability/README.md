@@ -2,7 +2,7 @@
 
 Helm chart for SUSE Observability
 
-Current chart version is `2.0.3-pre.50`
+Current chart version is `2.1.2-pre.1`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -12,14 +12,14 @@ Current chart version is `2.0.3-pre.50`
 |------------|------|---------|
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.11.4-stackstate.3 |
-| file://../hbase/ | hbase | 0.2.44 |
+| file://../hbase/ | hbase | 0.2.45 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
-| file://../minio/ | minio | 8.0.10-stackstate.8 |
+| file://../minio/ | minio | 8.0.10-stackstate.9 |
 | file://../pull-secret/ | pull-secret | * |
-| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.8 |
-| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.8 |
+| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.9 |
+| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.9 |
 | https://charts.bitnami.com/bitnami | clickhouse | 3.6.9 |
-| https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.141 |
+| https://helm-test.stackstate.io | anomaly-detection | 5.2.0-snapshot.143 |
 | https://open-telemetry.github.io/opentelemetry-helm-charts | opentelemetry-collector | 0.80.0 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
@@ -160,7 +160,7 @@ stackstate/stackstate
 | clickhouse.resources.requests.memory | string | `"1Gi"` |  |
 | clickhouse.restore.enabled | bool | `false` | Enable ClickHouse restore functionality (if `backup.enabled` is set to `true`). |
 | clickhouse.shards | int | `1` | Number of ClickHouse shards to deploy |
-| clickhouse.sidecars | list | `[{"command":["/app/entrypoint.sh"],"env":[{"name":"BACKUP_CLICKHOUSE_ENABLED","valueFrom":{"configMapKeyRef":{"key":"backup_enabled","name":"suse-observability-clickhouse-backup"}}},{"name":"BACKUP_TABLES","value":"{{ .Values.backup.config.tables }}"},{"name":"CLICKHOUSE_REPLICA_ID","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"metadata.name"}}}],"image":"{{ .Values.backup.image.registry }}/{{ .Values.backup.image.repository }}:{{ .Values.backup.image.tag }}","imagePullPolicy":"IfNotPresent","name":"backup","ports":[{"containerPort":9746,"name":"supercronic"},{"containerPort":7171,"name":"backup-api"}],"resources":{"limits":{"cpu":"{{ .Values.backup.resources.limit.cpu }}","memory":"{{ .Values.backup.resources.limit.memory }}"},"requests":{"cpu":"{{ .Values.backup.resources.requests.cpu }}","memory":"{{ .Values.backup.resources.requests.memory }}"}},"securityContext":{"runAsUser":1001},"volumeMounts":[{"mountPath":"/bitnami/clickhouse","name":"data"},{"mountPath":"/bitnami/clickhouse/etc/conf.d/default","name":"config"},{"mountPath":"/bitnami/clickhouse/etc/conf.d/extra-configmap","name":"extra-config"},{"mountPath":"/bitnami/clickhouse/etc/users.d/users-extra-configmap","name":"users-extra-config"},{"mountPath":"/etc/clickhouse-backup.yaml","name":"clickhouse-backup-config","subPath":"config.yaml"},{"mountPath":"/app/entrypoint.sh","name":"clickhouse-backup-scripts","subPath":"entrypoint.sh"}]}]` | sidecar containers to run backups |
+| clickhouse.sidecars | list | `[{"command":["/app/entrypoint.sh"],"env":[{"name":"BACKUP_CLICKHOUSE_ENABLED","valueFrom":{"configMapKeyRef":{"key":"backup_enabled","name":"suse-observability-clickhouse-backup"}}},{"name":"BACKUP_TABLES","value":"{{ .Values.backup.config.tables }}"},{"name":"CLICKHOUSE_REPLICA_ID","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"metadata.name"}}}],"image":"{{ default .Values.backup.image.registry .Values.global.imageRegistry }}/{{ .Values.backup.image.repository }}:{{ .Values.backup.image.tag }}","imagePullPolicy":"IfNotPresent","name":"backup","ports":[{"containerPort":9746,"name":"supercronic"},{"containerPort":7171,"name":"backup-api"}],"resources":{"limits":{"cpu":"{{ .Values.backup.resources.limit.cpu }}","memory":"{{ .Values.backup.resources.limit.memory }}"},"requests":{"cpu":"{{ .Values.backup.resources.requests.cpu }}","memory":"{{ .Values.backup.resources.requests.memory }}"}},"securityContext":{"runAsUser":1001},"volumeMounts":[{"mountPath":"/bitnami/clickhouse","name":"data"},{"mountPath":"/bitnami/clickhouse/etc/conf.d/default","name":"config"},{"mountPath":"/bitnami/clickhouse/etc/conf.d/extra-configmap","name":"extra-config"},{"mountPath":"/bitnami/clickhouse/etc/users.d/users-extra-configmap","name":"users-extra-config"},{"mountPath":"/etc/clickhouse-backup.yaml","name":"clickhouse-backup-config","subPath":"config.yaml"},{"mountPath":"/app/entrypoint.sh","name":"clickhouse-backup-scripts","subPath":"entrypoint.sh"}]}]` | sidecar containers to run backups |
 | clickhouse.usersExtraOverrides | string | `"<clickhouse>\n  <users>\n    <stackstate>\n        <no_password></no_password>\n        <grants>\n            <query>GRANT ALL ON *.*</query>\n        </grants>\n    </stackstate>\n  </users>\n</clickhouse>\n"` | Users extra configuration overrides. |
 | clickhouse.volumePermissions.enabled | bool | `false` |  |
 | clickhouse.zookeeper.enabled | bool | `false` | Disable Zookeeper from the clickhouse chart **Don't change unless otherwise specified**. |
@@ -236,7 +236,7 @@ stackstate/stackstate
 | hbase.hdfs.secondarynamenode.resources.requests.cpu | string | `"50m"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.memory | string | `"1Gi"` |  |
-| hbase.stackgraph.version | string | `"7.7.7"` | The StackGraph server version, must be compatible with the StackState version |
+| hbase.stackgraph.version | string | `"7.8.0"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
 | hbase.tephra.resources.limits.cpu | string | `"500m"` |  |
 | hbase.tephra.resources.limits.ephemeral-storage | string | `"1Gi"` |  |

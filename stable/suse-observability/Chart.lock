@@ -1,16 +1,16 @@
 dependencies:
 - name: anomaly-detection
-  repository: https://helm.stackstate.io
-  version: 5.2.0-snapshot.141
+  repository: https://helm-test.stackstate.io
+  version: 5.2.0-snapshot.143
 - name: common
   repository: file://../common/
   version: 0.4.24
 - name: elasticsearch
   repository: file://../elasticsearch/
-  version: 8.11.4-stackstate.3
+  version: 8.11.4-stackstate.4
 - name: hbase
   repository: file://../hbase/
-  version: 0.2.44
+  version: 0.2.45
 - name: kafka
   repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
   version: 19.1.3
@@ -19,7 +19,7 @@ dependencies:
   version: 0.1.7
 - name: minio
   repository: file://../minio/
-  version: 8.0.10-stackstate.8
+  version: 8.0.10-stackstate.9
 - name: pull-secret
   repository: file://../pull-secret/
   version: 1.0.1
@@ -28,10 +28,10 @@ dependencies:
   version: 8.1.2
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.8
+  version: 0.8.53-stackstate.9
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.8
+  version: 0.8.53-stackstate.9
 - name: victoria-metrics-cluster
   repository: https://victoriametrics.github.io/helm-charts
   version: 0.11.20
@@ -41,5 +41,5 @@ dependencies:
 - name: opentelemetry-collector
   repository: https://open-telemetry.github.io/opentelemetry-helm-charts
   version: 0.80.0
-digest: sha256:1f6fa99661fe2daf6a9c1277ad155dd3686326702e086b689fc1a72e611b790b
-generated: "2024-10-28T13:44:26.164165401Z"
+digest: sha256:fd03b56242da9f22e0b3e14184a216a16371fca89ccadfd9e7d7229b58cdc1cb
+generated: "2024-10-29T13:59:55.244127199Z"

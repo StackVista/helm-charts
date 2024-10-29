@@ -5,11 +5,7 @@ Return the image registry
   {{- if ((.ServiceConfig).image).imageRegistry -}}
     {{- .ServiceConfig.image.imageRegistry -}}
   {{- else -}}
-    {{- if .Values.global }}
-      {{- .Values.global.imageRegistry | default .Values.stackstate.components.all.image.registry -}}
-    {{- else -}}
-      {{- .Values.stackstate.components.all.image.registry -}}
-    {{- end -}}
+  {{ include "common.image.registry" ( dict "image" .Values.stackstate.components.all.image "context" $) }}
   {{- end -}}
 {{- end -}}
 
@@ -17,77 +13,49 @@ Return the image registry
 Return the image registry for the kafka-topic-create container
 */}}
 {{- define "stackstate.kafkaTopicCreate.image.registry" -}}
-  {{- if .Values.global }}
-    {{- .Values.global.imageRegistry | default .Values.stackstate.components.kafkaTopicCreate.image.registry -}}
-  {{- else -}}
-    {{- .Values.stackstate.components.kafkaTopicCreate.image.registry -}}
-  {{- end -}}
+{{ include "common.image.registry" ( dict "image" .Values.stackstate.components.kafkaTopicCreate.image "context" $) }}
 {{- end -}}
 
 {{/*
 Return the image registry for the nginx-prometheus-operator container
 */}}
 {{- define "stackstate.nginxPrometheusExporter.image.registry" -}}
-  {{- if .Values.global }}
-    {{- .Values.global.imageRegistry | default .Values.stackstate.components.nginxPrometheusExporter.image.registry -}}
-  {{- else -}}
-    {{- .Values.stackstate.components.nginxPrometheusExporter.image.registry -}}
-  {{- end -}}
+{{ include "common.image.registry" ( dict "image" .Values.stackstate.components.nginxPrometheusExporter.image "context" $) }}
 {{- end -}}
 
 {{/*
 Return the image registry for the router container
 */}}
 {{- define "stackstate.router.image.registry" -}}
-  {{- if .Values.global }}
-    {{- .Values.global.imageRegistry | default .Values.stackstate.components.router.image.registry -}}
-  {{- else -}}
-    {{- .Values.stackstate.components.router.image.registry -}}
-  {{- end -}}
+{{ include "common.image.registry" ( dict "image" .Values.stackstate.components.router.image "context" $) }}
 {{- end -}}
 
 {{/*
 Return the image registry for the stackpacks containers
 */}}
 {{- define "stackstate.stackpacks.image.registry" -}}
-  {{- if .Values.global }}
-    {{- .Values.global.imageRegistry | default .Values.stackstate.stackpacks.image.registry -}}
-  {{- else -}}
-    {{- .Values.stackstate.stackpacks.image.registry -}}
-  {{- end -}}
+{{ include "common.image.registry" ( dict "image" .Values.stackstate.stackpacks.image "context" $) }}
 {{- end -}}
 
 {{/*
 Return the image registry for the container-tools containers
 */}}
 {{- define "stackstate.containerTools.image.registry" -}}
-  {{- if .Values.global }}
-    {{- .Values.global.imageRegistry | default .Values.stackstate.components.containerTools.image.registry -}}
-  {{- else -}}
-    {{- .Values.stackstate.components.containerTools.image.registry -}}
-  {{- end -}}
+{{ include "common.image.registry" ( dict "image" .Values.stackstate.components.containerTools.image "context" $) }}
 {{- end -}}
 
 {{/*
 Return the image registry for the wait containers
 */}}
 {{- define "stackstate.wait.image.registry" -}}
-  {{- if .Values.global }}
-    {{- .Values.global.imageRegistry | default .Values.stackstate.components.wait.image.registry -}}
-  {{- else -}}
-    {{- .Values.stackstate.components.wait.image.registry -}}
-  {{- end -}}
+{{ include "common.image.registry" ( dict "image" .Values.stackstate.components.wait.image "context" $) }}
 {{- end -}}
 
 {{/*
 Return the image registry for the vmrestore containers
 */}}
 {{- define "stackstate.vmrestore.image.registry" -}}
-  {{- if .Values.global }}
-    {{- .Values.global.imageRegistry | default (index .Values "victoria-metrics" "restore" "image" "registry") -}}
-  {{- else -}}
-    {{- index .Values "victoria-metrics" "restore" "image" "registry" -}}
-  {{- end -}}
+{{ include "common.image.registry" ( dict "image" (index .Values "victoria-metrics" "restore" "image") "context" $) }}
 {{- end -}}
 
 {{/*

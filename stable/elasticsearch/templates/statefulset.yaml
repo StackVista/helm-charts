@@ -92,7 +92,11 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
     spec:
-{{ toYaml .Values.volumeClaimTemplate | indent 6 }}
+
+{{- include "elasticsearch.tplvalue.render" ( dict "value" .Values.volumeClaimTemplate "context" $) | trim | nindent 6 }}
+  {{- if (.Values.global).storageClass }}
+      storageClassName: "{{ .Values.global.storageClass }}"
+  {{- end }}
   {{- end }}
   template:
     metadata:

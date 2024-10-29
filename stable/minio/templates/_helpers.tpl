@@ -173,8 +173,8 @@ Return the image registry for the container-tools containers
 */}}
 {{- define "minio.image.registry" -}}
 {{- $context := .context }}
-{{- if $context.global -}}
-    {{- $context.global.imageRegistry | default .image.registry -}}
+{{- if $context.Values.global -}}
+    {{- $context.Values.global.imageRegistry | default .image.registry -}}
   {{- else -}}
     {{- .image.registry -}}
   {{- end -}}

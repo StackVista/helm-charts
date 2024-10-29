@@ -1,10 +1,10 @@
 # minio
 
-![Version: 8.0.10-stackstate.8](https://img.shields.io/badge/Version-8.0.10--stackstate.8-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 8.0.10-stackstate.9](https://img.shields.io/badge/Version-8.0.10--stackstate.9-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 High Performance, Kubernetes Native Object Storage
 
-Current chart version is `8.0.10-stackstate.8`
+Current chart version is `8.0.10-stackstate.9`
 
 **Homepage:** <https://min.io>
 
@@ -14,6 +14,12 @@ Current chart version is `8.0.10-stackstate.8`
 | ---- | ------ | --- |
 | MinIO, Inc | <dev@minio.io> |  |
 | Stackstate Ops Team | <ops@stackstate.com> |  |
+
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| file://../common/ | common | * |
 
 ## Values
 
@@ -53,6 +59,7 @@ Current chart version is `8.0.10-stackstate.8`
 | gcsgateway.projectId | string | `""` |  |
 | gcsgateway.replicas | int | `4` |  |
 | global.imageRegistry | string | `""` |  |
+| global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overriden per PVC. |
 | helmKubectlJqImage.pullPolicy | string | `"IfNotPresent"` |  |
 | helmKubectlJqImage.registry | string | `"docker.io"` |  |
 | helmKubectlJqImage.repository | string | `"bskim45/helm-kubectl-jq"` |  |

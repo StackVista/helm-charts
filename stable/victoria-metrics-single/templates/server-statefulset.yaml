@@ -42,7 +42,7 @@ spec:
       initContainers:
         {{- if .Values.backup.enabled }}
         - name: create-crontab
-          image: "{{ tpl .Values.backup.setupCron.image.repository .}}:{{ tpl .Values.backup.setupCron.image.tag . }}"
+          image: {{ include "victoria-metrics.image.registry" (dict "image" .Values.backup.setupCron.image "context" $) }}/{{ .Values.backup.setupCron.image.repository }}:{{ .Values.backup.setupCron.image.tag }}
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
@@ -72,7 +72,7 @@ spec:
           {{- with  .Values.server.podSecurityContext }}
           securityContext: {{- toYaml . | nindent 12 }}
           {{- end }}
-          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+          image: {{ include "victoria-metrics.image.registry" (dict "image" .Values.server.image "context" $) }}/{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}
           imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
           {{- if .Values.server.containerWorkingDir }}
           workingDir: {{ .Values.server.containerWorkingDir }}
@@ -172,7 +172,7 @@ spec:
           {{- end }}
         {{- if .Values.backup.enabled }}
         - name: vmbackup
-          image: "{{ tpl .Values.backup.vmbackup.image.repository .}}:{{ tpl .Values.backup.vmbackup.image.tag . }}"
+          image: {{ include "victoria-metrics.image.registry" (dict "image" .Values.backup.vmbackup.image "context" $) }}/{{ .Values.backup.vmbackup.image.repository }}:{{ .Values.backup.vmbackup.image.tag }}
           imagePullPolicy: IfNotPresent
           command:
             - supercronic
@@ -207,7 +207,7 @@ spec:
         {{- end }}
         {{- if .Values.server.vmbackupmanager.enable }}
         - name: {{ template "victoria-metrics.name" . }}-vmbackupmanager
-          image: "{{ .Values.server.vmbackupmanager.image.repository }}:{{ .Values.server.vmbackupmanager.image.tag }}"
+          image: {{ include "victoria-metrics.image.registry" (dict "image" .Values.server.vmbackupmanager.image "context" $) }}/{{ .Values.server.vmbackupmanager.image.repository }}:{{ .Values.server.vmbackupmanager.image.tag }}
           imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
           args:
             - {{ printf "%s=%t" "--eula" .Values.server.vmbackupmanager.eula | quote}}
@@ -252,10 +252,7 @@ spec:
       {{- with .Values.server.extraContainers }}
       {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- if .Values.imagePullSecrets }}
-      imagePullSecrets:
-       {{ toYaml .Values.imagePullSecrets | indent 2 }}
-    {{- end }}
+{{- include "victoria-metrics.image.pullSecret.name" (dict "images" (list .Values.server.image) "context" $) | indent 6 }}
     {{- if .Values.server.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}
@@ -314,13 +311,7 @@ spec:
         resources:
           requests:
             storage: "{{ .Values.server.persistentVolume.size }}"
-      {{- if .Values.server.persistentVolume.storageClass }}
-      {{- if (eq "-" .Values.server.persistentVolume.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: "{{ .Values.server.persistentVolume.storageClass }}"
-      {{- end }}
-      {{- end }}
+       {{ include "common.storage.class" ( dict "persistence" .Values.server.persistentVolume "global" .Values.global) | nindent 8 }}
       {{- with .Values.server.persistentVolume.matchLabels }}
         selector:
           matchLabels:
