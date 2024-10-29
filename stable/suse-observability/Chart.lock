@@ -28,10 +28,10 @@ dependencies:
   version: 8.1.2
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.9
+  version: 0.8.53-stackstate.10
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.9
+  version: 0.8.53-stackstate.10
 - name: victoria-metrics-cluster
   repository: https://victoriametrics.github.io/helm-charts
   version: 0.11.20
@@ -41,5 +41,5 @@ dependencies:
 - name: opentelemetry-collector
   repository: https://open-telemetry.github.io/opentelemetry-helm-charts
   version: 0.80.0
-digest: sha256:fd03b56242da9f22e0b3e14184a216a16371fca89ccadfd9e7d7229b58cdc1cb
-generated: "2024-10-29T13:59:55.244127199Z"
+digest: sha256:d32fdb5deabe10156b6bd3c59d5344d12828b50e5d8c0867455b9074d1fc551d
+generated: "2024-10-29T16:08:51.301825+01:00"

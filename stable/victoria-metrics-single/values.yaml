@@ -39,7 +39,7 @@ server:
   image:
     registry: quay.io
     # -- Image repository
-    repository: victoriametrics/victoria-metrics
+    repository: stackstate/victoria-metrics
     # -- Image tag
     tag: v1.87.1
     # -- Image pull policy
