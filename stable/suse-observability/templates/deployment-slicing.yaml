@@ -53,8 +53,10 @@ name: slicing
 ports:
 - containerPort: 1618
   name: health
+{{- if .Values.stackstate.instanceDebugApi.enabled }}
 - containerPort: 7080
   name: instance
+{{- end }}
 {{- if .Values.stackstate.components.all.metrics.enabled }}
 - containerPort: 9404
   name: metrics
