@@ -1,0 +1,11 @@
+{{- define "stackstate.healthSync.configmap" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-health-sync
+{{- include "stackstate.service.configmap.data" (dict "service" .Values.stackstate.components.healthSync "context" $) | nindent 0 -}}
+{{- end -}}
+
+{{- if .Values.stackstate.experimental.server.split }}
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $stackstateHealthSyncConfigMap := fromYaml (include "stackstate.healthSync.configmap" .) -}}
+{{- toYaml (merge $stackstateHealthSyncConfigMap $commonConfigMap) -}}
+{{- end -}}

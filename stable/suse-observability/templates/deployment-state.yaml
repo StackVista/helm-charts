@@ -22,13 +22,15 @@ args:
 {{- include "stackstate.service.args" . }}
 - -startRole
 - state
+envFrom:
+  - secretRef:
+      name: {{ include "stackstate.secret.name.license" .  }}
 env:
 {{- $serviceConfig := dict "ServiceName" "state" "ServiceConfig" .Values.stackstate.components.state }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.state.image.tag }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.baseurls.envvars" . }}
 {{- include "stackstate.metricstore.envvar" . }}
-{{- include "stackstate.deployment.optional.apiKey.env" . }}
 - name: ELASTICSEARCH_URI
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS
@@ -37,11 +39,6 @@ env:
   value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
 - name: HADOOP_USER_NAME
   value: nobody
-- name: LICENSE_KEY
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" . }}-license
-      key: sts-license-key
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
 - name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
@@ -82,9 +79,6 @@ resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 volumeMounts:
-- name: config-secrets-volume
-  mountPath: /opt/docker/etc/application_stackstate.conf
-  subPath: application_stackstate.conf
 {{- if .Values.stackstate.components.state.tmpToPVC }}
 - name: tmp-volume
   mountPath: /tmp
@@ -128,6 +122,7 @@ spec:
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.state.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.state.configmap.checksum" . | nindent 8 }}
         {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "state") .) }}
       labels:
         app.kubernetes.io/component: state
@@ -177,9 +172,6 @@ spec:
       securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
     {{- end }}
       volumes:
-        - name: config-secrets-volume
-          secret:
-            secretName: {{ template "common.fullname.short" . }}-state
         {{- if .Values.stackstate.components.state.tmpToPVC }}
         - name: tmp-volume
           persistentVolumeClaim:

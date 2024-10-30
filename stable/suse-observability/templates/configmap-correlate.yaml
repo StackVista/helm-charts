@@ -1,0 +1,9 @@
+{{- define "stackstate.correlate.configmap" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-correlate
+{{- include "stackstate.service.configmap.data" (dict "service" .Values.stackstate.components.correlate "context" $) | nindent 0 -}}
+{{- end -}}
+
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $stackstateCorrelateConfigMap := fromYaml (include "stackstate.correlate.configmap" .) -}}
+{{- toYaml (merge $stackstateCorrelateConfigMap $commonConfigMap) -}}

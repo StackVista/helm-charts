@@ -22,6 +22,9 @@ args:
 {{- include "stackstate.service.args" . }}
 - -startRole
 - healthSync
+envFrom:
+  - secretRef:
+      name: {{ include "stackstate.secret.name.license" .  }}
 env:
 {{- $serviceConfig := dict "ServiceName" "health-sync" "ServiceConfig" .Values.stackstate.components.healthSync }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.healthSync.image.tag }}
@@ -35,7 +38,6 @@ env:
 - name: CONFIG_FORCE_stackstate_rocksdb_cacheSizeBytes
   value: {{ include "stackstate.server.cache.memory.limit" $config | int | quote }}
 {{- end }}
-{{- include "stackstate.deployment.optional.apiKey.env" . }}
 - name: ELASTICSEARCH_URI
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS
@@ -44,11 +46,6 @@ env:
   value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
 - name: HADOOP_USER_NAME
   value: nobody
-- name: LICENSE_KEY
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" . }}-license
-      key: sts-license-key
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
@@ -84,9 +81,6 @@ resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 volumeMounts:
-- name: config-secrets-volume
-  mountPath: /opt/docker/etc/application_stackstate.conf
-  subPath: application_stackstate.conf
 {{- if .Values.stackstate.components.healthSync.tmpToPVC }}
 - name: tmp-volume
   mountPath: /tmp
@@ -130,6 +124,7 @@ spec:
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.healthSync.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.healthSync.configmap.checksum" . | nindent 8 }}
         {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "healthSync") .) }}
       labels:
         app.kubernetes.io/component: health-sync
@@ -179,9 +174,6 @@ spec:
       securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
     {{- end }}
       volumes:
-        - name: config-secrets-volume
-          secret:
-            secretName: {{ template "common.fullname.short" . }}-health-sync
         {{- if .Values.stackstate.components.healthSync.tmpToPVC }}
         - name: tmp-volume
           persistentVolumeClaim:

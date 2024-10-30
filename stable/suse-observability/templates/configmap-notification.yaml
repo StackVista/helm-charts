@@ -1,0 +1,11 @@
+{{- define "stackstate.notification.configmap" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-notification
+{{- include "stackstate.service.configmap.data" (dict "service" .Values.stackstate.components.notification "context" $) | nindent 0 -}}
+{{- end -}}
+
+{{- if .Values.stackstate.experimental.server.split }}
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $stackstateNotificationConfigMap := fromYaml (include "stackstate.notification.configmap" .) -}}
+{{- toYaml (merge $stackstateNotificationConfigMap $commonConfigMap) -}}
+{{- end -}}

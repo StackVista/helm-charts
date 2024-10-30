@@ -12,7 +12,7 @@ import (
 
 func TestGenerateValuesNoReceiverApiKey(t *testing.T) {
 	values := renderAsYaml(t, []string{"values/baseConfig.yaml"})
-	v, err := yamlpath.YamlPath(values, "global.receiverApiKey")
+	v, err := yamlpath.YamlPath(values, "stackstate.apiKey.key")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, v)
 }
@@ -70,7 +70,7 @@ func TestGenerateValuesWithBcryptPasswords(t *testing.T) {
 
 func TestGenerateValuesSetReceiverApiKey(t *testing.T) {
 	values := renderAsYaml(t, []string{"values/baseConfig.yaml", "values/apikey.yaml"})
-	v, err := yamlpath.YamlPath(values, "global.receiverApiKey")
+	v, err := yamlpath.YamlPath(values, "stackstate.apiKey.key")
 	assert.NoError(t, err)
 	assert.Equal(t, "stackstate-api-key-1234", v)
 }

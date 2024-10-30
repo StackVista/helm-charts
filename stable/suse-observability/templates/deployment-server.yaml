@@ -13,6 +13,13 @@ imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote 
 args:
 {{- include "stackstate.service.args" . }}
 - -start
+envFrom:
+  - secretRef:
+      name: {{ include "stackstate.secret.name.license" .  }}
+  - secretRef:
+      name: {{ include "stackstate.secret.name.apiKey" .  }}
+  - secretRef:
+      name: {{ include "stackstate.secret.name.auth" .  }}
 env:
 {{- $serviceConfig := dict "ServiceName" "server" "ServiceConfig" .Values.stackstate.components.server }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
@@ -23,7 +30,6 @@ env:
 - name: CONFIG_FORCE_stackstate_yaml_codePointLimit
   value: "{{ include "stackstate.server.yaml.maxSizeLimit" . }}"
 {{ end }}
-{{- include "stackstate.deployment.optional.apiKey.env" . }}
 - name: ELASTICSEARCH_URI
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS
@@ -32,11 +38,6 @@ env:
   value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
 - name: HADOOP_USER_NAME
   value: nobody
-- name: LICENSE_KEY
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" . }}-license
-      key: sts-license-key
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
@@ -77,9 +78,6 @@ volumeMounts:
 {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
 {{ include "stackstate.stackpacks.volumeMount" . }}
 {{- end }}
-- name: config-secrets-volume
-  mountPath: /opt/docker/etc/application_stackstate.conf
-  subPath: application_stackstate.conf
 {{- include "stackstate.service.container.volumes" . }}
 {{- end -}}
 
@@ -115,7 +113,10 @@ spec:
         {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "server" "filter" .Values.stackstate.components.server.agentMetricsFilter) | indent 8 }}
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.apiKey.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.auth.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.server.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.server.configmap.checksum" . | nindent 8 }}
         {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "server") .) }}
       labels:
         app.kubernetes.io/component: server
@@ -162,9 +163,6 @@ spec:
       securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
     {{- end }}
       volumes:
-      - name: config-secrets-volume
-        secret:
-          secretName: {{ template "common.fullname.short" . }}-server
       {{- include "stackstate.service.pod.volumes" (dict "pod_name" "server" "root" . ) | nindent 6 }}
       {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
       {{ include "stackstate.stackpacks.volume" . | nindent 6 }}

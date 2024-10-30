@@ -1,0 +1,9 @@
+{{- define "stackstate.e2es.configmap" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-e2es
+{{- include "stackstate.service.configmap.data" (dict "service" .Values.stackstate.components.e2es "context" $) | nindent 0 -}}
+{{- end -}}
+
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $stackstateK2esConfigMap := fromYaml (include "stackstate.e2es.configmap" .) -}}
+{{- toYaml (merge $stackstateK2esConfigMap $commonConfigMap) -}}

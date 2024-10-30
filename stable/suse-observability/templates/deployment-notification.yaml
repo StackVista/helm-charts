@@ -22,24 +22,21 @@ args:
 {{- include "stackstate.service.args" . }}
 - -startRole
 - notification
+envFrom:
+  - secretRef:
+      name: {{ include "stackstate.secret.name.license" .  }}
 env:
 {{- $serviceConfig := dict "ServiceName" "notification" "ServiceConfig" .Values.stackstate.components.notification }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.notification.image.tag }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.baseurls.envvars" . }}
 {{- include "stackstate.metricstore.envvar" . }}
-{{- include "stackstate.deployment.optional.apiKey.env" . }}
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
 - name: PROMETHEUS_WRITE_ENDPOINT
   value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
 - name: HADOOP_USER_NAME
   value: nobody
-- name: LICENSE_KEY
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" . }}-license
-      key: sts-license-key
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
@@ -75,9 +72,6 @@ resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 volumeMounts:
-- name: config-secrets-volume
-  mountPath: /opt/docker/etc/application_stackstate.conf
-  subPath: application_stackstate.conf
 {{- include "stackstate.service.container.volumes" . }}
 {{- if .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled }}
 {{ include "stackstate.service.transactionLog.volumeMount" . }}
@@ -117,6 +111,7 @@ spec:
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.notification.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.notification.configmap.checksum" . | nindent 8 }}
         {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "notification") .) }}
       labels:
         app.kubernetes.io/component: notification
@@ -163,9 +158,6 @@ spec:
       securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
     {{- end }}
       volumes:
-        - name: config-secrets-volume
-          secret:
-            secretName: {{ template "common.fullname.short" . }}-notification
         {{- include "stackstate.service.pod.volumes" (dict "pod_name" "notification" "root" . ) | nindent 8 }}
         {{- if .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled }}
         {{- include "stackstate.service.transactionLog.volume" (dict "pod_name" "notification" "root" . ) | nindent 8 }}

@@ -140,14 +140,17 @@ data:
 {{- range $key, $value := $additionalSecrets }}
   {{ $key }}: {{ $value | b64enc | quote }}
 {{- end }}
-stringData:
+{{- end -}}
+
+{{- define "stackstate.service.configmap.data" -}}
+data:
   application_stackstate.conf: |
 {{- if .service.config }}
 {{- .service.config | nindent 4 -}}
 {{- end }}
 {{- end -}}
 
-{{- define "stackstate.service.secret.clickhouseconfig" -}}
+{{- define "stackstate.service.configmap.clickhouseconfig" -}}
 {{- if .Values.stackstate.experimental.traces }}
 stackstate.traces.clickHouse = {{- .Values.stackstate.components.all.clickHouse | toPrettyJson }}
 {{- end }}
@@ -180,6 +183,9 @@ Mount secrets and log config in pod for stackstate services
 - name: config-volume-log
   configMap:
     name: {{ template "common.fullname.short" .root }}-{{ .pod_name }}-log
+- name: config-volume
+  configMap:
+    name: {{ template "common.fullname.short" .root }}-{{ .pod_name }}
 {{- if $mountSecrets }}
 - name: service-secrets-volume
   secret:
@@ -199,6 +205,9 @@ Mount secrets and log config in container for for stackstate services
 {{- $mountSecrets := fromYaml (include "stackstate.service.mountsecrets" .) }}
 - name: config-volume-log
   mountPath: /opt/docker/etc_log
+- name: config-volume
+  mountPath: /opt/docker/etc/application_stackstate.conf
+  subPath: application_stackstate.conf
 {{- if $mountSecrets }}
 - name: service-secrets-volume
   mountPath: /opt/docker/secrets

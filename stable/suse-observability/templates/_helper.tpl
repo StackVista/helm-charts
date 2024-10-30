@@ -158,22 +158,12 @@ checksum/correlate-env: {{ include (print $.Template.BasePath "/secret-correlate
 {{- end }}
 {{- end -}}
 
-
 {{/*
 E2ES secret checksum annotations
 */}}
 {{- define "stackstate.e2es.secret.checksum" -}}
 {{- if .Values.stackstate.components.e2es.extraEnv.secret }}
 checksum/e2es-env: {{ include (print $.Template.BasePath "/secret-e2es.yaml") . | sha256sum }}
-{{- end }}
-{{- end -}}
-
-{{/*
-Trace2ES secret checksum annotations
-*/}}
-{{- define "stackstate.trace2es.secret.checksum" -}}
-{{- if .Values.stackstate.components.trace2es.extraEnv.secret }}
-checksum/trace2es-env: {{ include (print $.Template.BasePath "/secret-trace2es.yaml") . | sha256sum }}
 {{- end }}
 {{- end -}}
 
@@ -203,6 +193,20 @@ License secret checksum annotations
 */}}
 {{- define "stackstate.license.secret.checksum" -}}
 checksum/license-env: {{ include (print $.Template.BasePath "/secret-license-key.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+License secret checksum annotations
+*/}}
+{{- define "stackstate.apiKey.secret.checksum" -}}
+checksum/api-key-env: {{ include (print $.Template.BasePath "/secret-api-key.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+License secret checksum annotations
+*/}}
+{{- define "stackstate.auth.secret.checksum" -}}
+checksum/auth-env: {{ include (print $.Template.BasePath "/secret-auth.yaml") . | sha256sum }}
 {{- end -}}
 
 {{/*
@@ -291,10 +295,31 @@ checksum/checks-configmap: {{ include (print $.Template.BasePath "/configmap-che
 {{- end -}}
 
 {{/*
+Correlate configmap checksum annotations
+*/}}
+{{- define "stackstate.correlate.configmap.checksum" -}}
+checksum/correlate-configmap: {{ include (print $.Template.BasePath "/configmap-correlate.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+E2ES configmap checksum annotations
+*/}}
+{{- define "stackstate.e2es.configmap.checksum" -}}
+checksum/e2es-configmap: {{ include (print $.Template.BasePath "/configmap-e2es.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
 Initializer configmap checksum annotations
 */}}
 {{- define "stackstate.initializer.configmap.checksum" -}}
 checksum/initializer-configmap: {{ include (print $.Template.BasePath "/configmap-initializer.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+Receiver configmap checksum annotations
+*/}}
+{{- define "stackstate.receiver.configmap.checksum" -}}
+checksum/receiver-configmap: {{ include (print $.Template.BasePath "/configmap-receiver.yaml") . | sha256sum }}
 {{- end -}}
 
 {{/*

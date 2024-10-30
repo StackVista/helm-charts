@@ -22,6 +22,9 @@ args:
 {{- include "stackstate.service.args" . }}
 - -startRole
 - checks
+envFrom:
+  - secretRef:
+      name: {{ include "stackstate.secret.name.license" .  }}
 env:
 {{- $serviceConfig := dict "ServiceName" "checks" "ServiceConfig" .Values.stackstate.components.checks }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.checks.image.tag }}
@@ -36,11 +39,6 @@ env:
   value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
 - name: HADOOP_USER_NAME
   value: nobody
-- name: LICENSE_KEY
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" . }}-license
-      key: sts-license-key
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
   # No need to keep cached items for a long time
@@ -83,9 +81,6 @@ resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 volumeMounts:
-- name: config-secrets-volume
-  mountPath: /opt/docker/etc/application_stackstate.conf
-  subPath: application_stackstate.conf
 {{- if .Values.stackstate.components.checks.tmpToPVC }}
 - name: tmp-volume
   mountPath: /tmp
@@ -129,6 +124,7 @@ spec:
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.checks.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.checks.configmap.checksum" . | nindent 8 }}
         {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "checks") .) }}
       labels:
         app.kubernetes.io/component: checks
@@ -178,9 +174,6 @@ spec:
       securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
     {{- end }}
       volumes:
-        - name: config-secrets-volume
-          secret:
-            secretName: {{ template "common.fullname.short" . }}-checks
         {{- if .Values.stackstate.components.checks.tmpToPVC }}
         - name: tmp-volume
           persistentVolumeClaim:

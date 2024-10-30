@@ -1,6 +1,5 @@
 {{- if .Values.baseConfig.generate }}
 global:
-  receiverApiKey: {{ template "sts.values.receiverKey" . }}
 {{- if and .Values.pullSecret.username .Values.pullSecret.password }}
   imagePullSecrets:
     - suse-observability-pull-secret
@@ -20,6 +19,8 @@ stackstate:
   baseUrl: {{ .Values.baseUrl | required "Please provide your SUSE Observability base URL in 'baseUrl'" | quote }}
   authentication:
     adminPassword: {{ template "sts.values.getOrGenerateAdminPassword" . }}
+  apiKey:
+    key: {{ template "sts.values.receiverKey" . }}
   license:
     key: {{ .Values.license | required "Please provide your SUSE Observability license key in 'license'" | quote }}
 ---

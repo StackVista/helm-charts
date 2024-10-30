@@ -22,12 +22,14 @@ args:
 {{- include "stackstate.service.args" . }}
 - -startRole
 - slicing
+envFrom:
+  - secretRef:
+      name: {{ include "stackstate.secret.name.license" .  }}
 env:
 {{- $serviceConfig := dict "ServiceName" "slicing" "ServiceConfig" .Values.stackstate.components.slicing }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.slicing.image.tag }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.baseurls.envvars" . }}
-{{- include "stackstate.deployment.optional.apiKey.env" . }}
 - name: ELASTICSEARCH_URI
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS
@@ -36,11 +38,6 @@ env:
   value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
 - name: HADOOP_USER_NAME
   value: nobody
-- name: LICENSE_KEY
-  valueFrom:
-    secretKeyRef:
-      name: {{ template "common.fullname.short" . }}-license
-      key: sts-license-key
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
 - name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
@@ -78,9 +75,6 @@ resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 volumeMounts:
-- name: config-secrets-volume
-  mountPath: /opt/docker/etc/application_stackstate.conf
-  subPath: application_stackstate.conf
 {{- include "stackstate.service.container.volumes" . }}
 {{- end -}}
 
@@ -117,6 +111,7 @@ spec:
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.slicing.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.slicing.configmap.checksum" . | nindent 8 }}
         {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "slicing") .) }}
       labels:
         app.kubernetes.io/component: slicing
@@ -160,9 +155,6 @@ spec:
       securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
     {{- end }}
       volumes:
-        - name: config-secrets-volume
-          secret:
-            secretName: {{ template "common.fullname.short" . }}-slicing
         {{- include "stackstate.service.pod.volumes" (dict "pod_name" "slicing" "root" . ) | nindent 8 }}
 {{- end -}}
 

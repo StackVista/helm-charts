@@ -99,14 +99,12 @@ image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.compon
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
 command:
   - '/backup-restore-scripts/backup-configuration.sh'
+envFrom:
+  - secretRef:
+      name: {{ include "stackstate.secret.name.license" .  }}
 env:
   {{- include "stackstate.backup.envvars" . | nindent 2 }}
   {{- include "stackstate.baseurls.envvars" .  | nindent 2 }}
-  - name: LICENSE_KEY
-    valueFrom:
-      secretKeyRef:
-        name: {{ template "common.fullname.short" . }}-license
-        key: sts-license-key
   {{ if .Values.backup.configuration.yaml.maxSizeLimit }}
   - name: CONFIG_FORCE_stackstate_yaml_codePointLimit
     value: "{{ include "stackstate.backup.yaml.maxSizeLimit" . }}"

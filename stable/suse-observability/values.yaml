@@ -2,10 +2,8 @@
 # StackState values #
 #####################
 global:
-  # global.receiverApiKey -- API key to be used by the Receiver; if no key is provided, a random one will be generated for you.
+  # global.receiverApiKey -- API key to be used by the Receiver; if no key is provided.
   receiverApiKey: ""
-  # global.onlyIngestionApiKey -- Disable Receiver  API Key, the application will accept only Ingestion API Keys
-  onlyIngestionApiKey: false
   # global.imagePullSecrets -- List of image pull secret names to be used by all images across all charts.
   imagePullSecrets: []
   # global.storageClass -- StorageClass for all PVCs created by the chart. Can be overriden per PVC.
@@ -1382,6 +1380,8 @@ stackstate:
         pullPolicy: IfNotPresent
   # stackstate.authentication -- Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error.
   authentication:
+    # stackstate.authentication.fromExternalSecret -- Use an external secret for the authenticated secrets. This suppresses secret creation by StackState and gets the data from the secret with the provided name.
+    fromExternalSecret:
     # stackstate.authentication.keycloak -- Use Keycloak as authentication provider. See [Configuring Keycloak](#configuring-keycloak).
     keycloak: {}
     # stackstate.authentication.ldap -- LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap).
@@ -1428,7 +1428,14 @@ stackstate:
     # stackstate.java.trustStorePassword -- Password to access the Java TrustStore (cacerts) file
     trustStorePassword:
   license:
+    # stackstate.license.fromExternalSecret -- Use an external secret for the license key. This suppresses secret creation by StackState and gets the data from the secret with the provided name.
+    fromExternalSecret:
     # stackstate.license.key -- (string) **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server.
+    key:
+  apiKey:
+    # stackstate.apiKey.fromExternalSecret -- Use an external secret for the api key. This suppresses secret creation by StackState and gets the data from the secret with the provided name.
+    fromExternalSecret:
+    # stackstate.apiKey.key -- (string) API key to be used by the Receiver.
     key:
   # stackstate.web.baseUrl -- (string) **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of StackState.
   baseUrl:
@@ -1459,7 +1466,7 @@ stackstate:
     installed: []
     # stackstate.stackpacks.upgradeOnStartup -- Specify a list of stackpacks that will, on startup only, be upgraded to the latest version available
     upgradeOnStartup: []
-    # stackstate.stackpacks.source -- Source of the stackpacks. Can be either 'docker-image' or 's3-bucket'.
+    # stackstate.stackpacks.source -- Source of the stackpacks, for now just the docker-image.
     source: "docker-image"
     updateInterval: "5 minutes"
     # stackstate.stackpacks.pvcSize -- Size of the Persistent Volume Claim (PVC) used to copy stackpacks from the Docker image.
@@ -1477,17 +1484,6 @@ stackstate:
       version: "20241023120811-master-3b44c5c"
       # stackstate.stackpacks.image.deploymentModeOverride -- Use the stackpacks from another deployment mode than StackState is running in
       deploymentModeOverride: ""
-    s3:
-      # stackstate.stackpacks.s3.bucket -- Name of the S3 bucket to use as source for stackpacks.
-      bucket: "sts-stackpacks-prod"
-      # stackstate.stackpacks.s3.accesskey -- Access key for the S3 bucket to use as source for stackpacks.
-      accesskey: ""
-      # stackstate.stackpacks.s3.secretkey -- Secret key for the S3 bucket to use as source for stackpacks.
-      secretkey: ""
-      # stackstate.stackpacks.s3.region -- Region of the S3 bucket to use as source for stackpacks.
-      region: "eu-west-1"
-      # stackstate.stackpacks.s3.endpoint -- AWS S3 Endpoint to use, can be used to point to a local S3 compatible storage.
-      endpoint:
 ##############################
 # Dependency chart overrides #
 ##############################

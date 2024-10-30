@@ -41,9 +41,6 @@ name: correlate{{ template "stackstate.correlate.name.postfix" . }}
 args:
 {{- include "stackstate.service.args" . }}
 volumeMounts:
-- name: config-secrets-volume
-  mountPath: /opt/docker/etc/application_stackstate.conf
-  subPath: application_stackstate.conf
 {{- include "stackstate.service.container.volumes" . }}
 ports:
 - containerPort: 1618
@@ -95,6 +92,7 @@ spec:
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.correlate.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.correlate.configmap.checksum" . | nindent 8 }}
         {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "correlate") .) }}
         {{- with .TypeConfig.podAnnotations }}
         {{- toYaml . | nindent 8}}
@@ -109,9 +107,6 @@ spec:
       containers:
       - {{ toYaml $stsstackstateCorrelateMainContainer | nindent 8 }}
       volumes:
-        - name: config-secrets-volume
-          secret:
-            secretName: {{ template "common.fullname.short" . }}-correlate
         {{- include "stackstate.service.pod.volumes" (dict "pod_name" "correlate" "root" . ) | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector (or .Values.stackstate.components.correlate.nodeSelector .TypeConfig.nodeSelector) }}
       nodeSelector:

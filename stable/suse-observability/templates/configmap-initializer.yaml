@@ -1,0 +1,12 @@
+{{- define "stackstate.initializer.configmap" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-initializer
+{{- include "stackstate.service.configmap.data" (dict "service" .Values.stackstate.components.initializer "context" $) | nindent 0 }}
+{{- include "stackstate.service.configmap.clickhouseconfig" . | nindent 4 -}}
+{{- end -}}
+
+{{- if .Values.stackstate.experimental.server.split }}
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $stackstateInitializerConfigMap := fromYaml (include "stackstate.initializer.configmap" .) -}}
+{{- toYaml (merge $stackstateInitializerConfigMap $commonConfigMap) -}}
+{{- end -}}

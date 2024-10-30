@@ -1,0 +1,12 @@
+{{- define "stackstate.server.configmap" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-server
+{{- include "stackstate.service.configmap.data" (dict "service" .Values.stackstate.components.server "context" $) | nindent 0 -}}
+{{- include "stackstate.configmap.server-and-api" . | nindent 4 -}}
+{{- end -}}
+
+{{- if not .Values.stackstate.experimental.server.split }}
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $stackstateServerConfigMap := fromYaml (include "stackstate.server.configmap" .) -}}
+{{- toYaml (merge $stackstateServerConfigMap $commonConfigMap) -}}
+{{- end -}}

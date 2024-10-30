@@ -10,7 +10,6 @@ stackstate.authorization.staticSubjects.stackstate-power-user: {{- $files.Get "s
 stackstate.authorization.staticSubjects.stackstate-guest: {{- $files.Get "sts-authz-permissions/stackstate-guest.json"}}
 stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter: {{- $files.Get "sts-authz-permissions/stackstate-k8s-troubleshooter.json"}}
 {{ println "" }}
-{{- include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.authentication "authnPrefix" "stackstate.api.authentication" "authzPrefix" "stackstate.authorization" "global" .) }}
 {{/* In SelfHosted mode, append any roles to the stackstate.authorization block, so that we keep the defaults delivered with stackstate. */}}
 {{- range .Values.stackstate.authentication.roles.admin }}
 stackstate.authorization.staticSubjects.{{ . | quote }}: {{- $files.Get "sts-authz-permissions/stackstate-admin.json" }}
@@ -41,8 +40,6 @@ stackstate.api.authorization.staticSubjects.stackstate-k8s-admin: {{- $files.Get
 {{- if index .Values "anomaly-detection" "enabled" }}
 stackstate.api.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["manage-annotations", "run-monitors", "view-monitors", "read-metrics", "read-settings"], viewPermissions: [] }
 {{- end }}
-
-{{ include "stackstate.auth.config" (dict "apiAuth" .Values.stackstate.authentication "authnPrefix" "stackstate.api.authentication" "authzPrefix" "stackstate.api.authorization" "global" .) }}
 {{- end }}
 
 stackstate.stackPacks {
@@ -80,15 +77,6 @@ stackstate.stackPacks {
   upgradeOnStartUp += {{ $editionStackPack | quote }}
 }
 
-stackstate.aws.s3 {
-  accesskey = {{ .Values.stackstate.stackpacks.s3.accesskey | quote }}
-  secretkey = {{ .Values.stackstate.stackpacks.s3.secretkey | quote }}
-  region = {{ .Values.stackstate.stackpacks.s3.region | quote }}
-  {{- if .Values.stackstate.stackpacks.s3.endpoint }}
-  endpoint = {{ .Values.stackstate.stackpacks.s3.endpoint | quote }}
-  {{- end }}
-}
-
 {{- if .Values.stackstate.components.api.docslink }}
 stackstate.webUIConfig.docLinkUrlPrefix = "{{- .Values.stackstate.components.api.docslink -}}"
 {{- end }}
@@ -99,14 +87,15 @@ stackstate.webUIConfig.supportMode = "{{- .Values.stackstate.components.api.supp
 
 stackstate.deploymentMode = "{{- .Values.stackstate.deployment.mode -}}"
 stackstate.edition = "{{- .Values.stackstate.deployment.edition -}}"
-{{- include "stackstate.service.secret.clickhouseconfig" . }}
-{{- end -}}
+{{- include "stackstate.service.configmap.clickhouseconfig" . }}
 
-{{- define "stackstate.auth.config" }}
-{{- $apiAuth := .apiAuth -}}
-{{- $authnPrefix := .authnPrefix -}}
-{{- $authzPrefix := .authzPrefix -}}
-{{- $global := .global -}}
+{{/*
+Authentication config
+*/}}
+{{- $apiAuth := .Values.stackstate.authentication -}}
+{{- $authnPrefix := "stackstate.api.authentication" -}}
+{{- $authzPrefix := "stackstate.api.authorization" -}}
+{{- $global := . -}}
 {{- $authTypes := list -}}
 {{ $authnPrefix }}.authServer.k8sServiceAccountAuthServer {}
 {{- if $apiAuth.ldap }}
@@ -118,7 +107,7 @@ stackstate.edition = "{{- .Values.stackstate.deployment.edition -}}"
 {{- if $apiAuth.ldap.bind }}
     bindCredentials {
       dn = {{ $apiAuth.ldap.bind.dn | quote }}
-      password = {{ $apiAuth.ldap.bind.password | quote }}
+      password = ${ldap_password}
     }
 {{- end }}
 {{- if $apiAuth.ldap.ssl }}
@@ -153,8 +142,8 @@ stackstate.edition = "{{- .Values.stackstate.deployment.edition -}}"
 {{- if $apiAuth.oidc }}
 {{ $authTypes = append $authTypes "oidcAuthServer" }}
 {{ $authnPrefix }}.authServer.oidcAuthServer {
-  clientId = {{ $apiAuth.oidc.clientId | required "OIDC authentication requires the client id to be set." | quote }}
-  secret = {{ $apiAuth.oidc.secret | required "OIDC authentication requires the client secret to be set." | quote }}
+  clientId = ${oidc_client_id}
+  secret = ${oidc_secret}
   discoveryUri = {{ $apiAuth.oidc.discoveryUri | required "OIDC authentication requires the discovery uri to be set." | quote }}
   {{- if $apiAuth.oidc.redirectUri }}
   redirectUri = {{ $apiAuth.oidc.redirectUri | trimSuffix "/" | quote }}
@@ -193,8 +182,8 @@ stackstate.edition = "{{- .Values.stackstate.deployment.edition -}}"
 {{ $authnPrefix }}.authServer.keycloakAuthServer {
   keycloakBaseUri = {{ $apiAuth.keycloak.url | required "Keycloak authentication requires the keycloak url to be set." | quote }}
   realm = {{ $apiAuth.keycloak.realm | required "Keycloak authentication requires the keycloak realm to be set." | quote }}
-  clientId = {{ $apiAuth.keycloak.clientId | required "Keycloak authentication requires the client id to be set." | quote }}
-  secret = {{ $apiAuth.keycloak.secret | required "Keycloak authentication requires the client secret to be set." | quote }}
+  clientId = ${keycloak_client_id}
+  secret = ${keycloak_secret}
   {{- if $apiAuth.keycloak.redirectUri }}
   redirectUri = {{ $apiAuth.keycloak.redirectUri | trimSuffix "/" | quote }}
   {{- else }}
@@ -235,7 +224,9 @@ stackstate.edition = "{{- .Values.stackstate.deployment.edition -}}"
   {{- if not .roles -}}
   {{- printf "No roles specified for user %s" .username | fail -}}
   {{- end }}
-  { username = {{ .username | required "A login requires a username" | quote }}, password = {{ .passwordHash | default .passwordMd5 | required "A login requires a password hash" | quote }}, roles = {{ .roles | toJson }} },
+  { username = {{ .username | required "A login requires a username" | quote }},
+    password = ${file_{{ .username | required "A login requires a username" }}_password},
+    roles = {{ .roles | toJson }} },
 {{- end }}
 ]
 {{- end }}
@@ -248,7 +239,7 @@ for production this should be replaced with one of the other mechanisms.
 {{- $authTypes = append $authTypes "stackstateAuthServer" }}
 {{ $authnPrefix }}.authServer.stackstateAuthServer {
 {{- if $global.Values.stackstate.authentication.adminPassword }}
-  defaultPassword = {{ $global.Values.stackstate.authentication.adminPassword | quote }}
+  defaultPassword = ${default_password}
 {{- else }}
 {{- fail "Helm value 'stackstate.authentication.adminPassword' is required when neither LDAP, OIDC, Keycloak nor file-based authentication has been configured" -}}
 {{- end }}
@@ -268,7 +259,7 @@ for production this should be replaced with one of the other mechanisms.
 {{- if $apiAuth.serviceToken.bootstrap.token }}
 {{- $authTypes = append $authTypes "serviceTokenAuthServer" }}
 {{ $authnPrefix }}.authServer.serviceTokenAuthServer.bootstrap {
-  token = {{ $apiAuth.serviceToken.bootstrap.token | quote }}
+  token = ${bootstrap_token}
   roles = [ {{- $apiAuth.serviceToken.bootstrap.roles | compact | join ", " -}} ]
   ttl = {{ $apiAuth.serviceToken.bootstrap.ttl | quote }}
 }
@@ -277,4 +268,4 @@ for production this should be replaced with one of the other mechanisms.
 {{- $authTypes = append $authTypes "k8sServiceAccountAuthServer" }}
 {{ $authnPrefix }}.authServer.authServerType = [ {{- $authTypes | compact | join ", " -}} ]
 
-{{- end }}
+{{- end -}}

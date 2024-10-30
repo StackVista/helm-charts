@@ -18,6 +18,9 @@ imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote 
 
 
 {{- define "stackstate.receiver.deployment.container.main" -}}
+envFrom:
+  - secretRef:
+      name: {{ include "stackstate.secret.name.apiKey" .  }}
 env:
 {{- $serviceTypeConfig := merge .TypeConfig (omit .Values.stackstate.components.receiver "split") }}
 {{- $serviceConfig := dict "ServiceName" "receiver" "ServiceConfig" $serviceTypeConfig }}
@@ -46,7 +49,6 @@ env:
   value: "http://{{ template "common.fullname.short" . }}-{{ template "stackstate.api.name" . }}-headless:7070/internal/api/security/ingestion/authorize"
 - name: CONFIG_FORCE_stackstate_receiver_agentLeases_agentServiceBaseUri
   value: "http://{{ template "common.fullname.short" . }}-{{ template "stackstate.api.name" . }}-headless:7070/internal/api/agents"
-{{- include "stackstate.deployment.optional.apiKey.env" . }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.receiver.envsFromExistingSecrets }}
 image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.receiver.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.receiver.image.tag }}"
@@ -111,6 +113,8 @@ spec:
         {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "receiver" "filter" .Values.stackstate.components.receiver.agentMetricsFilter) | indent 8 }}
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.receiver.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.apiKey.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.receiver.configmap.checksum" . | nindent 8 }}
         {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "receiver") .) }}
         {{- with .TypeConfig.podAnnotations }}
         {{- toYaml . | nindent 8}}
