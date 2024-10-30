@@ -29,10 +29,7 @@ func TestGenerateValuesPullSecretNotGenerated(t *testing.T) {
 
 func TestGenerateValuesWithGeneratesBcryptPasswords(t *testing.T) {
 	values := renderAsYaml(t, []string{"values/baseConfig.yaml"})
-	v, err := yamlpath.YamlPath(values, "stackstate.admin.authentication.password")
-	assert.NoError(t, err)
-	assert.Contains(t, v, "$2a$10$")
-	v, err = yamlpath.YamlPath(values, "stackstate.authentication.adminPassword")
+	v, err := yamlpath.YamlPath(values, "stackstate.authentication.adminPassword")
 	assert.NoError(t, err)
 	assert.Contains(t, v, "$2a$10$")
 
@@ -59,20 +56,14 @@ func TestGenerateValuesWithPullSecret(t *testing.T) {
 
 func TestGenerateValuesWithPlaintextPasswords(t *testing.T) {
 	values := renderAsYaml(t, []string{"values/baseConfig.yaml", "values/plaintextpasswords.yaml"})
-	v, err := yamlpath.YamlPath(values, "stackstate.admin.authentication.password")
-	assert.NoError(t, err)
-	assert.Contains(t, v, "$2a$10$")
-	v, err = yamlpath.YamlPath(values, "stackstate.authentication.adminPassword")
+	v, err := yamlpath.YamlPath(values, "stackstate.authentication.adminPassword")
 	assert.NoError(t, err)
 	assert.Contains(t, v, "$2a$10$")
 }
 
 func TestGenerateValuesWithBcryptPasswords(t *testing.T) {
 	values := renderAsYaml(t, []string{"values/baseConfig.yaml", "values/bcryptpasswords.yaml"})
-	v, err := yamlpath.YamlPath(values, "stackstate.admin.authentication.password")
-	assert.NoError(t, err)
-	assert.Equal(t, v, "$2a$10$qCWqX0H9E1crJ3tibX7ChuPSmkd2T6sBcSEzZc6gPBYH7Vm.qQKH.")
-	v, err = yamlpath.YamlPath(values, "stackstate.authentication.adminPassword")
+	v, err := yamlpath.YamlPath(values, "stackstate.authentication.adminPassword")
 	assert.NoError(t, err)
 	assert.Equal(t, v, "$2a$10$qCWqX0H9E1crJ3tibX7ChuPSmkd2T6sBcSEzZc6gPBYH7Vm.qQKH.")
 }
