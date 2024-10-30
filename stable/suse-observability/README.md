@@ -16,14 +16,19 @@ Current chart version is `2.1.2-pre.8`
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.9 |
 | file://../pull-secret/ | pull-secret | * |
+<<<<<<< HEAD
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.10 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.10 |
+=======
+| file://../victoria-metrics-cluster | victoriametrics-cluster(victoria-metrics-cluster) | 0.14.6-stackstate.0 |
+| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.9 |
+| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.9 |
+>>>>>>> af0bcd85 (STAC-21825: Fork charts for opentelemetry-collector and victoria-metrics cluster to bring global storage, registry and pullSecrets support)
 | https://charts.bitnami.com/bitnami | clickhouse | 3.6.9 |
 | https://helm-test.stackstate.io | anomaly-detection | 5.2.0-snapshot.143 |
 | https://open-telemetry.github.io/opentelemetry-helm-charts | opentelemetry-collector | 0.80.0 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
-| https://victoriametrics.github.io/helm-charts | victoriametrics-cluster(victoria-metrics-cluster) | 0.11.20 |
 
 ## Required Values
 
@@ -362,7 +367,6 @@ stackstate/stackstate
 | opentelemetry-collector.config.exporters.clickhousests.traces_table_name | string | `"otel_traces"` |  |
 | opentelemetry-collector.config.exporters.clickhousests.ttl | string | `"72h"` |  |
 | opentelemetry-collector.config.exporters.clickhousests.username | string | `"admin"` |  |
-| opentelemetry-collector.config.exporters.logging | string | `nil` |  |
 | opentelemetry-collector.config.exporters.prometheusremotewrite/victoria-metrics.endpoint | string | `"http://suse-observability-vmagent:8429/api/v1/write"` |  |
 | opentelemetry-collector.config.exporters.prometheusremotewrite/victoria-metrics.resource_to_telemetry_conversion.enabled | bool | `true` |  |
 | opentelemetry-collector.config.exporters.ststopology.endpoint | string | `"${env:INTAKE_URL}"` |  |
@@ -973,11 +977,13 @@ stackstate/stackstate
 | victoriametrics-cluster.vminsert.extraArgs.maxLabelsPerTimeseries | int | `60` |  |
 | victoriametrics-cluster.vminsert.extraArgs.replicationFactor | int | `2` |  |
 | victoriametrics-cluster.vminsert.extraLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
-| victoriametrics-cluster.vminsert.image.repository | string | `"quay.io/stackstate/vminsert"` | Repository for vminsert |
+| victoriametrics-cluster.vminsert.image.registry | string | `"quay.io"` |  |
+| victoriametrics-cluster.vminsert.image.repository | string | `"stackstate/vminsert"` | Repository for vminsert |
 | victoriametrics-cluster.vminsert.image.tag | string | `"v1.103.0-cluster-d94345cb"` | Tag of vminsert image |
 | victoriametrics-cluster.vminsert.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vminsert.check_names" | string | `"[\"openmetrics\"]"` |  |
 | victoriametrics-cluster.vminsert.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vminsert.init_configs" | string | `"[{}]"` |  |
 | victoriametrics-cluster.vminsert.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vminsert.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8480/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\", \"vminsert*\"] } ]"` |  |
+| victoriametrics-cluster.vminsert.podLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | victoriametrics-cluster.vminsert.replicaCount | int | `2` |  |
 | victoriametrics-cluster.vminsert.resources.limits.cpu | int | `1` |  |
 | victoriametrics-cluster.vminsert.resources.limits.memory | string | `"1Gi"` |  |
@@ -993,11 +999,13 @@ stackstate/stackstate
 | victoriametrics-cluster.vmselect.extraArgs."search.cacheTimestampOffset" | string | `"10m"` |  |
 | victoriametrics-cluster.vmselect.extraArgs.replicationFactor | int | `2` |  |
 | victoriametrics-cluster.vmselect.extraLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
-| victoriametrics-cluster.vmselect.image.repository | string | `"quay.io/stackstate/vmselect"` | Repository for vmselect |
+| victoriametrics-cluster.vmselect.image.registry | string | `"quay.io"` |  |
+| victoriametrics-cluster.vmselect.image.repository | string | `"stackstate/vmselect"` | Repository for vmselect |
 | victoriametrics-cluster.vmselect.image.tag | string | `"v1.103.0-cluster-cf63b26d"` | Tag of vmselect image |
 | victoriametrics-cluster.vmselect.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmselect.check_names" | string | `"[\"openmetrics\"]"` |  |
 | victoriametrics-cluster.vmselect.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmselect.init_configs" | string | `"[{}]"` |  |
 | victoriametrics-cluster.vmselect.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmselect.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8481/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\", \"vmselect*\"] } ]"` |  |
+| victoriametrics-cluster.vmselect.podLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | victoriametrics-cluster.vmselect.replicaCount | int | `2` |  |
 | victoriametrics-cluster.vmselect.resources.limits.cpu | int | `1` |  |
 | victoriametrics-cluster.vmselect.resources.limits.memory | string | `"1Gi"` |  |
@@ -1011,12 +1019,14 @@ stackstate/stackstate
 | victoriametrics-cluster.vmstorage.affinity | object | `{}` |  |
 | victoriametrics-cluster.vmstorage.extraArgs."dedup.minScrapeInterval" | string | `"1ms"` |  |
 | victoriametrics-cluster.vmstorage.extraLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
-| victoriametrics-cluster.vmstorage.image.repository | string | `"quay.io/stackstate/vmstorage"` | Repository for vmstorage |
+| victoriametrics-cluster.vmstorage.image.registry | string | `"quay.io"` |  |
+| victoriametrics-cluster.vmstorage.image.repository | string | `"stackstate/vmstorage"` | Repository for vmstorage |
 | victoriametrics-cluster.vmstorage.image.tag | string | `"v1.103.0-cluster-dc396072"` | Tag of vmstorage image |
 | victoriametrics-cluster.vmstorage.persistentVolume.size | string | `"250Gi"` |  |
 | victoriametrics-cluster.vmstorage.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmstorage.check_names" | string | `"[\"openmetrics\"]"` |  |
 | victoriametrics-cluster.vmstorage.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmstorage.init_configs" | string | `"[{}]"` |  |
 | victoriametrics-cluster.vmstorage.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmstorage.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8482/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\"] } ]"` |  |
+| victoriametrics-cluster.vmstorage.podLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | victoriametrics-cluster.vmstorage.podSecurityContext.enabled | bool | `true` |  |
 | victoriametrics-cluster.vmstorage.podSecurityContext.fsGroup | int | `65534` |  |
 | victoriametrics-cluster.vmstorage.replicaCount | int | `4` |  |
