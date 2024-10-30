@@ -349,3 +349,49 @@ app: {{ $Values.vmauth.name | default "vmauth" }}
   targetPort: {{ .targetPort }}
 {{- end }}
 {{- end -}}
+
+
+{{/*
+Renders a value that contains a template.
+Usage:
+{{ include "victoria-metrics.tplvalue.render" ( dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "victoria-metrics.tplvalue.render" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toYaml) .context }}
+    {{- end }}
+{{- end -}}
+
+{{/*
+Return the proper Docker Image Registry Secret Names evaluating values as templates
+{{ include "victoria-metrics.image.pullSecret.name" ( dict "images" (list .Values.path.to.the.image1, .Values.path.to.the.image2) "context" $) }}
+*/}}
+{{- define "victoria-metrics.image.pullSecret.name" -}}
+  {{- $pullSecrets := list }}
+  {{- $context := .context }}
+
+  {{- if $context.Values.global }}
+    {{- range $context.Values.global.imagePullSecrets -}}
+      {{- $pullSecrets = append $pullSecrets (include "victoria-metrics.tplvalue.render" (dict "value" . "context" $context)) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- range $context.Values.imagePullSecrets -}}
+    {{- $pullSecrets = append $pullSecrets (include "victoria-metrics.tplvalue.render" (dict "value" .name "context" $context)) -}}
+  {{- end -}}
+  {{- range .images -}}
+    {{- if .pullSecretName -}}
+      {{- $pullSecrets = append $pullSecrets (include "victoria-metrics.tplvalue.render" (dict "value" .pullSecretName "context" $context)) -}}
+    {{- else if (or .pullSecretUsername .pullSecretDockerConfigJson) -}}
+      {{- $pullSecrets = append $pullSecrets ((list (include "common.fullname.short" $context ) "pull-secret") | join "-")  -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- if (not (empty $pullSecrets)) }}
+imagePullSecrets:
+    {{- range $pullSecrets | uniq }}
+  - name: {{ . }}
+    {{- end }}
+  {{- end }}
+{{- end -}}

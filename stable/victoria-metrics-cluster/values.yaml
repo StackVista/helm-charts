@@ -75,7 +75,7 @@ vmselect:
     # -- Variant of the image to use.
     # e.g. cluster, enterprise-cluster
     variant: cluster
-  ports: 
+  ports:
     # -- VMSelect http port name
     name: "http"
   # -- Name of Priority Class
@@ -278,7 +278,7 @@ vmselect:
     enabled: false
     # -- Deploy order policy for StatefulSet pods
     podManagementPolicy: OrderedReady
-  
+
   # -- Empty dir configuration if persistence is disabled
   emptyDir: {}
   persistentVolume:
@@ -345,7 +345,7 @@ vminsert:
     # -- Image repository
     repository: victoriametrics/vminsert
     # -- Image tag
-    # override Chart.AppVersion    
+    # override Chart.AppVersion
     tag: ""
     # -- Variant of the image to use.
     # e.g. cluster, enterprise-cluster
@@ -829,7 +829,7 @@ vmstorage:
     variant: cluster
     # -- Image pull policy
     pullPolicy: IfNotPresent
-  ports: 
+  ports:
     # -- VMStorage http port name
     name: "http"
   # -- Name of Priority Class
@@ -880,7 +880,7 @@ vmstorage:
     []
     # - name: config-reloader
     #   image: reloader-image
-  
+
   # -- Extra secret mounts for vmstorage
   extraSecretMounts:
     []

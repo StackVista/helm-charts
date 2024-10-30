@@ -34,12 +34,10 @@ spec:
       {{- with $app.initContainers }}
       initContainers: {{ toYaml . | nindent 8 }}
       {{- end }}
-      {{- with ($app.imagePullSecrets | default .Values.global.imagePullSecrets) }}
-      imagePullSecrets: {{ toYaml . | nindent 8 }}
-      {{- end }}
+      {{- include "victoria-metrics.image.pullSecret.name" ( dict "images" (list $app) "context" $)  | indent 6 }}
       containers:
         - name: vmauth
-          image: {{ include "vm.image" (dict "helm" . "app" $app) }}
+          image: {{ include "victoria-metrics.image" (dict "helm" . "app" $app) }}
           imagePullPolicy: {{ $app.image.pullPolicy }}
           {{- with $app.containerWorkingDir }}
           workingDir: {{ . }}
