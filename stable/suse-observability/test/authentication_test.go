@@ -13,7 +13,7 @@ const expectedLdapAuthConfig = `stackstate.api.authentication.authServer.ldapAut
     port = 10389
     bindCredentials {
       dn = "ou=acme,dc=com"
-      password = "foobar"
+      password = ${ldap_password}
     }
     ssl {
       sslType = ssl
@@ -35,12 +35,18 @@ const expectedLdapAuthConfig = `stackstate.api.authentication.authServer.ldapAut
 
 const expectedLdapAuthEnabled = `stackstate.api.authentication.authServer.authServerType = [ldapAuthServer, k8sServiceAccountAuthServer]`
 
+var expectedLdapSecretContent = map[string]string{"ldap_password": "foobar"}
+
 func TestAuthenticationLdapSplit(t *testing.T) {
-	RunSecretsConfigTest(t, "suse-observability-api", []string{"values/ldap_authentication.yaml"}, expectedLdapAuthConfig, expectedLdapAuthEnabled)
+	RunConfigMapTest(t, "suse-observability-api", []string{"values/ldap_authentication.yaml"}, expectedLdapAuthConfig, expectedLdapAuthEnabled)
 }
 
 func TestAuthenticationLdap(t *testing.T) {
-	RunSecretsConfigTest(t, "suse-observability-server", []string{"values/ldap_authentication.yaml", "values/split_disabled.yaml"}, expectedLdapAuthConfig, expectedLdapAuthEnabled)
+	RunConfigMapTest(t, "suse-observability-server", []string{"values/ldap_authentication.yaml", "values/split_disabled.yaml"}, expectedLdapAuthConfig, expectedLdapAuthEnabled)
+}
+
+func TestAuthenticationLdapSecret(t *testing.T) {
+	RunSecretTest(t, "suse-observability-auth", []string{"values/ldap_authentication.yaml"}, expectedLdapSecretContent)
 }
 
 func TestAuthenticationLdapMissingValues(t *testing.T) {
@@ -51,8 +57,8 @@ func TestAuthenticationLdapMissingValues(t *testing.T) {
 }
 
 const expectedOidcAuthConfig = `stackstate.api.authentication.authServer.oidcAuthServer {
-  clientId = "stackstate-client-id"
-  secret = "some-secret"
+  clientId = ${oidc_client_id}
+  secret = ${oidc_secret}
   discoveryUri = "http://oidc-provider"
   redirectUri = "http://localhost/loginCallback"
   scope = ["groups","email"]
@@ -64,14 +70,23 @@ const expectedOidcAuthConfig = `stackstate.api.authentication.authServer.oidcAut
   }
 }`
 
+var expectedOidcAuthSecret = map[string]string{
+	"oidc_client_id": "stackstate-client-id",
+	"oidc_secret":    "some-secret",
+}
+
 const expectedOidcEnabled = `stackstate.api.authentication.authServer.authServerType = [oidcAuthServer, k8sServiceAccountAuthServer]`
 
 func TestAuthenticationOidcSplit(t *testing.T) {
-	RunSecretsConfigTest(t, "suse-observability-api", []string{"values/oidc_authentication.yaml"}, expectedOidcAuthConfig, expectedOidcEnabled)
+	RunConfigMapTest(t, "suse-observability-api", []string{"values/oidc_authentication.yaml"}, expectedOidcAuthConfig, expectedOidcEnabled)
+}
+
+func TestAuthenticationOidcSecret(t *testing.T) {
+	RunSecretTest(t, "suse-observability-auth", []string{"values/oidc_authentication.yaml"}, expectedOidcAuthSecret)
 }
 
 func TestAuthenticationOidc(t *testing.T) {
-	RunSecretsConfigTest(t, "suse-observability-server", []string{"values/oidc_authentication.yaml", "values/split_disabled.yaml"}, expectedOidcAuthConfig, expectedOidcEnabled)
+	RunConfigMapTest(t, "suse-observability-server", []string{"values/oidc_authentication.yaml", "values/split_disabled.yaml"}, expectedOidcAuthConfig, expectedOidcEnabled)
 }
 
 func TestAuthenticationOidcInvalid(t *testing.T) {
@@ -89,8 +104,8 @@ func TestAuthenticationOidcInvalid(t *testing.T) {
 const expectedKeycloakAuthConfig = `stackstate.api.authentication.authServer.keycloakAuthServer {
   keycloakBaseUri = "http://keycloak"
   realm = "test"
-  clientId = "stackstate-client-id"
-  secret = "some-secret"
+  clientId = ${keycloak_client_id}
+  secret = ${keycloak_secret}
   redirectUri = "http://localhost/loginCallback"
   scope = ["openid","profile","email"]
   authenticationMethod = "client_secret_basic"
@@ -100,14 +115,23 @@ const expectedKeycloakAuthConfig = `stackstate.api.authentication.authServer.key
   }
 }`
 
+var expectedKeycloakAuthSecret = map[string]string{
+	"keycloak_client_id": "stackstate-client-id",
+	"keycloak_secret":    "some-secret",
+}
+
 const expectedKeycloakEnabled = `stackstate.api.authentication.authServer.authServerType = [keycloakAuthServer, k8sServiceAccountAuthServer]`
 
 func TestAuthenticationKeycloakSplit(t *testing.T) {
-	RunSecretsConfigTest(t, "suse-observability-api", []string{"values/keycloak_authentication.yaml"}, expectedKeycloakAuthConfig, expectedKeycloakEnabled)
+	RunConfigMapTest(t, "suse-observability-api", []string{"values/keycloak_authentication.yaml"}, expectedKeycloakAuthConfig, expectedKeycloakEnabled)
+}
+
+func TestAuthenticationKeycloakSecret(t *testing.T) {
+	RunSecretTest(t, "suse-observability-auth", []string{"values/keycloak_authentication.yaml"}, expectedKeycloakAuthSecret)
 }
 
 func TestAuthenticationKeycloak(t *testing.T) {
-	RunSecretsConfigTest(t, "suse-observability-server", []string{"values/keycloak_authentication.yaml", "values/split_disabled.yaml"}, expectedKeycloakAuthConfig, expectedKeycloakEnabled)
+	RunConfigMapTest(t, "suse-observability-server", []string{"values/keycloak_authentication.yaml", "values/split_disabled.yaml"}, expectedKeycloakAuthConfig, expectedKeycloakEnabled)
 }
 
 func TestAuthenticationKeycloakInvalid(t *testing.T) {
@@ -122,20 +146,39 @@ func TestAuthenticationKeycloakInvalid(t *testing.T) {
 }
 
 const expectedFileAuthConfig = `stackstate.api.authentication.authServer.stackstateAuthServer.logins = [
-  { username = "administrator", password = "098f6bcd4621d373cade4e832627b4f6", roles = ["stackstate-admin"] },
-  { username = "guest1", password = "098f6bcd4621d373cade4e832627b4f6", roles = ["stackstate-guest"] },
-  { username = "guest2", password = "098f6bcd4621d373cade4e832627b4f6", roles = ["stackstate-guest"] },
-  { username = "maintainer", password = "098f6bcd4621d373cade4e832627b4f6", roles = ["stackstate-power-user","stackstate-guest"] },
+  { username = "administrator@company.com",
+    password = ${file_administrator_company_com_password},
+    roles = ["stackstate-admin"] },
+  { username = "guest1",
+    password = ${file_guest1_password},
+    roles = ["stackstate-guest"] },
+  { username = "guest2",
+    password = ${file_guest2_password},
+    roles = ["stackstate-guest"] },
+  { username = "maintainer",
+    password = ${file_maintainer_password},
+    roles = ["stackstate-power-user","stackstate-guest"] },
 ]`
+
+var expectedFileAuthSecret = map[string]string{
+	"file_administrator_company_com_password": "098f6bcd4621d373cade4e832627b4f6",
+	"file_guest1_password":                    "098f6bcd4621d373cade4e832627b4f6",
+	"file_guest2_password":                    "098f6bcd4621d373cade4e832627b4f6",
+	"file_maintainer_password":                "098f6bcd4621d373cade4e832627b4f6",
+}
 
 const expectedFileEnabled = `stackstate.api.authentication.authServer.authServerType = [stackstateAuthServer, k8sServiceAccountAuthServer]`
 
 func TestAuthenticationFileSplit(t *testing.T) {
-	RunSecretsConfigTest(t, "suse-observability-api", []string{"values/file_authentication.yaml"}, expectedFileAuthConfig, expectedFileEnabled)
+	RunConfigMapTest(t, "suse-observability-api", []string{"values/file_authentication.yaml"}, expectedFileAuthConfig, expectedFileEnabled)
+}
+
+func TestAuthenticationFileSecret(t *testing.T) {
+	RunSecretTest(t, "suse-observability-auth", []string{"values/file_authentication.yaml"}, expectedFileAuthSecret)
 }
 
 func TestAuthenticationFile(t *testing.T) {
-	RunSecretsConfigTest(t, "suse-observability-server", []string{"values/file_authentication.yaml", "values/split_disabled.yaml"}, expectedFileAuthConfig, expectedFileEnabled)
+	RunConfigMapTest(t, "suse-observability-server", []string{"values/file_authentication.yaml", "values/split_disabled.yaml"}, expectedFileAuthConfig, expectedFileEnabled)
 }
 
 func TestAuthenticationFileInvalid(t *testing.T) {
@@ -150,17 +193,25 @@ func TestAuthenticationFileInvalid(t *testing.T) {
 }
 
 const expectedFallbackAuthConfig = `stackstate.api.authentication.authServer.stackstateAuthServer {
-  defaultPassword = "098f6bcd4621d373cade4e832627b4f6"
+  defaultPassword = ${default_password}
 }`
+
+var expectedFallbackAuthSecret = map[string]string{
+	"default_password": "098f6bcd4621d373cade4e832627b4f6",
+}
 
 const expectedFallbackEnabled = `stackstate.api.authentication.authServer.authServerType = [stackstateAuthServer, k8sServiceAccountAuthServer]`
 
 func TestAuthenticationFallbackSplit(t *testing.T) {
-	RunSecretsConfigTest(t, "suse-observability-api", []string{}, expectedFallbackAuthConfig, expectedFallbackEnabled)
+	RunConfigMapTest(t, "suse-observability-api", []string{}, expectedFallbackAuthConfig, expectedFallbackEnabled)
+}
+
+func TestAuthenticationFallbackSecret(t *testing.T) {
+	RunSecretTest(t, "suse-observability-auth", []string{}, expectedFallbackAuthSecret)
 }
 
 func TestAuthenticationFallback(t *testing.T) {
-	RunSecretsConfigTest(t, "suse-observability-server", []string{"values/split_disabled.yaml"}, expectedFallbackAuthConfig, expectedFallbackEnabled)
+	RunConfigMapTest(t, "suse-observability-server", []string{"values/split_disabled.yaml"}, expectedFallbackAuthConfig, expectedFallbackEnabled)
 }
 
 func TestAuthenticationFallbackInvalid(t *testing.T) {
@@ -173,7 +224,7 @@ stackstate.authorization.powerUserGroups = ${stackstate.authorization.powerUserG
 stackstate.authorization.guestGroups = ${stackstate.authorization.guestGroups} ["guest1","guest2"]`
 
 func TestAuthenticationRolesSplit(t *testing.T) {
-	RunSecretsConfigTestF(t, "suse-observability-api", []string{"values/authentication_roles.yaml"}, func(stringData string) {
+	RunConfigMapTestF(t, "suse-observability-api", []string{"values/authentication_roles.yaml"}, func(stringData string) {
 		// check that the roles are added
 		require.NotContains(t, stringData, "stackstate-aad")
 		require.Contains(t, stringData, "extra-admin")
@@ -186,7 +237,7 @@ func TestAuthenticationRolesSplit(t *testing.T) {
 const expectedRolesWhenEmptyAuthConfig = `stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["stackstate-aad"]`
 
 func TestAuthenticationRolesEmptySplit(t *testing.T) {
-	RunSecretsConfigTestF(t, "suse-observability-api", []string{"values/authentication_roles_empty.yaml"}, func(stringData string) {
+	RunConfigMapTestF(t, "suse-observability-api", []string{"values/authentication_roles_empty.yaml"}, func(stringData string) {
 		require.NotContains(t, stringData, "stackstate-aad")
 	})
 }
@@ -194,13 +245,13 @@ func TestAuthenticationRolesEmptySplit(t *testing.T) {
 const expectedRolesWhenUndefinedAdminAuthConfig = `stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["stackstate-aad"]`
 
 func TestAuthenticationRolesUndefinedAdminSplit(t *testing.T) {
-	RunSecretsConfigTestF(t, "suse-observability-api", []string{"values/authentication_roles_no_admin.yaml"}, func(stringData string) {
+	RunConfigMapTestF(t, "suse-observability-api", []string{"values/authentication_roles_no_admin.yaml"}, func(stringData string) {
 		require.NotContains(t, stringData, "stackstate-aad")
 	})
 }
 
 func TestNoAuthenticationRolesSaaS(t *testing.T) {
-	RunSecretsConfigTestF(t, "suse-observability-server", []string{"values/authentication_saas_noroles.yaml", "values/split_disabled.yaml"}, func(stringData string) {
+	RunConfigMapTestF(t, "suse-observability-server", []string{"values/authentication_saas_noroles.yaml", "values/split_disabled.yaml"}, func(stringData string) {
 		// check that the suse-observability-troubleshooter role is added
 		require.Contains(t, stringData, "stackstate-k8s-troubleshooter")
 		require.NotContains(t, stringData, "stackstate-aad")
@@ -208,7 +259,7 @@ func TestNoAuthenticationRolesSaaS(t *testing.T) {
 }
 
 func TestIgnoredAuthenticationRolesSaaS(t *testing.T) {
-	RunSecretsConfigTestF(t, "suse-observability-server", []string{"values/authentication_saas_noroles.yaml", "values/split_disabled.yaml"}, func(stringData string) {
+	RunConfigMapTestF(t, "suse-observability-server", []string{"values/authentication_saas_noroles.yaml", "values/split_disabled.yaml"}, func(stringData string) {
 		// check that the suse-observability-troubleshooter role is added
 		require.Contains(t, stringData, "stackstate-k8s-troubleshooter")
 		require.NotContains(t, stringData, "stackstate-aad")
@@ -219,7 +270,7 @@ func TestIgnoredAuthenticationRolesSaaS(t *testing.T) {
 }
 
 func TestCustomAuthenticationRolesSaaS(t *testing.T) {
-	RunSecretsConfigTestF(t, "suse-observability-server", []string{"values/authentication_saas_custom.yaml", "values/split_disabled.yaml"}, func(stringData string) {
+	RunConfigMapTestF(t, "suse-observability-server", []string{"values/authentication_saas_custom.yaml", "values/split_disabled.yaml"}, func(stringData string) {
 		// check that the suse-observability-troubleshooter role is added
 		require.Contains(t, stringData, "stackstate-k8s-troubleshooter")
 		require.Contains(t, stringData, "stackstate-k8s-admin")
@@ -227,7 +278,7 @@ func TestCustomAuthenticationRolesSaaS(t *testing.T) {
 }
 
 func TestAuthenticationRoles(t *testing.T) {
-	RunSecretsConfigTestF(t, "suse-observability-server", []string{"values/authentication_roles.yaml", "values/split_disabled.yaml"}, func(stringData string) {
+	RunConfigMapTestF(t, "suse-observability-server", []string{"values/authentication_roles.yaml", "values/split_disabled.yaml"}, func(stringData string) {
 		// check that the roles are added
 		require.NotContains(t, stringData, "stackstate-aad")
 		require.Contains(t, stringData, "extra-admin")
@@ -238,7 +289,7 @@ func TestAuthenticationRoles(t *testing.T) {
 }
 
 func TestAuthenticationRolesWithDots(t *testing.T) {
-	RunSecretsConfigTestF(t, "suse-observability-server", []string{"values/authentication_roles_dots.yaml", "values/split_disabled.yaml"}, func(stringData string) {
+	RunConfigMapTestF(t, "suse-observability-server", []string{"values/authentication_roles_dots.yaml", "values/split_disabled.yaml"}, func(stringData string) {
 		require.Contains(t, stringData, "stackstate.authorization.staticSubjects.\"extra.admin\"")
 		require.Contains(t, stringData, "stackstate.authorization.staticSubjects.\"extra.power\"")
 		require.Contains(t, stringData, "stackstate.authorization.staticSubjects.\"guest.1\"")

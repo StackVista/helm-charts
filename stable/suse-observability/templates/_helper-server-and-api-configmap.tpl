@@ -94,7 +94,7 @@ Authentication config
 */}}
 {{- $apiAuth := .Values.stackstate.authentication -}}
 {{- $authnPrefix := "stackstate.api.authentication" -}}
-{{- $authzPrefix := "stackstate.api.authorization" -}}
+{{- $authzPrefix := "stackstate.authorization" -}}
 {{- $global := . -}}
 {{- $authTypes := list -}}
 {{ $authnPrefix }}.authServer.k8sServiceAccountAuthServer {}

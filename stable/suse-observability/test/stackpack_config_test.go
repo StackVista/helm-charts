@@ -25,9 +25,9 @@ const expectedStackPackConfig = `stackstate.stackPacks {
 }`
 
 func TestStackPackConfigRenderingApi(t *testing.T) {
-	RunSecretsConfigTest(t, "suse-observability-api", []string{"values/stackpack_config.yaml"}, expectedStackPackConfig)
+	RunConfigMapTest(t, "suse-observability-api", []string{"values/stackpack_config.yaml"}, expectedStackPackConfig)
 }
 
 func TestStackPackConfigRenderingServer(t *testing.T) {
-	RunSecretsConfigTest(t, "suse-observability-server", []string{"values/stackpack_config.yaml", "values/split_disabled.yaml"}, expectedStackPackConfig)
+	RunConfigMapTest(t, "suse-observability-server", []string{"values/stackpack_config.yaml", "values/split_disabled.yaml"}, expectedStackPackConfig)
 }
