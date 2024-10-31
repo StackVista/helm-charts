@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.0.7`
+Current chart version is `1.0.8`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -10,7 +10,7 @@ Current chart version is `1.0.7`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.11 |
+| https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.12 |
 
 ## Required Values
 
