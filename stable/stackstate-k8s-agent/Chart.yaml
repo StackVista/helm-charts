@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 3.0.0
-version: 1.0.98
+version: 1.0.99
 description: Helm chart for the StackState Agent.
 keywords:
 - monitoring
