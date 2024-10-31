@@ -28,10 +28,10 @@ dependencies:
   version: 8.1.2
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.11
+  version: 0.8.53-stackstate.12
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.11
+  version: 0.8.53-stackstate.12
 - name: victoria-metrics-cluster
   repository: file://../victoria-metrics-cluster
   version: 0.14.6-stackstate.0
@@ -41,5 +41,5 @@ dependencies:
 - name: opentelemetry-collector
   repository: file://../opentelemetry-collector
   version: 0.108.0-stackstate.0
-digest: sha256:e280dd8e88e9d5023a99a73a2f8076f60df977c68ab92199c92c730e4613cd42
-generated: "2024-10-30T11:41:30.112761807+01:00"
+digest: sha256:6737ac0e8d1de9c74a3e5c0bdd133da15a115a0ad6727402819ca319c4c8ab41
+generated: "2024-10-31T14:54:39.871976116+01:00"
