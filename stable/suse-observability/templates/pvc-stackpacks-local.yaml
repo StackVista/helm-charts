@@ -1,0 +1,17 @@
+{{- define "stackstate.stackpacks.local.persistentvolumeclaim" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-stackpacks-local
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.stackstate.stackpacks.localpvc.size }}
+  {{ include "common.storage.class" ( dict "persistence" .Values.stackstate.stackpacks.localpvc "global" .Values.global) | nindent 2 }}
+{{- end -}}
+
+{{- if eq .Values.deployment.mode "Mono" -}}
+{{- $commonPVC := fromYaml (include "common.persistentvolumeclaim" .) -}}
+{{- $stackstateStackpacksPVC := fromYaml (include "stackstate.stackpacks.local.persistentvolumeclaim" .) -}}
+{{- toYaml (merge $stackstateStackpacksPVC $commonPVC) -}}
+{{- end -}}

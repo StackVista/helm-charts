@@ -48,6 +48,8 @@ stackstate.api.authorization.staticSubjects.stackstate-aad: { systemPermissions:
 stackstate.stackPacks {
   {{- if eq .Values.hbase.deployment.mode "Distributed" }}
   localStackPacksUri = "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
+  {{- else }}
+  localStackPacksUri = "file:///var/stackpacks_local"
   {{- end }}
 
   {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}

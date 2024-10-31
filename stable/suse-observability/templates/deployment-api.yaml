@@ -89,6 +89,9 @@ volumeMounts:
 {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
 {{ include "stackstate.stackpacks.volumeMount" . }}
 {{- end }}
+{{- if eq .Values.deployment.mode "Mono" }}
+{{ include "stackstate.stackpacks.local.volumeMount" . }}
+{{- end }}
 - name: config-secrets-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
@@ -185,6 +188,9 @@ spec:
         {{- end }}
         {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
         {{ include "stackstate.stackpacks.volume" . | nindent 8 }}
+        {{- end }}
+        {{- if eq .Values.deployment.mode "Mono" }}
+        {{ include "stackstate.stackpacks.local.volume" . | nindent 8 }}
         {{- end }}
 {{- end -}}
 

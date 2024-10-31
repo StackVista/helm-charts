@@ -36,8 +36,6 @@ env:
       key: sts-license-key
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
-- name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
-  value: "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
 - name: CONFIG_FORCE_stackgraph_featureswitches_readCache
   value: "false"
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}

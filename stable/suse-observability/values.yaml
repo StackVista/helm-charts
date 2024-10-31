@@ -1462,7 +1462,11 @@ stackstate:
     # stackstate.stackpacks.source -- Source of the stackpacks. Can be either 'docker-image' or 's3-bucket'.
     source: "docker-image"
     updateInterval: "5 minutes"
-    # stackstate.stackpacks.pvcSize -- Size of the Persistent Volume Claim (PVC) used to copy stackpacks from the Docker image.
+    # stackstate.stackpacks.localpvc.size -- Size of the Persistent Volume Claim (PVC) used to persist stackpacks when there's no HDFS
+    localpvc:
+      size: 1Gi
+      storageClass:
+    # stackstate.stackpacks.pvc.size -- Size of the Persistent Volume Claim (PVC) used to copy stackpacks from the Docker image.
     pvc:
       size: 1Gi
       storageClass:
