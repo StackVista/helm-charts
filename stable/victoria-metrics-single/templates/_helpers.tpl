@@ -222,7 +222,7 @@ imagePullSecrets:
 {{- end -}}
 
 {{/*
-Return the image registry for the container-tools containers
+Return the image registry
 */}}
 {{- define "victoria-metrics.image.registry" -}}
 {{- $context := .context }}

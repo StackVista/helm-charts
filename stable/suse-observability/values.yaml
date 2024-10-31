@@ -214,7 +214,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: 7.0.0-snapshot.20241029135657-master-88ad0d4
+        tag: 7.0.0-snapshot.20241030130433-master-bb78157
       # stackstate.components.all.podAnnotations -- Extra annotations
       podAnnotations: {}
       metrics:
@@ -1481,7 +1481,7 @@ stackstate:
       # stackstate.stackpacks.image.repository -- Repository of the `stackpacks` Docker image.
       repository: stackstate/stackpacks
       # stackstate.stackpacks.image.version -- Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode
-      version: "20241023120811-master-3b44c5c"
+      version: "20241030082847-master-713f2a0"
       # stackstate.stackpacks.image.deploymentModeOverride -- Use the stackpacks from another deployment mode than StackState is running in
       deploymentModeOverride: ""
 ##############################
@@ -2225,8 +2225,9 @@ victoriametrics-cluster:
     namespaced: true
   vmstorage:
     image:
+      registry: quay.io
       # victoriametrics-cluster.vmstorage.image.repository -- Repository for vmstorage
-      repository: quay.io/stackstate/vmstorage
+      repository: stackstate/vmstorage
       # victoriametrics-cluster.vmstorage.image.tag -- Tag of vmstorage image
       tag: v1.103.0-cluster-dc396072
     # victoria-metrics-cluster.vmstorage.replicaCount -- Number of replicas of vmstorage in the StatefulSet
@@ -2251,6 +2252,8 @@ victoriametrics-cluster:
     #     weight: 1
     # victoria-metrics-cluster.vmstorage.extraLabels -- Extra labels for vmstorage Deployment
     extraLabels:
+      app.kubernetes.io/part-of: suse-observability
+    podLabels:
       app.kubernetes.io/part-of: suse-observability
     # victoria-metrics-cluster.vmstorage.extraArgs -- Extra arguments for vmstorage
     extraArgs:
@@ -2285,8 +2288,9 @@ victoriametrics-cluster:
       fsGroup: 65534
   vminsert:
     image:
+      registry: quay.io
       # victoriametrics-cluster.vminsert.image.repository -- Repository for vminsert
-      repository: quay.io/stackstate/vminsert
+      repository: stackstate/vminsert
       # victoriametrics-cluster.vminsert.image.tag -- Tag of vminsert image
       tag: v1.103.0-cluster-d94345cb
     # victoria-metrics-cluster.vminsert.replicaCount -- Number of replicas of vminsert in the Deployment
@@ -2311,6 +2315,8 @@ victoriametrics-cluster:
     #     weight: 1
     # victoria-metrics-cluster.vminsert.extraLabels -- Extra labels for vminsert Deployment
     extraLabels:
+      app.kubernetes.io/part-of: suse-observability
+    podLabels:
       app.kubernetes.io/part-of: suse-observability
     # victoria-metrics-cluster.vminsert.extraArgs -- Extra arguments for vminsert
     extraArgs:
@@ -2337,8 +2343,9 @@ victoriametrics-cluster:
       runAsGroup: 65534
   vmselect:
     image:
+      registry: quay.io
       # victoriametrics-cluster.vmselect.image.repository -- Repository for vmselect
-      repository: quay.io/stackstate/vmselect
+      repository: stackstate/vmselect
       # victoriametrics-cluster.vmselect.image.tag -- Tag of vmselect image
       tag: v1.103.0-cluster-cf63b26d
     # victoria-metrics-cluster.vmselect.replicaCount -- Number of replicas of vmselect in the Deployment
@@ -2363,6 +2370,8 @@ victoriametrics-cluster:
     #     weight: 1
     # victoria-metrics-cluster.vmselect.extraLabels -- Extra labels for vmselect Deployment
     extraLabels:
+      app.kubernetes.io/part-of: suse-observability
+    podLabels:
       app.kubernetes.io/part-of: suse-observability
     # victoria-metrics-cluster.vmselect.extraArgs -- Extra arguments for vmselect
     extraArgs:
@@ -2601,8 +2610,9 @@ opentelemetry:
   enabled: true
 opentelemetry-collector:
   image:
+    registry: quay.io
     # opentelemetry-collector.image.repository -- Repository where to get the image from.
-    repository: quay.io/stackstate/sts-opentelemetry-collector
+    repository: stackstate/sts-opentelemetry-collector
     # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
     tag: v0.0.14
   command:
@@ -2699,7 +2709,6 @@ opentelemetry-collector:
           enabled: true
       ststopology:
         endpoint: "${env:INTAKE_URL}"
-      logging: null
     extensions:
       ingestion_api_key_auth:
         endpoint:

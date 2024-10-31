@@ -1,0 +1,265 @@
+{{- $app := .Values.vmstorage }}
+{{- $ctx := dict "helm" . "extraLabels" $app.extraLabels "appKey" "vmstorage" }}
+{{- if $app.enabled -}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  {{- with $app.annotations }}
+  annotations: {{ toYaml . | nindent 4 }}
+  {{- end }}
+  labels: {{ include "victoria-metrics.vmstorage.labels" $ctx | nindent 4 }}
+  name: {{ include "vm.plain.fullname" $ctx }}
+  namespace: {{ include "vm.namespace" . }}
+spec:
+  serviceName: {{ include "vm.plain.fullname" $ctx }}
+  selector:
+    matchLabels: {{ include "victoria-metrics.vmstorage.matchLabels" . | nindent 6 }}
+  replicas: {{ $app.replicaCount }}
+  podManagementPolicy: {{ $app.podManagementPolicy }}
+  template:
+    metadata:
+      {{- with $app.podAnnotations }}
+      annotations: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- $_ := set $ctx "extraLabels" $app.podLabels }}
+      labels: {{ include "victoria-metrics.vmstorage.podLabels" $ctx | nindent 8 }}
+    spec:
+      {{- with $app.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
+      {{- with $app.schedulerName }}
+      schedulerName: {{ . }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountToken }}
+      {{- $manager := $app.vmbackupmanager }}
+      {{- if or $app.initContainers $manager.restore.onStart.enabled }}
+      initContainers:
+        {{- with $app.initContainers -}}
+        {{- toYaml . | nindent 8 }}
+        {{- end -}}
+        {{- if $manager.restore.onStart.enabled }}
+        {{- include "vm.enterprise.only" . }}
+        - name: vmbackupmanager-restore
+          image: {{ include "victoria-metrics.image" (merge (deepCopy .) (dict "app" $manager)) }}
+          imagePullPolicy: {{ $app.image.pullPolicy }}
+          {{- if $app.securityContext.enabled }}
+          securityContext: {{ include "vm.securityContext" (dict "securityContext" $app.securityContext "helm" .) | nindent 12 }}
+          {{- end }}
+          args: {{ include "vmbackupmanager.restore.args" . | nindent 12 }}
+          {{- with $manager.resources }}
+          resources: {{ toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            {{- with $manager.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          ports:
+            - name: manager-http
+              containerPort: 8300
+          volumeMounts:
+            - name: vmstorage-volume
+              mountPath: {{ $app.persistentVolume.mountPath }}
+              subPath: {{ $app.persistentVolume.subPath }}
+            {{- range $manager.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+            {{- end }}
+        {{- end }}
+        {{- end }}
+        {{- include "victoria-metrics.image.pullSecret.name" ( dict "images" (list $app) "context" $) | indent 6 }}
+      containers:
+        - name: vmstorage
+          image: {{ include "victoria-metrics.image" (dict "helm" . "app" $app) }}
+          imagePullPolicy: {{ $app.image.pullPolicy }}
+          {{- with $app.containerWorkingDir }}
+          workingDir: {{ . }}
+          {{- end }}
+          {{- if $app.securityContext.enabled }}
+          securityContext: {{ include "vm.securityContext" (dict "securityContext" $app.securityContext "helm" .) | nindent 12 }}
+          {{- end }}
+          args: {{ include "vmstorage.args" . | nindent 12 }}
+          ports:
+            - name: {{ $app.ports.name | default "http" }}
+              containerPort: {{ include "vm.port.from.flag" (dict "flag" $app.extraArgs.httpListenAddr "default" "8482") }}
+            - name: vminsert
+              containerPort: 8400
+            - name: vmselect
+              containerPort: 8401
+          {{- with $app.envFrom }}
+          envFrom: {{ toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $app.env }}
+          env: {{ toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with (fromYaml (include "vm.probe" (dict "app" $app "type" "readiness"))) }}
+          readinessProbe: {{ toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with (fromYaml (include "vm.probe" (dict "app" $app "type" "liveness"))) }}
+          livenessProbe: {{ toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with (fromYaml (include "vm.probe" (dict "app" $app "type" "startup"))) }}
+          startupProbe: {{ toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $app.resources }}
+          resources: {{ toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            {{- with $app.persistentVolume }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              {{- with .subPath }}
+              subPath: {{ . }}
+              {{- end }}
+            {{- end }}
+            {{- range $app.extraHostPathMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              {{- with .subPath }}
+              subPath: {{ . }}
+              {{- end }}
+              {{- with .readOnly }}
+              readOnly: {{ . }}
+              {{- end }}
+            {{- end }}
+            {{- range $app.extraConfigmapMounts }}
+            - name: {{ $app.name }}-{{ .name }}
+              mountPath: {{ .mountPath }}
+              {{- with .subPath }}
+              subPath: {{ . }}
+              {{- end }}
+              {{- with .readOnly }}
+              readOnly: {{ . }}
+              {{- end }}
+            {{- end }}
+            {{- range $app.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              {{- with .subPath }}
+              subPath: {{ . }}
+              {{- end }}
+              {{- with .readOnly }}
+              readOnly: {{ . }}
+              {{- end }}
+            {{- end }}
+            {{- with $app.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- include "vm.license.mount" . | nindent 12 }}
+        {{- if hasKey $manager "enable" }}
+          {{- fail "`vmstorage.vmbackupmanager.enable` is deprecated. Use `vmstorage.vmbackupmanager.enabled` instead" }}
+        {{- end }}
+        {{- if $manager.enabled }}
+        {{- include "vm.enterprise.only" . }}
+        - name: vmbackupmanager
+          image: {{ include "victoria-metrics.image" (dict "helm" . "app" $manager) }}
+          imagePullPolicy: {{ $app.image.pullPolicy }}
+          {{- if $app.securityContext.enabled }}
+          securityContext: {{ include "vm.securityContext" (dict "securityContext" $app.securityContext "helm" .) | nindent 12 }}
+          {{- end }}
+          args: {{ include "vmbackupmanager.args" . | nindent 12 }}
+          {{- with $manager.resources }}
+          resources: {{ toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with (fromYaml (include "vm.probe" (dict "app" $manager "type" "readiness"))) }}
+          readinessProbe: {{ toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with (fromYaml (include "vm.probe" (dict "app" $manager "type" "liveness"))) }}
+          livenessProbe: {{ toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with (fromYaml (include "vm.probe" (dict "app" $manager "type" "startup"))) }}
+          startupProbe: {{ toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            {{- with $manager.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          ports:
+            - name: manager-http
+              containerPort: 8300
+          volumeMounts:
+            {{- with $app.persistentVolume }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              {{- with .subPath }}
+              subPath: {{ . }}
+              {{- end }}
+            {{- end }}
+            {{- range $manager.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              {{- with .subPath }}
+              subPath: {{ . }}
+              {{- end }}
+              {{- with .readOnly }}
+              readOnly: {{ . }}
+              {{- end }}
+            {{- end }}
+            {{- include "vm.license.mount" . | nindent 12 }}
+        {{- end }}
+        {{- with $app.extraContainers }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with $app.nodeSelector }}
+      nodeSelector: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if $app.podSecurityContext.enabled }}
+      securityContext: {{ include "vm.securityContext" (dict "securityContext" $app.podSecurityContext "helm" .) | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "vm.sa.name" . }}
+      {{- with $app.tolerations }}
+      tolerations: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $app.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $app.topologySpreadConstraints }}
+      topologySpreadConstraints: {{ toYaml . | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ $app.terminationGracePeriodSeconds }}
+      {{- if or $app.extraVolumes (not $app.persistentVolume.enabled) $app.persistentVolume.existingClaim (include "vm.license.volume" .) }}
+      volumes:
+        {{- with $app.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- if or (not $app.persistentVolume.enabled) $app.persistentVolume.existingClaim }}
+        - name: vmstorage-volume
+          {{- if $app.persistentVolume.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ $app.persistentVolume.existingClaim }}
+          {{- else }}
+          emptyDir: {{ toYaml $app.emptyDir | nindent 12 }}
+          {{- end }}
+        {{- end }}
+        {{- include "vm.license.volume" . | nindent 8 }}
+      {{- end }}
+  {{- if and $app.persistentVolume.enabled (not $app.persistentVolume.existingClaim) }}
+  volumeClaimTemplates:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: {{ $app.persistentVolume.name }}
+        {{- with $app.persistentVolume.annotations }}
+        annotations: {{ toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with $app.persistentVolume.labels }}
+        labels: {{ toYaml . | nindent 10 }}
+        {{- end }}
+      spec:
+        {{- with $app.persistentVolume.accessModes }}
+        accessModes: {{ toYaml . | nindent 10 }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ $app.persistentVolume.size }}
+  {{ include "victoria-metrics.storage.class" ( dict "persistence" $app.persistentVolume "global" .Values.global) | nindent 8 }}
+  {{- end }}
+{{- end }}

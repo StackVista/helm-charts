@@ -1,0 +1,14 @@
+apiVersion: v2
+name: opentelemetry-collector
+version: 0.108.0-stackstate.0
+description: OpenTelemetry Collector Helm chart for Kubernetes
+type: application
+home: https://opentelemetry.io/
+sources:
+  - https://github.com/open-telemetry/opentelemetry-collector
+  - https://github.com/open-telemetry/opentelemetry-collector-contrib
+maintainers:
+  - name: Stackstate Ops Team
+    email: ops@stackstate.com
+icon: https://opentelemetry.io/img/logos/opentelemetry-logo-nav.png
+appVersion: 0.111.0

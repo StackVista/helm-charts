@@ -1,0 +1,79 @@
+{{ if .Values.printNotes }}
+{{- $ctx := dict "helm" . "style" "plain" }}
+{{ if .Values.vminsert.enabled }}
+{{- $_ := set $ctx "appKey" "vminsert" }}
+Write API:
+
+The Victoria Metrics write api can be accessed via port {{ .Values.vminsert.service.servicePort }} with the following DNS name from within your cluster:
+{{ include "vm.fqdn" $ctx }}
+
+Get the Victoria Metrics insert service URL by running these commands in the same shell:
+{{- if contains "NodePort" .Values.vminsert.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ include "vm.namespace" . }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "vm.service" $ctx }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ include "vm.namespace" . }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.vminsert.service.type }}
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch the status of by running 'kubectl get svc --namespace {{ include "vm.namespace" . }} -w {{ include "vm.service" $ctx }}'
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ include "vm.namespace" . }} {{ include "vm.service" $ctx }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.vminsert.service.servicePort }}
+{{- else if contains "ClusterIP"  .Values.vminsert.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ include "vm.namespace" . }} -l "app={{ .Values.vminsert.name }}" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace {{ include "vm.namespace" . }} port-forward $POD_NAME {{ .Values.vminsert.service.servicePort }}
+{{- end }}
+
+You need to update your Prometheus configuration file and add the following lines to it:
+
+prometheus.yml
+
+    remote_write:
+      - url: "http://<insert-service>/insert/0/prometheus/"
+
+
+
+for example -  inside the Kubernetes cluster:
+
+    remote_write:
+      - url: "http://{{ include "vm.fqdn" $ctx }}:{{ .Values.vminsert.service.servicePort }}/insert/0/prometheus/"
+
+{{- end }}
+
+{{- if .Values.vmselect.enabled }}
+{{- $_ := set $ctx "appKey" "vmselect" }}
+Read API:
+
+The VictoriaMetrics read api can be accessed via port {{ .Values.vmselect.service.servicePort }} with the following DNS name from within your cluster:
+{{ include "vm.fqdn" $ctx }}
+
+Get the VictoriaMetrics select service URL by running these commands in the same shell:
+{{- if contains "NodePort" .Values.vmselect.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ include "vm.namespace" . }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "vm.service" $ctx }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ include "vm.namespace" . }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.vmselect.service.type }}
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch the status of by running 'kubectl get svc --namespace {{ include "vm.namespace" . }} -w {{ include "vm.service" $ctx }}'
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ include "vm.namespace" . }} {{ include "vm.service" $ctx }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.vmselect.service.servicePort }}
+{{- else if contains "ClusterIP"  .Values.vmselect.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ include "vm.namespace" . }} -l "app={{ .Values.vmselect.name }}" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace {{ include "vm.namespace" . }} port-forward $POD_NAME {{ .Values.vmselect.service.servicePort }}
+{{- end }}
+
+You need to specify select service URL into your Grafana:
+ NOTE: you need to use the Prometheus Data Source
+
+Input this URL field into Grafana
+
+    http://<select-service>/select/0/prometheus/
+
+
+for example - inside the Kubernetes cluster:
+
+    http://{{ include "vm.fqdn" $ctx }}:{{ .Values.vmselect.service.servicePort }}/select/0/prometheus/
+
+{{- end }}
+{{- end }}
+
