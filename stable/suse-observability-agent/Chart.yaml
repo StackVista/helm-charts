@@ -28,6 +28,6 @@ dependencies:
   # repository: file:///home/bram/stackvista/agent/http-header-injector/charts/http-header-injector
   # version: "*"
   repository: https://helm.stackstate.io
-  version: 0.0.11
+  version: 0.0.12
   # Warning: do not use this condition. this will not play well with the prehooks in the chart
   # condition: http-header-injector-webhook.enabled

@@ -15,18 +15,13 @@ Current chart version is `2.1.2-pre.10`
 | file://../hbase/ | hbase | 0.2.45 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.9 |
+| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.0 |
 | file://../pull-secret/ | pull-secret | * |
-<<<<<<< HEAD
-| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.10 |
-| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.10 |
-=======
 | file://../victoria-metrics-cluster | victoriametrics-cluster(victoria-metrics-cluster) | 0.14.6-stackstate.0 |
-| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.9 |
-| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.9 |
->>>>>>> af0bcd85 (STAC-21825: Fork charts for opentelemetry-collector and victoria-metrics cluster to bring global storage, registry and pullSecrets support)
+| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.11 |
+| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.11 |
 | https://charts.bitnami.com/bitnami | clickhouse | 3.6.9 |
 | https://helm-test.stackstate.io | anomaly-detection | 5.2.0-snapshot.143 |
-| https://open-telemetry.github.io/opentelemetry-helm-charts | opentelemetry-collector | 0.80.0 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
 
@@ -423,7 +418,8 @@ stackstate/stackstate
 | opentelemetry-collector.config.service.telemetry.metrics.address | string | `"0.0.0.0:8888"` |  |
 | opentelemetry-collector.extraEnvs | list | `[{"name":"API_URL","valueFrom":{"configMapKeyRef":{"key":"api.url","name":"suse-observability-otel-collector"}}},{"name":"INTAKE_URL","valueFrom":{"configMapKeyRef":{"key":"intake.url","name":"suse-observability-otel-collector"}}}]` | Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/). Contains API_URL with path to api server used to authorize requests |
 | opentelemetry-collector.fullnameOverride | string | `"suse-observability-otel-collector"` | Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
-| opentelemetry-collector.image.repository | string | `"quay.io/stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
+| opentelemetry-collector.image.registry | string | `"quay.io"` |  |
+| opentelemetry-collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
 | opentelemetry-collector.image.tag | string | `"v0.0.14"` | Container image tag for 'opentelemetry-collector' containers. |
 | opentelemetry-collector.mode | string | `"statefulset"` | deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset". |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.check_names" | string | `"[\"openmetrics\"]"` |  |
