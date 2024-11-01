@@ -27,7 +27,4 @@ stackstate:
 {{ if .Values.generatedAdminPassword -}}
 # Your SUSE Observability admin password is: {{ .Values.generatedAdminPassword }}
 {{- end }}
-{{ if .Values.generatedAdminApiPassword -}}
-# Your SUSE Observability admin API password is: {{ .Values.generatedAdminApiPassword }}
-{{- end }}
 {{- end }}
