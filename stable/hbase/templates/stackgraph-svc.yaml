@@ -7,7 +7,7 @@ spec:
   clusterIP: None
   publishNotReadyAddresses: true
   ports:
-{{- range untilStep 10125 10225 1 }}
+{{- range untilStep 10125 10127 1 }}
   - port: {{ . }}
     name: ftp-{{ . }}
 {{- end }}

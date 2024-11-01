@@ -36,8 +36,16 @@ env:
   value: /hadoop-data/data/tephra
 - name: HBASE_CONF_hbase_master_info_port
   value: "{{ .Values.stackgraph.livenessProbe.httpPort }}"
+  # We force sync on hbase to improve durability in the mono pod
+- name: HBASE_CONF_hbase_wal_hsync
+  value: "true"
+- name: HBASE_CONF_hbase_master_store_region_wal_hsync
+  value: "true"
+# This setting is already true in the default master conf, if ever we want to reduce durability, better not touch this one.
+- name: HBASE_CONF_hbase_procedure_store_wal_use_hsync
+  value: "true"
 ports:
-{{- range untilStep 10125 10225 1 }}
+{{- range untilStep 10125 10127 1 }}
 - containerPort: {{ . }}
   name: ftp-{{ . }}
 {{- end }}
