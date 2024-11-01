@@ -77,7 +77,7 @@ volumeMounts:
 {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
 {{ include "stackstate.stackpacks.volumeMount" . }}
 {{- end }}
-{{- if eq .Values.deployment.mode "Mono" }}
+{{- if eq .Values.hbase.deployment.mode "Mono" }}
 {{ include "stackstate.stackpacks.local.volumeMount" . }}
 {{- end }}
 - name: config-secrets-volume
@@ -172,7 +172,7 @@ spec:
       {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
       {{ include "stackstate.stackpacks.volume" . | nindent 6 }}
       {{- end }}
-      {{- if eq .Values.deployment.mode "Mono" }}
+      {{- if eq .Values.hbase.deployment.mode "Mono" }}
       {{ include "stackstate.stackpacks.local.volume" . | nindent 6 }}
       {{- end }}
 {{- end -}}
