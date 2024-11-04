@@ -53,9 +53,9 @@ func TestStackPackConfigRenderingServer(t *testing.T) {
 }
 
 func TestStackPackConfigRenderingApiWithMonoHbase(t *testing.T) {
-	RunSecretsConfigTest(t, "suse-observability-api", []string{"values/stackpack_config_mono_hbase.yaml"}, expectedStackPackConfigMonoHbase)
+	RunConfigMapTest(t, "suse-observability-api", []string{"values/stackpack_config_mono_hbase.yaml"}, expectedStackPackConfigMonoHbase)
 }
 
 func TestStackPackConfigRenderingServerWithMonoHbase(t *testing.T) {
-	RunSecretsConfigTest(t, "suse-observability-server", []string{"values/stackpack_config_mono_hbase.yaml", "values/split_disabled.yaml"}, expectedStackPackConfigMonoHbase)
+	RunConfigMapTest(t, "suse-observability-server", []string{"values/stackpack_config_mono_hbase.yaml", "values/split_disabled.yaml"}, expectedStackPackConfigMonoHbase)
 }

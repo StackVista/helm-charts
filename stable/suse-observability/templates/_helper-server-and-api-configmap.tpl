@@ -226,8 +226,11 @@ Authentication config
   {{- if not .roles -}}
   {{- printf "No roles specified for user %s" .username | fail -}}
   {{- end }}
-  { username = {{ .username | required "A login requires a username" | quote }},
-    password = ${file_{{ regexReplaceAll "[^A-Za-z0-9]" (.username | required "A login requires a username") "_" }}_password},
+  {{- if not (regexMatch "^[A-Za-z0-9_]+$" (.username | required "A login requires a username")) }}
+    {{ printf "Only alphanumeric and _ are allowed for user names: %s." .username | fail }}
+  {{- end }}
+  { username = {{ .username | quote }},
+    password = ${file_{{ .username }}_password},
     roles = {{ .roles | toJson }} },
 {{- end }}
 ]

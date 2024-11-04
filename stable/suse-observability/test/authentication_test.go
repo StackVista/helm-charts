@@ -146,8 +146,8 @@ func TestAuthenticationKeycloakInvalid(t *testing.T) {
 }
 
 const expectedFileAuthConfig = `stackstate.api.authentication.authServer.stackstateAuthServer.logins = [
-  { username = "administrator@company.com",
-    password = ${file_administrator_company_com_password},
+  { username = "administrator",
+    password = ${file_administrator_password},
     roles = ["stackstate-admin"] },
   { username = "guest1",
     password = ${file_guest1_password},
@@ -161,10 +161,10 @@ const expectedFileAuthConfig = `stackstate.api.authentication.authServer.stackst
 ]`
 
 var expectedFileAuthSecret = map[string]string{
-	"file_administrator_company_com_password": "098f6bcd4621d373cade4e832627b4f6",
-	"file_guest1_password":                    "098f6bcd4621d373cade4e832627b4f6",
-	"file_guest2_password":                    "098f6bcd4621d373cade4e832627b4f6",
-	"file_maintainer_password":                "098f6bcd4621d373cade4e832627b4f6",
+	"file_administrator_password": "098f6bcd4621d373cade4e832627b4f6",
+	"file_guest1_password":        "098f6bcd4621d373cade4e832627b4f6",
+	"file_guest2_password":        "098f6bcd4621d373cade4e832627b4f6",
+	"file_maintainer_password":    "098f6bcd4621d373cade4e832627b4f6",
 }
 
 const expectedFileEnabled = `stackstate.api.authentication.authServer.authServerType = [stackstateAuthServer, k8sServiceAccountAuthServer]`
@@ -190,6 +190,10 @@ func TestAuthenticationFileInvalid(t *testing.T) {
 
 	err = helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/file_authentication_no_password.yaml")
 	require.Contains(t, err.Error(), "A login requires a password hash")
+
+	err = helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/file_authentication_invalid.yaml")
+	require.Contains(t, err.Error(), "Only alphanumeric and _ are allowed for user names: administrator@mycompany.com.")
+
 }
 
 const expectedFallbackAuthConfig = `stackstate.api.authentication.authServer.stackstateAuthServer {
