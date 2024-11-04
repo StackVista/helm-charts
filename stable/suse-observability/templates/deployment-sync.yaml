@@ -49,8 +49,6 @@ env:
   value: nobody
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
-- name: CONFIG_FORCE_stackstate_stackPacks_localStackPacksUri
-  value: "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
   # No need to keep data for a long time, data is very ephemeral.
   # Only stuff that is used often is cached
 - name: CONFIG_FORCE_stackgraph_vertex_cache_expireAfterSeconds

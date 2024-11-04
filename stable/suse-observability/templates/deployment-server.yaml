@@ -78,6 +78,9 @@ volumeMounts:
 {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
 {{ include "stackstate.stackpacks.volumeMount" . }}
 {{- end }}
+{{- if eq .Values.hbase.deployment.mode "Mono" }}
+{{ include "stackstate.stackpacks.local.volumeMount" . }}
+{{- end }}
 {{- include "stackstate.service.container.volumes" . }}
 {{- end -}}
 
@@ -166,6 +169,9 @@ spec:
       {{- include "stackstate.service.pod.volumes" (dict "pod_name" "server" "root" . ) | nindent 6 }}
       {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
       {{ include "stackstate.stackpacks.volume" . | nindent 6 }}
+      {{- end }}
+      {{- if eq .Values.hbase.deployment.mode "Mono" }}
+      {{ include "stackstate.stackpacks.local.volume" . | nindent 6 }}
       {{- end }}
 {{- end -}}
 

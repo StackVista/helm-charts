@@ -264,6 +264,24 @@ VolumeMount for stackpacks
   mountPath: /var/stackpacks
 {{- end -}}
 
+
+{{/*
+Volume for stackpacks local
+*/}}
+{{- define "stackstate.stackpacks.local.volume" -}}
+- name: stackpacks-local
+  persistentVolumeClaim:
+    claimName: {{ template "common.fullname.short" . }}-stackpacks-local
+{{- end -}}
+
+{{/*
+VolumeMount for stackpacks local
+*/}}
+{{- define "stackstate.stackpacks.local.volumeMount" -}}
+- name: stackpacks-local
+  mountPath: /var/stackpacks_local
+{{- end -}}
+
 {{/*
 yaml vars
 */}}
