@@ -298,7 +298,7 @@ spec:
             - '/backup-restore-scripts/restore-configuration-backup.sh'
           envFrom:
             - secretRef:
-      name: {{ include "stackstate.secret.name.license" .  }}
+                name: {{ include "stackstate.secret.name.license" .  }}
           env:
             {{- include "stackstate.backup.envvars" . | nindent 12 }}
             {{- include "stackstate.baseurls.envvars" .  | nindent 12 }}

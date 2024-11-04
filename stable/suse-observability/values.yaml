@@ -2,7 +2,7 @@
 # StackState values #
 #####################
 global:
-  # global.receiverApiKey -- API key to be used by the Receiver; if no key is provided.
+  # global.receiverApiKey -- API key to be used by the Receiver. This setting is deprectaed in favor of stackstate.apiKey.key
   receiverApiKey: ""
   # global.imagePullSecrets -- List of image pull secret names to be used by all images across all charts.
   imagePullSecrets: []
