@@ -45,6 +45,15 @@ ports:
 - containerPort: 9404
   name: metrics
 {{- end }}
+lifecycle:
+  preStop:
+    exec:
+      command:
+        - /bin/bash
+        - -c
+        - |
+          unset HADOOP_OPTS
+          hdfs dfsadmin -finalizeUpgrade > /hadoop-data/finalize_log.txt
 livenessProbe:
   httpGet:
     path: /
