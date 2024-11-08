@@ -2453,10 +2453,10 @@ clickhouse:
     size: 50Gi
   resources:
     limits:
-      memory: "1500Mi"
+      memory: "4Gi"
       cpu: "1000m"
     requests:
-      memory: "1Gi"
+      memory: "4Gi"
       cpu: "500m"
   # clickhouse.zookeeper.enabled -- Disable Zookeeper from the clickhouse chart **Don't change unless otherwise specified**.
   zookeeper:
