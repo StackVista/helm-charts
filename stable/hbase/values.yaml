@@ -217,7 +217,7 @@ hbase:
     # hbase.zookeeper.quorum -- Zookeeper quorum used for single-node Zookeeper installations; not used if `zookeeper.replicaCount` is more than `1`.
     quorum: hbase
 hdfs:
-  version: java11-8-949969df
+  version: java11-8-90a9d727
   # hdfs.minReplication -- Sets the minimum synchronous replication that the namenode will enforce when writing a block. This gives guarantees about the amount of copies of a single block. (If hdfs.datanode.replicaCount is set to a value less than this, the replicationfactor will be equal to the replicaCount.)
   minReplication: 1
   scc:

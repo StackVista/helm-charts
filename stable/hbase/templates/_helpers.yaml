@@ -254,7 +254,7 @@ Derive hadoop version
 */}}
 {{- define "hdfs.version" -}}
 {{- if eq .Values.version "2.5" }}
-{{- "3.3.5" }}
+{{- "3.4.1" }}
 {{- else }}
 {{- "2.10.2" }}
 {{- end }}
