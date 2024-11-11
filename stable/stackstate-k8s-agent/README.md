@@ -167,7 +167,7 @@ stackstate/stackstate-k8s-agent
 | logsAgent.enabled | bool | `true` | Enable / disable k8s pod log collection |
 | logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | logsAgent.image.repository | string | `"stackstate/promtail"` | Base container image repository. |
-| logsAgent.image.tag | string | `"2.9.8-5b179aee"` | Default container image tag. |
+| logsAgent.image.tag | string | `"2.9.10-5400572f"` | Default container image tag. |
 | logsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | logsAgent.priorityClassName | string | `""` | Priority class for logsAgent pods. |
 | logsAgent.resources.limits.cpu | string | `"1300m"` | CPU resource limits. |

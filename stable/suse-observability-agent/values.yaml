@@ -443,7 +443,7 @@ logsAgent:
     # logsAgent.image.repository -- Base container image repository.
     repository: stackstate/promtail
     # logsAgent.image.tag -- Default container image tag.
-    tag: 2.9.8-5b179aee
+    tag: 2.9.10-5400572f
     # logsAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
