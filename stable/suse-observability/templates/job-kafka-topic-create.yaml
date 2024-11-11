@@ -51,7 +51,7 @@ metadata:
   {{- if .Values.deployment.compatibleWithArgoCD }}
   generateName: topic-create-
   {{- else }}
-  name: {{ template "common.fullname.short" . }}-topic-create-{{ now | date "20060102t150405" }}
+  name: {{ template "common.fullname.short" . }}-topic-create-{{ now | date "02t150405" }}
   {{- end }}
   labels:
     app.kubernetes.io/component: topic-create

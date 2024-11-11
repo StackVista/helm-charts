@@ -5,7 +5,7 @@ metadata:
   {{- if .Values.deployment.compatibleWithArgoCD }}
   generateName: backup-init-
   {{- else }}
-  name: {{ template "common.fullname.short" . }}-backup-init-{{ now | date "20060102t150405" }}
+  name: {{ template "common.fullname.short" . }}-backup-init-{{ now | date "02t150405" }}
   {{- end }}
   labels:
     app.kubernetes.io/component: backup
