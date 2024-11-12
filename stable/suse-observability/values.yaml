@@ -1425,14 +1425,22 @@ stackstate:
     enabled: false
     # stackstate.email.fromExternalSecret -- Use an external secret for the email configuration. This suppresses secret creation by StackState and gets the data from the secret with the provided name.
     fromExternalSecret:
+    # stackstate.email.smtp -- Use authentication for SMTP configuration for StackState
     smtpAuth: true
+    # stackstate.email.smtpSslEnable -- Enable SSL for SMTP configuration for StackState
     smtpSslEnable: true
+    # stackstate.email.sender -- Email sender mail address
     sender: ""
     server:
+      # stackstate.email.server.protocol -- Email server protocol
       protocol: smtp
+      # stackstate.email.server.host -- Email server host
       host: ""
+      # stackstate.email.server.port -- Email server port
       port: 587
+      # stackstate.email.server.username -- Email server username
       username: ""
+      # stackstate.email.server.password -- Email server password
       password: ""
   # stackstate.java -- Extra Java configuration for StackState
   java:
