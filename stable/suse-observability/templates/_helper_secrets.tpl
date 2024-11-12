@@ -35,5 +35,5 @@ Secret for auth.
 Secret for email.
 */}}
 {{- define "stackstate.secret.name.email" -}}
-{{ include "stackstate.secret.externalOrInternal" (merge (dict "externalSecret" .Values.stackstate.email.fromExternalSecret "internalSecretName" "email") .) | quote }}
+{{ include "stackstate.secret.externalOrInternal" (merge (dict "externalSecret" .Values.stackstate.email.server.auth.fromExternalSecret "internalSecretName" "email") .) | quote }}
 {{- end }}

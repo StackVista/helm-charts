@@ -1423,8 +1423,6 @@ stackstate:
   email:
     # stackstate.email.enabled -- Enable email notifications
     enabled: false
-    # stackstate.email.fromExternalSecret -- Use an external secret for the email configuration. This suppresses secret creation by StackState and gets the data from the secret with the provided name.
-    fromExternalSecret:
     additionalProperties:
       "mail.smtp.auth": "true"
       "mail.smtp.starttls.enable": "true"
@@ -1437,10 +1435,13 @@ stackstate:
       host: ""
       # stackstate.email.server.port -- Email server port
       port: 587
-      # stackstate.email.server.username -- Email server username
-      username: ""
-      # stackstate.email.server.password -- Email server password
-      password: ""
+      auth:
+        # stackstate.email.auth.fromExternalSecret -- Use an external secret for the email configuration. This suppresses secret creation by StackState and gets the data from the secret with the provided name.
+        fromExternalSecret:
+        # stackstate.email.server.auth.username -- Email server username
+        username: ""
+        # stackstate.email.server.auth.password -- Email server password
+        password: ""
   # stackstate.java -- Extra Java configuration for StackState
   java:
     # stackstate.java.trustStore -- Java TrustStore (cacerts) file to use

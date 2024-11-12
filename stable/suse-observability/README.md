@@ -877,15 +877,14 @@ stackstate/stackstate
 | stackstate.components.wait.image.tag | string | `"1.0.10-025450d9"` | Container image tag for wait containers. |
 | stackstate.deployment.edition | string | `"Prime"` | StackState edition, one of 'Community' or 'Prime' |
 | stackstate.deployment.mode | string | `"SelfHosted"` | Deployment mode of StackState, possible values are 'Saas' and 'SelfHosted' |
-| stackstate.email | object | `{"additionalProperties":{"mail.smtp.auth":"true","mail.smtp.starttls.enable":"true"},"enabled":false,"fromExternalSecret":null,"sender":"","server":{"host":"","password":"","port":587,"protocol":"smtp","username":""}}` | Email configuration for StackState |
+| stackstate.email | object | `{"additionalProperties":{"mail.smtp.auth":"true","mail.smtp.starttls.enable":"true"},"enabled":false,"sender":"","server":{"auth":{"fromExternalSecret":null,"password":"","username":""},"host":"","port":587,"protocol":"smtp"}}` | Email configuration for StackState |
 | stackstate.email.enabled | bool | `false` | Enable email notifications |
-| stackstate.email.fromExternalSecret | string | `nil` | Use an external secret for the email configuration. This suppresses secret creation by StackState and gets the data from the secret with the provided name. |
 | stackstate.email.sender | string | `""` | Email sender mail address |
+| stackstate.email.server.auth.password | string | `""` | Email server password |
+| stackstate.email.server.auth.username | string | `""` | Email server username |
 | stackstate.email.server.host | string | `""` | Email server host |
-| stackstate.email.server.password | string | `""` | Email server password |
 | stackstate.email.server.port | int | `587` | Email server port |
 | stackstate.email.server.protocol | string | `"smtp"` | Email server protocol |
-| stackstate.email.server.username | string | `""` | Email server username |
 | stackstate.experimental.enableVMAgent | bool | `true` |  |
 | stackstate.experimental.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |
 | stackstate.experimental.storeTransactionLogsToPVC.enabled | boolean | `false` | Whether the transcation logs for some services, API, Checks, HealthSync,State and Sync have to be stored to PVCs instead of pod ephemeral storage. |
