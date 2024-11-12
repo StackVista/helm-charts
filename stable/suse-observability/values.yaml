@@ -1425,10 +1425,9 @@ stackstate:
     enabled: false
     # stackstate.email.fromExternalSecret -- Use an external secret for the email configuration. This suppresses secret creation by StackState and gets the data from the secret with the provided name.
     fromExternalSecret:
-    # stackstate.email.smtp -- Use authentication for SMTP configuration for StackState
-    smtpAuth: true
-    # stackstate.email.smtpSslEnable -- Enable SSL for SMTP configuration for StackState
-    smtpSslEnable: true
+    additionalProperties:
+      "mail.smtp.auth": "true"
+      "mail.smtp.starttls.enable": "true"
     # stackstate.email.sender -- Email sender mail address
     sender: ""
     server:

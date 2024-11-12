@@ -308,10 +308,7 @@ yaml vars
 {{- if .Values.stackstate.email.enabled }}
 stackstate{
   email {
-    properties {
-      "mail.smtp.auth" = {{ .Values.stackstate.email.smtpAuth | toString | quote}}
-      "mail.smtp.ssl.enable" = {{ .Values.stackstate.email.smtpSslEnable | toString | quote }}
-    }
+    properties = {{ .Values.stackstate.email.additionalProperties | toJson }}
     sender = {{ .Values.stackstate.email.sender | quote }}
     server {
       protocol = {{ .Values.stackstate.email.server.protocol | quote }}
