@@ -1419,6 +1419,21 @@ stackstate:
     mode: "SelfHosted"
     # stackstate.deployment.edition -- StackState edition, one of 'Community' or 'Prime'
     edition: "Prime"
+  # stackstate.email -- Email configuration for StackState
+  email:
+    # stackstate.email.enabled -- Enable email notifications
+    enabled: false
+    # stackstate.email.fromExternalSecret -- Use an external secret for the email configuration. This suppresses secret creation by StackState and gets the data from the secret with the provided name.
+    fromExternalSecret:
+    smtpAuth: true
+    smtpSslEnable: true
+    sender: ""
+    server:
+      protocol: smtp
+      host: ""
+      port: 587
+      username: ""
+      password: ""
   # stackstate.java -- Extra Java configuration for StackState
   java:
     # stackstate.java.trustStore -- Java TrustStore (cacerts) file to use

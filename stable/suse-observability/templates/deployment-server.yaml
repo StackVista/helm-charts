@@ -20,6 +20,8 @@ envFrom:
       name: {{ include "stackstate.secret.name.apiKey" .  }}
   - secretRef:
       name: {{ include "stackstate.secret.name.auth" .  }}
+  - secretRef:
+      name: {{ include "stackstate.secret.name.email" .  }}
 env:
 {{- $serviceConfig := dict "ServiceName" "server" "ServiceConfig" .Values.stackstate.components.server }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}

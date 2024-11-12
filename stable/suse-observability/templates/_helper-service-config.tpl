@@ -303,3 +303,24 @@ yaml vars
 {{- end -}}
 
 {{- end -}}
+
+{{- define "stackstate.config.email" -}}
+{{- if .Values.stackstate.email.enabled }}
+stackstate{
+  email {
+    properties {
+      "mail.smtp.auth" = {{ .Values.stackstate.email.smtpAuth | toString | quote}}
+      "mail.smtp.ssl.enable" = {{ .Values.stackstate.email.smtpSslEnable | toString | quote }}
+    }
+    sender = {{ .Values.stackstate.email.sender | quote }}
+    server {
+      protocol = {{ .Values.stackstate.email.server.protocol | quote }}
+      host = {{ .Values.stackstate.email.server.host | quote }}
+      port = {{ .Values.stackstate.email.server.port | quote }}
+      username = ${SMTP_USER_NAME}
+      password = ${SMTP_PASSWORD}
+    }
+  }
+}
+{{- end -}}
+{{- end -}}

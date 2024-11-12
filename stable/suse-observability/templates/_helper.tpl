@@ -210,6 +210,13 @@ checksum/auth-env: {{ include (print $.Template.BasePath "/secret-auth.yaml") . 
 {{- end -}}
 
 {{/*
+Email secret checksum annotations
+*/}}
+{{- define "stackstate.email.secret.checksum" -}}
+checksum/auth-env: {{ include (print $.Template.BasePath "/secret-email.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
 Initializer secret checksum annotations
 */}}
 {{- define "stackstate.initializer.secret.checksum" -}}

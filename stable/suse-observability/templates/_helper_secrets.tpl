@@ -29,3 +29,11 @@ Secret for auth.
 {{- define "stackstate.secret.name.auth" -}}
 {{ include "stackstate.secret.externalOrInternal" (merge (dict "externalSecret" .Values.stackstate.authentication.fromExternalSecret "internalSecretName" "auth") .) | quote }}
 {{- end }}
+
+
+{{/*
+Secret for email.
+*/}}
+{{- define "stackstate.secret.name.email" -}}
+{{ include "stackstate.secret.externalOrInternal" (merge (dict "externalSecret" .Values.stackstate.email.fromExternalSecret "internalSecretName" "email") .) | quote }}
+{{- end }}

@@ -90,6 +90,7 @@ stackstate.webUIConfig.supportMode = "{{- .Values.stackstate.components.api.supp
 stackstate.deploymentMode = "{{- .Values.stackstate.deployment.mode -}}"
 stackstate.edition = "{{- .Values.stackstate.deployment.edition -}}"
 {{- include "stackstate.service.configmap.clickhouseconfig" . }}
+{{- include "stackstate.config.email" . }}
 
 {{/*
 Authentication config

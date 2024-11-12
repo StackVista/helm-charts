@@ -877,6 +877,9 @@ stackstate/stackstate
 | stackstate.components.wait.image.tag | string | `"1.0.10-025450d9"` | Container image tag for wait containers. |
 | stackstate.deployment.edition | string | `"Prime"` | StackState edition, one of 'Community' or 'Prime' |
 | stackstate.deployment.mode | string | `"SelfHosted"` | Deployment mode of StackState, possible values are 'Saas' and 'SelfHosted' |
+| stackstate.email | object | `{"enabled":false,"fromExternalSecret":null,"sender":"","server":{"host":"","password":"","port":587,"protocol":"smtp","username":""},"smtpAuth":true,"smtpSslEnable":true}` | Email configuration for StackState |
+| stackstate.email.enabled | bool | `false` | Enable email notifications |
+| stackstate.email.fromExternalSecret | string | `nil` | Use an external secret for the email configuration. This suppresses secret creation by StackState and gets the data from the secret with the provided name. |
 | stackstate.experimental.enableVMAgent | bool | `true` |  |
 | stackstate.experimental.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |
 | stackstate.experimental.storeTransactionLogsToPVC.enabled | boolean | `false` | Whether the transcation logs for some services, API, Checks, HealthSync,State and Sync have to be stored to PVCs instead of pod ephemeral storage. |

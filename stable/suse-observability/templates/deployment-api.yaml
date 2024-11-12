@@ -29,6 +29,8 @@ envFrom:
       name: {{ include "stackstate.secret.name.apiKey" .  }}
   - secretRef:
       name: {{ include "stackstate.secret.name.auth" .  }}
+  - secretRef:
+      name: {{ include "stackstate.secret.name.email" .  }}
 env:
 {{- $serviceConfig := dict "ServiceName" "api" "ServiceConfig" .Values.stackstate.components.api }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.api.image.tag }}
@@ -129,6 +131,7 @@ spec:
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.apiKey.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.email.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.auth.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.api.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.api.configmap.checksum" . | nindent 8 }}
