@@ -59,7 +59,7 @@
       'receiveramplifier',
       'sandbox-operator',
       'sock-shop',
-      'tenantmanager',
+      'tenantprovisioning',
     ],
   },
   rules: {

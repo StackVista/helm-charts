@@ -8,7 +8,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-    {{- include "tenantmanager-labels" . | nindent 6 }}
+    {{- include "tenantprovisioning-labels" . | nindent 6 }}
   replicas: {{ .Values.replicaCount | int }}
   template:
     metadata:
@@ -17,14 +17,14 @@ spec:
         checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
       labels:
         {{- include "labels" . | nindent 8 }}
-        {{- include "tenantmanager-labels" . | nindent 8 }}
+        {{- include "tenantprovisioning-labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "fullname" . }}
       {{- include "image-pull-secrets" . | nindent 6 }}
       containers:
       - name: main
-        image: {{ include "image-registry" . }}/{{ .Values.image.repository }}:{{ .Values.image.tag | toString }}
-        command: ["/app/o11y-tooling", "tenantmanager", "--config", "/config/tenantmanager.yaml"]
+        image: {{ printf "%s/%s:%s" (include "image-registry" .) .Values.image.repository .Values.image.tag }}
+        command: ["/app/o11y-tooling", "tenantprovisioning", "--config", "/config/tenantprovisioning.yaml"]
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         envFrom:
         - secretRef:
@@ -37,8 +37,8 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: config
-          mountPath: /config/tenantmanager.yaml
-          subPath: tenantmanager.yaml
+          mountPath: /config/tenantprovisioning.yaml
+          subPath: tenantprovisioning.yaml
         - name: private-gpg-key
           mountPath: /config/private.key
           subPath: private.key

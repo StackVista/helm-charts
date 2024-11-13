@@ -6,7 +6,7 @@ metadata:
   labels:
 {{- include "labels" . | nindent 4 }}
 data:
-  tenantmanager.yaml: |
+  tenantprovisioning.yaml: |
     ListenAddr: "{{ .Values.config.ListenAddr | required "config.ListenAddr is required" }}"
     TmpDir: "{{ .Values.config.TmpDir | required "config.TmpDir is required" }}"
     Git:

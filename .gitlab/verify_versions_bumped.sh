@@ -7,6 +7,12 @@ set -euo pipefail
 
 chart="$1"
 
+check_if_helm_chart_exists=$(git ls-tree -r "helm/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" -- "stable/${chart}/Chart.yaml")
+if [ -z "$check_if_helm_chart_exists" ]; then
+  echo "Chart.yaml doesnt exist in the target branch, probably it is the first commit for the chart. Skipping version check!!!"
+  exit 0
+fi
+
 remote_version=$(git show "helm/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}:stable/${chart}/Chart.yaml" | yq ".version")
 new_version=$(yq ".version" "stable/${chart}/Chart.yaml")
 

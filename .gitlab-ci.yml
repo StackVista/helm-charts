@@ -919,11 +919,11 @@ build_suse-observability-values:
     - helm dependencies build stable/suse-observability-values
     - mkdir -p stable/suse-observability-values/build; helm package --destination stable/suse-observability-values/build stable/suse-observability-values
   stage: build
-build_tenantmanager:
+build_tenantprovisioning:
   artifacts:
     paths:
-      - stable/tenantmanager/charts/
-      - stable/tenantmanager/build/
+      - stable/tenantprovisioning/charts/
+      - stable/tenantprovisioning/build/
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
@@ -939,12 +939,12 @@ build_tenantmanager:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - changes:
-        - stable/tenantmanager/**/*
+        - stable/tenantprovisioning/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/tenantmanager/Chart.yaml  | xargs -I % helm dependencies build stable/tenantmanager/%
-    - helm dependencies build stable/tenantmanager
-    - mkdir -p stable/tenantmanager/build; helm package --destination stable/tenantmanager/build stable/tenantmanager
+    - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/tenantprovisioning/Chart.yaml  | xargs -I % helm dependencies build stable/tenantprovisioning/%
+    - helm dependencies build stable/tenantprovisioning
+    - mkdir -p stable/tenantprovisioning/build; helm package --destination stable/tenantprovisioning/build stable/tenantprovisioning
   stage: build
 build_trafficmirror:
   artifacts:
@@ -1352,16 +1352,16 @@ check_suse-observability-values_version:
   script:
     - .gitlab/verify_versions_bumped.sh suse-observability-values
   stage: validate
-check_tenantmanager_version:
+check_tenantprovisioning_version:
   before_script:
     - .gitlab/validate_before_script.sh
   image: quay.io/helmpack/chart-testing:v3.10.1
   rules:
     - changes:
-        - stable/tenantmanager/**/*
+        - stable/tenantprovisioning/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - .gitlab/verify_versions_bumped.sh tenantmanager
+    - .gitlab/verify_versions_bumped.sh tenantprovisioning
   stage: validate
 check_trafficmirror_version:
   before_script:
@@ -2871,7 +2871,7 @@ push_suse-observability_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/suse-observability
-push_tenantmanager_to_internal:
+push_tenantprovisioning_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
@@ -2883,21 +2883,21 @@ push_tenantmanager_to_internal:
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
     - changes:
-        - stable/tenantmanager/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-tenantmanager]/
+        - stable/tenantprovisioning/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-tenantprovisioning]/
       when: on_success
     - changes:
-        - stable/tenantmanager/**/*
+        - stable/tenantprovisioning/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
-    - if: $CI_COMMIT_TAG =~ /^tenantmanager\/.*/
+    - if: $CI_COMMIT_TAG =~ /^tenantprovisioning\/.*/
       when: on_success
   script:
     - helm dependencies update ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
   stage: push-charts-to-internal
   variables:
-    CHART: stable/tenantmanager
+    CHART: stable/tenantprovisioning
 push_test_charts:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   rules:
@@ -3476,16 +3476,16 @@ test_suse-observability-values:
   stage: test
   variables:
     CGO_ENABLED: 0
-test_tenantmanager:
+test_tenantprovisioning:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
   rules:
     - changes:
-        - stable/tenantmanager/**/*
+        - stable/tenantprovisioning/**/*
       exists:
-        - stable/tenantmanager/test/*.go
+        - stable/tenantprovisioning/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - go test ./stable/tenantmanager/test/...
+    - go test ./stable/tenantprovisioning/test/...
   stage: test
   variables:
     CGO_ENABLED: 0
@@ -4149,20 +4149,20 @@ validate_suse-observability-values:
     - if [ -f stable/suse-observability-values/ci/default-values.yaml ]; then helm lint stable/suse-observability-values --values stable/suse-observability-values/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
-validate_tenantmanager:
+validate_tenantprovisioning:
   before_script:
     - .gitlab/validate_before_script.sh
   image: quay.io/helmpack/chart-testing:v3.10.1
   rules:
     - changes:
-        - stable/tenantmanager/**/*
+        - stable/tenantprovisioning/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/tenantmanager/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/tenantmanager/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/tenantmanager/values.yaml
-    - if [ -f stable/tenantmanager/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/tenantmanager/ci/default-values.yaml; fi
-    - if [ -f stable/tenantmanager/ci/default-values.yaml ]; then helm lint stable/tenantmanager --values stable/tenantmanager/ci/default-values.yaml; fi
+    - yamale --schema /etc/ct/chart_schema.yaml stable/tenantprovisioning/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/tenantprovisioning/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/tenantprovisioning/values.yaml
+    - if [ -f stable/tenantprovisioning/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/tenantprovisioning/ci/default-values.yaml; fi
+    - if [ -f stable/tenantprovisioning/ci/default-values.yaml ]; then helm lint stable/tenantprovisioning --values stable/tenantprovisioning/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 validate_trafficmirror:

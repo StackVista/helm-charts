@@ -31,9 +31,9 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "tenantmanager-labels" -}}
-app.kubernetes.io/component: tenantmanager
-app.kubernetes.io/name: tenantmanager
+{{- define "tenantprovisioning-labels" -}}
+app.kubernetes.io/component: tenantprovisioning
+app.kubernetes.io/name: tenantprovisioning
 {{- end -}}
 
 {{/*

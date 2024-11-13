@@ -7,4 +7,4 @@ icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
 maintainers:
   - name: Stackstate Ops Team
     email: ops@stackstate.com
-name: tenantmanager
+name: tenantprovisioning
