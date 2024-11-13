@@ -24,7 +24,7 @@ args:
 - notification
 envFrom:
   - secretRef:
-    name: {{ include "stackstate.secret.name.license" .  }}
+      name: {{ include "stackstate.secret.name.license" .  }}
   {{- if .Values.stackstate.email.enabled }}
   - secretRef:
       name: {{ include "stackstate.secret.name.email" .  }}
