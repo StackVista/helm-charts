@@ -25,8 +25,10 @@ args:
 envFrom:
   - secretRef:
     name: {{ include "stackstate.secret.name.license" .  }}
+  {{- if .Values.stackstate.email.enabled }}
   - secretRef:
-    name: {{ include "stackstate.secret.name.email" .  }}
+      name: {{ include "stackstate.secret.name.email" .  }}
+  {{- end }}
 env:
 {{- $serviceConfig := dict "ServiceName" "notification" "ServiceConfig" .Values.stackstate.components.notification }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.notification.image.tag }}
