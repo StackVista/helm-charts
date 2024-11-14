@@ -24,7 +24,7 @@ spec:
       containers:
       - name: main
         image: {{ printf "%s/%s:%s" (include "image-registry" .) .Values.image.repository .Values.image.tag }}
-        command: ["/app/o11y-tooling", "tenantprovisioning", "--config", "/config/tenantprovisioning.yaml"]
+        command: ["/app/o11y-tooling", "tenant-provisioning", "--config", "/config/tenantprovisioning.yaml"]
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         envFrom:
         - secretRef:
