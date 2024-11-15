@@ -2641,7 +2641,7 @@ opentelemetry-collector:
     # opentelemetry-collector.image.repository -- Repository where to get the image from.
     repository: stackstate/sts-opentelemetry-collector
     # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: v0.0.14
+    tag: v0.0.15
   command:
     name: usr/bin/sts-opentelemetry-collector
   # opentelemetry-collector.fullnameOverride -- Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
@@ -2690,6 +2690,7 @@ opentelemetry-collector:
           max_items: 50000
       forward:
     processors:
+      stsusage: {}
       batch:
         timeout: 2s
         send_batch_size: 100000
@@ -2774,6 +2775,7 @@ opentelemetry-collector:
           receivers:
             - forward
           processors:
+            - stsusage
             - resource/removeStsApiKey
           exporters:
             - clickhousests

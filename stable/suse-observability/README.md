@@ -382,6 +382,7 @@ stackstate/stackstate
 | opentelemetry-collector.config.processors.resource/addStsApiKey.attributes[0].key | string | `"sts_api_key"` |  |
 | opentelemetry-collector.config.processors.resource/removeStsApiKey.attributes[0].action | string | `"delete"` |  |
 | opentelemetry-collector.config.processors.resource/removeStsApiKey.attributes[0].key | string | `"sts_api_key"` |  |
+| opentelemetry-collector.config.processors.stsusage | object | `{}` |  |
 | opentelemetry-collector.config.processors.transform/semconv.error_mode | string | `"ignore"` |  |
 | opentelemetry-collector.config.receivers.jaeger | string | `nil` |  |
 | opentelemetry-collector.config.receivers.otlp.protocols.grpc.auth.authenticator | string | `"ingestion_api_key_auth"` |  |
@@ -412,14 +413,15 @@ stackstate/stackstate
 | opentelemetry-collector.config.service.pipelines.traces.processors[2] | string | `"batch"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.receivers[0] | string | `"otlp"` |  |
 | opentelemetry-collector.config.service.pipelines.traces/clickhouse.exporters[0] | string | `"clickhousests"` |  |
-| opentelemetry-collector.config.service.pipelines.traces/clickhouse.processors[0] | string | `"resource/removeStsApiKey"` |  |
+| opentelemetry-collector.config.service.pipelines.traces/clickhouse.processors[0] | string | `"stsusage"` |  |
+| opentelemetry-collector.config.service.pipelines.traces/clickhouse.processors[1] | string | `"resource/removeStsApiKey"` |  |
 | opentelemetry-collector.config.service.pipelines.traces/clickhouse.receivers[0] | string | `"forward"` |  |
 | opentelemetry-collector.config.service.telemetry.metrics.address | string | `"0.0.0.0:8888"` |  |
 | opentelemetry-collector.extraEnvs | list | `[{"name":"API_URL","valueFrom":{"configMapKeyRef":{"key":"api.url","name":"suse-observability-otel-collector"}}},{"name":"INTAKE_URL","valueFrom":{"configMapKeyRef":{"key":"intake.url","name":"suse-observability-otel-collector"}}}]` | Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/). Contains API_URL with path to api server used to authorize requests |
 | opentelemetry-collector.fullnameOverride | string | `"suse-observability-otel-collector"` | Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | opentelemetry-collector.image.registry | string | `"quay.io"` |  |
 | opentelemetry-collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
-| opentelemetry-collector.image.tag | string | `"v0.0.14"` | Container image tag for 'opentelemetry-collector' containers. |
+| opentelemetry-collector.image.tag | string | `"v0.0.15"` | Container image tag for 'opentelemetry-collector' containers. |
 | opentelemetry-collector.mode | string | `"statefulset"` | deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset". |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.check_names" | string | `"[\"openmetrics\"]"` |  |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.init_configs" | string | `"[{}]"` |  |
