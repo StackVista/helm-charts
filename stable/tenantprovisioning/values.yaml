@@ -28,12 +28,12 @@ resources:
     # resources.limits.cpu -- CPU resource limits.
     cpu: "100m"
     # resources.limits.memory -- Memory resource limits.
-    memory: "256Mi"
+    memory: "384Mi"
   requests:
     # resources.requests.cpu -- CPU resource requests.
     cpu: "100m"
     # resources.requests.memory -- Memory resource requests.
-    memory: "256Mi"
+    memory: "384Mi"
 
 serviceAccount:
   # serviceAccount.annotations -- Extra annotations for the `ServiceAccount` object.
@@ -96,9 +96,28 @@ config:
   Clusters:
     # config.Clusters[0].Name -- cluster name.
   - Name:
-    # config.Clusters[0].Region -- cluster region.
-    Region:
     # config.Clusters[0].AvailabilityZones -- cluster availability zones.
     AvailabilityZones: []
+  AWS:
+    # config.AWS.Region -- Region to connect to
+    Region:
+    # config.AWS.SQSBaseEndpoint -- Endpoint of sqs to connect to, optional will default to aws endpoint
+    SQSBaseEndpoint:
+    # config.AWS.SQSBaseEndpoint -- Url of incoming provisioning queue
+    TenantProvisioningQueueURL:
+    # config.AWS.TenantProvisioningInternalWorkQueueURL -- Url of internal progress queue
+    TenantProvisioningInternalWorkQueueURL:
+    # config.AWS.TenantProvisioningStatusOutputQueueURL -- Url of output status
+    TenantProvisioningStatusOutputQueueURL:
+  ArgoCD:
+    # config.ArgoCD.ServerAddr -- Address of the argocd server of the form <server>:<port>, no protocol spec!
+    ServerAddr:
+    # config.ArgoCD.Insecure -- Do we allow insecure access?
+    Insecure: false
+    # config.ArgoCD.AuthToken -- Authentication token.
+    AuthToken:
+    # config.ArgoCD.GitRepo -- Git repo argo will pull, should be the git repo url as in config.Git.RepoURL but then how argo pulls it. This setting is separate because sometimes one uses https:// and the other git@ ssh style
+    GitRepo:
+
   # config.PrivateGPGKeyBase64Encoded -- Base64-encoded private GPG key to sign commits. Must not be protected with passphrase.
   PrivateGPGKeyBase64Encoded:

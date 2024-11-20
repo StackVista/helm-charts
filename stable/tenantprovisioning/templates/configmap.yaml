@@ -21,9 +21,20 @@ data:
     Clusters:
 {{- range $index, $cluster := .Values.config.Clusters }}
     - Name: "{{ $cluster.Name | required "config.Clusters[$index].Name is required" }}"
-      Region: "{{ $cluster.Region | required "config.Clusters[$index].Region is required" }}"
       AvailabilityZones:
 {{- range $zone := $cluster.AvailabilityZones }}
       - "{{ $zone | required "config.Clusters[$index].AvailabilityZones is required" }}"
 {{- end }}
 {{- end }}
+    AWS:
+      Region: "{{ .Values.config.AWS.Region | required "config.AWS.Region is required" }}"
+{{- if .Values.config.AWS.SQSBaseEndpoint }}
+      SQSBaseEndpoint: "{{ .Values.config.AWS.SQSBaseEndpoint }}"
+{{- end }}
+      TenantProvisioningQueueURL: "{{ .Values.config.AWS.TenantProvisioningQueueURL | required "config.AWS.TenantProvisioningQueueURL is required" }}"
+      TenantProvisioningInternalWorkQueueURL: "{{ .Values.config.AWS.TenantProvisioningInternalWorkQueueURL | required "config.AWS.TenantProvisioningInternalWorkQueueURL is required" }}"
+      TenantProvisioningStatusOutputQueueURL: "{{ .Values.config.AWS.TenantProvisioningStatusOutputQueueURL | required "config.AWS.TenantProvisioningStatusOutputQueueURL is required" }}"
+    ArgoCD:
+      ServerAddr: "{{ .Values.config.ArgoCD.ServerAddr | required "config.ArgoCD.ServerAddr is required" }}"
+      Insecure: {{ .Values.config.ArgoCD.Insecure | required "config.ArgoCD.Insecure is required" }}
+      GitRepo: {{ .Values.config.ArgoCD.GitRepo | required "config.ArgoCD.GitRepo is required" }}

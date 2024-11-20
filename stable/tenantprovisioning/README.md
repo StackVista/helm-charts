@@ -14,10 +14,18 @@ Create tenants manifests by Hubspot webhook.
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` | Affinity settings for pod assignment. |
-| config.Clusters | list | `[{"AvailabilityZones":[],"Name":null,"Region":null}]` | Clusters configuration. |
+| config.AWS.Region | string | `nil` | Region to connect to |
+| config.AWS.SQSBaseEndpoint | string | `nil` | Url of incoming provisioning queue |
+| config.AWS.TenantProvisioningInternalWorkQueueURL | string | `nil` | Url of internal progress queue |
+| config.AWS.TenantProvisioningQueueURL | string | `nil` |  |
+| config.AWS.TenantProvisioningStatusOutputQueueURL | string | `nil` | Url of output status |
+| config.ArgoCD.AuthToken | string | `nil` | Authentication token. |
+| config.ArgoCD.GitRepo | string | `nil` | Git repo argo will pull, should be the git repo url as in config.Git.RepoURL but then how argo pulls it. This setting is separate because sometimes one uses https:// and the other git@ ssh style |
+| config.ArgoCD.Insecure | bool | `false` | Do we allow insecure access? |
+| config.ArgoCD.ServerAddr | string | `nil` | Address of the argocd server of the form <server>:<port>, no protocol spec! |
+| config.Clusters | list | `[{"AvailabilityZones":[],"Name":null}]` | Clusters configuration. |
 | config.Clusters[0].AvailabilityZones | list | `[]` | cluster availability zones. |
 | config.Clusters[0].Name | string | `nil` | cluster name. |
-| config.Clusters[0].Region | string | `nil` | cluster region. |
 | config.GenericWebhookAuthToken | string | `nil` | Token to protect Generic webhook endpoint with. |
 | config.Git.Auth.Password | string | `nil` | Password for Git authentication. |
 | config.Git.Auth.Username | string | `nil` | Username for Git authentication. |
@@ -47,9 +55,9 @@ Create tenants manifests by Hubspot webhook.
 | nodeSelector | object | `{}` | Node labels for pod assignment. |
 | replicaCount | int | `1` | number of replicas to serve webhook |
 | resources.limits.cpu | string | `"100m"` | CPU resource limits. |
-| resources.limits.memory | string | `"256Mi"` | Memory resource limits. |
+| resources.limits.memory | string | `"384Mi"` | Memory resource limits. |
 | resources.requests.cpu | string | `"100m"` | CPU resource requests. |
-| resources.requests.memory | string | `"256Mi"` | Memory resource requests. |
+| resources.requests.memory | string | `"384Mi"` | Memory resource requests. |
 | securityContext.fsGroup | int | `1000` |  |
 | securityContext.runAsGroup | int | `1000` |  |
 | securityContext.runAsUser | int | `1000` |  |

@@ -16,5 +16,15 @@ config:
       Email: "john.doe@example.com"
   Clusters:
     - Name: "mock"
-      Region: "Europe"
       AvailabilityZones: ["eu-north-1a", "eu-north-1b", "eu-north-1c"]
+  AWS:
+    Region: "mock"
+    SQSBaseEndpoint: "mock"
+    TenantProvisioningQueueURL: "mock"
+    TenantProvisioningInternalWorkQueueURL: "mock"
+    TenantProvisioningStatusOutputQueueURL: "mock"
+  ArgoCD:
+    ServerAddr: "mock"
+    Insecure: False
+    AuthToken: "mock"
+    GitRepo: "git@gitlab.com/repo"
