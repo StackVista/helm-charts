@@ -71,10 +71,6 @@ config:
   ListenAddr: "0.0.0.0:8080"
   # config.TmpDir -- Temporary directory for the application.
   TmpDir: "/tmp"
-  # config.HubspotAPIToken -- Token to interact with Hubspot API.
-  HubspotAPIToken:
-  # config.HubspotClientSecret -- Secret to authenticate Hubspot webhook.
-  HubspotClientSecret:
   # config.GenericWebhookAuthToken -- Token to protect Generic webhook endpoint with.
   GenericWebhookAuthToken:
   Git:

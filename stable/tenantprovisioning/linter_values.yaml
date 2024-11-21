@@ -1,8 +1,6 @@
 config:
   ListenAddr: "127.0.0.1:8080"
   TmpDir: "/tmp"
-  HubspotAPIToken: "test"
-  HubspotClientSecret: "test"
   GenericWebhookAuthToken: "test"
   PrivateGPGKeyBase64Encoded: "SGVsbG8gd29ybGRcIVwhXCE="
   Git:

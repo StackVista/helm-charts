@@ -33,8 +33,6 @@ Create tenants manifests by Hubspot webhook.
 | config.Git.CommitAuthor.Email | string | `nil` | Email of the commit author. |
 | config.Git.CommitAuthor.Name | string | `nil` | Name of the commit author. |
 | config.Git.RepoURL | string | `nil` | URL of the Git repository. |
-| config.HubspotAPIToken | string | `nil` | Token to interact with Hubspot API. |
-| config.HubspotClientSecret | string | `nil` | Secret to authenticate Hubspot webhook. |
 | config.ListenAddr | string | `"0.0.0.0:8080"` | Address and port to listen on. |
 | config.PrivateGPGKeyBase64Encoded | string | `nil` | Base64-encoded private GPG key to sign commits. Must not be protected with passphrase. |
 | config.TmpDir | string | `"/tmp"` | Temporary directory for the application. |
@@ -65,4 +63,4 @@ Create tenants manifests by Hubspot webhook.
 | tolerations | list | `[]` | Toleration labels for pod assignment. |
 
 ## Overview
-tenantprovisioning accepts an HTTP webhook from Hubspot, generates tenants manifests for o11y-tenants repository and push them to Git.
+tenantprovisioning accepts an SQS data, generates tenants manifests for o11y-tenants repository and push them to Git.

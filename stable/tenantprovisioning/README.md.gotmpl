@@ -9,4 +9,4 @@
 {{ template "chart.valuesSection" . }}
 
 ## Overview
-tenantprovisioning accepts an HTTP webhook from Hubspot, generates tenants manifests for o11y-tenants repository and push them to Git.
+tenantprovisioning accepts an SQS data, generates tenants manifests for o11y-tenants repository and push them to Git.
