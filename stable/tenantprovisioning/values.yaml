@@ -9,7 +9,7 @@ image:
   # image.repository -- Base container image registry. Any image with kubectl, jq, aws-cli and gsutil will do.
   repository: stackstate/o11y-tooling
   # image.tag -- Default container image tag.
-  tag: "4c827669"
+  tag: "7468ec65"
   # image.pullPolicy -- Default container image pull policy.
   pullPolicy: IfNotPresent
 
