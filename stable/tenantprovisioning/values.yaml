@@ -99,11 +99,11 @@ config:
     Region:
     # config.AWS.SQSBaseEndpoint -- Endpoint of sqs to connect to, optional will default to aws endpoint
     SQSBaseEndpoint:
-    # config.AWS.SQSBaseEndpoint -- Url of incoming provisioning queue
+    # config.AWS.TenantProvisioningQueueURL -- Url of incoming provisioning queue, example: https://sqs.eu-central-1.amazonaws.com/123/myqueue.fifo
     TenantProvisioningQueueURL:
-    # config.AWS.TenantProvisioningInternalWorkQueueURL -- Url of internal progress queue
+    # config.AWS.TenantProvisioningInternalWorkQueueURL -- Url of internal progress queue, example: https://sqs.eu-central-1.amazonaws.com/123/myqueue.fifo
     TenantProvisioningInternalWorkQueueURL:
-    # config.AWS.TenantProvisioningStatusOutputQueueURL -- Url of output status
+    # config.AWS.TenantProvisioningStatusOutputQueueURL -- Url of output status, example: https://sqs.eu-central-1.amazonaws.com/123/myqueue.fifo
     TenantProvisioningStatusOutputQueueURL:
   ArgoCD:
     # config.ArgoCD.ServerAddr -- Address of the argocd server of the form <server>:<port>, no protocol spec!

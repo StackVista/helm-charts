@@ -15,10 +15,10 @@ Create tenants manifests by Hubspot webhook.
 |-----|------|---------|-------------|
 | affinity | object | `{}` | Affinity settings for pod assignment. |
 | config.AWS.Region | string | `nil` | Region to connect to |
-| config.AWS.SQSBaseEndpoint | string | `nil` | Url of incoming provisioning queue |
-| config.AWS.TenantProvisioningInternalWorkQueueURL | string | `nil` | Url of internal progress queue |
-| config.AWS.TenantProvisioningQueueURL | string | `nil` |  |
-| config.AWS.TenantProvisioningStatusOutputQueueURL | string | `nil` | Url of output status |
+| config.AWS.SQSBaseEndpoint | string | `nil` | Endpoint of sqs to connect to, optional will default to aws endpoint |
+| config.AWS.TenantProvisioningInternalWorkQueueURL | string | `nil` | Url of internal progress queue, example: https://sqs.eu-central-1.amazonaws.com/123/myqueue.fifo |
+| config.AWS.TenantProvisioningQueueURL | string | `nil` | Url of incoming provisioning queue, example: https://sqs.eu-central-1.amazonaws.com/123/myqueue.fifo |
+| config.AWS.TenantProvisioningStatusOutputQueueURL | string | `nil` | Url of output status, example: https://sqs.eu-central-1.amazonaws.com/123/myqueue.fifo |
 | config.ArgoCD.AuthToken | string | `nil` | Authentication token. |
 | config.ArgoCD.GitRepo | string | `nil` | Git repo argo will pull, should be the git repo url as in config.Git.RepoURL but then how argo pulls it. This setting is separate because sometimes one uses https:// and the other git@ ssh style |
 | config.ArgoCD.Insecure | bool | `false` | Do we allow insecure access? |
