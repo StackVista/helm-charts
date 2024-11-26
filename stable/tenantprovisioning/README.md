@@ -42,7 +42,7 @@ Create tenants manifests by Hubspot webhook.
 | image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | image.registry | string | `nil` | Registry containing the image for the Redirector |
 | image.repository | string | `"stackstate/o11y-tooling"` | Base container image registry. Any image with kubectl, jq, aws-cli and gsutil will do. |
-| image.tag | string | `"7468ec65"` | Default container image tag. |
+| image.tag | string | `"71ce46ec"` | Default container image tag. |
 | imagePullSecrets | list | `[]` | Extra secrets / credentials needed for container image registry. |
 | ingress.annotations | string | `nil` |  |
 | ingress.enabled | bool | `false` | Whether to deploy Ingress resource. |
