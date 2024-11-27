@@ -1,0 +1,300 @@
+elasticsearch:
+  resources:
+    requests:
+      cpu: "4"
+      memory: 4Gi
+    limits:
+      cpu: "6"
+      memory: 4Gi
+hbase:
+  hbase:
+    master:
+      experimental:
+        execLivenessProbe:
+          enabled: true
+      resources:
+        requests:
+          cpu: 2000m
+          memory: 1024Mi
+        limits:
+          cpu: 2500m
+          memory: 1024Mi
+    regionserver:
+      replicaCount: 5
+      resources:
+        requests:
+          cpu: 6000m
+          memory: 10Gi
+        limits:
+          cpu: 8000m
+          memory: 12Gi
+  hdfs:
+    datanode:
+      resources:
+        requests:
+          cpu: 4000m
+          memory: 3Gi
+        limits:
+          cpu: 6000m
+          memory: 5Gi
+      persistence:
+        size: 1000Gi
+    namenode:
+      resources:
+        requests:
+          cpu: 2000m
+          memory: 1024Mi
+        limits:
+          cpu: 4000m
+          memory: 2048Mi
+  tephra:
+    resources:
+      requests:
+        cpu: 4000m
+      limits:
+        cpu: 6000m
+kafka:
+  metrics:
+    jmx:
+      resources:
+        requests:
+          cpu: 500m
+        limits:
+          cpu: 1000m
+  extraEnv:
+    open:
+      KAFKA_CFG_REPLICA_FETCH_MAX_BYTES: "4194304"
+  resources:
+    requests:
+      cpu: 4000m
+      memory: 6Gi
+    limits:
+      cpu: 5000m
+      memory: 8Gi
+  persistence:
+    size: 400Gi
+  deleteTopicEnable: true
+stackstate:
+  experimental:
+    traces: false
+  components:
+    kafkaTopicCreate:
+      extraEnv:
+        open:
+          KAFKA_PARTITIONS_sts_correlated_connections: "40"
+          KAFKA_PARTITIONS_sts_correlate_endpoints: "40"
+          KAFKA_PARTITIONS_sts_correlate_http_trace_observations: "40"
+    api:
+      extraEnv:
+        open:
+          CONFIG_FORCE_stackstate_agents_agentLimit: "4000"
+      resources:
+        requests:
+          cpu: 7000m
+          memory: 10Gi
+        limits:
+          cpu: 9000m
+          memory: 12Gi
+    state:
+      resources:
+        requests:
+          cpu: "3"
+          memory: 4000Mi
+        limits:
+          cpu: "5"
+          memory: 6000Mi
+    checks:
+      resources:
+        requests:
+          cpu: 6000m
+          memory: 5Gi
+        limits:
+          cpu: 7000m
+          memory: 5Gi
+    correlate:
+      replicaCount: 10
+      resources:
+        requests:
+          cpu: 5000m
+          memory: 4000Mi
+        limits:
+          cpu: 6000m
+          memory: 6000Mi
+      extraEnv:
+        open:
+          CONFIG_FORCE_stackstate_correlate_correlateConnections_workers: "4"
+          CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers: "4"
+          CONFIG_FORCE_stackstate_correlate_aggregation_workers: "4"
+          CONFIG_FORCE_stackstate_correlate_correlateConnections_kafka_producer_request.timeout.ms: "25000"
+          CONFIG_FORCE_stackstate_correlate_correlateConnections_kafka_producer_delivery.timeout.ms: "30000"
+    healthSync:
+      extraEnv:
+        open:
+          CONFIG_FORCE_stackstate_healthSync_initializationTimeout: "30 minutes"
+          CONFIG_FORCE_stackstate_healthSync_maxIdentifiersProcessingDelay: "30 minutes"
+      resources:
+        requests:
+          cpu: 5000m
+          memory: 12Gi
+        limits:
+          cpu: 7000m
+          memory: 14Gi
+      sizing:
+        baseMemoryConsumption: 1800Mi
+    initializer:
+      resources:
+        requests:
+          cpu: 1000m
+          memory: 1Gi
+        limits:
+          cpu: 1500m
+          memory: 1Gi
+    e2es:
+      resources:
+        requests:
+          cpu: 2000m
+          memory: 768Mi
+        limits:
+          cpu: 3000m
+          memory: 1024Mi
+    receiver:
+      retention: 3
+      split:
+        enabled: true
+        logs:
+          resources:
+            requests:
+              cpu: "2"
+              memory: 4Gi
+            limits:
+              cpu: "3"
+              memory: 6Gi
+        processAgent:
+          resources:
+            requests:
+              cpu: "6"
+              memory: 4Gi
+            limits:
+              cpu: 8000m
+              memory: 6Gi
+        base:
+          resources:
+            requests:
+              cpu: "8"
+              memory: 6Gi
+            limits:
+              cpu: 9000m
+              memory: 7Gi
+      resources:
+        requests:
+          cpu: "8"
+          memory: 5Gi
+        limits:
+          cpu: 12000m
+          memory: 6Gi
+      extraEnv:
+        open:
+          CONFIG_FORCE_akka_http_host__connection__pool_max__open__requests: "384"
+          CONFIG_FORCE_stackstate_receiver_countBufferSize: "3000000"
+          CONFIG_FORCE_zstd__decompress__dispatcher_fork__join__executor_parallelism__factor: "4.0"
+          CONFIG_FORCE_zstd__decompress__dispatcher_fork__join__executor_parallelism__max: "64"
+          CONFIG_FORCE_akka_actor_default__dispatcher_fork__join__executor_parallelism__min: "16"
+          CONFIG_FORCE_akka_actor_default__dispatcher_fork__join__executor_parallelism__factor: "4.0"
+          CONFIG_FORCE_akka_actor_default__dispatcher_fork__join__executor_parallelism__max: "64"
+          CONFIG_FORCE_akka_actor_default__blocking__io__dispatcher_thread__pool__executor_fixed__pool__size: "64"
+          CONFIG_FORCE_stackstate_receiver_kafkaProducerConfig_max_request_size: "4194304"
+    sync:
+      sizing:
+        baseMemoryConsumption: "400Mi"
+      tmpToPVC:
+        volumeSize: 10Gi
+      resources:
+        requests:
+          cpu: "12"
+          memory: 14000Mi
+        limits:
+          cpu: "14"
+          memory: 16000Mi
+          ephemeral-storage: 2Gi
+    slicing:
+      resources:
+        requests:
+          cpu: 1000m
+          memory: 2536Mi
+        limits:
+          cpu: 1500m
+          memory: 2536Mi
+    notification:
+      resources:
+        requests:
+          cpu: 2000m
+          memory: 3200Mi
+        limits:
+          cpu: 3000m
+          memory: 4500Mi
+    router:
+      resources:
+        requests:
+          cpu: 2000m
+          memory: 256Mi
+        limits:
+          cpu: 2500m
+          memory: 512Mi
+    ui:
+      resources:
+        requests:
+          cpu: 100m
+        limits:
+          cpu: 500m
+    vmagent:
+      resources:
+        limits:
+          cpu: 3000m
+          memory: 2500Mi
+        requests:
+          cpu: 2000m
+          memory: 2500Mi
+zookeeper:
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 1024Mi
+    limits:
+      cpu: 1500m
+      memory: 1024Mi
+minio:
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+kafkaup-operator:
+  resources:
+    requests:
+      cpu: 10m
+    limits:
+      cpu: 10m
+victoria-metrics-0:
+  persistentVolume:
+    size: 400Gi
+  server:
+    resources:
+      requests:
+        cpu: "7"
+        memory: 16Gi
+      limits:
+        cpu: 8000m
+        memory: 18Gi
+victoria-metrics-1:
+  persistentVolume:
+    size: 400Gi
+  server:
+    resources:
+      requests:
+        cpu: 7
+        memory: 16Gi
+      limits:
+        cpu: 8000m
+        memory: 18Gi
