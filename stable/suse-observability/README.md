@@ -377,6 +377,9 @@ stackstate/stackstate
 | opentelemetry-collector.config.processors.attributes/removeStsApiKey.actions[1].key | string | `"server_sts_api_key"` |  |
 | opentelemetry-collector.config.processors.batch.send_batch_size | int | `100000` |  |
 | opentelemetry-collector.config.processors.batch.timeout | string | `"2s"` |  |
+| opentelemetry-collector.config.processors.resource/addDefaultNamespace.attributes[0].action | string | `"insert"` |  |
+| opentelemetry-collector.config.processors.resource/addDefaultNamespace.attributes[0].key | string | `"service.namespace"` |  |
+| opentelemetry-collector.config.processors.resource/addDefaultNamespace.attributes[0].value | string | `"default"` |  |
 | opentelemetry-collector.config.processors.resource/addStsApiKey.attributes[0].action | string | `"upsert"` |  |
 | opentelemetry-collector.config.processors.resource/addStsApiKey.attributes[0].from_context | string | `"auth.apiKey"` |  |
 | opentelemetry-collector.config.processors.resource/addStsApiKey.attributes[0].key | string | `"sts_api_key"` |  |
@@ -395,8 +398,9 @@ stackstate/stackstate
 | opentelemetry-collector.config.service.extensions[1] | string | `"memory_ballast"` |  |
 | opentelemetry-collector.config.service.extensions[2] | string | `"ingestion_api_key_auth"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics.exporters[0] | string | `"forward"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics.processors[0] | string | `"resource/addStsApiKey"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics.processors[1] | string | `"batch"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics.processors[0] | string | `"resource/addDefaultNamespace"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics.processors[1] | string | `"resource/addStsApiKey"` |  |
+| opentelemetry-collector.config.service.pipelines.metrics.processors[2] | string | `"batch"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics.receivers[0] | string | `"otlp"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics/topology.exporters[0] | string | `"ststopology"` |  |
 | opentelemetry-collector.config.service.pipelines.metrics/topology.receivers[0] | string | `"forward"` |  |
@@ -408,9 +412,11 @@ stackstate/stackstate
 | opentelemetry-collector.config.service.pipelines.metrics/victoria-metrics.receivers[1] | string | `"stsservicegraph"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.exporters[0] | string | `"forward"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.exporters[1] | string | `"stsservicegraph"` |  |
+| opentelemetry-collector.config.service.pipelines.traces.exporters[2] | string | `"ststopology"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.processors[0] | string | `"transform/semconv"` |  |
-| opentelemetry-collector.config.service.pipelines.traces.processors[1] | string | `"resource/addStsApiKey"` |  |
-| opentelemetry-collector.config.service.pipelines.traces.processors[2] | string | `"batch"` |  |
+| opentelemetry-collector.config.service.pipelines.traces.processors[1] | string | `"resource/addDefaultNamespace"` |  |
+| opentelemetry-collector.config.service.pipelines.traces.processors[2] | string | `"resource/addStsApiKey"` |  |
+| opentelemetry-collector.config.service.pipelines.traces.processors[3] | string | `"batch"` |  |
 | opentelemetry-collector.config.service.pipelines.traces.receivers[0] | string | `"otlp"` |  |
 | opentelemetry-collector.config.service.pipelines.traces/clickhouse.exporters[0] | string | `"clickhousests"` |  |
 | opentelemetry-collector.config.service.pipelines.traces/clickhouse.processors[0] | string | `"stsusage"` |  |
@@ -421,7 +427,7 @@ stackstate/stackstate
 | opentelemetry-collector.fullnameOverride | string | `"suse-observability-otel-collector"` | Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | opentelemetry-collector.image.registry | string | `"quay.io"` |  |
 | opentelemetry-collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
-| opentelemetry-collector.image.tag | string | `"v0.0.15"` | Container image tag for 'opentelemetry-collector' containers. |
+| opentelemetry-collector.image.tag | string | `"v0.0.17"` | Container image tag for 'opentelemetry-collector' containers. |
 | opentelemetry-collector.mode | string | `"statefulset"` | deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset". |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.check_names" | string | `"[\"openmetrics\"]"` |  |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.init_configs" | string | `"[{}]"` |  |

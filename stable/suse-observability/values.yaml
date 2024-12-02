@@ -2641,7 +2641,7 @@ opentelemetry-collector:
     # opentelemetry-collector.image.repository -- Repository where to get the image from.
     repository: stackstate/sts-opentelemetry-collector
     # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: v0.0.15
+    tag: v0.0.17
   command:
     name: usr/bin/sts-opentelemetry-collector
   # opentelemetry-collector.fullnameOverride -- Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
@@ -2694,6 +2694,11 @@ opentelemetry-collector:
       batch:
         timeout: 2s
         send_batch_size: 100000
+      resource/addDefaultNamespace:
+        attributes:
+          - key: service.namespace
+            action: insert
+            value: default
       resource/addStsApiKey:
         attributes:
           - key: sts_api_key
@@ -2766,11 +2771,13 @@ opentelemetry-collector:
             - otlp
           processors:
             - transform/semconv
+            - resource/addDefaultNamespace
             - resource/addStsApiKey
             - batch
           exporters:
             - forward
             - stsservicegraph
+            - ststopology
         traces/clickhouse:
           receivers:
             - forward
@@ -2783,6 +2790,7 @@ opentelemetry-collector:
           receivers:
             - otlp
           processors:
+            - resource/addDefaultNamespace
             - resource/addStsApiKey
             - batch
           exporters:
