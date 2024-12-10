@@ -1,5 +1,8 @@
 {{- if .Values.baseConfig.generate }}
 global:
+{{- if and .Values.imageRegistry }}
+  imageRegistry: {{ .Values.imageRegistry | quote }}
+{{- end }}
 {{- if and .Values.pullSecret.username .Values.pullSecret.password }}
   imagePullSecrets:
     - suse-observability-pull-secret

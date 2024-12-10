@@ -45,7 +45,7 @@ dependencies:
     version: "8.0.10-stackstate.9"
     condition: backup.enabled
   - name: pull-secret
-    version: "*"
+    version: 1.0.2
     repository: file://../pull-secret/
     condition: pull-secret.enabled
   - name: zookeeper

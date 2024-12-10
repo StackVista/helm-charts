@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 0.0.0
-version: 1.0.1
+version: 1.0.2
 description: Helm chart for deploying a pull-secret for StackState
 home: https://github.com/StackVista/stackstate
 icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png

@@ -15,6 +15,7 @@ metadata:
     {{- if .Values.deployment.compatibleWithArgoCD }}
     argocd.argoproj.io/hook: PostDelete
     argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
     {{- else }}
     "helm.sh/hook": post-delete
     "helm.sh/hook-weight": "-1"

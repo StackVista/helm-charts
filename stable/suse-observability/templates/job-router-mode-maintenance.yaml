@@ -14,6 +14,7 @@ metadata:
     {{- if .Values.deployment.compatibleWithArgoCD }}
     argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
     {{- else }}
     "helm.sh/hook": pre-install,pre-upgrade
     "helm.sh/hook-weight": "-1"

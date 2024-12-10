@@ -979,8 +979,8 @@ stackstate:
 
       mode:
         # stackstate.components.router.mode.status -- Determines the mode being deployed. Possible values:
-        #  "maintenance": puts the system to router mode
-        #  "active": puts the system in active mode
+        #  "maintenance": puts the system to maintenance mode, not serving the API
+        #  "active": puts the system in active mode, serving API requests
         #  "automatic": puts the system in maintenance during helm upgrade (use a pre-hook) and activates the system using a post-hook
         #               if deployment.compatibleWithArgoCD is set,doest the same but using PreSync PostSync from argocd
         status: "active"

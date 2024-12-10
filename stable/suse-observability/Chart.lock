@@ -22,7 +22,7 @@ dependencies:
   version: 8.0.10-stackstate.9
 - name: pull-secret
   repository: file://../pull-secret/
-  version: 1.0.1
+  version: 1.0.2
 - name: zookeeper
   repository: https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
   version: 8.1.2
@@ -41,5 +41,5 @@ dependencies:
 - name: opentelemetry-collector
   repository: file://../opentelemetry-collector
   version: 0.108.0-stackstate.0
-digest: sha256:808810aad11a58c88b9e371f80c0e3170a683d6f125696a781b5a629608b51a3
-generated: "2024-11-29T15:47:03.216716872Z"
+digest: sha256:3c82ad0f1d11a059926f2e56a3d2479297f4abc35f8031d9812bb61173545283
+generated: "2024-12-10T16:12:28.537462617+01:00"
