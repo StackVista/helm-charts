@@ -62,7 +62,7 @@ spec:
         app.kubernetes.io/component: router
     spec:
       serviceAccountName: {{ template "common.fullname.short" . }}-router
-      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       containers:
       - {{ toYaml $stsstackstateRouterMainContainer | nindent 8 }}
       volumes:

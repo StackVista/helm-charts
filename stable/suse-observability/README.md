@@ -481,9 +481,6 @@ stackstate/stackstate
 | stackstate.components.all.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods for all components. |
 | stackstate.components.all.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object for all components. |
 | stackstate.components.all.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below). |
-| stackstate.components.all.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
-| stackstate.components.all.image.pullSecretPassword | string | `nil` |  |
-| stackstate.components.all.image.pullSecretUsername | string | `nil` |  |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
 | stackstate.components.all.image.tag | string | `"7.0.0-snapshot.20241206141718-master-0302802"` | The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below). |
@@ -767,7 +764,7 @@ stackstate/stackstate
 | stackstate.components.router.image.tag | string | `"v1.19.1-e418b2bd"` | Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.router.mode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.router.mode.extraEnv.open | object | `{}` | Add additional environment variables to the pod |
-| stackstate.components.router.mode.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for router mode containers. |
+| stackstate.components.router.mode.image.pullPolicy | string | `nil` | Image pull policy for router mode containers. |
 | stackstate.components.router.mode.image.registry | string | `"quay.io"` | Base container image registry for router mode containers. |
 | stackstate.components.router.mode.image.repository | string | `"stackstate/container-tools"` | Base container image repository for router mode containers. |
 | stackstate.components.router.mode.image.tag | string | `"1.4.0"` | Container image tag for router mode containers. |

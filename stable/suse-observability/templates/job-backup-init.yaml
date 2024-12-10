@@ -50,7 +50,7 @@ spec:
             - name: tmp-data
               mountPath: /tmp-data
 {{- end }}
-      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       restartPolicy: Never
 {{- if .Values.backup.stackGraph.securityContext.enabled }}
       securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 8 }}

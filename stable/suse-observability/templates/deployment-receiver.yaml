@@ -123,7 +123,7 @@ spec:
         app.kubernetes.io/component: receiver{{ template "stackstate.receiver.name.postfix" . }}
         app.kubernetes.io/component-group: receiver
     spec:
-      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       initContainers:
       - {{ toYaml $stsstackstateReceiverInitContainer | nindent 8 }}
       containers:

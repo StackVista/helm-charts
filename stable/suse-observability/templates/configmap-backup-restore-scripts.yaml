@@ -36,7 +36,7 @@ spec:
           {{- end }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
-      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
       restartPolicy: Never
@@ -84,7 +84,7 @@ spec:
           {{- end }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
-      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
       restartPolicy: Never
@@ -129,7 +129,7 @@ spec:
           {{- end }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
-      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
       restartPolicy: Never
@@ -182,7 +182,7 @@ spec:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
             - name: tmp-data
               mountPath: /tmp-data
-      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
 {{- if .Values.backup.stackGraph.securityContext.enabled }}
       securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 8 }}
 {{- end }}
@@ -255,7 +255,7 @@ spec:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
             - name: settings-backup-data
               mountPath: /settings-backup-data
-      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
         - name: settings-backup-data
@@ -325,7 +325,7 @@ spec:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
             - name: settings-backup-data
               mountPath: /settings-backup-data
-      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
 {{- if .Values.backup.stackGraph.securityContext.enabled }}
       securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 8 }}
 {{- end }}
@@ -381,7 +381,7 @@ spec:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
             - name: settings-backup-data
               mountPath: /settings-backup-data
-      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
 {{- if .Values.backup.configuration.securityContext.enabled }}
       securityContext: {{- omit .Values.backup.configuration.securityContext "enabled" | toYaml | nindent 8 }}
 {{- end }}
@@ -437,7 +437,7 @@ spec:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
             - name: settings-backup-data
               mountPath: /settings-backup-data
-      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
 {{- if .Values.backup.configuration.securityContext.enabled }}
       securityContext: {{- omit .Values.backup.configuration.securityContext "enabled" | toYaml | nindent 8 }}
 {{- end }}
@@ -488,7 +488,7 @@ spec:
           {{- end }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
-      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
       restartPolicy: Never
@@ -537,7 +537,7 @@ spec:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
             - mountPath: /storage
               name: victoria-metrics-storage
-      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
 {{- if index .Values "victoria-metrics" "restore" "securityContext" "enabled" }}
       securityContext: {{- omit (index .Values "victoria-metrics" "restore" "securityContext") "enabled" | toYaml | nindent 8 }}
 {{- end }}

@@ -79,7 +79,7 @@ spec:
       - {{ include "stackstate.kafkaTopicCreate.job.initContainer.main" . | nindent 8 }}
       containers:
       - {{ toYaml $stsstackstateKafkaTopicCreateMainContainer | nindent 8 }}
-      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.kafkaTopicCreate.nodeSelector }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}

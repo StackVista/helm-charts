@@ -67,7 +67,7 @@ spec:
           - {{- toYaml $stackgraphBackupInitContainer | nindent 12 }}
           containers:
           - {{- toYaml $stackgraphBackupMainContainer | nindent 12 }}
-          {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 10 }}
+          {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 10 }}
           volumes:
             {{- include "stackstate.backup.volumes" . | nindent 12 }}
             - name: tmp-data
@@ -162,7 +162,7 @@ spec:
           - {{- toYaml $configBackupInitContainer | nindent 12 }}
           containers:
           - {{- toYaml $configBackupMainContainer | nindent 12 }}
-          {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 10 }}
+          {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 10 }}
           # Specifically setting this to empty string to unset previously used service account https://github.com/helm/helm/issues/10183
           serviceAccount: ""
           serviceAccountName: ""

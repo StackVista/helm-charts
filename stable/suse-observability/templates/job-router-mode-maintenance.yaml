@@ -31,7 +31,7 @@ spec:
         {{- include "common.labels.standard" . | nindent 4 }}
     spec:
       serviceAccountName: "{{ template "common.fullname.short" . }}-router-mode-scripts"
-      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       volumes:
         - name: "{{ template "common.fullname.short" . }}-router-mode-scripts"
           configMap:
@@ -39,8 +39,8 @@ spec:
             defaultMode: 0777
       containers:
         - name: router-mode-maintenance
-          image: "{{include "stackstate.router.mode.image.registry" .}}/{{ .Values.stackstate.components.router.mode.image.repository }}:{{ .Values.stackstate.components.router.mode.image.tag }}"
-          imagePullPolicy: {{ .Values.stackstate.components.router.mode.image.pullPolicy | quote }}
+          image: "{{ include "stackstate.router.mode.image.registry" . }}/{{ .Values.stackstate.components.router.mode.image.repository }}:{{ .Values.stackstate.components.router.mode.image.tag }}"
+          imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.router.mode.image.pullPolicy | quote }}
           {{- with .Values.stackstate.components.router.mode.resources }}
           resources:
             {{- toYaml . | nindent 12 }}

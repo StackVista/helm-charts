@@ -204,12 +204,6 @@ stackstate:
         registry: quay.io
         # stackstate.components.all.image.repositorySuffix - String to append to repositories for StackState components
         repositorySuffix: ""
-        # stackstate.components.all.image.pullSecretName -- Name of ImagePullSecret to use for all pods.
-        pullSecretName:
-        # all.image.pullSecretUsername -- Username used to login to the registry to pull Docker images of all pods.
-        pullSecretUsername:
-        # all.image.pullSecretPassword -- Password used to login to the registry to pull Docker images of all pods.
-        pullSecretPassword:
         # stackstate.components.all.image.pullPolicy -- The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below).
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
@@ -997,7 +991,7 @@ stackstate:
           # stackstate.components.router.mode.image.tag -- Container image tag for router mode containers.
           tag: 1.4.0
           # stackstate.components.router.mode.image.pullPolicy -- Image pull policy for router mode containers.
-          pullPolicy: IfNotPresent
+          pullPolicy:
         # stackstate.components.router.mode.resources -- Resource allocation for `router.mode` pods.
         resources:
           limits:

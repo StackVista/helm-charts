@@ -131,7 +131,7 @@ spec:
         stackstate.com/connects-to-stackgraph: "true"
     spec:
       serviceAccountName: {{ template "common.fullname.short" . }}-server
-      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       initContainers:
       {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
       - {{ include "stackstate.initContainer.stackpacks" . | nindent 8 }}

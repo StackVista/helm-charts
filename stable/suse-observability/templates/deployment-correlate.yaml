@@ -101,7 +101,7 @@ spec:
         app.kubernetes.io/component: correlate{{ template "stackstate.correlate.name.postfix" . }}
         app.kubernetes.io/component-group: correlate
     spec:
-      {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       initContainers:
       - {{ toYaml $stsstackstateCorrelateInitContainer | nindent 8 }}
       containers:
