@@ -26,6 +26,10 @@ if kubectl get deployment "{{ template "common.fullname.short" . }}-router" -n "
   echo "Waiting for rollout to complete..."
   while ! kubectl rollout status "deployment/{{ template "common.fullname.short" . }}-router" -n "{{ .Release.Namespace }}"; do
     echo "."
+    if ! kubectl get deployment "{{ template "common.fullname.short" . }}-router" -n "{{ .Release.Namespace }}"; then
+      echo "Deployment went away, exiting"
+      exit 0
+    fi
     sleep 1
   done
 else
