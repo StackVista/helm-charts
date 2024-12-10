@@ -976,6 +976,54 @@ stackstate:
       tolerations: []
       # stackstate.components.router.affinity -- Affinity settings for pod assignment.
       affinity: {}
+
+      mode:
+        # stackstate.components.router.mode.status -- Determines the mode being deployed. Possible values:
+        #  "maintenance": puts the system to router mode
+        #  "active": puts the system in active mode
+        #  "automatic": puts the system in maintenance during helm upgrade (use a pre-hook) and activates the system using a post-hook
+        #               if deployment.compatibleWithArgoCD is set,doest the same but using PreSync PostSync from argocd
+        status: "active"
+        # stackstate.components.router.mode.jobAnnotations -- Annotations for the router mode jobs.
+        jobAnnotations: { }
+        extraEnv:
+          # stackstate.components.router.mode.extraEnv.open -- Add additional environment variables to the pod
+          open: { }
+        image:
+          # stackstate.components.router.mode.image.registry -- Base container image registry for router mode containers.
+          registry: quay.io
+          # stackstate.components.router.mode.image.repository -- Base container image repository for router mode containers.
+          repository: stackstate/container-tools
+          # stackstate.components.router.mode.image.tag -- Container image tag for router mode containers.
+          tag: 1.4.0
+          # stackstate.components.router.mode.image.pullPolicy -- Image pull policy for router mode containers.
+          pullPolicy: IfNotPresent
+        # stackstate.components.router.mode.resources -- Resource allocation for `router.mode` pods.
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "400Mi"
+          requests:
+            cpu: "100m"
+            memory: "400Mi"
+        securityContext:
+          # stackstate.components.router.mode.securityContext.enabled -- Whether or not to enable the securityContext
+          enabled: true
+          # stackstate.components.router.mode.securityContext.fsGroup -- The GID (group ID) used to mount volumes
+          fsGroup: 1001
+          # stackstate.components.router.mode.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
+          runAsGroup: 1001
+          # stackstate.components.router.mode.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
+          runAsNonRoot: true
+          # stackstate.components.router.mode.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
+          runAsUser: 1001
+        # stackstate.components.router.mode.nodeSelector -- Node labels for pod assignment.
+        nodeSelector: { }
+        # stackstate.components.router.mode.tolerations -- Toleration labels for pod assignment.
+        tolerations: [ ]
+        # stackstate.components.router.mode.affinity -- Affinity settings for pod assignment.
+        affinity: { }
+
     server:
       # stackstate.components.server.envsFromExistingSecrets -- Configure environment variables from existing secrets.
       # envsFromExistingSecret

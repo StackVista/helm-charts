@@ -17,6 +17,13 @@ Return the image registry for the kafka-topic-create container
 {{- end -}}
 
 {{/*
+Return the image registry for the router-mode container
+*/}}
+{{- define "stackstate.router.mode.image.registry" -}}
+{{ include "common.image.registry" ( dict "image" .Values.stackstate.components.router.mode.image "context" $) }}
+{{- end -}}
+
+{{/*
 Return the image registry for the nginx-prometheus-operator container
 */}}
 {{- define "stackstate.nginxPrometheusExporter.image.registry" -}}

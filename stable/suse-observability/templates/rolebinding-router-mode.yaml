@@ -1,0 +1,24 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ template "common.fullname.short" . }}-router-mode
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/component: router-mode
+  annotations:
+    {{- if .Values.deployment.compatibleWithArgoCD }}
+    argocd.argoproj.io/hook: PreSync,PostSync,PostDelete
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+    argocd.argoproj.io/sync-wave: "-2"
+    {{- else }}
+    "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade,post-delete
+    "helm.sh/hook-weight": "-2"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    {{- end }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "common.fullname.short" . }}-router-mode-scripts
+roleRef:
+  kind: Role
+  name: {{ template "common.fullname.short" . }}-router-mode
+  apiGroup: rbac.authorization.k8s.io

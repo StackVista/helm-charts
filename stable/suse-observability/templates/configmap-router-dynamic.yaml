@@ -1,0 +1,18 @@
+{{- define "stackstate.router.api.name" -}}
+  {{- if .Values.stackstate.experimental.server.split }}api{{ else }}server{{ end }}
+{{- end -}}
+{{- define "stackstate.router.dynamic.configmap" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-router-{{ .RouterState }}
+{{ include "stackstate.router.configmap.data" . }}
+{{- end -}}
+
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+
+{{- if eq .Values.stackstate.components.router.mode.status "active" }}
+{{- $stackstateActiveRouterConfigMap := fromYaml (include "stackstate.router.dynamic.configmap" (merge (dict "RouterState" "active") .)) -}}
+{{- toYaml (merge $stackstateActiveRouterConfigMap $commonConfigMap) }}
+{{- else if eq .Values.stackstate.components.router.mode.status "maintenance" }}
+{{- $stackstateMaintenanceRouterConfigMap := fromYaml (include "stackstate.router.dynamic.configmap" (merge (dict "RouterState" "maintenance") .)) -}}
+{{ toYaml (merge $stackstateMaintenanceRouterConfigMap $commonConfigMap) }}
+{{- end }}

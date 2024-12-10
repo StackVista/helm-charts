@@ -765,6 +765,22 @@ stackstate/stackstate
 | stackstate.components.router.image.registry | string | `"quay.io"` | Registry of the router component Docker image. |
 | stackstate.components.router.image.repository | string | `"stackstate/envoy"` | Repository of the router component Docker image. |
 | stackstate.components.router.image.tag | string | `"v1.19.1-e418b2bd"` | Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.router.mode.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.router.mode.extraEnv.open | object | `{}` | Add additional environment variables to the pod |
+| stackstate.components.router.mode.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for router mode containers. |
+| stackstate.components.router.mode.image.registry | string | `"quay.io"` | Base container image registry for router mode containers. |
+| stackstate.components.router.mode.image.repository | string | `"stackstate/container-tools"` | Base container image repository for router mode containers. |
+| stackstate.components.router.mode.image.tag | string | `"1.4.0"` | Container image tag for router mode containers. |
+| stackstate.components.router.mode.jobAnnotations | object | `{}` | Annotations for the router mode jobs. |
+| stackstate.components.router.mode.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.router.mode.resources | object | `{"limits":{"cpu":"200m","memory":"400Mi"},"requests":{"cpu":"100m","memory":"400Mi"}}` | Resource allocation for `router.mode` pods. |
+| stackstate.components.router.mode.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
+| stackstate.components.router.mode.securityContext.fsGroup | int | `1001` | The GID (group ID) used to mount volumes |
+| stackstate.components.router.mode.securityContext.runAsGroup | int | `1001` | The GID (group ID) of the owning user of the process |
+| stackstate.components.router.mode.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
+| stackstate.components.router.mode.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
+| stackstate.components.router.mode.status | string | `"active"` | Determines the mode being deployed. Possible values:  "maintenance": puts the system to router mode  "active": puts the system in active mode  "automatic": puts the system in maintenance during helm upgrade (use a pre-hook) and activates the system using a post-hook               if deployment.compatibleWithArgoCD is set,doest the same but using PreSync PostSync from argocd |
+| stackstate.components.router.mode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.router.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.router.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.router.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `router` pods. |
