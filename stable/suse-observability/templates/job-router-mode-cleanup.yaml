@@ -1,5 +1,7 @@
 # This hook is always executed, because switching switching from 'automatic' 'active can leave the config map behind
 # This is harmless but needs cleaning up
+# This is why this hooks is always executed. Hooks are a bit brittle so we are not super happy to run a posthook always,
+# but a posthook during uninstall is quite safe from a user experience point of view, because the user is uninstalling anyway.
 apiVersion: batch/v1
 kind: Job
 metadata:

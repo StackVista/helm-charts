@@ -977,6 +977,7 @@ stackstate:
         #  "active": puts the system in active mode, serving API requests
         #  "automatic": puts the system in maintenance during helm upgrade (use a pre-hook) and activates the system using a post-hook
         #               if deployment.compatibleWithArgoCD is set,doest the same but using PreSync PostSync from argocd
+        #               !!! This feature is considered experimental and should not be used in mission-critical setup by end-users !!!
         status: "active"
         # stackstate.components.router.mode.jobAnnotations -- Annotations for the router mode jobs.
         jobAnnotations: { }
