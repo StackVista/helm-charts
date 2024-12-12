@@ -29,5 +29,4 @@ dependencies:
   # version: "*"
   repository: https://helm.stackstate.io
   version: 0.0.12
-  # Warning: do not use this condition. this will not play well with the prehooks in the chart
-  # condition: http-header-injector-webhook.enabled
+  condition: httpHeaderInjectorWebhook.enabled
