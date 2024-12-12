@@ -5,7 +5,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  {{- if .Values.deployment.compatibleWithArgoCD }}
+  {{- if .Values.deployment.routerModeForArgoCD }}
   generateName: cleanup-
   {{- else }}
   name: {{ template "common.fullname.short" . }}-cleanup-{{ now | date "02t150405" }}
@@ -14,7 +14,7 @@ metadata:
     app.kubernetes.io/component: router-mode
     {{- include "common.labels.standard" . | nindent 4 }}
   annotations:
-    {{- if .Values.deployment.compatibleWithArgoCD }}
+    {{- if .Values.deployment.routerModeForArgoCD }}
     argocd.argoproj.io/hook: PostDelete
     argocd.argoproj.io/sync-wave: "-1"
     argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded

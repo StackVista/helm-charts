@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  {{- if .Values.deployment.compatibleWithArgoCD }}
+  {{- if .Values.deployment.routerModeForArgoCD }}
   generateName: backup-conf-
   {{- else }}
   name: {{ template "common.fullname.short" . }}-backup-conf-{{ now | date "02t150405" }}
