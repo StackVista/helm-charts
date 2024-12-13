@@ -1,3 +1,4 @@
+{{- if eq .Values.stackstate.components.router.mode.status "automatic" }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -19,5 +20,4 @@ data:
     {{- tpl (.Files.Get "scripts/router-mode/set-maintenance.sh") . | trim | nindent 4 }}
   set-active.sh: |-
     {{- tpl (.Files.Get "scripts/router-mode/set-active.sh") . | trim | nindent 4 }}
-  cleanup.sh: |-
-    {{- tpl (.Files.Get "scripts/router-mode/cleanup.sh") . | trim | nindent 4 }}
+{{- end }}
