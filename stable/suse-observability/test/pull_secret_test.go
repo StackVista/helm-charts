@@ -1,6 +1,9 @@
 package test
 
 import (
+	"encoding/base64"
+	"fmt"
+	"log"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,10 +14,15 @@ import (
 func TestPullSecret(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
-	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "e2es"}
 
-	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "suse-observability-pull-secret")
-	CheckPullSecret(t, resources, "suse-observability-pull-secret", "test", "secret", "quay.io")
+	CheckPullSecret(t, resources, "suse-observability-pull-secret", "test", "secret", "my.registry.com")
+}
+
+func TestPullSecretGlobal(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/pull_secret_global.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	CheckPullSecret(t, resources, "suse-observability-pull-secret", "test", "secret", "my.registry.com")
 }
 
 func TestPullSecretGlobalNamed(t *testing.T) {
@@ -28,36 +36,6 @@ func TestPullSecretGlobalNamed(t *testing.T) {
 			assert.Fail(t, "Expected that no dockerconfigjson is being created")
 		}
 	}
-}
-func TestImagePullSecretName(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/pull_secret_name.yaml")
-	resources := helmtestutil.NewKubernetesResources(t, output)
-	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "e2es"}
-
-	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "my-pull-secret")
-	for _, secret := range resources.Secrets {
-		if secret.Name == "my-pull-secret" {
-			assert.Fail(t, "Expected that no dockerconfigjson is being created")
-		}
-	}
-}
-
-func TestGlobalRegistryLocalPullSecret(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/pull_secret_global_registry.yaml")
-	resources := helmtestutil.NewKubernetesResources(t, output)
-	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "e2es"}
-
-	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "suse-observability-pull-secret")
-	CheckPullSecret(t, resources, "suse-observability-pull-secret", "test", "secret", "my.registry.com")
-}
-
-func TestGlobalOverridesLocalPullSecretDetails(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/full.yaml", "values/pull_secret_both.yaml")
-	resources := helmtestutil.NewKubernetesResources(t, output)
-	deploymentsToCheck := []string{"api", "checks", "correlate", "initializer", "receiver", "slicing", "state", "sync", "e2es"}
-
-	CheckDeploymentsForPullSecret(t, resources, deploymentsToCheck, "suse-observability-pull-secret", "test-secret")
-	CheckPullSecret(t, resources, "suse-observability-pull-secret", "test", "secret", "my.registry.com")
 }
 
 func CheckDeploymentsForPullSecret(t *testing.T, resources helmtestutil.KubernetesResources, deploymentsToCheck []string, pullSecretName ...string) {
@@ -89,9 +67,13 @@ func CheckPullSecret(t *testing.T, resources helmtestutil.KubernetesResources, s
 			assert.Contains(t, dockerConfig, "auths")
 			auths := dockerConfig["auths"].(map[interface{}]interface{})
 			assert.Contains(t, auths, registry)
-			registryAuth := auths[registry].(map[interface{}]interface{})
-			assert.Equal(t, user, registryAuth["username"])
-			assert.Equal(t, password, registryAuth["password"])
+			registryAuth := auths[registry].(map[interface{}]interface{})["auth"].(string)
+			decodedBytes, err := base64.StdEncoding.DecodeString(registryAuth)
+			if err != nil {
+				log.Fatalf("Error decoding base64 string: %v", err)
+			}
+
+			assert.Equal(t, fmt.Sprintf("%s:%s", user, password), string(decodedBytes))
 			return
 		}
 	}

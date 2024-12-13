@@ -1,11 +1,15 @@
 global:
   receiverApiKey: "test-key"
+  imagePullUsername: "test"
+  imagePullPassword: "secret"
+  imageRegistry: "my.registry.com"
+
+pull-secret:
+  enabled: true
+
 stackstate:
   components:
     all:
-      image:
-        pullSecretUsername: "test"
-        pullSecretPassword: "secret"
       metricStore:
         remoteWriteEndpoint: "test-$vmInstance:8148"
         queryApiEndpoint: "test:8148"

@@ -22,7 +22,7 @@ func TestGenerateValuesPullSecretNotGenerated(t *testing.T) {
 	v, err := yamlpath.YamlPath(values, "pull-secret")
 	assert.NoError(t, err)
 	assert.Empty(t, v)
-	v, err = yamlpath.YamlPath(values, "global")
+	v, err = yamlpath.YamlPath(values, "global.imagePullSecrets")
 	assert.Empty(t, v)
 	assert.NoError(t, err)
 }

@@ -1,7 +1,6 @@
 package helmtestutil
 
 import (
-	"fmt"
 	"path/filepath"
 	"testing"
 
@@ -28,8 +27,7 @@ func RenderHelmTemplateError(t *testing.T, releaseName string, valuesFiles ...st
 		Logger:      logger.Discard,
 	}
 
-	out, err := RenderHelmTemplateOpts(t, releaseName, helmOpts)
-	fmt.Print(out)
+	_, err := RenderHelmTemplateOpts(t, releaseName, helmOpts)
 	require.NotNil(t, err)
 
 	return err
