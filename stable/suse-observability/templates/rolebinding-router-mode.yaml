@@ -1,3 +1,4 @@
+{{- if eq .Values.stackstate.components.router.mode.status "automatic" }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -22,3 +23,4 @@ roleRef:
   kind: Role
   name: {{ template "common.fullname.short" . }}-router-mode
   apiGroup: rbac.authorization.k8s.io
+  {{- end }}

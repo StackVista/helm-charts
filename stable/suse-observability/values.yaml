@@ -984,10 +984,10 @@ stackstate:
         #               !!! This feature is considered experimental and should not be used in mission-critical setup by end-users !!!
         status: "active"
         # stackstate.components.router.mode.jobAnnotations -- Annotations for the router mode jobs.
-        jobAnnotations: { }
+        jobAnnotations: {}
         extraEnv:
           # stackstate.components.router.mode.extraEnv.open -- Add additional environment variables to the pod
-          open: { }
+          open: {}
         image:
           # stackstate.components.router.mode.image.registry -- Base container image registry for router mode containers.
           registry: quay.io
@@ -1017,11 +1017,11 @@ stackstate:
           # stackstate.components.router.mode.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
           runAsUser: 1001
         # stackstate.components.router.mode.nodeSelector -- Node labels for pod assignment.
-        nodeSelector: { }
+        nodeSelector: {}
         # stackstate.components.router.mode.tolerations -- Toleration labels for pod assignment.
-        tolerations: [ ]
+        tolerations: []
         # stackstate.components.router.mode.affinity -- Affinity settings for pod assignment.
-        affinity: { }
+        affinity: {}
 
     server:
       # stackstate.components.server.envsFromExistingSecrets -- Configure environment variables from existing secrets.
