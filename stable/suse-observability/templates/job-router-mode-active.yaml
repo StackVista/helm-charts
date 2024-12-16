@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  {{- if .Values.deployment.routerModeForArgoCD }}
+  {{- if .Values.deployment.compatibleWithArgoCD }}
   generateName: set-active-
   {{- else }}
   name: {{ template "common.fullname.short" . }}-set-active-{{ now | date "02t150405" }}
@@ -11,7 +11,7 @@ metadata:
     app.kubernetes.io/component: router-mode
     {{- include "common.labels.standard" . | nindent 4 }}
   annotations:
-    {{- if .Values.deployment.routerModeForArgoCD }}
+    {{- if .Values.deployment.compatibleWithArgoCD }}
     argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/sync-wave: "-1"
     argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded

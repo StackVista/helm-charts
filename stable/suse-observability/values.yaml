@@ -145,9 +145,6 @@ deployment:
   # deployment.compatibleWithArgoCD -- Whether to adjust the Chart to be compatible with ArgoCD. This feature is as of yet
   # not deployed in the o11y-tenants and saas-tenants directories, so should be considered unfinished (see STAC-21445)
   compatibleWithArgoCD: false
-  # deployment.routerModeForArgoCD -- Makes the `stackstate.components.router.mode.status: automatic` compatible with argoCD
-  # hooks instead of helm hooks. Ideally we'd base this on the flag deployment.compatibleWithArgoCD but that is unfinished
-  routerModeForArgoCD: false
 ingress:
   # ingress.annotations -- Annotations for ingress objects.
   annotations: {}

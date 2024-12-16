@@ -65,7 +65,7 @@ metadata:
   {{- end }}
 spec:
   backoffLimit: 20
-  ttlSecondsAfterFinished: 600
+  ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
       annotations:

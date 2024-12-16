@@ -658,3 +658,10 @@ Return env entries to mount existing secret with the custom keys.
       key: {{ .secretKey }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return ttlSecondsAfterFinished. We make this a very high value for argo so failures cannot be silently ignored.
+*/}}
+{{- define "stackstate.job.ttlSecondsAfterFinished" -}}
+{{- if .Values.deployment.compatibleWithArgoCD }}86400{{- else }}600{{- end -}}
+{{- end -}}

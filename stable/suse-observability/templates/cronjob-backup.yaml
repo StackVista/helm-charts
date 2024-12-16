@@ -51,13 +51,17 @@ metadata:
 spec:
   concurrencyPolicy: Forbid
   schedule: {{ .Values.backup.stackGraph.scheduled.schedule | quote }}
+  {{- if .Values.deployment.compatibleWithArgoCD }}
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  {{- end }}
   jobTemplate:
     metadata:
       labels:
         app.kubernetes.io/component: backup
     spec:
       backoffLimit: 1
-      ttlSecondsAfterFinished: 600
+      ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
       template:
         metadata:
           labels:
@@ -146,13 +150,19 @@ metadata:
 spec:
   concurrencyPolicy: Forbid
   schedule: {{ .Values.backup.configuration.scheduled.schedule | quote }}
+  {{- if .Values.deployment.compatibleWithArgoCD }}
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  {{- end }}
   jobTemplate:
     metadata:
       labels:
         app.kubernetes.io/component: backup
     spec:
       backoffLimit: 1
-      ttlSecondsAfterFinished: 600
+      {{- if not .Values.deployment.compatibleWithArgoCD }}
+      ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
+      {{- end }}
       template:
         metadata:
           labels:

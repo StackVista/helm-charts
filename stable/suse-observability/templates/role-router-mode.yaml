@@ -7,7 +7,7 @@ metadata:
   labels:
     app.kubernetes.io/component: router-mode
   annotations:
-    {{- if .Values.deployment.routerModeForArgoCD }}
+    {{- if .Values.deployment.compatibleWithArgoCD }}
     argocd.argoproj.io/hook: PreSync,PostSync,PostDelete
     argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
     argocd.argoproj.io/sync-wave: "-3"
