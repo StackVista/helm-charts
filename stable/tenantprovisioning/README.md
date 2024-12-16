@@ -1,6 +1,6 @@
 # tenantprovisioning
 
-![Version: 0.0.6](https://img.shields.io/badge/Version-0.0.6-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.0.7](https://img.shields.io/badge/Version-0.0.7-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 Create tenants manifests by Hubspot webhook.
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 ## Maintainers
@@ -42,7 +42,7 @@ Create tenants manifests by Hubspot webhook.
 | image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | image.registry | string | `nil` | Registry containing the image for the Redirector |
 | image.repository | string | `"stackstate/o11y-tooling"` | Base container image registry. Any image with kubectl, jq, aws-cli and gsutil will do. |
-| image.tag | string | `"df60bdba"` | Default container image tag. |
+| image.tag | string | `"e4e2a288"` | Default container image tag. |
 | imagePullSecrets | list | `[]` | Extra secrets / credentials needed for container image registry. |
 | ingress.annotations | string | `nil` |  |
 | ingress.enabled | bool | `false` | Whether to deploy Ingress resource. |
