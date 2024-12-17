@@ -60,6 +60,7 @@
       'sandbox-operator',
       'sock-shop',
       'tenantprovisioning',
+      'tenantmanagement',
     ],
   },
   rules: {

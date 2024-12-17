@@ -919,6 +919,33 @@ build_suse-observability-values:
     - helm dependencies build stable/suse-observability-values
     - mkdir -p stable/suse-observability-values/build; helm package --destination stable/suse-observability-values/build stable/suse-observability-values
   stage: build
+build_tenantmanagement:
+  artifacts:
+    paths:
+      - stable/tenantmanagement/charts/
+      - stable/tenantmanagement/build/
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
+  rules:
+    - changes:
+        - stable/tenantmanagement/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/tenantmanagement/Chart.yaml  | xargs -I % helm dependencies build stable/tenantmanagement/%
+    - helm dependencies build stable/tenantmanagement
+    - mkdir -p stable/tenantmanagement/build; helm package --destination stable/tenantmanagement/build stable/tenantmanagement
+  stage: build
 build_tenantprovisioning:
   artifacts:
     paths:
@@ -1351,6 +1378,17 @@ check_suse-observability-values_version:
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - .gitlab/verify_versions_bumped.sh suse-observability-values
+  stage: validate
+check_tenantmanagement_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/tenantmanagement/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh tenantmanagement
   stage: validate
 check_tenantprovisioning_version:
   before_script:
@@ -2871,6 +2909,33 @@ push_suse-observability_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/suse-observability
+push_tenantmanagement_to_internal:
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/tenantmanagement/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-tenantmanagement]/
+      when: on_success
+    - changes:
+        - stable/tenantmanagement/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - if: $CI_COMMIT_TAG =~ /^tenantmanagement\/.*/
+      when: on_success
+  script:
+    - helm dependencies update ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/tenantmanagement
 push_tenantprovisioning_to_internal:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   rules:
@@ -3473,6 +3538,19 @@ test_suse-observability-values:
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - go test ./stable/suse-observability-values/test/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+test_tenantmanagement:
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-9f869792
+  rules:
+    - changes:
+        - stable/tenantmanagement/**/*
+      exists:
+        - stable/tenantmanagement/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/tenantmanagement/test/...
   stage: test
   variables:
     CGO_ENABLED: 0
@@ -4147,6 +4225,22 @@ validate_suse-observability-values:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-values/values.yaml
     - if [ -f stable/suse-observability-values/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-values/ci/default-values.yaml; fi
     - if [ -f stable/suse-observability-values/ci/default-values.yaml ]; then helm lint stable/suse-observability-values --values stable/suse-observability-values/ci/default-values.yaml; fi
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+validate_tenantmanagement:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/tenantmanagement/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/tenantmanagement/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/tenantmanagement/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/tenantmanagement/values.yaml
+    - if [ -f stable/tenantmanagement/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/tenantmanagement/ci/default-values.yaml; fi
+    - if [ -f stable/tenantmanagement/ci/default-values.yaml ]; then helm lint stable/tenantmanagement --values stable/tenantmanagement/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 validate_tenantprovisioning:
