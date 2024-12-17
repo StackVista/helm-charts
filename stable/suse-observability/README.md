@@ -2,7 +2,7 @@
 
 Helm chart for SUSE Observability
 
-Current chart version is `2.2.2-pre.bram.argo.4`
+Current chart version is `2.2.2-pre.bram.6`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
