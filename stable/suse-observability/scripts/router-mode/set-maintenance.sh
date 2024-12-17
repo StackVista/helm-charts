@@ -2,6 +2,9 @@
 
 set -ex
 
+# We exit successfully because we do not want to fail the upgrade on maintenance mode.
+trap "echo 'Timeout reached. Exiting successfully'; exit 0" SIGTERM
+
 echo "Applying update to configmap to set router mode"
 
 kubectl apply -f - <<EOF
