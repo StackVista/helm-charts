@@ -3027,10 +3027,10 @@ push_victoria-metrics-single_to_public:
     CHART: stable/victoria-metrics-single
 stages:
   - build
+  - push-charts-to-test
   - validate
   - test
   - update
-  - push-charts-to-test
   - push-charts-to-internal
   - push-charts-to-public
   - push-charts-to-rancher

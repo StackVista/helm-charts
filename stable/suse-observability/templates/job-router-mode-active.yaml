@@ -12,7 +12,7 @@ metadata:
     {{- include "common.labels.standard" . | nindent 4 }}
   annotations:
     {{- if .Values.deployment.compatibleWithArgoCD }}
-    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook: PostSync
     argocd.argoproj.io/sync-wave: "-1"
     argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
     {{- else }}

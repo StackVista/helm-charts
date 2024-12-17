@@ -24,6 +24,8 @@ metadata:
       {{- toYaml . | nindent 4}}
     {{- end }}
 spec:
+  # Put a deadline so we do not wait indefinitely with this feature
+  activeDeadlineSeconds: 180
   template:
     metadata:
       labels:

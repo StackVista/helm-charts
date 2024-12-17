@@ -403,7 +403,7 @@ local update_docker_images = {
     ],
   },
   image: variables.images.chart_testing,
-  stages: ['build', 'validate', 'test', 'update', 'push-charts-to-test', 'push-charts-to-internal', 'push-charts-to-public', 'push-charts-to-rancher'],
+  stages: ['build', 'push-charts-to-test', 'validate', 'test', 'update', 'push-charts-to-internal', 'push-charts-to-public', 'push-charts-to-rancher'],
 
   variables: {
     HELM_VERSION: 'v3.1.2',
