@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/component: backup
 spec:
   backoffLimit: 1
-  ttlSecondsAfterFinished: 600
+  ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
       labels:
@@ -51,7 +51,7 @@ metadata:
     app.kubernetes.io/component: backup
 spec:
   backoffLimit: 1
-  ttlSecondsAfterFinished: 600
+  ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
       labels:
@@ -100,7 +100,7 @@ metadata:
     app.kubernetes.io/component: backup
 spec:
   backoffLimit: 1
-  ttlSecondsAfterFinished: 600
+  ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
       labels:
@@ -145,7 +145,7 @@ metadata:
     app.kubernetes.io/component: backup
 spec:
   backoffLimit: 1
-  ttlSecondsAfterFinished: 600
+  ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
       labels:
@@ -222,7 +222,7 @@ metadata:
     app.kubernetes.io/component: backup
 spec:
   backoffLimit: 1
-  ttlSecondsAfterFinished: 600
+  ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
       labels:
@@ -275,7 +275,7 @@ metadata:
 spec:
   backoffLimit: 1
   activeDeadlineSeconds: 1200
-  ttlSecondsAfterFinished: 600
+  ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
       labels:
@@ -346,7 +346,7 @@ metadata:
     app.kubernetes.io/component: backup
 spec:
   backoffLimit: 1
-  ttlSecondsAfterFinished: 600
+  ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
       labels:
@@ -402,7 +402,7 @@ metadata:
     app.kubernetes.io/component: backup
 spec:
   backoffLimit: 1
-  ttlSecondsAfterFinished: 600
+  ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
       labels:
@@ -459,7 +459,7 @@ metadata:
     app.kubernetes.io/component: backup
 spec:
   backoffLimit: 1
-  ttlSecondsAfterFinished: 600
+  ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
       labels:
@@ -503,7 +503,7 @@ metadata:
     app.kubernetes.io/component: backup
 spec:
   backoffLimit: 1
-  ttlSecondsAfterFinished: 600
+  ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
       labels:

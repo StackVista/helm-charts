@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  {{- if .Values.deployment.routerModeForArgoCD }}
+  {{- if .Values.deployment.compatibleWithArgoCD }}
   generateName: backup-conf-
   {{- else }}
   name: {{ template "common.fullname.short" . }}-backup-conf-{{ now | date "02t150405" }}
@@ -17,7 +17,7 @@ metadata:
     {{- toYaml . | nindent 4}}
   {{- end }}
 spec:
-  ttlSecondsAfterFinished: 10
+  ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
   template:
     metadata:
       labels:
