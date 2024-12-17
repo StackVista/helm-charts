@@ -22,6 +22,5 @@
 .vscode/
 test/
 itest/
-installation/
 ci/
 auth-demo/
