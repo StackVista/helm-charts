@@ -66,3 +66,9 @@ $ brew install gawk
 ```shell
 $ apk add gawk
 ```
+
+## Design docs
+
+We list various design docs here that accompany the charts:
+
+- SUSE Observability router maintenance mode: https://lucid.app/lucidchart/1dd84a54-2908-4e33-9b5d-21705c461dab/edit
