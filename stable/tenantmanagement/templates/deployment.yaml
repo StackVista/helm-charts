@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "tenant-management.fullname" . }}
+  name: {{ include "tenantmanagement.fullname" . }}
   labels:
-    {{- include "tenant-management.labels" . | nindent 4 }}
+    {{- include "tenantmanagement.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "tenant-management.selectorLabels" . | nindent 6 }}
+      {{- include "tenantmanagement.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,16 +18,16 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "tenant-management.labels" . | nindent 8 }}
+        {{- include "tenantmanagement.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
-      {{- if.Values.pullSecret.username }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-       - name: tenant-management-pull-secret
+        {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "tenant-management.serviceAccountName" . }}
+      serviceAccountName: {{ include "tenantmanagement.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -44,7 +44,7 @@ spec:
             - name: DATABASE_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "tenant-management.fullname" . }}-db
+                  name: {{ include "tenantmanagement.fullname" . }}-db
                   key: password
             - name: SQS_PROVISIONING_QUEUE
               value: {{ .Values.app.sqs.provisioning_queue }}
@@ -57,17 +57,16 @@ spec:
             - name: SCALING_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "tenant-management.fullname" . }}-scaling
+                  name: {{ include "tenantmanagement.fullname" . }}-scaling
                   key: api_key
           ports:
             - name: http
               containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
-{{/*              TODO add probes*/}}
-{{/*          livenessProbe:*/}}
-{{/*            {{- toYaml .Values.livenessProbe | nindent 12 }}*/}}
-{{/*          readinessProbe:*/}}
-{{/*            {{- toYaml .Values.readinessProbe | nindent 12 }}*/}}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- with .Values.volumeMounts }}

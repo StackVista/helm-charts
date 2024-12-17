@@ -7,7 +7,7 @@ Manages all SaaS tenants
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Stackstate Ops Team | <ops@stackstate.com> |  |
+| SUSE Observability Team | <suse-observability-ops@suse.com> |  |
 
 ## Values
 
@@ -35,8 +35,7 @@ Manages all SaaS tenants
 | ingress.host | string | `nil` | HTTP host for the ingress. |
 | ingress.tls.enabled | bool | `false` | Whether to enable TLS for ingress. |
 | ingress.tls.secretName | string | `nil` | The name of K8s secrets containing SSL certificate for ingress. |
-| livenessProbe.httpGet.path | string | `"/"` |  |
-| livenessProbe.httpGet.port | string | `"http"` |  |
+| livenessProbe | object | `{}` |  |
 | nameOverride | string | `""` |  |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
@@ -44,8 +43,7 @@ Manages all SaaS tenants
 | podSecurityContext | object | `{}` |  |
 | pullSecret.password | string | `""` |  |
 | pullSecret.username | string | `""` |  |
-| readinessProbe.httpGet.path | string | `"/"` |  |
-| readinessProbe.httpGet.port | string | `"http"` |  |
+| readinessProbe | object | `{}` |  |
 | replicaCount | int | `1` |  |
 | resources.limits.cpu | string | `"250m"` |  |
 | resources.limits.memory | string | `"256Mi"` |  |

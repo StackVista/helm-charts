@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "tenant-management.name" -}}
+{{- define "tenantmanagement.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "tenant-management.fullname" -}}
+{{- define "tenantmanagement.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "tenant-management.chart" -}}
+{{- define "tenantmanagement.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "tenant-management.labels" -}}
-helm.sh/chart: {{ include "tenant-management.chart" . }}
-{{ include "tenant-management.selectorLabels" . }}
+{{- define "tenantmanagement.labels" -}}
+helm.sh/chart: {{ include "tenantmanagement.chart" . }}
+{{ include "tenantmanagement.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "tenant-management.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "tenant-management.name" . }}
+{{- define "tenantmanagement.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "tenantmanagement.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "tenant-management.serviceAccountName" -}}
+{{- define "tenantmanagement.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "tenant-management.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "tenantmanagement.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

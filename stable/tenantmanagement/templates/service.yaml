@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "tenant-management.fullname" . }}
+  name: {{ include "tenantmanagement.fullname" . }}
   labels:
-    {{- include "tenant-management.labels" . | nindent 4 }}
+    {{- include "tenantmanagement.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "tenant-management.selectorLabels" . | nindent 4 }}
+    {{- include "tenantmanagement.selectorLabels" . | nindent 4 }}
