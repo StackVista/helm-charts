@@ -1,6 +1,7 @@
 package test
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"os/exec"
@@ -30,7 +31,7 @@ func TestChangeImageRepo(t *testing.T) {
 
 	tmpDir, err := os.MkdirTemp("/tmp", "install-scripts")
 	require.NoError(t, err)
-	// defer os.RemoveAll(tmpDir)
+	defer os.RemoveAll(tmpDir)
 
 	err = exec.Command("cp", "-a", filepath.Join(curDir, ".."), tmpDir).Run()
 	require.NoError(t, err)
@@ -55,6 +56,13 @@ func RunGetImagesScript(t *testing.T, dir string) string {
 }
 
 func RunChangeImageScript(t *testing.T, dir, registry, repository string) {
-	err := exec.Command(filepath.Join(dir, "maintenance", "change-image-source.sh"), "-g", registry, "-p", repository).Run()
+	cmd := exec.Command(filepath.Join(dir, "maintenance", "change-image-source.sh"), "-g", registry, "-p", repository)
+	var outb, errb bytes.Buffer
+	cmd.Stdout = &outb
+	cmd.Stderr = &errb
+	err := cmd.Run()
+	if err != nil {
+		t.Fatalf("Error running change-image-source.sh: %v\nstderr: %s\nstdout: %s", err, errb.String(), outb.String())
+	}
 	require.NoError(t, err)
 }
