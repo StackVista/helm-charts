@@ -17,4 +17,4 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          files: backup-scripts-${GITHUB_REF_NAME#suse-observability/}.tar.gz
+          files: backup-scripts-*.tar.gz
