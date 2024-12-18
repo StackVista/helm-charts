@@ -18,7 +18,7 @@ build_artifactory-cleaner:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/artifactory-cleaner/**/*
@@ -45,7 +45,7 @@ build_aws-amicleaner:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/aws-amicleaner/**/*
@@ -72,7 +72,7 @@ build_aws-nuke:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/aws-nuke/**/*
@@ -99,7 +99,7 @@ build_aws-pod-identity-webhook:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/aws-pod-identity-webhook/**/*
@@ -126,7 +126,7 @@ build_beacher-job:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/beacher-job/**/*
@@ -153,7 +153,7 @@ build_chartmuseum:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/chartmuseum/**/*
@@ -180,7 +180,7 @@ build_common:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/common/**/*
@@ -207,7 +207,7 @@ build_elasticsearch:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/elasticsearch/**/*
@@ -234,7 +234,7 @@ build_falco-reporter:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/falco-reporter/**/*
@@ -261,7 +261,7 @@ build_gitlab-steward:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/gitlab-steward/**/*
@@ -288,7 +288,7 @@ build_hbase:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/hbase/**/*
@@ -315,7 +315,7 @@ build_helm-reaper:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/helm-reaper/**/*
@@ -342,7 +342,7 @@ build_iceman:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/iceman/**/*
@@ -369,7 +369,7 @@ build_k8s-image-list-to-s3:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/k8s-image-list-to-s3/**/*
@@ -396,7 +396,7 @@ build_k8s-spot-termination-handler:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/k8s-spot-termination-handler/**/*
@@ -423,7 +423,7 @@ build_kafkaup-operator:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/kafkaup-operator/**/*
@@ -450,7 +450,7 @@ build_kommoner-operator:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/kommoner-operator/**/*
@@ -477,7 +477,7 @@ build_minio:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/minio/**/*
@@ -504,7 +504,7 @@ build_otel-demo:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/otel-demo/**/*
@@ -531,7 +531,7 @@ build_petros-d-kubelet-stats-exporter:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
@@ -558,7 +558,7 @@ build_pull-secret:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/pull-secret/**/*
@@ -585,7 +585,7 @@ build_receiveramplifier:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/receiveramplifier/**/*
@@ -612,7 +612,7 @@ build_redirector:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/redirector/**/*
@@ -639,7 +639,7 @@ build_sandbox-operator:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/sandbox-operator/**/*
@@ -666,7 +666,7 @@ build_sock-shop:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/sock-shop/**/*
@@ -693,7 +693,7 @@ build_stackstate:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/stackstate/**/*
@@ -720,7 +720,7 @@ build_stackstate-agent:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/stackstate-agent/**/*
@@ -747,7 +747,7 @@ build_stackstate-k8s-agent:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/stackstate-k8s-agent/**/*
@@ -774,7 +774,7 @@ build_stackstate-monitoring:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/stackstate-monitoring/**/*
@@ -801,7 +801,7 @@ build_stackstate-standalone:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/stackstate-standalone/**/*
@@ -828,7 +828,7 @@ build_stackstate-values:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/stackstate-values/**/*
@@ -855,7 +855,7 @@ build_suse-observability:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/suse-observability/**/*
@@ -882,7 +882,7 @@ build_suse-observability-agent:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
@@ -909,7 +909,7 @@ build_suse-observability-values:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/suse-observability-values/**/*
@@ -936,7 +936,7 @@ build_tenantmanagement:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/tenantmanagement/**/*
@@ -963,7 +963,7 @@ build_tenantprovisioning:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/tenantprovisioning/**/*
@@ -990,7 +990,7 @@ build_trafficmirror:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/trafficmirror/**/*
@@ -1017,7 +1017,7 @@ build_victoria-metrics-single:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/victoria-metrics-single/**/*
@@ -3100,7 +3100,7 @@ stages:
   - push-charts-to-public
   - push-charts-to-rancher
 test_artifactory-cleaner:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/artifactory-cleaner/**/*
@@ -3113,7 +3113,7 @@ test_artifactory-cleaner:
   variables:
     CGO_ENABLED: 0
 test_aws-amicleaner:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/aws-amicleaner/**/*
@@ -3126,7 +3126,7 @@ test_aws-amicleaner:
   variables:
     CGO_ENABLED: 0
 test_aws-nuke:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/aws-nuke/**/*
@@ -3139,7 +3139,7 @@ test_aws-nuke:
   variables:
     CGO_ENABLED: 0
 test_aws-pod-identity-webhook:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/aws-pod-identity-webhook/**/*
@@ -3152,7 +3152,7 @@ test_aws-pod-identity-webhook:
   variables:
     CGO_ENABLED: 0
 test_beacher-job:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/beacher-job/**/*
@@ -3165,7 +3165,7 @@ test_beacher-job:
   variables:
     CGO_ENABLED: 0
 test_chartmuseum:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/chartmuseum/**/*
@@ -3178,7 +3178,7 @@ test_chartmuseum:
   variables:
     CGO_ENABLED: 0
 test_common:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/common/**/*
@@ -3191,7 +3191,7 @@ test_common:
   variables:
     CGO_ENABLED: 0
 test_elasticsearch:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/elasticsearch/**/*
@@ -3204,7 +3204,7 @@ test_elasticsearch:
   variables:
     CGO_ENABLED: 0
 test_falco-reporter:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/falco-reporter/**/*
@@ -3217,7 +3217,7 @@ test_falco-reporter:
   variables:
     CGO_ENABLED: 0
 test_gitlab-steward:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/gitlab-steward/**/*
@@ -3230,7 +3230,7 @@ test_gitlab-steward:
   variables:
     CGO_ENABLED: 0
 test_hbase:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/hbase/**/*
@@ -3243,7 +3243,7 @@ test_hbase:
   variables:
     CGO_ENABLED: 0
 test_helm-reaper:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/helm-reaper/**/*
@@ -3256,7 +3256,7 @@ test_helm-reaper:
   variables:
     CGO_ENABLED: 0
 test_iceman:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/iceman/**/*
@@ -3269,7 +3269,7 @@ test_iceman:
   variables:
     CGO_ENABLED: 0
 test_k8s-image-list-to-s3:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/k8s-image-list-to-s3/**/*
@@ -3282,7 +3282,7 @@ test_k8s-image-list-to-s3:
   variables:
     CGO_ENABLED: 0
 test_k8s-spot-termination-handler:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/k8s-spot-termination-handler/**/*
@@ -3295,7 +3295,7 @@ test_k8s-spot-termination-handler:
   variables:
     CGO_ENABLED: 0
 test_kafkaup-operator:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/kafkaup-operator/**/*
@@ -3308,7 +3308,7 @@ test_kafkaup-operator:
   variables:
     CGO_ENABLED: 0
 test_kommoner-operator:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/kommoner-operator/**/*
@@ -3321,7 +3321,7 @@ test_kommoner-operator:
   variables:
     CGO_ENABLED: 0
 test_minio:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/minio/**/*
@@ -3334,7 +3334,7 @@ test_minio:
   variables:
     CGO_ENABLED: 0
 test_otel-demo:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/otel-demo/**/*
@@ -3347,7 +3347,7 @@ test_otel-demo:
   variables:
     CGO_ENABLED: 0
 test_petros-d-kubelet-stats-exporter:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
@@ -3360,7 +3360,7 @@ test_petros-d-kubelet-stats-exporter:
   variables:
     CGO_ENABLED: 0
 test_pull-secret:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/pull-secret/**/*
@@ -3373,7 +3373,7 @@ test_pull-secret:
   variables:
     CGO_ENABLED: 0
 test_receiveramplifier:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/receiveramplifier/**/*
@@ -3386,7 +3386,7 @@ test_receiveramplifier:
   variables:
     CGO_ENABLED: 0
 test_redirector:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/redirector/**/*
@@ -3399,7 +3399,7 @@ test_redirector:
   variables:
     CGO_ENABLED: 0
 test_sandbox-operator:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/sandbox-operator/**/*
@@ -3412,7 +3412,7 @@ test_sandbox-operator:
   variables:
     CGO_ENABLED: 0
 test_sock-shop:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/sock-shop/**/*
@@ -3425,7 +3425,7 @@ test_sock-shop:
   variables:
     CGO_ENABLED: 0
 test_stackstate:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/stackstate/**/*
@@ -3438,7 +3438,7 @@ test_stackstate:
   variables:
     CGO_ENABLED: 0
 test_stackstate-agent:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/stackstate-agent/**/*
@@ -3451,7 +3451,7 @@ test_stackstate-agent:
   variables:
     CGO_ENABLED: 0
 test_stackstate-k8s-agent:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/stackstate-k8s-agent/**/*
@@ -3464,7 +3464,7 @@ test_stackstate-k8s-agent:
   variables:
     CGO_ENABLED: 0
 test_stackstate-monitoring:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/stackstate-monitoring/**/*
@@ -3477,7 +3477,7 @@ test_stackstate-monitoring:
   variables:
     CGO_ENABLED: 0
 test_stackstate-standalone:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/stackstate-standalone/**/*
@@ -3490,7 +3490,7 @@ test_stackstate-standalone:
   variables:
     CGO_ENABLED: 0
 test_stackstate-values:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/stackstate-values/**/*
@@ -3503,7 +3503,7 @@ test_stackstate-values:
   variables:
     CGO_ENABLED: 0
 test_suse-observability:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/suse-observability/**/*
@@ -3516,7 +3516,7 @@ test_suse-observability:
   variables:
     CGO_ENABLED: 0
 test_suse-observability-agent:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
@@ -3529,7 +3529,7 @@ test_suse-observability-agent:
   variables:
     CGO_ENABLED: 0
 test_suse-observability-values:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/suse-observability-values/**/*
@@ -3542,7 +3542,7 @@ test_suse-observability-values:
   variables:
     CGO_ENABLED: 0
 test_tenantmanagement:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/tenantmanagement/**/*
@@ -3555,7 +3555,7 @@ test_tenantmanagement:
   variables:
     CGO_ENABLED: 0
 test_tenantprovisioning:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/tenantprovisioning/**/*
@@ -3568,7 +3568,7 @@ test_tenantprovisioning:
   variables:
     CGO_ENABLED: 0
 test_trafficmirror:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/trafficmirror/**/*
@@ -3581,7 +3581,7 @@ test_trafficmirror:
   variables:
     CGO_ENABLED: 0
 test_victoria-metrics-single:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - changes:
         - stable/victoria-metrics-single/**/*
@@ -3607,7 +3607,7 @@ update_aad_chart_version:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - if: $UPDATE_AAD_CHART_VERSION
       when: always
@@ -3634,7 +3634,7 @@ update_stackgraph_version:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images-test:stackstate-helm-test-stac-22165-39379e47
+  image: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47 '
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: always
