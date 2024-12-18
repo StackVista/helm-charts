@@ -10,13 +10,13 @@ dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 function usage() {
   cat <<EOF >&2
-Get the list of Docker images used by the Rancher Prime Observability chart
+Get the list of Docker images used by the SUSE Observability chart
 
 Usage:
   $0 [-f suse-observability-X.Y.Z.tgz]
 
 Arguments:
-    -f : TGZ archive with the Rancher Prime Observability chart (optional)
+    -f : TGZ archive with the SUSE Observability chart (optional)
     -h : Show this help text
 EOF
 }
