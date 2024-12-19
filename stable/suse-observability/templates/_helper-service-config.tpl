@@ -227,7 +227,7 @@ does not expand variables within the JAVA_OPTS anymore
 - -Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD)
 {{- end }}
 {{- end }}
-- -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy
+- -Dlogback.configurationFile=/opt/docker/etc_log/logback.xml
 {{- end -}}
 
 {{/*

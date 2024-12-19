@@ -2,8 +2,9 @@
 metadata:
   name: {{ template "common.fullname.short" . }}-state-log
 data:
-  logback.groovy: |
-{{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "WARN" "AdditionalLogging" .Values.stackstate.components.state.additionalLogging) .) | nindent 4 -}}
+  logback.xml: |
+{{- $logging := printf "%s\n%s" (include "stackstate.configmap.server-base-log" .) .Values.stackstate.components.state.additionalLogging -}}
+{{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "WARN" "AdditionalLogging" $logging) .) | nindent 4 -}}
 {{- end -}}
 
 {{- if .Values.stackstate.experimental.server.split }}

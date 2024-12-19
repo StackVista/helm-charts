@@ -29,5 +29,5 @@ else
 fi
 
 echo "=== Importing StackGraph data from \"${BACKUP_FILE}\"..."
-/opt/docker/bin/stackstate-server -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy -import "${TMP_DIR}/${BACKUP_FILE}" "${FORCE_DELETE}"
+/opt/docker/bin/stackstate-server -Dlogback.configurationFile=/opt/docker/etc_log/logback.xml -import "${TMP_DIR}/${BACKUP_FILE}" "${FORCE_DELETE}"
 echo "==="

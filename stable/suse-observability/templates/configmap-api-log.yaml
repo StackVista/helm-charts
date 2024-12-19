@@ -2,8 +2,8 @@
 metadata:
   name: {{ template "common.fullname.short" . }}-api-log
 data:
-  logback.groovy: |
-{{- $logging := printf "%s\n%s" (include "stackstate.configmap.stackpack-log" .) .Values.stackstate.components.api.additionalLogging -}}
+  logback.xml: |
+{{- $logging := printf "%s\n%s" (include "stackstate.configmap.server-base-log" .) (include "stackstate.configmap.stackpack-log" .) .Values.stackstate.components.api.additionalLogging -}}
 {{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "WARN" "AdditionalLogging" $logging) .) | nindent 4 -}}
 {{- end -}}
 

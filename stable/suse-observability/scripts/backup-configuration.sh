@@ -20,7 +20,7 @@ eval "BACKUP_FILE=\"${BACKUP_CONFIGURATION_SCHEDULED_BACKUP_NAME_TEMPLATE}\""
 BACKUP_FILE_WITH_PATH="${BACKUP_DIR}/${BACKUP_FILE}"
 
 echo "=== Creating settings backup to \"${BACKUP_FILE}\"..."
-/opt/docker/bin/settings-backup -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy -create "${BACKUP_FILE_WITH_PATH}"
+/opt/docker/bin/settings-backup -Dlogback.configurationFile=/opt/docker/etc_log/logback.xml -create "${BACKUP_FILE_WITH_PATH}"
 
 grep '_version:' "${BACKUP_FILE_WITH_PATH}" > /dev/null || (
   echo "Exported file is probably not in STY format, exiting..."

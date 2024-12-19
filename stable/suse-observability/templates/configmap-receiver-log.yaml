@@ -2,8 +2,9 @@
 metadata:
   name: {{ template "common.fullname.short" . }}-receiver-log
 data:
-  logback.groovy: |
-{{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "WARN" "AdditionalLogging" .Values.stackstate.components.receiver.additionalLogging) .) | nindent 4 -}}
+  logback.xml: |
+{{- $logging := printf "%s\n%s" (include "stackstate.configmap.receiver-base-log" .) .Values.stackstate.components.receiver.additionalLogging -}}
+{{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "WARN" "BaseLogging"  "AdditionalLogging" $logging) .) | nindent 4 -}}
 {{- end -}}
 
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}

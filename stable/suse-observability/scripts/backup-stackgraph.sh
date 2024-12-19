@@ -22,7 +22,7 @@ echo "=== Listing contents of \"${TMP_DIR}\"..."
 ls -lat "${TMP_DIR:?}"
 eval "BACKUP_FILE=\"${BACKUP_STACKGRAPH_SCHEDULED_BACKUP_NAME_TEMPLATE}\""
 echo "=== Exporting StackGraph data to \"${BACKUP_FILE}\"..."
-/opt/docker/bin/stackstate-server -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy -export "${TMP_DIR}/${BACKUP_FILE}"
+/opt/docker/bin/stackstate-server -Dlogback.configurationFile=/opt/docker/etc_log/logback.xml -export "${TMP_DIR}/${BACKUP_FILE}"
 
 
 if [ ! -f "${TMP_DIR}/${BACKUP_FILE}" ]; then

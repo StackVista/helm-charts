@@ -2,8 +2,9 @@
 metadata:
   name: {{ template "common.fullname.short" . }}-e2es-log
 data:
-  logback.groovy: |
-{{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "INFO" "AdditionalLogging" .Values.stackstate.components.e2es.additionalLogging) .) | nindent 4 -}}
+  logback.xml: |
+{{- $logging := printf "%s\n%s" (include "stackstate.configmap.e2es-base-log" .) .Values.stackstate.components.e2es.additionalLogging -}}
+{{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "INFO" "AdditionalLogging" $logging) .) | nindent 4 -}}
 {{- end -}}
 
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}

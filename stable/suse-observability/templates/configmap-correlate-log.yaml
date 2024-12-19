@@ -2,8 +2,9 @@
 metadata:
   name: {{ template "common.fullname.short" . }}-correlate-log
 data:
-  logback.groovy: |
-{{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "INFO" "AdditionalLogging" .Values.stackstate.components.correlate.additionalLogging) .) | nindent 4 -}}
+  logback.xml: |
+{{- $logging := printf "%s\n%s" (include "stackstate.configmap.correlate-base-log" .) .Values.stackstate.components.correlate.additionalLogging -}}
+{{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "INFO" "AdditionalLogging" $logging) .) | nindent 4 -}}
 {{- end -}}
 
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}

@@ -23,5 +23,5 @@ fi
  fi
 
 echo "=== Restoring settings backup from \"${BACKUP_FILE}\"..."
-/opt/docker/bin/settings-backup -Dlogback.configurationFile=/opt/docker/etc_log/logback.groovy -restore "${RESTORE_FILE}"
+/opt/docker/bin/settings-backup -Dlogback.configurationFile=/opt/docker/etc_log/logback.xml -restore "${RESTORE_FILE}"
 echo "==="
