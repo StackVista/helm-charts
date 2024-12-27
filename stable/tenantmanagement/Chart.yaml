@@ -3,7 +3,7 @@ name: tenantmanagement
 description: Manages all SaaS tenants
 type: application
 
-version: 0.1.2
+version: 0.1.3
 appVersion: "1.0.0"
 
 home: https://gitlab.com/stackvista/devops/helm-charts.git
