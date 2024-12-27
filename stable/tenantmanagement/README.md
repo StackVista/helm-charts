@@ -1,6 +1,6 @@
 # tenantmanagement
 
-![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
+![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.0.0](https://img.shields.io/badge/AppVersion-1.0.0-informational?style=flat-square)
 Manages all SaaS tenants
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 ## Maintainers
@@ -29,13 +29,16 @@ Manages all SaaS tenants
 | fullnameOverride | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.repository | string | `"quay.io/stackstate/tenant-management"` |  |
-| image.tag | string | `"0.1.0-SNAPSHOT-2d9f3ce5"` |  |
+| image.tag | string | `"0.1.0-SNAPSHOT-0fdae22e"` |  |
 | ingress.annotations | string | `nil` |  |
 | ingress.enabled | bool | `false` | Whether to deploy Ingress resource. |
 | ingress.host | string | `nil` | HTTP host for the ingress. |
 | ingress.tls.enabled | bool | `false` | Whether to enable TLS for ingress. |
 | ingress.tls.secretName | string | `nil` | The name of K8s secrets containing SSL certificate for ingress. |
-| livenessProbe | object | `{}` |  |
+| livenessProbe.httpGet.initialDelaySeconds | int | `20` |  |
+| livenessProbe.httpGet.path | string | `"/status/live"` |  |
+| livenessProbe.httpGet.port | string | `"http"` |  |
+| livenessProbe.httpGet.timeoutSeconds | int | `5` |  |
 | nameOverride | string | `""` |  |
 | nodeSelector | object | `{}` |  |
 | podAnnotations | object | `{}` |  |
@@ -43,7 +46,10 @@ Manages all SaaS tenants
 | podSecurityContext | object | `{}` |  |
 | pullSecret.password | string | `""` |  |
 | pullSecret.username | string | `""` |  |
-| readinessProbe | object | `{}` |  |
+| readinessProbe.httpGet.initialDelaySeconds | int | `20` |  |
+| readinessProbe.httpGet.path | string | `"/status/ready"` |  |
+| readinessProbe.httpGet.port | string | `"http"` |  |
+| readinessProbe.httpGet.timeoutSeconds | int | `5` |  |
 | replicaCount | int | `1` |  |
 | resources.limits.cpu | string | `"250m"` |  |
 | resources.limits.memory | string | `"256Mi"` |  |
