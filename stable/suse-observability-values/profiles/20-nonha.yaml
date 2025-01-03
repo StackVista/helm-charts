@@ -145,9 +145,9 @@ victoria-metrics-0:
     vmbackup:
       resources:
         requests:
-          memory: 100Mi
+          memory: 256Mi
         limits:
-          memory: 100Mi
+          memory: 256Mi
 victoria-metrics-1:
   enabled: false
   server:

@@ -287,6 +287,13 @@ victoria-metrics-0:
       limits:
         cpu: 8000m
         memory: 18Gi
+  backup:
+    vmbackup:
+      resources:
+        requests:
+          memory: 512Mi
+        limits:
+          memory: 512Mi
 victoria-metrics-1:
   persistentVolume:
     size: 400Gi
@@ -298,3 +305,10 @@ victoria-metrics-1:
       limits:
         cpu: 8000m
         memory: 18Gi
+  backup:
+    vmbackup:
+      resources:
+        requests:
+          memory: 512Mi
+        limits:
+          memory: 512Mi

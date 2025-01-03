@@ -227,6 +227,13 @@ victoria-metrics-0:
       limits:
         cpu: 6
         memory: 10Gi
+  backup:
+    vmbackup:
+      resources:
+        requests:
+          memory: 512Mi
+        limits:
+          memory: 512Mi
 victoria-metrics-1:
   enabled: true
   server:
@@ -237,3 +244,10 @@ victoria-metrics-1:
       limits:
         cpu: 6
         memory: 10Gi
+  backup:
+    vmbackup:
+      resources:
+        requests:
+          memory: 512Mi
+        limits:
+          memory: 512Mi

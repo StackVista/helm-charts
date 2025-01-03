@@ -130,6 +130,13 @@ victoria-metrics-0:
         memory: 8Gi
     persistentVolume:
       size: 50Gi
+  backup:
+    vmbackup:
+      resources:
+        requests:
+          memory: 512Mi
+        limits:
+          memory: 512Mi
 victoria-metrics-1:
   enabled: false
   server:

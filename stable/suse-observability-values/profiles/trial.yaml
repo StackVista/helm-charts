@@ -158,7 +158,13 @@ victoria-metrics-1:
     persistentVolume:
       size: 10Gi
     retentionPeriod: 3d
-
+  backup:
+    vmbackup:
+      resources:
+        requests:
+          memory: 256Mi
+        limits:
+          memory: 256Mi
 zookeeper:
   replicaCount: 1
   persistence:
