@@ -286,7 +286,7 @@ prometheus-elasticsearch-exporter:
     # prometheus-elasticsearch-exporter.image.repository -- Elastichsearch Prometheus exporter image repository
     repository: stackstate/elasticsearch-exporter
     # prometheus-elasticsearch-exporter.image.tag -- Elastichsearch Prometheus exporter image tag
-    tag: v1.7.0-03d6f56d
+    tag: v1.8.0-1cd10cfa
   servicemonitor:
   # prometheus-elasticsearch-exporter.servicemonitor.enabled -- enable to create a servicemonitor for prometheus operator
     enabled: false
