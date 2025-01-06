@@ -10,7 +10,7 @@ Shared settings in configmap for logging on stackstate sync pods
     <sift>
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>"date %-5level ${worker} - %msg%n</pattern>
+            <pattern>%date %-5level ${worker} - %msg%n</pattern>
         </encoder>
     </appender>
     </sift>
