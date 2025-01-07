@@ -23,7 +23,7 @@ data:
         echo "Going to reap namespace ${ns}"
 
         cut_off_date=$(date --iso-8601=hours --date="${DELETE_OLDER_THAN} days ago")
-        releases=$(helm list --namespace ${ns} -o json | jq -r --arg cut_off_date "$cut_off_date" '.[] | select(.name != "branch-master" and .updated < $cut_off_date) | .name')
+        releases=$(helm list --namespace ${ns} -o json | jq -r --arg cut_off_date "$cut_off_date" '.[] | select(.name != "branch-master" and .name != "branch-community" and .updated < $cut_off_date) | .name')
 
         # Delete outdated Helm releases
         for release in ${releases}; do
