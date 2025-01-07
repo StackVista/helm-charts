@@ -16,13 +16,14 @@ import (
 func TestGetImages(t *testing.T) {
 	curDir, err := os.Getwd()
 	require.NoError(t, err)
+	images := strings.Split(RunGetImagesScript(t, filepath.Join(curDir, "..")), "\n")
 	require.Equal(t, 31, len(
 		slices.DeleteFunc(
-			strings.Split(RunGetImagesScript(t, filepath.Join(curDir, "..")), "\n"),
+			images,
 			func(e string) bool {
 				return e == ""
 			}),
-	))
+	), images)
 }
 
 func TestChangeImageRepo(t *testing.T) {
