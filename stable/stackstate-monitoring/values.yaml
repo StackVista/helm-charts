@@ -11,3 +11,6 @@ grafana:
   dashboards:
     # grafana.dashboards.enabled -- Whether or not to enable the Grafana dashboards
     enabled: true
+    # grafana.dashboards.labels -- List of additional labels to add to the dashboard configmaps
+    labels:
+      grafana_dashboard: "1"

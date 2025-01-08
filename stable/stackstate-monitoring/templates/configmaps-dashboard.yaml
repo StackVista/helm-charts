@@ -12,7 +12,9 @@ apiVersion: v1
 metadata:
   name: grafana-dashboard-{{ $d }}
   labels:
-    grafana_dashboard: "true"
+{{- with $.Values.grafana.dashboards.labels }}
+{{ toYaml . | nindent 4 }}
+{{- end }}
 data:
 {{ ($.Files.Glob (printf "grafana-dashboards/%s/**" $d)).AsConfig | indent 4 }}
 {{- end }}
