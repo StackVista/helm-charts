@@ -1,6 +1,6 @@
 # Victoria Metrics Helm Chart for Single Version
 
- ![Version: 0.8.53-stackstate.13](https://img.shields.io/badge/Version-0.8.53--stackstate.13-informational?style=flat-square)
+ ![Version: 0.8.53-stackstate.14](https://img.shields.io/badge/Version-0.8.53--stackstate.14-informational?style=flat-square)
 
 Victoria Metrics Single version - high-performance, cost-effective and scalable TSDB, long-term remote storage for Prometheus
 
@@ -166,7 +166,7 @@ Change the values according to the need of the environment in ``victoria-metrics
 | backup.supercronic.metrics.port | int | `9746` |  |
 | backup.vmbackup.image.registry | string | `"quay.io"` |  |
 | backup.vmbackup.image.repository | string | `"stackstate/vmbackup"` | Repository containing the image for the Victoria Metrics backup |
-| backup.vmbackup.image.tag | string | `"v1.93.7-b11ba275"` | Tag of the image for the Victoria Metrics backup |
+| backup.vmbackup.image.tag | string | `"v1.93.16-eb6f4fa5"` | Tag of the image for the Victoria Metrics backup |
 | backup.vmbackup.resources.limits.cpu | string | `"100m"` |  |
 | backup.vmbackup.resources.limits.memory | string | `"512Mi"` |  |
 | backup.vmbackup.resources.requests.cpu | string | `"10m"` |  |

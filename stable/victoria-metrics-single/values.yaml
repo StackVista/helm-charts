@@ -710,7 +710,7 @@ backup:
       # -- Repository containing the image for the Victoria Metrics backup
       repository: stackstate/vmbackup
       # -- Tag of the image for the Victoria Metrics backup
-      tag: v1.93.7-b11ba275
+      tag: v1.93.16-eb6f4fa5
     resources:
       requests:
         cpu: 10m
