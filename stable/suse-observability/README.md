@@ -18,8 +18,8 @@ Current chart version is `2.2.2-pre.35`
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.0 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../victoria-metrics-cluster | victoriametrics-cluster(victoria-metrics-cluster) | 0.14.6-stackstate.0 |
-| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.14 |
-| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.14 |
+| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.15 |
+| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.15 |
 | https://charts.bitnami.com/bitnami | clickhouse | 3.6.9 |
 | https://helm-test.stackstate.io | anomaly-detection | 5.2.0-snapshot.143 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
@@ -767,7 +767,7 @@ stackstate/stackstate
 | stackstate.components.router.mode.image.pullPolicy | string | `nil` | Image pull policy for router mode containers. |
 | stackstate.components.router.mode.image.registry | string | `"quay.io"` | Base container image registry for router mode containers. |
 | stackstate.components.router.mode.image.repository | string | `"stackstate/container-tools"` | Base container image repository for router mode containers. |
-| stackstate.components.router.mode.image.tag | string | `"1.5.1"` | Container image tag for router mode containers. |
+| stackstate.components.router.mode.image.tag | string | `"1.5.2"` | Container image tag for router mode containers. |
 | stackstate.components.router.mode.jobAnnotations | object | `{}` | Annotations for the router mode jobs. |
 | stackstate.components.router.mode.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.router.mode.resources | object | `{"limits":{"cpu":"200m","memory":"400Mi"},"requests":{"cpu":"100m","memory":"400Mi"}}` | Resource allocation for `router.mode` pods. |

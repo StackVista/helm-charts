@@ -5,7 +5,7 @@ description: Victoria Metrics Single version - high-performance, cost-effective 
 name: victoria-metrics-single
 sources:
 - https://github.com/VictoriaMetrics/helm-charts
-version: 0.8.53-stackstate.14
+version: 0.8.53-stackstate.15
 dependencies:
   - name: common
     version: "*"

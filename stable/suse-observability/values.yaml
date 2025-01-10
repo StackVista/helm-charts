@@ -990,7 +990,7 @@ stackstate:
           # stackstate.components.router.mode.image.repository -- Base container image repository for router mode containers.
           repository: stackstate/container-tools
           # stackstate.components.router.mode.image.tag -- Container image tag for router mode containers.
-          tag: 1.5.1
+          tag: 1.5.2
           # stackstate.components.router.mode.image.pullPolicy -- Image pull policy for router mode containers.
           pullPolicy:
         # stackstate.components.router.mode.resources -- Resource allocation for `router.mode` pods.
