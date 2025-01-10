@@ -37,9 +37,8 @@ echo "=== Scaling down deployments for pods that connect to StackGraph"
 kubectl scale --replicas=0 deployments --selector=stackstate.com/connects-to-stackgraph=true
 
 echo "=== Waiting for pods to terminate"
-while PODS=$(kubectl get pods --selector=stackstate.com/connects-to-stackgraph=true -o name) && [ -n "$PODS" ]; do
-   POD_LINE=$(echo "$PODS" | head -c -1 | tr '\n' ', ')
-   echo "$POD_LINE"
+while PODS=$(kubectl get pods --selector=stackstate.com/connects-to-stackgraph=true -o=jsonpath='{range .items[*]}{.metadata.name} {end}') && [ -n "$PODS" ]; do
+  echo "$PODS"
   sleep 2
 done
 
