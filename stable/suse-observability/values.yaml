@@ -1727,7 +1727,7 @@ kafkaup-operator:
     # kafkaup.image.repository -- Repository containing the image for the KafkaUp operator
     repository: stackstate/kafkaup-operator
     # kafkaup.image.tag -- Tag of the image for the KafkaUp operator
-    tag: 0.0.3
+    tag: 0.0.4
     # kafkaup.image.pullPolicy -- Pull policy for the image:pod for the KafkaUp operator
     pullPolicy: ""
   kafkaSelectors:
