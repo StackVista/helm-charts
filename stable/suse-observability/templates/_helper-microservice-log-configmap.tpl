@@ -18,7 +18,7 @@ Shared settings in configmap for logging on stackstate microservices
     </root>
 
     <!-- Logging from values.yaml -->
-{{ .AdditionalLogging }}
+    {{- .AdditionalLogging -}}
 
     <!-- Custom logging configuration goes here -->
 </configuration>
