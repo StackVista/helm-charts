@@ -16,10 +16,10 @@ Shared settings in configmap for logging on stackstate sync pods
     </sift>
 </appender>
 
-<logger name="com.stackstate.sync.SyncLogging" level="INFO">
+<logger name="com.stackstate.sync.SyncLogging" level="INFO" additivity="false">
     <appender-ref ref="Syncs" />
 </logger>
-<logger name="com.stackstate.sync.ExtTopoLogging" level="INFO">
+<logger name="com.stackstate.sync.ExtTopoLogging" level="INFO" additivity="false">
     <appender-ref ref="Syncs" />
 </logger>
 {{- end -}}

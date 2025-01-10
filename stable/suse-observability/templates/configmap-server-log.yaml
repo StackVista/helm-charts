@@ -3,7 +3,7 @@ metadata:
   name: {{ template "common.fullname.short" . }}-server-log
 data:
   logback.xml: |
-{{- $logging := printf "%s\n%s\n%s" (include "stackstate.configmap.server-base-log" .) (include "stackstate.configmap.sync-log" .) (include "stackstate.configmap.stackpack-log" .) .Values.stackstate.components.server.additionalLogging -}}
+{{- $logging := printf "%s\n%s\n%s\n%s" (include "stackstate.configmap.server-base-log" .) (include "stackstate.configmap.sync-log" .) (include "stackstate.configmap.stackpack-log" .) .Values.stackstate.components.server.additionalLogging -}}
 {{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "WARN" "AdditionalLogging" $logging) .) | nindent 4 -}}
 {{- end -}}
 

@@ -16,7 +16,7 @@ Shared settings in configmap for logging on stackstate sync pods
     </sift>
 </appender>
 
-<logger name="com.stackstate.stackpackmanager.StackPackLogging" level="INFO">
+<logger name="com.stackstate.stackpackmanager.StackPackLogging" level="INFO" additivity="false">
     <appender-ref ref="StackPacks" />
 </logger>
 {{- end -}}
