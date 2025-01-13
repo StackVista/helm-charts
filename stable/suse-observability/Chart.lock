@@ -10,7 +10,7 @@ dependencies:
   version: 8.11.4-stackstate.5
 - name: hbase
   repository: file://../hbase/
-  version: 0.2.51
+  version: 0.2.52
 - name: kafka
   repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
   version: 19.1.3
@@ -41,5 +41,5 @@ dependencies:
 - name: opentelemetry-collector
   repository: file://../opentelemetry-collector
   version: 0.108.0-stackstate.0
-digest: sha256:b49791c0668d098992736317fee6f9dd86b629b2f6cc1e76ff8f13b861d3f1d5
-generated: "2025-01-10T15:58:41.653943214+01:00"
+digest: sha256:4af5a5fe5c38637799954e827b91130ed7e6b405290a280f488986c57f179761
+generated: "2025-01-13T13:47:27.506868832Z"
