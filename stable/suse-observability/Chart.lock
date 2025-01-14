@@ -1,6 +1,6 @@
 dependencies:
 - name: anomaly-detection
-  repository: https://helm-test.stackstate.io
+  repository: https://helm.stackstate.io
   version: 5.2.0-snapshot.143
 - name: common
   repository: file://../common/
@@ -36,10 +36,10 @@ dependencies:
   repository: file://../victoria-metrics-cluster
   version: 0.14.6-stackstate.0
 - name: clickhouse
-  repository: https://charts.bitnami.com/bitnami
+  repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
   version: 3.6.9
 - name: opentelemetry-collector
   repository: file://../opentelemetry-collector
   version: 0.108.0-stackstate.0
-digest: sha256:4af5a5fe5c38637799954e827b91130ed7e6b405290a280f488986c57f179761
-generated: "2025-01-13T13:47:27.506868832Z"
+digest: sha256:1dfc7dc7c2abdee758e636f14533be744cdd7a1ccb0376d5f378e4932b868f58
+generated: "2025-01-14T10:23:24.601379719+01:00"

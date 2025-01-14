@@ -15,7 +15,7 @@ name: suse-observability
 dependencies:
   - name: anomaly-detection
     version: 5.2.0-snapshot.143
-    repository: https://helm-test.stackstate.io
+    repository: https://helm.stackstate.io
     condition: anomaly-detection.enabled
   - name: common
     repository: file://../common/
@@ -70,7 +70,7 @@ dependencies:
     condition: victoriametrics-cluster.enabled
   - name: clickhouse
     version: 3.6.9
-    repository: https://charts.bitnami.com/bitnami
+    repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     condition: clickhouse.enabled
   - name: opentelemetry-collector
     version: 0.108.0-stackstate.0

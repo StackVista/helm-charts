@@ -20,8 +20,8 @@ Current chart version is `2.2.2-pre.45`
 | file://../victoria-metrics-cluster | victoriametrics-cluster(victoria-metrics-cluster) | 0.14.6-stackstate.0 |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.15 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.15 |
-| https://charts.bitnami.com/bitnami | clickhouse | 3.6.9 |
-| https://helm-test.stackstate.io | anomaly-detection | 5.2.0-snapshot.143 |
+| https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.143 |
+| https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | clickhouse | 3.6.9 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
 
