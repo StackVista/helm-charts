@@ -133,16 +133,15 @@ func TestAuthenticationRancher(t *testing.T) {
 }
 
 func TestAuthenticationRancherInvalid(t *testing.T) {
-	// TODO
-	//err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/rancher_authentication_multiple_oidc_providers.yaml")
-	//require.Contains(t, err.Error(), "cannot configure both stackstate.authentication.oidc and stackstate.authentication.rancher at the same time")
+	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/rancher_authentication_multiple_oidc_providers.yaml")
+	require.Contains(t, err.Error(), "Cannot configure both stackstate.authentication.oidc and stackstate.authentication.rancher simultaneously")
 
-	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/rancher_authentication_missing_clientid.yaml")
+	err = helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/rancher_authentication_missing_clientid.yaml")
 	require.Contains(t, err.Error(), "the client id to be set")
 	err = helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/rancher_authentication_missing_secret.yaml")
 	require.Contains(t, err.Error(), "the client secret to be set")
 	err = helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/rancher_authentication_missing_baseUrl.yaml")
-	require.Contains(t, err.Error(), "the Rancher baseUrl to be set")
+	require.Contains(t, err.Error(), "either discoveryUri or baseUrl must be provided")
 }
 
 const expectedKeycloakAuthConfig = `stackstate.api.authentication.authServer.keycloakAuthServer {

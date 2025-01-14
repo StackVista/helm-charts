@@ -1431,7 +1431,7 @@ stackstate:
     # stackstate.authentication.oidc -- Use an OpenId Connect provider for authentication. See [Configuring OpenId Connect](#configuring-openid-connect).
     oidc: {}
     # stackstate.authentication.rancher -- Use Rancher as an OpenId Connect provider for authentication. See [Configuring OpenId Connect](#configuring-openid-connect).
-    rancher: { }
+    rancher: {}
     # stackstate.authentication.file -- Configure users, their passwords and roles from (config) file
     file: {}
     # stackstate.authentication.adminPassword -- Password for the 'admin' user that StackState creates by default

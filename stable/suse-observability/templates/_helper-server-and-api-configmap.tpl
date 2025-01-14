@@ -182,17 +182,23 @@ Authentication config
 {{- end }}
 {{- if $apiAuth.rancher }}
   {{- if has "oidcAuthServer" $authTypes }}
-  {{- fail "An authentication server is already configured through stackstate.authentication.oidc. You cannot configure both stackstate.authentication.oidc and stackstate.authentication.rancher at the same time." -}}
+  {{- fail "Cannot configure both stackstate.authentication.oidc and stackstate.authentication.rancher simultaneously. Please choose one authentication method." -}}
   {{- else }}
   {{- $authTypes = append $authTypes "oidcAuthServer" }}
 {{ $authnPrefix }}.authServer.oidcAuthServer {
   clientId = ${oidc_client_id}
   secret = ${oidc_secret}
-  discoveryUri = "{{ $apiAuth.rancher.baseUrl | trimSuffix "/" | required "OIDC authentication, for Rancher, requires the Rancher base URL to be set." }}/oidc/.well-known/openid-configuration"
+  {{- if $apiAuth.rancher.discoveryUri }}
+  discoveryUri = {{ $apiAuth.rancher.discoveryUri | trimSuffix "/" | quote }}
+  {{- else if $apiAuth.rancher.baseUrl }}
+  discoveryUri = "{{ $apiAuth.rancher.baseUrl | trimSuffix "/" }}/oidc/.well-known/openid-configuration"
+  {{- else }}
+  {{- fail "Cannot configure Rancher authentication: either discoveryUri or baseUrl must be provided." }}
+  {{- end }}
   {{- if $apiAuth.rancher.redirectUri }}
   redirectUri = {{ $apiAuth.rancher.redirectUri | trimSuffix "/" | quote }}
   {{- else }}
-  redirectUri = "{{ $global.Values.stackstate.baseUrl | default $global.Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "Could not determine redirectUri for OIDC from Rancher. Please specify explicitly." }}/loginCallback"
+  redirectUri = "{{ $global.Values.stackstate.baseUrl | default $global.Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "Cannot configure Rancher authentication: baseUrl or receiver.baseUrl must be provided to construct the redirectUri." }}/loginCallback"
   {{- end }}
   scope = ["openid", "email", "profile"]
   jwsAlgorithm = "RS256"
