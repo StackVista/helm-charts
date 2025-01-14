@@ -690,7 +690,7 @@ backup:
       # -- Repository containing busybox image, it is used to prepare th cronjob (create a crontab file).
       repository: stackstate/container-tools
       # -- Tag of the image for the busybox
-      tag: 1.5.2
+      tag: 1.5.3
     resources:
       requests:
         cpu: 20m
