@@ -1,0 +1,6 @@
+stackstate:
+  authentication:
+    rancher:
+      clientId: stackstate-client-id
+      secret: "some-secret"
+      baseUrl: https://rancher-hostname.com

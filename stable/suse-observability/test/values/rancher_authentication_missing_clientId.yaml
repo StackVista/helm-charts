@@ -1,0 +1,5 @@
+stackstate:
+  authentication:
+    rancher:
+      secret: "some-secret"
+      baseUrl: https://rancher-hostname.com

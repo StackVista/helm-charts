@@ -101,6 +101,50 @@ func TestAuthenticationOidcInvalid(t *testing.T) {
 	require.Contains(t, err.Error(), "the discovery uri to be set")
 }
 
+const expectedRancherAuthConfig = `stackstate.api.authentication.authServer.oidcAuthServer {
+  clientId = ${oidc_client_id}
+  secret = ${oidc_secret}
+  discoveryUri = "https://rancher-hostname.com/oidc/.well-known/openid-configuration"
+  redirectUri = "http://localhost/loginCallback"
+  scope = ["openid", "email", "profile"]
+  jwsAlgorithm = "RS256"
+  jwtClaims {
+    groupsField = "groups"
+  }
+}`
+
+var expectedRancherAuthSecret = map[string]string{
+	"oidc_client_id": "stackstate-client-id",
+	"oidc_secret":    "some-secret",
+}
+
+const expectedRancherAuthEnabled = `stackstate.api.authentication.authServer.authServerType = [oidcAuthServer, k8sServiceAccountAuthServer]`
+
+func TestAuthenticationRancherSplit(t *testing.T) {
+	RunConfigMapTest(t, "suse-observability-api", []string{"values/rancher_authentication.yaml"}, expectedRancherAuthConfig, expectedRancherAuthEnabled)
+}
+
+func TestAuthenticationRancherSecret(t *testing.T) {
+	RunSecretTest(t, "suse-observability-auth", []string{"values/rancher_authentication.yaml"}, expectedRancherAuthSecret)
+}
+
+func TestAuthenticationRancher(t *testing.T) {
+	RunConfigMapTest(t, "suse-observability-server", []string{"values/rancher_authentication.yaml", "values/split_disabled.yaml"}, expectedRancherAuthConfig, expectedRancherAuthEnabled)
+}
+
+func TestAuthenticationRancherInvalid(t *testing.T) {
+	// TODO
+	//err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/rancher_authentication_multiple_oidc_providers.yaml")
+	//require.Contains(t, err.Error(), "cannot configure both stackstate.authentication.oidc and stackstate.authentication.rancher at the same time")
+
+	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/rancher_authentication_missing_clientid.yaml")
+	require.Contains(t, err.Error(), "the client id to be set")
+	err = helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/rancher_authentication_missing_secret.yaml")
+	require.Contains(t, err.Error(), "the client secret to be set")
+	err = helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/rancher_authentication_missing_baseUrl.yaml")
+	require.Contains(t, err.Error(), "the Rancher baseUrl to be set")
+}
+
 const expectedKeycloakAuthConfig = `stackstate.api.authentication.authServer.keycloakAuthServer {
   keycloakBaseUri = "http://keycloak"
   realm = "test"

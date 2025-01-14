@@ -180,6 +180,31 @@ Authentication config
   {{- end }}
 }
 {{- end }}
+{{- if $apiAuth.rancher }}
+  {{- if has "oidcAuthServer" $authTypes }}
+  {{- fail "An authentication server is already configured through stackstate.authentication.oidc. You cannot configure both stackstate.authentication.oidc and stackstate.authentication.rancher at the same time." -}}
+  {{- else }}
+  {{- $authTypes = append $authTypes "oidcAuthServer" }}
+{{ $authnPrefix }}.authServer.oidcAuthServer {
+  clientId = ${oidc_client_id}
+  secret = ${oidc_secret}
+  discoveryUri = "{{ $apiAuth.rancher.baseUrl | trimSuffix "/" | required "OIDC authentication, for Rancher, requires the Rancher base URL to be set." }}/oidc/.well-known/openid-configuration"
+  {{- if $apiAuth.rancher.redirectUri }}
+  redirectUri = {{ $apiAuth.rancher.redirectUri | trimSuffix "/" | quote }}
+  {{- else }}
+  redirectUri = "{{ $global.Values.stackstate.baseUrl | default $global.Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "Could not determine redirectUri for OIDC from Rancher. Please specify explicitly." }}/loginCallback"
+  {{- end }}
+  scope = ["openid", "email", "profile"]
+  jwsAlgorithm = "RS256"
+  jwtClaims {
+    groupsField = "groups"
+  }
+  {{- if $apiAuth.rancher.customParameters }}
+  customParams {{ $apiAuth.rancher.customParameters | toJson }}
+  {{- end }}
+}
+  {{- end }}
+{{- end }}
 {{- if $apiAuth.keycloak }}
 {{ $authTypes = append $authTypes "keycloakAuthServer" }}
 {{ $authnPrefix }}.authServer.keycloakAuthServer {
@@ -253,7 +278,7 @@ for production this should be replaced with one of the other mechanisms.
 {{- end }}
 
 {{- if gt (len $authTypes) 1 -}}
-{{- fail "More than 1 authentication mechanism specified. Please configure only one from: keycloak, oidc or ldap. If none are configured the default admin user will be made available with the stackstate.authentication.adminPassword." -}}
+{{- fail "More than 1 authentication mechanism specified. Please configure only one from: keycloak, oidc, rancher or ldap. If none are configured the default admin user will be made available with the stackstate.authentication.adminPassword." -}}
 {{- end }}
 
 {{ $authnPrefix }}.sessionLifetime =  {{ $apiAuth.sessionLifetime | default "7d" | toJson }}
