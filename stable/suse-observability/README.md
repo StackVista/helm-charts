@@ -455,7 +455,7 @@ stackstate/stackstate
 | stackstate.authentication.keycloak | object | `{}` | Use Keycloak as authentication provider. See [Configuring Keycloak](#configuring-keycloak). |
 | stackstate.authentication.ldap | object | `{}` | LDAP settings for StackState. See [Configuring LDAP](#configuring-ldap). |
 | stackstate.authentication.oidc | object | `{}` | Use an OpenId Connect provider for authentication. See [Configuring OpenId Connect](#configuring-openid-connect). |
-| stackstate.authentication.rancher | object | `{}` | Use Rancher as an OpenId Connect provider for authentication. See [Configuring OpenId Connect](#configuring-openid-connect). |
+| stackstate.authentication.rancher | object | `{}` | Use Rancher as an OpenId Connect provider for authentication. See [Configuring Rancher authentication](#configuring-rancher-authentication). |
 | stackstate.authentication.roles | object | `{"admin":[],"custom":{},"guest":[],"k8sTroubleshooter":[],"powerUser":[]}` | Extend the default role names in StackState |
 | stackstate.authentication.roles.admin | list | `[]` | Extend the role names that have admin permissions (default: 'stackstate-admin') |
 | stackstate.authentication.roles.custom | object | `{}` | Extend the authorization with custom roles {roleName: {systemPermissions: [], viewPermissions: [], topologyScope: ""}} |
@@ -1141,6 +1141,51 @@ stackstate:
         groupsField: groups
       customParameters:
         access_type: offline # Custom request parameter
+```
+
+### Configuring Rancher authentication
+
+```
+NOTE: this authentication method is not yet fully supported.
+```
+
+Rancher authentication uses OpenId Connect (OIDC).
+
+This authentication mechanism in SUSE Observability abstracts away certain OIDC config specific to Rancher to simplify the config required to set up the authentication method between Rancher and SUSE Observability.
+
+To use it create a `rancher_auth_values.yaml` similar to the example below and add it as an additional argument to the installation:
+
+```
+helm install \
+  --values rancher_auth_values.yaml \
+  ... \
+stackstate/stackstate
+```
+
+Example that sets up Rancher authentication. The OIDC config from the
+```yaml
+stackstate:
+  authentication:
+    rancher:
+      clientId: "oidc-client"
+      secret: "oidc-client-secret"
+      baseUrl: "https://rancher-host"
+    roles:
+      admin: [ "Default Admin" ] # for now, we map here the display names in Rancher to the SO role
+```
+You can override and extend some of the OIDC config for Rancher with the following fields:
+- `discoveryUri`
+- `redirectUri`
+- `customParams`
+
+If you need to disable TLS verification due to a setup not using verifiable SSL certificates, you can disable SSL checks with some application config (don't use in production):
+```yaml
+stackstate:
+  components:
+    server:
+      extraEnv:
+        open:
+          CONFIG_FORCE_stackstate_misc_sslCertificateChecking: false
 ```
 
 ### Configuring Keycloak
