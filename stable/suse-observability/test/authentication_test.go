@@ -136,7 +136,7 @@ func TestAuthenticationRancherInvalid(t *testing.T) {
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/rancher_authentication_multiple_oidc_providers.yaml")
 	require.Contains(t, err.Error(), "Cannot configure both stackstate.authentication.oidc and stackstate.authentication.rancher simultaneously")
 
-	err = helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/rancher_authentication_missing_clientid.yaml")
+	err = helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/rancher_authentication_missing_clientId.yaml")
 	require.Contains(t, err.Error(), "the client id to be set")
 	err = helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/rancher_authentication_missing_secret.yaml")
 	require.Contains(t, err.Error(), "the client secret to be set")
