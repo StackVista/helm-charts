@@ -10,7 +10,8 @@ metadata:
     app: {{ $.Chart.Name }}
 spec:
   names:
-    kind: {{ ($crd.name | camelcase) }}
+    kind: {{ ($crd.singular | camelcase) }}
+    singular: {{ $crd.singular | replace "_" "" }}
     plural: {{ $crd.name | replace "_" "" }}
   scope: Namespaced
   group: {{ $crdDefinitions.apiGroup | quote }}

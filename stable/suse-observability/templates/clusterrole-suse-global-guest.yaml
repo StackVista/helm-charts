@@ -1,63 +1,36 @@
-{{- define "stackstate.k8s.authorization.global.admin.clusterrole" -}}
+{{- define "stackstate.k8s.authorization.global.admin.selfhosted.clusterrole" -}}
 metadata:
   labels:
     observability.cattle.io/globalrolebinding: "true"
-  name: {{ template "common.fullname.cluster.unique" . }}-global-admin-authz
+  name: {{ template "common.fullname.cluster.unique" . }}-global-guest
 rules:
 - apiGroups:
   - observability.cattle.io
   resources:
   - views
-  - ingestionapikeys
-  - metricbindings
-  - monitors
-  - notifications
-  - permissions
-  - servicetokens
-  - settings
   verbs:
-  - create
   - update
   - get
   - delete
 - apiGroups:
     - observability.cattle.io
   resources:
-    - settings
-  verbs:
-    - unlock
-- apiGroups:
-    - observability.cattle.io
-  resources:
-    - stackpackconfigurations
-  verbs:
-    - create
-    - get
-    - delete
-- apiGroups:
-    - observability.cattle.io
-  resources:
     - stackpacks
   verbs:
-    - create
     - get
 - apiGroups:
     - observability.cattle.io
   resources:
-    - agents
     - apitokens
     - metrics
-    - syncdata
     - systemnotifications
     - topology
-    - topicmessages
     - traces
   verbs:
     - get
 - apiGroups:
     - observability.cattle.io
   resources:
-    - syncdata
     - favoriteviews
     - visualizationsettings
   verbs:
@@ -66,9 +39,6 @@ rules:
     - observability.cattle.io
   resources:
     - componentactions
-    - monitors
-    - restrictedscripts
-    - scripts
   verbs:
     - execute
 - apiGroups:
@@ -79,8 +49,8 @@ rules:
     - delete
 {{- end -}}
 
-{{- if (index .Values "cluster-role" "enabled") -}}
+{{- if (eq .Values.stackstate.deployment.mode  "SelfHosted") -}}
 {{- $commonRole := fromYaml (include "common.clusterrole" .) -}}
-{{- $stsK8sAuthzRole := fromYaml (include "stackstate.k8s.authorization.global.admin.clusterrole" .) -}}
+{{- $stsK8sAuthzRole := fromYaml (include "stackstate.k8s.authorization.global.admin.selfhosted.clusterrole" .) -}}
 {{- toYaml (merge $stsK8sAuthzRole $commonRole) -}}
 {{- end -}}
