@@ -1374,7 +1374,7 @@ stackstate:
       fullNameOverride: suse-observability-vmagent
       image:
         repository: stackstate/vmagent
-        tag: v1.93.16-61db73fb
+        tag: v1.109.0-ad5fe3d4
       # stackstate.components.vmagent.poddisruptionbudget -- PodDisruptionBudget settings for `vmagent` pods.
       poddisruptionbudget:
         maxUnavailable: 1
@@ -2120,9 +2120,6 @@ victoria-metrics-0:
   server:
     # victoria-metrics-0.server.fullnameOverride -- Full name override
     fullnameOverride: suse-observability-victoria-metrics-0
-    image:
-      # 1.93.x is the LTS version
-      tag: "v1.93.16-71e00d51"
     # victoria-metrics-0.server.podAnnotations -- Annotations for Victoria Metrics server pod
     podAnnotations:
       ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
@@ -2207,9 +2204,6 @@ victoria-metrics-1:
   server:
     # victoria-metrics-1.server.fullnameOverride -- Full name override
     fullnameOverride: suse-observability-victoria-metrics-1
-    image:
-      # 1.93.x is the LTS version
-      tag: "v1.93.16-71e00d51"
     # victoria-metrics-1.server.podAnnotations -- Annotations for Victoria Metrics server pod
     podAnnotations:
       ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
@@ -2473,7 +2467,7 @@ victoria-metrics:
       # victoria-metrics.restore.image.repository -- Base container image repository for 'vmrestore' containers.
       repository: stackstate/vmrestore
       # victoria-metrics.restore.image.tag -- Container image tag for 'vmrestore' containers.
-      tag: v1.93.16-55133e01
+      tag: v1.109.0-219ea492
       # victoria-metrics.restore.image.pullPolicy -- Image pull policy for `vmrestore` containers.
       pullPolicy: IfNotPresent
     securityContext:

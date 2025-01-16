@@ -1,11 +1,11 @@
 apiVersion: v2
-appVersion: 1.87.1
+appVersion: 1.109.0
 description: Victoria Metrics Single version - high-performance, cost-effective and
   scalable TSDB, long-term remote storage for Prometheus
 name: victoria-metrics-single
 sources:
 - https://github.com/VictoriaMetrics/helm-charts
-version: 0.8.53-stackstate.16
+version: 0.8.53-stackstate.17
 dependencies:
   - name: common
     version: "*"
