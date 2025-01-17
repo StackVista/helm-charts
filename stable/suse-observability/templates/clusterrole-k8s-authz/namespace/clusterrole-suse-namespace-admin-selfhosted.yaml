@@ -1,14 +1,16 @@
-{{- define "stackstate.k8s.authorization.global.admin.selfhosted.clusterrole" -}}
+{{- define "stackstate.k8s.authorization.namespace.admin.selfhosted.clusterrole" -}}
 metadata:
   labels:
-    observability.cattle.io/globalrolebinding: "true"
-  name: {{ template "common.fullname.cluster.unique" . }}-global-guest
+  name: {{ template "common.fullname" . }}-namespace-admin
 rules:
 - apiGroups:
   - observability.cattle.io
   resources:
   - views
+  - permissions
+  - stackpackconfigurations
   verbs:
+  - create
   - update
   - get
   - delete
@@ -21,11 +23,17 @@ rules:
 - apiGroups:
     - observability.cattle.io
   resources:
+    - agents
     - apitokens
     - metrics
+    - syncdata
     - systemnotifications
     - topology
+    - topicmessages
     - traces
+    - metricbindings
+    - monitors
+    - notifications
   verbs:
     - get
 - apiGroups:
@@ -39,6 +47,9 @@ rules:
     - observability.cattle.io
   resources:
     - componentactions
+    - monitors
+    - restrictedscripts
+    - scripts
   verbs:
     - execute
 - apiGroups:
@@ -49,8 +60,8 @@ rules:
     - delete
 {{- end -}}
 
-{{- if (eq .Values.stackstate.deployment.mode  "SelfHosted") -}}
+{{- if and (index .Values "cluster-role-k8s-authz" "enabled")  (eq .Values.stackstate.deployment.mode  "SelfHosted") -}}
 {{- $commonRole := fromYaml (include "common.clusterrole" .) -}}
-{{- $stsK8sAuthzRole := fromYaml (include "stackstate.k8s.authorization.global.admin.selfhosted.clusterrole" .) -}}
+{{- $stsK8sAuthzRole := fromYaml (include "stackstate.k8s.authorization.namespace.admin.selfhosted.clusterrole" .) -}}
 {{- toYaml (merge $stsK8sAuthzRole $commonRole) -}}
 {{- end -}}

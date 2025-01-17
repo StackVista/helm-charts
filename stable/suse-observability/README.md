@@ -164,7 +164,7 @@ stackstate/stackstate
 | clickhouse.usersExtraOverrides | string | `"<clickhouse>\n  <users>\n    <stackstate>\n        <no_password></no_password>\n        <grants>\n            <query>GRANT ALL ON *.*</query>\n        </grants>\n    </stackstate>\n  </users>\n</clickhouse>\n"` | Users extra configuration overrides. |
 | clickhouse.volumePermissions.enabled | bool | `false` |  |
 | clickhouse.zookeeper.enabled | bool | `false` | Disable Zookeeper from the clickhouse chart **Don't change unless otherwise specified**. |
-| cluster-role-k8s-authz.enabled | bool | `true` | Deploy the ClusterRole(s) and permissions CRDs to populate permissions on Suse Observability |
+| cluster-role-k8s-authz.enabled | bool | `false` | Deploy the ClusterRole(s) and permissions CRDs to populate permissions on Suse Observability |
 | cluster-role.enabled | bool | `true` | Deploy the ClusterRole(s) and ClusterRoleBinding(s) together with the chart. Can be disabled if these need to be installed by an administrator of the Kubernetes cluster. |
 | commonLabels | object | `{}` | Labels that will be added to all resources created by the stackstate chart (not the subcharts though) |
 | deployment.compatibleWithArgoCD | bool | `false` | Whether to adjust the Chart to be compatible with ArgoCD. This feature is as of yet not deployed in the o11y-tenants and saas-tenants directories, so should be considered unfinished (see STAC-21445) |

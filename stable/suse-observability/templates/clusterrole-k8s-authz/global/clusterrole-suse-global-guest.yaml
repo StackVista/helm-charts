@@ -1,32 +1,17 @@
-{{- define "stackstate.k8s.authorization.global.admin.selfhosted.clusterrole" -}}
+{{- define "stackstate.k8s.authorization.global.guest.clusterrole" -}}
 metadata:
   labels:
-    observability.cattle.io/globalrolebinding: "true"
-  name: {{ template "common.fullname.cluster.unique" . }}-global-admin
+    observability.cattle.io/globalrole: "true"
+  name: {{ template "common.fullname" . }}-global-guest
 rules:
 - apiGroups:
   - observability.cattle.io
   resources:
   - views
-  - ingestionapikeys
-  - metricbindings
-  - monitors
-  - notifications
-  - permissions
-  - servicetokens
   verbs:
-  - create
   - update
   - get
   - delete
-- apiGroups:
-    - observability.cattle.io
-  resources:
-    - stackpackconfigurations
-  verbs:
-    - create
-    - get
-    - delete
 - apiGroups:
     - observability.cattle.io
   resources:
@@ -36,10 +21,8 @@ rules:
 - apiGroups:
     - observability.cattle.io
   resources:
-    - agents
     - apitokens
     - metrics
-    - syncdata
     - systemnotifications
     - topology
     - traces
@@ -48,7 +31,6 @@ rules:
 - apiGroups:
     - observability.cattle.io
   resources:
-    - syncdata
     - favoriteviews
     - visualizationsettings
   verbs:
@@ -57,20 +39,18 @@ rules:
     - observability.cattle.io
   resources:
     - componentactions
-    - monitors
   verbs:
     - execute
 - apiGroups:
     - observability.cattle.io
   resources:
     - favoriteviews
-    - syncdata
   verbs:
     - delete
 {{- end -}}
 
-{{- if and (index .Values "cluster-role-k8s-authz" "enabled")  (eq .Values.stackstate.deployment.mode  "SaaS") -}}
+{{- if and (index .Values "cluster-role-k8s-authz" "enabled") (eq .Values.stackstate.deployment.mode  "SelfHosted") -}}
 {{- $commonRole := fromYaml (include "common.clusterrole" .) -}}
-{{- $stsK8sAuthzRole := fromYaml (include "stackstate.k8s.authorization.global.admin.selfhosted.clusterrole" .) -}}
+{{- $stsK8sAuthzRole := fromYaml (include "stackstate.k8s.authorization.global.guest.clusterrole" .) -}}
 {{- toYaml (merge $stsK8sAuthzRole $commonRole) -}}
 {{- end -}}

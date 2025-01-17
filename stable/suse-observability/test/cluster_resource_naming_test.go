@@ -22,7 +22,6 @@ func TestClusterRoleDeployedToSameNamespaceAsChartName(t *testing.T) {
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	println(output)
 	require.Equal(t, 2, len(resources.ClusterRoleBindings))
 	require.Contains(t, resources.ClusterRoleBindings, "suse-observability-authentication")
 	require.Contains(t, resources.ClusterRoleBindings, "suse-observability-authorization")
