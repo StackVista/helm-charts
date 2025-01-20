@@ -1,13 +1,13 @@
-{{- define "stackstate.k8s.authorization.cluster.troubleshooter.clusterrole" -}}
+{{- define "stackstate.k8s.authorization.instance.troubleshooter.role" -}}
 metadata:
-  labels:
-    observability.cattle.io/globalrole: "true"
-  name: {{ template "common.fullname" . }}-cluster-troubleshooter
+  name: {{ template "common.fullname.short" . }}-instance-troubleshooter
 rules:
 - apiGroups:
-  - observability.cattle.io
+  - instance.observability.cattle.io
   resources:
   - views
+  - monitors
+  - notifications
   - stackpackconfigurations
   verbs:
   - create
@@ -15,7 +15,7 @@ rules:
   - get
   - delete
 - apiGroups:
-    - observability.cattle.io
+    - instance.observability.cattle.io
   resources:
     - agents
     - apitokens
@@ -25,34 +25,32 @@ rules:
     - systemnotifications
     - topology
     - traces
-    - monitors
-    - notifications
   verbs:
     - get
 - apiGroups:
-    - observability.cattle.io
+    - instance.observability.cattle.io
   resources:
     - favoriteviews
     - visualizationsettings
   verbs:
     - update
 - apiGroups:
-    - observability.cattle.io
+    - instance.observability.cattle.io
   resources:
     - componentactions
     - monitors
   verbs:
     - execute
 - apiGroups:
-    - observability.cattle.io
+    - instance.observability.cattle.io
   resources:
     - favoriteviews
   verbs:
     - delete
 {{- end -}}
 
-{{- if (index .Values "cluster-role-k8s-authz" "enabled")  -}}
-{{- $commonRole := fromYaml (include "common.clusterrole" .) -}}
-{{- $stsK8sAuthzRole := fromYaml (include "stackstate.k8s.authorization.cluster.troubleshooter.clusterrole" .) -}}
+{{- if (index .Values "role-k8s-authz" "enabled")  -}}
+{{- $commonRole := fromYaml (include "common.role" .) -}}
+{{- $stsK8sAuthzRole := fromYaml (include "stackstate.k8s.authorization.instance.troubleshooter.role" .) -}}
 {{- toYaml (merge $stsK8sAuthzRole $commonRole) -}}
 {{- end -}}

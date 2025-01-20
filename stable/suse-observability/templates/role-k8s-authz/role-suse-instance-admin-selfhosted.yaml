@@ -1,11 +1,9 @@
-{{- define "stackstate.k8s.authorization.global.admin.selfhosted.clusterrole" -}}
+{{- define "stackstate.k8s.authorization.instance.admin.selfhosted.role" -}}
 metadata:
-  labels:
-    observability.cattle.io/globalrole: "true"
-  name: {{ template "common.fullname" . }}-global-admin
+  name: {{ template "common.fullname.short" . }}-instance-admin
 rules:
 - apiGroups:
-  - observability.cattle.io
+  - instance.observability.cattle.io
   resources:
   - views
   - ingestionapikeys
@@ -19,20 +17,20 @@ rules:
   - get
   - delete
 - apiGroups:
-    - observability.cattle.io
+    - instance.observability.cattle.io
   resources:
     - settings
   verbs:
     - unlock
 - apiGroups:
-    - observability.cattle.io
+    - instance.observability.cattle.io
   resources:
     - stackpacks
   verbs:
     - create
     - get
 - apiGroups:
-    - observability.cattle.io
+    - instance.observability.cattle.io
   resources:
     - agents
     - apitokens
@@ -45,7 +43,7 @@ rules:
   verbs:
     - get
 - apiGroups:
-    - observability.cattle.io
+    - instance.observability.cattle.io
   resources:
     - syncdata
     - favoriteviews
@@ -53,7 +51,7 @@ rules:
   verbs:
     - update
 - apiGroups:
-    - observability.cattle.io
+    - instance.observability.cattle.io
   resources:
     - componentactions
     - monitors
@@ -62,7 +60,7 @@ rules:
   verbs:
     - execute
 - apiGroups:
-    - observability.cattle.io
+    - instance.observability.cattle.io
   resources:
     - favoriteviews
     - syncdata
@@ -70,8 +68,8 @@ rules:
     - delete
 {{- end -}}
 
-{{- if and (index .Values "cluster-role-k8s-authz" "enabled")  (eq .Values.stackstate.deployment.mode  "SelfHosted") -}}
-{{- $commonRole := fromYaml (include "common.clusterrole" .) -}}
-{{- $stsK8sAuthzRole := fromYaml (include "stackstate.k8s.authorization.global.admin.selfhosted.clusterrole" .) -}}
+{{- if and (index .Values "role-k8s-authz" "enabled")  (eq .Values.stackstate.deployment.mode  "SelfHosted") -}}
+{{- $commonRole := fromYaml (include "common.role" .) -}}
+{{- $stsK8sAuthzRole := fromYaml (include "stackstate.k8s.authorization.instance.admin.selfhosted.role" .) -}}
 {{- toYaml (merge $stsK8sAuthzRole $commonRole) -}}
 {{- end -}}

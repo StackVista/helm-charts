@@ -1,0 +1,54 @@
+{{- define "stackstate.k8s.authorization.instance.guest.role" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-instance-guest
+rules:
+- apiGroups:
+  - instance.observability.cattle.io
+  resources:
+  - views
+  verbs:
+  - update
+  - get
+  - delete
+- apiGroups:
+    - instance.observability.cattle.io
+  resources:
+    - stackpacks
+  verbs:
+    - get
+- apiGroups:
+    - instance.observability.cattle.io
+  resources:
+    - apitokens
+    - metrics
+    - systemnotifications
+    - topology
+    - traces
+  verbs:
+    - get
+- apiGroups:
+    - instance.observability.cattle.io
+  resources:
+    - favoriteviews
+    - visualizationsettings
+  verbs:
+    - update
+- apiGroups:
+    - instance.observability.cattle.io
+  resources:
+    - componentactions
+  verbs:
+    - execute
+- apiGroups:
+    - instance.observability.cattle.io
+  resources:
+    - favoriteviews
+  verbs:
+    - delete
+{{- end -}}
+
+{{- if and (index .Values "role-k8s-authz" "enabled") (eq .Values.stackstate.deployment.mode  "SelfHosted") -}}
+{{- $commonRole := fromYaml (include "common.role" .) -}}
+{{- $stsK8sAuthzRole := fromYaml (include "stackstate.k8s.authorization.instance.guest.role" .) -}}
+{{- toYaml (merge $stsK8sAuthzRole $commonRole) -}}
+{{- end -}}
