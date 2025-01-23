@@ -49,14 +49,3 @@ Selector labels
 app.kubernetes.io/name: {{ include "suse-observability-operator.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "suse-observability-operator.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "suse-observability-operator.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
