@@ -35,6 +35,7 @@ spec:
       containers:
         - name: configure
           image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
+          workingDir: /work
           imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
           command:
             - '/backup-restore-scripts/configure-backup.sh'
@@ -46,6 +47,8 @@ spec:
           {{- end }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
+            - name: workdir-container-tools
+              mountPath: /work
 {{- if and .Values.backup.enabled .Values.backup.stackGraph.scheduled.enabled }}
             - name: tmp-data
               mountPath: /tmp-data
@@ -57,6 +60,8 @@ spec:
 {{- end }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
+        - name: workdir-container-tools
+          emptyDir: { }
 {{- if and .Values.backup.enabled .Values.backup.stackGraph.scheduled.enabled }}
         - name: tmp-data
           persistentVolumeClaim:
