@@ -1,0 +1,16 @@
+apiVersion: v2
+
+version: 0.1.0
+appVersion: "7.0.0-snapshot.20250122132112-master-94424f8"
+
+name: suse-observability-operator
+description: Helm chart to install SUSE Observability using Operators
+keywords:
+  - kubernetes
+  - observability
+  - suse
+home: https://gitlab.com/stackvista/stackstate.git
+icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
+maintainers:
+  - name: SUSE
+    email: ops@stackstate.com
