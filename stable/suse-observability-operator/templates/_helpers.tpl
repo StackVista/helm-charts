@@ -49,3 +49,23 @@ Selector labels
 app.kubernetes.io/name: {{ include "suse-observability-operator.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Returns the image registry
+{{ include "common.image.registry" ( dict "image" . "context" $) }}
+*/}}
+{{- define "common.image.registry" -}}
+  {{- if .context.Values.global }}
+    {{- .image.registry | default .context.Values.global.imageRegistry -}}
+  {{- else -}}
+    {{- .image.registry -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Return the image
+{{ include "common.image" ( dict "image" . "context" $) }}
+*/}}
+{{- define "common.image" -}}
+  {{ include "common.image.registry" $ }}/{{ .image.repository }}:{{ .image.tag }}
+{{- end -}}

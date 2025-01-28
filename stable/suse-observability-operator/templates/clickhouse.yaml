@@ -1,0 +1,66 @@
+{{ if .Values.clickhouse.enabled }}
+apiVersion: "clickhouse.altinity.com/v1"
+kind: "ClickHouseInstallation"
+metadata:
+  name: "suse-observability"
+spec:
+  defaults:
+    templates:
+      podTemplate: default-pod-template
+      dataVolumeClaimTemplate: data-volumeclaim-template
+  configuration:
+    settings:
+      # listen clickhosue-server embedded prometheus endpoint
+      prometheus/endpoint: /metrics
+      prometheus/port: 9363
+      prometheus/metrics: true
+    users:
+      observability/password: {{ .Values.clickhouse.auth.observability.password }}
+      observability/networks/ip: "::/0"
+      observability/grants/query:
+        - "GRANT ALL ON otel.*"
+        - "GRANT CLUSTER ON *.*"
+    zookeeper:
+      nodes:
+        {{- range $zkHost := .Values.clickhouse.externalZookeeper.servers }}
+        - host: {{ $zkHost }}
+        {{- end }}
+    clusters:
+      - name: "default"
+        layout:
+          shardsCount: {{ .Values.clickhouse.shards }}
+          replicasCount: {{ .Values.clickhouse.replicaCount }}
+
+  templates:
+    podTemplates:
+      - name: default-pod-template
+        spec:
+          containers:
+            - name: clickhouse
+              metadata:
+                annotations:
+                  ad.stackstate.com/clickhouse.check_names: '["openmetrics"]'
+                  ad.stackstate.com/clickhouse.init_configs: "[{}]"
+                  ad.stackstate.com/clickhouse.instances: '[ { "prometheus_url": "http://%%host%%:9363/metrics", "namespace": "stackstate", "metrics": ["ClickHouseAsyncMetrics_*", "ClickHouseMetrics_*", "ClickHouseProfileEvents_*"] } ]'
+              image: {{ include "common.image" ( dict "image" .Values.clickhouse.image "context" $) }}
+              {{- with .Values.clickhouse.resources }}
+              resources:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              ports:
+                - name: "metrics"
+                  containerPort: 9363
+          securityContext:
+            runAsUser: 1000
+            fsGroup: 10000
+            runAsGroup: 1000
+    volumeClaimTemplates:
+      - name: data-volumeclaim-template
+        spec:
+          storageClassName: {{ .Values.clickhouse.persistence.data.storageClassName }}
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: {{ .Values.clickhouse.persistence.data.size }}
+  {{ end }}

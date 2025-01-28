@@ -1,3 +1,42 @@
 # This is to override the chart name.
 nameOverride: ""
 fullnameOverride: ""
+
+global:
+  imageRegistry: "quay.io"
+
+clickhouse:
+  # clickhouse.enabled -- Enable / disable Clickhouse installation
+  enabled: true
+  image:
+    # clickhouse.image.registry -- Registry where to get the image from, the default repository is defined in `global.imageRegistry`
+    registry: ""
+    # clickhouse.image.repository -- Repository where to get the image from.
+    repository: clickhouse/clickhouse-server
+    # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
+    tag: 24.8.12.28-alpine
+  # clickhouse.shards -- Number of ClickHouse shards to deploy
+  shards: 1
+  # clickhouse.replicaCount -- Number of ClickHouse replicas per shard to deploy
+  replicaCount: 3
+  externalZookeeper:
+    # clickhouse.externalZookeeper.servers -- List of zookeeper hosts
+    servers:
+      - suse-observability-zookeeper-headless
+  persistence:
+    data:
+      # clickhouse.persistence.data.storageClassName -- Storage Class used by CH data. It should support expansion if you decide to expand it
+      storageClassName: ""
+      # clickhouse.persistence.data.size -- Size of persistent volume for ClickHouse data
+      size: 50Gi
+  resources:
+    limits:
+      memory: "4Gi"
+      cpu: "1000m"
+    requests:
+      memory: "4Gi"
+      cpu: "500m"
+  auth:
+    observability:
+      # clickhouse.auth.observability.password -- Password to "observability" user used by the app and otel collector
+      password: observability
