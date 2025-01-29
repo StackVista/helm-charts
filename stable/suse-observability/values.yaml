@@ -2493,7 +2493,7 @@ clickhouse:
     # clickhouse.image.repository -- Repository where to get the image from.
     repository: stackstate/clickhouse
     # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
-    tag: 23.8.13-debian-12-r0-b9530c97
+    tag: 24.12.3-debian-12-r1-59d02972
   # clickhouse.enabled -- Enable / disable chart-based Clickhouse.
   enabled: true
   # clickhouse.shards -- Number of ClickHouse shards to deploy
@@ -2644,7 +2644,7 @@ clickhouse:
       # clickhouse.backup.image.repository -- Repository where to get the image from.
       repository: stackstate/clickhouse-backup
       # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
-      tag: 2.5.20-2b2c95ed
+      tag: 2.6.5-3c1fce8a
     # clickhouse.backup.enabled -- Enable scheduled backups of ClickHouse. It requires to be enabled MinIO 'backup.enabled'.
     enabled: false
     # clickhouse.backup.bucketName -- Name of the MinIO bucket where ClickHouse backups are stored.

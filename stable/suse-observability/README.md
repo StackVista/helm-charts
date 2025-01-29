@@ -129,7 +129,7 @@ stackstate/stackstate
 | clickhouse.backup.enabled | bool | `false` | Enable scheduled backups of ClickHouse. It requires to be enabled MinIO 'backup.enabled'. |
 | clickhouse.backup.image.registry | string | `"quay.io"` | Registry where to get the image from. |
 | clickhouse.backup.image.repository | string | `"stackstate/clickhouse-backup"` | Repository where to get the image from. |
-| clickhouse.backup.image.tag | string | `"2.5.20-2b2c95ed"` |  |
+| clickhouse.backup.image.tag | string | `"2.6.5-3c1fce8a"` |  |
 | clickhouse.backup.resources | object | `{"limit":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"50m","memory":"250Mi"}}` | Resources of the backup tool. |
 | clickhouse.backup.s3Prefix | string | `""` |  |
 | clickhouse.backup.scheduled.full_schedule | string | `"45 0 * * *"` | Cron schedule for automatic full backups of ClickHouse. |
@@ -143,7 +143,7 @@ stackstate/stackstate
 | clickhouse.fullnameOverride | string | `"suse-observability-clickhouse"` | Name override for clickhouse child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | clickhouse.image.registry | string | `"quay.io"` | Registry where to get the image from |
 | clickhouse.image.repository | string | `"stackstate/clickhouse"` | Repository where to get the image from. |
-| clickhouse.image.tag | string | `"23.8.13-debian-12-r0-b9530c97"` | Container image tag for 'clickhouse' containers. |
+| clickhouse.image.tag | string | `"24.12.3-debian-12-r1-59d02972"` | Container image tag for 'clickhouse' containers. |
 | clickhouse.metrics.enabled | bool | `true` |  |
 | clickhouse.persistence.size | string | `"50Gi"` | Size of persistent volume for each clickhouse pod |
 | clickhouse.podAnnotations."ad.stackstate.com/backup.check_names" | string | `"[\"openmetrics\"]"` |  |
