@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "notification-operator.webhook.serviceName" . }}
+  labels:
+    {{- include "notification-operator.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 443
+      protocol: TCP
+      targetPort: 9443
+  selector:
+    {{- include "notification-operator.selectorLabels" . | nindent 4 }}

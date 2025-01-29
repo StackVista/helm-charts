@@ -1,0 +1,204 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.16.4
+  name: notifications.saas.observability.suse.com
+spec:
+  conversion:
+    strategy: Webhook
+    webhook:
+      clientConfig:
+        service:
+          name: webhook-service
+          namespace: system
+          path: /convert
+      conversionReviewVersions:
+      - v1
+  group: saas.observability.suse.com
+  names:
+    kind: Notification
+    listKind: NotificationList
+    plural: notifications
+    singular: notification
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.name
+      name: Notitication
+      type: string
+    - jsonPath: .status.instance
+      name: Instance
+      type: string
+    - jsonPath: .spec.status
+      name: Status
+      type: string
+    - jsonPath: .status.synced
+      name: Synced
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Notification is the Schema for the notifications API.
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: NotificationSpec defines the desired spec of Notification
+              Confiration Custom resource.
+            properties:
+              componentTags:
+                items:
+                  type: string
+                type: array
+              identifier:
+                type: string
+              instance:
+                description: SuseObservabilityConnect contains information needed
+                  to connect to a SUSE Observability instance.
+                properties:
+                  serviceTokenSecretRef:
+                    description: SecretKeySelector selects a key of a Secret.
+                    properties:
+                      key:
+                        description: The key of the secret to select from.  Must be
+                          a valid secret key.
+                        type: string
+                      name:
+                        default: ""
+                        description: |-
+                          Name of the referent.
+                          This field is effectively required, but due to backwards compatibility is
+                          allowed to be empty. Instances of this type with an empty value here are
+                          almost certainly wrong.
+                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                        type: string
+                      optional:
+                        description: Specify whether the Secret or its key must be
+                          defined
+                        type: boolean
+                    required:
+                    - key
+                    type: object
+                    x-kubernetes-map-type: atomic
+                  url:
+                    type: string
+                required:
+                - serviceTokenSecretRef
+                - url
+                type: object
+              monitors:
+                items:
+                  type: string
+                type: array
+              name:
+                type: string
+              notifyHealthStates:
+                type: string
+              opsgenie:
+                description: OpsgenieChannel defines the structure of OpsgenieChannel.
+                properties:
+                  genieKeySecretRef:
+                    description: SecretKeySelector selects a key of a Secret.
+                    properties:
+                      key:
+                        description: The key of the secret to select from.  Must be
+                          a valid secret key.
+                        type: string
+                      name:
+                        default: ""
+                        description: |-
+                          Name of the referent.
+                          This field is effectively required, but due to backwards compatibility is
+                          allowed to be empty. Instances of this type with an empty value here are
+                          almost certainly wrong.
+                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                        type: string
+                      optional:
+                        description: Specify whether the Secret or its key must be
+                          defined
+                        type: boolean
+                    required:
+                    - key
+                    type: object
+                    x-kubernetes-map-type: atomic
+                  priority:
+                    type: string
+                  region:
+                    type: string
+                  responders:
+                    items:
+                      description: Responder is a target for OpsGenie alerts
+                      properties:
+                        name:
+                          type: string
+                        type:
+                          type: string
+                      required:
+                      - name
+                      - type
+                      type: object
+                    minItems: 1
+                    type: array
+                required:
+                - genieKeySecretRef
+                - priority
+                - region
+                - responders
+                type: object
+              status:
+                type: string
+            required:
+            - componentTags
+            - identifier
+            - instance
+            - monitors
+            - name
+            - notifyHealthStates
+            - opsgenie
+            - status
+            type: object
+          status:
+            description: NotificationStatus defines the observed state of Notification.
+            properties:
+              instance:
+                description: |-
+                  INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+                  Important: Run "make" to regenerate code after modifying this file
+                type: string
+              notificationConfigurationId:
+                format: int64
+                type: integer
+              opsgenieChannelId:
+                format: int64
+                type: integer
+              synced:
+                type: boolean
+            required:
+            - instance
+            - notificationConfigurationId
+            - synced
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

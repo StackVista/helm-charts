@@ -1,0 +1,29 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: {{ include "notification-operator.fullname" . }}-validating-webhook-configuration
+  annotations:
+    cert-manager.io/inject-ca-from: {{ .Release.Namespace }}/{{ include "notification-operator.fullname" . }}-serving-cert
+  labels:
+    {{- include "notification-operator.labels" . | nindent 4 }}
+webhooks:
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: {{ include "notification-operator.webhook.serviceName" . }}
+        namespace: {{ .Release.Namespace }}
+        path: /validate-saas-observability-suse-com-v1alpha1-notification
+    failurePolicy: Fail
+    name: vnotification-v1alpha1.kb.io
+    rules:
+      - apiGroups:
+          - saas.observability.suse.com
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - notifications
+    sideEffects: None
