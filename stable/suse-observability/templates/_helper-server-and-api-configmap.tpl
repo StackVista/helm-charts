@@ -30,7 +30,7 @@ stackstate.authorization.staticSubjects.{{ . | quote }}: {{- $files.Get "sts-aut
 {{- end }}
 
 {{- if index .Values "anomaly-detection" "enabled" }}
-stackstate.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["manage-annotations", "run-monitors", "view-monitors", "read-metrics", "read-settings"], viewPermissions: [] }
+stackstate.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["manage-annotations", "run-monitors", "view-monitors", "read-metrics", "read-settings", "create-telemetry"], viewPermissions: [] }
 {{- end }}
 
 {{- else }}
