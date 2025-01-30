@@ -1,0 +1,14 @@
+apiVersion: v2
+name: notification-operator
+description: Notification Operator manages SuseObservability Notification Configurations with custom resources.
+type: application
+version: 0.0.1
+appVersion: "0.0.1"
+keywords:
+  - kubernetes
+  - observability
+home: https://stackvista/devops/notification-operator.git
+icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
+maintainers:
+  - name: SUSE
+    email: suse-observability-ops@suse.com

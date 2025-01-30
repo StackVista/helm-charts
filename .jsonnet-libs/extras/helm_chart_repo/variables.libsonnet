@@ -53,6 +53,7 @@
       'k8s-image-list-to-s3',
       'k8s-spot-termination-handler',
       'kommoner-operator',
+      'notification-operator',
       'otel-demo',
       'petros-d-kubelet-stats-exporter',
       'redirector',

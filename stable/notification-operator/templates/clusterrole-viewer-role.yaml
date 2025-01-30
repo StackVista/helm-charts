@@ -1,0 +1,21 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "notification-operator.fullname" . }}-viewer-role
+  labels:
+    {{- include "notification-operator.labels" . | nindent 4 }}
+rules:
+  - apiGroups:
+      - saas.observability.suse.com
+    resources:
+      - notifications
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - saas.observability.suse.com
+    resources:
+      - notifications/status
+    verbs:
+      - get

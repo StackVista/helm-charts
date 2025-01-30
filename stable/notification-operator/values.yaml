@@ -1,0 +1,104 @@
+# Default values for notification-operator.
+
+# replicaCount -- Number of replicas for the deployment
+replicaCount: 1
+
+image:
+  # image.repository -- Container image repository
+  repository: quay.io/stackstate/notification-operator-controller
+  # image.pullPolicy -- Image pull policy
+  pullPolicy: IfNotPresent
+  # image.tag -- Overrides the image tag. Defaults to the chart appVersion.
+  tag: "789d7058"
+
+# imagePullSecrets -- List of secrets for pulling an image from a private repository
+imagePullSecrets: []
+
+# nameOverride -- Override the chart name
+nameOverride: ""
+
+# fullnameOverride -- Override the full name of the chart
+fullnameOverride: ""
+
+# clusterDomain -- The cluster domain name
+clusterDomain: cluster.local
+
+serviceAccount:
+  # serviceAccount.create -- Specifies whether a service account should be created
+  create: true
+  # serviceAccount.automount -- Automatically mount API credentials to the service account
+  automount: true
+  # serviceAccount.annotations -- Annotations to add to the service account
+  annotations: {}
+  # serviceAccount.name -- Name of the service account to use. Defaults to a generated name if left empty
+  name: ""
+
+# podAnnotations -- Kubernetes annotations for the pod
+podAnnotations: {}
+
+# podLabels -- Kubernetes labels for the pod
+podLabels: {}
+
+podSecurityContext:
+  # podSecurityContext -- Pod-level security context
+  {}
+
+securityContext:
+  # securityContext.runAsNonRoot -- Ensure the container runs as a non-root user
+  runAsNonRoot: true
+
+resources:
+  limits:
+    # resources.limits.cpu -- CPU limit for the container
+    cpu: 500m
+    # resources.limits.memory -- Memory limit for the container
+    memory: 256Mi
+  requests:
+    # resources.requests.cpu -- CPU request for the container
+    cpu: 100m
+    # resources.requests.memory -- Memory request for the container
+    memory: 128Mi
+
+livenessProbe:
+  httpGet:
+    # livenessProbe.httpGet.path -- HTTP path for liveness probe
+    path: /healthz
+    # livenessProbe.httpGet.port -- HTTP port for liveness probe
+    port: 8081
+  # livenessProbe.initialDelaySeconds -- Initial delay before liveness probe starts
+  initialDelaySeconds: 15
+  # livenessProbe.periodSeconds -- Period between liveness probe checks
+  periodSeconds: 20
+
+readinessProbe:
+  httpGet:
+    # readinessProbe.httpGet.path -- HTTP path for readiness probe
+    path: /readyz
+    # readinessProbe.httpGet.port -- HTTP port for readiness probe
+    port: 8081
+  # readinessProbe.initialDelaySeconds -- Initial delay before readiness probe starts
+  initialDelaySeconds: 5
+  # readinessProbe.periodSeconds -- Period between readiness probe checks
+  periodSeconds: 10
+
+# volumes -- Additional volumes for the Deployment
+volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+
+# volumeMounts -- Additional volume mounts for the Deployment
+volumeMounts: []
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true
+
+# nodeSelector -- Node selector for scheduling
+nodeSelector: {}
+
+# tolerations -- Tolerations for pod scheduling
+tolerations: []
+
+# affinity -- Affinity rules for pod scheduling
+affinity: {}

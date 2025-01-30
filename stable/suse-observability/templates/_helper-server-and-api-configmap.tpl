@@ -9,6 +9,8 @@ stackstate.authorization.staticSubjects.stackstate-admin: {{- $files.Get "sts-au
 stackstate.authorization.staticSubjects.stackstate-power-user: {{- $files.Get "sts-authz-permissions/stackstate-power-user.json"}}
 stackstate.authorization.staticSubjects.stackstate-guest: {{- $files.Get "sts-authz-permissions/stackstate-guest.json"}}
 stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter: {{- $files.Get "sts-authz-permissions/stackstate-k8s-troubleshooter.json"}}
+stackstate.authorization.staticSubjects.stackstate-ingest-telemetry: { systemPermissions: ["create-telemetry"], viewPermissions: [] }
+
 {{ println "" }}
 {{/* In SelfHosted mode, append any roles to the stackstate.authorization block, so that we keep the defaults delivered with stackstate. */}}
 {{- range .Values.stackstate.authentication.roles.admin }}
@@ -36,6 +38,7 @@ stackstate.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["m
 stackstate.api.authorization: {}
 stackstate.api.authorization.staticSubjects.stackstate-k8s-troubleshooter: {{- $files.Get "sts-authz-permissions/stackstate-k8s-troubleshooter.json" }}
 stackstate.api.authorization.staticSubjects.stackstate-k8s-admin: {{- $files.Get "sts-authz-permissions/stackstate-k8s-admin.json" }}
+stackstate.api.authorization.staticSubjects.stackstate-ingest-telemetry: { systemPermissions: ["create-telemetry"], viewPermissions: [] }
 
 {{- if index .Values "anomaly-detection" "enabled" }}
 stackstate.api.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["manage-annotations", "run-monitors", "view-monitors", "read-metrics", "read-settings"], viewPermissions: [] }
