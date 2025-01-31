@@ -1,0 +1,12 @@
+{{- define "stackstate.authorizationSync.configmap" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-authorization-sync
+{{- include "stackstate.service.configmap.data" (dict "service" .Values.stackstate.components.authorizationSync "context" $) | nindent 0 }}
+{{- include "stackstate.config.email" .  | nindent 4 }}
+{{- end -}}
+
+{{- if and .Values.stackstate.experimental.server.split .Values.stackstate.experimental.k8sAuthorization }}
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $stackstateAuthorizationSyncConfigMap := fromYaml (include "stackstate.authorizationSync.configmap" .) -}}
+{{- toYaml (merge $stackstateAuthorizationSyncConfigMap $commonConfigMap) -}}
+{{- end -}}

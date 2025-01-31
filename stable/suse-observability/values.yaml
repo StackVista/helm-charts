@@ -332,6 +332,60 @@ stackstate:
       yaml: {}
       # stackstate.components.api.yaml.maxSizeLimit -- Max size of the sty file that will be imported or installed via a stackpack
       # maxSizeLimit: "1Mi"
+    authorizationSync:
+      # stackstate.components.authorizationSync.envsFromExistingSecrets -- Configure environment variables from existing secrets.
+      # envsFromExistingSecret
+      # - name: MY_SECRET_ENV_VAR
+      #   secretName: my-k8s-secret
+      #   secretKey: my-secret-key
+      # - name: ANOTHER_ENV_VAR
+      #   secretName: another-k8s-secret
+      #   secretKey: another-secret-key
+      envsFromExistingSecrets: []
+      extraEnv:
+        # stackstate.components.authorizationSync.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.authorizationSync.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
+      image:
+        # stackstate.components.authorizationSync.image.imageRegistry -- `imageRegistry` used for the `notification` component Docker image; this will override `global.imageRegistry` on a per-service basis.
+        imageRegistry: ""
+        # stackstate.components.authorizationSync.image.pullPolicy -- `pullPolicy` used for the `notification` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.notification.image.repository -- Repository of the notification component Docker image.
+        repository: stackstate/stackstate-server
+        # stackstate.components.authorizationSync.image.tag -- Tag used for the `notification` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.authorizationSync.podAnnotations -- Extra annotations
+      podAnnotations: {}
+      # stackstate.components.authorizationSync.poddisruptionbudget -- PodDisruptionBudget settings for `notification` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.authorizationSync.resources -- Resource allocation for `notification` pods.
+      resources:
+        limits:
+          memory: "1Gi"
+          cpu: "1500m"
+          ephemeral-storage: "1Gi"
+        requests:
+          memory: "512Mi"
+          cpu: "250m"
+          ephemeral-storage: "1Mi"
+      sizing:
+        baseMemoryConsumption: "25Mi"
+        javaHeapMemoryFraction: "70"
+      # stackstate.components.authorizationSync.replicaCount -- Number of `notification` replicas.
+      replicaCount: 1
+      # stackstate.components.authorizationSync.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.authorizationSync.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.authorizationSync.affinity -- Affinity settings for pod assignment.
+      affinity: {}
+      # stackstate.components.authorizationSync.config -- Configuration file contents to customize the default StackState notification configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples.
+      config: ""
+      # stackstate.components.authorizationSync.additionalLogging -- Additional logback config
+      additionalLogging: ""
     backup:
       resources:
         limits:
@@ -1510,6 +1564,8 @@ stackstate:
     # stackstate.receiver.baseUrl -- (string) **DEPRECATED** Use stackstate.baseUrl instead
     baseUrl:
   experimental:
+    # stackstate.experimental.k8sAuthorization - (boolean) Whether we use k8s RBAC as authorization authority
+    k8sAuthorization: false
     enableVMAgent: true
     # stackstate.experimental.traces -- (boolean) Enable new traces UI and API
     traces: true
@@ -1517,7 +1573,7 @@ stackstate:
       # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
       split: true
     storeTransactionLogsToPVC:
-      # stackstate.experimental.storeTransactionLogsToPVC.enabled -- (boolean) Whether the transcation logs for some services, API, Checks, HealthSync,State and Sync have to be stored to PVCs instead of pod ephemeral storage.
+      # stackstate.experimental.storeTransactionLogsToPVC.enabled -- (boolean) Whether the transaction logs for some services, API, Checks, HealthSync,State and Sync have to be stored to PVCs instead of pod ephemeral storage.
       enabled: false
       # stackstate.experimental.storeTransactionLogsToPVC.volumeSize -- (string) The size of the persistent volume for the transaction logs.
       volumeSize: 600Mi

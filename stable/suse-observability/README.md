@@ -538,6 +538,24 @@ stackstate/stackstate
 | stackstate.components.api.supportMode | string | `""` | Mode of support, either Documentation or ContactStackstate |
 | stackstate.components.api.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.api.yaml | object | `{}` |  |
+| stackstate.components.authorizationSync.additionalLogging | string | `""` | Additional logback config |
+| stackstate.components.authorizationSync.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.authorizationSync.config | string | `""` | Configuration file contents to customize the default StackState notification configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
+| stackstate.components.authorizationSync.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
+| stackstate.components.authorizationSync.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| stackstate.components.authorizationSync.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.authorizationSync.image.imageRegistry | string | `""` | `imageRegistry` used for the `notification` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
+| stackstate.components.authorizationSync.image.pullPolicy | string | `""` | `pullPolicy` used for the `notification` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.components.authorizationSync.image.repository | string | `"stackstate/stackstate-server"` |  |
+| stackstate.components.authorizationSync.image.tag | string | `""` | Tag used for the `notification` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.authorizationSync.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.authorizationSync.podAnnotations | object | `{}` | Extra annotations |
+| stackstate.components.authorizationSync.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `notification` pods. |
+| stackstate.components.authorizationSync.replicaCount | int | `1` | Number of `notification` replicas. |
+| stackstate.components.authorizationSync.resources | object | `{"limits":{"cpu":"1500m","ephemeral-storage":"1Gi","memory":"1Gi"},"requests":{"cpu":"250m","ephemeral-storage":"1Mi","memory":"512Mi"}}` | Resource allocation for `notification` pods. |
+| stackstate.components.authorizationSync.sizing.baseMemoryConsumption | string | `"25Mi"` |  |
+| stackstate.components.authorizationSync.sizing.javaHeapMemoryFraction | string | `"70"` |  |
+| stackstate.components.authorizationSync.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.backup.resources.limits.cpu | string | `"3000m"` |  |
 | stackstate.components.backup.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | stackstate.components.backup.resources.limits.memory | string | `"4000Mi"` |  |
@@ -920,8 +938,9 @@ stackstate/stackstate
 | stackstate.email.server.port | int | `587` | Email server port |
 | stackstate.email.server.protocol | string | `"smtp"` | Email server protocol |
 | stackstate.experimental.enableVMAgent | bool | `true` |  |
+| stackstate.experimental.k8sAuthorization | bool | `false` |  |
 | stackstate.experimental.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |
-| stackstate.experimental.storeTransactionLogsToPVC.enabled | boolean | `false` | Whether the transcation logs for some services, API, Checks, HealthSync,State and Sync have to be stored to PVCs instead of pod ephemeral storage. |
+| stackstate.experimental.storeTransactionLogsToPVC.enabled | boolean | `false` | Whether the transaction logs for some services, API, Checks, HealthSync,State and Sync have to be stored to PVCs instead of pod ephemeral storage. |
 | stackstate.experimental.storeTransactionLogsToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by transaction logs. |
 | stackstate.experimental.storeTransactionLogsToPVC.volumeSize | string | `"600Mi"` | The size of the persistent volume for the transaction logs. |
 | stackstate.experimental.traces | boolean | `true` | Enable new traces UI and API |

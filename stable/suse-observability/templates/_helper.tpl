@@ -157,6 +157,13 @@ checksum/common-env: {{ include (print $.Template.BasePath "/secret-common.yaml"
 {{- end -}}
 
 {{/*
+Authorization Service secret checksum annotations
+*/}}
+{{- define "stackstate.authorizationSync.secret.checksum" -}}
+checksum/authorizationSync-env: {{ include (print $.Template.BasePath "/secret-authorizationSync.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
 Correlate secret checksum annotations
 */}}
 {{- define "stackstate.correlate.secret.checksum" -}}
@@ -362,6 +369,13 @@ HealthSync configmap checksum annotations
 */}}
 {{- define "stackstate.healthSync.configmap.checksum" -}}
 checksum/healthSync-configmap: {{ include (print $.Template.BasePath "/configmap-healthSync.yaml") . | sha256sum }}
+{{- end -}}
+
+{{/*
+AuthorizationSync configmap checksum annotations
+*/}}
+{{- define "stackstate.authorizationSync.configmap.checksum" -}}
+checksum/authorizationSync-configmap: {{ include (print $.Template.BasePath "/configmap-authorizationSync.yaml") . | sha256sum }}
 {{- end -}}
 
 {{/*

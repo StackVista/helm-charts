@@ -1,0 +1,22 @@
+{{- define "stackstate.authorizationSync.servicemonitor" -}}
+metadata:
+  labels:
+    app.kubernetes.io/component: authorization-sync
+  {{- with .Values.stackstate.components.all.metrics.servicemonitor.additionalLabels }}
+    {{ toYaml . | nindent 4 }}
+  {{- end }}
+  name: {{ template "common.fullname.short" . }}-authorization-sync
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: authorization-sync
+  {{ include "stackstate.servicemonitor.extraLabels" . | nindent 2 }}
+{{- end -}}
+
+{{- if and .Values.stackstate.experimental.server.split .Values.stackstate.experimental.k8sAuthorization }}
+{{- if and ( .Values.stackstate.components.all.metrics.enabled ) ( .Values.stackstate.components.all.metrics.servicemonitor.enabled ) }}
+{{- $commonServiceMonitor := fromYaml (include "common.servicemonitor" .) -}}
+{{- $authorizationSyncServiceMonitor := fromYaml (include "stackstate.authorizationSync.servicemonitor" .) -}}
+{{- toYaml (merge $authorizationSyncServiceMonitor $commonServiceMonitor) -}}
+{{- end -}}
+{{- end }}
