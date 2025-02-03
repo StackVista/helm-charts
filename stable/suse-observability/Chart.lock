@@ -1,7 +1,7 @@
 dependencies:
 - name: anomaly-detection
-  repository: file:///home/bram/stackvista/stackstate-ailab/.helm/stable/anomaly-detection/
-  version: 5.0.0
+  repository: https://helm-test.stackstate.io
+  version: 5.2.0-snapshot.149.stac-22316.7ad63bdd
 - name: common
   repository: file://../common/
   version: 0.4.24
@@ -41,5 +41,5 @@ dependencies:
 - name: opentelemetry-collector
   repository: file://../opentelemetry-collector
   version: 0.108.0-stackstate.0
-digest: sha256:acfae036a1bcde1c6616c479c6b607899739d05161bb105da96d5d7a41e6a12b
-generated: "2025-01-30T16:28:53.395641733+01:00"
+digest: sha256:f8eb4e62c14cf80f4440ab9f329e73789ce5972100f3a81261ff6c15513cc6a9
+generated: "2025-02-03T10:30:07.389395805+01:00"
