@@ -2872,3 +2872,42 @@ opentelemetry-collector:
     limits:
       cpu: 500m
       memory: 512Mi
+
+rbacAgent:
+  # rbacAgent.enabled. Enables/disables the rbac agent. Experimental feature, should not be enabled for now
+  enabled: false
+
+  url: '{{ include "stackstate.rbacAgent.url" . }}'
+
+  containers:
+    rbacAgent:
+      # image:
+        # rbacAgent.containers.rbacAgent.image.registry -- Registry for the docker image.
+        # registry:
+        # rbacAgent.containers.rbacAgent.image.repository - Repository for the docker image
+        # repository:
+        # rbacAgent.containers.rbacAgent.image.pullPolicy -- Policy when pulling an image
+        # pullPolicy:
+        # rbacAgent.containers.rbacAgent.image.tag -- The tag for the docker image
+        # tag:
+      resources:
+        requests:
+          # rbacAgent.containers.rbacAgent.resources.requests.memory -- Memory resource requests.
+          memory: "25Mi"
+        limits:
+          # rbacAgent.containers.rbacAgent.resources.limits.memory -- Memory resource limits.
+          memory: "40Mi"
+      # rbacAgent.containers.rbacAgent.env -- Additional environment variables
+      env: { }
+      # rbacAgent.containers.rbacAgent.podLabels -- Additional labels on the pod
+      podLabels: { }
+      # rbacAgent.containers.rbacAgent.podAnnotations -- Additional annotations on the pod
+      podAnnotations: { }
+      # rbacAgent.containers.rbacAgent.nodeSelector -- Set a nodeSelector
+      nodeSelector: { }
+      # rbacAgent.containers.rbacAgent.tolerations -- Set tolerations
+      tolerations: [ ]
+      # rbacAgent.containers.rbacAgent.affinity -- Set affinity
+      affinity: { }
+      # containers.rbacAgent.priorityClassName -- Set priorityClassName
+      priorityClassName: ""

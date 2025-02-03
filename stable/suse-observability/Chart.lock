@@ -41,5 +41,8 @@ dependencies:
 - name: opentelemetry-collector
   repository: file://../opentelemetry-collector
   version: 0.108.0-stackstate.0
-digest: sha256:96f1d23a39d03b56b8edebea1f7caddc32c7406481c4a0153d16cbc52b719f91
-generated: "2025-02-03T14:12:12.829473688Z"
+- name: kubernetes-rbac-agent
+  repository: file:///home/bram/stackvista/agent/kubernetes-rbac-agent/charts/kubernetes-rbac-agent
+  version: 0.0.2
+digest: sha256:1ffd414a67512cb32be65eb9a8533d40f307f95adf0a17646b083d34c482f5cf
+generated: "2025-02-03T16:03:58.883114715+01:00"

@@ -1,0 +1,12 @@
+{{- if .Values.rbacAgent.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ template "stackstate.rbacAgent.roleName" . }}
+  labels:
+    app.kubernetes.io/component: rbac-agent
+rules:
+  - apiGroups: [""]
+    resources: ["ping"]
+    verbs: ["get"]
+{{- end }}
