@@ -81,9 +81,9 @@ dependencies:
     condition: opentelemetry.enabled
   - name: kubernetes-rbac-agent
     # Local debugging: left here for future reference
-    repository: file:///home/bram/stackvista/agent/kubernetes-rbac-agent/charts/kubernetes-rbac-agent
-    version: "*"
-    # repository: https://helm.stackstate.io
-    # version: 0.0.2
+    # repository: file:///home/bram/stackvista/agent/kubernetes-rbac-agent/charts/kubernetes-rbac-agent
+    # version: "*"
+    repository: https://helm-internal.stackstate.io
+    version: 0.0.2
     alias: rbacAgent
     condition: rbacAgent.enabled

@@ -20,7 +20,7 @@ Current chart version is `2.3.1-pre.10`
 | file://../victoria-metrics-cluster | victoriametrics-cluster(victoria-metrics-cluster) | 0.14.6-stackstate.0 |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.20 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.20 |
-| file:///home/bram/stackvista/agent/kubernetes-rbac-agent/charts/kubernetes-rbac-agent | rbacAgent(kubernetes-rbac-agent) | * |
+| https://helm-internal.stackstate.io | rbacAgent(kubernetes-rbac-agent) | 0.0.2 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.151 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | clickhouse | 3.6.9 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
