@@ -14,7 +14,7 @@ maintainers:
 name: suse-observability
 dependencies:
   - name: anomaly-detection
-    version: 5.2.0-snapshot.146
+    version: 5.2.0-snapshot.151
     repository: https://helm.stackstate.io
     condition: anomaly-detection.enabled
   - name: common
