@@ -1,6 +1,6 @@
 # notification-operator
 
-![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.0.2](https://img.shields.io/badge/Version-0.0.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
 Notification Operator manages SuseObservability Notification Configurations with custom resources.
 
@@ -21,7 +21,7 @@ Notification Operator manages SuseObservability Notification Configurations with
 | fullnameOverride | string | `""` | Override the full name of the chart |
 | image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | image.repository | string | `"quay.io/stackstate/notification-operator-controller"` | Container image repository |
-| image.tag | string | `"789d7058"` | Overrides the image tag. Defaults to the chart appVersion. |
+| image.tag | string | `"e5ec18f4"` | Overrides the image tag. Defaults to the chart appVersion. |
 | imagePullSecrets | list | `[]` | List of secrets for pulling an image from a private repository |
 | livenessProbe.httpGet.path | string | `"/healthz"` | HTTP path for liveness probe |
 | livenessProbe.httpGet.port | int | `8081` | HTTP port for liveness probe |
