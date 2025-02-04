@@ -256,6 +256,9 @@ spec:
             - name: settings-backup-data
               mountPath: /settings-backup-data
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
+{{- if .Values.backup.stackGraph.securityContext.enabled }}
+      securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 8 }}
+{{- end }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
         - name: settings-backup-data
