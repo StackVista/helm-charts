@@ -209,7 +209,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: 7.0.0-snapshot.20250204105456-master-af26a5c
+        tag: 7.0.0-snapshot.20250204150057-master-ff2d731
       # stackstate.components.all.podAnnotations -- Extra annotations
       podAnnotations: {}
       metrics:
@@ -2872,24 +2872,21 @@ opentelemetry-collector:
     limits:
       cpu: 500m
       memory: 512Mi
-
 kubernetes-rbac-agent:
   # kubernetes-rbac-agent.enabled. Enables/disables the rbac agent. Experimental feature, should not be enabled for now
   enabled: false
-
   url: '{{ include "stackstate.rbacAgent.url" . }}'
-
   containers:
     rbacAgent:
       # image:
-        # kubernetes-rbac-agent.containers.rbacAgent.image.registry -- Registry for the docker image.
-        # registry:
-        # kubernetes-rbac-agent.containers.rbacAgent.image.repository - Repository for the docker image
-        # repository:
-        # kubernetes-rbac-agent.containers.rbacAgent.image.pullPolicy -- Policy when pulling an image
-        # pullPolicy:
-        # kubernetes-rbac-agent.containers.rbacAgent.image.tag -- The tag for the docker image
-        # tag:
+      # kubernetes-rbac-agent.containers.rbacAgent.image.registry -- Registry for the docker image.
+      # registry:
+      # kubernetes-rbac-agent.containers.rbacAgent.image.repository - Repository for the docker image
+      # repository:
+      # kubernetes-rbac-agent.containers.rbacAgent.image.pullPolicy -- Policy when pulling an image
+      # pullPolicy:
+      # kubernetes-rbac-agent.containers.rbacAgent.image.tag -- The tag for the docker image
+      # tag:
       resources:
         requests:
           # kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory -- Memory resource requests.
@@ -2913,5 +2910,5 @@ kubernetes-rbac-agent:
       priorityClassName: ""
       # kubernetes-rbac-agent.containers.rbacAgent.securityContext -- Set security context
       # securityContext:
-        # kubernetes-rbac-agent.containers.rbacAgent.securityContext.enabled -- Whether or not to enable the securityContext
-        # enabled: true
+      # kubernetes-rbac-agent.containers.rbacAgent.securityContext.enabled -- Whether or not to enable the securityContext
+      # enabled: true
