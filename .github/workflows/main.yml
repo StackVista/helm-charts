@@ -15,6 +15,10 @@ jobs:
         run: |
           tar czf backup-scripts-${GITHUB_REF_NAME#suse-observability/}.tar.gz -C stable/suse-observability/restore .
       - name: Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: backup-scripts-*.tar.gz
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create ${{ github.ref_name }} -t ${{ github.ref_name }} -d
+          echo 'Uploading helm chart scripts:'
+          ls  backup-scripts-*.tar.gz
+          gh release upload ${{ github.ref_name }} backup-scripts-*.tar.gz
