@@ -42,7 +42,7 @@ dependencies:
   repository: file://../opentelemetry-collector
   version: 0.108.0-stackstate.0
 - name: kubernetes-rbac-agent
-  repository: https://helm-internal.stackstate.io
+  repository: https://helm.stackstate.io
   version: 0.0.2
-digest: sha256:159d4fc2b91617e9f77812d73d68de755a70f22d16523a10e0629e0de2b6da7e
-generated: "2025-02-03T16:35:57.584006531+01:00"
+digest: sha256:79bdc707fb7a1c466b6c2de3cba9fa605cc7e74f0194bbd07076a4b6f379866d
+generated: "2025-02-04T12:28:32.748204229+01:00"

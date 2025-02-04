@@ -14,6 +14,8 @@ maintainers:
 name: suse-observability
 dependencies:
   - name: anomaly-detection
+    # chart source: https://gitlab.com/stackvista/stackstate-ailab/-/tree/master/.helm/stable/anomaly-detection
+
     # For local debugging
     # repository: file:///home/bram/stackvista/stackstate-ailab/.helm/stable/anomaly-detection/
     # version: "*"
@@ -80,10 +82,11 @@ dependencies:
     repository: file://../opentelemetry-collector
     condition: opentelemetry.enabled
   - name: kubernetes-rbac-agent
+    # chart source: https://gitlab.com/stackvista/agent/kubernetes-rbac-agent/-/tree/main/charts/kubernetes-rbac-agent
+
     # Local debugging: left here for future reference
     # repository: file:///home/bram/stackvista/agent/kubernetes-rbac-agent/charts/kubernetes-rbac-agent
     # version: "*"
-    repository: https://helm-internal.stackstate.io
+    repository: https://helm.stackstate.io
     version: 0.0.2
-    alias: rbacAgent
-    condition: rbacAgent.enabled
+    condition: kubernetes-rbac-agent.enabled

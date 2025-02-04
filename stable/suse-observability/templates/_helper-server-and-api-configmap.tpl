@@ -11,7 +11,7 @@ stackstate.authorization.staticSubjects.stackstate-guest: {{- $files.Get "sts-au
 stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter: {{- $files.Get "sts-authz-permissions/stackstate-k8s-troubleshooter.json"}}
 stackstate.authorization.staticSubjects.stackstate-ingest-telemetry: { systemPermissions: ["create-telemetry"], viewPermissions: [] }
 
-{{- if .Values.rbacAgent.enabled }}
+{{- if index .Values "kubernetes-rbac-agent" "enabled" }}
 stackstate.authorization.staticSubjects.{{ template "stackstate.rbacAgent.roleName" . }}: { systemPermissions: ["update-permissions"], viewPermissions: [] }
 {{- end }}
 
@@ -43,7 +43,7 @@ stackstate.api.authorization: {}
 stackstate.api.authorization.staticSubjects.stackstate-k8s-troubleshooter: {{- $files.Get "sts-authz-permissions/stackstate-k8s-troubleshooter.json" }}
 stackstate.api.authorization.staticSubjects.stackstate-k8s-admin: {{- $files.Get "sts-authz-permissions/stackstate-k8s-admin.json" }}
 stackstate.api.authorization.staticSubjects.stackstate-ingest-telemetry: { systemPermissions: ["create-telemetry"], viewPermissions: [] }
-{{- if .Values.rbacAgent.enabled }}
+{{- if index .Values "kubernetes-rbac-agent" "enabled" }}
 stackstate.api.authorization.staticSubjects.{{ template "stackstate.rbacAgent.roleName" . }}: { systemPermissions: ["update-permissions"], viewPermissions: [] }
 {{- end }}
 

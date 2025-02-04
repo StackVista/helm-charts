@@ -20,8 +20,8 @@ Current chart version is `2.3.1-pre.10`
 | file://../victoria-metrics-cluster | victoriametrics-cluster(victoria-metrics-cluster) | 0.14.6-stackstate.0 |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.20 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.20 |
-| https://helm-internal.stackstate.io | rbacAgent(kubernetes-rbac-agent) | 0.0.2 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.151 |
+| https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.2 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | clickhouse | 3.6.9 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
@@ -309,6 +309,17 @@ stackstate/stackstate
 | kafkaup-operator.kafkaSelectors.podLabel.value | string | `"kafka"` |  |
 | kafkaup-operator.kafkaSelectors.statefulSetName | string | `"suse-observability-kafka"` |  |
 | kafkaup-operator.startVersion | string | `"2.3.1"` |  |
+| kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
+| kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
+| kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
+| kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{}` | Additional annotations on the pod |
+| kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |
+| kubernetes-rbac-agent.containers.rbacAgent.priorityClassName | string | `""` | Set priorityClassName |
+| kubernetes-rbac-agent.containers.rbacAgent.resources.limits.memory | string | `"40Mi"` | Memory resource limits. |
+| kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory | string | `"25Mi"` | Memory resource requests. |
+| kubernetes-rbac-agent.containers.rbacAgent.tolerations | list | `[]` | Set tolerations |
+| kubernetes-rbac-agent.enabled | bool | `false` |  |
+| kubernetes-rbac-agent.url | string | `"{{ include \"stackstate.rbacAgent.url\" . }}"` |  |
 | minio.accessKey | string | `"setme"` | Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value. |
 | minio.azuregateway.replicas | int | `1` |  |
 | minio.fullnameOverride | string | `"suse-observability-minio"` | **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components. |
@@ -446,17 +457,6 @@ stackstate/stackstate
 | pull-secret.credentials | list | `[]` | Registry and assotiated credentials (username, password) that will be stored in the pull-secret |
 | pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |
 | pull-secret.fullNameOverride | string | `""` | Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart. |
-| rbacAgent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
-| rbacAgent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
-| rbacAgent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
-| rbacAgent.containers.rbacAgent.podAnnotations | object | `{}` | Additional annotations on the pod |
-| rbacAgent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |
-| rbacAgent.containers.rbacAgent.priorityClassName | string | `""` |  |
-| rbacAgent.containers.rbacAgent.resources.limits.memory | string | `"40Mi"` | Memory resource limits. |
-| rbacAgent.containers.rbacAgent.resources.requests.memory | string | `"25Mi"` | Memory resource requests. |
-| rbacAgent.containers.rbacAgent.tolerations | list | `[]` | Set tolerations |
-| rbacAgent.enabled | bool | `false` |  |
-| rbacAgent.url | string | `"{{ include \"stackstate.rbacAgent.url\" . }}"` |  |
 | role-k8s-authz.enabled | bool | `false` |  |
 | scc.enabled | bool | `false` | Create `SecurityContextConstraints` resource to manage Openshift security constraints for Stackstate. Has to be enabled when installing to Openshift >= 4.12 The resource is deployed as a Helm pre-install hook to avoid any warning for the first deployment. Because `helm uninstall` does not consider Helm hooks, the resource must be manually deleted after the Helm release is removed. |
 | stackstate.apiKey.fromExternalSecret | string | `nil` | Use an external secret for the api key. This suppresses secret creation by StackState and gets the data from the secret with the provided name. |
