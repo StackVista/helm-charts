@@ -1,0 +1,24 @@
+{{- define "stackstate.clickhouse-backup.service" -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: suse-observability-clickhouse-backup
+  labels:
+    app.kubernetes.io/component: clickhouse-backup
+spec:
+  clusterIP: None
+  ports:
+    - name: backup-api
+      port: 7171
+      protocol: TCP
+      targetPort: backup-api
+  selector:
+    clickhouse.altinity.com/chi: suse-observability
+    clickhouse.altinity.com/replica: "0"
+    clickhouse.altinity.com/shard: "0"
+  type: ClusterIP
+{{- end -}}
+
+{{- if and .Values.clickhouse.enabled .Values.clickhouse.backup.enabled }}
+{{- include "stackstate.clickhouse-backup.service" . -}}
+{{- end -}}

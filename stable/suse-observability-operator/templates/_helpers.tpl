@@ -69,3 +69,21 @@ Return the image
 {{- define "common.image" -}}
   {{ include "common.image.registry" $ }}/{{ .image.repository }}:{{ .image.tag }}
 {{- end -}}
+
+{{- /*
+  Adding a trailing slash to a value if it is not empty.
+*/ -}}
+{{- define "ensureTrailingSlashIfNotEmpty" -}}
+  {{- if . -}}
+    {{- printf "%s/" (. | trimSuffix "/") -}}
+  {{- else -}}
+    {{- "" -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Return ttlSecondsAfterFinished. We make this a very high value for argo so failures cannot be silently ignored.
+*/}}
+{{- define "stackstate.job.ttlSecondsAfterFinished" -}}
+{{- if .Values.deployment.compatibleWithArgoCD }}86400{{- else }}600{{- end -}}
+{{- end -}}

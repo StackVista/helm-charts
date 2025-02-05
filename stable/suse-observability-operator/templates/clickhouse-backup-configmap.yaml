@@ -1,12 +1,15 @@
-{{- define "stackstate.clickhouse-backup.configmap" -}}
+{{ if and .Values.clickhouse.enabled .Values.clickhouse.backup.enabled }}
+apiVersion: v1
+kind: ConfigMap
 metadata:
   name: suse-observability-clickhouse-backup
 data:
-  backup_enabled: {{ .Values.clickhouse.backup.enabled | quote }}
-  entrypoint.sh: |
+  backup_entrypoint.sh: |
     {{- .Files.Get "scripts/backup-clickhouse-entrypoint.sh" | nindent 4 }}
-  post_restore.sh: |
-    {{- .Files.Get "scripts/backup-clickhouse-post-restore.sh" | nindent 4 }}
+  full-backup.sh: |
+    {{- .Files.Get "scripts/backup-clickhouse-full-backup.sh" | nindent 4 }}
+  incremental-backup.sh: |
+    {{- .Files.Get "scripts/backup-clickhouse-incremental-backup.sh" | nindent 4 }}
   config.yaml: |
     general:
       remote_storage: s3             # REMOTE_STORAGE, choice from: `azblob`,`gcs`,`s3`, etc; if `none` then `upload` and `download` commands will fail.
@@ -56,8 +59,8 @@ data:
       rbac_backup_always: true # always, backup RBAC objects
       rbac_resolve_conflicts: "recreate"  # action, when RBAC object with the same name already exists, allow "recreate", "ignore", "fail" values
     clickhouse:
-      username: "{{ .Values.clickhouse.auth.username }}"                # CLICKHOUSE_USERNAME
-      password: "{{ .Values.clickhouse.auth.password }}"                     # CLICKHOUSE_PASSWORD
+      username: "backup"                                                            # CLICKHOUSE_USERNAME
+      password: "{{ .Values.clickhouse.auth.backup.password }}"                     # CLICKHOUSE_PASSWORD
       host: localhost                  # CLICKHOUSE_HOST, To make backup data `clickhouse-backup` requires access to the same file system as clickhouse-server, so `host` should localhost or address of another docker container on the same machine, or IP address bound to some network interface on the same host.
       port: 9000                       # CLICKHOUSE_PORT, don't use 8123, clickhouse-backup doesn't support HTTP protocol
       # CLICKHOUSE_DISK_MAPPING, use this mapping when your `system.disks` are different between the source and destination clusters during backup and restore process.
@@ -172,10 +175,4 @@ data:
       create_integration_tables: true # API_CREATE_INTEGRATION_TABLES, create `system.backup_list` and `system.backup_actions`
       complete_resumable_after_restart: true # API_COMPLETE_RESUMABLE_AFTER_RESTART, after API server startup, if `/var/lib/clickhouse/backup/*/(upload|download).state` present, then operation will continue in the background
       watch_is_main_process: false # WATCH_IS_MAIN_PROCESS, treats 'watch' command as a main api process, if it is stopped unexpectedly, api server is also stopped. Does not stop api server if 'watch' command canceled by the user.
-{{- end -}}
-
-{{- if and .Values.clickhouse.enabled .Values.clickhouse.backup.enabled -}}
-{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
-{{- $clickHouseBackuConfigmap := fromYaml (include "stackstate.clickhouse-backup.configmap" .) -}}
-{{- toYaml (merge $clickHouseBackuConfigmap $commonConfigMap) -}}
-{{- end -}}
+{{ end }}

@@ -8,6 +8,8 @@ data:
     {{- .Files.Get "scripts/backup-clickhouse-incremental-backup.sh" | nindent 4 }}
 {{- end -}}
 
+{{- if and .Values.clickhouse.enabled .Values.clickhouse.backup.enabled -}}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $clickHouseBackuConfigmap := fromYaml (include "stackstate.clickhouse-backup-scripts.configmap" .) -}}
 {{- toYaml (merge $clickHouseBackuConfigmap $commonConfigMap) -}}
+{{- end -}}

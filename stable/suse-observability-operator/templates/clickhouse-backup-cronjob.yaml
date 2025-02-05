@@ -1,0 +1,63 @@
+{{- define "clickhouse.backup.cronjob" -}}
+{{- if .Capabilities.APIVersions.Has "batch/v1/CronJob" }}
+apiVersion: batch/v1
+{{- else }}
+apiVersion: batch/v1beta1
+{{- end }}
+kind: CronJob
+metadata:
+  name: suse-observability-clickhouse-{{ .job_name }}
+  labels:
+    app.kubernetes.io/component: backup
+spec:
+  concurrencyPolicy: Forbid
+  schedule: {{ .cron_schedule | quote }}
+  {{- if .Values.deployment.compatibleWithArgoCD }}
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  {{- end }}
+  jobTemplate:
+    metadata:
+      labels:
+        app.kubernetes.io/component: backup
+    spec:
+      backoffLimit: 1
+      {{- if not .Values.deployment.compatibleWithArgoCD }}
+      ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
+      {{- end }}
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/component: backup
+        spec:
+          containers:
+            - name: backup-clickhouse-full
+              image: "{{ include "common.image" ( dict "image" .Values.clickhouse.backup.image "context" $) }}"
+              command:
+                - '/app/scripts/{{ .script_name }}.sh'
+              env:
+                - name: BACKUP_TABLES
+                  value: "{{ .Values.clickhouse.backup.config.tables }}"
+              volumeMounts:
+                - mountPath: /app/scripts/{{ .script_name }}.sh
+                  name: clickhouse-backup-scripts
+                  subPath: {{ .script_name }}.sh
+              securityContext:
+                runAsUser: 1001
+          volumes:
+            - name: clickhouse-backup-scripts
+              configMap:
+                name: suse-observability-clickhouse-backup
+                defaultMode: 0550
+          restartPolicy: Never
+{{- end -}}
+
+{{- if and .Values.clickhouse.enabled .Values.clickhouse.backup.enabled }}
+
+{{- $fullBackupConfig := dict "job_name" "full-backup" "script_name" "full-backup" "cron_schedule" .Values.clickhouse.backup.scheduled.full_schedule }}
+{{- include "clickhouse.backup.cronjob" (merge $fullBackupConfig .) }}
+---
+{{- $incrementalBackupConfig := dict "job_name" "incremental-backup" "script_name" "incremental-backup" "cron_schedule" .Values.clickhouse.backup.scheduled.incremental_schedule }}
+{{- include "clickhouse.backup.cronjob" (merge $incrementalBackupConfig .) }}
+
+{{- end }}

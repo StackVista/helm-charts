@@ -5,6 +5,18 @@ fullnameOverride: ""
 global:
   imageRegistry: "quay.io"
 
+minio:
+  fullnameOverride: suse-observability-minio
+  # minio.accessKey -- Access key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
+  accessKey: setme
+  # minio.accessKey -- Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
+  secretKey: setme
+
+deployment:
+  # deployment.compatibleWithArgoCD -- Whether to adjust the Chart to be compatible with ArgoCD. This feature is as of yet
+  # not deployed in the o11y-tenants and saas-tenants directories, so should be considered unfinished (see STAC-21445)
+  compatibleWithArgoCD: false
+
 clickhouse:
   # clickhouse.enabled -- Enable / disable Clickhouse installation
   enabled: true
@@ -40,3 +52,40 @@ clickhouse:
     observability:
       # clickhouse.auth.observability.password -- Password to "observability" user used by the app and otel collector
       password: observability
+    backup:
+      # clickhouse.auth.backup.password -- Password to "backup" user used by the backup and restore tools.
+      password: backup
+
+  backup:
+    # clickhouse.backup.enabled -- Enable scheduled backups of ClickHouse. It requires to be enabled MinIO 'backup.enabled'.
+    enabled: false
+    image:
+      # clickhouse.backup.image.registry -- Registry where to get the image from, the default repository is defined in `global.imageRegistry`
+      registry: ""
+      # clickhouse.backup.image.repository -- Repository where to get the image from.
+      repository: altinity/clickhouse-backup
+      # clickhouse.backup.image.tag -- Container image tag for 'clickhouse-backup' containers.
+      tag: 2.6.5
+    # clickhouse.backup.resources -- Resources of the backup tool.
+    resources:
+      requests:
+        memory: "250Mi"
+        cpu: "50m"
+      limit:
+        memory: "250Mi"
+        cpu: "100m"
+
+    # clickhouse.backup.bucketName -- Name of the MinIO bucket where ClickHouse backups are stored.
+    bucketName: 'sts-clickhouse-backup'
+    # backup.clickhouse.s3Prefix -- Prefix (dir name) used to store backup files.
+    s3Prefix: ""
+    config:
+      # clickhouse.backup.config.tables -- Create and upload backup only matched with table name patterns, separated by comma, allow ? and * as wildcard.
+      tables: "otel.*"
+      # clickhouse.backup.config.keep_remote -- How many latest backup should be kept on remote storage, 0 means all uploaded backups will be stored on remote storage. Incremental backups are executed every one 1h so the value 308 = ~14 days.
+      keep_remote: 308
+    scheduled:
+      # clickhouse.backup.scheduled.full_schedule -- Cron schedule for automatic full backups of ClickHouse.
+      full_schedule: '45 0 * * *'
+      # clickhouse.backup.scheduled.incremental_schedule -- Cron schedule for automatic incremental backups of ClickHouse. IMPORTANT: incremental and full backup CAN NOT overlap.
+      incremental_schedule: '45 3-23 * * *'
