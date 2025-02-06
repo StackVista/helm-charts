@@ -51,6 +51,14 @@ env:
   value: "http://{{ template "common.fullname.short" . }}-{{ template "stackstate.api.name" . }}-headless:7070/internal/api/agents"
 - name: CONFIG_FORCE_stackstate_receiver_authorizationService_authorizationServiceBaseUri
   value: "http://{{ template "common.fullname.short" . }}-{{ template "stackstate.api.name" . }}-headless:7070/api/user/authorization"
+{{- if .Values.stackstate.experimental.k8sAuthorization }}
+- name: CONFIG_FORCE_stackstate_receiver_authorizationSyncApi_authorizationSyncApiBaseUri
+  value: "http://{{ template "common.fullname.short" . }}-{{ template "stackstate.api.name" . }}-headless:7075/rbac"
+- name: CONFIG_FORCE_stackstate_receiver_authorizationSyncApi_enabled
+  value: "true"
+- name: CONFIG_FORCE_stackstate_receiver_featureSwitches_receiveRbacData
+  value: "true"
+{{- end }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.receiver.envsFromExistingSecrets }}
 image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.receiver.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.receiver.image.tag }}"

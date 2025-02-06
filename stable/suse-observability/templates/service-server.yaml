@@ -24,7 +24,7 @@ spec:
     - name: authz-api
       port: 7075
       protocol: TCP
-      targetPort: authorization-api
+      targetPort: authz-api
   {{- end }}
   selector:
     app.kubernetes.io/component: server
