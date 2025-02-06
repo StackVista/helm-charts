@@ -6,6 +6,10 @@ metadata:
 spec:
   clusterIP: None
   ports:
+    - name: authz-api
+      port: 7075
+      protocol: TCP
+      targetPort: authz-api
   {{- if .Values.stackstate.components.all.metrics.enabled }}
     - name: metrics
       port: 9404

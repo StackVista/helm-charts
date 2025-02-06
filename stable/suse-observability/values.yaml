@@ -2161,7 +2161,7 @@ anomaly-detection:
 cluster-role:
   # cluster-role.enabled -- Deploy the ClusterRole(s) and ClusterRoleBinding(s) together with the chart. Can be disabled if these need to be installed by an administrator of the Kubernetes cluster.
   enabled: true
-  # cluster-role-k8s-authz.enabled -- Deploy the ClusterRole(s) and permissions CRDs to populate permissions on Suse Observability
+  # role-k8s-authz.enabled -- Deploy the Role(s) to populate permissions on Suse Observability
 role-k8s-authz:
   enabled: false
 pull-secret:

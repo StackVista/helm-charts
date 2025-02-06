@@ -45,6 +45,8 @@ name: authorization-sync
 ports:
 - containerPort: 1618
   name: health
+- containerPort: 7075
+  name: authz-api
 {{- if .Values.stackstate.instanceDebugApi.enabled }}
 - containerPort: 7080
   name: instance

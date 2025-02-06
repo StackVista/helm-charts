@@ -20,6 +20,12 @@ spec:
       protocol: TCP
       targetPort: metrics
   {{- end }}
+  {{- if .Values.stackstate.experimental.k8sAuthorization }}
+    - name: authz-api
+      port: 7075
+      protocol: TCP
+      targetPort: authorization-api
+  {{- end }}
   selector:
     app.kubernetes.io/component: server
 {{- end -}}

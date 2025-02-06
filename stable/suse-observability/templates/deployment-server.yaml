@@ -64,6 +64,10 @@ ports:
 - containerPort: 7080
   name: instance
 {{- end }}
+{{- if .Values.stackstate.experimental.k8sAuthorization }}
+- containerPort: 7075
+  name: authz-api
+{{- end }}
 {{- if .Values.stackstate.components.all.metrics.enabled }}
 - containerPort: 9404
   name: metrics
