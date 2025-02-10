@@ -23,15 +23,15 @@ Helm chart to install SUSE Observability using Operators
 | clickhouse.backup.config.tables | string | `"otel.*"` | Create and upload backup only matched with table name patterns, separated by comma, allow ? and * as wildcard. |
 | clickhouse.backup.enabled | bool | `false` | Enable scheduled backups of ClickHouse. It requires to be enabled MinIO 'backup.enabled'. |
 | clickhouse.backup.image.registry | string | `""` | Registry where to get the image from, the default repository is defined in `global.imageRegistry` |
-| clickhouse.backup.image.repository | string | `"altinity/clickhouse-backup"` | Repository where to get the image from. |
-| clickhouse.backup.image.tag | string | `"2.6.5"` | Container image tag for 'clickhouse-backup' containers. |
+| clickhouse.backup.image.repository | string | `"stackstate/clickhouse-backup"` | Repository where to get the image from. |
+| clickhouse.backup.image.tag | string | `"2.6.5-3c1fce8a"` | Container image tag for 'clickhouse-backup' containers. |
 | clickhouse.backup.resources | object | `{"limit":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"50m","memory":"250Mi"}}` | Resources of the backup tool. |
 | clickhouse.backup.s3Prefix | string | `""` |  |
 | clickhouse.backup.scheduled.full_schedule | string | `"45 0 * * *"` | Cron schedule for automatic full backups of ClickHouse. |
 | clickhouse.backup.scheduled.incremental_schedule | string | `"45 3-23 * * *"` | Cron schedule for automatic incremental backups of ClickHouse. IMPORTANT: incremental and full backup CAN NOT overlap. |
 | clickhouse.enabled | bool | `true` | Enable / disable Clickhouse installation |
 | clickhouse.externalZookeeper.servers | list | `["suse-observability-zookeeper-headless"]` | List of zookeeper hosts |
-| clickhouse.image.registry | string | `""` | Registry where to get the image from, the default repository is defined in `global.imageRegistry` |
+| clickhouse.image.registry | string | `"docker.io"` | Registry where to get the image from, the default repository is defined in `global.imageRegistry` |
 | clickhouse.image.repository | string | `"clickhouse/clickhouse-server"` | Repository where to get the image from. |
 | clickhouse.image.tag | string | `"24.8.12.28-alpine"` | Container image tag for 'clickhouse' containers. |
 | clickhouse.persistence.data.size | string | `"50Gi"` | Size of persistent volume for ClickHouse data |

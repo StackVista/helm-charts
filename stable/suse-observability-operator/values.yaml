@@ -22,7 +22,7 @@ clickhouse:
   enabled: true
   image:
     # clickhouse.image.registry -- Registry where to get the image from, the default repository is defined in `global.imageRegistry`
-    registry: ""
+    registry: "docker.io"  # TODO copy images to quay.io
     # clickhouse.image.repository -- Repository where to get the image from.
     repository: clickhouse/clickhouse-server
     # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
@@ -63,9 +63,9 @@ clickhouse:
       # clickhouse.backup.image.registry -- Registry where to get the image from, the default repository is defined in `global.imageRegistry`
       registry: ""
       # clickhouse.backup.image.repository -- Repository where to get the image from.
-      repository: altinity/clickhouse-backup
+      repository: stackstate/clickhouse-backup
       # clickhouse.backup.image.tag -- Container image tag for 'clickhouse-backup' containers.
-      tag: 2.6.5
+      tag: 2.6.5-3c1fce8a
     # clickhouse.backup.resources -- Resources of the backup tool.
     resources:
       requests:
