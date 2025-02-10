@@ -20,8 +20,8 @@ Current chart version is `2.3.1-pre.20`
 | file://../victoria-metrics-cluster | victoriametrics-cluster(victoria-metrics-cluster) | 0.14.6-stackstate.0 |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.20 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.20 |
+| https://helm-internal.stackstate.io | kubernetes-rbac-agent | 0.0.4 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.151 |
-| https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.2 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | clickhouse | 3.6.9 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
@@ -309,6 +309,7 @@ stackstate/stackstate
 | kafkaup-operator.kafkaSelectors.podLabel.value | string | `"kafka"` |  |
 | kafkaup-operator.kafkaSelectors.statefulSetName | string | `"suse-observability-kafka"` |  |
 | kafkaup-operator.startVersion | string | `"2.3.1"` |  |
+| kubernetes-rbac-agent.clusterName.value | string | `"{{ .Release.Name }}"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
 | kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
@@ -319,7 +320,7 @@ stackstate/stackstate
 | kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory | string | `"25Mi"` | Memory resource requests. |
 | kubernetes-rbac-agent.containers.rbacAgent.tolerations | list | `[]` | Set tolerations |
 | kubernetes-rbac-agent.enabled | bool | `false` |  |
-| kubernetes-rbac-agent.url | string | `"{{ include \"stackstate.rbacAgent.url\" . }}"` |  |
+| kubernetes-rbac-agent.url.value | string | `"{{ include \"stackstate.rbacAgent.url\" . }}"` |  |
 | minio.accessKey | string | `"setme"` | Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value. |
 | minio.azuregateway.replicas | int | `1` |  |
 | minio.fullnameOverride | string | `"suse-observability-minio"` | **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components. |

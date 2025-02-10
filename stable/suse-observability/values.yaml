@@ -2931,7 +2931,10 @@ opentelemetry-collector:
 kubernetes-rbac-agent:
   # kubernetes-rbac-agent.enabled. Enables/disables the rbac agent. Experimental feature, should not be enabled for now
   enabled: false
-  url: '{{ include "stackstate.rbacAgent.url" . }}'
+  url:
+    value: '{{ include "stackstate.rbacAgent.url" . }}'
+  clusterName:
+    value: '{{ .Release.Name }}'
   containers:
     rbacAgent:
       # image:
