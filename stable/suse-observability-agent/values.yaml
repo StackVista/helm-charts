@@ -4,7 +4,7 @@
 
 global:
   # global.imageRegistry -- The image registry to use.
-  imageRegistry: "quay.io"
+  imageRegistry: "709825985650.dkr.ecr.us-east-1.amazonaws.com/suse"
   extraEnv:
     # global.extraEnv.open -- Extra open environment variables to inject into pods.
     open: {}
