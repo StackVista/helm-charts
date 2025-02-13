@@ -4,6 +4,8 @@ fullnameOverride: ""
 
 global:
   imageRegistry: "quay.io"
+  # global.affinity -- Global affinity for all components created by the helm chart
+  affinity: {}
 
 minio:
   fullnameOverride: suse-observability-minio
@@ -55,6 +57,8 @@ clickhouse:
     backup:
       # clickhouse.auth.backup.password -- Password to "backup" user used by the backup and restore tools.
       password: backup
+  # clickhouse.affinity -- Override affinity for ClickHouse
+  affinity: {}
 
   backup:
     # clickhouse.backup.enabled -- Enable scheduled backups of ClickHouse. It requires to be enabled MinIO 'backup.enabled'.

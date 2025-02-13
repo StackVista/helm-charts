@@ -16,6 +16,7 @@ Helm chart to install SUSE Observability using Operators
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| clickhouse.affinity | object | `{}` | Override affinity for ClickHouse |
 | clickhouse.auth.backup.password | string | `"backup"` | Password to "backup" user used by the backup and restore tools. |
 | clickhouse.auth.observability.password | string | `"observability"` | Password to "observability" user used by the app and otel collector |
 | clickhouse.backup.bucketName | string | `"sts-clickhouse-backup"` | Name of the MinIO bucket where ClickHouse backups are stored. |
@@ -44,6 +45,7 @@ Helm chart to install SUSE Observability using Operators
 | clickhouse.shards | int | `1` | Number of ClickHouse shards to deploy |
 | deployment.compatibleWithArgoCD | bool | `false` | Whether to adjust the Chart to be compatible with ArgoCD. This feature is as of yet not deployed in the o11y-tenants and saas-tenants directories, so should be considered unfinished (see STAC-21445) |
 | fullnameOverride | string | `""` |  |
+| global.affinity | object | `{}` | Global affinity for all components created by the helm chart |
 | global.imageRegistry | string | `"quay.io"` |  |
 | minio.accessKey | string | `"setme"` | Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value. |
 | minio.fullnameOverride | string | `"suse-observability-minio"` |  |

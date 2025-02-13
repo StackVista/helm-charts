@@ -96,6 +96,7 @@ spec:
             runAsUser: 1000
             fsGroup: 10000
             runAsGroup: 1000
+          {{include "merge.affinity"  ( dict "affinity" .Values.clickhouse.affinity "context" $) | nindent 10 }}
     volumeClaimTemplates:
       - name: data-volumeclaim-template
         spec:

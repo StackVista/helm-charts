@@ -63,6 +63,17 @@ Returns the image registry
 {{- end -}}
 
 {{/*
+Returns an affinity configuration, it use global affinity and then overrides it with the more specific for given resource
+{{include "merge.affinity"  ( dict "affinity" .Values.clickhouse.affinity "context" $) }}
+*/}}
+{{- define "merge.affinity" -}}
+affinity:
+  nodeAffinity: {{ .affinity.nodeAffinity | default .context.Values.global.affinity.nodeAffinity | toYaml | nindent 4 }}
+  podAffinity: {{ .affinity.podAffinity | default .context.Values.global.affinity.podAffinity | toYaml | nindent 4 }}
+  podAntiAffinity: {{ .affinity.podAntiAffinity | default .context.Values.global.affinity.podAntiAffinity | toYaml | nindent 4 }}
+{{- end -}}
+
+{{/*
 Return the image
 {{ include "common.image" ( dict "image" . "context" $) }}
 */}}
