@@ -174,8 +174,6 @@ data:
       watch_is_main_process: false # WATCH_IS_MAIN_PROCESS, treats 'watch' command as a main api process, if it is stopped unexpectedly, api server is also stopped. Does not stop api server if 'watch' command canceled by the user.
 {{- end -}}
 
-{{- if and .Values.clickhouse.enabled .Values.clickhouse.backup.enabled -}}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $clickHouseBackuConfigmap := fromYaml (include "stackstate.clickhouse-backup.configmap" .) -}}
 {{- toYaml (merge $clickHouseBackuConfigmap $commonConfigMap) -}}
-{{- end -}}
