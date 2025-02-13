@@ -87,6 +87,6 @@ dependencies:
     # Local debugging: left here for future reference
     # repository: file:///home/bram/stackvista/agent/kubernetes-rbac-agent/charts/kubernetes-rbac-agent
     # version: "*"
-    repository: https://helm-internal.stackstate.io
+    repository: https://helm.stackstate.io
     version: 0.0.4
     condition: kubernetes-rbac-agent.enabled
