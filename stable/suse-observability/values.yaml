@@ -2934,6 +2934,8 @@ kubernetes-rbac-agent:
   url:
     value: '{{ include "stackstate.rbacAgent.url" . }}'
   clusterName:
+    # Because we do not put in a cluster name for the instance agent, we put a 'dummy' value here, being the release name
+    # We might change this later.
     value: '{{ .Release.Name }}'
   containers:
     rbacAgent:
