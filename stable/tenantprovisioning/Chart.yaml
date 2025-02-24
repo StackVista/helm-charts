@@ -1,7 +1,7 @@
 apiVersion: v1
 appVersion: 0.0.1
-version: 0.0.7
-description: "Create tenants manifests by Hubspot webhook."
+version: 0.0.8
+description: "Create o11y-tenants manifests"
 home: https://gitlab.com/stackvista/devops/helm-charts.git
 icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
 maintainers:
