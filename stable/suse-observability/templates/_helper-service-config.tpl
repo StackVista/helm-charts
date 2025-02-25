@@ -51,8 +51,8 @@ Memory used by a JVM process can be calculated as follows:
 JVM memory = Heap memory+ Metaspace + CodeCache + (ThreadStackSize * Number of Threads) + DirectByteBuffers + Jvm-native.
 'BaseMemoryConsumption' encapsulates OS-level memory requirements and following parts of JVM memory: Metaspace, CodeCache,
 ThreadStackSize * Number of Threads and Jvm-native.
-'JavaHeapMemoryFraction' percent of the remainder of 'BaseMemoryConsumption' subracted from pod's memory limit is given to 'Xmx'.
-'JavaHeapMemoryFraction' percent of the remainder of 'BaseMemoryConsumption' subracted from pod's memory request is given to 'Xms'.
+'JavaHeapMemoryFraction' percent of the remainder of 'BaseMemoryConsumption' subtracted from pod's memory limit is given to 'Xmx'.
+'JavaHeapMemoryFraction' percent of the remainder of 'BaseMemoryConsumption' subtracted from pod's memory request is given to 'Xms'.
 Remainder of 'BaseMemoryConsumption' and 'Xmx' subtracted from pod's memory limit is given to 'DirectMemory'.
 Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory limit.
 */}}
@@ -126,6 +126,8 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
       key: {{ $key }}
   {{- end }}
 {{- end }}
+- name: PLATFORM_VERSION
+  value: "{{- .Chart.Version -}}"
 {{- end -}}
 
 {{- define "stackstate.service.secret.data" -}}
