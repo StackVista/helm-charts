@@ -72,16 +72,15 @@ stackstate:
   customApiKeySecretKey: "sts-api-key"
   # stackstate.customClusterAuthTokenSecretKey -- Key in the secret containing the cluster auth token.
   customClusterAuthTokenSecretKey: "sts-cluster-auth-token"
-
   # stackstate.apiKey -- (string) **PROVIDE YOUR API KEY HERE** API key to be used by the agent.
-  apiKey:
+  apiKey: "<your-API-key>"
   cluster:
     # stackstate.cluster.name -- (string) **PROVIDE KUBERNETES CLUSTER NAME HERE** Name of the Kubernetes cluster where the agent will be installed.
-    name:
+    name: "your.cluster.name"
     # stackstate.cluster.authToken -- Provide a token to enable secure communication between the agent and the cluster agent.
-    authToken: ""
+    authToken: "<your-cluster-token>"
   # stackstate.url -- (string) **PROVIDE STACKSTATE URL HERE** URL of the StackState installation to receive data from the agent.
-  url:
+  url: "https://your.stackstate.url"
 
 all:
   image:
