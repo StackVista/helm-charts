@@ -1,5 +1,5 @@
 {{- define "stackstate.rbacAgent.url" -}}
-http://{{ printf "%s-suse-observability" .Release.Name }}-router:8080/receiver/stsAgent
+{{ template "stackstate.router.endpoint" . }}/receiver/stsAgent
 {{- end -}}
 
 {{- define "stackstate.rbacAgent.roleName" -}}

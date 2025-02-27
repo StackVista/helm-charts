@@ -1,6 +1,6 @@
 # common
 
-![Version: 0.4.24](https://img.shields.io/badge/Version-0.4.24-informational?style=flat-square) ![AppVersion: 0.4.24](https://img.shields.io/badge/AppVersion-0.4.24-informational?style=flat-square)
+![Version: 0.4.25](https://img.shields.io/badge/Version-0.4.25-informational?style=flat-square) ![AppVersion: 0.4.25](https://img.shields.io/badge/AppVersion-0.4.25-informational?style=flat-square)
 Common chartbuilding components and helpers
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 ## Maintainers

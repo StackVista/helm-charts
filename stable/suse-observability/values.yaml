@@ -2122,7 +2122,7 @@ anomaly-detection:
     spotlightRepository: stackstate/spotlight
   stackstate:
     # anomaly-detection.stackstate.instance -- **Required Stackstate instance URL, e.g http://stackstate-router:8080
-    instance: 'http://{{ include "stackstate.hostname.prefix" . }}-router:8080'
+    instance: '{{ include "stackstate.router.endpoint" . }}'
     # anomaly-detection.stackstate.authType -- Type of authentication. There are three options 1) "token" - with service account token (default), 2) "api-token" - with Stackstate API Token, 3) "cookie" - username, password based auth.
     authType: token
     # anomaly-detection.stackstate.username -- Stackstate Username used by spotlight for authentication, it is expected to be set only in case if authType = "cookie"

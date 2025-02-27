@@ -1,6 +1,6 @@
 {{- define "stackstate.router.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-router
+  name: {{ template "stackstate.router.name" . }}
   labels:
     app.kubernetes.io/component: router
 spec:

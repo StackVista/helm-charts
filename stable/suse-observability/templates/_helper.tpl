@@ -566,23 +566,17 @@ Logic validate the total shares of Es disk
 {{- end -}}
 
 {{/*
-Determines the hostname prefix for the different stackstate services.
-Based on the `common.fullname.short` function
+Determines the hostname prefix for the different stackstate services. This name is stable across subcharts
 */}}
 {{- define "stackstate.hostname.prefix" -}}
-  {{- $global := default (dict) .Values.global -}}
-  {{- $base := "suse-observability" -}}
-  {{- if .Values.fullnameOverride -}}
-    {{- $base = .Values.fullnameOverride -}}
-  {{- else if ne $base .Release.Name -}}
-    {{- $base = (printf "%s-%s" .Release.Name "suse-observability") -}}
-  {{- end -}}
-  {{- $gpre := default "" $global.fullnamePrefix -}}
-  {{- $pre := default "" .Values.fullnamePrefix -}}
-  {{- $suf := default "" .Values.fullnameSuffix -}}
-  {{- $gsuf := default "" $global.fullnameSuffix -}}
-  {{- $name := print $gpre $pre $base $suf $gsuf -}}
-  {{- $name | lower | trunc 54 | trimSuffix "-" -}}
+{{- template "common.fullname.global" (merge (dict "Base" "suse-observability") .) }}
+{{- end -}}
+
+{{/*
+Determines the hostname fr the router. This name is stable across subcharts
+*/}}
+{{- define "stackstate.router.name" -}}
+{{- template "stackstate.hostname.prefix" . }}-router
 {{- end -}}
 
 {{/*

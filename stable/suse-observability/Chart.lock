@@ -4,7 +4,7 @@ dependencies:
   version: 5.2.0-snapshot.151
 - name: common
   repository: file://../common/
-  version: 0.4.24
+  version: 0.4.25
 - name: elasticsearch
   repository: file://../elasticsearch/
   version: 8.11.4-stackstate.5
@@ -44,5 +44,5 @@ dependencies:
 - name: kubernetes-rbac-agent
   repository: https://helm.stackstate.io
   version: 0.0.8
-digest: sha256:7f06395ed2a7e905b483abb5886ae62140d75887d9b77ab93a04580f19d33b80
-generated: "2025-02-27T17:01:27.81945332+01:00"
+digest: sha256:0154f5dbeb3cb88a7d5d48b3c1230da6fbe9d88781da68576eef8dd937194835
+generated: "2025-02-27T17:55:02.265845463+01:00"

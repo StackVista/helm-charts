@@ -62,6 +62,28 @@ This takes the same parameters as common.fullname
   {{- $name | lower | trunc 54 | trimSuffix "-" -}}
 {{- end -}}
 
+
+{{- /*
+Generate a shartname that can be used in any subchart and generate the same result. To this end it will not use any variables
+that change between subcharts.
+*/ -}}
+{{- define "common.fullname.global"}}
+  {{- $global := default (dict) .Values.global -}}
+  {{- $base := .Chart.Name -}}
+  {{- if .Base -}}
+    {{- $base = .Base -}}
+  {{- end -}}
+  {{- if $global.fullnameOverride -}}
+    {{- $base = $global.fullnameOverride -}}
+  {{- else if ne $base .Release.Name -}}
+    {{- $base = (printf "%s-%s" .Release.Name $base) -}}
+  {{- end -}}
+  {{- $gpre := default "" $global.fullnamePrefix -}}
+  {{- $gsuf := default "" $global.fullnameSuffix -}}
+  {{- $name := print $gpre $base $gsuf -}}
+  {{- $name | lower | trunc 54 | trimSuffix "-" -}}
+{{- end -}}
+
 {{/*
 'common.fullname.cluster.unique' creates a cluster-wide unique name for resources that need it,
 such as ClusterRole, ClusterRoleBinding, and other non-namespaced resources.

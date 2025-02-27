@@ -77,7 +77,7 @@ Logic to determine MinIO endpoint.
 Logic to determine Router endpoint.
 */}}
 {{- define "stackstate.router.endpoint" -}}
-http://{{ template "common.fullname.short" . }}-router:8080
+http://{{ template "stackstate.router.name" . }}:8080
 {{- end -}}
 
 {{/*
