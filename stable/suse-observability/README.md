@@ -250,6 +250,7 @@ stackstate/stackstate
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |
 | ingress.enabled | bool | `false` | Enable use of ingress controllers. |
 | ingress.hosts | list | `[]` | List of ingress hostnames; the paths are fixed to StackState backend services |
+| ingress.ingressClassName | string | `""` |  |
 | ingress.path | string | `"/"` |  |
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
 | kafka.command | list | `["/scripts/custom-setup.sh"]` | Override kafka container command. |
