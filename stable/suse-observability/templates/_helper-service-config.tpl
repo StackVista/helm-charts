@@ -126,6 +126,10 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
       key: {{ $key }}
   {{- end }}
 {{- end }}
+{{- include "stackstate.env.platform_version" . }}
+{{- end -}}
+
+{{- define "stackstate.env.platform_version" }}
 - name: PLATFORM_VERSION
   value: "{{- .Chart.Version -}}"
 {{- end -}}

@@ -115,6 +115,7 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   value: {{ .Values.clickhouse.backup.enabled | quote }}
 - name: MINIO_ENDPOINT
   value: {{ include "stackstate.minio.endpoint" . | quote }}
+{{- include "stackstate.env.platform_version" . }}
 {{- end -}}
 
 {{- define "stackstate.backup.volumeMounts" -}}
