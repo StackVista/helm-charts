@@ -1,7 +1,7 @@
 apiVersion: v2
 name: "helm-reaper"
 description: "The StackState Helm Reaper"
-version: 2.0.1
+version: 2.0.2
 appVersion: v2.0.0
 home: https://gitlab.com/StackVista/devops/helm-charts
 maintainers:

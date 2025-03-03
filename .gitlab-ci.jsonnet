@@ -7,7 +7,7 @@ local charts = variables.helm.charts;
 local public_charts = variables.helm.public_charts;
 
 // resolving deps with deps, ct lint will not resolve that properly;
-local update_2nd_degree_chart_deps(chart) = ['yq e \'.dependencies[] | select (.repository == "file*").repository | sub("^file://","")\' stable/' + chart + '/Chart.yaml  | xargs -I % helm dependencies build stable/' + chart + '/%'];
+local update_2nd_degree_chart_deps(chart) = ['yq e \'.dependencies[] | select (.repository == "file*").repository | sub("^file://","")\' stable/' + chart + '/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/' + chart + '/%'];
 
 local helm_config_dependencies = [
     'helm repo add %s %s' % [std.strReplace(name, '_', '-'), repositories[name]]
@@ -41,6 +41,7 @@ local build_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   before_script: helm_config_dependencies,
   script: [
+    'helm repo update',
     update_2nd_degree_chart_deps(chart),
     'helm dependencies build stable/' + chart,
     // To avoid a race condition with index.yaml mondifaction in the push_test_charts_jobs job, I package all modifed charts now and then upload only modified charts to s3
@@ -193,10 +194,10 @@ local push_chart_job(chart, script, when, autoTriggerOnCommitMsg) =
   );
 
 local push_chart_script(chart, repository_url, repository_username, repository_password) =
-
+   ['helm repo update'] +
    (if chart == 'stackstate' || chart == 'suse-observability' then update_2nd_degree_chart_deps(chart) else [])
    + [
-    'helm dependencies update ${CHART}',
+    'helm dependencies update --skip-refresh ${CHART}',
     'helm cm-push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
   ];
 

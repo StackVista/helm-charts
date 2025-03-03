@@ -10,16 +10,16 @@ dependencies:
   version: 8.11.4-stackstate.5
 - name: hbase
   repository: file://../hbase/
-  version: 0.2.52
+  version: 0.2.53
 - name: kafka
   repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
   version: 19.1.3
 - name: kafkaup-operator
   repository: file://../kafkaup-operator/
-  version: 0.1.7
+  version: 0.1.8
 - name: minio
   repository: file://../minio/
-  version: 8.0.10-stackstate.10
+  version: 8.0.10-stackstate.11
 - name: pull-secret
   repository: file://../pull-secret/
   version: 1.0.2
@@ -28,13 +28,13 @@ dependencies:
   version: 8.1.2
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.20
+  version: 0.8.53-stackstate.21
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.20
+  version: 0.8.53-stackstate.21
 - name: victoria-metrics-cluster
   repository: file://../victoria-metrics-cluster
-  version: 0.14.6-stackstate.0
+  version: 0.14.6-stackstate.1
 - name: clickhouse
   repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
   version: 3.6.9
@@ -44,5 +44,5 @@ dependencies:
 - name: kubernetes-rbac-agent
   repository: https://helm.stackstate.io
   version: 0.0.8
-digest: sha256:0154f5dbeb3cb88a7d5d48b3c1230da6fbe9d88781da68576eef8dd937194835
-generated: "2025-02-27T17:55:02.265845463+01:00"
+digest: sha256:6fadaf76cb1f555c7f1c03f0976c6b5dd744287184e83209f28b3e88cb230488
+generated: "2025-03-03T09:41:25.704127036+01:00"

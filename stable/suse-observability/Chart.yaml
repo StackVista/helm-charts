@@ -33,7 +33,7 @@ dependencies:
   - name: hbase
     condition: hbase.enabled
     repository: file://../hbase/
-    version: "0.2.52"
+    version: "0.2.53"
   - name: kafka
     condition: kafka.enabled
     # Bitnami official Helm repository stopped serving the old versions of the charts. This is the workaround https://github.com/bitnami/charts/issues/10539
@@ -47,7 +47,7 @@ dependencies:
   - name: minio
     repository: file://../minio/
     # For some reason * does not work
-    version: "8.0.10-stackstate.10"
+    version: "8.0.10-stackstate.11"
     condition: backup.enabled
   - name: pull-secret
     version: "*"
@@ -60,18 +60,18 @@ dependencies:
     condition: zookeeper.enabled
   - name: victoria-metrics-single
     alias: victoria-metrics-0
-    version: "0.8.53-stackstate.20"
+    version: "0.8.53-stackstate.21"
     repository: file://../victoria-metrics-single/
     condition: victoria-metrics-0.enabled
   - name: victoria-metrics-single
     alias: victoria-metrics-1
-    version: "0.8.53-stackstate.20"
+    version: "0.8.53-stackstate.21"
     repository: file://../victoria-metrics-single/
     condition: victoria-metrics-1.enabled
   - name: victoria-metrics-cluster
     alias: victoriametrics-cluster
     repository: file://../victoria-metrics-cluster
-    version: 0.14.6-stackstate.0
+    version: 0.14.6-stackstate.1
     condition: victoriametrics-cluster.enabled
   - name: clickhouse
     version: 3.6.9
