@@ -64,7 +64,7 @@ This takes the same parameters as common.fullname
 
 
 {{- /*
-Generate a shartname that can be used in any subchart and generate the same result. To this end it will not use any variables
+Generate a shortname that can be used in any subchart and generate the same result. To this end it will not use any variables
 that change between subcharts.
 */ -}}
 {{- define "common.fullname.global"}}
