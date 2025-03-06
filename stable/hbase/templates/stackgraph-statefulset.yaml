@@ -17,8 +17,6 @@ name: stackgraph
 image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.stackgraph.image.repository }}:{{ default (printf "%s-%s" .Values.version .Values.stackgraph.version) .Values.stackgraph.image.tag }}"
 imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.stackgraph.image.pullPolicy | quote  }}
 env:
-- name: HDFS_CONF_dfs_namenode_fs___limits_max___component___length
-  value: "0"
 {{- include "all.commonEnv" . }}
 {{- include "hbase.master.commonEnv" . }}
 {{- include "hbase.regionserver.commonEnv" . }}
@@ -28,22 +26,6 @@ env:
   value: "{{ template "common.fullname.short" . }}-stackgraph"
 - name: ZK_CONF_server_1
   value: "{{ template "common.fullname.short" . }}-stackgraph:2182"
-- name: HBASE_CONF_hbase_rootdir
-  value: /hadoop-data/data/hbase
-- name: HBASE_CONF_hbase_zookeeper_property_dataDir
-  value: /hadoop-data/data/zookeeper
-- name: HBASE_CONF_data_tx_snapshot_local_dir
-  value: /hadoop-data/data/tephra
-- name: HBASE_CONF_hbase_master_info_port
-  value: "{{ .Values.stackgraph.livenessProbe.httpPort }}"
-  # We force sync on hbase to improve durability in the mono pod
-- name: HBASE_CONF_hbase_wal_hsync
-  value: "true"
-- name: HBASE_CONF_hbase_master_store_region_wal_hsync
-  value: "true"
-# This setting is already true in the default master conf, if ever we want to reduce durability, better not touch this one.
-- name: HBASE_CONF_hbase_procedure_store_wal_use_hsync
-  value: "true"
 ports:
 {{- range untilStep 10125 10127 1 }}
 - containerPort: {{ . }}
@@ -53,12 +35,14 @@ ports:
   name: ftp
 - containerPort: 2182
   name: zk
-- containerPort: 16021
-  name: rs
-- containerPort: 16001
+- containerPort: 60001
   name: master
-- containerPort: {{ .Values.stackgraph.livenessProbe.httpPort }}
+- containerPort: 60011
   name: masterinfo
+- containerPort: 60021
+  name: rs
+- containerPort: 60031
+  name: rsinfo
 {{- if .Values.all.metrics.enabled }}
 - containerPort: 9404
   name: metrics

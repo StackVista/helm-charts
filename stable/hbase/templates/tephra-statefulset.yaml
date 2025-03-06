@@ -27,17 +27,15 @@ env:
 {{- include "hbase.hbase.commonEnv" . }}
 {{- include "all.commonEnv" . }}
 {{- include "tephra.commonEnv" . }}
+- name: TEPHRA_HBASE_SETUP
+  value: "distributed"
 - name: HBASE_CONF_hbase_master_hostname
   value: "{{ template "common.fullname.short" . }}-hbase-master"
 {{- else }}
 {{- include "all.commonEnv" . }}
 {{- include "tephra.commonEnv" . }}
-- name: HBASE_CONF_data_tx_snapshot_use_local
-  value: "true"
-- name: HBASE_CONF_data_tx_snapshot_dir
-  value: "/opt/tephra-server"
-- name: HBASE_CONF_data_tx_snapshot_local_dir
-  value: "/opt/tephra-server"
+- name: TEPHRA_HBASE_SETUP
+  value: "mono"
 - name: HBASE_CONF_hbase_master_hostname
   value: "{{ template "common.fullname.short" . }}-stackgraph"
 - name: HBASE_CONF_data_tx_zookeeper_quorum

@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.2.53`
+Current chart version is `0.2.54`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -131,7 +131,6 @@ Current chart version is `0.2.53`
 | stackgraph.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below). |
 | stackgraph.image.repository | string | `"stackstate/stackgraph-hbase"` | The default repository used for the single service stackgraph image |
 | stackgraph.image.tag | string | `nil` | The default tag used for the single service stackgraph image |
-| stackgraph.livenessProbe.httpPort | int | `16010` | The port of the Hbase master service to perform HTTP health checks upon. |
 | stackgraph.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackgraph.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for stackgraph. |
 | stackgraph.persistence.enabled | bool | `true` | Enable persistence for HDFS data nodes. |

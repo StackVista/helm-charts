@@ -66,9 +66,6 @@ stackgraph:
     size: 250Gi
     # stackgraph.persistence.storageClass -- Storage class of the volume for HDFS data nodes.
     storageClass:
-  livenessProbe:
-    # stackgraph.livenessProbe.httpPort -- The port of the Hbase master service to perform HTTP health checks upon.
-    httpPort: 16010
   resources:
     limits:
       memory: "3Gi"

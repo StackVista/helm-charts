@@ -15,12 +15,14 @@ spec:
     name: ftp
   - port: 2182
     name: zk
-  - port: 16021
-    name: rs
-  - port: 16001
+  - port: 60001
     name: master
-  - port: 16010
+  - port: 60011
     name: masterinfo
+  - port: 60021
+    name: rs
+  - port: 60031
+    name: rsinfo
 {{- if .Values.all.metrics.enabled }}
   - port: 9404
     name: metrics
