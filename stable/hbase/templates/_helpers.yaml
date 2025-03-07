@@ -47,6 +47,8 @@ We use HDFS_CONF_dfs_namenode_replication_min to ensure the desired amount of re
   value: "0.9f"
 - name: HDFS_CONF_dfs_namenode_http___address
   value: "0.0.0.0:50070"
+- name: HDFS_CONF_dfs_namenode_fs___limits_max___component___length
+  value: "0"
 - name: HDFS_CONF_dfs_datanode_http_address
   value: "0.0.0.0:50075"
 - name: HDFS_CONF_dfs_datanode_address
