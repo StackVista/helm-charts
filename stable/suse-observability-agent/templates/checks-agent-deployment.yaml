@@ -46,7 +46,7 @@ spec:
               fieldRef:
                 fieldPath: spec.nodeName
           - name: STS_HOSTNAME
-            value: "$(KUBERNETES_HOSTNAME)-{{ .Values.stackstate.cluster.name}}"
+            value: {{ .Values.stackstate.cluster.name | quote }}
           - name: AGENT_VERSION
             value: {{ .Values.checksAgent.image.tag | quote }}
           - name: LOG_LEVEL
