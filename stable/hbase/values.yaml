@@ -164,9 +164,6 @@ hbase:
       repository: stackstate/hbase-master
       # hbase.master.image.tag -- Container image tag for HBase masters, defaults to `version`-`stackgraph.version`
       tag:
-    livenessProbe:
-      # hbase.master.livenessProbe.httpPort -- The port of the Hbase master service to perform HTTP health checks upon.
-      httpPort: 16010
     # hbase.master.replicaCount -- Number of pods for HBase masters.
     replicaCount: 1
     # hbase.master.resources -- Resources to allocate for HBase masters.

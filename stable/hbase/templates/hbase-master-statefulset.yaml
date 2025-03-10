@@ -24,12 +24,12 @@ env:
     fieldRef:
       fieldPath: metadata.namespace
 - name: HBASE_MASTER_LIVENESS_HTTP_PORT
-  value: {{ .Values.hbase.master.livenessProbe.httpPort | quote }}
+  value: "16010"
 {{- end }}
 ports:
 - containerPort: 16000
   name: master
-- containerPort: {{ .Values.hbase.master.livenessProbe.httpPort }}
+- containerPort: 16010
   name: masterinfo
 {{- if .Values.all.metrics.enabled }}
 - containerPort: 9404

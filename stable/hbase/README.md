@@ -57,7 +57,6 @@ Current chart version is `0.2.54`
 | hbase.master.image.pullPolicy | string | `nil` | Pull policy for HBase masters, defaults to `stackgraph.image.pullPolicy` |
 | hbase.master.image.repository | string | `"stackstate/hbase-master"` | Base container image repository for HBase masters. |
 | hbase.master.image.tag | string | `nil` | Container image tag for HBase masters, defaults to `version`-`stackgraph.version` |
-| hbase.master.livenessProbe.httpPort | int | `16010` | The port of the Hbase master service to perform HTTP health checks upon. |
 | hbase.master.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hbase.master.replicaCount | int | `1` | Number of pods for HBase masters. |
 | hbase.master.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HBase masters. |
