@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 1.2.12
-version: 0.2.54
+version: 0.2.55
 description: Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 keywords:
 - aiops
