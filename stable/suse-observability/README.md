@@ -236,7 +236,7 @@ stackstate/stackstate
 | hbase.hdfs.secondarynamenode.resources.requests.cpu | string | `"50m"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.memory | string | `"1Gi"` |  |
-| hbase.stackgraph.version | string | `"7.9.0"` | The StackGraph server version, must be compatible with the StackState version |
+| hbase.stackgraph.version | string | `"7.9.3"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
 | hbase.tephra.resources.limits.cpu | string | `"500m"` |  |
 | hbase.tephra.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
