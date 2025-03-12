@@ -17,7 +17,7 @@
       ],
       "properties": {
         "apiKey": {
-          "type": "string"
+          "type": [ "string", "null" ]
         },
         "cluster": {
           "type": "object",

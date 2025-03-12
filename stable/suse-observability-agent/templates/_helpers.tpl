@@ -25,6 +25,13 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
+Release name of the chart. Can be used in subcharts because it does not use anything from .Values
+*/}}
+{{- define "stackstate-k8s-agent.releasename" -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "stackstate-k8s-agent.chart" -}}
@@ -199,12 +206,12 @@ Returns a YAML with extra labels
 - name: STS_API_KEY
   valueFrom:
     secretKeyRef:
-{{- if not .Values.stackstate.manageOwnSecrets }}
-      name: {{ include "stackstate-k8s-agent.fullname" . }}
-      key: sts-api-key
-{{- else }}
+{{- if .Values.stackstate.manageOwnSecrets }}
       name: {{ .Values.stackstate.customSecretName | quote }}
       key: {{ .Values.stackstate.customApiKeySecretKey | quote }}
+{{- else }}
+      name: {{ tpl .Values.global.apiKey.fromSecret . | quote }}
+      key: STS_API_KEY
 {{- end }}
 {{- end -}}
 
@@ -212,11 +219,35 @@ Returns a YAML with extra labels
 - name: STS_CLUSTER_AGENT_AUTH_TOKEN
   valueFrom:
     secretKeyRef:
-{{- if not .Values.stackstate.manageOwnSecrets }}
-      name: {{ include "stackstate-k8s-agent.fullname" . }}
-      key: sts-cluster-auth-token
-{{- else }}
+{{- if .Values.stackstate.manageOwnSecrets }}
       name: {{ .Values.stackstate.customSecretName | quote }}
       key: {{ .Values.stackstate.customClusterAuthTokenSecretKey | quote }}
+{{- else }}
+      name: {{ tpl .Values.global.clusterAgentAuthToken.fromSecret . | quote }}
+      key: STS_CLUSTER_AGENT_AUTH_TOKEN
 {{- end }}
 {{- end -}}
+
+{{- define "stackstate-k8s-agent.externalOrInternal" -}}
+{{- if .external }}
+{{- tpl .external . }}
+{{- else }}
+{{- template "stackstate-k8s-agent.releasename" . }}-{{ .internalName }}
+{{- end }}
+{{- end }}
+
+{{- define "stackstate-k8s-agent.secret.internal.name" -}}
+{{ include "stackstate-k8s-agent.releasename" . }}-secrets
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.url.configmap.internal.name" -}}
+{{ include "stackstate-k8s-agent.releasename" . }}-url
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.clusterName.configmap.internal.name" -}}
+{{ include "stackstate-k8s-agent.releasename" . }}-cluster-name
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.api-key.secret.name" -}}
+{{ include "stackstate-k8s-agent.externalOrInternal" (merge (dict "external" .Values.global.receiverApiKeySecret "internalName" "api-key") .) | quote }}
+{{- end }}

@@ -25,6 +25,21 @@ global:
   # global.extraAnnotations -- Extra annotations added ta all resources created by the helm chart
   extraAnnotations: {}
 
+  # global.receiverApiKey -- This is deprecated and will be removed in a future version.
+  # receiverApiKey:
+
+  # global.clusterAgentAuthToken.fromSecret -- The secret from from which the token for authenticating between node and cluster agent will be taken.
+  # Overriding this will allow setting the api key from an externally provided secret.
+  # The api key will be picked form the STS_CLUSTER_AGENT_AUTH_TOKEN value
+  clusterAgentAuthToken:
+    fromSecret: '{{ include "stackstate-k8s-agent.secret.internal.name" . }}'
+
+  # global.apiKey.fromSecret -- The secret from which the receiver api key is taken. Will execute as a template.
+  # Overriding this will allow setting the api key from an externally provided secret.
+  # The api key will be picked form the STS_API_KEY value
+  apiKey:
+    fromSecret: '{{ include "stackstate-k8s-agent.secret.internal.name" . }}'
+
 # nameOverride -- Override the name of the chart.
 nameOverride: ""
 # fullnameOverride -- Override the fullname of the chart.
@@ -32,6 +47,33 @@ fullnameOverride: ""
 
 # targetSystem -- Target OS for this deployment (possible values: linux)
 targetSystem: "linux"
+
+########################
+# StackState variables #
+########################
+
+stackstate:
+  # This method of defining external secrets is deprecated and might be removed in future versions.
+  # Use global.apiKey.fromSecret and global.clusterAgentAuthToken.fromSecret instead
+
+  # stackstate.manageOwnSecrets -- Set to true if you don't want this helm chart to create secrets for you.
+  manageOwnSecrets: false
+  # stackstate.customSecretName -- Name of the secret containing the receiver API key.
+  customSecretName: ""
+  # stackstate.customApiKeySecretKey -- Key in the secret containing the receiver API key.
+  customApiKeySecretKey: "sts-api-key"
+  # stackstate.customClusterAuthTokenSecretKey -- Key in the secret containing the cluster auth token.
+  customClusterAuthTokenSecretKey: "sts-cluster-auth-token"
+
+  # stackstate.apiKey -- (string) **PROVIDE YOUR API KEY HERE** API key to be used by the agent.
+  apiKey:
+  cluster:
+    # stackstate.cluster.name -- (string) **PROVIDE KUBERNETES CLUSTER NAME HERE** Name of the Kubernetes cluster where the agent will be installed.
+    name:
+    # stackstate.cluster.authToken -- Provide a token to enable secure communication between the agent and the cluster agent.
+    authToken: ""
+  # stackstate.url -- (string) **PROVIDE STACKSTATE URL HERE** URL of the StackState installation to receive data from the agent.
+  url:
 
 all:
   image:
@@ -610,24 +652,50 @@ httpHeaderInjectorWebhook:
       repository: stackstate/container-tools
 
 ########################
-# StackState variables #
+# Rbac Agent variables #
 ########################
 
-stackstate:
-  # stackstate.manageOwnSecrets -- Set to true if you don't want this helm chart to create secrets for you.
-  manageOwnSecrets: false
-  # stackstate.customSecretName -- Name of the secret containing the receiver API key.
-  customSecretName: ""
-  # stackstate.customApiKeySecretKey -- Key in the secret containing the receiver API key.
-  customApiKeySecretKey: "sts-api-key"
-  # stackstate.customClusterAuthTokenSecretKey -- Key in the secret containing the cluster auth token.
-  customClusterAuthTokenSecretKey: "sts-cluster-auth-token"
-  # stackstate.apiKey -- (string) **PROVIDE YOUR API KEY HERE** API key to be used by the agent.
-  apiKey:
-  cluster:
-    # stackstate.cluster.name -- (string) **PROVIDE KUBERNETES CLUSTER NAME HERE** Name of the Kubernetes cluster where the agent will be installed.
-    name:
-    # stackstate.cluster.authToken -- Provide a token to enable secure communication between the agent and the cluster agent.
-    authToken: ""
-  # stackstate.url -- (string) **PROVIDE STACKSTATE URL HERE** URL of the StackState installation to receive data from the agent.
+kubernetes-rbac-agent:
+  # kubernetes-rbac-agent.enabled. Enables/disables the rbac agent. Experimental feature, should not be enabled for now
+  enabled: false
   url:
+    fromConfigMap: '{{ include "stackstate-k8s-agent.url.configmap.internal.name" . }}'
+  clusterName:
+    fromConfigMap: '{{ include "stackstate-k8s-agent.clusterName.configmap.internal.name" . }}'
+  roleType: 'scope'
+  containers:
+    rbacAgent:
+      # image:
+      # kubernetes-rbac-agent.containers.rbacAgent.image.registry -- Registry for the docker image.
+      # registry:
+      # kubernetes-rbac-agent.containers.rbacAgent.image.repository - Repository for the docker image
+      # repository:
+      # kubernetes-rbac-agent.containers.rbacAgent.image.pullPolicy -- Policy when pulling an image
+      # pullPolicy:
+      # kubernetes-rbac-agent.containers.rbacAgent.image.tag -- The tag for the docker image
+      # tag:
+      resources:
+        requests:
+          # kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory -- Memory resource requests.
+          memory: "25Mi"
+        limits:
+          # kubernetes-rbac-agent.containers.rbacAgent.resources.limits.memory -- Memory resource limits.
+          memory: "40Mi"
+      # kubernetes-rbac-agent.containers.rbacAgent.env -- Additional environment variables
+      env: {}
+      # kubernetes-rbac-agent.containers.rbacAgent.podLabels -- Additional labels on the pod
+      podLabels: {}
+      # kubernetes-rbac-agent.containers.rbacAgent.podAnnotations -- Additional annotations on the pod
+      podAnnotations: {}
+      # kubernetes-rbac-agent.containers.rbacAgent.nodeSelector -- Set a nodeSelector
+      nodeSelector: {}
+      # kubernetes-rbac-agent.containers.rbacAgent.tolerations -- Set tolerations
+      tolerations: []
+      # kubernetes-rbac-agent.containers.rbacAgent.affinity -- Set affinity
+      affinity: {}
+      # kubernetes-rbac-agent.containers.rbacAgent.priorityClassName -- Set priorityClassName
+      priorityClassName: ""
+      # kubernetes-rbac-agent.containers.rbacAgent.securityContext -- Set security context
+      # securityContext:
+      # kubernetes-rbac-agent.containers.rbacAgent.securityContext.enabled -- Whether or not to enable the securityContext
+      # enabled: true

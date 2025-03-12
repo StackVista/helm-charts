@@ -30,3 +30,12 @@ dependencies:
   repository: https://helm.stackstate.io
   version: 0.0.15
   condition: httpHeaderInjectorWebhook.enabled
+- name: kubernetes-rbac-agent
+  # chart source: https://gitlab.com/stackvista/agent/kubernetes-rbac-agent/-/tree/main/charts/kubernetes-rbac-agent
+
+  # Local debugging: left here for future reference
+  # repository: file:///home/bram/stackvista/agent/kubernetes-rbac-agent/charts/kubernetes-rbac-agent
+  # version: "*"
+  repository: https://helm.stackstate.io
+  version: 0.0.10
+  condition: kubernetes-rbac-agent.enabled

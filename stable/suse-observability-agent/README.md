@@ -11,6 +11,7 @@ Current chart version is `1.0.22`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.15 |
+| https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.10 |
 
 ## Required Values
 
@@ -153,6 +154,8 @@ stackstate/stackstate-k8s-agent
 | clusterAgent.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | clusterAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | fullnameOverride | string | `""` | Override the fullname of the chart. |
+| global.apiKey.fromSecret | string | `"{{ include \"stackstate-k8s-agent.secret.internal.name\" . }}"` | The secret from which the receiver api key is taken. Will execute as a template. Overriding this will allow setting the api key from an externally provided secret. The api key will be picked form the STS_API_KEY value |
+| global.clusterAgentAuthToken.fromSecret | string | `"{{ include \"stackstate-k8s-agent.secret.internal.name\" . }}"` | The secret from from which the token for authenticating between node and cluster agent will be taken. Overriding this will allow setting the api key from an externally provided secret. The api key will be picked form the STS_CLUSTER_AGENT_AUTH_TOKEN value |
 | global.extraAnnotations | object | `{}` | Extra annotations added ta all resources created by the helm chart |
 | global.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | global.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
@@ -167,6 +170,19 @@ stackstate/stackstate-k8s-agent
 | httpHeaderInjectorWebhook.proxy.image.repository | string | `"stackstate/http-header-injector-proxy"` |  |
 | httpHeaderInjectorWebhook.proxyInit.image.repository | string | `"stackstate/http-header-injector-proxy-init"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
+| kubernetes-rbac-agent.clusterName.fromConfigMap | string | `"{{ include \"stackstate-k8s-agent.clusterName.configmap.internal.name\" . }}"` |  |
+| kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
+| kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
+| kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
+| kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{}` | Additional annotations on the pod |
+| kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |
+| kubernetes-rbac-agent.containers.rbacAgent.priorityClassName | string | `""` | Set priorityClassName |
+| kubernetes-rbac-agent.containers.rbacAgent.resources.limits.memory | string | `"40Mi"` | Memory resource limits. |
+| kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory | string | `"25Mi"` | Memory resource requests. |
+| kubernetes-rbac-agent.containers.rbacAgent.tolerations | list | `[]` | Set tolerations |
+| kubernetes-rbac-agent.enabled | bool | `false` |  |
+| kubernetes-rbac-agent.roleType | string | `"scope"` |  |
+| kubernetes-rbac-agent.url.fromConfigMap | string | `"{{ include \"stackstate-k8s-agent.url.configmap.internal.name\" . }}"` |  |
 | logsAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | logsAgent.enabled | bool | `true` | Enable / disable k8s pod log collection |
 | logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |

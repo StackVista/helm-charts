@@ -43,6 +43,6 @@ dependencies:
   version: 0.108.0-stackstate.0
 - name: kubernetes-rbac-agent
   repository: https://helm.stackstate.io
-  version: 0.0.8
-digest: sha256:844f84158d9dcebf3186e6795996118309c0193d797d697eb9d4e4d9a40b96f4
-generated: "2025-03-10T17:24:23.904900604Z"
+  version: 0.0.10
+digest: sha256:e3b359c72a3c31998ab9901bb607c4a8b297b30a0d917d67d790e330fb9e4670
+generated: "2025-03-12T15:59:40.919884685+01:00"
