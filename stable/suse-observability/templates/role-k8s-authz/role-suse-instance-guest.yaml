@@ -24,6 +24,7 @@ rules:
     - systemnotifications
     - topology
     - traces
+    - settings
   verbs:
     - get
 - apiGroups:
