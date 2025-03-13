@@ -21,7 +21,7 @@ Current chart version is `2.3.1-pre.60`
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.21 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.21 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.151 |
-| https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.10 |
+| https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.11 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | clickhouse | 3.6.9 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
