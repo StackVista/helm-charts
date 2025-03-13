@@ -3,7 +3,7 @@ dependencies:
   repository: https://helm.stackstate.io
   version: 0.0.15
 - name: kubernetes-rbac-agent
-  repository: file:///home/bram/stackvista/agent/kubernetes-rbac-agent/charts/kubernetes-rbac-agent
-  version: 0.0.10
-digest: sha256:b1444daa93df2fa315447559affd6c4088dd95dfef56d11729642f34dba0089f
-generated: "2025-03-13T09:00:10.578336676+01:00"
+  repository: https://helm.stackstate.io
+  version: 0.0.11
+digest: sha256:173bd977d3db9be4ce4333ff2e862d659456d89ddd921aea06af032222d9f0ea
+generated: "2025-03-13T12:53:44.307533864+01:00"
