@@ -2961,7 +2961,10 @@ kubernetes-rbac-agent:
       # kubernetes-rbac-agent.containers.rbacAgent.podLabels -- Additional labels on the pod
       podLabels: {}
       # kubernetes-rbac-agent.containers.rbacAgent.podAnnotations -- Additional annotations on the pod
-      podAnnotations: {}
+      podAnnotations:
+        ad.stackstate.com/rbac-agent.check_names: '["openmetrics"]'
+        ad.stackstate.com/rbac-agent.init_configs: "[{}]"
+        ad.stackstate.com/rbac-agent.instances: '[ { "prometheus_url": "http://%%host%%:8080/metrics", "namespace": "stackstate", metrics: ["*"] } ]'
       # kubernetes-rbac-agent.containers.rbacAgent.nodeSelector -- Set a nodeSelector
       nodeSelector: {}
       # kubernetes-rbac-agent.containers.rbacAgent.tolerations -- Set tolerations
