@@ -41,7 +41,7 @@ local build_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   before_script: helm_config_dependencies,
   script: [
-    'helm repo update',
+    helm_fetch_dependencies,
     update_2nd_degree_chart_deps(chart),
     'helm dependencies build stable/' + chart,
     // To avoid a race condition with index.yaml mondifaction in the push_test_charts_jobs job, I package all modifed charts now and then upload only modified charts to s3
@@ -194,7 +194,7 @@ local push_chart_job(chart, script, when, autoTriggerOnCommitMsg) =
   );
 
 local push_chart_script(chart, repository_url, repository_username, repository_password) =
-   ['helm repo update'] +
+   helm_fetch_dependencies +
    (if chart == 'stackstate' || chart == 'suse-observability' then update_2nd_degree_chart_deps(chart) else [])
    + [
     'helm dependencies update --skip-refresh ${CHART}',
