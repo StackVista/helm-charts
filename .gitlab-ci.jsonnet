@@ -40,9 +40,8 @@ local skip_when_dependency_upgrade = {
 local build_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   before_script: helm_config_dependencies,
-  script: [
-    helm_fetch_dependencies,
-    update_2nd_degree_chart_deps(chart),
+  script: helm_fetch_dependencies +
+    update_2nd_degree_chart_deps(chart) + [
     'helm dependencies build stable/' + chart,
     // To avoid a race condition with index.yaml mondifaction in the push_test_charts_jobs job, I package all modifed charts now and then upload only modified charts to s3
     'mkdir -p stable/' + chart + '/build; helm package --destination stable/' + chart + '/build stable/' + chart,
