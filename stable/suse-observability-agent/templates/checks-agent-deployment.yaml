@@ -104,7 +104,7 @@ spec:
           - name: {{ $key }}
             valueFrom:
               secretKeyRef:
-                name: {{ include "stackstate-k8s-agent.fullname" . }}
+                name: {{ include "stackstate-k8s-agent.fullname" $ }}
                 key: {{ $key }}
           {{- end }}
           livenessProbe:
