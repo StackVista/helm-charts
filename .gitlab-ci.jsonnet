@@ -278,7 +278,7 @@ if chart == 'suse-observability-agent' then 'publish-suse-observability-agent' e
   } + (
     if chart == 'stackstate' || chart == 'suse-observability' then
   { before_script: helm_fetch_dependencies + ['.gitlab/bump_sts_chart_master_version.sh stackstate ' + chart] }
-  else {}
+  else { before_script: helm_fetch_dependencies }
   ))
   for chart in public_charts
   if chart != 'stackstate' && chart != 'suse-observability'
