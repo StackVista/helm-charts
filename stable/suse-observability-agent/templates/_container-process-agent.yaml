@@ -93,7 +93,7 @@
     - name: {{ $key }}
       valueFrom:
         secretKeyRef:
-          name: {{ include "stackstate-k8s-agent.fullname" $ }}
+          name: {{ include "stackstate-k8s-agent.secret.internal.name" $ }}
           key: {{ $key }}
     {{- end }}
     {{- range $key, $value := .Values.nodeAgent.containers.processAgent.env }}

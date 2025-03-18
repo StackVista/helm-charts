@@ -106,7 +106,7 @@ spec:
           - name: {{ $key }}
             valueFrom:
               secretKeyRef:
-                name: {{ include "stackstate-k8s-agent.fullname" $ }}
+                name: {{ include "stackstate-k8s-agent.secret.internal.name" $ }}
                 key: {{ $key }}
           {{- end }}
         {{- if .Values.all.hardening.enabled}}
