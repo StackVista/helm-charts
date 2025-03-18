@@ -12,6 +12,7 @@
         "read-traces",
         "update-visualization",
         "view-monitors",
+        "view-metric-bindings",
         "view-notifications",
         "read-system-notifications"
     ],
