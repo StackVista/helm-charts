@@ -2589,6 +2589,55 @@ clickhouse:
   # clickhouse.extraOverrides -- Extra configuration overrides (evaluated as a template) apart from the default. This configuration deploys ClickHouse in the cluster mode even if there is only one node.
   extraOverrides: |
     <clickhouse>
+      <!-- Recommended settings for low memory systems https://clickhouse.com/docs/operations/tips#ram -->
+      <mark_cache_size>1073741824</mark_cache_size>
+      <concurrent_threads_soft_limit_num>1</concurrent_threads_soft_limit_num>
+
+      <profiles>
+        <default>
+          <!-- Recommended settings for low memory systems https://clickhouse.com/docs/operations/tips#ram -->
+          <max_block_size>8192</max_block_size>
+          <max_download_threads>1</max_download_threads>
+          <input_format_parallel_parsing>0</input_format_parallel_parsing>
+          <output_format_parallel_formatting>0</output_format_parallel_formatting>
+        </default>
+      </profiles>
+
+      <!-- Disable unused logs to avoid filling up disks -->
+      <!-- For more details see https://kb.altinity.com/altinity-kb-setup-and-maintenance/altinity-kb-system-tables-eat-my-disk/ -->
+      <asynchronous_metric_log remove="1"/>
+      <backup_log remove="1"/>
+      <error_log remove="1"/>
+      <metric_log remove="1"/>
+      <query_views_log remove="1" />
+      <part_log remove="1"/>
+      <session_log remove="1"/>
+      <text_log remove="1" />
+      <trace_log remove="1"/>
+      <crash_log remove="1"/>
+      <opentelemetry_span_log remove="1"/>
+      <zookeeper_log remove="1"/>
+      <processors_profile_log remove="1"/>
+
+      <!-- keeping these for debugging purposes, but configuring TTL -->
+      <query_thread_log replace="1">
+        <database>system</database>
+        <table>query_thread_log</table>
+        <engine>ENGINE = MergeTree PARTITION BY (event_date)
+          ORDER BY (event_time)
+          TTL event_date + INTERVAL 7 DAY DELETE
+        </engine>
+      </query_thread_log>
+
+      <query_log replace="1">
+        <database>system</database>
+        <table>query_log</table>
+        <engine>ENGINE = MergeTree PARTITION BY (event_date)
+          ORDER BY (event_time)
+          TTL event_date + INTERVAL 7 DAY DELETE
+        </engine>
+      </query_log>
+
       <!-- Cluster configuration - Any update of the shards and replicas requires helm upgrade -->
       <remote_servers>
         <default>
