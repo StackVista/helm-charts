@@ -1,0 +1,111 @@
+{{- define "stackstate.clickhouseCleanup.job.initContainer.main" -}}
+name: clickhouse-cleanup
+command:
+- sh
+- -c
+- |
+  /entrypoint -c {{ include "stackstate.clickhouse.endpoint" . }} -t 300
+image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+{{- end }}
+
+{{- define "stackstate.clickhouseCleanup.job.container.main" -}}
+command:
+- bash
+- -c
+- |
+  {{ .Files.Get "scripts/job-clickhouse-cleanup.sh" | nindent 2 }}
+env:
+- name: USERNAME
+  value: {{ .Values.clickhouse.auth.username | quote }}
+- name: PASSWORD
+  value: {{ .Values.clickhouse.auth.password | quote }}
+- name: CLICKHOUSE_HOST
+  value: {{ include "stackstate.clickhouse.host" . }}
+{{- if .Values.stackstate.components.clickhouseCleanup.extraEnv.open }}
+  {{- range $key, $value := .Values.stackstate.components.clickhouseCleanup.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+image: "{{include "stackstate.clickhouseCleanup.image.registry" .}}/{{ .Values.stackstate.components.clickhouseCleanup.image.repository }}:{{ .Values.stackstate.components.clickhouseCleanup.image.tag }}"
+imagePullPolicy: {{ .Values.stackstate.components.clickhouseCleanup.image.pullPolicy | quote }}
+name: kafka-topic-create
+{{- with .Values.stackstate.components.clickhouseCleanup.resources }}
+resources:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end -}}
+
+{{- define "stackstate.clickhouseCleanup.job" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.clickhouseCleanup.job.container.main" .) -}}
+{{- $stsstackstateclickhouseCleanupMainContainer := (merge $overrideContainer $commonContainer) -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  {{- if .Values.deployment.compatibleWithArgoCD }}
+  generateName: ch-clean
+  {{- else }}
+  name: {{ template "common.fullname.short" . }}-ch-clean{{ now | date "02t150405" }}
+  {{- end }}
+  labels:
+    app.kubernetes.io/component: ch-clean
+    {{- include "common.labels.standard" . | nindent 4 }}
+  annotations:
+    {{- if .Values.deployment.compatibleWithArgoCD }}
+    argocd.argoproj.io/hook: Sync
+    {{- end }}
+  {{- with .Values.stackstate.components.clickhouseCleanup.jobAnnotations }}
+    {{- toYaml . | nindent 4}}
+  {{- end }}
+spec:
+  backoffLimit: 20
+  ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
+  template:
+    metadata:
+      annotations:
+        {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.server.secret.checksum" . | nindent 8 }}
+      labels:
+        app.kubernetes.io/component: ch-clean
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+      - {{ include "stackstate.clickhouseCleanup.job.initContainer.main" . | nindent 8 }}
+      containers:
+      - {{ toYaml $stsstackstateclickhouseCleanupMainContainer | nindent 8 }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.clickhouseCleanup.nodeSelector }}
+      nodeSelector:
+      {{- with .Values.stackstate.components.all.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.clickhouseCleanup.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.clickhouseCleanup.affinity }}
+      affinity:
+      {{- with .Values.stackstate.components.all.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.clickhouseCleanup.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.clickhouseCleanup.tolerations }}
+      tolerations:
+      {{- with .Values.stackstate.components.all.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.clickhouseCleanup.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.stackstate.components.clickhouseCleanup.securityContext.enabled }}
+      securityContext: {{- omit .Values.stackstate.components.clickhouseCleanup.securityContext "enabled" | toYaml | nindent 8 }}
+    {{- end }}
+{{- end -}}
+
+{{ include "stackstate.clickhouseCleanup.job" . }}

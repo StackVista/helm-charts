@@ -585,6 +585,21 @@ stackstate/stackstate
 | stackstate.components.checks.tmpToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by /tmp directory. It stores temporary files/caches, so it should be the fastest possible. |
 | stackstate.components.checks.tmpToPVC.volumeSize | string | `"2Gi"` | The size of the PersistentVolume for "/tmp" directory. |
 | stackstate.components.checks.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.clickhouseCleanup.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.clickhouseCleanup.extraEnv.open | object | `{}` | Add additional environment variables to the pod |
+| stackstate.components.clickhouseCleanup.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for kafka-topic-create containers. |
+| stackstate.components.clickhouseCleanup.image.registry | string | `"quay.io"` |  |
+| stackstate.components.clickhouseCleanup.image.repository | string | `"stackstate/clickhouse"` |  |
+| stackstate.components.clickhouseCleanup.image.tag | string | `"24.12.3-debian-12-r1-59d02972"` |  |
+| stackstate.components.clickhouseCleanup.jobAnnotations | object | `{}` | Annotations for clickhouseCleanup job. |
+| stackstate.components.clickhouseCleanup.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.clickhouseCleanup.resources | object | `{"limits":{"cpu":"100m","ephemeral-storage":"1Gi","memory":"200Mi"},"requests":{"cpu":"100m","ephemeral-storage":"1Mi","memory":"200Mi"}}` | Resource allocation for `clickhouseCleanup` pods. |
+| stackstate.components.clickhouseCleanup.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
+| stackstate.components.clickhouseCleanup.securityContext.fsGroup | int | `1001` | The GID (group ID) used to mount volumes |
+| stackstate.components.clickhouseCleanup.securityContext.runAsGroup | int | `1001` | The GID (group ID) of the owning user of the process |
+| stackstate.components.clickhouseCleanup.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
+| stackstate.components.clickhouseCleanup.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
+| stackstate.components.clickhouseCleanup.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.configurationBackup.resources.limits.cpu | string | `"1000m"` |  |
 | stackstate.components.configurationBackup.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | stackstate.components.configurationBackup.resources.limits.memory | string | `"1000Mi"` |  |

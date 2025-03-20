@@ -1352,6 +1352,48 @@ stackstate:
       tolerations: []
       # stackstate.components.ui.affinity -- Affinity settings for pod assignment.
       affinity: {}
+    clickhouseCleanup:
+      # stackstate.components.clickhouseCleanup.jobAnnotations -- Annotations for clickhouseCleanup job.
+      jobAnnotations: {}
+      extraEnv:
+        # stackstate.components.clickhouseCleanup.extraEnv.open -- Add additional environment variables to the pod
+        open: {}
+      image:
+        # clickhouse.image.registry -- Registry where to get the image from
+        registry: quay.io
+        # clickhouse.image.repository -- Repository where to get the image from.
+        repository: stackstate/clickhouse
+        # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
+        tag: 24.12.3-debian-12-r1-59d02972
+        # stackstate.components.clickhouseCleanup.image.pullPolicy -- Image pull policy for kafka-topic-create containers.
+        pullPolicy: IfNotPresent
+      # stackstate.components.clickhouseCleanup.resources -- Resource allocation for `clickhouseCleanup` pods.
+      resources:
+        limits:
+          cpu: "100m"
+          memory: "200Mi"
+          ephemeral-storage: "1Gi"
+        requests:
+          cpu: "100m"
+          memory: "200Mi"
+          ephemeral-storage: "1Mi"
+      securityContext:
+        # stackstate.components.clickhouseCleanup.securityContext.enabled -- Whether or not to enable the securityContext
+        enabled: true
+        # stackstate.components.clickhouseCleanup.securityContext.fsGroup -- The GID (group ID) used to mount volumes
+        fsGroup: 1001
+        # stackstate.components.clickhouseCleanup.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
+        runAsGroup: 1001
+        # stackstate.components.clickhouseCleanup.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
+        runAsNonRoot: true
+        # stackstate.components.clickhouseCleanup.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
+        runAsUser: 1001
+      # stackstate.components.clickhouseCleanup.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.clickhouseCleanup.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.clickhouseCleanup.affinity -- Affinity settings for pod assignment.
+      affinity: {}
     kafkaTopicCreate:
       # stackstate.components.kafkaTopicCreate.jobAnnotations -- Annotations for KafkaTopicCreate job.
       jobAnnotations: {}

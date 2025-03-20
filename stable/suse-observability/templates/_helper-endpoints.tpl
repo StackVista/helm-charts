@@ -102,7 +102,14 @@ Logic to determine Zookeeper endpoint.
 Clickhouse endpoint.
 */}}
 {{- define "stackstate.clickhouse.endpoint" -}}
-{{- .Values.clickhouse.fullnameOverride }}-headless:8123
+{{- include "stackstate.clickhouse.host" . }}:8123
+{{- end -}}
+
+{{/*
+Clickhouse host.
+*/}}
+{{- define "stackstate.clickhouse.host" -}}
+{{- .Values.clickhouse.fullnameOverride }}-headless
 {{- end -}}
 
 {{/*
