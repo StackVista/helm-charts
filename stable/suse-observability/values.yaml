@@ -2651,6 +2651,7 @@ clickhouse:
       <backup_log remove="1"/>
       <error_log remove="1"/>
       <metric_log remove="1"/>
+      <query_metric_log remove="1" />
       <query_views_log remove="1" />
       <part_log remove="1"/>
       <session_log remove="1"/>

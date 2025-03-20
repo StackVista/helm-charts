@@ -1,14 +1,17 @@
 {{- define "stackstate.clickhouseCleanup.job.initContainer.main" -}}
-name: clickhouse-cleanup
+{{- $hostList := list -}}
+{{- range $i, $e := reverse (until (.Values.clickhouse.replicaCount | int)) -}}
+{{- $hostList = append $hostList (printf "%s-shard0-%d.%s-headless.%s.svc.cluster.local:8123" $.Values.clickhouse.fullnameOverride  $e $.Values.clickhouse.fullnameOverride $.Release.Namespace) -}}
+{{- end -}}
+name: clickhouse-cleanup-init
 command:
 - sh
 - -c
 - |
-  /entrypoint -c {{ include "stackstate.clickhouse.endpoint" . }} -t 300
-image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+  /entrypoint -c {{ join "," $hostList }} -t 1800
+image: "{{ include "stackstate.wait.image.registry" . }}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
 imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
 {{- end }}
-
 {{- define "stackstate.clickhouseCleanup.job.container.main" -}}
 command:
 - bash
@@ -20,8 +23,12 @@ env:
   value: {{ .Values.clickhouse.auth.username | quote }}
 - name: PASSWORD
   value: {{ .Values.clickhouse.auth.password | quote }}
-- name: CLICKHOUSE_HOST
-  value: {{ include "stackstate.clickhouse.host" . }}
+- name: CLICKHOUSE_HOST_PREFIX
+  value: {{ .Values.clickhouse.fullnameOverride | quote }}
+- name: CLICKHOUSE_REPLICA_COUNT
+  value: {{ .Values.clickhouse.replicaCount | quote }}
+- name: NAMESPACE
+  value: {{ .Release.Namespace | quote }}
 {{- if .Values.stackstate.components.clickhouseCleanup.extraEnv.open }}
   {{- range $key, $value := .Values.stackstate.components.clickhouseCleanup.extraEnv.open  }}
 - name: {{ $key }}
@@ -30,7 +37,7 @@ env:
 {{- end }}
 image: "{{include "stackstate.clickhouseCleanup.image.registry" .}}/{{ .Values.stackstate.components.clickhouseCleanup.image.repository }}:{{ .Values.stackstate.components.clickhouseCleanup.image.tag }}"
 imagePullPolicy: {{ .Values.stackstate.components.clickhouseCleanup.image.pullPolicy | quote }}
-name: kafka-topic-create
+name: clickhouse-cleanup
 {{- with .Values.stackstate.components.clickhouseCleanup.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
@@ -54,7 +61,13 @@ metadata:
     {{- include "common.labels.standard" . | nindent 4 }}
   annotations:
     {{- if .Values.deployment.compatibleWithArgoCD }}
-    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+    {{- else }}
+    "helm.sh/hook": post-upgrade
+    "helm.sh/hook-weight": "-1"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
     {{- end }}
   {{- with .Values.stackstate.components.clickhouseCleanup.jobAnnotations }}
     {{- toYaml . | nindent 4}}
