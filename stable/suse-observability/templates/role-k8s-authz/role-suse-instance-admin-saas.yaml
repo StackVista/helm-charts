@@ -30,6 +30,7 @@ rules:
     - agents
     - apitokens
     - metrics
+    - metricbindings
     - syncdata
     - systemnotifications
     - topology
