@@ -22,7 +22,6 @@ rules:
     - apitokens
     - metrics
     - metricbindings
-    - metricbindings
     - systemnotifications
     - topology
     - traces
