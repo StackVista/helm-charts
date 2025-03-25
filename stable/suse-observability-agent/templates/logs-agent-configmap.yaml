@@ -57,7 +57,30 @@ data:
             - __meta_kubernetes_pod_uid
             - __meta_kubernetes_pod_container_name
           target_label: __path__
-        # Drop all remaining labels, we do not need those
-        - action: drop
-          regex: __meta_(.*)
+    - job_name: static-pod-logs
+      kubernetes_sd_configs:
+        - role: pod
+      pipeline_stages:
+        - docker: {}
+        - cri: {}
+      relabel_configs:
+        - action: replace
+          source_labels:
+            - __meta_kubernetes_pod_name
+          target_label: pod_name
+        - action: replace
+          source_labels:
+            - __meta_kubernetes_pod_uid
+          target_label: pod_uid
+        - action: replace
+          source_labels:
+            - __meta_kubernetes_pod_container_name
+          target_label: container_name
+        # The __path__ is required by the promtail client
+        - replacement: /var/log/pods/*$1/*.log
+          separator: /
+          source_labels:
+            - __meta_kubernetes_pod_annotation_kubernetes_io_config_mirror
+            - __meta_kubernetes_pod_container_name
+          target_label: __path__
 {{- end -}}
