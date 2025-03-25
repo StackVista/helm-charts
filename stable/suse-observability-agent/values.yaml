@@ -150,7 +150,7 @@ nodeAgent:
         # nodeAgent.containers.agent.image.repository -- Base container image repository.
         repository: stackstate/stackstate-k8s-agent
         # nodeAgent.containers.agent.image.tag -- Default container image tag.
-        tag: "93feaa2b"
+        tag: "60de960a"
         # nodeAgent.containers.agent.image.pullPolicy -- Default container image pull policy.
         pullPolicy: IfNotPresent
       # nodeAgent.containers.agent.env -- Additional environment variables for the agent container
@@ -206,7 +206,7 @@ nodeAgent:
         # nodeAgent.containers.processAgent.image.repository -- Process-agent container image repository.
         repository: stackstate/stackstate-k8s-process-agent
         # nodeAgent.containers.processAgent.image.tag -- Default process-agent container image tag.
-        tag: "6bf354da"
+        tag: "418f3d6d"
         # nodeAgent.containers.processAgent.image.pullPolicy -- Process-agent container image pull policy.
         pullPolicy: IfNotPresent
       # nodeAgent.containers.processAgent.env -- Additional environment variables for the process-agent container
@@ -395,7 +395,7 @@ clusterAgent:
     # clusterAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-k8s-cluster-agent
     # clusterAgent.image.tag -- Default container image tag.
-    tag: "93feaa2b"
+    tag: "60de960a"
     # clusterAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -547,7 +547,7 @@ checksAgent:
     # checksAgent.image.repository -- Base container image repository.
     repository: stackstate/stackstate-k8s-agent
     # checksAgent.image.tag -- Default container image tag.
-    tag: "93feaa2b"
+    tag: "60de960a"
     # checksAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -659,9 +659,11 @@ kubernetes-rbac-agent:
   # kubernetes-rbac-agent.enabled. Enables/disables the rbac agent. Experimental feature, should not be enabled for now
   enabled: false
   url:
-    fromConfigMap: '{{ include "stackstate-k8s-agent.url.configmap.internal.name" . }}'
+    fromConfigMap: '{{ include "stackstate-k8s-agent.url.configmap.internal.name"
+      . }}'
   clusterName:
-    fromConfigMap: '{{ include "stackstate-k8s-agent.clusterName.configmap.internal.name" . }}'
+    fromConfigMap: '{{ include "stackstate-k8s-agent.clusterName.configmap.internal.name"
+      . }}'
   roleType: 'scope'
   containers:
     rbacAgent:
