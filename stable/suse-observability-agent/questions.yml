@@ -17,6 +17,12 @@ questions:
     description: "The API key for SUSE Observability."
     required: true
     group: General
+  - variable: global.skipSslValidation
+    label: "Skip TLS validation from client"
+    type: boolean
+    description: "Skip TLS validation from client."
+    default: "false"
+    group: "General"
   - variable: all.registry.override
     label: "Override Default Image Registry"
     type: boolean
@@ -25,18 +31,18 @@ questions:
     group: "General"
     show_subquestions_if: true
     subquestions:
-      - variable: all.image.registry
+      - variable: global.imageRegistry
         label: "Docker Image Registry"
         type: string
         description: "The registry to pull the agent images from."
         default: "quay.io"
-      - variable: global.imagePullCredentials.username
+      - variable: global.imagePullCredentials.default.username
         label: "Docker Image Pull Username"
         type: string
         description: "The username to use when pulling the agent images."
-      - variable: global.imagePullCredentials.password
+      - variable: global.imagePullCredentials.default.password
         label: "Docker Image Pull Password"
-        type: secret
+        type: password
         description: "The password to use when pulling the agent images."
   - variable: nodeAgent.containers.agent.resources.override
     label: "Override Node Agent Resource Allocation"
