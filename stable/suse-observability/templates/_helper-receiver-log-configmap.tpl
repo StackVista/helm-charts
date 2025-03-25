@@ -1,5 +1,8 @@
 {{/*
 Receiver settings
+
+<logger name="akka.actor.ActorSystemImpl" level="ERROR"/>
+This is here to supress X-Forwarded-for spurious messages, see zendesk #1401
 */}}
 {{- define "stackstate.configmap.receiver-base-log" }}
 <logger name="com.stackstate.api" level="INFO"/>
