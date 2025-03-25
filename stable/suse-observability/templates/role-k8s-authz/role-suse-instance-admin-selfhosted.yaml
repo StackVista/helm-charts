@@ -11,6 +11,8 @@ rules:
   - servicetokens
   - settings
   - stackpackconfigurations
+  - monitors
+  - notifications
   verbs:
   - create
   - update
