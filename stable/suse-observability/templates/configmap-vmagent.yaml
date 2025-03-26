@@ -51,6 +51,15 @@ data:
     - action: labeldrop
       regex: "pod"
 
+    # Metrics scope
+    - action: replace
+      source_labels: [cluster_name, namespace]
+      target_label: "_k8s_scope_"
+      regex: ".+;.+"
+      replacement: "{{ "{{cluster_name}}:{{namespace}}" }}"
+    - source_labels: [cluster_name]
+      target_label: "_k8s_cluster_"
+
 {{- end -}}
 
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
