@@ -44,6 +44,10 @@ questions:
         label: "Docker Image Pull Password"
         type: password
         description: "The password to use when pulling the agent images."
+      - variable: global.imagePullSecrets
+        label: "Docker image pull Secret"
+        type: arraystring
+        description: "The secret to use when pulling the agent images."
   - variable: nodeAgent.containers.agent.resources.override
     label: "Override Node Agent Resource Allocation"
     type: boolean
