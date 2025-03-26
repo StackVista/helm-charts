@@ -31,7 +31,6 @@ rules:
 - apiGroups:
     - instance.observability.cattle.io
   resources:
-    - favoriteviews
     - visualizationsettings
   verbs:
     - update
@@ -47,6 +46,7 @@ rules:
     - favoriteviews
   verbs:
     - delete
+    - create
 {{- end -}}
 
 {{- if and (index .Values "role-k8s-authz" "enabled") (eq .Values.stackstate.deployment.mode  "SelfHosted") -}}

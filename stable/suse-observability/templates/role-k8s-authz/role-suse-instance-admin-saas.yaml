@@ -41,7 +41,6 @@ rules:
     - instance.observability.cattle.io
   resources:
     - syncdata
-    - favoriteviews
     - visualizationsettings
   verbs:
     - update
@@ -59,6 +58,12 @@ rules:
     - syncdata
   verbs:
     - delete
+- apiGroups:
+    - instance.observability.cattle.io
+  resources:
+    - favoriteviews
+  verbs:
+    - create
 {{- end -}}
 
 {{- if and (index .Values "role-k8s-authz" "enabled")  (eq .Values.stackstate.deployment.mode  "SaaS") -}}

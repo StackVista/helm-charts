@@ -28,6 +28,7 @@ rules:
     - instance.observability.cattle.io
   resources:
     - stackpacks
+    - favoriteviews
   verbs:
     - create
     - get
@@ -49,7 +50,6 @@ rules:
     - instance.observability.cattle.io
   resources:
     - syncdata
-    - favoriteviews
     - visualizationsettings
   verbs:
     - update
