@@ -314,9 +314,9 @@ local update_sg_version = {
     image: variables.images.stackstate_helm_test,
     stage: 'update',
     variables: {
-      GIT_AUTHOR_EMAIL: 'sts-admin@stackstate.com',
+      GIT_AUTHOR_EMAIL: 'suse-observability-ops@stackstate.com',
       GIT_AUTHOR_NAME: 'stackstate-system-user',
-      GIT_COMMITTER_EMAIL: 'sts-admin@stackstate.com',
+      GIT_COMMITTER_EMAIL: 'suse-observability-ops@stackstate.com',
       GIT_COMMITTER_NAME: 'stackstate-system-user',
     },
     before_script: helm_fetch_dependencies,
@@ -340,9 +340,9 @@ local update_aad_chart_version = {
     image: variables.images.stackstate_helm_test,
     stage: 'update',
     variables: {
-      GIT_AUTHOR_EMAIL: 'sts-admin@stackstate.com',
+      GIT_AUTHOR_EMAIL: 'suse-observability-ops@stackstate.com',
       GIT_AUTHOR_NAME: 'stackstate-system-user',
-      GIT_COMMITTER_EMAIL: 'sts-admin@stackstate.com',
+      GIT_COMMITTER_EMAIL: 'suse-observability-ops@stackstate.com',
       GIT_COMMITTER_NAME: 'stackstate-system-user',
     },
     before_script: helm_fetch_dependencies,
@@ -364,9 +364,9 @@ local update_docker_images = {
     image: variables.images.stackstate_devops,
     stage: 'update',
     variables: {
-      GIT_AUTHOR_EMAIL: 'sts-admin@stackstate.com',
+      GIT_AUTHOR_EMAIL: 'suse-observability-ops@stackstate.com',
       GIT_AUTHOR_NAME: 'stackstate-system-user',
-      GIT_COMMITTER_EMAIL: 'sts-admin@stackstate.com',
+      GIT_COMMITTER_EMAIL: 'suse-observability-ops@stackstate.com',
       GIT_COMMITTER_NAME: 'stackstate-system-user',
     },
     before_script: [

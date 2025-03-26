@@ -4422,9 +4422,9 @@ update_aad_chart_version:
     - .gitlab/commit_changes_and_push.sh anomaly-detection $UPDATE_AAD_CHART_VERSION
   stage: update
   variables:
-    GIT_AUTHOR_EMAIL: sts-admin@stackstate.com
+    GIT_AUTHOR_EMAIL: suse-observability-ops@stackstate.com
     GIT_AUTHOR_NAME: stackstate-system-user
-    GIT_COMMITTER_EMAIL: sts-admin@stackstate.com
+    GIT_COMMITTER_EMAIL: suse-observability-ops@stackstate.com
     GIT_COMMITTER_NAME: stackstate-system-user
 update_stackgraph_version:
   before_script:
@@ -4451,9 +4451,9 @@ update_stackgraph_version:
     - .gitlab/commit_changes_and_push.sh StackGraph $UPDATE_STACKGRAPH_VERSION
   stage: update
   variables:
-    GIT_AUTHOR_EMAIL: sts-admin@stackstate.com
+    GIT_AUTHOR_EMAIL: suse-observability-ops@stackstate.com
     GIT_AUTHOR_NAME: stackstate-system-user
-    GIT_COMMITTER_EMAIL: sts-admin@stackstate.com
+    GIT_COMMITTER_EMAIL: suse-observability-ops@stackstate.com
     GIT_COMMITTER_NAME: stackstate-system-user
 update_stackpacks_version_to_latest:
   before_script:
@@ -4468,9 +4468,9 @@ update_stackpacks_version_to_latest:
     - .gitlab/suse-observability/update_stackpacks_version_to_latest.sh
   stage: update
   variables:
-    GIT_AUTHOR_EMAIL: sts-admin@stackstate.com
+    GIT_AUTHOR_EMAIL: suse-observability-ops@stackstate.com
     GIT_AUTHOR_NAME: stackstate-system-user
-    GIT_COMMITTER_EMAIL: sts-admin@stackstate.com
+    GIT_COMMITTER_EMAIL: suse-observability-ops@stackstate.com
     GIT_COMMITTER_NAME: stackstate-system-user
 update_stackstate_version_to_latest:
   before_script:
@@ -4485,9 +4485,9 @@ update_stackstate_version_to_latest:
     - .gitlab/suse-observability/update_stackstate_version_to_latest.sh
   stage: update
   variables:
-    GIT_AUTHOR_EMAIL: sts-admin@stackstate.com
+    GIT_AUTHOR_EMAIL: suse-observability-ops@stackstate.com
     GIT_AUTHOR_NAME: stackstate-system-user
-    GIT_COMMITTER_EMAIL: sts-admin@stackstate.com
+    GIT_COMMITTER_EMAIL: suse-observability-ops@stackstate.com
     GIT_COMMITTER_NAME: stackstate-system-user
 validate_artifactory-cleaner:
   before_script:
