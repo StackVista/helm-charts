@@ -1527,7 +1527,7 @@ push_artifactory-cleaner_to_internal:
       when: never
     - changes:
         - stable/artifactory-cleaner/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-artifactory-cleaner]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-artifactory-cleaner]/
       when: on_success
     - changes:
         - stable/artifactory-cleaner/**/*
@@ -1569,7 +1569,7 @@ push_artifactory-cleaner_to_public:
       when: never
     - changes:
         - stable/artifactory-cleaner/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-artifactory-cleaner]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-artifactory-cleaner]/
       when: on_success
     - changes:
         - stable/artifactory-cleaner/**/*
@@ -1609,7 +1609,7 @@ push_aws-amicleaner_to_internal:
       when: never
     - changes:
         - stable/aws-amicleaner/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-aws-amicleaner]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-aws-amicleaner]/
       when: on_success
     - changes:
         - stable/aws-amicleaner/**/*
@@ -1649,7 +1649,7 @@ push_aws-nuke_to_internal:
       when: never
     - changes:
         - stable/aws-nuke/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-aws-nuke]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-aws-nuke]/
       when: on_success
     - changes:
         - stable/aws-nuke/**/*
@@ -1689,7 +1689,7 @@ push_aws-pod-identity-webhook_to_internal:
       when: never
     - changes:
         - stable/aws-pod-identity-webhook/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-aws-pod-identity-webhook]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-aws-pod-identity-webhook]/
       when: on_success
     - changes:
         - stable/aws-pod-identity-webhook/**/*
@@ -1729,7 +1729,7 @@ push_beacher-job_to_internal:
       when: never
     - changes:
         - stable/beacher-job/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-beacher-job]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-beacher-job]/
       when: on_success
     - changes:
         - stable/beacher-job/**/*
@@ -1769,7 +1769,7 @@ push_chartmuseum_to_internal:
       when: never
     - changes:
         - stable/chartmuseum/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-chartmuseum]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-chartmuseum]/
       when: on_success
     - changes:
         - stable/chartmuseum/**/*
@@ -1809,7 +1809,7 @@ push_common_to_internal:
       when: never
     - changes:
         - stable/common/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-common]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-common]/
       when: on_success
     - changes:
         - stable/common/**/*
@@ -1851,7 +1851,7 @@ push_common_to_public:
       when: never
     - changes:
         - stable/common/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-common]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-common]/
       when: on_success
     - changes:
         - stable/common/**/*
@@ -1891,7 +1891,7 @@ push_elasticsearch_to_internal:
       when: never
     - changes:
         - stable/elasticsearch/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-elasticsearch]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-elasticsearch]/
       when: on_success
     - changes:
         - stable/elasticsearch/**/*
@@ -1933,7 +1933,7 @@ push_elasticsearch_to_public:
       when: never
     - changes:
         - stable/elasticsearch/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-elasticsearch]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-elasticsearch]/
       when: on_success
     - changes:
         - stable/elasticsearch/**/*
@@ -1973,7 +1973,7 @@ push_falco-reporter_to_internal:
       when: never
     - changes:
         - stable/falco-reporter/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-falco-reporter]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-falco-reporter]/
       when: on_success
     - changes:
         - stable/falco-reporter/**/*
@@ -2013,7 +2013,7 @@ push_gitlab-steward_to_internal:
       when: never
     - changes:
         - stable/gitlab-steward/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-gitlab-steward]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-gitlab-steward]/
       when: on_success
     - changes:
         - stable/gitlab-steward/**/*
@@ -2053,7 +2053,7 @@ push_hbase_to_internal:
       when: never
     - changes:
         - stable/hbase/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-hbase]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-hbase]/
       when: on_success
     - changes:
         - stable/hbase/**/*
@@ -2095,7 +2095,7 @@ push_hbase_to_public:
       when: never
     - changes:
         - stable/hbase/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-hbase]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-hbase]/
       when: on_success
     - changes:
         - stable/hbase/**/*
@@ -2135,7 +2135,7 @@ push_helm-reaper_to_internal:
       when: never
     - changes:
         - stable/helm-reaper/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-helm-reaper]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-helm-reaper]/
       when: on_success
     - changes:
         - stable/helm-reaper/**/*
@@ -2175,7 +2175,7 @@ push_iceman_to_internal:
       when: never
     - changes:
         - stable/iceman/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-iceman]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-iceman]/
       when: on_success
     - changes:
         - stable/iceman/**/*
@@ -2215,7 +2215,7 @@ push_k8s-image-list-to-s3_to_internal:
       when: never
     - changes:
         - stable/k8s-image-list-to-s3/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-image-list-to-s3]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-image-list-to-s3]/
       when: on_success
     - changes:
         - stable/k8s-image-list-to-s3/**/*
@@ -2255,7 +2255,7 @@ push_k8s-spot-termination-handler_to_internal:
       when: never
     - changes:
         - stable/k8s-spot-termination-handler/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-spot-termination-handler]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-spot-termination-handler]/
       when: on_success
     - changes:
         - stable/k8s-spot-termination-handler/**/*
@@ -2295,7 +2295,7 @@ push_kafkaup-operator_to_internal:
       when: never
     - changes:
         - stable/kafkaup-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-kafkaup-operator]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-kafkaup-operator]/
       when: on_success
     - changes:
         - stable/kafkaup-operator/**/*
@@ -2337,7 +2337,7 @@ push_kafkaup-operator_to_public:
       when: never
     - changes:
         - stable/kafkaup-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-kafkaup-operator]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-kafkaup-operator]/
       when: on_success
     - changes:
         - stable/kafkaup-operator/**/*
@@ -2377,7 +2377,7 @@ push_kommoner-operator_to_internal:
       when: never
     - changes:
         - stable/kommoner-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-kommoner-operator]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-kommoner-operator]/
       when: on_success
     - changes:
         - stable/kommoner-operator/**/*
@@ -2417,7 +2417,7 @@ push_minio_to_internal:
       when: never
     - changes:
         - stable/minio/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-minio]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-minio]/
       when: on_success
     - changes:
         - stable/minio/**/*
@@ -2459,7 +2459,7 @@ push_minio_to_public:
       when: never
     - changes:
         - stable/minio/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-minio]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-minio]/
       when: on_success
     - changes:
         - stable/minio/**/*
@@ -2499,7 +2499,7 @@ push_notification-operator_to_internal:
       when: never
     - changes:
         - stable/notification-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-notification-operator]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-notification-operator]/
       when: on_success
     - changes:
         - stable/notification-operator/**/*
@@ -2539,7 +2539,7 @@ push_otel-demo_to_internal:
       when: never
     - changes:
         - stable/otel-demo/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-otel-demo]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-otel-demo]/
       when: on_success
     - changes:
         - stable/otel-demo/**/*
@@ -2579,7 +2579,7 @@ push_petros-d-kubelet-stats-exporter_to_internal:
       when: never
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-petros-d-kubelet-stats-exporter]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-petros-d-kubelet-stats-exporter]/
       when: on_success
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
@@ -2619,7 +2619,7 @@ push_pull-secret_to_internal:
       when: never
     - changes:
         - stable/pull-secret/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-pull-secret]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-pull-secret]/
       when: on_success
     - changes:
         - stable/pull-secret/**/*
@@ -2661,7 +2661,7 @@ push_pull-secret_to_public:
       when: never
     - changes:
         - stable/pull-secret/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-pull-secret]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-pull-secret]/
       when: on_success
     - changes:
         - stable/pull-secret/**/*
@@ -2701,7 +2701,7 @@ push_receiveramplifier_to_internal:
       when: never
     - changes:
         - stable/receiveramplifier/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-receiveramplifier]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-receiveramplifier]/
       when: on_success
     - changes:
         - stable/receiveramplifier/**/*
@@ -2741,7 +2741,7 @@ push_redirector_to_internal:
       when: never
     - changes:
         - stable/redirector/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-redirector]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-redirector]/
       when: on_success
     - changes:
         - stable/redirector/**/*
@@ -2781,7 +2781,7 @@ push_sandbox-operator_to_internal:
       when: never
     - changes:
         - stable/sandbox-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-sandbox-operator]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-sandbox-operator]/
       when: on_success
     - changes:
         - stable/sandbox-operator/**/*
@@ -2821,7 +2821,7 @@ push_sock-shop_to_internal:
       when: never
     - changes:
         - stable/sock-shop/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-sock-shop]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-sock-shop]/
       when: on_success
     - changes:
         - stable/sock-shop/**/*
@@ -2861,7 +2861,7 @@ push_stackstate-agent_to_internal:
       when: never
     - changes:
         - stable/stackstate-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-agent]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-agent]/
       when: on_success
     - changes:
         - stable/stackstate-agent/**/*
@@ -2903,7 +2903,7 @@ push_stackstate-agent_to_public:
       when: never
     - changes:
         - stable/stackstate-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-agent]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-agent]/
       when: on_success
     - changes:
         - stable/stackstate-agent/**/*
@@ -2943,7 +2943,7 @@ push_stackstate-k8s-agent_to_internal:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/stackstate-k8s-agent/**/*
@@ -2985,7 +2985,7 @@ push_stackstate-k8s-agent_to_public:
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
       when: on_success
     - changes:
         - stable/stackstate-k8s-agent/**/*
@@ -3025,7 +3025,7 @@ push_stackstate-monitoring_to_internal:
       when: never
     - changes:
         - stable/stackstate-monitoring/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-monitoring]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-monitoring]/
       when: on_success
     - changes:
         - stable/stackstate-monitoring/**/*
@@ -3067,7 +3067,7 @@ push_stackstate-monitoring_to_public:
       when: never
     - changes:
         - stable/stackstate-monitoring/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-monitoring]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-monitoring]/
       when: on_success
     - changes:
         - stable/stackstate-monitoring/**/*
@@ -3107,7 +3107,7 @@ push_stackstate-standalone_to_internal:
       when: never
     - changes:
         - stable/stackstate-standalone/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-standalone]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-standalone]/
       when: on_success
     - changes:
         - stable/stackstate-standalone/**/*
@@ -3149,7 +3149,7 @@ push_stackstate-standalone_to_public:
       when: never
     - changes:
         - stable/stackstate-standalone/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-standalone]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-standalone]/
       when: on_success
     - changes:
         - stable/stackstate-standalone/**/*
@@ -3189,7 +3189,7 @@ push_stackstate-values_to_internal:
       when: never
     - changes:
         - stable/stackstate-values/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-values]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-values]/
       when: on_success
     - changes:
         - stable/stackstate-values/**/*
@@ -3231,7 +3231,7 @@ push_stackstate-values_to_public:
       when: never
     - changes:
         - stable/stackstate-values/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-values]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-values]/
       when: on_success
     - changes:
         - stable/stackstate-values/**/*
@@ -3344,7 +3344,7 @@ push_stackstate_to_internal:
       when: never
     - changes:
         - stable/stackstate/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate]/
       when: on_success
     - changes:
         - stable/stackstate/**/*
@@ -3385,7 +3385,7 @@ push_suse-observability-agent_to_internal:
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
       when: on_success
     - changes:
         - stable/suse-observability-agent/**/*
@@ -3427,7 +3427,7 @@ push_suse-observability-agent_to_public:
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
       when: on_success
     - changes:
         - stable/suse-observability-agent/**/*
@@ -3456,7 +3456,7 @@ push_suse-observability-agent_to_rancher:
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
       when: on_success
     - changes:
         - stable/suse-observability-agent/**/*
@@ -3495,7 +3495,7 @@ push_suse-observability-values_to_internal:
       when: never
     - changes:
         - stable/suse-observability-values/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-values]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-values]/
       when: on_success
     - changes:
         - stable/suse-observability-values/**/*
@@ -3537,7 +3537,7 @@ push_suse-observability-values_to_public:
       when: never
     - changes:
         - stable/suse-observability-values/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-values]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-values]/
       when: on_success
     - changes:
         - stable/suse-observability-values/**/*
@@ -3566,7 +3566,7 @@ push_suse-observability-values_to_rancher:
       when: never
     - changes:
         - stable/suse-observability-values/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-values]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-values]/
       when: on_success
     - changes:
         - stable/suse-observability-values/**/*
@@ -3608,7 +3608,7 @@ push_suse-observability_to_internal:
       when: never
     - changes:
         - stable/suse-observability/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability]/
       when: on_success
     - changes:
         - stable/suse-observability/**/*
@@ -3650,7 +3650,7 @@ push_tenantmanagement_to_internal:
       when: never
     - changes:
         - stable/tenantmanagement/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-tenantmanagement]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-tenantmanagement]/
       when: on_success
     - changes:
         - stable/tenantmanagement/**/*
@@ -3690,7 +3690,7 @@ push_tenantprovisioning_to_internal:
       when: never
     - changes:
         - stable/tenantprovisioning/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-tenantprovisioning]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-tenantprovisioning]/
       when: on_success
     - changes:
         - stable/tenantprovisioning/**/*
@@ -3745,7 +3745,7 @@ push_trafficmirror_to_internal:
       when: never
     - changes:
         - stable/trafficmirror/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-trafficmirror]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-trafficmirror]/
       when: on_success
     - changes:
         - stable/trafficmirror/**/*
@@ -3787,7 +3787,7 @@ push_trafficmirror_to_public:
       when: never
     - changes:
         - stable/trafficmirror/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-trafficmirror]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-trafficmirror]/
       when: on_success
     - changes:
         - stable/trafficmirror/**/*
@@ -3827,7 +3827,7 @@ push_victoria-metrics-single_to_internal:
       when: never
     - changes:
         - stable/victoria-metrics-single/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-victoria-metrics-single]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-victoria-metrics-single]/
       when: on_success
     - changes:
         - stable/victoria-metrics-single/**/*
@@ -3869,7 +3869,7 @@ push_victoria-metrics-single_to_public:
       when: never
     - changes:
         - stable/victoria-metrics-single/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-victoria-metrics-single]/
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-victoria-metrics-single]/
       when: on_success
     - changes:
         - stable/victoria-metrics-single/**/*

@@ -10,14 +10,14 @@ local public_charts = variables.helm.public_charts;
 local update_2nd_degree_chart_deps(chart) = ['yq e \'.dependencies[] | select (.repository == "file*").repository | sub("^file://","")\' stable/' + chart + '/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/' + chart + '/%'];
 
 local helm_config_dependencies = [
-    'helm repo add %s %s' % [std.strReplace(name, '_', '-'), repositories[name]]
-    for name in std.objectFields(repositories)
-  ];
+  'helm repo add %s %s' % [std.strReplace(name, '_', '-'), repositories[name]]
+  for name in std.objectFields(repositories)
+];
 
 local helm_fetch_dependencies = helm_config_dependencies +
-  [
-    'helm repo update',
-  ];
+                                [
+                                  'helm repo update',
+                                ];
 
 local skip_when_dependency_upgrade = {
   rules: [{
@@ -42,10 +42,10 @@ local build_chart_job(chart) = {
   before_script: helm_fetch_dependencies,
   script:
     update_2nd_degree_chart_deps(chart) + [
-    'helm dependencies build stable/' + chart,
-    // To avoid a race condition with index.yaml mondifaction in the push_test_charts_jobs job, I package all modifed charts now and then upload only modified charts to s3
-    'mkdir -p stable/' + chart + '/build; helm package --destination stable/' + chart + '/build stable/' + chart,
-  ],
+      'helm dependencies build stable/' + chart,
+      // To avoid a race condition with index.yaml mondifaction in the push_test_charts_jobs job, I package all modifed charts now and then upload only modified charts to s3
+      'mkdir -p stable/' + chart + '/build; helm package --destination stable/' + chart + '/build stable/' + chart,
+    ],
   stage: 'build',
   rules: [
     {
@@ -176,7 +176,7 @@ local push_chart_job(chart, script, when, autoTriggerOnCommitMsg) =
     script,
     [
       {
-        @'if': '$CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\\[' + autoTriggerOnCommitMsg + ']/',
+        @'if': '$CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\\[' + autoTriggerOnCommitMsg + ']/',
         changes: ['stable/' + chart + '/**/*'],
         when: 'on_success',
       },
@@ -193,120 +193,120 @@ local push_chart_job(chart, script, when, autoTriggerOnCommitMsg) =
   );
 
 local push_chart_script(chart, repository_url, repository_username, repository_password) =
-   (if chart == 'stackstate' || chart == 'suse-observability' then update_2nd_degree_chart_deps(chart) else [])
-   + [
+  (if chart == 'stackstate' || chart == 'suse-observability' then update_2nd_degree_chart_deps(chart) else [])
+  + [
     'helm dependencies update --skip-refresh ${CHART}',
     'helm cm-push --username ' + repository_username + ' --password ' + repository_password + ' ${CHART} ' + repository_url,
   ];
 
 local push_stackstate_chart_releases =
-{
- push_stackstate_release_to_internal: push_chart_job_if(
-    'stackstate',
-    push_chart_script(
+  {
+    push_stackstate_release_to_internal: push_chart_job_if(
       'stackstate',
-      '${CHARTMUSEUM_INTERNAL_URL}',
-      '${CHARTMUSEUM_INTERNAL_USERNAME}',
-      '${CHARTMUSEUM_INTERNAL_PASSWORD}',
-    ),
-    variables.rules.tag.all_release_rules,
+      push_chart_script(
+        'stackstate',
+        '${CHARTMUSEUM_INTERNAL_URL}',
+        '${CHARTMUSEUM_INTERNAL_USERNAME}',
+        '${CHARTMUSEUM_INTERNAL_PASSWORD}',
+      ),
+      variables.rules.tag.all_release_rules,
     ) {
-    before_script: helm_fetch_dependencies,
-    stage: 'push-charts-to-internal',
-  },
-  push_stackstate_release_to_public: push_chart_job_if(
-    'stackstate',
-    push_chart_script(
-'stackstate',
-      '${CHARTMUSEUM_URL}',
-      '${CHARTMUSEUM_USERNAME}',
-      '${CHARTMUSEUM_PASSWORD}',
-    ),
-    [variables.rules.tag.release_rule],
+      before_script: helm_fetch_dependencies,
+      stage: 'push-charts-to-internal',
+    },
+    push_stackstate_release_to_public: push_chart_job_if(
+      'stackstate',
+      push_chart_script(
+        'stackstate',
+        '${CHARTMUSEUM_URL}',
+        '${CHARTMUSEUM_USERNAME}',
+        '${CHARTMUSEUM_PASSWORD}',
+      ),
+      [variables.rules.tag.release_rule],
     ) {
-    before_script: helm_fetch_dependencies,
-    stage: 'push-charts-to-public',
-  },
-};
+      before_script: helm_fetch_dependencies,
+      stage: 'push-charts-to-public',
+    },
+  };
 
 local push_charts_to_internal_jobs = {
   ['push_%s_to_internal' % chart]: (push_chart_job(
-    chart,
-    push_chart_script(
-chart,
-    '${CHARTMUSEUM_INTERNAL_URL}',
-    '${CHARTMUSEUM_INTERNAL_USERNAME}',
-    '${CHARTMUSEUM_INTERNAL_PASSWORD}',
-    ),
-'on_success',
- if chart == 'suse-observability-agent' then 'publish-suse-observability-agent' else if chart == 'stackstate-k8s-agent' then 'publish-k8s-agent' else 'publish-' + chart
-) + {
-    stage: 'push-charts-to-internal',
-  } + (
-  if chart == 'stackstate' then
-  { before_script: helm_fetch_dependencies + ['.gitlab/bump_sts_chart_master_version.sh stackstate-internal ' + chart] }
-  else if chart == 'suse-observability' then
-  { before_script: helm_fetch_dependencies + [
-    '.gitlab/configure_git.sh',
-    // tags don't have CI_COMMIT_BRANCH, so I fetches the current branch(s) for current HEAD (HEAD points to a detached commit)
-    // but there may be multiple branches so I iterate all of them and push a commit to each branch
-    'export BRANCHES=${CI_COMMIT_BRANCH:-$(git for-each-ref --format="%(objectname) %(refname:short)" refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" \'$1==branch && $2!="origin" {print $2}\' | sed -E "s/^origin\\/(.*)$/\\1/")}',
-    // It extracts version from tag, e.g. suse-observability/1.3.2 => 1.3.2
-    '.gitlab/set_sts_chart_master_version.sh stable/' + chart + " $(echo $CI_COMMIT_TAG | sed -E 's/^" + chart + "\\/(.*)$/\\1/')",
-  ] }
-  { script+: ['.gitlab/bump_sts_chart_master_version_v2.sh stable/' + chart] }
-  else { before_script: helm_fetch_dependencies }
-  ))
+                                      chart,
+                                      push_chart_script(
+                                        chart,
+                                        '${CHARTMUSEUM_INTERNAL_URL}',
+                                        '${CHARTMUSEUM_INTERNAL_USERNAME}',
+                                        '${CHARTMUSEUM_INTERNAL_PASSWORD}',
+                                      ),
+                                      'on_success',
+                                      if chart == 'suse-observability-agent' then 'publish-suse-observability-agent' else if chart == 'stackstate-k8s-agent' then 'publish-k8s-agent' else 'publish-' + chart
+                                    ) + {
+                                      stage: 'push-charts-to-internal',
+                                    } + (
+                                      if chart == 'stackstate' then
+                                        { before_script: helm_fetch_dependencies + ['.gitlab/bump_sts_chart_master_version.sh stackstate-internal ' + chart] }
+                                      else if chart == 'suse-observability' then
+                                        { before_script: helm_fetch_dependencies + [
+                                          '.gitlab/configure_git.sh',
+                                          // tags don't have CI_COMMIT_BRANCH, so I fetches the current branch(s) for current HEAD (HEAD points to a detached commit)
+                                          // but there may be multiple branches so I iterate all of them and push a commit to each branch
+                                          'export BRANCHES=${CI_COMMIT_BRANCH:-$(git for-each-ref --format="%(objectname) %(refname:short)" refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" \'$1==branch && $2!="origin" {print $2}\' | sed -E "s/^origin\\/(.*)$/\\1/")}',
+                                          // It extracts version from tag, e.g. suse-observability/1.3.2 => 1.3.2
+                                          '.gitlab/set_sts_chart_master_version.sh stable/' + chart + " $(echo $CI_COMMIT_TAG | sed -E 's/^" + chart + "\\/(.*)$/\\1/')",
+                                        ] }
+                                        { script+: ['.gitlab/bump_sts_chart_master_version_v2.sh stable/' + chart] }
+                                      else { before_script: helm_fetch_dependencies }
+                                    ))
   for chart in (charts + public_charts)
 };
 
 local push_charts_to_public_jobs = {
   ['push_%s_to_public' % chart]: (push_chart_job(
-    chart,
-    push_chart_script(
-chart,
-      '${CHARTMUSEUM_URL}',
-'${CHARTMUSEUM_USERNAME}',
-'${CHARTMUSEUM_PASSWORD}',
-    ),
-'manual',
-if chart == 'suse-observability-agent' then 'publish-suse-observability-agent' else if chart == 'stackstate-k8s-agent' then 'publish-k8s-agent' else 'publish-' + chart
-) + {
-    stage: 'push-charts-to-public',
+                                    chart,
+                                    push_chart_script(
+                                      chart,
+                                      '${CHARTMUSEUM_URL}',
+                                      '${CHARTMUSEUM_USERNAME}',
+                                      '${CHARTMUSEUM_PASSWORD}',
+                                    ),
+                                    'manual',
+                                    if chart == 'suse-observability-agent' then 'publish-suse-observability-agent' else if chart == 'stackstate-k8s-agent' then 'publish-k8s-agent' else 'publish-' + chart
+                                  ) + {
+                                    stage: 'push-charts-to-public',
 
-    needs: ['push_%s_to_internal' % chart],
-  } + (
-    if chart == 'stackstate' || chart == 'suse-observability' then
-  { before_script: helm_fetch_dependencies + ['.gitlab/bump_sts_chart_master_version.sh stackstate ' + chart] }
-  else { before_script: helm_fetch_dependencies }
-  ))
+                                    needs: ['push_%s_to_internal' % chart],
+                                  } + (
+                                    if chart == 'stackstate' || chart == 'suse-observability' then
+                                      { before_script: helm_fetch_dependencies + ['.gitlab/bump_sts_chart_master_version.sh stackstate ' + chart] }
+                                    else { before_script: helm_fetch_dependencies }
+                                  ))
   for chart in public_charts
   if chart != 'stackstate' && chart != 'suse-observability'
 };
 
 local push_suse_observability_to_rancher_registry = {
   'push_suse-observability-agent_to_rancher': (push_chart_job(
-    'suse-observability-agent',
-    [
-      '.gitlab/publish-suse-agent-to-rancher.sh',
-    ],
-    'manual',
-    'publish-suse-observability-agent',
-) + {
-    stage: 'push-charts-to-rancher',
-    needs: ['push_suse-observability-agent_to_internal'],
-  }),
+                                                 'suse-observability-agent',
+                                                 [
+                                                   '.gitlab/publish-suse-agent-to-rancher.sh',
+                                                 ],
+                                                 'manual',
+                                                 'publish-suse-observability-agent',
+                                               ) + {
+                                                 stage: 'push-charts-to-rancher',
+                                                 needs: ['push_suse-observability-agent_to_internal'],
+                                               }),
   'push_suse-observability-values_to_rancher': (push_chart_job(
-    'suse-observability-values',
-    [
-      '.gitlab/publish-suse-observability-values-to-rancher.sh',
-    ],
-    'manual',
-    'publish-suse-observability-values',
-) + {
-    stage: 'push-charts-to-rancher',
-    needs: ['push_suse-observability-values_to_internal'],
-  }),
+                                                  'suse-observability-values',
+                                                  [
+                                                    '.gitlab/publish-suse-observability-values-to-rancher.sh',
+                                                  ],
+                                                  'manual',
+                                                  'publish-suse-observability-values',
+                                                ) + {
+                                                  stage: 'push-charts-to-rancher',
+                                                  needs: ['push_suse-observability-values_to_internal'],
+                                                }),
 };
 
 local update_sg_version = {
