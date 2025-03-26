@@ -57,6 +57,9 @@ data:
             - __meta_kubernetes_pod_uid
             - __meta_kubernetes_pod_container_name
           target_label: __path__
+        # Drop all remaining labels, we do not need those
+        - action: labeldrop
+          regex: __meta_(.*)
     - job_name: static-pod-logs
       kubernetes_sd_configs:
         - role: pod
@@ -83,4 +86,7 @@ data:
             - __meta_kubernetes_pod_annotation_kubernetes_io_config_mirror
             - __meta_kubernetes_pod_container_name
           target_label: __path__
+        # Drop all remaining labels, we do not need those
+        - action: labeldrop
+          regex: __meta_(.*)
 {{- end -}}
