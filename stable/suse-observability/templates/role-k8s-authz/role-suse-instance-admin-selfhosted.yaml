@@ -13,6 +13,7 @@ rules:
   - stackpackconfigurations
   - monitors
   - notifications
+  - dashboards
   verbs:
   - create
   - update
@@ -28,7 +29,6 @@ rules:
     - instance.observability.cattle.io
   resources:
     - stackpacks
-    - favoriteviews
   verbs:
     - create
     - get
@@ -66,7 +66,15 @@ rules:
     - instance.observability.cattle.io
   resources:
     - favoriteviews
+    - favoritedashboards
+  verbs:
+    - create
+- apiGroups:
+    - instance.observability.cattle.io
+  resources:
+    - favoriteviews
     - syncdata
+    - favoritedashboards
   verbs:
     - delete
 {{- end -}}

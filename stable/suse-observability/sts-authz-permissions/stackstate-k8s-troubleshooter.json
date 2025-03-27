@@ -20,7 +20,13 @@
         "view-monitors",
         "view-notifications",
         "read-agents",
-        "read-system-notifications"
+        "read-system-notifications",
+        "create-dashboards",
+        "view-dashboards",
+        "update-dashboards",
+        "delete-dashboards",
+        "create-favorite-dashboards",
+        "delete-favorite-dashboards"
     ],
     "viewPermissions" : [ "access-view", "save-view", "delete-view" ]
 }

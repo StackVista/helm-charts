@@ -13,6 +13,7 @@ rules:
   - permissions
   - servicetokens
   - stackpackconfigurations
+  - dashboards
   verbs:
   - create
   - update
@@ -21,20 +22,14 @@ rules:
 - apiGroups:
     - instance.observability.cattle.io
   resources:
-    - stackpacks
-  verbs:
-    - get
-- apiGroups:
-    - instance.observability.cattle.io
-  resources:
     - agents
     - apitokens
     - metrics
-    - metricbindings
     - syncdata
     - systemnotifications
     - topology
     - traces
+    - stackpacks
   verbs:
     - get
 - apiGroups:
@@ -56,12 +51,14 @@ rules:
   resources:
     - favoriteviews
     - syncdata
+    - favoritedashboards
   verbs:
     - delete
 - apiGroups:
     - instance.observability.cattle.io
   resources:
     - favoriteviews
+    - favoritedashboards
   verbs:
     - create
 {{- end -}}

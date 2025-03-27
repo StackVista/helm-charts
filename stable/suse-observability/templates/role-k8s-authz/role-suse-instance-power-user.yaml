@@ -18,9 +18,12 @@ rules:
 - apiGroups:
     - instance.observability.cattle.io
   resources:
-    - stackpacks
+    - dashboards
   verbs:
+    - create
+    - update
     - get
+    - delete
 - apiGroups:
     - instance.observability.cattle.io
   resources:
@@ -33,6 +36,7 @@ rules:
     - topology
     - topicmessages
     - traces
+    - stackpacks
   verbs:
     - get
 - apiGroups:
@@ -55,12 +59,14 @@ rules:
   resources:
     - favoriteviews
     - syncdata
+    - favoritedashboards
   verbs:
     - delete
 - apiGroups:
     - instance.observability.cattle.io
   resources:
     - favoriteviews
+    - favoritedashboards
   verbs:
     - create
 {{- end -}}

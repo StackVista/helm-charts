@@ -40,7 +40,13 @@
         "view-monitors",
         "view-notifications",
         "read-agents",
-        "read-system-notifications"
+        "read-system-notifications",
+        "create-dashboards",
+        "view-dashboards",
+        "update-dashboards",
+        "delete-dashboards",
+        "create-favorite-dashboards",
+        "delete-favorite-dashboards",
         # "unlock-node" We disable unlock node by default because we do not encourage unlocking stackpack-provided settings
         # (rather update the settings). In dire straits this config part can be patched to allow the unlocking.
     ],

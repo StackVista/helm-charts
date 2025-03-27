@@ -9,6 +9,7 @@ rules:
   - monitors
   - notifications
   - stackpackconfigurations
+  - dashboards
   verbs:
   - create
   - update
@@ -45,6 +46,7 @@ rules:
     - instance.observability.cattle.io
   resources:
     - favoriteviews
+    - favoritedashboards
   verbs:
     - delete
     - create
