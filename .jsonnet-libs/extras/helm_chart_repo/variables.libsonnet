@@ -2,7 +2,7 @@
   local Variable = self,
 
   images: {
-    stackstate_helm_test: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-39379e47',
+    stackstate_helm_test: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527',
     stackstate_devops: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a',
     chart_testing: 'quay.io/helmpack/chart-testing:v3.10.1',
   },
