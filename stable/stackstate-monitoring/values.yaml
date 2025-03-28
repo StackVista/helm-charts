@@ -13,4 +13,4 @@ grafana:
     enabled: true
     # grafana.dashboards.labels -- Automatically load dashboards with these labels
     labels:
-      grafana_dashboard: 1
+      grafana_dashboard: "true"
