@@ -4421,11 +4421,6 @@ update_aad_chart_version:
     - .gitlab/update_chart_version.sh stable/suse-observability anomaly-detection $UPDATE_AAD_CHART_VERSION
     - .gitlab/commit_changes_and_push.sh anomaly-detection $UPDATE_AAD_CHART_VERSION
   stage: update
-  variables:
-    GIT_AUTHOR_EMAIL: suse-observability-ops@stackstate.com
-    GIT_AUTHOR_NAME: stackstate-system-user
-    GIT_COMMITTER_EMAIL: suse-observability-ops@stackstate.com
-    GIT_COMMITTER_NAME: stackstate-system-user
 update_stackgraph_version:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -4450,11 +4445,6 @@ update_stackgraph_version:
     - .gitlab/update_chart_version.sh stable/suse-observability hbase local:stable/hbase
     - .gitlab/commit_changes_and_push.sh StackGraph $UPDATE_STACKGRAPH_VERSION
   stage: update
-  variables:
-    GIT_AUTHOR_EMAIL: suse-observability-ops@stackstate.com
-    GIT_AUTHOR_NAME: stackstate-system-user
-    GIT_COMMITTER_EMAIL: suse-observability-ops@stackstate.com
-    GIT_COMMITTER_NAME: stackstate-system-user
 update_stackpacks_version_to_latest:
   before_script:
     - .gitlab/configure_git.sh
@@ -4467,11 +4457,6 @@ update_stackpacks_version_to_latest:
   script:
     - .gitlab/suse-observability/update_stackpacks_version_to_latest.sh
   stage: update
-  variables:
-    GIT_AUTHOR_EMAIL: suse-observability-ops@stackstate.com
-    GIT_AUTHOR_NAME: stackstate-system-user
-    GIT_COMMITTER_EMAIL: suse-observability-ops@stackstate.com
-    GIT_COMMITTER_NAME: stackstate-system-user
 update_stackstate_version_to_latest:
   before_script:
     - .gitlab/configure_git.sh
@@ -4484,11 +4469,6 @@ update_stackstate_version_to_latest:
   script:
     - .gitlab/suse-observability/update_stackstate_version_to_latest.sh
   stage: update
-  variables:
-    GIT_AUTHOR_EMAIL: suse-observability-ops@stackstate.com
-    GIT_AUTHOR_NAME: stackstate-system-user
-    GIT_COMMITTER_EMAIL: suse-observability-ops@stackstate.com
-    GIT_COMMITTER_NAME: stackstate-system-user
 validate_artifactory-cleaner:
   before_script:
     - .gitlab/validate_before_script.sh

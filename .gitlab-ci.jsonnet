@@ -313,12 +313,6 @@ local update_sg_version = {
   update_stackgraph_version: {
     image: variables.images.stackstate_helm_test,
     stage: 'update',
-    variables: {
-      GIT_AUTHOR_EMAIL: 'suse-observability-ops@stackstate.com',
-      GIT_AUTHOR_NAME: 'stackstate-system-user',
-      GIT_COMMITTER_EMAIL: 'suse-observability-ops@stackstate.com',
-      GIT_COMMITTER_NAME: 'stackstate-system-user',
-    },
     before_script: helm_fetch_dependencies,
     rules: [
       {
@@ -339,12 +333,6 @@ local update_aad_chart_version = {
   update_aad_chart_version: {
     image: variables.images.stackstate_helm_test,
     stage: 'update',
-    variables: {
-      GIT_AUTHOR_EMAIL: 'suse-observability-ops@stackstate.com',
-      GIT_AUTHOR_NAME: 'stackstate-system-user',
-      GIT_COMMITTER_EMAIL: 'suse-observability-ops@stackstate.com',
-      GIT_COMMITTER_NAME: 'stackstate-system-user',
-    },
     before_script: helm_fetch_dependencies,
     rules: [
       {
@@ -363,12 +351,6 @@ local update_docker_images = {
   local job(requiredEnvName, scripts) = {
     image: variables.images.stackstate_devops,
     stage: 'update',
-    variables: {
-      GIT_AUTHOR_EMAIL: 'suse-observability-ops@stackstate.com',
-      GIT_AUTHOR_NAME: 'stackstate-system-user',
-      GIT_COMMITTER_EMAIL: 'suse-observability-ops@stackstate.com',
-      GIT_COMMITTER_NAME: 'stackstate-system-user',
-    },
     before_script: [
       '.gitlab/configure_git.sh',
       // tags don't have CI_COMMIT_BRANCH, so fetch the current branch(s) for current HEAD (HEAD points to a detached commit)
