@@ -2,7 +2,7 @@
 
 Helm chart for Monitoring Dashboards
 
-Current chart version is `1.1.12`
+Current chart version is `1.1.13`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -13,7 +13,7 @@ Current chart version is `1.1.12`
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | grafana.dashboards.enabled | bool | `true` | Whether or not to enable the Grafana dashboards |
-| grafana.dashboards.labels | object | `{"grafana_dashboard":"1"}` | List of additional labels to add to the dashboard configmaps |
+| grafana.dashboards.labels | object | `{"grafana_dashboard":1}` | List of additional labels to add to the dashboard configmaps |
 | rules.additionalLabels | object | `{}` | List of additional labels to add to all rules |
 | rules.enabled | bool | `true` | Whether or not to enable the rules |
 | rules.namespaceRegex | string | `"stackstate-.*"` | Regex to match namespaces to be monitored |
