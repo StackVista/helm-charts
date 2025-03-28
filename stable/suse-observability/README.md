@@ -954,6 +954,7 @@ stackstate/stackstate
 | stackstate.email.server.host | string | `""` | Email server host |
 | stackstate.email.server.port | int | `587` | Email server port |
 | stackstate.email.server.protocol | string | `"smtp"` | Email server protocol |
+| stackstate.experimental.dashboards | boolean | `false` | Enable dashboards |
 | stackstate.experimental.enableVMAgent | bool | `true` |  |
 | stackstate.experimental.k8sAuthorization | bool | `false` |  |
 | stackstate.experimental.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |

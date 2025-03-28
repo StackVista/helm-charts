@@ -1612,6 +1612,8 @@ stackstate:
     enableVMAgent: true
     # stackstate.experimental.traces -- (boolean) Enable new traces UI and API
     traces: true
+    # stackstate.experimental.dashboards -- (boolean) Enable dashboards
+    dashboards: false
     server:
       # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
       split: true

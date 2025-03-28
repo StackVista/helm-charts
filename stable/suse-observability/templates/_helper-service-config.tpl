@@ -45,6 +45,10 @@
 {{- if .Values.stackstate.experimental.traces }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_traces" "true" }}
 {{- end -}}
+{{- if .Values.stackstate.experimental.dashboards }}
+  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_dashboards" "true" }}
+{{- end -}}
+
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_newMetrics" "true" }}
 {{/*
 Memory used by a JVM process can be calculated as follows:
