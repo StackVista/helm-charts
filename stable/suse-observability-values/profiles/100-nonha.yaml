@@ -64,6 +64,8 @@ stackstate:
     all:
       extraEnv:
         open:
+          CONFIG_FORCE_stackstate_topologyQueryService_maxStackElementsPerQuery: "7500"
+          CONFIG_FORCE_stackstate_topologyQueryService_maxLoadedElementsPerQuery: "7500"
           CONFIG_FORCE_stackstate_agents_agentLimit: "100"
     server:
       extraEnv:
