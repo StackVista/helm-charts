@@ -1,6 +1,5 @@
 {
     "systemPermissions": [
-        "access-analytics",
         "access-cli",
         "access-explore",
         "access-log-data",
