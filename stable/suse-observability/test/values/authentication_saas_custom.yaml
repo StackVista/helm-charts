@@ -5,7 +5,6 @@ stackstate:
         stackstate-k8s-admin: {
           systemPermissions: [
             "create-views",
-            "execute-scripts",
             "read-settings",
             "update-settings",
             "import-settings",

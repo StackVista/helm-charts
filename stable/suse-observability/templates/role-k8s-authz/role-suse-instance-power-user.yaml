@@ -51,7 +51,6 @@ rules:
   resources:
     - componentactions
     - monitors
-    - scripts
   verbs:
     - execute
 - apiGroups:

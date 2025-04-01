@@ -9,7 +9,6 @@
         "execute-component-actions",
         "execute-component-templates",
         "execute-node-sync",
-        "execute-scripts",
         "export-settings",
         "import-settings",
         "manage-annotations",

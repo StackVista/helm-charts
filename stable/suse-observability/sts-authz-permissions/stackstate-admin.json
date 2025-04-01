@@ -10,7 +10,6 @@
         "execute-component-templates",
         "execute-node-sync",
         "execute-restricted-scripts",
-        "execute-scripts",
         "export-settings",
         "import-settings",
         "manage-annotations",
