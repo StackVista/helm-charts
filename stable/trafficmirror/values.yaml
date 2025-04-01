@@ -15,6 +15,19 @@ image:
 ingress:
   # ingress.enabled -- Enable use of ingress controllers.
   enabled: false
+  # ingress.annotations -- Annotations for `Ingress` objects.
+  annotations: {}
+  # ingress.hosts -- List of ingress hostnames.
+  hosts: []
+  # - host: chart-example.local
+  #   paths:
+  #     - path: /?(.*)
+  #       pathType: ImplementationSpecific
+  # ingress.tls -- List of ingress TLS certificates to use.
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 trafficmirror:
   # trafficmirror.mainUrl -- The default URL to receive the mirrored traffic.

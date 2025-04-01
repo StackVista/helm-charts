@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 2.5.4
-version: 2.1.1
+version: 3.0.0
 description: Trafficmirror -- mirror traffic to various endpoints.
 keywords:
   - mirror

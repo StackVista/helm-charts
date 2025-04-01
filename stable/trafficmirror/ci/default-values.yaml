@@ -3,8 +3,9 @@ ingress:
   hosts:
   - host: some-trafficmirror.website.com
     paths:
-      - /
-      - /another-path
+      - path: /?(.*)
+        pathType: ImplementationSpecific
+      - path: /another-path
   tls:
   - secretName: some-tls-secret
     hosts:
