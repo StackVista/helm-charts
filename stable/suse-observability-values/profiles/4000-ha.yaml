@@ -75,8 +75,6 @@ kafka:
     size: 400Gi
   deleteTopicEnable: true
 stackstate:
-  experimental:
-    traces: false
   components:
     kafkaTopicCreate:
       extraEnv:
