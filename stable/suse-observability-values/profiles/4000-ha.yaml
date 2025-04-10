@@ -1,3 +1,4 @@
+# profile 4000-ha
 elasticsearch:
   resources:
     requests:
@@ -6,12 +7,10 @@ elasticsearch:
     limits:
       cpu: "6"
       memory: 4Gi
+
 hbase:
   hbase:
     master:
-      experimental:
-        execLivenessProbe:
-          enabled: true
       resources:
         requests:
           cpu: 2000m
@@ -19,6 +18,9 @@ hbase:
         limits:
           cpu: 2500m
           memory: 1024Mi
+      experimental:
+        execLivenessProbe:
+          enabled: true
     regionserver:
       replicaCount: 5
       resources:
@@ -75,7 +77,15 @@ kafka:
     size: 400Gi
   deleteTopicEnable: true
 stackstate:
+  experimental:
+    server:
+      split: true
+
   components:
+    all:
+      extraEnv:
+        open:
+          CONFIG_FORCE_stackstate_agents_agentLimit: "4000"
     kafkaTopicCreate:
       extraEnv:
         open:
@@ -83,9 +93,6 @@ stackstate:
           KAFKA_PARTITIONS_sts_correlate_endpoints: "40"
           KAFKA_PARTITIONS_sts_correlate_http_trace_observations: "40"
     api:
-      extraEnv:
-        open:
-          CONFIG_FORCE_stackstate_agents_agentLimit: "4000"
       resources:
         requests:
           cpu: 7000m
@@ -93,14 +100,6 @@ stackstate:
         limits:
           cpu: 9000m
           memory: 12Gi
-    state:
-      resources:
-        requests:
-          cpu: "3"
-          memory: 4000Mi
-        limits:
-          cpu: "5"
-          memory: 6000Mi
     checks:
       resources:
         requests:
@@ -109,22 +108,6 @@ stackstate:
         limits:
           cpu: 7000m
           memory: 5Gi
-    correlate:
-      replicaCount: 10
-      resources:
-        requests:
-          cpu: 5000m
-          memory: 4000Mi
-        limits:
-          cpu: 6000m
-          memory: 6000Mi
-      extraEnv:
-        open:
-          CONFIG_FORCE_stackstate_correlate_correlateConnections_workers: "4"
-          CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers: "4"
-          CONFIG_FORCE_stackstate_correlate_aggregation_workers: "4"
-          CONFIG_FORCE_stackstate_correlate_correlateConnections_kafka_producer_request.timeout.ms: "25000"
-          CONFIG_FORCE_stackstate_correlate_correlateConnections_kafka_producer_delivery.timeout.ms: "30000"
     healthSync:
       extraEnv:
         open:
@@ -147,6 +130,51 @@ stackstate:
         limits:
           cpu: 1500m
           memory: 1Gi
+    notification:
+      resources:
+        requests:
+          cpu: 2000m
+          memory: 3200Mi
+        limits:
+          cpu: 3000m
+          memory: 4500Mi
+    router:
+      resources:
+        requests:
+          cpu: 2000m
+          memory: 256Mi
+        limits:
+          cpu: 2500m
+          memory: 512Mi
+    slicing:
+      resources:
+        requests:
+          cpu: 1000m
+          memory: 2536Mi
+        limits:
+          cpu: 1500m
+          memory: 2536Mi
+    state:
+      resources:
+        requests:
+          cpu: "3"
+          memory: 4000Mi
+        limits:
+          cpu: "5"
+          memory: 6000Mi
+    sync:
+      sizing:
+        baseMemoryConsumption: "400Mi"
+      tmpToPVC:
+        volumeSize: 10Gi
+      resources:
+        requests:
+          cpu: "12"
+          memory: 14000Mi
+        limits:
+          cpu: "14"
+          memory: 16000Mi
+          ephemeral-storage: 2Gi
     e2es:
       resources:
         requests:
@@ -155,6 +183,22 @@ stackstate:
         limits:
           cpu: 3000m
           memory: 1024Mi
+    correlate:
+      replicaCount: 10
+      resources:
+        requests:
+          cpu: 5000m
+          memory: 4000Mi
+        limits:
+          cpu: 6000m
+          memory: 6000Mi
+      extraEnv:
+        open:
+          CONFIG_FORCE_stackstate_correlate_correlateConnections_workers: "4"
+          CONFIG_FORCE_stackstate_correlate_correlateHTTPTraces_workers: "4"
+          CONFIG_FORCE_stackstate_correlate_aggregation_workers: "4"
+          CONFIG_FORCE_stackstate_correlate_correlateConnections_kafka_producer_request.timeout.ms: "25000"
+          CONFIG_FORCE_stackstate_correlate_correlateConnections_kafka_producer_delivery.timeout.ms: "30000"
     receiver:
       retention: 3
       split:
@@ -201,49 +245,6 @@ stackstate:
           CONFIG_FORCE_akka_actor_default__dispatcher_fork__join__executor_parallelism__max: "64"
           CONFIG_FORCE_akka_actor_default__blocking__io__dispatcher_thread__pool__executor_fixed__pool__size: "64"
           CONFIG_FORCE_stackstate_receiver_kafkaProducerConfig_max_request_size: "4194304"
-    sync:
-      sizing:
-        baseMemoryConsumption: "400Mi"
-      tmpToPVC:
-        volumeSize: 10Gi
-      resources:
-        requests:
-          cpu: "12"
-          memory: 14000Mi
-        limits:
-          cpu: "14"
-          memory: 16000Mi
-          ephemeral-storage: 2Gi
-    slicing:
-      resources:
-        requests:
-          cpu: 1000m
-          memory: 2536Mi
-        limits:
-          cpu: 1500m
-          memory: 2536Mi
-    notification:
-      resources:
-        requests:
-          cpu: 2000m
-          memory: 3200Mi
-        limits:
-          cpu: 3000m
-          memory: 4500Mi
-    router:
-      resources:
-        requests:
-          cpu: 2000m
-          memory: 256Mi
-        limits:
-          cpu: 2500m
-          memory: 512Mi
-    ui:
-      resources:
-        requests:
-          cpu: 100m
-        limits:
-          cpu: 500m
     vmagent:
       resources:
         limits:
@@ -252,6 +253,13 @@ stackstate:
         requests:
           cpu: 2000m
           memory: 2500Mi
+    ui:
+      replicaCount: 2
+      resources:
+        requests:
+          cpu: 100m
+        limits:
+          cpu: 500m
 zookeeper:
   resources:
     requests:
