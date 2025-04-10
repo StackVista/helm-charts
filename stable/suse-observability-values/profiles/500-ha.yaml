@@ -75,10 +75,6 @@ stackstate:
       split: true
 
   components:
-    all:
-      extraEnv:
-        open:
-          CONFIG_FORCE_stackstate_agents_agentLimit: "500"
     kafkaTopicCreate:
       extraEnv:
         open:
@@ -86,6 +82,9 @@ stackstate:
           KAFKA_PARTITIONS_sts_correlate_endpoints: "40"
           KAFKA_PARTITIONS_sts_correlate_http_trace_observations: "40"
     api:
+      extraEnv:
+        open:
+          CONFIG_FORCE_stackstate_agents_agentLimit: "500"
       resources:
         requests:
           cpu: "3000m"

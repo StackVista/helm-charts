@@ -81,11 +81,10 @@ stackstate:
       split: true
 
   components:
-    all:
+    api:
       extraEnv:
         open:
           CONFIG_FORCE_stackstate_agents_agentLimit: "150"
-    api:
       resources:
         requests:
           cpu: "1500m"

@@ -71,15 +71,12 @@ stackstate:
       split: false
 
   components:
-    all:
+    server:
       extraEnv:
         open:
           CONFIG_FORCE_stackstate_topologyQueryService_maxStackElementsPerQuery: "1000"
           CONFIG_FORCE_stackstate_topologyQueryService_maxLoadedElementsPerQuery: "1000"
           CONFIG_FORCE_stackstate_agents_agentLimit: "10"
-    server:
-      extraEnv:
-        open:
           CONFIG_FORCE_stackstate_sync_initializationBatchParallelism: "1"
           CONFIG_FORCE_stackstate_healthSync_initialLoadParallelism: "1"
           CONFIG_FORCE_stackstate_stateService_initializationParallelism: "1"
