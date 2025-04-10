@@ -16,7 +16,9 @@ data:
       grpc_listen_port: 0
 
     clients:
-      - url: {{ tpl .Values.stackstate.url . }}/logs/k8s?api_key=${STS_API_KEY}
+      - url: {{ tpl .Values.stackstate.url . }}/logs/k8s
+        headers:
+          sts-api-key: ${STS_API_KEY}
         external_labels:
            sts_cluster_name: {{ .Values.stackstate.cluster.name | quote }}
       {{- if .Values.global.proxy.url }}
