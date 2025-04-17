@@ -981,6 +981,34 @@ build_suse-observability-values:
     - helm dependencies build stable/suse-observability-values
     - mkdir -p stable/suse-observability-values/build; helm package --destination stable/suse-observability-values/build stable/suse-observability-values
   stage: build
+build_tenant-cleanup-controller:
+  artifacts:
+    paths:
+      - stable/tenant-cleanup-controller/charts/
+      - stable/tenant-cleanup-controller/build/
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  rules:
+    - changes:
+        - stable/tenant-cleanup-controller/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/tenant-cleanup-controller/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/tenant-cleanup-controller/%
+    - helm dependencies build stable/tenant-cleanup-controller
+    - mkdir -p stable/tenant-cleanup-controller/build; helm package --destination stable/tenant-cleanup-controller/build stable/tenant-cleanup-controller
+  stage: build
 build_tenantmanagement:
   artifacts:
     paths:
@@ -1455,6 +1483,17 @@ check_suse-observability-values_version:
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - .gitlab/verify_versions_bumped.sh suse-observability-values
+  stage: validate
+check_tenant-cleanup-controller_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/tenant-cleanup-controller/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh tenant-cleanup-controller
   stage: validate
 check_tenantmanagement_version:
   before_script:
@@ -3624,6 +3663,46 @@ push_suse-observability_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/suse-observability
+push_tenant-cleanup-controller_to_internal:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/tenant-cleanup-controller/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-tenant-cleanup-controller]/
+      when: on_success
+    - changes:
+        - stable/tenant-cleanup-controller/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - if: $CI_COMMIT_TAG =~ /^tenant-cleanup-controller\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/tenant-cleanup-controller
 push_tenantmanagement_to_internal:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -4347,6 +4426,19 @@ test_suse-observability-values:
   stage: test
   variables:
     CGO_ENABLED: 0
+test_tenant-cleanup-controller:
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  rules:
+    - changes:
+        - stable/tenant-cleanup-controller/**/*
+      exists:
+        - stable/tenant-cleanup-controller/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/tenant-cleanup-controller/test/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
 test_tenantmanagement:
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
   rules:
@@ -5027,6 +5119,22 @@ validate_suse-observability-values:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-values/values.yaml
     - if [ -f stable/suse-observability-values/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/suse-observability-values/ci/default-values.yaml; fi
     - if [ -f stable/suse-observability-values/ci/default-values.yaml ]; then helm lint stable/suse-observability-values --values stable/suse-observability-values/ci/default-values.yaml; fi
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+validate_tenant-cleanup-controller:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/tenant-cleanup-controller/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/tenant-cleanup-controller/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/tenant-cleanup-controller/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/tenant-cleanup-controller/values.yaml
+    - if [ -f stable/tenant-cleanup-controller/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/tenant-cleanup-controller/ci/default-values.yaml; fi
+    - if [ -f stable/tenant-cleanup-controller/ci/default-values.yaml ]; then helm lint stable/tenant-cleanup-controller --values stable/tenant-cleanup-controller/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 validate_tenantmanagement:

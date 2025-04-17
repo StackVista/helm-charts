@@ -62,6 +62,7 @@
       'sock-shop',
       'tenantprovisioning',
       'tenantmanagement',
+      'tenant-cleanup-controller',
     ],
   },
   rules: {
