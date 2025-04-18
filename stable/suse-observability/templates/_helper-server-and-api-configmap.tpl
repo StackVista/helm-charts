@@ -210,7 +210,7 @@ Authentication config
   {{- else }}
   redirectUri = "{{ $global.Values.stackstate.baseUrl | default $global.Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "Cannot configure Rancher authentication: baseUrl or receiver.baseUrl must be provided to construct the redirectUri." }}/loginCallback"
   {{- end }}
-  scope = ["openid", "email", "profile"]
+  scope = ["openid", "profile"]
   jwsAlgorithm = "RS256"
   jwtClaims {
     groupsField = "groups"
