@@ -106,7 +106,7 @@ const expectedRancherAuthConfig = `stackstate.api.authentication.authServer.oidc
   secret = ${oidc_secret}
   discoveryUri = "https://rancher-hostname.com/oidc/.well-known/openid-configuration"
   redirectUri = "http://localhost/loginCallback"
-  scope = ["openid", "email", "profile"]
+  scope = ["openid", "profile", "offline_access"]
   jwsAlgorithm = "RS256"
   jwtClaims {
     groupsField = "groups"
