@@ -2,7 +2,7 @@
 
 Helm chart for the StackState Agent.
 
-Current chart version is `1.0.100`
+Current chart version is `1.0.101`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -10,7 +10,7 @@ Current chart version is `1.0.100`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.12 |
+| https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.16 |
 
 ## Required Values
 
