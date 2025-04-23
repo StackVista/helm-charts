@@ -91,7 +91,6 @@ spec:
 {{- end -}}
 
 {{- define "job-stackgraph-list-backups.yaml" -}}
-{{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -137,6 +136,7 @@ spec:
 
 {{- define "job-stackgraph-restore-backup.yaml" -}}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
+{{- $serverServiceConfig := dict "ServiceName" "server" "ServiceConfig" .Values.stackstate.components.server }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -162,7 +162,7 @@ spec:
           imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
       containers:
         - name: restore
-          image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
+          image: "{{ include "stackstate.image.registry" (merge $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
           imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
           command:
             - '/backup-restore-scripts/restore-stackgraph-backup.sh'
@@ -213,7 +213,6 @@ spec:
 
 
 {{- define "job-configuration-list-backups.yaml" -}}
-{{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -269,6 +268,7 @@ spec:
 
 {{- define "job-configuration-restore-backup.yaml" -}}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
+{{- $serverServiceConfig := dict "ServiceName" "server" "ServiceConfig" .Values.stackstate.components.server }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -295,7 +295,7 @@ spec:
           imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
       containers:
         - name: restore-settings
-          image: "{{ include "stackstate.image.registry" . }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
+          image: "{{ include "stackstate.image.registry" (merge $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
           imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
           command:
             - '/backup-restore-scripts/restore-configuration-backup.sh'
@@ -453,7 +453,6 @@ spec:
 {{- end -}}
 
 {{- define "job-victoria-metrics-list-backups.yaml" -}}
-{{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
 apiVersion: batch/v1
 kind: Job
 metadata:
