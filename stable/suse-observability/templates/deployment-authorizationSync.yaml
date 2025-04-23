@@ -26,7 +26,7 @@ envFrom:
   - secretRef:
       name: {{ include "stackstate.secret.name.license" .  }}
 env:
-{{- $serviceConfig := dict "ServiceName" "authorizationSync" "ServiceConfig" .Values.stackstate.components.authorizationSync }}
+{{- $serviceConfig := dict "ServiceName" "authorization-sync" "ServiceConfig" .Values.stackstate.components.authorizationSync }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.authorizationSync.image.tag }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.baseurls.envvars" . }}
