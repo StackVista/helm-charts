@@ -2,6 +2,10 @@
   {{- if .Values.stackstate.experimental.server.split }}api{{ else }}server{{ end }}
 {{- end -}}
 
+{{- define "stackstate.authSync.name" -}}
+  {{- if .Values.stackstate.experimental.server.split }}authorization-sync{{ else }}server-headless{{ end }}
+{{- end -}}
+
 {{- define "stackstate.receiver.name.postfix" -}}
   {{- if .ReceiverType }}-{{ .ReceiverType }}{{ else }}{{ end }}
 {{- end -}}
@@ -53,7 +57,7 @@ env:
   value: "http://{{ template "common.fullname.short" . }}-{{ template "stackstate.api.name" . }}-headless:7070/api/user/authorization"
 {{- if .Values.stackstate.experimental.k8sAuthorization }}
 - name: CONFIG_FORCE_stackstate_receiver_authorizationSyncApi_authorizationSyncApiBaseUri
-  value: "http://{{ template "common.fullname.short" . }}-{{ template "stackstate.api.name" . }}-headless:7075/rbac"
+  value: "http://{{ template "common.fullname.short" . }}-{{ template "stackstate.authSync.name" . }}:7075/rbac"
 - name: CONFIG_FORCE_stackstate_receiver_authorizationSyncApi_enabled
   value: "true"
 - name: CONFIG_FORCE_stackstate_receiver_featureSwitches_receiveRbacData
