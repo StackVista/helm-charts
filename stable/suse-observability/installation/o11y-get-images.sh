@@ -57,7 +57,7 @@ helm_release=release
 images=()
 function listImages() {
   tmp_file=/tmp/o11y-tenant-get-images
-  helm_values_base="anomaly-detection.enabled=true,backup.enabled=true,victoria-metrics-0.backup.enabled=true,victoria-metrics-0.restore.enabled=true,minio.accessKey=ABCDEFGH,minio.secretKey=ABCDEFGHABCDEFGH,stackstate.baseUrl=http://dummy.stackstate.io,stackstate.admin.authentication.password=dummy,stackstate.authentication.adminPassword=dummy,stackstate.license.key=dummy,global.receiverApiKey=dummy,clickhouse.enabled=true,opentelemetry.enabled=true"
+  helm_values_base="anomaly-detection.enabled=true,backup.enabled=true,victoria-metrics-0.backup.enabled=true,victoria-metrics-0.restore.enabled=true,minio.accessKey=ABCDEFGH,minio.secretKey=ABCDEFGHABCDEFGH,stackstate.baseUrl=http://dummy.stackstate.io,stackstate.admin.authentication.password=dummy,stackstate.authentication.adminPassword=dummy,stackstate.license.key=dummy,global.receiverApiKey=dummy,clickhouse.enabled=true,opentelemetry.enabled=true,kubernetes-rbac-agent.enabled=true"
   # hbase in Distributed mode
   helm_values="$helm_values_base"
   helm template "$helm_release" "$helm_chart_archive" --set "$helm_values" | grep image: | sed -E 's/^.*image: ['\''"]?([^'\''"]*)['\''"]?.*$/\1/' > "$tmp_file"

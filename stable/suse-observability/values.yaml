@@ -3034,15 +3034,15 @@ kubernetes-rbac-agent:
     value: '{{ .Release.Name }}'
   containers:
     rbacAgent:
-      # image:
-      # kubernetes-rbac-agent.containers.rbacAgent.image.registry -- Registry for the docker image.
-      # registry:
-      # kubernetes-rbac-agent.containers.rbacAgent.image.repository - Repository for the docker image
-      # repository:
-      # kubernetes-rbac-agent.containers.rbacAgent.image.pullPolicy -- Policy when pulling an image
-      # pullPolicy:
-      # kubernetes-rbac-agent.containers.rbacAgent.image.tag -- The tag for the docker image
-      # tag:
+      image:
+        # kubernetes-rbac-agent.containers.rbacAgent.image.registry -- Registry for the docker image.
+        registry: quay.io
+        # kubernetes-rbac-agent.containers.rbacAgent.image.repository - Repository for the docker image
+        repository: stackstate/kubernetes-rbac-agent
+        # kubernetes-rbac-agent.containers.rbacAgent.image.pullPolicy -- Policy when pulling an image
+        # pullPolicy:
+        # kubernetes-rbac-agent.containers.rbacAgent.image.tag -- The tag for the docker image
+        # tag:
       resources:
         requests:
           # kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory -- Memory resource requests.

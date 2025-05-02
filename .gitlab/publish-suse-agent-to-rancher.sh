@@ -42,9 +42,7 @@ while IFS= read -r image; do
   fi
 done < "${image_list_file}"
 
-echo "Reconfiguring container images registry in values.yaml"
-yq -i -e  '.global.imageRegistry = env(RANCHER_CONTAINER_REGISTRY_URL)' values.yaml
-sed -i -r "s|(\s+repository:\s+\"?)stackstate/|\1${RANCHER_CONTAINER_REGISTRY_NAMESPACE}/|g" values.yaml
+./maintenance/change-image-source.sh -g "$RANCHER_CONTAINER_REGISTRY_URL" -p "$RANCHER_CONTAINER_REGISTRY_NAMESPACE"
 
 cd "${build_root}" || exit
 

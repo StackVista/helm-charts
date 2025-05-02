@@ -11,7 +11,7 @@ Current chart version is `1.0.36`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.16 |
-| https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.11 |
+| https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.14 |
 
 ## Required Values
 
@@ -173,6 +173,7 @@ stackstate/stackstate-k8s-agent
 | kubernetes-rbac-agent.clusterName.fromConfigMap | string | `"{{ include \"stackstate-k8s-agent.clusterName.configmap.internal.name\" . }}"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
+| kubernetes-rbac-agent.containers.rbacAgent.image.repository | string | `"stackstate/kubernetes-rbac-agent"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
 | kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{}` | Additional annotations on the pod |
 | kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |

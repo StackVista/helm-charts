@@ -17,7 +17,7 @@ func TestGetImages(t *testing.T) {
 	curDir, err := os.Getwd()
 	require.NoError(t, err)
 	images := strings.Split(RunGetImagesScript(t, filepath.Join(curDir, "..")), "\n")
-	require.Equal(t, 32, len(
+	require.Equal(t, 9, len(
 		slices.DeleteFunc(
 			images,
 			func(e string) bool {
@@ -37,7 +37,7 @@ func TestChangeImageRepo(t *testing.T) {
 	err = exec.Command("cp", "-a", filepath.Join(curDir, ".."), tmpDir).Run()
 	require.NoError(t, err)
 
-	helmDir := filepath.Join(tmpDir, "suse-observability")
+	helmDir := filepath.Join(tmpDir, "suse-observability-agent")
 
 	targetReg := "reg"
 	targetRepo := "repo"
@@ -49,7 +49,7 @@ func TestChangeImageRepo(t *testing.T) {
 }
 
 func RunGetImagesScript(t *testing.T, dir string) string {
-	cmd := exec.Command(filepath.Join(dir, "installation", "o11y-get-images.sh"))
+	cmd := exec.Command(filepath.Join(dir, "installation", "o11y-agent-get-images.sh"))
 	stdout, err := cmd.Output()
 
 	require.NoError(t, err)

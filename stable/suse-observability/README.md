@@ -21,7 +21,7 @@ Current chart version is `2.3.3-pre.8`
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.21 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.21 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.151 |
-| https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.13 |
+| https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.14 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | clickhouse | 3.6.9 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
 | https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
@@ -313,6 +313,8 @@ stackstate/stackstate
 | kubernetes-rbac-agent.clusterName.value | string | `"{{ .Release.Name }}"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
+| kubernetes-rbac-agent.containers.rbacAgent.image.registry | string | `"quay.io"` | Registry for the docker image. |
+| kubernetes-rbac-agent.containers.rbacAgent.image.repository | string | `"stackstate/kubernetes-rbac-agent"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
 | kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{"ad.stackstate.com/kubernetes-rbac-agent.check_names":"[\"openmetrics\"]","ad.stackstate.com/kubernetes-rbac-agent.init_configs":"[{}]","ad.stackstate.com/kubernetes-rbac-agent.instances":"[ { \"prometheus_url\": \"http://%%host%%:8080/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Additional annotations on the pod |
 | kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |
