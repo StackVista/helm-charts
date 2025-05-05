@@ -26,7 +26,7 @@ spec:
       serviceAccountName: sock-shop
       containers:
       - name: user
-        image: weaveworksdemos/user:0.4.7
+        image: ghcr.io/socks-factory/user:nightly
         resources:
         {{- toYaml .Values.user.resources | nindent 10 }}
         ports:

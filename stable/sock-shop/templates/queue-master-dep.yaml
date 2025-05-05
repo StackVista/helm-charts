@@ -25,7 +25,7 @@ spec:
       serviceAccountName: sock-shop
       containers:
       - name: queue-master
-        image: weaveworksdemos/queue-master:0.3.1
+        image: ghcr.io/socks-factory/queue-master:nightly
         env:
         - name: JAVA_OPTS
           value: {{ .Values.all.java.options }}

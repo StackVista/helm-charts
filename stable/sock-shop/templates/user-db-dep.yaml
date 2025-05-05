@@ -23,7 +23,7 @@ spec:
       serviceAccountName: sock-shop
       containers:
       - name: user-db
-        image: weaveworksdemos/user-db:0.4.0
+        image: ghcr.io/socks-factory/user-db:nightly
         ports:
         - name: mongo
           containerPort: 27017
