@@ -29,7 +29,7 @@ spec:
       {{- toYaml .Values.carts.affinity | nindent 10 }}
       containers:
       - name: carts
-        image: ghcr.io/socks-factory/carts:nightly
+        image: ghcr.io/socks-factory/carts:sha-7b07bdc
         env:
          - name: JAVA_OPTS
            value: {{ .Values.all.java.options }}
