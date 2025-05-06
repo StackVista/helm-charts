@@ -9,7 +9,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 subjects:
   - kind: Group
-    name: {{ template "common.fullname.short" . }}-instance-admin
+    name: {{ (index .Values "role-k8s-authz" "authprovider") }}{{ template "common.fullname.short" . }}-instance-admin
 {{- end -}}
 {{- if (index .Values "role-k8s-authz" "enabled")  -}}
 {{- include "stackstate.k8s.authorization.instance.admin.rolebinding" . -}}

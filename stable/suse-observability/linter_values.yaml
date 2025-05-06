@@ -39,3 +39,6 @@ networkPolicy:
 
 anomaly-detection:
   enabled: true
+
+role-k8s-authz:
+  enabled: true

@@ -53,6 +53,10 @@ env:
   value: nobody
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
+{{ if .Values.stackstate.experimental.k8sAuthorization }}
+- name: CONFIG_FORCE_stackstate_featureSwitches_authorizationSyncService
+  value: "true"
+{{ end }}
   # Keep for 1.5 hours, allowing timetravel and having users in analytics keep their results cached
 - name: CONFIG_FORCE_stackgraph_vertex_cache_expireAfterSeconds
   value: "5400"

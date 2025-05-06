@@ -2209,6 +2209,8 @@ cluster-role:
   # role-k8s-authz.enabled -- Deploy the Role(s) to populate permissions on Suse Observability
 role-k8s-authz:
   enabled: false
+  # role-k8s-authz.authprovider -- Prefix added to OIDC groups by a proxy like Rancher (e.g. 'keycloakoidc_group://')
+  authprovider: ''
 pull-secret:
   # pull-secret.enabled -- Deploy the ImagePullSecret for the chart.
   enabled: false

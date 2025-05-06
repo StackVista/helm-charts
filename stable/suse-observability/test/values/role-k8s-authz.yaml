@@ -1,0 +1,3 @@
+role-k8s-authz:
+  enabled: true
+  authprovider: "keycloakoidc_group://"
