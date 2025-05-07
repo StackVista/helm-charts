@@ -213,6 +213,7 @@ Authentication config
   scope = ["openid", "profile", "offline_access"]
   jwsAlgorithm = "RS256"
   jwtClaims {
+    usernameField = "sub"
     groupsField = "groups"
   }
   {{- if $apiAuth.rancher.customParameters }}
