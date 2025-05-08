@@ -109,6 +109,7 @@ const expectedRancherAuthConfig = `stackstate.api.authentication.authServer.oidc
   scope = ["openid", "profile", "offline_access"]
   jwsAlgorithm = "RS256"
   jwtClaims {
+    usernameField = "sub"
     groupsField = "groups"
   }
 }`
