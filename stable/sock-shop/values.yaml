@@ -28,6 +28,9 @@ cartsDB:
       memory: 100Mi
 
 carts:
+  image:
+    repository: weaveworksdemos/carts
+    tag: 0.4.3
   enabled: true
   # carts.version -- Custom label (version) value for `carts` pods.
   version: 1
@@ -36,10 +39,10 @@ carts:
   resources:
     limits:
       cpu: 500m
-      memory: 1000Mi
+      memory: 1500Mi
     requests:
       cpu: 500m
-      memory: 1000Mi
+      memory: 1500Mi
   # carts.affinity -- Affinity settings for carts pods.
   affinity: {}
 
@@ -209,6 +212,9 @@ orders:
 payment:
   enabled: true
   annotations: {}
+  image:
+    repository: weaveworksdemos/payment
+    tag: 0.4.3
   # payment.resources -- Resource allocation for `payment` pods.
   resources:
     limits:
@@ -229,15 +235,18 @@ payment:
 # SHIPPING DOMAIN
 #######
 queueMaster:
+  image:
+    repository: weaveworksdemos/queue-master
+    tag: 0.3.1
   annotations: {}
   # queueMaster.resources -- Resource allocation for `queue-master` pods.
   resources:
     limits:
       cpu: 500m
-      memory: 1000Mi
+      memory: 1500Mi
     requests:
       cpu: 500m
-      memory: 1000Mi
+      memory: 1500Mi
 
 rabbitmq:
   annotations: {}
@@ -254,14 +263,17 @@ rabbitmq:
 shipping:
   enabled: true
   annotations: {}
+  image:
+    repository: weaveworksdemos/shipping
+    tag: 0.4.8
   # shipping.resources -- Resource allocation for `shipping` pods.
   resources:
     limits:
       cpu: 500m
-      memory: 1000Mi
+      memory: 1500Mi
     requests:
       cpu: 500m
-      memory: 1000Mi
+      memory: 1500Mi
   ingress:
     # shipping.ingress.enables -- Whether to deploy Ingress resource for shipping service
     enabled: false
@@ -274,6 +286,9 @@ shipping:
 # USER DOMAIN
 #######
 userDB:
+  image:
+    repository: weaveworksdemos/user-db
+    tag: 0.4.0
   annotations: {}
   # userDB.resources -- Resource allocation for `user-db` pods.
   resources:
@@ -285,6 +300,9 @@ userDB:
       memory: 100Mi
 
 user:
+  image:
+    repository: weaveworksdemos/user
+    tag: 0.4.7
   annotations: {}
   enabled: true
   # user.resources -- Resource allocation for `user` pods.

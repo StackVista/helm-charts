@@ -27,7 +27,7 @@ spec:
       serviceAccountName: sock-shop
       containers:
       - name: payment
-        image: ghcr.io/socks-factory/payment:sha-d5d07f1
+        image: "{{ .Values.payment.image.repository }}:{{ .Values.payment.image.tag }}"
         resources:
         {{- toYaml .Values.payment.resources | nindent 10 }}
         ports:

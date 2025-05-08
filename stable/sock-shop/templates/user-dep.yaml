@@ -26,7 +26,7 @@ spec:
       serviceAccountName: sock-shop
       containers:
       - name: user
-        image: ghcr.io/socks-factory/user:sha-8738641
+        image: "{{ .Values.user.image.repository }}:{{ .Values.user.image.tag }}"
         resources:
         {{- toYaml .Values.user.resources | nindent 10 }}
         ports:

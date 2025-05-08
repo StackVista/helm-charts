@@ -26,6 +26,7 @@ spec:
       serviceAccountName: sock-shop
       containers:
       - name: shipping
+        image: "{{ .Values.shipping.image.repository }}:{{ .Values.shipping.image.tag }}"
         image: ghcr.io/socks-factory/shipping:sha-5757fda
         env:
          - name: JAVA_OPTS

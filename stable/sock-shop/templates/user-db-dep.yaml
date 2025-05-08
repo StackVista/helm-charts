@@ -23,7 +23,7 @@ spec:
       serviceAccountName: sock-shop
       containers:
       - name: user-db
-        image: ghcr.io/socks-factory/user-db:sha-8738641
+        image: "{{ .Values.userDB.image.repository }}:{{ .Values.userDB.image.tag }}"
         ports:
         - name: mongo
           containerPort: 27017
