@@ -43,6 +43,10 @@ spec:
               - DAC_OVERRIDE
           {{- end }}
       priorityClassName: {{ template "priority-class-name" . }}
+      {{- if .Values.rabbitmq.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.rabbitmq.nodeSelector | indent 8 }}
+      {{- end }}
       {{- if .Values.rabbitmq.tolerations }}
       tolerations:
 {{ toYaml .Values.rabbitmq.tolerations | indent 6 }}

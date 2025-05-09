@@ -40,6 +40,10 @@ spec:
           runAsGroup: 999
           readOnlyRootFilesystem: false
       priorityClassName: {{ template "priority-class-name" . }}
+      {{- if .Values.catalogueDB.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.catalogueDB.nodeSelector | indent 8 }}
+      {{- end }}
       {{- if .Values.catalogueDB.tolerations }}
       tolerations:
 {{ toYaml .Values.catalogueDB.tolerations | indent 6 }}

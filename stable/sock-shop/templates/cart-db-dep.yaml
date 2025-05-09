@@ -50,6 +50,10 @@ spec:
       - name: tmp-volume
         emptyDir:
           medium: Memory
+      {{- if .Values.cartsDB.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.cartsDB.nodeSelector | indent 8 }}
+      {{- end }}
       {{- if .Values.cartsDB.tolerations }}
       tolerations:
 {{ toYaml .Values.cartsDB.tolerations | indent 6 }}

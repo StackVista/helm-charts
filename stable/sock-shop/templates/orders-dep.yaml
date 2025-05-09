@@ -76,6 +76,10 @@ spec:
           emptyDir:
             medium: Memory
       priorityClassName: {{ template "priority-class-name" . }}
+      {{- if .Values.orders.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.orders.nodeSelector | indent 8 }}
+      {{- end }}
       {{- if .Values.orders.tolerations }}
       tolerations:
 {{ toYaml .Values.orders.tolerations | indent 6 }}

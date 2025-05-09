@@ -37,6 +37,10 @@ spec:
         securityContext:
           runAsUser: 10001
       priorityClassName: sock-shop-1000
+      {{- if .Values.loadgen.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.loadgen.nodeSelector | indent 8 }}
+      {{- end }}
       {{- if .Values.loadgen.tolerations }}
       tolerations:
 {{ toYaml .Values.loadgen.tolerations | indent 6 }}

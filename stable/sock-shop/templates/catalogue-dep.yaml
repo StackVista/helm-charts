@@ -68,6 +68,10 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 3
       priorityClassName: {{ template "priority-class-name" . }}
+      {{- if .Values.catalogue.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.catalogue.nodeSelector | indent 8 }}
+      {{- end }}
       {{- if .Values.catalogue.tolerations }}
       tolerations:
 {{ toYaml .Values.catalogue.tolerations | indent 6 }}

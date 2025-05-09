@@ -50,6 +50,10 @@ spec:
           emptyDir:
             medium: Memory
       priorityClassName: {{ template "priority-class-name" . }}
+      {{- if .Values.userDB.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.userDB.nodeSelector | indent 8 }}
+      {{- end }}
       {{- if .Values.userDB.tolerations }}
       tolerations:
 {{ toYaml .Values.userDB.tolerations | indent 6 }}

@@ -49,6 +49,10 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 3
       priorityClassName: {{ template "priority-class-name" . }}
+      {{- if .Values.queueMaster.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.queueMaster.nodeSelector | indent 8 }}
+      {{- end }}
       {{- if .Values.queueMaster.tolerations }}
       tolerations:
 {{ toYaml .Values.queueMaster.tolerations | indent 6 }}

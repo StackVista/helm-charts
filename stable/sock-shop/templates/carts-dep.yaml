@@ -68,6 +68,10 @@ spec:
         emptyDir:
           medium: Memory
       priorityClassName: {{ template "priority-class-name" . }}
+      {{- if .Values.carts.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.carts.nodeSelector | indent 8 }}
+      {{- end }}
       {{- if .Values.carts.tolerations }}
       tolerations:
 {{ toYaml .Values.carts.tolerations | indent 6 }}
