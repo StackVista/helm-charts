@@ -40,4 +40,8 @@ spec:
           runAsGroup: 999
           readOnlyRootFilesystem: false
       priorityClassName: {{ template "priority-class-name" . }}
+      {{- if .Values.catalogueDB.tolerations }}
+      tolerations:
+{{ toYaml .Values.catalogueDB.tolerations | indent 6 }}
+      {{- end }}
 {{- end }}

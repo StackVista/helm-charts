@@ -27,7 +27,6 @@ spec:
       containers:
       - name: shipping
         image: "{{ .Values.shipping.image.repository }}:{{ .Values.shipping.image.tag }}"
-        image: ghcr.io/socks-factory/shipping:sha-5757fda
         env:
          - name: JAVA_OPTS
            value:  {{ .Values.all.java.options }}
@@ -66,4 +65,8 @@ spec:
           emptyDir:
             medium: Memory
       priorityClassName: {{ template "priority-class-name" . }}
+      {{- if .Values.shipping.tolerations }}
+      tolerations:
+{{ toYaml .Values.shipping.tolerations | indent 6 }}
+      {{- end }}
 {{- end }}

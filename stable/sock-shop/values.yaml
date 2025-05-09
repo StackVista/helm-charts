@@ -1,5 +1,5 @@
 ###################
-# SOckShop values #
+# SockShop values #
 ###################
 global:
   annotations: {}
@@ -19,6 +19,7 @@ cartsDB:
   annotations:
     monitor.kubernetes-v2.stackstate.io/pod-cpu-throttling: '{"enabled":false}'
   # cartsDB.resources -- Resource allocation for `carts-db` pods.
+  tolerations: []
   resources:
     limits:
       cpu: 100m
@@ -35,6 +36,7 @@ carts:
   # carts.version -- Custom label (version) value for `carts` pods.
   version: 1
   annotations: {}
+  tolerations: []
   # carts.resources -- Resource allocation for `carts` pods.
   resources:
     limits:
@@ -57,7 +59,8 @@ catalogueDB:
     tag: 0.3.1
   annotations:
     monitor.kubernetes-v2.stackstate.io/pod-cpu-throttling: '{"enabled":false}'
-    # catalogueDB.resources -- Resource allocation for `catalogue-db` pods.
+  tolerations: []
+  # catalogueDB.resources -- Resource allocation for `catalogue-db` pods.
   resources:
     limits:
       cpu: 1000m
@@ -76,6 +79,7 @@ catalogue:
     requests:
       cpu: 100m
       memory: 200Mi
+  tolerations: []
   # catalogue.annotations -- Custom annotations for `catalogue` pods.
   annotations:
     vcs: https://gitlab.com/stackvista/demo/microservices-demo/catalogue/-/commit/e9e5338599dbda30366b38d00794c34aaa4221a7
@@ -106,6 +110,7 @@ frontend:
     tag: 0.3.13
   # frontend.replicas -- The number or replicas of `frontend` deployment.
   replicas: 1
+  tolerations: []
   annotations: {}
   # frontend.resources -- Resource allocation for `frontend` pods.
   resources:
@@ -144,6 +149,7 @@ loadgen:
     repository: quay.io/stackstate/loadgen
     # loadgen.image.tag -- The container image tag.
     tag: master-f65782ce
+  tolerations: []
   annotations: {}
   # loadgen.resources -- Resource allocation for `loadgen` pods.
   resources:
@@ -155,6 +161,7 @@ loadgen:
       memory: 100Mi
 
 sessionDB:
+  tolerations: []
   annotations: {}
   # sessionDB.resources -- Resource allocation for `session-db` pods.
   limits:
@@ -168,6 +175,7 @@ sessionDB:
 # ORDERS DOMAIN
 #######
 ordersDB:
+  tolerations: []
   annotations: {}
   # ordersDB.resources -- Resource allocation for `orders-db` pods.
   resources:
@@ -196,6 +204,7 @@ orders:
     shippingHost: shipping
     # orders.paymentHost -- Address to the payment service
     paymentHost: payment
+  tolerations: []
   annotations: {}
   # orders.resources -- Resource allocation for `orders` pods.
   resources:
@@ -211,6 +220,7 @@ orders:
 #######
 payment:
   enabled: true
+  tolerations: []
   annotations: {}
   image:
     repository: weaveworksdemos/payment
@@ -238,6 +248,7 @@ queueMaster:
   image:
     repository: weaveworksdemos/queue-master
     tag: 0.3.1
+  tolerations: []
   annotations: {}
   # queueMaster.resources -- Resource allocation for `queue-master` pods.
   resources:
@@ -249,6 +260,7 @@ queueMaster:
       memory: 1500Mi
 
 rabbitmq:
+  tolerations: []
   annotations: {}
   # rabbitmq.resources -- Resource allocation for `rabbitmq` pods.
   resources:
@@ -262,6 +274,7 @@ rabbitmq:
 
 shipping:
   enabled: true
+  tolerations: []
   annotations: {}
   image:
     repository: weaveworksdemos/shipping
@@ -289,6 +302,7 @@ userDB:
   image:
     repository: weaveworksdemos/user-db
     tag: 0.4.0
+  tolerations: []
   annotations: {}
   # userDB.resources -- Resource allocation for `user-db` pods.
   resources:
@@ -303,6 +317,7 @@ user:
   image:
     repository: weaveworksdemos/user
     tag: 0.4.7
+  tolerations: []
   annotations: {}
   enabled: true
   # user.resources -- Resource allocation for `user` pods.

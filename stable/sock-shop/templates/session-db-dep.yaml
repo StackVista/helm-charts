@@ -40,4 +40,8 @@ spec:
               - SETUID
           {{- end }}
       priorityClassName: {{ template "priority-class-name" . }}
+      {{- if .Values.sessionDB.tolerations }}
+      tolerations:
+{{ toYaml .Values.sessionDB.tolerations | indent 6 }}
+      {{- end }}
 {{- end }}
