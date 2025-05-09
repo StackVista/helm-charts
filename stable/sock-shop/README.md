@@ -3,7 +3,7 @@
 This chart deploys [SockShop](https://microservices-demo.github.io/) application. It was forked from [microservices-demo/microservices-demo](https://github.com/microservices-demo/microservices-demo/tree/master/deploy/kubernetes/helm-chart)
 and got some improvements.
 
-![Version: 0.2.10](https://img.shields.io/badge/Version-0.2.10-informational?style=flat-square) ![AppVersion: 0.3.5](https://img.shields.io/badge/AppVersion-0.3.5-informational?style=flat-square)
+![Version: 0.2.9](https://img.shields.io/badge/Version-0.2.9-informational?style=flat-square) ![AppVersion: 0.3.5](https://img.shields.io/badge/AppVersion-0.3.5-informational?style=flat-square)
 A Helm chart for Sock Shop
 
 ## Values
@@ -17,10 +17,12 @@ A Helm chart for Sock Shop
 | carts.enabled | bool | `true` |  |
 | carts.image.repository | string | `"weaveworksdemos/carts"` |  |
 | carts.image.tag | string | `"0.4.3"` |  |
+| carts.nodeSelector | object | `{}` |  |
 | carts.resources | object | `{"limits":{"cpu":"500m","memory":"1500Mi"},"requests":{"cpu":"500m","memory":"1500Mi"}}` | Resource allocation for `carts` pods. |
 | carts.tolerations | list | `[]` |  |
 | carts.version | int | `1` | Custom label (version) value for `carts` pods. |
 | cartsDB.annotations."monitor.kubernetes-v2.stackstate.io/pod-cpu-throttling" | string | `"{\"enabled\":false}"` |  |
+| cartsDB.nodeSelector | object | `{}` |  |
 | cartsDB.resources | object | `{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"100Mi"}}` | Resource allocation for `carts-db` pods. |
 | cartsDB.tolerations | list | `[]` |  |
 | catalogue.annotations | object | `{"vcs":"https://gitlab.com/stackvista/demo/microservices-demo/catalogue/-/commit/e9e5338599dbda30366b38d00794c34aaa4221a7"}` | Custom annotations for `catalogue` pods. |
@@ -31,11 +33,13 @@ A Helm chart for Sock Shop
 | catalogue.enabled | bool | `true` |  |
 | catalogue.image.repository | string | `"quay.io/stackstate/weaveworksdemo-catalogue"` | The container repository for `catalogue` images. |
 | catalogue.image.tag | string | `"0.3.5"` | The container image tag. |
+| catalogue.nodeSelector | object | `{}` |  |
 | catalogue.resources | object | `{"limits":{"cpu":"100m","memory":"200Mi"},"requests":{"cpu":"100m","memory":"200Mi"}}` | Resource allocation for `catalogue` pods. |
 | catalogue.tolerations | list | `[]` |  |
 | catalogueDB.annotations."monitor.kubernetes-v2.stackstate.io/pod-cpu-throttling" | string | `"{\"enabled\":false}"` |  |
 | catalogueDB.image.repository | string | `"quay.io/stackstate/weaveworksdemo-catalogue-db"` | The container repository for `catalogue-db` images. |
 | catalogueDB.image.tag | string | `"0.3.1"` | The container image tag. |
+| catalogueDB.nodeSelector | object | `{}` |  |
 | catalogueDB.resources | object | `{"limits":{"cpu":"1000m","memory":"500Mi"},"requests":{"cpu":"500m","memory":"250Mi"}}` | Resource allocation for `catalogue-db` pods. |
 | catalogueDB.tolerations | list | `[]` |  |
 | frontend.annotations | object | `{}` |  |
@@ -46,6 +50,7 @@ A Helm chart for Sock Shop
 | frontend.enabled | bool | `true` |  |
 | frontend.image.repository | string | `"quay.io/stackstate/weaveworksdemo-front-end"` | The container repository for `frontend` images. |
 | frontend.image.tag | string | `"0.3.13"` | The container image tag. |
+| frontend.nodeSelector | object | `{}` |  |
 | frontend.replicas | int | `1` | The number or replicas of `frontend` deployment. |
 | frontend.resources | object | `{"limits":{"cpu":"300m","memory":"1000Mi"},"requests":{"cpu":"200m","memory":"1000Mi"}}` | Resource allocation for `frontend` pods. |
 | frontend.tolerations | list | `[]` |  |
@@ -57,6 +62,7 @@ A Helm chart for Sock Shop
 | loadgen.enabled | bool | `false` |  |
 | loadgen.image.repository | string | `"quay.io/stackstate/loadgen"` | The container repository for `loadgen` images. |
 | loadgen.image.tag | string | `"master-f65782ce"` | The container image tag. |
+| loadgen.nodeSelector | object | `{}` |  |
 | loadgen.replicas | int | `1` | The number or replicas of `loadgen` deployment. |
 | loadgen.resources | object | `{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"100Mi"}}` | Resource allocation for `loadgen` pods. |
 | loadgen.tolerations | list | `[]` |  |
@@ -68,11 +74,13 @@ A Helm chart for Sock Shop
 | orders.enabled | bool | `true` |  |
 | orders.image.repository | string | `"quay.io/stackstate/weaveworksdemo-orders"` | The container repository for `orders` images. |
 | orders.image.tag | string | `"master"` | The container image tag. |
+| orders.nodeSelector | object | `{}` |  |
 | orders.orderPriority | int | `0` | whatever it means. |
 | orders.resources | object | `{"limits":{"cpu":"500m","memory":"1000Mi"},"requests":{"cpu":"500m","memory":"1000Mi"}}` | Resource allocation for `orders` pods. |
 | orders.shippingPriority | int | `0` | whatever it means. |
 | orders.tolerations | list | `[]` |  |
 | ordersDB.annotations | object | `{}` |  |
+| ordersDB.nodeSelector | object | `{}` |  |
 | ordersDB.resources | object | `{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"100Mi"}}` | Resource allocation for `orders-db` pods. |
 | ordersDB.tolerations | list | `[]` |  |
 | payment.annotations | object | `{}` |  |
@@ -84,15 +92,18 @@ A Helm chart for Sock Shop
 | payment.ingress.hostname | string | `""` |  |
 | payment.ingress.ingressClassName | string | `"ingress-nginx"` |  |
 | payment.ingress.tls | bool | `false` |  |
+| payment.nodeSelector | object | `{}` |  |
 | payment.resources | object | `{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"100Mi"}}` | Resource allocation for `payment` pods. |
 | payment.tolerations | list | `[]` |  |
 | priority | int | `1000000000` | priority for the custom PriorityClass |
 | queueMaster.annotations | object | `{}` |  |
 | queueMaster.image.repository | string | `"weaveworksdemos/queue-master"` |  |
 | queueMaster.image.tag | string | `"0.3.1"` |  |
+| queueMaster.nodeSelector | object | `{}` |  |
 | queueMaster.resources | object | `{"limits":{"cpu":"500m","memory":"1500Mi"},"requests":{"cpu":"500m","memory":"1500Mi"}}` | Resource allocation for `queue-master` pods. |
 | queueMaster.tolerations | list | `[]` |  |
 | rabbitmq.annotations | object | `{}` |  |
+| rabbitmq.nodeSelector | object | `{}` |  |
 | rabbitmq.resources | object | `{"limits":{"cpu":"100m","memory":"200Mi"},"requests":{"cpu":"100m","memory":"200Mi"}}` | Resource allocation for `rabbitmq` pods. |
 | rabbitmq.tolerations | list | `[]` |  |
 | scc.enabled | bool | `false` | Create `SecurityContextConstraints` resource to manage Openshift security constraints for Stackstate. |
@@ -100,6 +111,7 @@ A Helm chart for Sock Shop
 | sessionDB.annotations | object | `{}` |  |
 | sessionDB.limits.cpu | string | `"100m"` |  |
 | sessionDB.limits.memory | string | `"100Mi"` |  |
+| sessionDB.nodeSelector | object | `{}` |  |
 | sessionDB.requests.cpu | string | `"100m"` |  |
 | sessionDB.requests.memory | string | `"100Mi"` |  |
 | sessionDB.tolerations | list | `[]` |  |
@@ -112,6 +124,7 @@ A Helm chart for Sock Shop
 | shipping.ingress.hostname | string | `""` |  |
 | shipping.ingress.ingressClassName | string | `"ingress-nginx"` |  |
 | shipping.ingress.tls | bool | `false` |  |
+| shipping.nodeSelector | object | `{}` |  |
 | shipping.resources | object | `{"limits":{"cpu":"500m","memory":"1500Mi"},"requests":{"cpu":"500m","memory":"1500Mi"}}` | Resource allocation for `shipping` pods. |
 | shipping.tolerations | list | `[]` |  |
 | user.annotations | object | `{}` |  |
@@ -120,11 +133,13 @@ A Helm chart for Sock Shop
 | user.image.tag | string | `"0.4.7"` |  |
 | user.limits.cpu | string | `"300m"` |  |
 | user.limits.memory | string | `"1000Mi"` |  |
+| user.nodeSelector | object | `{}` |  |
 | user.requests.cpu | string | `"100m"` |  |
 | user.requests.memory | string | `"400Mi"` |  |
 | user.tolerations | list | `[]` |  |
 | userDB.annotations | object | `{}` |  |
 | userDB.image.repository | string | `"weaveworksdemos/user-db"` |  |
 | userDB.image.tag | string | `"0.4.0"` |  |
+| userDB.nodeSelector | object | `{}` |  |
 | userDB.resources | object | `{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"100Mi"}}` | Resource allocation for `user-db` pods. |
 | userDB.tolerations | list | `[]` |  |
