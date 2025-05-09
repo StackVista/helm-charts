@@ -188,3 +188,9 @@ questions:
         type: string
         description: "The memory limit for the Logs Agent."
         default: "192Mi"
+  - variable: kubernetes-rbac-agent.enabled
+    label: "Enable RBAC Agent"
+    type: boolean
+    description: "Enable the RBAC Agent for project-based authorization in SUSE Observability"
+    default: "true"
+    group: "RBAC Agent"
