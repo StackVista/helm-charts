@@ -1,15 +1,24 @@
 {{- define "stackstate.k8s.authorization.instance.base.role" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-instance-base
+  name: {{ template "common.fullname.short" . }}-instance-basic-access
 rules:
   - apiGroups:
       - instance.observability.cattle.io
     resources:
+      - views
       - apitokens
-      - settings
       - systemnotifications
+      - settings
+      - stackpacks
+      - metricbindings
     verbs:
       - get
+  - apiGroups:
+      - instance.observability.cattle.io
+    resources:
+      - visualizationsettings
+    verbs:
+      - update
   - apiGroups:
       - instance.observability.cattle.io
     resources:
@@ -20,37 +29,14 @@ rules:
       - instance.observability.cattle.io
     resources:
       - favoriteviews
-      - favoritedashboards
     verbs:
+      - update
       - delete
       - create
-  - apiGroups:
-      - instance.observability.cattle.io
-    resources:
-      - visualizationsettings
-    verbs:
-      - update
-  - apiGroups:
-      - instance.observability.cattle.io
-    resources:
-      - dashboards
-    verbs:
-      - create
-      - update
-      - get
-      - delete
-  - apiGroups:
-      - instance.observability.cattle.io
-    resources:
-      - views
-    verbs:
-      - update
-      - get
-      - delete
 {{- end -}}
 
 {{- if and (index .Values "role-k8s-authz" "enabled") (eq .Values.stackstate.deployment.mode  "SelfHosted") -}}
-{{- $commonRole := fromYaml (include "common.role" .) -}}
+{{- $commonClusterRole := fromYaml (include "common.role" .) -}}
 {{- $stsK8sAuthzRole := fromYaml (include "stackstate.k8s.authorization.instance.base.role" .) -}}
-{{- toYaml (merge $stsK8sAuthzRole $commonRole) -}}
+{{- toYaml (merge $stsK8sAuthzRole $commonClusterRole) -}}
 {{- end -}}

@@ -2209,14 +2209,12 @@ cluster-role:
   # role-k8s-authz.enabled -- Deploy the Role(s) to populate permissions on Suse Observability
 role-k8s-authz:
   enabled: false
-  # role-k8s-authz.authprovider -- Prefix added to OIDC groups by a proxy like Rancher (e.g. 'keycloakoidc_group://')
-  authprovider: ''
 pull-secret:
   # pull-secret.enabled -- Deploy the ImagePullSecret for the chart.
   enabled: false
   # pull-secret.fullNameOverride -- Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart.
   fullNameOverride: ''
-  # pull-secret.credentials -- Registry and assotiated credentials (username, password) that will be stored in the pull-secret
+  # pull-secret.credentials -- Registry and associated credentials (username, password) that will be stored in the pull-secret
   credentials: []
 victoria-metrics-0:
   enabled: true
