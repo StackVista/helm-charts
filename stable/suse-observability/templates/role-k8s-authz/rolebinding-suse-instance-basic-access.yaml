@@ -9,13 +9,9 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 subjects:
   - kind: Group
-    name: {{ template "common.fullname.short" . }}-instance-guest
-  - kind: Group
-    name: suse-observability-cluster-scope-guest
-  - kind: Group
-    name: suse-observability-scope-guest
+    name: "system:authenticated"
 {{- end -}}
 
-{{- if (index .Values "role-k8s-authz" "enabled")  -}}
+{{- if .Values.stackstate.experimental.k8sAuthorization -}}
 {{- include "stackstate.k8s.authorization.instance.base.rolebinding" . -}}
 {{- end -}}

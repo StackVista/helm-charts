@@ -1,0 +1,32 @@
+{{- define "stackstate.k8s.authorization.instance.recommendedaccess.role" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-instance-recommended-access
+rules:
+  - apiGroups:
+      - instance.observability.cattle.io
+    resources:
+      - apitokens
+      - stackpacks
+    verbs:
+      - get
+  - apiGroups:
+      - instance.observability.cattle.io
+    resources:
+      - visualizationsettings
+    verbs:
+      - update
+  - apiGroups:
+      - instance.observability.cattle.io
+    resources:
+      - favoriteviews
+      - favoritedashboards
+    verbs:
+      - delete
+      - create
+{{- end -}}
+
+{{- if and (index .Values "role-k8s-authz" "enabled") -}}
+{{- $commonClusterRole := fromYaml (include "common.role" .) -}}
+{{- $stsK8sAuthzRole := fromYaml (include "stackstate.k8s.authorization.instance.recommendedaccess.role" .) -}}
+{{- toYaml (merge $stsK8sAuthzRole $commonClusterRole) -}}
+{{- end -}}
