@@ -382,7 +382,7 @@ locust:
                     - worker
             topologyKey: kubernetes.io/hostname
     # master.args -- Any extra command args for the master
-    args: [ '-u', '5', -r, '1', '--autostart' ]
+    args: ['-u', '5', -r, '1', '--autostart']
     command:
       - sh
       - /config/docker-entrypoint.sh
@@ -403,7 +403,7 @@ locust:
                   values:
                     - master
             topologyKey: kubernetes.io/hostname
-    args: [ ]
+    args: []
     command:
       - sh
       - /config/docker-entrypoint.sh
