@@ -46,6 +46,7 @@
       'aws-nuke',
       'aws-pod-identity-webhook',
       'beacher-job',
+      'ci-test',
       'chartmuseum',
       'falco-reporter',
       'gitlab-steward',
