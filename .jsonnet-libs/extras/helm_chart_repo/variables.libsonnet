@@ -11,6 +11,7 @@
       bitnami: 'https://charts.bitnami.com/bitnami',
       'bitnami-pre-2022': 'https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami',
       'bitnami-full-archive': 'https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami',
+      deliveryhero: 'https://charts.deliveryhero.io',
       elastic: 'https://helm.elastic.co',
       opentelemetry: 'https://open-telemetry.github.io/opentelemetry-helm-charts',
       stable: 'https://charts.helm.sh/stable',
