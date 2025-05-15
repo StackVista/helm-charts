@@ -23,7 +23,7 @@ if [[ "$current_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+-pre\.[0-9]+$ ]]; then
   echo "Found pre-release version '$current_version', tagging.."
   tag="prerelease/$chart_name/$current_version"
   git tag -a "$tag" -m "$tag"
-  push_tag_skip_ci
+  push_tag_skip_ci "$tag"
 # There is "released" version like `x.y.z` so the new version will be `x.y.(z+1)-pre.1`
 elif [[ "$current_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   echo "Published release version, not need to tag"
