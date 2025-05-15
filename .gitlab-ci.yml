@@ -169,6 +169,34 @@ build_chartmuseum:
     - helm dependencies build stable/chartmuseum
     - mkdir -p stable/chartmuseum/build; helm package --destination stable/chartmuseum/build stable/chartmuseum
   stage: build
+build_ci-test:
+  artifacts:
+    paths:
+      - stable/ci-test/charts/
+      - stable/ci-test/build/
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  rules:
+    - changes:
+        - stable/ci-test/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/ci-test/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/ci-test/%
+    - helm dependencies build stable/ci-test
+    - mkdir -p stable/ci-test/build; helm package --destination stable/ci-test/build stable/ci-test
+  stage: build
 build_common:
   artifacts:
     paths:
@@ -1187,6 +1215,17 @@ check_chartmuseum_version:
   script:
     - .gitlab/verify_versions_bumped.sh chartmuseum
   stage: validate
+check_ci-test_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/ci-test/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh ci-test
+  stage: validate
 check_common_version:
   before_script:
     - .gitlab/validate_before_script.sh
@@ -1822,6 +1861,51 @@ push_chartmuseum_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/chartmuseum
+push_ci-test_to_internal:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+    - .gitlab/configure_git.sh
+    - export BRANCHES=${CI_COMMIT_BRANCH:-$(git for-each-ref --format="%(objectname) %(refname:short)" refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" '$1==branch && $2!="origin" {print $2}' | sed -E "s/^origin\/(.*)$/\1/")}
+    - .gitlab/set_sts_chart_master_version.sh stable/ci-test $(echo $CI_COMMIT_TAG | sed -E 's/^ci-test\/(.*)$/\1/')
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/ci-test/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-ci-test]/
+      when: on_success
+    - changes:
+        - stable/ci-test/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - if: $CI_COMMIT_TAG =~ /^ci-test\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+    - .gitlab/tag_sts_chart_pre_release.sh ci-test
+    - .gitlab/bump_sts_chart_master_version_v2.sh stable/ci-test
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/ci-test
 push_common_to_internal:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -3659,6 +3743,7 @@ push_suse-observability_to_internal:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/suse-observability/%
     - helm dependencies update --skip-refresh ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+    - .gitlab/tag_sts_chart_pre_release.sh suse-observability
     - .gitlab/bump_sts_chart_master_version_v2.sh stable/suse-observability
   stage: push-charts-to-internal
   variables:
@@ -4046,6 +4131,19 @@ test_chartmuseum:
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - go test ./stable/chartmuseum/test/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
+test_ci-test:
+  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  rules:
+    - changes:
+        - stable/ci-test/**/*
+      exists:
+        - stable/ci-test/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/ci-test/test/...
   stage: test
   variables:
     CGO_ENABLED: 0
@@ -4655,6 +4753,22 @@ validate_chartmuseum:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/chartmuseum/values.yaml
     - if [ -f stable/chartmuseum/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/chartmuseum/ci/default-values.yaml; fi
     - if [ -f stable/chartmuseum/ci/default-values.yaml ]; then helm lint stable/chartmuseum --values stable/chartmuseum/ci/default-values.yaml; fi
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+validate_ci-test:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/ci-test/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/ci-test/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/ci-test/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/ci-test/values.yaml
+    - if [ -f stable/ci-test/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/ci-test/ci/default-values.yaml; fi
+    - if [ -f stable/ci-test/ci/default-values.yaml ]; then helm lint stable/ci-test --values stable/ci-test/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 validate_common:
