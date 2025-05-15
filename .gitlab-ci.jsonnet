@@ -189,12 +189,7 @@ local push_chart_job(chart, script, when, autoTriggerOnCommitMsg) =
         @'if': '$CI_COMMIT_TAG =~ /^' + chart + '\\/.*/',
         when: 'on_success',
       },
-    ] + if chart == 'ci-test' then [
-      {
-          @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
-          changes: ['stable/' + chart + '/**/*'],
-      },
-    ] else []
+    ]
   );
 
 local push_chart_script(chart, repository_url, repository_username, repository_password) =
@@ -250,7 +245,7 @@ local push_charts_to_internal_jobs = {
                                     } + (
                                       if chart == 'stackstate' then
                                         { before_script: helm_fetch_dependencies + ['.gitlab/bump_sts_chart_master_version.sh stackstate-internal ' + chart] }
-                                      else if chart == 'suse-observability' || chart == 'ci-test' then
+                                      else if chart == 'suse-observability' then
                                         { before_script: helm_fetch_dependencies + [
                                           '.gitlab/configure_git.sh',
                                           // tags don't have CI_COMMIT_BRANCH, so I fetches the current branch(s) for current HEAD (HEAD points to a detached commit)

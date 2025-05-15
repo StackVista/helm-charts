@@ -1922,9 +1922,6 @@ push_ci-test_to_internal:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-    - .gitlab/configure_git.sh
-    - export BRANCHES=${CI_COMMIT_BRANCH:-$(git for-each-ref --format="%(objectname) %(refname:short)" refs/remotes/origin | awk -v branch="$(git rev-parse HEAD)" '$1==branch && $2!="origin" {print $2}' | sed -E "s/^origin\/(.*)$/\1/")}
-    - .gitlab/set_sts_chart_master_version.sh stable/ci-test $(echo $CI_COMMIT_TAG | sed -E 's/^ci-test\/(.*)$/\1/')
   image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
@@ -1945,14 +1942,9 @@ push_ci-test_to_internal:
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^ci-test\/.*/
       when: on_success
-    - changes:
-        - stable/ci-test/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - helm dependencies update --skip-refresh ${CHART}
     - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-    - .gitlab/tag_sts_chart_pre_release.sh ci-test
-    - .gitlab/bump_sts_chart_master_version_v2.sh stable/ci-test
   stage: push-charts-to-internal
   variables:
     CHART: stable/ci-test
