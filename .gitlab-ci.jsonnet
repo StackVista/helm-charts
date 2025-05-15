@@ -186,6 +186,11 @@ local push_chart_job(chart, script, when, autoTriggerOnCommitMsg) =
         when: when,
       },
       {
+        @'if': '$CI_COMMIT_BRANCH == "stac-22745"',
+        changes: ['stable/' + chart + '/**/*'],
+        when: when,
+      },
+      {
         @'if': '$CI_COMMIT_TAG =~ /^' + chart + '\\/.*/',
         when: 'on_success',
       },
