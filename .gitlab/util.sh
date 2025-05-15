@@ -34,6 +34,12 @@ function push_changes_skip_ci() {
   done
 }
 
+function push_tag_skip_ci() {
+  tag=$1
+  echo "Pushing tag '$tag', skipping ci"
+  git push "https://gitlab-ci-token:${gitlab_api_scope_token:?}@gitlab.com/stackvista/devops/helm-charts.git" "${tag}" -o ci.skip
+}
+
 function push_changes() {
   for branch in $BRANCHES; do
     if [[ "${PROMOTION_DRY_RUN}" == 'no' ]]; then
