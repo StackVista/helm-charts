@@ -1652,6 +1652,10 @@ push_artifactory-cleaner_to_internal:
         - stable/artifactory-cleaner/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
+    - changes:
+        - stable/artifactory-cleaner/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: on_success
     - if: $CI_COMMIT_TAG =~ /^artifactory-cleaner\/.*/
       when: on_success
   script:
@@ -1695,6 +1699,10 @@ push_artifactory-cleaner_to_public:
         - stable/artifactory-cleaner/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
+    - changes:
+        - stable/artifactory-cleaner/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: manual
     - if: $CI_COMMIT_TAG =~ /^artifactory-cleaner\/.*/
       when: on_success
   script:
@@ -1735,6 +1743,10 @@ push_aws-amicleaner_to_internal:
     - changes:
         - stable/aws-amicleaner/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/aws-amicleaner/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^aws-amicleaner\/.*/
       when: on_success
@@ -1777,6 +1789,10 @@ push_aws-nuke_to_internal:
         - stable/aws-nuke/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
+    - changes:
+        - stable/aws-nuke/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: on_success
     - if: $CI_COMMIT_TAG =~ /^aws-nuke\/.*/
       when: on_success
   script:
@@ -1817,6 +1833,10 @@ push_aws-pod-identity-webhook_to_internal:
     - changes:
         - stable/aws-pod-identity-webhook/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/aws-pod-identity-webhook/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^aws-pod-identity-webhook\/.*/
       when: on_success
@@ -1859,6 +1879,10 @@ push_beacher-job_to_internal:
         - stable/beacher-job/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
+    - changes:
+        - stable/beacher-job/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: on_success
     - if: $CI_COMMIT_TAG =~ /^beacher-job\/.*/
       when: on_success
   script:
@@ -1899,6 +1923,10 @@ push_chartmuseum_to_internal:
     - changes:
         - stable/chartmuseum/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/chartmuseum/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^chartmuseum\/.*/
       when: on_success
@@ -1943,6 +1971,10 @@ push_ci-test_to_internal:
         - stable/ci-test/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
+    - changes:
+        - stable/ci-test/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: on_success
     - if: $CI_COMMIT_TAG =~ /^ci-test\/.*/
       when: on_success
   script:
@@ -1985,6 +2017,10 @@ push_common_to_internal:
     - changes:
         - stable/common/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/common/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^common\/.*/
       when: on_success
@@ -2029,6 +2065,10 @@ push_common_to_public:
         - stable/common/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
+    - changes:
+        - stable/common/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: manual
     - if: $CI_COMMIT_TAG =~ /^common\/.*/
       when: on_success
   script:
@@ -2069,6 +2109,10 @@ push_elasticsearch_to_internal:
     - changes:
         - stable/elasticsearch/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/elasticsearch/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^elasticsearch\/.*/
       when: on_success
@@ -2113,6 +2157,10 @@ push_elasticsearch_to_public:
         - stable/elasticsearch/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
+    - changes:
+        - stable/elasticsearch/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: manual
     - if: $CI_COMMIT_TAG =~ /^elasticsearch\/.*/
       when: on_success
   script:
@@ -2153,6 +2201,10 @@ push_falco-reporter_to_internal:
     - changes:
         - stable/falco-reporter/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/falco-reporter/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^falco-reporter\/.*/
       when: on_success
@@ -2195,6 +2247,10 @@ push_gitlab-steward_to_internal:
         - stable/gitlab-steward/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
+    - changes:
+        - stable/gitlab-steward/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: on_success
     - if: $CI_COMMIT_TAG =~ /^gitlab-steward\/.*/
       when: on_success
   script:
@@ -2235,6 +2291,10 @@ push_hbase_to_internal:
     - changes:
         - stable/hbase/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/hbase/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^hbase\/.*/
       when: on_success
@@ -2279,6 +2339,10 @@ push_hbase_to_public:
         - stable/hbase/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
+    - changes:
+        - stable/hbase/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: manual
     - if: $CI_COMMIT_TAG =~ /^hbase\/.*/
       when: on_success
   script:
@@ -2319,6 +2383,10 @@ push_helm-reaper_to_internal:
     - changes:
         - stable/helm-reaper/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/helm-reaper/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^helm-reaper\/.*/
       when: on_success
@@ -2361,6 +2429,10 @@ push_iceman_to_internal:
         - stable/iceman/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
+    - changes:
+        - stable/iceman/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: on_success
     - if: $CI_COMMIT_TAG =~ /^iceman\/.*/
       when: on_success
   script:
@@ -2401,6 +2473,10 @@ push_k8s-image-list-to-s3_to_internal:
     - changes:
         - stable/k8s-image-list-to-s3/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/k8s-image-list-to-s3/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^k8s-image-list-to-s3\/.*/
       when: on_success
@@ -2443,6 +2519,10 @@ push_k8s-spot-termination-handler_to_internal:
         - stable/k8s-spot-termination-handler/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
+    - changes:
+        - stable/k8s-spot-termination-handler/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: on_success
     - if: $CI_COMMIT_TAG =~ /^k8s-spot-termination-handler\/.*/
       when: on_success
   script:
@@ -2483,6 +2563,10 @@ push_kafkaup-operator_to_internal:
     - changes:
         - stable/kafkaup-operator/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/kafkaup-operator/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^kafkaup-operator\/.*/
       when: on_success
@@ -2527,6 +2611,10 @@ push_kafkaup-operator_to_public:
         - stable/kafkaup-operator/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
+    - changes:
+        - stable/kafkaup-operator/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: manual
     - if: $CI_COMMIT_TAG =~ /^kafkaup-operator\/.*/
       when: on_success
   script:
@@ -2568,6 +2656,10 @@ push_kommoner-operator_to_internal:
         - stable/kommoner-operator/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
+    - changes:
+        - stable/kommoner-operator/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: on_success
     - if: $CI_COMMIT_TAG =~ /^kommoner-operator\/.*/
       when: on_success
   script:
@@ -2608,6 +2700,10 @@ push_minio_to_internal:
     - changes:
         - stable/minio/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/minio/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^minio\/.*/
       when: on_success
@@ -2652,6 +2748,10 @@ push_minio_to_public:
         - stable/minio/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
+    - changes:
+        - stable/minio/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: manual
     - if: $CI_COMMIT_TAG =~ /^minio\/.*/
       when: on_success
   script:
@@ -2692,6 +2792,10 @@ push_notification-operator_to_internal:
     - changes:
         - stable/notification-operator/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/notification-operator/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^notification-operator\/.*/
       when: on_success
@@ -2734,6 +2838,10 @@ push_otel-demo_to_internal:
         - stable/otel-demo/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
+    - changes:
+        - stable/otel-demo/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: on_success
     - if: $CI_COMMIT_TAG =~ /^otel-demo\/.*/
       when: on_success
   script:
@@ -2775,6 +2883,10 @@ push_petros-d-kubelet-stats-exporter_to_internal:
         - stable/petros-d-kubelet-stats-exporter/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
+    - changes:
+        - stable/petros-d-kubelet-stats-exporter/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: on_success
     - if: $CI_COMMIT_TAG =~ /^petros-d-kubelet-stats-exporter\/.*/
       when: on_success
   script:
@@ -2815,6 +2927,10 @@ push_pull-secret_to_internal:
     - changes:
         - stable/pull-secret/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/pull-secret/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^pull-secret\/.*/
       when: on_success
@@ -2859,6 +2975,10 @@ push_pull-secret_to_public:
         - stable/pull-secret/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
+    - changes:
+        - stable/pull-secret/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: manual
     - if: $CI_COMMIT_TAG =~ /^pull-secret\/.*/
       when: on_success
   script:
@@ -2899,6 +3019,10 @@ push_receiveramplifier_to_internal:
     - changes:
         - stable/receiveramplifier/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/receiveramplifier/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^receiveramplifier\/.*/
       when: on_success
@@ -2941,6 +3065,10 @@ push_redirector_to_internal:
         - stable/redirector/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
+    - changes:
+        - stable/redirector/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: on_success
     - if: $CI_COMMIT_TAG =~ /^redirector\/.*/
       when: on_success
   script:
@@ -2981,6 +3109,10 @@ push_sandbox-operator_to_internal:
     - changes:
         - stable/sandbox-operator/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/sandbox-operator/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^sandbox-operator\/.*/
       when: on_success
@@ -3023,6 +3155,10 @@ push_sock-shop_to_internal:
         - stable/sock-shop/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
+    - changes:
+        - stable/sock-shop/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: on_success
     - if: $CI_COMMIT_TAG =~ /^sock-shop\/.*/
       when: on_success
   script:
@@ -3063,6 +3199,10 @@ push_stackstate-agent_to_internal:
     - changes:
         - stable/stackstate-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/stackstate-agent/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^stackstate-agent\/.*/
       when: on_success
@@ -3107,6 +3247,10 @@ push_stackstate-agent_to_public:
         - stable/stackstate-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
+    - changes:
+        - stable/stackstate-agent/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: manual
     - if: $CI_COMMIT_TAG =~ /^stackstate-agent\/.*/
       when: on_success
   script:
@@ -3147,6 +3291,10 @@ push_stackstate-k8s-agent_to_internal:
     - changes:
         - stable/stackstate-k8s-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/stackstate-k8s-agent/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^stackstate-k8s-agent\/.*/
       when: on_success
@@ -3191,6 +3339,10 @@ push_stackstate-k8s-agent_to_public:
         - stable/stackstate-k8s-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
+    - changes:
+        - stable/stackstate-k8s-agent/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: manual
     - if: $CI_COMMIT_TAG =~ /^stackstate-k8s-agent\/.*/
       when: on_success
   script:
@@ -3231,6 +3383,10 @@ push_stackstate-monitoring_to_internal:
     - changes:
         - stable/stackstate-monitoring/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/stackstate-monitoring/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^stackstate-monitoring\/.*/
       when: on_success
@@ -3275,6 +3431,10 @@ push_stackstate-monitoring_to_public:
         - stable/stackstate-monitoring/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
+    - changes:
+        - stable/stackstate-monitoring/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: manual
     - if: $CI_COMMIT_TAG =~ /^stackstate-monitoring\/.*/
       when: on_success
   script:
@@ -3315,6 +3475,10 @@ push_stackstate-standalone_to_internal:
     - changes:
         - stable/stackstate-standalone/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/stackstate-standalone/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^stackstate-standalone\/.*/
       when: on_success
@@ -3359,6 +3523,10 @@ push_stackstate-standalone_to_public:
         - stable/stackstate-standalone/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
+    - changes:
+        - stable/stackstate-standalone/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: manual
     - if: $CI_COMMIT_TAG =~ /^stackstate-standalone\/.*/
       when: on_success
   script:
@@ -3399,6 +3567,10 @@ push_stackstate-values_to_internal:
     - changes:
         - stable/stackstate-values/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/stackstate-values/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^stackstate-values\/.*/
       when: on_success
@@ -3442,6 +3614,10 @@ push_stackstate-values_to_public:
     - changes:
         - stable/stackstate-values/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - changes:
+        - stable/stackstate-values/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: manual
     - if: $CI_COMMIT_TAG =~ /^stackstate-values\/.*/
       when: on_success
@@ -3559,6 +3735,10 @@ push_stackstate_to_internal:
         - stable/stackstate/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
+    - changes:
+        - stable/stackstate/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: on_success
     - if: $CI_COMMIT_TAG =~ /^stackstate\/.*/
       when: on_success
   script:
@@ -3600,6 +3780,10 @@ push_suse-observability-agent_to_internal:
     - changes:
         - stable/suse-observability-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/suse-observability-agent/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^suse-observability-agent\/.*/
       when: on_success
@@ -3644,6 +3828,10 @@ push_suse-observability-agent_to_public:
         - stable/suse-observability-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
+    - changes:
+        - stable/suse-observability-agent/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: manual
     - if: $CI_COMMIT_TAG =~ /^suse-observability-agent\/.*/
       when: on_success
   script:
@@ -3672,6 +3860,10 @@ push_suse-observability-agent_to_rancher:
     - changes:
         - stable/suse-observability-agent/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - changes:
+        - stable/suse-observability-agent/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: manual
     - if: $CI_COMMIT_TAG =~ /^suse-observability-agent\/.*/
       when: on_success
@@ -3712,6 +3904,10 @@ push_suse-observability-values_to_internal:
     - changes:
         - stable/suse-observability-values/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/suse-observability-values/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^suse-observability-values\/.*/
       when: on_success
@@ -3756,6 +3952,10 @@ push_suse-observability-values_to_public:
         - stable/suse-observability-values/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
+    - changes:
+        - stable/suse-observability-values/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: manual
     - if: $CI_COMMIT_TAG =~ /^suse-observability-values\/.*/
       when: on_success
   script:
@@ -3784,6 +3984,10 @@ push_suse-observability-values_to_rancher:
     - changes:
         - stable/suse-observability-values/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - changes:
+        - stable/suse-observability-values/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: manual
     - if: $CI_COMMIT_TAG =~ /^suse-observability-values\/.*/
       when: on_success
@@ -3827,6 +4031,10 @@ push_suse-observability_to_internal:
     - changes:
         - stable/suse-observability/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/suse-observability/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^suse-observability\/.*/
       when: on_success
@@ -3872,6 +4080,10 @@ push_tenant-cleanup-controller_to_internal:
         - stable/tenant-cleanup-controller/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
+    - changes:
+        - stable/tenant-cleanup-controller/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: on_success
     - if: $CI_COMMIT_TAG =~ /^tenant-cleanup-controller\/.*/
       when: on_success
   script:
@@ -3913,6 +4125,10 @@ push_tenantmanagement_to_internal:
         - stable/tenantmanagement/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
+    - changes:
+        - stable/tenantmanagement/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: on_success
     - if: $CI_COMMIT_TAG =~ /^tenantmanagement\/.*/
       when: on_success
   script:
@@ -3953,6 +4169,10 @@ push_tenantprovisioning_to_internal:
     - changes:
         - stable/tenantprovisioning/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/tenantprovisioning/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^tenantprovisioning\/.*/
       when: on_success
@@ -4010,6 +4230,10 @@ push_trafficmirror_to_internal:
         - stable/trafficmirror/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: on_success
+    - changes:
+        - stable/trafficmirror/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: on_success
     - if: $CI_COMMIT_TAG =~ /^trafficmirror\/.*/
       when: on_success
   script:
@@ -4053,6 +4277,10 @@ push_trafficmirror_to_public:
         - stable/trafficmirror/**/*
       if: $CI_COMMIT_BRANCH == "master"
       when: manual
+    - changes:
+        - stable/trafficmirror/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
+      when: manual
     - if: $CI_COMMIT_TAG =~ /^trafficmirror\/.*/
       when: on_success
   script:
@@ -4093,6 +4321,10 @@ push_victoria-metrics-single_to_internal:
     - changes:
         - stable/victoria-metrics-single/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - changes:
+        - stable/victoria-metrics-single/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^victoria-metrics-single\/.*/
       when: on_success
@@ -4136,6 +4368,10 @@ push_victoria-metrics-single_to_public:
     - changes:
         - stable/victoria-metrics-single/**/*
       if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - changes:
+        - stable/victoria-metrics-single/**/*
+      if: $CI_COMMIT_BRANCH == "stac-22745"
       when: manual
     - if: $CI_COMMIT_TAG =~ /^victoria-metrics-single\/.*/
       when: on_success
