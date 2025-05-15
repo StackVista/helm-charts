@@ -388,6 +388,7 @@ local update_docker_images = {
       { @'if': '$CI_MERGE_REQUEST_IID' },
       { @'if': '$CI_COMMIT_TAG' },
       { @'if': '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH' },
+      { @'if': '$CI_COMMIT_BRANCH == "ci-test"' },
     ],
   },
   image: variables.images.chart_testing,
