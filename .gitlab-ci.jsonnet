@@ -186,14 +186,15 @@ local push_chart_job(chart, script, when, autoTriggerOnCommitMsg) =
         when: when,
       },
       {
-        @'if': '$CI_COMMIT_BRANCH == "stac-22745"',
-        when: when,
-      },
-      {
         @'if': '$CI_COMMIT_TAG =~ /^' + chart + '\\/.*/',
         when: 'on_success',
       },
-    ]
+    ] + if chart == 'ci-test' then [
+      {
+          @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
+          changes: ['stable/' + chart + '/**/*'],
+      },
+    ] else []
   );
 
 local push_chart_script(chart, repository_url, repository_username, repository_password) =
@@ -388,7 +389,6 @@ local update_docker_images = {
       { @'if': '$CI_MERGE_REQUEST_IID' },
       { @'if': '$CI_COMMIT_TAG' },
       { @'if': '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH' },
-      { @'if': '$CI_COMMIT_BRANCH == "stac-22745"' },
     ],
   },
   image: variables.images.chart_testing,
