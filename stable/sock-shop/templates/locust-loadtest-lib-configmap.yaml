@@ -1,0 +1,11 @@
+{{- if .Values.locust.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loadtest-lib
+data:
+  __init__.py: |
+    # -*- coding: utf-8 -*-
+  helpers.py: |
+    # -*- coding: utf-8 -*-
+{{- end }}

@@ -3,9 +3,14 @@
 This chart deploys [SockShop](https://microservices-demo.github.io/) application. It was forked from [microservices-demo/microservices-demo](https://github.com/microservices-demo/microservices-demo/tree/master/deploy/kubernetes/helm-chart)
 and got some improvements.
 
-![Version: 0.2.9](https://img.shields.io/badge/Version-0.2.9-informational?style=flat-square) ![AppVersion: 0.3.5](https://img.shields.io/badge/AppVersion-0.3.5-informational?style=flat-square)
+![Version: 0.2.10](https://img.shields.io/badge/Version-0.2.10-informational?style=flat-square) ![AppVersion: 0.3.5](https://img.shields.io/badge/AppVersion-0.3.5-informational?style=flat-square)
 A Helm chart for Sock Shop
 
+## Requirements
+
+| Repository | Name | Version |
+|------------|------|---------|
+| https://charts.deliveryhero.io | locust | 0.31.1 |
 ## Values
 
 | Key | Type | Default | Description |
@@ -66,6 +71,37 @@ A Helm chart for Sock Shop
 | loadgen.replicas | int | `1` | The number or replicas of `loadgen` deployment. |
 | loadgen.resources | object | `{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"100Mi"}}` | Resource allocation for `loadgen` pods. |
 | loadgen.tolerations | list | `[]` |  |
+| locust.enabled | bool | `false` |  |
+| locust.loadtest.headless | bool | `false` |  |
+| locust.loadtest.locust_host | string | `"http://ingress"` |  |
+| locust.loadtest.locust_lib_configmap | string | `"loadtest-lib"` |  |
+| locust.loadtest.locust_locustfile_configmap | string | `"loadtest-locustfile"` |  |
+| locust.loadtest.name | string | `"catalogue"` |  |
+| locust.master.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].key | string | `"app.kubernetes.io/name"` |  |
+| locust.master.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].operator | string | `"In"` |  |
+| locust.master.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].values[0] | string | `"locust"` |  |
+| locust.master.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[1].key | string | `"component"` |  |
+| locust.master.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[1].operator | string | `"In"` |  |
+| locust.master.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[1].values[0] | string | `"worker"` |  |
+| locust.master.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].topologyKey | string | `"kubernetes.io/hostname"` |  |
+| locust.master.args[0] | string | `"-u"` |  |
+| locust.master.args[1] | string | `"5"` |  |
+| locust.master.args[2] | string | `"-r"` |  |
+| locust.master.args[3] | string | `"1"` |  |
+| locust.master.args[4] | string | `"--autostart"` |  |
+| locust.master.command[0] | string | `"sh"` |  |
+| locust.master.command[1] | string | `"/config/docker-entrypoint.sh"` |  |
+| locust.podSecurityContext.runAsUser | int | `1000` |  |
+| locust.worker.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].key | string | `"app.kubernetes.io/name"` |  |
+| locust.worker.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].operator | string | `"In"` |  |
+| locust.worker.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[0].values[0] | string | `"locust"` |  |
+| locust.worker.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[1].key | string | `"component"` |  |
+| locust.worker.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[1].operator | string | `"In"` |  |
+| locust.worker.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].labelSelector.matchExpressions[1].values[0] | string | `"master"` |  |
+| locust.worker.affinity.podAffinity.requiredDuringSchedulingIgnoredDuringExecution[0].topologyKey | string | `"kubernetes.io/hostname"` |  |
+| locust.worker.args | list | `[]` |  |
+| locust.worker.command[0] | string | `"sh"` |  |
+| locust.worker.command[1] | string | `"/config/docker-entrypoint.sh"` |  |
 | nameOverride | string | `""` | A name to prepend the Helm resources, if not specified the name of the chart is used. |
 | orders.annotations | object | `{}` |  |
 | orders.backorderPriority | int | `0` | whatever it means. |

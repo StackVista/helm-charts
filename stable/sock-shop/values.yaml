@@ -351,3 +351,62 @@ scc:
   enabled: false
   # scc.extraServiceAccounts -- Extraccounts from the same namespace to add to SecurityContextConstraints users.
   extraServiceAccounts: []
+
+locust:
+  enabled: false
+
+  loadtest:
+    # loadtest.name -- a name used for resources and settings in this load test
+    name: catalogue
+    locust_locustfile_configmap: "loadtest-locustfile"
+    # loadtest.locust_lib_configmap -- name of a configmap containing your lib (default uses the example lib)
+    locust_lib_configmap: "loadtest-lib"
+    # loadtest.locust_host -- the host you will load test
+    locust_host: http://ingress
+    # loadtest.headless -- whether to run locust with headless settings
+    headless: false
+
+  master:
+    affinity:
+      podAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - locust
+                - key: component
+                  operator: In
+                  values:
+                    - worker
+            topologyKey: kubernetes.io/hostname
+    # master.args -- Any extra command args for the master
+    args: [ '-u', '5', -r, '1', '--autostart' ]
+    command:
+      - sh
+      - /config/docker-entrypoint.sh
+
+  worker:
+    # worker.args -- Any extra command args for the workers
+    affinity:
+      podAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - locust
+                - key: component
+                  operator: In
+                  values:
+                    - master
+            topologyKey: kubernetes.io/hostname
+    args: [ ]
+    command:
+      - sh
+      - /config/docker-entrypoint.sh
+
+  podSecurityContext:
+    runAsUser: 1000
