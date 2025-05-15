@@ -1,5 +1,5 @@
 apiVersion: v2
-version: 0.0.1-pre.2
+version: 0.0.1-pre.3
 appVersion: 0.0.1
 description: A dummy helm chart that can be used to test changes in ci publishing
 home: https://gitlab.com/stackvista/devops/helm-charts.git
