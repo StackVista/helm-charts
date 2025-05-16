@@ -54,7 +54,7 @@ env:
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
 {{ if .Values.stackstate.experimental.k8sAuthorization }}
-- name: CONFIG_FORCE_stackstate_featureSwitches_authorizationSyncService
+- name: CONFIG_FORCE_stackstate_featureSwitches_authorizationK8s
   value: "true"
 {{ end }}
   # Keep for 1.5 hours, allowing timetravel and having users in analytics keep their results cached
