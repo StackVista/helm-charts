@@ -214,6 +214,7 @@ Authentication config
   jwsAlgorithm = "RS256"
   jwtClaims {
     usernameField = "sub"
+    displayNameField = "preferred_username"
     groupsField = "groups"
   }
   {{- if $apiAuth.rancher.customParameters }}
