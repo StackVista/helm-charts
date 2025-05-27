@@ -7,7 +7,7 @@ data:
 {{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "WARN" "AdditionalLogging" $logging) .) | nindent 4 -}}
 {{- end -}}
 
-{{- if and .Values.stackstate.experimental.server.split .Values.stackstate.experimental.k8sAuthorization }}
+{{- if and .Values.stackstate.experimental.server.split .Values.stackstate.k8sAuthorization.enabled }}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $stackstateAuthorizationSyncLogConfigMap := fromYaml (include "stackstate.authorizationSync.configmap-log" .) -}}
 {{- toYaml (merge $stackstateAuthorizationSyncLogConfigMap $commonConfigMap) -}}

@@ -1,4 +1,4 @@
-{{- if index .Values "kubernetes-rbac-agent" "enabled" }}
+{{- if .Values.stackstate.k8sAuthorization.enabled }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:

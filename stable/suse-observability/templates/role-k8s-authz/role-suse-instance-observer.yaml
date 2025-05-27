@@ -1,0 +1,19 @@
+{{- define "stackstate.k8s.authorization.instance.observer.role" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-instance-observer
+rules:
+- apiGroups:
+    - instance.observability.cattle.io
+  resources:
+    - metrics
+    - topology
+    - traces
+  verbs:
+    - get
+{{- end -}}
+
+{{- if and (index .Values.stackstate.experimental "role-k8s-authz") (eq .Values.stackstate.deployment.mode  "SelfHosted") -}}
+{{- $commonRole := fromYaml (include "common.role" .) -}}
+{{- $stsK8sAuthzRole := fromYaml (include "stackstate.k8s.authorization.instance.observer.role" .) -}}
+{{- toYaml (merge $stsK8sAuthzRole $commonRole) -}}
+{{- end -}}

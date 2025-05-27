@@ -13,7 +13,7 @@ rules:
       - get
 {{- end -}}
 
-{{- if .Values.stackstate.experimental.k8sAuthorization -}}
+{{- if .Values.stackstate.k8sAuthorization -}}
 {{- $commonClusterRole := fromYaml (include "common.role" .) -}}
 {{- $stsK8sAuthzRole := fromYaml (include "stackstate.k8s.authorization.instance.basicaccess.role" .) -}}
 {{- toYaml (merge $stsK8sAuthzRole $commonClusterRole) -}}

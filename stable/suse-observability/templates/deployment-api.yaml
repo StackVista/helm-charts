@@ -53,7 +53,7 @@ env:
   value: nobody
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
-{{ if .Values.stackstate.experimental.k8sAuthorization }}
+{{ if .Values.stackstate.k8sAuthorization.enabled }}
 - name: CONFIG_FORCE_stackstate_featureSwitches_authorizationK8s
   value: "true"
 {{ end }}

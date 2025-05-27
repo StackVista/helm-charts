@@ -20,7 +20,7 @@ spec:
       protocol: TCP
       targetPort: metrics
   {{- end }}
-  {{- if .Values.stackstate.experimental.k8sAuthorization }}
+  {{- if .Values.stackstate.k8sAuthorization.enabled }}
     - name: authz-api
       port: 7075
       protocol: TCP

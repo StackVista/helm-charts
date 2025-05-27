@@ -89,4 +89,4 @@ dependencies:
     # version: "*"
     repository: https://helm.stackstate.io
     version: 0.0.14
-    condition: kubernetes-rbac-agent.enabled
+    condition: stackstate.k8sAuthorization.enabled

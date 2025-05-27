@@ -1555,6 +1555,9 @@ stackstate:
         roles: []
         # stackstate.authentication.serviceToken.bootstrap.ttl -- The amount of time the service token is valid for
         ttl: 24h
+  k8sAuthorization:
+    # k8sAuthorization.enabled - (boolean) Whether we use k8s RBAC as authorization authority
+    enabled: false
   deployment:
     # stackstate.deployment.mode -- Deployment mode of StackState, possible values are 'Saas' and 'SelfHosted'
     mode: "SelfHosted"
@@ -1607,8 +1610,8 @@ stackstate:
     # stackstate.receiver.baseUrl -- (string) **DEPRECATED** Use stackstate.baseUrl instead
     baseUrl:
   experimental:
-    # stackstate.experimental.k8sAuthorization - (boolean) Whether we use k8s RBAC as authorization authority
-    k8sAuthorization: false
+    # stackstate.experimental.role-k8s-authz -- (boolean) Deploy the Role(s) to populate permissions on Suse Observability
+    role-k8s-authz: false
     enableVMAgent: true
     # stackstate.experimental.traces -- (boolean) Enable new traces UI and API
     traces: true
@@ -2219,9 +2222,6 @@ anomaly-detection:
 cluster-role:
   # cluster-role.enabled -- Deploy the ClusterRole(s) and ClusterRoleBinding(s) together with the chart. Can be disabled if these need to be installed by an administrator of the Kubernetes cluster.
   enabled: true
-  # role-k8s-authz.enabled -- Deploy the Role(s) to populate permissions on Suse Observability
-role-k8s-authz:
-  enabled: false
 pull-secret:
   # pull-secret.enabled -- Deploy the ImagePullSecret for the chart.
   enabled: false
@@ -3037,8 +3037,6 @@ opentelemetry-collector:
       cpu: 500m
       memory: 512Mi
 kubernetes-rbac-agent:
-  # kubernetes-rbac-agent.enabled. Enables/disables the rbac agent. Experimental feature, should not be enabled for now
-  enabled: false
   url:
     value: '{{ include "stackstate.rbacAgent.url" . }}'
   clusterName:

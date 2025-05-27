@@ -25,7 +25,7 @@ rules:
       - create
 {{- end -}}
 
-{{- if .Values.stackstate.experimental.k8sAuthorization -}}
+{{- if (index .Values.stackstate.experimental "role-k8s-authz") -}}
 {{- $commonClusterRole := fromYaml (include "common.role" .) -}}
 {{- $stsK8sAuthzRole := fromYaml (include "stackstate.k8s.authorization.instance.recommendedaccess.role" .) -}}
 {{- toYaml (merge $stsK8sAuthzRole $commonClusterRole) -}}

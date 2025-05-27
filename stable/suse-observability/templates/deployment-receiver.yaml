@@ -55,7 +55,7 @@ env:
   value: "http://{{ template "common.fullname.short" . }}-{{ template "stackstate.api.name" . }}-headless:7070/internal/api/agents"
 - name: CONFIG_FORCE_stackstate_receiver_authorizationService_authorizationServiceBaseUri
   value: "http://{{ template "common.fullname.short" . }}-{{ template "stackstate.api.name" . }}-headless:7070/api/user/authorization"
-{{- if .Values.stackstate.experimental.k8sAuthorization }}
+{{- if .Values.stackstate.k8sAuthorization.enabled }}
 - name: CONFIG_FORCE_stackstate_receiver_authorizationSyncApi_authorizationSyncApiBaseUri
   value: "http://{{ template "common.fullname.short" . }}-{{ template "stackstate.authSync.name" . }}:7075/rbac"
 - name: CONFIG_FORCE_stackstate_receiver_authorizationSyncApi_enabled

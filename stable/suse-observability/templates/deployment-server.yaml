@@ -44,7 +44,7 @@ env:
   value: nobody
 - name: ZOOKEEPER_QUORUM
   value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
-{{ if .Values.stackstate.experimental.k8sAuthorization }}
+{{ if .Values.stackstate.k8sAuthorization.enabled }}
 - name: CONFIG_FORCE_stackstate_featureSwitches_authorizationSyncService
   value: "true"
 - name: CONFIG_FORCE_stackstate_featureSwitches_authorizationK8s
@@ -70,7 +70,7 @@ ports:
 - containerPort: 7080
   name: instance
 {{- end }}
-{{- if .Values.stackstate.experimental.k8sAuthorization }}
+{{- if .Values.stackstate.k8sAuthorization.enabled }}
 - containerPort: 7075
   name: authz-api
 {{- end }}
