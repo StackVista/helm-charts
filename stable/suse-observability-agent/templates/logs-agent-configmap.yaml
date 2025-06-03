@@ -40,6 +40,10 @@ data:
         - docker: {}
         - cri: {}
       relabel_configs:
+        # We keep the results of this scraping job only if the __meta_kubernetes_pod_uid label is not empty
+        - source_labels: [__meta_kubernetes_pod_uid]
+          action: keep
+          regex: .+
         - action: replace
           source_labels:
             - __meta_kubernetes_pod_name
@@ -70,6 +74,8 @@ data:
         - docker: {}
         - cri: {}
       relabel_configs:
+        # We keep the results of this scraping job only if the
+        # __meta_kubernetes_pod_annotation_kubernetes_io_config_mirror label is not empty
         - source_labels: [__meta_kubernetes_pod_annotation_kubernetes_io_config_mirror]
           action: keep
           regex: .+
