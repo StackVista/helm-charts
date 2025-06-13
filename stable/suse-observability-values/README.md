@@ -2,7 +2,7 @@
 
 Helm Chart for rendering SUSE Observability Values
 
-Current chart version is `1.0.9`
+Current chart version is `1.1.0`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -45,8 +45,9 @@ The following values can be optionally set.
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | adminPassword | string | `""` | The password for the default 'admin' user used for authenticating with the SUSE Observability UI. If not provided a random password is generated.  If the password is not a bcrypt hash, but provided in plaintext, the value will be bcrypt hashed in the output. |
-| affinity.generate | bool | `false` | If we want to generate affinity values |
 | affinity.nodeAffinity | string | `nil` | Node Affinity settings |
+| affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution | bool | `true` | Enable required pod anti-affinity |
+| affinity.podAntiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | Topology key for pod anti-affinity |
 | baseConfig.generate | bool | `true` | If we want to generate the base configuration |
 | baseUrl | string | `""` | The base URL of the SUSE Observability instance. |
 | imageRegistry | string | `"registry.rancher.com"` | The registry to pull the SUSE Observability images from. |

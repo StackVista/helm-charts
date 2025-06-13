@@ -27,7 +27,10 @@ sizing:
   # sizing.profile -- Profile. OneOf 10-nonha, 20-nonha, 50-nonha, 100-nonha, 150-ha, 250-ha, 500-ha
   profile: ""
 affinity:
-  # affinity.generate -- If we want to generate affinity values
-  generate: false
   # affinity.nodeAffinity --  Node Affinity settings
   nodeAffinity: null
+  podAntiAffinity:
+    # affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution -- Enable required pod anti-affinity
+    requiredDuringSchedulingIgnoredDuringExecution: true
+    # affinity.podAntiAffinity.topologyKey -- Topology key for pod anti-affinity
+    topologyKey: "kubernetes.io/hostname"

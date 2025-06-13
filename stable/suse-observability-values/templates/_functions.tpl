@@ -22,3 +22,30 @@
 {{ $pwd | bcrypt | quote }}
 {{- end -}}
 {{- end -}}
+
+{{/* Generate podAntiAffinity configuration */}}
+{{- define "sts.values.podAntiAffinity" -}}
+{{- $labels := index . 0 -}}
+{{- $required := index . 1 -}}
+{{- $topologyKey := index . 2 -}}
+podAntiAffinity:
+{{- if $required }}
+  requiredDuringSchedulingIgnoredDuringExecution:
+  - labelSelector:
+      matchLabels:
+{{- range $key, $value := $labels }}
+        {{ $key }}: {{ $value }}
+{{- end }}
+    topologyKey: {{ $topologyKey }}
+{{- else }}
+  preferredDuringSchedulingIgnoredDuringExecution:
+  - weight: 100
+    podAffinityTerm:
+      labelSelector:
+        matchLabels:
+{{- range $key, $value := $labels }}
+          {{ $key }}: {{ $value }}
+{{- end }}
+      topologyKey: {{ $topologyKey }}
+{{- end }}
+{{- end -}}

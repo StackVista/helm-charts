@@ -1,9 +1,7 @@
-baseConfig:
-  generate: false
 sizing:
-  generate: false
+  profile: "150-ha"
+
 affinity:
-  generate: true
   nodeAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:
       nodeSelectorTerms:
@@ -11,4 +9,6 @@ affinity:
             - key: topology.kubernetes.io/zone
               operator: In
               values:
-                - "${AVAILABILITY_ZONE}"
+                - "eu-west-1c"
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution: false

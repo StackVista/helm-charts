@@ -1,40 +1,122 @@
-{{- if .Values.affinity.generate }}
-{{- $nodeAffinity := .Values.affinity.nodeAffinity | required "Please provide your affinity rules to be applied" }}
+# Affinity configurations
+{{- if or .Values.affinity.nodeAffinity (and .Values.affinity.podAntiAffinity (hasSuffix "-ha" .Values.sizing.profile)) }}
+{{- $nodeAffinity := .Values.affinity.nodeAffinity }}
 clickhouse:
   affinity:
+{{- if $nodeAffinity }}
     nodeAffinity:
 {{- with $nodeAffinity }}
   {{- toYaml . | nindent 6 }}
 {{- end }}
+{{- end }}
+{{- if and .Values.affinity.podAntiAffinity (hasSuffix "-ha" .Values.sizing.profile) }}
+    {{- $labels := dict "app.kubernetes.io/component" "clickhouse" }}
+    {{- $required := .Values.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution }}
+    {{- $topologyKey := .Values.affinity.podAntiAffinity.topologyKey }}
+    {{- include "sts.values.podAntiAffinity" (list $labels $required $topologyKey) | nindent 4 }}
+{{- end }}
 
 elasticsearch:
+{{- if $nodeAffinity }}
   nodeAffinity:
 {{- with $nodeAffinity }}
   {{- toYaml . | nindent 4 }}
+{{- end }}
+{{- end }}
+{{- if and .Values.affinity.podAntiAffinity (hasSuffix "-ha" .Values.sizing.profile) }}
+{{- if .Values.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution }}
+  antiAffinity: hard
+{{- else }}
+  antiAffinity: soft
+{{- end }}
+  antiAffinityTopologyKey: {{ .Values.affinity.podAntiAffinity.topologyKey }}
 {{- end }}
 
 hbase:
   all:
     affinity:
+{{- if $nodeAffinity }}
       nodeAffinity:
 {{- with $nodeAffinity }}
   {{- toYaml . | nindent 8 }}
 {{- end }}
+{{- end }}
+  hbase:
+    master:
+      affinity:
+{{- if and .Values.affinity.podAntiAffinity (hasSuffix "-ha" .Values.sizing.profile) }}
+      {{- $labels := dict "app.kubernetes.io/component" "hbase-master" }}
+      {{- $required := .Values.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution }}
+      {{- $topologyKey := .Values.affinity.podAntiAffinity.topologyKey }}
+      {{- include "sts.values.podAntiAffinity" (list $labels $required $topologyKey) | nindent 8 }}
+{{- end }}
+    regionserver:
+      affinity:
+{{- if and .Values.affinity.podAntiAffinity (hasSuffix "-ha" .Values.sizing.profile) }}
+      {{- $labels := dict "app.kubernetes.io/component" "hbase-rs" }}
+      {{- $required := .Values.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution }}
+      {{- $topologyKey := .Values.affinity.podAntiAffinity.topologyKey }}
+      {{- include "sts.values.podAntiAffinity" (list $labels $required $topologyKey) | nindent 8 }}
+{{- end }}
+  hdfs:
+    datanode:
+      affinity:
+{{- if and .Values.affinity.podAntiAffinity (hasSuffix "-ha" .Values.sizing.profile) }}
+      {{- $labels := dict "app.kubernetes.io/component" "hdfs-dn" }}
+      {{- $required := .Values.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution }}
+      {{- $topologyKey := .Values.affinity.podAntiAffinity.topologyKey }}
+      {{- include "sts.values.podAntiAffinity" (list $labels $required $topologyKey) | nindent 8 }}
+{{- end }}
+    namenode:
+      affinity:
+{{- if and .Values.affinity.podAntiAffinity (hasSuffix "-ha" .Values.sizing.profile) }}
+      {{- $labels := dict "app.kubernetes.io/component" "hdfs-snn" }}
+      {{- $required := .Values.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution }}
+      {{- $topologyKey := .Values.affinity.podAntiAffinity.topologyKey }}
+      {{- include "sts.values.podAntiAffinity" (list $labels $required $topologyKey) | nindent 8 }}
+{{- end }}
+    secondarynamenode:
+      affinity:
+{{- if and .Values.affinity.podAntiAffinity (hasSuffix "-ha" .Values.sizing.profile) }}
+      {{- $labels := dict "app.kubernetes.io/component" "hdfs-nn" }}
+      {{- $required := .Values.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution }}
+      {{- $topologyKey := .Values.affinity.podAntiAffinity.topologyKey }}
+      {{- include "sts.values.podAntiAffinity" (list $labels $required $topologyKey) | nindent 8 }}
+{{- end }}
+  tephra:
+    affinity:
+{{- if and .Values.affinity.podAntiAffinity (hasSuffix "-ha" .Values.sizing.profile) }}
+    {{- $labels := dict "app.kubernetes.io/component" "tephra" }}
+    {{- $required := .Values.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution }}
+    {{- $topologyKey := .Values.affinity.podAntiAffinity.topologyKey }}
+    {{- include "sts.values.podAntiAffinity" (list $labels $required $topologyKey) | nindent 6 }}
+{{- end }}
 
 kafka:
   affinity:
+{{- if $nodeAffinity }}
     nodeAffinity:
 {{- with $nodeAffinity }}
-  {{- toYaml . | nindent 8 }}
+  {{- toYaml . | nindent 6 }}
+{{- end }}
+{{- end }}
+{{- if and .Values.affinity.podAntiAffinity (hasSuffix "-ha" .Values.sizing.profile) }}
+    {{- $labels := dict "app.kubernetes.io/component" "kafka" }}
+    {{- $required := .Values.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution }}
+    {{- $topologyKey := .Values.affinity.podAntiAffinity.topologyKey }}
+    {{- include "sts.values.podAntiAffinity" (list $labels $required $topologyKey) | nindent 4 }}
 {{- end }}
 
+{{- if $nodeAffinity }}
 opentelemetry-collector:
   affinity:
     nodeAffinity:
 {{- with $nodeAffinity }}
   {{- toYaml . | nindent 8 }}
 {{- end }}
+{{- end }}
 
+{{- if $nodeAffinity }}
 stackstate:
   components:
     all:
@@ -43,28 +125,53 @@ stackstate:
 {{- with $nodeAffinity }}
   {{- toYaml . | nindent 10 }}
 {{- end }}
+{{- end }}
 
 victoria-metrics-0:
   server:
     affinity:
+{{- if $nodeAffinity }}
       nodeAffinity:
 {{- with $nodeAffinity }}
   {{- toYaml . | nindent 8 }}
+{{- end }}
+{{- end }}
+{{- if and .Values.affinity.podAntiAffinity (hasSuffix "-ha" .Values.sizing.profile) }}
+      {{- $labels := dict "app.kubernetes.io/name" "victoria-metrics-1" }}
+      {{- $required := .Values.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution }}
+      {{- $topologyKey := .Values.affinity.podAntiAffinity.topologyKey }}
+      {{- include "sts.values.podAntiAffinity" (list $labels $required $topologyKey) | nindent 6 }}
 {{- end }}
 
 victoria-metrics-1:
   server:
     affinity:
+{{- if $nodeAffinity }}
       nodeAffinity:
 {{- with $nodeAffinity }}
   {{- toYaml . | nindent 8 }}
 {{- end }}
+{{- end }}
+{{- if and .Values.affinity.podAntiAffinity (hasSuffix "-ha" .Values.sizing.profile) }}
+      {{- $labels := dict "app.kubernetes.io/name" "victoria-metrics-0" }}
+      {{- $required := .Values.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution }}
+      {{- $topologyKey := .Values.affinity.podAntiAffinity.topologyKey }}
+      {{- include "sts.values.podAntiAffinity" (list $labels $required $topologyKey) | nindent 6 }}
+{{- end }}
 
 zookeeper:
   affinity:
+{{- if $nodeAffinity }}
     nodeAffinity:
 {{- with $nodeAffinity }}
-  {{- toYaml . | nindent 8 }}
+  {{- toYaml . | nindent 6 }}
+{{- end }}
+{{- end }}
+{{- if and .Values.affinity.podAntiAffinity (hasSuffix "-ha" .Values.sizing.profile) }}
+    {{- $labels := dict "app.kubernetes.io/component" "zookeeper" }}
+    {{- $required := .Values.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution }}
+    {{- $topologyKey := .Values.affinity.podAntiAffinity.topologyKey }}
+    {{- include "sts.values.podAntiAffinity" (list $labels $required $topologyKey) | nindent 4 }}
 {{- end }}
 
 {{- end }}

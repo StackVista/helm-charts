@@ -1,6 +1,10 @@
 package test
 
 import (
+	"fmt"
+	"github.com/imdario/mergo"
+	"github.com/stretchr/testify/require"
+	"strings"
 	"testing"
 
 	"github.com/caspr-io/yamlpath"
@@ -82,11 +86,170 @@ func TestGenerateValuesForSizing(t *testing.T) {
 	assert.NotEmpty(t, v)
 }
 
-func TestGenerateValuesForAffinity(t *testing.T) {
-	values := renderAsYaml(t, []string{"values/affinity.yaml"})
+func TestGenerateValuesForAffinity2(t *testing.T) {
+	values := renderAsYaml(t, []string{"values/baseConfig.yaml", "values/nonHA_nodeAffinity.yaml"})
 	v, err := yamlpath.YamlPath(values, "clickhouse.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, v)
+}
+
+func TestGenerateValuesForAffinity(t *testing.T) {
+
+	baseConfigValues := "values/baseConfig.yaml"
+	tests := []struct {
+		name           string
+		valuesPath     string
+		expectedValues []string
+		unwantedValues []string
+	}{
+		{
+			name:       "nonHa profile with nodeAffinity configured",
+			valuesPath: "values/nonHA_nodeAffinity.yaml",
+			expectedValues: []string{
+				"clickhouse.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"elasticsearch.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.all.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"kafka.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"opentelemetry-collector.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"stackstate.components.all.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"victoria-metrics-0.server.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"victoria-metrics-1.server.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"zookeeper.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+			},
+			unwantedValues: []string{
+				"clickhouse.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"elasticsearch.antiAffinity",
+				"elasticsearch.antiAffinityTopologyKey",
+				"hbase.hbase.master.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.hbase.regionserver.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.hdfs.datanode.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.hdfs.namenode.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.hdfs.secondarynamenode.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.tephra.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"kafka.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"victoria-metrics-0.server.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"victoria-metrics-1.server.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"zookeeper.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+			},
+		},
+		{
+			name:           "nonHa profile with no nodeAffinity configured",
+			valuesPath:     "values/nonHA_NoNodeAffinity.yaml",
+			expectedValues: []string{},
+			unwantedValues: []string{
+				"clickhouse.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"elasticsearch.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.all.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"kafka.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"opentelemetry-collector.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"stackstate.components.all.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"victoria-metrics-0.server.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"victoria-metrics-1.server.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"zookeeper.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+			},
+		},
+		{
+			name:           "nonHa profile with podAntiAffinity configured",
+			valuesPath:     "values/nonHA_podAntiAffinity.yaml",
+			expectedValues: []string{},
+			unwantedValues: []string{
+				"clickhouse.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"elasticsearch.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.all.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"kafka.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"opentelemetry-collector.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"stackstate.components.all.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"victoria-metrics-0.server.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"victoria-metrics-1.server.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"zookeeper.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+			},
+		},
+		{
+			name:       "Ha profile with podAntiAffinity Configured",
+			valuesPath: "values/HA_podAntiAffinity.yaml",
+			expectedValues: []string{
+				"clickhouse.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"elasticsearch.antiAffinity",
+				"elasticsearch.antiAffinityTopologyKey",
+				"hbase.hbase.master.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.hbase.regionserver.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.hdfs.datanode.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.hdfs.namenode.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.hdfs.secondarynamenode.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.tephra.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"kafka.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"victoria-metrics-0.server.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"victoria-metrics-1.server.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"zookeeper.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+			},
+			unwantedValues: []string{
+				"clickhouse.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"elasticsearch.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.all.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"kafka.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"opentelemetry-collector.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"stackstate.components.all.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"victoria-metrics-0.server.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"victoria-metrics-1.server.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"zookeeper.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+			},
+		},
+		{
+			name:       "Ha profile with nodeAffinity and preferred podAntiAffinity Configured",
+			valuesPath: "values/HA_nodeAffinity_podAntiAffinity.yaml",
+			expectedValues: []string{
+				"clickhouse.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"elasticsearch.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.all.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"kafka.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"opentelemetry-collector.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"stackstate.components.all.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"victoria-metrics-0.server.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"victoria-metrics-1.server.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"zookeeper.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"clickhouse.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution",
+				"elasticsearch.antiAffinity",
+				"elasticsearch.antiAffinityTopologyKey",
+				"hbase.hbase.master.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution",
+				"hbase.hbase.regionserver.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution",
+				"hbase.hdfs.datanode.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution",
+				"hbase.hdfs.namenode.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution",
+				"hbase.hdfs.secondarynamenode.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution",
+				"hbase.tephra.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution",
+				"kafka.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution",
+				"victoria-metrics-0.server.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution",
+				"victoria-metrics-1.server.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution",
+				"zookeeper.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution",
+			},
+			unwantedValues: []string{
+				"clickhouse.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"elasticsearch.antiAffinity",
+				"elasticsearch.antiAffinityTopologyKey",
+				"hbase.hbase.master.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.hbase.regionserver.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.hdfs.datanode.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.hdfs.namenode.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.hdfs.secondarynamenode.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"hbase.tephra.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"kafka.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"victoria-metrics-0.server.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"victoria-metrics-1.server.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+				"zookeeper.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution",
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			values := renderAsYaml(t, []string{baseConfigValues, tt.valuesPath})
+			for i, expectedValue := range tt.expectedValues {
+				v, err := yamlpath.YamlPath(values, expectedValue)
+				assert.NoErrorf(t, err, fmt.Sprintf("missing value %v: %s", i, expectedValue))
+				assert.NotEmpty(t, v, fmt.Sprintf("expect not empty value %v: %s", i, expectedValue))
+
+			}
+		})
+	}
 }
 
 func renderAsYaml(t *testing.T, values []string) map[string]interface{} {
@@ -98,6 +261,24 @@ func renderAsYaml(t *testing.T, values []string) map[string]interface{} {
 	err := yaml.Unmarshal([]byte(output), &valuesMap)
 	assert.NoError(t, err)
 
-	// fmt.Printf("valuesMap: %v\n", valuesMap)
+	decoder := yaml.NewDecoder(strings.NewReader(output))
+
+	for {
+		var doc map[string]interface{}
+		err := decoder.Decode(&doc)
+		if err != nil {
+			if err.Error() == "EOF" {
+				break // End of documents
+			}
+			assert.NoError(t, err)
+		}
+
+		err = mergo.Merge(&valuesMap, doc, mergo.WithOverride)
+		require.NoErrorf(t, err, "Failed to merge map with values: %v", valuesMap)
+
+		fmt.Printf("Document: %+v\n", doc)
+	}
+
+	fmt.Printf("valuesMap: %+#v\n", valuesMap)
 	return valuesMap
 }
