@@ -1659,6 +1659,9 @@ stackstate:
       version: "20250604132238-master-845061c"
       # stackstate.stackpacks.image.deploymentModeOverride -- Use the stackpacks from another deployment mode than StackState is running in
       deploymentModeOverride: ""
+  ui:
+    # stackstate.defaultTimeRange -- Default time range  in the UI. One of LAST_5_MINUTES, LAST_15_MINUTES, LAST_30_MINUTES, LAST_1_HOUR, LAST_3_HOURS, LAST_6_HOURS, LAST_12_HOURS, LAST_24_HOURS, LAST_2_DAYS. No value or an unsupported value will automatically fall-back to LAST_1_HOUR.
+    defaultTimeRange:
 ##############################
 # Dependency chart overrides #
 ##############################

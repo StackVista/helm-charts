@@ -93,6 +93,10 @@ stackstate.stackPacks {
 stackstate.webUIConfig.docLinkUrlPrefix = "{{- .Values.stackstate.components.api.docslink -}}"
 {{- end }}
 
+{{- if .Values.stackstate.ui.defaultTimeRange }}
+stackstate.webUIConfig.defaultTimeRange = "{{- .Values.stackstate.ui.defaultTimeRange -}}"
+{{- end }}
+
 {{- if .Values.stackstate.components.api.supportMode }}
 stackstate.webUIConfig.supportMode = "{{- .Values.stackstate.components.api.supportMode -}}"
 {{- end }}
