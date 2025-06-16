@@ -45,8 +45,10 @@
         "delete-dashboards",
         "create-favorite-dashboards",
         "delete-favorite-dashboards",
+        "access-view",
+        "save-view",
+        "delete-view",
         # "unlock-node" We disable unlock node by default because we do not encourage unlocking stackpack-provided settings
         # (rather update the settings). In dire straits this config part can be patched to allow the unlocking.
-    ],
-    "viewPermissions" : [ "access-view", "save-view", "delete-view" ]
+    ]
 }

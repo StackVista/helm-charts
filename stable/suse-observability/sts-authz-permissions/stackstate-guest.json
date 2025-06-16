@@ -20,7 +20,7 @@
         "update-dashboards",
         "delete-dashboards",
         "create-favorite-dashboards",
-        "delete-favorite-dashboards"
-    ],
-    "viewPermissions": ["access-view"]
+        "delete-favorite-dashboards",
+        "access-view"
+    ]
 }

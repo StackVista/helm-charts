@@ -184,6 +184,7 @@ build_ci-test:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add deliveryhero https://charts.deliveryhero.io
     - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
@@ -1913,6 +1914,7 @@ push_ci-test_to_internal:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add deliveryhero https://charts.deliveryhero.io
     - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
     - helm repo add prometheus https://prometheus-community.github.io/helm-charts
