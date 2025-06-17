@@ -47,8 +47,6 @@ env:
 {{ if .Values.stackstate.k8sAuthorization.enabled }}
 - name: CONFIG_FORCE_stackstate_featureSwitches_authorizationSyncService
   value: "true"
-- name: CONFIG_FORCE_stackstate_featureSwitches_authorizationK8s
-  value: "true"
 {{ end }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.server.envsFromExistingSecrets }}
