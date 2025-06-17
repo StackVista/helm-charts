@@ -987,7 +987,7 @@ stackstate/stackstate
 | stackstate.stackpacks.updateInterval | string | `"5 minutes"` |  |
 | stackstate.stackpacks.upgradeOnStartup | list | `[]` | Specify a list of stackpacks that will, on startup only, be upgraded to the latest version available |
 | stackstate.topology.retentionHours | integer | `nil` | Number of hours topology will be retained. |
-| stackstate.ui.defaultTimeRange | string | `nil` |  |
+| stackstate.ui.defaultTimeRange | string | `nil` | Default time range  in the UI. One of LAST_5_MINUTES, LAST_15_MINUTES, LAST_30_MINUTES, LAST_1_HOUR, LAST_3_HOURS, LAST_6_HOURS, LAST_12_HOURS, LAST_24_HOURS, LAST_2_DAYS. No value or an unsupported value will automatically fall-back to LAST_1_HOUR. |
 | victoria-metrics-0.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the MinIO bucket where Victoria Metrics backups are stored. |
 | victoria-metrics-0.backup.enabled | bool | `false` | Enable scheduled backups of Victoria Metrics. It requires to be enabled MinIO 'backup.enabled'. |
 | victoria-metrics-0.backup.s3Prefix | string | `"victoria-metrics-0"` |  |
