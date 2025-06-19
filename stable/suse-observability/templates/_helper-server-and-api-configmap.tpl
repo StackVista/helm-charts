@@ -34,7 +34,7 @@ stackstate.authorization.staticSubjects.{{ . | quote }}: {{- $files.Get "sts-aut
 {{- end }}
 
 {{- if index .Values "anomaly-detection" "enabled" }}
-stackstate.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["manage-annotations", "run-monitors", "view-monitors", "read-metrics", "read-settings", "create-telemetry"], viewPermissions: [] }
+stackstate.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["perform-custom-query", "manage-annotations", "run-monitors", "view-monitors", "read-metrics", "read-settings", "create-telemetry"], viewPermissions: [] }
 {{- end }}
 
 {{- else }}
@@ -48,7 +48,7 @@ stackstate.api.authorization.staticSubjects.{{ template "stackstate.rbacAgent.ro
 {{- end }}
 
 {{- if index .Values "anomaly-detection" "enabled" }}
-stackstate.api.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["manage-annotations", "run-monitors", "view-monitors", "read-metrics", "read-settings"], viewPermissions: [] }
+stackstate.api.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["perform-custom-query", "manage-annotations", "run-monitors", "view-monitors", "read-metrics", "read-settings"], viewPermissions: [] }
 {{- end }}
 {{- end }}
 
