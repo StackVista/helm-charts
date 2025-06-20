@@ -315,6 +315,9 @@ for production this should be replaced with one of the other mechanisms.
   token = ${bootstrap_token}
   roles = [ {{- $apiAuth.serviceToken.bootstrap.roles | compact | join ", " -}} ]
   ttl = {{ $apiAuth.serviceToken.bootstrap.ttl | quote }}
+{{- if $apiAuth.serviceToken.bootstrap.dedicatedSubject }}
+  dedicatedSubject = {{ $apiAuth.serviceToken.bootstrap.dedicatedSubject | quote }}
+{{- end }}
 }
 {{- end }}
 

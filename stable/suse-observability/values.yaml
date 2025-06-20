@@ -1555,6 +1555,8 @@ stackstate:
         roles: []
         # stackstate.authentication.serviceToken.bootstrap.ttl -- The amount of time the service token is valid for
         ttl: 24h
+        # stackstate.authentication.serviceToken.bootstrap.dedicatedSubject --Subject solely created for usage with this token and cleaned up with the token
+        dedicatedSubject: ""
   k8sAuthorization:
     # stackstate.k8sAuthorization - (boolean) Whether we use k8s RBAC as authorization authority
     enabled: false
