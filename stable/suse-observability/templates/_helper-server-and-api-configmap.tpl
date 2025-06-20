@@ -12,7 +12,7 @@ stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter: {{- $file
 stackstate.authorization.staticSubjects.stackstate-ingest-telemetry: { systemPermissions: ["create-telemetry"], viewPermissions: [] }
 
 {{- if .Values.stackstate.k8sAuthorization.enabled }}
-stackstate.authorization.staticSubjects.{{ template "stackstate.rbacAgent.roleName" . }}: { systemPermissions: ["update-permissions"], viewPermissions: [] }
+stackstate.authorization.staticSubjects.{{ template "stackstate.rbacAgent.roleName" . }}: { systemPermissions: ["update-permissions", "update-scoped-permissions"], viewPermissions: [] }
 {{- end }}
 
 {{ println "" }}
