@@ -1545,7 +1545,7 @@ stackstate:
       guest: []
       # stackstate.authentication.roles.k8sTroubleshooter -- Extend the role names that have troubleshooter permissions (default: 'stackstate-k8s-troubleshooter')
       k8sTroubleshooter: []
-      # stackstate.authentication.roles.custom -- Extend the authorization with custom roles {roleName: {systemPermissions: [], viewPermissions: [], topologyScope: ""}}
+      # stackstate.authentication.roles.custom -- Extend the authorization with custom roles {roleName: {systemPermissions: [], resourcePermissions: {}, viewPermissions: [], topologyScope: ""}}
       custom: {}
     serviceToken:
       bootstrap:
