@@ -10,9 +10,10 @@ stackstate.authorization.staticSubjects.stackstate-power-user: {{- $files.Get "s
 stackstate.authorization.staticSubjects.stackstate-guest: {{- $files.Get "sts-authz-permissions/stackstate-guest.json"}}
 stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter: {{- $files.Get "sts-authz-permissions/stackstate-k8s-troubleshooter.json"}}
 stackstate.authorization.staticSubjects.stackstate-ingest-telemetry: { systemPermissions: ["create-telemetry"], viewPermissions: [] }
+stackstate.authorization.staticSubjects.suse-observability-ingest-all: { systemPermissions: ["update-permissions", "update-scoped-permissions", "create-telemetry"], viewPermissions: [] }
 
 {{- if .Values.stackstate.k8sAuthorization.enabled }}
-stackstate.authorization.staticSubjects.{{ template "stackstate.rbacAgent.roleName" . }}: { systemPermissions: ["update-permissions", "update-scoped-permissions"], viewPermissions: [] }
+stackstate.authorization.staticSubjects.{{ template "stackstate.rbacAgent.roleName" . }}: { systemPermissions: ["update-permissions"], viewPermissions: [] }
 {{- end }}
 
 {{ println "" }}
