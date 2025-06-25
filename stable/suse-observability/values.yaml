@@ -210,7 +210,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
-        tag: 7.0.0-snapshot.20250624073708-master-f04eea7
+        tag: 7.0.0-snapshot.20250625090922-master-309eb01
       # stackstate.components.all.podAnnotations -- Extra annotations
       podAnnotations: {}
       metrics:
@@ -1545,7 +1545,7 @@ stackstate:
       guest: []
       # stackstate.authentication.roles.k8sTroubleshooter -- Extend the role names that have troubleshooter permissions (default: 'stackstate-k8s-troubleshooter')
       k8sTroubleshooter: []
-      # stackstate.authentication.roles.custom -- Extend the authorization with custom roles {roleName: {systemPermissions: [], viewPermissions: [], topologyScope: ""}}
+      # stackstate.authentication.roles.custom -- Extend the authorization with custom roles {roleName: {systemPermissions: [], resourcePermissions: {}, viewPermissions: [], topologyScope: ""}}
       custom: {}
     serviceToken:
       bootstrap:
@@ -1658,7 +1658,7 @@ stackstate:
       # stackstate.stackpacks.image.repository -- Repository of the `stackpacks` Docker image.
       repository: stackstate/stackpacks
       # stackstate.stackpacks.image.version -- Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode
-      version: "20250618120252-master-118e47a"
+      version: "20250625122411-master-3c0f9fe"
       # stackstate.stackpacks.image.deploymentModeOverride -- Use the stackpacks from another deployment mode than StackState is running in
       deploymentModeOverride: ""
   ui:

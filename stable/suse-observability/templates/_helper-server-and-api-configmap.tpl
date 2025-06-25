@@ -9,11 +9,11 @@ stackstate.authorization.staticSubjects.stackstate-admin: {{- $files.Get "sts-au
 stackstate.authorization.staticSubjects.stackstate-power-user: {{- $files.Get "sts-authz-permissions/stackstate-power-user.json"}}
 stackstate.authorization.staticSubjects.stackstate-guest: {{- $files.Get "sts-authz-permissions/stackstate-guest.json"}}
 stackstate.authorization.staticSubjects.stackstate-k8s-troubleshooter: {{- $files.Get "sts-authz-permissions/stackstate-k8s-troubleshooter.json"}}
-stackstate.authorization.staticSubjects.stackstate-ingest-telemetry: { systemPermissions: ["create-telemetry"], viewPermissions: [] }
-stackstate.authorization.staticSubjects.suse-observability-ingest-all: { systemPermissions: ["update-permissions", "update-scoped-permissions", "create-telemetry"], viewPermissions: [] }
+stackstate.authorization.staticSubjects.stackstate-ingest-telemetry: { systemPermissions: ["update-metrics"] }
+stackstate.authorization.staticSubjects.suse-observability-ingest-all: { systemPermissions: ["update-permissions", "update-scoped-permissions", "update-metrics"] }
 
 {{- if .Values.stackstate.k8sAuthorization.enabled }}
-stackstate.authorization.staticSubjects.{{ template "stackstate.rbacAgent.roleName" . }}: { systemPermissions: ["update-permissions"], viewPermissions: [] }
+stackstate.authorization.staticSubjects.{{ template "stackstate.rbacAgent.roleName" . }}: { systemPermissions: ["update-permissions"] }
 {{- end }}
 
 {{ println "" }}
@@ -35,7 +35,7 @@ stackstate.authorization.staticSubjects.{{ . | quote }}: {{- $files.Get "sts-aut
 {{- end }}
 
 {{- if index .Values "anomaly-detection" "enabled" }}
-stackstate.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["perform-custom-query", "manage-annotations", "run-monitors", "view-monitors", "read-metrics", "read-settings", "create-telemetry"], viewPermissions: [] }
+stackstate.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["get-topology", "execute-monitors", "get-monitors", "get-metrics", "get-settings", "update-metrics"] }
 {{- end }}
 
 {{- else }}
@@ -43,13 +43,13 @@ stackstate.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["p
 stackstate.api.authorization: {}
 stackstate.api.authorization.staticSubjects.stackstate-k8s-troubleshooter: {{- $files.Get "sts-authz-permissions/stackstate-k8s-troubleshooter.json" }}
 stackstate.api.authorization.staticSubjects.stackstate-k8s-admin: {{- $files.Get "sts-authz-permissions/stackstate-k8s-admin.json" }}
-stackstate.api.authorization.staticSubjects.stackstate-ingest-telemetry: { systemPermissions: ["create-telemetry"], viewPermissions: [] }
+stackstate.api.authorization.staticSubjects.stackstate-ingest-telemetry: { systemPermissions: ["update-metrics"] }
 {{- if .Values.stackstate.k8sAuthorization.enabled }}
-stackstate.api.authorization.staticSubjects.{{ template "stackstate.rbacAgent.roleName" . }}: { systemPermissions: ["update-permissions"], viewPermissions: [] }
+stackstate.api.authorization.staticSubjects.{{ template "stackstate.rbacAgent.roleName" . }}: { systemPermissions: ["update-permissions"] }
 {{- end }}
 
 {{- if index .Values "anomaly-detection" "enabled" }}
-stackstate.api.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["perform-custom-query", "manage-annotations", "run-monitors", "view-monitors", "read-metrics", "read-settings"], viewPermissions: [] }
+stackstate.api.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["get-topology", "execute-monitors", "get-monitors", "get-metrics", "get-settings"] }
 {{- end }}
 {{- end }}
 
@@ -307,7 +307,7 @@ for production this should be replaced with one of the other mechanisms.
 {{ $authnPrefix }}.sessionLifetime =  {{ $apiAuth.sessionLifetime | default "7d" | toJson }}
 
 {{- range $k, $v := $apiAuth.roles.custom }}
-{{ $authzPrefix }}.staticSubjects.{{ $k | quote }}: { systemPermissions: {{ $v.systemPermissions | toJson }}, viewPermissions: {{ $v.viewPermissions | toJson }}{{ if $v.topologyScope }}, query: {{ $v.topologyScope | quote }}{{end}} }
+{{ $authzPrefix }}.staticSubjects.{{ $k | quote }}: { systemPermissions: {{ $v.systemPermissions | toJson }}{{ if $v.resourcePermissions }}, resourcePermissions: {{ $v.resourcePermissions | toJson }}{{end}}{{ if $v.viewPermissions }}, viewPermissions: {{ $v.viewPermissions | toJson }}{{end}}{{ if $v.topologyScope }}, query: {{ $v.topologyScope | quote }}{{end}} }
 {{- end }}
 
 {{- if $apiAuth.serviceToken.bootstrap.token }}
