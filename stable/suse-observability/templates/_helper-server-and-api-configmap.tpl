@@ -44,6 +44,7 @@ stackstate.api.authorization: {}
 stackstate.api.authorization.staticSubjects.stackstate-k8s-troubleshooter: {{- $files.Get "sts-authz-permissions/stackstate-k8s-troubleshooter.json" }}
 stackstate.api.authorization.staticSubjects.stackstate-k8s-admin: {{- $files.Get "sts-authz-permissions/stackstate-k8s-admin.json" }}
 stackstate.api.authorization.staticSubjects.stackstate-ingest-telemetry: { systemPermissions: ["update-metrics"] }
+stackstate.authorization.staticSubjects.suse-observability-ingest-all: { systemPermissions: ["update-permissions", "update-scoped-permissions", "update-metrics"] }
 {{- if .Values.stackstate.k8sAuthorization.enabled }}
 stackstate.api.authorization.staticSubjects.{{ template "stackstate.rbacAgent.roleName" . }}: { systemPermissions: ["update-permissions"] }
 {{- end }}
