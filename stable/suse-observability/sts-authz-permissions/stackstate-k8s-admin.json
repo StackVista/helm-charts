@@ -9,7 +9,6 @@
         "execute-node-sync",
         "export-settings",
         "manage-annotations",
-        "manage-ingestion-api-keys",
         "manage-metric-bindings",
         "manage-monitors",
         "manage-notifications",
