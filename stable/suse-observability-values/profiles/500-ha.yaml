@@ -81,10 +81,11 @@ stackstate:
           KAFKA_PARTITIONS_sts_correlated_connections: "40"
           KAFKA_PARTITIONS_sts_correlate_endpoints: "40"
           KAFKA_PARTITIONS_sts_correlate_http_trace_observations: "40"
-    api:
+    all:
       extraEnv:
         open:
           CONFIG_FORCE_stackstate_agents_agentLimit: "500"
+    api:
       resources:
         requests:
           cpu: "3000m"

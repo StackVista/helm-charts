@@ -88,10 +88,11 @@ stackstate:
           KAFKA_PARTITIONS_sts_correlated_connections: "40"
           KAFKA_PARTITIONS_sts_correlate_endpoints: "40"
           KAFKA_PARTITIONS_sts_correlate_http_trace_observations: "40"
-    api:
+    all:
       extraEnv:
         open:
           CONFIG_FORCE_stackstate_agents_agentLimit: "4000"
+    api:
       resources:
         requests:
           cpu: 7000m
@@ -282,9 +283,9 @@ kafkaup-operator:
     limits:
       cpu: 10m
 victoria-metrics-0:
-  persistentVolume:
-    size: 400Gi
   server:
+    persistentVolume:
+      size: 400Gi
     resources:
       requests:
         cpu: "7"
@@ -300,9 +301,9 @@ victoria-metrics-0:
         limits:
           memory: 512Mi
 victoria-metrics-1:
-  persistentVolume:
-    size: 400Gi
   server:
+    persistentVolume:
+      size: 400Gi
     resources:
       requests:
         cpu: 7
