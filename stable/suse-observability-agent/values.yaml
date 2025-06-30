@@ -206,7 +206,7 @@ nodeAgent:
         # nodeAgent.containers.processAgent.image.repository -- Process-agent container image repository.
         repository: stackstate/stackstate-k8s-process-agent
         # nodeAgent.containers.processAgent.image.tag -- Default process-agent container image tag.
-        tag: "af875378"
+        tag: "da72a056"
         # nodeAgent.containers.processAgent.image.pullPolicy -- Process-agent container image pull policy.
         pullPolicy: IfNotPresent
       # nodeAgent.containers.processAgent.env -- Additional environment variables for the process-agent container
