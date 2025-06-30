@@ -2877,11 +2877,11 @@ opentelemetry-collector:
         protocols:
           grpc:
             auth:
-              authenticator: ingestion_api_key_auth
+              authenticator: service_token_auth
             endpoint: ${env:MY_POD_IP}:4317
           http:
             auth:
-              authenticator: ingestion_api_key_auth
+              authenticator: service_token_auth
             endpoint: ${env:MY_POD_IP}:4318
       zipkin: null
       prometheus: null
@@ -2952,7 +2952,7 @@ opentelemetry-collector:
       ststopology:
         endpoint: "${env:INTAKE_URL}"
     extensions:
-      ingestion_api_key_auth:
+      service_token_auth:
         endpoint:
           url: "${env:API_URL}"
         cache:
@@ -2973,7 +2973,7 @@ opentelemetry-collector:
       extensions:
         - health_check
         - memory_ballast
-        - ingestion_api_key_auth
+        - service_token_auth
       pipelines:
         traces:
           receivers:

@@ -2,7 +2,12 @@
 metadata:
   name: suse-observability-otel-collector
 data:
-  api.url: "http://{{ template "common.fullname.short" . }}-{{ template "stackstate.api.name" . }}-headless:7070/internal/api/security/ingestion/authorize?withReceiverKey=true"
+  api.url:
+  {{- if .Values.stackstate.components.receiver.split.enabled }}
+    "http://{{ template "common.fullname.short" . }}-receiver-base:7077/stsAgent/api/v1/validate"
+  {{ else }}
+    "http://{{ template "common.fullname.short" . }}-receiver:7077/stsAgent/api/v1/validate"
+  {{- end -}}
   intake.url:
   {{- if .Values.stackstate.components.receiver.split.enabled }}
     "http://{{ template "common.fullname.short" . }}-receiver-base:7077/stsAgent/intake"
