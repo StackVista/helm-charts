@@ -7,7 +7,7 @@ data:
     "http://{{ template "common.fullname.short" . }}-receiver-base:7077/stsAgent/api/v1/validate"
   {{ else }}
     "http://{{ template "common.fullname.short" . }}-receiver:7077/stsAgent/api/v1/validate"
-  {{- end -}}
+  {{- end }}
   intake.url:
   {{- if .Values.stackstate.components.receiver.split.enabled }}
     "http://{{ template "common.fullname.short" . }}-receiver-base:7077/stsAgent/intake"
