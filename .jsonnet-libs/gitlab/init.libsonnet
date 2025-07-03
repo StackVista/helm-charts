@@ -6,7 +6,7 @@
     extra_opts=[],
     extra_vars={},
     gitlab_token='${gitlab_api_scope_token}',
-    image='${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-semver-release-1f9e87f1',
+    image='${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-semver-release-1f9e87f1',
     only={ refs: ['master'] },
     stage='tag',
   )::

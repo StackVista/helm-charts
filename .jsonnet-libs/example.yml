@@ -22,7 +22,7 @@ helm_init: helm init --client-only
 helm_install: helm install --debug --force --namespace test    --timeout 600  --version 1.2.3 --verify  stackstate/hbase
 helm_upgrade: helm upgrade --force --install --recreate-pods    --timeout 600  --wait some-test-chart stackstate/stackstate
 semver_release:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-semver-release-1f9e87f1
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-semver-release-1f9e87f1
   only:
     refs:
       - another_branch

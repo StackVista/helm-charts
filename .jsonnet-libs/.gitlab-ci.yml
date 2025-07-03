@@ -9,7 +9,7 @@ jsonnet_lint:
   script: .gitlab/jsonnet_lint.sh
   stage: verify
 semver_release:
-  image: ${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-semver-release-1f9e87f1
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-semver-release-1f9e87f1
   needs:
     - jsonnet_lint
   only:

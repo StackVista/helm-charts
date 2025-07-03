@@ -2,8 +2,8 @@
   local Variable = self,
 
   images: {
-    stackstate_helm_test: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527',
-    stackstate_devops: '${DOCKER_PROXY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a',
+    stackstate_helm_test: '${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527',
+    stackstate_devops: '${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a',
     chart_testing: 'quay.io/helmpack/chart-testing:v3.10.1',
   },
   helm: {
