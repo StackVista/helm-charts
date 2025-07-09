@@ -291,6 +291,35 @@ build_falco-reporter:
     - helm dependencies build stable/falco-reporter
     - mkdir -p stable/falco-reporter/build; helm package --destination stable/falco-reporter/build stable/falco-reporter
   stage: build
+build_gitlab-proxy:
+  artifacts:
+    paths:
+      - stable/gitlab-proxy/charts/
+      - stable/gitlab-proxy/build/
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  rules:
+    - changes:
+        - stable/gitlab-proxy/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/gitlab-proxy/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/gitlab-proxy/%
+    - helm dependencies build stable/gitlab-proxy
+    - mkdir -p stable/gitlab-proxy/build; helm package --destination stable/gitlab-proxy/build stable/gitlab-proxy
+  stage: build
 build_gitlab-steward:
   artifacts:
     paths:
@@ -1300,6 +1329,17 @@ check_falco-reporter_version:
   script:
     - .gitlab/verify_versions_bumped.sh falco-reporter
   stage: validate
+check_gitlab-proxy_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/gitlab-proxy/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh gitlab-proxy
+  stage: validate
 check_gitlab-steward_version:
   before_script:
     - .gitlab/validate_before_script.sh
@@ -2159,6 +2199,47 @@ push_falco-reporter_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/falco-reporter
+push_gitlab-proxy_to_internal:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/gitlab-proxy/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-gitlab-proxy]/
+      when: on_success
+    - changes:
+        - stable/gitlab-proxy/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - if: $CI_COMMIT_TAG =~ /^gitlab-proxy\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/gitlab-proxy
 push_gitlab-steward_to_internal:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -4281,6 +4362,19 @@ test_falco-reporter:
   stage: test
   variables:
     CGO_ENABLED: 0
+test_gitlab-proxy:
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  rules:
+    - changes:
+        - stable/gitlab-proxy/**/*
+      exists:
+        - stable/gitlab-proxy/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/gitlab-proxy/test/...
+  stage: test
+  variables:
+    CGO_ENABLED: 0
 test_gitlab-steward:
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
   rules:
@@ -4914,6 +5008,22 @@ validate_falco-reporter:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/falco-reporter/values.yaml
     - if [ -f stable/falco-reporter/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/falco-reporter/ci/default-values.yaml; fi
     - if [ -f stable/falco-reporter/ci/default-values.yaml ]; then helm lint stable/falco-reporter --values stable/falco-reporter/ci/default-values.yaml; fi
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+validate_gitlab-proxy:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/gitlab-proxy/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/gitlab-proxy/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/gitlab-proxy/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/gitlab-proxy/values.yaml
+    - if [ -f stable/gitlab-proxy/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/gitlab-proxy/ci/default-values.yaml; fi
+    - if [ -f stable/gitlab-proxy/ci/default-values.yaml ]; then helm lint stable/gitlab-proxy --values stable/gitlab-proxy/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 validate_gitlab-steward:

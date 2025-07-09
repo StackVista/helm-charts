@@ -1,0 +1,9 @@
+apiVersion: v2
+name: gitlab-proxy
+description: A Helm chart for GitLab Proxy - Nginx-based caching proxy for GitLab packages registry
+
+type: application
+
+version: 0.1.0
+
+appVersion: "1.29.0"

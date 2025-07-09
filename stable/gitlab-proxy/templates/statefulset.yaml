@@ -1,0 +1,131 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "gitlab-proxy.fullname" . }}
+  labels:
+    {{- include "gitlab-proxy.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "gitlab-proxy.fullname" . }}
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  updateStrategy:
+    rollingUpdate: {}
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      {{- include "gitlab-proxy.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "gitlab-proxy.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "gitlab-proxy.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automount }}
+      shareProcessNamespace: false
+      hostNetwork: false
+      hostIPC: false
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: preserve-logs-symlinks
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.initContainer.securityContext | nindent 12 }}
+          resources:
+            {{- toYaml .Values.initContainer.resources | nindent 12 }}
+          command:
+            - /bin/bash
+          args:
+            - -ec
+            - |
+              #!/bin/bash
+              . /opt/bitnami/scripts/libfs.sh
+              # We copy the logs folder because it has symlinks to stdout and stderr
+              if ! is_dir_empty /opt/bitnami/nginx/logs; then
+                cp -r /opt/bitnami/nginx/logs /emptydir/app-logs-dir
+                ln -sf /dev/stdout /emptydir/app-logs-dir/cache_debug.log
+              fi
+          volumeMounts:
+            - name: data
+              mountPath: /emptydir
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          env:
+            - name: BITNAMI_DEBUG
+              value: "false"
+            - name: NGINX_HTTP_PORT_NUMBER
+              value: "8080"
+            - name: NGINX_HTTPS_PORT_NUMBER
+              value: "8443"
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: https
+              containerPort: 8443
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /tmp
+              subPath: tmp-dir
+            - name: data
+              mountPath: /opt/bitnami/nginx/conf
+              subPath: app-conf-dir
+            - name: data
+              mountPath: /opt/bitnami/nginx/logs
+              subPath: app-logs-dir
+            - name: data
+              mountPath: /opt/bitnami/nginx/tmp
+              subPath: app-tmp-dir
+            - name: nginx-server-block
+              mountPath: /opt/bitnami/nginx/conf/server_blocks
+            - name: nginx-htpasswd
+              mountPath: /etc/nginx/auth
+      volumes:
+        - name: nginx-server-block
+          secret:
+            secretName: {{ include "gitlab-proxy.fullname" . }}-server-block
+        - name: nginx-htpasswd
+          secret:
+            secretName: {{ include "gitlab-proxy.fullname" . }}-htpasswd
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: {{ .Values.persistence.accessModes }}
+        storageClassName: {{ .Values.persistence.storageClass }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size }}

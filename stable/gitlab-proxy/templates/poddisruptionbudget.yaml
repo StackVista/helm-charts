@@ -1,0 +1,11 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "gitlab-proxy.fullname" . }}
+  labels:
+    {{- include "gitlab-proxy.labels" . | nindent 4 }}
+spec:
+  maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
+  selector:
+    matchLabels:
+      {{- include "gitlab-proxy.selectorLabels" . | nindent 6 }}

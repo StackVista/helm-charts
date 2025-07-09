@@ -1,0 +1,268 @@
+# Default values for gitlab-proxy.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 2
+revisionHistoryLimit: 10
+
+image:
+  repository: docker.io/bitnami/nginx
+  pullPolicy: IfNotPresent
+  tag: "1.29.0-debian-12-r2"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: false
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  fsGroup: 1001
+  fsGroupChangePolicy: Always
+  supplementalGroups: []
+  sysctls: []
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  privileged: false
+  readOnlyRootFilesystem: true
+  runAsGroup: 1001
+  runAsNonRoot: true
+  runAsUser: 1001
+  seLinuxOptions: {}
+  seccompProfile:
+    type: RuntimeDefault
+
+initContainer:
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    privileged: false
+    readOnlyRootFilesystem: true
+    runAsGroup: 1001
+    runAsNonRoot: true
+    runAsUser: 1001
+    seLinuxOptions: {}
+    seccompProfile:
+      type: RuntimeDefault
+  resources:
+    limits:
+      cpu: 150m
+      ephemeral-storage: 2Gi
+      memory: 192Mi
+    requests:
+      cpu: 100m
+      ephemeral-storage: 50Mi
+      memory: 128Mi
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ingressClass
+  annotations:
+  hosts:
+    - host: gitlab.proxy
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - gitlab.proxy
+      secretName: secret-tls
+
+resources:
+  limits:
+    ephemeral-storage: 2Gi
+    memory: 256Mi
+  requests:
+    cpu: 500m
+    ephemeral-storage: 50Mi
+    memory: 256Mi
+
+livenessProbe:
+  failureThreshold: 6
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 5
+  tcpSocket:
+    port: http
+
+readinessProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  successThreshold: 1
+  timeoutSeconds: 3
+  httpGet:
+    path: /health
+    port: http
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+nodeSelector: {}
+tolerations: []
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          labelSelector:
+            matchLabels: {}
+          topologyKey: kubernetes.io/hostname
+        weight: 1
+
+podDisruptionBudget:
+  maxUnavailable: 1
+
+persistence:
+  accessModes: ["ReadWriteOnce"]
+  storageClass:
+  size: 200Gi
+
+auth:
+  htpasswd: |
+    test:$apr1$lpJpERMg$rjNCT9/GOewTido8UmQYD.
+
+nginx:
+  serverBlock: |
+
+
+    resolver 10.0.224.1 valid=900s ipv6=off;
+    resolver_timeout 5s;
+
+    proxy_cache_path /opt/bitnami/nginx/tmp/nginx-cache levels=1:2 keys_zone=maven_cache:100m max_size=1g inactive=60d use_temp_path=off;
+    proxy_cache_path /opt/bitnami/nginx/tmp/nginx-cache-metadata levels=1:2 keys_zone=maven_metadata_cache:10m max_size=100m inactive=1h use_temp_path=off;
+
+    log_format cache_debug '$remote_addr - $remote_user [$time_local] '
+                      '"$request" $status $body_bytes_sent '
+                      '"$http_referer" "$http_user_agent" "$http_x_forwarded_for" '
+                      '"$upstream_addr" "$upstream_response_time" "$upstream_status" '
+                      'cache_status:$upstream_cache_status '
+                      'upstream_cache_control:"$upstream_http_cache_control" '
+                      'upstream_expires:"$upstream_http_expires"';
+
+    server {
+      listen 0.0.0.0:8080;
+
+    # Set cache and cache key once
+     proxy_cache maven_cache;
+     proxy_cache_key "gitlab.com$request_uri";
+
+      access_log /opt/bitnami/nginx/logs/cache_debug.log cache_debug;
+    # Default cache settings for all content
+     proxy_cache_valid 200 206 1y;
+     proxy_cache_valid 404 1m;
+     proxy_cache_valid any 0;
+
+    # Cache optimization settings
+     proxy_cache_use_stale error timeout invalid_header updating http_500 http_502 http_503 http_504;
+     proxy_cache_background_update on;
+     proxy_cache_lock on;
+     proxy_cache_lock_timeout 5s;
+
+      # Force caching regardless of upstream headers
+      proxy_ignore_headers Cache-Control Expires Set-Cookie;
+      proxy_hide_header Set-Cookie;
+
+      # Cache bypass for no-cache requests
+      set $no_cache 0;
+      if ($http_cache_control ~* "no-cache") {
+        set $no_cache 1;
+      }
+      proxy_cache_bypass $no_cache;
+      proxy_no_cache $no_cache;
+
+      # Debug headers - ADD THESE!
+      add_header X-Cache-Status $upstream_cache_status always;
+      add_header X-Cache-Key "gitlab.com$request_uri" always;
+
+      # Override cache settings for metadata files only
+      location ~* /maven-metadata\.xml$ {
+
+        if ($request_method ~ ^(PUT|POST|DELETE|PATCH)$) {
+            return 405;  # Method Not Allowed
+        }
+
+
+          auth_basic "GitLab Packages Registry Proxy";
+          auth_basic_user_file /etc/nginx/auth/.htpasswd;
+          proxy_pass https://gitlab.com;
+          proxy_set_header Host "gitlab.com";
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_set_header PRIVATE-TOKEN "GITLAB PERSONAL TOKEN WITH API SCOPE";
+          proxy_set_header Authorization "";
+
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+
+         proxy_ssl_verify off;
+         proxy_ssl_server_name on;
+         proxy_ssl_name gitlab.com;  # SNI hostname
+         proxy_ssl_protocols TLSv1.2 TLSv1.3;
+
+        # Override cache settings for metadata
+        proxy_cache_valid 200 206 1h;
+        proxy_cache_valid 404 1m;
+        expires 1h;
+      }
+
+      location / {
+
+        if ($request_method ~ ^(PUT|POST|DELETE|PATCH)$) {
+            return 405;  # Method Not Allowed
+        }
+          auth_basic "GitLab Packages Registry Proxy";
+          auth_basic_user_file /etc/nginx/auth/.htpasswd;
+          proxy_pass https://gitlab.com;
+          proxy_set_header Host "gitlab.com";
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_set_header PRIVATE-TOKEN "GITLAB PERSONAL TOKEN WITH API SCOPE";
+          proxy_set_header Authorization "";
+
+
+        # Artifacts cache settings
+        proxy_cache_valid 200 206 1y;
+        proxy_cache_valid 404 1m;
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+
+         proxy_ssl_verify off;
+         proxy_ssl_server_name on;
+         proxy_ssl_name gitlab.com;  # SNI hostname
+         proxy_ssl_protocols TLSv1.2 TLSv1.3;
+      }
+
+      # Health check endpoint
+      location /health {
+          access_log off;
+          return 200 "healthy\n";
+          add_header Content-Type text/plain;
+      }
+    }

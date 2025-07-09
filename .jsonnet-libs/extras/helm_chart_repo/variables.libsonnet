@@ -49,6 +49,7 @@
       'ci-test',
       'chartmuseum',
       'falco-reporter',
+      'gitlab-proxy',
       'gitlab-steward',
       'helm-reaper',
       'iceman',
