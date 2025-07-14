@@ -84,7 +84,7 @@ stackgraph:
   # stackgraph.tolerations -- Toleration labels for pod assignment.
   tolerations: []
   # stackgraph.version -- Version of stackgraph to use
-  version: 7.10.3
+  version: 7.10.4
 console:
   # console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
   enabled: true
