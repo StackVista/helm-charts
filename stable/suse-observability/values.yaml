@@ -1534,7 +1534,7 @@ stackstate:
     # stackstate.authentication.adminPassword -- Password for the 'admin' user that StackState creates by default
     adminPassword:
     # stackstate.authentication.sessionLifetime -- Amount of time to keep a session when a user does not log in
-    sessionLifetime: 7d
+    sessionLifetime: ""
     # stackstate.authentication.roles -- Extend the default role names in StackState
     roles:
       # stackstate.authentication.roles.admin -- Extend the role names that have admin permissions (default: 'stackstate-admin')

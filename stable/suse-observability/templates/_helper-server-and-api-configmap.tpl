@@ -305,7 +305,8 @@ for production this should be replaced with one of the other mechanisms.
 {{- fail "More than 1 authentication mechanism specified. Please configure only one from: keycloak, oidc, rancher or ldap. If none are configured the default admin user will be made available with the stackstate.authentication.adminPassword." -}}
 {{- end }}
 
-{{ $authnPrefix }}.sessionLifetime =  {{ $apiAuth.sessionLifetime | default "7d" | toJson }}
+{{- $defaultSessionLifetime := ternary "16h" "7d" (not (empty $apiAuth.rancher))  }}
+{{ $authnPrefix }}.sessionLifetime =  {{ $apiAuth.sessionLifetime | default $defaultSessionLifetime | toJson }}
 
 {{- range $k, $v := $apiAuth.roles.custom }}
 {{ $authzPrefix }}.staticSubjects.{{ $k | quote }}: { systemPermissions: {{ $v.systemPermissions | toJson }}{{ if $v.resourcePermissions }}, resourcePermissions: {{ $v.resourcePermissions | toJson }}{{end}}{{ if $v.viewPermissions }}, viewPermissions: {{ $v.viewPermissions | toJson }}{{end}}{{ if $v.topologyScope }}, query: {{ $v.topologyScope | quote }}{{end}} }
