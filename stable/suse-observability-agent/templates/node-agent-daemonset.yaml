@@ -42,7 +42,7 @@ spec:
           {{- include "container-process-agent" . | nindent 6 }}
         {{- end }}
       dnsPolicy: ClusterFirstWithHostNet
-      hostNetwork: true
+      hostNetwork: {{ .Values.nodeAgent.useHostNetwork }}
       hostPID: true
       {{- if .Values.nodeAgent.priorityClassName }}
       priorityClassName: {{ .Values.nodeAgent.priorityClassName }}
