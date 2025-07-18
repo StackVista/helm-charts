@@ -14,12 +14,21 @@ data:
         - name: envoy.filters.network.http_connection_manager
           typed_config:
             "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
-            {{- if .Values.stackstate.components.router.accesslog.enabled }}
+            {{- if or .Values.stackstate.components.router.errorlog.enabled .Values.stackstate.components.router.accesslog.enabled }}
             access_log:
             - name: envoy.access_loggers.file
               typed_config:
                 "@type": type.googleapis.com/envoy.extensions.access_loggers.file.v3.FileAccessLog
                 path: /dev/stdout
+            {{- if not .Values.stackstate.components.router.accesslog.enabled }}
+              filter:
+                status_code_filter:
+                  comparison:
+                    op: GE
+                    value:
+                      default_value: 400
+                      runtime_key: log_ge_response_status_code
+            {{- end }}
             {{- end }}
             codec_type: AUTO
             stat_prefix: ingress_http

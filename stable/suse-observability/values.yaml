@@ -977,6 +977,9 @@ stackstate:
           # stackstate.components.receiver.split.logs.affinity -- Additional affinity settings for pod assignment.
           affinity: {}
     router:
+      errorlog:
+        # stackstate.components.router.errorlog.enabled -- Enable error logging on the router
+        enabled: true
       accesslog:
         # stackstate.components.router.accesslog.enabled -- Enable access logging on the router
         enabled: false
