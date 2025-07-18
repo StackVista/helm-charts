@@ -27,6 +27,19 @@ func TestSecret(t *testing.T) {
 	assert.Equal(t, string(secret.Data["STS_CLUSTER_AGENT_AUTH_TOKEN"]), "test_cluster_auth_token")
 }
 
+func TestMissingApiKey(t *testing.T) {
+	error := helmtestutil.RenderHelmTemplateError(t, "suse-observability-agent", "values/minimal.yaml", "values/no_api_key.yaml")
+	assert.Contains(t, error.Error(), "Please provide an api key.")
+}
+
+func TestMissingApiKeyDoesRenderWithLegacySecret(t *testing.T) {
+	helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/no_api_key_with_legacy_secret.yaml")
+}
+
+func TestMissingApiKeyDoesRenderWithGlobalSecret(t *testing.T) {
+	helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/no_api_key_with_global_secret.yaml")
+}
+
 func TestExtraEnvSecrets(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/secrets.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
