@@ -56,11 +56,14 @@ container:
   securityContext:
     # container.securityContext.allowPrivilegeEscalation -- Controls whether a process can gain more privileges than its parent process.
     allowPrivilegeEscalation: false
+    # container.securityContext.capabilities.drop -- Drops all Linux capabilities by default.
     capabilities:
-      # container.securityContext.capabilities.drop -- Drops all Linux capabilities by default.
       drop:
-        - all
-    # runAsNonRoot: true
+        - ALL
+    # container.securityContext.seccompProfile.type -- Sets the Seccomp profile for a Container.
+    seccompProfile:
+      type: RuntimeDefault
+    runAsNonRoot: true
     # runAsUser: 65534
 
 cronjob:

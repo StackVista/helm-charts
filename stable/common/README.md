@@ -33,7 +33,9 @@ Common chartbuilding components and helpers
 | container.readinessProbeDefaults.timeoutSeconds | int | `2` | `timeoutSeconds` for the readiness probe. |
 | container.resources | object | `{}` | Container resource requests / limits. |
 | container.securityContext.allowPrivilegeEscalation | bool | `false` | Controls whether a process can gain more privileges than its parent process. |
-| container.securityContext.capabilities.drop | list | `["all"]` | Drops all Linux capabilities by default. |
+| container.securityContext.capabilities.drop | list | `["ALL"]` | Drops all Linux capabilities by default. |
+| container.securityContext.runAsNonRoot | bool | `true` |  |
+| container.securityContext.seccompProfile.type | string | `"RuntimeDefault"` | Sets the Seccomp profile for a Container. |
 | cronjob.annotations | object | `{}` | Annotations for `CronJob` objects. |
 | cronjob.concurrencyPolicy | string | `"Forbid"` | Specifies how to treat concurrent executions of a job that is created by this `CronJob` object. |
 | cronjob.dnsPolicy | string | `"ClusterFirst"` | DNS policy to apply to `Pod` objects. |
