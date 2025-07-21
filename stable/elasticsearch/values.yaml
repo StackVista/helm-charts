@@ -201,6 +201,9 @@ securityContext:
   # readOnlyRootFilesystem: true
   runAsNonRoot: true
   runAsUser: 1000
+  seccompProfile:
+    type: RuntimeDefault
+  allowPrivilegeEscalation: false
 
 # How long to wait for elasticsearch to stop gracefully
 terminationGracePeriod: 120

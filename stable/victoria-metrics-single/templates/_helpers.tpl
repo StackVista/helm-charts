@@ -139,6 +139,7 @@ Return if ingress supports pathType.
 
 {{- define "victoria-metrics.initContiners" -}}
 {{- if eq (include "victoria-metrics.hasInitContainer" . ) "true" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- with .Values.server.initContainers -}}
 {{ toYaml . }}
 {{- end -}}
@@ -156,6 +157,8 @@ Return if ingress supports pathType.
   {{- with .Values.server.vmbackupmanager.resources }}
   resources: {{ toYaml . | nindent 12  }}
   {{- end }}
+  securityContext:
+    {{- $commonContainer.securityContext | toYaml | nindent 12 }}
   {{- with .Values.server.vmbackupmanager.env }}
   env: {{ toYaml . | nindent 12 }}
   {{- end }}

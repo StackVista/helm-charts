@@ -1,4 +1,5 @@
 {{- define "stackstate.kafkaTopicCreate.job.initContainer.main" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
 name: kafka-topic-create-init
 command:
 - sh
@@ -7,6 +8,8 @@ command:
   /entrypoint -c {{ include "stackstate.kafka.endpoint" . }} -t 300
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
 imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+securityContext:
+  {{- $commonContainer.securityContext | toYaml | nindent 2 }}
 {{- end }}
 
 {{- define "stackstate.kafkaTopicCreate.job.container.main" -}}

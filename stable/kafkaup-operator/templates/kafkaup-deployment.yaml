@@ -1,3 +1,4 @@
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -38,6 +39,8 @@ spec:
         - --namespace
         - {{ .Release.Namespace }}
         - -vv
+        securityContext:
+          {{- $commonContainer.securityContext | toYaml | nindent 10 }}
         volumeMounts:
         - name: kafkaup-config-volume
           mountPath: /conf.d

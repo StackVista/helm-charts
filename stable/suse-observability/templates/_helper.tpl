@@ -639,6 +639,7 @@ volumeMounts:
 Init container to load stackpacks from docker image
 */}}
 {{- define "stackstate.initContainer.stackpacks" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
 name: init-stackpacks
 {{- $deploymentMode := .Values.stackstate.stackpacks.image.deploymentModeOverride | default .Values.stackstate.deployment.mode | lower -}}
 {{- $tag := printf "%s-%s-%s" .Values.stackstate.stackpacks.image.version (lower .Values.stackstate.deployment.edition ) $deploymentMode }}
@@ -647,6 +648,8 @@ imagePullPolicy: {{ .Values.stackstate.stackpacks.image.pullPolicy | quote }}
 args: ["/var/stackpacks"]
 volumeMounts:
 {{ include "stackstate.stackpacks.volumeMount" . }}
+securityContext:
+  {{- $commonContainer.securityContext | toYaml | nindent 8 }}
 {{- end -}}
 
 {{/*

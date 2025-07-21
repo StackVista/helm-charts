@@ -1,4 +1,5 @@
 {{- if and .Values.server.enabled .Values.server.statefulSet.enabled -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -60,6 +61,8 @@ spec:
               value: "{{ tpl .Values.backup.overrideS3Endpoint . }}"
             - name: S3_PREFIX
               value: {{ tpl .Values.backup.s3Prefix . | quote }}
+          securityContext:
+            {{- $commonContainer.securityContext | toYaml | nindent 12 }}
           volumeMounts:
             - name: crontab
               mountPath: /app/crontab
@@ -141,6 +144,8 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.server.resources | nindent 12 }}
+          securityContext:
+            {{- $commonContainer.securityContext | toYaml | nindent 12 }}
           volumeMounts:
             - name: server-volume
               mountPath: {{ .Values.server.persistentVolume.mountPath }}
@@ -182,6 +187,8 @@ spec:
             - /app/crontab/vmbackup
           resources:
 {{ toYaml .Values.backup.vmbackup.resources | indent 12 }}
+          securityContext:
+            {{- $commonContainer.securityContext | toYaml | nindent 12 }}
           env:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
@@ -229,6 +236,8 @@ spec:
           {{- with .Values.server.vmbackupmanager.resources }}
           resources: {{ toYaml . | nindent 12  }}
           {{- end }}
+          securityContext:
+            {{- $commonContainer.securityContext | toYaml | nindent 12 }}
           {{- with $.Values.server.vmbackupmanager.livenessProbe }}
           livenessProbe: {{- toYaml . | nindent 12 }}
           {{- end }}

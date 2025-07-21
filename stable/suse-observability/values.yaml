@@ -1943,6 +1943,14 @@ kafka:
       resources:
         limits: {}
         requests: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
   # kafka.fullnameOverride -- Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
   fullnameOverride: suse-observability-kafka
   image:
@@ -1994,6 +2002,16 @@ kafka:
           cpu: "200m"
           memory: "300Mi"
           ephemeral-storage: "1Mi"
+      containerSecurityContext:
+        enabled: true
+        runAsUser: 1001
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
     serviceMonitor:
       # kafka.metrics.serviceMonitor.enabled -- If `true`, creates a Prometheus Operator `ServiceMonitor` (also requires `kafka.metrics.kafka.enabled` or `kafka.metrics.jmx.enabled` to be `true`).
       enabled: false
@@ -2044,6 +2062,17 @@ kafka:
     minAvailable: ""
     ## kafka.pdb.maxUnavailable Maximum number/percentage of unavailable Kafka replicas
     maxUnavailable: 1
+  # kafka.containterSecurityContext - Kafka containers' Security Context
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 1001
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
 minio:
   # minio.replicas -- Number of MinIO replicas.
   replicas: 1
@@ -2155,6 +2184,17 @@ zookeeper:
     minAvailable: ""
     ## zookeeper.pdb.maxUnavailable Maximum number/percentage of unavailable Zookeeper replicas
     maxUnavailable: 1
+  # zookeper.containerSecurityContext - Configure Container Security Context
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 1001
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
 anomaly-detection:
   # anomaly-detection.enabled -- Enables anomaly detection chart
   enabled: false
@@ -2769,6 +2809,13 @@ clickhouse:
         - /app/entrypoint.sh
       securityContext:
         runAsUser: 1001
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       ports:
         - containerPort: 9746
           name: supercronic

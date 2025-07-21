@@ -167,7 +167,10 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | revisionHistoryLimit | int | `10` |  |
 | rollout.rollingUpdate | object | `{}` |  |
 | rollout.strategy | string | `"RollingUpdate"` |  |
-| securityContext | object | `{}` |  |
+| securityContext.allowPrivilegeEscalation | bool | `false` |  |
+| securityContext.capabilities.drop[0] | string | `"ALL"` |  |
+| securityContext.runAsNonRoot | bool | `true` |  |
+| securityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | service.annotations | object | `{}` |  |
 | service.type | string | `"ClusterIP"` |  |
 | serviceAccount.annotations | object | `{}` |  |

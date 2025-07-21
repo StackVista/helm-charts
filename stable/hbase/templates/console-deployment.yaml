@@ -1,4 +1,5 @@
 {{- define "hbase.console.container.main" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
 name: console
 image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.console.image.repository }}:{{ default (printf "%s-%s" .Values.version .Values.stackgraph.version) .Values.console.image.tag }}"
 imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.console.image.pullPolicy | quote }}
@@ -21,7 +22,7 @@ resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 securityContext:
-  runAsNonRoot: true
+  {{- $commonContainer.securityContext | toYaml | nindent 2 }}
 workingDir: /tmp
 {{- end -}}
 

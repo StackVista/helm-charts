@@ -108,10 +108,12 @@ Official Elastic helm chart for Elasticsearch
 | secret.enabled | bool | `false` |  |
 | secret.password | string | `""` |  |
 | secretMounts | list | `[]` |  |
+| securityContext.allowPrivilegeEscalation | bool | `false` |  |
 | securityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | securityContext.enabled | bool | `true` |  |
 | securityContext.runAsNonRoot | bool | `true` |  |
 | securityContext.runAsUser | int | `1000` |  |
+| securityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | service.annotations | object | `{}` |  |
 | service.httpPortName | string | `"http"` |  |
 | service.labels | object | `{}` |  |
