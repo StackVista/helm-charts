@@ -262,6 +262,7 @@ stackstate/stackstate-k8s-agent
 | nodeAgent.serviceaccount.annotations | object | `{}` | Annotations for the service account for the agent daemonset pods |
 | nodeAgent.skipKubeletTLSVerify | bool | `false` | Set to true if you want to skip kubelet tls verification. |
 | nodeAgent.useHostNetwork | bool | `false` | Set to true if you want to deploy the node agent in the host network namespace. |
+| nodeAgent.useHostPID | bool | `true` | Set to true if you want to deploy the node agent in the host PID namespace. |
 | nodeAgent.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
 | nodeAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | nodeAgent.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":100},"type":"RollingUpdate"}` | The update strategy for the DaemonSet object. |

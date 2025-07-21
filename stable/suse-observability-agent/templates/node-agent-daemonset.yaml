@@ -43,7 +43,7 @@ spec:
         {{- end }}
       dnsPolicy: ClusterFirstWithHostNet
       hostNetwork: {{ .Values.nodeAgent.useHostNetwork }}
-      hostPID: true
+      hostPID: {{ .Values.nodeAgent.useHostPID }}
       {{- if .Values.nodeAgent.priorityClassName }}
       priorityClassName: {{ .Values.nodeAgent.priorityClassName }}
       {{- end }}
