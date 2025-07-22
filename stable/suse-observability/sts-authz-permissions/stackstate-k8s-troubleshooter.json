@@ -33,6 +33,7 @@
         "delete-monitors",
         "execute-monitors",
         "get-stackpacks",
-        "update-stackpacks"
+        "update-stackpacks",
+        "get-topology"
     ]
 }
