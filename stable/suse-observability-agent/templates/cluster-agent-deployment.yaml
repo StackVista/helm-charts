@@ -24,6 +24,7 @@ spec:
       annotations:
         {{- include "stackstate-k8s-agent.checksum-configs" . | nindent 8 }}
         {{- include "stackstate-k8s-agent.configmap.override.checksum" . | nindent 8 }}
+        {{- include "stackstate-k8s-agent.customCertificates.checksum" . | nindent 8 }}
 {{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 8 }}
       labels:
         app.kubernetes.io/component: cluster-agent
@@ -148,6 +149,7 @@ spec:
             readOnly: true
           {{- end }}
           {{- end }}
+          {{- include "stackstate-k8s-agent.customCertificates.volumeMount" . | nindent 10 }}
       nodeSelector:
         {{ template "label.os" . }}: {{ .Values.targetSystem }}
         {{- with .Values.clusterAgent.nodeSelector }}
@@ -167,3 +169,4 @@ spec:
         - name: config-override-volume
           configMap:
             name: {{ .Release.Name }}-cluster-agent
+        {{- include "stackstate-k8s-agent.customCertificates.volume" . | nindent 8 }}

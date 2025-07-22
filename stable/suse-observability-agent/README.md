@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.0.53`
+Current chart version is `1.0.54`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -156,6 +156,10 @@ stackstate/stackstate-k8s-agent
 | fullnameOverride | string | `""` | Override the fullname of the chart. |
 | global.apiKey.fromSecret | string | `"{{ include \"stackstate-k8s-agent.secret.internal.name\" . }}"` | The secret from which the receiver api key is taken. Will execute as a template. Overriding this will allow setting the api key from an externally provided secret. The api key will be picked form the STS_API_KEY value |
 | global.clusterAgentAuthToken.fromSecret | string | `"{{ include \"stackstate-k8s-agent.secret.internal.name\" . }}"` | The secret from from which the token for authenticating between node and cluster agent will be taken. Overriding this will allow setting the api key from an externally provided secret. The api key will be picked form the STS_CLUSTER_AGENT_AUTH_TOKEN value |
+| global.customCertificates | object | `{"configMapName":"","enabled":false,"pemData":""}` | Custom certificates for HTTPS endpoints |
+| global.customCertificates.configMapName | string | `""` | Name of existing ConfigMap containing certificates (exclusive with pemData) |
+| global.customCertificates.enabled | bool | `false` | Enable custom certificate injection |
+| global.customCertificates.pemData | string | `""` | PEM-encoded certificate data (exclusive with configMapName), will be stored as tls.pem |
 | global.extraAnnotations | object | `{}` | Extra annotations added ta all resources created by the helm chart |
 | global.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | global.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |

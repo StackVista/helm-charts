@@ -158,6 +158,7 @@
     readOnly: true
   {{- end }}
   {{- end }}
+  {{- include "stackstate-k8s-agent.customCertificates.volumeMount" . | nindent 2 }}
 {{- if .Values.all.hardening.enabled}}
   securityContext:
     privileged: true

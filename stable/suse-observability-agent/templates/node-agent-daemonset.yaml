@@ -25,6 +25,7 @@ spec:
       annotations:
         {{- include "stackstate-k8s-agent.checksum-configs" . | nindent 8 }}
         {{- include "stackstate-k8s-agent.nodeAgent.configmap.override.checksum" . | nindent 8 }}
+        {{- include "stackstate-k8s-agent.customCertificates.checksum" . | nindent 8 }}
 {{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 8 }}
       labels:
         app.kubernetes.io/component: node-agent
@@ -108,3 +109,4 @@ spec:
         configMap:
           name: {{ .Release.Name }}-node-agent
       {{- end }}
+      {{- include "stackstate-k8s-agent.customCertificates.volume" . | nindent 6 }}

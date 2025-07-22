@@ -25,6 +25,7 @@ spec:
       annotations:
         {{- include "stackstate-k8s-agent.checksum-configs" . | nindent 8 }}
         {{- include "stackstate-k8s-agent.logsAgent.configmap.override.checksum" . | nindent 8 }}
+        {{- include "stackstate-k8s-agent.customCertificates.checksum" . | nindent 8 }}
 {{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 8 }}
       labels:
         app.kubernetes.io/component: logs-agent
@@ -62,6 +63,7 @@ spec:
             - name: varlibdockercontainers
               mountPath: /var/lib/docker/containers
               readOnly: true
+            {{- include "stackstate-k8s-agent.customCertificates.volumeMount" . | nindent 12 }}
       {{- if .Values.logsAgent.priorityClassName }}
       priorityClassName: {{ .Values.logsAgent.priorityClassName }}
       {{- end }}
@@ -88,4 +90,5 @@ spec:
         - name: logs-agent-config
           configMap:
             name: {{ .Release.Name }}-logs-agent
+        {{- include "stackstate-k8s-agent.customCertificates.volume" . | nindent 8 }}
 {{- end -}}

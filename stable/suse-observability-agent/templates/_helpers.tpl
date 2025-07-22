@@ -251,3 +251,50 @@ Returns a YAML with extra labels
 {{- define "stackstate-k8s-agent.api-key.secret.name" -}}
 {{ include "stackstate-k8s-agent.externalOrInternal" (merge (dict "external" .Values.global.receiverApiKeySecret "internalName" "api-key") .) | quote }}
 {{- end }}
+
+{{/*
+Custom certificates ConfigMap name
+*/}}
+{{- define "stackstate-k8s-agent.customCertificates.configmap.name" -}}
+{{ include "stackstate-k8s-agent.releasename" . }}-custom-certificates
+{{- end -}}
+
+{{/*
+Custom certificates volume definition
+*/}}
+{{- define "stackstate-k8s-agent.customCertificates.volume" -}}
+{{- if .Values.global.customCertificates.enabled }}
+- name: custom-certificates
+  configMap:
+    name: {{ if .Values.global.customCertificates.configMapName }}{{ .Values.global.customCertificates.configMapName }}{{ else }}{{ include "stackstate-k8s-agent.customCertificates.configmap.name" . }}{{ end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Custom certificates volume mount definition
+*/}}
+{{- define "stackstate-k8s-agent.customCertificates.volumeMount" -}}
+{{- if .Values.global.customCertificates.enabled }}
+- name: custom-certificates
+  mountPath: /etc/pki/tls/certs
+  readOnly: true
+{{- end }}
+{{- end -}}
+
+{{/*
+Custom certificates ConfigMap checksum annotation
+*/}}
+{{- define "stackstate-k8s-agent.customCertificates.checksum" -}}
+{{- if and .Values.global.customCertificates.enabled .Values.global.customCertificates.pemData (not .Values.global.customCertificates.configMapName) }}
+checksum/custom-certificates: {{ include (print $.Template.BasePath "/custom-certificates-configmap.yaml") . | sha256sum }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Custom certificates validation - fail if both configMapName and pemData are provided
+*/}}
+{{- define "stackstate-k8s-agent.customCertificates.validate" -}}
+{{- if and .Values.global.customCertificates.enabled .Values.global.customCertificates.configMapName .Values.global.customCertificates.pemData }}
+{{- fail "Error: Both global.customCertificates.configMapName and global.customCertificates.pemData are provided. Please use only one approach - either specify an external ConfigMap name OR provide PEM data directly, not both." }}
+{{- end }}
+{{- end -}}

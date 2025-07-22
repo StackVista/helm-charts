@@ -19,6 +19,14 @@ global:
     url: ""
   # global.skipSslValidation -- Enable tls validation from client
   skipSslValidation: false
+  # global.customCertificates -- Custom certificates for HTTPS endpoints
+  customCertificates:
+    # global.customCertificates.enabled -- Enable custom certificate injection
+    enabled: false
+    # global.customCertificates.configMapName -- Name of existing ConfigMap containing certificates (exclusive with pemData)
+    configMapName: ""
+    # global.customCertificates.pemData -- PEM-encoded certificate data (exclusive with configMapName), will be stored as tls.pem
+    pemData: ""
 
   # global.extraLabels -- Extra labels added ta all resources created by the helm chart
   extraLabels: {}
