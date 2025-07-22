@@ -18,8 +18,8 @@ Current chart version is `2.3.8-pre.11`
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.0 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../victoria-metrics-cluster | victoriametrics-cluster(victoria-metrics-cluster) | 0.14.6-stackstate.1 |
-| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.21 |
-| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.21 |
+| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.22 |
+| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.22 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.164 |
 | https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.14 |
 | https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | clickhouse | 3.6.9 |

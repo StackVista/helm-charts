@@ -10,4 +10,4 @@ maintainers:
 - name: Stackstate Ops Team
   email: ops@stackstate.com
 name: common
-version: 0.4.25
+version: 0.4.26
