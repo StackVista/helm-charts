@@ -11,10 +11,10 @@ Current chart version is `2.3.8-pre.11`
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common/ | common | * |
-| file://../elasticsearch/ | elasticsearch | 8.11.4-stackstate.5 |
+| file://../elasticsearch/ | elasticsearch | 8.11.4-stackstate.6 |
 | file://../hbase/ | hbase | 0.2.65 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
-| file://../minio/ | minio | 8.0.10-stackstate.11 |
+| file://../minio/ | minio | 8.0.10-stackstate.12 |
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.0 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../victoria-metrics-cluster | victoriametrics-cluster(victoria-metrics-cluster) | 0.14.6-stackstate.1 |

@@ -7,7 +7,7 @@ dependencies:
   version: 0.4.26
 - name: elasticsearch
   repository: file://../elasticsearch/
-  version: 8.11.4-stackstate.5
+  version: 8.11.4-stackstate.6
 - name: hbase
   repository: file://../hbase/
   version: 0.2.65
@@ -19,7 +19,7 @@ dependencies:
   version: 0.1.9
 - name: minio
   repository: file://../minio/
-  version: 8.0.10-stackstate.11
+  version: 8.0.10-stackstate.12
 - name: pull-secret
   repository: file://../pull-secret/
   version: 1.0.2
