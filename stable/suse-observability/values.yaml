@@ -1671,6 +1671,9 @@ stackstate:
 # Dependency chart overrides #
 ##############################
 elasticsearch:
+  # elasticsearch.sysctlInitContainer -- Enable privileged init container to increase Elasticsearch virtual memory on underlying nodes.
+  sysctlInitContainer:
+    enabled: true
   # elasticsearch.clusterHealthCheckParams -- The Elasticsearch cluster health status params that will be used by readinessProbe command
   clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
   # elasticsearch.clusterName -- Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
