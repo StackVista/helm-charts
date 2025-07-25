@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.0.54`
+Current chart version is `1.0.55`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -268,7 +268,7 @@ stackstate/stackstate-k8s-agent
 | nodeAgent.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
 | nodeAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | nodeAgent.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":100},"type":"RollingUpdate"}` | The update strategy for the DaemonSet object. |
-| nodeAgent.useHostNetwork | bool | `false` | Set to true if you want to deploy the node agent in the host network namespace. |
+| nodeAgent.useHostNetwork | bool | `true` | Set to true if you want to deploy the node agent in the host network namespace. |
 | nodeAgent.useHostPID | bool | `true` | Set to true if you want to deploy the node agent in the host PID namespace. |
 | openShiftLogging.installSecret | bool | `false` | Install a secret for logging on openshift |
 | processAgent.checkIntervals.connections | int | `30` | Override the default value of the connections check interval in seconds. |

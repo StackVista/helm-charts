@@ -116,7 +116,7 @@ nodeAgent:
   # nodeAgent.skipKubeletTLSVerify -- Set to true if you want to skip kubelet tls verification.
   skipKubeletTLSVerify: false
   # nodeAgent.useHostNetwork -- Set to true if you want to deploy the node agent in the host network namespace.
-  useHostNetwork: false
+  useHostNetwork: true
   # nodeAgent.useHostPID -- Set to true if you want to deploy the node agent in the host PID namespace.
   useHostPID: true
   # nodeAgent.checksTagCardinality -- low, orchestrator or high. Orchestrator level adds pod_name, high adds display_container_name
