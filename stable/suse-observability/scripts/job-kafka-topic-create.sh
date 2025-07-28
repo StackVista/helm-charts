@@ -65,6 +65,9 @@ createOrUpdateTopic "sts_internal_topology" "1" "${ephemeralRetention}" &
 PIDS+=($!)
 createOrUpdateTopic "sts_health_sync_settings" "1" "${ephemeralRetention}" &
 PIDS+=($!)
+createOrUpdateTopic "sts_topology_stream" "10" "${ephemeralRetention}" &
+PIDS+=($!)
+
 
 for pid in "${PIDS[@]}"; do
   wait "$pid"
