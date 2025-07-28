@@ -129,6 +129,9 @@ spec:
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
+{{- if .Values.backup.stackGraph.securityContext.enabled }}
+      securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 8 }}
+{{- end }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
       restartPolicy: Never
