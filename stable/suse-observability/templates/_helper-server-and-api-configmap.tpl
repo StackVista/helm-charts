@@ -39,7 +39,7 @@ stackstate.authorization.staticSubjects.stackstate-aad: { systemPermissions: ["g
 {{- end }}
 
 {{- else }}
-{{/* In SaaS mode, the stackstate.authorization block will be ignored and we will overwrite the reference to it from the stackstate.api.authorization */}}
+{{/* In Saas mode, the stackstate.authorization block will be ignored and we will overwrite the reference to it from the stackstate.api.authorization */}}
 stackstate.api.authorization: {}
 stackstate.api.authorization.staticSubjects.stackstate-k8s-troubleshooter: {{- $files.Get "sts-authz-permissions/stackstate-k8s-troubleshooter.json" }}
 stackstate.api.authorization.staticSubjects.stackstate-k8s-admin: {{- $files.Get "sts-authz-permissions/stackstate-k8s-admin.json" }}

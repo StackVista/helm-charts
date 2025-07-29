@@ -1,5 +1,5 @@
-{{- if not (or (eq .Values.stackstate.deployment.mode "SelfHosted") (eq .Values.stackstate.deployment.mode "SaaS")) -}}
-  {{- fail "Please set stackstate.deployment.mode to either SelfHosted or SaaS." -}}
+{{- if not (or (eq .Values.stackstate.deployment.mode "SelfHosted") (eq .Values.stackstate.deployment.mode "Saas")) -}}
+  {{- fail "Please set stackstate.deployment.mode to either SelfHosted or Saas." -}}
 {{- end }}
 {{- if not (or (eq .Values.stackstate.deployment.edition "Prime") (eq .Values.stackstate.deployment.edition "Community")) -}}
   {{- fail "Please set stackstate.deployment.edition to either Prime or Community." -}}

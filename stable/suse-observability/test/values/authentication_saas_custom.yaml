@@ -40,4 +40,4 @@ stackstate:
         }
       }
   deployment:
-    mode: "SaaS"
+    mode: "Saas"

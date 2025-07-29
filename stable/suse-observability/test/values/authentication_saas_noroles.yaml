@@ -3,4 +3,4 @@ stackstate:
     roles:
       custom: {}
   deployment:
-    mode: "SaaS"
+    mode: "Saas"

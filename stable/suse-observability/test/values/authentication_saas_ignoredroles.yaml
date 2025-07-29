@@ -6,4 +6,4 @@ stackstate:
       powerUser: ["extra-power-user"]
       custom: {}
   deployment:
-    mode: "SaaS"
+    mode: "Saas"

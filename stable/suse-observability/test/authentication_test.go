@@ -299,7 +299,7 @@ func TestAuthenticationRolesUndefinedAdminSplit(t *testing.T) {
 	})
 }
 
-func TestNoAuthenticationRolesSaaS(t *testing.T) {
+func TestNoAuthenticationRolesSaas(t *testing.T) {
 	RunConfigMapTestF(t, "suse-observability-server", []string{"values/authentication_saas_noroles.yaml", "values/split_disabled.yaml"}, func(stringData string) {
 		// check that the suse-observability-troubleshooter role is added
 		require.Contains(t, stringData, "stackstate-k8s-troubleshooter")
@@ -307,7 +307,7 @@ func TestNoAuthenticationRolesSaaS(t *testing.T) {
 	})
 }
 
-func TestIgnoredAuthenticationRolesSaaS(t *testing.T) {
+func TestIgnoredAuthenticationRolesSaas(t *testing.T) {
 	RunConfigMapTestF(t, "suse-observability-server", []string{"values/authentication_saas_noroles.yaml", "values/split_disabled.yaml"}, func(stringData string) {
 		// check that the suse-observability-troubleshooter role is added
 		require.Contains(t, stringData, "stackstate-k8s-troubleshooter")
@@ -318,7 +318,7 @@ func TestIgnoredAuthenticationRolesSaaS(t *testing.T) {
 	})
 }
 
-func TestCustomAuthenticationRolesSaaS(t *testing.T) {
+func TestCustomAuthenticationRolesSaas(t *testing.T) {
 	RunConfigMapTestF(t, "suse-observability-server", []string{"values/authentication_saas_custom.yaml", "values/split_disabled.yaml"}, func(stringData string) {
 		// check that the suse-observability-troubleshooter role is added
 		require.Contains(t, stringData, "stackstate-k8s-troubleshooter")
