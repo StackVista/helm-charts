@@ -17,8 +17,6 @@ spec:
   type: ClusterIP
 {{- end -}}
 
-{{- if .Values.stackstate.experimental.enableVMAgent }}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $vmagentService := fromYaml (include "stackstate.vmagent.service" .) -}}
 {{- toYaml (merge $vmagentService $commonService) -}}
-{{- end -}}

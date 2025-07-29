@@ -16,7 +16,7 @@ spec:
     app.kubernetes.io/component: state
 {{- end -}}
 
-{{- if .Values.stackstate.experimental.server.split }}
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $stsStackstateStateService := fromYaml (include "stackstate.state.service" .) -}}
 {{- toYaml (merge $stsStackstateStateService $commonService) -}}

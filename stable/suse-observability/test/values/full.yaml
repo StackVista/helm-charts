@@ -26,8 +26,6 @@ stackstate:
   baseUrl: "http://localhost"
   license:
     key: "api01"
-  experimental:
-    metrics: true
 hbase:
   all:
     image:

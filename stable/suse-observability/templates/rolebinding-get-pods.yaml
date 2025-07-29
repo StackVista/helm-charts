@@ -7,7 +7,7 @@ roleRef:
   name: {{ template "common.fullname.short" . }}-get-pods
   apiGroup: rbac.authorization.k8s.io
 subjects:
-{{- if .Values.stackstate.experimental.server.split }}
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
 - kind: ServiceAccount
   name: {{ template "common.fullname.short" . }}-api
 - kind: ServiceAccount

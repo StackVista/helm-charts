@@ -5,7 +5,7 @@ metadata:
 {{- include "stackstate.config.email" .  | nindent 4 }}
 {{- end -}}
 
-{{- if .Values.stackstate.experimental.server.split }}
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $stackstateNotificationConfigMap := fromYaml (include "stackstate.notification.configmap" .) -}}
 {{- toYaml (merge $stackstateNotificationConfigMap $commonConfigMap) -}}

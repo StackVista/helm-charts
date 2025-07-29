@@ -188,7 +188,7 @@ spec:
       {{- end }}
 {{- end -}}
 
-{{- if not .Values.stackstate.experimental.server.split }}
+{{- if not (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .)) }}
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 {{- $serverDeployment := fromYaml (include "stackstate.server.deployment" .) -}}
 {{- toYaml (merge $serverDeployment $commonDeployment) -}}

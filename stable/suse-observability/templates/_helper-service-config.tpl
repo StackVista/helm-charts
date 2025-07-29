@@ -42,10 +42,10 @@
 {{- else }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_singleWriter_releaseRevision" "1" }}
 {{- end -}}
-{{- if .Values.stackstate.experimental.traces }}
+{{- if include "suse-observability.features.enabled" (dict "key" "traces" "context" .) }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_traces" "true" }}
 {{- end -}}
-{{- if .Values.stackstate.experimental.dashboards }}
+{{- if include "suse-observability.features.enabled" (dict "key" "dashboards" "context" .) }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_dashboards" "true" }}
 {{- end -}}
 
@@ -161,7 +161,7 @@ data:
 {{- end -}}
 
 {{- define "stackstate.service.configmap.clickhouseconfig" -}}
-{{- if .Values.stackstate.experimental.traces }}
+{{- if include "suse-observability.features.enabled" (dict "key" "traces" "context" .) }}
 stackstate.traces.clickHouse = {{- .Values.stackstate.components.all.clickHouse | toPrettyJson }}
 {{- end }}
 {{- end -}}

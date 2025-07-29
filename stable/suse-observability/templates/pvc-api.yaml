@@ -1,4 +1,5 @@
 {{- define "stackstate.api.persistentvolumeclaim.txLog" -}}
+{{- $storageClass := include "suse-observability.features.get" (dict "key" "storeTransactionLogsToPVC.storageClass" "context" . ) }}
 metadata:
   name: {{ template "common.fullname.short" . }}-api-txlog
 spec:
@@ -6,11 +7,13 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.stackstate.experimental.storeTransactionLogsToPVC.volumeSize }}
-  {{ include "common.storage.class" ( dict "persistence" .Values.stackstate.experimental.storeTransactionLogsToPVC "global" .Values.global) | nindent 2 }}
+      storage: {{ include "suse-observability.features.get" (dict "key" "storeTransactionLogsToPVC.volumeSize" "context" . )}}
+{{- if ne $storageClass "<no value>" }}
+  storageClassName: {{ $storageClass }}
+{{- end }}
 {{- end -}}
 
-{{- if and .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled .Values.stackstate.experimental.server.split }}
+{{- if and (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .)) }}
 {{- $commonPVC := fromYaml (include "common.persistentvolumeclaim" .) -}}
 {{- $stackstateApiPVCTxLog := fromYaml (include "stackstate.api.persistentvolumeclaim.txLog" .) -}}
 {{- toYaml (merge $stackstateApiPVCTxLog $commonPVC) -}}

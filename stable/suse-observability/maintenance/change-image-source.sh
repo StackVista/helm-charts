@@ -8,6 +8,13 @@ NO_COLOR='\033[0m'
 
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+# if Macos, use gsed
+sed_bin="sed"
+if [ "$(uname)" == "Darwin" ] ;
+then
+  sed_bin="gsed"
+fi
+
 function usage() {
   cat <<EOF >&2
 Change the registry and repository in the helm chart values file. This is meant as a pre-publishing step when the chart
@@ -66,10 +73,10 @@ fi
 
 function updateDockerImagesInValues() {
   echo "Updating values.yaml to use new docker images"
-  sed -i "s#registry: [^/:]\+\$#registry: $docker_registry_to#g" "$helm_chart_dir/values.yaml"
-  sed -i "s#repository: [^/:]\+\/[^/:]\+\/\([^/:]\+\)\$#repository: $docker_registry_to/$docker_repo_to/\1#g" "$helm_chart_dir/values.yaml"
-  sed -i "s#repository: [^/:]\+\/\([^/:]\+\)\$#repository: $docker_repo_to/\1#g" "$helm_chart_dir/values.yaml"
-  sed -i "s#spotlightRepository: [^/:]\+\/\([^/:]\+\)\$#spotlightRepository: $docker_repo_to/\1#g" "$helm_chart_dir/values.yaml"
+  ${sed_bin} -i "s#registry: [^/:]\+\$#registry: $docker_registry_to#g" "$helm_chart_dir/values.yaml"
+  ${sed_bin} -i "s#repository: [^/:]\+\/[^/:]\+\/\([^/:]\+\)\$#repository: $docker_registry_to/$docker_repo_to/\1#g" "$helm_chart_dir/values.yaml"
+  ${sed_bin} -i "s#repository: [^/:]\+\/\([^/:]\+\)\$#repository: $docker_repo_to/\1#g" "$helm_chart_dir/values.yaml"
+  ${sed_bin} -i "s#spotlightRepository: [^/:]\+\/\([^/:]\+\)\$#spotlightRepository: $docker_repo_to/\1#g" "$helm_chart_dir/values.yaml"
 
   # Update elasticsearch
   yq e -i ".elasticsearch.imageRegistry = \"$docker_registry_to\"" "$helm_chart_dir/values.yaml"

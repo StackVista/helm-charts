@@ -13,7 +13,7 @@ spec:
   {{ include "stackstate.servicemonitor.extraLabels" . | nindent 2 }}
 {{- end -}}
 
-{{- if not .Values.stackstate.experimental.server.split }}
+{{- if eq (include "suse-observability.features.get" (dict "key" "server.split" "context" .)) "false" }}
 {{- if and ( .Values.stackstate.components.all.metrics.enabled ) ( .Values.stackstate.components.all.metrics.servicemonitor.enabled ) }}
 {{- $commonServiceMonitor := fromYaml (include "common.servicemonitor" .) -}}
 {{- $serverServiceMonitor := fromYaml (include "stackstate.server.servicemonitor" .) -}}

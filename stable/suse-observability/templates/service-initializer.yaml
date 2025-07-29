@@ -19,7 +19,7 @@ spec:
     app.kubernetes.io/component: initializer
 {{- end -}}
 
-{{- if .Values.stackstate.experimental.server.split }}
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $stsStackstateInitializerService := fromYaml (include "stackstate.initializer.service" .) -}}
 {{- toYaml (merge $stsStackstateInitializerService $commonService) -}}

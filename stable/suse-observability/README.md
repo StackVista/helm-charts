@@ -971,14 +971,14 @@ stackstate/stackstate
 | stackstate.email.server.host | string | `""` | Email server host |
 | stackstate.email.server.port | int | `587` | Email server port |
 | stackstate.email.server.protocol | string | `"smtp"` | Email server protocol |
-| stackstate.experimental.dashboards | boolean | `false` | Enable dashboards |
-| stackstate.experimental.enableVMAgent | bool | `true` |  |
-| stackstate.experimental.role-k8s-authz | boolean | `false` | Deploy the Role(s) to populate permissions on Suse Observability |
-| stackstate.experimental.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |
-| stackstate.experimental.storeTransactionLogsToPVC.enabled | boolean | `false` | Whether the transaction logs for some services, API, Checks, HealthSync,State and Sync have to be stored to PVCs instead of pod ephemeral storage. |
-| stackstate.experimental.storeTransactionLogsToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by transaction logs. |
-| stackstate.experimental.storeTransactionLogsToPVC.volumeSize | string | `"600Mi"` | The size of the persistent volume for the transaction logs. |
-| stackstate.experimental.traces | boolean | `true` | Enable new traces UI and API |
+| stackstate.experimental | object | `{}` | Enable experimental features in StackState. Deprecated, use `stackstate.features` instead. |
+| stackstate.features.dashboards | boolean | `false` | Enable dashboards |
+| stackstate.features.role-k8s-authz | boolean | `false` | Deploy the Role(s) to populate permissions on Suse Observability |
+| stackstate.features.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |
+| stackstate.features.storeTransactionLogsToPVC.enabled | boolean | `false` | Whether the transaction logs for some services, API, Checks, HealthSync,State and Sync have to be stored to PVCs instead of pod ephemeral storage. |
+| stackstate.features.storeTransactionLogsToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by transaction logs. |
+| stackstate.features.storeTransactionLogsToPVC.volumeSize | string | `"600Mi"` | The size of the persistent volume for the transaction logs. |
+| stackstate.features.traces | boolean | `true` | Enable new traces UI and API |
 | stackstate.instanceDebugApi.enabled | bool | `false` |  |
 | stackstate.java | object | `{"trustStore":null,"trustStoreBase64Encoded":null,"trustStorePassword":null}` | Extra Java configuration for StackState |
 | stackstate.java.trustStore | string | `nil` | Java TrustStore (cacerts) file to use |

@@ -156,7 +156,7 @@ spec:
         {{- include "stackstate.service.pod.volumes" (dict "pod_name" "slicing" "root" . ) | nindent 8 }}
 {{- end -}}
 
-{{- if .Values.stackstate.experimental.server.split }}
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 {{- $slicingDeployment := fromYaml (include "stackstate.slicing.deployment" .) -}}
 {{- toYaml (merge $slicingDeployment $commonDeployment) -}}

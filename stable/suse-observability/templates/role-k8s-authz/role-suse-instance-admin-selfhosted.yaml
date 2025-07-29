@@ -77,7 +77,7 @@ rules:
     - delete
 {{- end -}}
 
-{{- if and (index .Values.stackstate.experimental "role-k8s-authz")  (eq .Values.stackstate.deployment.mode  "SelfHosted") -}}
+{{- if and (include "suse-observability.features.enabled" (dict "key" "role-k8s-authz" "context" .)) (eq .Values.stackstate.deployment.mode  "SelfHosted") -}}
 {{- $commonRole := fromYaml (include "common.role" .) -}}
 {{- $stsK8sAuthzRole := fromYaml (include "stackstate.k8s.authorization.instance.admin.selfhosted.role" .) -}}
 {{- toYaml (merge $stsK8sAuthzRole $commonRole) -}}

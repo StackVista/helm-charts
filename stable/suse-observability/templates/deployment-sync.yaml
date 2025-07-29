@@ -91,7 +91,7 @@ volumeMounts:
   mountPath: /tmp
 {{- end}}
 {{- include "stackstate.service.container.volumes" . }}
-{{- if .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled }}
+{{- if (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) }}
 {{ include "stackstate.service.transactionLog.volumeMount" . }}
 {{- end }}
 {{- end -}}
@@ -140,7 +140,7 @@ spec:
       initContainers:
       - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
       - {{ toYaml $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer | nindent 8 }}
-      {{- if .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled }}
+      {{- if (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) }}
       - {{ include "stackstate.initContainer.cleanTransactionLogsDirectory" . | nindent 8 }}
       {{- end }}
       {{- if .Values.stackstate.components.sync.tmpToPVC }}
@@ -185,12 +185,12 @@ spec:
             claimName: {{ template "common.fullname.short" . }}-sync-tmp
         {{- end}}
         {{- include "stackstate.service.pod.volumes" (dict "pod_name" "sync" "root" . ) | nindent 8 }}
-        {{- if .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled }}
+        {{- if (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) }}
         {{- include "stackstate.service.transactionLog.volume" (dict "pod_name" "sync" "root" . ) | nindent 8 }}
         {{- end }}
 {{- end -}}
 
-{{- if .Values.stackstate.experimental.server.split }}
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 {{- $syncDeployment := fromYaml (include "stackstate.sync.deployment" .) -}}
 {{- toYaml (merge $syncDeployment $commonDeployment) -}}

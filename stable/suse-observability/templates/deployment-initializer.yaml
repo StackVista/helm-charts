@@ -152,7 +152,7 @@ spec:
         {{- include "stackstate.service.pod.volumes" (dict "pod_name" "initializer" "root" . ) | nindent 8 }}
 {{- end -}}
 
-{{- if .Values.stackstate.experimental.server.split }}
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 {{- $initializerDeployment := fromYaml (include "stackstate.initializer.deployment" .) -}}
 {{- toYaml (merge $initializerDeployment $commonDeployment) -}}

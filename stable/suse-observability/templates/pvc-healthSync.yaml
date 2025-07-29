@@ -1,4 +1,5 @@
 {{- define "stackstate.health-sync.persistentvolumeclaim.txLog" -}}
+{{- $storageClass := include "suse-observability.features.get" (dict "key" "storeTransactionLogsToPVC.storageClass" "context" . ) }}
 metadata:
   name: {{ template "common.fullname.short" . }}-health-sync-txlog
 spec:
@@ -6,16 +7,19 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.stackstate.experimental.storeTransactionLogsToPVC.volumeSize }}
+      storage: {{ include "suse-observability.features.get" (dict "key" "storeTransactionLogsToPVC.volumeSize" "context" . )}}
+{{- if ne $storageClass "<no value>" }}
+  storageClassName: {{ $storageClass }}
+{{- end }}
 {{- end -}}
 
-{{- if and .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled .Values.stackstate.experimental.server.split}}
+{{- if and (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .)) }}
 {{- $commonPVC := fromYaml (include "common.persistentvolumeclaim" .) -}}
 {{- $stackstateHealthSyncPVCTxLog := fromYaml (include "stackstate.health-sync.persistentvolumeclaim.txLog" .) -}}
 {{- toYaml (merge $stackstateHealthSyncPVCTxLog $commonPVC) -}}
 {{- end -}}
 
-{{- if and .Values.stackstate.components.healthSync.tmpToPVC .Values.stackstate.experimental.server.split }}
+{{- if and .Values.stackstate.components.healthSync.tmpToPVC (include "suse-observability.features.get" (dict "key" "server.split" "context" .)) }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

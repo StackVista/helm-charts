@@ -16,7 +16,7 @@ spec:
     app.kubernetes.io/component: slicing
 {{- end -}}
 
-{{- if .Values.stackstate.experimental.server.split }}
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $stsStackstateSlicingService := fromYaml (include "stackstate.slicing.service" .) -}}
 {{- toYaml (merge $stsStackstateSlicingService $commonService) -}}

@@ -24,7 +24,7 @@ spec:
     app.kubernetes.io/component: api
 {{- end -}}
 
-{{- if .Values.stackstate.experimental.server.split }}
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $stsStackstateApiService := fromYaml (include "stackstate.api.service" .) -}}
 {{- toYaml (merge $stsStackstateApiService $commonService) -}}

@@ -7,7 +7,7 @@ data:
 {{- include "stackstate.configmap.microservices-log" (merge (dict "RootLevel" "WARN" "AdditionalLogging" $logging) .) | nindent 4 -}}
 {{- end -}}
 
-{{- if .Values.stackstate.experimental.server.split }}
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $stackstateNotificationLogConfigMap := fromYaml (include "stackstate.notification.configmap-log" .) -}}
 {{- toYaml (merge $stackstateNotificationLogConfigMap $commonConfigMap) -}}

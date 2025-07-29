@@ -11,6 +11,6 @@ subjects:
   - kind: Group
     name: {{ template "common.fullname.short" . }}-instance-admin
 {{- end -}}
-{{- if (index .Values.stackstate.experimental "role-k8s-authz")  -}}
+{{- if (include "suse-observability.features.enabled" (dict "key" "role-k8s-authz" "context" .)) -}}
 {{- include "stackstate.k8s.authorization.instance.admin.rolebinding" . -}}
 {{- end -}}

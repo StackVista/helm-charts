@@ -5,7 +5,7 @@ metadata:
 {{- include "stackstate.configmap.server-and-api" . | nindent 4 -}}
 {{- end -}}
 
-{{- if not .Values.stackstate.experimental.server.split }}
+{{- if not (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .)) }}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $stackstateServerConfigMap := fromYaml (include "stackstate.server.configmap" .) -}}
 {{- toYaml (merge $stackstateServerConfigMap $commonConfigMap) -}}

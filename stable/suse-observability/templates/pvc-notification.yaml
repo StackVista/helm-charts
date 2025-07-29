@@ -1,4 +1,5 @@
 {{- define "stackstate.notification.persistentvolumeclaim.txLog" -}}
+{{- $storageClass := include "suse-observability.features.get" (dict "key" "storeTransactionLogsToPVC.storageClass" "context" . ) }}
 metadata:
   name: {{ template "common.fullname.short" . }}-notification-txlog
 spec:
@@ -6,10 +7,13 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.stackstate.experimental.storeTransactionLogsToPVC.volumeSize }}
+      storage: {{ include "suse-observability.features.get" (dict "key" "storeTransactionLogsToPVC.volumeSize" "context" . )}}
+{{- if ne $storageClass "<no value>" }}
+  storageClassName: {{ $storageClass }}
+{{- end }}
 {{- end -}}
 
-{{- if and .Values.stackstate.experimental.storeTransactionLogsToPVC.enabled .Values.stackstate.experimental.server.split}}
+{{- if and (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .)) }}
 {{- $commonPVC := fromYaml (include "common.persistentvolumeclaim" .) -}}
 {{- $stackstateNotificationPVCTxLog := fromYaml (include "stackstate.notification.persistentvolumeclaim.txLog" .) -}}
 {{- toYaml (merge $stackstateNotificationPVCTxLog $commonPVC) -}}

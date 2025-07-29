@@ -22,9 +22,9 @@ env:
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
 - name: CORRELATE_WRITE_STS_METRICS
-  value: "{{ not .Values.stackstate.experimental.enableVMAgent }}"
+  value: "false"
 - name: CORRELATE_WRITE_PROMETHEUS
-  value: "{{ .Values.stackstate.experimental.enableVMAgent }}"
+  value: "true"
 - name: PROMETHEUS_WRITE_ENDPOINT
   value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}

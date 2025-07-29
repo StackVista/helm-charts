@@ -4,7 +4,7 @@ metadata:
 {{- include "stackstate.service.configmap.data" (dict "service" .Values.stackstate.components.sync "context" $) | nindent 0 -}}
 {{- end -}}
 
-{{- if .Values.stackstate.experimental.server.split }}
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $stackstateSyncConfigMap := fromYaml (include "stackstate.sync.configmap" .) -}}
 {{- toYaml (merge $stackstateSyncConfigMap $commonConfigMap) -}}

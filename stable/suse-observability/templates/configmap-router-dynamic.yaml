@@ -1,5 +1,5 @@
 {{- define "stackstate.router.api.name" -}}
-  {{- if .Values.stackstate.experimental.server.split }}api{{ else }}server{{ end }}
+  {{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}api{{ else }}server{{ end }}
 {{- end -}}
 {{- define "stackstate.router.dynamic.configmap" -}}
 metadata:

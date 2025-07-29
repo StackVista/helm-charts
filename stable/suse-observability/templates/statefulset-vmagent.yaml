@@ -147,8 +147,6 @@ spec:
 {{- end }}
 
 
-{{- if .Values.stackstate.experimental.enableVMAgent }}
 {{- $commonStatefulset := fromYaml (include "common.statefulset" .) -}}
 {{- $vmagentStatefulset := fromYaml (include "stackstate.vmagent.statefulset" .) -}}
 {{- toYaml (merge $vmagentStatefulset $commonStatefulset) -}}
-{{- end -}}

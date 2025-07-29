@@ -4,7 +4,7 @@ metadata:
 roleRef:
   name: {{ template "common.fullname.cluster.unique" . }}-authorization
 subjects:
-{{- if .Values.stackstate.experimental.server.split }}
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
 - name: {{ template "common.fullname.short" . }}-api
   namespace: {{ .Release.Namespace }}
   kind: ServiceAccount

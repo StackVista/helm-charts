@@ -1614,23 +1614,24 @@ stackstate:
   receiver:
     # stackstate.receiver.baseUrl -- (string) **DEPRECATED** Use stackstate.baseUrl instead
     baseUrl:
-  experimental:
-    # stackstate.experimental.role-k8s-authz -- (boolean) Deploy the Role(s) to populate permissions on Suse Observability
+  # stackstate.experimental -- (object) Enable experimental features in StackState. Deprecated, use `stackstate.features` instead.
+  experimental: {}
+  features:
+    # stackstate.features.role-k8s-authz -- (boolean) Deploy the Role(s) to populate permissions on Suse Observability
     role-k8s-authz: false
-    enableVMAgent: true
-    # stackstate.experimental.traces -- (boolean) Enable new traces UI and API
+    # stackstate.features.traces -- (boolean) Enable new traces UI and API
     traces: true
-    # stackstate.experimental.dashboards -- (boolean) Enable dashboards
+    # stackstate.features.dashboards -- (boolean) Enable dashboards
     dashboards: false
     server:
-      # stackstate.experimental.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
+      # stackstate.features.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
       split: true
     storeTransactionLogsToPVC:
-      # stackstate.experimental.storeTransactionLogsToPVC.enabled -- (boolean) Whether the transaction logs for some services, API, Checks, HealthSync,State and Sync have to be stored to PVCs instead of pod ephemeral storage.
+      # stackstate.features.storeTransactionLogsToPVC.enabled -- (boolean) Whether the transaction logs for some services, API, Checks, HealthSync,State and Sync have to be stored to PVCs instead of pod ephemeral storage.
       enabled: false
-      # stackstate.experimental.storeTransactionLogsToPVC.volumeSize -- (string) The size of the persistent volume for the transaction logs.
+      # stackstate.features.storeTransactionLogsToPVC.volumeSize -- (string) The size of the persistent volume for the transaction logs.
       volumeSize: 600Mi
-      # stackstate.experimental.storeTransactionLogsToPVC.storageClass -- (string) Storage class name of PersistentVolume used by transaction logs.
+      # stackstate.features.storeTransactionLogsToPVC.storageClass -- (string) Storage class name of PersistentVolume used by transaction logs.
       storageClass:
   topology:
     # stackstate.topology.retentionHours -- (integer) Number of hours topology will be retained.
