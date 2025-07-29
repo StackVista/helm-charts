@@ -20,6 +20,7 @@
         "delete-dashboards",
         "create-favorite-dashboards",
         "delete-favorite-dashboards",
-        "get-views"
+        "get-views",
+        "get-topology"
     ]
 }
