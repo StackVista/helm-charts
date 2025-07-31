@@ -110,7 +110,6 @@ const expectedRancherAuthConfig = `stackstate.api.authentication.authServer.oidc
   jwsAlgorithm = "RS256"
   jwtClaims {
     usernameField = "sub"
-    displayNameField = "preferred_username"
     groupsField = "groups"
   }
 }`
