@@ -77,7 +77,7 @@ kafka:
     size: 400Gi
   deleteTopicEnable: true
 stackstate:
-  experimental:
+  features:
     server:
       split: true
 

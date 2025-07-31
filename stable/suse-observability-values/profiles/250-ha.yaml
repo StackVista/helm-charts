@@ -68,7 +68,7 @@ kafka:
       ephemeral-storage: "70Mi"
 
 stackstate:
-  experimental:
+  features:
     server:
       split: true
 

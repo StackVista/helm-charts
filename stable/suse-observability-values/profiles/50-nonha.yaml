@@ -65,7 +65,7 @@ kafka:
       cpu: "3000m"
 
 stackstate:
-  experimental:
+  features:
     server:
       split: false
 

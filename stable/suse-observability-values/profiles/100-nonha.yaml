@@ -56,7 +56,7 @@ kafka:
       memory: "3000Mi"
 
 stackstate:
-  experimental:
+  features:
     server:
       split: false
 
