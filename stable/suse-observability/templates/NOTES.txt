@@ -1,0 +1,44 @@
+{{/*
+Check for deprecated stackstate.experimental usage and show warnings
+*/}}
+{{- $hasExperimentalWarnings := false -}}
+{{- $warnings := list -}}
+
+{{/* Helper function to recursively check for experimental keys */}}
+{{- define "checkExperimentalKeys" -}}
+  {{- $prefix := .prefix -}}
+  {{- $obj := .obj -}}
+  {{- $result := list -}}
+  {{- range $key, $value := $obj -}}
+    {{- $fullKey := $key -}}
+    {{- if $prefix -}}
+      {{- $fullKey = printf "%s.%s" $prefix $key -}}
+    {{- end -}}
+    {{- if kindIs "map" $value -}}
+      {{- $subResult := include "checkExperimentalKeys" (dict "prefix" $fullKey "obj" $value) | splitList "\n" | compact -}}
+      {{- $result = concat $result $subResult -}}
+    {{- else -}}
+      {{- $result = append $result $fullKey -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $result | join "\n" -}}
+{{- end -}}
+
+{{/* Check if experimental section exists and collect warnings */}}
+{{- if .Values.stackstate.experimental -}}
+  {{- $warningsList := include "checkExperimentalKeys" (dict "prefix" "" "obj" .Values.stackstate.experimental) | splitList "\n" | compact | uniq -}}
+  {{- $warnings = $warningsList -}}
+  {{- $hasExperimentalWarnings = true -}}
+{{- end -}}
+
+{{/* Show deprecation warnings if any experimental keys are found */}}
+{{- if $hasExperimentalWarnings }}
+⚠️  DEPRECATION WARNINGS:
+{{- range $warnings }}
+   • stackstate.experimental.{{ . }} is deprecated
+     Please migrate to: stackstate.features.{{ . }}
+{{- end }}
+
+The stackstate.experimental.* configuration keys are deprecated and will be removed in a future release.
+Please update your values.yaml to use stackstate.features.* instead.
+{{- end }}
