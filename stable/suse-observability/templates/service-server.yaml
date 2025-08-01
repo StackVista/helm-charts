@@ -30,7 +30,7 @@ spec:
     app.kubernetes.io/component: server
 {{- end -}}
 
-{{- if eq (include "suse-observability.features.get" (dict "key" "server.split" "context" .)) "false" }}
+{{- if not (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .)) }}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $stsstackstateServerService := fromYaml (include "stackstate.server.service" .) -}}
 {{- toYaml (merge $stsstackstateServerService $commonService) -}}

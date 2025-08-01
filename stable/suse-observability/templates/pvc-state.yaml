@@ -19,7 +19,7 @@ spec:
 {{- toYaml (merge $stackstateStatePVCTxLog $commonPVC) -}}
 {{- end -}}
 
-{{- if and .Values.stackstate.components.state.tmpToPVC (include "suse-observability.features.get" (dict "key" "server.split" "context" .)) }}
+{{- if and .Values.stackstate.components.state.tmpToPVC (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .)) }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

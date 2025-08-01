@@ -13,7 +13,7 @@ spec:
   {{ include "stackstate.servicemonitor.extraLabels" . | nindent 2 }}
 {{- end -}}
 
-{{- if and (include "suse-observability.features.get" (dict "key" "server.split" "context" .)) .Values.stackstate.k8sAuthorization.enabled }}
+{{- if and (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .)) .Values.stackstate.k8sAuthorization.enabled }}
 {{- if and ( .Values.stackstate.components.all.metrics.enabled ) ( .Values.stackstate.components.all.metrics.servicemonitor.enabled ) }}
 {{- $commonServiceMonitor := fromYaml (include "common.servicemonitor" .) -}}
 {{- $authorizationSyncServiceMonitor := fromYaml (include "stackstate.authorizationSync.servicemonitor" .) -}}
