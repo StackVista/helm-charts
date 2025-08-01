@@ -25,15 +25,28 @@ function createOrUpdateTopic() {
   local partitions=${!PARTITION_ENV:-$2}
   local property=$3
 
+  # support to pass properties as a single arg like "p1=v1,...,pN=vN"
+  IFS=',' read -ra props_array <<< "$property"
+
   # shellcheck disable=SC2086
   if kafka-topics.sh ${commonFlags} --topic "${topic}" --describe 2>/dev/null; then
+    local config_args=()
+    for p in "${props_array[@]}"; do
+      config_args+=(--add-config "$p")
+    done
+
     printf -- "Topic '%s' already exists, updating settings...\n" "${topic}"
-    kafka-configs.sh ${commonFlags} --alter --entity-type topics --entity-name "${topic}" --add-config ${property}
+    kafka-configs.sh ${commonFlags} --alter --entity-type topics --entity-name "${topic}" "${config_args[@]}"
   else
+    local config_args=()
+    for p in "${props_array[@]}"; do
+      config_args+=(--config "$p")
+    done
+
     printf -- "Creating topic '%s'...\n" "${topic}"
     # shellcheck disable=SC2046
     # shellcheck disable=SC2086
-    kafka-topics.sh ${commonFlags} ${commonCreateFlags} --partitions $partitions --topic "${topic}" --config ${property}
+    kafka-topics.sh ${commonFlags} ${commonCreateFlags} --partitions $partitions --topic "${topic}" "${config_args[@]}"
   fi
 }
 
@@ -67,7 +80,8 @@ createOrUpdateTopic "sts_health_sync_settings" "1" "${ephemeralRetention}" &
 PIDS+=($!)
 createOrUpdateTopic "sts_topology_stream" "10" "${ephemeralRetention}" &
 PIDS+=($!)
-
+createOrUpdateTopic "sts_otel_mapping_sync_settings" "1" "${persistentRetention},cleanup.policy=compact,min.cleanable.dirty.ratio=0.2" &
+PIDS+=($!)
 
 for pid in "${PIDS[@]}"; do
   wait "$pid"
