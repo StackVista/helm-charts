@@ -20,7 +20,7 @@ build_artifactory-cleaner:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/artifactory-cleaner/**/*
@@ -49,7 +49,7 @@ build_aws-amicleaner:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/aws-amicleaner/**/*
@@ -78,7 +78,7 @@ build_aws-nuke:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/aws-nuke/**/*
@@ -107,7 +107,7 @@ build_aws-pod-identity-webhook:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/aws-pod-identity-webhook/**/*
@@ -136,7 +136,7 @@ build_beacher-job:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/beacher-job/**/*
@@ -165,7 +165,7 @@ build_chartmuseum:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/chartmuseum/**/*
@@ -194,7 +194,7 @@ build_ci-test:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/ci-test/**/*
@@ -223,7 +223,7 @@ build_common:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/common/**/*
@@ -252,7 +252,7 @@ build_elasticsearch:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/elasticsearch/**/*
@@ -281,7 +281,7 @@ build_falco-reporter:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/falco-reporter/**/*
@@ -310,7 +310,7 @@ build_gitlab-proxy:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/gitlab-proxy/**/*
@@ -339,7 +339,7 @@ build_gitlab-steward:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/gitlab-steward/**/*
@@ -368,7 +368,7 @@ build_hbase:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/hbase/**/*
@@ -397,7 +397,7 @@ build_helm-reaper:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/helm-reaper/**/*
@@ -426,7 +426,7 @@ build_iceman:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/iceman/**/*
@@ -455,7 +455,7 @@ build_k8s-image-list-to-s3:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/k8s-image-list-to-s3/**/*
@@ -484,7 +484,7 @@ build_k8s-spot-termination-handler:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/k8s-spot-termination-handler/**/*
@@ -513,7 +513,7 @@ build_kafkaup-operator:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/kafkaup-operator/**/*
@@ -542,7 +542,7 @@ build_kommoner-operator:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/kommoner-operator/**/*
@@ -571,7 +571,7 @@ build_minio:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/minio/**/*
@@ -600,7 +600,7 @@ build_notification-operator:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/notification-operator/**/*
@@ -629,7 +629,7 @@ build_otel-demo:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/otel-demo/**/*
@@ -658,7 +658,7 @@ build_petros-d-kubelet-stats-exporter:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
@@ -687,7 +687,7 @@ build_pull-secret:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/pull-secret/**/*
@@ -716,7 +716,7 @@ build_receiveramplifier:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/receiveramplifier/**/*
@@ -745,7 +745,7 @@ build_redirector:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/redirector/**/*
@@ -774,7 +774,7 @@ build_sandbox-operator:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/sandbox-operator/**/*
@@ -803,7 +803,7 @@ build_sock-shop:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/sock-shop/**/*
@@ -832,7 +832,7 @@ build_stackstate:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/stackstate/**/*
@@ -861,7 +861,7 @@ build_stackstate-agent:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/stackstate-agent/**/*
@@ -890,7 +890,7 @@ build_stackstate-k8s-agent:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/stackstate-k8s-agent/**/*
@@ -919,7 +919,7 @@ build_stackstate-monitoring:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/stackstate-monitoring/**/*
@@ -948,7 +948,7 @@ build_stackstate-standalone:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/stackstate-standalone/**/*
@@ -977,7 +977,7 @@ build_stackstate-values:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/stackstate-values/**/*
@@ -1006,7 +1006,7 @@ build_suse-observability:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/suse-observability/**/*
@@ -1035,7 +1035,7 @@ build_suse-observability-agent:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
@@ -1064,7 +1064,7 @@ build_suse-observability-values:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/suse-observability-values/**/*
@@ -1093,7 +1093,7 @@ build_tenant-cleanup-controller:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/tenant-cleanup-controller/**/*
@@ -1122,7 +1122,7 @@ build_tenantmanagement:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/tenantmanagement/**/*
@@ -1151,7 +1151,7 @@ build_tenantprovisioning:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/tenantprovisioning/**/*
@@ -1180,7 +1180,7 @@ build_trafficmirror:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/trafficmirror/**/*
@@ -1209,7 +1209,7 @@ build_victoria-metrics-single:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/victoria-metrics-single/**/*
@@ -4233,7 +4233,7 @@ stages:
   - push-charts-to-public
   - push-charts-to-rancher
 test_artifactory-cleaner:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/artifactory-cleaner/**/*
@@ -4243,10 +4243,12 @@ test_artifactory-cleaner:
   script:
     - go test ./stable/artifactory-cleaner/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_aws-amicleaner:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/aws-amicleaner/**/*
@@ -4256,10 +4258,12 @@ test_aws-amicleaner:
   script:
     - go test ./stable/aws-amicleaner/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_aws-nuke:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/aws-nuke/**/*
@@ -4269,10 +4273,12 @@ test_aws-nuke:
   script:
     - go test ./stable/aws-nuke/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_aws-pod-identity-webhook:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/aws-pod-identity-webhook/**/*
@@ -4282,10 +4288,12 @@ test_aws-pod-identity-webhook:
   script:
     - go test ./stable/aws-pod-identity-webhook/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_beacher-job:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/beacher-job/**/*
@@ -4295,10 +4303,12 @@ test_beacher-job:
   script:
     - go test ./stable/beacher-job/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_chartmuseum:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/chartmuseum/**/*
@@ -4308,10 +4318,12 @@ test_chartmuseum:
   script:
     - go test ./stable/chartmuseum/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_ci-test:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/ci-test/**/*
@@ -4321,10 +4333,12 @@ test_ci-test:
   script:
     - go test ./stable/ci-test/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_common:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/common/**/*
@@ -4334,10 +4348,12 @@ test_common:
   script:
     - go test ./stable/common/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_elasticsearch:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/elasticsearch/**/*
@@ -4347,10 +4363,12 @@ test_elasticsearch:
   script:
     - go test ./stable/elasticsearch/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_falco-reporter:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/falco-reporter/**/*
@@ -4360,10 +4378,12 @@ test_falco-reporter:
   script:
     - go test ./stable/falco-reporter/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_gitlab-proxy:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/gitlab-proxy/**/*
@@ -4373,10 +4393,12 @@ test_gitlab-proxy:
   script:
     - go test ./stable/gitlab-proxy/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_gitlab-steward:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/gitlab-steward/**/*
@@ -4386,10 +4408,12 @@ test_gitlab-steward:
   script:
     - go test ./stable/gitlab-steward/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_hbase:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/hbase/**/*
@@ -4399,10 +4423,12 @@ test_hbase:
   script:
     - go test ./stable/hbase/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_helm-reaper:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/helm-reaper/**/*
@@ -4412,10 +4438,12 @@ test_helm-reaper:
   script:
     - go test ./stable/helm-reaper/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_iceman:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/iceman/**/*
@@ -4425,10 +4453,12 @@ test_iceman:
   script:
     - go test ./stable/iceman/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_k8s-image-list-to-s3:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/k8s-image-list-to-s3/**/*
@@ -4438,10 +4468,12 @@ test_k8s-image-list-to-s3:
   script:
     - go test ./stable/k8s-image-list-to-s3/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_k8s-spot-termination-handler:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/k8s-spot-termination-handler/**/*
@@ -4451,10 +4483,12 @@ test_k8s-spot-termination-handler:
   script:
     - go test ./stable/k8s-spot-termination-handler/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_kafkaup-operator:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/kafkaup-operator/**/*
@@ -4464,10 +4498,12 @@ test_kafkaup-operator:
   script:
     - go test ./stable/kafkaup-operator/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_kommoner-operator:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/kommoner-operator/**/*
@@ -4477,10 +4513,12 @@ test_kommoner-operator:
   script:
     - go test ./stable/kommoner-operator/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_minio:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/minio/**/*
@@ -4490,10 +4528,12 @@ test_minio:
   script:
     - go test ./stable/minio/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_notification-operator:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/notification-operator/**/*
@@ -4503,10 +4543,12 @@ test_notification-operator:
   script:
     - go test ./stable/notification-operator/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_otel-demo:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/otel-demo/**/*
@@ -4516,10 +4558,12 @@ test_otel-demo:
   script:
     - go test ./stable/otel-demo/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_petros-d-kubelet-stats-exporter:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
@@ -4529,10 +4573,12 @@ test_petros-d-kubelet-stats-exporter:
   script:
     - go test ./stable/petros-d-kubelet-stats-exporter/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_pull-secret:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/pull-secret/**/*
@@ -4542,10 +4588,12 @@ test_pull-secret:
   script:
     - go test ./stable/pull-secret/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_receiveramplifier:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/receiveramplifier/**/*
@@ -4555,10 +4603,12 @@ test_receiveramplifier:
   script:
     - go test ./stable/receiveramplifier/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_redirector:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/redirector/**/*
@@ -4568,10 +4618,12 @@ test_redirector:
   script:
     - go test ./stable/redirector/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_sandbox-operator:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/sandbox-operator/**/*
@@ -4581,10 +4633,12 @@ test_sandbox-operator:
   script:
     - go test ./stable/sandbox-operator/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_sock-shop:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/sock-shop/**/*
@@ -4594,10 +4648,12 @@ test_sock-shop:
   script:
     - go test ./stable/sock-shop/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_stackstate:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/stackstate/**/*
@@ -4607,10 +4663,12 @@ test_stackstate:
   script:
     - go test ./stable/stackstate/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_stackstate-agent:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/stackstate-agent/**/*
@@ -4620,10 +4678,12 @@ test_stackstate-agent:
   script:
     - go test ./stable/stackstate-agent/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_stackstate-k8s-agent:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/stackstate-k8s-agent/**/*
@@ -4633,10 +4693,12 @@ test_stackstate-k8s-agent:
   script:
     - go test ./stable/stackstate-k8s-agent/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_stackstate-monitoring:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/stackstate-monitoring/**/*
@@ -4646,10 +4708,12 @@ test_stackstate-monitoring:
   script:
     - go test ./stable/stackstate-monitoring/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_stackstate-standalone:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/stackstate-standalone/**/*
@@ -4659,10 +4723,12 @@ test_stackstate-standalone:
   script:
     - go test ./stable/stackstate-standalone/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_stackstate-values:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/stackstate-values/**/*
@@ -4672,10 +4738,12 @@ test_stackstate-values:
   script:
     - go test ./stable/stackstate-values/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_suse-observability:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/suse-observability/**/*
@@ -4685,10 +4753,12 @@ test_suse-observability:
   script:
     - go test ./stable/suse-observability/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_suse-observability-agent:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
@@ -4698,10 +4768,12 @@ test_suse-observability-agent:
   script:
     - go test ./stable/suse-observability-agent/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_suse-observability-values:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/suse-observability-values/**/*
@@ -4711,10 +4783,12 @@ test_suse-observability-values:
   script:
     - go test ./stable/suse-observability-values/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_tenant-cleanup-controller:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/tenant-cleanup-controller/**/*
@@ -4724,10 +4798,12 @@ test_tenant-cleanup-controller:
   script:
     - go test ./stable/tenant-cleanup-controller/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_tenantmanagement:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/tenantmanagement/**/*
@@ -4737,10 +4813,12 @@ test_tenantmanagement:
   script:
     - go test ./stable/tenantmanagement/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_tenantprovisioning:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/tenantprovisioning/**/*
@@ -4750,10 +4828,12 @@ test_tenantprovisioning:
   script:
     - go test ./stable/tenantprovisioning/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_trafficmirror:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/trafficmirror/**/*
@@ -4763,10 +4843,12 @@ test_trafficmirror:
   script:
     - go test ./stable/trafficmirror/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 test_victoria-metrics-single:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
         - stable/victoria-metrics-single/**/*
@@ -4776,6 +4858,8 @@ test_victoria-metrics-single:
   script:
     - go test ./stable/victoria-metrics-single/test/...
   stage: test
+  tags:
+    - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
 update_aad_chart_version:
@@ -4793,7 +4877,7 @@ update_aad_chart_version:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - if: $UPDATE_AAD_CHART_VERSION
       when: always
@@ -4816,7 +4900,7 @@ update_stackgraph_version:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-941a5527
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: always

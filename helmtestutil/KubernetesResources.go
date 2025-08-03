@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/helm"
+	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
 	batchv1 "k8s.io/api/batch/v1"
@@ -29,13 +30,13 @@ type KubernetesResources struct {
 	PersistentVolumeClaims map[string]corev1.PersistentVolumeClaim
 	Pods                   map[string]corev1.Pod
 	Pdbs                   map[string]policyv1.PodDisruptionBudget
-	Psps                   map[string]policyv1.PodSecurityPolicy
 	Roles                  map[string]rbacv1.Role
 	RoleBindings           map[string]rbacv1.RoleBinding
 	Secrets                map[string]corev1.Secret
 	Services               map[string]corev1.Service
 	ServiceAccounts        map[string]corev1.ServiceAccount
 	Statefulsets           map[string]appsv1.StatefulSet
+	ServiceMonitors        map[string]promv1.ServiceMonitor
 	Unmapped               map[string]string
 }
 
@@ -53,13 +54,13 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 	persistentVolumeClaims := make(map[string]corev1.PersistentVolumeClaim)
 	pods := make(map[string]corev1.Pod)
 	pdbs := make(map[string]policyv1.PodDisruptionBudget)
-	psps := make(map[string]policyv1.PodSecurityPolicy)
 	roles := make(map[string]rbacv1.Role)
 	roleBindings := make(map[string]rbacv1.RoleBinding)
 	secrets := make(map[string]corev1.Secret)
 	services := make(map[string]corev1.Service)
 	serviceAccounts := make(map[string]corev1.ServiceAccount)
 	statefulsets := make(map[string]appsv1.StatefulSet)
+	serviceMonitors := make(map[string]promv1.ServiceMonitor)
 	unmapped := map[string]string{}
 
 	// The K8S unmarshalling only can do a single document
@@ -67,6 +68,13 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 	separateFiles := strings.Split(helmOutput, "\n---\n")
 
 	for _, v := range separateFiles {
+		if helmDocWithoutResources(v) {
+			// Skip empty resources, e.g. the helm chart has empty Multidoc sections, like
+			// ---
+			// # Source: suse-observability/charts/anomaly-detection/templates/anomaly-detection-manager.yaml
+			// ---
+			continue
+		}
 		var partial metav1.PartialObjectMetadata
 		err := helm.UnmarshalK8SYamlE(t, v, &partial)
 		if err != nil {
@@ -149,10 +157,6 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 			var resource policyv1.PodDisruptionBudget
 			helm.UnmarshalK8SYaml(t, v, &resource)
 			pdbs[resource.Name] = resource
-		case "PodSecurityPolicy":
-			var resource policyv1.PodSecurityPolicy
-			helm.UnmarshalK8SYaml(t, v, &resource)
-			psps[resource.Name] = resource
 		case "Role":
 			var resource rbacv1.Role
 			helm.UnmarshalK8SYaml(t, v, &resource)
@@ -177,6 +181,10 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 			var resource appsv1.StatefulSet
 			helm.UnmarshalK8SYaml(t, v, &resource)
 			statefulsets[resource.Name] = resource
+		case "ServiceMonitor":
+			var resource promv1.ServiceMonitor
+			helm.UnmarshalK8SYaml(t, v, &resource)
+			serviceMonitors[resource.Name] = resource
 		default:
 			if partial.Kind != "" || partial.APIVersion != "" {
 				t.Logf("Found unknown kind '%s/%s' in content\n%s\n This can be caused by an incorrect k8s resource type in the helm template or when using a custom resource type.", partial.APIVersion, partial.Kind, v)
@@ -205,6 +213,7 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 		Services:               services,
 		ServiceAccounts:        serviceAccounts,
 		Statefulsets:           statefulsets,
+		ServiceMonitors:        serviceMonitors,
 		Unmapped:               unmapped,
 	}
 }
@@ -217,4 +226,8 @@ func contains(s []string, str string) bool {
 	}
 
 	return false
+}
+
+func helmDocWithoutResources(doc string) bool {
+	return !strings.Contains(doc, "\n") && strings.HasPrefix(doc, "# Source:")
 }

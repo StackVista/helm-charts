@@ -114,6 +114,7 @@ local check_chart_version_jobs = {
 // Runs unit tests on all charts with "test" directory
 local test_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
+  tags: ['sts-k8s-xl-runner'],
   script: [
     'go test ./stable/' + chart + '/test/...',
   ],
