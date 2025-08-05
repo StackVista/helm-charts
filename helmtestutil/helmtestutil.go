@@ -1,7 +1,6 @@
 package helmtestutil
 
 import (
-	"fmt"
 	"path/filepath"
 	"testing"
 
@@ -53,9 +52,21 @@ func RenderHelmTemplateOpts(t *testing.T, releaseName string, helmOpts *helm.Opt
 	helmChartPath, pathErr := filepath.Abs("..")
 	require.NoError(t, pathErr)
 
-	// Here it goes: RenderTemplateE actually does not produce stdout in terratest 0.50.0 (the latest version). We use the
-	// command that produce them separately and concat.
-	stdout, stderr, err := helm.RenderTemplateAndGetStdOutErrE(t, helmOpts, helmChartPath, releaseName, []string{})
+	stdout, err := helm.RenderTemplateE(t, helmOpts, helmChartPath, releaseName, []string{})
 
-	return fmt.Sprintf("%s\n%s", stderr, stdout), err
+	return stdout, err
+}
+
+// RenderHelmTemplateOpts renders a helm template assuming it lives in the parent directory
+func RenderHelmTemplateOptsStdErr(t *testing.T, releaseName string, helmOpts *helm.Options) (string, error) {
+	if helmOpts.Logger == nil {
+		helmOpts.Logger = logger.Discard
+	}
+
+	helmChartPath, pathErr := filepath.Abs("..")
+	require.NoError(t, pathErr)
+
+	_, stderr, err := helm.RenderTemplateAndGetStdOutErrE(t, helmOpts, helmChartPath, releaseName, []string{})
+
+	return stderr, err
 }

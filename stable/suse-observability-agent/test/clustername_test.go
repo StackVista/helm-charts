@@ -35,7 +35,7 @@ func TestClusterNameValidation(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase.Name, func(t *testing.T) {
-			output, err := helmtestutil.RenderHelmTemplateOpts(
+			output, err := helmtestutil.RenderHelmTemplateOptsStdErr(
 				t, "cluster-agent",
 				&helm.Options{
 					ValuesFiles: []string{"values/minimal.yaml"},
