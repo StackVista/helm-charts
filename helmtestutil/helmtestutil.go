@@ -1,6 +1,7 @@
 package helmtestutil
 
 import (
+	"fmt"
 	"path/filepath"
 	"testing"
 
@@ -52,7 +53,9 @@ func RenderHelmTemplateOpts(t *testing.T, releaseName string, helmOpts *helm.Opt
 	helmChartPath, pathErr := filepath.Abs("..")
 	require.NoError(t, pathErr)
 
-	output, err := helm.RenderTemplateE(t, helmOpts, helmChartPath, releaseName, []string{})
+	// Here it goes: RenderTemplateE actually does not produce stdout in terratest 0.50.0 (the latest version). We use the
+	// command that produce them separately and concat.
+	stdout, stderr, err := helm.RenderTemplateAndGetStdOutErrE(t, helmOpts, helmChartPath, releaseName, []string{})
 
-	return output, err
+	return fmt.Sprintf("%s\n%s", stderr, stdout), err
 }
