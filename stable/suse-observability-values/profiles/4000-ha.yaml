@@ -150,10 +150,10 @@ stackstate:
       resources:
         requests:
           cpu: 1000m
-          memory: 2536Mi
+          memory: 4Gi
         limits:
           cpu: 1500m
-          memory: 2536Mi
+          memory: 4Gi
     state:
       resources:
         requests:
