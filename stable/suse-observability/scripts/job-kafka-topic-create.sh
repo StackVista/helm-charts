@@ -25,8 +25,8 @@ function createOrUpdateTopic() {
   local partitions=${!PARTITION_ENV:-$2}
   local property=$3
 
-  # support to pass properties as a single arg like "p1=v1,...,pN=vN"
-  IFS=',' read -ra props_array <<< "$property"
+  # support to pass properties as a single arg like "p1=v1|...|pN=vN"
+  IFS='|' read -ra props_array <<< "$property"
 
   # shellcheck disable=SC2086
   if kafka-topics.sh ${commonFlags} --topic "${topic}" --describe 2>/dev/null; then
@@ -80,7 +80,13 @@ createOrUpdateTopic "sts_health_sync_settings" "1" "${ephemeralRetention}" &
 PIDS+=($!)
 createOrUpdateTopic "sts_topology_stream" "10" "${ephemeralRetention}" &
 PIDS+=($!)
-createOrUpdateTopic "sts_otel_mapping_sync_settings" "1" "${persistentRetention},cleanup.policy=compact,min.cleanable.dirty.ratio=0.2" &
+
+# Topic configuration for aggressive compaction and retention
+# - cleanup.policy=compact,delete: Enable both log compaction (deduplication) and time-based deletion
+# - min.cleanable.dirty.ratio=0.1: Trigger compaction when 10% of log is "dirty" (more aggressive than default 50%)
+# - segment.ms=86400000: Roll log segments every 24 hours (86400000ms) to enable deletion of old segments
+# - max.compaction.lag.ms=86400000: Force compaction within 24 hours regardless of dirty ratio
+createOrUpdateTopic "sts_internal_settings" "1" "${ephemeralRetention}|cleanup.policy=compact,delete|min.cleanable.dirty.ratio=0.1|segment.ms=86400000|max.compaction.lag.ms=86400000"
 PIDS+=($!)
 
 for pid in "${PIDS[@]}"; do
