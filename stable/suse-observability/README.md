@@ -2,7 +2,7 @@
 
 Helm chart for SUSE Observability
 
-Current chart version is `2.3.8-pre.40`
+Current chart version is `2.3.8-pre.41`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -12,7 +12,7 @@ Current chart version is `2.3.8-pre.40`
 |------------|------|---------|
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.11.4-stackstate.6 |
-| file://../hbase/ | hbase | 0.2.68 |
+| file://../hbase/ | hbase | 0.2.69 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.12 |
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.0 |
@@ -239,7 +239,7 @@ stackstate/stackstate
 | hbase.hdfs.secondarynamenode.resources.requests.cpu | string | `"50m"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.memory | string | `"1Gi"` |  |
-| hbase.stackgraph.version | string | `"7.11.3"` | The StackGraph server version, must be compatible with the StackState version |
+| hbase.stackgraph.version | string | `"7.11.4"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
 | hbase.tephra.resources.limits.cpu | string | `"500m"` |  |
 | hbase.tephra.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
