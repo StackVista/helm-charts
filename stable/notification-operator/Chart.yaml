@@ -2,7 +2,7 @@ apiVersion: v2
 name: notification-operator
 description: Notification Operator manages SuseObservability Notification Configurations with custom resources.
 type: application
-version: 0.0.4
+version: 0.0.5
 appVersion: "0.0.1"
 keywords:
   - kubernetes

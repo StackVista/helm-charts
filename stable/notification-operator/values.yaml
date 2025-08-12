@@ -9,7 +9,7 @@ image:
   # image.pullPolicy -- Image pull policy
   pullPolicy: IfNotPresent
   # image.tag -- Overrides the image tag. Defaults to the chart appVersion.
-  tag: "5bf62cbd"
+  tag: "63f90181"
 
 # imagePullSecrets -- List of secrets for pulling an image from a private repository
 imagePullSecrets: []
@@ -102,3 +102,8 @@ tolerations: []
 
 # affinity -- Affinity rules for pod scheduling
 affinity: {}
+
+controller:
+  metrics:
+    # controller.metrics.secure -- Enable secure metrics endpoint
+    secure: true
