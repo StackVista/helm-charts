@@ -9,7 +9,7 @@ image:
   # image.pullPolicy -- Image pull policy
   pullPolicy: IfNotPresent
   # image.tag -- Overrides the image tag. Defaults to the chart appVersion.
-  tag: "63f90181"
+  tag: "5b29ef42"
 
 # imagePullSecrets -- List of secrets for pulling an image from a private repository
 imagePullSecrets: []
