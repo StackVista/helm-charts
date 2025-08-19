@@ -1614,7 +1614,7 @@ stackstate:
   receiver:
     # stackstate.receiver.baseUrl -- (string) **DEPRECATED** Use stackstate.baseUrl instead
     baseUrl:
-  # stackstate.allowOrigins -- CORS allowed origins
+  # stackstate.allowedOrigins -- Third-party web domains allowed to make cross-origin requests
   allowedOrigins: []
   # stackstate.experimental -- (object) Enable experimental features in StackState. Deprecated, use `stackstate.features` instead.
   experimental: {}
