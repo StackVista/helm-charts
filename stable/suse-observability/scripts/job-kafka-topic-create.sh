@@ -30,13 +30,33 @@ function createOrUpdateTopic() {
 
   # shellcheck disable=SC2086
   if kafka-topics.sh ${commonFlags} --topic "${topic}" --describe 2>/dev/null; then
-    local config_args=()
+    # For updates: single --add-config with comma-separated properties, bracket-wrap values with commas
+    local config_parts=()
     for p in "${props_array[@]}"; do
-      config_args+=(--add-config "$p")
+      # Check if the property value (after =) contains commas
+      if [[ "$p" == *"="*","* ]]; then
+        # Split on first = to get key and value
+        local key="${p%%=*}"
+        local value="${p#*=}"
+        # Wrap value in brackets if it contains commas
+        config_parts+=("${key}=[${value}]")
+      else
+        config_parts+=("$p")
+      fi
+    done
+
+    # Join all config parts with commas
+    local config_string=""
+    for i in "${!config_parts[@]}"; do
+      if [ $i -eq 0 ]; then
+        config_string="${config_parts[i]}"
+      else
+        config_string="${config_string},${config_parts[i]}"
+      fi
     done
 
     printf -- "Topic '%s' already exists, updating settings...\n" "${topic}"
-    kafka-configs.sh ${commonFlags} --alter --entity-type topics --entity-name "${topic}" "${config_args[@]}"
+    kafka-configs.sh ${commonFlags} --alter --entity-type topics --entity-name "${topic}" --add-config "${config_string}"
   else
     local config_args=()
     for p in "${props_array[@]}"; do
