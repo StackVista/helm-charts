@@ -4,7 +4,9 @@ import (
 	"testing"
 )
 
-const expectedCorsConfig = `stackstate.web.origins = [ "https://rancher.localhost" ]`
+const expectedCorsConfig = `stackstate.web.origins = [
+    "https://rancher.localhost"
+  ]`
 
 func TestCorsConfigRenderingApi(t *testing.T) {
 	RunConfigMapTest(t, "suse-observability-api", []string{"values/full.yaml"}, expectedCorsConfig)

@@ -5,7 +5,11 @@ Shared settings in configmap for server and api
 {{ $files := .Files }}
 
 {{- if .Values.stackstate.allowedOrigins }}
-stackstate.web.origins = [ {{- .Values.stackstate.allowedOrigins | compact | join ", " -}} ]
+stackstate.web.origins = [
+{{- range .Values.stackstate.allowedOrigins }}
+    {{ . | quote -}}
+{{- end }}
+  ]
 {{- end }}
 
 {{- if and .Values.stackstate.authentication (eq .Values.stackstate.deployment.mode "SelfHosted") }}
