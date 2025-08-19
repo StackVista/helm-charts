@@ -476,6 +476,7 @@ stackstate/stackstate
 | pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |
 | pull-secret.fullNameOverride | string | `""` | Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart. |
 | scc.enabled | bool | `false` | Create `SecurityContextConstraints` resource to manage Openshift security constraints for Stackstate. Has to be enabled when installing to Openshift >= 4.12 The resource is deployed as a Helm pre-install hook to avoid any warning for the first deployment. Because `helm uninstall` does not consider Helm hooks, the resource must be manually deleted after the Helm release is removed. |
+| stackstate.allowedOrigins | list | `[]` |  |
 | stackstate.apiKey.fromExternalSecret | string | `nil` | Use an external secret for the api key. This suppresses secret creation by StackState and gets the data from the secret with the provided name. |
 | stackstate.apiKey.key | string | `nil` | API key to be used by the Receiver. |
 | stackstate.authentication | object | `{"adminPassword":null,"file":{},"fromExternalSecret":null,"keycloak":{},"ldap":{},"oidc":{},"rancher":{},"roles":{"admin":[],"custom":{},"guest":[],"k8sTroubleshooter":[],"powerUser":[]},"serviceToken":{"bootstrap":{"dedicatedSubject":"","roles":[],"token":"","ttl":"24h"}},"sessionLifetime":""}` | Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error. |
@@ -497,7 +498,7 @@ stackstate/stackstate
 | stackstate.authentication.serviceToken.bootstrap.token | string | `""` | The service token to set as bootstrap token |
 | stackstate.authentication.serviceToken.bootstrap.ttl | string | `"24h"` | The amount of time the service token is valid for |
 | stackstate.authentication.sessionLifetime | string | `""` | Amount of time to keep a session when a user does not log in |
-| stackstate.baseUrl | string | `nil` |  |
+| stackstate.baseUrl | string | `nil` | **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of StackState. |
 | stackstate.components.all.affinity | object | `{}` | Affinity settings for pod assignment on all components. |
 | stackstate.components.all.clickHouse.database | string | `"otel"` |  |
 | stackstate.components.all.clickHouse.hostnames | string | `"suse-observability-clickhouse-headless"` |  |

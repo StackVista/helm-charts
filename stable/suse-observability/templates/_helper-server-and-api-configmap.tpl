@@ -4,6 +4,11 @@ Shared settings in configmap for server and api
 {{- define "stackstate.configmap.server-and-api" }}
 {{ $files := .Files }}
 
+
+{{- if .Values.stackstate.allowedOrigins }}
+stackstate.web.origins = {{- .Values.stackstate.allowedOrigins -}}
+{{- end }}
+
 {{- if and .Values.stackstate.authentication (eq .Values.stackstate.deployment.mode "SelfHosted") }}
 stackstate.authorization.staticSubjects.stackstate-admin: {{- $files.Get "sts-authz-permissions/stackstate-admin.json" }}
 stackstate.authorization.staticSubjects.stackstate-power-user: {{- $files.Get "sts-authz-permissions/stackstate-power-user.json"}}

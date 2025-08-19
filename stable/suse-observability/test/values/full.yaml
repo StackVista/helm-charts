@@ -24,6 +24,8 @@ stackstate:
     authentication:
       password: 5a4961367d65d570e20d2d69156581b4
   baseUrl: "http://localhost"
+  allowedOrigins:
+    - https://rancher.localhost
   license:
     key: "api01"
 hbase:

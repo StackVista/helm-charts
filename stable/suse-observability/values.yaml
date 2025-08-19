@@ -1609,11 +1609,13 @@ stackstate:
     fromExternalSecret:
     # stackstate.apiKey.key -- (string) API key to be used by the Receiver.
     key:
-  # stackstate.web.baseUrl -- (string) **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of StackState.
+  # stackstate.baseUrl -- (string) **PROVIDE YOUR BASE URL HERE** Externally visible baseUrl of StackState.
   baseUrl:
   receiver:
     # stackstate.receiver.baseUrl -- (string) **DEPRECATED** Use stackstate.baseUrl instead
     baseUrl:
+  # stackstate.allowOrigins -- CORS allowed origins
+  allowedOrigins: []
   # stackstate.experimental -- (object) Enable experimental features in StackState. Deprecated, use `stackstate.features` instead.
   experimental: {}
   features:
