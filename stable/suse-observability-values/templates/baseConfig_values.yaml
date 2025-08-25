@@ -20,6 +20,10 @@ pull-secret:
 
 stackstate:
   baseUrl: {{ .Values.baseUrl | required "Please provide your SUSE Observability base URL in 'baseUrl'" | quote }}
+{{- if .Values.rancherUrl }}
+  allowedOrigins:
+    - {{ .Values.rancherUrl }}
+{{- end }}
   authentication:
     adminPassword: {{ template "sts.values.getOrGenerateAdminPassword" . }}
   apiKey:
