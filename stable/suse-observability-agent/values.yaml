@@ -281,8 +281,6 @@ processAgent:
     httpObservationsBufferSize: 40000
 
   checkIntervals:
-    # processAgent.checkIntervals.container -- Override the default value of the container check interval in seconds.
-    container: 28
     # processAgent.checkIntervals.connections -- Override the default value of the connections check interval in seconds.
     connections: 30
     # processAgent.checkIntervals.process -- Override the default value of the process check interval in seconds.

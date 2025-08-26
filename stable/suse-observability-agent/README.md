@@ -269,7 +269,6 @@ stackstate/stackstate-k8s-agent
 | nodeAgent.useHostPID | bool | `true` | Set to true if you want to deploy the node agent in the host PID namespace. |
 | openShiftLogging.installSecret | bool | `false` | Install a secret for logging on openshift |
 | processAgent.checkIntervals.connections | int | `30` | Override the default value of the connections check interval in seconds. |
-| processAgent.checkIntervals.container | int | `28` | Override the default value of the container check interval in seconds. |
 | processAgent.checkIntervals.process | int | `32` | Override the default value of the process check interval in seconds. |
 | processAgent.softMemoryLimit.goMemLimit | string | `"340MiB"` | Soft-limit for golang heap allocation, for sanity, must be around 85% of nodeAgent.containers.processAgent.resources.limits.cpu. |
 | processAgent.softMemoryLimit.httpObservationsBufferSize | int | `40000` | Sets a maximum for the number of http observations to keep in memory between check runs, to use 40k requires around ~400Mib of memory. |

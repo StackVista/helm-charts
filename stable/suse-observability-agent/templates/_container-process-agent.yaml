@@ -20,10 +20,6 @@
           fieldPath: spec.nodeName
     - name: STS_HOSTNAME
       value: "$(KUBERNETES_HOSTNAME)-{{ .Values.stackstate.cluster.name}}"
-    - name: AGENT_VERSION
-      value: {{ .Values.nodeAgent.containers.processAgent.image.tag | quote }}
-    - name: STS_LOG_TO_CONSOLE
-      value: "true"
     - name: HOST_PROC
       value: "/host/proc"
     - name: HOST_SYS
@@ -32,29 +28,14 @@
       value: "/host/etc"
     - name: KUBERNETES
       value: "true"
-    - name: STS_CLUSTER_AGENT_ENABLED
-      value: {{ .Values.clusterAgent.enabled | quote }}
-    {{- if .Values.clusterAgent.enabled }}
-    - name: STS_CLUSTER_AGENT_KUBERNETES_SERVICE_NAME
-      value: {{ .Release.Name }}-cluster-agent
-    {{ include "stackstate-k8s-agent.clusterAgentAuthTokenEnv" . | nindent 4 }}
-    {{- end }}
     - name: STS_CLUSTER_NAME
       value: {{ .Values.stackstate.cluster.name | quote }}
-    - name: STS_SKIP_VALIDATE_CLUSTERNAME
-      value: "true"
-    - name: LOG_LEVEL
-      value: {{ .Values.nodeAgent.containers.processAgent.logLevel | default .Values.nodeAgent.logLevel | quote }}
     - name: STS_LOG_LEVEL
       value: {{ .Values.nodeAgent.containers.processAgent.logLevel | default .Values.nodeAgent.logLevel | quote }}
     - name: STS_NETWORK_TRACING_ENABLED
       value: {{ .Values.nodeAgent.networkTracing.enabled | quote }}
     - name: STS_PROTOCOL_INSPECTION_ENABLED
       value: {{ .Values.nodeAgent.protocolInspection.enabled | quote }}
-    - name: STS_PROCESS_AGENT_ENABLED
-      value: {{ .Values.nodeAgent.containers.processAgent.enabled | quote }}
-    - name: STS_CONTAINER_CHECK_INTERVAL
-      value: {{ .Values.processAgent.checkIntervals.container | quote }}
     - name: STS_CONNECTION_CHECK_INTERVAL
       value: {{ .Values.processAgent.checkIntervals.connections | quote }}
     - name: STS_PROCESS_CHECK_INTERVAL
@@ -71,8 +52,6 @@
       value: {{ or .Values.global.skipSslValidation .Values.nodeAgent.skipSslValidation | quote }}
     - name: STS_SKIP_KUBELET_TLS_VERIFY
       value: {{ .Values.nodeAgent.skipKubeletTLSVerify | quote }}
-    - name: STS_STS_URL
-      value: {{ include "stackstate-k8s-agent.stackstate.url" . }}
     - name: STS_HTTP_TRACING_ENABLED
       value: {{ .Values.nodeAgent.httpTracing.enabled | quote }}
     {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
