@@ -534,19 +534,10 @@ logsAgent:
 checksAgent:
   # checksAgent.enabled -- Enable / disable runnning cluster checks in a separately deployed pod
   enabled: true
-  scc:
-    # checksAgent.scc.enabled -- Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift
-    enabled: false
-  networkTracing:
-    # checksAgent.networkTracing.enabled -- Enable / disable the agent network tracing module.
-    enabled: true
-  processAgent:
-    # checksAgent.processAgent.enabled -- Enable / disable the agent process agent module.
-    enabled: true
   # checksAgent.skipSslValidation -- Set to true if self signed certificates are used.
   skipSslValidation: false
 
-  # nodeAgent.checksTagCardinality -- low, orchestrator or high. Orchestrator level adds pod_name, high adds display_container_name
+  # checksAgent.checksTagCardinality -- low, orchestrator or high. Orchestrator level adds pod_name, high adds display_container_name
   checksTagCardinality: orchestrator
 
   # checksAgent.config --

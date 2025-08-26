@@ -69,10 +69,8 @@ stackstate/stackstate-k8s-agent
 | checksAgent.livenessProbe.successThreshold | int | `1` | `successThreshold` for the liveness probe. |
 | checksAgent.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
 | checksAgent.logLevel | string | `"INFO"` | Logging level for clusterchecks agent processes. |
-| checksAgent.networkTracing.enabled | bool | `true` | Enable / disable the agent network tracing module. |
 | checksAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | checksAgent.priorityClassName | string | `""` | Priority class for clusterchecks agent pods. |
-| checksAgent.processAgent.enabled | bool | `true` | Enable / disable the agent process agent module. |
 | checksAgent.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
 | checksAgent.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
 | checksAgent.readinessProbe.initialDelaySeconds | int | `15` | `initialDelaySeconds` for the readiness probe. |
@@ -84,7 +82,6 @@ stackstate/stackstate-k8s-agent
 | checksAgent.resources.limits.memory | string | `"600Mi"` | Memory resource limits. |
 | checksAgent.resources.requests.cpu | string | `"20m"` | CPU resource requests. |
 | checksAgent.resources.requests.memory | string | `"512Mi"` | Memory resource requests. |
-| checksAgent.scc.enabled | bool | `false` | Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift |
 | checksAgent.serviceaccount.annotations | object | `{}` | Annotations for the service account for the cluster checks pods |
 | checksAgent.skipSslValidation | bool | `false` | Set to true if self signed certificates are used. |
 | checksAgent.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
