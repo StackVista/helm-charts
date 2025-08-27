@@ -7,6 +7,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/helm"
 	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/stretchr/testify/assert"
+	admissionregistrationv1 "k8s.io/api/admissionregistration/v1"
 	appsv1 "k8s.io/api/apps/v1"
 	batchv1 "k8s.io/api/batch/v1"
 	batchv1beta1 "k8s.io/api/batch/v1beta1"
@@ -19,25 +20,27 @@ import (
 
 // KubernetesResources parsed from a multi-document template string
 type KubernetesResources struct {
-	ClusterRoles           map[string]rbacv1.ClusterRole
-	ClusterRoleBindings    map[string]rbacv1.ClusterRoleBinding
-	ConfigMaps             map[string]corev1.ConfigMap
-	CronJobs               map[string]batchv1beta1.CronJob
-	DaemonSets             map[string]appsv1.DaemonSet
-	Deployments            map[string]appsv1.Deployment
-	Ingresses              map[string]networkingv1.Ingress
-	Jobs                   map[string]batchv1.Job
-	PersistentVolumeClaims map[string]corev1.PersistentVolumeClaim
-	Pods                   map[string]corev1.Pod
-	Pdbs                   map[string]policyv1.PodDisruptionBudget
-	Roles                  map[string]rbacv1.Role
-	RoleBindings           map[string]rbacv1.RoleBinding
-	Secrets                map[string]corev1.Secret
-	Services               map[string]corev1.Service
-	ServiceAccounts        map[string]corev1.ServiceAccount
-	Statefulsets           map[string]appsv1.StatefulSet
-	ServiceMonitors        map[string]promv1.ServiceMonitor
-	Unmapped               map[string]string
+	ClusterRoles             map[string]rbacv1.ClusterRole
+	ClusterRoleBindings      map[string]rbacv1.ClusterRoleBinding
+	ConfigMaps               map[string]corev1.ConfigMap
+	CronJobs                 map[string]batchv1beta1.CronJob
+	DaemonSets               map[string]appsv1.DaemonSet
+	Deployments              map[string]appsv1.Deployment
+	Ingresses                map[string]networkingv1.Ingress
+	Jobs                     map[string]batchv1.Job
+	PersistentVolumeClaims   map[string]corev1.PersistentVolumeClaim
+	Pods                     map[string]corev1.Pod
+	Pdbs                     map[string]policyv1.PodDisruptionBudget
+	Roles                    map[string]rbacv1.Role
+	RoleBindings             map[string]rbacv1.RoleBinding
+	Secrets                  map[string]corev1.Secret
+	Services                 map[string]corev1.Service
+	ServiceAccounts          map[string]corev1.ServiceAccount
+	Statefulsets             map[string]appsv1.StatefulSet
+	ServiceMonitors          map[string]promv1.ServiceMonitor
+	MutatingWebhookConfigs   map[string]admissionregistrationv1.MutatingWebhookConfiguration
+	ValidatingWebhookConfigs map[string]admissionregistrationv1.ValidatingWebhookConfiguration
+	Unmapped                 map[string]string
 }
 
 // NewKubernetesResources creates a new instance of KubernetesResources by parsing the helmOutput and
@@ -61,6 +64,8 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 	serviceAccounts := make(map[string]corev1.ServiceAccount)
 	statefulsets := make(map[string]appsv1.StatefulSet)
 	serviceMonitors := make(map[string]promv1.ServiceMonitor)
+	mutatingWebhookConfigs := make(map[string]admissionregistrationv1.MutatingWebhookConfiguration)
+	validatingWebhookConfigs := make(map[string]admissionregistrationv1.ValidatingWebhookConfiguration)
 	unmapped := map[string]string{}
 
 	// The K8S unmarshalling only can do a single document
@@ -185,6 +190,14 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 			var resource promv1.ServiceMonitor
 			helm.UnmarshalK8SYaml(t, v, &resource)
 			serviceMonitors[resource.Name] = resource
+		case "MutatingWebhookConfiguration":
+			var resource admissionregistrationv1.MutatingWebhookConfiguration
+			helm.UnmarshalK8SYaml(t, v, &resource)
+			mutatingWebhookConfigs[resource.Name] = resource
+		case "ValidatingWebhookConfiguration":
+			var resource admissionregistrationv1.ValidatingWebhookConfiguration
+			helm.UnmarshalK8SYaml(t, v, &resource)
+			validatingWebhookConfigs[resource.Name] = resource
 		default:
 			if partial.Kind != "" || partial.APIVersion != "" {
 				t.Logf("Found unknown kind '%s/%s' in content\n%s\n This can be caused by an incorrect k8s resource type in the helm template or when using a custom resource type.", partial.APIVersion, partial.Kind, v)
@@ -196,25 +209,27 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 	}
 
 	return KubernetesResources{
-		ClusterRoles:           clusterRoles,
-		ClusterRoleBindings:    clusterRoleBindings,
-		ConfigMaps:             configMaps,
-		DaemonSets:             daemonSets,
-		Deployments:            deployments,
-		Ingresses:              ingresses,
-		CronJobs:               cronJobs,
-		Jobs:                   jobs,
-		PersistentVolumeClaims: persistentVolumeClaims,
-		Pods:                   pods,
-		Pdbs:                   pdbs,
-		Roles:                  roles,
-		RoleBindings:           roleBindings,
-		Secrets:                secrets,
-		Services:               services,
-		ServiceAccounts:        serviceAccounts,
-		Statefulsets:           statefulsets,
-		ServiceMonitors:        serviceMonitors,
-		Unmapped:               unmapped,
+		ClusterRoles:             clusterRoles,
+		ClusterRoleBindings:      clusterRoleBindings,
+		ConfigMaps:               configMaps,
+		DaemonSets:               daemonSets,
+		Deployments:              deployments,
+		Ingresses:                ingresses,
+		CronJobs:                 cronJobs,
+		Jobs:                     jobs,
+		PersistentVolumeClaims:   persistentVolumeClaims,
+		Pods:                     pods,
+		Pdbs:                     pdbs,
+		Roles:                    roles,
+		RoleBindings:             roleBindings,
+		Secrets:                  secrets,
+		Services:                 services,
+		ServiceAccounts:          serviceAccounts,
+		Statefulsets:             statefulsets,
+		ServiceMonitors:          serviceMonitors,
+		MutatingWebhookConfigs:   mutatingWebhookConfigs,
+		ValidatingWebhookConfigs: validatingWebhookConfigs,
+		Unmapped:                 unmapped,
 	}
 }
 
