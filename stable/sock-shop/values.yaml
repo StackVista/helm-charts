@@ -101,6 +101,13 @@ catalogue:
       failure: "0 * * * *"
       # catalogue.demoScenarioSimulation.schedule.fix -- The cron schedule to fix the faulty k8s demo scenario.
       fix: "30 * * * *"
+    image:
+      # catalogue.demoScenarioSimulation.image.repository -- The container repository for the kubectl image used in demo scenario jobs.
+      repository: bitnamilegacy/kubectl
+      # catalogue.demoScenarioSimulation.image.tag -- The container image tag for the kubectl image.
+      tag: latest
+    # catalogue.demoScenarioSimulation.imagePullSecrets -- Image pull secrets for the demo scenario jobs.
+    imagePullSecrets: []
 
 #######
 # FRONTEND DOMAIN

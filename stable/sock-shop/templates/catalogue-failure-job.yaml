@@ -16,11 +16,17 @@ spec:
       activeDeadlineSeconds: 600
       template:
         spec:
+          {{- if .Values.catalogue.demoScenarioSimulation.imagePullSecrets }}
+          imagePullSecrets:
+            {{- range .Values.catalogue.demoScenarioSimulation.imagePullSecrets }}
+            - name: {{ . }}
+            {{- end }}
+          {{- end }}
           serviceAccountName: catalogue-failure-deployment
           restartPolicy: Never
           containers:
             - name: kubectl
-              image: bitnami/kubectl
+              image: {{ .Values.catalogue.demoScenarioSimulation.image.repository }}:{{ .Values.catalogue.demoScenarioSimulation.image.tag }}
               command:
                 - bash
                 - -c
@@ -50,11 +56,17 @@ spec:
       activeDeadlineSeconds: 600
       template:
         spec:
+          {{- if .Values.catalogue.demoScenarioSimulation.imagePullSecrets }}
+          imagePullSecrets:
+            {{- range .Values.catalogue.demoScenarioSimulation.imagePullSecrets }}
+            - name: {{ . }}
+            {{- end }}
+          {{- end }}
           serviceAccountName: catalogue-failure-deployment
           restartPolicy: Never
           containers:
             - name: kubectl
-              image: bitnami/kubectl
+              image: {{ .Values.catalogue.demoScenarioSimulation.image.repository }}:{{ .Values.catalogue.demoScenarioSimulation.image.tag }}
               command:
                 - bash
                 - -c

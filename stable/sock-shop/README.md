@@ -3,7 +3,7 @@
 This chart deploys [SockShop](https://microservices-demo.github.io/) application. It was forked from [microservices-demo/microservices-demo](https://github.com/microservices-demo/microservices-demo/tree/master/deploy/kubernetes/helm-chart)
 and got some improvements.
 
-![Version: 0.2.11](https://img.shields.io/badge/Version-0.2.11-informational?style=flat-square) ![AppVersion: 0.3.5](https://img.shields.io/badge/AppVersion-0.3.5-informational?style=flat-square)
+![Version: 0.2.12](https://img.shields.io/badge/Version-0.2.12-informational?style=flat-square) ![AppVersion: 0.3.5](https://img.shields.io/badge/AppVersion-0.3.5-informational?style=flat-square)
 A Helm chart for Sock Shop
 
 ## Requirements
@@ -32,6 +32,9 @@ A Helm chart for Sock Shop
 | cartsDB.tolerations | list | `[]` |  |
 | catalogue.annotations | object | `{"vcs":"https://gitlab.com/stackvista/demo/microservices-demo/catalogue/-/commit/e9e5338599dbda30366b38d00794c34aaa4221a7"}` | Custom annotations for `catalogue` pods. |
 | catalogue.demoScenarioSimulation.enabled | bool | `false` | Whether the k8s demo scenario should be enabled. |
+| catalogue.demoScenarioSimulation.image.repository | string | `"bitnamilegacy/kubectl"` | The container repository for the kubectl image used in demo scenario jobs. |
+| catalogue.demoScenarioSimulation.image.tag | string | `"latest"` | The container image tag for the kubectl image. |
+| catalogue.demoScenarioSimulation.imagePullSecrets | list | `[]` | Image pull secrets for the demo scenario jobs. |
 | catalogue.demoScenarioSimulation.schedule | object | `{"failure":"0 * * * *","fix":"30 * * * *"}` | The cron schedule to trigger the k8s demo scenario. |
 | catalogue.demoScenarioSimulation.schedule.failure | string | `"0 * * * *"` | The cron schedule to trigger the faulty k8s demo scenario. |
 | catalogue.demoScenarioSimulation.schedule.fix | string | `"30 * * * *"` | The cron schedule to fix the faulty k8s demo scenario. |
