@@ -1,6 +1,40 @@
 ################################################################
 # THIS FILE WAS GENERATED AUTOMATICALLY! DO NOT EDIT MANUALLY! #
 ################################################################
+beest_agent_trigger:
+  allow_failure: true
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  rules:
+    - changes:
+        - stable/suse-observability-agent/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - changes:
+        - stable/suse-observability-agent/**/*
+      if: $CI_COMMIT_BRANCH
+      when: manual
+  script:
+    - AGENT_HELM_CHART_VERSION=$(yq e ".version" stable/suse-observability-agent/Chart.yaml)
+    - echo "Triggering beest pipeline with AGENT_HELM_CHART_VERSION=${AGENT_HELM_CHART_VERSION}"
+    - curl --verbose --fail-with-body --request POST --form "token=$STS_BEEST_TRIGGER_TOKEN" --form ref=main --form "variables[AGENT_HELM_CHART_VERSION]=${AGENT_HELM_CHART_VERSION}" "https://gitlab.com/api/v4/projects/$BEEST_PROJECT_ID/trigger/pipeline"
+  stage: update
+beest_stackstate_trigger:
+  allow_failure: true
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  rules:
+    - changes:
+        - stable/suse-observability/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - changes:
+        - stable/suse-observability/**/*
+      if: $CI_COMMIT_BRANCH
+      when: manual
+  script:
+    - STACKSTATE_HELM_CHART_VERSION=$(yq e ".version" stable/suse-observability/Chart.yaml)
+    - echo "Triggering beest pipeline with STACKSTATE_HELM_CHART_VERSION=${STACKSTATE_HELM_CHART_VERSION}"
+    - curl --verbose --fail-with-body --request POST --form "token=$STS_BEEST_TRIGGER_TOKEN" --form ref=main --form "variables[STACKSTATE_HELM_CHART_VERSION]=${STACKSTATE_HELM_CHART_VERSION}" "https://gitlab.com/api/v4/projects/$BEEST_PROJECT_ID/trigger/pipeline"
+  stage: update
 build_artifactory-cleaner:
   artifacts:
     paths:

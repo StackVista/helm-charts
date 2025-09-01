@@ -377,6 +377,54 @@ local update_docker_images = {
   update_stackpacks_version_to_latest: job('UPDATE_STACKPACKS_DOCKER_VERSION', ['.gitlab/suse-observability/update_stackpacks_version_to_latest.sh']),
 };
 
+local beest_triggers = {
+  beest_agent_trigger: {
+    image: variables.images.stackstate_devops,
+    stage: 'update',
+    script: [
+      'AGENT_HELM_CHART_VERSION=$(yq e ".version" stable/suse-observability-agent/Chart.yaml)',
+      'echo "Triggering beest pipeline with AGENT_HELM_CHART_VERSION=${AGENT_HELM_CHART_VERSION}"',
+      'curl --verbose --fail-with-body --request POST --form "token=$STS_BEEST_TRIGGER_TOKEN" --form ref=main --form "variables[AGENT_HELM_CHART_VERSION]=${AGENT_HELM_CHART_VERSION}" "https://gitlab.com/api/v4/projects/$BEEST_PROJECT_ID/trigger/pipeline"',
+    ],
+    rules: [
+      {
+        @'if': '$CI_COMMIT_BRANCH == "master"',
+        changes: ['stable/suse-observability-agent/**/*'],
+        when: 'manual',
+      },
+      {
+        @'if': '$CI_COMMIT_BRANCH',
+        changes: ['stable/suse-observability-agent/**/*'],
+        when: 'manual',
+      },
+    ],
+    allow_failure: true,
+  },
+
+  beest_stackstate_trigger: {
+    image: variables.images.stackstate_devops,
+    stage: 'update',
+    script: [
+      'STACKSTATE_HELM_CHART_VERSION=$(yq e ".version" stable/suse-observability/Chart.yaml)',
+      'echo "Triggering beest pipeline with STACKSTATE_HELM_CHART_VERSION=${STACKSTATE_HELM_CHART_VERSION}"',
+      'curl --verbose --fail-with-body --request POST --form "token=$STS_BEEST_TRIGGER_TOKEN" --form ref=main --form "variables[STACKSTATE_HELM_CHART_VERSION]=${STACKSTATE_HELM_CHART_VERSION}" "https://gitlab.com/api/v4/projects/$BEEST_PROJECT_ID/trigger/pipeline"',
+    ],
+    rules: [
+      {
+        @'if': '$CI_COMMIT_BRANCH == "master"',
+        changes: ['stable/suse-observability/**/*'],
+        when: 'manual',
+      },
+      {
+        @'if': '$CI_COMMIT_BRANCH',
+        changes: ['stable/suse-observability/**/*'],
+        when: 'manual',
+      },
+    ],
+    allow_failure: true,
+  },
+};
+
 // Main
 {
   // Only run for merge requests, tags, or the default (master) branch
@@ -408,3 +456,4 @@ local update_docker_images = {
 + update_aad_chart_version
 + update_docker_images
 + push_suse_observability_to_rancher_registry
++ beest_triggers
