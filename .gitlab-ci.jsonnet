@@ -384,7 +384,7 @@ local beest_triggers = {
     script: [
       'AGENT_HELM_CHART_VERSION=$(yq e ".version" stable/suse-observability-agent/Chart.yaml)',
       'echo "Triggering beest pipeline with AGENT_HELM_CHART_VERSION=${AGENT_HELM_CHART_VERSION}"',
-      'curl --verbose --fail-with-body --request POST --form "token=$STS_BEEST_TRIGGER_TOKEN" --form ref=main --form "variables[AGENT_HELM_CHART_VERSION]=${AGENT_HELM_CHART_VERSION}" "https://gitlab.com/api/v4/projects/$BEEST_PROJECT_ID/trigger/pipeline"',
+      'curl --verbose --fail-with-body --request POST --form "token=$STS_BEEST_TRIGGER_TOKEN" --form ref=main --form "variables[AGENT_HELM_CHART_VERSION]=${AGENT_HELM_CHART_VERSION}" --form "variables[TRIGGER_AGENT_X86_TESTS]=true" "https://gitlab.com/api/v4/projects/$BEEST_PROJECT_ID/trigger/pipeline"',
     ],
     rules: [
       {
@@ -407,7 +407,7 @@ local beest_triggers = {
     script: [
       'STACKSTATE_HELM_CHART_VERSION=$(yq e ".version" stable/suse-observability/Chart.yaml)',
       'echo "Triggering beest pipeline with STACKSTATE_HELM_CHART_VERSION=${STACKSTATE_HELM_CHART_VERSION}"',
-      'curl --verbose --fail-with-body --request POST --form "token=$STS_BEEST_TRIGGER_TOKEN" --form ref=main --form "variables[STACKSTATE_HELM_CHART_VERSION]=${STACKSTATE_HELM_CHART_VERSION}" "https://gitlab.com/api/v4/projects/$BEEST_PROJECT_ID/trigger/pipeline"',
+      'curl --verbose --fail-with-body --request POST --form "token=$STS_BEEST_TRIGGER_TOKEN" --form ref=main --form "variables[STACKSTATE_HELM_CHART_VERSION]=${STACKSTATE_HELM_CHART_VERSION}" --form "variables[TRIGGER_AGENT_X86_TESTS]=true" "https://gitlab.com/api/v4/projects/$BEEST_PROJECT_ID/trigger/pipeline"',
     ],
     rules: [
       {
