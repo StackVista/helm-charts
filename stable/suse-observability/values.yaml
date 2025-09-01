@@ -1643,7 +1643,10 @@ stackstate:
   stackpacks:
     # stackstate.stackpacks.installed -- Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks)
     installed: []
-    # stackstate.stackpacks.upgradeOnStartup -- Specify a list of stackpacks that will, on startup only, be upgraded to the latest version available
+    # stackstate.stackpacks.upgradeOnStartup -- Specify additional stackpacks that will, on startup only, be upgraded to the latest version available.
+    # Note: The following StackPacks are automatically upgraded with SUSE Observability:
+    # kubernetes-v2, open-telemetry, stackstate-k8s-agent-v2, aad-v2, stackstate, plus either prime-kubernetes or community-kubernetes (based on stackstate.deployment.edition).
+    # Additional StackPacks declared in upgradeOnStartup will be merged with these defaults.
     upgradeOnStartup: []
     # stackstate.stackpacks.source -- Source of the stackpacks, for now just the docker-image.
     source: "docker-image"

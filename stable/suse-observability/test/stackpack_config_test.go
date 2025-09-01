@@ -19,7 +19,7 @@ const expectedStackPackConfig = `stackstate.stackPacks {
     }
   }
 
-  upgradeOnStartUp = ["test-stackpack-1"]
+  upgradeOnStartUp = ["kubernetes-v2","stackstate-k8s-agent-v2","open-telemetry","aad-v2","stackstate","test-stackpack-1"]
   installOnStartUp += "prime-kubernetes"
   upgradeOnStartUp += "prime-kubernetes"
 }`
@@ -39,7 +39,7 @@ const expectedStackPackConfigMonoHbase = `stackstate.stackPacks {
     }
   }
 
-  upgradeOnStartUp = ["test-stackpack-1"]
+  upgradeOnStartUp = ["kubernetes-v2","stackstate-k8s-agent-v2","open-telemetry","aad-v2","stackstate","test-stackpack-1"]
   installOnStartUp += "prime-kubernetes"
   upgradeOnStartUp += "prime-kubernetes"
 }`

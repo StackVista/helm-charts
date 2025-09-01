@@ -91,8 +91,14 @@ stackstate.stackPacks {
     {{- end }}
   }
 {{- end }}
-
-  upgradeOnStartUp = {{ toJson .Values.stackstate.stackpacks.upgradeOnStartup }}
+{{/*
+  Default StackPacks that will be upgraded on startup - to keep them in sync with SUSE Observability upgrades.
+  Users can extend this list by setting: stackstate.stackpacks.upgradeOnStartup
+*/}}
+  {{ $defaultStackPacksToUpgrade := list "kubernetes-v2" "stackstate-k8s-agent-v2" "open-telemetry" "aad-v2" "stackstate" -}}
+  {{ $userStackPacksToUpgrade := .Values.stackstate.stackpacks.upgradeOnStartup | default list -}}
+  {{ $upgradeList := concat $defaultStackPacksToUpgrade $userStackPacksToUpgrade | uniq -}}
+  upgradeOnStartUp = {{ toJson $upgradeList }}
 
   {{- $editionStackPack := printf "%s-kubernetes" (lower .Values.stackstate.deployment.edition) }}
   installOnStartUp += {{ $editionStackPack | quote }}
