@@ -656,8 +656,8 @@ httpHeaderInjectorWebhook:
 ########################
 
 kubernetes-rbac-agent:
-  # kubernetes-rbac-agent.enabled. Enables/disables the rbac agent. Experimental feature, should not be enabled for now
-  enabled: false
+  # kubernetes-rbac-agent.enabled. Enables/disables the rbac agent.
+  enabled: true
   url:
     fromConfigMap: '{{ include "stackstate-k8s-agent.url.configmap.internal.name"
       . }}'

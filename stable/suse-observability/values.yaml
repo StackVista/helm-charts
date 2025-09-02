@@ -1562,7 +1562,7 @@ stackstate:
         dedicatedSubject: ""
   k8sAuthorization:
     # stackstate.k8sAuthorization - (boolean) Whether we use k8s RBAC as authorization authority
-    enabled: false
+    enabled: true
   deployment:
     # stackstate.deployment.mode -- Deployment mode of StackState, possible values are 'Saas' and 'SelfHosted'
     mode: "SelfHosted"

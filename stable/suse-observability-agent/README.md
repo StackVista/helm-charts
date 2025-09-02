@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.0.64`
+Current chart version is `1.0.65`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -55,7 +55,7 @@ stackstate/stackstate-k8s-agent
 | all.hardening.enabled | bool | `false` | An indication of whether the containers will be evaluated for hardening at runtime |
 | all.image.registry | string | `nil` | The image registry to use. |
 | checksAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
-| checksAgent.checksTagCardinality | string | `"orchestrator"` |  |
+| checksAgent.checksTagCardinality | string | `"orchestrator"` | low, orchestrator or high. Orchestrator level adds pod_name, high adds display_container_name |
 | checksAgent.config | object | `{"override":[]}` |  |
 | checksAgent.config.override | list | `[]` | A list of objects containing three keys `name`, `path` and `data`, specifying filenames at specific paths which need to be (potentially) overridden using a mounted configmap |
 | checksAgent.enabled | bool | `true` | Enable / disable runnning cluster checks in a separately deployed pod |
@@ -182,7 +182,7 @@ stackstate/stackstate-k8s-agent
 | kubernetes-rbac-agent.containers.rbacAgent.resources.limits.memory | string | `"40Mi"` | Memory resource limits. |
 | kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory | string | `"25Mi"` | Memory resource requests. |
 | kubernetes-rbac-agent.containers.rbacAgent.tolerations | list | `[]` | Set tolerations |
-| kubernetes-rbac-agent.enabled | bool | `false` |  |
+| kubernetes-rbac-agent.enabled | bool | `true` |  |
 | kubernetes-rbac-agent.roleType | string | `"scope"` |  |
 | kubernetes-rbac-agent.url.fromConfigMap | string | `"{{ include \"stackstate-k8s-agent.url.configmap.internal.name\" . }}"` |  |
 | logsAgent.affinity | object | `{}` | Affinity settings for pod assignment. |

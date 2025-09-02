@@ -191,6 +191,6 @@ questions:
   - variable: kubernetes-rbac-agent.enabled
     label: "Enable RBAC Agent"
     type: boolean
-    description: "Enable the RBAC Agent for project-based authorization in SUSE Observability. This feature is not available yet."
+    description: "Enable the RBAC Agent for project-based authorization in SUSE Observability."
     default: "true"
-    group: "RBAC Agent (Coming soon)"
+    group: "RBAC Agent"
