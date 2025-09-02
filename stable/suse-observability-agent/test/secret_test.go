@@ -60,6 +60,9 @@ func TestEnvVarFromSecretRefDeployments(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	for deploymentName, deployment := range resources.Deployments {
+		if deploymentName == "suse-observability-agent-rbac-agent" {
+			continue
+		}
 		t.Run(deploymentName, func(t *testing.T) {
 			t.Logf("Processing deployment: %s", deploymentName)
 

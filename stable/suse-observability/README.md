@@ -974,7 +974,7 @@ stackstate/stackstate
 | stackstate.email.server.protocol | string | `"smtp"` | Email server protocol |
 | stackstate.experimental | object | `{}` | Enable experimental features in StackState. Deprecated, use `stackstate.features` instead. |
 | stackstate.features.dashboards | boolean | `false` | Enable dashboards |
-| stackstate.features.role-k8s-authz | boolean | `false` | Deploy the Role(s) to populate permissions on Suse Observability |
+| stackstate.features.role-k8s-authz | boolean | `true` | Deploy the Role(s) to populate permissions on Suse Observability |
 | stackstate.features.server.split | boolean | `true` | Run a single service server or split in multiple sub services as api, state .... |
 | stackstate.features.storeTransactionLogsToPVC.enabled | boolean | `false` | Whether the transaction logs for some services, API, Checks, HealthSync,State and Sync have to be stored to PVCs instead of pod ephemeral storage. |
 | stackstate.features.storeTransactionLogsToPVC.storageClass | string | `nil` | Storage class name of PersistentVolume used by transaction logs. |

@@ -1620,7 +1620,7 @@ stackstate:
   experimental: {}
   features:
     # stackstate.features.role-k8s-authz -- (boolean) Deploy the Role(s) to populate permissions on Suse Observability
-    role-k8s-authz: false
+    role-k8s-authz: true
     # stackstate.features.traces -- (boolean) Enable new traces UI and API
     traces: true
     # stackstate.features.dashboards -- (boolean) Enable dashboards
