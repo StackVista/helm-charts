@@ -29,6 +29,7 @@
       'common',
       'elasticsearch',
       'hbase',
+      'kafka',
       'kafkaup-operator',
       'minio',
       'pull-secret',
