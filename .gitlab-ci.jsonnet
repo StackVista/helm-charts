@@ -147,6 +147,8 @@ local resource_usage = {
       {
         @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
         changes: [
+          'test/*.go',
+          'test/**/*',
           'stable/suse-observability/**/*',
           'stable/suse-observability-values/**/*',
         ],

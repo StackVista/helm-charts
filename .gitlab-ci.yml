@@ -4385,6 +4385,8 @@ resource_usage:
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
+        - test/*.go
+        - test/**/*
         - stable/suse-observability/**/*
         - stable/suse-observability-values/**/*
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
