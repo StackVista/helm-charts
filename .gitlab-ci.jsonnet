@@ -135,6 +135,29 @@ local test_chart_jobs = {
   for chart in (charts + public_charts)
 };
 
+local resource_usage = {
+  resource_usage: {
+    image: variables.images.stackstate_helm_test,
+    tags: ['sts-k8s-xl-runner'],
+    script: [
+      'go test ./test/...',
+    ],
+    stage: 'test',
+    rules: [
+      {
+        @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
+        changes: [
+          'stable/suse-observability/**/*',
+          'stable/suse-observability-values/**/*',
+        ],
+      },
+    ],
+    variables: {
+      CGO_ENABLED: 0,
+    },
+  },
+};
+
 // Push charts to `helm-test.stackstate.io` registry
 local push_test_charts_jobs = {
   push_test_charts: {
@@ -448,6 +471,7 @@ local beest_triggers = {
 + check_chart_version_jobs
 + test_chart_jobs
 + push_test_charts_jobs
++ resource_usage
 
 + push_charts_to_internal_jobs
 + push_charts_to_public_jobs

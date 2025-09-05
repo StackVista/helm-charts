@@ -4381,6 +4381,20 @@ push_victoria-metrics-single_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/victoria-metrics-single
+resource_usage:
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  rules:
+    - changes:
+        - stable/suse-observability/**/*
+        - stable/suse-observability-values/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
 stages:
   - build
   - push-charts-to-test
