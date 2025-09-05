@@ -139,7 +139,10 @@ local resource_usage = {
   resource_usage: {
     image: variables.images.stackstate_helm_test,
     tags: ['sts-k8s-xl-runner'],
-    script: [
+    before_script: helm_fetch_dependencies,
+    script: update_2nd_degree_chart_deps('suse-observability') + [
+      'helm dependencies build stable/suse-observability',
+      'helm dependencies build stable/suse-observability-values',
       'go test ./test/...',
     ],
     stage: 'test',
