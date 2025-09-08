@@ -26,6 +26,7 @@
       'stackstate-k8s-agent',
       'suse-observability-agent',
       'artifactory-cleaner',
+      'clickhouse',
       'common',
       'elasticsearch',
       'hbase',
