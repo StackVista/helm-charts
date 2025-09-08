@@ -21,13 +21,43 @@ type resourceUsage struct {
 	totalCpuLimits   *resource.Quantity
 	totalMemRequests *resource.Quantity
 	totalMemLimits   *resource.Quantity
+
+	totalStorage *resource.Quantity
 }
+
+const VERSION = "version: "
 
 func TestCalculateResourceUsage(t *testing.T) {
 	f, err := os.Create("resource_usage.txt")
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	valuesChart, err := os.ReadFile("../stable/suse-observability-values/Chart.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+	valuesVersion := ""
+	for _, line := range strings.Split(string(valuesChart), "\n") {
+		if len(line) > len(VERSION) && line[:len(VERSION)] == VERSION {
+			valuesVersion = line[len(VERSION):]
+		}
+	}
+
+	observabilityChart, err := os.ReadFile("../stable/suse-observability/Chart.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+	observabilityVersion := ""
+	for _, line := range strings.Split(string(observabilityChart), "\n") {
+		if len(line) > len(VERSION) && line[:len(VERSION)] == VERSION {
+			observabilityVersion = line[len(VERSION):]
+		}
+	}
+
+	f.WriteString("\n")
+	fmt.Fprintf(f, "suse-observability-values version: %s\n", valuesVersion)
+	fmt.Fprintf(f, "suse-observability version: %s\n", observabilityVersion)
 	for _, profile := range []string{
 		"trial",
 		"10-nonha",
@@ -39,12 +69,13 @@ func TestCalculateResourceUsage(t *testing.T) {
 		"500-ha",
 		"4000-ha",
 	} {
-		fmt.Fprintf(f, "Profile: %s\n", profile)
+		fmt.Fprintf(f, "\nProfile: %s\n", profile)
 		usage := CalculateResourceUsage(t, profile)
 		fmt.Fprintf(f, "  cpu request: %v\n", usage.totalCpuRequests)
 		fmt.Fprintf(f, "  cpu limit: %v\n", usage.totalCpuLimits)
 		fmt.Fprintf(f, "  mem request: %v\n", usage.totalMemRequests)
 		fmt.Fprintf(f, "  mem limit: %v\n", usage.totalMemLimits)
+		fmt.Fprintf(f, "  storage: %v\n", usage.totalStorage)
 	}
 	f.Close()
 }
@@ -98,6 +129,7 @@ func CalculateResourceUsage(t *testing.T, profile string) resourceUsage {
 		totalCpuLimits:   resource.NewMilliQuantity(0, resource.DecimalSI),
 		totalMemRequests: resource.NewQuantity(0, resource.DecimalSI),
 		totalMemLimits:   resource.NewQuantity(0, resource.DecimalSI),
+		totalStorage:     resource.NewQuantity(0, resource.DecimalSI),
 	}
 
 	deployments := resources.Deployments
@@ -119,6 +151,18 @@ func CalculateResourceUsage(t *testing.T, profile string) resourceUsage {
 			memLim := container.Resources.Limits.Memory().DeepCopy()
 			memLim.Mul(replicas)
 			result.totalMemLimits.Add(memLim)
+
+			ephemeral := container.Resources.Requests.StorageEphemeral().DeepCopy()
+			ephemeral.Mul(replicas)
+			result.totalStorage.Add(ephemeral)
+		}
+		for _, vol := range deployment.Spec.Template.Spec.Volumes {
+			if vol.Ephemeral != nil {
+				vct := vol.Ephemeral.VolumeClaimTemplate
+				storage := vct.Spec.Resources.Requests.Storage().DeepCopy()
+				storage.Mul(replicas)
+				result.totalStorage.Add(storage)
+			}
 		}
 	}
 
@@ -141,6 +185,44 @@ func CalculateResourceUsage(t *testing.T, profile string) resourceUsage {
 			memLim := container.Resources.Limits.Memory().DeepCopy()
 			memLim.Mul(replicas)
 			result.totalMemLimits.Add(memLim)
+
+			ephemeral := container.Resources.Requests.StorageEphemeral().DeepCopy()
+			ephemeral.Mul(replicas)
+			result.totalStorage.Add(ephemeral)
+		}
+		for _, vol := range statefulset.Spec.Template.Spec.Volumes {
+			if vol.Ephemeral != nil {
+				vct := vol.Ephemeral.VolumeClaimTemplate
+				storage := vct.Spec.Resources.Requests.Storage().DeepCopy()
+				storage.Mul(replicas)
+				result.totalStorage.Add(storage)
+			}
+		}
+		for _, vct := range statefulset.Spec.VolumeClaimTemplates {
+			storage := vct.Spec.Resources.Requests.Storage().DeepCopy()
+			storage.Mul(replicas)
+			result.totalStorage.Add(storage)
+		}
+	}
+
+	pvcs := resources.PersistentVolumeClaims
+	for _, pvc := range pvcs {
+		result.totalStorage.Add(pvc.Spec.Resources.Requests.Storage().DeepCopy())
+	}
+
+	cms := resources.ConfigMaps
+	for _, configMap := range cms {
+		_, found := configMap.ObjectMeta.Labels["stackstate.com/backup-scripts"]
+		if found {
+			for key, data := range configMap.Data {
+				if key[len(key)-5:] == ".yaml" {
+					backupResources := helmtestutil.NewKubernetesResources(t, data)
+					pvcs := backupResources.PersistentVolumeClaims
+					for _, pvc := range pvcs {
+						result.totalStorage.Add(pvc.Spec.Resources.Requests.Storage().DeepCopy())
+					}
+				}
+			}
 		}
 	}
 
