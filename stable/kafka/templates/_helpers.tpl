@@ -494,3 +494,41 @@ kafka: auth.tls.keyPasswordSecretKey,auth.tls.keystorePasswordSecretKey,auth.tls
 {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Merge global and local common labels.
+Precedence order: .Values.commonLabels (higher) -> .Values.global.commonLabels (lower)
+*/}}
+{{- define "kafka.commonLabels" -}}
+{{- $labels := dict }}
+{{- if .Values.commonLabels }}
+{{- $labels = .Values.commonLabels }}
+{{- end }}
+{{- if .Values.global.commonLabels }}
+{{- $labels = merge $labels .Values.global.commonLabels }}
+{{- end }}
+{{- if $labels }}
+{{- include "common.tplvalues.render" ( dict "value" $labels "context" $ ) }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Return the proper Kafka pod labels
+Merges kafka.commonLabels with podLabels, with podLabels taking precedence
+Precedence order: .Values.podLabels (highest) -> .Values.commonLabels (middle) -> .Values.global.commonLabels (lowest)
+*/}}
+{{- define "kafka.podLabels" -}}
+{{- $labels := dict }}
+{{- if .Values.podLabels }}
+{{- $labels = .Values.podLabels }}
+{{- end }}
+{{- if .Values.commonLabels }}
+{{- $labels = merge $labels .Values.commonLabels }}
+{{- end }}
+{{- if .Values.global.commonLabels }}
+{{- $labels = merge $labels .Values.global.commonLabels }}
+{{- end }}
+{{- if $labels }}
+{{- include "common.tplvalues.render" ( dict "value" $labels "context" $ ) }}
+{{- end }}
+{{- end -}}

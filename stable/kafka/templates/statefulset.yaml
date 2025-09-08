@@ -14,9 +14,7 @@ metadata:
   namespace: {{ .Release.Namespace | quote }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: kafka
-    {{- if .Values.commonLabels }}
-    {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
-    {{- end }}
+    {{- include "kafka.commonLabels" . | nindent 4 }}
   {{- if .Values.commonAnnotations }}
   annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
@@ -32,9 +30,7 @@ spec:
     metadata:
       labels: {{- include "common.labels.standard" . | nindent 8 }}
         app.kubernetes.io/component: kafka
-        {{- if .Values.podLabels }}
-        {{- include "common.tplvalues.render" (dict "value" .Values.podLabels "context" $) | nindent 8 }}
-        {{- end }}
+        {{- include "kafka.podLabels" . | nindent 8 }}
       annotations:
         {{- if (include "kafka.createConfigmap" .) }}
         checksum/configuration: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}

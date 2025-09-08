@@ -1,0 +1,6 @@
+# Custom replica count for testing scaling
+replicaCount: 3
+
+# Use minimal persistence for testing
+persistence:
+  size: 1Gi

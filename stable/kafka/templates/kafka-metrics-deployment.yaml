@@ -11,9 +11,7 @@ metadata:
   namespace: {{ .Release.Namespace | quote }}
   labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: cluster-metrics
-    {{- if .Values.commonLabels }}
-    {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
-    {{- end }}
+    {{- include "kafka.commonLabels" . | nindent 4 }}
   {{- if .Values.commonAnnotations }}
   annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
@@ -26,6 +24,10 @@ spec:
     metadata:
       labels: {{- include "common.labels.standard" . | nindent 8 }}
         app.kubernetes.io/component: cluster-metrics
+        {{- include "kafka.commonLabels" . | nindent 8 }}
+        labels: {{- include "common.labels.standard" . | nindent 8 }}
+        app.kubernetes.io/component: cluster-metrics
+        {{- include "kafka.commonLabels" . | nindent 8 }}
         {{- if .Values.metrics.kafka.podLabels }}
         {{- include "common.tplvalues.render" (dict "value" .Values.metrics.kafka.podLabels "context" $) | nindent 8 }}
         {{- end }}

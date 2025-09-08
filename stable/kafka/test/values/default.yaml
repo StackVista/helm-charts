@@ -1,0 +1,6 @@
+# Default values for testing Kafka chart
+# This file uses the chart's default values with minimal test-specific overrides
+
+# Use minimal persistence for testing
+persistence:
+  size: 1Gi
