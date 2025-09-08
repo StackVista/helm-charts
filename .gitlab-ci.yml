@@ -1282,6 +1282,35 @@ build_victoria-metrics-single:
     - helm dependencies build stable/victoria-metrics-single
     - mkdir -p stable/victoria-metrics-single/build; helm package --destination stable/victoria-metrics-single/build stable/victoria-metrics-single
   stage: build
+build_zookeeper:
+  artifacts:
+    paths:
+      - stable/zookeeper/charts/
+      - stable/zookeeper/build/
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  rules:
+    - changes:
+        - stable/zookeeper/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/zookeeper/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/zookeeper/%
+    - helm dependencies build stable/zookeeper
+    - mkdir -p stable/zookeeper/build; helm package --destination stable/zookeeper/build stable/zookeeper
+  stage: build
 check_artifactory-cleaner_version:
   before_script:
     - .gitlab/validate_before_script.sh
@@ -1732,6 +1761,17 @@ check_victoria-metrics-single_version:
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - .gitlab/verify_versions_bumped.sh victoria-metrics-single
+  stage: validate
+check_zookeeper_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/zookeeper/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh zookeeper
   stage: validate
 image: quay.io/helmpack/chart-testing:v3.10.1
 push_artifactory-cleaner_to_internal:
@@ -4381,6 +4421,90 @@ push_victoria-metrics-single_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/victoria-metrics-single
+push_zookeeper_to_internal:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/zookeeper/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-zookeeper]/
+      when: on_success
+    - changes:
+        - stable/zookeeper/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - if: $CI_COMMIT_TAG =~ /^zookeeper\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/zookeeper
+push_zookeeper_to_public:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_zookeeper_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/zookeeper/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-zookeeper]/
+      when: on_success
+    - changes:
+        - stable/zookeeper/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^zookeeper\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/zookeeper
 resource_usage:
   artifacts:
     paths:
@@ -5066,6 +5190,21 @@ test_victoria-metrics-single:
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - go test ./stable/victoria-metrics-single/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
+test_zookeeper:
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  rules:
+    - changes:
+        - stable/zookeeper/**/*
+      exists:
+        - stable/zookeeper/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/zookeeper/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
@@ -5829,6 +5968,22 @@ validate_victoria-metrics-single:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/victoria-metrics-single/values.yaml
     - if [ -f stable/victoria-metrics-single/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/victoria-metrics-single/ci/default-values.yaml; fi
     - if [ -f stable/victoria-metrics-single/ci/default-values.yaml ]; then helm lint stable/victoria-metrics-single --values stable/victoria-metrics-single/ci/default-values.yaml; fi
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+validate_zookeeper:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/zookeeper/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/zookeeper/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/zookeeper/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/zookeeper/values.yaml
+    - if [ -f stable/zookeeper/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/zookeeper/ci/default-values.yaml; fi
+    - if [ -f stable/zookeeper/ci/default-values.yaml ]; then helm lint stable/zookeeper --values stable/zookeeper/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 variables:

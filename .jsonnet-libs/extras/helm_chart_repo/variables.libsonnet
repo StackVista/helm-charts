@@ -41,6 +41,7 @@
       'stackstate-standalone',
       'trafficmirror',
       'victoria-metrics-single',
+      'zookeeper',
     ],
     charts: [
       'aws-amicleaner',
