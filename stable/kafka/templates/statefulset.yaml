@@ -178,11 +178,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: KAFKA_CFG_ZOOKEEPER_CONNECT
-              {{- if .Values.zookeeper.enabled }}
-              value: {{ printf "%s%s" (include "kafka.zookeeper.fullname" .) (tpl .Values.zookeeperChrootPath .) | quote }}
-              {{- else }}
-              value: {{ include "common.tplvalues.render" (dict "value" (printf "%s%s" (join "," .Values.externalZookeeper.servers) (tpl .Values.zookeeperChrootPath .)) "context" $)    }}
-              {{- end }}
+              value: {{ include "common.tplvalues.render" (dict "value" (printf "%s%s" (join "," .Values.externalZookeeper.servers) (tpl .Values.zookeeperChrootPath .)) "context" $) }}
             - name: KAFKA_INTER_BROKER_LISTENER_NAME
               value: {{ .Values.interBrokerListenerName | quote }}
             - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
@@ -250,7 +246,7 @@ spec:
                   key: inter-broker-password
             {{- end }}
             {{- end }}
-            {{- if and .Values.zookeeper.auth.client.enabled .Values.auth.sasl.jaas.zookeeperUser }}
+            {{- if .Values.auth.sasl.jaas.zookeeperUser }}
             - name: KAFKA_ZOOKEEPER_USER
               value: {{ .Values.auth.sasl.jaas.zookeeperUser | quote }}
             - name: KAFKA_ZOOKEEPER_PASSWORD

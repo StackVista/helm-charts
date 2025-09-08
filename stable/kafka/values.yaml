@@ -1690,53 +1690,7 @@ provisioning:
   ##
   waitForKafka: true
 
-## @section ZooKeeper chart parameters
-
-## ZooKeeper chart configuration
-## https://github.com/bitnami/charts/blob/main/bitnami/zookeeper/values.yaml
-##
-zookeeper:
-  ## @param zookeeper.enabled Switch to enable or disable the ZooKeeper helm chart
-  ##
-  enabled: true
-  ## @param zookeeper.replicaCount Number of ZooKeeper nodes
-  ##
-  replicaCount: 1
-  ## ZooKeeper authenticaiton
-  ##
-  auth:
-    client:
-      ## @param zookeeper.auth.client.enabled Enable ZooKeeper auth
-      ##
-      enabled: false
-      ## @param zookeeper.auth.client.clientUser User that will use ZooKeeper clients to auth
-      ##
-      clientUser: ""
-      ## @param zookeeper.auth.client.clientPassword Password that will use ZooKeeper clients to auth
-      ##
-      clientPassword: ""
-      ## @param zookeeper.auth.client.serverUsers Comma, semicolon or whitespace separated list of user to be created. Specify them as a string, for example: "user1,user2,admin"
-      ##
-      serverUsers: ""
-      ## @param zookeeper.auth.client.serverPasswords Comma, semicolon or whitespace separated list of passwords to assign to users when created. Specify them as a string, for example: "pass4user1, pass4user2, pass4admin"
-      ##
-      serverPasswords: ""
-  ## ZooKeeper Persistence parameters
-  ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
-  ## @param zookeeper.persistence.enabled Enable persistence on ZooKeeper using PVC(s)
-  ## @param zookeeper.persistence.storageClass Persistent Volume storage class
-  ## @param zookeeper.persistence.accessModes Persistent Volume access modes
-  ## @param zookeeper.persistence.size Persistent Volume size
-  ##
-  persistence:
-    enabled: true
-    storageClass: ""
-    accessModes:
-      - ReadWriteOnce
-    size: 8Gi
-
 ## External Zookeeper Configuration
-## All of these values are only used if `zookeeper.enabled=false`
 ##
 externalZookeeper:
   ## @param externalZookeeper.servers List of external zookeeper servers to use. Typically used in combination with 'zookeeperChrootPath'.

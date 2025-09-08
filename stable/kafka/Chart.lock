@@ -1,9 +1,6 @@
 dependencies:
-- name: zookeeper
-  repository: file://charts/zookeeper
-  version: 10.2.4
 - name: common
   repository: file://charts/common
   version: 2.1.2
-digest: sha256:a2cc10754015c609d04da4fb644be8f61787ea707179cda9918bc05cca0f7629
-generated: "2025-09-05T19:14:48.670491+02:00"
+digest: sha256:a120a9065484bcc5cb3cfa943f7813c164a1988989376e563d7bdc8307995ab6
+generated: "2025-09-08T10:27:16.815925+02:00"

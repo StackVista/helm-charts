@@ -1,6 +1,6 @@
 # kafka
 
-![Version: 19.1.3](https://img.shields.io/badge/Version-19.1.3-informational?style=flat-square) ![AppVersion: 3.3.1](https://img.shields.io/badge/AppVersion-3.3.1-informational?style=flat-square)
+![Version: 19.1.3-suse-observability.1](https://img.shields.io/badge/Version-19.1.3--suse--observability.1-informational?style=flat-square) ![AppVersion: 3.3.1](https://img.shields.io/badge/AppVersion-3.3.1-informational?style=flat-square)
 
 Apache Kafka is a distributed streaming platform designed to build real-time pipelines and can be used as a message broker or as a replacement for a log aggregation solution for big data applications.
 
@@ -22,7 +22,6 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | Repository | Name | Version |
 |------------|------|---------|
 | file://charts/common | common | 2.x.x |
-| file://charts/zookeeper | zookeeper | 10.x.x |
 
 ## Values
 
@@ -395,17 +394,6 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | volumePermissions.image.tag | string | `"11-debian-11-r49"` |  |
 | volumePermissions.resources.limits | object | `{}` |  |
 | volumePermissions.resources.requests | object | `{}` |  |
-| zookeeper.auth.client.clientPassword | string | `""` |  |
-| zookeeper.auth.client.clientUser | string | `""` |  |
-| zookeeper.auth.client.enabled | bool | `false` |  |
-| zookeeper.auth.client.serverPasswords | string | `""` |  |
-| zookeeper.auth.client.serverUsers | string | `""` |  |
-| zookeeper.enabled | bool | `true` |  |
-| zookeeper.persistence.accessModes[0] | string | `"ReadWriteOnce"` |  |
-| zookeeper.persistence.enabled | bool | `true` |  |
-| zookeeper.persistence.size | string | `"8Gi"` |  |
-| zookeeper.persistence.storageClass | string | `""` |  |
-| zookeeper.replicaCount | int | `1` |  |
 | zookeeperChrootPath | string | `""` |  |
 | zookeeperConnectionTimeoutMs | int | `6000` |  |
 
