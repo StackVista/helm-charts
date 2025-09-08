@@ -4382,6 +4382,9 @@ push_victoria-metrics-single_to_public:
   variables:
     CHART: stable/victoria-metrics-single
 resource_usage:
+  artifacts:
+    paths:
+      - test/resource_usage.txt
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami

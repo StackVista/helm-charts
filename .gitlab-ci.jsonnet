@@ -160,6 +160,11 @@ local resource_usage = {
     variables: {
       CGO_ENABLED: 0,
     },
+    artifacts: {
+      paths: [
+        'test/resource_usage.txt',
+      ],
+    },
   },
 };
 

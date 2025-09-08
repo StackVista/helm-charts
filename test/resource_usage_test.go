@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"os"
 	"strings"
 	"testing"
@@ -13,26 +14,49 @@ import (
 	"github.com/gruntwork-io/terratest/modules/logger"
 )
 
-func TestCalculateResourceUsage(t *testing.T) {
-	CalculateResourceUsage(t, "trial")
-	CalculateResourceUsage(t, "10-nonha")
-	CalculateResourceUsage(t, "20-nonha")
-	CalculateResourceUsage(t, "50-nonha")
-	CalculateResourceUsage(t, "100-nonha")
-	CalculateResourceUsage(t, "150-ha")
-	CalculateResourceUsage(t, "250-ha")
-	CalculateResourceUsage(t, "500-ha")
-	CalculateResourceUsage(t, "4000-ha")
+type resourceUsage struct {
+	profile string
+
+	totalCpuRequests *resource.Quantity
+	totalCpuLimits   *resource.Quantity
+	totalMemRequests *resource.Quantity
+	totalMemLimits   *resource.Quantity
 }
 
-func CalculateResourceUsage(t *testing.T, size string) {
+func TestCalculateResourceUsage(t *testing.T) {
+	f, err := os.Create("resource_usage.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, profile := range []string{
+		"trial",
+		"10-nonha",
+		"20-nonha",
+		"50-nonha",
+		"100-nonha",
+		"150-ha",
+		"250-ha",
+		"500-ha",
+		"4000-ha",
+	} {
+		fmt.Fprintf(f, "Profile: %s\n", profile)
+		usage := CalculateResourceUsage(t, profile)
+		fmt.Fprintf(f, "  cpu request: %v\n", usage.totalCpuRequests)
+		fmt.Fprintf(f, "  cpu limit: %v\n", usage.totalCpuLimits)
+		fmt.Fprintf(f, "  mem request: %v\n", usage.totalMemRequests)
+		fmt.Fprintf(f, "  mem limit: %v\n", usage.totalMemLimits)
+	}
+	f.Close()
+}
+
+func CalculateResourceUsage(t *testing.T, profile string) resourceUsage {
 	values := []string{"values/base.yaml"}
 
 	output, err := helm.RenderTemplateE(t,
 		&helm.Options{
 			Logger:      logger.Discard,
 			ValuesFiles: values,
-			SetValues:   map[string]string{"sizing.profile": size},
+			SetValues:   map[string]string{"sizing.profile": profile},
 		},
 		"../stable/suse-observability-values", "test-values", []string{},
 	)
@@ -68,10 +92,13 @@ func CalculateResourceUsage(t *testing.T, size string) {
 	resources := helmtestutil.NewKubernetesResources(t, full)
 	require.Equal(t, 1, len(resources.Pods), "Unexpected number of pods, expected 1")
 
-	totalCpuRequests := resource.NewMilliQuantity(0, resource.DecimalSI)
-	totalCpuLimits := resource.NewMilliQuantity(0, resource.DecimalSI)
-	totalMemRequests := resource.NewQuantity(0, resource.DecimalSI)
-	totalMemLimits := resource.NewQuantity(0, resource.DecimalSI)
+	result := resourceUsage{
+		profile:          profile,
+		totalCpuRequests: resource.NewMilliQuantity(0, resource.DecimalSI),
+		totalCpuLimits:   resource.NewMilliQuantity(0, resource.DecimalSI),
+		totalMemRequests: resource.NewQuantity(0, resource.DecimalSI),
+		totalMemLimits:   resource.NewQuantity(0, resource.DecimalSI),
+	}
 
 	deployments := resources.Deployments
 	for _, deployment := range deployments {
@@ -82,16 +109,16 @@ func CalculateResourceUsage(t *testing.T, size string) {
 		for _, container := range deployment.Spec.Template.Spec.Containers {
 			cpuReq := container.Resources.Requests.Cpu().DeepCopy()
 			cpuReq.Mul(replicas)
-			totalCpuRequests.Add(cpuReq)
+			result.totalCpuRequests.Add(cpuReq)
 			cpuLim := container.Resources.Limits.Cpu().DeepCopy()
 			cpuLim.Mul(replicas)
-			totalCpuLimits.Add(cpuLim)
+			result.totalCpuLimits.Add(cpuLim)
 			memReq := container.Resources.Requests.Memory().DeepCopy()
 			memReq.Mul(replicas)
-			totalMemRequests.Add(memReq)
+			result.totalMemRequests.Add(memReq)
 			memLim := container.Resources.Limits.Memory().DeepCopy()
 			memLim.Mul(replicas)
-			totalMemLimits.Add(memLim)
+			result.totalMemLimits.Add(memLim)
 		}
 	}
 
@@ -104,48 +131,18 @@ func CalculateResourceUsage(t *testing.T, size string) {
 		for _, container := range statefulset.Spec.Template.Spec.Containers {
 			cpuReq := container.Resources.Requests.Cpu().DeepCopy()
 			cpuReq.Mul(replicas)
-			totalCpuRequests.Add(cpuReq)
+			result.totalCpuRequests.Add(cpuReq)
 			cpuLim := container.Resources.Limits.Cpu().DeepCopy()
 			cpuLim.Mul(replicas)
-			totalCpuLimits.Add(cpuLim)
+			result.totalCpuLimits.Add(cpuLim)
 			memReq := container.Resources.Requests.Memory().DeepCopy()
 			memReq.Mul(replicas)
-			totalMemRequests.Add(memReq)
+			result.totalMemRequests.Add(memReq)
 			memLim := container.Resources.Limits.Memory().DeepCopy()
 			memLim.Mul(replicas)
-			totalMemLimits.Add(memLim)
+			result.totalMemLimits.Add(memLim)
 		}
 	}
 
-	t.Logf("Resource usage for profile %s\n", size)
-	t.Logf("  cpu request: %v\n", totalCpuRequests)
-	t.Logf("  cpu limit: %v\n", totalCpuLimits)
-	t.Logf("  mem request: %v\n", totalMemRequests)
-	t.Logf("  mem limit: %v\n", totalMemLimits)
-
-	/*
-		var valuesMap map[string]interface{}
-		err = yaml.Unmarshal([]byte(output), &valuesMap)
-		assert.NoError(t, err)
-
-		decoder := yaml.NewDecoder(strings.NewReader(output))
-
-		for {
-			var doc map[string]interface{}
-			err := decoder.Decode(&doc)
-			if err != nil {
-				if err.Error() == "EOF" {
-					break // End of documents
-				}
-				assert.NoError(t, err)
-			}
-
-			err = mergo.Merge(&valuesMap, doc, mergo.WithOverride)
-			require.NoErrorf(t, err, "Failed to merge map with values: %v", valuesMap)
-
-			fmt.Printf("Document: %+v\n", doc)
-		}
-
-		fmt.Printf("valuesMap: %+#v\n", valuesMap)
-	*/
+	return result
 }
