@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.2.70`
+Current chart version is `0.2.71`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -151,9 +151,13 @@ Current chart version is `0.2.70`
 | tephra.image.repository | string | `"stackstate/tephra-server"` | Base container image repository for Tephra pods. |
 | tephra.image.tag | string | `nil` | Container image tag for Tephra pods, defaults to `version`-`stackgraph.version` |
 | tephra.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| tephra.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for Tephra on Mono mode. |
+| tephra.persistence.size | string | `"1Gi"` | Size of volume for Tephra on Mono mode. |
+| tephra.persistence.storageClass | string | `nil` | Storage class of the volume for Tephra on Mono mode |
 | tephra.replicaCount | int | `1` | Number of pods for Tephra pods. |
 | tephra.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"50m","memory":"2Gi"}}` | Resources to allocate for Tephra pods. |
 | tephra.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
+| tephra.securityContext.fsGroup | int | `65534` | GID of the Linux user to use for fs. |
 | tephra.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | tephra.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
 | tephra.tolerations | list | `[]` | Toleration labels for pod assignment. |

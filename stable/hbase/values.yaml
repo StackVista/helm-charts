@@ -344,6 +344,8 @@ tephra:
     runAsGroup: 65534
     # tephra.securityContext.runAsUser -- UID of the Linux user to use for all pod.
     runAsUser: 65534
+    # tephra.securityContext.fsGroup -- GID of the Linux user to use for fs.
+    fsGroup: 65534
   extraEnv:
     # tephra.extraEnv.open -- Extra open environment variables to inject into pods.
     open: {}
@@ -371,6 +373,13 @@ tephra:
   tolerations: []
   # tephra.affinity -- Affinity settings for pod assignment.
   affinity: {}
+  persistence:
+    # tephra.persistence.accessModes -- Access mode for Tephra on Mono mode.
+    accessModes: ["ReadWriteOnce"]
+    # tephra.persistence.size -- Size of volume for Tephra on Mono mode.
+    size: 1Gi
+    # tephra.persistence.storageClass -- Storage class of the volume for Tephra on Mono mode
+    storageClass:
 serviceAccount:
   # serviceAccount.create -- Whether to create serviceAccounts and run the statefulsets under them
   create: true

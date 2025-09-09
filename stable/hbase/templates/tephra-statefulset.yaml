@@ -80,6 +80,11 @@ resources:
 {{- end }}
 securityContext:
   runAsNonRoot: true
+{{- if eq .Values.deployment.mode "Mono" }}
+volumeMounts:
+  - name: snapshot
+    mountPath: /opt/tephra
+{{- end }}
 {{- end -}}
 
 {{- define "hbase.tephra.statefulset" -}}
@@ -144,6 +149,18 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
+    {{- if eq .Values.deployment.mode "Mono" }}
+  volumeClaimTemplates:
+    - metadata:
+        name: snapshot
+      spec:
+        accessModes: {{ .Values.tephra.persistence.accessModes }}
+        resources:
+          requests:
+            storage: {{ .Values.tephra.persistence.size }}
+        {{ include "common.storage.class" ( dict "persistence" .Values.tephra.persistence "global" .Values.global) | nindent 8 }}
+    {{- end }}
+
 {{- end -}}
 
 {{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
