@@ -28,10 +28,10 @@ dependencies:
   version: 8.1.2
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.22
+  version: 0.8.53-stackstate.23
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.22
+  version: 0.8.53-stackstate.23
 - name: victoria-metrics-cluster
   repository: file://../victoria-metrics-cluster
   version: 0.14.6-stackstate.1
@@ -44,5 +44,5 @@ dependencies:
 - name: kubernetes-rbac-agent
   repository: https://helm.stackstate.io
   version: 0.0.15
-digest: sha256:3b1a8c36a62ee5db9d7b145f1ff15ac86e0d22ee92af0a61d9bdd47d477ab050
-generated: "2025-08-29T14:18:13.218543227Z"
+digest: sha256:6d6a85c379565bd55a244485e5b1d1bd5bbbd97bcdb65cdbc23117d29b636d9b
+generated: "2025-09-09T14:34:52.598856237+02:00"
