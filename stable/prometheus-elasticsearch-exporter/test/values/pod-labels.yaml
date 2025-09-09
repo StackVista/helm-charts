@@ -1,0 +1,4 @@
+# Test podLabels
+podLabels:
+  pod.label1: "pod-value1"
+  pod.label2: "pod-value2"

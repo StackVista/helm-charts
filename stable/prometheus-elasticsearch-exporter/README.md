@@ -1,6 +1,6 @@
 # prometheus-elasticsearch-exporter
 
-![Version: 5.8.0-suse-observability.0](https://img.shields.io/badge/Version-5.8.0--suse--observability.0-informational?style=flat-square) ![AppVersion: v1.7.0](https://img.shields.io/badge/AppVersion-v1.7.0-informational?style=flat-square)
+![Version: 5.8.0-suse-observability.1](https://img.shields.io/badge/Version-5.8.0--suse--observability.1-informational?style=flat-square) ![AppVersion: v1.7.0](https://img.shields.io/badge/AppVersion-v1.7.0-informational?style=flat-square)
 
 Elasticsearch stats exporter for Prometheus
 
@@ -57,6 +57,7 @@ Kubernetes: `>=1.10.0-0`
 | extraEnvSecrets | object | `{}` |  |
 | extraVolumeMounts | list | `[]` |  |
 | extraVolumes | list | `[]` |  |
+| global.commonLabels | object | `{}` |  |
 | global.imagePullSecrets | list | `[]` |  |
 | global.imageRegistry | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |

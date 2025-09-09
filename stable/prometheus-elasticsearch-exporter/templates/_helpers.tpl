@@ -98,3 +98,35 @@ Return the correct (overridden global) image registry.
     {{- printf "%s" .Values.image.repository -}}
   {{- end }}
 {{- end -}}
+
+{{/*
+Merge global and local common labels.
+Precedence order: .Values.global.commonLabels (lower)
+*/}}
+{{- define "elasticsearch-exporter.commonLabels" -}}
+{{- $labels := dict }}
+{{- if .Values.global.commonLabels }}
+{{- $labels = merge $labels .Values.global.commonLabels }}
+{{- end }}
+{{- if $labels }}
+{{- include "elasticsearch-exporter.tplvalue.render" ( dict "value" $labels "context" $ ) }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Return the proper Elasticsearch Exporter pod labels
+Merges elasticsearch-exporter.commonLabels with podLabels, with podLabels taking precedence
+Precedence order: .Values.podLabels (highest) -> .Values.global.commonLabels (lowest)
+*/}}
+{{- define "elasticsearch-exporter.podLabels" -}}
+{{- $labels := dict }}
+{{- if .Values.podLabels }}
+{{- $labels = .Values.podLabels }}
+{{- end }}
+{{- if .Values.global.commonLabels }}
+{{- $labels = merge $labels .Values.global.commonLabels }}
+{{- end }}
+{{- if $labels }}
+{{- include "elasticsearch-exporter.tplvalue.render" ( dict "value" $labels "context" $ ) }}
+{{- end }}
+{{- end -}}

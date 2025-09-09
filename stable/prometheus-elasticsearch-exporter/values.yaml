@@ -4,6 +4,7 @@
 global:
   imagePullSecrets: []
   imageRegistry: ""
+  commonLabels: {}
 
 ## number of exporter instances
 ##
