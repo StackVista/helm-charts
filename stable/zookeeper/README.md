@@ -1,6 +1,6 @@
 # zookeeper
 
-![Version: 8.1.2-suse-observability.0](https://img.shields.io/badge/Version-8.1.2--suse--observability.0-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
+![Version: 8.1.2-suse-observability.1](https://img.shields.io/badge/Version-8.1.2--suse--observability.1-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
 
 Apache ZooKeeper provides a reliable, centralized register of configuration data and services for distributed applications.
 
@@ -65,6 +65,7 @@ Apache ZooKeeper provides a reliable, centralized register of configuration data
 | extraVolumes | list | `[]` |  |
 | fourlwCommandsWhitelist | string | `"srvr, mntr, ruok"` |  |
 | fullnameOverride | string | `""` |  |
+| global.commonLabels | object | `{}` |  |
 | global.imagePullSecrets | list | `[]` |  |
 | global.imageRegistry | string | `""` |  |
 | global.storageClass | string | `""` |  |

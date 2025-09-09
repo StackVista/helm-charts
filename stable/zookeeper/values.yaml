@@ -7,6 +7,8 @@
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.storageClass Global StorageClass for Persistent Volume(s)
+## @param global.commonLabels Labels to add to deployments, StatefulSets, and Pods managed by the chart.
+##   Precedence order: .Values.podLabels (highest) -> .Values.commonLabels (middle) -> .Values.global.commonLabels (lowest)
 ##
 global:
   imageRegistry: ""
@@ -16,6 +18,7 @@ global:
   ##
   imagePullSecrets: []
   storageClass: ""
+  commonLabels: {}
 
 ## @section Common parameters
 ##
@@ -39,6 +42,7 @@ extraDeploy: []
 ##
 commonLabels: {}
 ## @param commonAnnotations Add annotations to all the deployed resources
+## Precedence order: .Values.podLabels (highest) -> .Values.commonLabels (middle) -> .Values.global.commonLabels (lowest)
 ##
 commonAnnotations: {}
 ## @param namespaceOverride Override namespace for ZooKeeper resources
@@ -317,6 +321,7 @@ containerSecurityContext:
 ##
 hostAliases: []
 ## @param podLabels Extra labels for ZooKeeper pods
+## Precedence order: .Values.podLabels (highest) -> .Values.commonLabels (middle) -> .Values.global.commonLabels (lowest)
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 ##
 podLabels: {}
