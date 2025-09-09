@@ -162,20 +162,6 @@ Return the path to the CA cert file.
 {{-  printf "%s-headless" (include "common.names.fullname" .) -}}
 {{- end -}}
 
-{{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-*/}}
-{{- define "clickhouse.zookeeper.fullname" -}}
-{{- include "common.names.dependency.fullname" (dict "chartName" "zookeeper" "chartValues" .Values.zookeeper "context" $) -}}
-{{- end -}}
-
-{{/*
-Return the path to the CA cert file.
-*/}}
-{{- define "clickhouse.zookeeper.headlessServiceName" -}}
-{{-  printf "%s-headless" (include "clickhouse.zookeeper.fullname" .) -}}
-{{- end -}}
 
 {{/*
 Create the name of the service account to use
@@ -204,16 +190,15 @@ Compile all warnings into a single message.
 
 {{/* Validate values of ClickHouse - [Zoo]keeper */}}
 {{- define "clickhouse.validateValues.zookeeper" -}}
-{{- if or (and .Values.keeper.enabled .Values.zookeeper.enabled) (and .Values.keeper.enabled .Values.externalZookeeper.servers) (and .Values.zookeeper.enabled .Values.externalZookeeper.servers) -}}
+{{- if and .Values.keeper.enabled .Values.externalZookeeper.servers -}}
 clickhouse: Multiple [Zoo]keeper
     You can only use one [zoo]keeper
     Please choose use ClickHouse keeper or
-    installing a Zookeeper chart (--set zookeeper.enabled=true) or
-    using an external instance (--set zookeeper.servers )
+    using an external instance (--set externalZookeeper.servers)
 {{- end -}}
-{{- if and (not .Values.keeper.enabled) (not .Values.zookeeper.enabled) (not .Values.externalZookeeper.servers) (ne (int .Values.shards) 1) (ne (int .Values.replicaCount) 1) -}}
+{{- if and (not .Values.keeper.enabled) (not .Values.externalZookeeper.servers) (ne (int .Values.shards) 1) (ne (int .Values.replicaCount) 1) -}}
 clickhouse: No [Zoo]keeper
-    If you are deploying more than one ClickHouse instance, you need to enable [Zoo]keeper. Please choose installing a [Zoo]keeper (--set keeper.enabled=true) or (--set zookeeper.enabled=true) or
-    using an external instance (--set zookeeper.servers )
+    If you are deploying more than one ClickHouse instance, you need to enable [Zoo]keeper. Please choose installing a [Zoo]keeper (--set keeper.enabled=true) or
+    using an external instance (--set externalZookeeper.servers)
 {{- end -}}
 {{- end -}}

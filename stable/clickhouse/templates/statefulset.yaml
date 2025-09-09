@@ -227,12 +227,6 @@ spec:
             - name: {{ printf "KEEPER_NODE_%d" $j }}
               value: {{ printf "%s-shard%d-%d.%s.%s.svc.%s" (include "common.names.fullname" $ ) $i $j (include "clickhouse.headlessServiceName" $) (include "common.names.namespace" $) $.Values.clusterDomain }}
             {{- end }}
-            {{- else if $.Values.zookeeper.enabled }}
-            {{- $replicas := $.Values.zookeeper.replicaCount | int }}
-            {{- range $j, $r := until $replicas }}
-            - name: {{ printf "KEEPER_NODE_%d" $j }}
-              value: {{ printf "%s-%d.%s.%s.svc.%s" (include "clickhouse.zookeeper.fullname" $ ) $j (include "clickhouse.zookeeper.headlessServiceName" $) (include "common.names.namespace" $) $.Values.clusterDomain }}
-            {{- end }}
             {{- end }}
           envFrom:
             {{- if $.Values.extraEnvVarsCM }}

@@ -305,24 +305,15 @@ defaultConfigurationOverrides: |
       </raft_configuration>
     </keeper_server>
     {{- end }}
-    {{- if or .Values.keeper.enabled .Values.zookeeper.enabled .Values.externalZookeeper.servers }}
+    {{- if or .Values.keeper.enabled .Values.externalZookeeper.servers }}
     <!-- Zookeeper configuration -->
     <zookeeper>
-      {{- if or .Values.keeper.enabled }}
+      {{- if .Values.keeper.enabled }}
       {{- $nodes := .Values.replicaCount | int }}
       {{- range $node, $e := until $nodes }}
       <node>
         <host from_env="{{ printf "KEEPER_NODE_%d" $node }}"></host>
         <port>{{ $.Values.service.ports.keeper }}</port>
-      </node>
-      {{- end }}
-      {{- else if .Values.zookeeper.enabled }}
-      {{/* Zookeeper configuration using the helm chart */}}
-      {{- $nodes := .Values.zookeeper.replicaCount | int }}
-      {{- range $node, $e := until $nodes }}
-      <node>
-        <host from_env="{{ printf "KEEPER_NODE_%d" $node }}"></host>
-        <port>{{ $.Values.zookeeper.service.ports.client }}</port>
       </node>
       {{- end }}
       {{- else if .Values.externalZookeeper.servers }}
@@ -1095,16 +1086,3 @@ externalZookeeper:
   ##
   servers: []
   port: 2888
-
-## @section Zookeeper subchart parameters
-##
-## @param zookeeper.enabled Deploy Zookeeper subchart
-## @param zookeeper.replicaCount Number of Zookeeper instances
-## @param zookeeper.service.ports.client Zookeeper client port
-##
-zookeeper:
-  enabled: true
-  replicaCount: 3
-  service:
-    ports:
-      client: 2181
