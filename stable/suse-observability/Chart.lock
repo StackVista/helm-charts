@@ -10,7 +10,7 @@ dependencies:
   version: 8.11.4-stackstate.6
 - name: hbase
   repository: file://../hbase/
-  version: 0.2.70
+  version: 0.2.71
 - name: kafka
   repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
   version: 19.1.3
@@ -44,5 +44,5 @@ dependencies:
 - name: kubernetes-rbac-agent
   repository: https://helm.stackstate.io
   version: 0.0.15
-digest: sha256:6d6a85c379565bd55a244485e5b1d1bd5bbbd97bcdb65cdbc23117d29b636d9b
-generated: "2025-09-09T14:34:52.598856237+02:00"
+digest: sha256:bebcd2aec13722d4eb3ac5f9f06f65cee819dc7cbe6071f9141bb1c5645ac85c
+generated: "2025-09-09T17:52:56.487657015+02:00"
