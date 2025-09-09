@@ -29,3 +29,6 @@ helm repo index --merge upstream-index.yaml "${build_dir}"
 
 echo "Uploading chart"
 AWS_ACCESS_KEY_ID="${RANCHER_HELM_REGISTRY_USERNAME}" AWS_SECRET_ACCESS_KEY="${RANCHER_HELM_REGISTRY_PASSWORD}" aws s3 cp --recursive "${build_dir}" "${chart_repo_s3}"
+
+echo "Invalidating CloudFront Distribution"
+AWS_ACCESS_KEY_ID="${RANCHER_HELM_REGISTRY_USERNAME}" AWS_SECRET_ACCESS_KEY="${RANCHER_HELM_REGISTRY_PASSWORD}" aws cloudfront create-invalidation --distribution-id "${RANCHER_HELM_REGISTRY_DISTRIBUTION_ID}" --paths "/*"
