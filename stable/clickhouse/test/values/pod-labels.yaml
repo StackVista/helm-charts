@@ -1,0 +1,8 @@
+# Test podLabels
+podLabels:
+  pod.label1: "pod-value1"
+  pod.label2: "pod-value2"
+
+shards: 1
+persistence:
+  size: 1Gi

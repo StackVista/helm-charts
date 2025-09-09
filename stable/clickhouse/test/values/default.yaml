@@ -1,0 +1,4 @@
+# Default test values
+shards: 1
+persistence:
+  size: 1Gi

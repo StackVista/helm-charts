@@ -28,4 +28,4 @@ maintainers:
 name: clickhouse
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/clickhouse
-version: 3.6.9-suse-observability.1
+version: 3.6.9-suse-observability.2

@@ -1,0 +1,8 @@
+# Test commonLabels
+commonLabels:
+  common.label1: "common-value1"
+  common.label2: "common-value2"
+
+shards: 1
+persistence:
+  size: 1Gi
