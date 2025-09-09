@@ -33,6 +33,7 @@
       'kafka',
       'kafkaup-operator',
       'minio',
+      'prometheus-elasticsearch-exporter',
       'pull-secret',
       'stackstate',
       'suse-observability',

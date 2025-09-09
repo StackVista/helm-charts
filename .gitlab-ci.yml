@@ -760,6 +760,35 @@ build_petros-d-kubelet-stats-exporter:
     - helm dependencies build stable/petros-d-kubelet-stats-exporter
     - mkdir -p stable/petros-d-kubelet-stats-exporter/build; helm package --destination stable/petros-d-kubelet-stats-exporter/build stable/petros-d-kubelet-stats-exporter
   stage: build
+build_prometheus-elasticsearch-exporter:
+  artifacts:
+    paths:
+      - stable/prometheus-elasticsearch-exporter/charts/
+      - stable/prometheus-elasticsearch-exporter/build/
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  rules:
+    - changes:
+        - stable/prometheus-elasticsearch-exporter/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/prometheus-elasticsearch-exporter/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/prometheus-elasticsearch-exporter/%
+    - helm dependencies build stable/prometheus-elasticsearch-exporter
+    - mkdir -p stable/prometheus-elasticsearch-exporter/build; helm package --destination stable/prometheus-elasticsearch-exporter/build stable/prometheus-elasticsearch-exporter
+  stage: build
 build_pull-secret:
   artifacts:
     paths:
@@ -1614,6 +1643,17 @@ check_petros-d-kubelet-stats-exporter_version:
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - .gitlab/verify_versions_bumped.sh petros-d-kubelet-stats-exporter
+  stage: validate
+check_prometheus-elasticsearch-exporter_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/prometheus-elasticsearch-exporter/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh prometheus-elasticsearch-exporter
   stage: validate
 check_pull-secret_version:
   before_script:
@@ -3183,6 +3223,90 @@ push_petros-d-kubelet-stats-exporter_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/petros-d-kubelet-stats-exporter
+push_prometheus-elasticsearch-exporter_to_internal:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/prometheus-elasticsearch-exporter/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-prometheus-elasticsearch-exporter]/
+      when: on_success
+    - changes:
+        - stable/prometheus-elasticsearch-exporter/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - if: $CI_COMMIT_TAG =~ /^prometheus-elasticsearch-exporter\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/prometheus-elasticsearch-exporter
+push_prometheus-elasticsearch-exporter_to_public:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  needs:
+    - push_prometheus-elasticsearch-exporter_to_internal
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/prometheus-elasticsearch-exporter/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-prometheus-elasticsearch-exporter]/
+      when: on_success
+    - changes:
+        - stable/prometheus-elasticsearch-exporter/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: manual
+    - if: $CI_COMMIT_TAG =~ /^prometheus-elasticsearch-exporter\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
+  stage: push-charts-to-public
+  variables:
+    CHART: stable/prometheus-elasticsearch-exporter
 push_pull-secret_to_internal:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -5049,6 +5173,21 @@ test_petros-d-kubelet-stats-exporter:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+test_prometheus-elasticsearch-exporter:
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  rules:
+    - changes:
+        - stable/prometheus-elasticsearch-exporter/**/*
+      exists:
+        - stable/prometheus-elasticsearch-exporter/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go test ./stable/prometheus-elasticsearch-exporter/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
 test_pull-secret:
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
@@ -5819,6 +5958,22 @@ validate_petros-d-kubelet-stats-exporter:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/petros-d-kubelet-stats-exporter/values.yaml
     - if [ -f stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml; fi
     - if [ -f stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml ]; then helm lint stable/petros-d-kubelet-stats-exporter --values stable/petros-d-kubelet-stats-exporter/ci/default-values.yaml; fi
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+validate_prometheus-elasticsearch-exporter:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/prometheus-elasticsearch-exporter/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/prometheus-elasticsearch-exporter/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/prometheus-elasticsearch-exporter/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/prometheus-elasticsearch-exporter/values.yaml
+    - if [ -f stable/prometheus-elasticsearch-exporter/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/prometheus-elasticsearch-exporter/ci/default-values.yaml; fi
+    - if [ -f stable/prometheus-elasticsearch-exporter/ci/default-values.yaml ]; then helm lint stable/prometheus-elasticsearch-exporter --values stable/prometheus-elasticsearch-exporter/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 validate_pull-secret:
