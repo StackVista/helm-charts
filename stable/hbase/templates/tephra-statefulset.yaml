@@ -96,7 +96,7 @@ volumeMounts:
 metadata:
   labels:
     app.kubernetes.io/component: tephra
-  name: {{ template "common.fullname.short" . }}-tephra
+  name: {{ template "common.fullname.short" . }}-tephra{{- if eq .Values.deployment.mode "Mono" }}-mono{{- end }}
 spec:
   podManagementPolicy: Parallel
   replicas: {{ .Values.tephra.replicaCount }}
