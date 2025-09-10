@@ -81,6 +81,9 @@ volumeMounts:
 metadata:
   labels:
     app.kubernetes.io/component: hdfs-dn
+{{- if .Values.global.commonLabels }}
+{{- include "hbase.commonLabels" . | indent 4 }}
+{{- end }}
   name: {{ template "common.fullname.short" . }}-hdfs-dn
 spec:
   podManagementPolicy: Parallel
@@ -93,6 +96,9 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: hdfs-dn
+{{- if .Values.global.commonLabels }}
+{{- include "hbase.podLabels" . | indent 8 }}
+{{- end }}
       annotations:
       {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404" "container_name" "datanode" "filter" .Values.hdfs.datanode.agentMetricsFilter) | indent 8 }}
     spec:

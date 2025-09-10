@@ -259,3 +259,27 @@ Derive hadoop version
 {{- "2.10.2" }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Return the proper HBase common labels for StatefulSets and Deployments.
+Uses global.commonLabels only.
+*/}}
+{{- define "hbase.commonLabels" -}}
+{{- if .Values.global.commonLabels }}
+{{- range $key, $value := .Values.global.commonLabels }}
+{{ $key }}: {{ $value | quote }}
+{{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Return the proper HBase pod labels for Pod templates.
+Uses global.commonLabels only.
+*/}}
+{{- define "hbase.podLabels" -}}
+{{- if .Values.global.commonLabels }}
+{{- range $key, $value := .Values.global.commonLabels }}
+{{ $key }}: {{ $value | quote }}
+{{- end }}
+{{- end }}
+{{- end -}}

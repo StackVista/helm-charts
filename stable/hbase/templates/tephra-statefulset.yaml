@@ -96,6 +96,9 @@ volumeMounts:
 metadata:
   labels:
     app.kubernetes.io/component: tephra
+{{- if .Values.global.commonLabels }}
+{{- include "hbase.commonLabels" . | indent 4 }}
+{{- end }}
   name: {{ template "common.fullname.short" . }}-tephra{{- if eq .Values.deployment.mode "Mono" }}-mono{{- end }}
 spec:
   podManagementPolicy: Parallel
@@ -108,6 +111,9 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: tephra
+{{- if .Values.global.commonLabels }}
+{{- include "hbase.podLabels" . | indent 8 }}
+{{- end }}
       annotations:
       {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404" "container_name" "tephra" "filter" .Values.tephra.agentMetricsFilter) | indent 8 }}
     spec:

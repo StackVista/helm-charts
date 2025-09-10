@@ -1851,8 +1851,6 @@ hbase:
         cpu: "250m"
         ephemeral-storage: "1Mi"
   zookeeper:
-    # hbase.zookeeper.enabled -- Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**.
-    enabled: false
     # hbase.zookeeper.externalServers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
     externalServers: suse-observability-zookeeper-headless
 kafkaup-operator:

@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.2.73`
+Current chart version is `0.2.74`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -22,8 +22,8 @@ Current chart version is `0.2.73`
 | all.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods for all components. |
 | all.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object for all components. |
 | all.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
-| all.image.pullSecretPassword | string | `nil` | Password used to login to the registry to pull Docker images of all pods. |
-| all.image.pullSecretUsername | string | `nil` | Username used to login to the registry to pull Docker images of all pods. |
+| all.image.pullSecretPassword | string | `nil` | Password used to log in to the registry to pull Docker images of all pods. |
+| all.image.pullSecretUsername | string | `nil` | Username used to log in to the registry to pull Docker images of all pods. |
 | all.image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
 | all.metrics.agentAnnotationsEnabled | bool | `true` |  |
 | all.metrics.enabled | bool | `false` | Enable metrics port. |
@@ -31,7 +31,6 @@ Current chart version is `0.2.73`
 | all.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
 | all.nodeSelector | object | `{}` | Node labels for pod assignment on all components. |
 | all.tolerations | list | `[]` | Toleration labels for pod assignment on all components. |
-| commonLabels | object | `{}` | Labels that will be applied to all resources created by this helm chart |
 | console.affinity | object | `{}` | Affinity settings for pod assignment. |
 | console.enabled | bool | `true` | Enable / disable deployment of the stackgraph-console for debugging. |
 | console.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -48,7 +47,8 @@ Current chart version is `0.2.73`
 | console.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | console.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | deployment.mode | string | `"Distributed"` |  |
-| global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overriden per PVC. |
+| global.commonLabels | object | `{}` | Labels to add to deployments, StatefulSets, and Pods managed by the chart. |
+| global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overridden per PVC. |
 | hbase.master.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hbase.master.experimental.execLivenessProbe.enabled | bool | `false` | Whether to use a new scripted livenessProbe instead of the original HTTP check. Requires >= 4.11.5 version of the StackGraph docker images |
 | hbase.master.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -89,7 +89,7 @@ Current chart version is `0.2.73`
 | hdfs.image.pullPolicy | string | `"IfNotPresent"` | Pull policy for HDFS datanode. |
 | hdfs.image.repository | string | `"stackstate/hadoop"` | Base container image repository for HDFS datanode. |
 | hdfs.image.tag | string | `nil` | Default container image tag for HDFS datanode. |
-| hdfs.minReplication | int | `1` | Sets the minimum synchronous replication that the namenode will enforce when writing a block. This gives guarantees about the amount of copies of a single block. (If hdfs.datanode.replicaCount is set to a value less than this, the replicationfactor will be equal to the replicaCount.) |
+| hdfs.minReplication | int | `1` | Sets the minimum synchronous replication that the namenode will enforce when writing a block. This gives guarantees about the amount of copies of a single block. (If hdfs.datanode.replicaCount is set to a value less than this, the replication factor will be equal to the replicaCount.) |
 | hdfs.namenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.namenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hdfs.namenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
@@ -126,7 +126,7 @@ Current chart version is `0.2.73`
 | serviceAccount.create | bool | `true` | Whether to create serviceAccounts and run the statefulsets under them |
 | stackgraph.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackgraph.agentMetricsFilter | string | `""` | Configure metrics scraped by the agent |
-| stackgraph.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; invividual service `pullPolicy`s can be overriden (see below). |
+| stackgraph.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all components of hbase that are stackgraph version dependent; individual service `pullPolicy`s can be overridden (see below). |
 | stackgraph.image.repository | string | `"stackstate/stackgraph-hbase"` | The default repository used for the single service stackgraph image |
 | stackgraph.image.tag | string | `nil` | The default tag used for the single service stackgraph image |
 | stackgraph.nodeSelector | object | `{}` | Node labels for pod assignment. |

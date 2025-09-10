@@ -70,6 +70,9 @@ volumeMounts:
 metadata:
   labels:
     app.kubernetes.io/component: hdfs-snn
+{{- if .Values.global.commonLabels }}
+{{- include "hbase.commonLabels" . | indent 4 }}
+{{- end }}
   name: {{ template "common.fullname.short" . }}-hdfs-snn
 spec:
   serviceName: {{ template "common.fullname.short" . }}-hdfs-snn
@@ -81,6 +84,9 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: hdfs-snn
+{{- if .Values.global.commonLabels }}
+{{- include "hbase.podLabels" . | indent 8 }}
+{{- end }}
       annotations:
       {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404" "container_name" "namenode" "filter" .Values.hdfs.secondarynamenode.agentMetricsFilter) | indent 8 }}
     spec:

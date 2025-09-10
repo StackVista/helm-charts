@@ -66,6 +66,9 @@ securityContext:
 metadata:
   labels:
     app.kubernetes.io/component: hbase-master
+{{- if .Values.global.commonLabels }}
+{{- include "hbase.commonLabels" . | indent 4 }}
+{{- end }}
   name: {{ template "common.fullname.short" . }}-hbase-master
 spec:
   podManagementPolicy: Parallel
@@ -78,6 +81,9 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: hbase-master
+{{- if .Values.global.commonLabels }}
+{{- include "hbase.podLabels" . | indent 8 }}
+{{- end }}
       annotations:
       {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404" "container_name" "master" "filter" .Values.hbase.master.agentMetricsFilter ) | indent 8 }}
     spec:

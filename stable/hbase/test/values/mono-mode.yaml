@@ -1,0 +1,9 @@
+# Test Mono mode
+deployment:
+  mode: "Mono"
+
+console:
+  enabled: true
+
+zookeeper:
+  externalServers: "test-zookeeper"

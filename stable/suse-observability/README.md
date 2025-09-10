@@ -12,7 +12,7 @@ Current chart version is `2.5.1-pre.6`
 |------------|------|---------|
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.11.4-stackstate.8 |
-| file://../hbase/ | hbase | 0.2.73 |
+| file://../hbase/ | hbase | 0.2.74 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.12 |
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.0 |
@@ -248,7 +248,6 @@ stackstate/stackstate
 | hbase.tephra.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | hbase.tephra.resources.requests.memory | string | `"3Gi"` |  |
 | hbase.version | string | `"2.5"` | Version of hbase to use |
-| hbase.zookeeper.enabled | bool | `false` | Disable Zookeeper from the HBase chart **Don't change unless otherwise specified**. |
 | hbase.zookeeper.externalServers | string | `"suse-observability-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |
 | ingress.enabled | bool | `false` | Enable use of ingress controllers. |

@@ -1,0 +1,9 @@
+# Test Distributed mode
+deployment:
+  mode: "Distributed"
+
+console:
+  enabled: true
+
+zookeeper:
+  externalServers: "test-zookeeper"

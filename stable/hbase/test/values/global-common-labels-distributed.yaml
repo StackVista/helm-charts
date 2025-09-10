@@ -1,0 +1,11 @@
+# Test global.commonLabels in Distributed mode
+deployment:
+  mode: "Distributed"
+
+global:
+  commonLabels:
+    global.label1: "global-value1"
+    global.label2: "global-value2"
+
+zookeeper:
+  externalServers: "test-zookeeper"
