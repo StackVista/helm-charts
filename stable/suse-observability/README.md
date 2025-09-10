@@ -12,7 +12,7 @@ Current chart version is `2.5.1-pre.5`
 |------------|------|---------|
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.11.4-stackstate.8 |
-| file://../hbase/ | hbase | 0.2.71 |
+| file://../hbase/ | hbase | 0.2.73 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.12 |
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.0 |

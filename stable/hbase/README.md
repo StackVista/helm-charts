@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.2.72`
+Current chart version is `0.2.73`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -11,7 +11,6 @@ Current chart version is `0.2.72`
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common/ | common | * |
-| https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
 
 ## Required Values
 
@@ -166,13 +165,4 @@ Current chart version is `0.2.72`
 | wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | wait.image.repository | string | `"stackstate/wait"` | Container image tag for wait containers. |
 | wait.image.tag | string | `"1.0.11-04b49abf"` |  |
-| zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
-| zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |
-| zookeeper.fourlwCommandsWhitelist | string | `"mntr, ruok, stat, srvr"` | Zookeeper four-letter-word (FLW) commands that are enabled. |
-| zookeeper.image.registry | string | `"quay.io"` | ZooKeeper image registry |
-| zookeeper.image.repository | string | `"stackstate/zookeeper"` | ZooKeeper image repository |
-| zookeeper.image.tag | string | `"3.6.3-5e3ee3c0"` | ZooKeeper image tag |
-| zookeeper.metrics.enabled | bool | `true` | Enable / disable Zookeeper Prometheus metrics. |
-| zookeeper.metrics.serviceMonitor.enabled | bool | `false` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |
-| zookeeper.metrics.serviceMonitor.selector | object | `{"release":"prometheus-operator"}` | Default selector to use to target a certain Prometheus instance. |
-| zookeeper.replicaCount | int | `1` | Default amount of Zookeeper replicas to provision. |
+| zookeeper.externalServers | string | `""` | The list of external Zookeeper servers. |

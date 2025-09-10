@@ -396,27 +396,5 @@ statefulset:
 # Zookeeper chart overrides #
 #############################
 zookeeper:
-  # zookeeper.enabled -- Enable / disable chart-based Zookeeper.
-  enabled: true
-  # zookeeper.externalServers -- If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead.
+  # zookeeper.externalServers -- The list of external Zookeeper servers.
   externalServers: ""
-  # zookeeper.fourlwCommandsWhitelist -- Zookeeper four-letter-word (FLW) commands that are enabled.
-  fourlwCommandsWhitelist: "mntr, ruok, stat, srvr"
-  metrics:
-    # zookeeper.metrics.enabled -- Enable / disable Zookeeper Prometheus metrics.
-    enabled: true
-    serviceMonitor:
-      # zookeeper.metrics.serviceMonitor.enabled -- Enable creation of `ServiceMonitor` objects for Prometheus operator.
-      enabled: false
-      # zookeeper.metrics.serviceMonitor.selector -- Default selector to use to target a certain Prometheus instance.
-      selector:
-        release: prometheus-operator
-  # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
-  replicaCount: 1
-  image:
-    # zookeeper.image.registry -- ZooKeeper image registry
-    registry: quay.io
-    # zookeeper.image.repository -- ZooKeeper image repository
-    repository: stackstate/zookeeper
-    # zookeeper.image.tag -- ZooKeeper image tag
-    tag: 3.6.3-5e3ee3c0
