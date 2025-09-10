@@ -66,7 +66,7 @@ metadata:
   name: {{ template "elasticsearch.uname" . }}
   labels:
     {{- include "elasticsearch.labels.recommended" . | nindent 4 }}
-    {{- include "elasticsearch.labels.common" . | nindent 4 }}
+    {{- include "elasticsearch.commonLabels" . | nindent 4 }}
     app.kubernetes.io/component: {{ .Values.nodeGroup }}
     {{- range $key, $value := .Values.labels }}
     {{ $key }}: {{ $value | quote }}
@@ -105,7 +105,7 @@ spec:
         {{/* Only kept for backwards compatible in upgrades */}}
         app: "{{ template "elasticsearch.uname" . }}"
         {{- include "elasticsearch.labels.selector" . | nindent 8 }}
-        {{- include "elasticsearch.labels.common" . | nindent 8 }}
+        {{- include "elasticsearch.podLabels" . | nindent 8 }}
         app.kubernetes.io/component: {{ .Values.nodeGroup }}
         {{- range $key, $value := .Values.labels }}
         {{ $key }}: {{ $value | quote }}

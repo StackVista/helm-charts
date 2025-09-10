@@ -1,0 +1,11 @@
+# Test global.commonLabels with prometheus-elasticsearch-exporter enabled
+global:
+  commonLabels:
+    global.label1: "global-value1"
+    global.label2: "global-value2"
+
+prometheus-elasticsearch-exporter:
+  enabled: true
+
+persistence:
+  size: 1Gi

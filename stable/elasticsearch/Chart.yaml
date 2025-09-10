@@ -2,16 +2,16 @@ apiVersion: v2
 description: Official Elastic helm chart for Elasticsearch
 home: https://github.com/elastic/helm-charts
 name: elasticsearch
-version: 8.11.4-stackstate.6
+version: 8.11.4-stackstate.8
 appVersion: 8.11.4
 sources:
   - https://github.com/elastic/elasticsearch
 icon: https://helm.elastic.co/icons/elasticsearch.png
 maintainers:
-- name: Stackstate Ops Team
-  email: ops@stackstate.com
+- name: SUSE Observability Ops Team
+  email: suse-observability-ops@suse.com
 dependencies:
   - name: prometheus-elasticsearch-exporter
-    version: 5.8.0
-    repository: https://prometheus-community.github.io/helm-charts
+    repository: file://../prometheus-elasticsearch-exporter
+    version: "5.8.0-suse-observability.1"
     condition: prometheus-elasticsearch-exporter.enabled

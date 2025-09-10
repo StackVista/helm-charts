@@ -1,4 +1,9 @@
 ---
+# Global parameters
+global:
+  # Allows adding a label to all resources deployed by this chart
+  commonLabels: {}
+
 clusterName: "elasticsearch"
 nodeGroup: "master"
 

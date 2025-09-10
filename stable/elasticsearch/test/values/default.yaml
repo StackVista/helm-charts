@@ -1,0 +1,3 @@
+# Default test values
+persistence:
+  enabled: false

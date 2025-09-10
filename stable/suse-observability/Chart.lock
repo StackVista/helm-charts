@@ -7,7 +7,7 @@ dependencies:
   version: 0.4.26
 - name: elasticsearch
   repository: file://../elasticsearch/
-  version: 8.11.4-stackstate.6
+  version: 8.11.4-stackstate.8
 - name: hbase
   repository: file://../hbase/
   version: 0.2.71
@@ -44,5 +44,5 @@ dependencies:
 - name: kubernetes-rbac-agent
   repository: https://helm.stackstate.io
   version: 0.0.15
-digest: sha256:bebcd2aec13722d4eb3ac5f9f06f65cee819dc7cbe6071f9141bb1c5645ac85c
-generated: "2025-09-09T17:52:56.487657015+02:00"
+digest: sha256:cca5f5b903303e436398ad6e2ef9b38be9f0e2a515e36da0d932ef6194539a9c
+generated: "2025-09-10T11:26:44.355696+02:00"

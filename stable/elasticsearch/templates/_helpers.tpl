@@ -150,7 +150,45 @@ app.kubernetes.io/name: {{ template "elasticsearch.name" . }}
 Common labels
 */}}
 {{- define "elasticsearch.labels.common" -}}
-{{- range $key, $value := .Values.commonLabels -}}
+{{- range $key, $value := .Values.commonLabels }}
+{{ $key }}: {{ $value | quote }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Merge global and local common labels.
+Precedence order: .Values.commonLabels (higher) -> .Values.global.commonLabels (lower)
+*/}}
+{{- define "elasticsearch.commonLabels" -}}
+{{- $labels := dict }}
+{{- if .Values.commonLabels }}
+{{- $labels = .Values.commonLabels }}
+{{- end }}
+{{- if .Values.global.commonLabels }}
+{{- $labels = merge $labels .Values.global.commonLabels }}
+{{- end }}
+{{- range $key, $value := $labels }}
+{{ $key }}: {{ $value | quote }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the proper Elasticsearch pod labels
+Merges elasticsearch.commonLabels with podLabels, with podLabels taking precedence
+Precedence order: .Values.podLabels (highest) -> .Values.commonLabels (middle) -> .Values.global.commonLabels (lowest)
+*/}}
+{{- define "elasticsearch.podLabels" -}}
+{{- $labels := dict }}
+{{- if .Values.podLabels }}
+{{- $labels = .Values.podLabels }}
+{{- end }}
+{{- if .Values.commonLabels }}
+{{- $labels = merge $labels .Values.commonLabels }}
+{{- end }}
+{{- if .Values.global.commonLabels }}
+{{- $labels = merge $labels .Values.global.commonLabels }}
+{{- end }}
+{{- range $key, $value := $labels }}
 {{ $key }}: {{ $value | quote }}
 {{- end -}}
 {{- end -}}

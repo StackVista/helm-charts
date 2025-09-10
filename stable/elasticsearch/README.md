@@ -1,13 +1,13 @@
 # elasticsearch
 
-![Version: 8.11.4-stackstate.6](https://img.shields.io/badge/Version-8.11.4--stackstate.6-informational?style=flat-square) ![AppVersion: 8.11.4](https://img.shields.io/badge/AppVersion-8.11.4-informational?style=flat-square)
+![Version: 8.11.4-stackstate.8](https://img.shields.io/badge/Version-8.11.4--stackstate.8-informational?style=flat-square) ![AppVersion: 8.11.4](https://img.shields.io/badge/AppVersion-8.11.4-informational?style=flat-square)
 Official Elastic helm chart for Elasticsearch
 **Homepage:** <https://github.com/elastic/helm-charts>
 ## Maintainers
 
 | Name | Email | Url |
 | ---- | ------ | --- |
-| Stackstate Ops Team | <ops@stackstate.com> |  |
+| SUSE Observability Ops Team | <suse-observability-ops@suse.com> |  |
 ## Source Code
 
 * <https://github.com/elastic/elasticsearch>
@@ -15,7 +15,7 @@ Official Elastic helm chart for Elasticsearch
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://prometheus-community.github.io/helm-charts | prometheus-elasticsearch-exporter | 5.8.0 |
+| file://../prometheus-elasticsearch-exporter | prometheus-elasticsearch-exporter | 5.8.0-suse-observability.1 |
 ## Values
 
 | Key | Type | Default | Description |
@@ -36,6 +36,7 @@ Official Elastic helm chart for Elasticsearch
 | extraVolumes | string | `""` |  |
 | fsGroup | string | `""` |  |
 | fullnameOverride | string | `""` |  |
+| global.commonLabels | object | `{}` |  |
 | httpPort | int | `9200` |  |
 | imagePullPolicy | string | `"IfNotPresent"` |  |
 | imagePullSecrets | list | `[]` |  |

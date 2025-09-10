@@ -1,0 +1,18 @@
+# Test combination of all label types with unique labels per hierarchy and override behavior
+global:
+  commonLabels:
+    global-unique: "global-value"
+    override-at-common: "from-global"  # Should be overridden by commonLabels
+    override-at-pod: "from-global"     # Should be overridden by podLabels
+
+commonLabels:
+  common-unique: "common-value"
+  override-at-common: "from-common"   # This overrides global
+  override-at-pod: "from-common"      # Should be overridden by podLabels
+
+podLabels:
+  pod-unique: "pod-value"
+  override-at-pod: "from-pod"         # This overrides both global and common
+
+persistence:
+  enabled: false
