@@ -10,20 +10,20 @@ Current chart version is `2.5.1-pre.12`
 
 | Repository | Name | Version |
 |------------|------|---------|
+| file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.2 |
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.11.4-stackstate.8 |
 | file://../hbase/ | hbase | 0.2.74 |
+| file://../kafka/ | kafka | 19.1.3-suse-observability.2 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.13 |
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.1 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.24 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.24 |
-| https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.166 |
-| https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.15 |
-| https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | clickhouse | 3.6.9 |
-| https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami | kafka | 19.1.3 |
-| https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami | zookeeper | 8.1.2 |
+| file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.1 |
+| https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.168 |
+| https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.16 |
 
 ## Required Values
 
