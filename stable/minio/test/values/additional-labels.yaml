@@ -1,0 +1,4 @@
+# Test additionalLabels (minio uses this instead of commonLabels)
+additionalLabels:
+  additional.label1: "additional-value1"
+  additional.label2: "additional-value2"

@@ -1,0 +1,3 @@
+# Test with bucket creation enabled
+defaultBucket:
+  enabled: true

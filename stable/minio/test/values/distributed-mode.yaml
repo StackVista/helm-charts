@@ -1,0 +1,7 @@
+# Test distributed mode with global.commonLabels
+mode: distributed
+
+global:
+  commonLabels:
+    mode.label1: "distributed-value1"
+    mode.label2: "distributed-value2"

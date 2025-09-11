@@ -8,6 +8,9 @@ metadata:
     chart: {{ template "minio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- with (include "minio.commonLabels" .) }}
+{{ . | indent 4 }}
+{{- end }}
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
@@ -20,8 +23,8 @@ spec:
       labels:
         app: {{ template "minio.name" . }}-job
         release: {{ .Release.Name }}
-{{- if .Values.podLabels }}
-{{ toYaml .Values.podLabels | indent 8 }}
+{{- with (include "minio.podLabels" .) }}
+{{ . | indent 8 }}
 {{- end }}
 {{- if .Values.makeBucketJob.podAnnotations }}
       annotations:

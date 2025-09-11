@@ -1,10 +1,10 @@
 # minio
 
-![Version: 8.0.10-stackstate.12](https://img.shields.io/badge/Version-8.0.10--stackstate.12-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 8.0.10-stackstate.13](https://img.shields.io/badge/Version-8.0.10--stackstate.13-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 High Performance, Kubernetes Native Object Storage
 
-Current chart version is `8.0.10-stackstate.12`
+Current chart version is `8.0.10-stackstate.13`
 
 **Homepage:** <https://min.io>
 
@@ -13,7 +13,7 @@ Current chart version is `8.0.10-stackstate.12`
 | Name | Email | Url |
 | ---- | ------ | --- |
 | MinIO, Inc | <dev@minio.io> |  |
-| Stackstate Ops Team | <ops@stackstate.com> |  |
+| Stackstate Ops Team | <suse-observability-ops@suse.com> |  |
 
 ## Requirements
 
@@ -58,6 +58,7 @@ Current chart version is `8.0.10-stackstate.12`
 | gcsgateway.gcsKeyJson | string | `""` |  |
 | gcsgateway.projectId | string | `""` |  |
 | gcsgateway.replicas | int | `4` |  |
+| global.commonLabels | object | `{}` | Labels to apply to all resources |
 | global.imageRegistry | string | `""` |  |
 | global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overriden per PVC. |
 | helmKubectlJqImage.pullPolicy | string | `"IfNotPresent"` |  |

@@ -1,0 +1,13 @@
+# Test global.commonLabels with jobs enabled
+global:
+  commonLabels:
+    global.label1: "global-value1"
+    global.label2: "global-value2"
+
+# Enable both bucket creation and ServiceMonitor to ensure all jobs are created
+defaultBucket:
+  enabled: true
+
+metrics:
+  serviceMonitor:
+    enabled: true

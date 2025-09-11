@@ -42,8 +42,8 @@ metadata:
     chart: {{ template "minio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- if .Values.additionalLabels }}
-{{ toYaml .Values.additionalLabels | trimSuffix "\n" | indent 4 }}
+{{- with (include "minio.commonLabels" .) }}
+{{ . | indent 4 }}
 {{- end }}
 {{- if .Values.additionalAnnotations }}
   annotations:
@@ -65,8 +65,8 @@ spec:
       labels:
         app: {{ template "minio.name" . }}
         release: {{ .Release.Name }}
-{{- if .Values.podLabels }}
-{{ toYaml .Values.podLabels | indent 8 }}
+{{- with (include "minio.podLabels" .) }}
+{{ . | indent 8 }}
 {{- end }}
       annotations:
         checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}

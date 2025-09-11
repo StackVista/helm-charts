@@ -1,0 +1,4 @@
+# Test with ServiceMonitor enabled
+metrics:
+  serviceMonitor:
+    enabled: true

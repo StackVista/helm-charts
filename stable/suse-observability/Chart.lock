@@ -19,7 +19,7 @@ dependencies:
   version: 0.1.10
 - name: minio
   repository: file://../minio/
-  version: 8.0.10-stackstate.12
+  version: 8.0.10-stackstate.13
 - name: pull-secret
   repository: file://../pull-secret/
   version: 1.0.2
@@ -44,5 +44,5 @@ dependencies:
 - name: kubernetes-rbac-agent
   repository: https://helm.stackstate.io
   version: 0.0.15
-digest: sha256:4de933cd6e574335275d82828b082b6ab71132ad6059a5ab91f0fbb4a3b591be
-generated: "2025-09-11T10:34:13.627084+02:00"
+digest: sha256:866849e256d6943443d4d3ac83de760fbd83b9daf1ab6e35c402a174315178e5
+generated: "2025-09-11T11:14:24.719449+02:00"

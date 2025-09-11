@@ -3,6 +3,8 @@ global:
   imageRegistry: ''
   # global.storageClass -- StorageClass for all PVCs created by the chart. Can be overriden per PVC.
   storageClass:
+  # global.commonLabels -- Labels to apply to all resources
+  commonLabels: {}
 ## Provide a name in place of minio for `app:` labels
 ##
 nameOverride: ""

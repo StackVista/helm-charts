@@ -10,7 +10,7 @@ home: https://gitlab.com/stackvista/stackstate.git
 icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
 maintainers:
   - name: SUSE
-    email: ops@stackstate.com
+    email: suse-observability-ops@suse.com
 name: suse-observability
 dependencies:
   - name: anomaly-detection
@@ -47,7 +47,7 @@ dependencies:
   - name: minio
     repository: file://../minio/
     # For some reason * does not work
-    version: "8.0.10-stackstate.12"
+    version: "8.0.10-stackstate.13"
     condition: backup.enabled
   - name: pull-secret
     version: "*"

@@ -226,3 +226,41 @@ imagePullSecrets:
     {{- end }}
   {{- end }}
 {{- end -}}
+
+{{/*
+Merge global and local common labels.
+Precedence order: .Values.additionalLabels (higher) -> .Values.global.commonLabels (lower)
+*/}}
+{{- define "minio.commonLabels" -}}
+{{- $labels := dict }}
+{{- if .Values.additionalLabels }}
+{{- $labels = .Values.additionalLabels }}
+{{- end }}
+{{- if .Values.global.commonLabels }}
+{{- $labels = merge $labels .Values.global.commonLabels }}
+{{- end }}
+{{- if $labels }}
+{{- include "minio.tplvalue.render" ( dict "value" $labels "context" $ ) }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Return the proper Minio pod labels
+Merges minio.commonLabels with podLabels, with podLabels taking precedence
+Precedence order: .Values.podLabels (highest) -> .Values.additionalLabels (middle) -> .Values.global.commonLabels (lowest)
+*/}}
+{{- define "minio.podLabels" -}}
+{{- $labels := dict }}
+{{- if .Values.podLabels }}
+{{- $labels = .Values.podLabels }}
+{{- end }}
+{{- if .Values.additionalLabels }}
+{{- $labels = merge $labels .Values.additionalLabels }}
+{{- end }}
+{{- if .Values.global.commonLabels }}
+{{- $labels = merge $labels .Values.global.commonLabels }}
+{{- end }}
+{{- if $labels }}
+{{- include "minio.tplvalue.render" ( dict "value" $labels "context" $ ) }}
+{{- end }}
+{{- end -}}
