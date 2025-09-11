@@ -1,0 +1,4 @@
+# Default test configuration for OpenTelemetry Collector
+mode: "deployment"
+image:
+  repository: "otel/opentelemetry-collector-contrib"

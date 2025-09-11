@@ -5,7 +5,7 @@ metadata:
   name: {{ include "opentelemetry-collector.fullname" . }}-agent
   namespace: {{ template "opentelemetry-collector.namespace" . }}
   labels:
-    {{- include "opentelemetry-collector.labels" . | nindent 4 }}
+    {{- include "opentelemetry-collector.workloadLabels" . | nindent 4 }}
   {{- if .Values.annotations }}
   annotations:
     {{- range $key, $value := .Values.annotations }}
@@ -33,7 +33,7 @@ spec:
       labels:
         {{- include "opentelemetry-collector.selectorLabels" . | nindent 8 }}
         {{- include "opentelemetry-collector.component" . | nindent 8 }}
-        {{- include "opentelemetry-collector.podLabels" . | nindent 8 }}
+        {{- include "opentelemetry-collector.mergedPodLabels" . | nindent 8 }}
     spec:
       {{- $podValues := deepCopy .Values }}
       {{- $podData := dict "Values" $podValues "configmapSuffix" "-agent" "isAgent" true }}

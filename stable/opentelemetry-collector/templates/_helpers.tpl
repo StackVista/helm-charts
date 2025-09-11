@@ -294,3 +294,54 @@ imagePullSecrets:
     {{- end }}
   {{- end }}
 {{- end -}}
+
+{{/*
+Merge global and local common labels.
+Precedence order: .Values.additionalLabels (higher) -> .Values.global.commonLabels (lower)
+*/}}
+{{- define "opentelemetry-collector.commonLabels" -}}
+{{- $labels := dict }}
+{{- if .Values.additionalLabels }}
+{{- $labels = .Values.additionalLabels }}
+{{- end }}
+{{- if .Values.global.commonLabels }}
+{{- $labels = merge $labels .Values.global.commonLabels }}
+{{- end }}
+{{- if $labels }}
+{{- include "opentelemetry-collector.tplvalue.render" ( dict "value" $labels "context" $ ) }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Workload labels for Deployments, DaemonSets, StatefulSets (includes global.commonLabels)
+*/}}
+{{- define "opentelemetry-collector.workloadLabels" -}}
+helm.sh/chart: {{ include "opentelemetry-collector.chart" . }}
+{{ include "opentelemetry-collector.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "opentelemetry-collector.commonLabels" . }}
+{{- end }}
+
+{{/*
+Return the proper OpenTelemetry Collector pod labels
+Merges opentelemetry-collector.commonLabels with podLabels, with podLabels taking precedence
+Precedence order: .Values.podLabels (highest) -> .Values.additionalLabels (middle) -> .Values.global.commonLabels (lowest)
+*/}}
+{{- define "opentelemetry-collector.mergedPodLabels" -}}
+{{- $labels := dict }}
+{{- if .Values.podLabels }}
+{{- $labels = .Values.podLabels }}
+{{- end }}
+{{- if .Values.additionalLabels }}
+{{- $labels = merge $labels .Values.additionalLabels }}
+{{- end }}
+{{- if .Values.global.commonLabels }}
+{{- $labels = merge $labels .Values.global.commonLabels }}
+{{- end }}
+{{- if $labels }}
+{{- include "opentelemetry-collector.tplvalue.render" ( dict "value" $labels "context" $ ) }}
+{{- end }}
+{{- end -}}

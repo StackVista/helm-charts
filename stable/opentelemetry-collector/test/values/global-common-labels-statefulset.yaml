@@ -1,0 +1,8 @@
+# Test global.commonLabels in StatefulSet mode
+mode: "statefulset"
+image:
+  repository: "otel/opentelemetry-collector-contrib"
+global:
+  commonLabels:
+    global.label1: "global-value1"
+    global.label2: "global-value2"

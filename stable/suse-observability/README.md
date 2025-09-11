@@ -15,7 +15,7 @@ Current chart version is `2.5.1-pre.11`
 | file://../hbase/ | hbase | 0.2.74 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.13 |
-| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.0 |
+| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.1 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../victoria-metrics-cluster | victoriametrics-cluster(victoria-metrics-cluster) | 0.14.6-stackstate.1 |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.24 |

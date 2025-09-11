@@ -1,0 +1,4 @@
+# Test configuration for DaemonSet mode
+mode: "daemonset"
+image:
+  repository: "otel/opentelemetry-collector-contrib"

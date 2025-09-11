@@ -1,6 +1,6 @@
 # opentelemetry-collector
 
-![Version: 0.108.0-stackstate.0](https://img.shields.io/badge/Version-0.108.0--stackstate.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.111.0](https://img.shields.io/badge/AppVersion-0.111.0-informational?style=flat-square)
+![Version: 0.108.0-stackstate.1](https://img.shields.io/badge/Version-0.108.0--stackstate.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.111.0](https://img.shields.io/badge/AppVersion-0.111.0-informational?style=flat-square)
 
 OpenTelemetry Collector Helm chart for Kubernetes
 
@@ -80,6 +80,7 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | extraVolumeMounts | list | `[]` |  |
 | extraVolumes | list | `[]` |  |
 | fullnameOverride | string | `""` |  |
+| global.commonLabels | object | `{}` |  |
 | hostAliases | list | `[]` |  |
 | hostNetwork | bool | `false` |  |
 | image.digest | string | `""` |  |

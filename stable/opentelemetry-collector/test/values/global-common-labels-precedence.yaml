@@ -1,0 +1,10 @@
+# Test global.commonLabels precedence (local additionalLabels override global)
+mode: "deployment"
+image:
+  repository: "otel/opentelemetry-collector-contrib"
+global:
+  commonLabels:
+    global.label1: "global-value1"
+    global.label2: "global-value2"
+additionalLabels:
+  global.label1: "local-override"

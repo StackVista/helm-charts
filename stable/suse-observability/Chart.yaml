@@ -78,7 +78,7 @@ dependencies:
     repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
     condition: clickhouse.enabled
   - name: opentelemetry-collector
-    version: 0.108.0-stackstate.0
+    version: 0.108.0-stackstate.1
     repository: file://../opentelemetry-collector
     condition: opentelemetry.enabled
   - name: kubernetes-rbac-agent

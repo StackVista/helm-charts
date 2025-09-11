@@ -1,0 +1,5 @@
+# Test configuration for StatefulSet mode
+mode: "statefulset"
+replicaCount: 1
+image:
+  repository: "otel/opentelemetry-collector-contrib"
