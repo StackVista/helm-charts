@@ -2,6 +2,10 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+global:
+  # -- Common labels that are applied to all resources
+  commonLabels: {}
+
 rbac:
   create: true
   # Note: The PSP will only be deployed, if Kubernetes (<1.25) supports the resource.

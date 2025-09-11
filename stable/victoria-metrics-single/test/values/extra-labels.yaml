@@ -1,0 +1,8 @@
+# Test server.extraLabels
+rbac:
+  pspEnabled: false
+
+server:
+  extraLabels:
+    extra.label1: "extra-value1"
+    extra.label2: "extra-value2"

@@ -1,0 +1,8 @@
+# Test server.podLabels
+rbac:
+  pspEnabled: false
+
+server:
+  podLabels:
+    pod.label1: "pod-value1"
+    pod.label2: "pod-value2"

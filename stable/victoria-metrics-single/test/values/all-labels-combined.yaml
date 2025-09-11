@@ -1,0 +1,19 @@
+# Test precedence and combination of all label types
+rbac:
+  pspEnabled: false
+
+global:
+  commonLabels:
+    global-unique: "global-value"
+    override-at-extra: "from-global"
+    override-at-pod: "from-global"
+
+server:
+  extraLabels:
+    extra-unique: "extra-value"
+    override-at-extra: "from-extra"
+    override-at-pod: "from-extra"
+
+  podLabels:
+    pod-unique: "pod-value"
+    override-at-pod: "from-pod"

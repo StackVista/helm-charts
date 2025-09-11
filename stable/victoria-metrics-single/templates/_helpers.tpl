@@ -235,3 +235,31 @@ Return the image registry
     {{- .image.registry -}}
   {{- end -}}
 {{- end -}}
+
+{{/*
+Create StatefulSet labels that merge server.extraLabels and global.commonLabels with server.extraLabels taking precedence
+*/}}
+{{- define "victoria-metrics.server.statefulsetLabels" -}}
+{{- if or .Values.server.extraLabels .Values.global.commonLabels -}}
+{{- $globalLabels := .Values.global.commonLabels | default dict -}}
+{{- $extraLabels := .Values.server.extraLabels | default dict -}}
+{{- $mergedLabels := merge $extraLabels $globalLabels -}}
+{{- range $key, $value := $mergedLabels }}
+{{ $key }}: {{ $value | quote }}
+{{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Create Pod labels that merge server.podLabels and global.commonLabels with server.podLabels taking precedence
+*/}}
+{{- define "victoria-metrics.server.podLabels" -}}
+{{- if or .Values.server.podLabels .Values.global.commonLabels -}}
+{{- $globalLabels := .Values.global.commonLabels | default dict -}}
+{{- $podLabels := .Values.server.podLabels | default dict -}}
+{{- $mergedLabels := merge $podLabels $globalLabels -}}
+{{- range $key, $value := $mergedLabels }}
+{{ $key }}: {{ $value | quote }}
+{{- end }}
+{{- end }}
+{{- end -}}

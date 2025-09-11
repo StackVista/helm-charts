@@ -1,6 +1,6 @@
 # Victoria Metrics Helm Chart for Single Version
 
- ![Version: 0.8.53-stackstate.23](https://img.shields.io/badge/Version-0.8.53--stackstate.23-informational?style=flat-square)
+ ![Version: 0.8.53-stackstate.24](https://img.shields.io/badge/Version-0.8.53--stackstate.24-informational?style=flat-square)
 
 Victoria Metrics Single version - high-performance, cost-effective and scalable TSDB, long-term remote storage for Prometheus
 
@@ -171,6 +171,7 @@ Change the values according to the need of the environment in ``victoria-metrics
 | backup.vmbackup.resources.limits.memory | string | `"512Mi"` |  |
 | backup.vmbackup.resources.requests.cpu | string | `"10m"` |  |
 | backup.vmbackup.resources.requests.memory | string | `"512Mi"` |  |
+| global.commonLabels | object | `{}` | Common labels that are applied to all resources |
 | podDisruptionBudget.enabled | bool | `false` | See `kubectl explain poddisruptionbudget.spec` for more. Ref: [https://kubernetes.io/docs/tasks/run-application/configure-pdb/](https://kubernetes.io/docs/tasks/run-application/configure-pdb/) |
 | podDisruptionBudget.extraLabels | object | `{}` |  |
 | printNotes | bool | `true` | Print chart notes |
