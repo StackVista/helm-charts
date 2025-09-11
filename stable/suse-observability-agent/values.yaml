@@ -110,6 +110,7 @@ nodeAgent:
     # nodeAgent.protocolInspection.enabled -- Enable / disable the nodeAgent protocol inspection.
     enabled: true
   httpTracing:
+    # nodeAgent.httpTracing.enabled -- Enable / disable the process-agent HTTP tracing.
     enabled: true
   # nodeAgent.skipSslValidation -- Set to true if self signed certificates are used.
   skipSslValidation: false
@@ -285,6 +286,30 @@ processAgent:
     connections: 30
     # processAgent.checkIntervals.process -- Override the default value of the process check interval in seconds.
     process: 32
+
+  podCorrelation:
+    # processAgent.podCorrelation.enabled -- [Experimental] Enable / disable pod correlation.
+    enabled: false
+    # processAgent.podCorrelation.remoteCache -- When true, the chart will deploy a remote kube cache service and
+    # populate the process-agent environment with the service address (serviceName.namespace:grpcPort).
+    # Set to `false` to use a local informer inside the process-agent and avoid deploying the remote cache.
+    remoteCache: false
+    # processAgent.podCorrelation.protocolMetrics -- Enable / disable exporting protocol metrics. If false the agent will export only metrics for network connections.
+    protocolMetrics: false
+    # processAgent.podCorrelation.partialCorrelation -- Enable / disable partial pod correlation. if false the agent will export only pod<->pod metrics. Both extremities of the connection must be pods.
+    partialCorrelation: false
+    # processAgent.podCorrelation.attributes -- The attributes to be added to all exported metrics. If nothing is provided a default set will be used.
+    attributes: []
+    # processAgent.podCorrelation.shortLivedConnectionsInterval -- if different from 0, all connections younger than this interval (in seconds) won't be tracked.
+    shortLivedConnectionsInterval: 0
+
+    exporter:
+      # processAgent.podCorrelation.exporter.type -- The type of the exporter to use for metrics. Possible values ("otlp", "stdout")
+      type: ""
+      # processAgent.podCorrelation.exporter.endpoint -- Override the default endpoint to which the exporter will send metrics (e.g. "otel-collector-service:4317").
+      endpoint: ""
+      # processAgent.podCorrelation.exporter.interval -- The interval at which the exporter will send metrics (in seconds).
+      interval: 30
 
 clusterAgent:
   collection:

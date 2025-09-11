@@ -54,6 +54,30 @@
       value: {{ .Values.nodeAgent.skipKubeletTLSVerify | quote }}
     - name: STS_HTTP_TRACING_ENABLED
       value: {{ .Values.nodeAgent.httpTracing.enabled | quote }}
+    - name: STS_POD_CORRELATION_ENABLED
+      value: {{ .Values.processAgent.podCorrelation.enabled | quote }}
+    {{- if include "stackstate-k8s-agent.processAgent.podCorrelation.remoteCache.enabled" . }}
+    - name: STS_POD_CORRELATION_REMOTE_CACHE_ADDR
+      value: {{ include "stackstate-k8s-agent.remoteKubeCache.address" $ }}
+    {{- end }}
+    - name: STS_POD_CORRELATION_PROTOCOL_METRICS
+      value: {{ .Values.processAgent.podCorrelation.protocolMetrics | quote }}
+    - name: STS_POD_CORRELATION_PARTIAL_CORRELATION
+      value: {{ .Values.processAgent.podCorrelation.partialCorrelation | quote }}
+    - name: STS_POD_CORRELATION_ATTRIBUTES_KEYS
+    {{- if .Values.processAgent.podCorrelation.attributes }}
+      value: {{ join "," .Values.processAgent.podCorrelation.attributes | quote }}
+    {{- else }}
+      value: ""
+    {{- end }}
+    - name: STS_POD_CORRELATION_SHORT_LIVED_CONNECTIONS_INTERVAL
+      value: {{ .Values.processAgent.podCorrelation.shortLivedConnectionsInterval | quote }}
+    - name: STS_POD_CORRELATION_EXPORTER_TYPE
+      value: {{ .Values.processAgent.podCorrelation.exporter.type | quote }}
+    - name: STS_POD_CORRELATION_EXPORTER_OTLP_ENDPOINT
+      value: {{ .Values.processAgent.podCorrelation.exporter.endpoint | quote }}
+    - name: STS_POD_CORRELATION_EXPORTER_INTERVAL
+      value: {{ .Values.processAgent.podCorrelation.exporter.interval | quote }}
     {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}
     - name: STS_CRI_SOCKET_PATH
       value: {{ .Values.nodeAgent.containerRuntime.customSocketPath }}

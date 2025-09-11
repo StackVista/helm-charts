@@ -298,3 +298,24 @@ Custom certificates validation - fail if both configMapName and pemData are prov
 {{- fail "Error: Both global.customCertificates.configMapName and global.customCertificates.pemData are provided. Please use only one approach - either specify an external ConfigMap name OR provide PEM data directly, not both." }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Helpers for remote kube cache service (used by process-agent pod-correlation)
+*/}}
+{{- define "stackstate-k8s-agent.remoteKubeCache.serviceName" -}}
+{{- printf "%s-remote-kube-cache" .Release.Name -}}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.remoteKubeCache.grpcPort" -}}
+50055
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.remoteKubeCache.address" -}}
+{{- printf "%s:%s" (include "stackstate-k8s-agent.remoteKubeCache.serviceName" .) (include "stackstate-k8s-agent.remoteKubeCache.grpcPort" .) -}}
+{{- end -}}
+
+{{- define "stackstate-k8s-agent.processAgent.podCorrelation.remoteCache.enabled" -}}
+{{- if and .Values.nodeAgent.containers.processAgent.enabled .Values.processAgent.podCorrelation.enabled .Values.processAgent.podCorrelation.remoteCache }}
+true
+{{- end }}
+{{- end -}}

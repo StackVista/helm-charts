@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.0.71`
+Current chart version is `1.0.72`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -241,7 +241,7 @@ stackstate/stackstate-k8s-agent
 | nodeAgent.containers.processAgent.resources.limits.memory | string | `"400Mi"` | Memory resource limits. |
 | nodeAgent.containers.processAgent.resources.requests.cpu | string | `"25m"` | CPU resource requests. |
 | nodeAgent.containers.processAgent.resources.requests.memory | string | `"128Mi"` | Memory resource requests. |
-| nodeAgent.httpTracing.enabled | bool | `true` |  |
+| nodeAgent.httpTracing.enabled | bool | `true` | Enable / disable the process-agent HTTP tracing. |
 | nodeAgent.logLevel | string | `"INFO"` | Logging level for agent processes. |
 | nodeAgent.networkTracing.enabled | bool | `true` | Enable / disable the nodeAgent network tracing module. |
 | nodeAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
@@ -270,6 +270,15 @@ stackstate/stackstate-k8s-agent
 | openShiftLogging.installSecret | bool | `false` | Install a secret for logging on openshift |
 | processAgent.checkIntervals.connections | int | `30` | Override the default value of the connections check interval in seconds. |
 | processAgent.checkIntervals.process | int | `32` | Override the default value of the process check interval in seconds. |
+| processAgent.podCorrelation.attributes | list | `[]` | The attributes to be added to all exported metrics. If nothing is provided a default set will be used. |
+| processAgent.podCorrelation.enabled | bool | `false` | [Experimental] Enable / disable pod correlation. |
+| processAgent.podCorrelation.exporter.endpoint | string | `""` | Override the default endpoint to which the exporter will send metrics (e.g. "otel-collector-service:4317"). |
+| processAgent.podCorrelation.exporter.interval | int | `30` | The interval at which the exporter will send metrics (in seconds). |
+| processAgent.podCorrelation.exporter.type | string | `""` | The type of the exporter to use for metrics. Possible values ("otlp", "stdout") |
+| processAgent.podCorrelation.partialCorrelation | bool | `false` | Enable / disable partial pod correlation. if false the agent will export only pod<->pod metrics. Both extremities of the connection must be pods. |
+| processAgent.podCorrelation.protocolMetrics | bool | `false` | Enable / disable exporting protocol metrics. If false the agent will export only metrics for network connections. |
+| processAgent.podCorrelation.remoteCache | bool | `false` | When true, the chart will deploy a remote kube cache service and populate the process-agent environment with the service address (serviceName.namespace:grpcPort). Set to `false` to use a local informer inside the process-agent and avoid deploying the remote cache. |
+| processAgent.podCorrelation.shortLivedConnectionsInterval | int | `0` | if different from 0, all connections younger than this interval (in seconds) won't be tracked. |
 | processAgent.softMemoryLimit.goMemLimit | string | `"340MiB"` | Soft-limit for golang heap allocation, for sanity, must be around 85% of nodeAgent.containers.processAgent.resources.limits.cpu. |
 | processAgent.softMemoryLimit.httpObservationsBufferSize | int | `40000` | Sets a maximum for the number of http observations to keep in memory between check runs, to use 40k requires around ~400Mib of memory. |
 | processAgent.softMemoryLimit.httpStatsBufferSize | int | `40000` | Sets a maximum for the number of http stats to keep in memory between check runs, to use 40k requires around ~400Mib of memory. |
