@@ -68,11 +68,6 @@ dependencies:
     version: "0.8.53-stackstate.24"
     repository: file://../victoria-metrics-single/
     condition: victoria-metrics-1.enabled
-  - name: victoria-metrics-cluster
-    alias: victoriametrics-cluster
-    repository: file://../victoria-metrics-cluster
-    version: 0.14.6-stackstate.1
-    condition: victoriametrics-cluster.enabled
   - name: clickhouse
     version: 3.6.9
     repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami

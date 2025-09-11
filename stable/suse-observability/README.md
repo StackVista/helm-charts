@@ -17,7 +17,6 @@ Current chart version is `2.5.1-pre.12`
 | file://../minio/ | minio | 8.0.10-stackstate.13 |
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.1 |
 | file://../pull-secret/ | pull-secret | * |
-| file://../victoria-metrics-cluster | victoriametrics-cluster(victoria-metrics-cluster) | 0.14.6-stackstate.1 |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.24 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.24 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.166 |
@@ -1062,77 +1061,6 @@ stackstate/stackstate
 | victoria-metrics.restore.securityContext.runAsGroup | int | `65534` |  |
 | victoria-metrics.restore.securityContext.runAsNonRoot | bool | `true` |  |
 | victoria-metrics.restore.securityContext.runAsUser | int | `65534` |  |
-| victoriametrics-cluster.enabled | bool | `false` |  |
-| victoriametrics-cluster.rbac.namespaced | bool | `true` |  |
-| victoriametrics-cluster.rbac.pspEnabled | bool | `false` |  |
-| victoriametrics-cluster.vminsert.affinity | object | `{}` |  |
-| victoriametrics-cluster.vminsert.extraArgs.maxLabelsPerTimeseries | int | `60` |  |
-| victoriametrics-cluster.vminsert.extraArgs.replicationFactor | int | `2` |  |
-| victoriametrics-cluster.vminsert.extraLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
-| victoriametrics-cluster.vminsert.image.registry | string | `"quay.io"` |  |
-| victoriametrics-cluster.vminsert.image.repository | string | `"stackstate/vminsert"` | Repository for vminsert |
-| victoriametrics-cluster.vminsert.image.tag | string | `"v1.103.0-cluster-d94345cb"` | Tag of vminsert image |
-| victoriametrics-cluster.vminsert.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vminsert.check_names" | string | `"[\"openmetrics\"]"` |  |
-| victoriametrics-cluster.vminsert.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vminsert.init_configs" | string | `"[{}]"` |  |
-| victoriametrics-cluster.vminsert.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vminsert.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8480/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\", \"vminsert*\"] } ]"` |  |
-| victoriametrics-cluster.vminsert.podLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
-| victoriametrics-cluster.vminsert.replicaCount | int | `2` |  |
-| victoriametrics-cluster.vminsert.resources.limits.cpu | int | `1` |  |
-| victoriametrics-cluster.vminsert.resources.limits.memory | string | `"1Gi"` |  |
-| victoriametrics-cluster.vminsert.resources.requests.cpu | string | `"300m"` |  |
-| victoriametrics-cluster.vminsert.resources.requests.memory | string | `"1Gi"` |  |
-| victoriametrics-cluster.vminsert.securityContext.enabled | bool | `true` |  |
-| victoriametrics-cluster.vminsert.securityContext.runAsGroup | int | `65534` |  |
-| victoriametrics-cluster.vminsert.securityContext.runAsUser | int | `65534` |  |
-| victoriametrics-cluster.vminsert.serviceMonitor.enabled | bool | `false` |  |
-| victoriametrics-cluster.vminsert.serviceMonitor.extraLabels | object | `{}` |  |
-| victoriametrics-cluster.vmselect.affinity | object | `{}` |  |
-| victoriametrics-cluster.vmselect.extraArgs."dedup.minScrapeInterval" | string | `"1ms"` |  |
-| victoriametrics-cluster.vmselect.extraArgs."search.cacheTimestampOffset" | string | `"10m"` |  |
-| victoriametrics-cluster.vmselect.extraArgs.replicationFactor | int | `2` |  |
-| victoriametrics-cluster.vmselect.extraLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
-| victoriametrics-cluster.vmselect.image.registry | string | `"quay.io"` |  |
-| victoriametrics-cluster.vmselect.image.repository | string | `"stackstate/vmselect"` | Repository for vmselect |
-| victoriametrics-cluster.vmselect.image.tag | string | `"v1.103.0-cluster-cf63b26d"` | Tag of vmselect image |
-| victoriametrics-cluster.vmselect.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmselect.check_names" | string | `"[\"openmetrics\"]"` |  |
-| victoriametrics-cluster.vmselect.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmselect.init_configs" | string | `"[{}]"` |  |
-| victoriametrics-cluster.vmselect.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmselect.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8481/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\", \"vmselect*\"] } ]"` |  |
-| victoriametrics-cluster.vmselect.podLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
-| victoriametrics-cluster.vmselect.replicaCount | int | `2` |  |
-| victoriametrics-cluster.vmselect.resources.limits.cpu | int | `1` |  |
-| victoriametrics-cluster.vmselect.resources.limits.memory | string | `"1Gi"` |  |
-| victoriametrics-cluster.vmselect.resources.requests.cpu | string | `"300m"` |  |
-| victoriametrics-cluster.vmselect.resources.requests.memory | string | `"1Gi"` |  |
-| victoriametrics-cluster.vmselect.securityContext.enabled | bool | `true` |  |
-| victoriametrics-cluster.vmselect.securityContext.runAsGroup | int | `65534` |  |
-| victoriametrics-cluster.vmselect.securityContext.runAsUser | int | `65534` |  |
-| victoriametrics-cluster.vmselect.serviceMonitor.enabled | bool | `false` |  |
-| victoriametrics-cluster.vmselect.serviceMonitor.extraLabels | object | `{}` |  |
-| victoriametrics-cluster.vmstorage.affinity | object | `{}` |  |
-| victoriametrics-cluster.vmstorage.extraArgs."dedup.minScrapeInterval" | string | `"1ms"` |  |
-| victoriametrics-cluster.vmstorage.extraLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
-| victoriametrics-cluster.vmstorage.image.registry | string | `"quay.io"` |  |
-| victoriametrics-cluster.vmstorage.image.repository | string | `"stackstate/vmstorage"` | Repository for vmstorage |
-| victoriametrics-cluster.vmstorage.image.tag | string | `"v1.103.0-cluster-dc396072"` | Tag of vmstorage image |
-| victoriametrics-cluster.vmstorage.persistentVolume.size | string | `"250Gi"` |  |
-| victoriametrics-cluster.vmstorage.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmstorage.check_names" | string | `"[\"openmetrics\"]"` |  |
-| victoriametrics-cluster.vmstorage.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmstorage.init_configs" | string | `"[{}]"` |  |
-| victoriametrics-cluster.vmstorage.podAnnotations."ad.stackstate.com/victoriametrics-cluster-vmstorage.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8482/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\"] } ]"` |  |
-| victoriametrics-cluster.vmstorage.podLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
-| victoriametrics-cluster.vmstorage.podSecurityContext.enabled | bool | `true` |  |
-| victoriametrics-cluster.vmstorage.podSecurityContext.fsGroup | int | `65534` |  |
-| victoriametrics-cluster.vmstorage.replicaCount | int | `4` |  |
-| victoriametrics-cluster.vmstorage.resources.limits.cpu | int | `1` |  |
-| victoriametrics-cluster.vmstorage.resources.limits.memory | string | `"2Gi"` |  |
-| victoriametrics-cluster.vmstorage.resources.requests.cpu | string | `"300m"` |  |
-| victoriametrics-cluster.vmstorage.resources.requests.memory | string | `"2Gi"` |  |
-| victoriametrics-cluster.vmstorage.retentionPeriod | int | `1` |  |
-| victoriametrics-cluster.vmstorage.securityContext.enabled | bool | `true` |  |
-| victoriametrics-cluster.vmstorage.securityContext.runAsGroup | int | `65534` |  |
-| victoriametrics-cluster.vmstorage.securityContext.runAsNonRoot | bool | `true` |  |
-| victoriametrics-cluster.vmstorage.securityContext.runAsUser | int | `65534` |  |
-| victoriametrics-cluster.vmstorage.serviceMonitor.enabled | bool | `false` |  |
-| victoriametrics-cluster.vmstorage.serviceMonitor.extraLabels | object | `{}` |  |
 | zookeeper.autopurge | object | `{"purgeInterval":3,"snapRetainCount":5}` | configurations of ZooKeeper auto purge, it deletes old snapshot and log files. ClickHouse creates a lot of operation and it should be purged to avoud out of disk space. |
 | zookeeper.commonLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | zookeeper.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |

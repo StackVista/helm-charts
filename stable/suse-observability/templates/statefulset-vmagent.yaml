@@ -1,9 +1,5 @@
 {{- define "stackstate.vmagent.targets" -}}
 instances:
-{{ if index .Values "victoriametrics-cluster" "enabled" }}
-  - url: "http://suse-observability-victoriametrics-cluster-vminsert:8480/insert/0/prometheus/api/v1/write"
-    endpoint: "suse-observability-victoriametrics-cluster-vminsert:8480"
-{{- end -}}
 {{ if index .Values "victoria-metrics-0" "enabled" }}
   - url: {{ ( include "stackstate.metrics.victoriametrics.singleNode.remotewrite.url" (merge (dict "instanceIndex" "0") . ) ) }}
     endpoint: {{ include "stackstate.metrics.victoriametrics.singleNode.remoteWriteEndpoint" (dict "instanceIndex" "0") }}

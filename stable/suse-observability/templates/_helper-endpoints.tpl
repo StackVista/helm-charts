@@ -6,21 +6,10 @@ http://{{- include "stackstate.metrics.victoriametrics.singleNode.remoteWriteEnd
 {{- end -}}
 
 {{/*
-Logic to determine remote write endpoint for cluster of Victoria Metrics.
-*/}}
-{{- define "stackstate.metrics.victoriametrics.cluster.remotewrite.url" -}}
-http://{{- include "stackstate.metrics.victoriametrics.cluster.remoteWriteEndpoint" . -}}/insert/0{{.Values.stackstate.components.all.metricStore.remoteWritePath}}
-{{- end -}}
-
-{{/*
 Logic to determine promql query endpoint. It
 */}}
 {{- define "stackstate.metrics.query.url" -}}
-{{- if or (index .Values "victoriametrics-cluster" "enabled") -}}
-http://suse-observability-victoriametrics-cluster-vmselect:8481/select/0/prometheus
-{{- else -}}
 http://suse-observability-victoriametrics:8428
-{{- end -}}
 {{- end -}}
 
 {{/*
@@ -28,13 +17,6 @@ Logic to determine metric store host and port for single node deployment of Vict
 */}}
 {{- define "stackstate.metrics.victoriametrics.singleNode.remoteWriteEndpoint" -}}
 suse-observability-victoria-metrics-{{ .instanceIndex }}:8428
-{{- end -}}
-
-{{/*
-Logic to determine metric store host and port for cluster of Victoria Metrics.
-*/}}
-{{- define "stackstate.metrics.victoriametrics.cluster.remoteWriteEndpoint" -}}
-suse-observability-victoriametrics-cluster-vminsert:8480
 {{- end -}}
 
 {{/*

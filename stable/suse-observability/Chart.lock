@@ -32,9 +32,6 @@ dependencies:
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
   version: 0.8.53-stackstate.24
-- name: victoria-metrics-cluster
-  repository: file://../victoria-metrics-cluster
-  version: 0.14.6-stackstate.1
 - name: clickhouse
   repository: https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
   version: 3.6.9
@@ -44,5 +41,5 @@ dependencies:
 - name: kubernetes-rbac-agent
   repository: https://helm.stackstate.io
   version: 0.0.15
-digest: sha256:e297639e987462039bd5c2dadb62c648bd67ea6af8e92156b084d32769a8fbe7
-generated: "2025-09-11T16:30:23.612218+02:00"
+digest: sha256:55bbc2f9cd4a22b8fcb37f5efd099c17394e538f83796789c8f4387550ce3415
+generated: "2025-09-11T16:49:35.00263+02:00"
