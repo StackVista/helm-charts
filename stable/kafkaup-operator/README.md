@@ -1,10 +1,10 @@
 # kafkaup-operator
 
-![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square) ![AppVersion: v0.1.0](https://img.shields.io/badge/AppVersion-v0.1.0-informational?style=flat-square)
+![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-informational?style=flat-square) ![AppVersion: v0.1.0](https://img.shields.io/badge/AppVersion-v0.1.0-informational?style=flat-square)
 
 The StackState Kafka upgrade operator
 
-Current chart version is `0.1.9`
+Current chart version is `0.1.10`
 
 **Homepage:** <https://gitlab.com/StackVista/platform/kafkaup-operator>
 
@@ -26,6 +26,7 @@ Current chart version is `0.1.9`
 |-----|------|---------|-------------|
 | commonAnnotations | object | `{}` |  |
 | commonLabels | object | `{}` |  |
+| global.commonLabels | object | `{}` | Labels to apply to all resources |
 | image.pullPolicy | string | `"IfNotPresent"` | Pull policy for the image for the KafkaUp operator |
 | image.registry | string | `"quay.io"` | Registry containing the image for the KafkaUp operator |
 | image.repository | string | `"stackstate/kafkaup-operator"` | Repository containing the image for the KafkaUp operator |

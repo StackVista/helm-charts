@@ -1,0 +1,9 @@
+# Test precedence: commonLabels should override global.commonLabels
+global:
+  commonLabels:
+    global-unique: "global-value"
+    override-test: "from-global"
+
+commonLabels:
+  common-unique: "common-value"
+  override-test: "from-common"  # This should override global

@@ -1,0 +1,4 @@
+# Test commonLabels
+commonLabels:
+  common.label1: "common-value1"
+  common.label2: "common-value2"

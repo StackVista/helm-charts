@@ -1,3 +1,7 @@
+global:
+  # global.commonLabels -- Labels to apply to all resources
+  commonLabels: {}
+
 image:
   # image.registry -- Registry containing the image for the KafkaUp operator
   registry: quay.io
