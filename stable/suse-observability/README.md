@@ -2,7 +2,7 @@
 
 Helm chart for SUSE Observability
 
-Current chart version is `2.5.1-pre.12`
+Current chart version is `2.5.1-pre.13`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -194,6 +194,7 @@ stackstate/stackstate
 | elasticsearch.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"1Gi","memory":"4Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"4Gi"}}` | Override Elasticsearch resources |
 | elasticsearch.sysctlInitContainer | object | `{"enabled":true}` | Enable privileged init container to increase Elasticsearch virtual memory on underlying nodes. |
 | elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"250Gi"}}}` | PVC template defaulting to 250Gi default volumes |
+| global.commonLabels | object | `{}` | Labels that will be added to all Deployments, StatefulSets, CronJobs, Jobs and their pods |
 | global.imagePullSecrets | list | `[]` | List of image pull secret names to be used by all images across all charts. |
 | global.receiverApiKey | string | `""` | API key to be used by the Receiver. This setting is deprectaed in favor of stackstate.apiKey.key |
 | global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overriden per PVC. |

@@ -59,6 +59,7 @@ metadata:
   labels:
     app.kubernetes.io/component: ch-clean
     {{- include "common.labels.standard" . | nindent 4 }}
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
   annotations:
     {{- if .Values.deployment.compatibleWithArgoCD }}
     argocd.argoproj.io/hook: PostSync
@@ -82,6 +83,7 @@ spec:
         {{- include "stackstate.server.secret.checksum" . | nindent 8 }}
       labels:
         app.kubernetes.io/component: ch-clean
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       restartPolicy: OnFailure
       initContainers:

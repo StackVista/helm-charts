@@ -784,3 +784,16 @@ Usage: {{ if include "suse-observability.features.enabled" (dict "key" "server.s
 true
 {{- end -}}
 {{- end -}}
+
+{{/*
+Global common labels for all workload resources.
+
+Allow users of helm charts to specify global common labels via .Values.global.commonLabels
+*/}}
+{{- define "suse-observability.labels.global" -}}
+{{- if .Values.global.commonLabels -}}
+{{- range $key, $value := .Values.global.commonLabels }}
+{{ $key }}: {{ $value | quote }}
+{{- end -}}
+{{- end -}}
+{{- end -}}

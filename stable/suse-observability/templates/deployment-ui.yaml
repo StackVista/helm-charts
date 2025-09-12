@@ -75,6 +75,7 @@ metadata:
   name: {{ template "common.fullname.short" . }}-ui
   labels:
     app.kubernetes.io/component: ui
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   replicas: {{ .Values.stackstate.components.ui.replicaCount }}
   selector:
@@ -95,6 +96,7 @@ spec:
         {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "ui") .) }}
       labels:
         app.kubernetes.io/component: ui
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       containers:

@@ -78,6 +78,7 @@ metadata:
   name: {{ include "stackstate.vmagent.endpoint" . }}
   labels:
     app.kubernetes.io/component: vmagent
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   replicas: {{ .Values.stackstate.components.receiver.replicaCount }}
   selector:
@@ -90,6 +91,7 @@ spec:
         {{- include "stackstate.vmagent.configmap.checksum" . | nindent 8 }}
       labels:
         app.kubernetes.io/component: vmagent
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       initContainers:

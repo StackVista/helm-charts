@@ -74,6 +74,7 @@ metadata:
   labels:
     app.kubernetes.io/component: correlate{{ template "stackstate.correlate.name.postfix" . }}
     app.kubernetes.io/component-group: correlate
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   replicas: {{ .TypeConfig.replicaCount }}
   selector:
@@ -100,6 +101,7 @@ spec:
       labels:
         app.kubernetes.io/component: correlate{{ template "stackstate.correlate.name.postfix" . }}
         app.kubernetes.io/component-group: correlate
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       initContainers:

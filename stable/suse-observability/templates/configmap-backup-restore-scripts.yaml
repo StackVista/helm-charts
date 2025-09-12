@@ -5,6 +5,7 @@ metadata:
   name: elasticsearch-list-snapshots
   labels:
     app.kubernetes.io/component: backup
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   backoffLimit: 1
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
@@ -12,6 +13,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: backup
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       initContainers:
         - name: wait
@@ -49,6 +51,7 @@ metadata:
   name: elasticsearch-restore-snapshot
   labels:
     app.kubernetes.io/component: backup
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   backoffLimit: 1
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
@@ -56,6 +59,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: backup
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       initContainers:
         - name: wait
@@ -97,6 +101,7 @@ metadata:
   name: stackgraph-list-backups
   labels:
     app.kubernetes.io/component: backup
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   backoffLimit: 1
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
@@ -104,6 +109,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: backup
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       initContainers:
         - name: wait
@@ -146,6 +152,7 @@ metadata:
   name: stackgraph-restore-backup
   labels:
     app.kubernetes.io/component: backup
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   backoffLimit: 1
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
@@ -153,6 +160,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: backup
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       initContainers:
         - name: wait
@@ -222,6 +230,7 @@ metadata:
   name: configuration-list-backups
   labels:
     app.kubernetes.io/component: backup
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   backoffLimit: 1
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
@@ -229,6 +238,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: backup
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       {{- if .Values.backup.enabled }}
       initContainers:
@@ -278,6 +288,7 @@ metadata:
   name: configuration-restore-backup
   labels:
     app.kubernetes.io/component: backup
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   backoffLimit: 1
   activeDeadlineSeconds: 1200
@@ -286,6 +297,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: backup
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       initContainers:
         - name: wait
@@ -350,6 +362,7 @@ metadata:
   name: configuration-download-backup
   labels:
     app.kubernetes.io/component: backup
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   backoffLimit: 1
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
@@ -357,6 +370,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: backup
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       {{- if .Values.backup.enabled }}
       initContainers:
@@ -406,6 +420,7 @@ metadata:
   name: configuration-upload-backup
   labels:
     app.kubernetes.io/component: backup
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   backoffLimit: 1
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
@@ -413,6 +428,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: backup
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       {{- if .Values.backup.enabled }}
       initContainers:
@@ -462,6 +478,7 @@ metadata:
   name: victoria-metrics-list-backups
   labels:
     app.kubernetes.io/component: backup
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   backoffLimit: 1
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
@@ -469,6 +486,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: backup
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       initContainers:
         - name: wait
@@ -506,6 +524,7 @@ metadata:
   name: victoria-metrics-restore-backup
   labels:
     app.kubernetes.io/component: backup
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   backoffLimit: 1
   ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
@@ -513,6 +532,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: backup
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       initContainers:
         - name: wait

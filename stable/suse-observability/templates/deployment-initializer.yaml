@@ -87,6 +87,7 @@ metadata:
     app.kubernetes.io/component: initializer
     stackstate.com/connects-to-stackgraph: "true"
     stackstate.com/replicas: "1"
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
@@ -110,6 +111,7 @@ spec:
       labels:
         app.kubernetes.io/component: initializer
         stackstate.com/connects-to-stackgraph: "true"
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       serviceAccountName: {{ template "common.fullname.short" . }}-initializer
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}

@@ -111,6 +111,7 @@ metadata:
     app.kubernetes.io/component: sync
     stackstate.com/connects-to-stackgraph: "true"
     stackstate.com/replicas: "1"
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   replicas: {{ .Values.stackstate.components.sync.replicaCount }}
   selector:
@@ -134,6 +135,7 @@ spec:
       labels:
         app.kubernetes.io/component: sync
         stackstate.com/connects-to-stackgraph: "true"
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       serviceAccountName: {{ template "common.fullname.short" . }}-sync
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}

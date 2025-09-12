@@ -10,6 +10,7 @@ metadata:
   {{- end }}
   labels:
     app.kubernetes.io/component: backup-settings-init
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
   annotations:
     {{- if .Values.deployment.compatibleWithArgoCD }}
     argocd.argoproj.io/hook: Sync
@@ -23,6 +24,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: backup
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       containers:
         - name: init

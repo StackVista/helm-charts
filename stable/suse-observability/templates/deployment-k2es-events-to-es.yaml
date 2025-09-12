@@ -17,6 +17,7 @@ metadata:
   name: {{ template "common.fullname.short" . }}-e2es
   labels:
     app.kubernetes.io/component: e2es
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   replicas: {{ .Values.stackstate.components.e2es.replicaCount }}
   selector:
@@ -38,6 +39,7 @@ spec:
         {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "e2es") .) }}
       labels:
         app.kubernetes.io/component: e2es
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       initContainers:

@@ -91,6 +91,7 @@ metadata:
     app.kubernetes.io/component: slicing
     stackstate.com/connects-to-stackgraph: "true"
     stackstate.com/replicas: "1"
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   replicas: {{ .Values.stackstate.components.slicing.replicaCount }}
   selector:
@@ -114,6 +115,7 @@ spec:
       labels:
         app.kubernetes.io/component: slicing
         stackstate.com/connects-to-stackgraph: "true"
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       serviceAccountName: {{ template "common.fullname.short" . }}-slicing
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}

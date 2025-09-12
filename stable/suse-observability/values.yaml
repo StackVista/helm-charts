@@ -8,6 +8,8 @@ global:
   imagePullSecrets: []
   # global.storageClass -- StorageClass for all PVCs created by the chart. Can be overriden per PVC.
   storageClass:
+  # global.commonLabels -- Labels that will be added to all Deployments, StatefulSets, CronJobs, Jobs and their pods
+  commonLabels: {}
 # commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
 commonLabels: {}
 backup:

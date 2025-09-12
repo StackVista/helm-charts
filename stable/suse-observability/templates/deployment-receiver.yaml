@@ -108,6 +108,7 @@ metadata:
   labels:
     app.kubernetes.io/component: receiver{{ template "stackstate.receiver.name.postfix" . }}
     app.kubernetes.io/component-group: receiver
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   replicas: {{ .TypeConfig.replicaCount }}
   selector:
@@ -134,6 +135,7 @@ spec:
       labels:
         app.kubernetes.io/component: receiver{{ template "stackstate.receiver.name.postfix" . }}
         app.kubernetes.io/component-group: receiver
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       initContainers:

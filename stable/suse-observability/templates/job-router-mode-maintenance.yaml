@@ -10,6 +10,7 @@ metadata:
   labels:
     app.kubernetes.io/component: router-mode
     {{- include "common.labels.standard" . | nindent 4 }}
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
   annotations:
     {{- if .Values.deployment.compatibleWithArgoCD }}
     argocd.argoproj.io/hook: PreSync
@@ -31,6 +32,7 @@ spec:
       labels:
         app.kubernetes.io/component: router-mode
         {{- include "common.labels.standard" . | nindent 4 }}
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       serviceAccountName: "{{ template "common.fullname.short" . }}-router-mode-scripts"
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}

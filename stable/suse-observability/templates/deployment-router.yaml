@@ -42,6 +42,7 @@ metadata:
   name: {{ template "common.fullname.short" . }}-router
   labels:
     app.kubernetes.io/component: router
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   replicas: {{ .Values.stackstate.components.router.replicaCount }}
   selector:
@@ -60,6 +61,7 @@ spec:
         {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "router") .) }}
       labels:
         app.kubernetes.io/component: router
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       serviceAccountName: {{ template "common.fullname.short" . }}-router
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}

@@ -1,0 +1,48 @@
+global:
+  receiverApiKey: "test-key"
+  imagePullUsername: "test"
+  imagePullPassword: "secret"
+  imageRegistry: "my.registry.com"
+  commonLabels:
+    environment: "test"
+    team: "platform"
+
+pull-secret:
+  enabled: true
+
+stackstate:
+  components:
+    all:
+      metricStore:
+        remoteWriteEndpoint: "test-$vmInstance:8148"
+        queryApiEndpoint: "test:8148"
+    server:
+      java:
+        trustStorePassword: "secretTrustStorePassword"
+    trace2es:
+      enabled: true
+  authentication:
+    adminPassword: 098f6bcd4621d373cade4e832627b4f6
+  admin:
+    authentication:
+      password: 5a4961367d65d570e20d2d69156581b4
+  baseUrl: "http://localhost"
+  allowedOrigins:
+    - https://rancher.localhost
+  license:
+    key: "api01"
+  features:
+    server:
+      split: false
+hbase:
+  all:
+    image:
+      version: "2.5"
+  deployment:
+    mode: "Mono"
+anomaly-detection:
+  enabled: true
+backup:
+  enabled: true
+victoria-metrics-1:
+  enabled: false
