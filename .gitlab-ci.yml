@@ -4771,6 +4771,13 @@ resource_usage:
     - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -4783,12 +4790,14 @@ resource_usage:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/suse-observability/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/suse-observability/%
     - helm dependencies build stable/suse-observability
     - helm dependencies build stable/suse-observability-values
+    - go mod download
     - go test ./test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 stages:
   - build
   - push-charts-to-test
@@ -4799,6 +4808,13 @@ stages:
   - push-charts-to-public
   - push-charts-to-rancher
 test_artifactory-cleaner:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -4807,13 +4823,22 @@ test_artifactory-cleaner:
         - stable/artifactory-cleaner/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/artifactory-cleaner/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_aws-amicleaner:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -4822,13 +4847,22 @@ test_aws-amicleaner:
         - stable/aws-amicleaner/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/aws-amicleaner/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_aws-nuke:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -4837,13 +4871,22 @@ test_aws-nuke:
         - stable/aws-nuke/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/aws-nuke/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_aws-pod-identity-webhook:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -4852,13 +4895,22 @@ test_aws-pod-identity-webhook:
         - stable/aws-pod-identity-webhook/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/aws-pod-identity-webhook/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_beacher-job:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -4867,13 +4919,22 @@ test_beacher-job:
         - stable/beacher-job/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/beacher-job/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_chartmuseum:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -4882,13 +4943,22 @@ test_chartmuseum:
         - stable/chartmuseum/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/chartmuseum/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_ci-test:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -4897,13 +4967,22 @@ test_ci-test:
         - stable/ci-test/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/ci-test/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_clickhouse:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -4912,13 +4991,22 @@ test_clickhouse:
         - stable/clickhouse/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/clickhouse/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_common:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -4927,13 +5015,22 @@ test_common:
         - stable/common/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/common/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_elasticsearch:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -4942,13 +5039,22 @@ test_elasticsearch:
         - stable/elasticsearch/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/elasticsearch/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_falco-reporter:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -4957,13 +5063,22 @@ test_falco-reporter:
         - stable/falco-reporter/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/falco-reporter/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_gitlab-proxy:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -4972,13 +5087,22 @@ test_gitlab-proxy:
         - stable/gitlab-proxy/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/gitlab-proxy/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_gitlab-steward:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -4987,13 +5111,22 @@ test_gitlab-steward:
         - stable/gitlab-steward/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/gitlab-steward/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_hbase:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5002,13 +5135,22 @@ test_hbase:
         - stable/hbase/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/hbase/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_helm-reaper:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5017,13 +5159,22 @@ test_helm-reaper:
         - stable/helm-reaper/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/helm-reaper/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_iceman:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5032,13 +5183,22 @@ test_iceman:
         - stable/iceman/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/iceman/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_k8s-image-list-to-s3:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5047,13 +5207,22 @@ test_k8s-image-list-to-s3:
         - stable/k8s-image-list-to-s3/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/k8s-image-list-to-s3/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_k8s-spot-termination-handler:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5062,13 +5231,22 @@ test_k8s-spot-termination-handler:
         - stable/k8s-spot-termination-handler/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/k8s-spot-termination-handler/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_kafka:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5077,13 +5255,22 @@ test_kafka:
         - stable/kafka/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/kafka/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_kafkaup-operator:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5092,13 +5279,22 @@ test_kafkaup-operator:
         - stable/kafkaup-operator/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/kafkaup-operator/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_kommoner-operator:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5107,13 +5303,22 @@ test_kommoner-operator:
         - stable/kommoner-operator/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/kommoner-operator/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_minio:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5122,13 +5327,22 @@ test_minio:
         - stable/minio/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/minio/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_notification-operator:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5137,13 +5351,22 @@ test_notification-operator:
         - stable/notification-operator/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/notification-operator/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_otel-demo:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5152,13 +5375,22 @@ test_otel-demo:
         - stable/otel-demo/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/otel-demo/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_petros-d-kubelet-stats-exporter:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5167,13 +5399,22 @@ test_petros-d-kubelet-stats-exporter:
         - stable/petros-d-kubelet-stats-exporter/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/petros-d-kubelet-stats-exporter/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_prometheus-elasticsearch-exporter:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5182,13 +5423,22 @@ test_prometheus-elasticsearch-exporter:
         - stable/prometheus-elasticsearch-exporter/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/prometheus-elasticsearch-exporter/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_pull-secret:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5197,13 +5447,22 @@ test_pull-secret:
         - stable/pull-secret/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/pull-secret/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_receiveramplifier:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5212,13 +5471,22 @@ test_receiveramplifier:
         - stable/receiveramplifier/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/receiveramplifier/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_redirector:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5227,13 +5495,22 @@ test_redirector:
         - stable/redirector/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/redirector/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_sandbox-operator:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5242,13 +5519,22 @@ test_sandbox-operator:
         - stable/sandbox-operator/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/sandbox-operator/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_sock-shop:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5257,13 +5543,22 @@ test_sock-shop:
         - stable/sock-shop/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/sock-shop/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_stackstate:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5272,13 +5567,22 @@ test_stackstate:
         - stable/stackstate/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/stackstate/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_stackstate-agent:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5287,13 +5591,22 @@ test_stackstate-agent:
         - stable/stackstate-agent/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/stackstate-agent/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_stackstate-k8s-agent:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5302,13 +5615,22 @@ test_stackstate-k8s-agent:
         - stable/stackstate-k8s-agent/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/stackstate-k8s-agent/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_stackstate-monitoring:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5317,13 +5639,22 @@ test_stackstate-monitoring:
         - stable/stackstate-monitoring/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/stackstate-monitoring/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_stackstate-standalone:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5332,13 +5663,22 @@ test_stackstate-standalone:
         - stable/stackstate-standalone/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/stackstate-standalone/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_stackstate-values:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5347,13 +5687,22 @@ test_stackstate-values:
         - stable/stackstate-values/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/stackstate-values/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_suse-observability:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5362,13 +5711,22 @@ test_suse-observability:
         - stable/suse-observability/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/suse-observability/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_suse-observability-agent:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5377,13 +5735,22 @@ test_suse-observability-agent:
         - stable/suse-observability-agent/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/suse-observability-agent/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_suse-observability-values:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5392,13 +5759,22 @@ test_suse-observability-values:
         - stable/suse-observability-values/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/suse-observability-values/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_tenant-cleanup-controller:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5407,13 +5783,22 @@ test_tenant-cleanup-controller:
         - stable/tenant-cleanup-controller/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/tenant-cleanup-controller/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_tenantmanagement:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5422,13 +5807,22 @@ test_tenantmanagement:
         - stable/tenantmanagement/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/tenantmanagement/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_tenantprovisioning:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5437,13 +5831,22 @@ test_tenantprovisioning:
         - stable/tenantprovisioning/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/tenantprovisioning/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_trafficmirror:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5452,13 +5855,22 @@ test_trafficmirror:
         - stable/trafficmirror/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/trafficmirror/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_victoria-metrics-single:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5467,13 +5879,22 @@ test_victoria-metrics-single:
         - stable/victoria-metrics-single/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/victoria-metrics-single/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 test_zookeeper:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
   rules:
     - changes:
@@ -5482,12 +5903,14 @@ test_zookeeper:
         - stable/zookeeper/test/*.go
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
+    - go mod download
     - go test ./stable/zookeeper/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
   variables:
     CGO_ENABLED: 0
+    GOPATH: /go
 update_aad_chart_version:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami

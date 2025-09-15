@@ -6,6 +6,8 @@ local repositories = variables.helm.repositories;
 local charts = variables.helm.charts;
 local public_charts = variables.helm.public_charts;
 
+local go_cache = { key: { files: ['go.mod', 'go.sum'] }, paths: ['/go/pkg/mod/'] };
+
 // resolving deps with deps, ct lint will not resolve that properly;
 local update_2nd_degree_chart_deps(chart) = ['yq e \'.dependencies[] | select (.repository == "file*").repository | sub("^file://","")\' stable/' + chart + '/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/' + chart + '/%'];
 
@@ -116,6 +118,7 @@ local test_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
   tags: ['sts-k8s-xl-runner'],
   script: [
+    'go mod download',
     'go test ./stable/' + chart + '/test/...',
   ],
   stage: 'test',
@@ -128,7 +131,9 @@ local test_chart_job(chart) = {
   ],
   variables: {
     CGO_ENABLED: 0,
+    GOPATH: '/go',
   },
+  cache: go_cache,
 };
 local test_chart_jobs = {
   ['test_%s' % chart]: (test_chart_job(chart))
@@ -143,6 +148,7 @@ local resource_usage = {
     script: update_2nd_degree_chart_deps('suse-observability') + [
       'helm dependencies build stable/suse-observability',
       'helm dependencies build stable/suse-observability-values',
+      'go mod download',
       'go test ./test/...',
     ],
     stage: 'test',
@@ -159,12 +165,14 @@ local resource_usage = {
     ],
     variables: {
       CGO_ENABLED: 0,
+      GOPATH: '/go',
     },
     artifacts: {
       paths: [
         'test/resource_usage.txt',
       ],
     },
+    cache: go_cache,
   },
 };
 
