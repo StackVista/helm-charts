@@ -123,25 +123,29 @@ func TestProcessAgentPodCorrelation(t *testing.T) {
 			///////////////////
 
 			fullRemoteCacheName := fmt.Sprintf("%s-%s", releaseName, remoteCacheName)
+
+			_, cacheDeploymentOk := resources.Deployments[fullRemoteCacheName]
+			_, cacheServiceOk := resources.Services[fullRemoteCacheName]
+			_, cacheClusterRoleBindingOk := resources.ClusterRoleBindings[fullRemoteCacheName]
+			_, cacheClusterRoleOk := resources.ClusterRoles[fullRemoteCacheName]
+			_, cacheServiceAccountOk := resources.ServiceAccounts[fullRemoteCacheName]
+
 			// we should have the remote kubernetes cache
 			if tt.setValues["nodeAgent.containers.processAgent.enabled"] == "true" &&
 				tt.setValues["processAgent.podCorrelation.enabled"] == "true" &&
 				tt.setValues["processAgent.podCorrelation.remoteCache"] == "true" {
-				// remote cache deployment
-				assert.Greater(t, len(resources.Deployments), 0)
-				// remote cache service
-				assert.Greater(t, len(resources.Services), 0)
-
-				_, ok := resources.Deployments[fullRemoteCacheName]
-				assert.True(t, ok)
-				_, ok = resources.Services[fullRemoteCacheName]
-				assert.True(t, ok)
+				assert.True(t, cacheDeploymentOk)
+				assert.True(t, cacheServiceOk)
+				assert.True(t, cacheClusterRoleBindingOk)
+				assert.True(t, cacheClusterRoleOk)
+				assert.True(t, cacheServiceAccountOk)
 			} else {
 				// in all other cases we shouldn't have the cache
-				_, ok := resources.Deployments[fullRemoteCacheName]
-				assert.False(t, ok)
-				_, ok = resources.Services[fullRemoteCacheName]
-				assert.False(t, ok)
+				assert.False(t, cacheDeploymentOk)
+				assert.False(t, cacheServiceOk)
+				assert.False(t, cacheClusterRoleBindingOk)
+				assert.False(t, cacheClusterRoleOk)
+				assert.False(t, cacheServiceAccountOk)
 			}
 
 			///////////////////
