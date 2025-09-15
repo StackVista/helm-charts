@@ -300,8 +300,6 @@ processAgent:
     partialCorrelation: false
     # processAgent.podCorrelation.attributes -- The attributes to be added to all exported metrics. If nothing is provided a default set will be used.
     attributes: []
-    # processAgent.podCorrelation.shortLivedConnectionsInterval -- if different from 0, all connections younger than this interval (in seconds) won't be tracked.
-    shortLivedConnectionsInterval: 0
 
     exporter:
       # processAgent.podCorrelation.exporter.type -- The type of the exporter to use for metrics. Possible values ("otlp", "stdout")

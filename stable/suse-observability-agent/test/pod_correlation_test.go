@@ -17,15 +17,14 @@ const (
 	remoteCacheName            = "remote-kube-cache"
 	remoteCacheServiceGRPCPort = "50055"
 
-	POD_CORRELATION_ENABLED                          = "STS_POD_CORRELATION_ENABLED"
-	POD_CORRELATION_REMOTE_CACHE_ADDR                = "STS_POD_CORRELATION_REMOTE_CACHE_ADDR"
-	POD_CORRELATION_PROTOCOL_METRICS                 = "STS_POD_CORRELATION_PROTOCOL_METRICS"
-	POD_CORRELATION_PARTIAL_CORRELATION              = "STS_POD_CORRELATION_PARTIAL_CORRELATION"
-	POD_CORRELATION_ATTRIBUTES_KEYS                  = "STS_POD_CORRELATION_ATTRIBUTES_KEYS"
-	POD_CORRELATION_SHORT_LIVED_CONNECTIONS_INTERVAL = "STS_POD_CORRELATION_SHORT_LIVED_CONNECTIONS_INTERVAL"
-	POD_CORRELATION_EXPORTER_TYPE                    = "STS_POD_CORRELATION_EXPORTER_TYPE"
-	POD_CORRELATION_EXPORTER_OTLP_ENDPOINT           = "STS_POD_CORRELATION_EXPORTER_OTLP_ENDPOINT"
-	POD_CORRELATION_EXPORTER_INTERVAL                = "STS_POD_CORRELATION_EXPORTER_INTERVAL"
+	POD_CORRELATION_ENABLED                = "STS_POD_CORRELATION_ENABLED"
+	POD_CORRELATION_REMOTE_CACHE_ADDR      = "STS_POD_CORRELATION_REMOTE_CACHE_ADDR"
+	POD_CORRELATION_PROTOCOL_METRICS       = "STS_POD_CORRELATION_PROTOCOL_METRICS"
+	POD_CORRELATION_PARTIAL_CORRELATION    = "STS_POD_CORRELATION_PARTIAL_CORRELATION"
+	POD_CORRELATION_ATTRIBUTES_KEYS        = "STS_POD_CORRELATION_ATTRIBUTES_KEYS"
+	POD_CORRELATION_EXPORTER_TYPE          = "STS_POD_CORRELATION_EXPORTER_TYPE"
+	POD_CORRELATION_EXPORTER_OTLP_ENDPOINT = "STS_POD_CORRELATION_EXPORTER_OTLP_ENDPOINT"
+	POD_CORRELATION_EXPORTER_INTERVAL      = "STS_POD_CORRELATION_EXPORTER_INTERVAL"
 )
 
 func TestProcessAgentPodCorrelation(t *testing.T) {
@@ -56,8 +55,7 @@ func TestProcessAgentPodCorrelation(t *testing.T) {
 				// Note: if we provide an empty sting these 2 variables won't be defined.
 				// POD_CORRELATION_EXPORTER_TYPE:          "",
 				// POD_CORRELATION_EXPORTER_OTLP_ENDPOINT: "",
-				POD_CORRELATION_EXPORTER_INTERVAL:                "30",
-				POD_CORRELATION_SHORT_LIVED_CONNECTIONS_INTERVAL: "0",
+				POD_CORRELATION_EXPORTER_INTERVAL: "30",
 				// if we don't define any attributes we should have an empty string, the variable won't be defined
 				// POD_CORRELATION_ATTRIBUTES_KEYS: "",
 			},
@@ -79,32 +77,29 @@ func TestProcessAgentPodCorrelation(t *testing.T) {
 				// Note: if we provide an empty sting these 2 variables won't be defined.
 				// POD_CORRELATION_EXPORTER_TYPE:          "",
 				// POD_CORRELATION_EXPORTER_OTLP_ENDPOINT: "",
-				POD_CORRELATION_EXPORTER_INTERVAL:                "30",
-				POD_CORRELATION_ATTRIBUTES_KEYS:                  "example0,example1",
-				POD_CORRELATION_SHORT_LIVED_CONNECTIONS_INTERVAL: "0",
+				POD_CORRELATION_EXPORTER_INTERVAL: "30",
+				POD_CORRELATION_ATTRIBUTES_KEYS:   "example0,example1",
 			},
 		},
 		{
 			name: "pod correlation enabled remote cache",
 			setValues: map[string]string{
-				"nodeAgent.containers.processAgent.enabled":                 "true",
-				"processAgent.podCorrelation.remoteCache":                   "true",
-				"processAgent.podCorrelation.enabled":                       "true",
-				"processAgent.podCorrelation.exporter.type":                 "otlp",
-				"processAgent.podCorrelation.exporter.endpoint":             "otel-collector:4317",
-				"processAgent.podCorrelation.attributes[0]":                 "example0",
-				"processAgent.podCorrelation.shortLivedConnectionsInterval": "12",
+				"nodeAgent.containers.processAgent.enabled":     "true",
+				"processAgent.podCorrelation.remoteCache":       "true",
+				"processAgent.podCorrelation.enabled":           "true",
+				"processAgent.podCorrelation.exporter.type":     "otlp",
+				"processAgent.podCorrelation.exporter.endpoint": "otel-collector:4317",
+				"processAgent.podCorrelation.attributes[0]":     "example0",
 			},
 			expectEnv: map[string]string{
-				POD_CORRELATION_ENABLED:                          "true",
-				POD_CORRELATION_PROTOCOL_METRICS:                 "false",
-				POD_CORRELATION_PARTIAL_CORRELATION:              "false",
-				POD_CORRELATION_REMOTE_CACHE_ADDR:                fmt.Sprintf("%s-%s:%s", releaseName, remoteCacheName, remoteCacheServiceGRPCPort),
-				POD_CORRELATION_EXPORTER_TYPE:                    "otlp",
-				POD_CORRELATION_EXPORTER_OTLP_ENDPOINT:           "otel-collector:4317",
-				POD_CORRELATION_EXPORTER_INTERVAL:                "30",
-				POD_CORRELATION_ATTRIBUTES_KEYS:                  "example0",
-				POD_CORRELATION_SHORT_LIVED_CONNECTIONS_INTERVAL: "12",
+				POD_CORRELATION_ENABLED:                "true",
+				POD_CORRELATION_PROTOCOL_METRICS:       "false",
+				POD_CORRELATION_PARTIAL_CORRELATION:    "false",
+				POD_CORRELATION_REMOTE_CACHE_ADDR:      fmt.Sprintf("%s-%s:%s", releaseName, remoteCacheName, remoteCacheServiceGRPCPort),
+				POD_CORRELATION_EXPORTER_TYPE:          "otlp",
+				POD_CORRELATION_EXPORTER_OTLP_ENDPOINT: "otel-collector:4317",
+				POD_CORRELATION_EXPORTER_INTERVAL:      "30",
+				POD_CORRELATION_ATTRIBUTES_KEYS:        "example0",
 			},
 		},
 	}

@@ -278,7 +278,6 @@ stackstate/stackstate-k8s-agent
 | processAgent.podCorrelation.partialCorrelation | bool | `false` | Enable / disable partial pod correlation. if false the agent will export only pod<->pod metrics. Both extremities of the connection must be pods. |
 | processAgent.podCorrelation.protocolMetrics | bool | `false` | Enable / disable exporting protocol metrics. If false the agent will export only metrics for network connections. |
 | processAgent.podCorrelation.remoteCache | bool | `false` | When true, the chart will deploy a remote kube cache service and populate the process-agent environment with the service address (serviceName.namespace:grpcPort). Set to `false` to use a local informer inside the process-agent and avoid deploying the remote cache. |
-| processAgent.podCorrelation.shortLivedConnectionsInterval | int | `0` | if different from 0, all connections younger than this interval (in seconds) won't be tracked. |
 | processAgent.softMemoryLimit.goMemLimit | string | `"340MiB"` | Soft-limit for golang heap allocation, for sanity, must be around 85% of nodeAgent.containers.processAgent.resources.limits.cpu. |
 | processAgent.softMemoryLimit.httpObservationsBufferSize | int | `40000` | Sets a maximum for the number of http observations to keep in memory between check runs, to use 40k requires around ~400Mib of memory. |
 | processAgent.softMemoryLimit.httpStatsBufferSize | int | `40000` | Sets a maximum for the number of http stats to keep in memory between check runs, to use 40k requires around ~400Mib of memory. |

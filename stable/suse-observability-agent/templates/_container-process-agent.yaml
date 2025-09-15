@@ -70,8 +70,6 @@
     {{- else }}
       value: ""
     {{- end }}
-    - name: STS_POD_CORRELATION_SHORT_LIVED_CONNECTIONS_INTERVAL
-      value: {{ .Values.processAgent.podCorrelation.shortLivedConnectionsInterval | quote }}
     - name: STS_POD_CORRELATION_EXPORTER_TYPE
       value: {{ .Values.processAgent.podCorrelation.exporter.type | quote }}
     - name: STS_POD_CORRELATION_EXPORTER_OTLP_ENDPOINT
