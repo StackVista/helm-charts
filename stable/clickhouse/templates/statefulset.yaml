@@ -402,14 +402,8 @@ spec:
           {{- if $.Values.persistence.annotations }}
           {{- include "common.tplvalues.render" (dict "value" $.Values.persistence.annotations "context" $) | nindent 10 }}
           {{- end }}
-          {{- if $.Values.commonAnnotations }}
-          {{- include "common.tplvalues.render" (dict "value" $.Values.commonAnnotations "context" $) | nindent 10 }}
-          {{- end }}
         labels: {{- include "common.labels.matchLabels" $ | nindent 10 }}
           app.kubernetes.io/component: clickhouse
-          {{- if $.Values.commonLabels }}
-          {{- include "common.tplvalues.render" (dict "value" $.Values.commonLabels "context" $) | nindent 10 }}
-          {{- end }}
           {{- if $.Values.persistence.labels }}
           {{- include "common.tplvalues.render" (dict "value" $.Values.persistence.labels "context" $) | nindent 10 }}
           {{- end }}

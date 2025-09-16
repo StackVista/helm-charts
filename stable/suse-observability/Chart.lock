@@ -25,7 +25,7 @@ dependencies:
   version: 1.0.2
 - name: zookeeper
   repository: file://../zookeeper/
-  version: 8.1.2-suse-observability.1
+  version: 8.1.2-suse-observability.2
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
   version: 0.8.53-stackstate.24
@@ -34,12 +34,12 @@ dependencies:
   version: 0.8.53-stackstate.24
 - name: clickhouse
   repository: file://../clickhouse/
-  version: 3.6.9-suse-observability.2
+  version: 3.6.9-suse-observability.3
 - name: opentelemetry-collector
   repository: file://../opentelemetry-collector
   version: 0.108.0-stackstate.1
 - name: kubernetes-rbac-agent
   repository: https://helm.stackstate.io
   version: 0.0.17
-digest: sha256:d4327d08f1e1dcdcd8634527e0e3f4c1c5da039d71e90108cf4a16506eeabcdb
-generated: "2025-09-15T16:08:33.484163787+02:00"
+digest: sha256:b3513641c3032f3214d5c4355cf1d2eeec0586bd939755f50c10232d0baa3a09
+generated: "2025-09-16T08:57:18.946159+02:00"

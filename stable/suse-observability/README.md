@@ -10,7 +10,7 @@ Current chart version is `2.5.1-pre.15`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.2 |
+| file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.3 |
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.11.4-stackstate.8 |
 | file://../hbase/ | hbase | 0.2.74 |
@@ -21,7 +21,7 @@ Current chart version is `2.5.1-pre.15`
 | file://../pull-secret/ | pull-secret | * |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.24 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.24 |
-| file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.1 |
+| file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.2 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.168 |
 | https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.17 |
 
