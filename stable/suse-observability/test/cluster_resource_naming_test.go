@@ -66,10 +66,10 @@ func TestClusterRoleNameWhenNamespaceReleaseNameAndChartNameAllDifferent(t *test
 	require.Equal(t, 3, len(resources.ClusterRoleBindings))
 	require.Contains(t, resources.ClusterRoleBindings, "devver-stacky-suse-observability-authentication")
 	require.Contains(t, resources.ClusterRoleBindings, "devver-stacky-suse-observability-authorization")
-	require.Contains(t, resources.ClusterRoleBindings, "devver-suse-observability-rbac-agent") // from rbac-agent chart
+	require.Contains(t, resources.ClusterRoleBindings, "devver-stacky-rbac-agent") // from rbac-agent chart
 	require.Equal(t, 2, len(resources.ClusterRoles))
 	require.Contains(t, resources.ClusterRoles, "devver-stacky-suse-observability-authorization")
-	require.Contains(t, resources.ClusterRoles, "devver-suse-observability-rbac-agent") // from rbac-agent chart
+	require.Contains(t, resources.ClusterRoles, "devver-stacky-rbac-agent") // from rbac-agent chart
 }
 
 func TestResourcesNamesLength(t *testing.T) {
