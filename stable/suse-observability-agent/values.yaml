@@ -309,6 +309,19 @@ processAgent:
       # processAgent.podCorrelation.exporter.interval -- The interval at which the exporter will send metrics (in seconds).
       interval: 30
 
+remoteKubeCache:
+  # remoteKubeCache.nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
+
+  # remoteKubeCache.tolerations -- Toleration labels for pod assignment.
+  tolerations: []
+
+  # remoteKubeCache.affinity -- Affinity settings for pod assignment.
+  affinity: {}
+
+  # remoteKubeCache.resources -- Resource requests and limits for the remote kube cache container.
+  resources: {} # Like upstream, we do not set defaults here, as the requirements depend on the size of the cluster. https://github.com/open-telemetry/opentelemetry-helm-charts/pull/1704
+
 clusterAgent:
   collection:
     # clusterAgent.collection.kubernetesEvents -- Enable / disable the cluster agent events collection.

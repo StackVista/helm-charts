@@ -281,6 +281,10 @@ stackstate/stackstate-k8s-agent
 | processAgent.softMemoryLimit.goMemLimit | string | `"340MiB"` | Soft-limit for golang heap allocation, for sanity, must be around 85% of nodeAgent.containers.processAgent.resources.limits.cpu. |
 | processAgent.softMemoryLimit.httpObservationsBufferSize | int | `40000` | Sets a maximum for the number of http observations to keep in memory between check runs, to use 40k requires around ~400Mib of memory. |
 | processAgent.softMemoryLimit.httpStatsBufferSize | int | `40000` | Sets a maximum for the number of http stats to keep in memory between check runs, to use 40k requires around ~400Mib of memory. |
+| remoteKubeCache.affinity | object | `{}` | Affinity settings for pod assignment. |
+| remoteKubeCache.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| remoteKubeCache.resources | object | `{}` | Resource requests and limits for the remote kube cache container. |
+| remoteKubeCache.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.apiKey | string | `nil` | **PROVIDE YOUR API KEY HERE** API key to be used by the agent. |
 | stackstate.cluster.authToken | string | `""` | Provide a token to enable secure communication between the agent and the cluster agent. |
 | stackstate.cluster.name | string | `nil` | **PROVIDE KUBERNETES CLUSTER NAME HERE** Name of the Kubernetes cluster where the agent will be installed. |
