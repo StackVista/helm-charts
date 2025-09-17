@@ -283,7 +283,10 @@ stackstate/stackstate-k8s-agent
 | processAgent.softMemoryLimit.httpStatsBufferSize | int | `40000` | Sets a maximum for the number of http stats to keep in memory between check runs, to use 40k requires around ~400Mib of memory. |
 | remoteKubeCache.affinity | object | `{}` | Affinity settings for pod assignment. |
 | remoteKubeCache.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| remoteKubeCache.resources | object | `{}` | Resource requests and limits for the remote kube cache container. |
+| remoteKubeCache.resources.limits.cpu | string | `"200m"` | CPU resource limits. |
+| remoteKubeCache.resources.limits.memory | string | `"400Mi"` | Memory resource limits. |
+| remoteKubeCache.resources.requests.cpu | string | `"100m"` | CPU resource requests. |
+| remoteKubeCache.resources.requests.memory | string | `"200Mi"` | Memory resource requests. |
 | remoteKubeCache.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.apiKey | string | `nil` | **PROVIDE YOUR API KEY HERE** API key to be used by the agent. |
 | stackstate.cluster.authToken | string | `""` | Provide a token to enable secure communication between the agent and the cluster agent. |

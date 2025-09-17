@@ -319,8 +319,17 @@ remoteKubeCache:
   # remoteKubeCache.affinity -- Affinity settings for pod assignment.
   affinity: {}
 
-  # remoteKubeCache.resources -- Resource requests and limits for the remote kube cache container.
-  resources: {} # Like upstream, we do not set defaults here, as the requirements depend on the size of the cluster. https://github.com/open-telemetry/opentelemetry-helm-charts/pull/1704
+  resources:
+    limits:
+      # remoteKubeCache.resources.limits.cpu -- CPU resource limits.
+      cpu: "200m"
+      # remoteKubeCache.resources.limits.memory -- Memory resource limits.
+      memory: "400Mi"
+    requests:
+      # remoteKubeCache.resources.requests.cpu -- CPU resource requests.
+      cpu: "100m"
+      # remoteKubeCache.resources.requests.memory -- Memory resource requests.
+      memory: "200Mi"
 
 clusterAgent:
   collection:
