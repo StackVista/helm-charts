@@ -28,7 +28,7 @@ spec:
       serviceAccountName: {{ .Release.Name }}-remote-kube-cache
       containers:
         - name: remote-kube-cache
-          image: docker.io/andreater/obi-k8s-cache:75fc78604a75baf80f95fac65c36590308da8e04 # todo!: we need to push this image somewhere.
+          image: quay.io/stackstate/process-agent-remote-kube-cache:75fc7860
           imagePullPolicy: Always
           env:
             # We can set all the config through environment variables https://github.com/open-telemetry/opentelemetry-ebpf-instrumentation/blob/2d5ea0eafeeebeaed7b4c21a997c5dbea2abe439/pkg/kubecache/config.go#L19
