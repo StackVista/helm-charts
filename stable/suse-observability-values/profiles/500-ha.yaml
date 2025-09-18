@@ -222,6 +222,12 @@ stackstate:
           memory: "2Gi"
     ui:
       replicaCount: 2
+zookeeper:
+  resources:
+    requests:
+      cpu: 200m
+    limits:
+      cpu: 500m
 victoria-metrics-0:
   server:
     resources:

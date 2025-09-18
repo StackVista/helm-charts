@@ -261,13 +261,14 @@ stackstate:
         limits:
           cpu: 500m
 zookeeper:
+  heapSize: 512
   resources:
     requests:
       cpu: 1000m
-      memory: 1024Mi
+      memory: 768Mi
     limits:
       cpu: 1500m
-      memory: 1024Mi
+      memory: 768Mi
 minio:
   resources:
     requests:

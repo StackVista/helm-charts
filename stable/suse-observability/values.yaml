@@ -2111,7 +2111,7 @@ zookeeper:
   # zookeeper.externalServers -- If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead.
   externalServers: ""
   # zookeeper.heapSize -- HeapSize Size (in MB) for the Java Heap options (Xmx and Xms)
-  heapSize: 512
+  heapSize: 400
   # zookeeper.fourlwCommandsWhitelist -- Zookeeper four-letter-word (FLW) commands that are enabled.
   fourlwCommandsWhitelist: "mntr, ruok, stat, srvr"
   # zookeeper.autopurge -- configurations of ZooKeeper auto purge, it deletes old snapshot and log files. ClickHouse creates a lot of operation and it should be purged to avoud out of disk space.
