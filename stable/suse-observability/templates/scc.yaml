@@ -34,4 +34,6 @@ allowHostPorts: false
 allowPrivilegeEscalation: true
 allowPrivilegedContainer: false
 readOnlyRootFilesystem: false
+seccompProfiles:
+  - runtime/default
 {{- end }}
