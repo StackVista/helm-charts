@@ -698,8 +698,6 @@ httpHeaderInjectorWebhook:
       # certificatePrehook.image.tag
       tag: "1.7.0"
 
-
-
 ########################
 # Rbac Agent variables #
 ########################
