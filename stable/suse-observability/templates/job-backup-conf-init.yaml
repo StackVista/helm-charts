@@ -39,10 +39,10 @@ spec:
           resources:
             limits:
               cpu: 10m
-              memory: 10Mi
+              memory: 100Mi
             requests:
               cpu: 10m
-              memory: 10Mi
+              memory: 100Mi
           {{- end }}
           volumeMounts:
             - name: settings-backup-data
