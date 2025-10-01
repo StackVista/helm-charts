@@ -1,3 +1,23 @@
+{{/*
+Validate a URL. This helper uses the built-in 'required' function
+to ensure the value exists and then checks if the URL has a scheme (e.g., "http://").
+
+Usage:
+{{ include "mychart.validate.url" (dict "value" .Values.some.url "errorMessage" "A custom error message for when the value is missing.") }}
+
+Parameters:
+  . (dict): A dictionary containing:
+    - "value": The URL string to validate.
+    - "errorMessage": The error message to display if "value" is empty (used by 'required').
+*/}}
+{{- define "sts.values.validateUrl" -}}
+  {{- $url := required .errorMessage .value -}}
+  {{- $parsedUrl := urlParse $url -}}
+  {{- if not $parsedUrl.scheme -}}
+    {{- fail (printf "Invalid URL format for '%s'. The URL must include a scheme (e.g., 'http://' or 'https://')." $url) -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "sts.values.receiverKey" -}}
 {{- if .Values.receiverApiKey -}}
 {{ .Values.receiverApiKey }}

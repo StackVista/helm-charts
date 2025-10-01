@@ -1,3 +1,5 @@
+{{- include "sts.values.validateUrl" (dict "value" .Values.baseUrl "errorMessage" "Please provide your SUSE Observability base URL in 'values.baseUrl'") -}}
+
 {{- if .Values.baseConfig.generate }}
 global:
 {{- if .Values.imageRegistry }}
@@ -19,7 +21,7 @@ pull-secret:
 {{- end }}
 
 stackstate:
-  baseUrl: {{ .Values.baseUrl | required "Please provide your SUSE Observability base URL in 'baseUrl'" | quote }}
+  baseUrl: {{ .Values.baseUrl | quote }}
 {{- if .Values.rancherUrl }}
   allowedOrigins:
     - {{ .Values.rancherUrl }}

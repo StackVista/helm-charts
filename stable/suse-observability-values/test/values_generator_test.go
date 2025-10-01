@@ -252,6 +252,15 @@ func TestGenerateValuesForAffinity(t *testing.T) {
 	}
 }
 
+func TestGenerateValuesWithInvalidBaseUrl(t *testing.T) {
+	_, err := helmtestutil.RenderHelmTemplateOpts(t, "stackstate-values", &helm.Options{
+		ValuesFiles: []string{"values/base_url_schema.yaml"},
+	})
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "Invalid URL format")
+	assert.Contains(t, err.Error(), "must include a scheme")
+}
+
 func renderAsYaml(t *testing.T, values []string) map[string]interface{} {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "stackstate-values", &helm.Options{
 		ValuesFiles: values,
