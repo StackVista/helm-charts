@@ -19,8 +19,8 @@ Current chart version is `2.6.1-pre.8`
 | file://../minio/ | minio | 8.0.10-stackstate.13 |
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.4 |
 | file://../pull-secret/ | pull-secret | * |
-| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.24 |
-| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.24 |
+| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.25 |
+| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.25 |
 | file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.2 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.168 |
 | https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.20 |
