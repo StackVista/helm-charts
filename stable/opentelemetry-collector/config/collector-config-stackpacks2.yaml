@@ -9,9 +9,6 @@ receivers:
         auth:
           authenticator: service_token_auth
         endpoint: ${env:MY_POD_IP}:4318
-  zipkin: null
-  prometheus: null
-  jaeger: null
 connectors:
   stsservicegraph:
     latency_histogram_buckets: [2ms, 4ms, 6ms, 8ms, 10ms, 50ms, 100ms, 200ms, 400ms, 800ms, 1s, 1400ms, 2s, 5s, 10s, 15s, 30s]
@@ -76,7 +73,7 @@ exporters:
     endpoint: 'http://suse-observability-vmagent:8429/api/v1/write'
     resource_to_telemetry_conversion:
       enabled: true
-  stskafkaexporter:
+  sts_kafka_exporter:
     brokers:
       - "suse-observability-kafka-headless:9092"
     topic: "sts-topology-stream"
@@ -108,7 +105,7 @@ extensions:
   health_check:
     endpoint: ${env:MY_POD_IP}:13133
   memory_ballast: {}
-  stssettingsextension:
+  sts_settings_provider:
     kafka:
       brokers:
         - "suse-observability-kafka-headless:9092"
@@ -170,4 +167,4 @@ service:
       receivers:
         - tracetotopo
       exporters:
-        - stskafkaexporter
+        - sts_kafka_exporter
