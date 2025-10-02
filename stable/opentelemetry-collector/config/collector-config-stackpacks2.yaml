@@ -73,6 +73,8 @@ exporters:
     endpoint: 'http://suse-observability-vmagent:8429/api/v1/write'
     resource_to_telemetry_conversion:
       enabled: true
+  ststopology:
+    endpoint: "${env:INTAKE_URL}"
   sts_kafka_exporter:
     brokers:
       - "suse-observability-kafka-headless:9092"
