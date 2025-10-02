@@ -1971,9 +1971,6 @@ kafka:
     # When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order
     # for the kafkaup operator to upgrade the inter broker protocol version
     tag: 3.6.2-aec2a402
-  livenessProbe:
-    # kafka.livenessProbe.initialDelaySeconds -- Delay before readiness probe is initiated.
-    initialDelaySeconds: 240
   # kafka.logRetentionHours -- The minimum age of a log file to be eligible for deletion due to age.
   logRetentionHours: 24
   service:

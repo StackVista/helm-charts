@@ -14,7 +14,7 @@ Current chart version is `2.6.1-pre.1`
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.11.4-stackstate.8 |
 | file://../hbase/ | hbase | 0.2.75 |
-| file://../kafka/ | kafka | 19.1.3-suse-observability.2 |
+| file://../kafka/ | kafka | 19.1.3-suse-observability.3 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.13 |
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.1 |
@@ -275,7 +275,6 @@ stackstate/stackstate
 | kafka.image.repository | string | `"stackstate/kafka"` | Kafka image repository |
 | kafka.image.tag | string | `"3.6.2-aec2a402"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order for the kafkaup operator to upgrade the inter broker protocol version |
 | kafka.initContainers | list | `[{"args":["-c","while [ -z \"${KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION}\" ]; do echo \"KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION should be set by operator\"; sleep 1; done"],"command":["/bin/bash"],"image":"{{ include \"kafka.image\" . }}","imagePullPolicy":"","name":"check-inter-broker-protocol-version","resources":{"limits":{},"requests":{}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}}]` | required to make the kafka versionup operator work |
-| kafka.livenessProbe.initialDelaySeconds | int | `240` | Delay before readiness probe is initiated. |
 | kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
 | kafka.metrics.jmx.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
 | kafka.metrics.jmx.containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |

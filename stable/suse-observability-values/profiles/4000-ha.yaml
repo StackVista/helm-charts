@@ -56,6 +56,8 @@ hbase:
       limits:
         cpu: 6000m
 kafka:
+  # numRecoveryThreadsPerDataDir has to be 2 times of cpu requests
+  numRecoveryThreadsPerDataDir: 8
   metrics:
     jmx:
       resources:

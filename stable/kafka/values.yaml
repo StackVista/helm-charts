@@ -481,11 +481,11 @@ readinessProbe:
 ## @param startupProbe.successThreshold Success threshold for startupProbe
 ##
 startupProbe:
-  enabled: false
-  initialDelaySeconds: 30
-  periodSeconds: 10
+  enabled: true
+  initialDelaySeconds: 120
+  periodSeconds: 30
   timeoutSeconds: 1
-  failureThreshold: 15
+  failureThreshold: 18
   successThreshold: 1
 ## @param customLivenessProbe Custom livenessProbe that overrides the default one
 ##
@@ -598,7 +598,7 @@ topologySpreadConstraints: []
 ## @param terminationGracePeriodSeconds Seconds the pod needs to gracefully terminate
 ## ref: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#hook-handler-execution
 ##
-terminationGracePeriodSeconds: ""
+terminationGracePeriodSeconds: 300
 ## @param podManagementPolicy StatefulSet controller supports relax its ordering guarantees while preserving its uniqueness and identity guarantees. There are two valid pod management policies: OrderedReady and Parallel
 ## ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#pod-management-policy
 ##
