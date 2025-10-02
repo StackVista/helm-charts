@@ -33,6 +33,9 @@ backup:
     restore:
       # backup.elasticsearch.restore.enabled -- Enable ElasticSearch snapshot restore functionality (if `backup.enabled` is set to `true`).
       enabled: true
+      # backup.elasticsearch.restore.scaleDownLabels -- Labels used to identify deployments that should be scaled down during Elasticsearch restore procedure.
+      scaleDownLabels:
+        observability.suse.com/scalable-during-es-restore: "true"
     scheduled:
       # backup.elasticsearch.scheduled.enabled -- Enable scheduled ElasticSearch snapshots (if `backup.enabled` is set to `true`).
       enabled: true

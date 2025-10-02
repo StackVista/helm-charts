@@ -109,6 +109,9 @@ metadata:
     app.kubernetes.io/component: receiver{{ template "stackstate.receiver.name.postfix" . }}
     app.kubernetes.io/component-group: receiver
     {{- include "suse-observability.labels.global" . | nindent 4 }}
+    {{- if or (not .ReceiverType) (eq .ReceiverType "base") (eq .ReceiverType "logs") }}
+    {{- include "stackstate.backup.elasticsearch.restore.scaleDownLabels" . | nindent 4 }}
+    {{- end }}
 spec:
   replicas: {{ .TypeConfig.replicaCount }}
   selector:

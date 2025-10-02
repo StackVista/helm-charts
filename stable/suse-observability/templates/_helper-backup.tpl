@@ -143,3 +143,9 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
     secretName: {{ include "stackstate.minio.keys" . }}
 {{- end -}}
 {{- end -}}
+
+{{- define "stackstate.backup.elasticsearch.restore.scaleDownLabels" -}}
+{{- range $key, $value := .Values.backup.elasticsearch.restore.scaleDownLabels }}
+{{ $key }}: {{ $value | quote }}
+{{- end }}
+{{- end -}}

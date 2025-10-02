@@ -18,6 +18,7 @@ metadata:
   labels:
     app.kubernetes.io/component: e2es
     {{- include "suse-observability.labels.global" . | nindent 4 }}
+    {{- include "stackstate.backup.elasticsearch.restore.scaleDownLabels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.stackstate.components.e2es.replicaCount }}
   selector:

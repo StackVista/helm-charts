@@ -1,0 +1,13 @@
+stackstate:
+  components:
+    receiver:
+      split:
+        enabled: true
+  baseUrl: "http://localhost"
+  license:
+    key: "api01"
+  authentication:
+    adminPassword: 098f6bcd4621d373cade4e832627b4f6
+  admin:
+    authentication:
+      password: 5a4961367d65d570e20d2d69156581b4
