@@ -100,3 +100,24 @@ func TestOpenTelemetryCollectorStatefulSetMode(t *testing.T) {
 	assert.Len(t, resources.Deployments, 0, "Should not have Deployments in StatefulSet mode")
 	assert.Len(t, resources.DaemonSets, 0, "Should not have DaemonSets in StatefulSet mode")
 }
+
+func TestOpenTelemetryCollectorConfigSelection(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, releaseName, "values/default.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	defaultCollectorConfig := resources.ConfigMaps["otel-opentelemetry-collector"].Data["relay"]
+
+	assert.NotContains(t, defaultCollectorConfig, "stssettingsextension")
+	assert.NotContains(t, defaultCollectorConfig, "tracetotopo")
+	assert.NotContains(t, defaultCollectorConfig, "stskafkaexporter")
+
+	// with the global.features.enableStackPacks2 set to true
+	output = helmtestutil.RenderHelmTemplate(t, releaseName, "values/enable-stackpacks2.yaml")
+	resources = helmtestutil.NewKubernetesResources(t, output)
+
+	stackPacks2CollectorConfig := resources.ConfigMaps["otel-opentelemetry-collector"].Data["relay"]
+
+	assert.Contains(t, stackPacks2CollectorConfig, "stssettingsextension")
+	assert.Contains(t, stackPacks2CollectorConfig, "tracetotopo")
+	assert.Contains(t, stackPacks2CollectorConfig, "stskafkaexporter")
+}

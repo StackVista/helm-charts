@@ -1,6 +1,6 @@
 # opentelemetry-collector
 
-![Version: 0.108.0-stackstate.1](https://img.shields.io/badge/Version-0.108.0--stackstate.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.111.0](https://img.shields.io/badge/AppVersion-0.111.0-informational?style=flat-square)
+![Version: 0.108.0-stackstate.2](https://img.shields.io/badge/Version-0.108.0--stackstate.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.111.0](https://img.shields.io/badge/AppVersion-0.111.0-informational?style=flat-square)
 
 OpenTelemetry Collector Helm chart for Kubernetes
 
@@ -81,6 +81,8 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | extraVolumes | list | `[]` |  |
 | fullnameOverride | string | `""` |  |
 | global.commonLabels | object | `{}` |  |
+| global.features | object | `{"enableStackPacks2":false}` | Feature switches for SUSE Observability. |
+| global.features.enableStackPacks2 | bool | `false` | Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec. |
 | hostAliases | list | `[]` |  |
 | hostNetwork | bool | `false` |  |
 | image.digest | string | `""` |  |

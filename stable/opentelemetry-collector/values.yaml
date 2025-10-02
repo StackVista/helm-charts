@@ -4,6 +4,10 @@
 global:
   # Labels to apply to all resources
   commonLabels: {}
+  # global.features -- Feature switches for SUSE Observability.
+  features:
+    # global.features.enableStackPacks2 -- Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec.
+    enableStackPacks2: false
 
 # Declare variables to be passed into your templates.
 nameOverride: ""

@@ -2,14 +2,18 @@
 # StackState values #
 #####################
 global:
-  # global.receiverApiKey -- API key to be used by the Receiver. This setting is deprectaed in favor of stackstate.apiKey.key
+  # global.receiverApiKey -- API key to be used by the Receiver. This setting is deprecated in favor of stackstate.apiKey.key
   receiverApiKey: ""
   # global.imagePullSecrets -- List of image pull secret names to be used by all images across all charts.
   imagePullSecrets: []
-  # global.storageClass -- StorageClass for all PVCs created by the chart. Can be overriden per PVC.
+  # global.storageClass -- StorageClass for all PVCs created by the chart. Can be overridden per PVC.
   storageClass:
   # global.commonLabels -- Labels that will be added to all Deployments, StatefulSets, CronJobs, Jobs and their pods
   commonLabels: {}
+  # global.features -- Feature switches for SUSE Observability.
+  features:
+    # global.features.enableStackPacks2 -- Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec.
+    enableStackPacks2: false
 # commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
 commonLabels: {}
 backup:
@@ -32,7 +36,7 @@ backup:
     scheduled:
       # backup.elasticsearch.scheduled.enabled -- Enable scheduled ElasticSearch snapshots (if `backup.enabled` is set to `true`).
       enabled: true
-      # backup.elasticsearch.scheduled.schedule -- Cron schedule for automatic ElasticSearch snaphosts in [ElastichSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html).
+      # backup.elasticsearch.scheduled.schedule -- Cron schedule for automatic ElasticSearch snaphosts in [ElasticSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html).
       schedule: '0 0 3 * * ?'
       # backup.elasticsearch.scheduled.indices -- ElasticSearch indices to snapshot in [JSON array format](https://www.w3schools.com/js/js_json_arrays.asp).
       indices: "sts*"
@@ -208,10 +212,10 @@ stackstate:
         registry: quay.io
         # stackstate.components.all.image.repositorySuffix - String to append to repositories for StackState components
         repositorySuffix: ""
-        # stackstate.components.all.image.pullPolicy -- The default pullPolicy used for all stateless components of StackState; invividual service `pullPolicy`s can be overriden (see below).
+        # stackstate.components.all.image.pullPolicy -- The default pullPolicy used for all stateless components of StackState; individual service `pullPolicy`s can be overridden (see below).
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
-        # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; invividual service `tag`s can be overriden (see below).
+        # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; individual service `tag`s can be overridden (see below).
         tag: 7.0.0-snapshot.20250930124842-master-8624c83
       # stackstate.components.all.podAnnotations -- Extra annotations
       podAnnotations: {}
@@ -490,7 +494,7 @@ stackstate:
             javaHeapMemoryFraction:
           # stackstate.components.correlate.split.connection.replicaCount -- Number of `connection correlate` replicas.
           replicaCount: 1
-          # stackstate.components.correlate.split.connection.nodeSelector -- Additional dode labels for pod assignment.
+          # stackstate.components.correlate.split.connection.nodeSelector -- Additional node labels for pod assignment.
           nodeSelector: {}
           # stackstate.components.correlate.split.connection.tolerations -- Additional toleration labels for pod assignment.
           tolerations: []
@@ -522,7 +526,7 @@ stackstate:
             javaHeapMemoryFraction:
           # stackstate.components.correlate.split.httpTracing.replicaCount -- Number of `httpTracing correlate` replicas.
           replicaCount: 1
-          # stackstate.components.correlate.split.httpTracing.nodeSelector -- Additional dode labels for pod assignment.
+          # stackstate.components.correlate.split.httpTracing.nodeSelector -- Additional node labels for pod assignment.
           nodeSelector: {}
           # stackstate.components.correlate.split.httpTracing.tolerations -- Additional toleration labels for pod assignment.
           tolerations: []
@@ -554,7 +558,7 @@ stackstate:
             javaHeapMemoryFraction:
           # stackstate.components.correlate.split.aggregator.replicaCount -- Number of `aggregator correlate` replicas.
           replicaCount: 1
-          # stackstate.components.correlate.split.aggregator.nodeSelector -- Additional dode labels for pod assignment.
+          # stackstate.components.correlate.split.aggregator.nodeSelector -- Additional node labels for pod assignment.
           nodeSelector: {}
           # stackstate.components.correlate.split.aggregator.tolerations -- Additional toleration labels for pod assignment.
           tolerations: []
@@ -914,7 +918,7 @@ stackstate:
             javaHeapMemoryFraction:
           # stackstate.components.receiver.split.base.replicaCount -- Number of `base receiver` replicas.
           replicaCount: 1
-          # stackstate.components.receiver.split.base.nodeSelector -- Additional dode labels for pod assignment.
+          # stackstate.components.receiver.split.base.nodeSelector -- Additional node labels for pod assignment.
           nodeSelector: {}
           # stackstate.components.receiver.split.base.tolerations -- Additional toleration labels for pod assignment.
           tolerations: []
@@ -943,7 +947,7 @@ stackstate:
             javaHeapMemoryFraction:
           # stackstate.components.receiver.split.processAgent.replicaCount -- Number of `processAgent receiver` replicas.
           replicaCount: 1
-          # stackstate.components.receiver.split.processAgent.nodeSelector -- Additional dode labels for pod assignment.
+          # stackstate.components.receiver.split.processAgent.nodeSelector -- Additional node labels for pod assignment.
           nodeSelector: {}
           # stackstate.components.receiver.split.processAgent.tolerations -- Additional toleration labels for pod assignment.
           tolerations: []
@@ -972,7 +976,7 @@ stackstate:
             javaHeapMemoryFraction:
           # stackstate.components.receiver.split.logs.replicaCount -- Number of `logs receiver` replicas.
           replicaCount: 1
-          # stackstate.components.receiver.split.logs.nodeSelector -- Additional dode labels for pod assignment.
+          # stackstate.components.receiver.split.logs.nodeSelector -- Additional node labels for pod assignment.
           nodeSelector: {}
           # stackstate.components.receiver.split.logs.tolerations -- Additional toleration labels for pod assignment.
           tolerations: []
