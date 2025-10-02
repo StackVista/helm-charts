@@ -87,8 +87,8 @@ all:
   image:
     # all.image.registry -- The image registry to use.
     registry:
-  hardening:
-    # all.hardening.enabled -- An indication of whether the containers will be evaluated for hardening at runtime
+  fullPrivilegesMode:
+    # all.fullPrivilegesMode.enabled -- All agent pods run in full privileges mode (mainly used for debugging).
     enabled: false
 
 nodeAgent:

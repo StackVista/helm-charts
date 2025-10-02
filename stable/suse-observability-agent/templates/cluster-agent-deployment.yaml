@@ -37,19 +37,10 @@ spec:
       priorityClassName: {{ .Values.clusterAgent.priorityClassName }}
       {{- end }}
       serviceAccountName: {{ include "stackstate-k8s-agent.fullname" . }}
-    {{- if .Values.all.hardening.enabled}}
-      terminationGracePeriodSeconds: 240
-    {{- end }}
       containers:
         - name: cluster-agent
           image: "{{ include "stackstate-k8s-agent.imageRegistry" . }}/{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
           imagePullPolicy: "{{ .Values.clusterAgent.image.pullPolicy }}"
-        {{- if .Values.all.hardening.enabled}}
-          lifecycle:
-            preStop:
-              exec:
-                command: [ "/bin/sh", "-c", "echo 'Giving slim.ai monitor time to submit data...'; sleep 120" ]
-        {{- end }}
           env:
           {{ include "stackstate-k8s-agent.apiKeyEnv" . | nindent 10 }}
           {{ include "stackstate-k8s-agent.clusterAgentAuthTokenEnv" . | nindent 10 }}
@@ -110,7 +101,7 @@ spec:
                 name: {{ include "stackstate-k8s-agent.secret.internal.name" $ }}
                 key: {{ $key }}
           {{- end }}
-        {{- if .Values.all.hardening.enabled}}
+        {{- if .Values.all.fullPrivilegesMode.enabled}}
           securityContext:
             privileged: true
             runAsUser: 0  # root

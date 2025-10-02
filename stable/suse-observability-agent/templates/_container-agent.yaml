@@ -1,11 +1,5 @@
 {{- define "container-agent" -}}
 - name: node-agent
-{{- if .Values.all.hardening.enabled}}
-  lifecycle:
-    preStop:
-      exec:
-        command: [ "/bin/sh", "-c", "echo 'Giving slim.ai monitor time to submit data...'; sleep 120" ]
-{{- end }}
   image: "{{ include "stackstate-k8s-agent.imageRegistry" . }}/{{ .Values.nodeAgent.containers.agent.image.repository }}:{{ .Values.nodeAgent.containers.agent.image.tag }}"
   imagePullPolicy: "{{ .Values.nodeAgent.containers.agent.image.pullPolicy }}"
   env:
@@ -159,7 +153,7 @@
   {{- end }}
   {{- end }}
   {{- include "stackstate-k8s-agent.customCertificates.volumeMount" . | nindent 2 }}
-{{- if .Values.all.hardening.enabled}}
+{{- if .Values.all.fullPrivilegesMode.enabled}}
   securityContext:
     privileged: true
     runAsUser: 0  # root

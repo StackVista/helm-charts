@@ -34,9 +34,6 @@ spec:
 {{ include "stackstate-k8s-agent.global.extraLabels" . | indent 8 }}
     spec:
       {{- include "stackstate-k8s-agent.image.pullSecrets" (dict "images" (list .Values.nodeAgent.containers.agent.image .Values.all.image) "context" $) | nindent 6 }}
-    {{- if .Values.all.hardening.enabled}}
-      terminationGracePeriodSeconds: 240
-    {{- end }}
       containers:
         {{- include "container-agent" . | nindent 6 }}
         {{- if .Values.nodeAgent.containers.processAgent.enabled }}

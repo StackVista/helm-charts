@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.0.78`
+Current chart version is `1.1.0`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -52,7 +52,7 @@ stackstate/stackstate-k8s-agent
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| all.hardening.enabled | bool | `false` | An indication of whether the containers will be evaluated for hardening at runtime |
+| all.fullPrivilegesMode.enabled | bool | `false` | All agent pods run in full privileges mode (mainly used for debugging). |
 | all.image.registry | string | `nil` | The image registry to use. |
 | checksAgent.affinity | object | `{}` | Affinity settings for pod assignment. |
 | checksAgent.checksTagCardinality | string | `"orchestrator"` | low, orchestrator or high. Orchestrator level adds pod_name, high adds display_container_name |

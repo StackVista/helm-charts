@@ -148,7 +148,7 @@
   {{- end }}
   {{- end }}
   {{- include "stackstate-k8s-agent.customCertificates.volumeMount" . | nindent 2 }}
-{{- if .Values.all.hardening.enabled}}
+{{- if .Values.all.fullPrivilegesMode.enabled}}
   securityContext:
     privileged: true
     runAsUser: 0  # root
