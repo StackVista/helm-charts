@@ -1,3 +1,4 @@
+baseUrl: "http://some-test-helm-render.stackstate.io"
 baseConfig:
   generate: false
 sizing:
