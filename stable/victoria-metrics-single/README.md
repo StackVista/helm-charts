@@ -157,7 +157,7 @@ Change the values according to the need of the environment in ``victoria-metrics
 | backup.scheduled.schedule | string | `"25 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
 | backup.setupCron.image.registry | string | `"quay.io"` |  |
 | backup.setupCron.image.repository | string | `"stackstate/container-tools"` | Repository containing busybox image, it is used to prepare th cronjob (create a crontab file). |
-| backup.setupCron.image.tag | string | `"1.7.0"` | Tag of the image for the busybox |
+| backup.setupCron.image.tag | string | `"1.8.0-bci"` | Tag of the image for the busybox |
 | backup.setupCron.resources.limits.cpu | string | `"20m"` |  |
 | backup.setupCron.resources.limits.memory | string | `"64Mi"` |  |
 | backup.setupCron.resources.requests.cpu | string | `"20m"` |  |
