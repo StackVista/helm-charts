@@ -96,6 +96,11 @@ stackstate/stackstate
 | backup.elasticsearch.scheduled.snapshotRetentionExpireAfter | string | `"30d"` | Amount of time to keep ElasticSearch snapshots in [ElasticSearch time units](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/common-options.html#time-units). *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
 | backup.elasticsearch.scheduled.snapshotRetentionMaxCount | string | `"30"` | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
 | backup.elasticsearch.scheduled.snapshotRetentionMinCount | string | `"5"` | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
+| backup.elasticsearch.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
+| backup.elasticsearch.securityContext.fsGroup | int | `65534` | The GID (group ID) of all files on all mounted volumes |
+| backup.elasticsearch.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
+| backup.elasticsearch.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
+| backup.elasticsearch.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
 | backup.elasticsearch.snapshotRepositoryName | string | `"sts-backup"` | Name of the ElasticSearch snapshot repository. backup.elasticsearch.s3Prefix -- Prefix (dir name) used to store backup files. |
 | backup.enabled | bool | `false` | Enables backup/restore, including the MinIO subsystem. |
 | backup.initJobAnnotations | object | `{}` | Annotations for Backup-init Job. |

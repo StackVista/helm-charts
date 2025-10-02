@@ -1,3 +1,4 @@
+#file: noinspection ExcessiveWhitespaceTrimInspection
 {{- define "job-elasticsearch-list-snapshots.yaml" -}}
 apiVersion: batch/v1
 kind: Job
@@ -42,6 +43,9 @@ spec:
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
       restartPolicy: Never
+{{- if .Values.backup.elasticsearch.securityContext.enabled }}
+      securityContext: {{- omit .Values.backup.elasticsearch.securityContext "enabled" | toYaml | nindent 8 }}
+{{- end }}
 {{- end -}}
 
 {{- define "job-elasticsearch-restore-snapshot.yaml" -}}
@@ -92,6 +96,9 @@ spec:
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
       restartPolicy: Never
+{{- if .Values.backup.elasticsearch.securityContext.enabled }}
+      securityContext: {{- omit .Values.backup.elasticsearch.securityContext "enabled" | toYaml | nindent 8 }}
+{{- end }}
 {{- end -}}
 
 {{- define "job-stackgraph-list-backups.yaml" -}}

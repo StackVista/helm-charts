@@ -50,6 +50,17 @@ backup:
       snapshotRetentionMinCount: "5"
       # backup.elasticsearch.scheduled.snapshotRetentionMaxCount -- Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule).
       snapshotRetentionMaxCount: "30"
+    securityContext:
+      # backup.elasticsearch.securityContext.enabled -- Whether or not to enable the securityContext
+      enabled: true
+      # backup.elasticsearch.securityContext.fsGroup -- The GID (group ID) of all files on all mounted volumes
+      fsGroup: 65534
+      # backup.elasticsearch.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
+      runAsGroup: 65534
+      # backup.elasticsearch.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
+      runAsNonRoot: true
+      # backup.elasticsearch.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
+      runAsUser: 65534
   poddisruptionbudget:
     # backup.poddisruptionbudget.maxUnavailable -- Maximum number of pods that can be unavailable during the backup.
     maxUnavailable: 0
