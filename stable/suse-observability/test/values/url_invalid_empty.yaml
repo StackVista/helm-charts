@@ -1,0 +1,9 @@
+stackstate:
+  baseUrl:
+  deployment:
+    mode: SelfHosted
+    edition: Community
+  license:
+    key: test-key
+  authentication:
+    adminPassword: test

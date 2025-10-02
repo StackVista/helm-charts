@@ -1,3 +1,5 @@
+{{- include "stackstate.values.validateUrl" (dict "value" .Values.stackstate.baseUrl "errorMessage" "Please provide your SUSE Observability base URL in 'values.baseUrl'") -}}
+
 {{- if not (or (eq .Values.stackstate.deployment.mode "SelfHosted") (eq .Values.stackstate.deployment.mode "Saas")) -}}
   {{- fail "Please set stackstate.deployment.mode to either SelfHosted or Saas." -}}
 {{- end }}

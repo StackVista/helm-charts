@@ -1,0 +1,9 @@
+stackstate:
+  baseUrl: the-instance.stackstate.io
+  deployment:
+    mode: SelfHosted
+    edition: Community
+  license:
+    key: test-key
+  authentication:
+    adminPassword: test
