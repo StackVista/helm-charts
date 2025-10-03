@@ -16,6 +16,7 @@ const (
 	processAgentName           = "process-agent"
 	remoteCacheName            = "remote-kube-cache"
 	remoteCacheServiceGRPCPort = "50055"
+	processAgentEnabledKey     = "nodeAgent.containers.processAgent.enabled"
 
 	POD_CORRELATION_ENABLED                = "STS_POD_CORRELATION_ENABLED"
 	POD_CORRELATION_REMOTE_CACHE_ADDR      = "STS_POD_CORRELATION_REMOTE_CACHE_ADDR"
@@ -25,46 +26,41 @@ const (
 	POD_CORRELATION_EXPORTER_TYPE          = "STS_POD_CORRELATION_EXPORTER_TYPE"
 	POD_CORRELATION_EXPORTER_OTLP_ENDPOINT = "STS_POD_CORRELATION_EXPORTER_OTLP_ENDPOINT"
 	POD_CORRELATION_EXPORTER_INTERVAL      = "STS_POD_CORRELATION_EXPORTER_INTERVAL"
+
+	DISABLED_PROTOCOLS = "STS_DISABLED_PROTOCOLS"
 )
 
-func TestProcessAgentPodCorrelation(t *testing.T) {
+var (
+	fullNodeAgentName   = fmt.Sprintf("%s-%s", releaseName, nodeAgentName)
+	fullRemoteCacheName = fmt.Sprintf("%s-%s", releaseName, remoteCacheName)
+)
+
+func TestProcessAgentEnvVars(t *testing.T) {
 	tests := []struct {
 		name      string
 		setValues map[string]string
 		expectEnv map[string]string
 	}{
 		{
-			// we don't expect the process agent container
-			name: "process agent disabled",
-			setValues: map[string]string{
-				"nodeAgent.containers.processAgent.enabled": "false",
-				"processAgent.podCorrelation.enabled":       "true",
-			},
-		},
-		{
 			// env vars should have default values
 			name: "pod correlation disabled",
 			setValues: map[string]string{
-				"nodeAgent.containers.processAgent.enabled": "true",
-				"processAgent.podCorrelation.enabled":       "false",
+				"processAgent.podCorrelation.enabled": "false",
 			},
 			expectEnv: map[string]string{
-				POD_CORRELATION_ENABLED:             "false",
-				POD_CORRELATION_PROTOCOL_METRICS:    "false",
-				POD_CORRELATION_PARTIAL_CORRELATION: "false",
-				// Note: if we provide an empty sting these 2 variables won't be defined.
-				// POD_CORRELATION_EXPORTER_TYPE:          "",
-				// POD_CORRELATION_EXPORTER_OTLP_ENDPOINT: "",
-				POD_CORRELATION_EXPORTER_INTERVAL: "30",
-				// if we don't define any attributes we should have an empty string, the variable won't be defined
-				// POD_CORRELATION_ATTRIBUTES_KEYS: "",
+				POD_CORRELATION_ENABLED:                "false",
+				POD_CORRELATION_PROTOCOL_METRICS:       "false",
+				POD_CORRELATION_PARTIAL_CORRELATION:    "false",
+				POD_CORRELATION_EXPORTER_TYPE:          "",
+				POD_CORRELATION_EXPORTER_OTLP_ENDPOINT: "",
+				POD_CORRELATION_EXPORTER_INTERVAL:      "30",
+				POD_CORRELATION_ATTRIBUTES_KEYS:        "",
 			},
 		},
 		{
 			// env vars should have default values
 			name: "pod correlation enabled no remote cache",
 			setValues: map[string]string{
-				"nodeAgent.containers.processAgent.enabled": "true",
 				"processAgent.podCorrelation.enabled":       "true",
 				"processAgent.podCorrelation.remoteCache":   "false",
 				"processAgent.podCorrelation.attributes[0]": "example0",
@@ -74,17 +70,13 @@ func TestProcessAgentPodCorrelation(t *testing.T) {
 				POD_CORRELATION_ENABLED:             "true",
 				POD_CORRELATION_PROTOCOL_METRICS:    "false",
 				POD_CORRELATION_PARTIAL_CORRELATION: "false",
-				// Note: if we provide an empty sting these 2 variables won't be defined.
-				// POD_CORRELATION_EXPORTER_TYPE:          "",
-				// POD_CORRELATION_EXPORTER_OTLP_ENDPOINT: "",
-				POD_CORRELATION_EXPORTER_INTERVAL: "30",
-				POD_CORRELATION_ATTRIBUTES_KEYS:   "example0,example1",
+				POD_CORRELATION_EXPORTER_INTERVAL:   "30",
+				POD_CORRELATION_ATTRIBUTES_KEYS:     "example0,example1",
 			},
 		},
 		{
 			name: "pod correlation enabled remote cache",
 			setValues: map[string]string{
-				"nodeAgent.containers.processAgent.enabled":     "true",
 				"processAgent.podCorrelation.remoteCache":       "true",
 				"processAgent.podCorrelation.enabled":           "true",
 				"processAgent.podCorrelation.exporter.type":     "otlp",
@@ -100,6 +92,108 @@ func TestProcessAgentPodCorrelation(t *testing.T) {
 				POD_CORRELATION_EXPORTER_OTLP_ENDPOINT: "otel-collector:4317",
 				POD_CORRELATION_EXPORTER_INTERVAL:      "30",
 				POD_CORRELATION_ATTRIBUTES_KEYS:        "example0",
+			},
+		},
+		{
+			name: "all protocols enabled",
+			setValues: map[string]string{
+				"processAgent.disabledProtocols": "",
+			},
+			expectEnv: map[string]string{
+				DISABLED_PROTOCOLS: "",
+			},
+		},
+		{
+			name: "disable http and amqp protocols",
+			setValues: map[string]string{
+				"processAgent.disabledProtocols[0]": "amqp",
+				"processAgent.disabledProtocols[1]": "http",
+			},
+			expectEnv: map[string]string{
+				DISABLED_PROTOCOLS: "amqp,http",
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			// Add the process agent key to each test
+			tt.setValues[processAgentEnabledKey] = "true"
+
+			helmOpts := &helm.Options{
+				ValuesFiles: []string{"values/minimal.yaml"},
+				// We need to use `SetValues` instead of `SetStrValues` otherwise boolean will be interpreted as strings causing errors.
+				// it is the same difference between `--set` and `--set-string`
+				SetValues: tt.setValues,
+			}
+
+			output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability-agent", helmOpts)
+			resources := helmtestutil.NewKubernetesResources(t, output)
+
+			///////////////////
+			// Check process-agent presence and env vars
+			///////////////////
+
+			assert.Greater(t, len(resources.DaemonSets), 0)
+			ds, ok := resources.DaemonSets[fullNodeAgentName]
+			assert.True(t, ok)
+
+			// We should have both containers
+			assert.Len(t, ds.Spec.Template.Spec.Containers, 2)
+			processAgentContainer := ds.Spec.Template.Spec.Containers[1]
+			assert.Equal(t, processAgentName, processAgentContainer.Name)
+
+			// Build env var
+			envMap := map[string]string{}
+			for _, env := range processAgentContainer.Env {
+				envMap[env.Name] = env.Value
+			}
+
+			for k, v := range tt.expectEnv {
+				assert.Contains(t, envMap, k)
+				assert.Equal(t, v, envMap[k], "Wrong value for env var %s", k)
+			}
+		})
+	}
+
+}
+
+func TestProcessAgentPodCorrelation(t *testing.T) {
+	tests := []struct {
+		name      string
+		setValues map[string]string
+	}{
+		{
+			// we don't expect the process agent container
+			name: "process agent disabled",
+			setValues: map[string]string{
+				processAgentEnabledKey:                "false",
+				"processAgent.podCorrelation.enabled": "true",
+			},
+		},
+		{
+			name: "pod correlation disabled",
+			setValues: map[string]string{
+				processAgentEnabledKey:                "true",
+				"processAgent.podCorrelation.enabled": "false",
+			},
+		},
+		{
+			// env vars should have default values
+			name: "pod correlation enabled no remote cache",
+			setValues: map[string]string{
+				processAgentEnabledKey:                    "true",
+				"processAgent.podCorrelation.enabled":     "true",
+				"processAgent.podCorrelation.remoteCache": "false",
+			},
+		},
+		{
+			name: "pod correlation enabled remote cache",
+			setValues: map[string]string{
+				processAgentEnabledKey:                    "true",
+				"processAgent.podCorrelation.enabled":     "true",
+				"processAgent.podCorrelation.remoteCache": "true",
 			},
 		},
 	}
@@ -122,8 +216,6 @@ func TestProcessAgentPodCorrelation(t *testing.T) {
 			// Check k8s remote cache presence
 			///////////////////
 
-			fullRemoteCacheName := fmt.Sprintf("%s-%s", releaseName, remoteCacheName)
-
 			_, cacheDeploymentOk := resources.Deployments[fullRemoteCacheName]
 			_, cacheServiceOk := resources.Services[fullRemoteCacheName]
 			_, cacheClusterRoleBindingOk := resources.ClusterRoleBindings[fullRemoteCacheName]
@@ -131,7 +223,7 @@ func TestProcessAgentPodCorrelation(t *testing.T) {
 			_, cacheServiceAccountOk := resources.ServiceAccounts[fullRemoteCacheName]
 
 			// we should have the remote kubernetes cache
-			if tt.setValues["nodeAgent.containers.processAgent.enabled"] == "true" &&
+			if tt.setValues[processAgentEnabledKey] == "true" &&
 				tt.setValues["processAgent.podCorrelation.enabled"] == "true" &&
 				tt.setValues["processAgent.podCorrelation.remoteCache"] == "true" {
 				assert.True(t, cacheDeploymentOk)
@@ -160,7 +252,7 @@ func TestProcessAgentPodCorrelation(t *testing.T) {
 			containsPods := slices.Contains(nodeAgentClusterRole.Rules[0].Resources, "pods")
 			containsWatch := slices.Contains(nodeAgentClusterRole.Rules[0].Verbs, "watch")
 
-			if tt.setValues["nodeAgent.containers.processAgent.enabled"] == "true" &&
+			if tt.setValues[processAgentEnabledKey] == "true" &&
 				tt.setValues["processAgent.podCorrelation.enabled"] == "true" &&
 				tt.setValues["processAgent.podCorrelation.remoteCache"] == "false" {
 				assert.True(t, containsWatch)
@@ -178,29 +270,16 @@ func TestProcessAgentPodCorrelation(t *testing.T) {
 			ds, ok := resources.DaemonSets[fullNodeAgentName]
 			assert.True(t, ok)
 
-			if len(tt.expectEnv) == 0 {
+			if tt.setValues[processAgentEnabledKey] != "true" {
 				// There should be only the node agent
 				assert.Len(t, ds.Spec.Template.Spec.Containers, 1)
-				return
+			} else {
+				// We should have both containers
+				assert.Len(t, ds.Spec.Template.Spec.Containers, 2)
+				processAgentContainer := ds.Spec.Template.Spec.Containers[1]
+				assert.Equal(t, processAgentName, processAgentContainer.Name)
 			}
 
-			// We should have both containers
-			assert.Len(t, ds.Spec.Template.Spec.Containers, 2)
-			processAgentContainer := ds.Spec.Template.Spec.Containers[1]
-			assert.Equal(t, processAgentName, processAgentContainer.Name)
-
-			// Build env var
-			envMap := map[string]string{}
-			for _, env := range processAgentContainer.Env {
-				if env.Value != "" {
-					envMap[env.Name] = env.Value
-				}
-			}
-
-			for k, v := range tt.expectEnv {
-				assert.Contains(t, envMap, k)
-				assert.Equal(t, v, envMap[k])
-			}
 		})
 	}
 }

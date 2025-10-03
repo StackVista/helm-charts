@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.1.0`
+Current chart version is `1.1.1`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -271,6 +271,7 @@ stackstate/stackstate-k8s-agent
 | openShiftLogging.installSecret | bool | `false` | Install a secret for logging on openshift |
 | processAgent.checkIntervals.connections | int | `30` | Override the default value of the connections check interval in seconds. |
 | processAgent.checkIntervals.process | int | `32` | Override the default value of the process check interval in seconds. |
+| processAgent.disabledProtocols | list | `[]` | List of protocols to disable for protocol inspection. Supported protocols are http, http2, mongo, amqp, postgres, tls. If nothing is provided all protocols will be enabled. |
 | processAgent.podCorrelation.attributes | list | `[]` | The attributes to be added to all exported metrics. If nothing is provided a default set will be used. |
 | processAgent.podCorrelation.enabled | bool | `false` | [Experimental] Enable / disable pod correlation. |
 | processAgent.podCorrelation.exporter.endpoint | string | `""` | Override the default endpoint to which the exporter will send metrics (e.g. "otel-collector-service:4317"). |

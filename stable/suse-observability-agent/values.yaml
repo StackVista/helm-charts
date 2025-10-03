@@ -309,6 +309,9 @@ processAgent:
       # processAgent.podCorrelation.exporter.interval -- The interval at which the exporter will send metrics (in seconds).
       interval: 30
 
+  # processAgent.disabledProtocols -- List of protocols to disable for protocol inspection. Supported protocols are http, http2, mongo, amqp, postgres, tls. If nothing is provided all protocols will be enabled.
+  disabledProtocols: []
+
 remoteKubeCache:
   # remoteKubeCache.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}

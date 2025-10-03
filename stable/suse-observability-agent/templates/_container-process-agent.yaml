@@ -34,6 +34,12 @@
       value: {{ .Values.nodeAgent.containers.processAgent.logLevel | default .Values.nodeAgent.logLevel | quote }}
     - name: STS_NETWORK_TRACING_ENABLED
       value: {{ .Values.nodeAgent.networkTracing.enabled | quote }}
+    - name: STS_DISABLED_PROTOCOLS
+    {{- if .Values.processAgent.disabledProtocols }}
+      value: {{ join "," .Values.processAgent.disabledProtocols | quote }}
+    {{- else }}
+      value: ""
+    {{- end }}
     - name: STS_PROTOCOL_INSPECTION_ENABLED
       value: {{ .Values.nodeAgent.protocolInspection.enabled | quote }}
     - name: STS_CONNECTION_CHECK_INTERVAL
