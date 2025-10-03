@@ -86,6 +86,8 @@ spec:
               value: "REPLACE_ME_SNAPSHOT_NAME_REPLACE_ME"
             - name: INDICES_TO_RESTORE
               value: "REPLACE_ME_INDICES_TO_RESTORE_REPLACE_ME"
+            - name: DELETE_ALL_INDICES
+              value: "REPLACE_ME_DELETE_ALL_INDICES_REPLACE_ME"
           {{- with .Values.stackstate.components.containerTools.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
