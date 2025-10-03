@@ -159,6 +159,7 @@ func testCronJobV1Beta1GlobalLabels(t *testing.T, cronjob batchv1beta1.CronJob, 
 	// Test job template labels
 	for labelKey, expectedValue := range expectedLabels {
 		actualValue, exists := cronjob.Spec.JobTemplate.Labels[labelKey]
+		// t.Logf("Labels: %#v\n", cronjob.Spec.JobTemplate.Labels)
 		assert.True(t, exists, "%s mode: CronJob '%s' job template should have global label '%s'", mode, cronjob.Name, labelKey)
 		assert.Equal(t, expectedValue, actualValue, "%s mode: CronJob '%s' job template global label '%s' should have value '%s', got '%s'", mode, cronjob.Name, labelKey, expectedValue, actualValue)
 	}

@@ -51,6 +51,7 @@ var expectedWorkloadsHA = []string{
 	// CronJobs
 	"CronJob/suse-observability-backup-sg",
 	"CronJob/suse-observability-backup-conf",
+	"CronJob/suse-observability-backup-init",
 }
 
 // expectedWorkloadsNonHA defines ALL expected workloads when in Non-HA mode (from nonha_workload file)
@@ -87,6 +88,7 @@ var expectedWorkloadsNonHA = []string{
 	// CronJobs
 	"CronJob/suse-observability-backup-sg",
 	"CronJob/suse-observability-backup-conf",
+	"CronJob/suse-observability-backup-init",
 }
 
 func TestWorkloadHARendering(t *testing.T) {
