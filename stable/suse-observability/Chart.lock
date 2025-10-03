@@ -7,7 +7,7 @@ dependencies:
   version: 0.4.26
 - name: elasticsearch
   repository: file://../elasticsearch/
-  version: 8.11.4-stackstate.8
+  version: 8.11.4-stackstate.9
 - name: hbase
   repository: file://../hbase/
   version: 0.2.76
@@ -28,10 +28,10 @@ dependencies:
   version: 8.1.2-suse-observability.2
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.25
+  version: 0.8.53-stackstate.26
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.25
+  version: 0.8.53-stackstate.26
 - name: clickhouse
   repository: file://../clickhouse/
   version: 3.6.9-suse-observability.3
@@ -41,5 +41,5 @@ dependencies:
 - name: kubernetes-rbac-agent
   repository: https://helm.stackstate.io
   version: 0.0.20
-digest: sha256:05ad4b9d8168ba5947bbf8f8f3045404eab38048d97b72aa3970a5fac4817da9
-generated: "2025-10-03T10:29:30.816079364+02:00"
+digest: sha256:31f2aa7567a76798f7471f436b7e2f64fc55293044aed13725807fc622bbdb39
+generated: "2025-10-03T14:02:56.626205327+02:00"

@@ -1,6 +1,6 @@
 # elasticsearch
 
-![Version: 8.11.4-stackstate.8](https://img.shields.io/badge/Version-8.11.4--stackstate.8-informational?style=flat-square) ![AppVersion: 8.11.4](https://img.shields.io/badge/AppVersion-8.11.4-informational?style=flat-square)
+![Version: 8.11.4-stackstate.9](https://img.shields.io/badge/Version-8.11.4--stackstate.9-informational?style=flat-square) ![AppVersion: 8.11.4](https://img.shields.io/badge/AppVersion-8.11.4-informational?style=flat-square)
 Official Elastic helm chart for Elasticsearch
 **Homepage:** <https://github.com/elastic/helm-charts>
 ## Maintainers
@@ -86,7 +86,7 @@ Official Elastic helm chart for Elasticsearch
 | prometheus-elasticsearch-exporter.es.uri | string | `"http://elasticsearch-master:9200"` | URI of Elasticsearch to monitor, override when changing clusterName or nodeGroup (format is <protocol>://<clusterName>-<nodegroup>:<httpPort>) |
 | prometheus-elasticsearch-exporter.image.registry | string | `"quay.io"` |  |
 | prometheus-elasticsearch-exporter.image.repository | string | `"stackstate/elasticsearch-exporter"` | Elastichsearch Prometheus exporter image repository |
-| prometheus-elasticsearch-exporter.image.tag | string | `"v1.8.0-1cd10cfa"` | Elastichsearch Prometheus exporter image tag |
+| prometheus-elasticsearch-exporter.image.tag | string | `"v1.8.0-d2aa61ab"` | Elastichsearch Prometheus exporter image tag |
 | prometheus-elasticsearch-exporter.podAnnotations | object | `{}` | custom annotations on the pod |
 | prometheus-elasticsearch-exporter.servicemonitor.enabled | bool | `false` | enable to create a servicemonitor for prometheus operator |
 | protocol | string | `"http"` |  |

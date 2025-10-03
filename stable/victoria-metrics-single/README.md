@@ -1,6 +1,6 @@
 # Victoria Metrics Helm Chart for Single Version
 
- ![Version: 0.8.53-stackstate.25](https://img.shields.io/badge/Version-0.8.53--stackstate.25-informational?style=flat-square)
+ ![Version: 0.8.53-stackstate.26](https://img.shields.io/badge/Version-0.8.53--stackstate.26-informational?style=flat-square)
 
 Victoria Metrics Single version - high-performance, cost-effective and scalable TSDB, long-term remote storage for Prometheus
 
@@ -166,7 +166,7 @@ Change the values according to the need of the environment in ``victoria-metrics
 | backup.supercronic.metrics.port | int | `9746` |  |
 | backup.vmbackup.image.registry | string | `"quay.io"` |  |
 | backup.vmbackup.image.repository | string | `"stackstate/vmbackup"` | Repository containing the image for the Victoria Metrics backup |
-| backup.vmbackup.image.tag | string | `"v1.109.0-a8104dee"` | Tag of the image for the Victoria Metrics backup |
+| backup.vmbackup.image.tag | string | `"v1.109.0-4c7c50f9"` | Tag of the image for the Victoria Metrics backup |
 | backup.vmbackup.resources.limits.cpu | string | `"100m"` |  |
 | backup.vmbackup.resources.limits.memory | string | `"512Mi"` |  |
 | backup.vmbackup.resources.requests.cpu | string | `"10m"` |  |
@@ -195,7 +195,7 @@ Change the values according to the need of the environment in ``victoria-metrics
 | server.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
 | server.image.registry | string | `"quay.io"` |  |
 | server.image.repository | string | `"stackstate/victoria-metrics"` | Image repository |
-| server.image.tag | string | `"v1.109.0-fe577cd2"` | Image tag |
+| server.image.tag | string | `"v1.109.0-accea47f"` | Image tag |
 | server.ingress.annotations | object | `{}` | Ingress annotations |
 | server.ingress.enabled | bool | `false` | Enable deployment of ingress for server component |
 | server.ingress.extraLabels | object | `{}` | Ingress extra labels |
