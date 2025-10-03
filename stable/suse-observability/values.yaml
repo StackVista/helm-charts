@@ -1776,7 +1776,7 @@ hbase:
       agentAnnotationsEnabled: true
   stackgraph:
     # hbase.stackgraph.version -- The StackGraph server version, must be compatible with the StackState version
-    version: 7.11.6
+    version: 7.11.8
   console:
     # hbase.console.enabled -- Enabled by default for debugging, but with 0 replicas. Manually scale up to 1 replica and open a shell in the container to access the stackgraph console.
     enabled: true
