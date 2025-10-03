@@ -12,6 +12,6 @@ subjects:
     name: "system:authenticated"
 {{- end -}}
 
-{{- if .Values.stackstate.k8sAuthorization -}}
+{{- if .Values.stackstate.k8sAuthorization.enabled -}}
 {{- include "stackstate.k8s.authorization.instance.base.rolebinding" . -}}
 {{- end -}}
