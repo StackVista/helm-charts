@@ -1,0 +1,1 @@
+esJavaOpts: "-Xmx1500m -Xms1500m -Des.allow_insecure_settings=true -Xlog:disable -Xlog:gc*,gc+age=trace,safepoint:file=logs/gc.log:utctime,pid,tags:filecount=8,filesize=16m"
