@@ -1,0 +1,15 @@
+# Test Distributed mode with metrics enabled
+deployment:
+  mode: "Distributed"
+
+console:
+  enabled: true
+
+zookeeper:
+  externalServers: "test-zookeeper"
+
+all:
+  metrics:
+    enabled: true
+    servicemonitor:
+      enabled: true

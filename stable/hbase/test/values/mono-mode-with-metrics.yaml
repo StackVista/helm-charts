@@ -1,0 +1,15 @@
+# Test Mono mode with metrics enabled (servicemonitors should not be rendered)
+deployment:
+  mode: "Mono"
+
+console:
+  enabled: true
+
+zookeeper:
+  externalServers: "test-zookeeper"
+
+all:
+  metrics:
+    enabled: true
+    servicemonitor:
+      enabled: true

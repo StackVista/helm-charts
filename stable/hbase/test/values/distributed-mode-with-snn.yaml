@@ -1,0 +1,22 @@
+# Test Distributed mode with secondary namenode enabled
+deployment:
+  mode: "Distributed"
+
+console:
+  enabled: true
+
+zookeeper:
+  externalServers: "test-zookeeper"
+
+hdfs:
+  secondarynamenode:
+    enabled: true
+    extraEnv:
+      secret:
+        TEST_KEY: test
+
+all:
+  metrics:
+    enabled: true
+    servicemonitor:
+      enabled: true
