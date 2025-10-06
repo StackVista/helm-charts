@@ -10,6 +10,8 @@ spec:
   maxUnavailable: 1
 {{- end -}}
 
+{{- if eq .Values.deployment.mode "Distributed" -}}
 {{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
 {{- $stackstateHbaseRegionServerPdb := fromYaml (include "hbase.hbase.regionserver.poddisruptionbudget" .) -}}
 {{- toYaml (merge $stackstateHbaseRegionServerPdb $commonPdb) -}}
+{{- end -}}

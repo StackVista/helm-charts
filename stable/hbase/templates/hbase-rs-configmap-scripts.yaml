@@ -6,6 +6,8 @@ data:
     {{- .Files.Get "scripts/hbase-check-status.sh" | nindent 4 }}
 {{- end -}}
 
+{{- if eq .Values.deployment.mode "Distributed" -}}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $rsScriptsConfigMap := fromYaml (include "hbase.hbase.rs.configmap-scripts" .) -}}
 {{- toYaml (merge $rsScriptsConfigMap $commonConfigMap) -}}
+{{- end -}}

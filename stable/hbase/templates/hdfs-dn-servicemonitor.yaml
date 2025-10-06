@@ -12,8 +12,10 @@ spec:
       app.kubernetes.io/component: hdfs-dn
 {{- end -}}
 
+{{- if eq .Values.deployment.mode "Distributed" -}}
 {{- if and ( .Capabilities.APIVersions.Has "monitoring.coreos.com/v1" ) ( .Values.all.metrics.enabled ) ( .Values.all.metrics.servicemonitor.enabled ) }}
 {{- $commonServiceMonitor := fromYaml (include "common.servicemonitor" .) -}}
 {{- $stackstateHbaseHdfsDatanodeServceMonitor := fromYaml (include "hbase.hdfs.datanode.servicemonitor" .) -}}
 {{- toYaml (merge $stackstateHbaseHdfsDatanodeServceMonitor $commonServiceMonitor) -}}
+{{- end -}}
 {{- end -}}

@@ -10,6 +10,8 @@ spec:
   maxUnavailable: 1
 {{- end -}}
 
+{{- if eq .Values.deployment.mode "Distributed" -}}
 {{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
 {{- $stackstateHbaseMasterPdb := fromYaml (include "hbase.hbase.master.poddisruptionbudget" .) -}}
 {{- toYaml (merge $stackstateHbaseMasterPdb $commonPdb) -}}
+{{- end -}}
