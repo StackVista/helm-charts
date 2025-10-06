@@ -12,8 +12,13 @@ Current chart version is `2.6.1-pre.22`
 |------------|------|---------|
 | file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.3 |
 | file://../common/ | common | * |
+<<<<<<< HEAD
 | file://../elasticsearch/ | elasticsearch | 8.11.4-stackstate.9 |
 | file://../hbase/ | hbase | 0.2.78 |
+=======
+| file://../elasticsearch/ | elasticsearch | 8.11.4-stackstate.10 |
+| file://../hbase/ | hbase | 0.2.77 |
+>>>>>>> 3fa38e16 (STAC-23483 Upgrade Elasticsearch)
 | file://../kafka/ | kafka | 19.1.3-suse-observability.3 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.13 |
