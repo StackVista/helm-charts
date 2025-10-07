@@ -129,6 +129,7 @@ stackstate/stackstate
 | backup.stackGraph.splitArchiveSize | int | `0` | Split the Stackgraph dump into chunks of the specified size in bytes. Accepts an integer greater or equal to 0 with optional suffix K,M,G (powers of 1024) or KB,MB,GB (powers of 1000) If set to 0, the dump is not split. |
 | clickhouse.auth.password | string | `"admin"` | ClickHouse Admin password. If left empty the random value is generated. |
 | clickhouse.auth.username | string | `"admin"` | ClickHouse Admin username |
+| clickhouse.backup.affinity | object | `{}` | Affinity settings for pod assignment. |
 | clickhouse.backup.bucketName | string | `"sts-clickhouse-backup"` | Name of the MinIO bucket where ClickHouse backups are stored. |
 | clickhouse.backup.config.keep_remote | int | `308` | How many latest backup should be kept on remote storage, 0 means all uploaded backups will be stored on remote storage. Incremental backups are executed every one 1h so the value 308 = ~14 days. |
 | clickhouse.backup.config.tables | string | `"otel.*"` | Create and upload backup only matched with table name patterns, separated by comma, allow ? and * as wildcard. |
@@ -136,10 +137,14 @@ stackstate/stackstate
 | clickhouse.backup.image.registry | string | `"quay.io"` | Registry where to get the image from. |
 | clickhouse.backup.image.repository | string | `"stackstate/clickhouse-backup"` | Repository where to get the image from. |
 | clickhouse.backup.image.tag | string | `"2.6.38-9157204e"` | Container image tag for 'clickhouse' backup containers. |
+| clickhouse.backup.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| clickhouse.backup.podAnnotations | object | `{}` | Extra annotations for ClickHouse backup pods. |
+| clickhouse.backup.podLabels | object | `{}` | Extra labels for ClickHouse backup pods. |
 | clickhouse.backup.resources | object | `{"limit":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"50m","memory":"250Mi"}}` | Resources of the backup tool. |
 | clickhouse.backup.s3Prefix | string | `""` |  |
 | clickhouse.backup.scheduled.full_schedule | string | `"45 0 * * *"` | Cron schedule for automatic full backups of ClickHouse. |
 | clickhouse.backup.scheduled.incremental_schedule | string | `"45 3-23 * * *"` | Cron schedule for automatic incremental backups of ClickHouse. IMPORTANT: incremental and full backup CAN NOT overlap. |
+| clickhouse.backup.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | clickhouse.enabled | bool | `true` | Enable / disable chart-based Clickhouse. |
 | clickhouse.externalZookeeper.port | int | `2181` |  |
 | clickhouse.externalZookeeper.servers | list | `["suse-observability-zookeeper-headless"]` | External Zookeeper configuration. |
@@ -533,6 +538,7 @@ stackstate/stackstate
 | stackstate.components.all.otelInstrumentation.otlpExporterProtocol | string | `"grpc"` |  |
 | stackstate.components.all.otelInstrumentation.serviceNamespace | string | `"{{ printf \"%s-%s\" .Chart.Name .Release.Namespace }}"` |  |
 | stackstate.components.all.podAnnotations | object | `{}` | Extra annotations |
+| stackstate.components.all.podLabels | object | `{}` | Extra labels |
 | stackstate.components.all.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
 | stackstate.components.all.securityContext.fsGroup | int | `65534` | The GID (group ID) used to mount volumes |
 | stackstate.components.all.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
@@ -579,12 +585,17 @@ stackstate/stackstate
 | stackstate.components.authorizationSync.sizing.baseMemoryConsumption | string | `"25Mi"` |  |
 | stackstate.components.authorizationSync.sizing.javaHeapMemoryFraction | string | `"70"` |  |
 | stackstate.components.authorizationSync.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.backup.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.backup.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.backup.podAnnotations | object | `{}` | Extra annotations for backup pods. |
+| stackstate.components.backup.podLabels | object | `{}` | Extra labels for backup pods. |
 | stackstate.components.backup.resources.limits.cpu | string | `"3000m"` |  |
 | stackstate.components.backup.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | stackstate.components.backup.resources.limits.memory | string | `"4000Mi"` |  |
 | stackstate.components.backup.resources.requests.cpu | string | `"1000m"` |  |
 | stackstate.components.backup.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | stackstate.components.backup.resources.requests.memory | string | `"4000Mi"` |  |
+| stackstate.components.backup.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.checks.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.checks.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.checks.config | string | `""` | Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
@@ -614,6 +625,8 @@ stackstate/stackstate
 | stackstate.components.clickhouseCleanup.image.tag | string | `"24.12.3-debian-12-r1-59d02972"` |  |
 | stackstate.components.clickhouseCleanup.jobAnnotations | object | `{}` | Annotations for clickhouseCleanup job. |
 | stackstate.components.clickhouseCleanup.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.clickhouseCleanup.podAnnotations | object | `{}` | Extra annotations for clickhouse cleanup job pods. |
+| stackstate.components.clickhouseCleanup.podLabels | object | `{}` | Extra labels for clickhouse cleanup job pods. |
 | stackstate.components.clickhouseCleanup.resources | object | `{"limits":{"cpu":"100m","ephemeral-storage":"1Gi","memory":"200Mi"},"requests":{"cpu":"100m","ephemeral-storage":"1Mi","memory":"200Mi"}}` | Resource allocation for `clickhouseCleanup` pods. |
 | stackstate.components.clickhouseCleanup.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
 | stackstate.components.clickhouseCleanup.securityContext.fsGroup | int | `1001` | The GID (group ID) used to mount volumes |
@@ -621,12 +634,17 @@ stackstate/stackstate
 | stackstate.components.clickhouseCleanup.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | stackstate.components.clickhouseCleanup.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
 | stackstate.components.clickhouseCleanup.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.configurationBackup.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.configurationBackup.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.configurationBackup.podAnnotations | object | `{}` | Extra annotations for configuration backup pods. |
+| stackstate.components.configurationBackup.podLabels | object | `{}` | Extra labels for configuration backup pods. |
 | stackstate.components.configurationBackup.resources.limits.cpu | string | `"1000m"` |  |
 | stackstate.components.configurationBackup.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | stackstate.components.configurationBackup.resources.limits.memory | string | `"1000Mi"` |  |
 | stackstate.components.configurationBackup.resources.requests.cpu | string | `"1000m"` |  |
 | stackstate.components.configurationBackup.resources.requests.ephemeral-storage | string | `"100Mi"` |  |
 | stackstate.components.configurationBackup.resources.requests.memory | string | `"1000Mi"` |  |
+| stackstate.components.configurationBackup.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.containerTools.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for container-tools containers. |
 | stackstate.components.containerTools.image.registry | string | `"quay.io"` | Base container image registry for container-tools containers. |
 | stackstate.components.containerTools.image.repository | string | `"stackstate/container-tools"` | Base container image repository for container-tools containers. |
@@ -743,6 +761,8 @@ stackstate/stackstate
 | stackstate.components.kafkaTopicCreate.image.tag | string | `"3.6.2-aec2a402"` | Container image tag for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.jobAnnotations | object | `{}` | Annotations for KafkaTopicCreate job. |
 | stackstate.components.kafkaTopicCreate.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.kafkaTopicCreate.podAnnotations | object | `{}` | Extra annotations for kafka topic create job pods. |
+| stackstate.components.kafkaTopicCreate.podLabels | object | `{}` | Extra labels for kafka topic create job pods. |
 | stackstate.components.kafkaTopicCreate.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `kafkaTopicCreate` pods. |
 | stackstate.components.kafkaTopicCreate.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
 | stackstate.components.kafkaTopicCreate.securityContext.fsGroup | int | `1001` | The GID (group ID) used to mount volumes |
@@ -840,6 +860,8 @@ stackstate/stackstate
 | stackstate.components.router.mode.image.tag | string | `"1.8.0-bci"` | Container image tag for router mode containers. |
 | stackstate.components.router.mode.jobAnnotations | object | `{}` | Annotations for the router mode jobs. |
 | stackstate.components.router.mode.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.router.mode.podAnnotations | object | `{}` | Extra annotations for router mode job pods. |
+| stackstate.components.router.mode.podLabels | object | `{}` | Extra labels for router mode job pods. |
 | stackstate.components.router.mode.resources | object | `{"limits":{"cpu":"200m","memory":"400Mi"},"requests":{"cpu":"100m","memory":"400Mi"}}` | Resource allocation for `router.mode` pods. |
 | stackstate.components.router.mode.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
 | stackstate.components.router.mode.securityContext.fsGroup | int | `1001` | The GID (group ID) used to mount volumes |

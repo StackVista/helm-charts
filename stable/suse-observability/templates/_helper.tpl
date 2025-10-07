@@ -685,6 +685,18 @@ Returns a YAML with extra annotations for StackState service, it contains annota
 {{- end -}}
 
 {{/*
+Returns a YAML with extra labels for StackState service, it contains labels for "all" and service provided within "Name" parameter
+*/}}
+{{- define "stackstate.component.podExtraLabels" -}}
+{{- with .Values.stackstate.components.all.podLabels }}
+{{- toYaml . | nindent 8}}
+{{- end }}
+{{- with (index .Values.stackstate.components .Name "podLabels") }}
+{{- toYaml . | nindent 8}}
+{{- end }}
+{{- end -}}
+
+{{/*
 Return env entries to mount existing secret with the custom keys.
 */}}
 {{- define "stackstate.component.envsFromExistingSecrets" -}}

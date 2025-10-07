@@ -29,9 +29,24 @@ spec:
       {{- end }}
       template:
         metadata:
+        {{- if or .Values.stackstate.components.all.podAnnotations .Values.clickhouse.backup.podAnnotations }}
+          annotations:
+          {{- with .Values.stackstate.components.all.podAnnotations }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.clickhouse.backup.podAnnotations }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- end }}
           labels:
             app.kubernetes.io/component: backup
             {{- include "suse-observability.labels.global" . | nindent 12 }}
+          {{- with .Values.stackstate.components.all.podLabels }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.clickhouse.backup.podLabels }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
         spec:
           containers:
             - name: backup-clickhouse-full
@@ -48,11 +63,39 @@ spec:
                   subPath: {{ .script_name }}.sh
               securityContext:
                 runAsUser: 1001
+          {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 10 }}
           volumes:
             - name: clickhouse-backup-scripts
               configMap:
                 name: suse-observability-clickhouse-backup-scripts
                 defaultMode: 0550
+        {{- if or .Values.stackstate.components.all.nodeSelector .Values.clickhouse.backup.nodeSelector }}
+          nodeSelector:
+          {{- with .Values.stackstate.components.all.nodeSelector }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.clickhouse.backup.nodeSelector }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- end }}
+        {{- if or .Values.stackstate.components.all.affinity .Values.clickhouse.backup.affinity }}
+          affinity:
+          {{- with .Values.stackstate.components.all.affinity }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.clickhouse.backup.affinity }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- end }}
+        {{- if or .Values.stackstate.components.all.tolerations .Values.clickhouse.backup.tolerations }}
+          tolerations:
+          {{- with .Values.stackstate.components.all.tolerations }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.clickhouse.backup.tolerations }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- end }}
           restartPolicy: Never
 {{- end -}}
 

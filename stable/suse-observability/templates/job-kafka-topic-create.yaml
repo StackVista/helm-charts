@@ -75,9 +75,21 @@ spec:
       annotations:
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.server.secret.checksum" . | nindent 8 }}
+      {{- with .Values.stackstate.components.all.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.kafkaTopicCreate.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
         app.kubernetes.io/component: topic-create
         {{- include "suse-observability.labels.global" . | nindent 8 }}
+      {{- with .Values.stackstate.components.all.podLabels }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.kafkaTopicCreate.podLabels }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
       restartPolicy: OnFailure
       initContainers:

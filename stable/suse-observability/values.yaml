@@ -233,6 +233,8 @@ stackstate:
         tag: 7.0.0-snapshot.20251009112954-master-5ced326
       # stackstate.components.all.podAnnotations -- Extra annotations
       podAnnotations: {}
+      # stackstate.components.all.podLabels -- Extra labels
+      podLabels: {}
       metrics:
         defaultAgentMetricsFilter: '["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "akka_http_requests_active", "stackstate*", "receiver*", "stackgraph*", "caffeine*"]'
         # stackstate.components.all.metrics.enabled -- Enable metrics port.
@@ -408,6 +410,16 @@ stackstate:
       # stackstate.components.authorizationSync.additionalLogging -- Additional logback config
       additionalLogging: ""
     backup:
+      # stackstate.components.backup.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.backup.podAnnotations -- Extra annotations for backup pods.
+      podAnnotations: {}
+      # stackstate.components.backup.podLabels -- Extra labels for backup pods.
+      podLabels: {}
+      # stackstate.components.backup.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.backup.affinity -- Affinity settings for pod assignment.
+      affinity: {}
       resources:
         limits:
           memory: "4000Mi"
@@ -418,6 +430,16 @@ stackstate:
           cpu: "1000m"
           ephemeral-storage: "1Mi"
     configurationBackup:
+      # stackstate.components.configurationBackup.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.configurationBackup.podAnnotations -- Extra annotations for configuration backup pods.
+      podAnnotations: {}
+      # stackstate.components.configurationBackup.podLabels -- Extra labels for configuration backup pods.
+      podLabels: {}
+      # stackstate.components.configurationBackup.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.configurationBackup.affinity -- Affinity settings for pod assignment.
+      affinity: {}
       resources:
         limits:
           memory: "1000Mi"
@@ -1059,6 +1081,10 @@ stackstate:
         status: "active"
         # stackstate.components.router.mode.jobAnnotations -- Annotations for the router mode jobs.
         jobAnnotations: {}
+        # stackstate.components.router.mode.podAnnotations -- Extra annotations for router mode job pods.
+        podAnnotations: {}
+        # stackstate.components.router.mode.podLabels -- Extra labels for router mode job pods.
+        podLabels: {}
         extraEnv:
           # stackstate.components.router.mode.extraEnv.open -- Add additional environment variables to the pod
           open: {}
@@ -1378,6 +1404,10 @@ stackstate:
     clickhouseCleanup:
       # stackstate.components.clickhouseCleanup.jobAnnotations -- Annotations for clickhouseCleanup job.
       jobAnnotations: {}
+      # stackstate.components.clickhouseCleanup.podAnnotations -- Extra annotations for clickhouse cleanup job pods.
+      podAnnotations: {}
+      # stackstate.components.clickhouseCleanup.podLabels -- Extra labels for clickhouse cleanup job pods.
+      podLabels: {}
       extraEnv:
         # stackstate.components.clickhouseCleanup.extraEnv.open -- Add additional environment variables to the pod
         open: {}
@@ -1420,6 +1450,10 @@ stackstate:
     kafkaTopicCreate:
       # stackstate.components.kafkaTopicCreate.jobAnnotations -- Annotations for KafkaTopicCreate job.
       jobAnnotations: {}
+      # stackstate.components.kafkaTopicCreate.podAnnotations -- Extra annotations for kafka topic create job pods.
+      podAnnotations: {}
+      # stackstate.components.kafkaTopicCreate.podLabels -- Extra labels for kafka topic create job pods.
+      podLabels: {}
       extraEnv:
         # stackstate.components.kafkaTopicCreate.extraEnv.open -- Add additional environment variables to the pod
         open: {}
@@ -2699,6 +2733,16 @@ clickhouse:
     bucketName: 'sts-clickhouse-backup'
     # backup.clickhouse.s3Prefix -- Prefix (dir name) used to store backup files.
     s3Prefix: ""
+    # clickhouse.backup.nodeSelector -- Node labels for pod assignment.
+    nodeSelector: {}
+    # clickhouse.backup.podAnnotations -- Extra annotations for ClickHouse backup pods.
+    podAnnotations: {}
+    # clickhouse.backup.podLabels -- Extra labels for ClickHouse backup pods.
+    podLabels: {}
+    # clickhouse.backup.tolerations -- Toleration labels for pod assignment.
+    tolerations: []
+    # clickhouse.backup.affinity -- Affinity settings for pod assignment.
+    affinity: {}
     config:
       # clickhouse.backup.config.tables -- Create and upload backup only matched with table name patterns, separated by comma, allow ? and * as wildcard.
       tables: "otel.*"

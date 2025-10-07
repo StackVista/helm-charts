@@ -2,9 +2,24 @@
 ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
 template:
   metadata:
+  {{- if or .Values.stackstate.components.all.podAnnotations .Values.stackstate.components.backup.podAnnotations }}
+    annotations:
+    {{- with .Values.stackstate.components.all.podAnnotations }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.stackstate.components.backup.podAnnotations }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+  {{- end }}
     labels:
       app.kubernetes.io/component: backup
       {{- include "suse-observability.labels.global" . | nindent 6 }}
+    {{- with .Values.stackstate.components.all.podLabels }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.stackstate.components.backup.podLabels }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
   spec:
     initContainers:
       - name: wait
@@ -38,6 +53,33 @@ template:
 {{- end }}
     {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 4 }}
     restartPolicy: Never
+{{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}
+    nodeSelector:
+    {{- with .Values.stackstate.components.all.nodeSelector }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.stackstate.components.backup.nodeSelector }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+{{- end }}
+{{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.backup.affinity }}
+    affinity:
+    {{- with .Values.stackstate.components.all.affinity }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.stackstate.components.backup.affinity }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+{{- end }}
+{{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.backup.tolerations }}
+    tolerations:
+    {{- with .Values.stackstate.components.all.tolerations }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.stackstate.components.backup.tolerations }}
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+{{- end }}
 {{- if .Values.backup.stackGraph.securityContext.enabled }}
     securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 6 }}
 {{- end }}
