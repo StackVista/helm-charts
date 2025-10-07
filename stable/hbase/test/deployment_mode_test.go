@@ -143,32 +143,6 @@ func TestMonoModeSecretsAbsent(t *testing.T) {
 	}
 }
 
-// TestDistributedModeServiceMonitorsPresent verifies that ServiceMonitors with Distributed mode conditionals are rendered when metrics are enabled
-// TODO: Uncomment when helmtestutil supports --api-versions flag
-// func TestDistributedModeServiceMonitorsPresent(t *testing.T) {
-// 	output := helmtestutil.RenderHelmTemplate(t, releaseName, "values/distributed-mode-with-metrics.yaml", "--api-versions", "monitoring.coreos.com/v1")
-// 	resources := helmtestutil.NewKubernetesResources(t, output)
-//
-// 	// ServiceMonitors that should exist in Distributed mode
-// 	expectedServiceMonitors := []string{
-// 		releaseName + "-hbase-hbase-master",
-// 		releaseName + "-hbase-hbase-rs",
-// 		releaseName + "-hbase-hdfs-nn",
-// 		releaseName + "-hbase-hdfs-dn",
-// 	}
-//
-// 	for _, expectedName := range expectedServiceMonitors {
-// 		found := false
-// 		for _, sm := range resources.ServiceMonitors {
-// 			if sm.Name == expectedName {
-// 				found = true
-// 				break
-// 			}
-// 		}
-// 		assert.True(t, found, "ServiceMonitor %s should exist in Distributed mode when metrics are enabled", expectedName)
-// 	}
-// }
-
 // TestDistributedModeSecondaryNameNodeResources verifies that hdfs-snn resources are rendered when enabled in Distributed mode
 func TestDistributedModeSecondaryNameNodeResources(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, releaseName, "values/distributed-mode-with-snn.yaml")
@@ -195,42 +169,4 @@ func TestDistributedModeSecondaryNameNodeResources(t *testing.T) {
 		}
 	}
 	assert.True(t, found, "Secret %s should exist in Distributed mode when hdfs.secondarynamenode.enabled=true and extraEnv.secret is set", expectedName)
-
-	// TODO: Uncomment when helmtestutil supports --api-versions flag
-	// // Check ServiceMonitor
-	// found = false
-	// for _, sm := range resources.ServiceMonitors {
-	// 	if sm.Name == expectedName {
-	// 		found = true
-	// 		break
-	// 	}
-	// }
-	// assert.True(t, found, "ServiceMonitor %s should exist in Distributed mode when hdfs.secondarynamenode.enabled=true and metrics are enabled", expectedName)
 }
-
-// TestMonoModeServiceMonitorsAbsent verifies that ServiceMonitors with Distributed mode conditionals are NOT rendered in Mono mode
-// TODO: Uncomment when helmtestutil supports --api-versions flag
-// func TestMonoModeServiceMonitorsAbsent(t *testing.T) {
-// 	output := helmtestutil.RenderHelmTemplate(t, releaseName, "values/mono-mode-with-metrics.yaml", "--api-versions", "monitoring.coreos.com/v1")
-// 	resources := helmtestutil.NewKubernetesResources(t, output)
-//
-// 	// ServiceMonitors that should NOT exist in Mono mode
-// 	distributedOnlyServiceMonitors := []string{
-// 		releaseName + "-hbase-hbase-master",
-// 		releaseName + "-hbase-hbase-rs",
-// 		releaseName + "-hbase-hdfs-nn",
-// 		releaseName + "-hbase-hdfs-dn",
-// 		releaseName + "-hbase-hdfs-snn",
-// 	}
-//
-// 	for _, name := range distributedOnlyServiceMonitors {
-// 		found := false
-// 		for _, sm := range resources.ServiceMonitors {
-// 			if sm.Name == name {
-// 				found = true
-// 				break
-// 			}
-// 		}
-// 		assert.False(t, found, "ServiceMonitor %s should NOT exist in Mono mode", name)
-// 	}
-// }
