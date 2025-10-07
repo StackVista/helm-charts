@@ -129,25 +129,21 @@ persistence:
   enabled: true
   annotations: {}
 
-extraVolumes:
-  ""
+extraVolumes: ""
   # - name: extras
   #   emptyDir: {}
 
-extraVolumeMounts:
-  ""
+extraVolumeMounts: ""
   # - name: extras
   #   mountPath: /usr/share/extras
   #   readOnly: true
 
-extraContainers:
-  ""
+extraContainers: ""
   # - name: do-something
   #   image: busybox
   #   command: ['do', 'something']
 
-extraInitContainers:
-  ""
+extraInitContainers: ""
   # - name: do-something
   #   image: busybox
   #   command: ['do', 'something']
@@ -206,7 +202,7 @@ securityContext:
   enabled: true
   capabilities:
     drop:
-      - ALL
+    - ALL
   # readOnlyRootFilesystem: true
   runAsNonRoot: true
   runAsUser: 1000
@@ -300,7 +296,7 @@ prometheus-elasticsearch-exporter:
     # prometheus-elasticsearch-exporter.image.tag -- Elastichsearch Prometheus exporter image tag
     tag: v1.8.0-d2aa61ab
   servicemonitor:
-    # prometheus-elasticsearch-exporter.servicemonitor.enabled -- enable to create a servicemonitor for prometheus operator
+  # prometheus-elasticsearch-exporter.servicemonitor.enabled -- enable to create a servicemonitor for prometheus operator
     enabled: false
   # prometheus-elasticsearch-exporter.podAnnotations -- custom annotations on the pod
   podAnnotations: {}

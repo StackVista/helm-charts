@@ -25,11 +25,11 @@ backup:
   initJobAnnotations: {}
   elasticsearch:
     # backup.elasticsearch.bucketName -- Name of the MinIO bucket where ElasticSearch snapshots are stored.
-    bucketName: "sts-elasticsearch-backup"
+    bucketName: 'sts-elasticsearch-backup'
     # backup.elasticsearch.snapshotRepositoryName -- Name of the ElasticSearch snapshot repository.
     # backup.elasticsearch.s3Prefix -- Prefix (dir name) used to store backup files.
     s3Prefix: ""
-    snapshotRepositoryName: "sts-backup"
+    snapshotRepositoryName: 'sts-backup'
     restore:
       # backup.elasticsearch.restore.enabled -- Enable ElasticSearch snapshot restore functionality (if `backup.enabled` is set to `true`).
       enabled: true
@@ -40,11 +40,11 @@ backup:
       # backup.elasticsearch.scheduled.enabled -- Enable scheduled ElasticSearch snapshots (if `backup.enabled` is set to `true`).
       enabled: true
       # backup.elasticsearch.scheduled.schedule -- Cron schedule for automatic ElasticSearch snaphosts in [ElasticSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html).
-      schedule: "0 0 3 * * ?"
+      schedule: '0 0 3 * * ?'
       # backup.elasticsearch.scheduled.indices -- ElasticSearch indices to snapshot in [JSON array format](https://www.w3schools.com/js/js_json_arrays.asp).
       indices: "sts*"
       # backup.elasticsearch.scheduled.snapshotPolicyName -- Name of the ElasticSearch snapshot policy.
-      snapshotPolicyName: "auto-sts-backup"
+      snapshotPolicyName: 'auto-sts-backup'
       # backup.elasticsearch.scheduled.snapshotNameTemplate -- Template for the ElasticSearch snapshot name in [ElasticSearch date math format](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/date-math-index-names.html).
       snapshotNameTemplate: "<sts-backup-{now{yyyyMMdd-HHmm}}>"
       # backup.elasticsearch.scheduled.snapshotRetentionExpireAfter -- Amount of time to keep ElasticSearch snapshots in [ElasticSearch time units](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/common-options.html#time-units). *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule).
@@ -69,7 +69,7 @@ backup:
     maxUnavailable: 0
   stackGraph:
     # backup.stackGraph.bucketName -- Name of the MinIO bucket to store StackGraph backups.
-    bucketName: "sts-stackgraph-backup"
+    bucketName: 'sts-stackgraph-backup'
     # backup.stackGraph.s3Prefix -- Prefix (dir name) used to store backup files.
     s3Prefix: ""
     # backup.stackGraph.splitArchiveSize -- Split the Stackgraph dump into chunks of the specified size in bytes.
@@ -90,15 +90,15 @@ backup:
       # backup.stackGraph.scheduled.enabled -- Enable scheduled StackGraph backups (if `backup.enabled` is set to `true`).
       enabled: true
       # backup.stackGraph.scheduled.schedule -- Cron schedule for automatic StackGraph backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax).
-      schedule: "0 3 * * *"
+      schedule: '0 3 * * *'
       # backup.stackGraph.scheduled.backupNameTemplate -- Template for the StackGraph backup name as a double-quoted shell string value.
-      backupNameTemplate: "sts-backup-$(date +%Y%m%d-%H%M).graph"
+      backupNameTemplate: 'sts-backup-$(date +%Y%m%d-%H%M).graph'
       # backup.stackGraph.scheduled.backupNameParseRegexp -- Regular expression to retrieve date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`.
-      backupNameParseRegexp: "sts-backup-([0-9]*-[0-9]*).graph"
+      backupNameParseRegexp: 'sts-backup-([0-9]*-[0-9]*).graph'
       # backup.stackGraph.scheduled.backupDatetimeParseFormat -- Format to parse date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`.
-      backupDatetimeParseFormat: "%Y%m%d-%H%M"
+      backupDatetimeParseFormat: '%Y%m%d-%H%M'
       # backup.stackGraph.scheduled.backupRetentionTimeDelta -- Time to keep StackGraph backups in. The value is passed to GNU date tool  to determine a specific date, and files older than this date will be deleted.
-      backupRetentionTimeDelta: "30 days ago"
+      backupRetentionTimeDelta: '30 days ago'
       tempData:
         # backup.stackGraph.scheduled.tmpData.accessModes -- Access mode for temporary backup data.
         accessModes: ["ReadWriteOnce"]
@@ -119,7 +119,7 @@ backup:
       runAsUser: 65534
   configuration:
     # backup.configuration.bucketName -- Name of the MinIO bucket to store configuration backups.
-    bucketName: "sts-configuration-backup"
+    bucketName: 'sts-configuration-backup'
     # backup.configuration.s3Prefix -- Prefix (dir name) used to store backup files.
     s3Prefix: ""
     yaml:
@@ -134,20 +134,20 @@ backup:
       # backup.configuration.scheduled.enabled -- Enable scheduled configuration backups (if `backup.enabled` is set to `true`).
       enabled: true
       # backup.configuration.scheduled.schedule -- Cron schedule for automatic configuration backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax).
-      schedule: "0 4 * * *"
+      schedule: '0 4 * * *'
       # backup.configuration.scheduled.backupNameTemplate -- Template for the configuration backup name as a double-quoted shell string value.
-      backupNameTemplate: "sts-backup-$(date +%Y%m%d-%H%M).sty"
+      backupNameTemplate: 'sts-backup-$(date +%Y%m%d-%H%M).sty'
       # backup.configuration.scheduled.backupNameParseRegexp -- Regular expression to retrieve date/time from configuration backup name. *Note:* This should match the value for `backupNameTemplate`.
-      backupNameParseRegexp: "sts-backup-([0-9]*-[0-9]*).sty"
+      backupNameParseRegexp: 'sts-backup-([0-9]*-[0-9]*).sty'
       # backup.configuration.scheduled.backupDatetimeParseFormat -- Format to parse date/time from configuration backup name. *Note:* This should match the value for `backupNameTemplate`.
-      backupDatetimeParseFormat: "%Y%m%d-%H%M"
+      backupDatetimeParseFormat: '%Y%m%d-%H%M'
       # backup.configuration.scheduled.backupRetentionTimeDelta -- Time to keep configuration backups. The value is passed to GNU date tool to determine a specific date, and files older than this date will be deleted.
-      backupRetentionTimeDelta: "365 days ago"
+      backupRetentionTimeDelta: '365 days ago'
       pvc:
         # backup.configuration.scheduled.pvc.accessModes -- Access mode for settings backup data.
         accessModes: ["ReadWriteOnce"]
         # backup.configuration.scheduled.pvc.size -- Size of volume for settings backup
-        size: "1Gi"
+        size: '1Gi'
         # backup.configuration.scheduled.pvc.storageClass -- Storage class of the volume for settings backup data.
         storageClass:
     securityContext:
@@ -1961,12 +1961,12 @@ kafka:
   initContainers:
     - name: check-inter-broker-protocol-version
       image: '{{ include "kafka.image" . }}'
-      imagePullPolicy: ""
+      imagePullPolicy: ''
       command:
         - /bin/bash
       args:
         - -c
-        - 'while [ -z "${KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION}" ]; do echo "KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION should be set by operator"; sleep 1; done'
+        - "while [ -z \"${KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION}\" ]; do echo \"KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION should be set by operator\"; sleep 1; done"
       resources:
         limits: {}
         requests: {}
@@ -2298,7 +2298,7 @@ pull-secret:
   # pull-secret.enabled -- Deploy the ImagePullSecret for the chart.
   enabled: false
   # pull-secret.fullNameOverride -- Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart.
-  fullNameOverride: ""
+  fullNameOverride: ''
   # pull-secret.credentials -- Registry and associated credentials (username, password) that will be stored in the pull-secret
   credentials: []
 victoria-metrics-0:
@@ -2376,12 +2376,12 @@ victoria-metrics-0:
     # victoria-metrics-0.backup.enabled -- Enable scheduled backups of Victoria Metrics. It requires to be enabled MinIO 'backup.enabled'.
     enabled: false
     # victoria-metrics-0.backup.bucketName -- Name of the MinIO bucket where Victoria Metrics backups are stored.
-    bucketName: "sts-victoria-metrics-backup"
+    bucketName: 'sts-victoria-metrics-backup'
     # victoria-metrics-1.backup.s3Prefix -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
     s3Prefix: victoria-metrics-0
     scheduled:
       # victoria-metrics-0.backup.scheduled.schedule -- Cron schedule for automatic backups of Victoria Metrics
-      schedule: "25 * * * *"
+      schedule: '25 * * * *'
   restore:
     # victoria-metrics-0.restore.enabled -- Enable Victoria Metrics restore functionality (if `backup.enabled` is set to `true`).
     enabled: false
@@ -2459,12 +2459,12 @@ victoria-metrics-1:
     # victoria-metrics-1.backup.enabled -- Enable scheduled backups of Victoria Metrics. It requires to be enabled MinIO 'backup.enabled'.
     enabled: false
     # victoria-metrics-1.backup.bucketName -- Name of the MinIO bucket where Victoria Metrics backups are stored.
-    bucketName: "sts-victoria-metrics-backup"
+    bucketName: 'sts-victoria-metrics-backup'
     # victoria-metrics-1.backup.s3Prefix -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
     s3Prefix: victoria-metrics-1
     scheduled:
       # victoria-metrics-1.backup.scheduled.schedule -- Cron schedule for automatic backups of Victoria Metrics
-      schedule: "35 * * * *"
+      schedule: '35 * * * *'
   restore:
     # victoria-metrics-1.restore.enabled -- Enable Victoria Metrics restore functionality (if `backup.enabled` is set to `true`).
     enabled: false
@@ -2709,7 +2709,7 @@ clickhouse:
     # clickhouse.backup.enabled -- Enable scheduled backups of ClickHouse. It requires to be enabled MinIO 'backup.enabled'.
     enabled: false
     # clickhouse.backup.bucketName -- Name of the MinIO bucket where ClickHouse backups are stored.
-    bucketName: "sts-clickhouse-backup"
+    bucketName: 'sts-clickhouse-backup'
     # backup.clickhouse.s3Prefix -- Prefix (dir name) used to store backup files.
     s3Prefix: ""
     config:
@@ -2719,9 +2719,9 @@ clickhouse:
       keep_remote: 308
     scheduled:
       # clickhouse.backup.scheduled.full_schedule -- Cron schedule for automatic full backups of ClickHouse.
-      full_schedule: "45 0 * * *"
+      full_schedule: '45 0 * * *'
       # clickhouse.backup.scheduled.incremental_schedule -- Cron schedule for automatic incremental backups of ClickHouse. IMPORTANT: incremental and full backup CAN NOT overlap.
-      incremental_schedule: "45 3-23 * * *"
+      incremental_schedule: '45 3-23 * * *'
     # clickhouse.backup.resources -- Resources of the backup tool.
     resources:
       requests:
@@ -2780,26 +2780,7 @@ opentelemetry-collector:
       jaeger: null
     connectors:
       stsservicegraph:
-        latency_histogram_buckets:
-          [
-            2ms,
-            4ms,
-            6ms,
-            8ms,
-            10ms,
-            50ms,
-            100ms,
-            200ms,
-            400ms,
-            800ms,
-            1s,
-            1400ms,
-            2s,
-            5s,
-            10s,
-            15s,
-            30s,
-          ]
+        latency_histogram_buckets: [2ms, 4ms, 6ms, 8ms, 10ms, 50ms, 100ms, 200ms, 400ms, 800ms, 1s, 1400ms, 2s, 5s, 10s, 15s, 30s]
         dimensions:
           - service.namespace
           - service.instance.id
@@ -2857,7 +2838,7 @@ opentelemetry-collector:
           max_interval: 30s
           max_elapsed_time: 300s
       prometheusremotewrite/victoria-metrics:
-        endpoint: "http://suse-observability-vmagent:8429/api/v1/write"
+        endpoint: 'http://suse-observability-vmagent:8429/api/v1/write'
         resource_to_telemetry_conversion:
           enabled: true
       ststopology:
@@ -2958,7 +2939,7 @@ kubernetes-rbac-agent:
   clusterName:
     # Because we do not put in a cluster name for the instance agent, we put a 'dummy' value here, being the release name
     # We might change this later.
-    value: "{{ .Release.Name }}"
+    value: '{{ .Release.Name }}'
   containers:
     rbacAgent:
       image:
