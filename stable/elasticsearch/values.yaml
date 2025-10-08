@@ -223,10 +223,16 @@ readinessProbe:
   failureThreshold: 5
 
 livenessProbe:
-  initialDelaySeconds: 50
+  initialDelaySeconds: 60
   periodSeconds: 10
   timeoutSeconds: 5
-  failureThreshold: 5
+  failureThreshold: 6
+
+startupProbe:
+  initialDelaySeconds: 90
+  periodSeconds: 30
+  timeoutSeconds: 5
+  failureThreshold: 17
 
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html#request-params wait_for_status
 clusterHealthCheckParams: "local=true"

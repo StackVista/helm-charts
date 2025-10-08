@@ -268,6 +268,9 @@ spec:
         livenessProbe:
 {{ include "elasticsearch.probe" . | nindent 10 }}
 {{ toYaml .Values.livenessProbe | indent 10 }}
+        startupProbe:
+{{ include "elasticsearch.probe" . | nindent 10 }}
+{{ toYaml .Values.startupProbe | indent 10 }}
         ports:
         - name: http
           containerPort: {{ .Values.httpPort }}

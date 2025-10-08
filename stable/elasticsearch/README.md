@@ -1,6 +1,6 @@
 # elasticsearch
 
-![Version: 8.19.4-stackstate.1](https://img.shields.io/badge/Version-8.19.4--stackstate.1-informational?style=flat-square) ![AppVersion: 8.19.4](https://img.shields.io/badge/AppVersion-8.19.4-informational?style=flat-square)
+![Version: 8.19.4-stackstate.2](https://img.shields.io/badge/Version-8.19.4--stackstate.2-informational?style=flat-square) ![AppVersion: 8.19.4](https://img.shields.io/badge/AppVersion-8.19.4-informational?style=flat-square)
 Official Elastic helm chart for Elasticsearch
 **Homepage:** <https://github.com/elastic/helm-charts>
 ## Maintainers
@@ -52,8 +52,8 @@ Official Elastic helm chart for Elasticsearch
 | keystore | list | `[]` |  |
 | labels | object | `{}` |  |
 | lifecycle | object | `{}` |  |
-| livenessProbe.failureThreshold | int | `5` |  |
-| livenessProbe.initialDelaySeconds | int | `50` |  |
+| livenessProbe.failureThreshold | int | `6` |  |
+| livenessProbe.initialDelaySeconds | int | `60` |  |
 | livenessProbe.periodSeconds | int | `10` |  |
 | livenessProbe.timeoutSeconds | int | `5` |  |
 | masterService | string | `""` |  |
@@ -125,6 +125,10 @@ Official Elastic helm chart for Elasticsearch
 | service.transportPortName | string | `"transport"` |  |
 | service.type | string | `"ClusterIP"` |  |
 | sidecarResources | object | `{}` |  |
+| startupProbe.failureThreshold | int | `17` |  |
+| startupProbe.initialDelaySeconds | int | `90` |  |
+| startupProbe.periodSeconds | int | `30` |  |
+| startupProbe.timeoutSeconds | int | `5` |  |
 | sysctlInitContainer.enabled | bool | `true` |  |
 | sysctlVmMaxMapCount | int | `262144` |  |
 | terminationGracePeriod | int | `120` |  |

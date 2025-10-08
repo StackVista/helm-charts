@@ -1732,19 +1732,6 @@ elasticsearch:
       cpu: "2000m"
       memory: "4Gi"
       ephemeral-storage: "1Gi"
-  # elasticsearch.readinessProbe -- Override Elasticsearch readinessProbe
-  readinessProbe:
-    initialDelaySeconds: 10
-    periodSeconds: 10
-    timeoutSeconds: 5
-    successThreshold: 3
-    failureThreshold: 5
-  # elasticsearch.livenessProbe -- Override Elasticsearch livenessProbe
-  livenessProbe:
-    initialDelaySeconds: 110
-    periodSeconds: 10
-    timeoutSeconds: 5
-    failureThreshold: 5
   # elasticsearch.volumeClaimTemplate -- PVC template defaulting to 250Gi default volumes
   volumeClaimTemplate:
     accessModes:
