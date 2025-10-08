@@ -2,7 +2,6 @@
 metadata:
   name: {{ template "common.fullname.short" . }}-authorization-sync
 {{- include "stackstate.service.configmap.data" (dict "service" .Values.stackstate.components.authorizationSync "context" $) | nindent 0 }}
-{{- include "stackstate.config.email" .  | nindent 4 }}
 {{- end -}}
 
 {{- if and (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .)) .Values.stackstate.k8sAuthorization.enabled }}
