@@ -1,0 +1,124 @@
+global:
+  receiverApiKey: "test-key"
+
+stackstate:
+  baseUrl: "http://localhost"
+  license:
+    key: "test-key"
+  authentication:
+    adminPassword: "098f6bcd4621d373cade4e832627b4f6"
+  components:
+    all:
+      podAnnotations:
+        all-annotation: "all-value"
+      podLabels:
+        all-label: "all-value"
+      nodeSelector:
+        all-node: "all-value"
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: all-affinity
+                    operator: In
+                    values:
+                      - all-value
+              topologyKey: kubernetes.io/hostname
+      tolerations:
+        - key: all-toleration
+          operator: Equal
+          value: all-value
+          effect: NoSchedule
+    backup:
+      podAnnotations:
+        backup-annotation: "backup-value"
+      podLabels:
+        backup-label: "backup-value"
+      nodeSelector:
+        backup-node: "backup-value"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: backup-affinity
+                    operator: In
+                    values:
+                      - backup-value
+      tolerations:
+        - key: backup-toleration
+          operator: Equal
+          value: backup-value
+          effect: NoSchedule
+    configurationBackup:
+      podAnnotations:
+        config-backup-annotation: "config-value"
+      podLabels:
+        config-backup-label: "config-value"
+      nodeSelector:
+        config-backup-node: "config-value"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: config-backup-affinity
+                    operator: In
+                    values:
+                      - config-value
+      tolerations:
+        - key: config-backup-toleration
+          operator: Equal
+          value: config-value
+          effect: NoSchedule
+    clickhouseCleanup:
+      podAnnotations:
+        ch-cleanup-annotation: "ch-cleanup-value"
+      podLabels:
+        ch-cleanup-label: "ch-cleanup-value"
+    kafkaTopicCreate:
+      podAnnotations:
+        kafka-topic-annotation: "kafka-value"
+      podLabels:
+        kafka-topic-label: "kafka-value"
+    router:
+      mode:
+        podAnnotations:
+          router-mode-annotation: "router-value"
+        podLabels:
+          router-mode-label: "router-value"
+
+backup:
+  enabled: true
+  stackGraph:
+    scheduled:
+      enabled: true
+  configuration:
+    scheduled:
+      enabled: true
+
+clickhouse:
+  enabled: true
+  backup:
+    enabled: true
+    podAnnotations:
+      clickhouse-backup-annotation: "clickhouse-value"
+    podLabels:
+      clickhouse-backup-label: "clickhouse-value"
+    nodeSelector:
+      clickhouse-backup-node: "clickhouse-value"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: clickhouse-backup-affinity
+                  operator: In
+                  values:
+                    - clickhouse-value
+    tolerations:
+      - key: clickhouse-backup-toleration
+        operator: Equal
+        value: clickhouse-value
+        effect: NoSchedule

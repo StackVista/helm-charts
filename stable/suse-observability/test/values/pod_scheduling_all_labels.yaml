@@ -1,0 +1,46 @@
+global:
+  receiverApiKey: "test-key"
+
+stackstate:
+  baseUrl: "http://localhost"
+  license:
+    key: "test-key"
+  authentication:
+    adminPassword: "098f6bcd4621d373cade4e832627b4f6"
+  components:
+    all:
+      podAnnotations:
+        all-annotation: "all-value"
+      podLabels:
+        all-label: "all-value"
+      nodeSelector:
+        all-node: "all-value"
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: all-affinity
+                    operator: In
+                    values:
+                      - all-value
+              topologyKey: kubernetes.io/hostname
+      tolerations:
+        - key: all-toleration
+          operator: Equal
+          value: all-value
+          effect: NoSchedule
+
+backup:
+  enabled: true
+  stackGraph:
+    scheduled:
+      enabled: true
+  configuration:
+    scheduled:
+      enabled: true
+
+clickhouse:
+  enabled: true
+  backup:
+    enabled: true
