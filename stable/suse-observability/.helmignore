@@ -24,3 +24,4 @@ test/
 itest/
 ci/
 auth-demo/
+update-chart-dependencies.sh

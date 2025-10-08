@@ -38,6 +38,13 @@ $ brew install norwoodj/tap/helm-docs
 
 NOTE: The templates for README generation are only compatible with helm-docs 0.15+.
 
+### Updating SUSE Observability Chart dependencies
+
+The SUSE Observability Helm has few subchart dependencies located in the same repository, when the subcharts are changed the main Chart dependencies have to be updated. It can be done by running:
+```sh
+stable/suse-observability/update-chart-dependencies.sh
+```
+
 ## Testing the Helm charts
 
 The Helm chart repository supports testing Helm charts using the [Terratest](https://terratest.gruntwork.io/) library. In order to run tests for a chart, you can invoke the following command from the root of the repository:
