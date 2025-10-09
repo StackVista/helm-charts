@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.2.80`
+Current chart version is `0.2.81`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -140,7 +140,7 @@ Current chart version is `0.2.80`
 | stackgraph.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | stackgraph.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
 | stackgraph.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| stackgraph.version | string | `"7.11.10"` | Version of stackgraph to use |
+| stackgraph.version | string | `"7.11.11"` | Version of stackgraph to use |
 | statefulset.antiAffinity.strategy | string | `"soft"` | AntiAffinity strategy to use for all StatefulSets. |
 | statefulset.antiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | AntiAffinity topology key to use for all StatefulSets. |
 | tephra.affinity | object | `{}` | Affinity settings for pod assignment. |
