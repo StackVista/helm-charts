@@ -41,9 +41,6 @@ spec:
           labels:
             app.kubernetes.io/component: backup
             {{- include "suse-observability.labels.global" . | nindent 12 }}
-          {{- with .Values.stackstate.components.all.podLabels }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
           {{- with .Values.clickhouse.backup.podLabels }}
             {{- toYaml . | nindent 12 }}
           {{- end }}

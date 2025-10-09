@@ -90,9 +90,6 @@ spec:
       labels:
         app.kubernetes.io/component: ch-clean
         {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.all.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- with .Values.stackstate.components.clickhouseCleanup.podLabels }}
         {{- toYaml . | nindent 8 }}
       {{- end }}

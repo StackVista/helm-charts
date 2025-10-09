@@ -40,9 +40,6 @@ spec:
         app.kubernetes.io/component: router-mode
         {{- include "common.labels.standard" . | nindent 8 }}
         {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.all.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- with .Values.stackstate.components.router.mode.podLabels }}
         {{- toYaml . | nindent 8 }}
       {{- end }}

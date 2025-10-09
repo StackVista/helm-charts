@@ -24,9 +24,6 @@ spec:
       labels:
         app.kubernetes.io/component: backup
         {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.all.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- with .Values.stackstate.components.backup.podLabels }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -115,9 +112,6 @@ spec:
       labels:
         app.kubernetes.io/component: backup
         {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.all.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- with .Values.stackstate.components.backup.podLabels }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -212,9 +206,6 @@ spec:
       labels:
         app.kubernetes.io/component: backup
         {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.all.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- with .Values.stackstate.components.backup.podLabels }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -305,9 +296,6 @@ spec:
       labels:
         app.kubernetes.io/component: backup
         {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.all.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- with .Values.stackstate.components.backup.podLabels }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -425,9 +413,6 @@ spec:
       labels:
         app.kubernetes.io/component: backup
         {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.all.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- with .Values.stackstate.components.configurationBackup.podLabels }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -526,9 +511,6 @@ spec:
       labels:
         app.kubernetes.io/component: backup
         {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.all.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- with .Values.stackstate.components.configurationBackup.podLabels }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -641,9 +623,6 @@ spec:
       labels:
         app.kubernetes.io/component: backup
         {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.all.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- with .Values.stackstate.components.configurationBackup.podLabels }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -741,9 +720,6 @@ spec:
       labels:
         app.kubernetes.io/component: backup
         {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.all.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- with .Values.stackstate.components.configurationBackup.podLabels }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -841,9 +817,6 @@ spec:
       labels:
         app.kubernetes.io/component: backup
         {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.all.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- with .Values.stackstate.components.backup.podLabels }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -929,9 +902,6 @@ spec:
       labels:
         app.kubernetes.io/component: backup
         {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.all.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       {{- with .Values.stackstate.components.backup.podLabels }}
         {{- toYaml . | nindent 8 }}
       {{- end }}

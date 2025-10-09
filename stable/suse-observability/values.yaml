@@ -233,8 +233,6 @@ stackstate:
         tag: 7.0.0-snapshot.20251009112954-master-5ced326
       # stackstate.components.all.podAnnotations -- Extra annotations
       podAnnotations: {}
-      # stackstate.components.all.podLabels -- Extra labels
-      podLabels: {}
       metrics:
         defaultAgentMetricsFilter: '["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "akka_http_requests_active", "stackstate*", "receiver*", "stackgraph*", "caffeine*"]'
         # stackstate.components.all.metrics.enabled -- Enable metrics port.

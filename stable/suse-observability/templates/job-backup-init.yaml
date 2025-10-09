@@ -14,9 +14,6 @@ template:
     labels:
       app.kubernetes.io/component: backup
       {{- include "suse-observability.labels.global" . | nindent 6 }}
-    {{- with .Values.stackstate.components.all.podLabels }}
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
     {{- with .Values.stackstate.components.backup.podLabels }}
       {{- toYaml . | nindent 6 }}
     {{- end }}
