@@ -20,7 +20,7 @@ connectors:
     store:
       ttl: 30s
       max_items: 50000
-  forward:
+  forward: {}
   tracetotopo: {}
 processors:
   stsusage: {}
@@ -78,10 +78,10 @@ exporters:
   sts_kafka_exporter:
     brokers:
       - "suse-observability-kafka-headless:9092"
-    topic: "sts-topology-stream"
+    topic: "sts_topology_stream"
     read_timeout: 2s
     produce_timeout: 5s
-    required_acks: "leader"   # allowed: "none", "leader", "all"
+    required_acks: "none"   # allowed: "none", "leader", "all"
     timeout: 30s
     sending_queue:
       enabled: true
@@ -111,7 +111,7 @@ extensions:
     kafka:
       brokers:
         - "suse-observability-kafka-headless:9092"
-      topic: "sts-internal-settings"
+      topic: "sts_internal_settings"
 service:
   telemetry:
     metrics:
@@ -120,6 +120,7 @@ service:
     - health_check
     - memory_ballast
     - service_token_auth
+    - sts_settings_provider
   pipelines:
     traces:
       receivers:
