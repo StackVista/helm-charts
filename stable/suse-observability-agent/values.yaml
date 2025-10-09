@@ -103,9 +103,6 @@ nodeAgent:
   scc:
     # nodeAgent.scc.enabled -- Enable / disable the installation of the SecurityContextConfiguration needed for installation on OpenShift.
     enabled: false
-  networkTracing:
-    # nodeAgent.networkTracing.enabled -- Enable / disable the nodeAgent network tracing module.
-    enabled: true
   protocolInspection:
     # nodeAgent.protocolInspection.enabled -- Enable / disable the nodeAgent protocol inspection.
     enabled: true

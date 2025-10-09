@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.1.2`
+Current chart version is `1.2.0`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
@@ -244,7 +244,6 @@ stackstate/stackstate-k8s-agent
 | nodeAgent.containers.processAgent.resources.requests.memory | string | `"128Mi"` | Memory resource requests. |
 | nodeAgent.httpTracing.enabled | bool | `true` | Enable / disable the process-agent HTTP tracing. |
 | nodeAgent.logLevel | string | `"INFO"` | Logging level for agent processes. |
-| nodeAgent.networkTracing.enabled | bool | `true` | Enable / disable the nodeAgent network tracing module. |
 | nodeAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | nodeAgent.priorityClassName | string | `""` | Priority class for nodeAgent pods. |
 | nodeAgent.protocolInspection.enabled | bool | `true` | Enable / disable the nodeAgent protocol inspection. |
