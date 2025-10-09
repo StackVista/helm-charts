@@ -1,5 +1,7 @@
 global:
   receiverApiKey: "test-key"
+  commonLabels:
+    all-label: "all-value"
 
 stackstate:
   baseUrl: "http://localhost"
@@ -11,8 +13,6 @@ stackstate:
     all:
       podAnnotations:
         all-annotation: "all-value"
-      podLabels:
-        all-label: "all-value"
       nodeSelector:
         all-node: "all-value"
       affinity:
