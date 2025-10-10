@@ -2,10 +2,11 @@ package test
 
 import (
 	"fmt"
-	"github.com/imdario/mergo"
-	"github.com/stretchr/testify/require"
 	"strings"
 	"testing"
+
+	"github.com/imdario/mergo"
+	"github.com/stretchr/testify/require"
 
 	"github.com/caspr-io/yamlpath"
 	"github.com/gruntwork-io/terratest/modules/helm"
@@ -261,6 +262,13 @@ func TestGenerateValuesWithInvalidBaseUrl(t *testing.T) {
 	assert.Contains(t, err.Error(), "must include a scheme")
 }
 
+func TestGenerateValuesWithoutBaseConfigAndMissingBaseUrl(t *testing.T) {
+	_, err := helmtestutil.RenderHelmTemplateOpts(t, "stackstate-values", &helm.Options{
+		ValuesFiles: []string{"values/missing_base_url_without_base_config.yaml"},
+	})
+	assert.NoError(t, err)
+}
+
 func renderAsYaml(t *testing.T, values []string) map[string]interface{} {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "stackstate-values", &helm.Options{
 		ValuesFiles: values,
@@ -284,10 +292,7 @@ func renderAsYaml(t *testing.T, values []string) map[string]interface{} {
 
 		err = mergo.Merge(&valuesMap, doc, mergo.WithOverride)
 		require.NoErrorf(t, err, "Failed to merge map with values: %v", valuesMap)
-
-		fmt.Printf("Document: %+v\n", doc)
 	}
 
-	fmt.Printf("valuesMap: %+#v\n", valuesMap)
 	return valuesMap
 }
