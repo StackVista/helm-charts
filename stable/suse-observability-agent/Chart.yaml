@@ -21,21 +21,3 @@ maintainers:
 - name: SUSE
   email: suse-observability-ops@suse.com
 name: suse-observability-agent
-dependencies:
-- name: http-header-injector
-  alias: httpHeaderInjectorWebhook
-  # Local debugging: left here for future reference
-  # repository: file:///home/bram/stackvista/agent/http-header-injector/charts/http-header-injector
-  # version: "*"
-  repository: https://helm.stackstate.io
-  version: 0.0.22
-  condition: httpHeaderInjectorWebhook.enabled
-- name: kubernetes-rbac-agent
-  # chart source: https://gitlab.com/stackvista/agent/kubernetes-rbac-agent/-/tree/main/charts/kubernetes-rbac-agent
-
-  # Local debugging: left here for future reference
-  # repository: file:///home/bram/stackvista/agent/kubernetes-rbac-agent/charts/kubernetes-rbac-agent
-  # version: "*"
-  repository: https://helm.stackstate.io
-  version: 0.0.23
-  condition: kubernetes-rbac-agent.enabled
