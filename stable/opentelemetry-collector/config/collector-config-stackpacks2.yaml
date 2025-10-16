@@ -21,7 +21,16 @@ connectors:
       ttl: 30s
       max_items: 50000
   forward: {}
-  tracetotopo: {}
+  tracetotopo:
+    expression_cache_settings:
+      enable_metrics: true
+      size: 100000
+    tag_regex_cache_settings:
+      enable_metrics: true
+      size: 2000
+    tag_template_cache_settings:
+      enable_metrics: true
+      size: 2000
 processors:
   stsusage: {}
   batch:
