@@ -2131,7 +2131,7 @@ minio:
     repository: stackstate/minio
   # minio.accessKey -- Access key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
   accessKey: setme
-  # minio.accessKey -- Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
+  # minio.secretKey -- Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
   secretKey: setme
   azuregateway:
     # azuregateway.replicas -- Number of azure gateway instances to run in parallel

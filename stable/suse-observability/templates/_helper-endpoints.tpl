@@ -38,6 +38,13 @@ Logic to determine ElasticSearch endpoint.
 {{- end -}}
 
 {{/*
+Logic to determine ElasticSearch host.
+*/}}
+{{- define "stackstate.es.host" -}}
+{{- .Values.elasticsearch.clusterName -}}-{{ .Values.elasticsearch.nodeGroup }}-headless
+{{- end -}}
+
+{{/*
 Logic to determine Kafka endpoint.
 */}}
 {{- define "stackstate.kafka.endpoint" -}}

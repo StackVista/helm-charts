@@ -149,3 +149,15 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
 {{ $key }}: {{ $value | quote }}
 {{- end }}
 {{- end -}}
+
+{{- /*
+  Convert backup.elasticsearch.restore.scaleDownLabels map to comma-separated list of key=value pairs.
+  Example output: "observability.suse.com/scalable-during-es-restore=true,key=value"
+*/ -}}
+{{- define "stackstate.backup.elasticsearch.restore.scaleDownLabelsCommaSeparated" -}}
+{{- $labels := list -}}
+{{- range $key, $value := .Values.backup.elasticsearch.restore.scaleDownLabels }}
+  {{- $labels = append $labels (printf "%s=%s" $key $value) -}}
+{{- end }}
+{{- $labels | join "," -}}
+{{- end -}}

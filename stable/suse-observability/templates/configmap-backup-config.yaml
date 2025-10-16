@@ -1,0 +1,38 @@
+{{- define "stackstate.backup-config.configmap" -}}
+metadata:
+  name: {{ .Chart.Name }}-backup-config
+data:
+  config: |
+    elasticsearch:
+      snapshotRepository:
+        name: "sts-backup"
+        bucket: {{ .Values.backup.elasticsearch.bucketName | quote }}
+        endpoint: {{ include "stackstate.minio.endpoint" . | quote }}
+        basepath: {{ include "trimTrailingSlashes" .Values.backup.elasticsearch.s3Prefix | quote }}
+      slm:
+        name: "aut-sts-backup"
+        schedule: {{ .Values.backup.elasticsearch.scheduled.schedule | quote }}
+        snapshotTemplateName: "<sts-backup-{now{yyyyMMdd-HHmm}}>"
+        repository: "sts-backup"
+        indices: "sts*"
+        retentionExpireAfter: {{ .Values.backup.elasticsearch.scheduled.snapshotRetentionExpireAfter | quote }}
+        retentionMinCount: {{ .Values.backup.elasticsearch.scheduled.snapshotRetentionMinCount | quote }}
+        retentionMaxCount: {{ .Values.backup.elasticsearch.scheduled.snapshotRetentionMaxCount | quote }}
+      service:
+        name: {{ include "stackstate.es.host" . | quote }}
+        port: 9200
+        localPortForwardPort: 9200
+      restore:
+        repository: "sts-backup"
+        scaleDownLabelSelector: {{ include "stackstate.backup.elasticsearch.restore.scaleDownLabelsCommaSeparated" . }}
+        indexPrefix: sts
+        datastreamIndexPrefix: .ds-sts_k8s_logs
+        datastreamName: sts_k8s_logs
+        indicesPattern: sts*,.ds-sts_k8s_logs*
+{{- end -}}
+
+{{- if .Values.backup.enabled }}
+{{- $commonConfigmap := fromYaml (include "common.configmap" .) -}}
+{{- $stackstateBackupConfigmap := fromYaml (include "stackstate.backup-config.configmap" .) -}}
+{{- toYaml (merge $stackstateBackupConfigmap $commonConfigmap) -}}
+{{- end -}}

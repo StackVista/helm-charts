@@ -347,7 +347,7 @@ stackstate/stackstate
 | kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory | string | `"25Mi"` | Memory resource requests. |
 | kubernetes-rbac-agent.containers.rbacAgent.tolerations | list | `[]` | Set tolerations |
 | kubernetes-rbac-agent.url.value | string | `"{{ include \"stackstate.rbacAgent.url\" . }}"` |  |
-| minio.accessKey | string | `"setme"` | Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value. |
+| minio.accessKey | string | `"setme"` | Access key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value. |
 | minio.azuregateway.replicas | int | `1` |  |
 | minio.fullnameOverride | string | `"suse-observability-minio"` | **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components. |
 | minio.image.registry | string | `"quay.io"` | MinIO image registry |
@@ -355,7 +355,7 @@ stackstate/stackstate
 | minio.persistence.enabled | bool | `false` | Enables MinIO persistence. Must be enabled when MinIO is not configured as a gateway to AWS S3 or Azure Blob Storage. |
 | minio.replicas | int | `1` | Number of MinIO replicas. |
 | minio.s3gateway.replicas | int | `1` |  |
-| minio.secretKey | string | `"setme"` |  |
+| minio.secretKey | string | `"setme"` | Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value. |
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
 | opentelemetry-collector.command.name | string | `"usr/bin/sts-opentelemetry-collector"` |  |
