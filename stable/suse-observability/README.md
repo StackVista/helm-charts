@@ -207,6 +207,7 @@ stackstate/stackstate
 | global.features | object | `{"enableStackPacks2":false}` | Feature switches for SUSE Observability. |
 | global.features.enableStackPacks2 | bool | `false` | Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec. |
 | global.imagePullSecrets | list | `[]` | List of image pull secret names to be used by all images across all charts. |
+| global.imageRegistry | string | `nil` | Image registry to be used by all images across all charts. |
 | global.receiverApiKey | string | `""` | API key to be used by the Receiver. This setting is deprecated in favor of stackstate.apiKey.key |
 | global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overridden per PVC. |
 | hbase.all.metrics.agentAnnotationsEnabled | bool | `true` |  |
@@ -337,7 +338,6 @@ stackstate/stackstate
 | kubernetes-rbac-agent.clusterName.value | string | `"{{ .Release.Name }}"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
-| kubernetes-rbac-agent.containers.rbacAgent.image.registry | string | `"quay.io"` | Registry for the docker image. |
 | kubernetes-rbac-agent.containers.rbacAgent.image.repository | string | `"stackstate/kubernetes-rbac-agent"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
 | kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{"ad.stackstate.com/kubernetes-rbac-agent.check_names":"[\"openmetrics\"]","ad.stackstate.com/kubernetes-rbac-agent.init_configs":"[{}]","ad.stackstate.com/kubernetes-rbac-agent.instances":"[ { \"prometheus_url\": \"http://%%host%%:8080/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Additional annotations on the pod |

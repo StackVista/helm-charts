@@ -78,6 +78,9 @@ function updateDockerImagesInValues() {
   ${sed_bin} -i "s#repository: [^/:]\+\/\([^/:]\+\)\$#repository: $docker_repo_to/\1#g" "$helm_chart_dir/values.yaml"
   ${sed_bin} -i "s#spotlightRepository: [^/:]\+\/\([^/:]\+\)\$#spotlightRepository: $docker_repo_to/\1#g" "$helm_chart_dir/values.yaml"
 
+  # Set the global image registry
+  DOCKER_REGISTRY_TO="$docker_registry_to" yq -i -e  '.global.imageRegistry = env(DOCKER_REGISTRY_TO)' "$helm_chart_dir/values.yaml"
+
   # Update elasticsearch
   yq e -i ".elasticsearch.imageRegistry = \"$docker_registry_to\"" "$helm_chart_dir/values.yaml"
   yq e -i ".elasticsearch.imageRepository = \"$docker_repo_to/elasticsearch\"" "$helm_chart_dir/values.yaml"
