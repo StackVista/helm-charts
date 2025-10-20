@@ -176,7 +176,6 @@ stackstate:
         limits:
           cpu: "14"
           memory: 16000Mi
-          ephemeral-storage: 2Gi
     e2es:
       resources:
         requests:

@@ -17,14 +17,12 @@ hbase:
           cpu: "500m"
         limits:
           cpu: "1000m"
-          ephemeral-storage: "20Mi"
     regionserver:
       resources:
         requests:
           cpu: "3000m"
         limits:
           cpu: "6000m"
-          ephemeral-storage: "100Mi"
   hdfs:
     datanode:
       resources:
@@ -32,21 +30,17 @@ hbase:
           cpu: "600m"
         limits:
           cpu: "1200m"
-          ephemeral-storage: "70Mi"
     namenode:
       resources:
         requests:
           cpu: "200m"
         limits:
           cpu: "400m"
-          ephemeral-storage: "70Mi"
     secondarynamenode:
       enabled: true
       resources:
         requests:
           cpu: "10m"
-        limits:
-          ephemeral-storage: "70Mi"
   tephra:
     resources:
       limits:
@@ -65,7 +59,6 @@ kafka:
     limits:
       cpu: "4"
       memory: "4Gi"
-      ephemeral-storage: "70Mi"
 
 stackstate:
   features:
@@ -83,7 +76,6 @@ stackstate:
           cpu: "2000m"
           memory: "5Gi"
         limits:
-          ephemeral-storage: "800Mi"
           cpu: "4000m"
           memory: "5Gi"
     checks:
@@ -94,13 +86,11 @@ stackstate:
         limits:
           cpu: "6000m"
           memory: 5Gi
-          ephemeral-storage: "700Mi"
     healthSync:
       resources:
         limits:
           memory: 6Gi
           cpu: "3000m"
-          ephemeral-storage: "650Mi"
         requests:
           memory: 6Gi
           cpu: "1500m"
@@ -110,8 +100,6 @@ stackstate:
       resources:
         requests:
           cpu: "50m"
-        limits:
-          ephemeral-storage: "60Mi"
     notification:
       resources:
         requests:
@@ -126,7 +114,6 @@ stackstate:
           cpu: "120m"
         limits:
           cpu: "240m"
-          ephemeral-storage: "60Mi"
     slicing:
       resources:
         requests:
@@ -135,13 +122,11 @@ stackstate:
         limits:
           cpu: "600m"
           memory: 1500Mi
-          ephemeral-storage: "60Mi"
     state:
       resources:
         limits:
           cpu: "4"
           memory: "4000Mi"
-          ephemeral-storage: "700Mi"
         requests:
           cpu: "2"
           memory: "4000Mi"
@@ -152,7 +137,6 @@ stackstate:
         limits:
           cpu: "6000m"
           memory: 8Gi
-          ephemeral-storage: "700Mi"
         requests:
           cpu: "3000m"
           memory: 8Gi
@@ -172,7 +156,6 @@ stackstate:
         requests:
           cpu: "2000m"
           memory: 3Gi
-          ephemeral-storage: "60Mi"
       extraEnv:
         open:
           CONFIG_FORCE_stackstate_correlate_correlateConnections_workers: "2"

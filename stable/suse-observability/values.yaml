@@ -1541,7 +1541,7 @@ stackstate:
         limits:
           cpu: "200m"
           memory: "512Mi"
-          ephemeral-storage: "100Mi"
+          ephemeral-storage: "1Gi"
         requests:
           cpu: "200m"
           memory: "256Mi"

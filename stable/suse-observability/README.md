@@ -982,7 +982,7 @@ stackstate/stackstate
 | stackstate.components.vmagent.persistence.size | string | `"10Gi"` |  |
 | stackstate.components.vmagent.persistence.storageClass | string | `nil` |  |
 | stackstate.components.vmagent.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `vmagent` pods. |
-| stackstate.components.vmagent.resources | object | `{"limits":{"cpu":"200m","ephemeral-storage":"100Mi","memory":"512Mi"},"requests":{"cpu":"200m","ephemeral-storage":"1Mi","memory":"256Mi"}}` | Resource allocation for vmagent pod. |
+| stackstate.components.vmagent.resources | object | `{"limits":{"cpu":"200m","ephemeral-storage":"1Gi","memory":"512Mi"},"requests":{"cpu":"200m","ephemeral-storage":"1Mi","memory":"256Mi"}}` | Resource allocation for vmagent pod. |
 | stackstate.components.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | stackstate.components.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
