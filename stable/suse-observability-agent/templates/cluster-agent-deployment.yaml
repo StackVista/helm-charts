@@ -39,7 +39,7 @@ spec:
       serviceAccountName: {{ include "stackstate-k8s-agent.fullname" . }}
       containers:
         - name: cluster-agent
-          image: "{{ include "stackstate-k8s-agent.imageRegistry" . }}/{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
+          image: "{{ .Values.clusterAgent.image.repository }}:{{ .Values.clusterAgent.image.tag }}"
           imagePullPolicy: "{{ .Values.clusterAgent.image.pullPolicy }}"
           env:
           {{ include "stackstate-k8s-agent.apiKeyEnv" . | nindent 10 }}

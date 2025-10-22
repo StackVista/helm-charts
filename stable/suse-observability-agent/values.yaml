@@ -3,8 +3,6 @@
 #####################
 
 global:
-  # global.imageRegistry -- The image registry to use.
-  imageRegistry: "709825985650.dkr.ecr.us-east-1.amazonaws.com/suse"
   extraEnv:
     # global.extraEnv.open -- Extra open environment variables to inject into pods.
     open: {}
@@ -159,7 +157,7 @@ nodeAgent:
     agent:
       image:
         # nodeAgent.containers.agent.image.repository -- Base container image repository.
-        repository: stackstate/stackstate-k8s-agent
+        repository: 709825985650.dkr.ecr.us-east-1.amazonaws.com/suse/stackstate/stackstate-k8s-agent
         # nodeAgent.containers.agent.image.tag -- Default container image tag.
         tag: "8f803adb"
         # nodeAgent.containers.agent.image.pullPolicy -- Default container image pull policy.
@@ -212,10 +210,8 @@ nodeAgent:
       # nodeAgent.containers.processAgent.enabled -- Enable / disable the process agent container.
       enabled: true
       image:
-        # Override to pull the image from an alternate registry
-        registry:
         # nodeAgent.containers.processAgent.image.repository -- Process-agent container image repository.
-        repository: stackstate/stackstate-k8s-process-agent
+        repository: 709825985650.dkr.ecr.us-east-1.amazonaws.com/suse/stackstate/stackstate-k8s-process-agent
         # nodeAgent.containers.processAgent.image.tag -- Default process-agent container image tag.
         tag: "e7a68fed"
         # nodeAgent.containers.processAgent.image.pullPolicy -- Process-agent container image pull policy.
@@ -449,7 +445,7 @@ clusterAgent:
 
   image:
     # clusterAgent.image.repository -- Base container image repository.
-    repository: stackstate/stackstate-k8s-cluster-agent
+    repository: 709825985650.dkr.ecr.us-east-1.amazonaws.com/suse/stackstate/stackstate-k8s-cluster-agent
     # clusterAgent.image.tag -- Default container image tag.
     tag: "8f803adb"
     # clusterAgent.image.pullPolicy -- Default container image pull policy.
@@ -539,7 +535,7 @@ logsAgent:
 
   image:
     # logsAgent.image.repository -- Base container image repository.
-    repository: stackstate/promtail
+    repository: 709825985650.dkr.ecr.us-east-1.amazonaws.com/suse/stackstate/promtail
     # logsAgent.image.tag -- Default container image tag.
     tag: 2.9.15-2a5cc100
     # logsAgent.image.pullPolicy -- Default container image pull policy.
@@ -592,7 +588,7 @@ checksAgent:
 
   image:
     # checksAgent.image.repository -- Base container image repository.
-    repository: stackstate/stackstate-k8s-agent
+    repository: 709825985650.dkr.ecr.us-east-1.amazonaws.com/suse/stackstate/stackstate-k8s-agent
     # checksAgent.image.tag -- Default container image tag.
     tag: "8f803adb"
     # checksAgent.image.pullPolicy -- Default container image pull policy.

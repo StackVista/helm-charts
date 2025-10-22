@@ -36,7 +36,7 @@ spec:
       {{- include "stackstate-k8s-agent.image.pullSecrets" (dict "images" (list .Values.logsAgent.image .Values.all.image) "context" $) | nindent 6 }}
       containers:
         - name: logs-agent
-          image: "{{ include "stackstate-k8s-agent.imageRegistry" . }}/{{ .Values.logsAgent.image.repository }}:{{ .Values.logsAgent.image.tag }}"
+          image: "{{ .Values.logsAgent.image.repository }}:{{ .Values.logsAgent.image.tag }}"
           args:
           - -config.expand-env=true
           - -config.file=/etc/promtail/promtail.yaml

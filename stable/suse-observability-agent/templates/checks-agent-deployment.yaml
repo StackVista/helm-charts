@@ -37,7 +37,7 @@ spec:
       {{- include "stackstate-k8s-agent.image.pullSecrets" (dict "images" (list .Values.checksAgent.image .Values.all.image) "context" $) | nindent 6 }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ include "stackstate-k8s-agent.imageRegistry" . }}/{{ .Values.checksAgent.image.repository }}:{{ .Values.checksAgent.image.tag }}"
+          image: "{{ .Values.checksAgent.image.repository }}:{{ .Values.checksAgent.image.tag }}"
           imagePullPolicy: "{{ .Values.checksAgent.image.pullPolicy }}"
           env:
           {{ include "stackstate-k8s-agent.apiKeyEnv" . | nindent 10 }}
