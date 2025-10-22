@@ -1,6 +1,6 @@
 {{- define "container-agent" -}}
 - name: node-agent
-  image: "{{ include "stackstate-k8s-agent.imageRegistry" . }}/{{ .Values.nodeAgent.containers.agent.image.repository }}:{{ .Values.nodeAgent.containers.agent.image.tag }}"
+  image: "{{ .Values.nodeAgent.containers.agent.image.repository }}:{{ .Values.nodeAgent.containers.agent.image.tag }}"
   imagePullPolicy: "{{ .Values.nodeAgent.containers.agent.image.pullPolicy }}"
   env:
     {{ include "stackstate-k8s-agent.apiKeyEnv" . | nindent 4 }}
