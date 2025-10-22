@@ -1,9 +1,9 @@
 {{- define "container-process-agent" -}}
 - name: process-agent
 {{ if .Values.nodeAgent.containers.processAgent.image.registry }}
-  image: "{{ .Values.nodeAgent.containers.processAgent.image.registry }}/{{ .Values.nodeAgent.containers.processAgent.image.repository }}:{{ .Values.nodeAgent.containers.processAgent.image.tag }}"
+  image: "{{ .Values.nodeAgent.containers.processAgent.image.repository }}:{{ .Values.nodeAgent.containers.processAgent.image.tag }}"
 {{ else }}
-  image: "{{ include "stackstate-k8s-agent.imageRegistry" . }}/{{ .Values.nodeAgent.containers.processAgent.image.repository }}:{{ .Values.nodeAgent.containers.processAgent.image.tag }}"
+  image: "{{ .Values.nodeAgent.containers.processAgent.image.repository }}:{{ .Values.nodeAgent.containers.processAgent.image.tag }}"
 {{- end }}
   imagePullPolicy: "{{ .Values.nodeAgent.containers.processAgent.image.pullPolicy }}"
   ports:
