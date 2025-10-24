@@ -161,3 +161,10 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
 {{- end }}
 {{- $labels | join "," -}}
 {{- end -}}
+
+{{- /*
+  The labels of the Deployments that should be scaled down during Stackgraph restoring from the backup
+*/ -}}
+{{- define "stackstate.backup.stackgraph.restore.scaleDownLabelsCommaSeparated" -}}
+stackstate.com/connects-to-stackgraph=true
+{{- end -}}
