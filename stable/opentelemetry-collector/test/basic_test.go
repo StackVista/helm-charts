@@ -107,9 +107,10 @@ func TestOpenTelemetryCollectorConfigSelection(t *testing.T) {
 
 	defaultCollectorConfig := resources.ConfigMaps["otel-opentelemetry-collector"].Data["relay"]
 
-	assert.NotContains(t, defaultCollectorConfig, "stssettingsextension")
+	assert.NotContains(t, defaultCollectorConfig, "sts_settings_provider")
 	assert.NotContains(t, defaultCollectorConfig, "tracetotopo")
-	assert.NotContains(t, defaultCollectorConfig, "stskafkaexporter")
+	assert.NotContains(t, defaultCollectorConfig, "sts_kafka_exporter")
+	assert.NotContains(t, defaultCollectorConfig, "trace_statements", "trace_statements are only present for testing purposes and should not be in standard config")
 
 	// with the global.features.enableStackPacks2 set to true
 	output = helmtestutil.RenderHelmTemplate(t, releaseName, "values/enable-stackpacks2.yaml")
@@ -117,7 +118,8 @@ func TestOpenTelemetryCollectorConfigSelection(t *testing.T) {
 
 	stackPacks2CollectorConfig := resources.ConfigMaps["otel-opentelemetry-collector"].Data["relay"]
 
-	assert.Contains(t, stackPacks2CollectorConfig, "stssettingsextension")
+	assert.Contains(t, stackPacks2CollectorConfig, "sts_settings_provider")
 	assert.Contains(t, stackPacks2CollectorConfig, "tracetotopo")
-	assert.Contains(t, stackPacks2CollectorConfig, "stskafkaexporter")
+	assert.Contains(t, stackPacks2CollectorConfig, "sts_kafka_exporter")
+	assert.Contains(t, stackPacks2CollectorConfig, "trace_statements", "trace_statements are only present for testing purposes and should not be in standard config")
 }

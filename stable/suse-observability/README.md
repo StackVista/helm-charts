@@ -17,7 +17,7 @@ Current chart version is `2.6.2-pre.33`
 | file://../kafka/ | kafka | 19.1.3-suse-observability.3 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.13 |
-| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.5 |
+| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.6 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.26 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.26 |
@@ -358,123 +358,15 @@ stackstate/stackstate
 | minio.secretKey | string | `"setme"` | Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value. |
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
-| opentelemetry-collector.command.name | string | `"usr/bin/sts-opentelemetry-collector"` |  |
-| opentelemetry-collector.config.connectors.forward | string | `nil` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.dimensions[0] | string | `"service.namespace"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.dimensions[1] | string | `"service.instance.id"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.dimensions[2] | string | `"sts_api_key"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.dimensions[3] | string | `"peer.service"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.latency_histogram_buckets[0] | string | `"2ms"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.latency_histogram_buckets[10] | string | `"1s"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.latency_histogram_buckets[11] | string | `"1400ms"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.latency_histogram_buckets[12] | string | `"2s"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.latency_histogram_buckets[13] | string | `"5s"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.latency_histogram_buckets[14] | string | `"10s"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.latency_histogram_buckets[15] | string | `"15s"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.latency_histogram_buckets[16] | string | `"30s"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.latency_histogram_buckets[1] | string | `"4ms"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.latency_histogram_buckets[2] | string | `"6ms"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.latency_histogram_buckets[3] | string | `"8ms"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.latency_histogram_buckets[4] | string | `"10ms"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.latency_histogram_buckets[5] | string | `"50ms"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.latency_histogram_buckets[6] | string | `"100ms"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.latency_histogram_buckets[7] | string | `"200ms"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.latency_histogram_buckets[8] | string | `"400ms"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.latency_histogram_buckets[9] | string | `"800ms"` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.store.max_items | int | `50000` |  |
-| opentelemetry-collector.config.connectors.stsservicegraph.store.ttl | string | `"30s"` |  |
-| opentelemetry-collector.config.exporters.clickhousests.create_resources_table | bool | `false` |  |
-| opentelemetry-collector.config.exporters.clickhousests.create_traces_table | bool | `false` |  |
-| opentelemetry-collector.config.exporters.clickhousests.database | string | `"otel"` |  |
-| opentelemetry-collector.config.exporters.clickhousests.endpoint | string | `"tcp://suse-observability-clickhouse:9000?dial_timeout=10s&compress=lz4"` |  |
-| opentelemetry-collector.config.exporters.clickhousests.logs_table_name | string | `"otel_logs"` |  |
-| opentelemetry-collector.config.exporters.clickhousests.metrics_table_name | string | `"otel_metrics"` |  |
-| opentelemetry-collector.config.exporters.clickhousests.password | string | `"admin"` |  |
-| opentelemetry-collector.config.exporters.clickhousests.resources_table_name | string | `"otel_resources"` |  |
-| opentelemetry-collector.config.exporters.clickhousests.retry_on_failure.enabled | bool | `true` |  |
-| opentelemetry-collector.config.exporters.clickhousests.retry_on_failure.initial_interval | string | `"5s"` |  |
-| opentelemetry-collector.config.exporters.clickhousests.retry_on_failure.max_elapsed_time | string | `"300s"` |  |
-| opentelemetry-collector.config.exporters.clickhousests.retry_on_failure.max_interval | string | `"30s"` |  |
-| opentelemetry-collector.config.exporters.clickhousests.timeout | string | `"5s"` |  |
-| opentelemetry-collector.config.exporters.clickhousests.traces_table_name | string | `"otel_traces"` |  |
-| opentelemetry-collector.config.exporters.clickhousests.ttl | string | `"72h"` |  |
-| opentelemetry-collector.config.exporters.clickhousests.username | string | `"admin"` |  |
-| opentelemetry-collector.config.exporters.prometheusremotewrite/victoria-metrics.endpoint | string | `"http://suse-observability-vmagent:8429/api/v1/write"` |  |
-| opentelemetry-collector.config.exporters.prometheusremotewrite/victoria-metrics.resource_to_telemetry_conversion.enabled | bool | `true` |  |
-| opentelemetry-collector.config.exporters.ststopology.endpoint | string | `"${env:INTAKE_URL}"` |  |
-| opentelemetry-collector.config.extensions.health_check.endpoint | string | `"${env:MY_POD_IP}:13133"` |  |
-| opentelemetry-collector.config.extensions.memory_ballast | object | `{}` |  |
-| opentelemetry-collector.config.extensions.service_token_auth.cache.invalid_size | int | `100` |  |
-| opentelemetry-collector.config.extensions.service_token_auth.cache.valid_size | int | `100` |  |
-| opentelemetry-collector.config.extensions.service_token_auth.cache.valid_ttl | string | `"5m"` |  |
-| opentelemetry-collector.config.extensions.service_token_auth.endpoint.url | string | `"${env:API_URL}"` |  |
-| opentelemetry-collector.config.extensions.service_token_auth.schema | string | `"SUSEObservability"` |  |
-| opentelemetry-collector.config.processors.attributes/removeStsApiKey.actions[0].action | string | `"delete"` |  |
-| opentelemetry-collector.config.processors.attributes/removeStsApiKey.actions[0].key | string | `"client_sts_api_key"` |  |
-| opentelemetry-collector.config.processors.attributes/removeStsApiKey.actions[1].action | string | `"delete"` |  |
-| opentelemetry-collector.config.processors.attributes/removeStsApiKey.actions[1].key | string | `"server_sts_api_key"` |  |
-| opentelemetry-collector.config.processors.batch.send_batch_size | int | `100000` |  |
-| opentelemetry-collector.config.processors.batch.timeout | string | `"2s"` |  |
-| opentelemetry-collector.config.processors.resource/addDefaultNamespace.attributes[0].action | string | `"insert"` |  |
-| opentelemetry-collector.config.processors.resource/addDefaultNamespace.attributes[0].key | string | `"service.namespace"` |  |
-| opentelemetry-collector.config.processors.resource/addDefaultNamespace.attributes[0].value | string | `"default"` |  |
-| opentelemetry-collector.config.processors.resource/addStsApiKey.attributes[0].action | string | `"upsert"` |  |
-| opentelemetry-collector.config.processors.resource/addStsApiKey.attributes[0].from_context | string | `"auth.apiKey"` |  |
-| opentelemetry-collector.config.processors.resource/addStsApiKey.attributes[0].key | string | `"sts_api_key"` |  |
-| opentelemetry-collector.config.processors.resource/removeStsApiKey.attributes[0].action | string | `"delete"` |  |
-| opentelemetry-collector.config.processors.resource/removeStsApiKey.attributes[0].key | string | `"sts_api_key"` |  |
-| opentelemetry-collector.config.processors.stsusage | object | `{}` |  |
-| opentelemetry-collector.config.processors.transform/semconv.error_mode | string | `"ignore"` |  |
-| opentelemetry-collector.config.receivers.jaeger | string | `nil` |  |
-| opentelemetry-collector.config.receivers.otlp.protocols.grpc.auth.authenticator | string | `"service_token_auth"` |  |
-| opentelemetry-collector.config.receivers.otlp.protocols.grpc.endpoint | string | `"${env:MY_POD_IP}:4317"` |  |
-| opentelemetry-collector.config.receivers.otlp.protocols.http.auth.authenticator | string | `"service_token_auth"` |  |
-| opentelemetry-collector.config.receivers.otlp.protocols.http.endpoint | string | `"${env:MY_POD_IP}:4318"` |  |
-| opentelemetry-collector.config.receivers.prometheus | string | `nil` |  |
-| opentelemetry-collector.config.receivers.zipkin | string | `nil` |  |
-| opentelemetry-collector.config.service.extensions[0] | string | `"health_check"` |  |
-| opentelemetry-collector.config.service.extensions[1] | string | `"memory_ballast"` |  |
-| opentelemetry-collector.config.service.extensions[2] | string | `"service_token_auth"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics.exporters[0] | string | `"forward"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics.processors[0] | string | `"resource/addDefaultNamespace"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics.processors[1] | string | `"resource/addStsApiKey"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics.processors[2] | string | `"batch"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics.receivers[0] | string | `"otlp"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics/topology.exporters[0] | string | `"ststopology"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics/topology.receivers[0] | string | `"forward"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics/topology.receivers[1] | string | `"stsservicegraph"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics/victoria-metrics.exporters[0] | string | `"prometheusremotewrite/victoria-metrics"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics/victoria-metrics.processors[0] | string | `"resource/removeStsApiKey"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics/victoria-metrics.processors[1] | string | `"attributes/removeStsApiKey"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics/victoria-metrics.receivers[0] | string | `"forward"` |  |
-| opentelemetry-collector.config.service.pipelines.metrics/victoria-metrics.receivers[1] | string | `"stsservicegraph"` |  |
-| opentelemetry-collector.config.service.pipelines.traces.exporters[0] | string | `"forward"` |  |
-| opentelemetry-collector.config.service.pipelines.traces.exporters[1] | string | `"stsservicegraph"` |  |
-| opentelemetry-collector.config.service.pipelines.traces.exporters[2] | string | `"ststopology"` |  |
-| opentelemetry-collector.config.service.pipelines.traces.processors[0] | string | `"transform/semconv"` |  |
-| opentelemetry-collector.config.service.pipelines.traces.processors[1] | string | `"resource/addDefaultNamespace"` |  |
-| opentelemetry-collector.config.service.pipelines.traces.processors[2] | string | `"resource/addStsApiKey"` |  |
-| opentelemetry-collector.config.service.pipelines.traces.processors[3] | string | `"batch"` |  |
-| opentelemetry-collector.config.service.pipelines.traces.receivers[0] | string | `"otlp"` |  |
-| opentelemetry-collector.config.service.pipelines.traces/clickhouse.exporters[0] | string | `"clickhousests"` |  |
-| opentelemetry-collector.config.service.pipelines.traces/clickhouse.processors[0] | string | `"stsusage"` |  |
-| opentelemetry-collector.config.service.pipelines.traces/clickhouse.processors[1] | string | `"resource/removeStsApiKey"` |  |
-| opentelemetry-collector.config.service.pipelines.traces/clickhouse.receivers[0] | string | `"forward"` |  |
-| opentelemetry-collector.config.service.telemetry.metrics.address | string | `"0.0.0.0:8888"` |  |
 | opentelemetry-collector.extraEnvs | list | `[{"name":"API_URL","valueFrom":{"configMapKeyRef":{"key":"api.url","name":"suse-observability-otel-collector"}}},{"name":"INTAKE_URL","valueFrom":{"configMapKeyRef":{"key":"intake.url","name":"suse-observability-otel-collector"}}}]` | Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/). Contains API_URL with path to api server used to authorize requests |
 | opentelemetry-collector.fullnameOverride | string | `"suse-observability-otel-collector"` | Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | opentelemetry-collector.image.registry | string | `"quay.io"` |  |
 | opentelemetry-collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
-| opentelemetry-collector.image.tag | string | `"v0.0.21"` | Container image tag for 'opentelemetry-collector' containers. |
+| opentelemetry-collector.image.tag | string | `"v0.0.22"` | Container image tag for 'opentelemetry-collector' containers. |
 | opentelemetry-collector.mode | string | `"statefulset"` | deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset". |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.check_names" | string | `"[\"openmetrics\"]"` |  |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.init_configs" | string | `"[{}]"` |  |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8888/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"` |  |
-| opentelemetry-collector.ports.jaeger-compact.enabled | bool | `false` |  |
-| opentelemetry-collector.ports.jaeger-grpc.enabled | bool | `false` |  |
-| opentelemetry-collector.ports.jaeger-thrift.enabled | bool | `false` |  |
-| opentelemetry-collector.ports.metrics.enabled | bool | `true` |  |
-| opentelemetry-collector.ports.zipkin.enabled | bool | `false` |  |
 | opentelemetry-collector.replicaCount | int | `1` | only used with deployment mode |
 | opentelemetry-collector.resources.limits.cpu | string | `"500m"` |  |
 | opentelemetry-collector.resources.limits.memory | string | `"512Mi"` |  |
