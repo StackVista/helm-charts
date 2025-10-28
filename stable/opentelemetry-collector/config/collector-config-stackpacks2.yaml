@@ -59,6 +59,14 @@ processors:
   # extension point to massage data so it conforms to the semantic conventions
   transform/semconv:
     error_mode: ignore
+    trace_statements:
+      - context: span
+        statements:
+          - delete_key(attributes, "peer.service") where attributes["db.system"] == "redis"
+      - context: span
+        statements:
+          - set(attributes["db.system"], "other_sql") where attributes["db.type"] == "sql"
+            and attributes["db.system"] == nil
 exporters:
   clickhousests:
     endpoint: tcp://suse-observability-clickhouse:9000?dial_timeout=10s&compress=lz4
