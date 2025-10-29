@@ -702,6 +702,35 @@ build_notification-operator:
     - helm dependencies build stable/notification-operator
     - mkdir -p stable/notification-operator/build; helm package --destination stable/notification-operator/build stable/notification-operator
   stage: build
+build_opentelemetry-collector:
+  artifacts:
+    paths:
+      - stable/opentelemetry-collector/charts/
+      - stable/opentelemetry-collector/build/
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  rules:
+    - changes:
+        - stable/opentelemetry-collector/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/opentelemetry-collector/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/opentelemetry-collector/%
+    - helm dependencies build stable/opentelemetry-collector
+    - mkdir -p stable/opentelemetry-collector/build; helm package --destination stable/opentelemetry-collector/build stable/opentelemetry-collector
+  stage: build
 build_otel-demo:
   artifacts:
     paths:
@@ -1621,6 +1650,17 @@ check_notification-operator_version:
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - .gitlab/verify_versions_bumped.sh notification-operator
+  stage: validate
+check_opentelemetry-collector_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/opentelemetry-collector/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh opentelemetry-collector
   stage: validate
 check_otel-demo_version:
   before_script:
@@ -3141,6 +3181,47 @@ push_notification-operator_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/notification-operator
+push_opentelemetry-collector_to_internal:
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
+    - helm repo add deliveryhero https://charts.deliveryhero.io
+    - helm repo add elastic https://helm.elastic.co
+    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
+    - helm repo add stable https://charts.helm.sh/stable
+    - helm repo add stackstate https://helm.stackstate.io
+    - helm repo add stackstate-internal https://helm-internal.stackstate.io
+    - helm repo add stackstate-test https://helm-test.stackstate.io
+    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
+    - helm repo update
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
+  rules:
+    - if: $UPDATE_STACKGRAPH_VERSION
+      when: never
+    - if: $UPDATE_AAD_CHART_VERSION
+      when: never
+    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
+      when: never
+    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - changes:
+        - stable/opentelemetry-collector/**/*
+      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-opentelemetry-collector]/
+      when: on_success
+    - changes:
+        - stable/opentelemetry-collector/**/*
+      if: $CI_COMMIT_BRANCH == "master"
+      when: on_success
+    - if: $CI_COMMIT_TAG =~ /^opentelemetry-collector\/.*/
+      when: on_success
+  script:
+    - helm dependencies update --skip-refresh ${CHART}
+    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
+  stage: push-charts-to-internal
+  variables:
+    CHART: stable/opentelemetry-collector
 push_otel-demo_to_internal:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -5359,6 +5440,30 @@ test_notification-operator:
   variables:
     CGO_ENABLED: 0
     GOPATH: /go
+test_opentelemetry-collector:
+  cache:
+    key:
+      files:
+        - go.mod
+        - go.sum
+    paths:
+      - /go/pkg/mod/
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  rules:
+    - changes:
+        - stable/opentelemetry-collector/**/*
+      exists:
+        - stable/opentelemetry-collector/test/*.go
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - go mod download
+    - go test ./stable/opentelemetry-collector/test/...
+  stage: test
+  tags:
+    - sts-k8s-xl-runner
+  variables:
+    CGO_ENABLED: 0
+    GOPATH: /go
 test_otel-demo:
   cache:
     key:
@@ -6349,6 +6454,22 @@ validate_notification-operator:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/notification-operator/values.yaml
     - if [ -f stable/notification-operator/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/notification-operator/ci/default-values.yaml; fi
     - if [ -f stable/notification-operator/ci/default-values.yaml ]; then helm lint stable/notification-operator --values stable/notification-operator/ci/default-values.yaml; fi
+    - .gitlab/validate_kubeconform.sh
+  stage: validate
+validate_opentelemetry-collector:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/opentelemetry-collector/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - yamale --schema /etc/ct/chart_schema.yaml stable/opentelemetry-collector/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/opentelemetry-collector/Chart.yaml
+    - yamllint --config-file /etc/ct/lintconf.yaml stable/opentelemetry-collector/values.yaml
+    - if [ -f stable/opentelemetry-collector/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/opentelemetry-collector/ci/default-values.yaml; fi
+    - if [ -f stable/opentelemetry-collector/ci/default-values.yaml ]; then helm lint stable/opentelemetry-collector --values stable/opentelemetry-collector/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 validate_otel-demo:
