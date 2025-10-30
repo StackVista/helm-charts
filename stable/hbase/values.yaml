@@ -7,7 +7,7 @@ global:
   # global.commonLabels -- Labels to add to deployments, StatefulSets, and Pods managed by the chart.
   commonLabels: {}
 # version -- Version of hbase to use
-version: "1.2"
+version: "2.5"
 # stackstate.deployment.mode -- (Distributed, Mono) Run a single stackgraph service or split in multiple sub services as hbase-master, hbase-rs ....
 deployment:
   mode: "Distributed"
@@ -211,7 +211,8 @@ hbase:
     # hbase.zookeeper.quorum -- Zookeeper quorum used for single-node Zookeeper installations; not used if `zookeeper.replicaCount` is more than `1`.
     quorum: hbase
 hdfs:
-  version: java21-8-11835454
+  # hdfs.version -- The hadoop version is automatically derived from the hbase version, this is the specific build version of the HDFS image for that version
+  version: java21-8-be24ca0f
   # hdfs.minReplication -- Sets the minimum synchronous replication that the namenode will enforce when writing a block. This gives guarantees about the amount of copies of a single block. (If hdfs.datanode.replicaCount is set to a value less than this, the replication factor will be equal to the replicaCount.)
   minReplication: 1
   scc:
