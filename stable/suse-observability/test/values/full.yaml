@@ -28,9 +28,6 @@ stackstate:
     - https://rancher.localhost
   license:
     key: "api01"
-hbase:
-  all:
-    image:
 anomaly-detection:
   enabled: false
 backup:
