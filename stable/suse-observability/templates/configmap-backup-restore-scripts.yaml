@@ -845,6 +845,9 @@ spec:
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
+{{- if index .Values "victoria-metrics" "restore" "securityContext" "enabled" }}
+      securityContext: {{- omit (index .Values "victoria-metrics" "restore" "securityContext") "enabled" | toYaml | nindent 8 }}
+{{- end }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}

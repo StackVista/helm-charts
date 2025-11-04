@@ -168,3 +168,10 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
 {{- define "stackstate.backup.stackgraph.restore.scaleDownLabelsCommaSeparated" -}}
 stackstate.com/connects-to-stackgraph=true
 {{- end -}}
+
+{{- /*
+  The labels of the Statefulsets that should be scaled down during VictoriaMetrics restoring from the backup
+*/ -}}
+{{- define "stackstate.backup.victoriametrics.restore.scaleDownLabelsCommaSeparated" -}}
+observability.suse.com/scalable-during-vm-restore=true
+{{- end -}}

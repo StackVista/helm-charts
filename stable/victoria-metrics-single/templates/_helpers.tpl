@@ -263,3 +263,10 @@ Create Pod labels that merge server.podLabels and global.commonLabels with serve
 {{- end }}
 {{- end }}
 {{- end -}}
+
+{{- /*
+  The labels of the Statefulsets that should be scaled down during VictoriaMetrics restoring from the backup
+*/ -}}
+{{- define "victoria-metrics.server.scaleDownRestoreLabels" -}}
+observability.suse.com/scalable-during-vm-restore: "true"
+{{- end -}}

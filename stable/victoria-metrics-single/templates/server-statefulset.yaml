@@ -11,6 +11,7 @@ metadata:
   labels:
     {{- include "victoria-metrics.server.labels" . | nindent 4 }}
     {{- include "victoria-metrics.server.statefulsetLabels" . | nindent 4 }}
+    {{- include "victoria-metrics.server.scaleDownRestoreLabels" . | nindent 4 }}
   name: {{ template "victoria-metrics.server.fullname" . }}
 spec:
   serviceName: {{ template "victoria-metrics.server.fullname" . }}
