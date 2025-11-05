@@ -249,10 +249,10 @@ stackstate:
     vmagent:
       resources:
         limits:
-          cpu: 4000m
+          cpu: 5000m
           memory: 5000Mi
         requests:
-          cpu: 3000m
+          cpu: 4000m
           memory: 5000Mi
     ui:
       replicaCount: 2
