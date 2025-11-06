@@ -17,7 +17,7 @@ Current chart version is `2.6.3-pre.15`
 | file://../kafka/ | kafka | 19.1.3-suse-observability.3 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.13 |
-| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.6 |
+| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.7 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.27 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.27 |
