@@ -2518,7 +2518,7 @@ clickhouse:
     # clickhouse.image.repository -- Repository where to get the image from.
     repository: stackstate/clickhouse
     # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
-    tag: 24.12.3-debian-12-r1-59d02972
+    tag: 25.9.5-1361f690
   # clickhouse.enabled -- Enable / disable chart-based Clickhouse.
   enabled: true
   # clickhouse.shards -- Number of ClickHouse shards to deploy
