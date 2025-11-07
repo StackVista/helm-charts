@@ -513,7 +513,7 @@ stackstate/stackstate
 | stackstate.components.clickhouseCleanup.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for kafka-topic-create containers. |
 | stackstate.components.clickhouseCleanup.image.registry | string | `"quay.io"` |  |
 | stackstate.components.clickhouseCleanup.image.repository | string | `"stackstate/clickhouse"` |  |
-| stackstate.components.clickhouseCleanup.image.tag | string | `"24.12.3-debian-12-r1-59d02972"` |  |
+| stackstate.components.clickhouseCleanup.image.tag | string | `"25.9.5-1361f690"` |  |
 | stackstate.components.clickhouseCleanup.jobAnnotations | object | `{}` | Annotations for clickhouseCleanup job. |
 | stackstate.components.clickhouseCleanup.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.clickhouseCleanup.podAnnotations | object | `{}` | Extra annotations for clickhouse cleanup job pods. |

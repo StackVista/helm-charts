@@ -1417,7 +1417,7 @@ stackstate:
         # clickhouse.image.repository -- Repository where to get the image from.
         repository: stackstate/clickhouse
         # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
-        tag: 24.12.3-debian-12-r1-59d02972
+        tag: 25.9.5-1361f690
         # stackstate.components.clickhouseCleanup.image.pullPolicy -- Image pull policy for kafka-topic-create containers.
         pullPolicy: IfNotPresent
       # stackstate.components.clickhouseCleanup.resources -- Resource allocation for `clickhouseCleanup` pods.
