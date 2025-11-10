@@ -110,10 +110,10 @@ console:
   # console.resources -- Resources to allocate for HDFS console.
   resources:
     limits:
-      memory: "1Gi"
+      memory: "4Gi"
       cpu: "500m"
     requests:
-      memory: "512Mi"
+      memory: "4Gi"
       cpu: "50m"
   # console.replicaCount -- Amount of console replicas to provision. Default of 0,
   replicaCount: 0
