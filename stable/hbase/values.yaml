@@ -128,6 +128,11 @@ console:
   tolerations: []
   # console.affinity -- Affinity settings for pod assignment.
   affinity: {}
+  integrity:
+    # console.integrity.enabled -- Enable / disable periodic integrity check to run though a cronjob.
+    enabled: false
+    # console.integrity.schedule -- Schedule at which the integrity check runs
+    schedule: '*/30 * * * *'
 wait:
   image:
     # wait.image.registry -- Base container image registry for wait containers.

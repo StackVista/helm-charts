@@ -38,6 +38,8 @@ Current chart version is `0.2.85`
 | console.image.pullPolicy | string | `nil` | Pull policy for console pods, defaults to `stackgraph.image.pullPolicy` |
 | console.image.repository | string | `"stackstate/stackgraph-console"` | Base container image repository for console pods. |
 | console.image.tag | string | `nil` | Container image tag for console pods, defaults to `version`-`stackgraph.version` |
+| console.integrity.enabled | bool | `false` | Enable / disable periodic integrity check to run though a cronjob. |
+| console.integrity.schedule | string | `"*/30 * * * *"` | Schedule at which the integrity check runs |
 | console.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | console.replicaCount | int | `0` | Amount of console replicas to provision. Default of 0, |
 | console.resources | object | `{"limits":{"cpu":"500m","memory":"4Gi"},"requests":{"cpu":"50m","memory":"4Gi"}}` | Resources to allocate for HDFS console. |

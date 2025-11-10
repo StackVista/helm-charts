@@ -6,7 +6,7 @@ imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.console.
 args:
 - /bin/bash
 - -c
-- while true; do sleep 10; done
+- {{ .console_command }}
 env:
 {{- include "all.commonEnv" . }}
 {{- include "console.commonEnv" . }}
@@ -29,7 +29,7 @@ workingDir: /tmp
 
 {{- define "hbase.console.deployment" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $overrideContainer := fromYaml (include "hbase.console.container.main" .) -}}
+{{- $overrideContainer := fromYaml (include "hbase.console.container.main" (merge (dict "console_command" "while true; do sleep 10; done") .)) -}}
 {{- $stackstateHbaseConsoleContainer := (merge $overrideContainer $commonContainer) }}
 metadata:
   labels:
@@ -56,12 +56,12 @@ spec:
 {{- end }}
     spec:
       {{- include "common.image.pullSecret.name" (dict "images" (list .Values.all.image) "context" $) | nindent 6 }}
-      {{- if .Values.serviceAccount.create }}
+    {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ template "common.fullname.short" . }}-console
-      {{- end }}
-      {{- if .Values.console.securityContext.enabled }}
+    {{- end }}
+    {{- if .Values.console.securityContext.enabled }}
       securityContext: {{- omit .Values.console.securityContext "enabled" | toYaml | nindent 8 }}
-      {{- end }}
+    {{- end }}
       containers:
       - {{ toYaml $stackstateHbaseConsoleContainer | nindent 8 }}
     {{- if or .Values.all.nodeSelector .Values.console.nodeSelector }}
