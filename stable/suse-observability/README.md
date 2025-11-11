@@ -154,7 +154,7 @@ stackstate/stackstate
 | clickhouse.fullnameOverride | string | `"suse-observability-clickhouse"` | Name override for clickhouse child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | clickhouse.image.registry | string | `"quay.io"` | Registry where to get the image from |
 | clickhouse.image.repository | string | `"stackstate/clickhouse"` | Repository where to get the image from. |
-| clickhouse.image.tag | string | `"25.9.5-1361f690"` | Container image tag for 'clickhouse' containers. |
+| clickhouse.image.tag | string | `"25.9.5-d30c9bcf"` | Container image tag for 'clickhouse' containers. |
 | clickhouse.metrics.enabled | bool | `true` |  |
 | clickhouse.persistence.size | string | `"50Gi"` | Size of persistent volume for each clickhouse pod |
 | clickhouse.podAnnotations."ad.stackstate.com/backup.check_names" | string | `"[\"openmetrics\"]"` |  |
@@ -510,10 +510,10 @@ stackstate/stackstate
 | stackstate.components.checks.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.clickhouseCleanup.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.clickhouseCleanup.extraEnv.open | object | `{}` | Add additional environment variables to the pod |
-| stackstate.components.clickhouseCleanup.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for kafka-topic-create containers. |
-| stackstate.components.clickhouseCleanup.image.registry | string | `"quay.io"` |  |
-| stackstate.components.clickhouseCleanup.image.repository | string | `"stackstate/clickhouse"` |  |
-| stackstate.components.clickhouseCleanup.image.tag | string | `"25.9.5-1361f690"` |  |
+| stackstate.components.clickhouseCleanup.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy `clickhouseCleanup` containers. |
+| stackstate.components.clickhouseCleanup.image.registry | string | `"quay.io"` | Registry where to get the image from |
+| stackstate.components.clickhouseCleanup.image.repository | string | `"stackstate/clickhouse"` | Repository where to get the image from. |
+| stackstate.components.clickhouseCleanup.image.tag | string | `"25.9.5-d30c9bcf"` | Container image tag for 'clickhouseCleanup' containers. |
 | stackstate.components.clickhouseCleanup.jobAnnotations | object | `{}` | Annotations for clickhouseCleanup job. |
 | stackstate.components.clickhouseCleanup.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.clickhouseCleanup.podAnnotations | object | `{}` | Extra annotations for clickhouse cleanup job pods. |

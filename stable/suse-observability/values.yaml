@@ -1412,13 +1412,13 @@ stackstate:
         # stackstate.components.clickhouseCleanup.extraEnv.open -- Add additional environment variables to the pod
         open: {}
       image:
-        # clickhouse.image.registry -- Registry where to get the image from
+        # stackstate.components.clickhouseCleanup.image.registry -- Registry where to get the image from
         registry: quay.io
-        # clickhouse.image.repository -- Repository where to get the image from.
+        # stackstate.components.clickhouseCleanup.image.repository -- Repository where to get the image from.
         repository: stackstate/clickhouse
-        # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
-        tag: 25.9.5-1361f690
-        # stackstate.components.clickhouseCleanup.image.pullPolicy -- Image pull policy for kafka-topic-create containers.
+        # stackstate.components.clickhouseCleanup.image.tag -- Container image tag for 'clickhouseCleanup' containers.
+        tag: 25.9.5-d30c9bcf
+        # stackstate.components.clickhouseCleanup.image.pullPolicy -- Image pull policy `clickhouseCleanup` containers.
         pullPolicy: IfNotPresent
       # stackstate.components.clickhouseCleanup.resources -- Resource allocation for `clickhouseCleanup` pods.
       resources:
@@ -2518,7 +2518,7 @@ clickhouse:
     # clickhouse.image.repository -- Repository where to get the image from.
     repository: stackstate/clickhouse
     # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
-    tag: 25.9.5-1361f690
+    tag: 25.9.5-d30c9bcf
   # clickhouse.enabled -- Enable / disable chart-based Clickhouse.
   enabled: true
   # clickhouse.shards -- Number of ClickHouse shards to deploy
