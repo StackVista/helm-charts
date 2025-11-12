@@ -140,6 +140,8 @@ stackstate/stackstate
 | hbase.all.metrics.enabled | bool | `true` |  |
 | hbase.commonLabels | object | `{"app.kubernetes.io/part-of":"stackstate"}` | Add additional labels to all resources created for all hbase resources |
 | hbase.console.enabled | bool | `false` | Enable / disable deployment of the stackgraph-console for debugging. |
+| hbase.console.integrity.enabled | bool | `false` | Enable / disable periodic integrity check to run though a cronjob. |
+| hbase.console.integrity.schedule | string | `"*/30 * * * *"` | Schedule at which the integrity check runs |
 | hbase.enabled | bool | `true` | Enable / disable chart-based HBase. |
 | hbase.hbase.master.replicaCount | int | `2` | Number of HBase master node replicas. |
 | hbase.hbase.master.resources.limits.cpu | string | `"500m"` |  |

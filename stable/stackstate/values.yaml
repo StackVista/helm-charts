@@ -1126,6 +1126,11 @@ hbase:
   console:
     # hbase.console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
     enabled: false
+    integrity:
+      # hbase.console.integrity.enabled -- Enable / disable periodic integrity check to run though a cronjob.
+      enabled: false
+      # hbase.console.integrity.schedule -- Schedule at which the integrity check runs
+      schedule: '*/30 * * * *'
   hbase:
     master:
       # hbase.hbase.master.replicaCount -- Number of HBase master node replicas.
