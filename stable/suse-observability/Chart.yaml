@@ -1,6 +1,6 @@
 apiVersion: v2
-appVersion: "7.0.0-snapshot.20251106200530-master-cc23525"
-version: 2.6.3-pre.17
+appVersion: "7.0.0-snapshot.20251112072337-master-fdf0cd6"
+version: 2.6.3-pre.23
 description: Helm chart for SUSE Observability
 keywords:
   - kubernetes
@@ -33,7 +33,7 @@ dependencies:
   - name: hbase
     condition: hbase.enabled
     repository: file://../hbase/
-    version: "0.2.85"
+    version: "0.2.86"
   - name: kafka
     condition: kafka.enabled
     repository: file://../kafka/
