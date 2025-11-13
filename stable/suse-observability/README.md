@@ -2,7 +2,7 @@
 
 Helm chart for SUSE Observability
 
-Current chart version is `2.6.3-pre.23`
+Current chart version is `2.6.3-pre.24`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
