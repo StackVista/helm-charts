@@ -1412,13 +1412,13 @@ stackstate:
         # stackstate.components.clickhouseCleanup.extraEnv.open -- Add additional environment variables to the pod
         open: {}
       image:
-        # clickhouse.image.registry -- Registry where to get the image from
+        # stackstate.components.clickhouseCleanup.image.registry -- Registry where to get the image from
         registry: quay.io
-        # clickhouse.image.repository -- Repository where to get the image from.
+        # stackstate.components.clickhouseCleanup.image.repository -- Repository where to get the image from.
         repository: stackstate/clickhouse
-        # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
-        tag: 24.12.3-debian-12-r1-59d02972
-        # stackstate.components.clickhouseCleanup.image.pullPolicy -- Image pull policy for kafka-topic-create containers.
+        # stackstate.components.clickhouseCleanup.image.tag -- Container image tag for 'clickhouseCleanup' containers.
+        tag: 25.9.5-d30c9bcf
+        # stackstate.components.clickhouseCleanup.image.pullPolicy -- Image pull policy `clickhouseCleanup` containers.
         pullPolicy: IfNotPresent
       # stackstate.components.clickhouseCleanup.resources -- Resource allocation for `clickhouseCleanup` pods.
       resources:
@@ -1463,7 +1463,7 @@ stackstate:
         # stackstate.components.kafkaTopicCreate.image.repository -- Base container image repository for kafka-topic-create containers.
         repository: stackstate/kafka
         # stackstate.components.kafkaTopicCreate.image.tag -- Container image tag for kafka-topic-create containers.
-        tag: 3.6.2-aec2a402
+        tag: 3.9.1-17ef1d95
         # stackstate.components.kafkaTopicCreate.image.pullPolicy -- Image pull policy for kafka-topic-create containers.
         pullPolicy: IfNotPresent
       # stackstate.components.kafkaTopicCreate.resources -- Resource allocation for `kafkaTopicCreate` pods.
@@ -2014,7 +2014,7 @@ kafka:
     # kafka.image.tag -- Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.**
     # When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order
     # for the kafkaup operator to upgrade the inter broker protocol version
-    tag: 3.6.2-aec2a402
+    tag: 3.9.1-17ef1d95
   # kafka.logRetentionHours -- The minimum age of a log file to be eligible for deletion due to age.
   logRetentionHours: 24
   service:
@@ -2088,7 +2088,7 @@ kafka:
     ad.stackstate.com/jmx-exporter.init_configs: "[{}]"
     ad.stackstate.com/jmx-exporter.instances: '[ { "prometheus_url": "http://%%host%%:5556/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
     # When changing this version, be sure to also change the image, such that the image version and this version are in sync
-    stackstate.com/kafkaup-operator.kafka_version: "3.3.1"
+    stackstate.com/kafkaup-operator.kafka_version: "3.9.1"
   # kafka.resources -- Kafka resources per pods.
   resources:
     limits:
@@ -2523,7 +2523,7 @@ clickhouse:
     # clickhouse.image.repository -- Repository where to get the image from.
     repository: stackstate/clickhouse
     # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
-    tag: 24.12.3-debian-12-r1-59d02972
+    tag: 25.9.5-d30c9bcf
   # clickhouse.enabled -- Enable / disable chart-based Clickhouse.
   enabled: true
   # clickhouse.shards -- Number of ClickHouse shards to deploy
