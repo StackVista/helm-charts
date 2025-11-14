@@ -58,6 +58,11 @@ data:
       regex: ".+;.+"
       replacement: "k8s:{{ "{{cluster_name}}:{{namespace}}" }}"
     - action: replace
+      source_labels: [k8s_cluster_name, k8s_namespace_name]
+      target_label: "_scope_"
+      regex: ".+;.+"
+      replacement: "k8s:{{ "{{k8s_cluster_name}}:{{k8s_namespace_name}}" }}"
+    - action: replace
       source_labels: [cluster_name, local_pod_ns]
       target_label: "_scope_"
       regex: ".+;.+"
