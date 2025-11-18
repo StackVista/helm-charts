@@ -170,6 +170,13 @@ stackstate.com/connects-to-stackgraph=true
 {{- end -}}
 
 {{- /*
+  The labels of the Deployments that should be scaled down during Settings restoring from the backup. The same as for Stackgraph
+*/ -}}
+{{- define "stackstate.backup.configuration.restore.scaleDownLabelsCommaSeparated" -}}
+{{ include "stackstate.backup.stackgraph.restore.scaleDownLabelsCommaSeparated" . }}
+{{- end -}}
+
+{{- /*
   The labels of the Statefulsets that should be scaled down during VictoriaMetrics restoring from the backup
 */ -}}
 {{- define "stackstate.backup.victoriametrics.restore.scaleDownLabelsCommaSeparated" -}}
