@@ -1417,7 +1417,7 @@ stackstate:
         # stackstate.components.clickhouseCleanup.image.repository -- Repository where to get the image from.
         repository: stackstate/clickhouse
         # stackstate.components.clickhouseCleanup.image.tag -- Container image tag for 'clickhouseCleanup' containers.
-        tag: 25.9.5-d30c9bcf
+        tag: 25.9.5-85835861-137
         # stackstate.components.clickhouseCleanup.image.pullPolicy -- Image pull policy `clickhouseCleanup` containers.
         pullPolicy: IfNotPresent
       # stackstate.components.clickhouseCleanup.resources -- Resource allocation for `clickhouseCleanup` pods.
@@ -2523,7 +2523,7 @@ clickhouse:
     # clickhouse.image.repository -- Repository where to get the image from.
     repository: stackstate/clickhouse
     # clickhouse.image.tag -- Container image tag for 'clickhouse' containers.
-    tag: 25.9.5-d30c9bcf
+    tag: 25.9.5-85835861-137
   # clickhouse.enabled -- Enable / disable chart-based Clickhouse.
   enabled: true
   # clickhouse.shards -- Number of ClickHouse shards to deploy
