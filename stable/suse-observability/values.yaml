@@ -1564,6 +1564,45 @@ stackstate:
                         - stackstate
                 topologyKey: kubernetes.io/hostname
       agentMetricsFilter: '["vm*", "go*"]'
+    workloadObserver:
+      # stackstate.components.workloadObserver.enabled -- Enable/disable the workload observer
+      enabled: true
+      extraEnv:
+        # stackstate.components.workloadObserver.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: { }
+      image:
+        # stackstate.components.workloadObserver.image.imageRegistry -- `imageRegistry` used for the `workloadObserver` component Docker image; this will override `global.imageRegistry` on a per-service basis.
+        imageRegistry: ""
+        # stackstate.components.workloadObserver.image.pullPolicy -- `pullPolicy` used for the `workloadObserver` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.workloadObserver.image.repository -- Repository of the workloadObserver component Docker image.
+        repository: stackstate/workload-observer
+        # stackstate.components.workloadObserver.image.tag -- Tag used for the `workloadObserver` component Docker image..
+        tag: aeab2d8e
+      # stackstate.components.workloadObserver.podAnnotations -- Extra annotations
+      podAnnotations: { }
+      # stackstate.components.workloadObserver.resources -- Resource allocation for `workloadObserver` pods.
+      resources:
+        limits:
+          cpu: "50m"
+          memory: "48Mi"
+          ephemeral-storage: "1Gi"
+        requests:
+          memory: "24Mi"
+          cpu: "20m"
+          ephemeral-storage: "1Mi"
+      persistence:
+        sizeMB: 1024
+        storageClass:
+      # stackstate.components.workloadObserver.poddisruptionbudget -- Number of `workloadObserver` replicas.
+      poddisruptionbudget:
+        maxUnavailable: 1
+      # stackstate.components.workloadObserver.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: { }
+      # stackstate.components.workloadObserver.tolerations -- Toleration labels for pod assignment.
+      tolerations: [ ]
+      # stackstate.components.workloadObserver.affinity -- Affinity settings for pod assignment.
+      affinity: { }
     wait:
       image:
         # stackstate.components.wait.image.registry -- Base container image registry for wait containers.

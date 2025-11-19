@@ -882,6 +882,20 @@ stackstate/stackstate
 | stackstate.components.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
 | stackstate.components.wait.image.tag | string | `"1.0.11-04b49abf"` | Container image tag for wait containers. |
+| stackstate.components.workloadObserver.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.workloadObserver.enabled | bool | `true` | Enable/disable the workload observer |
+| stackstate.components.workloadObserver.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| stackstate.components.workloadObserver.image.imageRegistry | string | `""` | `imageRegistry` used for the `workloadObserver` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
+| stackstate.components.workloadObserver.image.pullPolicy | string | `""` | `pullPolicy` used for the `workloadObserver` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.components.workloadObserver.image.repository | string | `"stackstate/workload-observer"` | Repository of the workloadObserver component Docker image. |
+| stackstate.components.workloadObserver.image.tag | string | `"aeab2d8e"` | Tag used for the `workloadObserver` component Docker image.. |
+| stackstate.components.workloadObserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.workloadObserver.persistence.sizeMB | int | `1024` |  |
+| stackstate.components.workloadObserver.persistence.storageClass | string | `nil` |  |
+| stackstate.components.workloadObserver.podAnnotations | object | `{}` | Extra annotations |
+| stackstate.components.workloadObserver.poddisruptionbudget | object | `{"maxUnavailable":1}` | Number of `workloadObserver` replicas. |
+| stackstate.components.workloadObserver.resources | object | `{"limits":{"cpu":"50m","ephemeral-storage":"1Gi","memory":"48Mi"},"requests":{"cpu":"20m","ephemeral-storage":"1Mi","memory":"24Mi"}}` | Resource allocation for `workloadObserver` pods. |
+| stackstate.components.workloadObserver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.deployment.edition | string | `"Prime"` | StackState edition, one of 'Community' or 'Prime' |
 | stackstate.deployment.mode | string | `"SelfHosted"` | Deployment mode of StackState, possible values are 'Saas' and 'SelfHosted' |
 | stackstate.email | object | `{"additionalProperties":{"mail.smtp.auth":"true","mail.smtp.starttls.enable":"true"},"enabled":false,"sender":"","server":{"auth":{"fromExternalSecret":null,"password":"","username":""},"host":"","port":587,"protocol":"smtp"}}` | Email configuration for StackState |
