@@ -1,10 +1,10 @@
 # minio
 
-![Version: 8.0.10-stackstate.13](https://img.shields.io/badge/Version-8.0.10--stackstate.13-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 8.0.10-stackstate.14](https://img.shields.io/badge/Version-8.0.10--stackstate.14-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 High Performance, Kubernetes Native Object Storage
 
-Current chart version is `8.0.10-stackstate.13`
+Current chart version is `8.0.10-stackstate.14`
 
 **Homepage:** <https://min.io>
 
@@ -68,7 +68,7 @@ Current chart version is `8.0.10-stackstate.13`
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.registry | string | `"quay.io"` |  |
 | image.repository | string | `"stackstate/minio"` |  |
-| image.tag | string | `"RELEASE.2025-01-13T16-22-00Z-4ae4220f"` |  |
+| image.tag | string | `"RELEASE.2025-11-19T12-41-50Z-15bb6f44-162"` |  |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.enabled | bool | `false` |  |
