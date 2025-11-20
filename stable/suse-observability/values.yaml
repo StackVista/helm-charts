@@ -1569,7 +1569,7 @@ stackstate:
       enabled: true
       extraEnv:
         # stackstate.components.workloadObserver.extraEnv.open -- Extra open environment variables to inject into pods.
-        open: { }
+        open: {}
       image:
         # stackstate.components.workloadObserver.image.imageRegistry -- `imageRegistry` used for the `workloadObserver` component Docker image; this will override `global.imageRegistry` on a per-service basis.
         imageRegistry: ""
@@ -1580,7 +1580,7 @@ stackstate:
         # stackstate.components.workloadObserver.image.tag -- Tag used for the `workloadObserver` component Docker image..
         tag: aeab2d8e
       # stackstate.components.workloadObserver.podAnnotations -- Extra annotations
-      podAnnotations: { }
+      podAnnotations: {}
       # stackstate.components.workloadObserver.resources -- Resource allocation for `workloadObserver` pods.
       resources:
         limits:
@@ -1598,11 +1598,11 @@ stackstate:
       poddisruptionbudget:
         maxUnavailable: 1
       # stackstate.components.workloadObserver.nodeSelector -- Node labels for pod assignment.
-      nodeSelector: { }
+      nodeSelector: {}
       # stackstate.components.workloadObserver.tolerations -- Toleration labels for pod assignment.
-      tolerations: [ ]
+      tolerations: []
       # stackstate.components.workloadObserver.affinity -- Affinity settings for pod assignment.
-      affinity: { }
+      affinity: {}
     wait:
       image:
         # stackstate.components.wait.image.registry -- Base container image registry for wait containers.
