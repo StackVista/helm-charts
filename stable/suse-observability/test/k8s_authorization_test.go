@@ -316,7 +316,7 @@ func TestK8sAuthzDefault(t *testing.T) {
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	require.Equal(t, 10, len(resources.Roles), "Default configuration should generate exactly 10 roles")
+	require.Equal(t, 11, len(resources.Roles), "Default configuration should generate exactly 11 roles")
 	ok := assert.Contains(t, resources.Roles, "suse-observability-instance-basic-access")
 	if ok {
 		checkRole(t, expectedRoles["suse-observability-instance-basic-access"], resources.Roles["suse-observability-instance-basic-access"])
@@ -326,7 +326,7 @@ func TestK8sAuthzDefault(t *testing.T) {
 	assert.Contains(t, resources.Roles, "suse-observability-instance-admin", "Default config should include admin role")
 	assert.Contains(t, resources.Roles, "suse-observability-instance-recommended-access", "Default config should include recommended-access role")
 
-	require.Equal(t, 10, len(resources.RoleBindings), "Default configuration should generate exactly 10 role bindings")
+	require.Equal(t, 11, len(resources.RoleBindings), "Default configuration should generate exactly 11 role bindings")
 	ok = assert.Contains(t, resources.RoleBindings, "suse-observability-instance-basic-access")
 	if ok {
 		checkRoleBinding(t, expectedRoleBindings["suse-observability-instance-basic-access"], resources.RoleBindings["suse-observability-instance-basic-access"])
@@ -352,13 +352,13 @@ func TestK8sAuthzSaas(t *testing.T) {
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	require.Equal(t, 10, len(resources.Roles), "SaaS mode with k8s-authz feature enabled should generate 10 roles")
+	require.Equal(t, 11, len(resources.Roles), "SaaS mode with k8s-authz feature enabled should generate 11 roles")
 	if ok := assert.Contains(t, resources.Roles, "suse-observability-instance-basic-access"); ok {
 		checkRole(t, expectedRoles["suse-observability-instance-basic-access"], resources.Roles["suse-observability-instance-basic-access"])
 	}
 	checkFeatureSaasRoles(t, resources.Roles)
 
-	require.Equal(t, 10, len(resources.RoleBindings), "SaaS mode with k8s-authz feature enabled should generate 10 role bindings")
+	require.Equal(t, 11, len(resources.RoleBindings), "SaaS mode with k8s-authz feature enabled should generate 11 role bindings")
 	if ok := assert.Contains(t, resources.RoleBindings, "suse-observability-instance-basic-access"); ok {
 		checkRoleBinding(t, expectedRoleBindings["suse-observability-instance-basic-access"], resources.RoleBindings["suse-observability-instance-basic-access"])
 	}
@@ -381,7 +381,7 @@ func TestK8sAuthzFeatureFlagDisabled(t *testing.T) {
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	require.Equal(t, 6, len(resources.Roles), "Default configuration should generate exactly 6 roles")
+	require.Equal(t, 7, len(resources.Roles), "Default configuration should generate exactly 7 roles")
 	ok := assert.Contains(t, resources.Roles, "suse-observability-instance-basic-access")
 	if ok {
 		checkRole(t, expectedRoles["suse-observability-instance-basic-access"], resources.Roles["suse-observability-instance-basic-access"])
@@ -391,7 +391,7 @@ func TestK8sAuthzFeatureFlagDisabled(t *testing.T) {
 	assert.NotContains(t, resources.Roles, "suse-observability-instance-admin", "Default config should not include admin role")
 	assert.NotContains(t, resources.Roles, "suse-observability-instance-recommended-access", "Default config should not include recommended-access role")
 
-	require.Equal(t, 6, len(resources.RoleBindings), "Default configuration should generate exactly 6 role bindings")
+	require.Equal(t, 7, len(resources.RoleBindings), "Default configuration should generate exactly 7 role bindings")
 	ok = assert.Contains(t, resources.RoleBindings, "suse-observability-instance-basic-access")
 	if ok {
 		checkRoleBinding(t, expectedRoleBindings["suse-observability-instance-basic-access"], resources.RoleBindings["suse-observability-instance-basic-access"])
