@@ -18,8 +18,6 @@ env:
     value: "{{ .Release.Namespace }}"
   - name: REPORT_DIRECTORY
     value: "/report-data"
-  - name: REPORT_MAX_SIZE_MB
-    value: {{ .Values.stackstate.components.workloadObserver.persistence.sizeMB | mulf 0.9 | int | quote}}
 livenessProbe:
   httpGet:
     path: /healthz
@@ -100,7 +98,7 @@ spec:
           - ReadWriteOnce
         resources:
           requests:
-            storage: "{{ .Values.stackstate.components.workloadObserver.persistence.sizeMB}}Mi"
+            storage: {{ .Values.stackstate.components.workloadObserver.persistence.size | quote }}
         {{ include "common.storage.class" ( dict "persistence" .Values.stackstate.components.workloadObserver.persistence "global" .Values.global) | nindent 8 }}
 {{- end }}
 

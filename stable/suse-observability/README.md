@@ -888,13 +888,13 @@ stackstate/stackstate
 | stackstate.components.workloadObserver.image.imageRegistry | string | `""` | `imageRegistry` used for the `workloadObserver` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.workloadObserver.image.pullPolicy | string | `""` | `pullPolicy` used for the `workloadObserver` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.workloadObserver.image.repository | string | `"stackstate/workload-observer"` | Repository of the workloadObserver component Docker image. |
-| stackstate.components.workloadObserver.image.tag | string | `"aeab2d8e"` | Tag used for the `workloadObserver` component Docker image.. |
+| stackstate.components.workloadObserver.image.tag | string | `"c2e8e7ad"` | Tag used for the `workloadObserver` component Docker image.. |
 | stackstate.components.workloadObserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.workloadObserver.persistence.sizeMB | int | `1024` |  |
+| stackstate.components.workloadObserver.persistence.size | string | `"1Gi"` |  |
 | stackstate.components.workloadObserver.persistence.storageClass | string | `nil` |  |
 | stackstate.components.workloadObserver.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.workloadObserver.poddisruptionbudget | object | `{"maxUnavailable":1}` | Number of `workloadObserver` replicas. |
-| stackstate.components.workloadObserver.resources | object | `{"limits":{"cpu":"50m","ephemeral-storage":"1Gi","memory":"48Mi"},"requests":{"cpu":"20m","ephemeral-storage":"1Mi","memory":"24Mi"}}` | Resource allocation for `workloadObserver` pods. |
+| stackstate.components.workloadObserver.resources | object | `{"limits":{"cpu":"50m","ephemeral-storage":"1Gi","memory":"128Mi"},"requests":{"cpu":"20m","ephemeral-storage":"1Mi","memory":"24Mi"}}` | Resource allocation for `workloadObserver` pods. |
 | stackstate.components.workloadObserver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.deployment.edition | string | `"Prime"` | StackState edition, one of 'Community' or 'Prime' |
 | stackstate.deployment.mode | string | `"SelfHosted"` | Deployment mode of StackState, possible values are 'Saas' and 'SelfHosted' |

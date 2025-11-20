@@ -1578,21 +1578,21 @@ stackstate:
         # stackstate.components.workloadObserver.image.repository -- Repository of the workloadObserver component Docker image.
         repository: stackstate/workload-observer
         # stackstate.components.workloadObserver.image.tag -- Tag used for the `workloadObserver` component Docker image..
-        tag: aeab2d8e
+        tag: c2e8e7ad
       # stackstate.components.workloadObserver.podAnnotations -- Extra annotations
       podAnnotations: {}
       # stackstate.components.workloadObserver.resources -- Resource allocation for `workloadObserver` pods.
       resources:
         limits:
           cpu: "50m"
-          memory: "48Mi"
+          memory: "128Mi"
           ephemeral-storage: "1Gi"
         requests:
           memory: "24Mi"
           cpu: "20m"
           ephemeral-storage: "1Mi"
       persistence:
-        sizeMB: 1024
+        size: "1Gi"
         storageClass:
       # stackstate.components.workloadObserver.poddisruptionbudget -- Number of `workloadObserver` replicas.
       poddisruptionbudget:
