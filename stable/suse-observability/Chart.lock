@@ -10,7 +10,7 @@ dependencies:
   version: 8.19.4-stackstate.2
 - name: hbase
   repository: file://../hbase/
-  version: 0.2.90
+  version: 0.2.91
 - name: kafka
   repository: file://../kafka/
   version: 19.1.3-suse-observability.4
@@ -41,5 +41,5 @@ dependencies:
 - name: kubernetes-rbac-agent
   repository: https://helm.stackstate.io
   version: 0.0.20
-digest: sha256:480a5f166882d7759f052082b8547d6e9dbdd8e1ea693d0df7e16e5253d17287
-generated: "2025-11-20T11:52:54.592083+01:00"
+digest: sha256:d5eaad89f93bb1967318b2d4fd37dd7ac330f8abb43393d47c8ef26d8eb84da0
+generated: "2025-11-20T15:30:44.559477411Z"
