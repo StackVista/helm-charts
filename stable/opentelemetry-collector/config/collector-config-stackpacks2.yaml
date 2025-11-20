@@ -9,6 +9,13 @@ receivers:
         auth:
           authenticator: service_token_auth
         endpoint: ${env:MY_POD_IP}:4318
+  prometheus/internal:
+    config:
+      scrape_configs:
+        - job_name: "opentelemetry-collector-internal"
+          scrape_interval: 10s
+          static_configs:
+            - targets: ["localhost:8888"]  # by default, the collector exposes internal metrics on 127.0.0.1:8888
 connectors:
   stsservicegraph:
     latency_histogram_buckets: [2ms, 4ms, 6ms, 8ms, 10ms, 50ms, 100ms, 200ms, 400ms, 800ms, 1s, 1400ms, 2s, 5s, 10s, 15s, 30s]
@@ -67,6 +74,12 @@ processors:
         statements:
           - set(attributes["db.system"], "other_sql") where attributes["db.type"] == "sql"
             and attributes["db.system"] == nil
+  # Using a relabel rule on the scrape_configs' metric_relabel_configs could also work, but that strips metric metadata
+  transform/internalMetricsPrefix:
+    metric_statements:
+      - context: metric
+        statements:
+          - set(name, Concat(["otelcol_", name], "")) where not HasPrefix(name, "otelcol")
 exporters:
   clickhousests:
     endpoint: tcp://suse-observability-clickhouse:9000?dial_timeout=10s&compress=lz4
@@ -159,6 +172,13 @@ service:
         - resource/addDefaultNamespace
         - resource/addStsApiKey
         - batch
+      exporters:
+        - forward
+    metrics/internal:
+      receivers:
+        - prometheus/internal
+      processors:
+        - transform/internalMetricsPrefix
       exporters:
         - forward
     metrics/victoria-metrics:
