@@ -2052,6 +2052,7 @@ kafka:
           cpu: "200m"
           memory: "300Mi"
           ephemeral-storage: "1Mi"
+      heapSizeMB: 256
       containerSecurityContext:
         enabled: true
         runAsUser: 1001

@@ -464,7 +464,7 @@ spec:
           command:
             - java
           args:
-            - -XX:MaxRAMPercentage=100
+            - -Xmx{{ .Values.metrics.kafka.heapSizeMB }}m
             - -XshowSettings:vm
             - -jar
             - jmx_prometheus_httpserver.jar

@@ -1123,14 +1123,17 @@ metrics:
     ##
     containerPorts:
       metrics: 9308
-    ## Kafka exporter resource requests and limits
+    ## Kafka exporter resource requests and limits, should be kept in sync with heapSizeMB
     ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
     ## @param metrics.kafka.resources.limits The resources limits for the container
     ## @param metrics.kafka.resources.requests The requested resources for the container
     ##
     resources:
       limits: {}
-      requests: {}
+      requests:
+        memory: 300Mi
+    ## Kafka exporter max heap size. Should be kept in sync with requests.memory
+    heapSizeMB: 256
     ## Kafka exporter pods' Security Context
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
     ## @param metrics.kafka.podSecurityContext.enabled Enable security context for the pods

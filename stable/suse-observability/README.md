@@ -14,7 +14,7 @@ Current chart version is `2.6.3-pre.55`
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.2 |
 | file://../hbase/ | hbase | 0.2.90 |
-| file://../kafka/ | kafka | 19.1.3-suse-observability.3 |
+| file://../kafka/ | kafka | 19.1.3-suse-observability.4 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.14 |
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.7 |
@@ -297,6 +297,7 @@ stackstate/stackstate
 | kafka.metrics.jmx.containerSecurityContext.runAsUser | int | `1001` |  |
 | kafka.metrics.jmx.containerSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | kafka.metrics.jmx.enabled | bool | `true` | Whether or not to expose JMX metrics to Prometheus. |
+| kafka.metrics.jmx.heapSizeMB | int | `256` |  |
 | kafka.metrics.jmx.image.registry | string | `"quay.io"` | Kafka JMX exporter image registry |
 | kafka.metrics.jmx.image.repository | string | `"stackstate/jmx-exporter"` | Kafka JMX exporter image repository |
 | kafka.metrics.jmx.image.tag | string | `"0.17.0-e3374eb0"` | Kafka JMX exporter image tag |
