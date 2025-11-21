@@ -913,7 +913,7 @@ stackstate/stackstate
 | stackstate.stackpacks.image.pullPolicy | string | `""` | `pullPolicy` used for the `stackpacks` Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.stackpacks.image.registry | string | `"quay.io"` | `registry` used for the `stackpacks` Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.stackpacks.image.repository | string | `"stackstate/stackpacks"` | Repository of the `stackpacks` Docker image. |
-| stackstate.stackpacks.image.version | string | `"20251119095051-master-039b12e"` | Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode |
+| stackstate.stackpacks.image.version | string | `"20251121095203-master-3673f57"` | Version used for the `stackpacks` Docker image, the tag is build from the version and the stackstate edition + deployment mode |
 | stackstate.stackpacks.installed | list | `[]` | Specify a list of stackpacks to be always installed including their configuration, for an example see [Auto-installing StackPacks](#auto-installing-stackpacks) |
 | stackstate.stackpacks.localpvc.size | string | `"1Gi"` | Size of the Persistent Volume Claim (PVC) used to persist stackpacks when there's no HDFS |
 | stackstate.stackpacks.localpvc.storageClass | string | `nil` |  |
