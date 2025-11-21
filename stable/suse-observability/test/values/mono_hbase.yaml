@@ -1,0 +1,3 @@
+hbase:
+  deployment:
+    mode: "Mono"
