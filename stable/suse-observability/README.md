@@ -8,22 +8,22 @@ Current chart version is `2.6.3-pre.62`
 
 ## Requirements
 
-| Repository | Name | Version                     |
-|------------|------|-----------------------------|
-| file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.3  |
-| file://../common/ | common | *                           |
-| file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.2         |
+| Repository | Name | Version |
+|------------|------|---------|
+| file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.3 |
+| file://../common/ | common | * |
+| file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.2 |
 | file://../hbase/ | hbase | 0.2.91 |
 | file://../kafka/ | kafka | 19.1.3-suse-observability.4 |
-| file://../kafkaup-operator/ | kafkaup-operator | *                           |
-| file://../minio/ | minio | 8.0.10-stackstate.14        |
-| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.8        |
-| file://../pull-secret/ | pull-secret | *                           |
-| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.27        |
-| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.27        |
-| file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.2  |
-| https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.175          |
-| https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.20                      |
+| file://../kafkaup-operator/ | kafkaup-operator | * |
+| file://../minio/ | minio | 8.0.10-stackstate.14 |
+| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.9 |
+| file://../pull-secret/ | pull-secret | * |
+| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.27 |
+| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.27 |
+| file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.2 |
+| https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.175 |
+| https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.20 |
 
 ## Required Values
 
@@ -365,7 +365,7 @@ stackstate/stackstate
 | opentelemetry-collector.fullnameOverride | string | `"suse-observability-otel-collector"` | Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | opentelemetry-collector.image.registry | string | `"quay.io"` |  |
 | opentelemetry-collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
-| opentelemetry-collector.image.tag | string | `"v0.0.22"` | Container image tag for 'opentelemetry-collector' containers. |
+| opentelemetry-collector.image.tag | string | `"v0.0.23"` | Container image tag for 'opentelemetry-collector' containers. |
 | opentelemetry-collector.mode | string | `"statefulset"` | deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset". |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.check_names" | string | `"[\"openmetrics\"]"` |  |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.init_configs" | string | `"[{}]"` |  |

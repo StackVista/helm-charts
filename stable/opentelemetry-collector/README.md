@@ -1,6 +1,6 @@
 # opentelemetry-collector
 
-![Version: 0.108.0-stackstate.8](https://img.shields.io/badge/Version-0.108.0--stackstate.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.22](https://img.shields.io/badge/AppVersion-0.0.22-informational?style=flat-square)
+![Version: 0.108.0-stackstate.9](https://img.shields.io/badge/Version-0.108.0--stackstate.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.23](https://img.shields.io/badge/AppVersion-0.0.23-informational?style=flat-square)
 
 OpenTelemetry Collector Helm chart for Kubernetes
 
@@ -106,11 +106,16 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | config.processors.resource/removeStsApiKey.attributes[0].action | string | `"delete"` |  |
 | config.processors.resource/removeStsApiKey.attributes[0].key | string | `"sts_api_key"` |  |
 | config.processors.stsusage | object | `{}` |  |
+| config.processors.transform/internalMetricsPrefix.metric_statements[0].context | string | `"metric"` |  |
+| config.processors.transform/internalMetricsPrefix.metric_statements[0].statements[0] | string | `"set(name, Concat([\"otelcol_\", name], \"\")) where not HasPrefix(name, \"otelcol\")"` |  |
 | config.processors.transform/semconv.error_mode | string | `"ignore"` |  |
 | config.receivers.otlp.protocols.grpc.auth.authenticator | string | `"service_token_auth"` |  |
 | config.receivers.otlp.protocols.grpc.endpoint | string | `"${env:MY_POD_IP}:4317"` |  |
 | config.receivers.otlp.protocols.http.auth.authenticator | string | `"service_token_auth"` |  |
 | config.receivers.otlp.protocols.http.endpoint | string | `"${env:MY_POD_IP}:4318"` |  |
+| config.receivers.prometheus/internal.config.scrape_configs[0].job_name | string | `"opentelemetry-collector-internal"` |  |
+| config.receivers.prometheus/internal.config.scrape_configs[0].scrape_interval | string | `"10s"` |  |
+| config.receivers.prometheus/internal.config.scrape_configs[0].static_configs[0].targets[0] | string | `"localhost:8888"` |  |
 | config.service.extensions[0] | string | `"health_check"` |  |
 | config.service.extensions[1] | string | `"service_token_auth"` |  |
 | config.service.pipelines.metrics.exporters[0] | string | `"forward"` |  |
@@ -118,6 +123,9 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | config.service.pipelines.metrics.processors[1] | string | `"resource/addStsApiKey"` |  |
 | config.service.pipelines.metrics.processors[2] | string | `"batch"` |  |
 | config.service.pipelines.metrics.receivers[0] | string | `"otlp"` |  |
+| config.service.pipelines.metrics/internal.exporters[0] | string | `"forward"` |  |
+| config.service.pipelines.metrics/internal.processors[0] | string | `"transform/internalMetricsPrefix"` |  |
+| config.service.pipelines.metrics/internal.receivers[0] | string | `"prometheus/internal"` |  |
 | config.service.pipelines.metrics/topology.exporters[0] | string | `"ststopology"` |  |
 | config.service.pipelines.metrics/topology.receivers[0] | string | `"forward"` |  |
 | config.service.pipelines.metrics/topology.receivers[1] | string | `"stsservicegraph"` |  |
