@@ -136,7 +136,7 @@ stackstate/stackstate
 | clickhouse.backup.enabled | bool | `false` | Enable scheduled backups of ClickHouse. It requires to be enabled MinIO 'backup.enabled'. |
 | clickhouse.backup.image.registry | string | `"quay.io"` | Registry where to get the image from. |
 | clickhouse.backup.image.repository | string | `"stackstate/clickhouse-backup"` | Repository where to get the image from. |
-| clickhouse.backup.image.tag | string | `"2.6.38-9157204e"` | Container image tag for 'clickhouse' backup containers. |
+| clickhouse.backup.image.tag | string | `"2.6.39-d0d7ba46-65"` | Container image tag for 'clickhouse' backup containers. |
 | clickhouse.backup.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | clickhouse.backup.podAnnotations | object | `{}` | Extra annotations for ClickHouse backup pods. |
 | clickhouse.backup.podLabels | object | `{}` | Extra labels for ClickHouse backup pods. |

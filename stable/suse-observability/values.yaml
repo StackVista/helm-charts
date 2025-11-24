@@ -2771,7 +2771,7 @@ clickhouse:
       # clickhouse.backup.image.repository -- Repository where to get the image from.
       repository: stackstate/clickhouse-backup
       # clickhouse.backup.image.tag -- Container image tag for 'clickhouse' backup containers.
-      tag: 2.6.38-9157204e
+      tag: 2.6.39-d0d7ba46-65
     # clickhouse.backup.enabled -- Enable scheduled backups of ClickHouse. It requires to be enabled MinIO 'backup.enabled'.
     enabled: false
     # clickhouse.backup.bucketName -- Name of the MinIO bucket where ClickHouse backups are stored.

@@ -69,7 +69,7 @@ clickhouse:
       # clickhouse.backup.image.repository -- Repository where to get the image from.
       repository: stackstate/clickhouse-backup
       # clickhouse.backup.image.tag -- Container image tag for 'clickhouse-backup' containers.
-      tag: 2.6.5-3c1fce8a
+      tag: 2.6.39-d0d7ba46-65
     # clickhouse.backup.resources -- Resources of the backup tool.
     resources:
       requests:

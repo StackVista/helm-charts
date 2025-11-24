@@ -25,7 +25,7 @@ Helm chart to install SUSE Observability using Operators
 | clickhouse.backup.enabled | bool | `false` | Enable scheduled backups of ClickHouse. It requires to be enabled MinIO 'backup.enabled'. |
 | clickhouse.backup.image.registry | string | `""` | Registry where to get the image from, the default repository is defined in `global.imageRegistry` |
 | clickhouse.backup.image.repository | string | `"stackstate/clickhouse-backup"` | Repository where to get the image from. |
-| clickhouse.backup.image.tag | string | `"2.6.5-3c1fce8a"` | Container image tag for 'clickhouse-backup' containers. |
+| clickhouse.backup.image.tag | string | `"2.6.39-d0d7ba46-65"` | Container image tag for 'clickhouse-backup' containers. |
 | clickhouse.backup.resources | object | `{"limit":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"50m","memory":"250Mi"}}` | Resources of the backup tool. |
 | clickhouse.backup.s3Prefix | string | `""` |  |
 | clickhouse.backup.scheduled.full_schedule | string | `"45 0 * * *"` | Cron schedule for automatic full backups of ClickHouse. |
