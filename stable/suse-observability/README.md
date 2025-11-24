@@ -300,7 +300,7 @@ stackstate/stackstate
 | kafka.metrics.jmx.heapSizeMB | int | `256` |  |
 | kafka.metrics.jmx.image.registry | string | `"quay.io"` | Kafka JMX exporter image registry |
 | kafka.metrics.jmx.image.repository | string | `"stackstate/jmx-exporter"` | Kafka JMX exporter image repository |
-| kafka.metrics.jmx.image.tag | string | `"0.17.0-e3374eb0"` | Kafka JMX exporter image tag |
+| kafka.metrics.jmx.image.tag | string | `"0.20.0-d19cf0ff-182"` | Kafka JMX exporter image tag |
 | kafka.metrics.jmx.resources.limits.cpu | string | `"1"` |  |
 | kafka.metrics.jmx.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | kafka.metrics.jmx.resources.limits.memory | string | `"300Mi"` |  |
