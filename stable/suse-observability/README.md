@@ -1028,7 +1028,7 @@ stackstate/stackstate
 | zookeeper.heapSize | int | `400` | HeapSize Size (in MB) for the Java Heap options (Xmx and Xms) |
 | zookeeper.image.registry | string | `"quay.io"` | ZooKeeper image registry |
 | zookeeper.image.repository | string | `"stackstate/zookeeper"` | ZooKeeper image repository |
-| zookeeper.image.tag | string | `"3.9.3-aeb92d19-184"` | ZooKeeper image tag |
+| zookeeper.image.tag | string | `"3.9.3-eda4e09e-204"` | ZooKeeper image tag |
 | zookeeper.livenessProbe.enabled | bool | `false` | it must be disabled to apply the custom probe, the probe adds "-q" option to nc to wait 1sec until close the connection, it fixes problem of failing the probed |
 | zookeeper.metrics.enabled | bool | `true` | Enable / disable Zookeeper Prometheus metrics. |
 | zookeeper.metrics.serviceMonitor | object | `{"enabled":false,"selector":{}}` |  |

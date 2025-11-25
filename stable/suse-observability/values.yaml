@@ -2239,7 +2239,7 @@ zookeeper:
     # zookeeper.image.repository -- ZooKeeper image repository
     repository: stackstate/zookeeper
     # zookeeper.image.tag -- ZooKeeper image tag
-    tag: 3.9.3-aeb92d19-184
+    tag: 3.9.3-eda4e09e-204
   metrics:
     # zookeeper.metrics.enabled -- Enable / disable Zookeeper Prometheus metrics.
     enabled: true
