@@ -323,6 +323,7 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{ include "opentelemetry-collector.commonLabels" . }}
+observability.suse.com/scalable-during-clickhouse-restore: "true"
 {{- end }}
 
 {{/*

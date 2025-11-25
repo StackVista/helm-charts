@@ -182,3 +182,10 @@ stackstate.com/connects-to-stackgraph=true
 {{- define "stackstate.backup.victoriametrics.restore.scaleDownLabelsCommaSeparated" -}}
 observability.suse.com/scalable-during-vm-restore=true
 {{- end -}}
+
+{{- /*
+  The labels of the Statefulsets that should be scaled down during VictoriaMetrics restoring from the backup
+*/ -}}
+{{- define "stackstate.backup.clickhouse.restore.scaleDownLabelsCommaSeparated" -}}
+observability.suse.com/scalable-during-clickhouse-restore=true
+{{- end -}}
