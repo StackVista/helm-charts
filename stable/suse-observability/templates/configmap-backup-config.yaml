@@ -29,6 +29,13 @@ Returns a YAML array of objects with bucket and prefix fields, or empty array if
 {{- end -}}
 {{- end -}}
 
+{{/*
+  The default database used by the clickhouse backup client
+*/}}
+{{- define "clickhouse.default.database" -}}
+default
+{{- end -}}
+
 {{- define "stackstate.backup-config.configmap" -}}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
 {{- $serverServiceConfig := dict "ServiceName" "server" "ServiceConfig" .Values.stackstate.components.server }}
@@ -232,6 +239,18 @@ config: |
           {{- toYaml . | nindent 12 }}
         {{- end }}
         {{- end }}
+  clickhouse:
+    database: {{ include "clickhouse.default.database" . }}
+    service:
+      name: {{ include "stackstate.backup.clickhouse.backup.service" .}}
+      port: 9000
+      localPortForwardPort: 9000
+    backupService:
+      name: {{ include "stackstate.backup.clickhouse.backup.service" .}}
+      port: 7171
+      localPortForwardPort: 7171
+    restore:
+      scaleDownLabelSelector: {{ include "stackstate.backup.clickhouse.restore.scaleDownLabelsCommaSeparated" . }}
 {{- end -}}
 
 {{- if .Values.backup.enabled }}
