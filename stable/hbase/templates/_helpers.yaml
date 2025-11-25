@@ -306,8 +306,6 @@ Helpful to derive limits from the diskspace
 {{- else if hasSuffix "M" . -}}
     {{- trimSuffix "M" . | int -}}
 {{- else -}}
-    {{- if regexMatch "^[0-9]*$" . -}}
-        {{ . | int }}
-    {{- end -}}
+    {{- fail (printf "Invalid storage format: %q. Input must be a number with a supported suffix (Ti, T, Gi, G, Mi, M)." .) -}}
 {{- end -}}
 {{- end -}}
