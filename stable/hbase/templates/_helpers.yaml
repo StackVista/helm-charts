@@ -283,3 +283,29 @@ Uses global.commonLabels only.
 {{- end }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Helpful to derive limits from the diskspace
+*/}}
+{{- define "hbase.storage.to.megabytes" -}}
+{{- if hasSuffix "Ti" . -}}
+    {{- $ti := trimSuffix "Ti" . | int -}}
+    {{- mul $ti 1100000 -}}
+{{- else if hasSuffix "T" . -}}
+    {{- $t := trimSuffix "T" . | int -}}
+    {{- mul $t 1000000 -}}
+{{- else if hasSuffix "Gi" . -}}
+    {{- $gi := trimSuffix "Gi" . | int -}}
+    {{- mul $gi 1074 -}}
+{{- else if hasSuffix "G" . -}}
+    {{- $g := trimSuffix "G" . | int -}}
+    {{- mul $g 1000 -}}
+{{- else if hasSuffix "Mi" . -}}
+    {{- $mi := trimSuffix "Mi" . | int -}}
+    {{- mul $mi 1.049 -}}
+{{- else if hasSuffix "M" . -}}
+    {{- trimSuffix "M" . | int -}}
+{{- else -}}
+    {{- fail (printf "Invalid storage format: %q. Input must be a number with a supported suffix (Ti, T, Gi, G, Mi, M)." .) -}}
+{{- end -}}
+{{- end -}}
