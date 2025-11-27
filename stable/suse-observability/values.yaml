@@ -1500,7 +1500,7 @@ stackstate:
         # stackstate.components.nginxPrometheusExporter.image.repository -- Base container image repository for nginx-prometheus-exporter containers.
         repository: stackstate/nginx-prometheus-exporter
         # stackstate.components.nginxPrometheusExporter.image.tag -- Container image tag for nginx-prometheus-exporter containers.
-        tag: 1.4.0-11589218739
+        tag: 1.5.1-f5b5d433-31
         # stackstate.components.nginxPrometheusExporter.image.pullPolicy -- Image pull policy for nginx-prometheus-exporter containers.
         pullPolicy: IfNotPresent
     containerTools:
