@@ -11,7 +11,7 @@ Current chart version is `1.2.8`
 | Repository | Name | Version |
 |------------|------|---------|
 | https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.21 |
-| https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.20 |
+| https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.22 |
 
 ## Required Values
 
