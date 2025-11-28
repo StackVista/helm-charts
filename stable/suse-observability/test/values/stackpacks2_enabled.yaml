@@ -1,0 +1,3 @@
+global:
+  features:
+    enableStackPacks2: true
