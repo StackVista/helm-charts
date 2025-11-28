@@ -80,5 +80,5 @@ dependencies:
     # repository: file:///home/bram/stackvista/agent/kubernetes-rbac-agent/charts/kubernetes-rbac-agent
     # version: "*"
     repository: https://helm.stackstate.io
-    version: 0.0.20
+    version: 0.0.22
     condition: stackstate.k8sAuthorization.enabled
