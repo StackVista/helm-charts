@@ -3,7 +3,7 @@ Determines the HA mode based on backup configuration.
 Returns "mirror" if both victoria-metrics instances have backup enabled, otherwise "single".
 */}}
 {{- define "victoria-metrics.ha.mode" -}}
-{{- if and (index .Values "victoria-metrics-0" "backup" "enabled") (index .Values "victoria-metrics-1" "backup" "enabled") -}}
+{{- if and (index .Values "victoria-metrics-0" "enabled") (index .Values "victoria-metrics-1" "enabled") -}}
 mirror
 {{- else -}}
 single
@@ -16,10 +16,10 @@ Returns a YAML array of objects with bucket and prefix fields, or empty array if
 */}}
 {{- define "backupS3Locations" -}}
 {{- $locations := list -}}
-{{- if index .Values "victoria-metrics-0" "backup" "enabled" -}}
+{{- if index .Values "victoria-metrics-0" "enabled" -}}
   {{- $locations = append $locations (dict "bucket" (index .Values "victoria-metrics-0" "backup" "bucketName") "prefix" (index .Values "victoria-metrics-0" "backup" "s3Prefix")) -}}
 {{- end -}}
-{{- if index .Values "victoria-metrics-1" "backup" "enabled" -}}
+{{- if index .Values "victoria-metrics-1" "enabled" -}}
   {{- $locations = append $locations (dict "bucket" (index .Values "victoria-metrics-1" "backup" "bucketName") "prefix" (index .Values "victoria-metrics-1" "backup" "s3Prefix")) -}}
 {{- end -}}
 {{- if $locations -}}
@@ -45,6 +45,7 @@ config: |
       app.kubernetes.io/name: sts-backup
       app.kubernetes.io/managed-by: sts-backup
   minio:
+    enabled: {{ .Values.global.backup.enabled }}
     service:
       name: {{ .Values.minio.fullnameOverride | quote }}
       port: 9000
@@ -119,6 +120,7 @@ config: |
       platformVersion: "{{- .Chart.Version -}}"
       scaleDownLabelSelector: {{ include "stackstate.backup.configuration.restore.scaleDownLabelsCommaSeparated" . }}
       zookeeperQuorum: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
+      pvc: {{ template "common.fullname.short" . }}-settings-backup-data
       job:
         image: {{ include "stackstate.image.registry" (merge $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}
         waitImage: {{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}
@@ -253,7 +255,6 @@ config: |
       scaleDownLabelSelector: {{ include "stackstate.backup.clickhouse.restore.scaleDownLabelsCommaSeparated" . }}
 {{- end -}}
 
-{{- if .Values.backup.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -262,4 +263,3 @@ metadata:
     {{- include "common.labels.standard" . | nindent 4 }}
 data:
 {{- include "stackstate.backup-config.configmap" . | nindent 4 }}
-{{- end -}}

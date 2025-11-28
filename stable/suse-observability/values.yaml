@@ -16,6 +16,9 @@ global:
   features:
     # global.features.enableStackPacks2 -- Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec.
     enableStackPacks2: false
+  # backup.enabled -- Enables backup/restore, including the MinIO subsystem.
+  backup:
+    enabled: false
 # commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
 commonLabels: {}
 backup:
@@ -33,14 +36,10 @@ backup:
     s3Prefix: ""
     snapshotRepositoryName: 'sts-backup'
     restore:
-      # backup.elasticsearch.restore.enabled -- Enable ElasticSearch snapshot restore functionality (if `backup.enabled` is set to `true`).
-      enabled: true
       # backup.elasticsearch.restore.scaleDownLabels -- Labels used to identify deployments that should be scaled down during Elasticsearch restore procedure.
       scaleDownLabels:
         observability.suse.com/scalable-during-es-restore: "true"
     scheduled:
-      # backup.elasticsearch.scheduled.enabled -- Enable scheduled ElasticSearch snapshots (if `backup.enabled` is set to `true`).
-      enabled: true
       # backup.elasticsearch.scheduled.schedule -- Cron schedule for automatic ElasticSearch snaphosts in [ElasticSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html).
       schedule: '0 0 3 * * ?'
       # backup.elasticsearch.scheduled.indices -- ElasticSearch indices to snapshot in [JSON array format](https://www.w3schools.com/js/js_json_arrays.asp).
@@ -79,8 +78,6 @@ backup:
     # If set to 0, the dump is not split.
     splitArchiveSize: 0
     restore:
-      # backup.stackGraph.restore.enabled -- Enable StackGraph backup restore functionality (if `backup.enabled` is set to `true`).
-      enabled: true
       tempData:
         # backup.stackGraph.restore.tmpData.accessModes -- Access mode for temporary backup data.
         accessModes: ["ReadWriteOnce"]
@@ -89,8 +86,6 @@ backup:
         # backup.stackGraph.restore.tmpData.storageClass -- Storage class of the volume for temporary backup data.
         storageClass:
     scheduled:
-      # backup.stackGraph.scheduled.enabled -- Enable scheduled StackGraph backups (if `backup.enabled` is set to `true`).
-      enabled: true
       # backup.stackGraph.scheduled.schedule -- Cron schedule for automatic StackGraph backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax).
       schedule: '0 3 * * *'
       # backup.stackGraph.scheduled.backupNameTemplate -- Template for the StackGraph backup name as a double-quoted shell string value.
@@ -129,12 +124,7 @@ backup:
       maxSizeLimit: "100Mi"
     # backup.configuration.maxLocalFiles -- The maximum number of configuration backup files stored on the PVC for the configuration backup (which is only of limited size, see backup.configuration.scheduled.pvc.size.
     maxLocalFiles: 10
-    restore:
-      # backup.configuration.restore.enabled -- Enable configuration backup restore functionality (if `backup.enabled` is set to `true`).
-      enabled: true
     scheduled:
-      # backup.configuration.scheduled.enabled -- Enable scheduled configuration backups (if `backup.enabled` is set to `true`).
-      enabled: true
       # backup.configuration.scheduled.schedule -- Cron schedule for automatic configuration backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax).
       schedule: '0 4 * * *'
       # backup.configuration.scheduled.backupNameTemplate -- Template for the configuration backup name as a double-quoted shell string value.
@@ -2437,8 +2427,6 @@ victoria-metrics-0:
       # victoria-metrics-0.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
       extraLabels: {}
   backup:
-    # victoria-metrics-0.backup.enabled -- Enable scheduled backups of Victoria Metrics. It requires to be enabled MinIO 'backup.enabled'.
-    enabled: false
     # victoria-metrics-0.backup.bucketName -- Name of the MinIO bucket where Victoria Metrics backups are stored.
     bucketName: 'sts-victoria-metrics-backup'
     # victoria-metrics-1.backup.s3Prefix -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
@@ -2446,9 +2434,6 @@ victoria-metrics-0:
     scheduled:
       # victoria-metrics-0.backup.scheduled.schedule -- Cron schedule for automatic backups of Victoria Metrics
       schedule: '25 * * * *'
-  restore:
-    # victoria-metrics-0.restore.enabled -- Enable Victoria Metrics restore functionality (if `backup.enabled` is set to `true`).
-    enabled: false
 victoria-metrics-1:
   enabled: true
   rbac:
@@ -2520,8 +2505,6 @@ victoria-metrics-1:
       # victoria-metrics-1.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
       extraLabels: {}
   backup:
-    # victoria-metrics-1.backup.enabled -- Enable scheduled backups of Victoria Metrics. It requires to be enabled MinIO 'backup.enabled'.
-    enabled: false
     # victoria-metrics-1.backup.bucketName -- Name of the MinIO bucket where Victoria Metrics backups are stored.
     bucketName: 'sts-victoria-metrics-backup'
     # victoria-metrics-1.backup.s3Prefix -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
@@ -2529,9 +2512,6 @@ victoria-metrics-1:
     scheduled:
       # victoria-metrics-1.backup.scheduled.schedule -- Cron schedule for automatic backups of Victoria Metrics
       schedule: '35 * * * *'
-  restore:
-    # victoria-metrics-1.restore.enabled -- Enable Victoria Metrics restore functionality (if `backup.enabled` is set to `true`).
-    enabled: false
 victoria-metrics:
   restore:
     image:
@@ -2770,8 +2750,6 @@ clickhouse:
       repository: stackstate/clickhouse-backup
       # clickhouse.backup.image.tag -- Container image tag for 'clickhouse' backup containers.
       tag: 2.6.39-d0d7ba46-65
-    # clickhouse.backup.enabled -- Enable scheduled backups of ClickHouse. It requires to be enabled MinIO 'backup.enabled'.
-    enabled: false
     # clickhouse.backup.bucketName -- Name of the MinIO bucket where ClickHouse backups are stored.
     bucketName: 'sts-clickhouse-backup'
     # backup.clickhouse.s3Prefix -- Prefix (dir name) used to store backup files.
@@ -2792,6 +2770,9 @@ clickhouse:
       # clickhouse.backup.config.keep_remote -- How many latest backup should be kept on remote storage, 0 means all uploaded backups will be stored on remote storage. Incremental backups are executed every one 1h so the value 308 = ~14 days.
       keep_remote: 308
     scheduled:
+      # !!!
+      # Backups struggle with parallel execution. If a second backup starts before the first one completes, it will disrupt the first backup.
+      # Therefore, it's crucial to avoid parallel execution. For instance, the first incremental backup should be executed three hours after the full one.
       # clickhouse.backup.scheduled.full_schedule -- Cron schedule for automatic full backups of ClickHouse.
       full_schedule: '45 0 * * *'
       # clickhouse.backup.scheduled.incremental_schedule -- Cron schedule for automatic incremental backups of ClickHouse. IMPORTANT: incremental and full backup CAN NOT overlap.
@@ -2804,9 +2785,6 @@ clickhouse:
       limit:
         memory: "250Mi"
         cpu: "100m"
-  restore:
-    # clickhouse.restore.enabled -- Enable ClickHouse restore functionality (if `backup.enabled` is set to `true`).
-    enabled: false
 opentelemetry:
   # opentelemetry.enabled -- Enable / disable chart-based OTEL.
   enabled: true

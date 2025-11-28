@@ -30,6 +30,6 @@ spec:
   type: ClusterIP
 {{- end -}}
 
-{{- if and .Values.clickhouse.enabled .Values.clickhouse.backup.enabled }}
+{{- if .Values.global.backup.enabled }}
 {{- include "stackstate.clickhouse-backup.service" . -}}
 {{- end -}}

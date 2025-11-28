@@ -67,7 +67,7 @@ spec:
       port: {{ include "split-host-port" .Values.server.extraArgs.opentsdbListenAddr }}
       targetPort: opentsdb-tcp
 {{- end }}
-{{- if .Values.backup.enabled }}
+{{- if .Values.global.backup.enabled }}
     - name: supercronic
       protocol: TCP
       port: {{ .Values.backup.supercronic.metrics.port }}

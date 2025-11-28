@@ -96,7 +96,7 @@ spec:
           restartPolicy: Never
 {{- end -}}
 
-{{- if and .Values.clickhouse.enabled .Values.backup.enabled .Values.clickhouse.backup.enabled }}
+{{- if and .Values.clickhouse.enabled .Values.global.backup.enabled }}
 
 {{- $fullBackupConfig := dict "job_name" "full-backup" "script_name" "full-backup" "cron_schedule" .Values.clickhouse.backup.scheduled.full_schedule }}
 {{- include "clickhouse.backup.cronjob" (merge $fullBackupConfig .) }}

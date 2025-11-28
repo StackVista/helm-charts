@@ -38,7 +38,7 @@ spec:
 {{- end }}
       automountServiceAccountToken: {{ .Values.serviceAccount.automountToken }}
       initContainers:
-        {{- if .Values.backup.enabled }}
+        {{- if .Values.global.backup.enabled }}
         - name: create-crontab
           image: {{ include "victoria-metrics.image.registry" (dict "image" .Values.backup.setupCron.image "context" $) }}/{{ .Values.backup.setupCron.image.repository }}:{{ .Values.backup.setupCron.image.tag }}
           imagePullPolicy: IfNotPresent
@@ -172,7 +172,7 @@ spec:
           {{- with .Values.server.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-        {{- if .Values.backup.enabled }}
+        {{- if .Values.global.backup.enabled }}
         - name: vmbackup
           image: {{ include "victoria-metrics.image.registry" (dict "image" .Values.backup.vmbackup.image "context" $) }}/{{ .Values.backup.vmbackup.image.repository }}:{{ .Values.backup.vmbackup.image.tag }}
           imagePullPolicy: IfNotPresent
@@ -292,7 +292,7 @@ spec:
             claimName: {{ .Values.server.persistentVolume.existingClaim }}
         {{- end }}
         {{- end }}
-        {{- if .Values.backup.enabled }}
+        {{- if .Values.global.backup.enabled }}
         - name: crontab
           emptyDir: { }
         {{- end }}

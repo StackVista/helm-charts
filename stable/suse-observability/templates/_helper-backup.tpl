@@ -27,8 +27,6 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   value: {{ .Values.backup.elasticsearch.bucketName | quote }}
 - name: BACKUP_ELASTICSEARCH_S3_PREFIX
   value: {{ include "trimTrailingSlashes" .Values.backup.elasticsearch.s3Prefix | quote }}
-- name: BACKUP_ELASTICSEARCH_RESTORE_ENABLED
-  value: {{ .Values.backup.elasticsearch.restore.enabled | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_ENABLED
   value: {{ .Values.backup.elasticsearch.scheduled.enabled | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_SCHEDULED
@@ -51,10 +49,6 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   value: {{ .Values.backup.stackGraph.bucketName | quote }}
 - name: BACKUP_STACKGRAPH_S3_PREFIX
   value: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.stackGraph.s3Prefix }}
-- name: BACKUP_STACKGRAPH_RESTORE_ENABLED
-  value: {{ .Values.backup.stackGraph.restore.enabled | quote }}
-- name: BACKUP_STACKGRAPH_SCHEDULED_ENABLED
-  value: {{ .Values.backup.stackGraph.scheduled.enabled | quote }}
 - name: BACKUP_STACKGRAPH_ARCHIVE_SPLIT_SIZE
   value: {{ .Values.backup.stackGraph.splitArchiveSize | quote }}
 - name: BACKUP_STACKGRAPH_SCHEDULED_BACKUP_NAME_TEMPLATE
@@ -66,13 +60,11 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
 - name: BACKUP_STACKGRAPH_SCHEDULED_BACKUP_RETENTION_TIME_DELTA
   value: {{ .Values.backup.stackGraph.scheduled.backupRetentionTimeDelta | quote }}
 - name: BACKUP_CONFIGURATION_UPLOAD_REMOTE
-  value: {{ .Values.backup.enabled | toString | lower | quote }}
+  value: {{ .Values.global.backup.enabled | toString | lower | quote }}
 - name: BACKUP_CONFIGURATION_BUCKET_NAME
   value: {{ .Values.backup.configuration.bucketName | quote }}
 - name: BACKUP_CONFIGURATION_S3_PREFIX
   value: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.configuration.s3Prefix }}
-- name: BACKUP_CONFIGURATION_RESTORE_ENABLED
-  value: {{ .Values.backup.configuration.restore.enabled | quote }}
 - name: BACKUP_CONFIGURATION_SCHEDULED_ENABLED
   value: {{ .Values.backup.configuration.scheduled.enabled | quote }}
 - name: BACKUP_CONFIGURATION_SCHEDULED_BACKUP_NAME_TEMPLATE
@@ -95,24 +87,16 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   value: {{ index .Values "victoria-metrics-0" "backup" "bucketName" | quote }}
 - name: BACKUP_VICTORIA_METRICS_0_S3_PREFIX
   value: {{ include "trimTrailingSlashes" (index .Values "victoria-metrics-0" "backup" "s3Prefix") }}
-- name: BACKUP_VICTORIA_METRICS_0_RESTORE_ENABLED
-  value: {{ index .Values "victoria-metrics-0" "restore" "enabled" | quote }}
 - name: BACKUP_VICTORIA_METRICS_1_ENABLED
   value: {{ index .Values "victoria-metrics-1" "backup" "enabled" | quote }}
 - name: BACKUP_VICTORIA_METRICS_1_BUCKET_NAME
   value: {{ index .Values "victoria-metrics-1" "backup" "bucketName" | quote }}
 - name: BACKUP_VICTORIA_METRICS_1_S3_PREFIX
   value: {{ include "trimTrailingSlashes" (index .Values  "victoria-metrics-1" "backup" "s3Prefix") }}
-- name: BACKUP_VICTORIA_METRICS_1_RESTORE_ENABLED
-  value: {{ index .Values "victoria-metrics-1" "restore" "enabled" | quote }}
 - name: BACKUP_CLICKHOUSE_BUCKET_NAME
   value: {{ .Values.clickhouse.backup.bucketName | quote }}
 - name: BACKUP_CLICKHOUSE_S3_PREFIX
   value: {{ include "ensureTrailingSlashIfNotEmpty" .Values.clickhouse.backup.s3Prefix }}
-- name: BACKUP_CLICKHOUSE_RESTORE_ENABLED
-  value: {{ .Values.clickhouse.restore.enabled | quote }}
-- name: BACKUP_CLICKHOUSE_SCHEDULED_ENABLED
-  value: {{ .Values.clickhouse.backup.enabled | quote }}
 - name: MINIO_ENDPOINT
   value: {{ include "stackstate.minio.endpoint" . | quote }}
 {{- include "stackstate.env.platform_version" . }}
@@ -123,7 +107,7 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   mountPath: /opt/docker/etc_log
 - name: backup-restore-scripts
   mountPath: /backup-restore-scripts
-{{- if .Values.backup.enabled }}
+{{- if .Values.global.backup.enabled }}
 - name: minio-keys
   mountPath: /aws-keys
 {{- end -}}
@@ -137,7 +121,7 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   configMap:
     name: {{ template "common.fullname.short" . }}-backup-restore-scripts
     defaultMode: 0755
-{{- if .Values.backup.enabled }}
+{{- if .Values.global.backup.enabled }}
 - name: minio-keys
   secret:
     secretName: {{ include "stackstate.minio.keys" . }}

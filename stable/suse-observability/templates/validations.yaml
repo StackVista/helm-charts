@@ -6,3 +6,7 @@
 {{- if not (or (eq .Values.stackstate.deployment.edition "Prime") (eq .Values.stackstate.deployment.edition "Community")) -}}
   {{- fail "Please set stackstate.deployment.edition to either Prime or Community." -}}
 {{- end }}
+
+{{- if .Values.backup.enabled -}}
+  {{- fail "Please use `global.backup.enabled=true` instead of `backup.enabled=true`" -}}
+{{- end }}

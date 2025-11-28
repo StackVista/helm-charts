@@ -1,10 +1,10 @@
 # minio
 
-![Version: 8.0.10-stackstate.14](https://img.shields.io/badge/Version-8.0.10--stackstate.14-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 8.0.10-stackstate.15](https://img.shields.io/badge/Version-8.0.10--stackstate.15-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 High Performance, Kubernetes Native Object Storage
 
-Current chart version is `8.0.10-stackstate.14`
+Current chart version is `8.0.10-stackstate.15`
 
 **Homepage:** <https://min.io>
 
@@ -25,9 +25,7 @@ Current chart version is `8.0.10-stackstate.14`
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| DeploymentUpdate.maxSurge | string | `"100%"` |  |
-| DeploymentUpdate.maxUnavailable | int | `0` |  |
-| DeploymentUpdate.type | string | `"RollingUpdate"` |  |
+| DeploymentUpdate.type | string | `"Recreate"` |  |
 | StatefulSetUpdate.updateStrategy | string | `"RollingUpdate"` |  |
 | accessKey | string | `""` |  |
 | additionalAnnotations | list | `[]` |  |

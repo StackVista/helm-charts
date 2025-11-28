@@ -3,7 +3,8 @@ global:
   imagePullUsername: "test"
   imagePullPassword: "secret"
   imageRegistry: "my.registry.com"
-
+  backup:
+    enabled: true
 pull-secret:
   enabled: true
 
@@ -30,7 +31,5 @@ stackstate:
     key: "api01"
 anomaly-detection:
   enabled: false
-backup:
-  enabled: true
 victoria-metrics-1:
   enabled: true

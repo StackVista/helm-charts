@@ -7,6 +7,8 @@ global:
     environment: "production"
     team: "platform"
     deployment: "ha"
+  backup:
+    enabled: true
 
 pull-secret:
   enabled: true
@@ -40,8 +42,6 @@ hbase:
   deployment:
     mode: "Mono"
 anomaly-detection:
-  enabled: true
-backup:
   enabled: true
 victoria-metrics-1:
   enabled: true

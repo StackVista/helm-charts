@@ -1,4 +1,3 @@
-{{- if .Values.backup.configuration.scheduled.enabled }}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 apiVersion: batch/v1
 kind: Job
@@ -96,4 +95,3 @@ spec:
       - name: settings-backup-data
         persistentVolumeClaim:
           claimName: {{ template "common.fullname.short" . }}-settings-backup-data
-{{- end }}

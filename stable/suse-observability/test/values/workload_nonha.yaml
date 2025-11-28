@@ -6,6 +6,8 @@ global:
   commonLabels:
     environment: "test"
     team: "platform"
+  backup:
+    enabled: true
 
 pull-secret:
   enabled: true
@@ -39,8 +41,6 @@ hbase:
   deployment:
     mode: "Mono"
 anomaly-detection:
-  enabled: true
-backup:
   enabled: true
 victoria-metrics-1:
   enabled: false

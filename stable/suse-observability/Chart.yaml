@@ -45,8 +45,8 @@ dependencies:
   - name: minio
     repository: file://../minio/
     # For some reason * does not work
-    version: "8.0.10-stackstate.14"
-    condition: backup.enabled
+    version: "8.0.10-stackstate.15"
+    condition: global.backup.enabled
   - name: pull-secret
     version: "*"
     repository: file://../pull-secret/
@@ -57,12 +57,12 @@ dependencies:
     condition: zookeeper.enabled
   - name: victoria-metrics-single
     alias: victoria-metrics-0
-    version: "0.8.53-stackstate.28"
+    version: "0.8.53-stackstate.29"
     repository: file://../victoria-metrics-single/
     condition: victoria-metrics-0.enabled
   - name: victoria-metrics-single
     alias: victoria-metrics-1
-    version: "0.8.53-stackstate.28"
+    version: "0.8.53-stackstate.29"
     repository: file://../victoria-metrics-single/
     condition: victoria-metrics-1.enabled
   - name: clickhouse

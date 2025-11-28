@@ -33,10 +33,9 @@ volumeMounts:
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $overrideContainer := fromYaml (include "stackstate.backup.stackgraph.container.main" .) -}}
 {{- $stackgraphBackupMainContainer := (merge $overrideContainer $commonContainer) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.backup.stackgraph.container.init" .) -}}
-{{- $stackgraphBackupInitContainer := (merge $overrideContainer $commonContainer) -}}
-{{- if .Values.backup.enabled }}
-{{- if .Values.backup.stackGraph.scheduled.enabled }}
+{{- $overrideInitContainer := fromYaml (include "stackstate.backup.stackgraph.container.init" .) -}}
+{{- $stackgraphBackupInitContainer := (merge $overrideInitContainer $commonContainer) -}}
+{{- if .Values.global.backup.enabled }}
 {{- if .Capabilities.APIVersions.Has "batch/v1/CronJob" }}
 apiVersion: batch/v1
 {{- else }}
@@ -123,8 +122,6 @@ spec:
           securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 12 }}
         {{- end }}
           restartPolicy: Never
-{{- end }}
-
 ---
 {{- end }}
 
@@ -134,7 +131,7 @@ command:
   - sh
   - -c
   - |
-    /entrypoint -c {{- if .Values.backup.enabled -}}{{ include "stackstate.minio.endpoint" . }},{{- end -}}{{ include "stackgraph.hbase.waitfor" . }},{{ template "common.fullname.short" . }}-{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
+    /entrypoint -c {{- if .Values.global.backup.enabled -}}{{ include "stackstate.minio.endpoint" . }},{{- end -}}{{ include "stackgraph.hbase.waitfor" . }},{{ template "common.fullname.short" . }}-{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
 imagePullPolicy: Always
 {{- end }}
@@ -172,12 +169,12 @@ volumeMounts:
     mountPath: /settings-backup-data
 {{- end }}
 
-{{- if .Values.backup.configuration.scheduled.enabled }}
+{{- if .Values.global.backup.enabled }}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $overrideContainer := fromYaml (include "stackstate.backup.configuration.container.main" .) -}}
 {{- $configBackupMainContainer := (merge $overrideContainer $commonContainer) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.backup.configuration.container.init" .) -}}
-{{- $configBackupInitContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideInitContainer := fromYaml (include "stackstate.backup.configuration.container.init" .) -}}
+{{- $configBackupInitContainer := (merge $overrideInitContainer $commonContainer) -}}
 {{- if .Capabilities.APIVersions.Has "batch/v1/CronJob" }}
 apiVersion: batch/v1
 {{- else }}

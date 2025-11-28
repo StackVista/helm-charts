@@ -44,10 +44,8 @@ template:
           {{- include "stackstate.backup.volumeMounts" . | nindent 10 }}
           - name: workdir-container-tools
             mountPath: /work
-{{- if and .Values.backup.enabled .Values.backup.stackGraph.scheduled.enabled }}
           - name: tmp-data
             mountPath: /tmp-data
-{{- end }}
     {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 4 }}
     restartPolicy: Never
 {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}
@@ -84,14 +82,12 @@ template:
       {{- include "stackstate.backup.volumes" . | nindent 6 }}
       - name: workdir-container-tools
         emptyDir: { }
-{{- if and .Values.backup.enabled .Values.backup.stackGraph.scheduled.enabled }}
       - name: tmp-data
         persistentVolumeClaim:
           claimName: {{ template "common.fullname.short" . }}-backup-stackgraph-tmp-data
-{{- end }}
 {{- end -}}
 
-{{- if and .Values.backup.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticsearch.restore.enabled .Values.backup.elasticsearch.scheduled.enabled (index .Values "victoria-metrics-0" "backup" "enabled") (index .Values "victoria-metrics-1" "backup" "enabled") (index .Values "victoria-metrics-0" "restore" "enabled") (index .Values "victoria-metrics-1" "restore" "enabled") .Values.clickhouse.backup.enabled .Values.clickhouse.restore.enabled) }}
+{{- if .Values.global.backup.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:

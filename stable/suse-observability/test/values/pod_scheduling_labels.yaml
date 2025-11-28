@@ -2,6 +2,8 @@ global:
   receiverApiKey: "test-key"
   commonLabels:
     all-label: "all-value"
+  backup:
+    enabled: true
 
 stackstate:
   baseUrl: "http://localhost"
@@ -88,20 +90,8 @@ stackstate:
           router-mode-annotation: "router-value"
         podLabels:
           router-mode-label: "router-value"
-
-backup:
-  enabled: true
-  stackGraph:
-    scheduled:
-      enabled: true
-  configuration:
-    scheduled:
-      enabled: true
-
 clickhouse:
-  enabled: true
   backup:
-    enabled: true
     podAnnotations:
       clickhouse-backup-annotation: "clickhouse-value"
     podLabels:

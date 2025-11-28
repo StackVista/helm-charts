@@ -21,12 +21,12 @@ if [ -z "${CM_NAME}" ]; then
 fi
 
 if (! (kubectl get configmap "${CM_NAME}" -o jsonpath="{.data.job-${JOB_NAME_TEMPLATE}\.yaml}"  | sed -e "s/${JOB_NAME_TEMPLATE}/${JOB_NAME}/" -e "s/REPLACE_ME_BACKUP_FILE_REPLACE_ME/${BACKUP_FILE}/" -e "s/REPLACE_ME_FORCE_DELETE_REPLACE_ME/${FORCE_DELETE}/" > "${JOB_YAML_FILE}")) || [ ! -s "${JOB_YAML_FILE}" ]; then
-    echo "Did you set backup.enabled and backup.stackGraph.restore.enabled to true?"
+    echo "Did you set backup.enabled to true?"
     exit 1
 fi
 
 if (! (kubectl get configmap "${CM_NAME}" -o jsonpath="{.data.pvc-${JOB_NAME_TEMPLATE}\.yaml}")) | sed -e "s/${JOB_NAME_TEMPLATE}/${JOB_NAME}/" > "${PVC_YAML_FILE}" || [ ! -s "${PVC_YAML_FILE}" ]; then
-    echo "Did you set backup.enabled and backup.stackGraph.restore.enabled to true?"
+    echo "Did you set backup.enabled to true?"
     exit 1
 fi
 

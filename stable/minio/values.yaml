@@ -59,9 +59,7 @@ extraArgs: []
 
 ## Update strategy for Deployments
 DeploymentUpdate:
-  type: RollingUpdate
-  maxUnavailable: 0
-  maxSurge: 100%
+  type: Recreate
 
 ## Update strategy for StatefulSets
 StatefulSetUpdate:

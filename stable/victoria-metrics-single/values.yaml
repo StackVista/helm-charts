@@ -5,6 +5,9 @@
 global:
   # -- Common labels that are applied to all resources
   commonLabels: {}
+  backup:
+  # -- Enable scheduled backups of Victoria Metrics.
+    enabled: false
 
 rbac:
   create: true
