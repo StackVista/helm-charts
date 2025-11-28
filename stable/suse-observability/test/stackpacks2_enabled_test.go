@@ -20,7 +20,7 @@ func TestStackpacks2EnabledNonSplit(t *testing.T) {
 	// Stackpacks 2 feature flag Env var should be set
 	assert.GreaterOrEqual(t, slices.IndexFunc(server.Spec.Template.Spec.Containers[0].Env, func(env v1.EnvVar) bool {
 		t.Log(env.Name, ":",env.Value)
-		return env.Name == "CONFIG_FORCE_stackstate_featureSwitches_enableStackpacks2" }),0)
+		return env.Name == "CONFIG_FORCE_stackstate_featureSwitches_enableStackPacks2" }),0)
 
 	// Stackpacks 2 is auto-upgraded
 	serverConfigmap := resources.ConfigMaps["suse-observability-server"]
@@ -39,7 +39,7 @@ func TestStackpacks2DisabledNonSplit(t *testing.T) {
 	server := resources.Deployments["suse-observability-server"]
 
 	// Stackpacks 2 feature flag Env var should not be set
-	assert.Equal(t, -1, slices.IndexFunc(server.Spec.Template.Spec.Containers[0].Env, func(env v1.EnvVar) bool { return env.Name == "CONFIG_FORCE_stackstate_featureSwitches_enableStackpacks2" }))
+	assert.Equal(t, -1, slices.IndexFunc(server.Spec.Template.Spec.Containers[0].Env, func(env v1.EnvVar) bool { return env.Name == "CONFIG_FORCE_stackstate_featureSwitches_enableStackPacks2" }))
 
 
 	// Stackpacks 2 is not auto-upgraded
@@ -59,7 +59,7 @@ func TestStackpacks2EnabledSplit(t *testing.T) {
 	api := resources.Deployments["suse-observability-api"]
 
 	// Stackpacks 2 feature flag Env var should be set
-	assert.GreaterOrEqual(t, slices.IndexFunc(api.Spec.Template.Spec.Containers[0].Env, func(env v1.EnvVar) bool { return env.Name == "CONFIG_FORCE_stackstate_featureSwitches_enableStackpacks2" }),0)
+	assert.GreaterOrEqual(t, slices.IndexFunc(api.Spec.Template.Spec.Containers[0].Env, func(env v1.EnvVar) bool { return env.Name == "CONFIG_FORCE_stackstate_featureSwitches_enableStackPacks2" }),0)
 
 
 	// Stackpacks 2 is auto-upgraded
@@ -79,7 +79,7 @@ func TestStackpacks2DisabledSplit(t *testing.T) {
 	api := resources.Deployments["suse-observability-api"]
 
 	// Stackpacks 2 feature flag Env var should not be set
-	assert.Equal(t, -1, slices.IndexFunc(api.Spec.Template.Spec.Containers[0].Env, func(env v1.EnvVar) bool { return env.Name == "CONFIG_FORCE_stackstate_featureSwitches_enableStackpacks2" }))
+	assert.Equal(t, -1, slices.IndexFunc(api.Spec.Template.Spec.Containers[0].Env, func(env v1.EnvVar) bool { return env.Name == "CONFIG_FORCE_stackstate_featureSwitches_enableStackPacks2" }))
 
 
 	// Stackpacks 2 is not auto-upgraded
