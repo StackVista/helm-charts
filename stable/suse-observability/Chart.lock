@@ -37,9 +37,9 @@ dependencies:
   version: 3.6.9-suse-observability.3
 - name: opentelemetry-collector
   repository: file://../opentelemetry-collector
-  version: 0.108.0-stackstate.11
+  version: 0.108.0-stackstate.12
 - name: kubernetes-rbac-agent
   repository: https://helm.stackstate.io
   version: 0.0.22
-digest: sha256:fee2dda62595dd40294f2459168de99fb02bcc3495532e9b89ef24a68038a2b0
-generated: "2025-12-03T13:23:28.260404546+01:00"
+digest: sha256:e934bf707d7253a5be114c656e2860d62edcb8c51f001e18902390ffa05574ce
+generated: "2025-12-08T12:07:42.065306801+01:00"
