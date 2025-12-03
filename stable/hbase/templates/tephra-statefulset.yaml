@@ -49,7 +49,7 @@ env:
   value: {{ template "common.fullname.short" . }}-stackgraph:2182
 - name: HBASE_CONF_data_tx_snapshot_local_ftp_mirror
   value: "anonymous@{{ template "common.fullname.short" . }}-stackgraph:10021"
-{{ $diskSpaceMB := (include "hbase.storage.to.megabytes" .Values.stackgraph.persistence.size) }}
+{{ $diskSpaceMB := (include "hbase.storage.to.megabytes" .Values.tephra.persistence.size) }}
 {{ if $diskSpaceMB  }}
 - name: HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb
   value: "{{ mulf $diskSpaceMB 0.1 | int }}"

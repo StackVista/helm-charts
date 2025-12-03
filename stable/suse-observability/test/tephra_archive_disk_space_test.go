@@ -41,6 +41,6 @@ func TestTephraMonoHbaseArchiveDiskSpaceRender(t *testing.T) {
 	}
 
 	require.NotNil(t, stackstateTephraStatefulset)
-	expectedTephraArchiveDiskSpace := v1.EnvVar{Name: "HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb", Value: "26850"}
+	expectedTephraArchiveDiskSpace := v1.EnvVar{Name: "HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb", Value: "107"}
 	require.Contains(t, stackstateTephraStatefulset.Spec.Template.Spec.Containers[0].Env, expectedTephraArchiveDiskSpace)
 }
