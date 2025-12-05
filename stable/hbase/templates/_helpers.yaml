@@ -77,6 +77,11 @@ Common environment variables for HBase configuration.
   value: "hdfs://{{ template "common.fullname.short" . }}-hdfs-nn-headful:9000/hbase"
 - name: HBASE_CONF_hbase_zookeeper_quorum
   value: {{ include "hbase.zookeeper.endpoint" . | quote }}
+{{ $diskSpaceMB := (include "hbase.storage.to.megabytes" .Values.hdfs.datanode.persistence.size) }}
+{{ if $diskSpaceMB  }}
+- name: HBASE_CONF_hbase_master_stackstate_logcleaner_max_size_mb
+  value: "{{ mulf $diskSpaceMB 0.05 | int }}"
+{{ end }}
 {{- end }}
 
 {{/*
