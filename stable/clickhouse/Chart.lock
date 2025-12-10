@@ -2,5 +2,8 @@ dependencies:
 - name: common
   repository: file://charts/common
   version: 2.8.0
-digest: sha256:b92974eeb773b86d74f5a6baa9aa0c87d3e0e75c8bcf2119246fb38d2b31d18c
-generated: "2025-09-09T10:21:25.892935+02:00"
+- name: suse-observability-sizing
+  repository: file://../suse-observability-sizing
+  version: 0.1.1
+digest: sha256:c03282ee586087b08f39b9c5a6f8fc1b15ffb4cbefe531ceb72cbde49ba1370d
+generated: "2025-12-10T11:24:24.4202+01:00"

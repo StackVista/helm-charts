@@ -66,7 +66,7 @@ dependencies:
     repository: file://../victoria-metrics-single/
     condition: victoria-metrics-1.enabled
   - name: clickhouse
-    version: 3.6.9-suse-observability.3
+    version: 3.6.9-suse-observability.4
     repository: file://../clickhouse/
     condition: clickhouse.enabled
   - name: opentelemetry-collector

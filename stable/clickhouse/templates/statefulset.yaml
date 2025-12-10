@@ -17,7 +17,7 @@ metadata:
   annotations: {{- include "common.tplvalues.render" ( dict "value" $.Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
 spec:
-  replicas: {{ $.Values.replicaCount }}
+  replicas: {{ include "common.tplvalues.render" (dict "value" $.Values.replicaCount "context" $) }}
   podManagementPolicy: {{ $.Values.podManagementPolicy | quote }}
   selector:
     matchLabels: {{ include "common.labels.matchLabels" $ | nindent 6 }}
@@ -48,8 +48,13 @@ spec:
       {{- if $.Values.hostAliases }}
       hostAliases: {{- include "common.tplvalues.render" (dict "value" $.Values.hostAliases "context" $) | nindent 8 }}
       {{- end }}
-      {{- if $.Values.affinity }}
-      affinity: {{- include "common.tplvalues.render" ( dict "value" $.Values.affinity "context" $) | nindent 8 }}
+      {{- $sizingAffinity := include "common.sizing.clickhouse.affinityConfig" $ | fromYaml -}}
+      {{- $finalAffinity := $.Values.affinity | default dict -}}
+      {{- if and (not $.Values.affinity) $sizingAffinity -}}
+        {{- $finalAffinity = $sizingAffinity -}}
+      {{- end -}}
+      {{- if $finalAffinity }}
+      affinity: {{- include "common.tplvalues.render" ( dict "value" $finalAffinity "context" $) | nindent 8 }}
       {{- else }}
       affinity:
         podAffinity: {{- include "common.affinities.pods" (dict "type" $.Values.podAffinityPreset "component" "clickhouse" "context" $) | nindent 10 }}
@@ -82,8 +87,14 @@ spec:
         - name: copy-certs
           image: {{ include "clickhouse.volumePermissions.image" $ }}
           imagePullPolicy: {{ $.Values.volumePermissions.image.pullPolicy | quote }}
-          {{- if $.Values.resources }}
-          resources: {{- toYaml $.Values.resources | nindent 12 }}
+          {{- $profileResources := include "common.sizing.clickhouse.resources" $ | trim -}}
+          {{- $evaluatedResources := $.Values.resources }}
+          {{- if $profileResources }}
+          {{- $profileResourcesDict := fromYaml $profileResources }}
+          {{- $evaluatedResources = merge $profileResourcesDict $.Values.resources }}
+          {{- end }}
+          {{- with $evaluatedResources }}
+          resources: {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- if $.Values.containerSecurityContext.enabled }}
           # We don't require a privileged container in this case
@@ -233,8 +244,14 @@ spec:
             - secretRef:
                 name: {{ include "common.tplvalues.render" (dict "value" $.Values.extraEnvVarsSecret "context" $) }}
             {{- end }}
-          {{- if $.Values.resources }}
-          resources: {{- toYaml $.Values.resources | nindent 12 }}
+          {{- $profileResources := include "common.sizing.clickhouse.resources" $ | trim -}}
+          {{- $evaluatedResources := $.Values.resources }}
+          {{- if $profileResources }}
+          {{- $profileResourcesDict := fromYaml $profileResources }}
+          {{- $evaluatedResources = merge $profileResourcesDict $.Values.resources }}
+          {{- end }}
+          {{- with $evaluatedResources }}
+          resources: {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:
             - name: http
@@ -414,7 +431,7 @@ spec:
         {{- end }}
         resources:
           requests:
-            storage: {{ $.Values.persistence.size | quote }}
+            storage: {{ include "common.tplvalues.render" (dict "value" $.Values.persistence.size "context" $) | quote }}
         {{- if $.Values.persistence.selector }}
         selector: {{- include "common.tplvalues.render" (dict "value" $.Values.persistence.selector "context" $) | nindent 10 }}
         {{- end }}

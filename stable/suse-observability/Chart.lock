@@ -34,7 +34,7 @@ dependencies:
   version: 0.8.53-stackstate.29
 - name: clickhouse
   repository: file://../clickhouse/
-  version: 3.6.9-suse-observability.3
+  version: 3.6.9-suse-observability.4
 - name: opentelemetry-collector
   repository: file://../opentelemetry-collector
   version: 0.108.0-stackstate.16

@@ -10,7 +10,7 @@ Current chart version is `2.7.1-pre.17`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.3 |
+| file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.4 |
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.2 |
 | file://../hbase/ | hbase | 0.2.108 |

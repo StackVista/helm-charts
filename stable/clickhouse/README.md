@@ -1,6 +1,6 @@
 # clickhouse
 
-![Version: 3.6.9-suse-observability.3](https://img.shields.io/badge/Version-3.6.9--suse--observability.3-informational?style=flat-square) ![AppVersion: 23.7.4](https://img.shields.io/badge/AppVersion-23.7.4-informational?style=flat-square)
+![Version: 3.6.9-suse-observability.4](https://img.shields.io/badge/Version-3.6.9--suse--observability.4-informational?style=flat-square) ![AppVersion: 23.7.4](https://img.shields.io/badge/AppVersion-23.7.4-informational?style=flat-square)
 
 ClickHouse is an open-source column-oriented OLAP database management system. Use it to boost your database performance while providing linear scalability and hardware efficiency.
 
@@ -20,6 +20,7 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 
 | Repository | Name | Version |
 |------------|------|---------|
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.1 |
 | file://charts/common | common | 2.x.x |
 
 ## Values
