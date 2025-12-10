@@ -14,7 +14,7 @@ Current chart version is `2.7.1-pre.17`
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.3 |
 | file://../hbase/ | hbase | 0.2.108 |
-| file://../kafka/ | kafka | 19.1.3-suse-observability.4 |
+| file://../kafka/ | kafka | 19.1.3-suse-observability.5 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.15 |
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.16 |

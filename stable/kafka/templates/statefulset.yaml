@@ -20,7 +20,7 @@ metadata:
   {{- end }}
 spec:
   podManagementPolicy: {{ .Values.podManagementPolicy }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ include "common.tplvalues.render" (dict "value" .Values.replicaCount "context" $) }}
   selector:
     matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
       app.kubernetes.io/component: kafka
@@ -60,8 +60,13 @@ spec:
       {{- if .Values.schedulerName }}
       schedulerName: {{ .Values.schedulerName | quote }}
       {{- end }}
-      {{- if .Values.affinity }}
-      affinity: {{- include "common.tplvalues.render" (dict "value" .Values.affinity "context" $) | nindent 8 }}
+      {{- $sizingAffinity := include "common.sizing.kafka.affinityConfig" . | fromYaml -}}
+      {{- $finalAffinity := .Values.affinity | default dict -}}
+      {{- if and (not .Values.affinity) $sizingAffinity -}}
+        {{- $finalAffinity = $sizingAffinity -}}
+      {{- end -}}
+      {{- if $finalAffinity }}
+      affinity: {{- include "common.tplvalues.render" (dict "value" $finalAffinity "context" $) | nindent 8 }}
       {{- else }}
       affinity:
         podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.podAffinityPreset "component" "kafka" "context" $) | nindent 10 }}
@@ -319,11 +324,11 @@ spec:
             - name: KAFKA_CFG_LOG_DIRS
               value: {{ .Values.logsDirs | quote }}
             - name: KAFKA_CFG_DEFAULT_REPLICATION_FACTOR
-              value: {{ .Values.defaultReplicationFactor | quote }}
+              value: {{ include "common.tplvalues.render" (dict "value" .Values.defaultReplicationFactor "context" $) | quote }}
             - name: KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR
-              value: {{ .Values.offsetsTopicReplicationFactor | quote }}
+              value: {{ include "common.tplvalues.render" (dict "value" .Values.offsetsTopicReplicationFactor "context" $) | quote }}
             - name: KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
-              value: {{ .Values.transactionStateLogReplicationFactor | quote }}
+              value: {{ include "common.tplvalues.render" (dict "value" .Values.transactionStateLogReplicationFactor "context" $) | quote }}
             - name: KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR
               value: {{ .Values.transactionStateLogMinIsr | quote }}
             - name: KAFKA_CFG_NUM_IO_THREADS
@@ -397,8 +402,14 @@ spec:
           {{- if .Values.lifecycleHooks }}
           lifecycle: {{- include "common.tplvalues.render" (dict "value" .Values.lifecycleHooks "context" $) | nindent 12 }}
           {{- end }}
-          {{- if .Values.resources }}
-          resources: {{- toYaml .Values.resources | nindent 12 }}
+          {{- $profileResources := include "common.sizing.kafka.resources" . | trim -}}
+          {{- $evaluatedResources := .Values.resources }}
+          {{- if $profileResources }}
+          {{- $profileResourcesDict := fromYaml $profileResources }}
+          {{- $evaluatedResources = merge $profileResourcesDict .Values.resources }}
+          {{- end }}
+          {{- with $evaluatedResources }}
+          resources: {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
             - name: data
