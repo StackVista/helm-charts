@@ -25,7 +25,7 @@ dependencies:
   version: 1.0.2
 - name: zookeeper
   repository: file://../zookeeper/
-  version: 8.1.2-suse-observability.2
+  version: 8.1.2-suse-observability.3
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
   version: 0.8.53-stackstate.29
