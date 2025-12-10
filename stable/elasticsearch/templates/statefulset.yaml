@@ -142,13 +142,19 @@ spec:
       nodeSelector:
 {{ toYaml . | indent 8 }}
       {{- end }}
-      {{- if or (eq .Values.antiAffinity "hard") (eq .Values.antiAffinity "soft") .Values.nodeAffinity }}
+      {{- $sizingAntiAffinity := include "common.sizing.elasticsearch.antiAffinityConfig" . | trim -}}
+      {{- $sizingAntiAffinityTopologyKey := include "common.sizing.elasticsearch.antiAffinityTopologyKeyConfig" . | trim -}}
+      {{- $antiAffinity := .Values.antiAffinity | default $sizingAntiAffinity | toString -}}
+      {{- $antiAffinity = tpl $antiAffinity . -}}
+      {{- $antiAffinityTopologyKey := .Values.antiAffinityTopologyKey | default $sizingAntiAffinityTopologyKey | toString -}}
+      {{- $antiAffinityTopologyKey = tpl $antiAffinityTopologyKey . -}}
+      {{- if or (eq $antiAffinity "hard") (eq $antiAffinity "soft") .Values.nodeAffinity }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
       affinity:
       {{- end }}
-      {{- if eq .Values.antiAffinity "hard" }}
+      {{- if eq $antiAffinity "hard" }}
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
@@ -157,13 +163,13 @@ spec:
                 operator: In
                 values:
                 - "{{ template "elasticsearch.uname" .}}"
-            topologyKey: {{ .Values.antiAffinityTopologyKey }}
-      {{- else if eq .Values.antiAffinity "soft" }}
+            topologyKey: {{ $antiAffinityTopologyKey }}
+      {{- else if eq $antiAffinity "soft" }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 1
             podAffinityTerm:
-              topologyKey: {{ .Values.antiAffinityTopologyKey }}
+              topologyKey: {{ $antiAffinityTopologyKey }}
               labelSelector:
                 matchExpressions:
                 - key: app
@@ -276,8 +282,16 @@ spec:
           containerPort: {{ .Values.httpPort }}
         - name: transport
           containerPort: {{ .Values.transportPort }}
+{{- $profileResources := include "common.sizing.elasticsearch.resources" . | trim -}}
+{{- $evaluatedResources := .Values.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.resources }}
+{{- end }}
+{{- with $evaluatedResources }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+{{ toYaml . | indent 10 }}
+{{- end }}
         env:
           - name: node.name
             valueFrom:

@@ -7,7 +7,7 @@ dependencies:
   version: 0.4.26
 - name: elasticsearch
   repository: file://../elasticsearch/
-  version: 8.19.4-stackstate.2
+  version: 8.19.4-stackstate.3
 - name: hbase
   repository: file://../hbase/
   version: 0.2.108

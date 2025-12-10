@@ -29,7 +29,7 @@ dependencies:
     condition: elasticsearch.enabled
     repository: file://../elasticsearch/
     # For some reason * does not work
-    version: "8.19.4-stackstate.2"
+    version: "8.19.4-stackstate.3"
   - name: hbase
     condition: hbase.enabled
     repository: file://../hbase/
