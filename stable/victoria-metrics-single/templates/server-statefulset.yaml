@@ -272,7 +272,17 @@ spec:
       tolerations:
 {{ toYaml .Values.server.tolerations | indent 8 }}
     {{- end }}
-    {{- with .Values.server.affinity }}
+    {{- $sizingAffinity := dict -}}
+    {{- if contains "victoria-metrics-0" (include "victoria-metrics.server.fullname" .) -}}
+      {{- $sizingAffinity = include "common.sizing.victoria-metrics-0.affinityConfig" . | fromYaml -}}
+    {{- else if contains "victoria-metrics-1" (include "victoria-metrics.server.fullname" .) -}}
+      {{- $sizingAffinity = include "common.sizing.victoria-metrics-1.affinityConfig" . | fromYaml -}}
+    {{- end -}}
+    {{- $finalAffinity := .Values.server.affinity | default dict -}}
+    {{- if and (not .Values.server.affinity) $sizingAffinity -}}
+      {{- $finalAffinity = $sizingAffinity -}}
+    {{- end -}}
+    {{- with $finalAffinity }}
       affinity: {{ toYaml . | nindent 8 }}
     {{- end }}
       terminationGracePeriodSeconds: {{ .Values.server.terminationGracePeriodSeconds }}
