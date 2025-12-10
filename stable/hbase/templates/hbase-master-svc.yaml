@@ -19,7 +19,7 @@ spec:
     app.kubernetes.io/component: hbase-master
 {{- end -}}
 
-{{- if eq .Values.deployment.mode "Distributed" -}}
+{{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $stackstateHbaseMasterService := fromYaml (include "hbase.hbase.master.service" .) -}}
 {{- toYaml (merge $stackstateHbaseMasterService $commonService) -}}

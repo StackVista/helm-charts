@@ -10,7 +10,7 @@ spec:
   maxUnavailable: 1
 {{- end -}}
 
-{{- if eq .Values.deployment.mode "Distributed" -}}
+{{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
 {{- if .Values.hdfs.secondarynamenode.enabled -}}
 {{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
 {{- $stackstateHbaseHdfsSecondaryNamenodePdb := fromYaml (include "hbase.hdfs.secondarynamenode.poddisruptionbudget" .) -}}

@@ -17,7 +17,7 @@ spec:
     app.kubernetes.io/component: hdfs-snn
 {{- end -}}
 
-{{- if eq .Values.deployment.mode "Distributed" -}}
+{{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
 {{- if .Values.hdfs.secondarynamenode.enabled -}}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $stackstateHbaseHdfsSecondaryNamenodeService := fromYaml (include "hbase.hdfs.secondarynamenode.service" .) -}}

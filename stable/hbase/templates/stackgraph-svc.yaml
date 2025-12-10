@@ -31,7 +31,7 @@ spec:
     app.kubernetes.io/component: stackgraph
 {{- end -}}
 
-{{- if eq .Values.deployment.mode "Mono" -}}
+{{- if eq (include "hbase.deployment.mode" .) "Mono" -}}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $stackgraphService := fromYaml (include "stackgraph.service" .) -}}
 {{- toYaml (merge $stackgraphService $commonService) -}}

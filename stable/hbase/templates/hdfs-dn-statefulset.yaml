@@ -61,7 +61,13 @@ readinessProbe:
   initialDelaySeconds: 60
   periodSeconds: 30
   successThreshold: 1
-{{- with .Values.hdfs.datanode.resources }}
+{{- $profileResources := include "common.sizing.hbase.hdfs.datanode.resources" . | trim -}}
+{{- $evaluatedResources := .Values.hdfs.datanode.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.hdfs.datanode.resources }}
+{{- end }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -124,8 +130,12 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.all.affinity .Values.hdfs.datanode.affinity }}
+    {{- $sizingAffinity := include "common.sizing.hbase.hdfs.datanode.affinityConfig" . | fromYaml -}}
+    {{- if or .Values.all.affinity .Values.hdfs.datanode.affinity $sizingAffinity }}
       affinity:
+      {{- with $sizingAffinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.all.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -165,7 +175,7 @@ spec:
 {{- end }}
 {{- end -}}
 
-{{- if eq .Values.deployment.mode "Distributed" -}}
+{{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
 {{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
 {{- $stackstateHbaseHdfsDatanodeStatefulSet := fromYaml (include "hbase.hdfs.datanode.statefulset" .) -}}
 {{- toYaml (merge $stackstateHbaseHdfsDatanodeStatefulSet $commonStatefulSet) -}}

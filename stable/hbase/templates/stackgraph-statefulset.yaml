@@ -62,7 +62,13 @@ readinessProbe:
   httpGet:
     path: /
     port: masterinfo
-{{- with .Values.stackgraph.resources }}
+{{- $profileResources := include "common.sizing.hbase.stackgraph.resources" . | trim -}}
+{{- $evaluatedResources := .Values.stackgraph.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.stackgraph.resources }}
+{{- end }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -154,7 +160,7 @@ spec:
 {{- end }}
 {{- end -}}
 
-{{- if eq .Values.deployment.mode "Mono" -}}
+{{- if eq (include "hbase.deployment.mode" .) "Mono" -}}
 {{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
 {{- $stackgraphStatefulSet := fromYaml (include "stackgraph.statefulset" .) -}}
 {{- toYaml (merge $stackgraphStatefulSet $commonStatefulSet) -}}

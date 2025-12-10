@@ -1,6 +1,6 @@
 {{- define "hbase.tephra.container.init" -}}
 name: tephra-init
-{{- if eq .Values.deployment.mode "Distributed" }}
+{{- if eq (include "hbase.deployment.mode" .) "Distributed" }}
 command:
 - sh
 - -c
@@ -22,7 +22,7 @@ name: tephra
 image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.tephra.image.repository }}:{{ default (printf "%s-%s" .Values.version .Values.stackgraph.version) .Values.tephra.image.tag }}"
 imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.tephra.image.pullPolicy | quote  }}
 env:
-{{- if eq .Values.deployment.mode "Distributed" }}
+{{- if eq (include "hbase.deployment.mode" .) "Distributed" }}
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "hbase.hbase.commonEnv" . }}
 {{- include "all.commonEnv" . }}
@@ -85,13 +85,19 @@ readinessProbe:
     port: health
   initialDelaySeconds: 20
   timeoutSeconds: 5
-{{- with .Values.tephra.resources }}
+{{- $profileResources := include "common.sizing.hbase.tephra.resources" . | trim -}}
+{{- $evaluatedResources := .Values.tephra.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.tephra.resources }}
+{{- end }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 securityContext:
   runAsNonRoot: true
-{{- if eq .Values.deployment.mode "Mono" }}
+{{- if eq (include "hbase.deployment.mode" .) "Mono" }}
 volumeMounts:
   - name: snapshot
     mountPath: /opt/tephra
@@ -110,10 +116,10 @@ metadata:
 {{- if .Values.global.commonLabels }}
 {{- include "hbase.commonLabels" . | indent 4 }}
 {{- end }}
-  name: {{ template "common.fullname.short" . }}-tephra{{- if eq .Values.deployment.mode "Mono" }}-mono{{- end }}
+  name: {{ template "common.fullname.short" . }}-tephra{{- if eq (include "hbase.deployment.mode" .) "Mono" }}-mono{{- end }}
 spec:
   podManagementPolicy: Parallel
-  replicas: {{ .Values.tephra.replicaCount }}
+  replicas: {{ tpl (.Values.tephra.replicaCount | toString) . }}
   serviceName: {{ template "common.fullname.short" . }}-tephra
   selector:
     matchLabels:
@@ -148,8 +154,12 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.all.affinity .Values.tephra.affinity }}
+    {{- $sizingAffinity := include "common.sizing.hbase.tephra.affinityConfig" . | fromYaml -}}
+    {{- if or .Values.all.affinity .Values.tephra.affinity $sizingAffinity }}
       affinity:
+      {{- with $sizingAffinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.all.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -166,7 +176,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if eq .Values.deployment.mode "Mono" }}
+    {{- if eq (include "hbase.deployment.mode" .) "Mono" }}
   volumeClaimTemplates:
     - metadata:
         name: snapshot

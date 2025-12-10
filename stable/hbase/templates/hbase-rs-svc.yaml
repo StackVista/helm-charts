@@ -19,7 +19,7 @@ spec:
     app.kubernetes.io/component: hbase-rs
 {{- end -}}
 
-{{- if eq .Values.deployment.mode "Distributed" -}}
+{{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $stackstateHbaseRegionServerService := fromYaml (include "hbase.hbase.regionserver.service" .) -}}
 {{- toYaml (merge $stackstateHbaseRegionServerService $commonService) -}}

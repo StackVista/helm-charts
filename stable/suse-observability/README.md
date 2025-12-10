@@ -12,7 +12,7 @@ Current chart version is `2.7.1-pre.17`
 |------------|------|---------|
 | file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.4 |
 | file://../common/ | common | * |
-| file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.2 |
+| file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.3 |
 | file://../hbase/ | hbase | 0.2.108 |
 | file://../kafka/ | kafka | 19.1.3-suse-observability.4 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |

@@ -11,14 +11,20 @@ env:
 {{- include "all.commonEnv" . }}
 {{- include "console.commonEnv" . }}
 - name: ZOOKEEPER_QUORUM
-{{- if eq .Values.deployment.mode "Distributed" }}
+{{- if eq (include "hbase.deployment.mode" .) "Distributed" }}
   value: {{ include "hbase.zookeeper.endpoint" . | quote }}
 {{- else }}
   value: {{ template "common.fullname.short" . }}-stackgraph:2182
 {{- end }}
 - name: "JAVA_TOOL_OPTIONS"
   value: "-XX:InitialRAMPercentage=70.0 -XX:MaxRAMPercentage=70.0"
-{{- with .Values.console.resources }}
+{{- $profileResources := include "common.sizing.hbase.console.resources" . | trim -}}
+{{- $evaluatedResources := .Values.console.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.console.resources }}
+{{- end }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}

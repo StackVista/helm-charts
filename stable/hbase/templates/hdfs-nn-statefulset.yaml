@@ -64,7 +64,13 @@ readinessProbe:
   httpGet:
     path: /
     port: nninfo
-{{- with .Values.hdfs.namenode.resources }}
+{{- $profileResources := include "common.sizing.hbase.hdfs.namenode.resources" . | trim -}}
+{{- $evaluatedResources := .Values.hdfs.namenode.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.hdfs.namenode.resources }}
+{{- end }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -124,8 +130,12 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.all.affinity .Values.hdfs.namenode.affinity }}
+    {{- $sizingAffinity := include "common.sizing.hbase.hdfs.namenode.affinityConfig" . | fromYaml -}}
+    {{- if or .Values.all.affinity .Values.hdfs.namenode.affinity $sizingAffinity }}
       affinity:
+      {{- with $sizingAffinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.all.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -160,7 +170,7 @@ spec:
 {{- end }}
 {{- end -}}
 
-{{- if eq .Values.deployment.mode "Distributed" -}}
+{{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
 {{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
 {{- $stackstateHbaseHdfsNamenodeStatefulSet := fromYaml (include "hbase.hdfs.namenode.statefulset" .) -}}
 {{- toYaml (merge $stackstateHbaseHdfsNamenodeStatefulSet $commonStatefulSet) -}}

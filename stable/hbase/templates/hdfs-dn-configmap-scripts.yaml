@@ -6,7 +6,7 @@ data:
     {{- .Files.Get "scripts/datanode-check-status.sh" | nindent 4 }}
 {{- end -}}
 
-{{- if eq .Values.deployment.mode "Distributed" -}}
+{{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
 {{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
 {{- $datanodeScriptsConfigMap := fromYaml (include "hbase.hdfs.datanode.configmap-scripts" .) -}}
 {{- toYaml (merge $datanodeScriptsConfigMap $commonConfigMap) -}}
