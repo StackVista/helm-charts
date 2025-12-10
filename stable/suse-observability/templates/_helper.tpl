@@ -138,10 +138,11 @@ Router extra environment variables for ui pods inherited through `stackstate.com
 Environment variables containing the properly sanitized StackState Base URLs
 */}}
 {{- define "stackstate.baseurls.envvars" }}
+{{- $baseUrl := include "suse-observability.global.baseUrl" . | default .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl or global.suseObservability.baseUrl is required" }}
 - name: STACKSTATE_BASE_URL
-  value: {{ .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is required" | quote }}
+  value: {{ $baseUrl | quote }}
 - name: RECEIVER_BASE_URL
-  value: {{ printf "%s/%s" ( .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is required" ) "receiver" | quote }}
+  value: {{ printf "%s/%s" $baseUrl "receiver" | quote }}
 {{- end -}}
 
 {{/*
@@ -514,6 +515,11 @@ Return the proper Docker Image Registry Secret Names evaluating values as templa
     {{- $pullSecrets = append $pullSecrets (include "stackstate.tplvalue.render" (dict "value" .name "context" $context)) -}}
   {{- end -}}
 
+  {{- /* Automatically include suse-observability-pull-secret if configured via global.suseObservability */ -}}
+  {{- if include "suse-observability.global.hasPullSecret" $context -}}
+    {{- $pullSecrets = append $pullSecrets "suse-observability-pull-secret" -}}
+  {{- end -}}
+
   {{- if (not (empty $pullSecrets)) }}
 imagePullSecrets:
     {{- range $pullSecrets | uniq }}
@@ -732,6 +738,22 @@ Usage:
 {{- $experimental := .context.Values.stackstate.experimental -}}
 {{- $features := .context.Values.stackstate.features -}}
 
+{{/* STEP 0: If sizing profile is set, check profile-based defaults FIRST for specific keys */}}
+{{/* This ensures profile-based values take precedence over defaults in values.yaml */}}
+{{- if and .context.Values.global .context.Values.global.suseObservability .context.Values.global.suseObservability.sizing .context.Values.global.suseObservability.sizing.profile -}}
+  {{- if eq .key "server.split" -}}
+    {{- $value = include "common.sizing.stackstate.server.split" .context | trim -}}
+    {{- if $value -}}
+      {{- $found = true -}}
+    {{- end -}}
+  {{- else if eq .key "receiver.split.enabled" -}}
+    {{- $value = include "common.sizing.stackstate.receiver.split.enabled" .context | trim -}}
+    {{- if $value -}}
+      {{- $found = true -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
 {{/* STEP 1: Check experimental section first for backward compatibility */}}
 {{- if $experimental -}}
   {{/* Start traversing from the experimental object */}}
@@ -784,7 +806,8 @@ Usage:
   {{- end -}}
 {{- end -}}
 
-{{/* Return the final value (will be empty string if not found in either section) */}}
+{{/* Return the final value (will be empty string if not found in any section) */}}
+{{/* Note: Step 0 above handles global mode profile-based defaults */}}
 {{- $value -}}
 {{- end -}}
 
@@ -796,12 +819,13 @@ When checking boolean-like values:
 - Comparing with "true" doesn't work reliably since any non-empty string is truthy in Helm
 - The string "false" is still truthy in boolean context since it's a non-empty string
 - We must explicitly check if the returned value is NOT the string "false"
+- We trim the value to handle any whitespace/newlines from template rendering
 
 Usage: {{ if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
 */}}
 {{- define "suse-observability.features.enabled" -}}
-{{- $value := include "suse-observability.features.get" (dict "key" .key "context" .context) -}}
-{{- if ne $value "false" -}}
+{{- $value := include "suse-observability.features.get" (dict "key" .key "context" .context) | trim -}}
+{{- if and $value (ne $value "false") -}}
 true
 {{- end -}}
 {{- end -}}
@@ -816,5 +840,46 @@ Allow users of helm charts to specify global common labels via .Values.global.co
 {{- range $key, $value := .Values.global.commonLabels }}
 {{ $key }}: {{ $value | quote }}
 {{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Auto-detect whether to use NEW mode (global.suseObservability.*) or LEGACY mode (stackstate.*)
+Usage: {{ include "suse-observability.sizing-profile.enabled" . }}
+Returns: "true" if global configuration should be used, empty string for legacy mode
+Logic:
+  - If any meaningful global.suseObservability values are set, enable NEW mode
+  - Check for: sizing.profile, license, baseUrl, adminPassword, receiverApiKey, pullSecret
+  - Otherwise, use LEGACY mode (stackstate.* values)
+*/}}
+{{- define "suse-observability.sizing-profile.enabled" -}}
+{{- if and .Values.global .Values.global.suseObservability -}}
+  {{- $hasProfile := and .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile (ne .Values.global.suseObservability.sizing.profile "") -}}
+  {{- $hasLicense := and .Values.global.suseObservability.license (ne .Values.global.suseObservability.license "") -}}
+  {{- $hasBaseUrl := and .Values.global.suseObservability.baseUrl (ne .Values.global.suseObservability.baseUrl "") -}}
+  {{- $hasAdminPassword := and .Values.global.suseObservability.adminPassword (ne .Values.global.suseObservability.adminPassword "") -}}
+  {{- $hasReceiverApiKey := and .Values.global.suseObservability.receiverApiKey (ne .Values.global.suseObservability.receiverApiKey "") -}}
+  {{- $hasPullSecret := and .Values.global.suseObservability.pullSecret (or .Values.global.suseObservability.pullSecret.username .Values.global.suseObservability.pullSecret.password) -}}
+  {{- if or $hasProfile $hasLicense $hasBaseUrl $hasAdminPassword $hasReceiverApiKey $hasPullSecret -}}
+true
+  {{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get receiver split enabled flag with sizing profile evaluation
+Usage: {{ include "stackstate.receiver.split.enabled" . }}
+Returns: "true" or "false" string
+*/}}
+{{- define "stackstate.receiver.split.enabled" -}}
+{{- if eq (include "suse-observability.sizing-profile.enabled" .) "true" -}}
+{{- $profileSplit := include "common.sizing.stackstate.receiver.split.enabled" . | trim -}}
+{{- if $profileSplit -}}
+{{- $profileSplit -}}
+{{- else -}}
+{{- if .Values.stackstate.components.receiver.split.enabled }}true{{- else }}false{{- end -}}
+{{- end -}}
+{{- else -}}
+{{- if .Values.stackstate.components.receiver.split.enabled }}true{{- else }}false{{- end -}}
 {{- end -}}
 {{- end -}}

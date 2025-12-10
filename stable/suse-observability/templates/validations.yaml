@@ -1,4 +1,12 @@
-{{- include "stackstate.values.validateUrl" (dict "value" .Values.stackstate.baseUrl "errorMessage" "Please provide your SUSE Observability base URL in 'values.baseUrl'") -}}
+{{- /* Validate global.suseObservability configuration */ -}}
+{{- include "suse-observability.global.validate" . -}}
+
+{{- $baseUrl := include "suse-observability.global.baseUrl" . -}}
+{{- if $baseUrl -}}
+  {{- include "stackstate.values.validateUrl" (dict "value" $baseUrl "errorMessage" "Please provide your SUSE Observability base URL in 'global.suseObservability.baseUrl' or 'stackstate.baseUrl'") -}}
+{{- else -}}
+  {{- include "stackstate.values.validateUrl" (dict "value" .Values.stackstate.baseUrl "errorMessage" "Please provide your SUSE Observability base URL in 'global.suseObservability.baseUrl' or 'stackstate.baseUrl'") -}}
+{{- end -}}
 
 {{- if not (or (eq .Values.stackstate.deployment.mode "SelfHosted") (eq .Values.stackstate.deployment.mode "Saas")) -}}
   {{- fail "Please set stackstate.deployment.mode to either SelfHosted or Saas." -}}

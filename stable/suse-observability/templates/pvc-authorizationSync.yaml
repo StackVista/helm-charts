@@ -1,20 +1,23 @@
-{{- define "stackstate.authorizationSync.persistentvolumeclaim.txLog" -}}
-{{- $storageClass := include "suse-observability.features.get" (dict "key" "storeTransactionLogsToPVC.storageClass" "context" . ) }}
+{{- if and (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .)) }}
+{{- $storageClass := include "suse-observability.features.get" (dict "key" "storeTransactionLogsToPVC.storageClass" "context" . ) | trim }}
+apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
   name: {{ template "common.fullname.short" . }}-authorization-sync-txlog
+  labels:
+    {{- include "common.labels.standard" . | nindent 4 }}
+    {{- include "common.labels.custom" . | nindent 4 }}
+{{- if .Values.gitlab }}
+  annotations:
+    {{- include "common.annotations.gitlab" . | nindent 4 }}
+{{- end }}
 spec:
   accessModes:
   - ReadWriteOnce
   resources:
     requests:
-      storage: {{ include "suse-observability.features.get" (dict "key" "storeTransactionLogsToPVC.volumeSize" "context" . )}}
-{{- if ne $storageClass "<no value>" }}
+      storage: {{ include "suse-observability.features.get" (dict "key" "storeTransactionLogsToPVC.volumeSize" "context" . ) | trim }}
+{{- if and $storageClass (ne $storageClass "<no value>") }}
   storageClassName: {{ $storageClass }}
 {{- end }}
-{{- end -}}
-
-{{- if and (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .)) }}
-{{- $commonPVC := fromYaml (include "common.persistentvolumeclaim" .) -}}
-{{- $stackstateAuthorizationSyncPVCTxLog := fromYaml (include "stackstate.authorizationSync.persistentvolumeclaim.txLog" .) -}}
-{{- toYaml (merge $stackstateAuthorizationSyncPVCTxLog $commonPVC) -}}
 {{- end -}}

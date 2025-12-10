@@ -5,6 +5,9 @@ dependencies:
 - name: common
   repository: file://../common/
   version: 0.4.26
+- name: suse-observability-sizing
+  repository: file://../suse-observability-sizing/
+  version: 0.1.1
 - name: elasticsearch
   repository: file://../elasticsearch/
   version: 8.19.4-stackstate.3

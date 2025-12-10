@@ -1,0 +1,7 @@
+# Test that setting baseUrl without license fails (auto-detection triggers but validation fails)
+global:
+  suseObservability:
+    # license is missing
+    baseUrl: "http://test.example.com"
+    # bcrypt hash of "test-password"
+    adminPassword: "$2b$10$rqXW3qKnFmHMfCjVQ3ZmduF4Y4XhF.kLCvP/jmqVJNZJc8zJmEVSu"

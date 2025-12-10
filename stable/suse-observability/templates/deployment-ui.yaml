@@ -70,6 +70,13 @@ resources:
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $stsstackstateUiMainContainer := fromYaml (include "stackstate.ui.deployment.main.container" .) }}
 {{- $stsstackstateUiMonitoringContainer := fromYaml (include "stackstate.ui.deployment.monitoring.container" .) }}
+{{- $evaluatedReplicaCount := .Values.stackstate.components.ui.replicaCount | default 2 -}}
+{{- if eq (include "suse-observability.sizing-profile.enabled" .) "true" -}}
+{{- $profileReplicaCount := include "common.sizing.stackstate.ui.replicaCount" . | trim -}}
+{{- if $profileReplicaCount -}}
+{{- $evaluatedReplicaCount = $profileReplicaCount | int -}}
+{{- end -}}
+{{- end -}}
 
 metadata:
   name: {{ template "common.fullname.short" . }}-ui
@@ -77,7 +84,7 @@ metadata:
     app.kubernetes.io/component: ui
     {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.stackstate.components.ui.replicaCount }}
+  replicas: {{ $evaluatedReplicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/component: ui
@@ -113,14 +120,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.ui.affinity }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.ui.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- if $affinity }}
       affinity:
-      {{- with .Values.stackstate.components.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.ui.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- $affinity | nindent 8 }}
     {{- end }}
     {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.ui.tolerations }}
       tolerations:

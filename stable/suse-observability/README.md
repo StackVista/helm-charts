@@ -19,6 +19,7 @@ Current chart version is `2.7.1-pre.17`
 | file://../minio/ | minio | 8.0.10-stackstate.15 |
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.16 |
 | file://../pull-secret/ | pull-secret | * |
+| file://../suse-observability-sizing/ | suse-observability-sizing | 0.1.1 |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.29 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.29 |
 | file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.3 |
@@ -203,6 +204,20 @@ stackstate/stackstate
 | global.imageRegistry | string | `nil` | Image registry to be used by all images across all charts. |
 | global.receiverApiKey | string | `""` | API key to be used by the Receiver. This setting is deprecated in favor of stackstate.apiKey.key |
 | global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overridden per PVC. |
+| global.suseObservability | object | `{"adminPassword":"","affinity":{"nodeAffinity":null,"podAffinity":null,"podAntiAffinity":null},"baseUrl":"","license":"","pullSecret":{"password":"","username":""},"receiverApiKey":"","sizing":{"profile":""}}` | Simplified configuration section that allows users to specify high-level settings. When any values in this section are configured (license, baseUrl, sizing.profile, etc.), the chart will automatically use this configuration instead of the legacy stackstate.* values. This provides a single-chart installation experience without needing the separate suse-observability-values chart. NOTE: This section works in conjunction with existing global settings (imageRegistry, receiverApiKey, imagePullSecrets). |
+| global.suseObservability.adminPassword | string | `""` | Admin password for the default 'admin' user. Must be a bcrypt hash. Required when using global.suseObservability configuration unless other authentication methods (LDAP, OIDC, Keycloak) are configured. |
+| global.suseObservability.affinity | object | `{"nodeAffinity":null,"podAffinity":null,"podAntiAffinity":null}` | Affinity configuration for SUSE Observability application components only (API, server, UI, etc.). Infrastructure components (kafka, clickhouse, etc.) have automatic affinity based on sizing profile. |
+| global.suseObservability.affinity.nodeAffinity | string | `nil` | Node affinity configuration applied to SUSE Observability application components only (API, server, UI, receiver, correlate, sync, etc.). Does NOT apply to infrastructure components (kafka, clickhouse, zookeeper, elasticsearch, hbase, victoria-metrics) which have their own automatic affinity based on sizing profile. Standard Kubernetes nodeAffinity spec. Note: Kubernetes does not have nodeAntiAffinity - use operators like NotIn or DoesNotExist in nodeAffinity instead. |
+| global.suseObservability.affinity.podAffinity | string | `nil` | Pod affinity configuration for SUSE Observability application components only. Does NOT apply to infrastructure components. Standard Kubernetes podAffinity spec. |
+| global.suseObservability.affinity.podAntiAffinity | string | `nil` | Pod anti-affinity configuration for SUSE Observability application components only. Does NOT apply to infrastructure components which have automatic anti-affinity for HA profiles. Must use standard Kubernetes podAntiAffinity spec with requiredDuringSchedulingIgnoredDuringExecution or preferredDuringSchedulingIgnoredDuringExecution as a list. Component-specific labels will be automatically added by each component. |
+| global.suseObservability.baseUrl | string | `""` | Base URL for SUSE Observability (required when using global.suseObservability). |
+| global.suseObservability.license | string | `""` | SUSE Observability license key (required when using global.suseObservability). |
+| global.suseObservability.pullSecret | object | `{"password":"","username":""}` | Image pull secret configuration. |
+| global.suseObservability.pullSecret.password | string | `""` | Password for image pull secret. |
+| global.suseObservability.pullSecret.username | string | `""` | Username for image pull secret. |
+| global.suseObservability.receiverApiKey | string | `""` | Receiver API key for telemetry data. Optional, will use stackstate.receiver.apiKey if not provided. |
+| global.suseObservability.sizing | object | `{"profile":""}` | Sizing profile configuration. |
+| global.suseObservability.sizing.profile | string | `""` | Sizing profile name. Must match one of the available profiles: 10-nonha, 20-nonha, 50-nonha, 100-nonha, 150-ha, 250-ha, 500-ha, 4000-ha, trial. The chart will automatically apply resource limits, replica counts, and affinity configurations based on the selected profile. These act as intelligent defaults that can be overridden by component-specific values. |
 | global.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | global.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | global.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
@@ -330,7 +345,7 @@ stackstate/stackstate
 | kafkaup-operator.image.pullPolicy | string | `""` |  |
 | kafkaup-operator.image.registry | string | `"quay.io"` |  |
 | kafkaup-operator.image.repository | string | `"stackstate/kafkaup-operator"` |  |
-| kafkaup-operator.image.tag | string | `"0.0.6"` |  |
+| kafkaup-operator.image.tag | string | `"0.0.5"` |  |
 | kafkaup-operator.kafkaSelectors.podLabel.key | string | `"app.kubernetes.io/component"` |  |
 | kafkaup-operator.kafkaSelectors.podLabel.value | string | `"kafka"` |  |
 | kafkaup-operator.kafkaSelectors.statefulSetName | string | `"suse-observability-kafka"` |  |

@@ -1,0 +1,17 @@
+global:
+  suseObservability:
+    enabled: true
+    sizing:
+      profile: "150-ha"
+    license: "test-license"
+    baseUrl: "https://test.example.com"
+    adminPassword: "test-password"
+
+kafka:
+  enabled: true
+
+clickhouse:
+  enabled: true
+
+zookeeper:
+  enabled: true

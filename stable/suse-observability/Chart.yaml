@@ -25,6 +25,9 @@ dependencies:
   - name: common
     repository: file://../common/
     version: "*"
+  - name: suse-observability-sizing
+    repository: file://../suse-observability-sizing/
+    version: 0.1.1
   - name: elasticsearch
     condition: elasticsearch.enabled
     repository: file://../elasticsearch/

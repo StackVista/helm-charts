@@ -10,6 +10,13 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- end -}}
 
 {{- define "stackstate.server.deployment.container.main" -}}
+{{- $profileResources := include "common.sizing.stackstate.server.resources" . | trim -}}
+{{- $evaluatedResources := .Values.stackstate.components.server.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.stackstate.components.server.resources }}
+{{- end }}
+{{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.server -}}
 args:
 {{- include "stackstate.service.args" . }}
 - -start
@@ -25,7 +32,7 @@ envFrom:
       name: {{ include "stackstate.secret.name.email" .  }}
   {{- end }}
 env:
-{{- $serviceConfig := dict "ServiceName" "server" "ServiceConfig" .Values.stackstate.components.server }}
+{{- $serviceConfig := dict "ServiceName" "server" "ServiceConfig" $componentConfigWithResources }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.baseurls.envvars" . }}
@@ -82,7 +89,7 @@ readinessProbe:
     port: health
   initialDelaySeconds: 10
   timeoutSeconds: 5
-{{- with .Values.stackstate.components.server.resources }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -159,14 +166,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.server.affinity }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.server.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- if $affinity }}
       affinity:
-      {{- with .Values.stackstate.components.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.server.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- $affinity | nindent 8 }}
     {{- end }}
     {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.server.tolerations }}
       tolerations:

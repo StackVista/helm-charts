@@ -22,11 +22,18 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 
 
 {{- define "stackstate.receiver.deployment.container.main" -}}
+{{- $profileResources := include "common.sizing.stackstate.receiver.resources" . | trim -}}
+{{- $evaluatedResources := .Values.stackstate.components.receiver.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.stackstate.components.receiver.resources }}
+{{- end }}
+{{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.receiver -}}
 envFrom:
   - secretRef:
       name: {{ include "stackstate.secret.name.apiKey" .  }}
 env:
-{{- $serviceTypeConfig := merge .TypeConfig (omit .Values.stackstate.components.receiver "split") }}
+{{- $serviceTypeConfig := merge (omit $componentConfigWithResources "split") .TypeConfig }}
 {{- $serviceConfig := dict "ServiceName" "receiver" "ServiceConfig" $serviceTypeConfig }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 - name: ELASTICSEARCH_URI
@@ -91,7 +98,11 @@ readinessProbe:
     port: health
   initialDelaySeconds: 10
   timeoutSeconds: 5
-{{- with (merge .TypeConfig.resources .Values.stackstate.components.receiver.resources) }}
+{{- $finalResources := $evaluatedResources }}
+{{- if .TypeConfig.resources }}
+{{- $finalResources = merge .TypeConfig.resources $evaluatedResources }}
+{{- end }}
+{{- with $finalResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -159,17 +170,14 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity (or .Values.stackstate.components.receiver.affinity .TypeConfig.affinity) }}
+    {{- $componentAffinity := .Values.stackstate.components.receiver.affinity }}
+    {{- if .TypeConfig.affinity }}
+      {{- $componentAffinity = .TypeConfig.affinity }}
+    {{- end }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" $componentAffinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- if $affinity }}
       affinity:
-      {{- with .Values.stackstate.components.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.receiver.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .TypeConfig.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- $affinity | nindent 8 }}
     {{- end }}
     {{- if or .Values.stackstate.components.all.tolerations (or .Values.stackstate.components.receiver.tolerations .TypeConfig.tolerations) }}
       tolerations:
@@ -190,7 +198,7 @@ spec:
 
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 
-{{- if .Values.stackstate.components.receiver.split.enabled }}
+{{- if eq (include "stackstate.receiver.split.enabled" .) "true" }}
 {{- $receiverBaseArgs := merge (dict "ReceiverType" "base" "TypeConfig" .Values.stackstate.components.receiver.split.base) . -}}
 {{- $receiverBaseDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverBaseArgs) -}}
 {{- toYaml (merge $receiverBaseDeployment $commonDeployment) }}
@@ -201,8 +209,8 @@ spec:
 ---
 {{- $receiverProcessAgentArgs := merge (dict "ReceiverType" "process-agent" "TypeConfig" .Values.stackstate.components.receiver.split.processAgent) . -}}
 {{- $receiverProcessAgentDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverProcessAgentArgs) -}}
-{{ toYaml (merge $receiverProcessAgentDeployment $commonDeployment) }}
-{{ else }}
+{{- toYaml (merge $receiverProcessAgentDeployment $commonDeployment) }}
+{{- else }}
 {{- $receiverArgs := merge (dict "ReceiverType" "" "TypeConfig" .Values.stackstate.components.receiver) . -}}
 {{- $receiverDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverArgs) -}}
 {{- toYaml (merge $receiverDeployment $commonDeployment) }}

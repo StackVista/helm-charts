@@ -1,0 +1,35 @@
+# Test auto-detection with sizing profile set
+global:
+  suseObservability:
+    sizing:
+      profile: "10-nonha"
+    license: "test-license-key-12345"
+    baseUrl: "http://test.example.com"
+    # bcrypt hash of "testpassword"
+    adminPassword: "$2b$10$N9qo8uLOickgx2ZMRZoMye.IUIrCxGvz9/6pN.XMlqL9hzTgDaPGy"
+
+# Minimal stackstate config required for chart to render
+stackstate:
+  components:
+    all:
+      metricStore:
+        remoteWriteEndpoint: "test-$vmInstance:8148"
+        queryApiEndpoint: "test:8148"
+    server:
+      java:
+        trustStorePassword: "secretTrustStorePassword"
+  admin:
+    authentication:
+      password: 5a4961367d65d570e20d2d69156581b4
+
+anomaly-detection:
+  enabled: false
+backup:
+  enabled: false
+
+# Disable PodSecurityPolicy to avoid test framework parsing issues with deprecated resources
+victoria-metrics-0:
+  rbac:
+    pspEnabled: false
+victoria-metrics-1:
+  enabled: false

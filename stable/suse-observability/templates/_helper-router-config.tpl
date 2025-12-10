@@ -67,7 +67,7 @@ data:
                     timeout: 0s
                     cluster: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
                     prefix_rewrite: "/api/metrics/"
-                {{- if .Values.stackstate.components.receiver.split.enabled }}
+                {{- if eq (include "stackstate.receiver.split.enabled" .) "true" }}
                 - match:
                     prefix: "/stsAgent/api/v1/connections"
                   route:
@@ -169,7 +169,7 @@ data:
                   address: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-headless"
                   port_value: 7070
         {{- end }}
-      {{- if .Values.stackstate.components.receiver.split.enabled }}
+      {{- if eq (include "stackstate.receiver.split.enabled" .) "true" }}
     - "@type": type.googleapis.com/envoy.config.cluster.v3.Cluster
       name: "{{ template "common.fullname.short" . }}-receiver-logs"
       type: STRICT_DNS

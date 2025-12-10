@@ -30,6 +30,48 @@ global:
       tag: 1.0.11-04b49abf
       # global.wait.image.pullPolicy -- Image pull policy for wait containers.
       pullPolicy: IfNotPresent
+  # global.suseObservability -- Simplified configuration section that allows users to specify high-level settings.
+  # When any values in this section are configured (license, baseUrl, sizing.profile, etc.), the chart will
+  # automatically use this configuration instead of the legacy stackstate.* values.
+  # This provides a single-chart installation experience without needing the separate suse-observability-values chart.
+  # NOTE: This section works in conjunction with existing global settings (imageRegistry, receiverApiKey, imagePullSecrets).
+  suseObservability:
+    # global.suseObservability.license -- SUSE Observability license key (required when using global.suseObservability).
+    license: ""
+    # global.suseObservability.baseUrl -- Base URL for SUSE Observability (required when using global.suseObservability).
+    baseUrl: ""
+    # global.suseObservability.adminPassword -- Admin password for the default 'admin' user. Must be a bcrypt hash. Required when using global.suseObservability configuration unless other authentication methods (LDAP, OIDC, Keycloak) are configured.
+    adminPassword: ""
+    # global.suseObservability.pullSecret -- Image pull secret configuration.
+    pullSecret:
+      # global.suseObservability.pullSecret.username -- Username for image pull secret.
+      username: ""
+      # global.suseObservability.pullSecret.password -- Password for image pull secret.
+      password: ""
+    # global.suseObservability.sizing -- Sizing profile configuration.
+    sizing:
+      # global.suseObservability.sizing.profile -- Sizing profile name. Must match one of the available profiles: 10-nonha, 20-nonha, 50-nonha, 100-nonha, 150-ha, 250-ha, 500-ha, 4000-ha, trial. The chart will automatically apply resource limits, replica counts, and affinity configurations based on the selected profile. These act as intelligent defaults that can be overridden by component-specific values.
+      profile: ""
+    # global.suseObservability.receiverApiKey -- Receiver API key for telemetry data. Optional, will use stackstate.receiver.apiKey if not provided.
+    receiverApiKey: ""
+    # global.suseObservability.affinity -- Affinity configuration for SUSE Observability application components only (API, server, UI, etc.). Infrastructure components (kafka, clickhouse, etc.) have automatic affinity based on sizing profile.
+    affinity:
+      # global.suseObservability.affinity.nodeAffinity -- Node affinity configuration applied to SUSE Observability application components only (API, server, UI, receiver, correlate, sync, etc.). Does NOT apply to infrastructure components (kafka, clickhouse, zookeeper, elasticsearch, hbase, victoria-metrics) which have their own automatic affinity based on sizing profile. Standard Kubernetes nodeAffinity spec. Note: Kubernetes does not have nodeAntiAffinity - use operators like NotIn or DoesNotExist in nodeAffinity instead.
+      nodeAffinity: null
+      # global.suseObservability.affinity.podAffinity -- Pod affinity configuration for SUSE Observability application components only. Does NOT apply to infrastructure components. Standard Kubernetes podAffinity spec.
+      podAffinity: null
+      # global.suseObservability.affinity.podAntiAffinity -- Pod anti-affinity configuration for SUSE Observability application components only. Does NOT apply to infrastructure components which have automatic anti-affinity for HA profiles. Must use standard Kubernetes podAntiAffinity spec with requiredDuringSchedulingIgnoredDuringExecution or preferredDuringSchedulingIgnoredDuringExecution as a list. Component-specific labels will be automatically added by each component.
+      podAntiAffinity: null
+      # Example for podAntiAffinity (uncomment and modify as needed):
+      # podAntiAffinity:
+      #   requiredDuringSchedulingIgnoredDuringExecution:
+      #   - labelSelector:
+      #       matchExpressions:
+      #       - key: app.kubernetes.io/component
+      #         operator: In
+      #         values:
+      #         - api
+      #     topologyKey: kubernetes.io/hostname
 # commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
 commonLabels: {}
 backup:
@@ -1935,7 +1977,7 @@ kafkaup-operator:
     # kafkaup.image.repository -- Repository containing the image for the KafkaUp operator
     repository: stackstate/kafkaup-operator
     # kafkaup.image.tag -- Tag of the image for the KafkaUp operator
-    tag: 0.0.6
+    tag: 0.0.5
     # kafkaup.image.pullPolicy -- Pull policy for the image:pod for the KafkaUp operator
     pullPolicy: ""
   kafkaSelectors:

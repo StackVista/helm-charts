@@ -307,11 +307,7 @@ for production this should be replaced with one of the other mechanisms.
 {{- if eq (len $authTypes) 0 }}
 {{- $authTypes = append $authTypes "stackstateAuthServer" }}
 {{ $authnPrefix }}.authServer.stackstateAuthServer {
-{{- if $global.Values.stackstate.authentication.adminPassword }}
   defaultPassword = ${default_password}
-{{- else }}
-{{- fail "Helm value 'stackstate.authentication.adminPassword' is required when neither LDAP, OIDC, Keycloak nor file-based authentication has been configured" -}}
-{{- end }}
 }
 {{- end }}
 

@@ -13,8 +13,16 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- end -}}
 
 {{- define "stackstate.k2es.deployment.common.container" -}}
+{{- $profileResources := include (printf "common.sizing.stackstate.%s.resources" .K2esName) . | trim -}}
+{{- $defaultResources := .K2esConfig.resources }}
+{{- $evaluatedResources := $defaultResources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict $defaultResources }}
+{{- end }}
+{{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .K2esConfig -}}
 env:
-{{- $serviceConfig := dict "ServiceName" .K2esName "ServiceConfig" .K2esConfig }}
+{{- $serviceConfig := dict "ServiceName" .K2esName "ServiceConfig" $componentConfigWithResources }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{/*
     Currently we use a single replicationFactor config for all indices on ES, that works fine with calculating the available disk space
@@ -68,7 +76,7 @@ readinessProbe:
     port: health
   initialDelaySeconds: 10
   timeoutSeconds: 5
-{{- with .K2esConfig.resources }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}

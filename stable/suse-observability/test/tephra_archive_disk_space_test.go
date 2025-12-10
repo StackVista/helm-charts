@@ -15,24 +15,16 @@ func TestTephraArchiveDiskSpaceRender(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stackstateTephraStatefulset appsv1.StatefulSet
-	var stackstateMasterStatefulSet appsv1.StatefulSet
 
-	for _, statefulSet := range resources.Statefulsets {
-		if statefulSet.Name == "suse-observability-hbase-tephra" {
-			stackstateTephraStatefulset = statefulSet
-		}
-		if statefulSet.Name == "suse-observability-hbase-hbase-master" {
-			stackstateMasterStatefulSet = statefulSet
+	for _, statefulSetTephra := range resources.Statefulsets {
+		if statefulSetTephra.Name == "suse-observability-hbase-tephra" {
+			stackstateTephraStatefulset = statefulSetTephra
 		}
 	}
 
 	require.NotNil(t, stackstateTephraStatefulset)
 	expectedTephraArchiveDiskSpace := v1.EnvVar{Name: "HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb", Value: "2685"}
 	require.Contains(t, stackstateTephraStatefulset.Spec.Template.Spec.Containers[0].Env, expectedTephraArchiveDiskSpace)
-
-	require.NotNil(t, stackstateMasterStatefulSet)
-	expectedMasterArchiveDiskSpace := v1.EnvVar{Name: "HBASE_CONF_hbase_master_stackstate_logcleaner_max_size_mb", Value: "2685"}
-	require.Contains(t, stackstateMasterStatefulSet.Spec.Template.Spec.Containers[0].Env, expectedMasterArchiveDiskSpace)
 }
 
 func TestTephraMonoHbaseArchiveDiskSpaceRender(t *testing.T) {
@@ -41,23 +33,14 @@ func TestTephraMonoHbaseArchiveDiskSpaceRender(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	var stackstateTephraStatefulset appsv1.StatefulSet
-	var stackstateMasterStatefulSet appsv1.StatefulSet
 
-	for _, statefulSet := range resources.Statefulsets {
-		if statefulSet.Name == "suse-observability-hbase-tephra-mono" {
-			stackstateTephraStatefulset = statefulSet
-		}
-
-		if statefulSet.Name == "suse-observability-hbase-stackgraph" {
-			stackstateMasterStatefulSet = statefulSet
+	for _, statefulSetTephra := range resources.Statefulsets {
+		if statefulSetTephra.Name == "suse-observability-hbase-tephra-mono" {
+			stackstateTephraStatefulset = statefulSetTephra
 		}
 	}
 
 	require.NotNil(t, stackstateTephraStatefulset)
 	expectedTephraArchiveDiskSpace := v1.EnvVar{Name: "HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb", Value: "10"}
 	require.Contains(t, stackstateTephraStatefulset.Spec.Template.Spec.Containers[0].Env, expectedTephraArchiveDiskSpace)
-
-	require.NotNil(t, stackstateMasterStatefulSet)
-	expectedMasterArchiveDiskSpace := v1.EnvVar{Name: "HBASE_CONF_hbase_master_stackstate_logcleaner_max_size_mb", Value: "2685"}
-	require.Contains(t, stackstateMasterStatefulSet.Spec.Template.Spec.Containers[0].Env, expectedMasterArchiveDiskSpace)
 }

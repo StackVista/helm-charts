@@ -1,0 +1,7 @@
+# Test that setting license without baseUrl fails (auto-detection triggers but validation fails)
+global:
+  suseObservability:
+    license: "test-license-key-12345"
+    # baseUrl is missing
+    # bcrypt hash of "test-password"
+    adminPassword: "$2b$10$rqXW3qKnFmHMfCjVQ3ZmduF4Y4XhF.kLCvP/jmqVJNZJc8zJmEVSu"

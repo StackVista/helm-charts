@@ -18,6 +18,13 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- end -}}
 
 {{- define "stackstate.sync.deployment.container.main" -}}
+{{- $profileResources := include "common.sizing.stackstate.sync.resources" . | trim -}}
+{{- $evaluatedResources := .Values.stackstate.components.sync.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.stackstate.components.sync.resources }}
+{{- end }}
+{{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.sync -}}
 args:
 {{- include "stackstate.service.args" . }}
 - -startRole
@@ -26,12 +33,12 @@ envFrom:
   - secretRef:
       name: {{ include "stackstate.secret.name.license" .  }}
 env:
-{{- $serviceConfig := dict "ServiceName" "sync" "ServiceConfig" .Values.stackstate.components.sync }}
+{{- $serviceConfig := dict "ServiceName" "sync" "ServiceConfig" $componentConfigWithResources }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.sync.image.tag }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{- include "stackstate.baseurls.envvars" . }}
 {{- include "stackstate.metricstore.envvar" . }}
-{{- include "stackstate.server.cpu.parallelism" .Values.stackstate.components.sync.resources.requests.cpu }}
+{{- include "stackstate.server.cpu.parallelism" $evaluatedResources.requests.cpu }}
 - name: CONFIG_FORCE_stackstate_cacheStorage_backend
   value: {{ .Values.stackstate.components.sync.cache.backend }}
 {{- if eq (lower .Values.stackstate.components.sync.cache.backend) "rocksdb" }}
@@ -81,7 +88,7 @@ readinessProbe:
     port: health
   initialDelaySeconds: 10
   timeoutSeconds: 5
-{{- with .Values.stackstate.components.sync.resources }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -159,14 +166,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.sync.affinity }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.sync.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- if $affinity }}
       affinity:
-      {{- with .Values.stackstate.components.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.sync.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- $affinity | nindent 8 }}
     {{- end }}
     {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.sync.tolerations }}
       tolerations:

@@ -14,8 +14,15 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- end -}}
 
 {{- define "stackstate.correlate.deployment.container.main" -}}
+{{- $profileResources := include "common.sizing.stackstate.correlate.resources" . | trim -}}
+{{- $evaluatedResources := .Values.stackstate.components.correlate.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.stackstate.components.correlate.resources }}
+{{- end }}
+{{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.correlate -}}
 env:
-{{- $serviceTypeConfig := merge .TypeConfig (omit .Values.stackstate.components.correlate "split") }}
+{{- $serviceTypeConfig := merge (omit $componentConfigWithResources "split") .TypeConfig }}
 {{- $serviceConfig := dict "ServiceName" "correlate" "ServiceConfig" $serviceTypeConfig }}
 
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
@@ -57,7 +64,11 @@ readinessProbe:
     port: health
   initialDelaySeconds: 10
   timeoutSeconds: 5
-{{- with (merge .TypeConfig.resources .Values.stackstate.components.correlate.resources) }}
+{{- $finalResources := $evaluatedResources }}
+{{- if .TypeConfig.resources }}
+{{- $finalResources = merge .TypeConfig.resources $evaluatedResources }}
+{{- end }}
+{{- with $finalResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -69,6 +80,13 @@ resources:
 {{- $stsstackstateCorrelateMainContainer := (merge $overrideMainContainer $commonContainer) -}}
 {{- $overrideInitContainer := fromYaml (include "stackstate.correlate.deployment.container.init" .) -}}
 {{- $stsstackstateCorrelateInitContainer := (merge $overrideInitContainer $commonContainer) -}}
+{{- $evaluatedReplicaCount := .TypeConfig.replicaCount | default 1 -}}
+{{- if eq (include "suse-observability.sizing-profile.enabled" .) "true" -}}
+{{- $profileReplicaCount := include "common.sizing.stackstate.correlate.replicaCount" . | trim -}}
+{{- if $profileReplicaCount -}}
+{{- $evaluatedReplicaCount = $profileReplicaCount | int -}}
+{{- end -}}
+{{- end -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-correlate{{ template "stackstate.correlate.name.postfix" . }}
   labels:
@@ -76,7 +94,7 @@ metadata:
     app.kubernetes.io/component-group: correlate
     {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
-  replicas: {{ .TypeConfig.replicaCount }}
+  replicas: {{ $evaluatedReplicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/component: correlate{{ template "stackstate.correlate.name.postfix" . }}
@@ -119,14 +137,14 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity (or .Values.stackstate.components.correlate.affinity .TypeConfig.affinity) }}
+    {{- $componentAffinity := .Values.stackstate.components.correlate.affinity }}
+    {{- if .TypeConfig.affinity }}
+      {{- $componentAffinity = .TypeConfig.affinity }}
+    {{- end }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" $componentAffinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- if $affinity }}
       affinity:
-      {{- with .Values.stackstate.components.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.correlate.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- $affinity | nindent 8 }}
     {{- end }}
     {{- if or .Values.stackstate.components.all.tolerations (or .Values.stackstate.components.correlate.tolerations .TypeConfig.tolerations) }}
       tolerations:
