@@ -119,7 +119,9 @@ metadata:
   name: {{ template "common.fullname.short" . }}-tephra{{- if eq (include "hbase.deployment.mode" .) "Mono" }}-mono{{- end }}
 spec:
   podManagementPolicy: Parallel
-  replicas: {{ tpl (.Values.tephra.replicaCount | toString) . }}
+  {{- $sizingReplicaCount := include "common.sizing.hbase.tephra.replicaCount" . | trim -}}
+  {{- $defaultReplicaCount := tpl (.Values.tephra.replicaCount | toString) . -}}
+  replicas: {{ default $defaultReplicaCount $sizingReplicaCount }}
   serviceName: {{ template "common.fullname.short" . }}-tephra
   selector:
     matchLabels:

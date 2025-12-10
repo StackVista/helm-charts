@@ -1,4 +1,5 @@
-{{- $replicaCount := int .Values.replicaCount }}
+{{- $sizingReplicaCount := include "common.sizing.kafka.replicaCount" . | trim -}}
+{{- $replicaCount := int (default .Values.replicaCount $sizingReplicaCount) }}
 {{- $fullname := include "common.names.fullname" . }}
 {{- $releaseNamespace := .Release.Namespace }}
 {{- $clusterDomain := .Values.clusterDomain }}
@@ -20,7 +21,7 @@ metadata:
   {{- end }}
 spec:
   podManagementPolicy: {{ .Values.podManagementPolicy }}
-  replicas: {{ include "common.tplvalues.render" (dict "value" .Values.replicaCount "context" $) }}
+  replicas: {{ $replicaCount }}
   selector:
     matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
       app.kubernetes.io/component: kafka
@@ -324,11 +325,14 @@ spec:
             - name: KAFKA_CFG_LOG_DIRS
               value: {{ .Values.logsDirs | quote }}
             - name: KAFKA_CFG_DEFAULT_REPLICATION_FACTOR
-              value: {{ include "common.tplvalues.render" (dict "value" .Values.defaultReplicationFactor "context" $) | quote }}
+              {{- $sizingDefaultRF := include "common.sizing.kafka.defaultReplicationFactor" . | trim }}
+              value: {{ default .Values.defaultReplicationFactor $sizingDefaultRF | quote }}
             - name: KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR
-              value: {{ include "common.tplvalues.render" (dict "value" .Values.offsetsTopicReplicationFactor "context" $) | quote }}
+              {{- $sizingOffsetsRF := include "common.sizing.kafka.offsetsTopicReplicationFactor" . | trim }}
+              value: {{ default .Values.offsetsTopicReplicationFactor $sizingOffsetsRF | quote }}
             - name: KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
-              value: {{ include "common.tplvalues.render" (dict "value" .Values.transactionStateLogReplicationFactor "context" $) | quote }}
+              {{- $sizingTransactionRF := include "common.sizing.kafka.transactionStateLogReplicationFactor" . | trim }}
+              value: {{ default .Values.transactionStateLogReplicationFactor $sizingTransactionRF | quote }}
             - name: KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR
               value: {{ .Values.transactionStateLogMinIsr | quote }}
             - name: KAFKA_CFG_NUM_IO_THREADS

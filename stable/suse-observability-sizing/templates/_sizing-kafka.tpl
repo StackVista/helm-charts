@@ -111,7 +111,11 @@ Get kafka transactionStateLogReplicationFactor
 Usage: {{ include "common.sizing.kafka.transactionStateLogReplicationFactor" . }}
 */}}
 {{- define "common.sizing.kafka.transactionStateLogReplicationFactor" -}}
-{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}1
+{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") }}1
+{{- else }}3
+{{- end }}
 {{- end }}
 {{- end }}
 
@@ -123,6 +127,7 @@ Usage: {{ include "common.sizing.kafka.defaultReplicationFactor" . }}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
 {{- $profile := .Values.global.suseObservability.sizing.profile -}}
 {{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") }}1
+{{- else }}3
 {{- end }}
 {{- end }}
 {{- end }}
@@ -135,6 +140,7 @@ Usage: {{ include "common.sizing.kafka.offsetsTopicReplicationFactor" . }}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
 {{- $profile := .Values.global.suseObservability.sizing.profile -}}
 {{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") }}1
+{{- else }}3
 {{- end }}
 {{- end }}
 {{- end }}

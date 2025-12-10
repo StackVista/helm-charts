@@ -40,6 +40,18 @@ limits:
 {{- end }}
 {{- end }}
 
+{{/*
+Get elasticsearch replicas based on sizing profile
+Usage: {{ include "common.sizing.elasticsearch.replicas" . }}
+*/}}
+{{- define "common.sizing.elasticsearch.replicas" -}}
+{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") }}1
+{{- else }}3
+{{- end }}
+{{- end }}
+{{- end }}
 
 {{/*
 =============================================================================

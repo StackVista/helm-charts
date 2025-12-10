@@ -1,3 +1,5 @@
+{{- $sizingReplicaCount := include "common.sizing.zookeeper.replicaCount" . | trim -}}
+{{- $replicaCount := int (default .Values.replicaCount $sizingReplicaCount) }}
 apiVersion: {{ include "common.capabilities.statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
@@ -11,7 +13,7 @@ metadata:
   annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ $replicaCount }}
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   selector:
     matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}

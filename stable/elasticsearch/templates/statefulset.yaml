@@ -60,6 +60,8 @@ exec:
       fi
 {{- end -}}
 ---
+{{- $sizingReplicas := include "common.sizing.elasticsearch.replicas" . | trim -}}
+{{- $replicas := int (default .Values.replicas $sizingReplicas) }}
 apiVersion: {{ template "elasticsearch.statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
@@ -79,7 +81,7 @@ spec:
     matchLabels:
         {{/* Only kept for backwards compatible in upgrades, selector cannot be updated */}}
         app: "{{ template "elasticsearch.uname" . }}"
-  replicas: {{ .Values.replicas }}
+  replicas: {{ $replicas }}
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   updateStrategy:
     type: {{ .Values.updateStrategy }}

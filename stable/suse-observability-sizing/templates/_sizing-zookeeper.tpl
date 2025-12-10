@@ -28,6 +28,19 @@ Usage: {{ include "common.sizing.zookeeper.persistence.size" . }}
 {{- end }}
 
 {{/*
+Get zookeeper replicaCount based on sizing profile
+Usage: {{ include "common.sizing.zookeeper.replicaCount" . }}
+*/}}
+{{- define "common.sizing.zookeeper.replicaCount" -}}
+{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") }}1
+{{- else }}3
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
 =============================================================================
 
 {{/*
