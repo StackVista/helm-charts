@@ -55,6 +55,8 @@ env:
   value: "{{ mulf $diskSpaceMB 0.1 | int }}"
 {{ end }}
 {{- end }}
+{{- $serviceConfig := dict "ServiceConfig" (merge .Values.tephra .Values.all) }}
+{{- include "hbase.service.envvars" $serviceConfig }}
 ports:
 - containerPort: 15165
   name: tephra

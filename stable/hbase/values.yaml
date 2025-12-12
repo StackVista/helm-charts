@@ -36,6 +36,10 @@ all:
       additionalLabels: {}
       # all.metrics.servicemonitor.enabled -- Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled.
       enabled: false
+  # all.sizing -- Default memory sizing for JVMs in pods
+  sizing:
+    baseMemoryConsumption: "300Mi"
+    javaHeapMemoryFraction: "50"
   # all.nodeSelector -- Node labels for pod assignment on all components.
   nodeSelector: {}
   # all.tolerations -- Toleration labels for pod assignment on all components.

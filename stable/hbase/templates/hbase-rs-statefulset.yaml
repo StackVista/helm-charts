@@ -30,6 +30,8 @@ env:
   value: $(POD_NAME).{{ template "common.fullname.short" . }}-hbase-rs.$(POD_NAMESPACE).svc.cluster.local
 - name: HBASE_CONF_hbase_master_hostname
   value: "{{ template "common.fullname.short" . }}-hbase-master"
+{{- $serviceConfig := dict "ServiceConfig" (merge .Values.hbase.regionserver .Values.all) }}
+{{- include "hbase.service.envvars" $serviceConfig }}
 ports:
 - containerPort: 16020
   name: rs

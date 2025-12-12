@@ -36,6 +36,8 @@ env:
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "all.commonEnv" . }}
 {{- include "hdfs.namenode.commonEnv" . }}
+{{- $serviceConfig := dict "ServiceConfig" (merge .Values.hdfs.namenode .Values.all) }}
+{{- include "hbase.service.envvars" $serviceConfig }}
 ports:
 - containerPort: 9000
   name: nn

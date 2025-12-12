@@ -314,3 +314,34 @@ Helpful to derive limits from the diskspace
     {{- fail (printf "Invalid storage format: %q. Input must be a number with a supported suffix (Ti, T, Gi, G, Mi, M)." .) -}}
 {{- end -}}
 {{- end -}}
+
+{{- define "hbase.server.memory.resource" -}}
+{{- $podMemoryLimitMB := (include "hbase.storage.to.megabytes" .Mem) -}}
+{{- $grossMemoryLimit := (subf $podMemoryLimitMB .BaseMemoryConsumptionMB) | int -}}
+{{- $javaHeapMemory := (divf (mulf $grossMemoryLimit (.JavaHeapFraction | int)) 100) | int -}}
+{{- max $javaHeapMemory 0 -}}
+{{- end -}}
+
+{{- define "hbase.service.envvars" -}}
+{{/*
+Memory used by a JVM process can be calculated as follows:
+JVM memory = Heap memory+ Metaspace + CodeCache + (ThreadStackSize * Number of Threads) + DirectByteBuffers + Jvm-native.
+'BaseMemoryConsumption' encapsulates OS-level memory requirements and following parts of JVM memory: Metaspace, CodeCache,
+ThreadStackSize * Number of Threads and Jvm-native.
+'JavaHeapMemoryFraction' percent of the remainder of 'BaseMemoryConsumption' subtracted from pod's memory limit is given to 'Xmx'.
+'JavaHeapMemoryFraction' percent of the remainder of 'BaseMemoryConsumption' subtracted from pod's memory request is given to 'Xms'.
+Remainder of 'BaseMemoryConsumption' and 'Xmx' subtracted from pod's memory limit is given to 'DirectMemory'.
+Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory limit.
+*/}}
+{{- $baseMemoryConsumptionMB := (include "hbase.storage.to.megabytes" .ServiceConfig.sizing.baseMemoryConsumption)}}
+{{- $xmxConfig := dict "Mem" .ServiceConfig.resources.limits.memory "BaseMemoryConsumptionMB" $baseMemoryConsumptionMB "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
+{{- $xmx := (include "hbase.server.memory.resource" $xmxConfig) | int }}
+{{- $xmsConfig := dict "Mem" .ServiceConfig.resources.requests.memory "BaseMemoryConsumptionMB" $baseMemoryConsumptionMB "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
+{{- $xms := include "hbase.server.memory.resource" $xmsConfig | int }}
+{{- $xmxParam := ( (gt $xmx 0) | ternary (printf "-Xmx%dm" $xmx) "") }}
+{{- $xmsParam := ( (gt $xms 0) | ternary (printf "-Xms%dm" $xms) "") }}
+{{- $directMem := (subf (subf (include "hbase.storage.to.megabytes" .ServiceConfig.resources.limits.memory) $baseMemoryConsumptionMB) $xmx) | int }}
+{{- $directMemParam := ( (gt $directMem 0) | ternary ( printf "-XX:MaxDirectMemorySize=%dm" $directMem) "") }}
+- name: "JAVA_OPTS"
+  value: "{{ $directMemParam }} {{ $xmxParam }} {{ $xmsParam }}"
+{{- end -}}
