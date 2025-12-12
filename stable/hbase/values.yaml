@@ -76,6 +76,8 @@ stackgraph:
     requests:
       memory: "2Gi"
       cpu: "1000m"
+  # stackgraph.sizing -- Stackgraph memory sizing for JVM
+  sizing: {}
   securityContext:
     # stackgraph.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.
     enabled: true
@@ -182,6 +184,8 @@ hbase:
       requests:
         memory: "1Gi"
         cpu: "50m"
+    # hbase.master.sizing -- HBase master memory sizing for JVM
+    sizing: {}
     # hbase.master.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hbase.master.tolerations -- Toleration labels for pod assignment.
@@ -210,6 +214,8 @@ hbase:
       requests:
         memory: "2Gi"
         cpu: "2000m"
+    # hbase.regionserver.sizing -- HBase region server memory sizing for JVM
+    sizing: {}
     # hbase.regionserver.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hbase.regionserver.tolerations -- Toleration labels for pod assignment.
@@ -280,6 +286,8 @@ hdfs:
       requests:
         memory: "2Gi"
         cpu: "50m"
+    # hdfs.datanode.sizing -- HDFS Datanode memory sizing for JVMs in pods
+    sizing: {}
     # hdfs.datanode.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hdfs.datanode.tolerations -- Toleration labels for pod assignment.
@@ -310,6 +318,8 @@ hdfs:
       requests:
         memory: "1Gi"
         cpu: "50m"
+    # hdfs.namenode.sizing -- HDFS name node memory sizing for JVM
+    sizing: {}
     # hdfs.namenode.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hdfs.namenode.tolerations -- Toleration labels for pod assignment.
@@ -340,6 +350,8 @@ hdfs:
       requests:
         memory: "1Gi"
         cpu: "50m"
+    # hdfs.secondarynamenode.sizing -- HDFS secondary name node memory sizing for JVM
+    sizing: {}
     # hdfs.secondarynamenode.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hdfs.secondarynamenode.tolerations -- Toleration labels for pod assignment.
@@ -377,6 +389,8 @@ tephra:
     requests:
       memory: "2Gi"
       cpu: "50m"
+  # tephra.sizing -- Tephra memory sizing for JVM
+  sizing: {}
   # tephra.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}
   # tephra.tolerations -- Toleration labels for pod assignment.
