@@ -23,7 +23,7 @@ Current chart version is `2.6.4-pre.50`
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.28 |
 | file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.2 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.175 |
-| https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.22 |
+| https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.23 |
 
 ## Required Values
 
