@@ -45,9 +45,6 @@
 {{- if include "suse-observability.features.enabled" (dict "key" "traces" "context" .) }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_traces" "true" }}
 {{- end -}}
-{{- if include "suse-observability.features.enabled" (dict "key" "dashboards" "context" .) }}
-  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_dashboards" "true" }}
-{{- end -}}
 {{- if .Values.global.features.enableStackPacks2 }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_featureSwitches_enableStackPacks2" "true" }}
 {{- end -}}
