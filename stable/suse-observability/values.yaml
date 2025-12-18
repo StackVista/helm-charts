@@ -1717,7 +1717,7 @@ stackstate:
     # stackstate.features.traces -- (boolean) Enable new traces UI and API
     traces: true
     # stackstate.features.dashboards -- (boolean) Enable dashboards
-    dashboards: false
+    dashboards: true
     server:
       # stackstate.features.server.split -- (boolean) Run a single service server or split in multiple sub services as api, state ....
       split: true
