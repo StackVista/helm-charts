@@ -170,13 +170,11 @@ spec:
         accessModes: {{ .Values.hdfs.datanode.persistence.accessModes }}
         resources:
           requests:
-            storage: {{ .Values.hdfs.datanode.persistence.size }}
+            storage: {{ include "hbase.hdfs.datanode.persistence.size" . }}
         {{ include "common.storage.class" ( dict "persistence" .Values.hdfs.datanode.persistence "global" .Values.global) | nindent 8 }}
 {{- end }}
 {{- end -}}
 
 {{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
-{{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
-{{- $stackstateHbaseHdfsDatanodeStatefulSet := fromYaml (include "hbase.hdfs.datanode.statefulset" .) -}}
-{{- toYaml (merge $stackstateHbaseHdfsDatanodeStatefulSet $commonStatefulSet) -}}
+{{- include "hbase.hdfs.datanode.statefulset" . -}}
 {{- end -}}

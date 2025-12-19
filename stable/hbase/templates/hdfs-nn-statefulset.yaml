@@ -171,7 +171,5 @@ spec:
 {{- end -}}
 
 {{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
-{{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
-{{- $stackstateHbaseHdfsNamenodeStatefulSet := fromYaml (include "hbase.hdfs.namenode.statefulset" .) -}}
-{{- toYaml (merge $stackstateHbaseHdfsNamenodeStatefulSet $commonStatefulSet) -}}
+{{- include "hbase.hdfs.namenode.statefulset" . -}}
 {{- end -}}

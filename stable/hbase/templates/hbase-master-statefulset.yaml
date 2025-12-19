@@ -141,7 +141,5 @@ spec:
 {{- end -}}
 
 {{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
-{{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
-{{- $stackstateHbaseMasterStatefulSet := fromYaml (include "hbase.hbase.master.statefulset" .) -}}
-{{- toYaml (merge $stackstateHbaseMasterStatefulSet $commonStatefulSet) -}}
+{{- include "hbase.hbase.master.statefulset" . -}}
 {{- end }}

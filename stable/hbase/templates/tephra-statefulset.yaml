@@ -31,10 +31,16 @@ env:
   value: "distributed"
 - name: HBASE_CONF_hbase_master_hostname
   value: "{{ template "common.fullname.short" . }}-hbase-master"
+{{- $sizingArchiveMaxSize := include "common.sizing.hbase.tephra.archiveMaxSizeMb" . | trim }}
+{{ if $sizingArchiveMaxSize }}
+- name: HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb
+  value: "{{ $sizingArchiveMaxSize }}"
+{{ else }}
 {{ $diskSpaceMB := (include "hbase.storage.to.megabytes" .Values.hdfs.datanode.persistence.size) }}
 {{ if $diskSpaceMB  }}
 - name: HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb
   value: "{{ mulf $diskSpaceMB 0.01 | int }}"
+{{ end }}
 {{ end }}
 {{- else }}
 {{- include "all.commonEnv" . }}
@@ -49,10 +55,16 @@ env:
   value: {{ template "common.fullname.short" . }}-stackgraph:2182
 - name: HBASE_CONF_data_tx_snapshot_local_ftp_mirror
   value: "anonymous@{{ template "common.fullname.short" . }}-stackgraph:10021"
-{{ $diskSpaceMB := (include "hbase.storage.to.megabytes" .Values.tephra.persistence.size) }}
+{{- $sizingArchiveMaxSize := include "common.sizing.hbase.tephra.archiveMaxSizeMb" . | trim }}
+{{ if $sizingArchiveMaxSize }}
+- name: HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb
+  value: "{{ $sizingArchiveMaxSize }}"
+{{ else }}
+{{ $diskSpaceMB := (include "hbase.storage.to.megabytes" (include "hbase.tephra.persistence.size" .)) }}
 {{ if $diskSpaceMB  }}
 - name: HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb
   value: "{{ mulf $diskSpaceMB 0.01 | int }}"
+{{ end }}
 {{ end }}
 {{- end }}
 {{- $serviceConfig := dict "ServiceConfig" (merge .Values.tephra .Values.all) }}
@@ -119,8 +131,8 @@ metadata:
   name: {{ template "common.fullname.short" . }}-tephra{{- if eq (include "hbase.deployment.mode" .) "Mono" }}-mono{{- end }}
 spec:
   podManagementPolicy: Parallel
-  {{- $sizingReplicaCount := include "common.sizing.hbase.tephra.replicaCount" . | trim -}}
-  {{- $defaultReplicaCount := tpl (.Values.tephra.replicaCount | toString) . -}}
+  {{- $sizingReplicaCount := include "common.sizing.hbase.tephra.replicaCount" . | trim }}
+  {{- $defaultReplicaCount := tpl (.Values.tephra.replicaCount | toString) . }}
   replicas: {{ default $defaultReplicaCount $sizingReplicaCount }}
   serviceName: {{ template "common.fullname.short" . }}-tephra
   selector:
@@ -186,12 +198,12 @@ spec:
         accessModes: {{ .Values.tephra.persistence.accessModes }}
         resources:
           requests:
-            storage: {{ .Values.tephra.persistence.size }}
+            storage: {{ include "hbase.tephra.persistence.size" . }}
         {{ include "common.storage.class" ( dict "persistence" .Values.tephra.persistence "global" .Values.global) | nindent 8 }}
     {{- end }}
 
 {{- end -}}
 
-{{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
-{{- $stackstateHbaseTephraStatefulSet := fromYaml (include "hbase.tephra.statefulset" .) -}}
-{{- toYaml (merge $stackstateHbaseTephraStatefulSet $commonStatefulSet) -}}
+apiVersion: apps/v1
+kind: StatefulSet
+{{ include "hbase.tephra.statefulset" . }}

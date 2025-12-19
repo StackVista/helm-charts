@@ -81,7 +81,9 @@ metadata:
   name: {{ template "common.fullname.short" . }}-hbase-rs
 spec:
   podManagementPolicy: Parallel
-  replicas: {{ .Values.hbase.regionserver.replicaCount }}
+  {{- $sizingReplicaCount := include "common.sizing.hbase.regionserver.replicaCount" . | trim }}
+  {{- $defaultReplicaCount := tpl (.Values.hbase.regionserver.replicaCount | toString) . }}
+  replicas: {{ default $defaultReplicaCount $sizingReplicaCount }}
   serviceName: {{ template "common.fullname.short" . }}-hbase-rs
   selector:
     matchLabels:
@@ -147,7 +149,5 @@ spec:
 {{- end -}}
 
 {{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
-{{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
-{{- $stackstateHbaseRegionServerStatefulSet := fromYaml (include "hbase.hbase.regionserver.statefulset" .) -}}
-{{- toYaml (merge $stackstateHbaseRegionServerStatefulSet $commonStatefulSet) -}}
+{{- include "hbase.hbase.regionserver.statefulset" . -}}
 {{- end -}}

@@ -66,7 +66,7 @@ readinessProbe:
 {{- $evaluatedResources := .Values.stackgraph.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = merge $profileResourcesDict .Values.stackgraph.resources }}
+{{- $evaluatedResources = $profileResourcesDict }}
 {{- end }}
 {{- with $evaluatedResources }}
 resources:
@@ -155,13 +155,13 @@ spec:
         accessModes: {{ .Values.stackgraph.persistence.accessModes }}
         resources:
           requests:
-            storage: {{ .Values.stackgraph.persistence.size }}
+            storage: {{ include "hbase.stackgraph.persistence.size" . }}
       {{ include "common.storage.class" ( dict "persistence" .Values.stackgraph.persistence "global" .Values.global) | nindent 8 }}
 {{- end }}
 {{- end -}}
 
 {{- if eq (include "hbase.deployment.mode" .) "Mono" -}}
-{{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
-{{- $stackgraphStatefulSet := fromYaml (include "stackgraph.statefulset" .) -}}
-{{- toYaml (merge $stackgraphStatefulSet $commonStatefulSet) -}}
+apiVersion: apps/v1
+kind: StatefulSet
+{{ include "stackgraph.statefulset" . }}
 {{- end -}}

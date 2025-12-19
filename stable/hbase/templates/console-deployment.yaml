@@ -100,7 +100,7 @@ spec:
 {{- end -}}
 
 {{- if .Values.console.enabled }}
-{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
-{{- $stackstateHbaseConsoleDeployment := fromYaml (include "hbase.console.deployment" .) -}}
-{{- toYaml (mergeOverwrite $commonDeployment $stackstateHbaseConsoleDeployment) -}}
+apiVersion: apps/v1
+kind: Deployment
+{{ include "hbase.console.deployment" . }}
 {{- end -}}

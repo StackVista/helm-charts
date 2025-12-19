@@ -160,8 +160,6 @@ spec:
 
 {{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
 {{- if .Values.hdfs.secondarynamenode.enabled -}}
-{{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
-{{- $stackstateHbaseHdfsSecondaryNamenodeStatefulSet := fromYaml (include "hbase.hdfs.secondarynamenode.statefulset" .) -}}
-{{- toYaml (merge $stackstateHbaseHdfsSecondaryNamenodeStatefulSet $commonStatefulSet) -}}
+{{- include "hbase.hdfs.secondarynamenode.statefulset" . -}}
 {{- end -}}
 {{- end -}}
