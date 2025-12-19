@@ -225,7 +225,13 @@ spec:
             - name: ZOO_MAX_SESSION_TIMEOUT
               value: {{ .Values.maxSessionTimeout | quote }}
             - name: ZOO_SERVERS
-              {{- $replicaCount := int .Values.replicaCount }}
+              {{- $sizingReplicaCount := include "common.sizing.zookeeper.replicaCount" . | trim -}}
+              {{- $replicaCount := 0 -}}
+              {{- if $sizingReplicaCount -}}
+                {{- $replicaCount = int $sizingReplicaCount -}}
+              {{- else -}}
+                {{- $replicaCount = int .Values.replicaCount -}}
+              {{- end }}
               {{- $minServerId := int .Values.minServerId }}
               {{- $followerPort := int .Values.containerPorts.follower }}
               {{- $electionPort := int .Values.containerPorts.election }}
@@ -253,7 +259,7 @@ spec:
                   key: server-password
             {{- end }}
             - name: ZOO_HEAP_SIZE
-              value: {{ .Values.heapSize | quote }}
+              value: {{ include "common.sizing.zookeeper.heapSize" . | trim | default .Values.heapSize | quote }}
             {{- if .Values.log4jProp }}
             - name: ZOO_LOG4J_PROP
               value: {{ .Values.log4jProp | quote }}
