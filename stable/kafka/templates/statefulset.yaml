@@ -303,7 +303,8 @@ spec:
             - name: KAFKA_LOG_DIR
               value: {{ .Values.logPersistence.mountPath | quote }}
             - name: KAFKA_CFG_DELETE_TOPIC_ENABLE
-              value: {{ .Values.deleteTopicEnable | quote }}
+              {{- $sizingDeleteTopicEnable := include "common.sizing.kafka.deleteTopicEnable" . | trim }}
+              value: {{ default .Values.deleteTopicEnable $sizingDeleteTopicEnable | quote }}
             - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
               value: {{ .Values.autoCreateTopicsEnable | quote }}
             - name: KAFKA_HEAP_OPTS
@@ -342,7 +343,8 @@ spec:
             - name: KAFKA_CFG_NUM_PARTITIONS
               value: {{ .Values.numPartitions | quote }}
             - name: KAFKA_CFG_NUM_RECOVERY_THREADS_PER_DATA_DIR
-              value: {{ .Values.numRecoveryThreadsPerDataDir | quote }}
+              {{- $sizingNumRecoveryThreadsPerDataDir := include "common.sizing.kafka.numRecoveryThreadsPerDataDir" . | trim }}
+              value: {{ default .Values.numRecoveryThreadsPerDataDir $sizingNumRecoveryThreadsPerDataDir | quote }}
             - name: KAFKA_CFG_SOCKET_RECEIVE_BUFFER_BYTES
               value: {{ .Values.socketReceiveBufferBytes | quote }}
             - name: KAFKA_CFG_SOCKET_REQUEST_MAX_BYTES
@@ -489,8 +491,13 @@ spec:
           ports:
             - name: metrics
               containerPort: {{ .Values.metrics.jmx.containerPorts.metrics }}
-          {{- if .Values.metrics.jmx.resources }}
-          resources: {{- toYaml .Values.metrics.jmx.resources | nindent 12 }}
+          {{- $sizingJmxResources := include "common.sizing.kafka.metrics.jmx.resources" . | trim -}}
+          {{- $jmxResources := .Values.metrics.jmx.resources -}}
+          {{- if $sizingJmxResources -}}
+          {{- $jmxResources = fromYaml $sizingJmxResources -}}
+          {{- end -}}
+          {{- if $jmxResources }}
+          resources: {{- toYaml $jmxResources | nindent 12 }}
           {{- end }}
           volumeMounts:
             - name: jmx-config
@@ -590,7 +597,8 @@ spec:
         {{- end }}
         resources:
           requests:
-            storage: {{ .Values.persistence.size | quote }}
+            {{- $storageSize := include "common.sizing.kafka.persistence.size" . | trim -}}
+            storage: {{ $storageSize | default .Values.persistence.size | quote }}
         {{ include "kafka.storageClass" . | nindent 8 }}
         {{- if .Values.persistence.selector }}
         selector: {{- include "common.tplvalues.render" (dict "value" .Values.persistence.selector "context" $) | nindent 10 }}
