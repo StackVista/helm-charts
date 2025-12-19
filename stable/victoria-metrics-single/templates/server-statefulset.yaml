@@ -78,7 +78,12 @@ spec:
           workingDir: {{ .Values.server.containerWorkingDir }}
           {{- end }}
           args:
+            {{- $retention := include "common.sizing.victoria-metrics.retention" . | trim -}}
+            {{- if $retention }}
+            - {{ printf "%s=%s" "--retentionPeriod" $retention | quote}}
+            {{- else }}
             - {{ printf "%s=%s" "--retentionPeriod" (toString .Values.server.retentionPeriod) | quote}}
+            {{- end }}
             - {{ printf "%s=%s" "--storageDataPath" .Values.server.persistentVolume.mountPath | quote}}
           {{- if .Values.server.scrape.enabled }}
             - -promscrape.config=/scrapeconfig/scrape.yml
@@ -140,7 +145,7 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
-            {{- toYaml .Values.server.resources | nindent 12 }}
+            {{- include "victoria-metrics.server.resources" . | nindent 12 }}
           securityContext:
             {{- $commonContainer.securityContext | toYaml | nindent 12 }}
           volumeMounts:
@@ -326,7 +331,12 @@ spec:
 {{ toYaml .Values.server.persistentVolume.accessModes | indent 10 }}
         resources:
           requests:
+{{- $storageSize := include "common.sizing.victoria-metrics.storage" $ | trim -}}
+{{- if $storageSize }}
+            storage: "{{ $storageSize }}"
+{{- else }}
             storage: "{{ .Values.server.persistentVolume.size }}"
+{{- end }}
        {{ include "common.storage.class" ( dict "persistence" .Values.server.persistentVolume "global" .Values.global) | nindent 8 }}
       {{- with .Values.server.persistentVolume.matchLabels }}
         selector:
