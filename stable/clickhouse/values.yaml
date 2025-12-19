@@ -104,7 +104,7 @@ shards: 2
 ## @param replicaCount Number of ClickHouse replicas per shard to deploy
 ## if keeper enable, same as keeper count, keeper cluster by shards.
 ##
-replicaCount: 3
+replicaCount: 1
 ## @param containerPorts.http ClickHouse HTTP container port
 ## @param containerPorts.https ClickHouse HTTPS container port
 ## @param containerPorts.tcp ClickHouse TCP container port

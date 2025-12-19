@@ -433,7 +433,8 @@ spec:
         {{- end }}
         resources:
           requests:
-            storage: {{ include "common.tplvalues.render" (dict "value" $.Values.persistence.size "context" $) | quote }}
+            {{- $storageSize := include "common.sizing.clickhouse.persistence.size" $ | trim -}}
+            storage: {{ $storageSize | default (include "common.tplvalues.render" (dict "value" $.Values.persistence.size "context" $)) | quote }}
         {{- if $.Values.persistence.selector }}
         selector: {{- include "common.tplvalues.render" (dict "value" $.Values.persistence.selector "context" $) | nindent 10 }}
         {{- end }}
