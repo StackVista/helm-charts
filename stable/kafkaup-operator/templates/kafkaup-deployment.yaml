@@ -43,8 +43,13 @@ spec:
         volumeMounts:
         - name: kafkaup-config-volume
           mountPath: /conf.d
+{{- $sizingResources := include "common.sizing.kafkaup-operator.resources" . | trim }}
+{{- $resources := .Values.resources }}
+{{- if $sizingResources }}
+{{- $resources = fromYaml $sizingResources }}
+{{- end }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+{{ toYaml $resources | indent 10 }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
