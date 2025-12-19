@@ -94,8 +94,14 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
     spec:
-
-{{- include "elasticsearch.tplvalue.render" ( dict "value" .Values.volumeClaimTemplate "context" $) | trim | nindent 6 }}
+      accessModes:
+      {{- range .Values.volumeClaimTemplate.accessModes }}
+        - {{ . | quote }}
+      {{- end }}
+      resources:
+        requests:
+          {{- $storageSize := include "common.sizing.elasticsearch.storage" . | trim -}}
+          storage: {{ $storageSize | default .Values.volumeClaimTemplate.resources.requests.storage | quote }}
   {{- if (.Values.global).storageClass }}
       storageClassName: "{{ .Values.global.storageClass }}"
   {{- end }}
@@ -328,7 +334,7 @@ spec:
             {{/* Remain compatible with existing configurations, the esJavaOpts is often overriden by users via the small profiles of SUSE Observability.
                  by removing the logging options because they are defined in the docker image now and this settings breaks in the new image version due to different working directory*/}}
           - name: ES_JAVA_OPTS
-            value: {{ .Values.esJavaOpts | replace " -Xlog:disable -Xlog:gc*,gc+age=trace,safepoint:file=logs/gc.log:utctime,pid,tags:filecount=8,filesize=16m" "" | quote }}
+            value: {{ include "elasticsearch.esJavaOpts" . | replace " -Xlog:disable -Xlog:gc*,gc+age=trace,safepoint:file=logs/gc.log:utctime,pid,tags:filecount=8,filesize=16m" "" | quote }}
           {{- if .Values.createCert }}
           - name: xpack.security.enabled
             value: "true"

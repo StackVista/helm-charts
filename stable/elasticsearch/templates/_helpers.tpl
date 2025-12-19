@@ -74,7 +74,13 @@ ca.crt: {{ $ca.Cert | toString | b64enc }}
 {{- end -}}
 
 {{- define "elasticsearch.endpoints" -}}
-{{- $replicas := int (toString (.Values.replicas)) }}
+{{- $sizingReplicas := include "common.sizing.elasticsearch.replicas" . | trim -}}
+{{- $replicas := 0 -}}
+{{- if $sizingReplicas -}}
+  {{- $replicas = int $sizingReplicas -}}
+{{- else -}}
+  {{- $replicas = int (toString (.Values.replicas)) -}}
+{{- end -}}
 {{- $uname := printf "%s-%s" .Values.clusterName .Values.nodeGroup }}
   {{- range $i, $e := untilStep 0 $replicas 1 -}}
 {{ $uname }}-{{ $i }},
