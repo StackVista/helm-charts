@@ -1,3 +1,9 @@
+{{/*
+ZOOKEEPER TEMPLATES
+=============================================================================
+*/}}
+
+{{/*
 Get zookeeper resources based on sizing profile
 Usage: {{ include "common.sizing.zookeeper.resources" . }}
 */}}
@@ -9,11 +15,18 @@ requests:
   cpu: 100m
 limits:
   cpu: 250m
-{{- else if or (eq $profile "150-ha") (eq $profile "250-ha") (eq $profile "500-ha") (eq $profile "4000-ha") }}
+{{- else if or (eq $profile "150-ha") (eq $profile "250-ha") (eq $profile "500-ha") }}
 requests:
   cpu: 200m
 limits:
   cpu: 500m
+{{- else if eq $profile "4000-ha" }}
+requests:
+  cpu: 1000m
+  memory: 768Mi
+limits:
+  cpu: 1500m
+  memory: 768Mi
 {{- end }}
 {{- end }}
 {{- end }}
@@ -23,7 +36,13 @@ Get zookeeper persistence size based on sizing profile
 Usage: {{ include "common.sizing.zookeeper.persistence.size" . }}
 */}}
 {{- define "common.sizing.zookeeper.persistence.size" -}}
-{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}8Gi
+{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- if eq $profile "trial" -}}
+2Gi
+{{- else -}}
+8Gi
+{{- end -}}
 {{- end }}
 {{- end }}
 
@@ -41,7 +60,16 @@ Usage: {{ include "common.sizing.zookeeper.replicaCount" . }}
 {{- end }}
 
 {{/*
-=============================================================================
+Get zookeeper heapSize based on sizing profile
+Usage: {{ include "common.sizing.zookeeper.heapSize" . }}
+*/}}
+{{- define "common.sizing.zookeeper.heapSize" -}}
+{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- if eq $profile "4000-ha" }}512
+{{- end }}
+{{- end }}
+{{- end }}
 
 {{/*
 Get zookeeper affinity

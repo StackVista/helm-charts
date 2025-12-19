@@ -1,13 +1,15 @@
 {{/*
 =============================================================================
 Victoria Metrics Affinity Configuration
-These templates provide complete affinity configurations for Victoria Metrics instances.
+These templates provide complete affinity configurations for Victoria Metrics
+instances.
 =============================================================================
 */}}
 
 {{/*
 Get complete Victoria Metrics 0 affinity configuration for HA profiles.
-Returns a complete affinity block with podAntiAffinity targeting victoria-metrics-1 for HA profiles.
+Returns a complete affinity block with podAntiAffinity targeting
+victoria-metrics-1 for HA profiles.
 
 Usage in values.yaml:
 victoria-metrics-0:
@@ -28,7 +30,8 @@ Returns (for HA profiles):
 
 {{/*
 Get complete Victoria Metrics 1 affinity configuration for HA profiles.
-Returns a complete affinity block with podAntiAffinity targeting victoria-metrics-0 for HA profiles.
+Returns a complete affinity block with podAntiAffinity targeting
+victoria-metrics-0 for HA profiles.
 
 Usage in values.yaml:
 victoria-metrics-1:

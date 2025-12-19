@@ -1,97 +1,7 @@
 {{/*
-=============================================================================
 KAFKA SIZING TEMPLATES
 =============================================================================
 */}}
-
-{{/*
-Get kafka resources based on sizing profile
-Usage: {{ include "common.sizing.kafka.resources" . }}
-*/}}
-{{- define "common.sizing.kafka.resources" -}}
-{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
-{{- if eq $profile "trial" }}
-requests:
-  cpu: "250m"
-  memory: "750Mi"
-limits:
-  cpu: "500m"
-  memory: "1Gi"
-{{- else if eq $profile "10-nonha" }}
-requests:
-  cpu: "250m"
-  memory: "750Mi"
-limits:
-  cpu: "500m"
-  memory: "1Gi"
-{{- else if eq $profile "20-nonha" }}
-requests:
-  cpu: "500m"
-  memory: "1500Mi"
-limits:
-  cpu: "1"
-  memory: "2Gi"
-{{- else if eq $profile "50-nonha" }}
-requests:
-  cpu: "500m"
-  memory: "1500Mi"
-limits:
-  cpu: "1"
-  memory: "2Gi"
-{{- else if eq $profile "100-nonha" }}
-requests:
-  cpu: "500m"
-  memory: "1500Mi"
-limits:
-  cpu: "1"
-  memory: "2Gi"
-{{- else if eq $profile "150-ha" }}
-requests:
-  cpu: "1"
-  memory: "3Gi"
-limits:
-  cpu: "2"
-  memory: "4Gi"
-{{- else if eq $profile "250-ha" }}
-requests:
-  cpu: "1"
-  memory: "3Gi"
-limits:
-  cpu: "2"
-  memory: "4Gi"
-{{- else if eq $profile "500-ha" }}
-requests:
-  cpu: "1500m"
-  memory: "4Gi"
-limits:
-  cpu: "3"
-  memory: "5Gi"
-{{- else if eq $profile "4000-ha" }}
-requests:
-  cpu: "2"
-  memory: "5Gi"
-limits:
-  cpu: "4"
-  memory: "6Gi"
-{{- end }}
-{{- end }}
-{{- end }}
-
-{{/*
-Get kafka persistence size based on sizing profile
-Usage: {{ include "common.sizing.kafka.persistence.size" . }}
-*/}}
-{{- define "common.sizing.kafka.persistence.size" -}}
-{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
-{{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") (eq $profile "150-ha") }}50Gi
-{{- else if eq $profile "250-ha" }}100Gi
-{{- else if eq $profile "500-ha" }}200Gi
-{{- else if eq $profile "4000-ha" }}500Gi
-{{- end }}
-{{- end }}
-{{- end }}
 
 {{/*
 Get kafka replicaCount
@@ -101,20 +11,44 @@ Usage: {{ include "common.sizing.kafka.replicaCount" . }}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
 {{- $profile := .Values.global.suseObservability.sizing.profile -}}
 {{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") }}1
-{{- else }}3
 {{- end }}
 {{- end }}
 {{- end }}
 
 {{/*
-Get kafka transactionStateLogReplicationFactor
-Usage: {{ include "common.sizing.kafka.transactionStateLogReplicationFactor" . }}
+Get kafka numRecoveryThreadsPerDataDir
+Usage: {{ include "common.sizing.kafka.numRecoveryThreadsPerDataDir" . }}
 */}}
-{{- define "common.sizing.kafka.transactionStateLogReplicationFactor" -}}
+{{- define "common.sizing.kafka.numRecoveryThreadsPerDataDir" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
 {{- $profile := .Values.global.suseObservability.sizing.profile -}}
-{{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") }}1
-{{- else }}3
+{{- if eq $profile "500-ha" }}6
+{{- else if eq $profile "4000-ha" }}8
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Get kafka deleteTopicEnable
+Usage: {{ include "common.sizing.kafka.deleteTopicEnable" . }}
+*/}}
+{{- define "common.sizing.kafka.deleteTopicEnable" -}}
+{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- if eq $profile "4000-ha" }}true
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Get kafka extraEnv for REPLICA_FETCH_MAX_BYTES
+Usage: {{ include "common.sizing.kafka.extraEnv.open" . }}
+*/}}
+{{- define "common.sizing.kafka.extraEnv.open" -}}
+{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- if eq $profile "4000-ha" }}
+KAFKA_CFG_REPLICA_FETCH_MAX_BYTES: "4194304"
 {{- end }}
 {{- end }}
 {{- end }}
@@ -127,7 +61,6 @@ Usage: {{ include "common.sizing.kafka.defaultReplicationFactor" . }}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
 {{- $profile := .Values.global.suseObservability.sizing.profile -}}
 {{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") }}1
-{{- else }}3
 {{- end }}
 {{- end }}
 {{- end }}
@@ -140,15 +73,118 @@ Usage: {{ include "common.sizing.kafka.offsetsTopicReplicationFactor" . }}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
 {{- $profile := .Values.global.suseObservability.sizing.profile -}}
 {{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") }}1
-{{- else }}3
 {{- end }}
 {{- end }}
 {{- end }}
 
 {{/*
-Get kafka affinity
-Usage: {{ include "common.sizing.kafka.affinity" . }}
+Get kafka transactionStateLogReplicationFactor
+Usage: {{ include "common.sizing.kafka.transactionStateLogReplicationFactor" . }}
 */}}
-{{- define "common.sizing.kafka.affinity" -}}
-{{- include "common.sizing.podAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "kafka") "context" .) }}
+{{- define "common.sizing.kafka.transactionStateLogReplicationFactor" -}}
+{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") (eq $profile "150-ha") (eq $profile "250-ha") (eq $profile "500-ha") }}1
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Get kafka resources
+Usage: {{ include "common.sizing.kafka.resources" . }}
+*/}}
+{{- define "common.sizing.kafka.resources" -}}
+{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- if or (eq $profile "trial") (eq $profile "10-nonha") }}
+requests:
+  cpu: "800m"
+  memory: "2048Mi"
+limits:
+  cpu: "1600m"
+  memory: "2048Mi"
+{{- else if eq $profile "20-nonha" }}
+requests:
+  cpu: "1000m"
+  memory: "2048Mi"
+limits:
+  cpu: "2000m"
+  memory: "2048Mi"
+{{- else if eq $profile "50-nonha" }}
+requests:
+  cpu: "1500m"
+  memory: "2048Mi"
+limits:
+  cpu: "3000m"
+  memory: "2048Mi"
+{{- else if eq $profile "100-nonha" }}
+requests:
+  cpu: "2000m"
+  memory: "3000Mi"
+limits:
+  cpu: "4000m"
+  memory: "3000Mi"
+{{- else if eq $profile "150-ha" }}
+requests:
+  cpu: "1"
+  memory: "3Gi"
+limits:
+  cpu: "2"
+  memory: "4Gi"
+{{- else if eq $profile "250-ha" }}
+requests:
+  cpu: "2"
+  memory: "3Gi"
+limits:
+  cpu: "4"
+  memory: "4Gi"
+{{- else if eq $profile "500-ha" }}
+requests:
+  cpu: "3"
+  memory: "3Gi"
+limits:
+  cpu: "6"
+  memory: "4Gi"
+{{- else if eq $profile "4000-ha" }}
+requests:
+  cpu: "4000m"
+  memory: "6Gi"
+limits:
+  cpu: "5000m"
+  memory: "8Gi"
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Get kafka metrics.jmx.resources
+Usage: {{ include "common.sizing.kafka.metrics.jmx.resources" . }}
+*/}}
+{{- define "common.sizing.kafka.metrics.jmx.resources" -}}
+{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- if eq $profile "4000-ha" }}
+requests:
+  cpu: "500m"
+  memory: "300Mi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "1000m"
+  memory: "300Mi"
+  ephemeral-storage: "1Gi"
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Get kafka persistence.size
+Usage: {{ include "common.sizing.kafka.persistence.size" . }}
+*/}}
+{{- define "common.sizing.kafka.persistence.size" -}}
+{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- if or (eq $profile "trial") (eq $profile "10-nonha") }}60Gi
+{{- else if or (eq $profile "500-ha") (eq $profile "4000-ha") }}400Gi
+{{- end }}
+{{- end }}
 {{- end }}

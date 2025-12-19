@@ -26,8 +26,11 @@ Parameters:
 {{- end -}}
 {{- end -}}
 
-{{/* Checks whether an `adminPassword` is set, if not it will generate a new password and set this for printing. */}}
-{{/* If the password is set, this function will validate it is correctly `bcrypt` hashed, if not, it will hash it for the outputted values. */}}
+{{/* Checks whether an `adminPassword` is set, if not it will generate
+a new password and set this for printing. If the password is set,
+this function will validate it is correctly `bcrypt` hashed, if not, it will
+hash it for the outputted values.
+*/}}
 {{- define "sts.values.getOrGenerateAdminPassword" -}}
 {{- $pwd := .Values.adminPassword -}}
 {{- if $pwd -}}
