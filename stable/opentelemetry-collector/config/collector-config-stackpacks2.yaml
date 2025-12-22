@@ -29,15 +29,25 @@ connectors:
       max_items: 50000
   forward: {}
   topology:
-    expression_cache_settings:
+    expression_cache:
       enable_metrics: true
       size: 100000
-    tag_regex_cache_settings:
+      ttl: 0 # 0 == eviction disabled
+    tag_regex_cache:
       enable_metrics: true
       size: 2000
-    tag_template_cache_settings:
+      ttl: 0 # 0 == eviction disabled
+    tag_template_cache:
       enable_metrics: true
       size: 2000
+      ttl: 0 # 0 == eviction disabled
+    deduplication:
+      enabled: true
+      refresh_fraction: 0.5
+      cache:
+        enable_metrics: true
+        size: 100000
+        ttl: 1h
 processors:
   stsusage: {}
   batch:
