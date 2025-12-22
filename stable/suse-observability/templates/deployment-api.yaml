@@ -1,6 +1,7 @@
 {{- define "stackstate.api.deployment.container.init" -}}
 name: server-init
-{{- if eq .Values.hbase.deployment.mode "Distributed" }}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+{{- if eq $deploymentMode "Distributed" }}
 command:
 - sh
 - -c
@@ -38,12 +39,29 @@ env:
 {{- $evaluatedResources := .Values.stackstate.components.api.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = merge $profileResourcesDict .Values.stackstate.components.api.resources }}
+{{- $evaluatedResources = $profileResourcesDict }}
 {{- end }}
-{{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.api -}}
+{{- $profileEnv := include "common.sizing.stackstate.api.env" . | trim -}}
+{{- $evaluatedExtraEnvOpen := .Values.stackstate.components.api.extraEnv.open }}
+{{- if $profileEnv }}
+{{- $profileEnvDict := fromYaml $profileEnv }}
+{{- $evaluatedExtraEnvOpen = $profileEnvDict }}
+{{- end }}
+{{- $evaluatedExtraEnv := dict "open" $evaluatedExtraEnvOpen "secret" .Values.stackstate.components.api.extraEnv.secret }}
+{{- $profileBaseMemory := include "common.sizing.stackstate.api.baseMemoryConsumption" . | trim -}}
+{{- $profileJavaHeapFraction := include "common.sizing.stackstate.api.javaHeapMemoryFraction" . | trim -}}
+{{- $evaluatedSizing := .Values.stackstate.components.api.sizing }}
+{{- if $profileBaseMemory }}
+{{- $evaluatedSizing = merge (dict) (dict "baseMemoryConsumption" $profileBaseMemory) $evaluatedSizing }}
+{{- end }}
+{{- if $profileJavaHeapFraction }}
+{{- $evaluatedSizing = merge (dict) (dict "javaHeapMemoryFraction" $profileJavaHeapFraction) $evaluatedSizing }}
+{{- end }}
+{{- $baseConfig := omit .Values.stackstate.components.api "resources" "extraEnv" "sizing" }}
+{{- $componentConfigWithResources := merge $baseConfig (dict "resources" $evaluatedResources "extraEnv" $evaluatedExtraEnv "sizing" $evaluatedSizing) -}}
 {{- $serviceConfig := dict "ServiceName" "api" "ServiceConfig" $componentConfigWithResources }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.api.image.tag }}
-{{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
+{{- include "stackstate.service.envvars" (merge (dict) . $serviceConfig) }}
 {{- include "stackstate.baseurls.envvars" . }}
 {{- include "stackstate.metricstore.envvar" . }}
 {{ if .Values.stackstate.components.api.yaml.maxSizeLimit }}
@@ -67,7 +85,7 @@ env:
   value: "5400"
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.api.envsFromExistingSecrets }}
-image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.api.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
+image: "{{ include "stackstate.image.registry" (merge (dict) $serviceConfig .) }}/{{ .Values.stackstate.components.api.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.api.image.pullPolicy | quote }}
 name: api
 ports:
@@ -103,7 +121,8 @@ volumeMounts:
 {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
 {{ include "stackstate.stackpacks.volumeMount" . }}
 {{- end }}
-{{- if eq .Values.hbase.deployment.mode "Mono" }}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+{{- if eq $deploymentMode "Mono" }}
 {{ include "stackstate.stackpacks.local.volumeMount" . }}
 {{- end }}
 {{- include "stackstate.service.container.volumes" . }}
@@ -199,7 +218,8 @@ spec:
         {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
         {{ include "stackstate.stackpacks.volume" . | nindent 8 }}
         {{- end }}
-        {{- if eq .Values.hbase.deployment.mode "Mono" }}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+        {{- if eq $deploymentMode "Mono" }}
         {{ include "stackstate.stackpacks.local.volume" . | nindent 8 }}
         {{- end }}
 {{- end -}}

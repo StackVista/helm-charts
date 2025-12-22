@@ -14,18 +14,12 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- end -}}
 
 {{- define "stackstate.correlate.deployment.container.main" -}}
-{{- $profileResources := include "common.sizing.stackstate.correlate.resources" . | trim -}}
-{{- $evaluatedResources := .Values.stackstate.components.correlate.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = merge $profileResourcesDict .Values.stackstate.components.correlate.resources }}
-{{- end }}
-{{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.correlate -}}
+{{- $componentConfigWithResources := .TypeConfig -}}
 env:
 {{- $serviceTypeConfig := merge (omit $componentConfigWithResources "split") .TypeConfig }}
 {{- $serviceConfig := dict "ServiceName" "correlate" "ServiceConfig" $serviceTypeConfig }}
 
-{{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
+{{- include "stackstate.service.envvars" (merge (dict) . $serviceConfig) }}
 - name: KAFKA_BROKERS
   value: {{ include "stackstate.kafka.endpoint" . | quote }}
 - name: CORRELATE_WRITE_STS_METRICS
@@ -36,7 +30,7 @@ env:
   value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.correlate.envsFromExistingSecrets }}
-image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.correlate.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.correlate.image.tag }}"
+image: "{{ include "stackstate.image.registry" (merge (dict) . $serviceConfig) }}/{{ .Values.stackstate.components.correlate.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.correlate.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.correlate.image.pullPolicy | quote }}
 livenessProbe:
   httpGet:
@@ -64,11 +58,7 @@ readinessProbe:
     port: health
   initialDelaySeconds: 10
   timeoutSeconds: 5
-{{- $finalResources := $evaluatedResources }}
-{{- if .TypeConfig.resources }}
-{{- $finalResources = merge .TypeConfig.resources $evaluatedResources }}
-{{- end }}
-{{- with $finalResources }}
+{{- with .TypeConfig.resources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -178,7 +168,28 @@ spec:
 {{- $correlateAggregatorDeployment := fromYaml (include "stackstate.correlate.deployment" $correlateAggregatorArgs) -}}
 {{ toYaml (merge $correlateAggregatorDeployment $commonDeployment) }}
 {{ else }}
-{{- $correlateArgs := merge (dict "CorrelateType" "" "TypeConfig" .Values.stackstate.components.correlate) . -}}
+{{- $profileResources := include "common.sizing.stackstate.correlate.resources" . | trim -}}
+{{- $evaluatedResources := .Values.stackstate.components.correlate.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end }}
+{{- $profileEnv := include "common.sizing.stackstate.correlate.env" . | trim -}}
+{{- $evaluatedExtraEnvOpen := .Values.stackstate.components.correlate.extraEnv.open }}
+{{- if $profileEnv }}
+{{- $profileEnvDict := fromYaml $profileEnv }}
+{{- $evaluatedExtraEnvOpen = $profileEnvDict }}
+{{- else }}
+{{- if .Values.stackstate.components.correlate.extraEnv }}
+{{- if .Values.stackstate.components.correlate.extraEnv.open }}
+{{- $evaluatedExtraEnvOpen = merge (dict) .Values.stackstate.components.correlate.extraEnv.open $evaluatedExtraEnvOpen }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- $evaluatedExtraEnv := dict "open" $evaluatedExtraEnvOpen "secret" .Values.stackstate.components.correlate.extraEnv.secret }}
+{{- $baseConfig := omit .Values.stackstate.components.correlate "resources" "extraEnv" }}
+{{- $evaluatedConfig := merge $baseConfig (dict "resources" $evaluatedResources "extraEnv" $evaluatedExtraEnv) }}
+{{- $correlateArgs := merge (dict "CorrelateType" "" "TypeConfig" $evaluatedConfig) . -}}
 {{- $correlateDeployment := fromYaml (include "stackstate.correlate.deployment" $correlateArgs) -}}
 {{- toYaml (merge $correlateDeployment $commonDeployment) }}
 {{- end }}

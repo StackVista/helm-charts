@@ -63,7 +63,8 @@ stackstate.api.authorization.staticSubjects.stackstate-aad: { systemPermissions:
 {{- end }}
 
 stackstate.stackPacks {
-  {{- if eq .Values.hbase.deployment.mode "Distributed" }}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+  {{- if eq $deploymentMode "Distributed" }}
   localStackPacksUri = "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
   {{- else }}
   localStackPacksUri = "file:///var/stackpacks_local"

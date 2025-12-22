@@ -41,6 +41,193 @@ helm install \
 stackstate/stackstate
 ```
 
+## Simplified Sizing Configuration
+
+SUSE Observability now provides built-in sizing profiles that automatically configure all component resources, replica counts, storage sizes, and deployment modes with a single configuration value.
+
+### Quick Start with Sizing Profiles
+
+```yaml
+# values.yaml
+global:
+  suseObservability:
+    sizing:
+      profile: "150-ha"  # Single value configures everything
+    license: "<your-license-key>"
+    baseUrl: "<your-base-url>"
+    adminPassword: "<bcrypt-hashed-password>"
+    receiverApiKey: "<your-receiver-api-key>"
+    pullSecret:
+      username: "<registry-username>"
+      password: "<registry-password>"
+
+# For HA profiles (150-ha, 250-ha, 500-ha, 4000-ha), enable second Victoria Metrics instance
+victoria-metrics-1:
+  enabled: true
+
+# Disable pull-secret subchart when using global.suseObservability.pullSecret
+pull-secret:
+  enabled: false
+```
+
+```shell
+helm install suse-observability . -f values.yaml
+```
+
+### Available Sizing Profiles
+
+| Profile | Use Case | HA Mode | Components | VM Instances | Server Split |
+|---------|----------|---------|------------|--------------|--------------|
+| `trial` | Development/Testing | No | ~10 | 1 | No |
+| `10-nonha` | Small non-HA | No | ~10 | 1 | No |
+| `20-nonha` | Small non-HA | No | ~20 | 1 | No |
+| `50-nonha` | Medium non-HA | No | ~50 | 1 | No |
+| `100-nonha` | Large non-HA | No | ~100 | 1 | No |
+| `150-ha` | Production HA | Yes | ~150 | 2 | Yes |
+| `250-ha` | Production HA | Yes | ~250 | 2 | Yes |
+| `500-ha` | Production HA | Yes | ~500 | 2 | Yes |
+| `4000-ha` | Enterprise HA | Yes | ~4000 | 2 | Yes |
+
+### What Gets Configured Automatically
+
+A single sizing profile automatically configures:
+
+**Infrastructure Components:**
+- ✅ **ClickHouse**: Replicas, CPU/memory resources, storage size
+- ✅ **Elasticsearch**: Replicas, CPU/memory resources, storage size
+- ✅ **HBase**: Deployment mode (Mono/Distributed), resources for master/regionserver/datanode/namenode/tephra
+- ✅ **Kafka**: Replicas, CPU/memory resources, storage size, partition counts
+- ✅ **Zookeeper**: Replicas, CPU/memory resources
+- ✅ **Victoria Metrics 0**: CPU/memory resources, storage size, retention period
+- ✅ **Victoria Metrics 1**: Enablement (HA only), CPU/memory resources, storage size
+
+**SUSE Observability Components:**
+- ✅ **API/Server**: Split mode (HA profiles), replica counts, CPU/memory resources
+- ✅ **Receiver**: Split mode (base/logs/process-agent for HA), replica counts, resources
+- ✅ **Checks, Correlate, State, Sync, Health-Sync**: Replica counts, CPU/memory resources
+- ✅ **UI, Notification, Slicing**: Replica counts, CPU/memory resources
+
+**Supporting Services:**
+- ✅ **Minio**: CPU/memory resources
+- ✅ **KafkaUp Operator**: CPU/memory resources
+- ✅ **Prometheus Elasticsearch Exporter**: CPU/memory resources
+
+### Migrating from suse-observability-values Chart
+
+> **⚠️ DEPRECATION NOTICE**
+> The `suse-observability-values` chart is deprecated. Use the built-in sizing profiles instead.
+
+**Old workflow (DEPRECATED):**
+
+```shell
+# Step 1: Generate values file with suse-observability-values chart
+helm template suse-observability-values \
+  --set sizing.profile=150-ha \
+  --set license=<your-license-key> \
+  --set baseUrl=<your-base-url> \
+  --set pullSecret.username=<username> \
+  --set pullSecret.password=<password> \
+  suse-observability/suse-observability-values > generated-values.yaml
+
+# Step 2: Install suse-observability chart with generated values
+helm install suse-observability . -f generated-values.yaml
+```
+
+**New workflow (Recommended):**
+
+```yaml
+# values.yaml
+global:
+  suseObservability:
+    sizing:
+      profile: "150-ha"  # Replaces the entire values generation step!
+    license: "<your-license-key>"
+    baseUrl: "<your-base-url>"
+    adminPassword: "<bcrypt-hashed-password>"
+    receiverApiKey: "<your-receiver-api-key>"
+    pullSecret:
+      username: "<username>"
+      password: "<password>"
+
+victoria-metrics-1:
+  enabled: true  # Set to 'false' for non-HA profiles (trial, *-nonha)
+
+pull-secret:
+  enabled: false  # Use inlined pull-secret from global.suseObservability
+```
+
+```shell
+helm install suse-observability . -f values.yaml
+```
+
+**Migration checklist:**
+
+1. ✅ Identify your current sizing profile (e.g., `150-ha`)
+2. ✅ Create new values file with `global.suseObservability.sizing.profile`
+3. ✅ Move credentials to `global.suseObservability.*` section
+4. ✅ Set `victoria-metrics-1.enabled: true` for HA profiles (`150-ha`, `250-ha`, `500-ha`, `4000-ha`)
+5. ✅ Set `victoria-metrics-1.enabled: false` for non-HA profiles (`trial`, `*-nonha`)
+6. ✅ Set `pull-secret.enabled: false` when using `global.suseObservability.pullSecret`
+7. ✅ Remove `helm template suse-observability-values` step from deployment scripts
+8. ✅ Test installation in non-production environment first
+
+**Benefits of the new approach:**
+
+- ✅ **Simpler**: No separate chart installation needed
+- ✅ **Faster**: Single-step installation instead of two steps
+- ✅ **Cleaner**: No intermediate generated values files to manage
+- ✅ **Maintainable**: Profile updates happen automatically with chart upgrades
+- ✅ **Explicit**: Clear profile selection in your values file
+
+### Overriding Sizing Profile Defaults
+
+You can override specific values from the sizing profile when needed:
+
+```yaml
+global:
+  suseObservability:
+    sizing:
+      profile: "150-ha"
+
+# Override specific component resources
+stackstate:
+  components:
+    api:
+      resources:
+        requests:
+          memory: 16Gi  # Override profile's default of 12Gi
+
+# Override storage sizes
+elasticsearch:
+  volumeClaimTemplate:
+    resources:
+      requests:
+        storage: 500Gi  # Override profile's default
+```
+
+### Backward Compatibility
+
+The traditional configuration method (without sizing profiles) is still supported for backward compatibility:
+
+```yaml
+# Traditional method - still works
+stackstate:
+  license:
+    key: "<your-license-key>"
+  baseUrl: "<your-base-url>"
+  authentication:
+    adminPassword: "<password>"
+  components:
+    api:
+      resources:
+        requests:
+          cpu: "4000m"
+          memory: 12Gi
+    # ... manual configuration for each component
+```
+
+However, we strongly recommend migrating to sizing profiles for easier maintenance and upgrades.
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -158,7 +345,7 @@ stackstate/stackstate
 | clickhouse.podAnnotations."ad.stackstate.com/clickhouse.init_configs" | string | `"[{}]"` |  |
 | clickhouse.podAnnotations."ad.stackstate.com/clickhouse.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8001/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"ClickHouseAsyncMetrics_*\", \"ClickHouseMetrics_*\", \"ClickHouseProfileEvents_*\"] } ]"` |  |
 | clickhouse.podAnnotations.checksum/stackstate-backup-config | string | `"{{ toJson .Values.backup | sha256sum }}"` |  |
-| clickhouse.replicaCount | int | `3` | Number of ClickHouse replicas per shard to deploy |
+| clickhouse.replicaCount | int | `1` | Number of ClickHouse replicas per shard to deploy |
 | clickhouse.resources.limits.cpu | string | `"1000m"` |  |
 | clickhouse.resources.limits.memory | string | `"4Gi"` |  |
 | clickhouse.resources.requests.cpu | string | `"500m"` |  |
@@ -718,7 +905,7 @@ stackstate/stackstate
 | stackstate.components.receiver.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.receiver.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `receiver` pods. |
 | stackstate.components.receiver.replicaCount | int | `1` | Number of `receiver` replicas. |
-| stackstate.components.receiver.resources | object | `{"limits":{"cpu":"3000m","ephemeral-storage":"1Gi","memory":"4Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"4Gi"}}` | Resource allocation for `receiver` pods. |
+| stackstate.components.receiver.resources | object | `{"limits":{"cpu":"3000m","memory":"4Gi"},"requests":{"cpu":"1000m","memory":"4Gi"}}` | Resource allocation for `receiver` pods. |
 | stackstate.components.receiver.retention | int | `7` | Number of days to keep the logs data on Es |
 | stackstate.components.receiver.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
 | stackstate.components.receiver.sizing.javaHeapMemoryFraction | string | `"65"` |  |
@@ -728,7 +915,7 @@ stackstate/stackstate
 | stackstate.components.receiver.split.base.nodeSelector | object | `{}` | Additional node labels for pod assignment. |
 | stackstate.components.receiver.split.base.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.receiver.split.base.replicaCount | int | `1` | Number of `base receiver` replicas. |
-| stackstate.components.receiver.split.base.resources | object | `{"limits":{"cpu":null,"ephemeral-storage":null,"memory":null},"requests":{"cpu":null,"ephemeral-storage":null,"memory":null}}` | Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources |
+| stackstate.components.receiver.split.base.resources | object | `{"limits":{"cpu":null,"memory":null},"requests":{"cpu":null,"memory":null}}` | Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources |
 | stackstate.components.receiver.split.base.sizing.baseMemoryConsumption | string | `nil` |  |
 | stackstate.components.receiver.split.base.sizing.javaHeapMemoryFraction | string | `nil` |  |
 | stackstate.components.receiver.split.base.tolerations | list | `[]` | Additional toleration labels for pod assignment. |
@@ -739,7 +926,7 @@ stackstate/stackstate
 | stackstate.components.receiver.split.logs.nodeSelector | object | `{}` | Additional node labels for pod assignment. |
 | stackstate.components.receiver.split.logs.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.receiver.split.logs.replicaCount | int | `1` | Number of `logs receiver` replicas. |
-| stackstate.components.receiver.split.logs.resources | object | `{"limits":{"cpu":null,"ephemeral-storage":null,"memory":null},"requests":{"cpu":null,"ephemeral-storage":null,"memory":null}}` | Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources |
+| stackstate.components.receiver.split.logs.resources | object | `{"limits":{"cpu":null,"memory":null},"requests":{"cpu":null,"memory":null}}` | Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources |
 | stackstate.components.receiver.split.logs.sizing.javaHeapMemoryFraction | string | `nil` |  |
 | stackstate.components.receiver.split.logs.sizing.logsMemoryConsumption | string | `nil` |  |
 | stackstate.components.receiver.split.logs.tolerations | list | `[]` | Additional toleration labels for pod assignment. |
@@ -749,7 +936,7 @@ stackstate/stackstate
 | stackstate.components.receiver.split.processAgent.nodeSelector | object | `{}` | Additional node labels for pod assignment. |
 | stackstate.components.receiver.split.processAgent.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.receiver.split.processAgent.replicaCount | int | `1` | Number of `processAgent receiver` replicas. |
-| stackstate.components.receiver.split.processAgent.resources | object | `{"limits":{"cpu":null,"ephemeral-storage":null,"memory":null},"requests":{"cpu":null,"ephemeral-storage":null,"memory":null}}` | Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources |
+| stackstate.components.receiver.split.processAgent.resources | object | `{"limits":{"cpu":null,"memory":null},"requests":{"cpu":null,"memory":null}}` | Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources |
 | stackstate.components.receiver.split.processAgent.sizing.javaHeapMemoryFraction | string | `nil` |  |
 | stackstate.components.receiver.split.processAgent.sizing.processAgentMemoryConsumption | string | `nil` |  |
 | stackstate.components.receiver.split.processAgent.tolerations | list | `[]` | Additional toleration labels for pod assignment. |

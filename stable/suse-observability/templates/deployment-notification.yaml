@@ -1,6 +1,7 @@
 {{- define "stackstate.notification.deployment.container.init" -}}
 name: server-init
-{{- if eq .Values.hbase.deployment.mode "Distributed" }}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+{{- if eq $deploymentMode "Distributed" }}
 command:
 - sh
 - -c
@@ -34,12 +35,12 @@ env:
 {{- $evaluatedResources := .Values.stackstate.components.notification.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = merge $profileResourcesDict .Values.stackstate.components.notification.resources }}
+{{- $evaluatedResources = $profileResourcesDict }}
 {{- end }}
 {{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.notification -}}
 {{- $serviceConfig := dict "ServiceName" "notification" "ServiceConfig" $componentConfigWithResources }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.notification.image.tag }}
-{{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
+{{- include "stackstate.service.envvars" (merge (dict) . $serviceConfig) }}
 {{- include "stackstate.baseurls.envvars" . }}
 {{- include "stackstate.metricstore.envvar" . }}
 - name: KAFKA_BROKERS
@@ -52,7 +53,7 @@ env:
   value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.notification.envsFromExistingSecrets }}
-image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.notification.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
+image: "{{ include "stackstate.image.registry" (merge (dict) . $serviceConfig) }}/{{ .Values.stackstate.components.notification.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.notification.image.pullPolicy | quote }}
 name: notification
 ports:

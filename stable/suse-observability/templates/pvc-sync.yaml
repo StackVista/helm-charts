@@ -33,6 +33,6 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.stackstate.components.sync.tmpToPVC.volumeSize }}
+      storage: {{ include "suse-observability.global.syncTmpToPVCVolumeSize" . | default .Values.stackstate.components.sync.tmpToPVC.volumeSize }}
   {{ include "common.storage.class" ( dict "persistence" .Values.stackstate.components.sync.tmpToPVC "global" .Values.global) | nindent 2 }}
 {{- end}}

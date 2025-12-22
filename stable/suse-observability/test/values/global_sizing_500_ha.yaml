@@ -1,0 +1,27 @@
+global:
+  imageRegistry: "my.registry.com"
+  suseObservability:
+    receiverApiKey: "test-key"
+    pullSecret:
+      username: "test"
+      password: "secret"
+    sizing:
+      profile: "500-ha"
+    license: "test-license-key"
+    baseUrl: "https://test.example.com"
+    adminPassword: "$2b$10$N9qo8uLOickgx2ZMRZoMye.IUIrCxGvz9/6pN.XMlqL9hzTgDaPGy"
+
+pull-secret:
+  enabled: false
+
+stackstate:
+  components:
+    all:
+      metricStore:
+        remoteWriteEndpoint: "test-$vmInstance:8148"
+        queryApiEndpoint: "test:8148"
+    server:
+      java:
+        trustStorePassword: "secretTrustStorePassword"
+anomaly-detection:
+  enabled: false

@@ -949,11 +949,9 @@ stackstate:
         limits:
           memory: "4Gi"
           cpu: "3000m"
-          ephemeral-storage: "1Gi"
         requests:
           memory: "4Gi"
           cpu: "1000m"
-          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "300Mi"
         javaHeapMemoryFraction: "65"
@@ -987,11 +985,9 @@ stackstate:
             limits:
               memory:
               cpu:
-              ephemeral-storage:
             requests:
               memory:
               cpu:
-              ephemeral-storage:
           sizing:
             baseMemoryConsumption:
             javaHeapMemoryFraction:
@@ -1016,11 +1012,9 @@ stackstate:
             limits:
               memory:
               cpu:
-              ephemeral-storage:
             requests:
               memory:
               cpu:
-              ephemeral-storage:
           sizing:
             processAgentMemoryConsumption:
             javaHeapMemoryFraction:
@@ -1045,11 +1039,9 @@ stackstate:
             limits:
               memory:
               cpu:
-              ephemeral-storage:
             requests:
               memory:
               cpu:
-              ephemeral-storage:
           sizing:
             logsMemoryConsumption:
             javaHeapMemoryFraction:
@@ -2591,7 +2583,7 @@ clickhouse:
   # clickhouse.shards -- Number of ClickHouse shards to deploy
   shards: 1
   # clickhouse.replicaCount -- Number of ClickHouse replicas per shard to deploy
-  replicaCount: 3
+  replicaCount: 1
   externalZookeeper:
     # clickhouse.externalZookeeper.servers -- External Zookeeper configuration.
     servers:

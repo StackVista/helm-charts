@@ -12,7 +12,8 @@ spec:
   accessModes: {{ .Values.backup.stackGraph.scheduled.tempData.accessModes }}
   resources:
     requests:
-      {{- if eq .Values.hbase.deployment.mode "Distributed" }}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+      {{- if eq $deploymentMode "Distributed" }}
       storage: {{ .Values.backup.stackGraph.scheduled.tempData.size | default .Values.hbase.hdfs.datanode.persistence.size }}
       {{- else}}
       storage: {{ .Values.backup.stackGraph.scheduled.tempData.size | default .Values.hbase.stackgraph.persistence.size }}

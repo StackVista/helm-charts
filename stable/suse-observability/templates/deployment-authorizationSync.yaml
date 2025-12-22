@@ -1,6 +1,7 @@
 {{- define "stackstate.authorizationSync.deployment.container.init" -}}
 name: server-init
-{{- if eq .Values.hbase.deployment.mode "Distributed" }}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+{{- if eq $deploymentMode "Distributed" }}
 command:
 - sh
 - -c
@@ -28,7 +29,7 @@ envFrom:
 env:
 {{- $serviceConfig := dict "ServiceName" "authorization-sync" "ServiceConfig" .Values.stackstate.components.authorizationSync }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.authorizationSync.image.tag }}
-{{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
+{{- include "stackstate.service.envvars" (merge (dict) . $serviceConfig) }}
 {{- include "stackstate.baseurls.envvars" . }}
 {{- include "stackstate.metricstore.envvar" . }}
 - name: KAFKA_BROKERS
@@ -39,7 +40,7 @@ env:
   value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.authorizationSync.envsFromExistingSecrets }}
-image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.authorizationSync.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
+image: "{{ include "stackstate.image.registry" (merge (dict) . $serviceConfig) }}/{{ .Values.stackstate.components.authorizationSync.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.authorizationSync.image.pullPolicy | quote }}
 name: authorization-sync
 ports:

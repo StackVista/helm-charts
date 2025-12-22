@@ -1,6 +1,7 @@
 {{- define "stackstate.healthSync.deployment.container.init" -}}
 name: server-init
-{{- if eq .Values.hbase.deployment.mode "Distributed" }}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+{{- if eq $deploymentMode "Distributed" }}
 command:
 - sh
 - -c
@@ -30,12 +31,25 @@ env:
 {{- $evaluatedResources := .Values.stackstate.components.healthSync.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = merge $profileResourcesDict .Values.stackstate.components.healthSync.resources }}
+{{- $evaluatedResources = $profileResourcesDict }}
 {{- end }}
-{{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.healthSync -}}
+{{- $profileEnv := include "common.sizing.stackstate.healthSync.env" . | trim -}}
+{{- $evaluatedExtraEnvOpen := .Values.stackstate.components.healthSync.extraEnv.open }}
+{{- if $profileEnv }}
+{{- $profileEnvDict := fromYaml $profileEnv }}
+{{- $evaluatedExtraEnvOpen = $profileEnvDict }}
+{{- end }}
+{{- $evaluatedExtraEnv := dict "open" $evaluatedExtraEnvOpen "secret" .Values.stackstate.components.healthSync.extraEnv.secret }}
+{{- $profileBaseMemory := include "common.sizing.stackstate.healthSync.baseMemoryConsumption" . | trim -}}
+{{- $evaluatedSizing := .Values.stackstate.components.healthSync.sizing }}
+{{- if $profileBaseMemory }}
+{{- $evaluatedSizing = merge (dict) (dict "baseMemoryConsumption" $profileBaseMemory) $evaluatedSizing }}
+{{- end }}
+{{- $baseConfig := omit .Values.stackstate.components.healthSync "resources" "extraEnv" "sizing" }}
+{{- $componentConfigWithResources := merge $baseConfig (dict "resources" $evaluatedResources "extraEnv" $evaluatedExtraEnv "sizing" $evaluatedSizing) -}}
 {{- $serviceConfig := dict "ServiceName" "health-sync" "ServiceConfig" $componentConfigWithResources }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.healthSync.image.tag }}
-{{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
+{{- include "stackstate.service.envvars" (merge (dict) $serviceConfig .) }}
 {{- include "stackstate.baseurls.envvars" . }}
 {{- include "stackstate.metricstore.envvar" . }}
 - name: CONFIG_FORCE_stackstate_cacheStorage_backend
@@ -57,7 +71,7 @@ env:
   value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.healthSync.envsFromExistingSecrets }}
-image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.healthSync.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
+image: "{{ include "stackstate.image.registry" (merge (dict) . $serviceConfig) }}/{{ .Values.stackstate.components.healthSync.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.healthSync.image.pullPolicy | quote }}
 name: health-sync
 ports:

@@ -1,6 +1,7 @@
 {{- define "stackstate.slicing.deployment.container.init" -}}
 name: server-init
-{{- if eq .Values.hbase.deployment.mode "Distributed" }}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+{{- if eq $deploymentMode "Distributed" }}
 command:
 - sh
 - -c
@@ -22,7 +23,7 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- $evaluatedResources := .Values.stackstate.components.slicing.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = merge $profileResourcesDict .Values.stackstate.components.slicing.resources }}
+{{- $evaluatedResources = $profileResourcesDict }}
 {{- end }}
 {{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.slicing -}}
 args:
@@ -35,7 +36,7 @@ envFrom:
 env:
 {{- $serviceConfig := dict "ServiceName" "slicing" "ServiceConfig" $componentConfigWithResources }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.slicing.image.tag }}
-{{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
+{{- include "stackstate.service.envvars" (merge (dict) $serviceConfig .) }}
 {{- include "stackstate.baseurls.envvars" . }}
 - name: ELASTICSEARCH_URI
   value: "http://{{ include "stackstate.es.endpoint" . }}"
@@ -49,7 +50,7 @@ env:
   value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.slicing.envsFromExistingSecrets }}
-image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.slicing.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
+image: "{{ include "stackstate.image.registry" (merge (dict) . $serviceConfig) }}/{{ .Values.stackstate.components.slicing.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.slicing.image.pullPolicy | quote }}
 name: slicing
 ports:

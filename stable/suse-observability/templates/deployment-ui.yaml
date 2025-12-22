@@ -1,4 +1,10 @@
 {{- define "stackstate.ui.deployment.main.container" -}}
+{{- $profileResources := include "common.sizing.stackstate.ui.resources" . | trim -}}
+{{- $evaluatedResources := .Values.stackstate.components.ui.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict $evaluatedResources }}
+{{- end }}
 {{- $serviceConfig := dict "ServiceName" "ui" "ServiceConfig" .Values.stackstate.components.ui }}
 
 env:
@@ -24,7 +30,7 @@ readinessProbe:
     path: /
     port: ui
   initialDelaySeconds: 5
-{{- with .Values.stackstate.components.ui.resources }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}

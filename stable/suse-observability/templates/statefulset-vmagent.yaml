@@ -62,7 +62,13 @@ volumeMounts:
     mountPath: /tmpData
   - name: vmagent-config
     mountPath: /etc/vmagent
-{{- with .Values.stackstate.components.vmagent.resources }}
+{{- $profileResources := include "common.sizing.stackstate.vmagent.resources" . | trim -}}
+{{- $evaluatedResources := .Values.stackstate.components.vmagent.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}

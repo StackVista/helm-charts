@@ -46,6 +46,26 @@ Usage:
 {{- end -}}
 
 {{/*
+Get the effective HBase deployment mode.
+Returns "Mono" for non-HA profiles when global sizing is enabled, otherwise uses .Values.hbase.deployment.mode
+
+Usage:
+{{ include "suse-observability.hbase.deploymentMode" . }}
+*/}}
+{{- define "suse-observability.hbase.deploymentMode" -}}
+{{- if include "suse-observability.global.enabled" . -}}
+{{- $mode := include "common.sizing.hbase.deployment.mode" . | trim -}}
+{{- if $mode -}}
+{{- $mode -}}
+{{- else -}}
+{{- .Values.hbase.deployment.mode | default "Distributed" -}}
+{{- end -}}
+{{- else -}}
+{{- .Values.hbase.deployment.mode | default "Distributed" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Get the effective admin password.
 Prefers global.suseObservability.adminPassword if enabled, falls back to stackstate.authentication.adminPassword.
 
@@ -132,21 +152,19 @@ Usage:
 
 {{/*
 Get the effective victoria-metrics-1.enabled value based on sizing profile.
-If explicitly set in victoria-metrics-1.enabled, use that.
-Otherwise, determine from profile: non-HA profiles = false, HA profiles = true
+When global sizing is enabled, use sizing profile logic.
+Otherwise, use explicitly set victoria-metrics-1.enabled value.
 
 Usage:
 {{ include "suse-observability.global.victoriaMetrics1Enabled" . }}
 */}}
 {{- define "suse-observability.global.victoriaMetrics1Enabled" -}}
-{{- if hasKey .Values "victoria-metrics-1" -}}
+{{- if include "suse-observability.global.enabled" . -}}
+  {{- include "common.sizing.victoria-metrics-1.enabled" . -}}
+{{- else if hasKey .Values "victoria-metrics-1" -}}
   {{- if hasKey (index .Values "victoria-metrics-1") "enabled" -}}
     {{- index .Values "victoria-metrics-1" "enabled" -}}
-  {{- else if include "suse-observability.global.enabled" . -}}
-    {{- include "common.sizing.victoria-metrics.secondInstance" . -}}
   {{- end -}}
-{{- else if include "suse-observability.global.enabled" . -}}
-  {{- include "common.sizing.victoria-metrics.secondInstance" . -}}
 {{- end -}}
 {{- end -}}
 
@@ -169,6 +187,27 @@ Usage:
 {{- $explicitValue -}}
 {{- else if include "suse-observability.global.enabled" . -}}
   {{- include "common.sizing.stackstate.receiver.split.enabled" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the effective receiver.retention value based on sizing profile.
+When global sizing is enabled, use sizing profile logic.
+Otherwise, use explicitly set stackstate.components.receiver.retention value.
+
+Usage:
+{{ include "suse-observability.global.receiverRetention" . }}
+*/}}
+{{- define "suse-observability.global.receiverRetention" -}}
+{{- if include "suse-observability.global.enabled" . -}}
+  {{- $retention := include "common.sizing.stackstate.receiver.retention" . | trim -}}
+  {{- if $retention -}}
+    {{- $retention -}}
+  {{- else -}}
+    {{- .Values.stackstate.components.receiver.retention -}}
+  {{- end -}}
+{{- else -}}
+  {{- .Values.stackstate.components.receiver.retention -}}
 {{- end -}}
 {{- end -}}
 
@@ -255,5 +294,45 @@ Parameters:
 {{- /* Output the merged affinity */ -}}
 {{- if $result -}}
 {{- toYaml $result -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the effective Kafka replicaCount.
+Prefers sizing template if global.suseObservability is enabled, falls back to values.yaml.
+
+Usage:
+{{ include "suse-observability.global.kafkaReplicaCount" . }}
+*/}}
+{{- define "suse-observability.global.kafkaReplicaCount" -}}
+{{- if include "suse-observability.global.enabled" . -}}
+  {{- $replicas := include "common.sizing.kafka.replicaCount" . | trim -}}
+  {{- if $replicas -}}
+    {{- $replicas -}}
+  {{- else -}}
+    {{- .Values.kafka.replicaCount -}}
+  {{- end -}}
+{{- else -}}
+  {{- .Values.kafka.replicaCount -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the effective sync tmpToPVC volumeSize.
+Prefers sizing template if global.suseObservability is enabled, falls back to values.yaml.
+
+Usage:
+{{ include "suse-observability.global.syncTmpToPVCVolumeSize" . }}
+*/}}
+{{- define "suse-observability.global.syncTmpToPVCVolumeSize" -}}
+{{- if include "suse-observability.global.enabled" . -}}
+  {{- $volumeSize := include "common.sizing.stackstate.sync.tmpToPVC.volumeSize" . | trim -}}
+  {{- if $volumeSize -}}
+    {{- $volumeSize -}}
+  {{- else if and .Values.stackstate.components.sync.tmpToPVC .Values.stackstate.components.sync.tmpToPVC.volumeSize -}}
+    {{- .Values.stackstate.components.sync.tmpToPVC.volumeSize -}}
+  {{- end -}}
+{{- else if and .Values.stackstate.components.sync.tmpToPVC .Values.stackstate.components.sync.tmpToPVC.volumeSize -}}
+  {{- .Values.stackstate.components.sync.tmpToPVC.volumeSize -}}
 {{- end -}}
 {{- end -}}

@@ -35,8 +35,14 @@
     We merge the service specific env vars into the common ones to avoid duplicate entries in the env
 */}}
 {{- define "stackstate.service.envvars" -}}
-{{- $openEnvVars := merge .ServiceConfig.extraEnv.open .Values.stackstate.components.all.extraEnv.open }}
-{{- $secretEnvVars := merge .ServiceConfig.extraEnv.secret .Values.stackstate.components.all.extraEnv.secret }}
+{{- $profileEnv := include "common.sizing.stackstate.all.extraEnv.open" . | trim -}}
+{{- $evaluatedAllExtraEnvOpen := .Values.stackstate.components.all.extraEnv.open }}
+{{- if $profileEnv }}
+{{- $profileEnvDict := fromYaml $profileEnv }}
+{{- $evaluatedAllExtraEnvOpen = merge (dict) $profileEnvDict $evaluatedAllExtraEnvOpen }}
+{{- end }}
+{{- $openEnvVars := merge (dict) .ServiceConfig.extraEnv.open $evaluatedAllExtraEnvOpen }}
+{{- $secretEnvVars := merge (dict) .ServiceConfig.extraEnv.secret .Values.stackstate.components.all.extraEnv.secret }}
 {{- if eq (lower .Values.stackstate.components.all.deploymentStrategy.type) "rollingupdate" }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_singleWriter_releaseRevision" .Release.Revision }}
 {{- else }}

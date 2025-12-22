@@ -96,8 +96,14 @@ Return the image registry for the vmrestore containers
 Common extra environment variables for all processes inherited through `stackstate.components.all.extraEnv`
 */}}
 {{- define "stackstate.common.envvars" -}}
-{{- if .Values.stackstate.components.all.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.all.extraEnv.open  }}
+{{- $profileEnv := include "common.sizing.stackstate.all.extraEnv.open" . | trim -}}
+{{- $evaluatedExtraEnvOpen := .Values.stackstate.components.all.extraEnv.open }}
+{{- if $profileEnv }}
+{{- $profileEnvDict := fromYaml $profileEnv }}
+{{- $evaluatedExtraEnvOpen = merge $profileEnvDict $evaluatedExtraEnvOpen }}
+{{- end }}
+{{- if $evaluatedExtraEnvOpen }}
+  {{- range $key, $value := $evaluatedExtraEnvOpen  }}
 - name: {{ $key }}
   value: {{ $value | quote }}
   {{- end }}

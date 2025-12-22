@@ -1,6 +1,7 @@
 {{- define "stackstate.state.deployment.container.init" -}}
 name: server-init
-{{- if eq .Values.hbase.deployment.mode "Distributed" }}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+{{- if eq $deploymentMode "Distributed" }}
 command:
 - sh
 - -c
@@ -22,9 +23,26 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- $evaluatedResources := .Values.stackstate.components.state.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = merge $profileResourcesDict .Values.stackstate.components.state.resources }}
+{{- $evaluatedResources = $profileResourcesDict }}
 {{- end }}
-{{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.state -}}
+{{- $profileEnv := include "common.sizing.stackstate.state.env" . | trim -}}
+{{- $evaluatedExtraEnvOpen := .Values.stackstate.components.state.extraEnv.open }}
+{{- if $profileEnv }}
+{{- $profileEnvDict := fromYaml $profileEnv }}
+{{- $evaluatedExtraEnvOpen = $profileEnvDict }}
+{{- end }}
+{{- $evaluatedExtraEnv := dict "open" $evaluatedExtraEnvOpen "secret" .Values.stackstate.components.state.extraEnv.secret }}
+{{- $profileBaseMemory := include "common.sizing.stackstate.state.baseMemoryConsumption" . | trim -}}
+{{- $profileJavaHeapFraction := include "common.sizing.stackstate.state.javaHeapMemoryFraction" . | trim -}}
+{{- $evaluatedSizing := .Values.stackstate.components.state.sizing }}
+{{- if $profileBaseMemory }}
+{{- $evaluatedSizing = merge (dict) (dict "baseMemoryConsumption" $profileBaseMemory) $evaluatedSizing }}
+{{- end }}
+{{- if $profileJavaHeapFraction }}
+{{- $evaluatedSizing = merge (dict) (dict "javaHeapMemoryFraction" $profileJavaHeapFraction) $evaluatedSizing }}
+{{- end }}
+{{- $baseConfig := omit .Values.stackstate.components.state "resources" "extraEnv" "sizing" }}
+{{- $componentConfigWithResources := merge $baseConfig (dict "resources" $evaluatedResources "extraEnv" $evaluatedExtraEnv "sizing" $evaluatedSizing) -}}
 args:
 {{- include "stackstate.service.args" . }}
 - -startRole
@@ -35,7 +53,7 @@ envFrom:
 env:
 {{- $serviceConfig := dict "ServiceName" "state" "ServiceConfig" $componentConfigWithResources }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.state.image.tag }}
-{{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
+{{- include "stackstate.service.envvars" (merge (dict) . $serviceConfig) }}
 {{- include "stackstate.baseurls.envvars" . }}
 {{- include "stackstate.metricstore.envvar" . }}
 - name: ELASTICSEARCH_URI
@@ -53,7 +71,7 @@ env:
   value: "86400"
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.state.envsFromExistingSecrets }}
-image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.state.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
+image: "{{ include "stackstate.image.registry" (merge (dict) $serviceConfig .) }}/{{ .Values.stackstate.components.state.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.state.image.pullPolicy | quote }}
 name: state
 ports:

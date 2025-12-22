@@ -109,7 +109,8 @@ Logic to determine otel collector endpoint.
 Comma-separated list of the endpoints that need to be up to consider hdfs running
 */}}
 {{ define "stackgraph.hbase.waitfor" -}}
-{{- if eq .Values.hbase.deployment.mode "Distributed" -}}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+{{- if eq $deploymentMode "Distributed" -}}
 {{- include "stackstate.zookeeper.endpoint" . }},{{ .Release.Name }}-hbase-hdfs-nn-headful:9000
 {{- else -}}
 {{- .Release.Name }}-hbase-stackgraph:2182
@@ -142,7 +143,8 @@ http://{{ template "common.fullname.short" . }}-vmagent
 Logic to determine Zookeeper endpoint for stackgraph.
 */}}
 {{- define "stackgraph.zookeeper.endpoint" -}}
-{{- if eq .Values.hbase.deployment.mode "Distributed" }}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+{{- if eq $deploymentMode "Distributed" }}
 {{- include "stackstate.zookeeper.endpoint" . }}
 {{- else }}
 {{- .Release.Name }}-hbase-stackgraph:2182

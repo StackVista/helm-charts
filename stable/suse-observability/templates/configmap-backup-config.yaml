@@ -59,7 +59,8 @@ config: |
       scaleDownLabelSelector: {{ include "stackstate.backup.stackgraph.restore.scaleDownLabelsCommaSeparated" . }}
       zookeeperQuorum: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
       pvc:
-        {{- if eq .Values.hbase.deployment.mode "Distributed" }}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+        {{- if eq $deploymentMode "Distributed" }}
         size: {{ .Values.backup.stackGraph.restore.tempData.size | default .Values.hbase.hdfs.datanode.persistence.size }}
         {{- else}}
         size: {{ .Values.backup.stackGraph.restore.tempData.size | default .Values.hbase.stackgraph.persistence.size }}
@@ -67,7 +68,7 @@ config: |
         accessModes: {{ .Values.backup.stackGraph.restore.tempData.accessModes }}
         {{ include "common.storage.class" ( dict "persistence" .Values.backup.stackGraph.restore.tempData "global" .Values.global) | nindent 10 }}
       job:
-        image: {{ include "stackstate.image.registry" (merge $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}
+        image: {{ include "stackstate.image.registry" (merge (dict) $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}
         waitImage: {{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}
         {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 8 }}
         labels:
@@ -115,14 +116,14 @@ config: |
     s3Prefix: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.configuration.s3Prefix | quote }}
     restore:
       loggingConfigConfigMap: {{ template "common.fullname.short" . }}-backup-log
-      baseUrl: {{ .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is required" | quote }}
-      receiverBaseUrl: {{ printf "%s/%s" ( .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is required" ) "receiver" | quote }}
+      baseUrl: {{ include "suse-observability.global.baseUrl" . | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is required" | quote }}
+      receiverBaseUrl: {{ printf "%s/%s" ( include "suse-observability.global.baseUrl" . | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is required" ) "receiver" | quote }}
       platformVersion: "{{- .Chart.Version -}}"
       scaleDownLabelSelector: {{ include "stackstate.backup.configuration.restore.scaleDownLabelsCommaSeparated" . }}
       zookeeperQuorum: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
       pvc: {{ template "common.fullname.short" . }}-settings-backup-data
       job:
-        image: {{ include "stackstate.image.registry" (merge $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}
+        image: {{ include "stackstate.image.registry" (merge (dict) $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}
         waitImage: {{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}
         {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 8 }}
         labels:

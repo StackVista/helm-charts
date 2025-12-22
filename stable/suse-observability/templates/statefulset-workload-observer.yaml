@@ -7,7 +7,13 @@ ports:
   - name: http
     containerPort: 8080
 env:
-{{- $openEnvVars := merge .Values.stackstate.components.workloadObserver.extraEnv.open .Values.stackstate.components.all.extraEnv.open }}
+{{- $profileEnv := include "common.sizing.stackstate.all.extraEnv.open" . | trim -}}
+{{- $evaluatedAllExtraEnvOpen := .Values.stackstate.components.all.extraEnv.open }}
+{{- if $profileEnv }}
+{{- $profileEnvDict := fromYaml $profileEnv }}
+{{- $evaluatedAllExtraEnvOpen = merge $profileEnvDict $evaluatedAllExtraEnvOpen }}
+{{- end }}
+{{- $openEnvVars := merge .Values.stackstate.components.workloadObserver.extraEnv.open $evaluatedAllExtraEnvOpen }}
 {{- if $openEnvVars }}
   {{- range $key, $value := $openEnvVars }}
   - name: {{ $key }}

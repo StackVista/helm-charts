@@ -29,9 +29,8 @@ func TestGlobalSuseObservabilityValidConfiguration(t *testing.T) {
 	assert.NotEmpty(t, authSecret.Data["default_password"], "Admin password should be set")
 
 	// Verify pull secret is created with values from global.suseObservability.pullSecret
-	pullSecret, exists := resources.Secrets["suse-observability-pull-secret"]
-	require.True(t, exists, "Pull secret should be created")
-	assert.NotEmpty(t, pullSecret.Data[".dockerconfigjson"], "Docker config should be set")
+	// Using the comprehensive CheckPullSecret helper to validate registry, username, and password
+	CheckPullSecret(t, resources, "suse-observability-pull-secret", "testuser", "testpassword", "my.registry.com")
 
 	// Verify deployments exist and are using correct baseUrl from global.suseObservability.baseUrl
 	apiDeployment, exists := resources.Deployments["suse-observability-api"]

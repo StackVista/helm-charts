@@ -1,12 +1,13 @@
 # Test valid global.suseObservability configuration with auto-detection
 global:
+  # imageRegistry is a global setting that works in conjunction with global.suseObservability
+  imageRegistry: "my.registry.com"
   suseObservability:
     license: "test-license-key-12345"
     baseUrl: "http://test.example.com"
     # bcrypt hash of "testpassword"
     adminPassword: "$2b$10$N9qo8uLOickgx2ZMRZoMye.IUIrCxGvz9/6pN.XMlqL9hzTgDaPGy"
     receiverApiKey: "test-receiver-api-key"
-    imageRegistry: "my.registry.com"
     pullSecret:
       username: "testuser"
       password: "testpassword"

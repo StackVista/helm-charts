@@ -310,7 +310,7 @@ spec:
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
       containers:
         - name: restore
-          image: "{{ include "stackstate.image.registry" (merge $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
+          image: "{{ include "stackstate.image.registry" (merge (dict) $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}"
           imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
           command:
             - '/backup-restore-scripts/restore-stackgraph-backup.sh'
@@ -378,10 +378,11 @@ spec:
   accessModes: {{ .Values.backup.stackGraph.restore.tempData.accessModes }}
   resources:
     requests:
-      {{- if eq .Values.hbase.deployment.mode "Distributed" }}
-      storage: {{ .Values.backup.stackGraph.restore.tempData.size | default .Values.hbase.hdfs.datanode.persistence.size }}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+      {{- if eq $deploymentMode "Distributed" }}
+      storage: {{ .Values.backup.stackGraph.restore.tempData.size | default (include "suse-observability.sizing.hbase.hdfs.datanode.persistence.size" .) }}
       {{- else}}
-      storage: {{ .Values.backup.stackGraph.restore.tempData.size | default .Values.hbase.stackgraph.persistence.size }}
+      storage: {{ .Values.backup.stackGraph.restore.tempData.size | default (include "suse-observability.sizing.hbase.stackgraph.persistence.size" .) }}
       {{- end }}
 {{ include "common.storage.class" ( dict "persistence" .Values.backup.stackGraph.restore.tempData "global" .Values.global) | nindent 2 }}
 {{- end -}}
@@ -525,7 +526,7 @@ spec:
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
       containers:
         - name: restore-settings
-          image: "{{ include "stackstate.image.registry" (merge $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
+          image: "{{ include "stackstate.image.registry" (merge (dict) $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}"
           imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
           command:
             - '/backup-restore-scripts/restore-configuration-backup.sh'

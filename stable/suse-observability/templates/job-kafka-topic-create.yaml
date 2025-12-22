@@ -13,6 +13,12 @@ securityContext:
 {{- end }}
 
 {{- define "stackstate.kafkaTopicCreate.job.container.main" -}}
+{{- $profileEnv := include "common.sizing.stackstate.kafkaTopicCreate.env" . | trim -}}
+{{- $evaluatedExtraEnvOpen := .Values.stackstate.components.kafkaTopicCreate.extraEnv.open }}
+{{- if $profileEnv }}
+{{- $profileEnvDict := fromYaml $profileEnv }}
+{{- $evaluatedExtraEnvOpen = $profileEnvDict }}
+{{- end }}
 command:
 - bash
 - -c
@@ -20,7 +26,7 @@ command:
   {{ .Files.Get "scripts/job-kafka-topic-create.sh" | nindent 2 }}
 env:
 - name: KAFKA_REPLICAS
-  value: {{ .Values.kafka.replicaCount | quote }}
+  value: {{ include "suse-observability.global.kafkaReplicaCount" . | quote }}
 - name: KAFKA_TOPIC_RETENTION
   value: {{ .Values.kafka.topicRetention | quote }}
 - name: KAFKA_BROKERS
@@ -29,8 +35,8 @@ env:
   value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
 - name: STS_METRICS_V2_PARTITION_COUNT
   value: {{ .Values.kafka.topic.stsMetricsV2.partitionCount | quote }}
-{{- if .Values.stackstate.components.kafkaTopicCreate.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.kafkaTopicCreate.extraEnv.open  }}
+{{- if $evaluatedExtraEnvOpen }}
+  {{- range $key, $value := $evaluatedExtraEnvOpen  }}
 - name: {{ $key }}
   value: {{ $value | quote }}
   {{- end }}

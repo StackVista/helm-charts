@@ -29,24 +29,26 @@ env:
     and on the STS processes assigning diskSpaceWeights to each process. But if in the future we have need to configure different
     replicationFactors per index we will need to revisit and adapt the diskSpaceWeights login on STS
 */}}
-{{ $replicationFactor := ternary "1" "0" (gt .Values.elasticsearch.replicas 2.0) }}
+{{- $esReplicas := include "suse-observability.sizing.elasticsearch.replicas" . | trim | int -}}
+{{ $replicationFactor := ternary "1" "0" (gt $esReplicas 2) }}
 - name: CONFIG_FORCE_stackstate_kafkaTopologyEventsToES_elasticsearch_index_replicas
   value: "{{ $replicationFactor  }}"
 {{/*
 Run validation of total ESDiskShare
 */}}
 {{ include "stackstate.elastic.storage.total" . }}
-{{ $diskSpaceMB := (include "stackstate.storage.to.megabytes" .Values.elasticsearch.volumeClaimTemplate.resources.requests.storage) }}
+{{- $esStorage := include "suse-observability.sizing.elasticsearch.volumeClaimTemplate.resources.requests.storage" . | trim -}}
+{{ $diskSpaceMB := (include "stackstate.storage.to.megabytes" $esStorage) }}
 {{ if $diskSpaceMB  }}
 - name: CONFIG_FORCE_stackstate_elasticsearchDiskSpaceMB
-  value: "{{ divf (mulf (divf (mulf $diskSpaceMB .Values.elasticsearch.replicas) (add1 $replicationFactor)) .esDiskSpaceShare) 100 | int }}"
+  value: "{{ divf (mulf (divf (mulf $diskSpaceMB $esReplicas) (add1 $replicationFactor)) .esDiskSpaceShare) 100 | int }}"
 {{ end }}
 {{- $k2esShare := .Values.stackstate.components.e2es.esDiskSpaceShare | int -}}
 {{- $e2EsShare := (mulf (divf (.Values.stackstate.components.e2es.esDiskSpaceShare | int) $k2esShare) 100) | int  -}}
 - name: CONFIG_FORCE_stackstate_kafkaTopologyEventsToES_elasticsearch_index_diskSpaceWeight
   value: "{{ $e2EsShare }}"
 - name: CONFIG_FORCE_stackstate_kafkaTopologyEventsToES_elasticsearch_index_maxIndicesRetained
-  value: "{{ .Values.stackstate.components.e2es.retention }}"
+  value: "{{ include "common.sizing.stackstate.e2es.retention" . | default .Values.stackstate.components.e2es.retention }}"
 - name: ELASTICSEARCH_URI
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS
