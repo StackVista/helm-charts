@@ -37,7 +37,14 @@ env:
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "all.commonEnv" . }}
 {{- include "hdfs.secondarynamenode.commonEnv" . }}
-{{- $serviceConfig := dict "ServiceConfig" (merge .Values.hdfs.secondarynamenode .Values.all) }}
+{{- $profileResources := include "common.sizing.hbase.hdfs.secondarynamenode.resources" . | trim -}}
+{{- $evaluatedResources := .Values.hdfs.secondarynamenode.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.hdfs.secondarynamenode.resources }}
+{{- end }}
+{{- $secondarynamenodeWithResources := merge (dict "resources" $evaluatedResources) .Values.hdfs.secondarynamenode }}
+{{- $serviceConfig := dict "ServiceConfig" (merge $secondarynamenodeWithResources .Values.all) }}
 {{- include "hbase.service.envvars" $serviceConfig }}
 ports:
 - containerPort: 50090
@@ -52,12 +59,6 @@ livenessProbe:
 readinessProbe:
   tcpSocket:
     port: snn
-{{- $profileResources := include "common.sizing.hbase.hdfs.secondarynamenode.resources" . | trim -}}
-{{- $evaluatedResources := .Values.hdfs.secondarynamenode.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = merge $profileResourcesDict .Values.hdfs.secondarynamenode.resources }}
-{{- end }}
 {{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
@@ -160,6 +161,8 @@ spec:
 
 {{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
 {{- if .Values.hdfs.secondarynamenode.enabled -}}
-{{- include "hbase.hdfs.secondarynamenode.statefulset" . -}}
+apiVersion: apps/v1
+kind: StatefulSet
+{{ include "hbase.hdfs.secondarynamenode.statefulset" . }}
 {{- end -}}
 {{- end -}}

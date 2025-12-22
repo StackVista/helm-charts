@@ -17,7 +17,11 @@ func TestGlobalSizingProfilesRender(t *testing.T) {
 	}{
 		{"trial", "values/global_sizing_trial.yaml"},
 		{"10-nonha", "values/global_sizing_10_nonha.yaml"},
+		{"20-nonha", "values/global_sizing_20_nonha.yaml"},
+		{"50-nonha", "values/global_sizing_50_nonha.yaml"},
+		{"100-nonha", "values/global_sizing_100_nonha.yaml"},
 		{"150-ha", "values/global_sizing_150_ha.yaml"},
+		{"250-ha", "values/global_sizing_250_ha.yaml"},
 		{"500-ha", "values/global_sizing_500_ha.yaml"},
 		{"4000-ha", "values/global_sizing_4000_ha.yaml"},
 	}
@@ -73,8 +77,36 @@ func TestGlobalSizingReceiverSplitMode(t *testing.T) {
 			expectedDeployments: []string{"suse-observability-receiver"},
 		},
 		{
+			name:        "20-nonha-no-split",
+			valuesFile:  "values/global_sizing_20_nonha.yaml",
+			expectSplit: false,
+			expectedDeployments: []string{"suse-observability-receiver"},
+		},
+		{
+			name:        "50-nonha-no-split",
+			valuesFile:  "values/global_sizing_50_nonha.yaml",
+			expectSplit: false,
+			expectedDeployments: []string{"suse-observability-receiver"},
+		},
+		{
+			name:        "100-nonha-no-split",
+			valuesFile:  "values/global_sizing_100_nonha.yaml",
+			expectSplit: false,
+			expectedDeployments: []string{"suse-observability-receiver"},
+		},
+		{
 			name:        "150-ha-split",
 			valuesFile:  "values/global_sizing_150_ha.yaml",
+			expectSplit: true,
+			expectedDeployments: []string{
+				"suse-observability-receiver-base",
+				"suse-observability-receiver-logs",
+				"suse-observability-receiver-process-agent",
+			},
+		},
+		{
+			name:        "250-ha-split",
+			valuesFile:  "values/global_sizing_250_ha.yaml",
 			expectSplit: true,
 			expectedDeployments: []string{
 				"suse-observability-receiver-base",
@@ -148,8 +180,28 @@ func TestGlobalSizingVictoriaMetrics1Enablement(t *testing.T) {
 			expectVM1Enabled: false,
 		},
 		{
+			name:             "20-nonha-vm1-disabled",
+			valuesFile:       "values/global_sizing_20_nonha.yaml",
+			expectVM1Enabled: false,
+		},
+		{
+			name:             "50-nonha-vm1-disabled",
+			valuesFile:       "values/global_sizing_50_nonha.yaml",
+			expectVM1Enabled: false,
+		},
+		{
+			name:             "100-nonha-vm1-disabled",
+			valuesFile:       "values/global_sizing_100_nonha.yaml",
+			expectVM1Enabled: false,
+		},
+		{
 			name:             "150-ha-vm1-enabled",
 			valuesFile:       "values/global_sizing_150_ha.yaml",
+			expectVM1Enabled: true,
+		},
+		{
+			name:             "250-ha-vm1-enabled",
+			valuesFile:       "values/global_sizing_250_ha.yaml",
 			expectVM1Enabled: true,
 		},
 		{
@@ -231,8 +283,65 @@ func TestGlobalSizingHbaseDeploymentMode(t *testing.T) {
 			},
 		},
 		{
+			name:           "20-nonha-mono-mode",
+			valuesFile:     "values/global_sizing_20_nonha.yaml",
+			expectMonoMode: true,
+			expectedStatefulSets: []string{
+				"suse-observability-hbase-stackgraph",
+				"suse-observability-hbase-tephra-mono",
+			},
+			unexpectedStatefulSets: []string{
+				"suse-observability-hbase-hbase-master",
+				"suse-observability-hbase-hbase-rs",
+				"suse-observability-hbase-hdfs-nn",
+				"suse-observability-hbase-hdfs-dn",
+			},
+		},
+		{
+			name:           "50-nonha-mono-mode",
+			valuesFile:     "values/global_sizing_50_nonha.yaml",
+			expectMonoMode: true,
+			expectedStatefulSets: []string{
+				"suse-observability-hbase-stackgraph",
+				"suse-observability-hbase-tephra-mono",
+			},
+			unexpectedStatefulSets: []string{
+				"suse-observability-hbase-hbase-master",
+				"suse-observability-hbase-hbase-rs",
+				"suse-observability-hbase-hdfs-nn",
+				"suse-observability-hbase-hdfs-dn",
+			},
+		},
+		{
+			name:           "100-nonha-mono-mode",
+			valuesFile:     "values/global_sizing_100_nonha.yaml",
+			expectMonoMode: true,
+			expectedStatefulSets: []string{
+				"suse-observability-hbase-stackgraph",
+				"suse-observability-hbase-tephra-mono",
+			},
+			unexpectedStatefulSets: []string{
+				"suse-observability-hbase-hbase-master",
+				"suse-observability-hbase-hbase-rs",
+				"suse-observability-hbase-hdfs-nn",
+				"suse-observability-hbase-hdfs-dn",
+			},
+		},
+		{
 			name:           "150-ha-tephra-mode",
 			valuesFile:     "values/global_sizing_150_ha.yaml",
+			expectMonoMode: false,
+			expectedStatefulSets: []string{
+				"suse-observability-hbase-tephra",
+			},
+			unexpectedStatefulSets: []string{
+				"suse-observability-hbase-stackgraph",
+				"suse-observability-hbase-tephra-mono",
+			},
+		},
+		{
+			name:           "250-ha-tephra-mode",
+			valuesFile:     "values/global_sizing_250_ha.yaml",
 			expectMonoMode: false,
 			expectedStatefulSets: []string{
 				"suse-observability-hbase-tephra",

@@ -60,7 +60,7 @@ Current chart version is `0.2.108`
 | hbase.master.image.pullPolicy | string | `nil` | Pull policy for HBase masters, defaults to `stackgraph.image.pullPolicy` |
 | hbase.master.image.repository | string | `"stackstate/hbase-master"` | Base container image repository for HBase masters. |
 | hbase.master.image.tag | string | `nil` | Container image tag for HBase masters, defaults to `version`-`stackgraph.version` |
-| hbase.master.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| hbase.master.nodeSelector | object | `{}` |  |
 | hbase.master.replicaCount | int | `1` | Number of pods for HBase masters. |
 | hbase.master.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HBase masters. |
 | hbase.master.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HBase master memory sizing for JVM |
@@ -71,7 +71,7 @@ Current chart version is `0.2.108`
 | hbase.regionserver.image.pullPolicy | string | `nil` | Pull policy for HBase region servers, defaults to `stackgraph.image.pullPolicy` |
 | hbase.regionserver.image.repository | string | `"stackstate/hbase-regionserver"` | Base container image repository for HBase region servers. |
 | hbase.regionserver.image.tag | string | `nil` | Container image tag for HBase region servers, defaults to `version`-`stackgraph.version` |
-| hbase.regionserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| hbase.regionserver.nodeSelector | object | `{}` |  |
 | hbase.regionserver.replicaCount | int | `1` | Number of HBase regionserver nodes. |
 | hbase.regionserver.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"2000m","memory":"2Gi"}}` | Resources to allocate for HBase region servers. |
 | hbase.regionserver.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HBase region server memory sizing for JVM |
@@ -83,7 +83,7 @@ Current chart version is `0.2.108`
 | hdfs.datanode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.datanode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hdfs.datanode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| hdfs.datanode.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| hdfs.datanode.nodeSelector | object | `{}` |  |
 | hdfs.datanode.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for HDFS data nodes. |
 | hdfs.datanode.persistence.enabled | bool | `true` | Enable persistence for HDFS data nodes. |
 | hdfs.datanode.persistence.size | string | `"250Gi"` | Size of volume for HDFS data nodes. |
@@ -100,7 +100,7 @@ Current chart version is `0.2.108`
 | hdfs.namenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.namenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hdfs.namenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| hdfs.namenode.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| hdfs.namenode.nodeSelector | object | `{}` |  |
 | hdfs.namenode.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for HDFS name nodes. |
 | hdfs.namenode.persistence.enabled | bool | `true` | Enable persistence for HDFS name nodes. |
 | hdfs.namenode.persistence.size | string | `"20Gi"` | Size of volume for HDFS name nodes. |
@@ -113,7 +113,7 @@ Current chart version is `0.2.108`
 | hdfs.secondarynamenode.enabled | bool | `false` | Enable / disable secondary name nodes. |
 | hdfs.secondarynamenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hdfs.secondarynamenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| hdfs.secondarynamenode.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| hdfs.secondarynamenode.nodeSelector | object | `{}` |  |
 | hdfs.secondarynamenode.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.persistence.enabled | bool | `true` | Enable persistence for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.persistence.size | string | `"20Gi"` | Size of volume for HDFS secondary name nodes. |
@@ -159,7 +159,7 @@ Current chart version is `0.2.108`
 | tephra.image.pullPolicy | string | `nil` | Pull policy for Tephra pods, defaults to `stackgraph.image.pullPolicy` |
 | tephra.image.repository | string | `"stackstate/tephra-server"` | Base container image repository for Tephra pods. |
 | tephra.image.tag | string | `nil` | Container image tag for Tephra pods, defaults to `version`-`stackgraph.version` |
-| tephra.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| tephra.nodeSelector | object | `{}` |  |
 | tephra.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for Tephra on Mono mode. |
 | tephra.persistence.size | string | `"1Gi"` | Size of volume for Tephra on Mono mode. |
 | tephra.persistence.storageClass | string | `nil` | Storage class of the volume for Tephra on Mono mode |

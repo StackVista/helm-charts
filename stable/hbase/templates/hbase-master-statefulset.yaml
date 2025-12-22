@@ -26,7 +26,14 @@ env:
 - name: HBASE_MASTER_LIVENESS_HTTP_PORT
   value: "16010"
 {{- end }}
-{{- $serviceConfig := dict "ServiceConfig" (merge .Values.hbase.master .Values.all) }}
+{{- $profileResources := include "common.sizing.hbase.master.resources" . | trim -}}
+{{- $evaluatedResources := .Values.hbase.master.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.hbase.master.resources }}
+{{- end }}
+{{- $masterWithResources := merge (dict "resources" $evaluatedResources) .Values.hbase.master }}
+{{- $serviceConfig := dict "ServiceConfig" (merge $masterWithResources .Values.all) }}
 {{- include "hbase.service.envvars" $serviceConfig }}
 ports:
 - containerPort: 16000
@@ -51,12 +58,6 @@ readinessProbe:
   httpGet:
     path: /
     port: masterinfo
-{{- $profileResources := include "common.sizing.hbase.master.resources" . | trim -}}
-{{- $evaluatedResources := .Values.hbase.master.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = merge $profileResourcesDict .Values.hbase.master.resources }}
-{{- end }}
 {{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
@@ -141,5 +142,7 @@ spec:
 {{- end -}}
 
 {{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
-{{- include "hbase.hbase.master.statefulset" . -}}
+apiVersion: apps/v1
+kind: StatefulSet
+{{ include "hbase.hbase.master.statefulset" . }}
 {{- end }}

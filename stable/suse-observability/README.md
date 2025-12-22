@@ -383,7 +383,8 @@ However, we strongly recommend migrating to sizing profiles for easier maintenan
 | elasticsearch.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"1Gi","memory":"4Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"4Gi"}}` | Override Elasticsearch resources |
 | elasticsearch.sysctlInitContainer | object | `{"enabled":true}` | Enable privileged init container to increase Elasticsearch virtual memory on underlying nodes. |
 | elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"250Gi"}}}` | PVC template defaulting to 250Gi default volumes |
-| global.backup.enabled | bool | `false` |  |
+| global.backup | object | `{"enabled":false}` | Backup configuration. |
+| global.backup.enabled | bool | `false` | Enables backup/restore, including the MinIO subsystem. |
 | global.commonLabels | object | `{}` | Labels that will be added to all Deployments, StatefulSets, CronJobs, Jobs and their pods |
 | global.features | object | `{"experimentalStackpacks":false}` | Feature switches for SUSE Observability. |
 | global.features.experimentalStackpacks | bool | `false` | Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec. This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed. |
@@ -411,41 +412,33 @@ However, we strongly recommend migrating to sizing profiles for easier maintenan
 | global.wait.image.tag | string | `"1.0.11-04b49abf"` | Container image tag for wait containers. |
 | hbase.all.metrics.agentAnnotationsEnabled | bool | `true` |  |
 | hbase.all.metrics.enabled | bool | `true` |  |
+| hbase.all.sizing | object | `{"baseMemoryConsumption":"300Mi","javaHeapMemoryFraction":"50"}` | Default memory sizing for JVMs in HBase pods |
 | hbase.commonLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Add additional labels to all resources created for all hbase resources |
 | hbase.console.enabled | bool | `true` | Enabled by default for debugging, but with 0 replicas. Manually scale up to 1 replica and open a shell in the container to access the stackgraph console. |
 | hbase.console.integrity.enabled | bool | `false` | Enable / disable periodic integrity check to run though a cronjob. |
 | hbase.console.integrity.schedule | string | `"*/30 * * * *"` | Schedule at which the integrity check runs |
 | hbase.enabled | bool | `true` | Enable / disable chart-based HBase. |
 | hbase.hbase.master.experimental.execLivenessProbe.enabled | bool | `true` |  |
+| hbase.hbase.master.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for HBase master pods. |
+| hbase.hbase.master.extraEnv.open | object | `{}` | Extra open environment variables to inject into HBase master pods. |
+| hbase.hbase.master.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into HBase master pods via a Secret object. |
 | hbase.hbase.master.replicaCount | int | `2` | Number of HBase master node replicas. |
-| hbase.hbase.master.resources.limits.cpu | string | `"500m"` |  |
-| hbase.hbase.master.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
-| hbase.hbase.master.resources.limits.memory | string | `"1Gi"` |  |
-| hbase.hbase.master.resources.requests.cpu | string | `"50m"` |  |
-| hbase.hbase.master.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
-| hbase.hbase.master.resources.requests.memory | string | `"1Gi"` |  |
+| hbase.hbase.regionserver.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for HBase regionserver pods. |
+| hbase.hbase.regionserver.extraEnv.open | object | `{}` | Extra open environment variables to inject into HBase regionserver pods. |
+| hbase.hbase.regionserver.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into HBase regionserver pods via a Secret object. |
 | hbase.hbase.regionserver.replicaCount | int | `3` | Number of HBase regionserver node replicas. |
-| hbase.hbase.regionserver.resources.limits.cpu | string | `"3000m"` |  |
-| hbase.hbase.regionserver.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
-| hbase.hbase.regionserver.resources.limits.memory | string | `"3Gi"` |  |
-| hbase.hbase.regionserver.resources.requests.cpu | string | `"500m"` |  |
-| hbase.hbase.regionserver.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
-| hbase.hbase.regionserver.resources.requests.memory | string | `"3Gi"` |  |
+| hbase.hdfs.datanode.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for HDFS datanode pods. |
+| hbase.hdfs.datanode.extraEnv.open | object | `{}` | Extra open environment variables to inject into HDFS datanode pods. |
+| hbase.hdfs.datanode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into HDFS datanode pods via a Secret object. |
 | hbase.hdfs.datanode.replicaCount | int | `3` | Number of HDFS datanode replicas. |
-| hbase.hdfs.datanode.resources.limits.cpu | string | `"500m"` |  |
-| hbase.hdfs.datanode.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
-| hbase.hdfs.datanode.resources.limits.memory | string | `"4Gi"` |  |
-| hbase.hdfs.datanode.resources.requests.cpu | string | `"100m"` |  |
-| hbase.hdfs.datanode.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
-| hbase.hdfs.datanode.resources.requests.memory | string | `"4Gi"` |  |
 | hbase.hdfs.minReplication | int | `2` | Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead) |
-| hbase.hdfs.namenode.resources.limits.cpu | string | `"500m"` |  |
-| hbase.hdfs.namenode.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
-| hbase.hdfs.namenode.resources.limits.memory | string | `"1Gi"` |  |
-| hbase.hdfs.namenode.resources.requests.cpu | string | `"50m"` |  |
-| hbase.hdfs.namenode.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
-| hbase.hdfs.namenode.resources.requests.memory | string | `"1Gi"` |  |
+| hbase.hdfs.namenode.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for HDFS namenode pods. |
+| hbase.hdfs.namenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into HDFS namenode pods. |
+| hbase.hdfs.namenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into HDFS namenode pods via a Secret object. |
 | hbase.hdfs.secondarynamenode.enabled | bool | `true` |  |
+| hbase.hdfs.secondarynamenode.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for HDFS secondary namenode pods. |
+| hbase.hdfs.secondarynamenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into HDFS secondary namenode pods. |
+| hbase.hdfs.secondarynamenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into HDFS secondary namenode pods via a Secret object. |
 | hbase.hdfs.secondarynamenode.resources.limits.cpu | string | `"500m"` |  |
 | hbase.hdfs.secondarynamenode.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | hbase.hdfs.secondarynamenode.resources.limits.memory | string | `"1Gi"` |  |
@@ -453,13 +446,10 @@ However, we strongly recommend migrating to sizing profiles for easier maintenan
 | hbase.hdfs.secondarynamenode.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | hbase.hdfs.secondarynamenode.resources.requests.memory | string | `"1Gi"` |  |
 | hbase.stackgraph.version | string | `"7.13.17"` | The StackGraph server version, must be compatible with the StackState version |
+| hbase.tephra.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for Tephra pods. |
+| hbase.tephra.extraEnv.open | object | `{}` | Extra open environment variables to inject into Tephra pods. |
+| hbase.tephra.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into Tephra pods via a Secret object. |
 | hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
-| hbase.tephra.resources.limits.cpu | string | `"500m"` |  |
-| hbase.tephra.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
-| hbase.tephra.resources.limits.memory | string | `"3Gi"` |  |
-| hbase.tephra.resources.requests.cpu | string | `"250m"` |  |
-| hbase.tephra.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
-| hbase.tephra.resources.requests.memory | string | `"3Gi"` |  |
 | hbase.version | string | `"2.5"` | Version of hbase to use |
 | hbase.zookeeper.externalServers | string | `"suse-observability-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |

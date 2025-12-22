@@ -36,7 +36,14 @@ env:
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "all.commonEnv" . }}
 {{- include "hdfs.namenode.commonEnv" . }}
-{{- $serviceConfig := dict "ServiceConfig" (merge .Values.hdfs.namenode .Values.all) }}
+{{- $profileResources := include "common.sizing.hbase.hdfs.namenode.resources" . | trim -}}
+{{- $evaluatedResources := .Values.hdfs.namenode.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.hdfs.namenode.resources }}
+{{- end }}
+{{- $namenodeWithResources := merge (dict "resources" $evaluatedResources) .Values.hdfs.namenode }}
+{{- $serviceConfig := dict "ServiceConfig" (merge $namenodeWithResources .Values.all) }}
 {{- include "hbase.service.envvars" $serviceConfig }}
 ports:
 - containerPort: 9000
@@ -64,12 +71,6 @@ readinessProbe:
   httpGet:
     path: /
     port: nninfo
-{{- $profileResources := include "common.sizing.hbase.hdfs.namenode.resources" . | trim -}}
-{{- $evaluatedResources := .Values.hdfs.namenode.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = merge $profileResourcesDict .Values.hdfs.namenode.resources }}
-{{- end }}
 {{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
@@ -171,5 +172,7 @@ spec:
 {{- end -}}
 
 {{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
-{{- include "hbase.hdfs.namenode.statefulset" . -}}
+apiVersion: apps/v1
+kind: StatefulSet
+{{ include "hbase.hdfs.namenode.statefulset" . }}
 {{- end -}}

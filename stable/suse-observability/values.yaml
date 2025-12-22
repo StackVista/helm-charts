@@ -72,6 +72,10 @@ global:
       #         values:
       #         - api
       #     topologyKey: kubernetes.io/hostname
+  # global.backup -- Backup configuration.
+  backup:
+    # global.backup.enabled -- Enables backup/restore, including the MinIO subsystem.
+    enabled: false
 # commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
 commonLabels: {}
 backup:
@@ -1867,6 +1871,10 @@ hbase:
   # hbase.version -- Version of hbase to use
   version: "2.5"
   all:
+    # hbase.all.sizing -- Default memory sizing for JVMs in HBase pods
+    sizing:
+      baseMemoryConsumption: "300Mi"
+      javaHeapMemoryFraction: "50"
     metrics:
       enabled: true
       # stackstate.components.all.metrics.agentAnnotationsEnabled -- Put annotations on each pod to instruct the stackstate agent to scrape the metrics
@@ -1887,77 +1895,65 @@ hbase:
       experimental:
         execLivenessProbe:
           enabled: true
+      # hbase.hbase.master.extraEnv -- Extra environment variables for HBase master pods.
+      extraEnv:
+        # hbase.hbase.master.extraEnv.open -- Extra open environment variables to inject into HBase master pods.
+        open: {}
+        # hbase.hbase.master.extraEnv.secret -- Extra secret environment variables to inject into HBase master pods via a Secret object.
+        secret: {}
       # hbase.hbase.master.replicaCount -- Number of HBase master node replicas.
       replicaCount: 2
-      resources:
-        limits:
-          memory: "1Gi"
-          cpu: "500m"
-          ephemeral-storage: "1Gi"
-        requests:
-          memory: "1Gi"
-          cpu: "50m"
-          ephemeral-storage: "1Mi"
+      # hbase.hbase.master.resources -- Resources will be set by sizing profile. Only override if needed.
     regionserver:
+      # hbase.hbase.regionserver.extraEnv -- Extra environment variables for HBase regionserver pods.
+      extraEnv:
+        # hbase.hbase.regionserver.extraEnv.open -- Extra open environment variables to inject into HBase regionserver pods.
+        open: {}
+        # hbase.hbase.regionserver.extraEnv.secret -- Extra secret environment variables to inject into HBase regionserver pods via a Secret object.
+        secret: {}
       # hbase.hbase.regionserver.replicaCount -- Number of HBase regionserver node replicas.
       replicaCount: 3
-      resources:
-        limits:
-          memory: "3Gi"
-          cpu: "3000m"
-          ephemeral-storage: "1Gi"
-        requests:
-          memory: "3Gi"
-          cpu: "500m"
-          ephemeral-storage: "1Mi"
+      # hbase.hbase.regionserver.resources -- Resources will be set by sizing profile. Only override if needed.
   hdfs:
     # hbase.hdfs.minReplication -- Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead)
     minReplication: 2
     datanode:
+      # hbase.hdfs.datanode.extraEnv -- Extra environment variables for HDFS datanode pods.
+      extraEnv:
+        # hbase.hdfs.datanode.extraEnv.open -- Extra open environment variables to inject into HDFS datanode pods.
+        open: {}
+        # hbase.hdfs.datanode.extraEnv.secret -- Extra secret environment variables to inject into HDFS datanode pods via a Secret object.
+        secret: {}
       # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas.
       replicaCount: 3
-      resources:
-        limits:
-          memory: "4Gi"
-          cpu: "500m"
-          ephemeral-storage: "1Gi"
-        requests:
-          memory: "4Gi"
-          cpu: "100m"
-          ephemeral-storage: "1Mi"
+      # hbase.hdfs.datanode.resources -- Resources will be set by sizing profile. Only override if needed.
     namenode:
-      resources:
-        limits:
-          memory: "1Gi"
-          cpu: "500m"
-          ephemeral-storage: "1Gi"
-        requests:
-          memory: "1Gi"
-          cpu: "50m"
-          ephemeral-storage: "1Mi"
+      # hbase.hdfs.namenode.extraEnv -- Extra environment variables for HDFS namenode pods.
+      extraEnv:
+        # hbase.hdfs.namenode.extraEnv.open -- Extra open environment variables to inject into HDFS namenode pods.
+        open: {}
+        # hbase.hdfs.namenode.extraEnv.secret -- Extra secret environment variables to inject into HDFS namenode pods via a Secret object.
+        secret: {}
+      # hbase.hdfs.namenode.resources -- Resources will be set by sizing profile. Only override if needed.
     secondarynamenode:
       enabled: true
-      resources:
-        limits:
-          memory: "1Gi"
-          cpu: "500m"
-          ephemeral-storage: "1Gi"
-        requests:
-          memory: "1Gi"
-          cpu: "50m"
-          ephemeral-storage: "1Mi"
+      # hbase.hdfs.secondarynamenode.extraEnv -- Extra environment variables for HDFS secondary namenode pods.
+      extraEnv:
+        # hbase.hdfs.secondarynamenode.extraEnv.open -- Extra open environment variables to inject into HDFS secondary namenode pods.
+        open: {}
+        # hbase.hdfs.secondarynamenode.extraEnv.secret -- Extra secret environment variables to inject into HDFS secondary namenode pods via a Secret object.
+        secret: {}
+      # hbase.hdfs.secondarynamenode.resources -- Resources will be set by sizing profile. Only override if needed.
   tephra:
+    # hbase.tephra.extraEnv -- Extra environment variables for Tephra pods.
+    extraEnv:
+      # hbase.tephra.extraEnv.open -- Extra open environment variables to inject into Tephra pods.
+      open: {}
+      # hbase.tephra.extraEnv.secret -- Extra secret environment variables to inject into Tephra pods via a Secret object.
+      secret: {}
     # hbase.tephra.replicaCount -- Number of Tephra replicas.
     replicaCount: 2
-    resources:
-      limits:
-        memory: "3Gi"
-        cpu: "500m"
-        ephemeral-storage: "1Gi"
-      requests:
-        memory: "3Gi"
-        cpu: "250m"
-        ephemeral-storage: "1Mi"
+    # hbase.tephra.resources -- Resources will be set by sizing profile. Only override if needed.
   zookeeper:
     # hbase.zookeeper.externalServers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
     externalServers: suse-observability-zookeeper-headless

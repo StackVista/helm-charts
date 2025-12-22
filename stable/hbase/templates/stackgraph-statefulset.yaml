@@ -31,7 +31,14 @@ env:
 - name: HBASE_CONF_hbase_master_stackstate_logcleaner_max_size_mb
   value: "{{ mulf $diskSpaceMB 0.01 | int }}"
 {{ end }}
-{{- $serviceConfig := dict "ServiceConfig" (merge .Values.stackgraph .Values.all) }}
+{{- $profileResources := include "common.sizing.hbase.stackgraph.resources" . | trim -}}
+{{- $evaluatedResources := .Values.stackgraph.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end }}
+{{- $stackgraphWithResources := merge (dict "resources" $evaluatedResources) .Values.stackgraph }}
+{{- $serviceConfig := dict "ServiceConfig" (merge $stackgraphWithResources .Values.all) }}
 {{- include "hbase.service.envvars" $serviceConfig }}
 ports:
 {{- range untilStep 10125 10127 1 }}
@@ -62,12 +69,6 @@ readinessProbe:
   httpGet:
     path: /
     port: masterinfo
-{{- $profileResources := include "common.sizing.hbase.stackgraph.resources" . | trim -}}
-{{- $evaluatedResources := .Values.stackgraph.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end }}
 {{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}

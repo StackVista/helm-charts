@@ -30,7 +30,14 @@ env:
   value: $(POD_NAME).{{ template "common.fullname.short" . }}-hbase-rs.$(POD_NAMESPACE).svc.cluster.local
 - name: HBASE_CONF_hbase_master_hostname
   value: "{{ template "common.fullname.short" . }}-hbase-master"
-{{- $serviceConfig := dict "ServiceConfig" (merge .Values.hbase.regionserver .Values.all) }}
+{{- $profileResources := include "common.sizing.hbase.regionserver.resources" . | trim -}}
+{{- $evaluatedResources := .Values.hbase.regionserver.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.hbase.regionserver.resources }}
+{{- end }}
+{{- $regionserverWithResources := merge (dict "resources" $evaluatedResources) .Values.hbase.regionserver }}
+{{- $serviceConfig := dict "ServiceConfig" (merge $regionserverWithResources .Values.all) }}
 {{- include "hbase.service.envvars" $serviceConfig }}
 ports:
 - containerPort: 16020
@@ -49,12 +56,6 @@ readinessProbe:
   exec:
     command:
       - /rs-scripts/check-status.sh
-{{- $profileResources := include "common.sizing.hbase.regionserver.resources" . | trim -}}
-{{- $evaluatedResources := .Values.hbase.regionserver.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = merge $profileResourcesDict .Values.hbase.regionserver.resources }}
-{{- end }}
 {{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
@@ -149,5 +150,7 @@ spec:
 {{- end -}}
 
 {{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
-{{- include "hbase.hbase.regionserver.statefulset" . -}}
+apiVersion: apps/v1
+kind: StatefulSet
+{{ include "hbase.hbase.regionserver.statefulset" . }}
 {{- end -}}

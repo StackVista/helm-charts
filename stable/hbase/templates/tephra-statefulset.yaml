@@ -67,7 +67,14 @@ env:
 {{ end }}
 {{ end }}
 {{- end }}
-{{- $serviceConfig := dict "ServiceConfig" (merge .Values.tephra .Values.all) }}
+{{- $profileResources := include "common.sizing.hbase.tephra.resources" . | trim -}}
+{{- $evaluatedResources := .Values.tephra.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.tephra.resources }}
+{{- end }}
+{{- $tephraWithResources := merge (dict "resources" $evaluatedResources) .Values.tephra }}
+{{- $serviceConfig := dict "ServiceConfig" (merge $tephraWithResources .Values.all) }}
 {{- include "hbase.service.envvars" $serviceConfig }}
 ports:
 - containerPort: 15165
@@ -97,12 +104,6 @@ readinessProbe:
     port: health
   initialDelaySeconds: 20
   timeoutSeconds: 5
-{{- $profileResources := include "common.sizing.hbase.tephra.resources" . | trim -}}
-{{- $evaluatedResources := .Values.tephra.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = merge $profileResourcesDict .Values.tephra.resources }}
-{{- end }}
 {{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
