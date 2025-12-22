@@ -52,7 +52,7 @@ SUSE Observability now provides built-in sizing profiles that automatically conf
 global:
   suseObservability:
     sizing:
-      profile: "150-ha"  # Single value configures everything
+      profile: "150-ha"  # Single value configures everything!
     license: "<your-license-key>"
     baseUrl: "<your-base-url>"
     adminPassword: "<bcrypt-hashed-password>"
@@ -117,7 +117,7 @@ A single sizing profile automatically configures:
 > **⚠️ DEPRECATION NOTICE**
 > The `suse-observability-values` chart is deprecated. Use the built-in sizing profiles instead.
 
-**Old workflow (DEPRECATED):**
+**Old workflow (DEPRECATED - Two steps):**
 
 ```shell
 # Step 1: Generate values file with suse-observability-values chart
@@ -133,7 +133,7 @@ helm template suse-observability-values \
 helm install suse-observability . -f generated-values.yaml
 ```
 
-**New workflow (Recommended):**
+**New workflow (Recommended - Single step):**
 
 ```yaml
 # values.yaml
