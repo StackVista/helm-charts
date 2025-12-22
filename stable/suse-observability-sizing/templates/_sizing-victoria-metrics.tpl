@@ -68,7 +68,7 @@ limits:
   memory: 10Gi
 {{- else if eq $profile "4000-ha" -}}
 requests:
-  cpu: 7
+  cpu: "7"
   memory: 16Gi
 limits:
   cpu: 8000m

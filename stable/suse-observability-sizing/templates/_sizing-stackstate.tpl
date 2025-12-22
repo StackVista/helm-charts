@@ -536,11 +536,11 @@ requests:
   ephemeral-storage: "1Mi"
 {{- else if eq $profile "4000-ha" }}
 limits:
-  cpu: 14000m
+  cpu: "14"
   memory: "16000Mi"
   ephemeral-storage: "1Gi"
 requests:
-  cpu: 12000m
+  cpu: "12"
   memory: "14000Mi"
   ephemeral-storage: "1Mi"
 {{- end }}
