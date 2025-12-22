@@ -13,7 +13,7 @@ maintainers:
 dependencies:
   - name: prometheus-elasticsearch-exporter
     repository: file://../prometheus-elasticsearch-exporter
-    version: "5.8.0-suse-observability.1"
+    version: "5.8.0-suse-observability.2"
     condition: prometheus-elasticsearch-exporter.enabled
   - name: suse-observability-sizing
     repository: file://../suse-observability-sizing

@@ -5,8 +5,8 @@ description:
   scalable TSDB, long-term remote storage for Prometheus
 name: victoria-metrics-single
 sources:
-- https://github.com/VictoriaMetrics/helm-charts
-version: 0.8.53-stackstate.29
+  - https://github.com/VictoriaMetrics/helm-charts
+version: 0.8.53-stackstate.30
 dependencies:
   - name: common
     version: "*"

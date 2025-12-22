@@ -28,6 +28,10 @@ Usage: {{ include "common.sizing.hbase.stackgraph.persistence.size" . }}
 {{- else if eq $profile "20-nonha" }}50Gi
 {{- else if eq $profile "50-nonha" }}100Gi
 {{- else if eq $profile "100-nonha" }}100Gi
+{{- else if eq $profile "150-ha" }}250Gi
+{{- else if eq $profile "250-ha" }}250Gi
+{{- else if eq $profile "500-ha" }}250Gi
+{{- else if eq $profile "4000-ha" }}1000Gi
 {{- end }}
 {{- end }}
 {{- end }}

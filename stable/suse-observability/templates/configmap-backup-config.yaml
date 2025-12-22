@@ -61,9 +61,9 @@ config: |
       pvc:
 {{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
         {{- if eq $deploymentMode "Distributed" }}
-        size: {{ .Values.backup.stackGraph.restore.tempData.size | default .Values.hbase.hdfs.datanode.persistence.size }}
+        size: {{ .Values.backup.stackGraph.restore.tempData.size | default (include "suse-observability.sizing.hbase.hdfs.datanode.persistence.size" .) }}
         {{- else}}
-        size: {{ .Values.backup.stackGraph.restore.tempData.size | default .Values.hbase.stackgraph.persistence.size }}
+        size: {{ .Values.backup.stackGraph.restore.tempData.size | default (include "suse-observability.sizing.hbase.stackgraph.persistence.size" .) }}
         {{- end }}
         accessModes: {{ .Values.backup.stackGraph.restore.tempData.accessModes }}
         {{ include "common.storage.class" ( dict "persistence" .Values.backup.stackGraph.restore.tempData "global" .Values.global) | nindent 10 }}

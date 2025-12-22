@@ -26,7 +26,7 @@ env:
   value: "{{ template "common.fullname.short" . }}-stackgraph"
 - name: ZK_CONF_server_1
   value: "{{ template "common.fullname.short" . }}-stackgraph:2182"
-{{ $diskSpaceMB := (include "hbase.storage.to.megabytes" .Values.stackgraph.persistence.size) }}
+{{ $diskSpaceMB := (include "hbase.storage.to.megabytes" (include "hbase.stackgraph.persistence.size" .)) }}
 {{ if $diskSpaceMB  }}
 - name: HBASE_CONF_hbase_master_stackstate_logcleaner_max_size_mb
   value: "{{ mulf $diskSpaceMB 0.01 | int }}"

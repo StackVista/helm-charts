@@ -20,8 +20,8 @@ Current chart version is `2.7.1-pre.17`
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.16 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../suse-observability-sizing/ | suse-observability-sizing | 0.1.1 |
-| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.29 |
-| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.29 |
+| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.30 |
+| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.30 |
 | file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.3 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.175 |
 | https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.23 |

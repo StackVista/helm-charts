@@ -27,6 +27,8 @@ CONFIG_FORCE_stackstate_agents_agentLimit: "250"
 CONFIG_FORCE_stackstate_agents_agentLimit: "500"
 {{- else if eq $profile "4000-ha" }}
 CONFIG_FORCE_stackstate_agents_agentLimit: "4000"
+CONFIG_FORCE_stackstate_eventPersistor_kafkaProducerConfig_request.timeout.ms: "25000"
+CONFIG_FORCE_stackstate_eventPersistor_kafkaProducerConfig_delivery.timeout.ms: "30000"
 {{- end }}
 {{- end }}
 {{- end }}
