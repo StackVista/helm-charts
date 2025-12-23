@@ -169,7 +169,6 @@ volumeMounts:
     mountPath: /settings-backup-data
 {{- end }}
 
-{{- if .Values.global.backup.enabled }}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $overrideContainer := fromYaml (include "stackstate.backup.configuration.container.main" .) -}}
 {{- $configBackupMainContainer := (merge $overrideContainer $commonContainer) -}}
@@ -266,4 +265,3 @@ spec:
           securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 12 }}
         {{- end }}
           restartPolicy: Never
-{{- end }}
