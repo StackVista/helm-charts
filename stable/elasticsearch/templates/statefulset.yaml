@@ -100,7 +100,7 @@ spec:
       {{- end }}
       resources:
         requests:
-          {{- $storageSize := include "common.sizing.elasticsearch.storage" . | trim -}}
+          {{ $storageSize := include "common.sizing.elasticsearch.storage" . | trim }}
           storage: {{ $storageSize | default .Values.volumeClaimTemplate.resources.requests.storage | quote }}
   {{- if (.Values.global).storageClass }}
       storageClassName: "{{ .Values.global.storageClass }}"

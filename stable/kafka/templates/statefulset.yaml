@@ -597,7 +597,7 @@ spec:
         {{- end }}
         resources:
           requests:
-            {{- $storageSize := include "common.sizing.kafka.persistence.size" . | trim -}}
+            {{ $storageSize := include "common.sizing.kafka.persistence.size" . | trim }}
             storage: {{ $storageSize | default .Values.persistence.size | quote }}
         {{ include "kafka.storageClass" . | nindent 8 }}
         {{- if .Values.persistence.selector }}

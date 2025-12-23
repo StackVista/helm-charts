@@ -143,6 +143,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: tephra
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        app.kubernetes.io/name: {{ template "common.name" . }}
 {{- if .Values.global.commonLabels }}
 {{- include "hbase.podLabels" . | indent 8 }}
 {{- end }}
