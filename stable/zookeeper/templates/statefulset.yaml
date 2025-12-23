@@ -1,5 +1,7 @@
 {{- $sizingReplicaCount := include "common.sizing.zookeeper.replicaCount" . | trim -}}
 {{- $replicaCount := int (default .Values.replicaCount $sizingReplicaCount) }}
+{{- $sizingPersistenceSize := include "common.sizing.zookeeper.persistence.size" . | trim -}}
+{{- $persistenceSize := default .Values.persistence.size $sizingPersistenceSize }}
 apiVersion: {{ include "common.capabilities.statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
@@ -494,7 +496,7 @@ spec:
         {{- end }}
         resources:
           requests:
-            storage: {{ include "common.tplvalues.render" (dict "value" .Values.persistence.size "context" $) | quote }}
+            storage: {{ $persistenceSize | quote }}
         {{- include "common.storage.class" (dict "persistence" .Values.persistence "global" .Values.global) | nindent 8 }}
         {{- if .Values.persistence.selector }}
         selector: {{- include "common.tplvalues.render" (dict "value" .Values.persistence.selector "context" $) | nindent 10 }}

@@ -2287,6 +2287,9 @@ zookeeper:
     ad.stackstate.com/zookeeper.instances: '[ { "prometheus_url": "http://%%host%%:9141/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
   replicaCount: 3
+  persistence:
+    # zookeeper.persistence.size -- Size of the PVC for Zookeeper data. Default is 8Gi, will be overridden by sizing profile if using global.suseObservability.sizing.profile.
+    size: 8Gi
   pdb:
     ## zookeeper.pdb.create Deploy a pdb object for the Zookeeper pod
     create: true
