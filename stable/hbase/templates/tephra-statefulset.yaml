@@ -34,7 +34,7 @@ env:
 {{ $diskSpaceMB := (include "hbase.storage.to.megabytes" .Values.hdfs.datanode.persistence.size) }}
 {{ if $diskSpaceMB  }}
 - name: HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb
-  value: "{{ mulf $diskSpaceMB 0.1 | int }}"
+  value: "{{ mulf $diskSpaceMB 0.01 | int }}"
 {{ end }}
 {{- else }}
 {{- include "all.commonEnv" . }}
@@ -52,7 +52,7 @@ env:
 {{ $diskSpaceMB := (include "hbase.storage.to.megabytes" .Values.tephra.persistence.size) }}
 {{ if $diskSpaceMB  }}
 - name: HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb
-  value: "{{ mulf $diskSpaceMB 0.1 | int }}"
+  value: "{{ mulf $diskSpaceMB 0.01 | int }}"
 {{ end }}
 {{- end }}
 {{- $serviceConfig := dict "ServiceConfig" (merge .Values.tephra .Values.all) }}

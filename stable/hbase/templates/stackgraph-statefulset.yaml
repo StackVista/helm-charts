@@ -29,7 +29,7 @@ env:
 {{ $diskSpaceMB := (include "hbase.storage.to.megabytes" .Values.stackgraph.persistence.size) }}
 {{ if $diskSpaceMB  }}
 - name: HBASE_CONF_hbase_master_stackstate_logcleaner_max_size_mb
-  value: "{{ mulf $diskSpaceMB 0.05 | int }}"
+  value: "{{ mulf $diskSpaceMB 0.01 | int }}"
 {{ end }}
 {{- $serviceConfig := dict "ServiceConfig" (merge .Values.stackgraph .Values.all) }}
 {{- include "hbase.service.envvars" $serviceConfig }}

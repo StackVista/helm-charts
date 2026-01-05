@@ -27,11 +27,11 @@ func TestTephraArchiveDiskSpaceRender(t *testing.T) {
 	}
 
 	require.NotNil(t, stackstateTephraStatefulset)
-	expectedTephraArchiveDiskSpace := v1.EnvVar{Name: "HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb", Value: "26850"}
+	expectedTephraArchiveDiskSpace := v1.EnvVar{Name: "HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb", Value: "2685"}
 	require.Contains(t, stackstateTephraStatefulset.Spec.Template.Spec.Containers[0].Env, expectedTephraArchiveDiskSpace)
 
 	require.NotNil(t, stackstateMasterStatefulSet)
-	expectedMasterArchiveDiskSpace := v1.EnvVar{Name: "HBASE_CONF_hbase_master_stackstate_logcleaner_max_size_mb", Value: "13425"}
+	expectedMasterArchiveDiskSpace := v1.EnvVar{Name: "HBASE_CONF_hbase_master_stackstate_logcleaner_max_size_mb", Value: "2685"}
 	require.Contains(t, stackstateMasterStatefulSet.Spec.Template.Spec.Containers[0].Env, expectedMasterArchiveDiskSpace)
 }
 
@@ -54,10 +54,10 @@ func TestTephraMonoHbaseArchiveDiskSpaceRender(t *testing.T) {
 	}
 
 	require.NotNil(t, stackstateTephraStatefulset)
-	expectedTephraArchiveDiskSpace := v1.EnvVar{Name: "HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb", Value: "107"}
+	expectedTephraArchiveDiskSpace := v1.EnvVar{Name: "HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb", Value: "10"}
 	require.Contains(t, stackstateTephraStatefulset.Spec.Template.Spec.Containers[0].Env, expectedTephraArchiveDiskSpace)
 
 	require.NotNil(t, stackstateMasterStatefulSet)
-	expectedMasterArchiveDiskSpace := v1.EnvVar{Name: "HBASE_CONF_hbase_master_stackstate_logcleaner_max_size_mb", Value: "13425"}
+	expectedMasterArchiveDiskSpace := v1.EnvVar{Name: "HBASE_CONF_hbase_master_stackstate_logcleaner_max_size_mb", Value: "2685"}
 	require.Contains(t, stackstateMasterStatefulSet.Spec.Template.Spec.Containers[0].Env, expectedMasterArchiveDiskSpace)
 }
