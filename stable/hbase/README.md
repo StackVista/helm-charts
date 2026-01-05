@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.2.103`
+Current chart version is `0.2.105`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -62,7 +62,7 @@ Current chart version is `0.2.103`
 | hbase.master.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hbase.master.replicaCount | int | `1` | Number of pods for HBase masters. |
 | hbase.master.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HBase masters. |
-| hbase.master.sizing | object | `{}` | HBase master memory sizing for JVM |
+| hbase.master.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HBase master memory sizing for JVM |
 | hbase.master.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.regionserver.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hbase.regionserver.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -73,7 +73,7 @@ Current chart version is `0.2.103`
 | hbase.regionserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hbase.regionserver.replicaCount | int | `1` | Number of HBase regionserver nodes. |
 | hbase.regionserver.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"2000m","memory":"2Gi"}}` | Resources to allocate for HBase region servers. |
-| hbase.regionserver.sizing | object | `{}` | HBase region server memory sizing for JVM |
+| hbase.regionserver.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HBase region server memory sizing for JVM |
 | hbase.regionserver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
 | hbase.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
@@ -147,7 +147,7 @@ Current chart version is `0.2.103`
 | stackgraph.securityContext.fsGroup | int | `65534` | UID of the Linux user to use for all pod. |
 | stackgraph.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | stackgraph.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
-| stackgraph.sizing | object | `{}` | Stackgraph memory sizing for JVM |
+| stackgraph.sizing | object | `{"javaHeapMemoryFraction":"60"}` | Stackgraph memory sizing for JVM |
 | stackgraph.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackgraph.version | string | `"7.13.15"` | Version of stackgraph to use |
 | statefulset.antiAffinity.strategy | string | `"soft"` | AntiAffinity strategy to use for all StatefulSets. |
@@ -168,7 +168,7 @@ Current chart version is `0.2.103`
 | tephra.securityContext.fsGroup | int | `65534` | GID of the Linux user to use for fs. |
 | tephra.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | tephra.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
-| tephra.sizing | object | `{}` | Tephra memory sizing for JVM |
+| tephra.sizing | object | `{"javaHeapMemoryFraction":"65"}` | Tephra memory sizing for JVM |
 | tephra.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | version | string | `"2.5"` | Version of hbase to use |
 | wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |

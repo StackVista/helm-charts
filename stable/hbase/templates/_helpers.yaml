@@ -342,6 +342,6 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
 {{- $xmsParam := ( (gt $xms 0) | ternary (printf "-Xms%dm" $xms) "") }}
 {{- $directMem := (subf (subf (include "hbase.storage.to.megabytes" .ServiceConfig.resources.limits.memory) $baseMemoryConsumptionMB) $xmx) | int }}
 {{- $directMemParam := ( (gt $directMem 0) | ternary ( printf "-XX:MaxDirectMemorySize=%dm" $directMem) "") }}
-- name: "JAVA_OPTS"
+- name: "JAVA_CONTAINER_OPTS"
   value: "{{ $directMemParam }} {{ $xmxParam }} {{ $xmsParam }}"
 {{- end -}}
