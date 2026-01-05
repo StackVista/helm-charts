@@ -89,7 +89,7 @@ Current chart version is `0.2.105`
 | hdfs.datanode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS data nodes. |
 | hdfs.datanode.replicaCount | int | `1` | Number of HDFS data nodes. |
 | hdfs.datanode.resources | object | `{"limits":{"memory":"4Gi"},"requests":{"cpu":"50m","memory":"2Gi"}}` | Resources to allocate for HDFS data nodes. |
-| hdfs.datanode.sizing | object | `{}` | HDFS Datanode memory sizing for JVMs in pods |
+| hdfs.datanode.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HDFS Datanode memory sizing for JVMs in pods |
 | hdfs.datanode.terminationGracePeriodSeconds | int | `600` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
 | hdfs.datanode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.image.pullPolicy | string | `"IfNotPresent"` | Pull policy for HDFS datanode. |
@@ -105,7 +105,7 @@ Current chart version is `0.2.105`
 | hdfs.namenode.persistence.size | string | `"20Gi"` | Size of volume for HDFS name nodes. |
 | hdfs.namenode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS name nodes. |
 | hdfs.namenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HDFS name nodes. |
-| hdfs.namenode.sizing | object | `{}` | HDFS name node memory sizing for JVM |
+| hdfs.namenode.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HDFS name node memory sizing for JVM |
 | hdfs.namenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.scc.enabled | bool | `false` | Whether to create an OpenShift SecurityContextConfiguration (required when running on OpenShift) |
 | hdfs.secondarynamenode.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -118,7 +118,7 @@ Current chart version is `0.2.105`
 | hdfs.secondarynamenode.persistence.size | string | `"20Gi"` | Size of volume for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HDFS secondary name nodes. |
-| hdfs.secondarynamenode.sizing | object | `{}` | HDFS secondary name node memory sizing for JVM |
+| hdfs.secondarynamenode.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HDFS secondary name node memory sizing for JVM |
 | hdfs.secondarynamenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
 | hdfs.securityContext.fsGroup | int | `65534` |  |

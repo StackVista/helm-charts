@@ -290,7 +290,8 @@ hdfs:
         memory: "2Gi"
         cpu: "50m"
     # hdfs.datanode.sizing -- HDFS Datanode memory sizing for JVMs in pods
-    sizing: {}
+    sizing:
+      javaHeapMemoryFraction: "75"
     # hdfs.datanode.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hdfs.datanode.tolerations -- Toleration labels for pod assignment.
@@ -322,7 +323,8 @@ hdfs:
         memory: "1Gi"
         cpu: "50m"
     # hdfs.namenode.sizing -- HDFS name node memory sizing for JVM
-    sizing: {}
+    sizing:
+      javaHeapMemoryFraction: "75"
     # hdfs.namenode.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hdfs.namenode.tolerations -- Toleration labels for pod assignment.
@@ -354,7 +356,8 @@ hdfs:
         memory: "1Gi"
         cpu: "50m"
     # hdfs.secondarynamenode.sizing -- HDFS secondary name node memory sizing for JVM
-    sizing: {}
+    sizing:
+      javaHeapMemoryFraction: "75"
     # hdfs.secondarynamenode.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hdfs.secondarynamenode.tolerations -- Toleration labels for pod assignment.
