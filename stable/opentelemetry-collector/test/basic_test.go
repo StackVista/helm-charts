@@ -112,7 +112,7 @@ func TestOpenTelemetryCollectorConfigSelection(t *testing.T) {
 	assert.NotContains(t, defaultCollectorConfig, "sts_kafka_exporter")
 	assert.NotContains(t, defaultCollectorConfig, "trace_statements", "trace_statements are only present for testing purposes and should not be in standard config")
 
-	// with the global.features.enableStackPacks2 set to true
+	// with the global.features.experimentalStackpacks set to true
 	output = helmtestutil.RenderHelmTemplate(t, releaseName, "values/enable-stackpacks2.yaml")
 	resources = helmtestutil.NewKubernetesResources(t, output)
 
