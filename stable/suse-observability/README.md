@@ -13,7 +13,7 @@ Current chart version is `2.6.4-pre.78`
 | file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.3 |
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.2 |
-| file://../hbase/ | hbase | 0.2.106 |
+| file://../hbase/ | hbase | 0.2.107 |
 | file://../kafka/ | kafka | 19.1.3-suse-observability.4 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.15 |
