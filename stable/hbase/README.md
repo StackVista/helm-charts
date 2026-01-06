@@ -30,7 +30,7 @@ Current chart version is `0.2.105`
 | all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
 | all.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
 | all.nodeSelector | object | `{}` | Node labels for pod assignment on all components. |
-| all.sizing | object | `{"baseMemoryConsumption":"300Mi","javaHeapMemoryFraction":"50"}` | Default memory sizing for JVMs in pods |
+| all.sizing | object | `{"baseMemoryConsumption":"125Mi","javaHeapMemoryFraction":"75"}` | Default memory sizing for JVMs in pods |
 | all.tolerations | list | `[]` | Toleration labels for pod assignment on all components. |
 | console.affinity | object | `{}` | Affinity settings for pod assignment. |
 | console.enabled | bool | `true` | Enable / disable deployment of the stackgraph-console for debugging. |

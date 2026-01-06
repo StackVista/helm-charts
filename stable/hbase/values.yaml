@@ -38,8 +38,8 @@ all:
       enabled: false
   # all.sizing -- Default memory sizing for JVMs in pods
   sizing:
-    baseMemoryConsumption: "300Mi"
-    javaHeapMemoryFraction: "50"
+    baseMemoryConsumption: "125Mi"
+    javaHeapMemoryFraction: "75"
   # all.nodeSelector -- Node labels for pod assignment on all components.
   nodeSelector: {}
   # all.tolerations -- Toleration labels for pod assignment on all components.
