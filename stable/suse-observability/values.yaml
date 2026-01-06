@@ -14,8 +14,9 @@ global:
   commonLabels: {}
   # global.features -- Feature switches for SUSE Observability.
   features:
-    # global.features.enableStackPacks2 -- Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec.
-    enableStackPacks2: false
+    # global.features.experimentalStackpacks -- Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec.
+    # This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed.
+    experimentalStackpacks: false
   # backup.enabled -- Enables backup/restore, including the MinIO subsystem.
   backup:
     enabled: false
@@ -222,7 +223,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; individual service `tag`s can be overridden (see below).
-        tag: 7.0.0-snapshot.20251230155413-master-fc0facc
+        tag: 7.0.0-snapshot.20260106105446-master-3d78353
       # stackstate.components.all.podAnnotations -- Extra annotations
       podAnnotations: {}
       metrics:

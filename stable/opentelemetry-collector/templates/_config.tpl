@@ -1,5 +1,5 @@
 {{- define "opentelemetry-collector.baseConfig" -}}
-{{- $stackPacks2 := default false .Values.global.features.enableStackPacks2 }}
+{{- $stackPacks2 := default false .Values.global.features.experimentalStackpacks }}
 {{- if $stackPacks2 }}
 {{ .Files.Get "config/collector-config-stackpacks2.yaml" | nindent 2 }}
 {{- else}}
