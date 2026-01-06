@@ -47,6 +47,7 @@
 {{- end -}}
 {{- if .Values.global.features.experimentalStackpacks }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_featureSwitches_enableStackPacks2" "true" }}
+  {{- $__ := set $openEnvVars "CONFIG_FORCE_stackstate_featureSwitches_enableTopologyStreamSync" "true" }}
 {{- end -}}
 
 
