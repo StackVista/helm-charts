@@ -661,7 +661,7 @@ Init container to load stackpacks from docker image
 {{- define "stackstate.initContainer.stackpacks" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 name: init-stackpacks
-{{- $stackpacksv2 := .Values.global.features.enableStackPacks2 | ternary "-2_0" "" -}}
+{{- $stackpacksv2 := .Values.global.features.experimentalStackpacks | ternary "-2_0" "" -}}
 {{- $deploymentMode := .Values.stackstate.stackpacks.image.deploymentModeOverride | default .Values.stackstate.deployment.mode | lower -}}
 {{- $tag := printf "%s%s-%s-%s" .Values.stackstate.stackpacks.image.version $stackpacksv2 (lower .Values.stackstate.deployment.edition) $deploymentMode }}
 image: "{{ include "stackstate.stackpacks.image.registry" . }}/{{ .Values.stackstate.stackpacks.image.repository }}:{{ $tag }}"

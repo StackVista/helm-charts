@@ -197,8 +197,8 @@ stackstate/stackstate
 | elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"250Gi"}}}` | PVC template defaulting to 250Gi default volumes |
 | global.backup.enabled | bool | `false` |  |
 | global.commonLabels | object | `{}` | Labels that will be added to all Deployments, StatefulSets, CronJobs, Jobs and their pods |
-| global.features | object | `{"enableStackPacks2":false}` | Feature switches for SUSE Observability. |
-| global.features.enableStackPacks2 | bool | `false` | Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec. |
+| global.features | object | `{"experimentalStackpacks":false}` | Feature switches for SUSE Observability. |
+| global.features.experimentalStackpacks | bool | `false` | Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec. This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed. |
 | global.imagePullSecrets | list | `[]` | List of image pull secret names to be used by all images across all charts. |
 | global.imageRegistry | string | `nil` | Image registry to be used by all images across all charts. |
 | global.receiverApiKey | string | `""` | API key to be used by the Receiver. This setting is deprecated in favor of stackstate.apiKey.key |
