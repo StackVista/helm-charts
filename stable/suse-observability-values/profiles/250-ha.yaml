@@ -21,8 +21,10 @@ hbase:
       resources:
         requests:
           cpu: "3000m"
+          memory: 4Gi
         limits:
           cpu: "6000m"
+          memory: 4Gi
   hdfs:
     datanode:
       resources:
