@@ -2184,6 +2184,7 @@ zookeeper:
   heapSize: 400
   # zookeeper.fourlwCommandsWhitelist -- Zookeeper four-letter-word (FLW) commands that are enabled.
   fourlwCommandsWhitelist: "mntr, ruok, stat, srvr"
+  jvmFlags: "-Djute.maxbuffer=2097150"
   # zookeeper.autopurge -- configurations of ZooKeeper auto purge, it deletes old snapshot and log files. ClickHouse creates a lot of operation and it should be purged to avoud out of disk space.
   autopurge:
     snapRetainCount: 5
