@@ -75,8 +75,19 @@ Usage:
 {{- define "suse-observability.global.adminPassword" -}}
 {{- if and (include "suse-observability.global.enabled" .) .Values.global.suseObservability.adminPassword -}}
 {{ .Values.global.suseObservability.adminPassword }}
-{{- else if .Values.stackstate.authentication.adminPassword -}}
-{{ .Values.stackstate.authentication.adminPassword }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the effective admin password (bcrypt hash).
+Only returns a value in global mode when adminPasswordBcrypt is set.
+
+Usage:
+{{ include "suse-observability.global.adminPasswordBcrypt" . }}
+*/}}
+{{- define "suse-observability.global.adminPasswordBcrypt" -}}
+{{- if and (include "suse-observability.global.enabled" .) .Values.global.suseObservability.adminPasswordBcrypt -}}
+{{ .Values.global.suseObservability.adminPasswordBcrypt }}
 {{- end -}}
 {{- end -}}
 

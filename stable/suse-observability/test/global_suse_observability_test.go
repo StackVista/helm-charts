@@ -152,7 +152,7 @@ func TestGlobalSuseObservabilityAutoDetectionMinimal(t *testing.T) {
 	assert.NotEmpty(t, licenseSecret.Data["LICENSE_KEY"], "License key should be set")
 }
 
-// TestGlobalSuseObservabilityBcryptPassword tests that bcrypt hashed passwords are accepted and not re-hashed
+// TestGlobalSuseObservabilityBcryptPassword tests that bcrypt hashed passwords are accepted via adminPasswordBcrypt
 func TestGlobalSuseObservabilityBcryptPassword(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_bcrypt_password.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -170,11 +170,54 @@ func TestGlobalSuseObservabilityBcryptPassword(t *testing.T) {
 	assert.Contains(t, passwordStr, "$2b$10$N9qo8uLOickgx2ZMRZoMye", "Bcrypt hash should be preserved without re-hashing")
 }
 
-// TestGlobalSuseObservabilityMissingAdminPassword tests that adminPassword is required in global mode
+// TestGlobalSuseObservabilityPlaintextPassword tests that plain text passwords are stored with $plain$ prefix
+func TestGlobalSuseObservabilityPlaintextPassword(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_plaintext_password.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// Verify auth secret is created
+	authSecret, exists := resources.Secrets["suse-observability-auth"]
+	require.True(t, exists, "Auth secret should be created")
+	require.Contains(t, authSecret.Data, "default_password", "Auth secret should contain default_password")
+
+	// Decode the password and verify it has the $plain$ prefix
+	passwordBytes := authSecret.Data["default_password"]
+	passwordStr := string(passwordBytes)
+
+	// The plain text password should be stored with $plain$ prefix
+	assert.Equal(t, "$plain$mysecretpassword", passwordStr, "Plain text password should be stored with $plain$ prefix")
+}
+
+// TestGlobalSuseObservabilityBothPasswords tests that specifying both password options fails
+func TestGlobalSuseObservabilityBothPasswords(t *testing.T) {
+	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/global_suse_observability_both_passwords.yaml")
+	require.Error(t, err, "Should fail when both adminPassword and adminPasswordBcrypt are specified")
+	require.Contains(t, err.Error(), "Cannot specify both", "Error should mention both options cannot be specified")
+}
+
+// TestGlobalSuseObservabilityMissingAdminPassword tests that adminPassword is required in global mode when no other auth is configured
 func TestGlobalSuseObservabilityMissingAdminPassword(t *testing.T) {
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/global_suse_observability_missing_adminpassword.yaml")
 	require.Error(t, err, "Should fail when adminPassword is missing in global mode")
-	require.Contains(t, err.Error(), "global.suseObservability.adminPassword is required", "Error should mention adminPassword is required")
+	require.Contains(t, err.Error(), "global.suseObservability.adminPassword or global.suseObservability.adminPasswordBcrypt is required", "Error should mention password options are required")
+}
+
+// TestGlobalSuseObservabilityWithOIDCNoPassword tests that adminPassword is optional when OIDC is configured
+func TestGlobalSuseObservabilityWithOIDCNoPassword(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_with_oidc.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// Verify auth secret is created (for OIDC credentials)
+	authSecret, exists := resources.Secrets["suse-observability-auth"]
+	require.True(t, exists, "Auth secret should be created")
+
+	// Verify OIDC credentials are in the secret
+	require.Contains(t, authSecret.Data, "oidc_client_id", "Auth secret should contain OIDC client ID")
+	require.Contains(t, authSecret.Data, "oidc_secret", "Auth secret should contain OIDC secret")
+
+	// Verify default_password is NOT in the secret (since no admin password was provided)
+	_, hasDefaultPassword := authSecret.Data["default_password"]
+	assert.False(t, hasDefaultPassword, "Auth secret should NOT contain default_password when OIDC is configured and no admin password is provided")
 }
 
 // Helper function to convert environment variables array to map for easier testing

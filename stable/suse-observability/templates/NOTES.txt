@@ -53,7 +53,7 @@ Simplified configuration mode is active (auto-detected from global.suseObservabi
 Configuration Summary:
   • Base URL: {{ include "suse-observability.global.baseUrl" . }}
   • License: {{ if include "suse-observability.global.license" . }}✓ Configured{{ else }}⚠ Missing{{ end }}
-  • Admin Password: {{ if include "suse-observability.global.adminPassword" . }}✓ Configured{{ else }}⚠ Missing{{ end }}
+  • Admin Password: {{ if or (include "suse-observability.global.adminPassword" .) (include "suse-observability.global.adminPasswordBcrypt" .) }}✓ Configured{{ else }}⚠ Missing{{ end }}
   • Receiver API Key: {{ if include "suse-observability.global.receiverApiKey" . }}✓ Configured{{ else }}⚠ Missing (optional){{ end }}
   {{- if include "suse-observability.global.hasPullSecret" . }}
   • Pull Secret: ✓ Configured (automatically applied to all pods)
@@ -73,7 +73,7 @@ For simplified configuration, you can use the global.suseObservability section:
   helm install suse-observability suse-observability/suse-observability \
     --set global.suseObservability.license=<your-license> \
     --set global.suseObservability.baseUrl=<your-base-url> \
-    --set global.suseObservability.adminPassword=<bcrypt-hashed-password> \
+    --set global.suseObservability.adminPassword=<plain-text-password> \
     --set global.suseObservability.sizing.profile=<profile-name>
 
   With image pull secret (optional):

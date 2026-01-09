@@ -43,8 +43,10 @@ global:
     license: ""
     # global.suseObservability.baseUrl -- Base URL for SUSE Observability (required when using global.suseObservability).
     baseUrl: ""
-    # global.suseObservability.adminPassword -- Admin password for the default 'admin' user. Must be a bcrypt hash. Required when using global.suseObservability configuration unless other authentication methods (LDAP, OIDC, Keycloak) are configured.
+    # global.suseObservability.adminPassword -- Admin password for the default 'admin' user (plain text). Mutually exclusive with adminPasswordBcrypt. Required (one of the two) when using global.suseObservability configuration unless other authentication methods (LDAP, OIDC, Keycloak) are configured.
     adminPassword: ""
+    # global.suseObservability.adminPasswordBcrypt -- Admin password as bcrypt hash. Mutually exclusive with adminPassword.
+    adminPasswordBcrypt: ""
     # global.suseObservability.pullSecret -- Image pull secret configuration.
     pullSecret:
       # global.suseObservability.pullSecret.username -- Username for image pull secret.

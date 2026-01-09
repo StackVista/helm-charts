@@ -1,10 +1,9 @@
-# Test that bcrypt hashed password is accepted in global.suseObservability.adminPasswordBcrypt
+# Test that adminPassword is optional when OIDC is configured in global mode
 global:
   suseObservability:
     license: "test-license-key-12345"
     baseUrl: "http://test.example.com"
-    # This is a bcrypt hash of "testpassword"
-    adminPasswordBcrypt: "$2b$10$N9qo8uLOickgx2ZMRZoMye.IUIrCxGvz9/6pN.XMlqL9hzTgDaPGy"
+    # No adminPassword or adminPasswordBcrypt - should succeed because OIDC is configured
 
 # Minimal stackstate config required for chart to render
 stackstate:
@@ -19,6 +18,12 @@ stackstate:
   admin:
     authentication:
       password: 5a4961367d65d570e20d2d69156581b4
+  baseUrl: "http://test.example.com"
+  authentication:
+    oidc:
+      clientId: stackstate-client-id
+      secret: "some-secret"
+      discoveryUri: http://oidc-provider
 
 anomaly-detection:
   enabled: false
