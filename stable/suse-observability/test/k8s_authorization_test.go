@@ -102,7 +102,7 @@ var expectedRoles = map[string]v1.Role{
 		Rules: []v1.PolicyRule{
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"views", "metricbindings", "monitors", "notifications", "permissions", "servicetokens", "stackpackconfigurations", "dashboards"},
+				Resources: []string{"views", "metricbindings", "monitors", "notifications", "permissions", "servicetokens", "stackpackconfigurations", "dashboards", "otel-mappings"},
 				Verbs:     []string{"create", "update", "get", "delete"},
 			},
 			{
@@ -143,7 +143,7 @@ var expectedRoles = map[string]v1.Role{
 		Rules: []v1.PolicyRule{
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"views", "permissions", "servicetokens", "settings", "stackpackconfigurations", "monitors", "notifications", "dashboards"},
+				Resources: []string{"views", "permissions", "servicetokens", "settings", "stackpackconfigurations", "monitors", "notifications", "dashboards", "otel-mappings"},
 				Verbs:     []string{"create", "update", "get", "delete"},
 			},
 			{

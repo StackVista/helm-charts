@@ -13,6 +13,7 @@ rules:
   - servicetokens
   - stackpackconfigurations
   - dashboards
+  - otel-mappings
   verbs:
   - create
   - update

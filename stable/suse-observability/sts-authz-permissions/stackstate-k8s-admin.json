@@ -47,6 +47,10 @@
         "update-dashboards",
         "delete-dashboards",
         "create-favorite-dashboards",
-        "delete-favorite-dashboards"
+        "delete-favorite-dashboards",
+        "get-otel-mappings",
+        "create-otel-mappings",
+        "update-otel-mappings",
+        "delete-otel-mappings"
     ]
 }
