@@ -54,24 +54,18 @@ global:
       profile: ""
     # global.suseObservability.receiverApiKey -- Receiver API key for telemetry data. Optional, will use stackstate.receiver.apiKey if not provided.
     receiverApiKey: ""
-    # global.suseObservability.affinity -- Affinity configuration for SUSE Observability application components only (API, server, UI, etc.). Infrastructure components (kafka, clickhouse, etc.) have automatic affinity based on sizing profile.
+    # global.suseObservability.affinity -- Affinity configuration for all SUSE Observability components including infrastructure.
     affinity:
-      # global.suseObservability.affinity.nodeAffinity -- Node affinity configuration applied to SUSE Observability application components only (API, server, UI, receiver, correlate, sync, etc.). Does NOT apply to infrastructure components (kafka, clickhouse, zookeeper, elasticsearch, hbase, victoria-metrics) which have their own automatic affinity based on sizing profile. Standard Kubernetes nodeAffinity spec. Note: Kubernetes does not have nodeAntiAffinity - use operators like NotIn or DoesNotExist in nodeAffinity instead.
+      # global.suseObservability.affinity.nodeAffinity -- Node affinity configuration applied to all components (application and infrastructure). Standard Kubernetes nodeAffinity spec.
       nodeAffinity: null
-      # global.suseObservability.affinity.podAffinity -- Pod affinity configuration for SUSE Observability application components only. Does NOT apply to infrastructure components. Standard Kubernetes podAffinity spec.
+      # global.suseObservability.affinity.podAffinity -- Pod affinity configuration for application components only. Does NOT apply to infrastructure components. Standard Kubernetes podAffinity spec.
       podAffinity: null
-      # global.suseObservability.affinity.podAntiAffinity -- Pod anti-affinity configuration for SUSE Observability application components only. Does NOT apply to infrastructure components which have automatic anti-affinity for HA profiles. Must use standard Kubernetes podAntiAffinity spec with requiredDuringSchedulingIgnoredDuringExecution or preferredDuringSchedulingIgnoredDuringExecution as a list. Component-specific labels will be automatically added by each component.
-      podAntiAffinity: null
-      # Example for podAntiAffinity (uncomment and modify as needed):
-      # podAntiAffinity:
-      #   requiredDuringSchedulingIgnoredDuringExecution:
-      #   - labelSelector:
-      #       matchExpressions:
-      #       - key: app.kubernetes.io/component
-      #         operator: In
-      #         values:
-      #         - api
-      #     topologyKey: kubernetes.io/hostname
+      # global.suseObservability.affinity.podAntiAffinity -- Simplified pod anti-affinity configuration for HA profiles. Applied to all infrastructure components (kafka, clickhouse, zookeeper, elasticsearch, hbase, victoria-metrics) for HA profiles.
+      podAntiAffinity:
+        # global.suseObservability.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution -- Enable required (hard) pod anti-affinity. When true, pods must be scheduled on different nodes. When false, soft anti-affinity is used (preferred but not required).
+        requiredDuringSchedulingIgnoredDuringExecution: true
+        # global.suseObservability.affinity.podAntiAffinity.topologyKey -- Topology key for pod anti-affinity. Determines the domain for spreading pods (e.g., kubernetes.io/hostname for node-level, topology.kubernetes.io/zone for zone-level).
+        topologyKey: "kubernetes.io/hostname"
   # global.backup -- Backup configuration.
   backup:
     # global.backup.enabled -- Enables backup/restore, including the MinIO subsystem.

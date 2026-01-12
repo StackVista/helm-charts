@@ -74,6 +74,32 @@ pull-secret:
 helm install suse-observability . -f values.yaml
 ```
 
+#### Generating a bcrypt Password Hash
+
+The `adminPassword` must be a bcrypt-hashed password. Generate one using either method:
+
+```shell
+# Using htpasswd (commonly available on Linux/macOS)
+htpasswd -bnBC 10 "" "your-password" | tr -d ':\n'
+
+# Using Python with bcrypt library
+python3 -c "import bcrypt; print(bcrypt.hashpw(b'your-password', bcrypt.gensalt(10)).decode())"
+
+# Using Docker
+docker run --rm httpd:alpine htpasswd -bnBC 10 "" "your-password" | tr -d ':\n'
+```
+
+#### Understanding receiverApiKey
+
+The `receiverApiKey` is **optional**. It's used to authenticate telemetry data sent to the SUSE Observability receiver endpoints. If not provided:
+- The chart will auto-generate a key if `stackstate.receiver.apiKey` is also not set
+- You can retrieve the generated key from the Kubernetes secret after installation
+
+Only set this explicitly if you need to:
+- Use a specific key for external integrations
+- Maintain consistency across reinstallations
+- Integrate with pre-configured agents
+
 ### Available Sizing Profiles
 
 | Profile | Use Case | HA Mode | Components | VM Instances | Server Split |
@@ -179,6 +205,53 @@ helm install suse-observability . -f values.yaml
 - ✅ **Maintainable**: Profile updates happen automatically with chart upgrades
 - ✅ **Explicit**: Clear profile selection in your values file
 
+### Upgrading Existing Deployments
+
+If you have an existing SUSE Observability installation using the old `suse-observability-values` chart workflow, follow these steps:
+
+**Before upgrading:**
+
+1. **Backup your current values**: Save your existing generated values file and any custom overrides
+   ```shell
+   kubectl get configmap -n <namespace> -o yaml > backup-configmaps.yaml
+   helm get values suse-observability -n <namespace> > current-values.yaml
+   ```
+
+2. **Identify your sizing profile**: Check your current `suse-observability-values` configuration to find the profile name (e.g., `150-ha`)
+
+3. **Review resource differences**: The new profiles may have updated resource recommendations. Compare your current resources with the new profile defaults if you have custom overrides
+
+**Upgrade procedure:**
+
+```shell
+# 1. Create your new values file with global.suseObservability configuration
+#    (see Quick Start example above)
+
+# 2. Perform helm upgrade with the new values
+helm upgrade suse-observability suse-observability/suse-observability \
+  -n <namespace> \
+  -f new-values.yaml
+
+# 3. Verify the upgrade
+kubectl get pods -n <namespace>
+helm get values suse-observability -n <namespace>
+```
+
+**Important considerations:**
+
+- **No downtime expected**: The upgrade is a standard Helm upgrade; pods will be rolled incrementally
+- **PVCs are preserved**: Existing persistent volume claims remain intact
+- **Secrets are preserved**: Existing secrets (licenses, API keys) are not deleted
+- **Rollback available**: Use `helm rollback suse-observability <revision>` if needed
+
+### Why victoria-metrics-1 Must Be Set Manually
+
+The `victoria-metrics-1` subchart enablement cannot be auto-configured by the sizing profile because Helm subchart conditions (`enabled: true/false`) must be evaluated before template rendering. The sizing profile values are applied during template rendering, which is too late to affect subchart inclusion.
+
+**Rule of thumb:**
+- HA profiles (`150-ha`, `250-ha`, `500-ha`, `4000-ha`): Set `victoria-metrics-1.enabled: true`
+- Non-HA profiles (`trial`, `10-nonha`, `20-nonha`, `50-nonha`, `100-nonha`): Set `victoria-metrics-1.enabled: false` (or omit, as `false` is the default)
+
 ### Overriding Sizing Profile Defaults
 
 You can override specific values from the sizing profile when needed:
@@ -205,6 +278,55 @@ elasticsearch:
         storage: 500Gi  # Override profile's default
 ```
 
+### Global Affinity Configuration
+
+The `global.suseObservability.affinity` section allows you to configure pod scheduling constraints for all components:
+
+```yaml
+global:
+  suseObservability:
+    sizing:
+      profile: "150-ha"
+    affinity:
+      # Node affinity - target specific nodes (applies to ALL components)
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: node-role.kubernetes.io/observability
+                  operator: Exists
+
+      # Pod affinity - co-locate application pods (does NOT apply to infrastructure)
+      podAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/part-of: suse-observability
+              topologyKey: kubernetes.io/hostname
+
+      # Pod anti-affinity - spread infrastructure pods (HA profiles only)
+      podAntiAffinity:
+        # Use hard anti-affinity (pods MUST be on different nodes)
+        requiredDuringSchedulingIgnoredDuringExecution: true
+        # Spread across nodes (use topology.kubernetes.io/zone for zone spreading)
+        topologyKey: "kubernetes.io/hostname"
+```
+
+**Affinity scope:**
+
+| Affinity Type | Application Components | Infrastructure Components |
+|---------------|------------------------|---------------------------|
+| `nodeAffinity` | ✅ Applied | ✅ Applied |
+| `podAffinity` | ✅ Applied | ❌ Not applied |
+| `podAntiAffinity` | ❌ Not applied | ✅ Applied (HA profiles) |
+
+**Pod anti-affinity modes:**
+
+- `requiredDuringSchedulingIgnoredDuringExecution: true` - **Hard anti-affinity**: Pods will NOT schedule if they cannot be placed on separate nodes. Use when you have enough nodes.
+- `requiredDuringSchedulingIgnoredDuringExecution: false` - **Soft anti-affinity**: Pods will prefer separate nodes but can co-locate if necessary. Use when node count is limited.
+
 ### Backward Compatibility
 
 The traditional configuration method (without sizing profiles) is still supported for backward compatibility:
@@ -227,6 +349,92 @@ stackstate:
 ```
 
 However, we strongly recommend migrating to sizing profiles for easier maintenance and upgrades.
+
+### Troubleshooting Migration Issues
+
+**Problem: Pods stuck in Pending state after migration**
+
+This usually indicates a scheduling issue, often related to anti-affinity rules:
+
+```shell
+# Check pod events
+kubectl describe pod <pod-name> -n <namespace>
+
+# If anti-affinity is the issue, use soft anti-affinity
+global:
+  suseObservability:
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution: false  # Soft anti-affinity
+```
+
+**Problem: Resources differ from previous installation**
+
+Sizing profiles may have updated resource recommendations. To preserve your previous settings:
+
+```yaml
+# Override specific resources while using the profile for everything else
+global:
+  suseObservability:
+    sizing:
+      profile: "150-ha"
+
+# Your custom overrides
+stackstate:
+  components:
+    api:
+      resources:
+        requests:
+          memory: 8Gi  # Your previous value
+```
+
+**Problem: helm upgrade fails with validation errors**
+
+Ensure you're not mixing old and new configuration styles:
+
+```shell
+# Check current values
+helm get values suse-observability -n <namespace>
+
+# Common issue: both stackstate.license.key AND global.suseObservability.license set
+# Solution: Use only one configuration style
+```
+
+**Problem: Pull secret not working**
+
+When using `global.suseObservability.pullSecret`, ensure the pull-secret subchart is disabled:
+
+```yaml
+global:
+  suseObservability:
+    pullSecret:
+      username: "user"
+      password: "pass"
+
+pull-secret:
+  enabled: false  # Required when using global.suseObservability.pullSecret
+```
+
+**Problem: victoria-metrics-1 pods not starting (HA profiles)**
+
+Ensure the subchart is explicitly enabled:
+
+```yaml
+global:
+  suseObservability:
+    sizing:
+      profile: "150-ha"
+
+victoria-metrics-1:
+  enabled: true  # Must be set explicitly for HA profiles
+```
+
+**Getting help:**
+
+If you encounter issues not covered here:
+1. Check pod logs: `kubectl logs <pod-name> -n <namespace>`
+2. Review Helm release status: `helm status suse-observability -n <namespace>`
+3. Compare rendered templates: `helm template suse-observability . -f values.yaml > rendered.yaml`
 
 ## Values
 
@@ -392,12 +600,14 @@ However, we strongly recommend migrating to sizing profiles for easier maintenan
 | global.imageRegistry | string | `nil` | Image registry to be used by all images across all charts. |
 | global.receiverApiKey | string | `""` | API key to be used by the Receiver. This setting is deprecated in favor of stackstate.apiKey.key |
 | global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overridden per PVC. |
-| global.suseObservability | object | `{"adminPassword":"","affinity":{"nodeAffinity":null,"podAffinity":null,"podAntiAffinity":null},"baseUrl":"","license":"","pullSecret":{"password":"","username":""},"receiverApiKey":"","sizing":{"profile":""}}` | Simplified configuration section that allows users to specify high-level settings. When any values in this section are configured (license, baseUrl, sizing.profile, etc.), the chart will automatically use this configuration instead of the legacy stackstate.* values. This provides a single-chart installation experience without needing the separate suse-observability-values chart. NOTE: This section works in conjunction with existing global settings (imageRegistry, receiverApiKey, imagePullSecrets). |
+| global.suseObservability | object | `{"adminPassword":"","affinity":{"nodeAffinity":null,"podAffinity":null,"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":true,"topologyKey":"kubernetes.io/hostname"}},"baseUrl":"","license":"","pullSecret":{"password":"","username":""},"receiverApiKey":"","sizing":{"profile":""}}` | Simplified configuration section that allows users to specify high-level settings. When any values in this section are configured (license, baseUrl, sizing.profile, etc.), the chart will automatically use this configuration instead of the legacy stackstate.* values. This provides a single-chart installation experience without needing the separate suse-observability-values chart. NOTE: This section works in conjunction with existing global settings (imageRegistry, receiverApiKey, imagePullSecrets). |
 | global.suseObservability.adminPassword | string | `""` | Admin password for the default 'admin' user. Must be a bcrypt hash. Required when using global.suseObservability configuration unless other authentication methods (LDAP, OIDC, Keycloak) are configured. |
-| global.suseObservability.affinity | object | `{"nodeAffinity":null,"podAffinity":null,"podAntiAffinity":null}` | Affinity configuration for SUSE Observability application components only (API, server, UI, etc.). Infrastructure components (kafka, clickhouse, etc.) have automatic affinity based on sizing profile. |
-| global.suseObservability.affinity.nodeAffinity | string | `nil` | Node affinity configuration applied to SUSE Observability application components only (API, server, UI, receiver, correlate, sync, etc.). Does NOT apply to infrastructure components (kafka, clickhouse, zookeeper, elasticsearch, hbase, victoria-metrics) which have their own automatic affinity based on sizing profile. Standard Kubernetes nodeAffinity spec. Note: Kubernetes does not have nodeAntiAffinity - use operators like NotIn or DoesNotExist in nodeAffinity instead. |
-| global.suseObservability.affinity.podAffinity | string | `nil` | Pod affinity configuration for SUSE Observability application components only. Does NOT apply to infrastructure components. Standard Kubernetes podAffinity spec. |
-| global.suseObservability.affinity.podAntiAffinity | string | `nil` | Pod anti-affinity configuration for SUSE Observability application components only. Does NOT apply to infrastructure components which have automatic anti-affinity for HA profiles. Must use standard Kubernetes podAntiAffinity spec with requiredDuringSchedulingIgnoredDuringExecution or preferredDuringSchedulingIgnoredDuringExecution as a list. Component-specific labels will be automatically added by each component. |
+| global.suseObservability.affinity | object | `{"nodeAffinity":null,"podAffinity":null,"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":true,"topologyKey":"kubernetes.io/hostname"}}` | Affinity configuration for all SUSE Observability components including infrastructure. |
+| global.suseObservability.affinity.nodeAffinity | string | `nil` | Node affinity configuration applied to all components (application and infrastructure). Standard Kubernetes nodeAffinity spec. |
+| global.suseObservability.affinity.podAffinity | string | `nil` | Pod affinity configuration for application components only. Does NOT apply to infrastructure components. Standard Kubernetes podAffinity spec. |
+| global.suseObservability.affinity.podAntiAffinity | object | `{"requiredDuringSchedulingIgnoredDuringExecution":true,"topologyKey":"kubernetes.io/hostname"}` | Simplified pod anti-affinity configuration for HA profiles. Applied to all infrastructure components (kafka, clickhouse, zookeeper, elasticsearch, hbase, victoria-metrics) for HA profiles. |
+| global.suseObservability.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution | bool | `true` | Enable required (hard) pod anti-affinity. When true, pods must be scheduled on different nodes. When false, soft anti-affinity is used (preferred but not required). |
+| global.suseObservability.affinity.podAntiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | Topology key for pod anti-affinity. Determines the domain for spreading pods (e.g., kubernetes.io/hostname for node-level, topology.kubernetes.io/zone for zone-level). |
 | global.suseObservability.baseUrl | string | `""` | Base URL for SUSE Observability (required when using global.suseObservability). |
 | global.suseObservability.license | string | `""` | SUSE Observability license key (required when using global.suseObservability). |
 | global.suseObservability.pullSecret | object | `{"password":"","username":""}` | Image pull secret configuration. |

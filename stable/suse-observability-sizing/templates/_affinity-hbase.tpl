@@ -7,7 +7,8 @@ These templates provide complete affinity configurations for HBase components.
 
 {{/*
 Get complete HBase master affinity configuration for HA profiles.
-Returns a complete affinity block with podAntiAffinity for HA profiles, empty for non-HA.
+Returns a complete affinity block with nodeAffinity (from global config) and
+podAntiAffinity for HA profiles. Empty for non-HA profiles without nodeAffinity.
 
 Usage in values.yaml:
 hbase:
@@ -16,11 +17,27 @@ hbase:
       affinity: {{ include "common.sizing.hbase.master.affinityConfig" . | nindent 8 }}
 */}}
 {{- define "common.sizing.hbase.master.affinityConfig" -}}
-{{- include "common.sizing.hbase.master.affinity" . -}}
+{{- $result := dict -}}
+{{- $nodeAffinity := include "common.sizing.global.nodeAffinity" . | trim -}}
+{{- if $nodeAffinity -}}
+  {{- $_ := set $result "nodeAffinity" ($nodeAffinity | fromYaml) -}}
+{{- end -}}
+{{- $podAntiAffinity := include "common.sizing.hbase.master.affinity" . | trim -}}
+{{- if $podAntiAffinity -}}
+  {{- $parsed := $podAntiAffinity | fromYaml -}}
+  {{- if $parsed.podAntiAffinity -}}
+    {{- $_ := set $result "podAntiAffinity" $parsed.podAntiAffinity -}}
+  {{- end -}}
+{{- end -}}
+{{- if $result -}}
+{{- toYaml $result -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
 Get complete HBase regionserver affinity configuration for HA profiles.
+Returns a complete affinity block with nodeAffinity (from global config) and
+podAntiAffinity for HA profiles.
 
 Usage in values.yaml:
 hbase:
@@ -29,11 +46,27 @@ hbase:
       affinity: {{ include "common.sizing.hbase.regionserver.affinityConfig" . | nindent 8 }}
 */}}
 {{- define "common.sizing.hbase.regionserver.affinityConfig" -}}
-{{- include "common.sizing.hbase.regionserver.affinity" . -}}
+{{- $result := dict -}}
+{{- $nodeAffinity := include "common.sizing.global.nodeAffinity" . | trim -}}
+{{- if $nodeAffinity -}}
+  {{- $_ := set $result "nodeAffinity" ($nodeAffinity | fromYaml) -}}
+{{- end -}}
+{{- $podAntiAffinity := include "common.sizing.hbase.regionserver.affinity" . | trim -}}
+{{- if $podAntiAffinity -}}
+  {{- $parsed := $podAntiAffinity | fromYaml -}}
+  {{- if $parsed.podAntiAffinity -}}
+    {{- $_ := set $result "podAntiAffinity" $parsed.podAntiAffinity -}}
+  {{- end -}}
+{{- end -}}
+{{- if $result -}}
+{{- toYaml $result -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
 Get complete HBase tephra affinity configuration for HA profiles.
+Returns a complete affinity block with nodeAffinity (from global config) and
+podAntiAffinity for HA profiles.
 
 Usage in values.yaml:
 hbase:
@@ -41,11 +74,27 @@ hbase:
     affinity: {{ include "common.sizing.hbase.tephra.affinityConfig" . | nindent 6 }}
 */}}
 {{- define "common.sizing.hbase.tephra.affinityConfig" -}}
-{{- include "common.sizing.hbase.tephra.affinity" . -}}
+{{- $result := dict -}}
+{{- $nodeAffinity := include "common.sizing.global.nodeAffinity" . | trim -}}
+{{- if $nodeAffinity -}}
+  {{- $_ := set $result "nodeAffinity" ($nodeAffinity | fromYaml) -}}
+{{- end -}}
+{{- $podAntiAffinity := include "common.sizing.hbase.tephra.affinity" . | trim -}}
+{{- if $podAntiAffinity -}}
+  {{- $parsed := $podAntiAffinity | fromYaml -}}
+  {{- if $parsed.podAntiAffinity -}}
+    {{- $_ := set $result "podAntiAffinity" $parsed.podAntiAffinity -}}
+  {{- end -}}
+{{- end -}}
+{{- if $result -}}
+{{- toYaml $result -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
 Get complete HBase HDFS datanode affinity configuration for HA profiles.
+Returns a complete affinity block with nodeAffinity (from global config) and
+podAntiAffinity for HA profiles.
 
 Usage in values.yaml:
 hbase:
@@ -54,11 +103,27 @@ hbase:
       affinity: {{ include "common.sizing.hbase.hdfs.datanode.affinityConfig" . | nindent 8 }}
 */}}
 {{- define "common.sizing.hbase.hdfs.datanode.affinityConfig" -}}
-{{- include "common.sizing.hbase.hdfs.datanode.affinity" . -}}
+{{- $result := dict -}}
+{{- $nodeAffinity := include "common.sizing.global.nodeAffinity" . | trim -}}
+{{- if $nodeAffinity -}}
+  {{- $_ := set $result "nodeAffinity" ($nodeAffinity | fromYaml) -}}
+{{- end -}}
+{{- $podAntiAffinity := include "common.sizing.hbase.hdfs.datanode.affinity" . | trim -}}
+{{- if $podAntiAffinity -}}
+  {{- $parsed := $podAntiAffinity | fromYaml -}}
+  {{- if $parsed.podAntiAffinity -}}
+    {{- $_ := set $result "podAntiAffinity" $parsed.podAntiAffinity -}}
+  {{- end -}}
+{{- end -}}
+{{- if $result -}}
+{{- toYaml $result -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
 Get complete HBase HDFS namenode affinity configuration for HA profiles.
+Returns a complete affinity block with nodeAffinity (from global config) and
+podAntiAffinity for HA profiles.
 
 Usage in values.yaml:
 hbase:
@@ -67,11 +132,27 @@ hbase:
       affinity: {{ include "common.sizing.hbase.hdfs.namenode.affinityConfig" . | nindent 8 }}
 */}}
 {{- define "common.sizing.hbase.hdfs.namenode.affinityConfig" -}}
-{{- include "common.sizing.hbase.hdfs.namenode.affinity" . -}}
+{{- $result := dict -}}
+{{- $nodeAffinity := include "common.sizing.global.nodeAffinity" . | trim -}}
+{{- if $nodeAffinity -}}
+  {{- $_ := set $result "nodeAffinity" ($nodeAffinity | fromYaml) -}}
+{{- end -}}
+{{- $podAntiAffinity := include "common.sizing.hbase.hdfs.namenode.affinity" . | trim -}}
+{{- if $podAntiAffinity -}}
+  {{- $parsed := $podAntiAffinity | fromYaml -}}
+  {{- if $parsed.podAntiAffinity -}}
+    {{- $_ := set $result "podAntiAffinity" $parsed.podAntiAffinity -}}
+  {{- end -}}
+{{- end -}}
+{{- if $result -}}
+{{- toYaml $result -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
 Get complete HBase HDFS secondarynamenode affinity configuration for HA profiles.
+Returns a complete affinity block with nodeAffinity (from global config) and
+podAntiAffinity for HA profiles.
 
 Usage in values.yaml:
 hbase:
@@ -80,5 +161,19 @@ hbase:
       affinity: {{ include "common.sizing.hbase.hdfs.secondarynamenode.affinityConfig" . | nindent 8 }}
 */}}
 {{- define "common.sizing.hbase.hdfs.secondarynamenode.affinityConfig" -}}
-{{- include "common.sizing.hbase.hdfs.secondarynamenode.affinity" . -}}
+{{- $result := dict -}}
+{{- $nodeAffinity := include "common.sizing.global.nodeAffinity" . | trim -}}
+{{- if $nodeAffinity -}}
+  {{- $_ := set $result "nodeAffinity" ($nodeAffinity | fromYaml) -}}
+{{- end -}}
+{{- $podAntiAffinity := include "common.sizing.hbase.hdfs.secondarynamenode.affinity" . | trim -}}
+{{- if $podAntiAffinity -}}
+  {{- $parsed := $podAntiAffinity | fromYaml -}}
+  {{- if $parsed.podAntiAffinity -}}
+    {{- $_ := set $result "podAntiAffinity" $parsed.podAntiAffinity -}}
+  {{- end -}}
+{{- end -}}
+{{- if $result -}}
+{{- toYaml $result -}}
+{{- end -}}
 {{- end -}}

@@ -48,7 +48,7 @@ Please update your values.yaml to use stackstate.features.* instead.
 SUSE Observability Installation (Simplified Configuration Mode)
 =============================================================================
 
-You have enabled the simplified configuration mode (global.suseObservability.enabled: true).
+Simplified configuration mode is active (auto-detected from global.suseObservability.* values).
 
 Configuration Summary:
   • Base URL: {{ include "suse-observability.global.baseUrl" . }}

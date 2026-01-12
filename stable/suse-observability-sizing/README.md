@@ -239,7 +239,7 @@ These subcharts **call sizing templates directly** from their resource templates
 
 #### Pattern B: Local Wrapper Helpers (hbase)
 
-The hbase subchart has **`_sizing.tpl`** with wrapper functions that encapsulate mode detection logic:
+The hbase subchart has **`_sizing.tpl`** with wrapper functions that encapsulate sizing detection logic:
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
@@ -257,19 +257,12 @@ The hbase subchart has **`_sizing.tpl`** with wrapper functions that encapsulate
 │                                                               │
 │ {{- define "hbase.stackgraph.persistence.size" -}}           │
 │                                                               │
-│ Step 1: Detect if sizing mode active                         │
-│ {{- $useSizingProfile := false -}}                           │
-│ {{- if and .Values.global .Values.global.suseObservability -}}│
-│   {{- $hasProfile := ... -}}                                 │
-│   {{- $hasLicense := ... -}}                                 │
-│   {{- $hasBaseUrl := ... -}}                                 │
-│   {{- if or $hasProfile $hasLicense $hasBaseUrl -}}          │
-│     {{- $useSizingProfile = true -}}                         │
-│   {{- end -}}                                                │
-│ {{- end -}}                                                  │
+│ Step 1: Check if sizing profile is set                       │
+│ {{- if and .Values.global .Values.global.suseObservability   │
+│           .Values.global.suseObservability.sizing            │
+│           .Values.global.suseObservability.sizing.profile -}}│
 │                                                               │
 │ Step 2: Use profile value OR default                         │
-│ {{- if $useSizingProfile -}}                                 │
 │   {{- $profileSize :=                                        │
 │         include "common.sizing.hbase.stackgraph              │
 │                   .persistence.size" . | trim -}}            │
@@ -280,7 +273,7 @@ The hbase subchart has **`_sizing.tpl`** with wrapper functions that encapsulate
 │   {{- end -}}                     ← FALLBACK TO DEFAULT      │
 │ {{- else -}}                                                 │
 │   {{- .Values.stackgraph.persistence.size -}}                │
-│ {{- end -}}                       ← LEGACY MODE              │
+│ {{- end -}}                       ← STANDALONE MODE          │
 │ {{- end }}                                                   │
 │                                                               │
 └───────────────────────┬──────────────────────────────────────┘

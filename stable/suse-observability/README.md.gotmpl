@@ -55,6 +55,32 @@ pull-secret:
 helm install suse-observability . -f values.yaml
 ```
 
+#### Generating a bcrypt Password Hash
+
+The `adminPassword` must be a bcrypt-hashed password. Generate one using either method:
+
+```shell
+# Using htpasswd (commonly available on Linux/macOS)
+htpasswd -bnBC 10 "" "your-password" | tr -d ':\n'
+
+# Using Python with bcrypt library
+python3 -c "import bcrypt; print(bcrypt.hashpw(b'your-password', bcrypt.gensalt(10)).decode())"
+
+# Using Docker
+docker run --rm httpd:alpine htpasswd -bnBC 10 "" "your-password" | tr -d ':\n'
+```
+
+#### Understanding receiverApiKey
+
+The `receiverApiKey` is **optional**. It's used to authenticate telemetry data sent to the SUSE Observability receiver endpoints. If not provided:
+- The chart will auto-generate a key if `stackstate.receiver.apiKey` is also not set
+- You can retrieve the generated key from the Kubernetes secret after installation
+
+Only set this explicitly if you need to:
+- Use a specific key for external integrations
+- Maintain consistency across reinstallations
+- Integrate with pre-configured agents
+
 ### Available Sizing Profiles
 
 | Profile | Use Case | HA Mode | Components | VM Instances | Server Split |
@@ -160,6 +186,53 @@ helm install suse-observability . -f values.yaml
 - ✅ **Maintainable**: Profile updates happen automatically with chart upgrades
 - ✅ **Explicit**: Clear profile selection in your values file
 
+### Upgrading Existing Deployments
+
+If you have an existing SUSE Observability installation using the old `suse-observability-values` chart workflow, follow these steps:
+
+**Before upgrading:**
+
+1. **Backup your current values**: Save your existing generated values file and any custom overrides
+   ```shell
+   kubectl get configmap -n <namespace> -o yaml > backup-configmaps.yaml
+   helm get values suse-observability -n <namespace> > current-values.yaml
+   ```
+
+2. **Identify your sizing profile**: Check your current `suse-observability-values` configuration to find the profile name (e.g., `150-ha`)
+
+3. **Review resource differences**: The new profiles may have updated resource recommendations. Compare your current resources with the new profile defaults if you have custom overrides
+
+**Upgrade procedure:**
+
+```shell
+# 1. Create your new values file with global.suseObservability configuration
+#    (see Quick Start example above)
+
+# 2. Perform helm upgrade with the new values
+helm upgrade suse-observability suse-observability/suse-observability \
+  -n <namespace> \
+  -f new-values.yaml
+
+# 3. Verify the upgrade
+kubectl get pods -n <namespace>
+helm get values suse-observability -n <namespace>
+```
+
+**Important considerations:**
+
+- **No downtime expected**: The upgrade is a standard Helm upgrade; pods will be rolled incrementally
+- **PVCs are preserved**: Existing persistent volume claims remain intact
+- **Secrets are preserved**: Existing secrets (licenses, API keys) are not deleted
+- **Rollback available**: Use `helm rollback suse-observability <revision>` if needed
+
+### Why victoria-metrics-1 Must Be Set Manually
+
+The `victoria-metrics-1` subchart enablement cannot be auto-configured by the sizing profile because Helm subchart conditions (`enabled: true/false`) must be evaluated before template rendering. The sizing profile values are applied during template rendering, which is too late to affect subchart inclusion.
+
+**Rule of thumb:**
+- HA profiles (`150-ha`, `250-ha`, `500-ha`, `4000-ha`): Set `victoria-metrics-1.enabled: true`
+- Non-HA profiles (`trial`, `10-nonha`, `20-nonha`, `50-nonha`, `100-nonha`): Set `victoria-metrics-1.enabled: false` (or omit, as `false` is the default)
+
 ### Overriding Sizing Profile Defaults
 
 You can override specific values from the sizing profile when needed:
@@ -186,6 +259,55 @@ elasticsearch:
         storage: 500Gi  # Override profile's default
 ```
 
+### Global Affinity Configuration
+
+The `global.suseObservability.affinity` section allows you to configure pod scheduling constraints for all components:
+
+```yaml
+global:
+  suseObservability:
+    sizing:
+      profile: "150-ha"
+    affinity:
+      # Node affinity - target specific nodes (applies to ALL components)
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: node-role.kubernetes.io/observability
+                  operator: Exists
+
+      # Pod affinity - co-locate application pods (does NOT apply to infrastructure)
+      podAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/part-of: suse-observability
+              topologyKey: kubernetes.io/hostname
+
+      # Pod anti-affinity - spread infrastructure pods (HA profiles only)
+      podAntiAffinity:
+        # Use hard anti-affinity (pods MUST be on different nodes)
+        requiredDuringSchedulingIgnoredDuringExecution: true
+        # Spread across nodes (use topology.kubernetes.io/zone for zone spreading)
+        topologyKey: "kubernetes.io/hostname"
+```
+
+**Affinity scope:**
+
+| Affinity Type | Application Components | Infrastructure Components |
+|---------------|------------------------|---------------------------|
+| `nodeAffinity` | ✅ Applied | ✅ Applied |
+| `podAffinity` | ✅ Applied | ❌ Not applied |
+| `podAntiAffinity` | ❌ Not applied | ✅ Applied (HA profiles) |
+
+**Pod anti-affinity modes:**
+
+- `requiredDuringSchedulingIgnoredDuringExecution: true` - **Hard anti-affinity**: Pods will NOT schedule if they cannot be placed on separate nodes. Use when you have enough nodes.
+- `requiredDuringSchedulingIgnoredDuringExecution: false` - **Soft anti-affinity**: Pods will prefer separate nodes but can co-locate if necessary. Use when node count is limited.
+
 ### Backward Compatibility
 
 The traditional configuration method (without sizing profiles) is still supported for backward compatibility:
@@ -208,6 +330,92 @@ stackstate:
 ```
 
 However, we strongly recommend migrating to sizing profiles for easier maintenance and upgrades.
+
+### Troubleshooting Migration Issues
+
+**Problem: Pods stuck in Pending state after migration**
+
+This usually indicates a scheduling issue, often related to anti-affinity rules:
+
+```shell
+# Check pod events
+kubectl describe pod <pod-name> -n <namespace>
+
+# If anti-affinity is the issue, use soft anti-affinity
+global:
+  suseObservability:
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution: false  # Soft anti-affinity
+```
+
+**Problem: Resources differ from previous installation**
+
+Sizing profiles may have updated resource recommendations. To preserve your previous settings:
+
+```yaml
+# Override specific resources while using the profile for everything else
+global:
+  suseObservability:
+    sizing:
+      profile: "150-ha"
+
+# Your custom overrides
+stackstate:
+  components:
+    api:
+      resources:
+        requests:
+          memory: 8Gi  # Your previous value
+```
+
+**Problem: helm upgrade fails with validation errors**
+
+Ensure you're not mixing old and new configuration styles:
+
+```shell
+# Check current values
+helm get values suse-observability -n <namespace>
+
+# Common issue: both stackstate.license.key AND global.suseObservability.license set
+# Solution: Use only one configuration style
+```
+
+**Problem: Pull secret not working**
+
+When using `global.suseObservability.pullSecret`, ensure the pull-secret subchart is disabled:
+
+```yaml
+global:
+  suseObservability:
+    pullSecret:
+      username: "user"
+      password: "pass"
+
+pull-secret:
+  enabled: false  # Required when using global.suseObservability.pullSecret
+```
+
+**Problem: victoria-metrics-1 pods not starting (HA profiles)**
+
+Ensure the subchart is explicitly enabled:
+
+```yaml
+global:
+  suseObservability:
+    sizing:
+      profile: "150-ha"
+
+victoria-metrics-1:
+  enabled: true  # Must be set explicitly for HA profiles
+```
+
+**Getting help:**
+
+If you encounter issues not covered here:
+1. Check pod logs: `kubectl logs <pod-name> -n <namespace>`
+2. Review Helm release status: `helm status suse-observability -n <namespace>`
+3. Compare rendered templates: `helm template suse-observability . -f values.yaml > rendered.yaml`
 
 {{ template "chart.valuesSection" . }}
 

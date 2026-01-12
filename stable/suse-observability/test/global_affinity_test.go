@@ -114,19 +114,21 @@ func TestGlobalAffinityComponentOverride(t *testing.T) {
 	assert.Equal(t, []string{"observability"}, syncNodeSelectorTerms[0].MatchExpressions[0].Values, "Sync should use global value 'observability'")
 }
 
-// TestGlobalAffinityWithoutPodAntiAffinity tests that simplified podAntiAffinity format is not rendered
-func TestGlobalAffinityWithoutPodAntiAffinity(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_node_affinity.yaml")
+// TestGlobalAffinityAppComponentsNoPodAntiAffinity tests that application components don't get podAntiAffinity
+// from the simplified format (only infrastructure components get it)
+func TestGlobalAffinityAppComponentsNoPodAntiAffinity(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_infrastructure.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	// Check that API deployment doesn't have podAntiAffinity from the simplified format
+	// (simplified format only applies to infrastructure components)
 	apiDeployment, exists := resources.Deployments["suse-observability-api"]
 	require.True(t, exists, "API deployment should exist")
 	require.NotNil(t, apiDeployment.Spec.Template.Spec.Affinity, "Affinity should be set for API")
 	require.NotNil(t, apiDeployment.Spec.Template.Spec.Affinity.NodeAffinity, "NodeAffinity should be set for API")
 
-	// PodAntiAffinity should be nil because the simplified format in values.yaml is not supported
-	assert.Nil(t, apiDeployment.Spec.Template.Spec.Affinity.PodAntiAffinity, "PodAntiAffinity should not be set from simplified format")
+	// PodAntiAffinity should be nil for application components (simplified format only for infra)
+	assert.Nil(t, apiDeployment.Spec.Template.Spec.Affinity.PodAntiAffinity, "PodAntiAffinity should not be set for application components from simplified format")
 }
 
 // TestLegacyAffinityBackwardsCompatibility tests that legacy stackstate.components.*.affinity still works
@@ -141,4 +143,110 @@ func TestLegacyAffinityBackwardsCompatibility(t *testing.T) {
 
 	_, apiExists := resources.Deployments["suse-observability-api"]
 	require.True(t, apiExists, "API deployment should exist in legacy mode")
+}
+
+// TestGlobalAffinityInfrastructureNodeAffinity tests that nodeAffinity is applied to infrastructure components
+func TestGlobalAffinityInfrastructureNodeAffinity(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_infrastructure.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// Infrastructure statefulsets that should have nodeAffinity from global config
+	infraStatefulsets := []string{
+		"suse-observability-kafka",
+		"suse-observability-zookeeper",
+		"suse-observability-clickhouse-shard0",
+		"suse-observability-victoria-metrics-0",
+		"suse-observability-victoria-metrics-1",
+		"suse-observability-elasticsearch-master",
+	}
+
+	for _, stsName := range infraStatefulsets {
+		sts, exists := resources.Statefulsets[stsName]
+		if !exists {
+			t.Logf("Skipping %s (not found in rendered output)", stsName)
+			continue
+		}
+
+		// Check that nodeAffinity is present
+		require.NotNil(t, sts.Spec.Template.Spec.Affinity, "Affinity should be set for %s", stsName)
+		require.NotNil(t, sts.Spec.Template.Spec.Affinity.NodeAffinity, "NodeAffinity should be set for %s", stsName)
+		require.NotNil(t, sts.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution, "RequiredDuringSchedulingIgnoredDuringExecution should be set for %s", stsName)
+
+		// Verify the nodeAffinity matches what we set in global.suseObservability.affinity.nodeAffinity
+		nodeSelectorTerms := sts.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution.NodeSelectorTerms
+		require.Len(t, nodeSelectorTerms, 1, "Should have one node selector term for %s", stsName)
+		require.Len(t, nodeSelectorTerms[0].MatchExpressions, 1, "Should have one match expression for %s", stsName)
+		assert.Equal(t, "node-type", nodeSelectorTerms[0].MatchExpressions[0].Key, "Match expression key should be node-type for %s", stsName)
+		assert.Equal(t, v1.NodeSelectorOpIn, nodeSelectorTerms[0].MatchExpressions[0].Operator, "Match expression operator should be In for %s", stsName)
+		assert.Equal(t, []string{"observability"}, nodeSelectorTerms[0].MatchExpressions[0].Values, "Match expression values should be [observability] for %s", stsName)
+	}
+}
+
+// TestGlobalAffinityInfrastructureCustomTopologyKey tests that custom topologyKey is applied to infrastructure podAntiAffinity
+func TestGlobalAffinityInfrastructureCustomTopologyKey(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_infrastructure.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// Infrastructure statefulsets that should have podAntiAffinity with custom topologyKey
+	infraStatefulsets := []string{
+		"suse-observability-kafka",
+		"suse-observability-zookeeper",
+		"suse-observability-clickhouse-shard0",
+		"suse-observability-victoria-metrics-0",
+		"suse-observability-victoria-metrics-1",
+	}
+
+	for _, stsName := range infraStatefulsets {
+		sts, exists := resources.Statefulsets[stsName]
+		if !exists {
+			t.Logf("Skipping %s (not found in rendered output)", stsName)
+			continue
+		}
+
+		// Check that podAntiAffinity is present with custom topologyKey
+		require.NotNil(t, sts.Spec.Template.Spec.Affinity, "Affinity should be set for %s", stsName)
+		require.NotNil(t, sts.Spec.Template.Spec.Affinity.PodAntiAffinity, "PodAntiAffinity should be set for %s", stsName)
+		require.NotNil(t, sts.Spec.Template.Spec.Affinity.PodAntiAffinity.RequiredDuringSchedulingIgnoredDuringExecution, "RequiredDuringSchedulingIgnoredDuringExecution should be set for %s", stsName)
+		require.Len(t, sts.Spec.Template.Spec.Affinity.PodAntiAffinity.RequiredDuringSchedulingIgnoredDuringExecution, 1, "Should have one anti-affinity term for %s", stsName)
+
+		// Verify custom topologyKey (topology.kubernetes.io/zone)
+		topologyKey := sts.Spec.Template.Spec.Affinity.PodAntiAffinity.RequiredDuringSchedulingIgnoredDuringExecution[0].TopologyKey
+		assert.Equal(t, "topology.kubernetes.io/zone", topologyKey, "TopologyKey should be topology.kubernetes.io/zone for %s", stsName)
+	}
+}
+
+// TestGlobalAffinitySoftAntiAffinity tests that soft (preferred) anti-affinity is applied when configured
+func TestGlobalAffinitySoftAntiAffinity(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_soft_antiaffinity.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// Infrastructure statefulsets that should have soft podAntiAffinity
+	infraStatefulsets := []string{
+		"suse-observability-kafka",
+		"suse-observability-zookeeper",
+		"suse-observability-clickhouse-shard0",
+		"suse-observability-victoria-metrics-0",
+		"suse-observability-victoria-metrics-1",
+	}
+
+	for _, stsName := range infraStatefulsets {
+		sts, exists := resources.Statefulsets[stsName]
+		if !exists {
+			t.Logf("Skipping %s (not found in rendered output)", stsName)
+			continue
+		}
+
+		// Check that podAntiAffinity uses preferredDuringSchedulingIgnoredDuringExecution (soft)
+		require.NotNil(t, sts.Spec.Template.Spec.Affinity, "Affinity should be set for %s", stsName)
+		require.NotNil(t, sts.Spec.Template.Spec.Affinity.PodAntiAffinity, "PodAntiAffinity should be set for %s", stsName)
+
+		// Should have preferred (soft) anti-affinity, not required (hard)
+		assert.Nil(t, sts.Spec.Template.Spec.Affinity.PodAntiAffinity.RequiredDuringSchedulingIgnoredDuringExecution, "RequiredDuringSchedulingIgnoredDuringExecution should NOT be set for soft anti-affinity on %s", stsName)
+		require.NotNil(t, sts.Spec.Template.Spec.Affinity.PodAntiAffinity.PreferredDuringSchedulingIgnoredDuringExecution, "PreferredDuringSchedulingIgnoredDuringExecution should be set for soft anti-affinity on %s", stsName)
+		require.Len(t, sts.Spec.Template.Spec.Affinity.PodAntiAffinity.PreferredDuringSchedulingIgnoredDuringExecution, 1, "Should have one preferred anti-affinity term for %s", stsName)
+
+		// Verify topologyKey
+		topologyKey := sts.Spec.Template.Spec.Affinity.PodAntiAffinity.PreferredDuringSchedulingIgnoredDuringExecution[0].PodAffinityTerm.TopologyKey
+		assert.Equal(t, "kubernetes.io/hostname", topologyKey, "TopologyKey should be kubernetes.io/hostname for %s", stsName)
+	}
 }

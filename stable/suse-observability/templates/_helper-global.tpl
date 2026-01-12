@@ -336,3 +336,76 @@ Usage:
   {{- .Values.stackstate.components.sync.tmpToPVC.volumeSize -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+=============================================================================
+INFRASTRUCTURE AFFINITY HELPERS
+These helpers provide affinity configuration for infrastructure components
+(kafka, clickhouse, zookeeper, elasticsearch, hbase, victoria-metrics).
+=============================================================================
+*/}}
+
+{{/*
+Get the global nodeAffinity configuration for infrastructure components.
+Returns the nodeAffinity from global.suseObservability.affinity.nodeAffinity if configured.
+
+Usage:
+{{ include "suse-observability.global.infra.nodeAffinity" . }}
+*/}}
+{{- define "suse-observability.global.infra.nodeAffinity" -}}
+{{- if include "suse-observability.global.enabled" . -}}
+  {{- if and .Values.global.suseObservability.affinity .Values.global.suseObservability.affinity.nodeAffinity -}}
+{{- toYaml .Values.global.suseObservability.affinity.nodeAffinity -}}
+  {{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the podAntiAffinity topologyKey for infrastructure components.
+Returns the custom topologyKey from global.suseObservability.affinity.podAntiAffinity.topologyKey
+or defaults to "kubernetes.io/hostname".
+
+Usage:
+{{ include "suse-observability.global.infra.podAntiAffinity.topologyKey" . }}
+*/}}
+{{- define "suse-observability.global.infra.podAntiAffinity.topologyKey" -}}
+{{- $default := "kubernetes.io/hostname" -}}
+{{- if include "suse-observability.global.enabled" . -}}
+  {{- if and .Values.global.suseObservability.affinity .Values.global.suseObservability.affinity.podAntiAffinity .Values.global.suseObservability.affinity.podAntiAffinity.topologyKey -}}
+{{- .Values.global.suseObservability.affinity.podAntiAffinity.topologyKey -}}
+  {{- else -}}
+{{- $default -}}
+  {{- end -}}
+{{- else -}}
+{{- $default -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Check if hard (required) pod anti-affinity should be used for infrastructure components.
+Returns "true" if requiredDuringSchedulingIgnoredDuringExecution is enabled (default),
+"false" if soft anti-affinity should be used.
+
+Usage:
+{{ if eq (include "suse-observability.global.infra.podAntiAffinity.required" .) "true" }}
+*/}}
+{{- define "suse-observability.global.infra.podAntiAffinity.required" -}}
+{{- $default := true -}}
+{{- if include "suse-observability.global.enabled" . -}}
+  {{- if and .Values.global.suseObservability.affinity .Values.global.suseObservability.affinity.podAntiAffinity -}}
+    {{- if hasKey .Values.global.suseObservability.affinity.podAntiAffinity "requiredDuringSchedulingIgnoredDuringExecution" -}}
+      {{- if .Values.global.suseObservability.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution -}}
+true
+      {{- else -}}
+false
+      {{- end -}}
+    {{- else -}}
+{{- $default -}}
+    {{- end -}}
+  {{- else -}}
+{{- $default -}}
+  {{- end -}}
+{{- else -}}
+{{- $default -}}
+{{- end -}}
+{{- end -}}

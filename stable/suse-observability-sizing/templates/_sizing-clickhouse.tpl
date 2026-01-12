@@ -29,18 +29,6 @@ Usage: {{ include "common.sizing.clickhouse.persistence.size" . }}
 {{- end }}
 
 {{/*
-Get clickhouse replicaCount
-Usage: {{ include "common.sizing.clickhouse.replicaCount" . }}
-*/}}
-{{- define "common.sizing.clickhouse.replicaCount" -}}
-{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
-{{- if eq $profile "500-ha" }}1
-{{- end }}
-{{- end }}
-{{- end }}
-
-{{/*
 Get clickhouse affinity
 Usage: {{ include "common.sizing.clickhouse.affinity" . }}
 */}}
