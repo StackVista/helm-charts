@@ -251,6 +251,13 @@ Return the the image registry.
 {{- end }}
 
 {{/*
+Return the the wait image registry.
+*/}}
+{{- define "opentelemetry-collector.waitImageRegistry" -}}
+  {{ default .Values.global.wait.image.registry (.Values.global).imageRegistry }}
+{{- end }}
+
+{{/*
 Renders a value that contains a template.
 Usage:
 {{ include "opentelemetry-collector.tplvalue.render" ( dict "value" .Values.path.to.the.Value "context" $) }}

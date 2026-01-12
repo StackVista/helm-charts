@@ -9,7 +9,17 @@ global:
     # global.features.experimentalStackpacks -- Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec.
     # This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed.
     experimentalStackpacks: false
-
+  # Wait image for init containers
+  wait:
+    image:
+      # global.wait.image.registry -- Base container image registry for wait containers.
+      registry: ''
+      # global.wait.image.repository -- Base container image repository for wait containers.
+      repository: ''
+      # global.wait.image.tag -- Container image tag for wait containers.
+      tag: ''
+      # global.wait.image.pullPolicy -- Image pull policy for wait containers.
+      pullPolicy: ''
 # Declare variables to be passed into your templates.
 nameOverride: ""
 fullnameOverride: ""
@@ -295,12 +305,6 @@ image:
   # When digest is set to a non-empty value, images will be pulled by digest (regardless of tag value).
   digest: ""
 imagePullSecrets: []
-# Wait image for init containers
-wait:
-  image:
-    registry: ""
-    repository: ""
-    tag: ""
 
 # OpenTelemetry Collector executable
 command:

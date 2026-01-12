@@ -20,6 +20,16 @@ global:
   # backup.enabled -- Enables backup/restore, including the MinIO subsystem.
   backup:
     enabled: false
+  wait:
+    image:
+      # global.wait.image.registry -- Base container image registry for wait containers.
+      registry: quay.io
+      # global.wait.image.repository -- Base container image repository for wait containers.
+      repository: stackstate/wait
+      # global.wait.image.tag -- Container image tag for wait containers.
+      tag: 1.0.11-04b49abf
+      # global.wait.image.pullPolicy -- Image pull policy for wait containers.
+      pullPolicy: IfNotPresent
 # commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
 commonLabels: {}
 backup:
@@ -1594,16 +1604,6 @@ stackstate:
       tolerations: []
       # stackstate.components.workloadObserver.affinity -- Affinity settings for pod assignment.
       affinity: {}
-    wait:
-      image:
-        # stackstate.components.wait.image.registry -- Base container image registry for wait containers.
-        registry: &waitImageRegistry quay.io
-        # stackstate.components.wait.image.repository -- Base container image repository for wait containers.
-        repository: &waitImageRepository stackstate/wait
-        # stackstate.components.wait.image.tag -- Container image tag for wait containers.
-        tag: &waitImageTag 1.0.11-04b49abf
-        # stackstate.components.wait.image.pullPolicy -- Image pull policy for wait containers.
-        pullPolicy: IfNotPresent
   # stackstate.authentication -- Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error.
   authentication:
     # stackstate.authentication.fromExternalSecret -- Use an external secret for the authenticated secrets. This suppresses secret creation by StackState and gets the data from the secret with the provided name.
@@ -2825,17 +2825,9 @@ opentelemetry-collector:
     limits:
       cpu: 500m
       memory: 512Mi
-  wait:
-    image:
-      # opentelemetry-collector.wait.image.registry -- Base container image registry for 'wait' containers.
-      registry: *waitImageRegistry
-      # opentelemetry-collector.wait.image.repository -- Base container image repository for 'wait' containers.
-      repository: *waitImageRepository
-      # opentelemetry-collector.wait.image.tag -- Container image tag for 'wait' containers.
-      tag: *waitImageTag
   initContainers:
     - name: otel-collector-init
-      image: '{{ include "opentelemetry-collector.imageRegistry" . }}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}'
+      image: '{{ include "opentelemetry-collector.waitImageRegistry" . }}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}'
       imagePullPolicy: IfNotPresent
       command:
         - sh

@@ -82,7 +82,7 @@ Return the image registry for the container-tools containers
 Return the image registry for the wait containers
 */}}
 {{- define "stackstate.wait.image.registry" -}}
-{{ include "common.image.registry" ( dict "image" .Values.stackstate.components.wait.image "context" $) }}
+{{ include "common.image.registry" ( dict "image" .Values.global.wait.image "context" $) }}
 {{- end -}}
 
 {{/*

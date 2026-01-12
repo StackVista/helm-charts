@@ -25,8 +25,8 @@ template:
           - -c
           - |
             /entrypoint -c {{ include "stackstate.es.endpoint" . }},{{ include "stackstate.minio.endpoint" . }} -t 300
-        image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-        imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+        image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+        imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
     containers:
       - name: configure
         image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"

@@ -13,8 +13,8 @@ command:
   - |
     /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{- .Release.Name }}-hbase-stackgraph:2182,{{ template "common.fullname.short" . }}-initializer:1618 -t 300
 {{- end }}
-image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- end -}}
 
 {{- define "stackstate.healthSync.deployment.container.main" -}}

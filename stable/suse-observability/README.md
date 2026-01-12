@@ -203,6 +203,10 @@ stackstate/stackstate
 | global.imageRegistry | string | `nil` | Image registry to be used by all images across all charts. |
 | global.receiverApiKey | string | `""` | API key to be used by the Receiver. This setting is deprecated in favor of stackstate.apiKey.key |
 | global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overridden per PVC. |
+| global.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
+| global.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
+| global.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
+| global.wait.image.tag | string | `"1.0.11-04b49abf"` | Container image tag for wait containers. |
 | hbase.all.metrics.agentAnnotationsEnabled | bool | `true` |  |
 | hbase.all.metrics.enabled | bool | `true` |  |
 | hbase.commonLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Add additional labels to all resources created for all hbase resources |
@@ -362,7 +366,7 @@ stackstate/stackstate
 | opentelemetry-collector.initContainers[0].command[0] | string | `"sh"` |  |
 | opentelemetry-collector.initContainers[0].command[1] | string | `"-c"` |  |
 | opentelemetry-collector.initContainers[0].command[2] | string | `"/entrypoint -c suse-observability-clickhouse:9000,suse-observability-vmagent:8429,suse-observability-kafka-headless:9092 -t 300\n"` |  |
-| opentelemetry-collector.initContainers[0].image | string | `"{{ include \"opentelemetry-collector.imageRegistry\" . }}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"` |  |
+| opentelemetry-collector.initContainers[0].image | string | `"{{ include \"opentelemetry-collector.waitImageRegistry\" . }}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"` |  |
 | opentelemetry-collector.initContainers[0].imagePullPolicy | string | `"IfNotPresent"` |  |
 | opentelemetry-collector.initContainers[0].name | string | `"otel-collector-init"` |  |
 | opentelemetry-collector.mode | string | `"statefulset"` | deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset". |
@@ -374,9 +378,6 @@ stackstate/stackstate
 | opentelemetry-collector.resources.limits.memory | string | `"512Mi"` |  |
 | opentelemetry-collector.resources.requests.cpu | string | `"250m"` |  |
 | opentelemetry-collector.resources.requests.memory | string | `"512Mi"` |  |
-| opentelemetry-collector.wait.image.registry | string | `"quay.io"` | Base container image registry for 'wait' containers. |
-| opentelemetry-collector.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for 'wait' containers. |
-| opentelemetry-collector.wait.image.tag | string | `"1.0.11-04b49abf"` | Container image tag for 'wait' containers. |
 | opentelemetry.enabled | bool | `true` | Enable / disable chart-based OTEL. |
 | pull-secret.credentials | list | `[]` | Registry and associated credentials (username, password) that will be stored in the pull-secret |
 | pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |
@@ -880,10 +881,6 @@ stackstate/stackstate
 | stackstate.components.vmagent.persistence.storageClass | string | `nil` |  |
 | stackstate.components.vmagent.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `vmagent` pods. |
 | stackstate.components.vmagent.resources | object | `{"limits":{"cpu":"200m","ephemeral-storage":"1Gi","memory":"512Mi"},"requests":{"cpu":"200m","ephemeral-storage":"1Mi","memory":"256Mi"}}` | Resource allocation for vmagent pod. |
-| stackstate.components.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
-| stackstate.components.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
-| stackstate.components.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
-| stackstate.components.wait.image.tag | string | `"1.0.11-04b49abf"` | Container image tag for wait containers. |
 | stackstate.components.workloadObserver.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.workloadObserver.enabled | bool | `true` | Enable/disable the workload observer |
 | stackstate.components.workloadObserver.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |

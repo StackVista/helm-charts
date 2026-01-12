@@ -159,6 +159,10 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | global.commonLabels | object | `{}` |  |
 | global.features | object | `{"experimentalStackpacks":false}` | Feature switches for SUSE Observability. |
 | global.features.experimentalStackpacks | bool | `false` | Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec. This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed. |
+| global.wait.image.pullPolicy | string | `""` | Image pull policy for wait containers. |
+| global.wait.image.registry | string | `""` | Base container image registry for wait containers. |
+| global.wait.image.repository | string | `""` | Base container image repository for wait containers. |
+| global.wait.image.tag | string | `""` | Container image tag for wait containers. |
 | hostAliases | list | `[]` |  |
 | hostNetwork | bool | `false` |  |
 | image.digest | string | `""` |  |
@@ -270,7 +274,4 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | tolerations | list | `[]` |  |
 | topologySpreadConstraints | list | `[]` |  |
 | useGOMEMLIMIT | bool | `true` |  |
-| wait.image.registry | string | `""` |  |
-| wait.image.repository | string | `""` |  |
-| wait.image.tag | string | `""` |  |
 

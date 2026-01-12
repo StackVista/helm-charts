@@ -6,7 +6,7 @@ command:
   - -c
   - |
     /entrypoint -c {{ include "stackstate.minio.endpoint" . }},{{ include "stackgraph.hbase.waitfor" . }},{{ template "common.fullname.short" . }}-{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
-image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
 imagePullPolicy: Always
 {{- end }}
 {{- define "stackstate.backup.stackgraph.container.main" }}
@@ -132,7 +132,7 @@ command:
   - -c
   - |
     /entrypoint -c {{- if .Values.global.backup.enabled -}}{{ include "stackstate.minio.endpoint" . }},{{- end -}}{{ include "stackgraph.hbase.waitfor" . }},{{ template "common.fullname.short" . }}-{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
-image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
+image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
 imagePullPolicy: Always
 {{- end }}
 {{- define "stackstate.backup.configuration.container.main" }}

@@ -68,7 +68,7 @@ config: |
         {{ include "common.storage.class" ( dict "persistence" .Values.backup.stackGraph.restore.tempData "global" .Values.global) | nindent 10 }}
       job:
         image: {{ include "stackstate.image.registry" (merge $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}
-        waitImage: {{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}
+        waitImage: {{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}
         {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 8 }}
         labels:
           app.kubernetes.io/component: backup
@@ -123,7 +123,7 @@ config: |
       pvc: {{ template "common.fullname.short" . }}-settings-backup-data
       job:
         image: {{ include "stackstate.image.registry" (merge $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}
-        waitImage: {{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}
+        waitImage: {{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}
         {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 8 }}
         labels:
           app.kubernetes.io/component: backup
@@ -199,7 +199,7 @@ config: |
       scaleDownLabelSelector: {{ include "stackstate.backup.victoriametrics.restore.scaleDownLabelsCommaSeparated" . }}
       job:
         image: {{ include "stackstate.vmrestore.image.registry" . }}/{{ index .Values "victoria-metrics" "restore" "image" "repository" }}:{{ index .Values "victoria-metrics" "restore" "image" "tag" }}
-        waitImage: {{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}
+        waitImage: {{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}
         {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 8 }}
         labels:
           app.kubernetes.io/component: backup

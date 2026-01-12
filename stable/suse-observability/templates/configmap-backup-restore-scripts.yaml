@@ -34,8 +34,8 @@ spec:
             - -c
             - |
               /entrypoint -c {{ include "stackstate.es.endpoint" . }},{{ include "stackstate.minio.endpoint" . }} -t 300
-          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
       containers:
         - name: list
           image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
@@ -122,8 +122,8 @@ spec:
             - -c
             - |
               /entrypoint -c {{ include "stackstate.es.endpoint" . }},{{ include "stackstate.minio.endpoint" . }} -t 300
-          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
       containers:
         - name: restore
           image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
@@ -216,8 +216,8 @@ spec:
             - -c
             - |
               /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
-          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
       containers:
         - name: list
           image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
@@ -306,8 +306,8 @@ spec:
             - -c
             - |
               /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
-          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
       containers:
         - name: restore
           image: "{{ include "stackstate.image.registry" (merge $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
@@ -424,8 +424,8 @@ spec:
             - -c
             - |
               /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
-          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
       {{- end }}
       containers:
         - name: list
@@ -521,8 +521,8 @@ spec:
             - -c
             - |
               /entrypoint -c {{- if .Values.global.backup.enabled -}}{{ include "stackstate.minio.endpoint" . }},{{- end -}}{{ include "stackgraph.hbase.waitfor" . }} -t 300
-          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
       containers:
         - name: restore-settings
           image: "{{ include "stackstate.image.registry" (merge $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
@@ -634,8 +634,8 @@ spec:
             - -c
             - |
               /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
-          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
       {{- end }}
       containers:
         - name: download
@@ -731,8 +731,8 @@ spec:
             - -c
             - |
               /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
-          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
       {{- end }}
       containers:
         - name: upload
@@ -827,8 +827,8 @@ spec:
             - -c
             - |
               /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
-          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
       containers:
         - name: list
           image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
@@ -915,8 +915,8 @@ spec:
             - -c
             - |
               /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
-          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-          imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+          image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+          imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
       containers:
         - name: restore
           image: "{{ include "stackstate.vmrestore.image.registry" . }}/{{ index .Values "victoria-metrics" "restore" "image" "repository" }}:{{ index .Values "victoria-metrics" "restore" "image" "tag" }}"
