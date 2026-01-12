@@ -58,7 +58,6 @@ global:
     license: "<your-license-key>"
     baseUrl: "<your-base-url>"
     adminPassword: "<bcrypt-hashed-password>"
-    receiverApiKey: "<your-receiver-api-key>"
     pullSecret:
       username: "<registry-username>"
       password: "<registry-password>"
@@ -83,17 +82,6 @@ python3 -c "import bcrypt; print(bcrypt.hashpw(b'your-password', bcrypt.gensalt(
 # Using Docker
 docker run --rm httpd:alpine htpasswd -bnBC 10 "" "your-password" | tr -d ':\n'
 ```
-
-#### Understanding receiverApiKey
-
-The `receiverApiKey` is **optional**. It's used to authenticate telemetry data sent to the SUSE Observability receiver endpoints. If not provided:
-- The chart will auto-generate a key if `stackstate.receiver.apiKey` is also not set
-- You can retrieve the generated key from the Kubernetes secret after installation
-
-Only set this explicitly if you need to:
-- Use a specific key for external integrations
-- Maintain consistency across reinstallations
-- Integrate with pre-configured agents
 
 ### Available Sizing Profiles
 
@@ -167,7 +155,6 @@ global:
     license: "<your-license-key>"
     baseUrl: "<your-base-url>"
     adminPassword: "<bcrypt-hashed-password>"
-    receiverApiKey: "<your-receiver-api-key>"
     pullSecret:
       username: "<username>"
       password: "<password>"
@@ -542,7 +529,7 @@ If you encounter issues not covered here:
 | global.features.experimentalStackpacks | bool | `false` | Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec. This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed. |
 | global.imagePullSecrets | list | `[]` | List of image pull secret names to be used by all images across all charts. |
 | global.imageRegistry | string | `nil` | Image registry to be used by all images across all charts. When using global.suseObservability (global mode), set this to "registry.rancher.com" to match the default behavior of the suse-observability-values chart. |
-| global.receiverApiKey | string | `""` | API key to be used by the Receiver. This setting is deprecated in favor of stackstate.apiKey.key |
+| global.receiverApiKey | string | `""` | Optional, prefer to use service tokens instead for more control and security. Please see the documentation on how to use Service Tokens. |
 | global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overridden per PVC. |
 | global.suseObservability | object | `{"adminPassword":"","adminPasswordBcrypt":"","affinity":{"nodeAffinity":null,"podAffinity":null,"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":true,"topologyKey":"kubernetes.io/hostname"}},"baseUrl":"","license":"","pullSecret":{"password":"","username":""},"receiverApiKey":"","sizing":{"profile":""}}` | Simplified configuration section that allows users to specify high-level settings. When any values in this section are configured (license, baseUrl, sizing.profile, etc.), the chart will automatically use this configuration instead of the legacy stackstate.* values. This provides a single-chart installation experience without needing the separate suse-observability-values chart. NOTE: This section works in conjunction with existing global settings (imageRegistry, receiverApiKey, imagePullSecrets). IMPORTANT: When using this section, also set global.imageRegistry to "registry.rancher.com" for SUSE Observability images. |
 | global.suseObservability.adminPassword | string | `""` | Admin password for the default 'admin' user (plain text). Mutually exclusive with adminPasswordBcrypt. Required (one of the two) when using global.suseObservability configuration unless other authentication methods (LDAP, OIDC, Keycloak) are configured. |
@@ -558,7 +545,7 @@ If you encounter issues not covered here:
 | global.suseObservability.pullSecret | object | `{"password":"","username":""}` | Image pull secret configuration. |
 | global.suseObservability.pullSecret.password | string | `""` | Password for image pull secret. |
 | global.suseObservability.pullSecret.username | string | `""` | Username for image pull secret. |
-| global.suseObservability.receiverApiKey | string | `""` | Receiver API key for telemetry data. Optional, will use stackstate.receiver.apiKey if not provided. |
+| global.suseObservability.receiverApiKey | string | `""` | Optional, prefer to use Service Tokens instead for more control and security. Will use global.receiverApiKey if not provided. Please see the documentation on how to use Service Tokens. |
 | global.suseObservability.sizing | object | `{"profile":""}` | Sizing profile configuration. |
 | global.suseObservability.sizing.profile | string | `""` | Sizing profile name. Must match one of the available profiles: 10-nonha, 20-nonha, 50-nonha, 100-nonha, 150-ha, 250-ha, 500-ha, 4000-ha, trial. The chart will automatically apply resource limits, replica counts, and affinity configurations based on the selected profile. These act as intelligent defaults that can be overridden by component-specific values. |
 | global.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |

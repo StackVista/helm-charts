@@ -28,6 +28,7 @@ envFrom:
       name: {{ include "stackstate.secret.name.license" .  }}
   - secretRef:
       name: {{ include "stackstate.secret.name.apiKey" .  }}
+      optional: true
   - secretRef:
       name: {{ include "stackstate.secret.name.auth" .  }}
   {{- if .Values.stackstate.email.enabled }}

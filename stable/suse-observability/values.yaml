@@ -2,7 +2,8 @@
 # StackState values #
 #####################
 global:
-  # global.receiverApiKey -- API key to be used by the Receiver. This setting is deprecated in favor of stackstate.apiKey.key
+  # global.receiverApiKey -- Optional, prefer to use service tokens instead for more control and security.
+  # Please see the documentation on how to use Service Tokens.
   receiverApiKey: ""
   # global.imagePullSecrets -- List of image pull secret names to be used by all images across all charts.
   imagePullSecrets: []
@@ -57,7 +58,8 @@ global:
     sizing:
       # global.suseObservability.sizing.profile -- Sizing profile name. Must match one of the available profiles: 10-nonha, 20-nonha, 50-nonha, 100-nonha, 150-ha, 250-ha, 500-ha, 4000-ha, trial. The chart will automatically apply resource limits, replica counts, and affinity configurations based on the selected profile. These act as intelligent defaults that can be overridden by component-specific values.
       profile: ""
-    # global.suseObservability.receiverApiKey -- Receiver API key for telemetry data. Optional, will use stackstate.receiver.apiKey if not provided.
+    # global.suseObservability.receiverApiKey -- Optional, prefer to use Service Tokens instead for more control and security. Will use global.receiverApiKey if not provided.
+    # Please see the documentation on how to use Service Tokens.
     receiverApiKey: ""
     # global.suseObservability.affinity -- Affinity configuration for all SUSE Observability components including infrastructure.
     affinity:

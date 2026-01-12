@@ -65,6 +65,7 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 envFrom:
   - secretRef:
       name: {{ include "stackstate.secret.name.apiKey" .  }}
+      optional: true
 env:
 {{- $serviceConfig := dict "ServiceName" "receiver" "ServiceConfig" $serviceTypeConfig }}
 {{- include "stackstate.service.envvars" (merge (dict) . $serviceConfig) }}

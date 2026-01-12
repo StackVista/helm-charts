@@ -39,7 +39,6 @@ global:
     license: "<your-license-key>"
     baseUrl: "<your-base-url>"
     adminPassword: "<bcrypt-hashed-password>"
-    receiverApiKey: "<your-receiver-api-key>"
     pullSecret:
       username: "<registry-username>"
       password: "<registry-password>"
@@ -64,17 +63,6 @@ python3 -c "import bcrypt; print(bcrypt.hashpw(b'your-password', bcrypt.gensalt(
 # Using Docker
 docker run --rm httpd:alpine htpasswd -bnBC 10 "" "your-password" | tr -d ':\n'
 ```
-
-#### Understanding receiverApiKey
-
-The `receiverApiKey` is **optional**. It's used to authenticate telemetry data sent to the SUSE Observability receiver endpoints. If not provided:
-- The chart will auto-generate a key if `stackstate.receiver.apiKey` is also not set
-- You can retrieve the generated key from the Kubernetes secret after installation
-
-Only set this explicitly if you need to:
-- Use a specific key for external integrations
-- Maintain consistency across reinstallations
-- Integrate with pre-configured agents
 
 ### Available Sizing Profiles
 
@@ -148,7 +136,6 @@ global:
     license: "<your-license-key>"
     baseUrl: "<your-base-url>"
     adminPassword: "<bcrypt-hashed-password>"
-    receiverApiKey: "<your-receiver-api-key>"
     pullSecret:
       username: "<username>"
       password: "<password>"

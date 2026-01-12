@@ -54,13 +54,22 @@ Configuration Summary:
   • Base URL: {{ include "suse-observability.global.baseUrl" . }}
   • License: {{ if include "suse-observability.global.license" . }}✓ Configured{{ else }}⚠ Missing{{ end }}
   • Admin Password: {{ if or (include "suse-observability.global.adminPassword" .) (include "suse-observability.global.adminPasswordBcrypt" .) }}✓ Configured{{ else }}⚠ Missing{{ end }}
-  • Receiver API Key: {{ if include "suse-observability.global.receiverApiKey" . }}✓ Configured{{ else }}⚠ Missing (optional){{ end }}
+  • Receiver API Key: {{ if include "suse-observability.global.receiverApiKey" . }}⚠ Deprecated (configured){{ else }}✓ Not configured{{ end }}
   {{- if include "suse-observability.global.hasPullSecret" . }}
   • Pull Secret: ✓ Configured (automatically applied to all pods)
   {{- end }}
   {{- if .Values.global.suseObservability.sizing.profile }}
   • Sizing Profile: {{ .Values.global.suseObservability.sizing.profile }} ✓
   {{- end }}
+
+{{- if include "suse-observability.global.receiverApiKey" . }}
+
+⚠️ WARNING:
+   You are using the 'receiverApiKey' configuration.
+   Instead of a global, unlimited, API key, please use (per-cluster) Service Tokens.
+   For service token usage and migration instructions, see: https://l.stackstate.com/v7.0/ui-service-tokens
+{{- end }}
+
 
 {{- else }}
 =============================================================================
@@ -79,9 +88,6 @@ For simplified configuration, you can use the global.suseObservability section:
   With image pull secret (optional):
     --set global.suseObservability.pullSecret.username=<username> \
     --set global.suseObservability.pullSecret.password=<password>
-
-  With receiver API key (optional):
-    --set global.suseObservability.receiverApiKey=<your-api-key>
 
 {{- end }}
 
