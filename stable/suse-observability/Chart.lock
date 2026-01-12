@@ -4,7 +4,7 @@ dependencies:
   version: 5.2.0-snapshot.175
 - name: common
   repository: file://../common/
-  version: 0.4.26
+  version: 0.4.27
 - name: suse-observability-sizing
   repository: file://../suse-observability-sizing/
   version: 0.1.1

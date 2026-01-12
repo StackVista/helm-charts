@@ -7,7 +7,7 @@ keywords:
   - common
   - stackstate
 maintainers:
-- name: Stackstate Ops Team
-  email: ops@stackstate.com
+  - name: Stackstate Ops Team
+    email: ops@stackstate.com
 name: common
-version: 0.4.26
+version: 0.4.27
