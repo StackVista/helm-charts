@@ -88,7 +88,9 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
 - name: BACKUP_VICTORIA_METRICS_0_S3_PREFIX
   value: {{ include "trimTrailingSlashes" (index .Values "victoria-metrics-0" "backup" "s3Prefix") }}
 - name: BACKUP_VICTORIA_METRICS_1_ENABLED
-  value: {{ index .Values "victoria-metrics-1" "backup" "enabled" | quote }}
+  {{- $vm1Enabled := eq (include "victoria-metrics-1.effectivelyEnabled" .) "true" -}}
+  {{- $backupEnabled := and $vm1Enabled (index .Values "victoria-metrics-1" "backup" "enabled") }}
+  value: {{ $backupEnabled | quote }}
 - name: BACKUP_VICTORIA_METRICS_1_BUCKET_NAME
   value: {{ index .Values "victoria-metrics-1" "backup" "bucketName" | quote }}
 - name: BACKUP_VICTORIA_METRICS_1_S3_PREFIX

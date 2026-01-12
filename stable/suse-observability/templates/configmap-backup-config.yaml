@@ -1,9 +1,33 @@
 {{/*
+Check if victoria-metrics-1 is effectively enabled.
+This considers both the values setting and global sizing profile override.
+For non-HA profiles in global mode, victoria-metrics-1 is disabled regardless of values.
+*/}}
+{{- define "victoria-metrics-1.effectivelyEnabled" -}}
+{{- $valuesEnabled := index .Values "victoria-metrics-1" "enabled" -}}
+{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+  {{- $profile := .Values.global.suseObservability.sizing.profile -}}
+  {{- /* Non-HA profiles should have victoria-metrics-1 disabled */ -}}
+  {{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") -}}
+    {{- print "false" -}}
+  {{- else -}}
+    {{- /* HA profiles: use the values setting */ -}}
+    {{- print $valuesEnabled -}}
+  {{- end -}}
+{{- else -}}
+  {{- /* No global sizing, use the values setting */ -}}
+  {{- print $valuesEnabled -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Determines the HA mode based on backup configuration.
 Returns "mirror" if both victoria-metrics instances have backup enabled, otherwise "single".
+Considers global sizing profile override for victoria-metrics-1.
 */}}
 {{- define "victoria-metrics.ha.mode" -}}
-{{- if and (index .Values "victoria-metrics-0" "enabled") (index .Values "victoria-metrics-1" "enabled") -}}
+{{- $vm1Enabled := eq (include "victoria-metrics-1.effectivelyEnabled" .) "true" -}}
+{{- if and (index .Values "victoria-metrics-0" "enabled") $vm1Enabled -}}
 mirror
 {{- else -}}
 single
@@ -13,13 +37,15 @@ single
 {{/*
 Generates a list of S3 backup locations from enabled victoria-metrics instances.
 Returns a YAML array of objects with bucket and prefix fields, or empty array if no backups enabled.
+Considers global sizing profile override for victoria-metrics-1.
 */}}
 {{- define "backupS3Locations" -}}
 {{- $locations := list -}}
 {{- if index .Values "victoria-metrics-0" "enabled" -}}
   {{- $locations = append $locations (dict "bucket" (index .Values "victoria-metrics-0" "backup" "bucketName") "prefix" (index .Values "victoria-metrics-0" "backup" "s3Prefix")) -}}
 {{- end -}}
-{{- if index .Values "victoria-metrics-1" "enabled" -}}
+{{- $vm1Enabled := eq (include "victoria-metrics-1.effectivelyEnabled" .) "true" -}}
+{{- if $vm1Enabled -}}
   {{- $locations = append $locations (dict "bucket" (index .Values "victoria-metrics-1" "backup" "bucketName") "prefix" (index .Values "victoria-metrics-1" "backup" "s3Prefix")) -}}
 {{- end -}}
 {{- if $locations -}}

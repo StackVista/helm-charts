@@ -1,4 +1,4 @@
-{{- if .Values.server.persistentVolume.enabled -}}
+{{- if and .Values.server.persistentVolume.enabled (eq (include "victoria-metrics.isEnabled" .) "true") -}}
 {{- if not .Values.server.statefulSet.enabled -}}
 {{- if not .Values.server.persistentVolume.existingClaim -}}
 kind: PersistentVolumeClaim

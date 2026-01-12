@@ -1,4 +1,4 @@
-{{- if and .Values.server.enabled .Values.server.statefulSet.enabled -}}
+{{- if and .Values.server.enabled .Values.server.statefulSet.enabled (eq (include "victoria-metrics.isEnabled" .) "true") -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 apiVersion: apps/v1
 kind: StatefulSet

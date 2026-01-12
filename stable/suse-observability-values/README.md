@@ -2,12 +2,6 @@
 
 Helm Chart for rendering SUSE Observability Values
 
-> **⚠️ DEPRECATION NOTICE**
-> This chart is deprecated. The `suse-observability` chart now supports simplified
-> configuration natively via the `global.suseObservability` section.
-> Please use the single-chart installation method instead. See the
-> [suse-observability chart documentation](../suse-observability/README.md) for details.
-
 Current chart version is `1.4.5`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>

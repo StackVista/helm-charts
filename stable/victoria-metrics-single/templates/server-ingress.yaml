@@ -1,4 +1,4 @@
-{{- if and .Values.server.enabled .Values.server.ingress.enabled  }}
+{{- if and .Values.server.enabled .Values.server.ingress.enabled (eq (include "victoria-metrics.isEnabled" .) "true") }}
 {{- $ingressApiIsStable := eq (include "victoria-metrics.ingress.isStable" .) "true" -}}
 {{- $ingressSupportsIngressClassName := eq (include "victoria-metrics.ingress.supportsIngressClassName" .) "true" -}}
 {{- $ingressSupportsPathType := eq (include "victoria-metrics.ingress.supportsPathType" .) "true" -}}

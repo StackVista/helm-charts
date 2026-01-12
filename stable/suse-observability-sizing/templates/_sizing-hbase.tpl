@@ -134,13 +134,17 @@ limits:
 {{- else if eq $profile "250-ha" }}
 requests:
   cpu: "3000m"
+  memory: 4Gi
 limits:
   cpu: "6000m"
+  memory: 4Gi
 {{- else if eq $profile "500-ha" }}
 requests:
   cpu: "4000m"
+  memory: 6Gi
 limits:
   cpu: "8000m"
+  memory: 6Gi
 {{- else if eq $profile "4000-ha" }}
 requests:
   cpu: "6000m"
@@ -285,10 +289,8 @@ requests:
   cpu: "500m"
 {{- else if eq $profile "4000-ha" }}
 limits:
-  memory: "3Gi"
   cpu: "6000m"
 requests:
-  memory: "3Gi"
   cpu: "4000m"
 {{- end }}
 {{- end }}
@@ -357,13 +359,13 @@ the HBase chart's default value (1Gi), matching the behavior of the old profile 
 {{/*
 Get hbase tephra archive max size MB
 Usage: {{ include "common.sizing.hbase.tephra.archiveMaxSizeMb" . }}
+
+NOTE: This helper intentionally returns empty for all profiles to use the
+computed value (1% of disk space) in the hbase chart, matching the old profile behavior.
+Only add explicit values here if a profile needs a value different from the computed default.
 */}}
 {{- define "common.sizing.hbase.tephra.archiveMaxSizeMb" -}}
-{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
-{{- if eq $profile "4000-ha" }}107400
-{{- end }}
-{{- end }}
+{{- /* Intentionally empty - let hbase chart compute from disk space */ -}}
 {{- end }}
 
 

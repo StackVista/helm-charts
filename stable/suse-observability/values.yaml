@@ -7,7 +7,7 @@ global:
   # global.imagePullSecrets -- List of image pull secret names to be used by all images across all charts.
   imagePullSecrets: []
   # global.imageRegistry -- Image registry to be used by all images across all charts.
-  imageRegistry:
+  imageRegistry: "registry.rancher.com"
   # global.storageClass -- StorageClass for all PVCs created by the chart. Can be overridden per PVC.
   storageClass:
   # global.commonLabels -- Labels that will be added to all Deployments, StatefulSets, CronJobs, Jobs and their pods

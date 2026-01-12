@@ -36,7 +36,7 @@ env:
 - name: HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb
   value: "{{ $sizingArchiveMaxSize }}"
 {{ else }}
-{{ $diskSpaceMB := (include "hbase.storage.to.megabytes" .Values.hdfs.datanode.persistence.size) }}
+{{ $diskSpaceMB := (include "hbase.storage.to.megabytes" (include "hbase.hdfs.datanode.persistence.size" .)) }}
 {{ if $diskSpaceMB  }}
 - name: HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb
   value: "{{ mulf $diskSpaceMB 0.01 | int }}"

@@ -597,7 +597,7 @@ If you encounter issues not covered here:
 | global.features | object | `{"experimentalStackpacks":false}` | Feature switches for SUSE Observability. |
 | global.features.experimentalStackpacks | bool | `false` | Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec. This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed. |
 | global.imagePullSecrets | list | `[]` | List of image pull secret names to be used by all images across all charts. |
-| global.imageRegistry | string | `nil` | Image registry to be used by all images across all charts. |
+| global.imageRegistry | string | `"registry.rancher.com"` | Image registry to be used by all images across all charts. |
 | global.receiverApiKey | string | `""` | API key to be used by the Receiver. This setting is deprecated in favor of stackstate.apiKey.key |
 | global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overridden per PVC. |
 | global.suseObservability | object | `{"adminPassword":"","affinity":{"nodeAffinity":null,"podAffinity":null,"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":true,"topologyKey":"kubernetes.io/hostname"}},"baseUrl":"","license":"","pullSecret":{"password":"","username":""},"receiverApiKey":"","sizing":{"profile":""}}` | Simplified configuration section that allows users to specify high-level settings. When any values in this section are configured (license, baseUrl, sizing.profile, etc.), the chart will automatically use this configuration instead of the legacy stackstate.* values. This provides a single-chart installation experience without needing the separate suse-observability-values chart. NOTE: This section works in conjunction with existing global settings (imageRegistry, receiverApiKey, imagePullSecrets). |
@@ -649,12 +649,6 @@ If you encounter issues not covered here:
 | hbase.hdfs.secondarynamenode.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for HDFS secondary namenode pods. |
 | hbase.hdfs.secondarynamenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into HDFS secondary namenode pods. |
 | hbase.hdfs.secondarynamenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into HDFS secondary namenode pods via a Secret object. |
-| hbase.hdfs.secondarynamenode.resources.limits.cpu | string | `"500m"` |  |
-| hbase.hdfs.secondarynamenode.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
-| hbase.hdfs.secondarynamenode.resources.limits.memory | string | `"1Gi"` |  |
-| hbase.hdfs.secondarynamenode.resources.requests.cpu | string | `"50m"` |  |
-| hbase.hdfs.secondarynamenode.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
-| hbase.hdfs.secondarynamenode.resources.requests.memory | string | `"1Gi"` |  |
 | hbase.stackgraph.version | string | `"7.13.17"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for Tephra pods. |
 | hbase.tephra.extraEnv.open | object | `{}` | Extra open environment variables to inject into Tephra pods. |
