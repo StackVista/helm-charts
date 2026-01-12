@@ -1597,11 +1597,11 @@ stackstate:
     wait:
       image:
         # stackstate.components.wait.image.registry -- Base container image registry for wait containers.
-        registry: quay.io
+        registry: &waitImageRegistry quay.io
         # stackstate.components.wait.image.repository -- Base container image repository for wait containers.
-        repository: stackstate/wait
+        repository: &waitImageRepository stackstate/wait
         # stackstate.components.wait.image.tag -- Container image tag for wait containers.
-        tag: 1.0.11-04b49abf
+        tag: &waitImageTag 1.0.11-04b49abf
         # stackstate.components.wait.image.pullPolicy -- Image pull policy for wait containers.
         pullPolicy: IfNotPresent
   # stackstate.authentication -- Configure the authentication settings for StackState here. Only one of the authentication providers can be used, configuring multiple will result in an error.
@@ -2825,6 +2825,23 @@ opentelemetry-collector:
     limits:
       cpu: 500m
       memory: 512Mi
+  wait:
+    image:
+        # opentelemetry-collector.wait.image.registry -- Base container image registry for 'wait' containers.
+        registry: *waitImageRegistry
+        # opentelemetry-collector.wait.image.repository -- Base container image repository for 'wait' containers.
+        repository: *waitImageRepository
+        # opentelemetry-collector.wait.image.tag -- Container image tag for 'wait' containers.
+        tag: *waitImageTag
+  initContainers:
+    - name: otel-collector-init
+      image: '{{ include "opentelemetry-collector.imageRegistry" . }}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}'
+      imagePullPolicy: IfNotPresent
+      command:
+        - sh
+        - -c
+        - |
+          /entrypoint -c suse-observability-clickhouse:9000,suse-observability-vmagent:8429,suse-observability-kafka-headless:9092 -t 300
 kubernetes-rbac-agent:
   url:
     value: '{{ include "stackstate.rbacAgent.url" . }}'

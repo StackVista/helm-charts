@@ -1,6 +1,6 @@
 # opentelemetry-collector
 
-![Version: 0.108.0-stackstate.15](https://img.shields.io/badge/Version-0.108.0--stackstate.15-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.25](https://img.shields.io/badge/AppVersion-0.0.25-informational?style=flat-square)
+![Version: 0.108.0-stackstate.16](https://img.shields.io/badge/Version-0.108.0--stackstate.16-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.25](https://img.shields.io/badge/AppVersion-0.0.25-informational?style=flat-square)
 
 OpenTelemetry Collector Helm chart for Kubernetes
 
@@ -270,4 +270,7 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | tolerations | list | `[]` |  |
 | topologySpreadConstraints | list | `[]` |  |
 | useGOMEMLIMIT | bool | `true` |  |
+| wait.image.registry | string | `""` |  |
+| wait.image.repository | string | `""` |  |
+| wait.image.tag | string | `""` |  |
 

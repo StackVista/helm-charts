@@ -17,7 +17,7 @@ Current chart version is `2.6.4-pre.94`
 | file://../kafka/ | kafka | 19.1.3-suse-observability.4 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.15 |
-| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.15 |
+| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.16 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.29 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.29 |
@@ -359,6 +359,12 @@ stackstate/stackstate
 | opentelemetry-collector.image.registry | string | `"quay.io"` |  |
 | opentelemetry-collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
 | opentelemetry-collector.image.tag | string | `"v0.0.25"` | Container image tag for 'opentelemetry-collector' containers. |
+| opentelemetry-collector.initContainers[0].command[0] | string | `"sh"` |  |
+| opentelemetry-collector.initContainers[0].command[1] | string | `"-c"` |  |
+| opentelemetry-collector.initContainers[0].command[2] | string | `"/entrypoint -c suse-observability-clickhouse:9000,suse-observability-vmagent:8429,suse-observability-kafka-headless:9092 -t 300\n"` |  |
+| opentelemetry-collector.initContainers[0].image | string | `"{{ include \"opentelemetry-collector.imageRegistry\" . }}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"` |  |
+| opentelemetry-collector.initContainers[0].imagePullPolicy | string | `"IfNotPresent"` |  |
+| opentelemetry-collector.initContainers[0].name | string | `"otel-collector-init"` |  |
 | opentelemetry-collector.mode | string | `"statefulset"` | deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset". |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.check_names" | string | `"[\"openmetrics\"]"` |  |
 | opentelemetry-collector.podAnnotations."ad.stackstate.com/opentelemetry-collector.init_configs" | string | `"[{}]"` |  |
@@ -368,6 +374,9 @@ stackstate/stackstate
 | opentelemetry-collector.resources.limits.memory | string | `"512Mi"` |  |
 | opentelemetry-collector.resources.requests.cpu | string | `"250m"` |  |
 | opentelemetry-collector.resources.requests.memory | string | `"512Mi"` |  |
+| opentelemetry-collector.wait.image.registry | string | `"quay.io"` | Base container image registry for 'wait' containers. |
+| opentelemetry-collector.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for 'wait' containers. |
+| opentelemetry-collector.wait.image.tag | string | `"1.0.11-04b49abf"` | Container image tag for 'wait' containers. |
 | opentelemetry.enabled | bool | `true` | Enable / disable chart-based OTEL. |
 | pull-secret.credentials | list | `[]` | Registry and associated credentials (username, password) that will be stored in the pull-secret |
 | pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |
