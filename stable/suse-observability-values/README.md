@@ -8,7 +8,7 @@ Helm Chart for rendering SUSE Observability Values
 > Please use the single-chart installation method instead. See the
 > [suse-observability chart documentation](../suse-observability/README.md) for details.
 
-Current chart version is `1.4.4`
+Current chart version is `1.4.5`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
