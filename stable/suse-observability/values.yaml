@@ -2827,12 +2827,12 @@ opentelemetry-collector:
       memory: 512Mi
   wait:
     image:
-        # opentelemetry-collector.wait.image.registry -- Base container image registry for 'wait' containers.
-        registry: *waitImageRegistry
-        # opentelemetry-collector.wait.image.repository -- Base container image repository for 'wait' containers.
-        repository: *waitImageRepository
-        # opentelemetry-collector.wait.image.tag -- Container image tag for 'wait' containers.
-        tag: *waitImageTag
+      # opentelemetry-collector.wait.image.registry -- Base container image registry for 'wait' containers.
+      registry: *waitImageRegistry
+      # opentelemetry-collector.wait.image.repository -- Base container image repository for 'wait' containers.
+      repository: *waitImageRepository
+      # opentelemetry-collector.wait.image.tag -- Container image tag for 'wait' containers.
+      tag: *waitImageTag
   initContainers:
     - name: otel-collector-init
       image: '{{ include "opentelemetry-collector.imageRegistry" . }}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}'
