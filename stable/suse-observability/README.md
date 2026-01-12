@@ -16,7 +16,7 @@ Current chart version is `2.7.1-pre.17`
 | file://../hbase/ | hbase | 0.2.108 |
 | file://../kafka/ | kafka | 19.1.3-suse-observability.5 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
-| file://../minio/ | minio | 8.0.10-stackstate.15 |
+| file://../minio/ | minio | 8.0.10-stackstate.16 |
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.16 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../suse-observability-sizing/ | suse-observability-sizing | 0.1.1 |

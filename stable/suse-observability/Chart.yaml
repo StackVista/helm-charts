@@ -48,7 +48,7 @@ dependencies:
   - name: minio
     repository: file://../minio/
     # For some reason * does not work
-    version: "8.0.10-stackstate.15"
+    version: "8.0.10-stackstate.16"
     condition: global.backup.enabled
   - name: pull-secret
     version: "*"
