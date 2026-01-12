@@ -173,27 +173,6 @@
         }
       }
     },
-    "wait": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "image": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "registry": {
-              "type": "string"
-            },
-            "repository": {
-              "type": "string"
-            },
-            "tag": {
-              "type": "string"
-            }
-          }
-        }
-      }
-    },
     "imagePullSecrets": {
       "type": "array",
       "items": {
