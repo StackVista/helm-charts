@@ -82,8 +82,9 @@ Usage:
 
 {{/*
 Get the effective image registry.
-Prefers global.imageRegistry, falls back to global.suseObservability.imageRegistry if in global mode.
-Note: This is currently not exposed in global.suseObservability, users should use global.imageRegistry directly.
+Prefers global.imageRegistry if explicitly set.
+When global mode is enabled and no explicit registry is set, defaults to registry.rancher.com
+to match suse-observability-values chart behavior.
 
 Usage:
 {{ include "suse-observability.global.imageRegistry" . }}
@@ -91,6 +92,8 @@ Usage:
 {{- define "suse-observability.global.imageRegistry" -}}
 {{- if .Values.global.imageRegistry -}}
 {{ .Values.global.imageRegistry }}
+{{- else if include "suse-observability.global.enabled" . -}}
+registry.rancher.com
 {{- end -}}
 {{- end -}}
 

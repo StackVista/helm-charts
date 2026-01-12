@@ -984,7 +984,7 @@ Usage: {{ include "common.sizing.stackstate.all.extraEnv.open" . }}
 CONFIG_FORCE_stackstate_topologyQueryService_maxStackElementsPerQuery: "1000"
 CONFIG_FORCE_stackstate_topologyQueryService_maxLoadedElementsPerQuery: "1000"
 CONFIG_FORCE_stackstate_agents_agentLimit: "10"
-CONFIG_FORCE_stackgraph_retentionWindowMs: 259200000
+CONFIG_FORCE_stackgraph_retentionWindowMs: "259200000"
 CONFIG_FORCE_stackstate_traces_retentionDays: "3"
 {{- else if eq $profile "150-ha" }}
 CONFIG_FORCE_stackstate_agents_agentLimit: "150"

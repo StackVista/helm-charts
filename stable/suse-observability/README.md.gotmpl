@@ -31,6 +31,8 @@ SUSE Observability now provides built-in sizing profiles that automatically conf
 ```yaml
 # values.yaml
 global:
+  # Required: Set image registry for SUSE Observability images
+  imageRegistry: "registry.rancher.com"
   suseObservability:
     sizing:
       profile: "150-ha"  # Single value configures everything!
@@ -145,6 +147,8 @@ helm install suse-observability . -f generated-values.yaml
 ```yaml
 # values.yaml
 global:
+  # Required: Set image registry for SUSE Observability images
+  imageRegistry: "registry.rancher.com"
   suseObservability:
     sizing:
       profile: "150-ha"  # Replaces the entire values generation step!
@@ -171,12 +175,13 @@ helm install suse-observability . -f values.yaml
 
 1. ✅ Identify your current sizing profile (e.g., `150-ha`)
 2. ✅ Create new values file with `global.suseObservability.sizing.profile`
-3. ✅ Move credentials to `global.suseObservability.*` section
-4. ✅ Set `victoria-metrics-1.enabled: true` for HA profiles (`150-ha`, `250-ha`, `500-ha`, `4000-ha`)
-5. ✅ Set `victoria-metrics-1.enabled: false` for non-HA profiles (`trial`, `*-nonha`)
-6. ✅ Set `pull-secret.enabled: false` when using `global.suseObservability.pullSecret`
-7. ✅ Remove `helm template suse-observability-values` step from deployment scripts
-8. ✅ Test installation in non-production environment first
+3. ✅ Set `global.imageRegistry: "registry.rancher.com"` for SUSE Observability images
+4. ✅ Move credentials to `global.suseObservability.*` section
+5. ✅ Set `victoria-metrics-1.enabled: true` for HA profiles (`150-ha`, `250-ha`, `500-ha`, `4000-ha`)
+6. ✅ Set `victoria-metrics-1.enabled: false` for non-HA profiles (`trial`, `*-nonha`)
+7. ✅ Set `pull-secret.enabled: false` when using `global.suseObservability.pullSecret`
+8. ✅ Remove `helm template suse-observability-values` step from deployment scripts
+9. ✅ Test installation in non-production environment first
 
 **Benefits of the new approach:**
 

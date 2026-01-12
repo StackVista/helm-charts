@@ -50,6 +50,8 @@ SUSE Observability now provides built-in sizing profiles that automatically conf
 ```yaml
 # values.yaml
 global:
+  # Required: Set image registry for SUSE Observability images
+  imageRegistry: "registry.rancher.com"
   suseObservability:
     sizing:
       profile: "150-ha"  # Single value configures everything!
@@ -164,6 +166,8 @@ helm install suse-observability . -f generated-values.yaml
 ```yaml
 # values.yaml
 global:
+  # Required: Set image registry for SUSE Observability images
+  imageRegistry: "registry.rancher.com"
   suseObservability:
     sizing:
       profile: "150-ha"  # Replaces the entire values generation step!
@@ -190,12 +194,13 @@ helm install suse-observability . -f values.yaml
 
 1. ✅ Identify your current sizing profile (e.g., `150-ha`)
 2. ✅ Create new values file with `global.suseObservability.sizing.profile`
-3. ✅ Move credentials to `global.suseObservability.*` section
-4. ✅ Set `victoria-metrics-1.enabled: true` for HA profiles (`150-ha`, `250-ha`, `500-ha`, `4000-ha`)
-5. ✅ Set `victoria-metrics-1.enabled: false` for non-HA profiles (`trial`, `*-nonha`)
-6. ✅ Set `pull-secret.enabled: false` when using `global.suseObservability.pullSecret`
-7. ✅ Remove `helm template suse-observability-values` step from deployment scripts
-8. ✅ Test installation in non-production environment first
+3. ✅ Set `global.imageRegistry: "registry.rancher.com"` for SUSE Observability images
+4. ✅ Move credentials to `global.suseObservability.*` section
+5. ✅ Set `victoria-metrics-1.enabled: true` for HA profiles (`150-ha`, `250-ha`, `500-ha`, `4000-ha`)
+6. ✅ Set `victoria-metrics-1.enabled: false` for non-HA profiles (`trial`, `*-nonha`)
+7. ✅ Set `pull-secret.enabled: false` when using `global.suseObservability.pullSecret`
+8. ✅ Remove `helm template suse-observability-values` step from deployment scripts
+9. ✅ Test installation in non-production environment first
 
 **Benefits of the new approach:**
 
@@ -597,10 +602,10 @@ If you encounter issues not covered here:
 | global.features | object | `{"experimentalStackpacks":false}` | Feature switches for SUSE Observability. |
 | global.features.experimentalStackpacks | bool | `false` | Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec. This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed. |
 | global.imagePullSecrets | list | `[]` | List of image pull secret names to be used by all images across all charts. |
-| global.imageRegistry | string | `"registry.rancher.com"` | Image registry to be used by all images across all charts. |
+| global.imageRegistry | string | `nil` | Image registry to be used by all images across all charts. When using global.suseObservability (global mode), set this to "registry.rancher.com" to match the default behavior of the suse-observability-values chart. |
 | global.receiverApiKey | string | `""` | API key to be used by the Receiver. This setting is deprecated in favor of stackstate.apiKey.key |
 | global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overridden per PVC. |
-| global.suseObservability | object | `{"adminPassword":"","affinity":{"nodeAffinity":null,"podAffinity":null,"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":true,"topologyKey":"kubernetes.io/hostname"}},"baseUrl":"","license":"","pullSecret":{"password":"","username":""},"receiverApiKey":"","sizing":{"profile":""}}` | Simplified configuration section that allows users to specify high-level settings. When any values in this section are configured (license, baseUrl, sizing.profile, etc.), the chart will automatically use this configuration instead of the legacy stackstate.* values. This provides a single-chart installation experience without needing the separate suse-observability-values chart. NOTE: This section works in conjunction with existing global settings (imageRegistry, receiverApiKey, imagePullSecrets). |
+| global.suseObservability | object | `{"adminPassword":"","affinity":{"nodeAffinity":null,"podAffinity":null,"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":true,"topologyKey":"kubernetes.io/hostname"}},"baseUrl":"","license":"","pullSecret":{"password":"","username":""},"receiverApiKey":"","sizing":{"profile":""}}` | Simplified configuration section that allows users to specify high-level settings. When any values in this section are configured (license, baseUrl, sizing.profile, etc.), the chart will automatically use this configuration instead of the legacy stackstate.* values. This provides a single-chart installation experience without needing the separate suse-observability-values chart. NOTE: This section works in conjunction with existing global settings (imageRegistry, receiverApiKey, imagePullSecrets). IMPORTANT: When using this section, also set global.imageRegistry to "registry.rancher.com" for SUSE Observability images. |
 | global.suseObservability.adminPassword | string | `""` | Admin password for the default 'admin' user. Must be a bcrypt hash. Required when using global.suseObservability configuration unless other authentication methods (LDAP, OIDC, Keycloak) are configured. |
 | global.suseObservability.affinity | object | `{"nodeAffinity":null,"podAffinity":null,"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":true,"topologyKey":"kubernetes.io/hostname"}}` | Affinity configuration for all SUSE Observability components including infrastructure. |
 | global.suseObservability.affinity.nodeAffinity | string | `nil` | Node affinity configuration applied to all components (application and infrastructure). Standard Kubernetes nodeAffinity spec. |

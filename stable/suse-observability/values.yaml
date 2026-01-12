@@ -7,7 +7,9 @@ global:
   # global.imagePullSecrets -- List of image pull secret names to be used by all images across all charts.
   imagePullSecrets: []
   # global.imageRegistry -- Image registry to be used by all images across all charts.
-  imageRegistry: "registry.rancher.com"
+  # When using global.suseObservability (global mode), set this to "registry.rancher.com" to match
+  # the default behavior of the suse-observability-values chart.
+  imageRegistry:
   # global.storageClass -- StorageClass for all PVCs created by the chart. Can be overridden per PVC.
   storageClass:
   # global.commonLabels -- Labels that will be added to all Deployments, StatefulSets, CronJobs, Jobs and their pods
@@ -35,6 +37,7 @@ global:
   # automatically use this configuration instead of the legacy stackstate.* values.
   # This provides a single-chart installation experience without needing the separate suse-observability-values chart.
   # NOTE: This section works in conjunction with existing global settings (imageRegistry, receiverApiKey, imagePullSecrets).
+  # IMPORTANT: When using this section, also set global.imageRegistry to "registry.rancher.com" for SUSE Observability images.
   suseObservability:
     # global.suseObservability.license -- SUSE Observability license key (required when using global.suseObservability).
     license: ""

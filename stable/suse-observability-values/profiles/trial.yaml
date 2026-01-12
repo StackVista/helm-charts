@@ -78,7 +78,7 @@ stackstate:
           CONFIG_FORCE_stackstate_topologyQueryService_maxLoadedElementsPerQuery: "1000"
           CONFIG_FORCE_stackstate_agents_agentLimit: "10"
           # 14 day retention as NONHA is not completely meant for prod installations
-          CONFIG_FORCE_stackgraph_retentionWindowMs: 259200000
+          CONFIG_FORCE_stackgraph_retentionWindowMs: "259200000"
           CONFIG_FORCE_stackstate_traces_retentionDays: "3"
     server:
       extraEnv:
