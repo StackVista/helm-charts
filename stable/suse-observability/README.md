@@ -63,13 +63,6 @@ global:
       username: "<registry-username>"
       password: "<registry-password>"
 
-# For HA profiles (150-ha, 250-ha, 500-ha, 4000-ha), enable second Victoria Metrics instance
-victoria-metrics-1:
-  enabled: true
-
-# Disable pull-secret subchart when using global.suseObservability.pullSecret
-pull-secret:
-  enabled: false
 ```
 
 ```shell
@@ -121,24 +114,24 @@ Only set this explicitly if you need to:
 A single sizing profile automatically configures:
 
 **Infrastructure Components:**
-- ✅ **ClickHouse**: Replicas, CPU/memory resources, storage size
-- ✅ **Elasticsearch**: Replicas, CPU/memory resources, storage size
-- ✅ **HBase**: Deployment mode (Mono/Distributed), resources for master/regionserver/datanode/namenode/tephra
-- ✅ **Kafka**: Replicas, CPU/memory resources, storage size, partition counts
-- ✅ **Zookeeper**: Replicas, CPU/memory resources
-- ✅ **Victoria Metrics 0**: CPU/memory resources, storage size, retention period
-- ✅ **Victoria Metrics 1**: Enablement (HA only), CPU/memory resources, storage size
+- **ClickHouse**: Replicas, CPU/memory resources, storage size
+- **Elasticsearch**: Replicas, CPU/memory resources, storage size
+- **HBase**: Deployment mode (Mono/Distributed), resources for master/regionserver/datanode/namenode/tephra
+- **Kafka**: Replicas, CPU/memory resources, storage size, partition counts
+- **Zookeeper**: Replicas, CPU/memory resources
+- **Victoria Metrics 0**: CPU/memory resources, storage size, retention period
+- **Victoria Metrics 1**: Enablement (HA only), CPU/memory resources, storage size
 
 **SUSE Observability Components:**
-- ✅ **API/Server**: Split mode (HA profiles), replica counts, CPU/memory resources
-- ✅ **Receiver**: Split mode (base/logs/process-agent for HA), replica counts, resources
-- ✅ **Checks, Correlate, State, Sync, Health-Sync**: Replica counts, CPU/memory resources
-- ✅ **UI, Notification, Slicing**: Replica counts, CPU/memory resources
+- **API/Server**: Split mode (HA profiles), replica counts, CPU/memory resources
+- **Receiver**: Split mode (base/logs/process-agent for HA), replica counts, resources
+- **Checks, Correlate, State, Sync, Health-Sync**: Replica counts, CPU/memory resources
+- **UI, Notification, Slicing**: Replica counts, CPU/memory resources
 
 **Supporting Services:**
-- ✅ **Minio**: CPU/memory resources
-- ✅ **KafkaUp Operator**: CPU/memory resources
-- ✅ **Prometheus Elasticsearch Exporter**: CPU/memory resources
+- **Minio**: CPU/memory resources
+- **KafkaUp Operator**: CPU/memory resources
+- **Prometheus Elasticsearch Exporter**: CPU/memory resources
 
 ### Migrating from suse-observability-values Chart
 
@@ -179,11 +172,6 @@ global:
       username: "<username>"
       password: "<password>"
 
-victoria-metrics-1:
-  enabled: true  # Set to 'false' for non-HA profiles (trial, *-nonha)
-
-pull-secret:
-  enabled: false  # Use inlined pull-secret from global.suseObservability
 ```
 
 ```shell
@@ -192,23 +180,12 @@ helm install suse-observability . -f values.yaml
 
 **Migration checklist:**
 
-1. ✅ Identify your current sizing profile (e.g., `150-ha`)
-2. ✅ Create new values file with `global.suseObservability.sizing.profile`
-3. ✅ Set `global.imageRegistry: "registry.rancher.com"` for SUSE Observability images
-4. ✅ Move credentials to `global.suseObservability.*` section
-5. ✅ Set `victoria-metrics-1.enabled: true` for HA profiles (`150-ha`, `250-ha`, `500-ha`, `4000-ha`)
-6. ✅ Set `victoria-metrics-1.enabled: false` for non-HA profiles (`trial`, `*-nonha`)
-7. ✅ Set `pull-secret.enabled: false` when using `global.suseObservability.pullSecret`
-8. ✅ Remove `helm template suse-observability-values` step from deployment scripts
-9. ✅ Test installation in non-production environment first
-
-**Benefits of the new approach:**
-
-- ✅ **Simpler**: No separate chart installation needed
-- ✅ **Faster**: Single-step installation instead of two steps
-- ✅ **Cleaner**: No intermediate generated values files to manage
-- ✅ **Maintainable**: Profile updates happen automatically with chart upgrades
-- ✅ **Explicit**: Clear profile selection in your values file
+1. Identify your current sizing profile (e.g., `150-ha`)
+2. Create new values file with `global.suseObservability.sizing.profile`
+3. Set `global.imageRegistry: "registry.rancher.com"` for SUSE Observability images
+4. Move credentials to `global.suseObservability.*` section
+5. Remove `helm template suse-observability-values` step from deployment scripts
+6. Test installation in non-production environment first
 
 ### Upgrading Existing Deployments
 
@@ -248,14 +225,6 @@ helm get values suse-observability -n <namespace>
 - **PVCs are preserved**: Existing persistent volume claims remain intact
 - **Secrets are preserved**: Existing secrets (licenses, API keys) are not deleted
 - **Rollback available**: Use `helm rollback suse-observability <revision>` if needed
-
-### Why victoria-metrics-1 Must Be Set Manually
-
-The `victoria-metrics-1` subchart enablement cannot be auto-configured by the sizing profile because Helm subchart conditions (`enabled: true/false`) must be evaluated before template rendering. The sizing profile values are applied during template rendering, which is too late to affect subchart inclusion.
-
-**Rule of thumb:**
-- HA profiles (`150-ha`, `250-ha`, `500-ha`, `4000-ha`): Set `victoria-metrics-1.enabled: true`
-- Non-HA profiles (`trial`, `10-nonha`, `20-nonha`, `50-nonha`, `100-nonha`): Set `victoria-metrics-1.enabled: false` (or omit, as `false` is the default)
 
 ### Overriding Sizing Profile Defaults
 
@@ -323,9 +292,9 @@ global:
 
 | Affinity Type | Application Components | Infrastructure Components |
 |---------------|------------------------|---------------------------|
-| `nodeAffinity` | ✅ Applied | ✅ Applied |
-| `podAffinity` | ✅ Applied | ❌ Not applied |
-| `podAntiAffinity` | ❌ Not applied | ✅ Applied (HA profiles) |
+| `nodeAffinity` | Yes | Yes |
+| `podAffinity` | Yes | No |
+| `podAntiAffinity` | No | Yes (HA profiles) |
 
 **Pod anti-affinity modes:**
 
@@ -403,35 +372,6 @@ helm get values suse-observability -n <namespace>
 
 # Common issue: both stackstate.license.key AND global.suseObservability.license set
 # Solution: Use only one configuration style
-```
-
-**Problem: Pull secret not working**
-
-When using `global.suseObservability.pullSecret`, ensure the pull-secret subchart is disabled:
-
-```yaml
-global:
-  suseObservability:
-    pullSecret:
-      username: "user"
-      password: "pass"
-
-pull-secret:
-  enabled: false  # Required when using global.suseObservability.pullSecret
-```
-
-**Problem: victoria-metrics-1 pods not starting (HA profiles)**
-
-Ensure the subchart is explicitly enabled:
-
-```yaml
-global:
-  suseObservability:
-    sizing:
-      profile: "150-ha"
-
-victoria-metrics-1:
-  enabled: true  # Must be set explicitly for HA profiles
 ```
 
 **Getting help:**
@@ -596,8 +536,7 @@ If you encounter issues not covered here:
 | elasticsearch.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"1Gi","memory":"4Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"4Gi"}}` | Override Elasticsearch resources |
 | elasticsearch.sysctlInitContainer | object | `{"enabled":true}` | Enable privileged init container to increase Elasticsearch virtual memory on underlying nodes. |
 | elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"250Gi"}}}` | PVC template defaulting to 250Gi default volumes |
-| global.backup | object | `{"enabled":false}` | Backup configuration. |
-| global.backup.enabled | bool | `false` | Enables backup/restore, including the MinIO subsystem. |
+| global.backup.enabled | bool | `false` |  |
 | global.commonLabels | object | `{}` | Labels that will be added to all Deployments, StatefulSets, CronJobs, Jobs and their pods |
 | global.features | object | `{"experimentalStackpacks":false}` | Feature switches for SUSE Observability. |
 | global.features.experimentalStackpacks | bool | `false` | Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec. This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed. |

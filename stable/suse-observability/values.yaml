@@ -69,10 +69,6 @@ global:
         requiredDuringSchedulingIgnoredDuringExecution: true
         # global.suseObservability.affinity.podAntiAffinity.topologyKey -- Topology key for pod anti-affinity. Determines the domain for spreading pods (e.g., kubernetes.io/hostname for node-level, topology.kubernetes.io/zone for zone-level).
         topologyKey: "kubernetes.io/hostname"
-  # global.backup -- Backup configuration.
-  backup:
-    # global.backup.enabled -- Enables backup/restore, including the MinIO subsystem.
-    enabled: false
 # commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
 commonLabels: {}
 backup:
