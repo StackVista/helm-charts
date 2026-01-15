@@ -2662,6 +2662,15 @@ clickhouse:
         </engine>
       </query_log>
 
+      <aggregated_zookeeper_log replace="1">
+        <database>system</database>
+        <table>aggregated_zookeeper_log</table>
+        <engine>ENGINE = MergeTree PARTITION BY (event_date)
+          ORDER BY (event_date, event_time)
+          TTL event_date + INTERVAL 3 DAY DELETE
+        </engine>
+      </aggregated_zookeeper_log>
+
       {{- $effectiveReplicaCount := include "common.sizing.clickhouse.effectiveReplicaCount" . | int -}}
       <!-- Cluster configuration - Any update of the shards and replicas requires helm upgrade -->
       <remote_servers>

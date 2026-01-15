@@ -1,0 +1,6 @@
+# Test values for custom mergeTree settings
+shards: 1
+persistence:
+  keepFreeSpaceBytes: 2147483648  # 2 GiB
+mergeTree:
+  minFreeDiskRatioToPerformInsert: 0.15
