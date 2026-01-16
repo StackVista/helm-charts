@@ -86,6 +86,8 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: hbase-master
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      app.kubernetes.io/name: {{ template "common.name" . }}
   template:
     metadata:
       labels:

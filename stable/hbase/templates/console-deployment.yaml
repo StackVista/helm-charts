@@ -49,6 +49,8 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: console
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      app.kubernetes.io/name: {{ template "common.name" . }}
 {{- with .Values.console.strategy }}
   strategy:
     {{- toYaml . | nindent 4 }}
@@ -57,6 +59,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: console
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        app.kubernetes.io/name: {{ template "common.name" . }}
 {{- if .Values.global.commonLabels }}
 {{- include "hbase.podLabels" . | indent 8 }}
 {{- end }}
