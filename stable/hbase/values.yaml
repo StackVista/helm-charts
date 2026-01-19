@@ -177,7 +177,7 @@ hbase:
       # hbase.master.image.tag -- Container image tag for HBase masters, defaults to `version`-`stackgraph.version`
       tag:
     # hbase.master.replicaCount -- Number of pods for HBase masters.
-    replicaCount: 1
+    replicaCount: null
     # hbase.master.resources -- Resources to allocate for HBase masters.
     resources:
       limits:
@@ -208,7 +208,7 @@ hbase:
       # hbase.regionserver.image.tag -- Container image tag for HBase region servers, defaults to `version`-`stackgraph.version`
       tag:
     # hbase.regionserver.replicaCount -- Number of HBase regionserver nodes.
-    replicaCount: 1
+    replicaCount: null
     # hbase.regionserver.resources -- Resources to allocate for HBase region servers.
     resources:
       limits:
@@ -281,7 +281,7 @@ hdfs:
       # hdfs.datanode.persistence.storageClass -- Storage class of the volume for HDFS data nodes.
       storageClass:
     # hdfs.datanode.replicaCount -- Number of HDFS data nodes.
-    replicaCount: 1
+    replicaCount: null
     # hdfs.datanode.resources -- Resources to allocate for HDFS data nodes.
     resources:
       limits:
@@ -387,7 +387,7 @@ tephra:
     # tephra.image.tag -- Container image tag for Tephra pods, defaults to `version`-`stackgraph.version`
     tag:
   # tephra.replicaCount -- Number of pods for Tephra pods.
-  replicaCount: 1
+  replicaCount: null
   # tephra.resources -- Resources to allocate for Tephra pods.
   resources:
     limits:

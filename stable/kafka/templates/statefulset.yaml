@@ -1,5 +1,5 @@
 {{- $sizingReplicaCount := include "common.sizing.kafka.replicaCount" . | trim -}}
-{{- $replicaCount := int (default .Values.replicaCount $sizingReplicaCount) }}
+{{- $replicaCount := ternary (int .Values.replicaCount) (int (default "1" $sizingReplicaCount)) (not (kindIs "invalid" .Values.replicaCount)) -}}
 {{- $fullname := include "common.names.fullname" . }}
 {{- $releaseNamespace := .Release.Namespace }}
 {{- $clusterDomain := .Values.clusterDomain }}

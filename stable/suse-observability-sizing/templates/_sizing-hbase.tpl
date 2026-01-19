@@ -368,6 +368,30 @@ Only add explicit values here if a profile needs a value different from the comp
 {{- /* Intentionally empty - let hbase chart compute from disk space */ -}}
 {{- end }}
 
+{{/*
+Get hbase master replicaCount
+Usage: {{ include "common.sizing.hbase.master.replicaCount" . }}
+*/}}
+{{- define "common.sizing.hbase.master.replicaCount" -}}
+{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- /* All profiles use 1 master - only needed for distributed mode */ -}}
+1
+{{- end }}
+{{- end }}
+
+{{/*
+Get hdfs datanode replicaCount
+Usage: {{ include "common.sizing.hdfs.datanode.replicaCount" . }}
+*/}}
+{{- define "common.sizing.hdfs.datanode.replicaCount" -}}
+{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- /* All profiles use 1 datanode - only needed for distributed mode */ -}}
+1
+{{- end }}
+{{- end }}
+
 
 {{/*
 =============================================================================

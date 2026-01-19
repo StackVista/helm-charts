@@ -83,8 +83,8 @@ metadata:
 spec:
   podManagementPolicy: Parallel
   {{- $sizingReplicaCount := include "common.sizing.hbase.regionserver.replicaCount" . | trim }}
-  {{- $defaultReplicaCount := tpl (.Values.hbase.regionserver.replicaCount | toString) . }}
-  replicas: {{ default $defaultReplicaCount $sizingReplicaCount }}
+  {{- $replicaCount := ternary .Values.hbase.regionserver.replicaCount (default "1" $sizingReplicaCount) (not (kindIs "invalid" .Values.hbase.regionserver.replicaCount)) }}
+  replicas: {{ $replicaCount }}
   serviceName: {{ template "common.fullname.short" . }}-hbase-rs
   selector:
     matchLabels:

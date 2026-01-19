@@ -346,7 +346,7 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | readinessProbe.periodSeconds | int | `10` |  |
 | readinessProbe.successThreshold | int | `1` |  |
 | readinessProbe.timeoutSeconds | int | `5` |  |
-| replicaCount | int | `1` |  |
+| replicaCount | string | `nil` |  |
 | resources.limits | object | `{}` |  |
 | resources.requests | object | `{}` |  |
 | schedulerName | string | `""` |  |

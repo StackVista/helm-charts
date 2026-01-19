@@ -59,6 +59,7 @@ hbase:
         cpu: "500m"
     replicaCount: 2
 kafka:
+  replicaCount: 3
   transactionStateLogReplicationFactor: 1
   resources:
     requests:
@@ -201,6 +202,7 @@ stackstate:
     ui:
       replicaCount: 2
 zookeeper:
+  replicaCount: 3
   resources:
     requests:
       cpu: 200m

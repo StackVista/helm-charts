@@ -532,7 +532,7 @@ stackstate:
         baseMemoryConsumption: "400Mi"
         javaHeapMemoryFraction: "65"
       # stackstate.components.correlate.replicaCount -- Number of `correlate` replicas.
-      replicaCount: 1
+      replicaCount: null
       # stackstate.components.correlate.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.correlate.tolerations -- Toleration labels for pod assignment.
@@ -1426,7 +1426,7 @@ stackstate:
         # stackstate.components.ui.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
         runAsUser: 101
       # stackstate.components.ui.replicaCount -- Number of `ui` replicas.
-      replicaCount: 2
+      replicaCount: null
       # stackstate.components.ui.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.ui.tolerations -- Toleration labels for pod assignment.
@@ -1894,8 +1894,8 @@ hbase:
         open: {}
         # hbase.hbase.master.extraEnv.secret -- Extra secret environment variables to inject into HBase master pods via a Secret object.
         secret: {}
-      # hbase.hbase.master.replicaCount -- Number of HBase master node replicas.
-      replicaCount: 2
+      # hbase.hbase.master.replicaCount -- Number of HBase master node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
+      replicaCount: null
       # hbase.hbase.master.resources -- Resources will be set by sizing profile. Only override if needed.
     regionserver:
       # hbase.hbase.regionserver.extraEnv -- Extra environment variables for HBase regionserver pods.
@@ -1904,8 +1904,8 @@ hbase:
         open: {}
         # hbase.hbase.regionserver.extraEnv.secret -- Extra secret environment variables to inject into HBase regionserver pods via a Secret object.
         secret: {}
-      # hbase.hbase.regionserver.replicaCount -- Number of HBase regionserver node replicas.
-      replicaCount: 3
+      # hbase.hbase.regionserver.replicaCount -- Number of HBase regionserver node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
+      replicaCount: null
       # hbase.hbase.regionserver.resources -- Resources will be set by sizing profile. Only override if needed.
   hdfs:
     # hbase.hdfs.minReplication -- Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead)
@@ -1917,8 +1917,8 @@ hbase:
         open: {}
         # hbase.hdfs.datanode.extraEnv.secret -- Extra secret environment variables to inject into HDFS datanode pods via a Secret object.
         secret: {}
-      # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas.
-      replicaCount: 3
+      # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
+      replicaCount: null
       # hbase.hdfs.datanode.resources -- Resources will be set by sizing profile. Only override if needed.
     namenode:
       # hbase.hdfs.namenode.extraEnv -- Extra environment variables for HDFS namenode pods.
@@ -1944,8 +1944,8 @@ hbase:
       open: {}
       # hbase.tephra.extraEnv.secret -- Extra secret environment variables to inject into Tephra pods via a Secret object.
       secret: {}
-    # hbase.tephra.replicaCount -- Number of Tephra replicas.
-    replicaCount: 2
+    # hbase.tephra.replicaCount -- Number of Tephra replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
+    replicaCount: null
     # hbase.tephra.resources -- Resources will be set by sizing profile. Only override if needed.
   zookeeper:
     # hbase.zookeeper.externalServers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
@@ -2124,8 +2124,8 @@ kafka:
   readinessProbe:
     # kafka.readinessProbe.initialDelaySeconds -- Delay before readiness probe is initiated.
     initialDelaySeconds: 45
-  # kafka.replicaCount -- Number of Kafka replicas.
-  replicaCount: 3
+  # kafka.replicaCount -- Number of Kafka replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
+  replicaCount: null
   # kafka.topicRetention -- Max time in milliseconds to retain data in each topic.
   topicRetention: "86400000"
   persistence:
@@ -2278,8 +2278,8 @@ zookeeper:
     ad.stackstate.com/zookeeper.check_names: '["openmetrics"]'
     ad.stackstate.com/zookeeper.init_configs: "[{}]"
     ad.stackstate.com/zookeeper.instances: '[ { "prometheus_url": "http://%%host%%:9141/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
-  # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision.
-  replicaCount: 3
+  # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
+  replicaCount: null
   persistence:
     # zookeeper.persistence.size -- Size of the PVC for Zookeeper data. Default is 8Gi, will be overridden by sizing profile if using global.suseObservability.sizing.profile.
     size: 8Gi

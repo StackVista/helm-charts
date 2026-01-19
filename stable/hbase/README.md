@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.2.108`
+Current chart version is `0.2.109`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -61,7 +61,7 @@ Current chart version is `0.2.108`
 | hbase.master.image.repository | string | `"stackstate/hbase-master"` | Base container image repository for HBase masters. |
 | hbase.master.image.tag | string | `nil` | Container image tag for HBase masters, defaults to `version`-`stackgraph.version` |
 | hbase.master.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| hbase.master.replicaCount | int | `1` | Number of pods for HBase masters. |
+| hbase.master.replicaCount | string | `nil` | Number of pods for HBase masters. |
 | hbase.master.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HBase masters. |
 | hbase.master.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HBase master memory sizing for JVM |
 | hbase.master.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -72,7 +72,7 @@ Current chart version is `0.2.108`
 | hbase.regionserver.image.repository | string | `"stackstate/hbase-regionserver"` | Base container image repository for HBase region servers. |
 | hbase.regionserver.image.tag | string | `nil` | Container image tag for HBase region servers, defaults to `version`-`stackgraph.version` |
 | hbase.regionserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| hbase.regionserver.replicaCount | int | `1` | Number of HBase regionserver nodes. |
+| hbase.regionserver.replicaCount | string | `nil` | Number of HBase regionserver nodes. |
 | hbase.regionserver.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"2000m","memory":"2Gi"}}` | Resources to allocate for HBase region servers. |
 | hbase.regionserver.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HBase region server memory sizing for JVM |
 | hbase.regionserver.tolerations | list | `[]` | Toleration labels for pod assignment. |
@@ -88,7 +88,7 @@ Current chart version is `0.2.108`
 | hdfs.datanode.persistence.enabled | bool | `true` | Enable persistence for HDFS data nodes. |
 | hdfs.datanode.persistence.size | string | `"250Gi"` | Size of volume for HDFS data nodes. |
 | hdfs.datanode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS data nodes. |
-| hdfs.datanode.replicaCount | int | `1` | Number of HDFS data nodes. |
+| hdfs.datanode.replicaCount | string | `nil` | Number of HDFS data nodes. |
 | hdfs.datanode.resources | object | `{"limits":{"memory":"4Gi"},"requests":{"cpu":"50m","memory":"2Gi"}}` | Resources to allocate for HDFS data nodes. |
 | hdfs.datanode.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HDFS Datanode memory sizing for JVMs in pods |
 | hdfs.datanode.terminationGracePeriodSeconds | int | `600` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
@@ -163,7 +163,7 @@ Current chart version is `0.2.108`
 | tephra.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for Tephra on Mono mode. |
 | tephra.persistence.size | string | `"1Gi"` | Size of volume for Tephra on Mono mode. |
 | tephra.persistence.storageClass | string | `nil` | Storage class of the volume for Tephra on Mono mode |
-| tephra.replicaCount | int | `1` | Number of pods for Tephra pods. |
+| tephra.replicaCount | string | `nil` | Number of pods for Tephra pods. |
 | tephra.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"50m","memory":"2Gi"}}` | Resources to allocate for Tephra pods. |
 | tephra.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
 | tephra.securityContext.fsGroup | int | `65534` | GID of the Linux user to use for fs. |

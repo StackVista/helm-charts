@@ -52,6 +52,7 @@ hbase:
         cpu: "500m"
     replicaCount: 2
 kafka:
+  replicaCount: 3
   transactionStateLogReplicationFactor: 1
   # numRecoveryThreadsPerDataDir has to be 2 times of cpu requests
   numRecoveryThreadsPerDataDir: 6
@@ -210,6 +211,7 @@ stackstate:
     ui:
       replicaCount: 2
 zookeeper:
+  replicaCount: 3
   resources:
     requests:
       cpu: 200m

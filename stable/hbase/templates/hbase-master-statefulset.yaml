@@ -81,7 +81,9 @@ metadata:
   name: {{ template "common.fullname.short" . }}-hbase-master
 spec:
   podManagementPolicy: Parallel
-  replicas: {{ .Values.hbase.master.replicaCount }}
+  {{- $sizingReplicaCount := include "common.sizing.hbase.master.replicaCount" . | trim }}
+  {{- $replicaCount := ternary .Values.hbase.master.replicaCount (default "1" $sizingReplicaCount) (not (kindIs "invalid" .Values.hbase.master.replicaCount)) }}
+  replicas: {{ $replicaCount }}
   serviceName: {{ template "common.fullname.short" . }}-hbase-master
   selector:
     matchLabels:

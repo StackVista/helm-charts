@@ -76,13 +76,8 @@ resources:
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $stsstackstateUiMainContainer := fromYaml (include "stackstate.ui.deployment.main.container" .) }}
 {{- $stsstackstateUiMonitoringContainer := fromYaml (include "stackstate.ui.deployment.monitoring.container" .) }}
-{{- $evaluatedReplicaCount := .Values.stackstate.components.ui.replicaCount | default 2 -}}
-{{- if eq (include "suse-observability.sizing-profile.enabled" .) "true" -}}
-{{- $profileReplicaCount := include "common.sizing.stackstate.ui.replicaCount" . | trim -}}
-{{- if $profileReplicaCount -}}
-{{- $evaluatedReplicaCount = $profileReplicaCount | int -}}
-{{- end -}}
-{{- end -}}
+{{- $sizingReplicaCount := include "common.sizing.stackstate.ui.replicaCount" . | trim -}}
+{{- $evaluatedReplicaCount := ternary .Values.stackstate.components.ui.replicaCount (default 2 $sizingReplicaCount | int) (not (kindIs "invalid" .Values.stackstate.components.ui.replicaCount)) -}}
 
 metadata:
   name: {{ template "common.fullname.short" . }}-ui

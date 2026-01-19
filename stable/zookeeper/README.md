@@ -153,7 +153,7 @@ Apache ZooKeeper provides a reliable, centralized register of configuration data
 | readinessProbe.probeCommandTimeout | int | `2` |  |
 | readinessProbe.successThreshold | int | `1` |  |
 | readinessProbe.timeoutSeconds | int | `5` |  |
-| replicaCount | int | `1` |  |
+| replicaCount | string | `nil` |  |
 | resources.limits | object | `{}` |  |
 | resources.requests.cpu | string | `"250m"` |  |
 | resources.requests.memory | string | `"256Mi"` |  |

@@ -425,7 +425,7 @@ extraEnvVarsSecret: ""
 
 ## @param replicaCount Number of Kafka nodes
 ##
-replicaCount: 1
+replicaCount: null
 ## @param minBrokerId Minimal broker.id value, nodes increment their `broker.id` respectively
 ## Brokers increment their ID starting at this minimal value.
 ## E.g., with `minBrokerId=100` and 3 nodes, IDs will be 100, 101, 102 for brokers 0, 1, and 2, respectively.

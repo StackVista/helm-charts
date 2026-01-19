@@ -55,7 +55,9 @@ hbase:
         cpu: 4000m
       limits:
         cpu: 6000m
+    replicaCount: 2
 kafka:
+  replicaCount: 3
   # numRecoveryThreadsPerDataDir has to be 2 times of cpu requests
   numRecoveryThreadsPerDataDir: 8
   metrics:
@@ -264,6 +266,7 @@ stackstate:
         limits:
           cpu: 500m
 zookeeper:
+  replicaCount: 3
   heapSize: 512
   resources:
     requests:

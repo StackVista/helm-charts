@@ -13,7 +13,7 @@ Current chart version is `2.7.1-pre.17`
 | file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.4 |
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.3 |
-| file://../hbase/ | hbase | 0.2.108 |
+| file://../hbase/ | hbase | 0.2.109 |
 | file://../kafka/ | kafka | 19.1.3-suse-observability.5 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.16 |
@@ -576,15 +576,15 @@ If you encounter issues not covered here:
 | hbase.hbase.master.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for HBase master pods. |
 | hbase.hbase.master.extraEnv.open | object | `{}` | Extra open environment variables to inject into HBase master pods. |
 | hbase.hbase.master.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into HBase master pods via a Secret object. |
-| hbase.hbase.master.replicaCount | int | `2` | Number of HBase master node replicas. |
+| hbase.hbase.master.replicaCount | string | `nil` | Number of HBase master node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | hbase.hbase.regionserver.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for HBase regionserver pods. |
 | hbase.hbase.regionserver.extraEnv.open | object | `{}` | Extra open environment variables to inject into HBase regionserver pods. |
 | hbase.hbase.regionserver.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into HBase regionserver pods via a Secret object. |
-| hbase.hbase.regionserver.replicaCount | int | `3` | Number of HBase regionserver node replicas. |
+| hbase.hbase.regionserver.replicaCount | string | `nil` | Number of HBase regionserver node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | hbase.hdfs.datanode.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for HDFS datanode pods. |
 | hbase.hdfs.datanode.extraEnv.open | object | `{}` | Extra open environment variables to inject into HDFS datanode pods. |
 | hbase.hdfs.datanode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into HDFS datanode pods via a Secret object. |
-| hbase.hdfs.datanode.replicaCount | int | `3` | Number of HDFS datanode replicas. |
+| hbase.hdfs.datanode.replicaCount | string | `nil` | Number of HDFS datanode replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | hbase.hdfs.minReplication | int | `2` | Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead) |
 | hbase.hdfs.namenode.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for HDFS namenode pods. |
 | hbase.hdfs.namenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into HDFS namenode pods. |
@@ -597,7 +597,7 @@ If you encounter issues not covered here:
 | hbase.tephra.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for Tephra pods. |
 | hbase.tephra.extraEnv.open | object | `{}` | Extra open environment variables to inject into Tephra pods. |
 | hbase.tephra.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into Tephra pods via a Secret object. |
-| hbase.tephra.replicaCount | int | `2` | Number of Tephra replicas. |
+| hbase.tephra.replicaCount | string | `nil` | Number of Tephra replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | hbase.version | string | `"2.5"` | Version of hbase to use |
 | hbase.zookeeper.externalServers | string | `"suse-observability-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |
@@ -657,7 +657,7 @@ If you encounter issues not covered here:
 | kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"kafka\", \"metrics\": [\"*\"], \"type_overrides\": {\"kafka_server_replicamanager_total_underreplicatedpartitions_value\":\"gauge\", \"kafka_controller_kafkacontroller_offlinepartitionscount_value\":\"gauge\", \"kafka_controller_kafkacontroller_activecontrollercount_value\": \"gauge\"}}]","stackstate.com/kafkaup-operator.kafka_version":"3.9.1"}` | Kafka Pod annotations. |
 | kafka.podLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | kafka.readinessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
-| kafka.replicaCount | int | `3` | Number of Kafka replicas. |
+| kafka.replicaCount | string | `nil` | Number of Kafka replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | kafka.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2Gi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2Gi"}}` | Kafka resources per pods. |
 | kafka.service.annotations."monitor.kubernetes-v2.stackstate.io/http-response-time" | string | `"{ \"deviatingThreshold\": 10.0, \"criticalThreshold\": 10.0 }"` |  |
 | kafka.service.headless.annotations."monitor.kubernetes-v2.stackstate.io/http-response-time" | string | `"{ \"deviatingThreshold\": 10.0, \"criticalThreshold\": 10.0 }"` |  |
@@ -899,7 +899,7 @@ If you encounter issues not covered here:
 | stackstate.components.correlate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.correlate.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.correlate.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `correlate` pods. |
-| stackstate.components.correlate.replicaCount | int | `1` | Number of `correlate` replicas. |
+| stackstate.components.correlate.replicaCount | string | `nil` | Number of `correlate` replicas. |
 | stackstate.components.correlate.resources | object | `{"limits":{"cpu":"2000m","ephemeral-storage":"1Gi","memory":"2800Mi"},"requests":{"cpu":"600m","ephemeral-storage":"1Mi","memory":"2800Mi"}}` | Resource allocation for `correlate` pods. |
 | stackstate.components.correlate.sizing.baseMemoryConsumption | string | `"400Mi"` |  |
 | stackstate.components.correlate.sizing.javaHeapMemoryFraction | string | `"65"` |  |
@@ -1203,7 +1203,7 @@ If you encounter issues not covered here:
 | stackstate.components.ui.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.ui.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.ui.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `ui` pods. |
-| stackstate.components.ui.replicaCount | int | `2` | Number of `ui` replicas. |
+| stackstate.components.ui.replicaCount | string | `nil` | Number of `ui` replicas. |
 | stackstate.components.ui.resources | object | `{"limits":{"cpu":"50m","ephemeral-storage":"1Gi","memory":"64Mi"},"requests":{"cpu":"50m","ephemeral-storage":"1Mi","memory":"64Mi"}}` | Resource allocation for `ui` pods. |
 | stackstate.components.ui.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
 | stackstate.components.ui.securityContext.fsGroup | int | `101` | The GID (group ID) used to mount volumes |
@@ -1376,7 +1376,7 @@ If you encounter issues not covered here:
 | zookeeper.podAnnotations | object | `{"ad.stackstate.com/zookeeper.check_names":"[\"openmetrics\"]","ad.stackstate.com/zookeeper.init_configs":"[{}]","ad.stackstate.com/zookeeper.instances":"[ { \"prometheus_url\": \"http://%%host%%:9141/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Annotations for ZooKeeper pod. |
 | zookeeper.podLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | zookeeper.readinessProbe.enabled | bool | `false` | it must be disabled to apply the custom probe, the probe adds "-q" option to nc to wait 1sec until close the connection, it fixes problem of failing the probed |
-| zookeeper.replicaCount | int | `3` | Default amount of Zookeeper replicas to provision. |
+| zookeeper.replicaCount | string | `nil` | Default amount of Zookeeper replicas to provision. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | zookeeper.resources.limits.cpu | string | `"250m"` |  |
 | zookeeper.resources.limits.ephemeral-storage | string | `"1Gi"` |  |
 | zookeeper.resources.limits.memory | string | `"640Mi"` | Allocated memory should be bigger than JVM Heap Size (env var ZOO_HEAP_SIZE) and space used by Off-Heap Memory (e.g. Metaspace) |

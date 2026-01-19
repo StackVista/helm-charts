@@ -70,13 +70,8 @@ resources:
 {{- $stsstackstateCorrelateMainContainer := (merge $overrideMainContainer $commonContainer) -}}
 {{- $overrideInitContainer := fromYaml (include "stackstate.correlate.deployment.container.init" .) -}}
 {{- $stsstackstateCorrelateInitContainer := (merge $overrideInitContainer $commonContainer) -}}
-{{- $evaluatedReplicaCount := .TypeConfig.replicaCount | default 1 -}}
-{{- if eq (include "suse-observability.sizing-profile.enabled" .) "true" -}}
-{{- $profileReplicaCount := include "common.sizing.stackstate.correlate.replicaCount" . | trim -}}
-{{- if $profileReplicaCount -}}
-{{- $evaluatedReplicaCount = $profileReplicaCount | int -}}
-{{- end -}}
-{{- end -}}
+{{- $sizingReplicaCount := include "common.sizing.stackstate.correlate.replicaCount" . | trim -}}
+{{- $evaluatedReplicaCount := ternary .TypeConfig.replicaCount (default 1 $sizingReplicaCount | int) (not (kindIs "invalid" .TypeConfig.replicaCount)) -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-correlate{{ template "stackstate.correlate.name.postfix" . }}
   labels:

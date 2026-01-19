@@ -56,10 +56,12 @@ We use HDFS_CONF_dfs_namenode_replication_min to ensure the desired amount of re
 - name: HDFS_CONF_dfs_replication
   value: "2"
 - name: HDFS_CONF_dfs_namenode_replication_min
-  {{- if gt .Values.hdfs.datanode.replicaCount .Values.hdfs.minReplication  }}
+  {{- $datanodeReplicaCount := include "common.sizing.hdfs.datanode.replicaCount" . | trim -}}
+  {{- $effectiveDatanodeCount := ternary .Values.hdfs.datanode.replicaCount (default "1" $datanodeReplicaCount) (not (kindIs "invalid" .Values.hdfs.datanode.replicaCount)) | int -}}
+  {{- if gt $effectiveDatanodeCount (int .Values.hdfs.minReplication) }}
   value: {{ .Values.hdfs.minReplication | quote }}
   {{- else }}
-  value: {{ .Values.hdfs.datanode.replicaCount | quote }}
+  value: {{ $effectiveDatanodeCount | quote }}
   {{- end }}
 - name: HDFS_CONF_dfs_client_block_write_replace___datanode___on___failure_enable
   value: "true"

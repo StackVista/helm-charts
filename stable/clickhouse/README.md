@@ -189,7 +189,7 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 | readinessProbe.periodSeconds | int | `10` |  |
 | readinessProbe.successThreshold | int | `1` |  |
 | readinessProbe.timeoutSeconds | int | `1` |  |
-| replicaCount | int | `3` |  |
+| replicaCount | string | `nil` |  |
 | resources.limits | object | `{}` |  |
 | resources.requests | object | `{}` |  |
 | schedulerName | string | `""` |  |
