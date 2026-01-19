@@ -57,7 +57,8 @@ We use HDFS_CONF_dfs_namenode_replication_min to ensure the desired amount of re
   value: "2"
 - name: HDFS_CONF_dfs_namenode_replication_min
   {{- $datanodeReplicaCount := include "common.sizing.hdfs.datanode.replicaCount" . | trim -}}
-  {{- $effectiveDatanodeCount := ternary .Values.hdfs.datanode.replicaCount (default "1" $datanodeReplicaCount) (not (kindIs "invalid" .Values.hdfs.datanode.replicaCount)) | int -}}
+  {{- $chartDefault := "1" -}}{{/* Default when no sizing profile */}}
+  {{- $effectiveDatanodeCount := ternary .Values.hdfs.datanode.replicaCount ($datanodeReplicaCount | default $chartDefault) (not (kindIs "invalid" .Values.hdfs.datanode.replicaCount)) | int -}}
   {{- if gt $effectiveDatanodeCount (int .Values.hdfs.minReplication) }}
   value: {{ .Values.hdfs.minReplication | quote }}
   {{- else }}

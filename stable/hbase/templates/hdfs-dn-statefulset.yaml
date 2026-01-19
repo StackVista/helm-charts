@@ -97,7 +97,8 @@ metadata:
 spec:
   podManagementPolicy: Parallel
   {{- $sizingReplicaCount := include "common.sizing.hdfs.datanode.replicaCount" . | trim }}
-  {{- $replicaCount := ternary .Values.hdfs.datanode.replicaCount (default "1" $sizingReplicaCount) (not (kindIs "invalid" .Values.hdfs.datanode.replicaCount)) }}
+  {{- $chartDefault := "1" -}}{{/* Default when no sizing profile */}}
+  {{- $replicaCount := ternary .Values.hdfs.datanode.replicaCount ($sizingReplicaCount | default $chartDefault) (not (kindIs "invalid" .Values.hdfs.datanode.replicaCount)) }}
   replicas: {{ $replicaCount }}
   serviceName: {{ template "common.fullname.short" . }}-hdfs-dn
   selector:

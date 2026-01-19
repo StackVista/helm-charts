@@ -96,3 +96,22 @@ Fails if global.suseObservability.sizing.profile is set but invalid
   {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Profile lookup helper - returns value from a dict based on current sizing profile
+Usage: {{ include "common.sizing.profileLookup" (dict "profileMap" $profileMap "context" .) }}
+Parameters:
+  - profileMap: A dict mapping profile names to values
+  - context: The template context (.)
+Returns: The value for the current profile, or empty string if no profile is set
+*/}}
+{{- define "common.sizing.profileLookup" -}}
+{{- $profileMap := .profileMap -}}
+{{- $context := .context -}}
+{{- if and $context.Values.global $context.Values.global.suseObservability $context.Values.global.suseObservability.sizing $context.Values.global.suseObservability.sizing.profile -}}
+  {{- $profile := $context.Values.global.suseObservability.sizing.profile -}}
+  {{- if hasKey $profileMap $profile -}}
+    {{- index $profileMap $profile -}}
+  {{- end -}}
+{{- end -}}
+{{- end -}}

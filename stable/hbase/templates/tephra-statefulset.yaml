@@ -133,7 +133,8 @@ metadata:
 spec:
   podManagementPolicy: Parallel
   {{- $sizingReplicaCount := include "common.sizing.hbase.tephra.replicaCount" . | trim }}
-  {{- $replicaCount := ternary .Values.tephra.replicaCount (default "1" $sizingReplicaCount) (not (kindIs "invalid" .Values.tephra.replicaCount)) }}
+  {{- $chartDefault := "1" -}}{{/* Default when no sizing profile */}}
+  {{- $replicaCount := ternary .Values.tephra.replicaCount ($sizingReplicaCount | default $chartDefault) (not (kindIs "invalid" .Values.tephra.replicaCount)) }}
   replicas: {{ $replicaCount }}
   serviceName: {{ template "common.fullname.short" . }}-tephra
   selector:

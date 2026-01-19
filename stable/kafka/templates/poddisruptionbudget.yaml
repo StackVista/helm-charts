@@ -1,5 +1,6 @@
 {{- $sizingReplicaCount := include "common.sizing.kafka.replicaCount" . | trim -}}
-{{- $replicaCount := ternary (int .Values.replicaCount) (int (default "1" $sizingReplicaCount)) (not (kindIs "invalid" .Values.replicaCount)) -}}
+{{- $chartDefault := "1" -}}{{/* Default when no sizing profile */}}
+{{- $replicaCount := ternary (int .Values.replicaCount) (int ($sizingReplicaCount | default $chartDefault)) (not (kindIs "invalid" .Values.replicaCount)) -}}
 {{- $globalSizingEnabled := and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
 {{- $profile := "" -}}
 {{- if $globalSizingEnabled -}}

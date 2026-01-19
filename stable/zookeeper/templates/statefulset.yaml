@@ -1,5 +1,6 @@
 {{- $sizingReplicaCount := include "common.sizing.zookeeper.replicaCount" . | trim -}}
-{{- $replicaCount := ternary (int .Values.replicaCount) (int (default "1" $sizingReplicaCount)) (not (kindIs "invalid" .Values.replicaCount)) -}}
+{{- $chartDefault := "1" -}}{{/* Default when no sizing profile */}}
+{{- $replicaCount := ternary (int .Values.replicaCount) (int ($sizingReplicaCount | default $chartDefault)) (not (kindIs "invalid" .Values.replicaCount)) -}}
 {{- $sizingPersistenceSize := include "common.sizing.zookeeper.persistence.size" . | trim -}}
 {{- $persistenceSize := default .Values.persistence.size $sizingPersistenceSize }}
 apiVersion: {{ include "common.capabilities.statefulset.apiVersion" . }}
@@ -228,7 +229,8 @@ spec:
               value: {{ .Values.maxSessionTimeout | quote }}
             - name: ZOO_SERVERS
               {{- $sizingReplicaCount := include "common.sizing.zookeeper.replicaCount" . | trim -}}
-              {{- $replicaCount := ternary (int .Values.replicaCount) (int $sizingReplicaCount) (not (kindIs "invalid" .Values.replicaCount)) -}}
+              {{- $chartDefault := "1" -}}{{/* Default when no sizing profile */}}
+              {{- $replicaCount := ternary (int .Values.replicaCount) (int ($sizingReplicaCount | default $chartDefault)) (not (kindIs "invalid" .Values.replicaCount)) -}}
               {{- $minServerId := int .Values.minServerId }}
               {{- $followerPort := int .Values.containerPorts.follower }}
               {{- $electionPort := int .Values.containerPorts.election }}

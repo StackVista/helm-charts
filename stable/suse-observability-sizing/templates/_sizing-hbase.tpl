@@ -299,14 +299,11 @@ requests:
 {{/*
 Get hbase tephra replicaCount
 Usage: {{ include "common.sizing.hbase.tephra.replicaCount" . }}
+Returns: 1 for non-HA profiles, 2 for HA profiles, empty if no profile set
 */}}
 {{- define "common.sizing.hbase.tephra.replicaCount" -}}
-{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
-{{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") }}1
-{{- else }}2
-{{- end }}
-{{- end }}
+{{- $profileMap := dict "trial" "1" "10-nonha" "1" "20-nonha" "1" "50-nonha" "1" "100-nonha" "1" "150-ha" "2" "250-ha" "2" "500-ha" "2" "4000-ha" "2" -}}
+{{- include "common.sizing.profileLookup" (dict "profileMap" $profileMap "context" .) -}}
 {{- end }}
 
 {{/*
@@ -324,13 +321,11 @@ Usage: {{ include "common.sizing.hbase.experimental.execLivenessProbe.enabled" .
 {{/*
 Get hbase regionserver replicaCount
 Usage: {{ include "common.sizing.hbase.regionserver.replicaCount" . }}
+Returns: 1 for most profiles, 5 for 4000-ha, empty if no profile set
 */}}
 {{- define "common.sizing.hbase.regionserver.replicaCount" -}}
-{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
-{{- if eq $profile "4000-ha" }}5
-{{- end }}
-{{- end }}
+{{- $profileMap := dict "trial" "1" "10-nonha" "1" "20-nonha" "1" "50-nonha" "1" "100-nonha" "1" "150-ha" "1" "250-ha" "1" "500-ha" "1" "4000-ha" "5" -}}
+{{- include "common.sizing.profileLookup" (dict "profileMap" $profileMap "context" .) -}}
 {{- end }}
 
 {{/*
@@ -371,25 +366,21 @@ Only add explicit values here if a profile needs a value different from the comp
 {{/*
 Get hbase master replicaCount
 Usage: {{ include "common.sizing.hbase.master.replicaCount" . }}
+Returns: 1 for all profiles (only used in distributed mode), empty if no profile set
 */}}
 {{- define "common.sizing.hbase.master.replicaCount" -}}
-{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
-{{- /* All profiles use 1 master - only needed for distributed mode */ -}}
-1
-{{- end }}
+{{- $profileMap := dict "trial" "1" "10-nonha" "1" "20-nonha" "1" "50-nonha" "1" "100-nonha" "1" "150-ha" "1" "250-ha" "1" "500-ha" "1" "4000-ha" "1" -}}
+{{- include "common.sizing.profileLookup" (dict "profileMap" $profileMap "context" .) -}}
 {{- end }}
 
 {{/*
 Get hdfs datanode replicaCount
 Usage: {{ include "common.sizing.hdfs.datanode.replicaCount" . }}
+Returns: 1 for all profiles (only used in distributed mode), empty if no profile set
 */}}
 {{- define "common.sizing.hdfs.datanode.replicaCount" -}}
-{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
-{{- /* All profiles use 1 datanode - only needed for distributed mode */ -}}
-1
-{{- end }}
+{{- $profileMap := dict "trial" "1" "10-nonha" "1" "20-nonha" "1" "50-nonha" "1" "100-nonha" "1" "150-ha" "1" "250-ha" "1" "500-ha" "1" "4000-ha" "1" -}}
+{{- include "common.sizing.profileLookup" (dict "profileMap" $profileMap "context" .) -}}
 {{- end }}
 
 
