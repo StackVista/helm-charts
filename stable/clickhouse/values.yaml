@@ -254,15 +254,17 @@ defaultConfigurationOverrides: |
     <logger>
       <level>{{ .Values.logLevel }}</level>
     </logger>
-    {{- if or (ne (int .Values.shards) 1) (ne (int .Values.replicaCount) 1)}}
+    {{- $sizingReplicaCount := include "common.sizing.clickhouse.replicaCount" . | trim -}}
+    {{- $chartDefaultReplicas := "1" -}}
+    {{- $effectiveReplicaCount := ternary .Values.replicaCount ($sizingReplicaCount | default $chartDefaultReplicas) (not (kindIs "invalid" .Values.replicaCount)) | int -}}
+    {{- if or (ne (int .Values.shards) 1) (ne $effectiveReplicaCount 1)}}
     <!-- Cluster configuration - Any update of the shards and replicas requires helm upgrade -->
     <remote_servers>
       <default>
         {{- $shards := $.Values.shards | int }}
         {{- range $shard, $e := until $shards }}
         <shard>
-            {{- $replicas := $.Values.replicaCount | int }}
-            {{- range $i, $_e := until $replicas }}
+            {{- range $i, $_e := until $effectiveReplicaCount }}
             <replica>
                 <host>{{ printf "%s-shard%d-%d.%s.%s.svc.%s" (include "common.names.fullname" $ ) $shard $i (include "clickhouse.headlessServiceName" $) (include "common.names.namespace" $) $.Values.clusterDomain }}</host>
                 <port>{{ $.Values.service.ports.tcp }}</port>
@@ -294,8 +296,7 @@ defaultConfigurationOverrides: |
       </coordination_settings>
 
       <raft_configuration>
-      {{- $nodes := .Values.replicaCount | int }}
-      {{- range $node, $e := until $nodes }}
+      {{- range $node, $e := until $effectiveReplicaCount }}
       <server>
         <id>{{ $node | int }}</id>
         <hostname from_env="{{ printf "KEEPER_NODE_%d" $node }}"></hostname>
@@ -309,8 +310,7 @@ defaultConfigurationOverrides: |
     <!-- Zookeeper configuration -->
     <zookeeper>
       {{- if .Values.keeper.enabled }}
-      {{- $nodes := .Values.replicaCount | int }}
-      {{- range $node, $e := until $nodes }}
+      {{- range $node, $e := until $effectiveReplicaCount }}
       <node>
         <host from_env="{{ printf "KEEPER_NODE_%d" $node }}"></host>
         <port>{{ $.Values.service.ports.keeper }}</port>

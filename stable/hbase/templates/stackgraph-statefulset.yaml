@@ -166,7 +166,7 @@ spec:
 {{- end -}}
 
 {{- if eq (include "hbase.deployment.mode" .) "Mono" -}}
-apiVersion: apps/v1
-kind: StatefulSet
-{{ include "stackgraph.statefulset" . }}
+{{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
+{{- $stackgraphStatefulSet := fromYaml (include "stackgraph.statefulset" .) -}}
+{{- toYaml (merge $stackgraphStatefulSet $commonStatefulSet) -}}
 {{- end -}}

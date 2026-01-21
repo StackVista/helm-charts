@@ -161,11 +161,45 @@ Usage: {{ include "common.sizing.elasticsearch.antiAffinityTopologyKey" . }}
 {{- end -}}
 
 {{/*
+Helper to generate HBase-specific podAntiAffinity configuration.
+For HBase components, outputs BOTH:
+- Soft anti-affinity to spread all HBase pods across nodes
+- Hard anti-affinity to prevent same-component pods on the same node
+
+Usage: {{ include "common.sizing.hbasePodAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "hbase-master") "context" .) }}
+*/}}
+{{- define "common.sizing.hbasePodAntiAffinity" -}}
+{{- $labels := .labels -}}
+{{- $context := .context -}}
+{{- $globalTopologyKey := include "common.sizing.global.topologyKey" $context | trim -}}
+{{- $topologyKey := .topologyKey | default $globalTopologyKey | default "kubernetes.io/hostname" -}}
+{{- $profile := include "common.sizing.global.profile" $context | trim -}}
+{{- if and $profile (hasSuffix "-ha" $profile) }}
+podAntiAffinity:
+  preferredDuringSchedulingIgnoredDuringExecution:
+  - podAffinityTerm:
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/instance: {{ $context.Release.Name }}
+          app.kubernetes.io/name: hbase
+      topologyKey: {{ $topologyKey }}
+    weight: 1
+  requiredDuringSchedulingIgnoredDuringExecution:
+  - labelSelector:
+      matchLabels:
+{{- range $key, $value := $labels }}
+        {{ $key }}: {{ $value }}
+{{- end }}
+    topologyKey: {{ $topologyKey }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Get hbase master affinity
 Usage: {{ include "common.sizing.hbase.master.affinity" . }}
 */}}
 {{- define "common.sizing.hbase.master.affinity" -}}
-{{- include "common.sizing.podAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "hbase-master") "context" .) }}
+{{- include "common.sizing.hbasePodAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "hbase-master") "context" .) }}
 {{- end }}
 
 {{/*
@@ -173,7 +207,7 @@ Get hbase regionserver affinity
 Usage: {{ include "common.sizing.hbase.regionserver.affinity" . }}
 */}}
 {{- define "common.sizing.hbase.regionserver.affinity" -}}
-{{- include "common.sizing.podAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "hbase-rs") "context" .) }}
+{{- include "common.sizing.hbasePodAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "hbase-rs") "context" .) }}
 {{- end }}
 
 {{/*
@@ -181,7 +215,7 @@ Get hbase hdfs datanode affinity
 Usage: {{ include "common.sizing.hbase.hdfs.datanode.affinity" . }}
 */}}
 {{- define "common.sizing.hbase.hdfs.datanode.affinity" -}}
-{{- include "common.sizing.podAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "hdfs-dn") "context" .) }}
+{{- include "common.sizing.hbasePodAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "hdfs-dn") "context" .) }}
 {{- end }}
 
 {{/*
@@ -189,7 +223,7 @@ Get hbase hdfs namenode affinity
 Usage: {{ include "common.sizing.hbase.hdfs.namenode.affinity" . }}
 */}}
 {{- define "common.sizing.hbase.hdfs.namenode.affinity" -}}
-{{- include "common.sizing.podAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "hdfs-snn") "context" .) }}
+{{- include "common.sizing.hbasePodAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "hdfs-snn") "context" .) }}
 {{- end }}
 
 {{/*
@@ -197,7 +231,7 @@ Get hbase hdfs secondarynamenode affinity
 Usage: {{ include "common.sizing.hbase.hdfs.secondarynamenode.affinity" . }}
 */}}
 {{- define "common.sizing.hbase.hdfs.secondarynamenode.affinity" -}}
-{{- include "common.sizing.podAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "hdfs-nn") "context" .) }}
+{{- include "common.sizing.hbasePodAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "hdfs-nn") "context" .) }}
 {{- end }}
 
 {{/*
@@ -205,7 +239,7 @@ Get hbase tephra affinity
 Usage: {{ include "common.sizing.hbase.tephra.affinity" . }}
 */}}
 {{- define "common.sizing.hbase.tephra.affinity" -}}
-{{- include "common.sizing.podAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "tephra") "context" .) }}
+{{- include "common.sizing.hbasePodAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "tephra") "context" .) }}
 {{- end }}
 
 {{/*

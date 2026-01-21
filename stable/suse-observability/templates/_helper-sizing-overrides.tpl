@@ -172,6 +172,22 @@ These helpers apply sizing-chart-based resources and storage to subcharts.
 */}}
 
 {{/*
+Get ClickHouse replicaCount from sizing profile if applicable.
+*/}}
+{{- define "suse-observability.sizing.clickhouse.replicaCount" -}}
+{{- if include "suse-observability.global.enabled" . -}}
+{{- $replicas := include "common.sizing.clickhouse.replicaCount" . | trim -}}
+{{- if $replicas -}}
+{{- $replicas -}}
+{{- else -}}
+{{- .Values.clickhouse.replicaCount -}}
+{{- end -}}
+{{- else -}}
+{{- .Values.clickhouse.replicaCount -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Get Elasticsearch storage size from sizing profile if applicable.
 */}}
 {{- define "suse-observability.sizing.elasticsearch.volumeClaimTemplate.resources.requests.storage" -}}

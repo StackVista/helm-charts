@@ -75,14 +75,10 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
         {{- end }}
-        {{- if or .Values.stackstate.components.all.affinity .Values.clickhouse.backup.affinity }}
+        {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.clickhouse.backup.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) -}}
+        {{- if $affinity }}
           affinity:
-          {{- with .Values.stackstate.components.all.affinity }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.clickhouse.backup.affinity }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+            {{- $affinity | nindent 12 }}
         {{- end }}
         {{- if or .Values.stackstate.components.all.tolerations .Values.clickhouse.backup.tolerations }}
           tolerations:

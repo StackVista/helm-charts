@@ -57,14 +57,10 @@ template:
       {{- toYaml . | nindent 6 }}
     {{- end }}
 {{- end }}
-{{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.backup.affinity }}
+{{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.backup.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) -}}
+{{- if $affinity }}
     affinity:
-    {{- with .Values.stackstate.components.all.affinity }}
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
-    {{- with .Values.stackstate.components.backup.affinity }}
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
+      {{- $affinity | nindent 6 }}
 {{- end }}
 {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.backup.tolerations }}
     tolerations:

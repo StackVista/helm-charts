@@ -47,37 +47,47 @@ Usage: {{ include "common.sizing.hbase.stackgraph.resources" . }}
 requests:
   memory: "2250Mi"
   cpu: "500m"
+  ephemeral-storage: "1Mi"
 limits:
   cpu: "1500m"
   memory: "2250Mi"
+  ephemeral-storage: "1Gi"
 {{- else if eq $profile "10-nonha" -}}
 requests:
   memory: "2250Mi"
   cpu: "500m"
+  ephemeral-storage: "1Mi"
 limits:
   cpu: "1500m"
   memory: "2250Mi"
+  ephemeral-storage: "1Gi"
 {{- else if eq $profile "20-nonha" -}}
 requests:
   memory: "2500Mi"
   cpu: "1000m"
+  ephemeral-storage: "1Mi"
 limits:
   cpu: "2000m"
   memory: "2500Mi"
+  ephemeral-storage: "1Gi"
 {{- else if eq $profile "50-nonha" -}}
 requests:
   memory: "3Gi"
   cpu: "2000m"
+  ephemeral-storage: "1Mi"
 limits:
   cpu: "4000m"
   memory: "3Gi"
+  ephemeral-storage: "1Gi"
 {{- else if eq $profile "100-nonha" -}}
 requests:
   memory: "4500Mi"
   cpu: "2000m"
+  ephemeral-storage: "1Mi"
 limits:
   cpu: "4000m"
   memory: "4500Mi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 {{- end }}
@@ -106,15 +116,21 @@ Usage: {{ include "common.sizing.hbase.master.resources" . }}
 {{- if or (eq $profile "150-ha") (eq $profile "250-ha") (eq $profile "500-ha") }}
 requests:
   cpu: "500m"
+  memory: "1Gi"
+  ephemeral-storage: "1Mi"
 limits:
   cpu: "1000m"
+  memory: "1Gi"
+  ephemeral-storage: "1Gi"
 {{- else if eq $profile "4000-ha" }}
 requests:
   cpu: "2000m"
   memory: "1024Mi"
+  ephemeral-storage: "1Mi"
 limits:
   cpu: "2500m"
   memory: "1024Mi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 {{- end }}
@@ -129,29 +145,39 @@ Usage: {{ include "common.sizing.hbase.regionserver.resources" . }}
 {{- if eq $profile "150-ha" }}
 requests:
   cpu: "2000m"
+  memory: "3Gi"
+  ephemeral-storage: "1Mi"
 limits:
   cpu: "4000m"
+  memory: "3Gi"
+  ephemeral-storage: "1Gi"
 {{- else if eq $profile "250-ha" }}
 requests:
   cpu: "3000m"
   memory: 4Gi
+  ephemeral-storage: "1Mi"
 limits:
   cpu: "6000m"
   memory: 4Gi
+  ephemeral-storage: "1Gi"
 {{- else if eq $profile "500-ha" }}
 requests:
   cpu: "4000m"
   memory: 6Gi
+  ephemeral-storage: "1Mi"
 limits:
   cpu: "8000m"
   memory: 6Gi
+  ephemeral-storage: "1Gi"
 {{- else if eq $profile "4000-ha" }}
 requests:
   cpu: "6000m"
   memory: 10Gi
+  ephemeral-storage: "1Mi"
 limits:
   cpu: "8000m"
   memory: 12Gi
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 {{- end }}
@@ -166,15 +192,21 @@ Usage: {{ include "common.sizing.hbase.hdfs.datanode.resources" . }}
 {{- if or (eq $profile "150-ha") (eq $profile "250-ha") (eq $profile "500-ha") }}
 requests:
   cpu: "600m"
+  memory: "4Gi"
+  ephemeral-storage: "1Mi"
 limits:
   cpu: "1200m"
+  memory: "4Gi"
+  ephemeral-storage: "1Gi"
 {{- else if eq $profile "4000-ha" }}
 requests:
   cpu: "4000m"
   memory: "3Gi"
+  ephemeral-storage: "1Mi"
 limits:
   cpu: "6000m"
   memory: "5Gi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 {{- end }}
@@ -189,15 +221,21 @@ Usage: {{ include "common.sizing.hbase.hdfs.namenode.resources" . }}
 {{- if or (eq $profile "150-ha") (eq $profile "250-ha") (eq $profile "500-ha") }}
 requests:
   cpu: "200m"
+  memory: "1Gi"
+  ephemeral-storage: "1Mi"
 limits:
   cpu: "400m"
+  memory: "1Gi"
+  ephemeral-storage: "1Gi"
 {{- else if eq $profile "4000-ha" }}
 requests:
   cpu: "2000m"
   memory: "1024Mi"
+  ephemeral-storage: "1Mi"
 limits:
   cpu: "4000m"
   memory: "2048Mi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 {{- end }}
@@ -224,9 +262,21 @@ Usage: {{ include "common.sizing.hbase.hdfs.secondarynamenode.resources" . }}
 {{- if or (eq $profile "150-ha") (eq $profile "250-ha") (eq $profile "500-ha") }}
 requests:
   cpu: "10m"
+  memory: "1Gi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "500m"
+  memory: "1Gi"
+  ephemeral-storage: "1Gi"
 {{- else if eq $profile "4000-ha" }}
 requests:
   cpu: "50m"
+  memory: "1Gi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "500m"
+  memory: "1Gi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 {{- end }}
@@ -242,56 +292,74 @@ Usage: {{ include "common.sizing.hbase.tephra.resources" . }}
 limits:
   cpu: "100m"
   memory: "512Mi"
+  ephemeral-storage: "1Gi"
 requests:
   memory: "512Mi"
   cpu: "50m"
+  ephemeral-storage: "1Mi"
 {{- else if eq $profile "10-nonha" }}
 limits:
   cpu: "100m"
   memory: "512Mi"
+  ephemeral-storage: "1Gi"
 requests:
   memory: "512Mi"
   cpu: "50m"
+  ephemeral-storage: "1Mi"
 {{- else if eq $profile "20-nonha" }}
 limits:
   cpu: "100m"
   memory: "600Mi"
+  ephemeral-storage: "1Gi"
 requests:
   memory: "600Mi"
   cpu: "50m"
+  ephemeral-storage: "1Mi"
 {{- else if eq $profile "50-nonha" }}
 limits:
   cpu: "100m"
   memory: "750Mi"
+  ephemeral-storage: "1Gi"
 requests:
   memory: "750Mi"
   cpu: "50m"
+  ephemeral-storage: "1Mi"
 {{- else if eq $profile "100-nonha" }}
 limits:
   memory: "1Gi"
   cpu: "200m"
+  ephemeral-storage: "1Gi"
 requests:
   memory: "1Gi"
   cpu: "100m"
+  ephemeral-storage: "1Mi"
 {{- else if or (eq $profile "150-ha") (eq $profile "250-ha") }}
 limits:
   memory: "1Gi"
   cpu: "1000m"
+  ephemeral-storage: "1Gi"
 requests:
   memory: "1Gi"
   cpu: "500m"
+  ephemeral-storage: "1Mi"
 {{- else if eq $profile "500-ha" }}
 limits:
   memory: "1Gi"
   cpu: "1000m"
+  ephemeral-storage: "1Gi"
 requests:
   memory: "1Gi"
   cpu: "500m"
+  ephemeral-storage: "1Mi"
 {{- else if eq $profile "4000-ha" }}
 limits:
   cpu: "6000m"
+  memory: "3Gi"
+  ephemeral-storage: "1Gi"
 requests:
   cpu: "4000m"
+  memory: "3Gi"
+  ephemeral-storage: "1Mi"
 {{- end }}
 {{- end }}
 {{- end }}
@@ -321,10 +389,10 @@ Usage: {{ include "common.sizing.hbase.experimental.execLivenessProbe.enabled" .
 {{/*
 Get hbase regionserver replicaCount
 Usage: {{ include "common.sizing.hbase.regionserver.replicaCount" . }}
-Returns: 1 for most profiles, 5 for 4000-ha, empty if no profile set
+Returns: 1 for non-HA profiles, 3 for standard HA profiles, 5 for 4000-ha, empty if no profile set
 */}}
 {{- define "common.sizing.hbase.regionserver.replicaCount" -}}
-{{- $profileMap := dict "trial" "1" "10-nonha" "1" "20-nonha" "1" "50-nonha" "1" "100-nonha" "1" "150-ha" "1" "250-ha" "1" "500-ha" "1" "4000-ha" "5" -}}
+{{- $profileMap := dict "trial" "1" "10-nonha" "1" "20-nonha" "1" "50-nonha" "1" "100-nonha" "1" "150-ha" "3" "250-ha" "3" "500-ha" "3" "4000-ha" "5" -}}
 {{- include "common.sizing.profileLookup" (dict "profileMap" $profileMap "context" .) -}}
 {{- end }}
 
@@ -366,20 +434,30 @@ Only add explicit values here if a profile needs a value different from the comp
 {{/*
 Get hbase master replicaCount
 Usage: {{ include "common.sizing.hbase.master.replicaCount" . }}
-Returns: 1 for all profiles (only used in distributed mode), empty if no profile set
+Returns: 1 for non-HA profiles, 2 for HA profiles, empty if no profile set
 */}}
 {{- define "common.sizing.hbase.master.replicaCount" -}}
-{{- $profileMap := dict "trial" "1" "10-nonha" "1" "20-nonha" "1" "50-nonha" "1" "100-nonha" "1" "150-ha" "1" "250-ha" "1" "500-ha" "1" "4000-ha" "1" -}}
+{{- $profileMap := dict "trial" "1" "10-nonha" "1" "20-nonha" "1" "50-nonha" "1" "100-nonha" "1" "150-ha" "2" "250-ha" "2" "500-ha" "2" "4000-ha" "2" -}}
 {{- include "common.sizing.profileLookup" (dict "profileMap" $profileMap "context" .) -}}
 {{- end }}
 
 {{/*
 Get hdfs datanode replicaCount
 Usage: {{ include "common.sizing.hdfs.datanode.replicaCount" . }}
-Returns: 1 for all profiles (only used in distributed mode), empty if no profile set
+Returns: 1 for non-HA profiles, 3 for HA profiles, empty if no profile set
 */}}
 {{- define "common.sizing.hdfs.datanode.replicaCount" -}}
-{{- $profileMap := dict "trial" "1" "10-nonha" "1" "20-nonha" "1" "50-nonha" "1" "100-nonha" "1" "150-ha" "1" "250-ha" "1" "500-ha" "1" "4000-ha" "1" -}}
+{{- $profileMap := dict "trial" "1" "10-nonha" "1" "20-nonha" "1" "50-nonha" "1" "100-nonha" "1" "150-ha" "3" "250-ha" "3" "500-ha" "3" "4000-ha" "3" -}}
+{{- include "common.sizing.profileLookup" (dict "profileMap" $profileMap "context" .) -}}
+{{- end }}
+
+{{/*
+Get hdfs secondarynamenode replicaCount
+Usage: {{ include "common.sizing.hdfs.secondarynamenode.replicaCount" . }}
+Returns: 0 for non-HA profiles, 1 for HA profiles, empty if no profile set
+*/}}
+{{- define "common.sizing.hdfs.secondarynamenode.replicaCount" -}}
+{{- $profileMap := dict "trial" "0" "10-nonha" "0" "20-nonha" "0" "50-nonha" "0" "100-nonha" "0" "150-ha" "1" "250-ha" "1" "500-ha" "1" "4000-ha" "1" -}}
 {{- include "common.sizing.profileLookup" (dict "profileMap" $profileMap "context" .) -}}
 {{- end }}
 

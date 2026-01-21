@@ -1,5 +1,5 @@
 {{- define "stackstate.clickhouseCleanup.job.initContainer.main" -}}
-{{- $replicaCount := int .Values.clickhouse.replicaCount -}}
+{{- $replicaCount := include "suse-observability.sizing.clickhouse.replicaCount" . | trim | int -}}
 {{- $hostList := list -}}
 {{- range $i, $e := reverse (until $replicaCount) -}}
 {{- $hostList = append $hostList (printf "%s-shard0-%d.%s-headless.%s.svc.cluster.local:8123" $.Values.clickhouse.fullnameOverride  $e $.Values.clickhouse.fullnameOverride $.Release.Namespace) -}}
@@ -14,7 +14,7 @@ image: "{{ include "stackstate.wait.image.registry" . }}/{{ .Values.global.wait.
 imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- end }}
 {{- define "stackstate.clickhouseCleanup.job.container.main" -}}
-{{- $replicaCount := .Values.clickhouse.replicaCount -}}
+{{- $replicaCount := include "suse-observability.sizing.clickhouse.replicaCount" . | trim | int -}}
 command:
 - bash
 - -c

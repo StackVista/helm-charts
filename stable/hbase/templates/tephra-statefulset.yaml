@@ -210,6 +210,6 @@ spec:
 
 {{- end -}}
 
-apiVersion: apps/v1
-kind: StatefulSet
-{{ include "hbase.tephra.statefulset" . }}
+{{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
+{{- $tephraStatefulSet := fromYaml (include "hbase.tephra.statefulset" .) -}}
+{{- toYaml (merge $tephraStatefulSet $commonStatefulSet) -}}

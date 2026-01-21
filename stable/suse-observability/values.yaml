@@ -1864,10 +1864,6 @@ hbase:
   # hbase.version -- Version of hbase to use
   version: "2.5"
   all:
-    # hbase.all.sizing -- Default memory sizing for JVMs in HBase pods
-    sizing:
-      baseMemoryConsumption: "300Mi"
-      javaHeapMemoryFraction: "50"
     metrics:
       enabled: true
       # stackstate.components.all.metrics.agentAnnotationsEnabled -- Put annotations on each pod to instruct the stackstate agent to scrape the metrics
@@ -1958,7 +1954,7 @@ kafkaup-operator:
     # kafkaup.image.repository -- Repository containing the image for the KafkaUp operator
     repository: stackstate/kafkaup-operator
     # kafkaup.image.tag -- Tag of the image for the KafkaUp operator
-    tag: 0.0.5
+    tag: 0.0.6
     # kafkaup.image.pullPolicy -- Pull policy for the image:pod for the KafkaUp operator
     pullPolicy: ""
   kafkaSelectors:
@@ -2574,8 +2570,8 @@ clickhouse:
   enabled: true
   # clickhouse.shards -- Number of ClickHouse shards to deploy
   shards: 1
-  # clickhouse.replicaCount -- Number of ClickHouse replicas per shard to deploy
-  replicaCount: 1
+  # clickhouse.replicaCount -- Number of ClickHouse replicas per shard to deploy. When using global.suseObservability.sizing.profile, this value is determined by the sizing profile (1 for most profiles, 3 for 4000-ha).
+  replicaCount: null
   externalZookeeper:
     # clickhouse.externalZookeeper.servers -- External Zookeeper configuration.
     servers:
@@ -2658,14 +2654,16 @@ clickhouse:
         </engine>
       </query_log>
 
+      {{- $sizingReplicaCount := include "common.sizing.clickhouse.replicaCount" . | trim -}}
+      {{- $chartDefaultReplicas := "1" -}}
+      {{- $effectiveReplicaCount := ternary .Values.replicaCount ($sizingReplicaCount | default $chartDefaultReplicas) (not (kindIs "invalid" .Values.replicaCount)) | int -}}
       <!-- Cluster configuration - Any update of the shards and replicas requires helm upgrade -->
       <remote_servers>
         <default>
           {{- $shards := $.Values.shards | int }}
           {{- range $shard, $e := until $shards }}
           <shard>
-              {{- $replicas := $.Values.replicaCount | int }}
-              {{- range $i, $_e := until $replicas }}
+              {{- range $i, $_e := until $effectiveReplicaCount }}
               <replica>
                   <host>{{ printf "%s-shard%d-%d.%s.%s.svc.%s" (include "common.names.fullname" $ ) $shard $i (include "clickhouse.headlessServiceName" $) (include "common.names.namespace" $) $.Values.clusterDomain }}</host>
                   <port>{{ $.Values.service.ports.tcp }}</port>
