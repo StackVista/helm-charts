@@ -243,6 +243,14 @@ Usage: {{ include "common.sizing.hbase.tephra.affinity" . }}
 {{- end }}
 
 {{/*
+Get hbase console affinity
+Usage: {{ include "common.sizing.hbase.console.affinity" . }}
+*/}}
+{{- define "common.sizing.hbase.console.affinity" -}}
+{{- include "common.sizing.hbasePodAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "console") "context" .) }}
+{{- end }}
+
+{{/*
 Get victoria-metrics-0 affinity
 Usage: {{ include "common.sizing.victoria-metrics-0.affinity" . }}
 */}}
@@ -256,4 +264,12 @@ Usage: {{ include "common.sizing.victoria-metrics-1.affinity" . }}
 */}}
 {{- define "common.sizing.victoria-metrics-1.affinity" -}}
 {{- include "common.sizing.podAntiAffinity" (dict "labels" (dict "app.kubernetes.io/name" "victoria-metrics-0") "context" .) }}
+{{- end }}
+
+{{/*
+Get opentelemetry-collector affinity
+Usage: {{ include "common.sizing.opentelemetry-collector.affinity" . }}
+*/}}
+{{- define "common.sizing.opentelemetry-collector.affinity" -}}
+{{- include "common.sizing.podAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "statefulset-collector") "context" .) }}
 {{- end }}

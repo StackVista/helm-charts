@@ -204,9 +204,14 @@ volumes:
 nodeSelector:
   {{- toYaml . | nindent 2 }}
 {{- end }}
-{{- with .Values.affinity }}
+{{- $sizingAffinity := include "common.sizing.opentelemetry-collector.affinityConfig" . | fromYaml -}}
+{{- $finalAffinity := .Values.affinity | default dict -}}
+{{- if and (not .Values.affinity) $sizingAffinity -}}
+  {{- $finalAffinity = $sizingAffinity -}}
+{{- end -}}
+{{- if $finalAffinity }}
 affinity:
-  {{- toYaml . | nindent 2 }}
+  {{- toYaml $finalAffinity | nindent 2 }}
 {{- end }}
 {{- with .Values.tolerations }}
 tolerations:

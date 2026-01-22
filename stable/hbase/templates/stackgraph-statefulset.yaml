@@ -87,7 +87,7 @@ volumeMounts:
 {{- $overrideContainer := fromYaml (include "stackgraphcontainer.init" .) -}}
 {{- $stackgraphInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  labels:
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: stackgraph
 {{- if .Values.global.commonLabels }}
 {{- include "hbase.commonLabels" . | indent 4 }}

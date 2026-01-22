@@ -88,7 +88,7 @@ volumeMounts:
 {{- $overrideContainer := fromYaml (include "hbase.hdfs.datanode.container.init" .) -}}
 {{- $stackstateHbaseHdfsDatanodeInitContainer := (merge $overrideContainer $commonContainer) }}
 metadata:
-  labels:
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: hdfs-dn
 {{- if .Values.global.commonLabels }}
 {{- include "hbase.commonLabels" . | indent 4 }}

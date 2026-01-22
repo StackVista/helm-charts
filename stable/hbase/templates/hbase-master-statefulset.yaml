@@ -73,7 +73,7 @@ securityContext:
 {{- $overrideContainer := fromYaml (include "hbase.hbase.master.container.init" .) -}}
 {{- $stackstateHbaseMasterInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  labels:
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: hbase-master
 {{- if .Values.global.commonLabels }}
 {{- include "hbase.commonLabels" . | indent 4 }}

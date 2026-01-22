@@ -165,6 +165,37 @@ Usage in hbase subchart context:
 {{- end -}}
 
 {{/*
+Get HBase console affinity from sizing profile if applicable.
+
+Usage in hbase subchart context:
+{{ include "suse-observability.sizing.hbase.console.affinity" . }}
+*/}}
+{{- define "suse-observability.sizing.hbase.console.affinity" -}}
+{{- if include "suse-observability.global.enabled" . -}}
+{{- include "common.sizing.hbase.console.affinityConfig" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get OpenTelemetry Collector affinity from sizing profile if applicable.
+
+Usage in opentelemetry-collector subchart context:
+{{ include "suse-observability.sizing.opentelemetry-collector.affinity" . }}
+*/}}
+{{- define "suse-observability.sizing.opentelemetry-collector.affinity" -}}
+{{- if include "suse-observability.global.enabled" . -}}
+{{- $affinity := include "common.sizing.opentelemetry-collector.affinityConfig" . | trim -}}
+{{- if $affinity -}}
+{{- $affinity -}}
+{{- else -}}
+{{- "{}" -}}
+{{- end -}}
+{{- else -}}
+{{- "{}" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 =============================================================================
 Sizing-based Resource and Storage Overrides for Subcharts
 These helpers apply sizing-chart-based resources and storage to subcharts.

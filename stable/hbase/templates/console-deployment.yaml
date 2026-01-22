@@ -38,7 +38,7 @@ workingDir: /tmp
 {{- $overrideContainer := fromYaml (include "hbase.console.container.main" (merge (dict "console_command" "while true; do sleep 10; done") .)) -}}
 {{- $stackstateHbaseConsoleContainer := (merge $overrideContainer $commonContainer) }}
 metadata:
-  labels:
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: console
 {{- if .Values.global.commonLabels }}
 {{- include "hbase.commonLabels" . | indent 4 }}
@@ -83,8 +83,12 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.all.affinity .Values.console.affinity }}
+    {{- $sizingAffinity := include "common.sizing.hbase.console.affinityConfig" . | fromYaml -}}
+    {{- if or .Values.all.affinity .Values.console.affinity $sizingAffinity }}
       affinity:
+      {{- with $sizingAffinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.all.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}

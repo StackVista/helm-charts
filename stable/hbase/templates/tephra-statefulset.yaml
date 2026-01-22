@@ -124,7 +124,7 @@ volumeMounts:
 {{- $overrideContainer := fromYaml (include "hbase.tephra.container.init" .) -}}
 {{- $stackstateHbaseTephraInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  labels:
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: tephra
 {{- if .Values.global.commonLabels }}
 {{- include "hbase.commonLabels" . | indent 4 }}

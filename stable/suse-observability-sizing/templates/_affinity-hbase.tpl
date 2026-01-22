@@ -177,3 +177,31 @@ hbase:
 {{- toYaml $result -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Get complete HBase console affinity configuration for HA profiles.
+Returns a complete affinity block with nodeAffinity (from global config) and
+podAntiAffinity for HA profiles.
+
+Usage in values.yaml:
+hbase:
+  console:
+    affinity: {{ include "common.sizing.hbase.console.affinityConfig" . | nindent 8 }}
+*/}}
+{{- define "common.sizing.hbase.console.affinityConfig" -}}
+{{- $result := dict -}}
+{{- $nodeAffinity := include "common.sizing.global.nodeAffinity" . | trim -}}
+{{- if $nodeAffinity -}}
+  {{- $_ := set $result "nodeAffinity" ($nodeAffinity | fromYaml) -}}
+{{- end -}}
+{{- $podAntiAffinity := include "common.sizing.hbase.console.affinity" . | trim -}}
+{{- if $podAntiAffinity -}}
+  {{- $parsed := $podAntiAffinity | fromYaml -}}
+  {{- if $parsed.podAntiAffinity -}}
+    {{- $_ := set $result "podAntiAffinity" $parsed.podAntiAffinity -}}
+  {{- end -}}
+{{- end -}}
+{{- if $result -}}
+{{- toYaml $result -}}
+{{- end -}}
+{{- end -}}
