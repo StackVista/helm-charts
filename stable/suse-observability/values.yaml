@@ -272,7 +272,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; individual service `tag`s can be overridden (see below).
-        tag: 7.0.0-snapshot.20260122134137-master-06b2d5c
+        tag: 7.0.0-snapshot.20260123143416-master-92457dd
       # stackstate.components.all.podAnnotations -- Extra annotations
       podAnnotations: {}
       metrics:
@@ -1923,7 +1923,7 @@ hbase:
         open: {}
         # hbase.hdfs.namenode.extraEnv.secret -- Extra secret environment variables to inject into HDFS namenode pods via a Secret object.
         secret: {}
-      # hbase.hdfs.namenode.resources -- Resources will be set by sizing profile. Only override if needed.
+        # hbase.hdfs.namenode.resources -- Resources will be set by sizing profile. Only override if needed.
     secondarynamenode:
       enabled: true
       # hbase.hdfs.secondarynamenode.extraEnv -- Extra environment variables for HDFS secondary namenode pods.
@@ -1932,7 +1932,7 @@ hbase:
         open: {}
         # hbase.hdfs.secondarynamenode.extraEnv.secret -- Extra secret environment variables to inject into HDFS secondary namenode pods via a Secret object.
         secret: {}
-      # hbase.hdfs.secondarynamenode.resources -- Resources will be set by sizing profile. Only override if needed.
+        # hbase.hdfs.secondarynamenode.resources -- Resources will be set by sizing profile. Only override if needed.
   tephra:
     # hbase.tephra.extraEnv -- Extra environment variables for Tephra pods.
     extraEnv:
