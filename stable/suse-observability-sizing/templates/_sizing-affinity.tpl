@@ -251,6 +251,14 @@ Usage: {{ include "common.sizing.hbase.console.affinity" . }}
 {{- end }}
 
 {{/*
+Get hbase stackgraph affinity
+Usage: {{ include "common.sizing.hbase.stackgraph.affinity" . }}
+*/}}
+{{- define "common.sizing.hbase.stackgraph.affinity" -}}
+{{- include "common.sizing.hbasePodAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "stackgraph") "context" .) }}
+{{- end }}
+
+{{/*
 Get victoria-metrics-0 affinity
 Usage: {{ include "common.sizing.victoria-metrics-0.affinity" . }}
 */}}

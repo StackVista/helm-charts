@@ -205,3 +205,31 @@ hbase:
 {{- toYaml $result -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Get complete HBase stackgraph affinity configuration for HA profiles.
+Returns a complete affinity block with nodeAffinity (from global config) and
+podAntiAffinity for HA profiles.
+
+Usage in values.yaml:
+hbase:
+  stackgraph:
+    affinity: {{ include "common.sizing.hbase.stackgraph.affinityConfig" . | nindent 8 }}
+*/}}
+{{- define "common.sizing.hbase.stackgraph.affinityConfig" -}}
+{{- $result := dict -}}
+{{- $nodeAffinity := include "common.sizing.global.nodeAffinity" . | trim -}}
+{{- if $nodeAffinity -}}
+  {{- $_ := set $result "nodeAffinity" ($nodeAffinity | fromYaml) -}}
+{{- end -}}
+{{- $podAntiAffinity := include "common.sizing.hbase.stackgraph.affinity" . | trim -}}
+{{- if $podAntiAffinity -}}
+  {{- $parsed := $podAntiAffinity | fromYaml -}}
+  {{- if $parsed.podAntiAffinity -}}
+    {{- $_ := set $result "podAntiAffinity" $parsed.podAntiAffinity -}}
+  {{- end -}}
+{{- end -}}
+{{- if $result -}}
+{{- toYaml $result -}}
+{{- end -}}
+{{- end -}}

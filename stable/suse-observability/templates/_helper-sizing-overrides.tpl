@@ -177,6 +177,18 @@ Usage in hbase subchart context:
 {{- end -}}
 
 {{/*
+Get HBase stackgraph affinity from sizing profile if applicable.
+
+Usage in hbase subchart context:
+{{ include "suse-observability.sizing.hbase.stackgraph.affinity" . }}
+*/}}
+{{- define "suse-observability.sizing.hbase.stackgraph.affinity" -}}
+{{- if include "suse-observability.global.enabled" . -}}
+{{- include "common.sizing.hbase.stackgraph.affinityConfig" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Get OpenTelemetry Collector affinity from sizing profile if applicable.
 
 Usage in opentelemetry-collector subchart context:

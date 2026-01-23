@@ -134,8 +134,22 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.all.affinity .Values.stackgraph.affinity }}
+    {{- /* Use sizing-based affinity when deployed via suse-observability (sizing profile is set) */ -}}
+    {{- $hasSizingProfile := false -}}
+    {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+      {{- $hasSizingProfile = true -}}
+    {{- else if and .Values.global .Values.global.sizing .Values.global.sizing.profile -}}
+      {{- $hasSizingProfile = true -}}
+    {{- end -}}
+    {{- $sizingAffinity := dict -}}
+    {{- if $hasSizingProfile -}}
+      {{- $sizingAffinity = include "common.sizing.hbase.stackgraph.affinityConfig" . | fromYaml -}}
+    {{- end -}}
+    {{- if or .Values.all.affinity .Values.stackgraph.affinity $sizingAffinity }}
       affinity:
+      {{- with $sizingAffinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.all.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
