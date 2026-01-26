@@ -12,12 +12,14 @@ hbase:
         requests:
           cpu: "20m"
     master:
+      replicaCount: 2
       resources:
         requests:
           cpu: "500m"
         limits:
           cpu: "1000m"
     regionserver:
+      replicaCount: 3
       resources:
         requests:
           cpu: "3000m"
@@ -27,6 +29,7 @@ hbase:
           memory: 4Gi
   hdfs:
     datanode:
+      replicaCount: 3
       resources:
         requests:
           cpu: "600m"

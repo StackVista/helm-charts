@@ -8,6 +8,7 @@ hbase:
     mode: "Distributed"
   hbase:
     master:
+      replicaCount: 2
       resources:
         requests:
           cpu: "500m"
@@ -17,6 +18,7 @@ hbase:
         execLivenessProbe:
           enabled: true
     regionserver:
+      replicaCount: 3
       resources:
         requests:
           cpu: "4000m"
@@ -26,6 +28,7 @@ hbase:
           memory: 6Gi
   hdfs:
     datanode:
+      replicaCount: 3
       resources:
         requests:
           cpu: "600m"

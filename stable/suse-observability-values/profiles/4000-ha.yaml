@@ -11,6 +11,7 @@ elasticsearch:
 hbase:
   hbase:
     master:
+      replicaCount: 2
       resources:
         requests:
           cpu: 2000m
@@ -32,6 +33,7 @@ hbase:
           memory: 12Gi
   hdfs:
     datanode:
+      replicaCount: 3
       resources:
         requests:
           cpu: 4000m
