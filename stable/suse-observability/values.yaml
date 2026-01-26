@@ -2,8 +2,7 @@
 # StackState values #
 #####################
 global:
-  # global.receiverApiKey -- Optional, prefer to use service tokens instead for more control and security.
-  # Please see the documentation on how to use Service Tokens.
+  # global.receiverApiKey -- Deprecated. Use global.suseObservability.receiverApiKey instead.
   receiverApiKey: ""
   # global.imagePullSecrets -- List of image pull secret names to be used by all images across all charts.
   imagePullSecrets: []
@@ -58,8 +57,8 @@ global:
     sizing:
       # global.suseObservability.sizing.profile -- Sizing profile name. Must match one of the available profiles: 10-nonha, 20-nonha, 50-nonha, 100-nonha, 150-ha, 250-ha, 500-ha, 4000-ha, trial. The chart will automatically apply resource limits, replica counts, and affinity configurations based on the selected profile. These act as intelligent defaults that can be overridden by component-specific values.
       profile: ""
-    # global.suseObservability.receiverApiKey -- Optional, prefer to use Service Tokens instead for more control and security. Will use global.receiverApiKey if not provided.
-    # Please see the documentation on how to use Service Tokens.
+    # global.suseObservability.receiverApiKey -- Optional, prefer to use Service Tokens instead for more control and better security. Will use stackstate.apiKey.key if not provided, stackstate.apiKey can also be used to provide the apiKey via an external secret.
+    # Please see the documentation on how to use Service Tokens instead.
     receiverApiKey: ""
     # global.suseObservability.affinity -- Affinity configuration for all SUSE Observability components including infrastructure.
     affinity:
@@ -1731,6 +1730,7 @@ stackstate:
     fromExternalSecret:
     # stackstate.license.key -- (string) **PROVIDE YOUR LICENSE KEY HERE** The StackState license key needed to start the server.
     key:
+  # stackstate.apiKey -- Optional, API key configuration for StackState. prefer to use Service Tokens instead for more control and better security.
   apiKey:
     # stackstate.apiKey.fromExternalSecret -- Use an external secret for the api key. This suppresses secret creation by StackState and gets the data from the secret with the provided name.
     fromExternalSecret:
