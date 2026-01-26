@@ -4,7 +4,7 @@ SPDX-License-Identifier: APACHE-2.0
 */}}
 
 {{- $sizingReplicaCount := include "common.sizing.clickhouse.replicaCount" . | trim -}}
-{{- $chartDefault := "3" -}}{{/* Default when no sizing profile */}}
+{{- $chartDefault := "1" -}}{{/* Backwards-compatibility default matching pre-global-mode parent chart */}}
 {{- $replicaCount := ternary .Values.replicaCount ($sizingReplicaCount | default $chartDefault) (not (kindIs "invalid" .Values.replicaCount)) -}}
 {{- $shards := .Values.shards | int }}
 {{- range $i, $e := until $shards }}
