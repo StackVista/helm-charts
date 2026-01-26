@@ -146,6 +146,8 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | config.service.pipelines.traces/clickhouse.processors[0] | string | `"stsusage"` |  |
 | config.service.pipelines.traces/clickhouse.processors[1] | string | `"resource/removeStsApiKey"` |  |
 | config.service.pipelines.traces/clickhouse.receivers[0] | string | `"forward"` |  |
+| config.service.telemetry.metrics.readers[0].pull.exporter.prometheus.host | string | `"0.0.0.0"` |  |
+| config.service.telemetry.metrics.readers[0].pull.exporter.prometheus.port | int | `8888` |  |
 | configMap.create | bool | `true` |  |
 | configMap.existingName | string | `""` |  |
 | dnsConfig | object | `{}` |  |
