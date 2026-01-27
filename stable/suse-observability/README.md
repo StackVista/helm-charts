@@ -653,7 +653,7 @@ If you encounter issues not covered here:
 | kafka.pdb.maxUnavailable | int | `1` |  |
 | kafka.pdb.minAvailable | string | `""` |  |
 | kafka.persistence.size | string | `"100Gi"` | Size of persistent volume for each Kafka pod |
-| kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"kafka\", \"metrics\": [\"*\"], \"type_overrides\": {\"kafka_server_replicamanager_total_underreplicatedpartitions_value\":\"gauge\", \"kafka_controller_kafkacontroller_offlinepartitionscount_value\":\"gauge\", \"kafka_controller_kafkacontroller_activecontrollercount_value\": \"gauge\"}}]","stackstate.com/kafkaup-operator.kafka_version":"3.9.1"}` | Kafka Pod annotations. |
+| kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"], \"type_overrides\": {\"kafka_server_replicamanager_total_underreplicatedpartitions_value\":\"gauge\", \"kafka_controller_kafkacontroller_offlinepartitionscount_value\":\"gauge\", \"kafka_controller_kafkacontroller_activecontrollercount_value\": \"gauge\"}}]","stackstate.com/kafkaup-operator.kafka_version":"3.9.1"}` | Kafka Pod annotations. |
 | kafka.podLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | kafka.readinessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
 | kafka.replicaCount | string | `nil` | Number of Kafka replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
@@ -1052,7 +1052,7 @@ If you encounter issues not covered here:
 | stackstate.components.receiver.split.base.nodeSelector | object | `{}` | Additional node labels for pod assignment. |
 | stackstate.components.receiver.split.base.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.receiver.split.base.replicaCount | int | `1` | Number of `base receiver` replicas. |
-| stackstate.components.receiver.split.base.resources | object | `{"limits":{"cpu":null,"memory":null},"requests":{"cpu":null,"memory":null}}` | Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources |
+| stackstate.components.receiver.split.base.resources | object | `{"limits":{"cpu":null,"ephemeral-storage":"1Gi","memory":null},"requests":{"cpu":null,"ephemeral-storage":"1Mi","memory":null}}` | Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources |
 | stackstate.components.receiver.split.base.sizing.baseMemoryConsumption | string | `nil` |  |
 | stackstate.components.receiver.split.base.sizing.javaHeapMemoryFraction | string | `nil` |  |
 | stackstate.components.receiver.split.base.tolerations | list | `[]` | Additional toleration labels for pod assignment. |

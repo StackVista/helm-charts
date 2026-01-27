@@ -984,9 +984,11 @@ stackstate:
             limits:
               memory:
               cpu:
+              ephemeral-storage: "1Gi"
             requests:
               memory:
               cpu:
+              ephemeral-storage: "1Mi"
           sizing:
             baseMemoryConsumption:
             javaHeapMemoryFraction:
@@ -2136,7 +2138,7 @@ kafka:
   podAnnotations:
     ad.stackstate.com/jmx-exporter.check_names: '["openmetrics"]'
     ad.stackstate.com/jmx-exporter.init_configs: "[{}]"
-    ad.stackstate.com/jmx-exporter.instances: '[ { "prometheus_url": "http://%%host%%:5556/metrics", "namespace": "kafka", "metrics": ["*"], "type_overrides": {"kafka_server_replicamanager_total_underreplicatedpartitions_value":"gauge", "kafka_controller_kafkacontroller_offlinepartitionscount_value":"gauge", "kafka_controller_kafkacontroller_activecontrollercount_value": "gauge"}}]'
+    ad.stackstate.com/jmx-exporter.instances: '[ { "prometheus_url": "http://%%host%%:5556/metrics", "namespace": "stackstate", "metrics": ["*"], "type_overrides": {"kafka_server_replicamanager_total_underreplicatedpartitions_value":"gauge", "kafka_controller_kafkacontroller_offlinepartitionscount_value":"gauge", "kafka_controller_kafkacontroller_activecontrollercount_value": "gauge"}}]'
     # When changing this version, be sure to also change the image, such that the image version and this version are in sync
     stackstate.com/kafkaup-operator.kafka_version: "3.9.1"
   # kafka.resources -- Kafka resources per pods.
