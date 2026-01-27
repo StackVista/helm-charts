@@ -86,7 +86,7 @@ metadata:
 spec:
   serviceName: {{ template "common.fullname.short" . }}-hdfs-snn
   {{- $sizingReplicaCount := include "common.sizing.hdfs.secondarynamenode.replicaCount" . | trim }}
-  {{- $chartDefault := "0" -}}{{/* Default when no sizing profile - snn disabled by default */}}
+  {{- $chartDefault := "1" -}}{{/* Default when no sizing profile - snn disabled by default */}}
   {{- $replicaCount := ternary .Values.hdfs.secondarynamenode.replicaCount ($sizingReplicaCount | default $chartDefault) (not (kindIs "invalid" .Values.hdfs.secondarynamenode.replicaCount)) }}
   replicas: {{ $replicaCount }}
   selector:

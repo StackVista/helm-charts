@@ -26,7 +26,7 @@ command:
   {{ .Files.Get "scripts/job-kafka-topic-create.sh" | nindent 2 }}
 env:
 - name: KAFKA_REPLICAS
-  value: {{ include "suse-observability.global.kafkaReplicaCount" . | quote }}
+  value: {{ include "common.sizing.kafka.effectiveReplicaCount" . | quote }}
 - name: KAFKA_TOPIC_RETENTION
   value: {{ .Values.kafka.topicRetention | quote }}
 - name: KAFKA_BROKERS
