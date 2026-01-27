@@ -946,9 +946,11 @@ stackstate:
         limits:
           memory: "4Gi"
           cpu: "3000m"
+          ephemeral-storage: "1Gi"
         requests:
           memory: "4Gi"
           cpu: "1000m"
+          ephemeral-storage: "1Mi"
       sizing:
         baseMemoryConsumption: "300Mi"
         javaHeapMemoryFraction: "65"

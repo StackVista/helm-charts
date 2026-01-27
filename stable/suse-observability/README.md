@@ -1042,7 +1042,7 @@ If you encounter issues not covered here:
 | stackstate.components.receiver.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.receiver.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `receiver` pods. |
 | stackstate.components.receiver.replicaCount | int | `1` | Number of `receiver` replicas. |
-| stackstate.components.receiver.resources | object | `{"limits":{"cpu":"3000m","memory":"4Gi"},"requests":{"cpu":"1000m","memory":"4Gi"}}` | Resource allocation for `receiver` pods. |
+| stackstate.components.receiver.resources | object | `{"limits":{"cpu":"3000m","ephemeral-storage":"1Gi","memory":"4Gi"},"requests":{"cpu":"1000m","ephemeral-storage":"1Mi","memory":"4Gi"}}` | Resource allocation for `receiver` pods. |
 | stackstate.components.receiver.retention | int | `7` | Number of days to keep the logs data on Es |
 | stackstate.components.receiver.sizing.baseMemoryConsumption | string | `"300Mi"` |  |
 | stackstate.components.receiver.sizing.javaHeapMemoryFraction | string | `"65"` |  |
