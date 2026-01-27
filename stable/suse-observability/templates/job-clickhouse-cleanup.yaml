@@ -1,5 +1,6 @@
 {{- define "stackstate.clickhouseCleanup.job.initContainer.main" -}}
-{{- $replicaCount := include "common.sizing.clickhouse.effectiveReplicaCount" . | int -}}
+{{- $sizingReplicaCount := include "common.sizing.clickhouse.replicaCount" . | trim -}}
+{{- $replicaCount := include "common.sizing.effectiveReplicaCount" (dict "sizingReplicaCount" $sizingReplicaCount "chartDefault" "3" "valuesReplicaCount" .Values.clickhouse.replicaCount) | int -}}
 {{- $hostList := list -}}
 {{- range $i, $e := reverse (until $replicaCount) -}}
 {{- $hostList = append $hostList (printf "%s-shard0-%d.%s-headless.%s.svc.cluster.local:8123" $.Values.clickhouse.fullnameOverride  $e $.Values.clickhouse.fullnameOverride $.Release.Namespace) -}}
@@ -14,7 +15,7 @@ image: "{{ include "stackstate.wait.image.registry" . }}/{{ .Values.global.wait.
 imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- end }}
 {{- define "stackstate.clickhouseCleanup.job.container.main" -}}
-{{- $replicaCount := include "common.sizing.clickhouse.effectiveReplicaCount" . -}}
+{{- $sizingReplicaCount := include "common.sizing.clickhouse.replicaCount" . | trim -}}
 command:
 - bash
 - -c
@@ -28,7 +29,7 @@ env:
 - name: CLICKHOUSE_HOST_PREFIX
   value: {{ .Values.clickhouse.fullnameOverride | quote }}
 - name: CLICKHOUSE_REPLICA_COUNT
-  value: {{ $replicaCount | quote }}
+  value: {{ include "common.sizing.effectiveReplicaCount" (dict "sizingReplicaCount" $sizingReplicaCount "chartDefault" "3" "valuesReplicaCount" .Values.clickhouse.replicaCount) | quote}}
 - name: NAMESPACE
   value: {{ .Release.Namespace | quote }}
 {{- if .Values.stackstate.components.clickhouseCleanup.extraEnv.open }}

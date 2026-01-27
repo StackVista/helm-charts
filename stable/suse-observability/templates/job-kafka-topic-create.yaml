@@ -25,8 +25,10 @@ command:
 - |
   {{ .Files.Get "scripts/job-kafka-topic-create.sh" | nindent 2 }}
 env:
+
 - name: KAFKA_REPLICAS
-  value: {{ include "common.sizing.kafka.effectiveReplicaCount" . | quote }}
+  {{ $sizingReplicaCount := include "common.sizing.kafka.replicaCount" . | trim -}}
+  value: {{ include "common.sizing.effectiveReplicaCount" (dict "sizingReplicaCount" $sizingReplicaCount "chartDefault" "3" "valuesReplicaCount" .Values.kafka.replicaCount) | quote }}
 - name: KAFKA_TOPIC_RETENTION
   value: {{ .Values.kafka.topicRetention | quote }}
 - name: KAFKA_BROKERS
