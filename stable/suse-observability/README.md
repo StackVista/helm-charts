@@ -1063,7 +1063,7 @@ If you encounter issues not covered here:
 | stackstate.components.receiver.split.logs.nodeSelector | object | `{}` | Additional node labels for pod assignment. |
 | stackstate.components.receiver.split.logs.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.receiver.split.logs.replicaCount | int | `1` | Number of `logs receiver` replicas. |
-| stackstate.components.receiver.split.logs.resources | object | `{"limits":{"cpu":null,"memory":null},"requests":{"cpu":null,"memory":null}}` | Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources |
+| stackstate.components.receiver.split.logs.resources | object | `{"limits":{"cpu":null,"ephemeral-storage":"1Gi","memory":null},"requests":{"cpu":null,"ephemeral-storage":"1Mi","memory":null}}` | Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources |
 | stackstate.components.receiver.split.logs.sizing.javaHeapMemoryFraction | string | `nil` |  |
 | stackstate.components.receiver.split.logs.sizing.logsMemoryConsumption | string | `nil` |  |
 | stackstate.components.receiver.split.logs.tolerations | list | `[]` | Additional toleration labels for pod assignment. |
@@ -1073,7 +1073,7 @@ If you encounter issues not covered here:
 | stackstate.components.receiver.split.processAgent.nodeSelector | object | `{}` | Additional node labels for pod assignment. |
 | stackstate.components.receiver.split.processAgent.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.receiver.split.processAgent.replicaCount | int | `1` | Number of `processAgent receiver` replicas. |
-| stackstate.components.receiver.split.processAgent.resources | object | `{"limits":{"cpu":null,"memory":null},"requests":{"cpu":null,"memory":null}}` | Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources |
+| stackstate.components.receiver.split.processAgent.resources | object | `{"limits":{"cpu":null,"ephemeral-storage":"1Gi","memory":null},"requests":{"cpu":null,"ephemeral-storage":"1Mi","memory":null}}` | Resource allocation for pods. If not defined, will take from stackstate.components.receiver.resources |
 | stackstate.components.receiver.split.processAgent.sizing.javaHeapMemoryFraction | string | `nil` |  |
 | stackstate.components.receiver.split.processAgent.sizing.processAgentMemoryConsumption | string | `nil` |  |
 | stackstate.components.receiver.split.processAgent.tolerations | list | `[]` | Additional toleration labels for pod assignment. |

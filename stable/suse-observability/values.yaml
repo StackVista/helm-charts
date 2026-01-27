@@ -1013,9 +1013,11 @@ stackstate:
             limits:
               memory:
               cpu:
+              ephemeral-storage: "1Gi"
             requests:
               memory:
               cpu:
+              ephemeral-storage: "1Mi"
           sizing:
             processAgentMemoryConsumption:
             javaHeapMemoryFraction:
@@ -1040,9 +1042,11 @@ stackstate:
             limits:
               memory:
               cpu:
+              ephemeral-storage: "1Gi"
             requests:
               memory:
               cpu:
+              ephemeral-storage: "1Mi"
           sizing:
             logsMemoryConsumption:
             javaHeapMemoryFraction:
