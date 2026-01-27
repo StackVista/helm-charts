@@ -14,6 +14,16 @@ Returns: 1 for non-HA profiles, 3 for HA profiles, empty if no profile set
 {{- end }}
 
 {{/*
+Get effective kafka replicaCount with backwards-compatibility support.
+Usage: {{ include "common.sizing.kafka.effectiveReplicaCount" . }}
+Returns: Resolved replica count (callers pipe to | int as needed)
+*/}}
+{{- define "common.sizing.kafka.effectiveReplicaCount" -}}
+{{- $sizingReplicaCount := include "common.sizing.kafka.replicaCount" . | trim -}}
+{{- include "common.sizing.effectiveReplicaCount" (dict "sizingReplicaCount" $sizingReplicaCount "chartDefault" "3" "valuesReplicaCount" .Values.replicaCount) -}}
+{{- end }}
+
+{{/*
 Get kafka numRecoveryThreadsPerDataDir
 Usage: {{ include "common.sizing.kafka.numRecoveryThreadsPerDataDir" . }}
 */}}

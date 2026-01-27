@@ -16,7 +16,7 @@ Official Elastic helm chart for Elasticsearch
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../prometheus-elasticsearch-exporter | prometheus-elasticsearch-exporter | 5.8.0-suse-observability.2 |
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.1 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.2 |
 ## Values
 
 | Key | Type | Default | Description |

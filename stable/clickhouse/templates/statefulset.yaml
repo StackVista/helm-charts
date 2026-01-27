@@ -3,9 +3,7 @@ Copyright VMware, Inc.
 SPDX-License-Identifier: APACHE-2.0
 */}}
 
-{{- $sizingReplicaCount := include "common.sizing.clickhouse.replicaCount" . | trim -}}
-{{- $chartDefault := "1" -}}{{/* Backwards-compatibility default matching pre-global-mode parent chart */}}
-{{- $replicaCount := ternary .Values.replicaCount ($sizingReplicaCount | default $chartDefault) (not (kindIs "invalid" .Values.replicaCount)) -}}
+{{- $replicaCount := include "common.sizing.clickhouse.effectiveReplicaCount" . -}}
 {{- $shards := .Values.shards | int }}
 {{- range $i, $e := until $shards }}
 apiVersion: {{ include "common.capabilities.statefulset.apiVersion" $ }}

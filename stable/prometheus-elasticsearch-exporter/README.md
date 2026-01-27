@@ -24,7 +24,7 @@ Kubernetes: `>=1.10.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.1 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.2 |
 
 ## Values
 

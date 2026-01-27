@@ -16,7 +16,7 @@ dependencies:
     version: 2.x.x
   - name: suse-observability-sizing
     repository: file://../suse-observability-sizing
-    version: 0.1.1
+    version: 0.1.2
 description:
   ClickHouse is an open-source column-oriented OLAP database management
   system. Use it to boost your database performance while providing linear scalability

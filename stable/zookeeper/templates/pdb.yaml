@@ -1,6 +1,4 @@
-{{- $sizingReplicaCount := include "common.sizing.zookeeper.replicaCount" . | trim -}}
-{{- $chartDefault := "3" -}}{{/* Backwards-compatibility default matching pre-global-mode parent chart */}}
-{{- $replicaCount := ternary (int .Values.replicaCount) (int ($sizingReplicaCount | default $chartDefault)) (not (kindIs "invalid" .Values.replicaCount)) -}}
+{{- $replicaCount := include "common.sizing.zookeeper.effectiveReplicaCount" . | int -}}
 {{- $globalSizingEnabled := and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
 {{- $profile := "" -}}
 {{- if $globalSizingEnabled -}}

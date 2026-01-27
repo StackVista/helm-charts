@@ -82,9 +82,7 @@ metadata:
   name: {{ template "common.fullname.short" . }}-hbase-rs
 spec:
   podManagementPolicy: Parallel
-  {{- $sizingReplicaCount := include "common.sizing.hbase.regionserver.replicaCount" . | trim }}
-  {{- $chartDefault := "3" -}}{{/* Backwards-compatibility default matching pre-global-mode parent chart */}}
-  {{- $replicaCount := ternary .Values.hbase.regionserver.replicaCount ($sizingReplicaCount | default $chartDefault) (not (kindIs "invalid" .Values.hbase.regionserver.replicaCount)) }}
+  {{- $replicaCount := include "common.sizing.hbase.regionserver.effectiveReplicaCount" . }}
   replicas: {{ $replicaCount }}
   serviceName: {{ template "common.fullname.short" . }}-hbase-rs
   selector:

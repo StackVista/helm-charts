@@ -57,6 +57,16 @@ Returns: 1 for non-HA profiles, 3 for HA profiles, empty if no profile set
 {{- end }}
 
 {{/*
+Get effective zookeeper replicaCount with backwards-compatibility support.
+Usage: {{ include "common.sizing.zookeeper.effectiveReplicaCount" . }}
+Returns: Resolved replica count (callers pipe to | int as needed)
+*/}}
+{{- define "common.sizing.zookeeper.effectiveReplicaCount" -}}
+{{- $sizingReplicaCount := include "common.sizing.zookeeper.replicaCount" . | trim -}}
+{{- include "common.sizing.effectiveReplicaCount" (dict "sizingReplicaCount" $sizingReplicaCount "chartDefault" "3" "valuesReplicaCount" .Values.replicaCount) -}}
+{{- end }}
+
+{{/*
 Get zookeeper heapSize based on sizing profile
 Usage: {{ include "common.sizing.zookeeper.heapSize" . }}
 */}}

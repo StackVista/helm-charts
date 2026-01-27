@@ -1,6 +1,6 @@
 apiVersion: v2
 name: suse-observability-sizing
-version: 0.1.1
+version: 0.1.2
 description: SUSE Observability sizing profile templates library
 keywords:
   - suse-observability

@@ -132,9 +132,7 @@ metadata:
   name: {{ template "common.fullname.short" . }}-tephra{{- if eq (include "hbase.deployment.mode" .) "Mono" }}-mono{{- end }}
 spec:
   podManagementPolicy: Parallel
-  {{- $sizingReplicaCount := include "common.sizing.hbase.tephra.replicaCount" . | trim }}
-  {{- $chartDefault := "2" -}}{{/* Backwards-compatibility default matching pre-global-mode parent chart */}}
-  {{- $replicaCount := ternary .Values.tephra.replicaCount ($sizingReplicaCount | default $chartDefault) (not (kindIs "invalid" .Values.tephra.replicaCount)) }}
+  {{- $replicaCount := include "common.sizing.hbase.tephra.effectiveReplicaCount" . }}
   replicas: {{ $replicaCount }}
   serviceName: {{ template "common.fullname.short" . }}-tephra
   selector:

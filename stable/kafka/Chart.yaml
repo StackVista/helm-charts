@@ -10,7 +10,7 @@ dependencies:
     version: 2.x.x
   - name: suse-observability-sizing
     repository: file://../suse-observability-sizing
-    version: 0.1.1
+    version: 0.1.2
 description:
   Apache Kafka is a distributed streaming platform designed to build real-time
   pipelines and can be used as a message broker or as a replacement for a log aggregation

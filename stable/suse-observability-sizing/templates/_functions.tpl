@@ -105,6 +105,19 @@ Parameters:
   - context: The template context (.)
 Returns: The value for the current profile, or empty string if no profile is set
 */}}
+{{/*
+Resolve effective replica count with backwards-compatibility support.
+Usage: {{ include "common.sizing.effectiveReplicaCount" (dict "sizingReplicaCount" $sizing "chartDefault" "3" "valuesReplicaCount" .Values.replicaCount) }}
+Parameters:
+  - sizingReplicaCount: Already-resolved sizing profile value (from common.sizing.<component>.replicaCount)
+  - chartDefault: Backwards-compatibility default matching pre-global-mode parent chart
+  - valuesReplicaCount: The .Values.xxx.replicaCount value
+Returns: The raw resolved value (callers pipe to | int as needed)
+*/}}
+{{- define "common.sizing.effectiveReplicaCount" -}}
+{{- ternary .valuesReplicaCount (.sizingReplicaCount | default .chartDefault) (not (kindIs "invalid" .valuesReplicaCount)) -}}
+{{- end -}}
+
 {{- define "common.sizing.profileLookup" -}}
 {{- $profileMap := .profileMap -}}
 {{- $context := .context -}}

@@ -254,9 +254,7 @@ defaultConfigurationOverrides: |
     <logger>
       <level>{{ .Values.logLevel }}</level>
     </logger>
-    {{- $sizingReplicaCount := include "common.sizing.clickhouse.replicaCount" . | trim -}}
-    {{- $chartDefaultReplicas := "1" -}}{{/* Backwards-compatibility default matching pre-global-mode parent chart */}}
-    {{- $effectiveReplicaCount := ternary .Values.replicaCount ($sizingReplicaCount | default $chartDefaultReplicas) (not (kindIs "invalid" .Values.replicaCount)) | int -}}
+    {{- $effectiveReplicaCount := include "common.sizing.clickhouse.effectiveReplicaCount" . | int -}}
     {{- if or (ne (int .Values.shards) 1) (ne $effectiveReplicaCount 1)}}
     <!-- Cluster configuration - Any update of the shards and replicas requires helm upgrade -->
     <remote_servers>

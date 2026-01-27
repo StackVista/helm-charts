@@ -375,6 +375,46 @@ Returns: 1 for non-HA profiles, 2 for HA profiles, empty if no profile set
 {{- end }}
 
 {{/*
+Get effective hbase master replicaCount with backwards-compatibility support.
+Usage: {{ include "common.sizing.hbase.master.effectiveReplicaCount" . }}
+Returns: Resolved replica count (callers pipe to | int as needed)
+*/}}
+{{- define "common.sizing.hbase.master.effectiveReplicaCount" -}}
+{{- $sizingReplicaCount := include "common.sizing.hbase.master.replicaCount" . | trim -}}
+{{- include "common.sizing.effectiveReplicaCount" (dict "sizingReplicaCount" $sizingReplicaCount "chartDefault" "2" "valuesReplicaCount" .Values.hbase.master.replicaCount) -}}
+{{- end }}
+
+{{/*
+Get effective hbase regionserver replicaCount with backwards-compatibility support.
+Usage: {{ include "common.sizing.hbase.regionserver.effectiveReplicaCount" . }}
+Returns: Resolved replica count (callers pipe to | int as needed)
+*/}}
+{{- define "common.sizing.hbase.regionserver.effectiveReplicaCount" -}}
+{{- $sizingReplicaCount := include "common.sizing.hbase.regionserver.replicaCount" . | trim -}}
+{{- include "common.sizing.effectiveReplicaCount" (dict "sizingReplicaCount" $sizingReplicaCount "chartDefault" "3" "valuesReplicaCount" .Values.hbase.regionserver.replicaCount) -}}
+{{- end }}
+
+{{/*
+Get effective hbase tephra replicaCount with backwards-compatibility support.
+Usage: {{ include "common.sizing.hbase.tephra.effectiveReplicaCount" . }}
+Returns: Resolved replica count (callers pipe to | int as needed)
+*/}}
+{{- define "common.sizing.hbase.tephra.effectiveReplicaCount" -}}
+{{- $sizingReplicaCount := include "common.sizing.hbase.tephra.replicaCount" . | trim -}}
+{{- include "common.sizing.effectiveReplicaCount" (dict "sizingReplicaCount" $sizingReplicaCount "chartDefault" "2" "valuesReplicaCount" .Values.tephra.replicaCount) -}}
+{{- end }}
+
+{{/*
+Get effective hdfs datanode replicaCount with backwards-compatibility support.
+Usage: {{ include "common.sizing.hdfs.datanode.effectiveReplicaCount" . }}
+Returns: Resolved replica count (callers pipe to | int as needed)
+*/}}
+{{- define "common.sizing.hdfs.datanode.effectiveReplicaCount" -}}
+{{- $sizingReplicaCount := include "common.sizing.hdfs.datanode.replicaCount" . | trim -}}
+{{- include "common.sizing.effectiveReplicaCount" (dict "sizingReplicaCount" $sizingReplicaCount "chartDefault" "3" "valuesReplicaCount" .Values.hdfs.datanode.replicaCount) -}}
+{{- end }}
+
+{{/*
 Get hbase experimental.execLivenessProbe.enabled
 Usage: {{ include "common.sizing.hbase.experimental.execLivenessProbe.enabled" . }}
 */}}

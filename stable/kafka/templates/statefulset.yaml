@@ -1,6 +1,4 @@
-{{- $sizingReplicaCount := include "common.sizing.kafka.replicaCount" . | trim -}}
-{{- $chartDefault := "3" -}}{{/* Backwards-compatibility default matching pre-global-mode parent chart */}}
-{{- $replicaCount := ternary (int .Values.replicaCount) (int ($sizingReplicaCount | default $chartDefault)) (not (kindIs "invalid" .Values.replicaCount)) -}}
+{{- $replicaCount := include "common.sizing.kafka.effectiveReplicaCount" . | int -}}
 {{- $fullname := include "common.names.fullname" . }}
 {{- $releaseNamespace := .Release.Namespace }}
 {{- $clusterDomain := .Values.clusterDomain }}

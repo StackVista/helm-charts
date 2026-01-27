@@ -21,7 +21,7 @@ Apache ZooKeeper provides a reliable, centralized register of configuration data
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.1 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.2 |
 | https://charts.bitnami.com/bitnami | common | 1.x.x |
 
 ## Values

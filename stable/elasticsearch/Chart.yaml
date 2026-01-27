@@ -17,4 +17,4 @@ dependencies:
     condition: prometheus-elasticsearch-exporter.enabled
   - name: suse-observability-sizing
     repository: file://../suse-observability-sizing
-    version: 0.1.1
+    version: 0.1.2

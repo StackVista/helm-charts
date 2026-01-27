@@ -11,7 +11,7 @@ Current chart version is `0.2.110`
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common/ | common | * |
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.1 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.2 |
 
 ## Required Values
 

@@ -21,4 +21,4 @@ version: 5.8.0-suse-observability.2
 dependencies:
   - name: suse-observability-sizing
     repository: file://../suse-observability-sizing
-    version: 0.1.1
+    version: 0.1.2

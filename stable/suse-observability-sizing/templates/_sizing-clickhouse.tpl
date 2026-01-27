@@ -39,6 +39,16 @@ Returns: 1 for most profiles, 3 for 4000-ha, empty if no profile set
 {{- end }}
 
 {{/*
+Get effective clickhouse replicaCount with backwards-compatibility support.
+Usage: {{ include "common.sizing.clickhouse.effectiveReplicaCount" . }}
+Returns: Resolved replica count (callers pipe to | int as needed)
+*/}}
+{{- define "common.sizing.clickhouse.effectiveReplicaCount" -}}
+{{- $sizingReplicaCount := include "common.sizing.clickhouse.replicaCount" . | trim -}}
+{{- include "common.sizing.effectiveReplicaCount" (dict "sizingReplicaCount" $sizingReplicaCount "chartDefault" "1" "valuesReplicaCount" .Values.replicaCount) -}}
+{{- end }}
+
+{{/*
 Get clickhouse affinity
 Usage: {{ include "common.sizing.clickhouse.affinity" . }}
 */}}
