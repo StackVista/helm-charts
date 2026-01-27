@@ -45,7 +45,7 @@ Returns: Resolved replica count (callers pipe to | int as needed)
 */}}
 {{- define "common.sizing.clickhouse.effectiveReplicaCount" -}}
 {{- $sizingReplicaCount := include "common.sizing.clickhouse.replicaCount" . | trim -}}
-{{- include "common.sizing.effectiveReplicaCount" (dict "sizingReplicaCount" $sizingReplicaCount "chartDefault" "1" "valuesReplicaCount" .Values.replicaCount) -}}
+{{- include "common.sizing.effectiveReplicaCount" (dict "sizingReplicaCount" $sizingReplicaCount "chartDefault" "3" "valuesReplicaCount" .Values.replicaCount) -}}
 {{- end }}
 
 {{/*
