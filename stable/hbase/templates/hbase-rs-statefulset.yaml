@@ -143,6 +143,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.hbase.regionserver.terminationGracePeriodSeconds }}
     {{- if or .Values.all.tolerations .Values.hbase.regionserver.tolerations }}
       tolerations:
       {{- with .Values.all.tolerations }}

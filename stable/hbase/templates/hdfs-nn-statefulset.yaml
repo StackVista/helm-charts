@@ -148,6 +148,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.hdfs.namenode.terminationGracePeriodSeconds }}
     {{- if or .Values.all.tolerations .Values.hdfs.namenode.tolerations }}
       tolerations:
       {{- with .Values.all.tolerations }}

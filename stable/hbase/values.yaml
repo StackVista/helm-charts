@@ -182,9 +182,14 @@ hbase:
     resources:
       limits:
         memory: "1Gi"
+        cpu: "500m"
+        ephemeral-storage: "1Gi"
       requests:
         memory: "1Gi"
         cpu: "50m"
+        ephemeral-storage: "1Mi"
+    # hbase.master.terminationGracePeriodSeconds -- Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook
+    terminationGracePeriodSeconds: 30
     # hbase.master.sizing -- HBase master memory sizing for JVM
     sizing:
       javaHeapMemoryFraction: "75"
@@ -213,9 +218,14 @@ hbase:
     resources:
       limits:
         memory: "3Gi"
+        cpu: "3000m"
+        ephemeral-storage: "1Gi"
       requests:
-        memory: "2Gi"
-        cpu: "2000m"
+        memory: "3Gi"
+        cpu: "500m"
+        ephemeral-storage: "1Mi"
+    # hbase.regionserver.terminationGracePeriodSeconds -- Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook
+    terminationGracePeriodSeconds: 30
     # hbase.regionserver.sizing -- HBase region server memory sizing for JVM
     sizing:
       javaHeapMemoryFraction: "75"
@@ -286,9 +296,12 @@ hdfs:
     resources:
       limits:
         memory: "4Gi"
+        cpu: "500m"
+        ephemeral-storage: "1Gi"
       requests:
-        memory: "2Gi"
-        cpu: "50m"
+        memory: "4Gi"
+        cpu: "100m"
+        ephemeral-storage: "1Mi"
     # hdfs.datanode.sizing -- HDFS Datanode memory sizing for JVMs in pods
     sizing:
       javaHeapMemoryFraction: "75"
@@ -319,9 +332,14 @@ hdfs:
     resources:
       limits:
         memory: "1Gi"
+        cpu: "500m"
+        ephemeral-storage: "1Gi"
       requests:
         memory: "1Gi"
         cpu: "50m"
+        ephemeral-storage: "1Mi"
+    # hdfs.namenode.terminationGracePeriodSeconds -- Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook
+    terminationGracePeriodSeconds: 30
     # hdfs.namenode.sizing -- HDFS name node memory sizing for JVM
     sizing:
       javaHeapMemoryFraction: "75"
@@ -352,9 +370,14 @@ hdfs:
     resources:
       limits:
         memory: "1Gi"
+        cpu: "500m"
+        ephemeral-storage: "1Gi"
       requests:
         memory: "1Gi"
         cpu: "50m"
+        ephemeral-storage: "1Mi"
+    # hdfs.secondarynamenode.terminationGracePeriodSeconds -- Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook
+    terminationGracePeriodSeconds: 30
     # hdfs.secondarynamenode.sizing -- HDFS secondary name node memory sizing for JVM
     sizing:
       javaHeapMemoryFraction: "75"
@@ -392,9 +415,12 @@ tephra:
   resources:
     limits:
       memory: "3Gi"
+      cpu: "500m"
+      ephemeral-storage: "1Gi"
     requests:
-      memory: "2Gi"
-      cpu: "50m"
+      memory: "3Gi"
+      cpu: "250m"
+      ephemeral-storage: "1Mi"
   # tephra.sizing -- Tephra memory sizing for JVM
   sizing:
     javaHeapMemoryFraction: "65"
