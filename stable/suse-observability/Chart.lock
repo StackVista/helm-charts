@@ -37,12 +37,12 @@ dependencies:
   version: 0.8.53-stackstate.31
 - name: clickhouse
   repository: file://../clickhouse/
-  version: 3.6.9-suse-observability.6
+  version: 3.6.9-suse-observability.7
 - name: opentelemetry-collector
   repository: file://../opentelemetry-collector
   version: 0.108.0-stackstate.18
 - name: kubernetes-rbac-agent
   repository: https://helm.stackstate.io
   version: 0.0.23
-digest: sha256:ce46b50763a6369fc63c85204ee3cda8aed96317819f36e6985526ad7e0d66e1
-generated: "2026-01-28T08:53:29.034732602+01:00"
+digest: sha256:6c9c87ae37d24316b30e3f9f013a69e1326af11dc78bebe16b44ed5e24b33458
+generated: "2026-01-28T12:36:23.147161088+01:00"

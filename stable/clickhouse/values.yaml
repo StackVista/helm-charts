@@ -372,7 +372,7 @@ defaultConfigurationOverrides: |
     <storage_configuration>
       <disks>
         <default>
-          <keep_free_space_bytes>{{ .Values.persistence.keepFreeSpaceBytes }}</keep_free_space_bytes>
+          <keep_free_space_bytes>{{ .Values.persistence.keepFreeSpaceBytes | int64 }}</keep_free_space_bytes>
         </default>
       </disks>
     </storage_configuration>

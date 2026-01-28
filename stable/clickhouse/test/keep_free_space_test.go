@@ -23,8 +23,8 @@ func TestClickhouseMergeTreeDefaults(t *testing.T) {
 	// Verify storage_configuration is present with fixed 1 GiB
 	// Note: Helm renders large integers in scientific notation
 	assert.Contains(t, configData, "<storage_configuration>", "ConfigMap should contain storage_configuration")
-	assert.Contains(t, configData, "<keep_free_space_bytes>1.073741824e+09</keep_free_space_bytes>",
-		"keep_free_space_bytes should be 1 GiB (1.073741824e+09 in scientific notation)")
+	assert.Contains(t, configData, "<keep_free_space_bytes>1073741824</keep_free_space_bytes>",
+		"keep_free_space_bytes should be 1 GiB (1073741824 bytes)")
 
 	// Verify merge_tree configuration is present with default 0.10 ratio
 	assert.Contains(t, configData, "<merge_tree>", "ConfigMap should contain merge_tree section")
@@ -48,8 +48,8 @@ func TestClickhouseMergeTreeCustomValues(t *testing.T) {
 	// Verify custom keep_free_space_bytes (2 GiB)
 	// Note: Helm renders large integers in scientific notation
 	assert.Contains(t, configData, "<storage_configuration>", "ConfigMap should contain storage_configuration")
-	assert.Contains(t, configData, "<keep_free_space_bytes>2.147483648e+09</keep_free_space_bytes>",
-		"keep_free_space_bytes should be 2 GiB (2.147483648e+09 in scientific notation)")
+	assert.Contains(t, configData, "<keep_free_space_bytes>2147483648</keep_free_space_bytes>",
+		"keep_free_space_bytes should be 2 GiB (2147483648 bytes)")
 
 	// Verify custom min_free_disk_ratio_to_perform_insert (0.15)
 	assert.Contains(t, configData, "<merge_tree>", "ConfigMap should contain merge_tree section")
