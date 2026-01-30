@@ -19,7 +19,7 @@ dependencies:
     # For local debugging
     # repository: file:///home/bram/stackvista/stackstate-ailab/.helm/stable/anomaly-detection/
     # version: "*"
-    version: 5.2.0-snapshot.175
+    version: 5.2.0-snapshot.177
     repository: https://helm.stackstate.io
     condition: anomaly-detection.enabled
   - name: common
