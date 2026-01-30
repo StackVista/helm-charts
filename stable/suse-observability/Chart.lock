@@ -10,39 +10,39 @@ dependencies:
   version: 0.1.2
 - name: elasticsearch
   repository: file://../elasticsearch/
-  version: 8.19.4-stackstate.4
+  version: 8.19.4-stackstate.5
 - name: hbase
   repository: file://../hbase/
-  version: 0.2.110
+  version: 0.2.111
 - name: kafka
   repository: file://../kafka/
-  version: 19.1.3-suse-observability.6
+  version: 19.1.3-suse-observability.7
 - name: kafkaup-operator
   repository: file://../kafkaup-operator/
-  version: 0.1.12
+  version: 0.1.13
 - name: minio
   repository: file://../minio/
-  version: 8.0.10-stackstate.16
+  version: 8.0.10-stackstate.17
 - name: pull-secret
   repository: file://../pull-secret/
   version: 1.0.3
 - name: zookeeper
   repository: file://../zookeeper/
-  version: 8.1.2-suse-observability.4
+  version: 8.1.2-suse-observability.5
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.31
+  version: 0.8.53-stackstate.32
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.31
+  version: 0.8.53-stackstate.32
 - name: clickhouse
   repository: file://../clickhouse/
-  version: 3.6.9-suse-observability.7
+  version: 3.6.9-suse-observability.8
 - name: opentelemetry-collector
   repository: file://../opentelemetry-collector
-  version: 0.108.0-stackstate.18
+  version: 0.108.0-stackstate.19
 - name: kubernetes-rbac-agent
   repository: https://helm.stackstate.io
-  version: 0.0.23
-digest: sha256:76065f2f95e6962a68ee6d99375eab3e1bc581d2bc67e10eacb35c2163f94cf3
-generated: "2026-01-30T08:07:47.132266954Z"
+  version: 0.0.24
+digest: sha256:1d284c5c1234ae26a295c9da2f0d382c9e1b43badf8d0acf797352edb14781eb
+generated: "2026-01-30T09:07:32.168796+01:00"

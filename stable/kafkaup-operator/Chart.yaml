@@ -1,7 +1,7 @@
 apiVersion: v2
 name: "kafkaup-operator"
 description: "The StackState Kafka upgrade operator"
-version: 0.1.12
+version: 0.1.13
 appVersion: v0.1.0
 home: https://gitlab.com/StackVista/platform/kafkaup-operator
 maintainers:

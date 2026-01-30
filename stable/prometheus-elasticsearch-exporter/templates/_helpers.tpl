@@ -64,15 +64,19 @@ Return the proper Docker Image Registry Secret Names evaluating values as templa
   {{- $pullSecrets := list }}
   {{- $context := .context }}
 
-  {{- if $context.Values.global }}
-    {{- range $context.Values.global.imagePullSecrets -}}
-      {{/* Is plain array of strings, compatible with all bitnami charts */}}
-      {{- $pullSecrets = append $pullSecrets (include "elasticsearch-exporter.tplvalue.render" (dict "value" . "context" $context)) -}}
+  {{- if and $context.Values.global $context.Values.global.suseObservability $context.Values.global.suseObservability.pullSecret $context.Values.global.suseObservability.pullSecret.username $context.Values.global.suseObservability.pullSecret.password -}}
+    {{- $pullSecrets = append $pullSecrets "suse-observability-pull-secret"  -}}
+  {{- else -}}
+    {{- if $context.Values.global }}
+      {{- range $context.Values.global.imagePullSecrets -}}
+        {{/* Is plain array of strings, compatible with all bitnami charts */}}
+        {{- $pullSecrets = append $pullSecrets (include "elasticsearch-exporter.tplvalue.render" (dict "value" . "context" $context)) -}}
+      {{- end -}}
     {{- end -}}
-  {{- end -}}
-  {{- range .images -}}
-    {{- if .pullSecret -}}
-      {{- $pullSecrets = append $pullSecrets (include "elasticsearch-exporter.tplvalue.render" (dict "value" .pullSecret "context" $context)) -}}
+    {{- range .images -}}
+      {{- if .pullSecret -}}
+        {{- $pullSecrets = append $pullSecrets (include "elasticsearch-exporter.tplvalue.render" (dict "value" .pullSecret "context" $context)) -}}
+      {{- end -}}
     {{- end -}}
   {{- end -}}
 

@@ -6,7 +6,7 @@ description:
 name: victoria-metrics-single
 sources:
   - https://github.com/VictoriaMetrics/helm-charts
-version: 0.8.53-stackstate.31
+version: 0.8.53-stackstate.32
 dependencies:
   - name: common
     version: "*"
