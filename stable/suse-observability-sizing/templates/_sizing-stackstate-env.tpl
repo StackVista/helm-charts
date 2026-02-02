@@ -109,7 +109,9 @@ Usage: {{ include "common.sizing.stackstate.sync.env" . }}
 {{- define "common.sizing.stackstate.sync.env" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
 {{- $profile := .Values.global.suseObservability.sizing.profile -}}
-{{- /* No profile-specific sync env vars for 500-ha */ -}}
+{{- if or (eq $profile "150-ha") (eq $profile "250-ha") (eq $profile "500-ha") (eq $profile "4000-ha") }}
+CONFIG_FORCE_stackgraph_featureswitches_readCache: "false"
+{{- end }}
 {{- end }}
 {{- end }}
 
