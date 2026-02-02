@@ -79,6 +79,7 @@ config: |
   stackgraph:
     bucket: {{ .Values.backup.stackGraph.bucketName | quote }}
     s3Prefix: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.stackGraph.s3Prefix | quote }}
+    stackpacksS3Prefix: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.stackGraph.stackpacksS3Prefix | quote }}
     multipartArchive: {{ ne (toString .Values.backup.stackGraph.splitArchiveSize) "0" }}
     restore:
       loggingConfigConfigMap: {{ template "common.fullname.short" . }}-backup-log
@@ -112,6 +113,7 @@ config: |
     localBucket: {{ include "stackstate.s3proxy.localSettingsBucketName" . | quote }}
     bucket: {{ .Values.backup.configuration.bucketName | quote }}
     s3Prefix: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.configuration.s3Prefix | quote }}
+    stackpacksS3Prefix: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.configuration.stackpacksS3Prefix | quote }}
     restore:
       loggingConfigConfigMap: {{ template "common.fullname.short" . }}-backup-log
       baseUrl: {{ include "suse-observability.global.baseUrl" . | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is required" | quote }}
