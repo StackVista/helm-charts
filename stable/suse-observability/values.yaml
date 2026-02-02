@@ -185,6 +185,8 @@ backup:
     bucketName: 'sts-stackgraph-backup'
     # backup.stackGraph.s3Prefix -- Prefix (dir name) used to store backup files.
     s3Prefix: ""
+    # backup.stackGraph.stackpacksS3Prefix -- Prefix (dir name) used to store StackPacks backup files that are created alongside stackgraph backups.
+    stackpacksS3Prefix: "stackpacks"
     # backup.stackGraph.splitArchiveSize -- Split the Stackgraph dump into chunks of the specified size in bytes.
     # Accepts an integer greater or equal to 0 with optional suffix K,M,G (powers of 1024) or KB,MB,GB (powers of 1000)
     # If set to 0, the dump is not split.
@@ -231,6 +233,8 @@ backup:
     bucketName: 'sts-configuration-backup'
     # backup.configuration.s3Prefix -- Prefix (dir name) used to store backup files.
     s3Prefix: ""
+    # backup.configuration.stackpacksS3Prefix -- Prefix (dir name) used to store StackPacks backup files that are created alongside configuration backups.
+    stackpacksS3Prefix: "stackpacks"
     yaml:
       # backup.configuration.yaml.maxSizeLimit -- Max size of the settings backup or installed via a stackpack
       maxSizeLimit: "100Mi"

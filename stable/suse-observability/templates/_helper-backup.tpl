@@ -59,6 +59,8 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   value: {{ .Values.backup.stackGraph.scheduled.backupDatetimeParseFormat | quote }}
 - name: BACKUP_STACKGRAPH_SCHEDULED_BACKUP_RETENTION_TIME_DELTA
   value: {{ .Values.backup.stackGraph.scheduled.backupRetentionTimeDelta | quote }}
+- name: BACKUP_STACKGRAPH_STACKPACKS_S3_PREFIX
+  value: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.stackGraph.stackpacksS3Prefix }}
 - name: BACKUP_CONFIGURATION_UPLOAD_REMOTE
   value: {{ .Values.global.backup.enabled | toString | lower | quote }}
 - name: BACKUP_CONFIGURATION_BUCKET_NAME
@@ -77,6 +79,8 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   value: {{ .Values.backup.configuration.scheduled.backupRetentionTimeDelta | quote }}
 - name: BACKUP_CONFIGURATION_MAX_LOCAL_FILES
   value: {{ .Values.backup.configuration.maxLocalFiles | quote }}
+- name: BACKUP_CONFIGURATION_STACKPACKS_S3_PREFIX
+  value: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.configuration.stackpacksS3Prefix }}
 - name: STACKSTATE_ROUTER_ENDPOINT
   value: {{ include "stackstate.router.endpoint" . | quote }}
 - name: ELASTICSEARCH_ENDPOINT

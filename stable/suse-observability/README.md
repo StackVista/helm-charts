@@ -401,6 +401,7 @@ If you encounter issues not covered here:
 | backup.configuration.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
 | backup.configuration.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | backup.configuration.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
+| backup.configuration.stackpacksS3Prefix | string | `"stackpacks"` | Prefix (dir name) used to store StackPacks backup files that are created alongside configuration backups. |
 | backup.configuration.yaml.maxSizeLimit | string | `"100Mi"` | Max size of the settings backup or installed via a stackpack |
 | backup.elasticsearch.bucketName | string | `"sts-elasticsearch-backup"` | Name of the storage bucket where ElasticSearch snapshots are stored. |
 | backup.elasticsearch.restore.scaleDownLabels | object | `{"observability.suse.com/scalable-during-es-restore":"true"}` | Labels used to identify deployments that should be scaled down during Elasticsearch restore procedure. |
@@ -440,6 +441,7 @@ If you encounter issues not covered here:
 | backup.stackGraph.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | backup.stackGraph.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
 | backup.stackGraph.splitArchiveSize | int | `0` | Split the Stackgraph dump into chunks of the specified size in bytes. Accepts an integer greater or equal to 0 with optional suffix K,M,G (powers of 1024) or KB,MB,GB (powers of 1000) If set to 0, the dump is not split. |
+| backup.stackGraph.stackpacksS3Prefix | string | `"stackpacks"` | Prefix (dir name) used to store StackPacks backup files that are created alongside stackgraph backups. |
 | backup.storage.backend.azure | object | `{"accountKey":"","accountName":"","enabled":false,"endpoint":"","fromExternalSecret":""}` | Use Azure Blob Storage |
 | backup.storage.backend.azure.accountKey | string | `""` | Azure storage account key (optional, falls back to managed identity) |
 | backup.storage.backend.azure.accountName | string | `""` | Azure storage account name |

@@ -49,3 +49,25 @@ export BACKUP_SCHEDULED_BACKUP_NAME_PARSE_REGEXP=${BACKUP_STACKGRAPH_SCHEDULED_B
 export BACKUP_SCHEDULED_BACKUP_DATETIME_PARSE_FORMAT=${BACKUP_STACKGRAPH_SCHEDULED_BACKUP_DATETIME_PARSE_FORMAT}
 export BACKUP_SCHEDULED_BACKUP_RETENTION_TIME_DELTA=${BACKUP_STACKGRAPH_SCHEDULED_BACKUP_RETENTION_TIME_DELTA}
 /backup-restore-scripts/expire-s3-backups.sh
+
+# StackPacks backup (they work best when created right after the settings backup such that available stackpacks are in sync with the settings)
+echo "=== Creating StackPacks backup..."
+STACKPACKS_BACKUP_FILE="${BACKUP_FILE}.stackpacks.zip"
+echo "=== Exporting StackPacks data to \"${STACKPACKS_BACKUP_FILE}\"..."
+/opt/docker/bin/stack-packs-backup -Dlogback.configurationFile=/opt/docker/etc_log/logback.xml -create "${TMP_DIR}/${STACKPACKS_BACKUP_FILE}"
+
+if [ ! -f "${TMP_DIR}/${STACKPACKS_BACKUP_FILE}" ]; then
+    echo "=== StackPacks export failed. Backup file \"${TMP_DIR}/${STACKPACKS_BACKUP_FILE}\" does not exist."
+    exit 1
+fi
+
+echo "=== Uploading StackPacks backup \"${STACKPACKS_BACKUP_FILE}\" to bucket \"${BACKUP_STACKGRAPH_BUCKET_NAME}\"..."
+uploadFileToS3 "${TMP_DIR}/${STACKPACKS_BACKUP_FILE}" "s3://${BACKUP_STACKGRAPH_BUCKET_NAME}/${BACKUP_STACKGRAPH_STACKPACKS_S3_PREFIX}${STACKPACKS_BACKUP_FILE}" "http://${MINIO_ENDPOINT}"
+
+echo "=== Expiring old StackPacks backups..."
+export BACKUP_BUCKET_NAME=${BACKUP_STACKGRAPH_BUCKET_NAME}
+export S3_PREFIX=${BACKUP_STACKGRAPH_STACKPACKS_S3_PREFIX}
+export BACKUP_SCHEDULED_BACKUP_NAME_PARSE_REGEXP=${BACKUP_STACKGRAPH_SCHEDULED_BACKUP_NAME_PARSE_REGEXP}
+export BACKUP_SCHEDULED_BACKUP_DATETIME_PARSE_FORMAT=${BACKUP_STACKGRAPH_SCHEDULED_BACKUP_DATETIME_PARSE_FORMAT}
+export BACKUP_SCHEDULED_BACKUP_RETENTION_TIME_DELTA=${BACKUP_STACKGRAPH_SCHEDULED_BACKUP_RETENTION_TIME_DELTA}
+/backup-restore-scripts/expire-s3-backups.sh
