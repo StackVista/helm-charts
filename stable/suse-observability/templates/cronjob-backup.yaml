@@ -18,8 +18,14 @@ command:
   - '/backup-restore-scripts/backup-stackgraph.sh'
 env:
   {{- include "stackstate.backup.envvars" . | nindent 2 }}
+  {{- include "stackstate.baseurls.envvars" .  | nindent 2 }}
+  - name: PROMETHEUS_WRITE_ENDPOINT
+    value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
+  - name: HADOOP_USER_NAME
+    value: nobody
   - name: ZOOKEEPER_QUORUM
     value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
+  {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- with .Values.stackstate.components.backup.resources }}
 resources:
   {{- toYaml . | nindent 2 }}

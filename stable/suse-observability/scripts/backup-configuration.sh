@@ -46,8 +46,10 @@ grep '_version:' "${BACKUP_FILE_WITH_PATH}" > /dev/null || (
 echo "=== Uploading backup \"${BACKUP_FILE}\" to local settings bucket \"${S3_BUCKET_SETTINGS}\"..."
 sts-toolbox aws s3 cp --endpoint "http://${S3_ENDPOINT}" --region us-east-1 "${BACKUP_FILE_WITH_PATH}" "s3://${S3_BUCKET_SETTINGS}/${BACKUP_FILE}"
 
+# Make sure stackpacks backup dir exists
+mkdir -p "${STACKPACKS_BACKUP_DIR}"
 # StackPacks backup (they work best when created right after the settings backup such that available stackpacks are in sync with the settings)
-echo "=== Removing oldest backups from local storage \"${STACKPACKS_BACKUP_DIR}\", keeping at most $BACKUP_CONFIGURATION_MAX_LOCAL_FILES..."
+echo "=== Removing oldest stackpacks backups from local storage \"${STACKPACKS_BACKUP_DIR}\", keeping at most $BACKUP_CONFIGURATION_MAX_LOCAL_FILES..."
 
 # Removing oldest backups (files only, there can be directories like `lost+found` that we want to ignore)
 current_count=$(find "${STACKPACKS_BACKUP_DIR}" -maxdepth 1 -type f | wc -l)
