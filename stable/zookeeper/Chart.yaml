@@ -10,7 +10,7 @@ dependencies:
     version: 1.x.x
   - name: suse-observability-sizing
     repository: file://../suse-observability-sizing
-    version: 0.1.2
+    version: 0.1.3
 description:
   Apache ZooKeeper provides a reliable, centralized register of configuration
   data and services for distributed applications.
@@ -25,4 +25,4 @@ name: zookeeper
 sources:
   - https://github.com/bitnami/bitnami-docker-zookeeper
   - https://zookeeper.apache.org/
-version: 8.1.2-suse-observability.5
+version: 8.1.2-suse-observability.6
