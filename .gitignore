@@ -7,8 +7,10 @@
 *.swp
 .DS_Store
 .jsonnet-libs/example.json
+__pycache__
 
 # IDE
 .vscode
+*.iml
 
 util/**/*.json
