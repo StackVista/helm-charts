@@ -5,7 +5,7 @@ bump_chart_version.py - Bump a Helm chart version and update all dependents
 This script:
 1. Bumps the version of a specified Helm chart (major, minor, or patch)
 2. Finds all charts that depend on it (including transitive dependencies)
-3. Performs a minor version bump on all dependent charts
+3. Performs a patch version bump on all dependent charts
 4. Updates dependency versions in Chart.yaml files
 5. Regenerates Chart.lock files for all affected charts
 
@@ -468,7 +468,7 @@ Examples:
 The script will:
 1. Bump the version of the specified chart
 2. Find all charts that depend on it (including transitive dependencies)
-3. Perform a minor version bump on all dependent charts (once per chart)
+3. Perform a patch version bump on all dependent charts (once per chart)
 4. Update dependency versions in Chart.yaml files
 5. Regenerate Chart.lock files for all affected charts
 
