@@ -9,6 +9,9 @@ const expectedStackPackConfig = `stackstate.stackPacks {
   latestVersionsStackPackStoreUri = "file:///var/stackpacks"
 
   updateStackPacksInterval = "5 minutes"
+}
+
+stackstate.stackPacks {
   installOnStartUp += "test-stackpack-1"
 
   installOnStartUpConfig {
@@ -29,6 +32,9 @@ const expectedStackPackConfigMonoHbase = `stackstate.stackPacks {
   latestVersionsStackPackStoreUri = "file:///var/stackpacks"
 
   updateStackPacksInterval = "5 minutes"
+}
+
+stackstate.stackPacks {
   installOnStartUp += "test-stackpack-1"
 
   installOnStartUpConfig {

@@ -1,0 +1,11 @@
+{{- define "stackstate.backup.configmap" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-backup
+data:
+  application_stackstate.conf: |
+{{- include "stackstate.configmap.stackpacks.storage" . | nindent 4 }}
+{{- end -}}
+
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $backupConfigMap := fromYaml (include "stackstate.backup.configmap" .) -}}
+{{ toYaml (merge $backupConfigMap $commonConfigMap) }}

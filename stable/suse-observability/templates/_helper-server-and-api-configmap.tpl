@@ -1,4 +1,28 @@
 {{/*
+Stackpack configuration section - shared between server, api, and backup jobs
+*/}}
+{{- define "stackstate.configmap.stackpacks.storage" -}}
+stackstate.stackPacks {
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+  {{- if eq $deploymentMode "Distributed" }}
+  localStackPacksUri = "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
+  {{- else }}
+  localStackPacksUri = "file:///var/stackpacks_local"
+  {{- end }}
+
+  {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
+  latestVersionsStackPackStoreUri = "file:///var/stackpacks"
+  {{- else if eq .Values.stackstate.stackpacks.source "s3-bucket"}}
+  latestVersionsStackPackStoreUri = "s3://{{ .Values.stackstate.stackpacks.s3.bucket }}"
+  {{- else }}
+  {{- fail "The value for stackstate.stackpacks.source must be one of `docker-image` or `s3-bucket`" -}}
+  {{- end }}
+
+  updateStackPacksInterval = {{ .Values.stackstate.stackpacks.updateInterval | quote }}
+}
+{{- end -}}
+
+{{/*
 Shared settings in configmap for server and api
 */}}
 {{- define "stackstate.configmap.server-and-api" }}
@@ -62,24 +86,9 @@ stackstate.api.authorization.staticSubjects.stackstate-aad: { systemPermissions:
 {{- end }}
 {{- end }}
 
+{{- include "stackstate.configmap.stackpacks.storage" . }}
+
 stackstate.stackPacks {
-{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
-  {{- if eq $deploymentMode "Distributed" }}
-  localStackPacksUri = "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
-  {{- else }}
-  localStackPacksUri = "file:///var/stackpacks_local"
-  {{- end }}
-
-  {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
-  latestVersionsStackPackStoreUri = "file:///var/stackpacks"
-  {{- else if eq .Values.stackstate.stackpacks.source "s3-bucket"}}
-  latestVersionsStackPackStoreUri = "s3://{{ .Values.stackstate.stackpacks.s3.bucket }}"
-  {{- else }}
-  {{- fail "The value for stackstate.stackpacks.source must be one of `docker-image` or `s3-bucket`" -}}
-  {{- end }}
-
-  updateStackPacksInterval = {{ .Values.stackstate.stackpacks.updateInterval | quote }}
-
 {{- with .Values.stackstate.stackpacks.installed }}
 
   {{- range . }}

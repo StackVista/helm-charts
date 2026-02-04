@@ -61,6 +61,7 @@ var backupAlwaysPresentSecrets = []string{
 }
 
 var backupAlwaysEnabledConfigMaps = []string{
+	"suse-observability-backup",
 	"suse-observability-backup-config",
 	"suse-observability-backup-restore-scripts",
 	"suse-observability-clickhouse-backup",
