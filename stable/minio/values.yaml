@@ -22,7 +22,7 @@ clusterDomain: cluster.local
 image:
   registry: quay.io
   repository: stackstate/minio
-  tag: RELEASE.2025-11-19T12-41-50Z-15bb6f44-162
+  tag: RELEASE.2025-11-19T12-41-50Z-15bb6f44-173
   pullPolicy: IfNotPresent
 
 ## Set default image, imageTag, and imagePullPolicy for the `mc` (the minio

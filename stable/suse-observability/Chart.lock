@@ -22,7 +22,7 @@ dependencies:
   version: 0.1.14
 - name: minio
   repository: file://../minio/
-  version: 8.0.10-stackstate.17
+  version: 8.0.10-stackstate.18
 - name: pull-secret
   repository: file://../pull-secret/
   version: 1.0.3
