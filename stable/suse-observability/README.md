@@ -2,7 +2,7 @@
 
 Helm chart for SUSE Observability
 
-Current chart version is `2.7.1-pre.56`
+Current chart version is `2.7.1-pre.59`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -13,7 +13,7 @@ Current chart version is `2.7.1-pre.56`
 | file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.8 |
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.5 |
-| file://../hbase/ | hbase | 0.2.111 |
+| file://../hbase/ | hbase | 0.2.112 |
 | file://../kafka/ | kafka | 19.1.3-suse-observability.7 |
 | file://../kafkaup-operator/ | kafkaup-operator | * |
 | file://../minio/ | minio | 8.0.10-stackstate.17 |
@@ -580,7 +580,7 @@ If you encounter issues not covered here:
 | hbase.hdfs.secondarynamenode.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for HDFS secondary namenode pods. |
 | hbase.hdfs.secondarynamenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into HDFS secondary namenode pods. |
 | hbase.hdfs.secondarynamenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into HDFS secondary namenode pods via a Secret object. |
-| hbase.stackgraph.version | string | `"7.13.17"` | The StackGraph server version, must be compatible with the StackState version |
+| hbase.stackgraph.version | string | `"7.13.18"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for Tephra pods. |
 | hbase.tephra.extraEnv.open | object | `{}` | Extra open environment variables to inject into Tephra pods. |
 | hbase.tephra.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into Tephra pods via a Secret object. |
@@ -750,7 +750,7 @@ If you encounter issues not covered here:
 | stackstate.components.all.image.pullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for all stateless components of StackState; individual service `pullPolicy`s can be overridden (see below). |
 | stackstate.components.all.image.registry | string | `"quay.io"` | Base container image registry for all StackState containers, except for the wait container and the container-tools container |
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
-| stackstate.components.all.image.tag | string | `"7.0.0-snapshot.20260203111330-master-0fdb36b"` | The default tag used for all stateless components of StackState; individual service `tag`s can be overridden (see below). |
+| stackstate.components.all.image.tag | string | `"7.0.0-snapshot.20260204124316-master-3c22dd4"` | The default tag used for all stateless components of StackState; individual service `tag`s can be overridden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
 | stackstate.components.all.metricStore.remoteWritePath | string | `"/api/v1/write"` | Remote write path used to ingest metrics, /api/v1/write is most common |
 | stackstate.components.all.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |

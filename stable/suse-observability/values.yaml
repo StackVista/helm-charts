@@ -275,7 +275,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; individual service `tag`s can be overridden (see below).
-        tag: 7.0.0-snapshot.20260203111330-master-0fdb36b
+        tag: 7.0.0-snapshot.20260204124316-master-3c22dd4
       # stackstate.components.all.podAnnotations -- Extra annotations
       podAnnotations: {}
       metrics:
@@ -1882,7 +1882,7 @@ hbase:
       agentAnnotationsEnabled: true
   stackgraph:
     # hbase.stackgraph.version -- The StackGraph server version, must be compatible with the StackState version
-    version: 7.13.17
+    version: 7.13.18
   console:
     # hbase.console.enabled -- Enabled by default for debugging, but with 0 replicas. Manually scale up to 1 replica and open a shell in the container to access the stackgraph console.
     enabled: true
