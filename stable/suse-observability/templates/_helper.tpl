@@ -889,3 +889,10 @@ Returns: "true" or "false" string
 {{- if .Values.stackstate.components.receiver.split.enabled }}true{{- else }}false{{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+The prefix for the Chart-generated resource names.
+*/}}
+{{- define "namePrefix" -}}
+suse-observability
+{{- end -}}
