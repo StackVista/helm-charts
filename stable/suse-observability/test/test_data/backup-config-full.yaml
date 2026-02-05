@@ -58,14 +58,6 @@ stackgraph:
                 values:
                 - backup-config-full-backup
             topologyKey: kubernetes.io/hostname
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: test
-                operator: In
-                values:
-                - backup-config-full-all
-            topologyKey: kubernetes.io/hostname
       tolerations:
         - effect: NoSchedule
           key: node-role.kubernetes.io/backup-config-full-all
@@ -120,14 +112,6 @@ settings:
                 operator: In
                 values:
                 - backup-config-full-backup
-            topologyKey: kubernetes.io/hostname
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: test
-                operator: In
-                values:
-                - backup-config-full-all
             topologyKey: kubernetes.io/hostname
       tolerations:
         - effect: NoSchedule
@@ -208,14 +192,6 @@ victoriaMetrics:
                 operator: In
                 values:
                 - backup-config-full-backup
-            topologyKey: kubernetes.io/hostname
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: test
-                operator: In
-                values:
-                - backup-config-full-all
             topologyKey: kubernetes.io/hostname
       tolerations:
         - effect: NoSchedule

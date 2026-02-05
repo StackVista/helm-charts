@@ -201,13 +201,11 @@ nodeSelector:
   {{- include "stackstate.backup.affinity" . | nindent 8 }}
 */ -}}
 {{- define "stackstate.backup.affinity" -}}
-{{- $allAffinity := .Values.stackstate.components.all.affinity | default dict -}}
-{{- $backupAffinity := .Values.stackstate.components.backup.affinity | default dict -}}
-{{- $merged := merge $backupAffinity $allAffinity -}}
-{{- if $merged -}}
+{{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.backup.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) -}}
+  {{- if $affinity -}}
 affinity:
-  {{- toYaml $merged | nindent 2 }}
-{{- end -}}
+  {{- $affinity | nindent 2 }}
+  {{- end }}
 {{- end -}}
 
 {{- /*
