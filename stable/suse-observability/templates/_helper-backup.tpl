@@ -120,10 +120,6 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
 - name: config-volume
   mountPath: /opt/docker/etc/application_stackstate.conf
   subPath: application_stackstate.conf
-{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
-{{- if eq $deploymentMode "Mono" }}
-{{ include "stackstate.stackpacks.local.volumeMount" . }}
-{{- end -}}
 {{- end -}}
 
 {{- define "stackstate.backup.volumes" -}}
@@ -140,10 +136,6 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
 - name: config-volume
   configMap:
     name: {{ template "common.fullname.short" . }}-backup
-{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
-{{- if eq $deploymentMode "Mono" }}
-{{ include "stackstate.stackpacks.local.volume" . }}
-{{- end -}}
 {{- end -}}
 
 {{- define "stackstate.backup.elasticsearch.restore.scaleDownLabels" -}}
