@@ -92,17 +92,12 @@ config: |
         size: {{ .Values.backup.stackGraph.restore.tempData.size | default (include "suse-observability.sizing.hbase.stackgraph.persistence.size" .) }}
         {{- end }}
         accessModes: {{ .Values.backup.stackGraph.restore.tempData.accessModes }}
-        {{ include "common.storage.class" ( dict "persistence" .Values.backup.stackGraph.restore.tempData "global" .Values.global) | nindent 10 }}
+        {{ include "common.storage.class" ( dict "persistence" .Values.backup.stackGraph.restore.tempData "global" .Values.global) | nindent 8 }}
       job:
         image: {{ include "stackstate.image.registry" (merge (dict) $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}
         waitImage: {{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}
         {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 8 }}
-        labels:
-          app.kubernetes.io/component: backup
-        {{- include "suse-observability.labels.global" . | nindent 12 }}
-        {{- with .Values.stackstate.components.backup.podLabels }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
+        {{- include "stackstate.backup.podLabels" . | nindent 8 }}
         {{- with .Values.stackstate.components.backup.resources }}
         resources:
           {{- toYaml . | nindent 12 }}
@@ -110,33 +105,9 @@ config: |
         {{- if .Values.backup.stackGraph.securityContext.enabled }}
         securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 12 }}
         {{- end }}
-        {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}
-        nodeSelector:
-        {{- with .Values.stackstate.components.all.nodeSelector }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
-        {{- with .Values.stackstate.components.backup.nodeSelector }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
-        {{- end }}
-        {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.backup.affinity }}
-        affinity:
-        {{- with .Values.stackstate.components.all.affinity }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
-        {{- with .Values.stackstate.components.backup.affinity }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
-        {{- end }}
-        {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.backup.tolerations }}
-        tolerations:
-        {{- with .Values.stackstate.components.all.tolerations }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
-        {{- with .Values.stackstate.components.backup.tolerations }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
-        {{- end }}
+        {{- include "stackstate.backup.nodeSelector" . | nindent 8 }}
+        {{- include "stackstate.backup.affinity" . | nindent 8 }}
+        {{- include "stackstate.backup.tolerations" . | nindent 8 }}
   settings:
     bucket: {{ .Values.backup.configuration.bucketName | quote }}
     s3Prefix: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.configuration.s3Prefix | quote }}
@@ -144,7 +115,7 @@ config: |
       loggingConfigConfigMap: {{ template "common.fullname.short" . }}-backup-log
       baseUrl: {{ include "suse-observability.global.baseUrl" . | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is required" | quote }}
       receiverBaseUrl: {{ printf "%s/%s" ( include "suse-observability.global.baseUrl" . | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is required" ) "receiver" | quote }}
-      platformVersion: "{{- .Chart.Version -}}"
+      platformVersion: {{ if and .Values.testHelper .Values.testHelper.chartVersion -}}{{ .Values.testHelper.chartVersion | quote }}{{- else -}}{{ .Chart.Version | quote }}{{- end }}
       scaleDownLabelSelector: {{ include "stackstate.backup.configuration.restore.scaleDownLabelsCommaSeparated" . }}
       zookeeperQuorum: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
       pvc: {{ template "common.fullname.short" . }}-settings-backup-data
@@ -152,12 +123,7 @@ config: |
         image: {{ include "stackstate.image.registry" (merge (dict) $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}
         waitImage: {{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}
         {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 8 }}
-        labels:
-          app.kubernetes.io/component: backup
-        {{- include "suse-observability.labels.global" . | nindent 12 }}
-        {{- with .Values.stackstate.components.backup.podLabels }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
+        {{- include "stackstate.backup.podLabels" . | nindent 8 }}
         {{- with .Values.stackstate.components.backup.resources }}
         resources:
           {{- toYaml . | nindent 12 }}
@@ -165,33 +131,9 @@ config: |
         {{- if .Values.backup.configuration.securityContext.enabled }}
         securityContext: {{- omit .Values.backup.configuration.securityContext "enabled" | toYaml | nindent 12 }}
         {{- end }}
-        {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}
-        nodeSelector:
-        {{- with .Values.stackstate.components.all.nodeSelector }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
-        {{- with .Values.stackstate.components.backup.nodeSelector }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
-        {{- end }}
-        {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.backup.affinity }}
-        affinity:
-        {{- with .Values.stackstate.components.all.affinity }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
-        {{- with .Values.stackstate.components.backup.affinity }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
-        {{- end }}
-        {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.backup.tolerations }}
-        tolerations:
-        {{- with .Values.stackstate.components.all.tolerations }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
-        {{- with .Values.stackstate.components.backup.tolerations }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
-        {{- end }}
+        {{- include "stackstate.backup.nodeSelector" . | nindent 8 }}
+        {{- include "stackstate.backup.affinity" . | nindent 8 }}
+        {{- include "stackstate.backup.tolerations" . | nindent 8 }}
   elasticsearch:
     snapshotRepository:
       name: "sts-backup"
@@ -228,12 +170,7 @@ config: |
         image: {{ include "stackstate.vmrestore.image.registry" . }}/{{ index .Values "victoria-metrics" "restore" "image" "repository" }}:{{ index .Values "victoria-metrics" "restore" "image" "tag" }}
         waitImage: {{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}
         {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 8 }}
-        labels:
-          app.kubernetes.io/component: backup
-        {{- include "suse-observability.labels.global" . | nindent 12 }}
-        {{- with .Values.stackstate.components.backup.podLabels }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
+        {{- include "stackstate.backup.podLabels" . | nindent 8 }}
         {{- with .Values.stackstate.components.backup.resources }}
         resources:
           {{- toYaml . | nindent 12 }}
@@ -241,33 +178,9 @@ config: |
         {{- if .Values.backup.stackGraph.securityContext.enabled }}
         securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 12 }}
         {{- end }}
-        {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}
-        nodeSelector:
-        {{- with .Values.stackstate.components.all.nodeSelector }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
-        {{- with .Values.stackstate.components.backup.nodeSelector }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
-        {{- end }}
-        {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.backup.affinity }}
-        affinity:
-        {{- with .Values.stackstate.components.all.affinity }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
-        {{- with .Values.stackstate.components.backup.affinity }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
-        {{- end }}
-        {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.backup.tolerations }}
-        tolerations:
-        {{- with .Values.stackstate.components.all.tolerations }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
-        {{- with .Values.stackstate.components.backup.tolerations }}
-          {{- toYaml . | nindent 12 }}
-        {{- end }}
-        {{- end }}
+        {{- include "stackstate.backup.nodeSelector" . | nindent 8 }}
+        {{- include "stackstate.backup.affinity" . | nindent 8 }}
+        {{- include "stackstate.backup.tolerations" . | nindent 8 }}
   clickhouse:
     database: {{ include "clickhouse.default.database" . }}
     service:

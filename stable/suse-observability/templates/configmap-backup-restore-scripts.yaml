@@ -20,12 +20,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-      labels:
-        app.kubernetes.io/component: backup
-        {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.backup.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+    {{- include "stackstate.backup.podLabels" . | nindent 6 }}
     spec:
       initContainers:
         - name: wait
@@ -53,33 +48,9 @@ spec:
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
-    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}
-      nodeSelector:
-      {{- with .Values.stackstate.components.all.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.backup.affinity }}
-      affinity:
-      {{- with .Values.stackstate.components.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.backup.tolerations }}
-      tolerations:
-      {{- with .Values.stackstate.components.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
+      {{- include "stackstate.backup.nodeSelector" . | nindent 6 }}
+      {{- include "stackstate.backup.affinity" . | nindent 6 }}
+      {{- include "stackstate.backup.tolerations" . | nindent 6 }}
       restartPolicy: Never
 {{- if .Values.backup.elasticsearch.securityContext.enabled }}
       securityContext: {{- omit .Values.backup.elasticsearch.securityContext "enabled" | toYaml | nindent 8 }}
@@ -108,12 +79,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-      labels:
-        app.kubernetes.io/component: backup
-        {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.backup.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+    {{- include "stackstate.backup.podLabels" . | nindent 6 }}
     spec:
       initContainers:
         - name: wait
@@ -147,33 +113,9 @@ spec:
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
-    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}
-      nodeSelector:
-      {{- with .Values.stackstate.components.all.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.backup.affinity }}
-      affinity:
-      {{- with .Values.stackstate.components.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.backup.tolerations }}
-      tolerations:
-      {{- with .Values.stackstate.components.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
+      {{- include "stackstate.backup.nodeSelector" . | nindent 6 }}
+      {{- include "stackstate.backup.affinity" . | nindent 6 }}
+      {{- include "stackstate.backup.tolerations" . | nindent 6 }}
       restartPolicy: Never
 {{- if .Values.backup.elasticsearch.securityContext.enabled }}
       securityContext: {{- omit .Values.backup.elasticsearch.securityContext "enabled" | toYaml | nindent 8 }}
@@ -202,12 +144,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-      labels:
-        app.kubernetes.io/component: backup
-        {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.backup.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+    {{- include "stackstate.backup.podLabels" . | nindent 6 }}
     spec:
       initContainers:
         - name: wait
@@ -238,33 +175,9 @@ spec:
 {{- end }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
-    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}
-      nodeSelector:
-      {{- with .Values.stackstate.components.all.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.backup.affinity }}
-      affinity:
-      {{- with .Values.stackstate.components.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.backup.tolerations }}
-      tolerations:
-      {{- with .Values.stackstate.components.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
+      {{- include "stackstate.backup.nodeSelector" . | nindent 6 }}
+      {{- include "stackstate.backup.affinity" . | nindent 6 }}
+      {{- include "stackstate.backup.tolerations" . | nindent 6 }}
       restartPolicy: Never
 {{- end -}}
 
@@ -292,12 +205,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-      labels:
-        app.kubernetes.io/component: backup
-        {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.backup.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+    {{- include "stackstate.backup.podLabels" . | nindent 6 }}
     spec:
       initContainers:
         - name: wait
@@ -334,33 +242,9 @@ spec:
 {{- if .Values.backup.stackGraph.securityContext.enabled }}
       securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 8 }}
 {{- end }}
-    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}
-      nodeSelector:
-      {{- with .Values.stackstate.components.all.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.backup.affinity }}
-      affinity:
-      {{- with .Values.stackstate.components.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.backup.tolerations }}
-      tolerations:
-      {{- with .Values.stackstate.components.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
+      {{- include "stackstate.backup.nodeSelector" . | nindent 6 }}
+      {{- include "stackstate.backup.affinity" . | nindent 6 }}
+      {{- include "stackstate.backup.tolerations" . | nindent 6 }}
       restartPolicy: Never
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
@@ -814,12 +698,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-      labels:
-        app.kubernetes.io/component: backup
-        {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.backup.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+    {{- include "stackstate.backup.podLabels" . | nindent 6 }}
     spec:
       initContainers:
         - name: wait
@@ -850,33 +729,9 @@ spec:
 {{- end }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
-    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}
-      nodeSelector:
-      {{- with .Values.stackstate.components.all.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.backup.affinity }}
-      affinity:
-      {{- with .Values.stackstate.components.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.backup.tolerations }}
-      tolerations:
-      {{- with .Values.stackstate.components.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
+      {{- include "stackstate.backup.nodeSelector" . | nindent 6 }}
+      {{- include "stackstate.backup.affinity" . | nindent 6 }}
+      {{- include "stackstate.backup.tolerations" . | nindent 6 }}
       restartPolicy: Never
 {{- end -}}
 
@@ -902,12 +757,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-      labels:
-        app.kubernetes.io/component: backup
-        {{- include "suse-observability.labels.global" . | nindent 8 }}
-      {{- with .Values.stackstate.components.backup.podLabels }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+    {{- include "stackstate.backup.podLabels" . | nindent 6 }}
     spec:
       initContainers:
         - name: wait
@@ -947,33 +797,9 @@ spec:
         - name: victoria-metrics-storage
           persistentVolumeClaim:
             claimName: server-volume-suse-observability-REPLACE_ME_VICTORIA_METRICS_INSTANCE_NAME-0
-    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}
-      nodeSelector:
-      {{- with .Values.stackstate.components.all.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.nodeSelector }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.backup.affinity }}
-      affinity:
-      {{- with .Values.stackstate.components.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.backup.tolerations }}
-      tolerations:
-      {{- with .Values.stackstate.components.all.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.backup.tolerations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
+      {{- include "stackstate.backup.nodeSelector" . | nindent 6 }}
+      {{- include "stackstate.backup.affinity" . | nindent 6 }}
+      {{- include "stackstate.backup.tolerations" . | nindent 6 }}
 {{- end -}}
 
 

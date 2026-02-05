@@ -175,3 +175,71 @@ observability.suse.com/scalable-during-vm-restore=true
 {{- define "stackstate.backup.clickhouse.restore.scaleDownLabelsCommaSeparated" -}}
 observability.suse.com/scalable-during-clickhouse-restore=true
 {{- end -}}
+
+{{- /*
+  Merge nodeSelector from stackstate.components.all and stackstate.components.backup.
+  backup.nodeSelector takes precedence over all.nodeSelector.
+
+  Usage:
+  {{- include "stackstate.backup.nodeSelector" . | nindent 8 }}
+*/ -}}
+{{- define "stackstate.backup.nodeSelector" -}}
+{{- $allNodeSelector := .Values.stackstate.components.all.nodeSelector | default dict -}}
+{{- $backupNodeSelector := .Values.stackstate.components.backup.nodeSelector | default dict -}}
+{{- $merged := merge $backupNodeSelector $allNodeSelector -}}
+{{- if $merged -}}
+nodeSelector:
+  {{- toYaml $merged | nindent 2 }}
+{{- end -}}
+{{- end -}}
+
+{{- /*
+  Merge affinity from stackstate.components.all and stackstate.components.backup.
+  backup.affinity takes precedence over all.affinity.
+
+  Usage:
+  {{- include "stackstate.backup.affinity" . | nindent 8 }}
+*/ -}}
+{{- define "stackstate.backup.affinity" -}}
+{{- $allAffinity := .Values.stackstate.components.all.affinity | default dict -}}
+{{- $backupAffinity := .Values.stackstate.components.backup.affinity | default dict -}}
+{{- $merged := merge $backupAffinity $allAffinity -}}
+{{- if $merged -}}
+affinity:
+  {{- toYaml $merged | nindent 2 }}
+{{- end -}}
+{{- end -}}
+
+{{- /*
+  Concatenate tolerations from stackstate.components.all and stackstate.components.backup.
+  Both lists are combined (backup tolerations are appended after all tolerations).
+
+  Usage:
+  {{- include "stackstate.backup.tolerations" . | nindent 8 }}
+*/ -}}
+{{- define "stackstate.backup.tolerations" -}}
+{{- $allTolerations := .Values.stackstate.components.all.tolerations | default list -}}
+{{- $backupTolerations := .Values.stackstate.components.backup.tolerations | default list -}}
+{{- $merged := concat $allTolerations $backupTolerations -}}
+{{- if $merged -}}
+tolerations:
+  {{- toYaml $merged | nindent 2 }}
+{{- end -}}
+{{- end -}}
+
+{{- /*
+  Generate pod labels for backup components.
+  Includes app.kubernetes.io/component label, global labels, and custom podLabels.
+  backup.podLabels takes precedence over global labels.
+
+  Usage:
+  {{- include "stackstate.backup.podLabels" . | nindent 8 }}
+*/ -}}
+{{- define "stackstate.backup.podLabels" -}}
+{{- $globalLabels := include "suse-observability.labels.global" . | fromYaml | default dict -}}
+{{- $backupPodLabels := .Values.stackstate.components.backup.podLabels | default dict -}}
+{{- $merged := merge $backupPodLabels $globalLabels -}}
+{{- $merged = merge (dict "app.kubernetes.io/component" "backup") $merged -}}
+labels:
+  {{- toYaml $merged | nindent 2 }}
+{{- end -}}

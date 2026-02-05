@@ -1,6 +1,7 @@
 package test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/helm"
@@ -141,4 +142,52 @@ func TestGlobalBackupDisabledEnsureResources(t *testing.T) {
 		_, ok := resources.PersistentVolumeClaims[component]
 		assert.Equal(t, false, ok, "%s PersistentVolumeClaim should not exist", component)
 	}
+}
+
+func TestBackupConfigmapFull(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{
+			"values/backup_config_full.yaml",
+		},
+		KubectlOptions: &k8s.KubectlOptions{
+			Namespace: "suse-observability",
+		},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	backupConfigMap, ok := resources.ConfigMaps["suse-observability-backup-config"]
+	require.True(t, ok, "ConfigMap 'suse-observability-backup-config' should exist")
+
+	configData, ok := backupConfigMap.Data["config"]
+	require.True(t, ok, "ConfigMap should have 'config' key")
+
+	expectedConfig, err := os.ReadFile("test_data/backup-config-full.yaml")
+	require.NoError(t, err, "Should be able to read expected config file")
+
+	assert.Equal(t, string(expectedConfig), configData, "ConfigMap 'config' data should match expected backup-config-full.yaml")
+}
+
+func TestBackupConfigmapDefault(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{
+			"values/backup_config_default.yaml",
+		},
+		KubectlOptions: &k8s.KubectlOptions{
+			Namespace: "suse-observability",
+		},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	backupConfigMap, ok := resources.ConfigMaps["suse-observability-backup-config"]
+	require.True(t, ok, "ConfigMap 'suse-observability-backup-config' should exist")
+
+	configData, ok := backupConfigMap.Data["config"]
+	require.True(t, ok, "ConfigMap should have 'config' key")
+
+	expectedConfig, err := os.ReadFile("test_data/backup-config-default.yaml")
+	require.NoError(t, err, "Should be able to read expected config file")
+
+	assert.Equal(t, string(expectedConfig), configData, "ConfigMap 'config' data should match expected backup-config-default.yaml")
 }
