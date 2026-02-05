@@ -275,7 +275,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; individual service `tag`s can be overridden (see below).
-        tag: 7.0.0-snapshot.20260205134900-master-1c73821
+        tag: 7.0.0-snapshot.20260205140428-master-a459181
       # stackstate.components.all.podAnnotations -- Extra annotations
       podAnnotations: {}
       metrics:
