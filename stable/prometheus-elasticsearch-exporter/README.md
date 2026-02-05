@@ -1,6 +1,6 @@
 # prometheus-elasticsearch-exporter
 
-![Version: 5.8.0-suse-observability.4](https://img.shields.io/badge/Version-5.8.0--suse--observability.4-informational?style=flat-square) ![AppVersion: v1.7.0](https://img.shields.io/badge/AppVersion-v1.7.0-informational?style=flat-square)
+![Version: 5.8.0-suse-observability.5](https://img.shields.io/badge/Version-5.8.0--suse--observability.5-informational?style=flat-square) ![AppVersion: v1.7.0](https://img.shields.io/badge/AppVersion-v1.7.0-informational?style=flat-square)
 
 Elasticsearch stats exporter for Prometheus
 
@@ -24,7 +24,7 @@ Kubernetes: `>=1.10.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.2 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.3 |
 
 ## Values
 

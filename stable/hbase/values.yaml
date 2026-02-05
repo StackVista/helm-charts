@@ -240,7 +240,7 @@ hbase:
     quorum: hbase
 hdfs:
   # hdfs.version -- The hadoop version is automatically derived from the hbase version, this is the specific build version of the HDFS image for that version
-  version: java21-8-5e4f83b6
+  version: java21-8-e86b1b03-349
   # hdfs.minReplication -- Sets the minimum synchronous replication that the namenode will enforce when writing a block. This gives guarantees about the amount of copies of a single block. (If hdfs.datanode.replicaCount is set to a value less than this, the replication factor will be equal to the replicaCount.)
   minReplication: 1
   scc:
