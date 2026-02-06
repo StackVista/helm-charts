@@ -1827,6 +1827,17 @@ check_suse-observability-agent_version:
   script:
     - .gitlab/verify_versions_bumped.sh suse-observability-agent
   stage: validate
+check_suse-observability-sizing_version:
+  before_script:
+    - .gitlab/validate_before_script.sh
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/suse-observability-sizing/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - .gitlab/verify_versions_bumped.sh suse-observability-sizing
+  stage: validate
 check_suse-observability-values_version:
   before_script:
     - .gitlab/validate_before_script.sh

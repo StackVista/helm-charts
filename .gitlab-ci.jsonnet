@@ -113,8 +113,26 @@ local check_chart_version_jobs = {
   if chart != 'stackstate' && chart != 'suse-observability'
 };
 
-// Validates that all charts depending on suse-observability-sizing have updated their dependency versions
-local check_sizing_dependencies_job = {
+// Validation jobs for suse-observability-sizing chart (not in charts/public_charts lists)
+local check_sizing_chart_jobs = {
+  // Checks if suse-observability-sizing version has been bumped.
+  // Adding suse-observability-sizing to the .jsonnet-libs/extras/helm_chart_repo/variables.libsonnet charts list generates
+  // build, validate, test, and push jobs - which is unnecessary overhead for a library chart that's only used as a dependency.
+  'check_suse-observability-sizing_version': {
+    image: variables.images.chart_testing,
+    before_script: ['.gitlab/validate_before_script.sh'],
+    script: [
+      '.gitlab/verify_versions_bumped.sh suse-observability-sizing',
+    ],
+    stage: 'validate',
+    rules: [
+      {
+        @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
+        changes: ['stable/suse-observability-sizing/**/*'],
+      },
+    ],
+  },
+  // Validates that all dependent charts have updated their dependency versions
   check_sizing_chart_dependencies: {
     image: variables.images.chart_testing,
     before_script: ['pip install pyyaml'],
@@ -505,7 +523,7 @@ local beest_triggers = {
 + build_chart_jobs
 + validate_chart_jobs
 + check_chart_version_jobs
-+ check_sizing_dependencies_job
++ check_sizing_chart_jobs
 + test_chart_jobs
 + push_test_charts_jobs
 + resource_usage
