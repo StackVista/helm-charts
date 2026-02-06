@@ -416,6 +416,9 @@ class BumpChartVersion:
 
         self.log_info(f"Checking {len(dependents)} dependent charts...")
 
+        # Flush stdout before checking so error messages appear in order
+        sys.stdout.flush()
+
         all_correct = True
         for dependent in dependents:
             # Read the dependent's Chart.yaml
@@ -452,7 +455,8 @@ class BumpChartVersion:
             self.log_info("All dependency versions are correct.")
         else:
             self.log_error(
-                "Some dependency versions are outdated. Run bump_chart_version.py to update them."
+                f"Some dependency versions are outdated. "
+                f"Run: python3 scripts/bump-chart-version/bump_chart_version.py {target_chart}"
             )
 
         return all_correct
