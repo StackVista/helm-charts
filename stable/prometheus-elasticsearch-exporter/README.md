@@ -1,6 +1,6 @@
 # prometheus-elasticsearch-exporter
 
-![Version: 5.8.0-suse-observability.5](https://img.shields.io/badge/Version-5.8.0--suse--observability.5-informational?style=flat-square) ![AppVersion: v1.7.0](https://img.shields.io/badge/AppVersion-v1.7.0-informational?style=flat-square)
+![Version: 5.8.0-suse-observability.6](https://img.shields.io/badge/Version-5.8.0--suse--observability.6-informational?style=flat-square) ![AppVersion: v1.7.0](https://img.shields.io/badge/AppVersion-v1.7.0-informational?style=flat-square)
 
 Elasticsearch stats exporter for Prometheus
 

@@ -55,7 +55,7 @@ A Python script that bumps the version of a specified Helm chart and automatical
 
 - **Safe by default** - Supports dry-run mode (`-d`) to preview all changes before making them. Always recommended to run with `-d` first.
 
-- **Version suffix handling** - For versions with suffixes like `-stackstate.5` or `-suse-observability.7`, only the suffix number is incremented (e.g., `5.8.0-suse-observability.4` → `5.8.0-suse-observability.5`). The base version remains unchanged. For versions without a suffix, the standard semver bump applies.
+- **Version suffix handling** - For versions with suffixes like `-stackstate.5` or `-suse-observability.7`, only the suffix number is incremented (e.g., `5.8.0-suse-observability.4` → `5.8.0-suse-observability.6`). The base version remains unchanged. For versions without a suffix, the standard semver bump applies.
 
 - **Optimized helm operations** - The script runs `helm repo update` once at the start, then uses `--skip-refresh` on all subsequent `helm dependency update` commands. This significantly speeds up execution when updating many charts.
 
