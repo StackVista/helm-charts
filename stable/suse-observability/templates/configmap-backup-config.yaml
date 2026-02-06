@@ -65,7 +65,7 @@ default
 {{- define "stackstate.backup-config.configmap" -}}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
 {{- $serverServiceConfig := dict "ServiceName" "server" "ServiceConfig" .Values.stackstate.components.server }}
-config: |
+config: |-
   kubernetes:
     commonLabels:
       app.kubernetes.io/name: sts-backup
@@ -76,6 +76,7 @@ config: |
       name: {{ include "stackstate.s3proxy.service.fullname" . | quote }}
       port: {{ include "stackstate.s3proxy.port" . }}
       localPortForwardPort: 9000
+  {{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . }}
   stackgraph:
     bucket: {{ .Values.backup.stackGraph.bucketName | quote }}
     s3Prefix: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.stackGraph.s3Prefix | quote }}
@@ -83,10 +84,10 @@ config: |
     multipartArchive: {{ ne (toString .Values.backup.stackGraph.splitArchiveSize) "0" }}
     restore:
       loggingConfigConfigMap: {{ template "common.fullname.short" . }}-backup-log
+      stsBackupConfigConfigMap: {{ template "common.fullname.short" . }}-sts-backup-conf
       scaleDownLabelSelector: {{ include "stackstate.backup.stackgraph.restore.scaleDownLabelsCommaSeparated" . }}
       zookeeperQuorum: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
       pvc:
-{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
         {{- if eq $deploymentMode "Distributed" }}
         size: {{ .Values.backup.stackGraph.restore.tempData.size | default (include "suse-observability.sizing.hbase.hdfs.datanode.persistence.size" .) }}
         {{- else}}
@@ -94,6 +95,9 @@ config: |
         {{- end }}
         accessModes: {{ .Values.backup.stackGraph.restore.tempData.accessModes }}
         {{ include "common.storage.class" ( dict "persistence" .Values.backup.stackGraph.restore.tempData "global" .Values.global) | nindent 8 }}
+      {{- if eq $deploymentMode "Mono" }}
+      stackpacksPvc: {{ template "common.fullname.short" . }}-stackpacks-local
+      {{- end }}
       job:
         image: {{ include "stackstate.image.registry" (merge (dict) $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}
         waitImage: {{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}
@@ -116,12 +120,16 @@ config: |
     stackpacksS3Prefix: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.configuration.stackpacksS3Prefix | quote }}
     restore:
       loggingConfigConfigMap: {{ template "common.fullname.short" . }}-backup-log
+      stsBackupConfigConfigMap: {{ template "common.fullname.short" . }}-sts-backup-conf
       baseUrl: {{ include "suse-observability.global.baseUrl" . | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is required" | quote }}
       receiverBaseUrl: {{ printf "%s/%s" ( include "suse-observability.global.baseUrl" . | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is required" ) "receiver" | quote }}
       platformVersion: {{ if and .Values.testHelper .Values.testHelper.chartVersion -}}{{ .Values.testHelper.chartVersion | quote }}{{- else -}}{{ .Chart.Version | quote }}{{- end }}
       scaleDownLabelSelector: {{ include "stackstate.backup.configuration.restore.scaleDownLabelsCommaSeparated" . }}
       zookeeperQuorum: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
       pvc: {{ template "common.fullname.short" . }}-settings-backup-data
+      {{- if eq $deploymentMode "Mono" }}
+      stackpacksPvc: {{ template "common.fullname.short" . }}-stackpacks-local
+      {{- end }}
       job:
         image: {{ include "stackstate.image.registry" (merge (dict) $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}
         waitImage: {{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}

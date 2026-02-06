@@ -87,6 +87,8 @@ ports:
   name: health
 - containerPort: 7070
   name: api
+- containerPort: 7090
+  name: backup
 {{- if .Values.stackstate.instanceDebugApi.enabled }}
 - containerPort: 7080
   name: instance

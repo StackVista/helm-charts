@@ -1,0 +1,23 @@
+{{- define "stackstate.backup.stackpacks.service" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-backup-stackpacks
+  labels:
+    app.kubernetes.io/component: stackpacks-backup
+spec:
+  clusterIP: None
+  ports:
+    - name: backup
+      port: 7090
+      protocol: TCP
+      targetPort: backup
+  selector:
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
+    app.kubernetes.io/component: api
+{{- else }}
+    app.kubernetes.io/component: server
+{{- end }}
+{{- end }}
+
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $stsStackstateBackupStackpacksService := fromYaml (include "stackstate.backup.stackpacks.service" .) -}}
+{{- toYaml (merge $stsStackstateBackupStackpacksService $commonService) -}}

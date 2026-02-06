@@ -66,7 +66,7 @@ STACKPACKS_BACKUP_FILE="${BACKUP_FILE}.stackpacks.zip"
 STACKPACKS_BACKUP_FILE_WITH_PATH="${STACKPACKS_BACKUP_DIR}/${STACKPACKS_BACKUP_FILE}"
 
 echo "=== Exporting StackPacks data to \"${STACKPACKS_BACKUP_FILE}\"..."
-/opt/docker/bin/stack-packs-backup -Dlogback.configurationFile=/opt/docker/etc_log/logback.xml -create "${STACKPACKS_BACKUP_FILE_WITH_PATH}"
+/opt/docker/bin/stack-packs-backup -Dlogback.configurationFile=/opt/docker/etc_log/logback.xml -create "${STACKPACKS_BACKUP_FILE_WITH_PATH}" -remote "${BACKUP_STACKPACKS_SERVICE_URL}"
 
 # If remote backup is enabled, also upload to remote bucket
 if [ "$BACKUP_CONFIGURATION_UPLOAD_REMOTE" == "true" ]; then

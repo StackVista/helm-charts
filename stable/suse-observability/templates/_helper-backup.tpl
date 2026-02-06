@@ -23,6 +23,8 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
 {{- if not (regexMatch "^[0-9]+([KMG]?|[KMG]?[B]?)$" (toString .Values.backup.stackGraph.splitArchiveSize)) }}
   {{- fail (printf ".Values.backup.stackGraph.splitArchiveSize (%v) has to be an integer greater or equal to 0 with an optional suffix K,M,G,KB,MB,GB" .Values.backup.stackGraph.splitArchiveSize)}}
 {{- end }}
+- name: BACKUP_STACKPACKS_SERVICE_URL
+  value: http://{{ template "common.fullname.short" . }}-backup-stackpacks:7090
 - name: BACKUP_ELASTICSEARCH_BUCKET_NAME
   value: {{ .Values.backup.elasticsearch.bucketName | quote }}
 - name: BACKUP_ELASTICSEARCH_S3_PREFIX
@@ -135,7 +137,7 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
     secretName: {{ include "stackstate.minio.keys" . }}
 - name: config-volume
   configMap:
-    name: {{ template "common.fullname.short" . }}-backup
+    name: {{ template "common.fullname.short" . }}-sts-backup-conf
 {{- end -}}
 
 {{- define "stackstate.backup.elasticsearch.restore.scaleDownLabels" -}}

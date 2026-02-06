@@ -94,6 +94,8 @@ ports:
 - containerPort: 7080
   name: instance
 {{- end }}
+- containerPort: 7090
+  name: backup
 {{- if .Values.stackstate.components.all.metrics.enabled }}
 - containerPort: 9404
   name: metrics

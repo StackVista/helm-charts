@@ -34,7 +34,7 @@ fi
 echo "=== Creating StackPacks backup..."
 STACKPACKS_BACKUP_FILE="${BACKUP_FILE}.stackpacks.zip"
 echo "=== Exporting StackPacks data to \"${STACKPACKS_BACKUP_FILE}\"..."
-/opt/docker/bin/stack-packs-backup -Dlogback.configurationFile=/opt/docker/etc_log/logback.xml -create "${TMP_DIR}/${STACKPACKS_BACKUP_FILE}"
+/opt/docker/bin/stack-packs-backup -Dlogback.configurationFile=/opt/docker/etc_log/logback.xml -create "${TMP_DIR}/${STACKPACKS_BACKUP_FILE}" -remote "${BACKUP_STACKPACKS_SERVICE_URL}"
 
 if [ ! -f "${TMP_DIR}/${STACKPACKS_BACKUP_FILE}" ]; then
     echo "=== StackPacks export failed. Backup file \"${TMP_DIR}/${STACKPACKS_BACKUP_FILE}\" does not exist."

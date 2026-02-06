@@ -10,10 +10,6 @@ spec:
       port: 7070
       protocol: TCP
       targetPort: api
-    - name: admin
-      port: 7071
-      protocol: TCP
-      targetPort: admin
   {{- if .Values.stackstate.components.all.metrics.enabled }}
     - name: metrics
       port: 9404
