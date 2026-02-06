@@ -456,14 +456,19 @@ class BumpChartVersion:
         else:
             self.log_error(
                 f"Some dependency versions are outdated. "
-                f"Run: python3 scripts/bump-chart-version/bump_chart_version.py {target_chart}"
+                f"Run: python3 scripts/bump-chart-version/bump_chart_version.py --dependents-only {target_chart}"
             )
 
         return all_correct
 
-    def run(self, target_chart: str, bump_type: str = "patch") -> None:
+    def run(
+        self, target_chart: str, bump_type: str = "patch", dependents_only: bool = False
+    ) -> None:
         """Main execution flow."""
-        self.log_info(f"Bumping chart: {target_chart} ({bump_type} bump)")
+        if dependents_only:
+            self.log_info(f"Updating dependents of: {target_chart} (no version bump)")
+        else:
+            self.log_info(f"Bumping chart: {target_chart} ({bump_type} bump)")
         self.log_info(f"Charts directory: {self.charts_dir}")
 
         if self.dry_run:
@@ -482,13 +487,18 @@ class BumpChartVersion:
 
         # Get current version and calculate new version
         current_version = self.get_chart_version(target_chart)
-        new_version = self.bump_version(current_version, bump_type)
 
-        self.log_info(f"Version: {current_version} -> {new_version}")
-
-        # Update the target chart's version and track it
-        self.update_chart_version(target_chart, new_version)
-        self.bumped_versions[target_chart] = new_version
+        if dependents_only:
+            # Keep current version, just update dependents
+            new_version = current_version
+            self.log_info(f"Version: {current_version} (unchanged)")
+            self.bumped_versions[target_chart] = current_version
+        else:
+            # Bump the target chart's version
+            new_version = self.bump_version(current_version, bump_type)
+            self.log_info(f"Version: {current_version} -> {new_version}")
+            self.update_chart_version(target_chart, new_version)
+            self.bumped_versions[target_chart] = new_version
 
         # Build the dependency graph
         self.log_info("Building dependency graph...")
@@ -633,6 +643,13 @@ but will NOT have their own version bumped.
         "Returns exit code 1 if any dependency version is outdated. "
         "Does not modify any files.",
     )
+    parser.add_argument(
+        "--dependents-only",
+        dest="dependents_only",
+        action="store_true",
+        help="Only update dependent charts without bumping the target chart's version. "
+        "Use this when the target chart was already bumped but dependents need updating.",
+    )
 
     args = parser.parse_args()
 
@@ -656,8 +673,8 @@ but will NOT have their own version bumped.
         success = bumper.check_dependencies(args.chart_name)
         sys.exit(0 if success else 1)
     else:
-        # Normal mode: bump versions
-        bumper.run(args.chart_name, args.bump_type)
+        # Normal mode: bump versions (or just update dependents)
+        bumper.run(args.chart_name, args.bump_type, args.dependents_only)
 
 
 if __name__ == "__main__":
