@@ -132,7 +132,8 @@ local check_sizing_chart_jobs = {
       },
     ],
   },
-  // Validates that all dependent charts have updated their dependency versions
+  // Validates that all dependent charts have updated their dependency versions.
+  // Runs after version check passes to ensure we're checking against the correct version.
   check_sizing_chart_dependencies: {
     image: variables.images.chart_testing,
     before_script: ['pip install pyyaml'],
@@ -140,6 +141,7 @@ local check_sizing_chart_jobs = {
       'python3 scripts/bump-chart-version/bump_chart_version.py --check suse-observability-sizing',
     ],
     stage: 'validate',
+    needs: ['check_suse-observability-sizing_version'],
     rules: [
       {
         @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',

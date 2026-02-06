@@ -1743,6 +1743,8 @@ check_sizing_chart_dependencies:
   before_script:
     - pip install pyyaml
   image: quay.io/helmpack/chart-testing:v3.10.1
+  needs:
+    - check_suse-observability-sizing_version
   rules:
     - changes:
         - stable/suse-observability-sizing/**/*
