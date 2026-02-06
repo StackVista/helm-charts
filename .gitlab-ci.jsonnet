@@ -113,6 +113,24 @@ local check_chart_version_jobs = {
   if chart != 'stackstate' && chart != 'suse-observability'
 };
 
+// Validates that all charts depending on suse-observability-sizing have updated their dependency versions
+local check_sizing_dependencies_job = {
+  check_sizing_chart_dependencies: {
+    image: variables.images.chart_testing,
+    before_script: ['pip install pyyaml'],
+    script: [
+      'python3 scripts/bump-chart-version/bump_chart_version.py --check suse-observability-sizing',
+    ],
+    stage: 'validate',
+    rules: [
+      {
+        @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
+        changes: ['stable/suse-observability-sizing/**/*'],
+      },
+    ],
+  },
+};
+
 // Runs unit tests on all charts with "test" directory
 local test_chart_job(chart) = {
   image: variables.images.stackstate_helm_test,
@@ -487,6 +505,7 @@ local beest_triggers = {
 + build_chart_jobs
 + validate_chart_jobs
 + check_chart_version_jobs
++ check_sizing_dependencies_job
 + test_chart_jobs
 + push_test_charts_jobs
 + resource_usage

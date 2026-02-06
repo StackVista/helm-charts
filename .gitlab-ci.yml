@@ -1739,6 +1739,17 @@ check_sandbox-operator_version:
   script:
     - .gitlab/verify_versions_bumped.sh sandbox-operator
   stage: validate
+check_sizing_chart_dependencies:
+  before_script:
+    - pip install pyyaml
+  image: quay.io/helmpack/chart-testing:v3.10.1
+  rules:
+    - changes:
+        - stable/suse-observability-sizing/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - python3 scripts/bump-chart-version/bump_chart_version.py --check suse-observability-sizing
+  stage: validate
 check_sock-shop_version:
   before_script:
     - .gitlab/validate_before_script.sh
