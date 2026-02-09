@@ -1,0 +1,23 @@
+stackstate:
+  components:
+    all:
+      extraEnv:
+        open:
+          "all": "test"
+    receiver:
+      extraEnv:
+        open:
+          "receiverRoot": "test"
+      resources:
+        requests:
+          cpu: 555
+      split:
+        enabled: false
+  authentication:
+    adminPassword: 098f6bcd4621d373cade4e832627b4f6
+  admin:
+    authentication:
+      password: 5a4961367d65d570e20d2d69156581b4
+  baseUrl: "http://localhost"
+  license:
+    key: "api01"

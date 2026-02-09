@@ -1,0 +1,44 @@
+stackstate:
+  components:
+    all:
+      extraEnv:
+        open:
+          "all": "test"
+    receiver:
+      extraEnv:
+        open:
+          "receiverRoot": "test"
+      resources:
+        requests:
+          cpu: 555
+      split:
+        enabled: true
+        base:
+          extraEnv:
+            open:
+              "receiverBase": "test"
+          resources:
+            requests:
+              cpu: 666
+        logs:
+          extraEnv:
+            open:
+              "receiverLogs": "test"
+          resources:
+            requests:
+              cpu: 777
+        processAgent:
+          extraEnv:
+            open:
+              "receiverProcessAgent": "test"
+          resources:
+            requests:
+              cpu: 888
+  authentication:
+    adminPassword: 098f6bcd4621d373cade4e832627b4f6
+  admin:
+    authentication:
+      password: 5a4961367d65d570e20d2d69156581b4
+  baseUrl: "http://localhost"
+  license:
+    key: "api01"
