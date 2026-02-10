@@ -62,6 +62,7 @@
       'kommoner-operator',
       'notification-operator',
       'otel-demo',
+      'opentelemetry-collector',
       'petros-d-kubelet-stats-exporter',
       'redirector',
       'receiveramplifier',

@@ -3,7 +3,8 @@ global:
   imagePullUsername: "test"
   imagePullPassword: "secret"
   imageRegistry: "my.registry.com"
-
+  backup:
+    enabled: true
 pull-secret:
   enabled: true
 
@@ -28,12 +29,7 @@ stackstate:
     - https://rancher.localhost
   license:
     key: "api01"
-hbase:
-  all:
-    image:
 anomaly-detection:
   enabled: false
-backup:
-  enabled: true
 victoria-metrics-1:
   enabled: true

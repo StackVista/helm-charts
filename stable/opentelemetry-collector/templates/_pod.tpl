@@ -204,9 +204,23 @@ volumes:
 nodeSelector:
   {{- toYaml . | nindent 2 }}
 {{- end }}
-{{- with .Values.affinity }}
+{{- $finalAffinity := .Values.affinity | default dict -}}
+{{- /* Use sizing-based affinity when deployed via suse-observability (sizing profile is set) */ -}}
+{{- $hasSizingProfile := false -}}
+{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+  {{- $hasSizingProfile = true -}}
+{{- else if and .Values.global .Values.global.sizing .Values.global.sizing.profile -}}
+  {{- $hasSizingProfile = true -}}
+{{- end -}}
+{{- if and (not .Values.affinity) $hasSizingProfile -}}
+  {{- $sizingAffinity := include "common.sizing.opentelemetry-collector.affinityConfig" . | fromYaml -}}
+  {{- if $sizingAffinity -}}
+    {{- $finalAffinity = $sizingAffinity -}}
+  {{- end -}}
+{{- end -}}
+{{- if $finalAffinity }}
 affinity:
-  {{- toYaml . | nindent 2 }}
+  {{- toYaml $finalAffinity | nindent 2 }}
 {{- end }}
 {{- with .Values.tolerations }}
 tolerations:

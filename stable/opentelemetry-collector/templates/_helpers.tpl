@@ -251,6 +251,13 @@ Return the the image registry.
 {{- end }}
 
 {{/*
+Return the the wait image registry.
+*/}}
+{{- define "opentelemetry-collector.waitImageRegistry" -}}
+  {{ default .Values.global.wait.image.registry (.Values.global).imageRegistry }}
+{{- end }}
+
+{{/*
 Renders a value that contains a template.
 Usage:
 {{ include "opentelemetry-collector.tplvalue.render" ( dict "value" .Values.path.to.the.Value "context" $) }}
@@ -270,20 +277,23 @@ Return the proper Docker Image Registry Secret Names evaluating values as templa
 {{- define "opentelemetry-collector.image.pullSecret.name" -}}
   {{- $pullSecrets := list }}
   {{- $context := .context }}
-
-  {{- if $context.Values.global }}
-    {{- range $context.Values.global.imagePullSecrets -}}
-      {{- $pullSecrets = append $pullSecrets (include "opentelemetry-collector.tplvalue.render" (dict "value" . "context" $context)) -}}
+  {{- if and $context.Values.global $context.Values.global.suseObservability $context.Values.global.suseObservability.pullSecret $context.Values.global.suseObservability.pullSecret.username $context.Values.global.suseObservability.pullSecret.password -}}
+    {{- $pullSecrets = append $pullSecrets "suse-observability-pull-secret" -}}
+  {{- else -}}
+    {{- if $context.Values.global }}
+      {{- range $context.Values.global.imagePullSecrets -}}
+        {{- $pullSecrets = append $pullSecrets (include "opentelemetry-collector.tplvalue.render" (dict "value" . "context" $context)) -}}
+      {{- end -}}
     {{- end -}}
-  {{- end -}}
-  {{- range $context.Values.imagePullSecrets -}}
-    {{- $pullSecrets = append $pullSecrets (include "opentelemetry-collector.tplvalue.render" (dict "value" .name "context" $context)) -}}
-  {{- end -}}
-  {{- range .images -}}
-    {{- if .pullSecretName -}}
-      {{- $pullSecrets = append $pullSecrets (include "opentelemetry-collector.tplvalue.render" (dict "value" .pullSecretName "context" $context)) -}}
-    {{- else if (or .pullSecretUsername .pullSecretDockerConfigJson) -}}
-      {{- $pullSecrets = append $pullSecrets ((list (include "common.fullname.short" $context ) "pull-secret") | join "-")  -}}
+    {{- range $context.Values.imagePullSecrets -}}
+      {{- $pullSecrets = append $pullSecrets (include "opentelemetry-collector.tplvalue.render" (dict "value" .name "context" $context)) -}}
+    {{- end -}}
+    {{- range .images -}}
+      {{- if .pullSecretName -}}
+        {{- $pullSecrets = append $pullSecrets (include "opentelemetry-collector.tplvalue.render" (dict "value" .pullSecretName "context" $context)) -}}
+      {{- else if (or .pullSecretUsername .pullSecretDockerConfigJson) -}}
+        {{- $pullSecrets = append $pullSecrets ((list (include "common.fullname.short" $context ) "pull-secret") | join "-")  -}}
+      {{- end -}}
     {{- end -}}
   {{- end -}}
 
@@ -323,6 +333,7 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{ include "opentelemetry-collector.commonLabels" . }}
+observability.suse.com/scalable-during-clickhouse-restore: "true"
 {{- end }}
 
 {{/*

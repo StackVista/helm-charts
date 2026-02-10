@@ -1,8 +1,15 @@
+{{- /*
+    The K8s service for the Clickhouse backup
+*/ -}}
+{{- define "stackstate.backup.clickhouse.backup.service" -}}
+suse-observability-clickhouse-backup
+{{- end -}}
+
 {{- define "stackstate.clickhouse-backup.service" -}}
 apiVersion: {{ .Values.common.service.apiVersion }}
 kind: Service
 metadata:
-  name: suse-observability-clickhouse-backup
+  name: {{ include "stackstate.backup.clickhouse.backup.service" . }}
   labels:
     app.kubernetes.io/component: clickhouse-backup
 spec:
@@ -12,6 +19,10 @@ spec:
       port: 7171
       protocol: TCP
       targetPort: backup-api
+    - name: tcp
+      port: 9000
+      protocol: TCP
+      targetPort: tcp
   selector:
     app.kubernetes.io/component: clickhouse
     shard: "0"
@@ -19,6 +30,6 @@ spec:
   type: ClusterIP
 {{- end -}}
 
-{{- if and .Values.clickhouse.enabled .Values.clickhouse.backup.enabled }}
+{{- if .Values.global.backup.enabled }}
 {{- include "stackstate.clickhouse-backup.service" . -}}
 {{- end -}}

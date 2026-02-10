@@ -264,7 +264,7 @@ func TestAuthenticationFallback(t *testing.T) {
 
 func TestAuthenticationFallbackInvalid(t *testing.T) {
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/fallback_authentication_no_password.yaml")
-	require.Contains(t, err.Error(), "Helm value 'stackstate.authentication.adminPassword' is required")
+	require.Contains(t, err.Error(), "Admin password is required")
 }
 
 const expectedRolesAuthConfig = `stackstate.authorization.adminGroups = ${stackstate.authorization.adminGroups} ["extra-admin","stackstate-aad"]

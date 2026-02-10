@@ -1,10 +1,11 @@
 {{- define "stackstate.vmagent.targets" -}}
+{{- $vm1Enabled := eq (include "victoria-metrics-1.effectivelyEnabled" .) "true" -}}
 instances:
 {{ if index .Values "victoria-metrics-0" "enabled" }}
   - url: {{ ( include "stackstate.metrics.victoriametrics.singleNode.remotewrite.url" (merge (dict "instanceIndex" "0") . ) ) }}
     endpoint: {{ include "stackstate.metrics.victoriametrics.singleNode.remoteWriteEndpoint" (dict "instanceIndex" "0") }}
 {{- end -}}
-{{ if index .Values "victoria-metrics-1" "enabled" }}
+{{ if $vm1Enabled }}
   - url: {{ ( include "stackstate.metrics.victoriametrics.singleNode.remotewrite.url" (merge (dict "instanceIndex" "1") . ) ) }}
     endpoint: {{ include "stackstate.metrics.victoriametrics.singleNode.remoteWriteEndpoint" (dict "instanceIndex" "1") }}
 {{- end -}}
@@ -22,8 +23,8 @@ command:
 - -c
 - |
   /entrypoint -c {{ join "," $endpoints }} -t 300
-image: {{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}
-imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+image: {{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}
+imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- end -}}
 
 {{- define "stackstate.vmagent.container.main" -}}
@@ -62,7 +63,13 @@ volumeMounts:
     mountPath: /tmpData
   - name: vmagent-config
     mountPath: /etc/vmagent
-{{- with .Values.stackstate.components.vmagent.resources }}
+{{- $profileResources := include "common.sizing.stackstate.vmagent.resources" . | trim -}}
+{{- $evaluatedResources := .Values.stackstate.components.vmagent.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -107,14 +114,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.vmagent.affinity }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.vmagent.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- if $affinity }}
       affinity:
-      {{- with .Values.stackstate.components.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.vmagent.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- $affinity | nindent 8 }}
     {{- end }}
     {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.vmagent.tolerations }}
       tolerations:

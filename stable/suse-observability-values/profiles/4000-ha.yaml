@@ -11,6 +11,7 @@ elasticsearch:
 hbase:
   hbase:
     master:
+      replicaCount: 2
       resources:
         requests:
           cpu: 2000m
@@ -32,6 +33,7 @@ hbase:
           memory: 12Gi
   hdfs:
     datanode:
+      replicaCount: 3
       resources:
         requests:
           cpu: 4000m
@@ -55,7 +57,9 @@ hbase:
         cpu: 4000m
       limits:
         cpu: 6000m
+    replicaCount: 2
 kafka:
+  replicaCount: 3
   # numRecoveryThreadsPerDataDir has to be 2 times of cpu requests
   numRecoveryThreadsPerDataDir: 8
   metrics:
@@ -94,6 +98,8 @@ stackstate:
       extraEnv:
         open:
           CONFIG_FORCE_stackstate_agents_agentLimit: "4000"
+          CONFIG_FORCE_stackstate_eventPersistor_kafkaProducerConfig_request.timeout.ms: "25000"
+          CONFIG_FORCE_stackstate_eventPersistor_kafkaProducerConfig_delivery.timeout.ms: "30000"
     api:
       resources:
         requests:
@@ -176,7 +182,6 @@ stackstate:
         limits:
           cpu: "14"
           memory: 16000Mi
-          ephemeral-storage: 2Gi
     e2es:
       resources:
         requests:
@@ -250,11 +255,11 @@ stackstate:
     vmagent:
       resources:
         limits:
-          cpu: 3000m
-          memory: 2500Mi
+          cpu: 5000m
+          memory: 5000Mi
         requests:
-          cpu: 2000m
-          memory: 2500Mi
+          cpu: 4000m
+          memory: 5000Mi
     ui:
       replicaCount: 2
       resources:
@@ -263,6 +268,7 @@ stackstate:
         limits:
           cpu: 500m
 zookeeper:
+  replicaCount: 3
   heapSize: 512
   resources:
     requests:

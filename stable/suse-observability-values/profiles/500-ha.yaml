@@ -8,44 +8,43 @@ hbase:
     mode: "Distributed"
   hbase:
     master:
+      replicaCount: 2
       resources:
         requests:
           cpu: "500m"
         limits:
           cpu: "1000m"
-          ephemeral-storage: "20Mi"
       experimental:
         execLivenessProbe:
           enabled: true
     regionserver:
+      replicaCount: 3
       resources:
         requests:
           cpu: "4000m"
+          memory: 6Gi
         limits:
           cpu: "8000m"
-          ephemeral-storage: "100Mi"
+          memory: 6Gi
   hdfs:
     datanode:
+      replicaCount: 3
       resources:
         requests:
           cpu: "600m"
         limits:
           cpu: "1200m"
-          ephemeral-storage: "70Mi"
     namenode:
       resources:
         requests:
           cpu: "200m"
         limits:
           cpu: "400m"
-          ephemeral-storage: "70Mi"
     secondarynamenode:
       enabled: true
       resources:
         requests:
           cpu: "10m"
-        limits:
-          ephemeral-storage: "70Mi"
   tephra:
     resources:
       limits:
@@ -56,6 +55,7 @@ hbase:
         cpu: "500m"
     replicaCount: 2
 kafka:
+  replicaCount: 3
   transactionStateLogReplicationFactor: 1
   # numRecoveryThreadsPerDataDir has to be 2 times of cpu requests
   numRecoveryThreadsPerDataDir: 6
@@ -66,7 +66,6 @@ kafka:
     limits:
       cpu: "6"
       memory: "4Gi"
-      ephemeral-storage: "70Mi"
   # Need more kafka due to increased partition count
   persistence:
     size: 400Gi
@@ -93,7 +92,6 @@ stackstate:
           cpu: "3000m"
           memory: "6Gi"
         limits:
-          ephemeral-storage: "800Mi"
           cpu: "6000m"
           memory: "6Gi"
     checks:
@@ -104,13 +102,11 @@ stackstate:
         limits:
           cpu: "6000m"
           memory: 5Gi
-          ephemeral-storage: "700Mi"
     healthSync:
       resources:
         limits:
           memory: 8Gi
           cpu: "8000m"
-          ephemeral-storage: "650Mi"
         requests:
           memory: 8Gi
           cpu: "4000m"
@@ -120,8 +116,6 @@ stackstate:
       resources:
         requests:
           cpu: "50m"
-        limits:
-          ephemeral-storage: "60Mi"
     notification:
       resources:
         requests:
@@ -136,19 +130,15 @@ stackstate:
           cpu: "120m"
         limits:
           cpu: "240m"
-          ephemeral-storage: "60Mi"
     slicing:
       resources:
         requests:
           cpu: "300m"
-        limits:
-          ephemeral-storage: "60Mi"
     state:
       resources:
         limits:
           cpu: "4"
           memory: "4000Mi"
-          ephemeral-storage: "700Mi"
         requests:
           cpu: "2"
           memory: "4000Mi"
@@ -159,7 +149,6 @@ stackstate:
         limits:
           cpu: "8000m"
           memory: 8Gi
-          ephemeral-storage: "700Mi"
         requests:
           cpu: "4000m"
           memory: 8Gi
@@ -225,6 +214,7 @@ stackstate:
     ui:
       replicaCount: 2
 zookeeper:
+  replicaCount: 3
   resources:
     requests:
       cpu: 200m

@@ -1,6 +1,6 @@
 # zookeeper
 
-![Version: 8.1.2-suse-observability.2](https://img.shields.io/badge/Version-8.1.2--suse--observability.2-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
+![Version: 8.1.2-suse-observability.5](https://img.shields.io/badge/Version-8.1.2--suse--observability.5-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
 
 Apache ZooKeeper provides a reliable, centralized register of configuration data and services for distributed applications.
 
@@ -21,6 +21,7 @@ Apache ZooKeeper provides a reliable, centralized register of configuration data
 
 | Repository | Name | Version |
 |------------|------|---------|
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.2 |
 | https://charts.bitnami.com/bitnami | common | 1.x.x |
 
 ## Values
@@ -152,7 +153,7 @@ Apache ZooKeeper provides a reliable, centralized register of configuration data
 | readinessProbe.probeCommandTimeout | int | `2` |  |
 | readinessProbe.successThreshold | int | `1` |  |
 | readinessProbe.timeoutSeconds | int | `5` |  |
-| replicaCount | int | `1` |  |
+| replicaCount | string | `nil` |  |
 | resources.limits | object | `{}` |  |
 | resources.requests.cpu | string | `"250m"` |  |
 | resources.requests.memory | string | `"256Mi"` |  |

@@ -2,7 +2,7 @@
 
 The StackState Helm Reaper
 
-Current chart version is `2.0.2`
+Current chart version is `2.0.4`
 
 **Homepage:** <https://gitlab.com/StackVista/devops/helm-charts>
 

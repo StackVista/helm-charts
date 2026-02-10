@@ -33,10 +33,19 @@ imagePullSecrets:
 {{/*
 Return the image registry
 {{ include "common.image.registry" ( dict "image" . "context" $) }}
+When global.suseObservability is enabled (global mode), defaults to registry.rancher.com
+to match the suse-observability-values chart behavior.
 */}}
 {{- define "common.image.registry" -}}
   {{- if .context.Values.global }}
-    {{- .context.Values.global.imageRegistry | default .image.registry -}}
+    {{- if .context.Values.global.imageRegistry -}}
+      {{- .context.Values.global.imageRegistry -}}
+    {{- else if and .context.Values.global.suseObservability (or .context.Values.global.suseObservability.license .context.Values.global.suseObservability.baseUrl .context.Values.global.suseObservability.sizing.profile) -}}
+      {{- /* Global mode is enabled, default to registry.rancher.com */ -}}
+      registry.rancher.com
+    {{- else -}}
+      {{- .image.registry -}}
+    {{- end -}}
   {{- else -}}
     {{- .image.registry -}}
   {{- end -}}

@@ -139,9 +139,15 @@ spec:
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- $sizingResources := include "common.sizing.elasticsearch.prometheus-exporter.resources" . | trim -}}
+          {{- if $sizingResources }}
+          resources:
+            {{- $sizingResources | nindent 12 }}
+          {{- else }}
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- end }}
           ports:
             - containerPort: {{ .Values.service.httpPort }}

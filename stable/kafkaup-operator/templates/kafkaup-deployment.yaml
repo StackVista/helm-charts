@@ -28,7 +28,7 @@ spec:
         {{ include "kafkaup-operator.checksum-configs" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "common.fullname.short" . }}-kafkaup
-      {{- include "common.image.pullSecret.name" (dict "images" (list .Values.image) "context" $) | nindent 6 }}
+      {{- include "kafkaup.image.pullSecret.name" . | nindent 6 }}
       containers:
       - name: kafkaup-operator
         image: "{{ include "common.image.registry" (dict "image" .Values.image "context" .) }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -43,8 +43,13 @@ spec:
         volumeMounts:
         - name: kafkaup-config-volume
           mountPath: /conf.d
+{{- $sizingResources := include "common.sizing.kafkaup-operator.resources" . | trim }}
+{{- $resources := .Values.resources }}
+{{- if $sizingResources }}
+{{- $resources = fromYaml $sizingResources }}
+{{- end }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+{{ toYaml $resources | indent 10 }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

@@ -1,22 +1,25 @@
 apiVersion: v2
 appVersion: 1.2.12
-version: 0.2.81
+version: 0.2.113
 description: Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 keywords:
-- aiops
-- monitoring
-- stackstate
-- hbase
-- hadoop
+  - aiops
+  - monitoring
+  - stackstate
+  - hbase
+  - hadoop
 home: https://gitlab.com/stackvista/devops/helm-charts.git
 sources:
-- https://github.com/apache/hadoop
+  - https://github.com/apache/hadoop
 icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
 maintainers:
-- name: Stackstate Ops Team
-  email: ops@stackstate.com
+  - name: Stackstate Ops Team
+    email: ops@stackstate.com
 name: hbase
 dependencies:
-- name: common
-  version: "*"
-  repository: file://../common/
+  - name: common
+    version: "*"
+    repository: file://../common/
+  - name: suse-observability-sizing
+    repository: file://../suse-observability-sizing
+    version: 0.1.3

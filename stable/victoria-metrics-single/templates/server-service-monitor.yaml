@@ -1,4 +1,4 @@
-{{- if and .Values.server.enabled .Values.server.serviceMonitor.enabled -}}
+{{- if and .Values.server.enabled .Values.server.serviceMonitor.enabled (eq (include "victoria-metrics.isEnabled" .) "true") -}}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -41,7 +41,7 @@ spec:
       relabelings:
           {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- if .Values.backup.enabled }}
+    {{- if .Values.global.backup.enabled }}
     - port: supercronic
       interval: {{ .Values.backup.supercronic.metrics.interval }}
     {{- end }}

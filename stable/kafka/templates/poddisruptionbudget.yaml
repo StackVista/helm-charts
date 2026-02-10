@@ -1,5 +1,11 @@
-{{- $replicaCount := int .Values.replicaCount }}
-{{- if and .Values.pdb.create (gt $replicaCount 1) }}
+{{- $replicaCount := include "common.sizing.kafka.effectiveReplicaCount" . | int -}}
+{{- $globalSizingEnabled := and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+{{- $profile := "" -}}
+{{- if $globalSizingEnabled -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
+{{- $isNonHa := or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") -}}
+{{- if and .Values.pdb.create (gt $replicaCount 1) (not (and $globalSizingEnabled $isNonHa)) }}
 apiVersion: {{ include "common.capabilities.policy.apiVersion" . }}
 kind: PodDisruptionBudget
 metadata:

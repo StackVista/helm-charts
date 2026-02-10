@@ -1,6 +1,6 @@
 # Victoria Metrics Helm Chart for Single Version
 
- ![Version: 0.8.53-stackstate.26](https://img.shields.io/badge/Version-0.8.53--stackstate.26-informational?style=flat-square)
+ ![Version: 0.8.53-stackstate.33](https://img.shields.io/badge/Version-0.8.53--stackstate.33-informational?style=flat-square)
 
 Victoria Metrics Single version - high-performance, cost-effective and scalable TSDB, long-term remote storage for Prometheus
 
@@ -157,7 +157,7 @@ Change the values according to the need of the environment in ``victoria-metrics
 | backup.scheduled.schedule | string | `"25 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
 | backup.setupCron.image.registry | string | `"quay.io"` |  |
 | backup.setupCron.image.repository | string | `"stackstate/container-tools"` | Repository containing busybox image, it is used to prepare th cronjob (create a crontab file). |
-| backup.setupCron.image.tag | string | `"1.8.0-bci"` | Tag of the image for the busybox |
+| backup.setupCron.image.tag | string | `"1.8.2-bci-517"` | Tag of the image for the busybox |
 | backup.setupCron.resources.limits.cpu | string | `"20m"` |  |
 | backup.setupCron.resources.limits.memory | string | `"64Mi"` |  |
 | backup.setupCron.resources.requests.cpu | string | `"20m"` |  |
@@ -171,6 +171,7 @@ Change the values according to the need of the environment in ``victoria-metrics
 | backup.vmbackup.resources.limits.memory | string | `"512Mi"` |  |
 | backup.vmbackup.resources.requests.cpu | string | `"10m"` |  |
 | backup.vmbackup.resources.requests.memory | string | `"512Mi"` |  |
+| global.backup.enabled | bool | `false` | Enable scheduled backups of Victoria Metrics. |
 | global.commonLabels | object | `{}` | Common labels that are applied to all resources |
 | podDisruptionBudget.enabled | bool | `false` | See `kubectl explain poddisruptionbudget.spec` for more. Ref: [https://kubernetes.io/docs/tasks/run-application/configure-pdb/](https://kubernetes.io/docs/tasks/run-application/configure-pdb/) |
 | podDisruptionBudget.extraLabels | object | `{}` |  |

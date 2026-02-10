@@ -1,6 +1,6 @@
 {{- define "hbase.tephra.container.init" -}}
 name: tephra-init
-{{- if eq .Values.deployment.mode "Distributed" }}
+{{- if eq (include "hbase.deployment.mode" .) "Distributed" }}
 command:
 - sh
 - -c
@@ -22,7 +22,7 @@ name: tephra
 image: "{{ include "common.image.registry" (dict "image" .Values.all.image "context" .) }}/{{ .Values.tephra.image.repository }}:{{ default (printf "%s-%s" .Values.version .Values.stackgraph.version) .Values.tephra.image.tag }}"
 imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.tephra.image.pullPolicy | quote  }}
 env:
-{{- if eq .Values.deployment.mode "Distributed" }}
+{{- if eq (include "hbase.deployment.mode" .) "Distributed" }}
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "hbase.hbase.commonEnv" . }}
 {{- include "all.commonEnv" . }}
@@ -31,6 +31,17 @@ env:
   value: "distributed"
 - name: HBASE_CONF_hbase_master_hostname
   value: "{{ template "common.fullname.short" . }}-hbase-master"
+{{- $sizingArchiveMaxSize := include "common.sizing.hbase.tephra.archiveMaxSizeMb" . | trim }}
+{{ if $sizingArchiveMaxSize }}
+- name: HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb
+  value: "{{ $sizingArchiveMaxSize }}"
+{{ else }}
+{{ $diskSpaceMB := (include "hbase.storage.to.megabytes" (include "hbase.hdfs.datanode.persistence.size" .)) }}
+{{ if $diskSpaceMB  }}
+- name: HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb
+  value: "{{ mulf $diskSpaceMB 0.01 | int }}"
+{{ end }}
+{{ end }}
 {{- else }}
 {{- include "all.commonEnv" . }}
 {{- include "tephra.commonEnv" . }}
@@ -44,8 +55,27 @@ env:
   value: {{ template "common.fullname.short" . }}-stackgraph:2182
 - name: HBASE_CONF_data_tx_snapshot_local_ftp_mirror
   value: "anonymous@{{ template "common.fullname.short" . }}-stackgraph:10021"
-
+{{- $sizingArchiveMaxSize := include "common.sizing.hbase.tephra.archiveMaxSizeMb" . | trim }}
+{{ if $sizingArchiveMaxSize }}
+- name: HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb
+  value: "{{ $sizingArchiveMaxSize }}"
+{{ else }}
+{{ $diskSpaceMB := (include "hbase.storage.to.megabytes" (include "hbase.tephra.persistence.size" .)) }}
+{{ if $diskSpaceMB  }}
+- name: HBASE_CONF_tephra_tx_snapshot_archive_max_size_mb
+  value: "{{ mulf $diskSpaceMB 0.01 | int }}"
+{{ end }}
+{{ end }}
 {{- end }}
+{{- $profileResources := include "common.sizing.hbase.tephra.resources" . | trim -}}
+{{- $evaluatedResources := .Values.tephra.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.tephra.resources }}
+{{- end }}
+{{- $tephraWithResources := merge (dict "resources" $evaluatedResources) .Values.tephra }}
+{{- $serviceConfig := dict "ServiceConfig" (merge $tephraWithResources .Values.all) }}
+{{- include "hbase.service.envvars" $serviceConfig }}
 ports:
 - containerPort: 15165
   name: tephra
@@ -74,13 +104,13 @@ readinessProbe:
     port: health
   initialDelaySeconds: 20
   timeoutSeconds: 5
-{{- with .Values.tephra.resources }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 securityContext:
   runAsNonRoot: true
-{{- if eq .Values.deployment.mode "Mono" }}
+{{- if eq (include "hbase.deployment.mode" .) "Mono" }}
 volumeMounts:
   - name: snapshot
     mountPath: /opt/tephra
@@ -94,30 +124,35 @@ volumeMounts:
 {{- $overrideContainer := fromYaml (include "hbase.tephra.container.init" .) -}}
 {{- $stackstateHbaseTephraInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  labels:
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: tephra
 {{- if .Values.global.commonLabels }}
 {{- include "hbase.commonLabels" . | indent 4 }}
 {{- end }}
-  name: {{ template "common.fullname.short" . }}-tephra{{- if eq .Values.deployment.mode "Mono" }}-mono{{- end }}
+  name: {{ template "common.fullname.short" . }}-tephra{{- if eq (include "hbase.deployment.mode" .) "Mono" }}-mono{{- end }}
 spec:
   podManagementPolicy: Parallel
-  replicas: {{ .Values.tephra.replicaCount }}
+  {{- $replicaCount := include "common.sizing.hbase.tephra.effectiveReplicaCount" . }}
+  replicas: {{ $replicaCount }}
   serviceName: {{ template "common.fullname.short" . }}-tephra
   selector:
     matchLabels:
       app.kubernetes.io/component: tephra
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      app.kubernetes.io/name: {{ template "common.name" . }}
   template:
     metadata:
       labels:
         app.kubernetes.io/component: tephra
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        app.kubernetes.io/name: {{ template "common.name" . }}
 {{- if .Values.global.commonLabels }}
 {{- include "hbase.podLabels" . | indent 8 }}
 {{- end }}
       annotations:
       {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404" "container_name" "tephra" "filter" .Values.tephra.agentMetricsFilter) | indent 8 }}
     spec:
-      {{- include "common.image.pullSecret.name" (dict "images" (list .Values.all.image) "context" $) | nindent 6 }}
+      {{- include "hbase.image.pullSecret.name" (dict "images" (list .Values.all.image) "context" $) | nindent 6 }}
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ template "common.fullname.short" . }}-tephra
       {{- end }}
@@ -137,8 +172,12 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.all.affinity .Values.tephra.affinity }}
+    {{- $sizingAffinity := include "common.sizing.hbase.tephra.affinityConfig" . | fromYaml -}}
+    {{- if or .Values.all.affinity .Values.tephra.affinity $sizingAffinity }}
       affinity:
+      {{- with $sizingAffinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.all.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -155,7 +194,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if eq .Values.deployment.mode "Mono" }}
+    {{- if eq (include "hbase.deployment.mode" .) "Mono" }}
   volumeClaimTemplates:
     - metadata:
         name: snapshot
@@ -163,12 +202,12 @@ spec:
         accessModes: {{ .Values.tephra.persistence.accessModes }}
         resources:
           requests:
-            storage: {{ .Values.tephra.persistence.size }}
+            storage: {{ include "hbase.tephra.persistence.size" . }}
         {{ include "common.storage.class" ( dict "persistence" .Values.tephra.persistence "global" .Values.global) | nindent 8 }}
     {{- end }}
 
 {{- end -}}
 
 {{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
-{{- $stackstateHbaseTephraStatefulSet := fromYaml (include "hbase.tephra.statefulset" .) -}}
-{{- toYaml (merge $stackstateHbaseTephraStatefulSet $commonStatefulSet) -}}
+{{- $tephraStatefulSet := fromYaml (include "hbase.tephra.statefulset" .) -}}
+{{- toYaml (merge $tephraStatefulSet $commonStatefulSet) -}}

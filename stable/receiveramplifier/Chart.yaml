@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 0.1.0
-version: 0.1.7
+version: 0.1.8
 description: Receiver amplifier to increase the load on an installation.
 keywords:
   - receiver

@@ -17,7 +17,7 @@ spec:
     app.kubernetes.io/component: hdfs-nn
 {{- end -}}
 
-{{- if eq .Values.deployment.mode "Distributed" -}}
+{{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $stackstateHbaseHdfsNamenodeService := fromYaml (include "hbase.hdfs.namenode.service" .) -}}
 {{- toYaml (merge $stackstateHbaseHdfsNamenodeService $commonService) -}}

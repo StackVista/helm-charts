@@ -1,6 +1,4 @@
 license: "some-test-license-key"
 baseUrl: "some-test-helm-render.stackstate.io"
-baseConfig:
-  generate: false
 sizing:
   profile: "10-nonha"

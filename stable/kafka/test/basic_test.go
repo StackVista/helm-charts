@@ -38,7 +38,7 @@ func TestKafkaDefaultValuesProducesExpectedResources(t *testing.T) {
 	}
 
 	assert.Equal(t, "kafka", statefulset.Name, "StatefulSet should be named 'kafka'")
-	assert.Equal(t, int32(1), *statefulset.Spec.Replicas, "Default replica count should be 1")
+	assert.Equal(t, int32(3), *statefulset.Spec.Replicas, "Default replica count should be 3")
 
 	// Validate container configuration
 	containers := statefulset.Spec.Template.Spec.Containers

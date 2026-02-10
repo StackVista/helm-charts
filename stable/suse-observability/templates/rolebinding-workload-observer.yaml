@@ -1,0 +1,13 @@
+{{- if .Values.stackstate.components.workloadObserver.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "namePrefix" . }}-workload-observer
+roleRef:
+  kind: Role
+  name: {{ include "namePrefix" . }}-workload-observer
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: {{ include "namePrefix" . }}-workload-observer
+{{- end }}

@@ -1,0 +1,25 @@
+global:
+  backup:
+    enabled: true
+  suseObservability:
+    license: "api01"
+    baseUrl: "http://localhost"
+    sizing.profile: "150-ha"
+    pullSecret:
+      username: pullPassword
+      password:  pullSecret
+    adminPassword: password
+  wait:
+    image:
+      tag: "wait_image_test_tag"
+stackstate:
+  components:
+    server:
+      image:
+        tag: "stackstate_image_test_tag"
+victoria-metrics:
+  restore:
+    image:
+      tag: "vm_image_test_tag"
+testHelper:
+  chartVersion: "test_chart_version"

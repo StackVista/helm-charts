@@ -200,19 +200,24 @@ Return the proper Docker Image Registry Secret Names evaluating values as templa
   {{- $pullSecrets := list }}
   {{- $context := .context }}
 
-  {{- if $context.Values.global }}
-    {{- range $context.Values.global.imagePullSecrets -}}
-      {{- $pullSecrets = append $pullSecrets (include "victoria-metrics.tplvalue.render" (dict "value" . "context" $context)) -}}
+  {{- if and $context.Values.global $context.Values.global.suseObservability $context.Values.global.suseObservability.pullSecret $context.Values.global.suseObservability.pullSecret.username $context.Values.global.suseObservability.pullSecret.password -}}
+    {{- $pullSecrets = append $pullSecrets "suse-observability-pull-secret"  -}}
+  {{- else -}}
+
+    {{- if $context.Values.global }}
+      {{- range $context.Values.global.imagePullSecrets -}}
+        {{- $pullSecrets = append $pullSecrets (include "victoria-metrics.tplvalue.render" (dict "value" . "context" $context)) -}}
+      {{- end -}}
     {{- end -}}
-  {{- end -}}
-  {{- range $context.Values.imagePullSecrets -}}
-    {{- $pullSecrets = append $pullSecrets (include "victoria-metrics.tplvalue.render" (dict "value" .name "context" $context)) -}}
-  {{- end -}}
-  {{- range .images -}}
-    {{- if .pullSecretName -}}
-      {{- $pullSecrets = append $pullSecrets (include "victoria-metrics.tplvalue.render" (dict "value" .pullSecretName "context" $context)) -}}
-    {{- else if (or .pullSecretUsername .pullSecretDockerConfigJson) -}}
-      {{- $pullSecrets = append $pullSecrets ((list (include "common.fullname.short" $context ) "pull-secret") | join "-")  -}}
+    {{- range $context.Values.imagePullSecrets -}}
+      {{- $pullSecrets = append $pullSecrets (include "victoria-metrics.tplvalue.render" (dict "value" .name "context" $context)) -}}
+    {{- end -}}
+    {{- range .images -}}
+      {{- if .pullSecretName -}}
+        {{- $pullSecrets = append $pullSecrets (include "victoria-metrics.tplvalue.render" (dict "value" .pullSecretName "context" $context)) -}}
+      {{- else if (or .pullSecretUsername .pullSecretDockerConfigJson) -}}
+        {{- $pullSecrets = append $pullSecrets ((list (include "common.fullname.short" $context ) "pull-secret") | join "-")  -}}
+      {{- end -}}
     {{- end -}}
   {{- end -}}
 
@@ -262,4 +267,47 @@ Create Pod labels that merge server.podLabels and global.commonLabels with serve
 {{ $key }}: {{ $value | quote }}
 {{- end }}
 {{- end }}
+{{- end -}}
+
+{{- /*
+  The labels of the Statefulsets that should be scaled down during VictoriaMetrics restoring from the backup
+*/ -}}
+{{- define "victoria-metrics.server.scaleDownRestoreLabels" -}}
+observability.suse.com/scalable-during-vm-restore: "true"
+{{- end -}}
+
+{{/*
+Check if this victoria-metrics instance should be enabled.
+This helper considers the global.suseObservability.sizing.profile setting to
+disable victoria-metrics-1 for non-HA profiles, even when enabled: true in values.
+
+For victoria-metrics-0: always use the values setting (no override)
+For victoria-metrics-1: disable for non-HA profiles when global sizing is enabled
+
+Usage:
+{{ include "victoria-metrics.isEnabled" . }}
+*/}}
+{{- define "victoria-metrics.isEnabled" -}}
+{{- $chartName := .Chart.Name -}}
+{{- $isVictoriaMetrics1 := or (eq $chartName "victoria-metrics-1") (hasSuffix "-1" (include "victoria-metrics.fullname" .)) -}}
+{{- if $isVictoriaMetrics1 -}}
+  {{- /* Check if global sizing mode is enabled and profile is non-HA */ -}}
+  {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+    {{- $profile := .Values.global.suseObservability.sizing.profile -}}
+    {{- /* Non-HA profiles should have victoria-metrics-1 disabled */ -}}
+    {{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") -}}
+      {{- /* Return false for non-HA profiles */ -}}
+      {{- print "false" -}}
+    {{- else -}}
+      {{- /* HA profiles: use the values setting */ -}}
+      {{- print "true" -}}
+    {{- end -}}
+  {{- else -}}
+    {{- /* No global sizing, use the values setting */ -}}
+    {{- print "true" -}}
+  {{- end -}}
+{{- else -}}
+  {{- /* victoria-metrics-0: always use values setting */ -}}
+  {{- print "true" -}}
+{{- end -}}
 {{- end -}}

@@ -6,6 +6,8 @@ global:
   commonLabels:
     environment: "test"
     team: "platform"
+  backup:
+    enabled: true
 
 pull-secret:
   enabled: true
@@ -35,14 +37,10 @@ stackstate:
     server:
       split: false
 hbase:
-  all:
-    image:
-      version: "2.5"
+  version: "2.5"
   deployment:
     mode: "Mono"
 anomaly-detection:
-  enabled: true
-backup:
   enabled: true
 victoria-metrics-1:
   enabled: false

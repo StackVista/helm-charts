@@ -104,7 +104,7 @@ shards: 2
 ## @param replicaCount Number of ClickHouse replicas per shard to deploy
 ## if keeper enable, same as keeper count, keeper cluster by shards.
 ##
-replicaCount: 3
+replicaCount: null
 ## @param containerPorts.http ClickHouse HTTP container port
 ## @param containerPorts.https ClickHouse HTTPS container port
 ## @param containerPorts.tcp ClickHouse TCP container port
@@ -254,15 +254,15 @@ defaultConfigurationOverrides: |
     <logger>
       <level>{{ .Values.logLevel }}</level>
     </logger>
-    {{- if or (ne (int .Values.shards) 1) (ne (int .Values.replicaCount) 1)}}
+    {{- $effectiveReplicaCount := include "common.sizing.clickhouse.effectiveReplicaCount" . | int -}}
+    {{- if or (ne (int .Values.shards) 1) (ne $effectiveReplicaCount 1)}}
     <!-- Cluster configuration - Any update of the shards and replicas requires helm upgrade -->
     <remote_servers>
       <default>
         {{- $shards := $.Values.shards | int }}
         {{- range $shard, $e := until $shards }}
         <shard>
-            {{- $replicas := $.Values.replicaCount | int }}
-            {{- range $i, $_e := until $replicas }}
+            {{- range $i, $_e := until $effectiveReplicaCount }}
             <replica>
                 <host>{{ printf "%s-shard%d-%d.%s.%s.svc.%s" (include "common.names.fullname" $ ) $shard $i (include "clickhouse.headlessServiceName" $) (include "common.names.namespace" $) $.Values.clusterDomain }}</host>
                 <port>{{ $.Values.service.ports.tcp }}</port>
@@ -294,8 +294,7 @@ defaultConfigurationOverrides: |
       </coordination_settings>
 
       <raft_configuration>
-      {{- $nodes := .Values.replicaCount | int }}
-      {{- range $node, $e := until $nodes }}
+      {{- range $node, $e := until $effectiveReplicaCount }}
       <server>
         <id>{{ $node | int }}</id>
         <hostname from_env="{{ printf "KEEPER_NODE_%d" $node }}"></hostname>
@@ -309,8 +308,7 @@ defaultConfigurationOverrides: |
     <!-- Zookeeper configuration -->
     <zookeeper>
       {{- if .Values.keeper.enabled }}
-      {{- $nodes := .Values.replicaCount | int }}
-      {{- range $node, $e := until $nodes }}
+      {{- range $node, $e := until $effectiveReplicaCount }}
       <node>
         <host from_env="{{ printf "KEEPER_NODE_%d" $node }}"></host>
         <port>{{ $.Values.service.ports.keeper }}</port>
@@ -370,6 +368,18 @@ defaultConfigurationOverrides: |
         <asynchronous_metrics>true</asynchronous_metrics>
     </prometheus>
     {{- end }}
+    <!-- Fixed disk space reservation for OS and other tasks -->
+    <storage_configuration>
+      <disks>
+        <default>
+          <keep_free_space_bytes>{{ .Values.persistence.keepFreeSpaceBytes | int64 }}</keep_free_space_bytes>
+        </default>
+      </disks>
+    </storage_configuration>
+    <!-- MergeTree settings for insert disk space protection -->
+    <merge_tree>
+      <min_free_disk_ratio_to_perform_insert>{{ .Values.mergeTree.minFreeDiskRatioToPerformInsert }}</min_free_disk_ratio_to_perform_insert>
+    </merge_tree>
   </clickhouse>
 
 ## @param existingOverridesConfigmap The name of an existing ConfigMap with your custom configuration for ClickHouse
@@ -929,6 +939,18 @@ persistence:
   ## @param persistence.dataSource Custom PVC data source
   ##
   dataSource: {}
+  ## @param persistence.keepFreeSpaceBytes Bytes to keep free on disk for OS-level tasks (default 1 GiB)
+  ##
+  keepFreeSpaceBytes: 1073741824
+
+## @section MergeTree Settings
+##
+
+## @param mergeTree.minFreeDiskRatioToPerformInsert Ratio of free disk space required to perform inserts (0.0-1.0)
+##
+mergeTree:
+  minFreeDiskRatioToPerformInsert: 0.10
+
 ## @section Init Container Parameters
 ##
 

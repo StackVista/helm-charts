@@ -27,8 +27,6 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   value: {{ .Values.backup.elasticsearch.bucketName | quote }}
 - name: BACKUP_ELASTICSEARCH_S3_PREFIX
   value: {{ include "trimTrailingSlashes" .Values.backup.elasticsearch.s3Prefix | quote }}
-- name: BACKUP_ELASTICSEARCH_RESTORE_ENABLED
-  value: {{ .Values.backup.elasticsearch.restore.enabled | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_ENABLED
   value: {{ .Values.backup.elasticsearch.scheduled.enabled | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_SCHEDULED
@@ -51,10 +49,6 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   value: {{ .Values.backup.stackGraph.bucketName | quote }}
 - name: BACKUP_STACKGRAPH_S3_PREFIX
   value: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.stackGraph.s3Prefix }}
-- name: BACKUP_STACKGRAPH_RESTORE_ENABLED
-  value: {{ .Values.backup.stackGraph.restore.enabled | quote }}
-- name: BACKUP_STACKGRAPH_SCHEDULED_ENABLED
-  value: {{ .Values.backup.stackGraph.scheduled.enabled | quote }}
 - name: BACKUP_STACKGRAPH_ARCHIVE_SPLIT_SIZE
   value: {{ .Values.backup.stackGraph.splitArchiveSize | quote }}
 - name: BACKUP_STACKGRAPH_SCHEDULED_BACKUP_NAME_TEMPLATE
@@ -66,13 +60,11 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
 - name: BACKUP_STACKGRAPH_SCHEDULED_BACKUP_RETENTION_TIME_DELTA
   value: {{ .Values.backup.stackGraph.scheduled.backupRetentionTimeDelta | quote }}
 - name: BACKUP_CONFIGURATION_UPLOAD_REMOTE
-  value: {{ .Values.backup.enabled | toString | lower | quote }}
+  value: {{ .Values.global.backup.enabled | toString | lower | quote }}
 - name: BACKUP_CONFIGURATION_BUCKET_NAME
   value: {{ .Values.backup.configuration.bucketName | quote }}
 - name: BACKUP_CONFIGURATION_S3_PREFIX
   value: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.configuration.s3Prefix }}
-- name: BACKUP_CONFIGURATION_RESTORE_ENABLED
-  value: {{ .Values.backup.configuration.restore.enabled | quote }}
 - name: BACKUP_CONFIGURATION_SCHEDULED_ENABLED
   value: {{ .Values.backup.configuration.scheduled.enabled | quote }}
 - name: BACKUP_CONFIGURATION_SCHEDULED_BACKUP_NAME_TEMPLATE
@@ -95,24 +87,18 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   value: {{ index .Values "victoria-metrics-0" "backup" "bucketName" | quote }}
 - name: BACKUP_VICTORIA_METRICS_0_S3_PREFIX
   value: {{ include "trimTrailingSlashes" (index .Values "victoria-metrics-0" "backup" "s3Prefix") }}
-- name: BACKUP_VICTORIA_METRICS_0_RESTORE_ENABLED
-  value: {{ index .Values "victoria-metrics-0" "restore" "enabled" | quote }}
 - name: BACKUP_VICTORIA_METRICS_1_ENABLED
-  value: {{ index .Values "victoria-metrics-1" "backup" "enabled" | quote }}
+  {{- $vm1Enabled := eq (include "victoria-metrics-1.effectivelyEnabled" .) "true" -}}
+  {{- $backupEnabled := and $vm1Enabled (index .Values "victoria-metrics-1" "backup" "enabled") }}
+  value: {{ $backupEnabled | quote }}
 - name: BACKUP_VICTORIA_METRICS_1_BUCKET_NAME
   value: {{ index .Values "victoria-metrics-1" "backup" "bucketName" | quote }}
 - name: BACKUP_VICTORIA_METRICS_1_S3_PREFIX
   value: {{ include "trimTrailingSlashes" (index .Values  "victoria-metrics-1" "backup" "s3Prefix") }}
-- name: BACKUP_VICTORIA_METRICS_1_RESTORE_ENABLED
-  value: {{ index .Values "victoria-metrics-1" "restore" "enabled" | quote }}
 - name: BACKUP_CLICKHOUSE_BUCKET_NAME
   value: {{ .Values.clickhouse.backup.bucketName | quote }}
 - name: BACKUP_CLICKHOUSE_S3_PREFIX
   value: {{ include "ensureTrailingSlashIfNotEmpty" .Values.clickhouse.backup.s3Prefix }}
-- name: BACKUP_CLICKHOUSE_RESTORE_ENABLED
-  value: {{ .Values.clickhouse.restore.enabled | quote }}
-- name: BACKUP_CLICKHOUSE_SCHEDULED_ENABLED
-  value: {{ .Values.clickhouse.backup.enabled | quote }}
 - name: MINIO_ENDPOINT
   value: {{ include "stackstate.minio.endpoint" . | quote }}
 {{- include "stackstate.env.platform_version" . }}
@@ -123,7 +109,7 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   mountPath: /opt/docker/etc_log
 - name: backup-restore-scripts
   mountPath: /backup-restore-scripts
-{{- if .Values.backup.enabled }}
+{{- if .Values.global.backup.enabled }}
 - name: minio-keys
   mountPath: /aws-keys
 {{- end -}}
@@ -137,7 +123,7 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   configMap:
     name: {{ template "common.fullname.short" . }}-backup-restore-scripts
     defaultMode: 0755
-{{- if .Values.backup.enabled }}
+{{- if .Values.global.backup.enabled }}
 - name: minio-keys
   secret:
     secretName: {{ include "stackstate.minio.keys" . }}
@@ -148,4 +134,112 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
 {{- range $key, $value := .Values.backup.elasticsearch.restore.scaleDownLabels }}
 {{ $key }}: {{ $value | quote }}
 {{- end }}
+{{- end -}}
+
+{{- /*
+  Convert backup.elasticsearch.restore.scaleDownLabels map to comma-separated list of key=value pairs.
+  Example output: "observability.suse.com/scalable-during-es-restore=true,key=value"
+*/ -}}
+{{- define "stackstate.backup.elasticsearch.restore.scaleDownLabelsCommaSeparated" -}}
+{{- $labels := list -}}
+{{- range $key, $value := .Values.backup.elasticsearch.restore.scaleDownLabels }}
+  {{- $labels = append $labels (printf "%s=%s" $key $value) -}}
+{{- end }}
+{{- $labels | join "," -}}
+{{- end -}}
+
+{{- /*
+  The labels of the Deployments that should be scaled down during Stackgraph restoring from the backup
+*/ -}}
+{{- define "stackstate.backup.stackgraph.restore.scaleDownLabelsCommaSeparated" -}}
+stackstate.com/connects-to-stackgraph=true
+{{- end -}}
+
+{{- /*
+  The labels of the Deployments that should be scaled down during Settings restoring from the backup. The same as for Stackgraph
+*/ -}}
+{{- define "stackstate.backup.configuration.restore.scaleDownLabelsCommaSeparated" -}}
+{{ include "stackstate.backup.stackgraph.restore.scaleDownLabelsCommaSeparated" . }}
+{{- end -}}
+
+{{- /*
+  The labels of the Statefulsets that should be scaled down during VictoriaMetrics restoring from the backup
+*/ -}}
+{{- define "stackstate.backup.victoriametrics.restore.scaleDownLabelsCommaSeparated" -}}
+observability.suse.com/scalable-during-vm-restore=true
+{{- end -}}
+
+{{- /*
+  The labels of the Statefulsets that should be scaled down during VictoriaMetrics restoring from the backup
+*/ -}}
+{{- define "stackstate.backup.clickhouse.restore.scaleDownLabelsCommaSeparated" -}}
+observability.suse.com/scalable-during-clickhouse-restore=true
+{{- end -}}
+
+{{- /*
+  Merge nodeSelector from stackstate.components.all and stackstate.components.backup.
+  backup.nodeSelector takes precedence over all.nodeSelector.
+
+  Usage:
+  {{- include "stackstate.backup.nodeSelector" . | nindent 8 }}
+*/ -}}
+{{- define "stackstate.backup.nodeSelector" -}}
+{{- $allNodeSelector := .Values.stackstate.components.all.nodeSelector | default dict -}}
+{{- $backupNodeSelector := .Values.stackstate.components.backup.nodeSelector | default dict -}}
+{{- $merged := merge $backupNodeSelector $allNodeSelector -}}
+{{- if $merged -}}
+nodeSelector:
+  {{- toYaml $merged | nindent 2 }}
+{{- end -}}
+{{- end -}}
+
+{{- /*
+  Merge affinity from stackstate.components.all and stackstate.components.backup.
+  backup.affinity takes precedence over all.affinity.
+
+  Usage:
+  {{- include "stackstate.backup.affinity" . | nindent 8 }}
+*/ -}}
+{{- define "stackstate.backup.affinity" -}}
+{{- $allAffinity := .Values.stackstate.components.all.affinity | default dict -}}
+{{- $backupAffinity := .Values.stackstate.components.backup.affinity | default dict -}}
+{{- $merged := merge $backupAffinity $allAffinity -}}
+{{- if $merged -}}
+affinity:
+  {{- toYaml $merged | nindent 2 }}
+{{- end -}}
+{{- end -}}
+
+{{- /*
+  Concatenate tolerations from stackstate.components.all and stackstate.components.backup.
+  Both lists are combined (backup tolerations are appended after all tolerations).
+
+  Usage:
+  {{- include "stackstate.backup.tolerations" . | nindent 8 }}
+*/ -}}
+{{- define "stackstate.backup.tolerations" -}}
+{{- $allTolerations := .Values.stackstate.components.all.tolerations | default list -}}
+{{- $backupTolerations := .Values.stackstate.components.backup.tolerations | default list -}}
+{{- $merged := concat $allTolerations $backupTolerations -}}
+{{- if $merged -}}
+tolerations:
+  {{- toYaml $merged | nindent 2 }}
+{{- end -}}
+{{- end -}}
+
+{{- /*
+  Generate pod labels for backup components.
+  Includes app.kubernetes.io/component label, global labels, and custom podLabels.
+  backup.podLabels takes precedence over global labels.
+
+  Usage:
+  {{- include "stackstate.backup.podLabels" . | nindent 8 }}
+*/ -}}
+{{- define "stackstate.backup.podLabels" -}}
+{{- $globalLabels := include "suse-observability.labels.global" . | fromYaml | default dict -}}
+{{- $backupPodLabels := .Values.stackstate.components.backup.podLabels | default dict -}}
+{{- $merged := merge $backupPodLabels $globalLabels -}}
+{{- $merged = merge (dict "app.kubernetes.io/component" "backup") $merged -}}
+labels:
+  {{- toYaml $merged | nindent 2 }}
 {{- end -}}

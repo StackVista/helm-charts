@@ -1,8 +1,27 @@
-{{- include "stackstate.values.validateUrl" (dict "value" .Values.stackstate.baseUrl "errorMessage" "Please provide your SUSE Observability base URL in 'values.baseUrl'") -}}
+{{- /* Validate global.suseObservability configuration */ -}}
+{{- include "suse-observability.global.validate" . -}}
+
+{{- $baseUrl := include "suse-observability.global.baseUrl" . -}}
+{{- if $baseUrl -}}
+  {{- include "stackstate.values.validateUrl" (dict "value" $baseUrl "errorMessage" "Please provide your SUSE Observability base URL in 'global.suseObservability.baseUrl' or 'stackstate.baseUrl'") -}}
+{{- else -}}
+  {{- include "stackstate.values.validateUrl" (dict "value" .Values.stackstate.baseUrl "errorMessage" "Please provide your SUSE Observability base URL in 'global.suseObservability.baseUrl' or 'stackstate.baseUrl'") -}}
+{{- end -}}
 
 {{- if not (or (eq .Values.stackstate.deployment.mode "SelfHosted") (eq .Values.stackstate.deployment.mode "Saas")) -}}
   {{- fail "Please set stackstate.deployment.mode to either SelfHosted or Saas." -}}
 {{- end }}
 {{- if not (or (eq .Values.stackstate.deployment.edition "Prime") (eq .Values.stackstate.deployment.edition "Community")) -}}
   {{- fail "Please set stackstate.deployment.edition to either Prime or Community." -}}
+{{- end }}
+
+{{- if .Values.backup.enabled -}}
+  {{- fail "Please use `global.backup.enabled=true` instead of `backup.enabled=true`" -}}
+{{- end }}
+
+{{- /* Validate that both pull-secret mechanisms are not enabled simultaneously */ -}}
+{{- $pullSecretSubchartEnabled := index .Values "pull-secret" "enabled" -}}
+{{- $globalPullSecretConfigured := and .Values.global.suseObservability.pullSecret.username .Values.global.suseObservability.pullSecret.password -}}
+{{- if and $pullSecretSubchartEnabled $globalPullSecretConfigured -}}
+  {{- fail "Cannot configure both pull-secret.enabled and global.suseObservability.pullSecret simultaneously. Use either the pull-secret subchart (pull-secret.enabled=true with pull-secret.credentials) OR the simplified global configuration (global.suseObservability.pullSecret.username/password), but not both." -}}
 {{- end }}

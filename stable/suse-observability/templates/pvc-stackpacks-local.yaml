@@ -10,7 +10,8 @@ spec:
   {{ include "common.storage.class" ( dict "persistence" .Values.stackstate.stackpacks.localpvc "global" .Values.global) | nindent 2 }}
 {{- end -}}
 
-{{- if eq .Values.hbase.deployment.mode "Mono" -}}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+{{- if eq $deploymentMode "Mono" -}}
 {{- $commonPVC := fromYaml (include "common.persistentvolumeclaim" .) -}}
 {{- $stackstateStackpacksPVC := fromYaml (include "stackstate.stackpacks.local.persistentvolumeclaim" .) -}}
 {{- toYaml (merge $stackstateStackpacksPVC $commonPVC) -}}

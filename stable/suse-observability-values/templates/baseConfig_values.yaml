@@ -1,6 +1,5 @@
-{{- include "sts.values.validateUrl" (dict "value" .Values.baseUrl "errorMessage" "Please provide your SUSE Observability base URL in 'values.baseUrl'") -}}
-
 {{- if .Values.baseConfig.generate }}
+{{- include "sts.values.validateUrl" (dict "value" .Values.baseUrl "errorMessage" "Please provide your SUSE Observability base URL in 'values.baseUrl'") -}}
 global:
 {{- if .Values.imageRegistry }}
   imageRegistry: {{ .Values.imageRegistry | quote }}

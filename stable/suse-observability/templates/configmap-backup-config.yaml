@@ -1,0 +1,205 @@
+{{/*
+Check if victoria-metrics-1 is effectively enabled.
+This considers both the values setting and global sizing profile override.
+For non-HA profiles in global mode, victoria-metrics-1 is disabled regardless of values.
+*/}}
+{{- define "victoria-metrics-1.effectivelyEnabled" -}}
+{{- $valuesEnabled := index .Values "victoria-metrics-1" "enabled" -}}
+{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
+  {{- $profile := .Values.global.suseObservability.sizing.profile -}}
+  {{- /* Non-HA profiles should have victoria-metrics-1 disabled */ -}}
+  {{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") -}}
+    {{- print "false" -}}
+  {{- else -}}
+    {{- /* HA profiles: use the values setting */ -}}
+    {{- print $valuesEnabled -}}
+  {{- end -}}
+{{- else -}}
+  {{- /* No global sizing, use the values setting */ -}}
+  {{- print $valuesEnabled -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Determines the HA mode based on backup configuration.
+Returns "mirror" if both victoria-metrics instances have backup enabled, otherwise "single".
+Considers global sizing profile override for victoria-metrics-1.
+*/}}
+{{- define "victoria-metrics.ha.mode" -}}
+{{- $vm1Enabled := eq (include "victoria-metrics-1.effectivelyEnabled" .) "true" -}}
+{{- if and (index .Values "victoria-metrics-0" "enabled") $vm1Enabled -}}
+mirror
+{{- else -}}
+single
+{{- end -}}
+{{- end -}}
+
+{{/*
+Generates a list of S3 backup locations from enabled victoria-metrics instances.
+Returns a YAML array of objects with bucket and prefix fields, or empty array if no backups enabled.
+Considers global sizing profile override for victoria-metrics-1.
+*/}}
+{{- define "backupS3Locations" -}}
+{{- $locations := list -}}
+{{- if index .Values "victoria-metrics-0" "enabled" -}}
+  {{- $locations = append $locations (dict "bucket" (index .Values "victoria-metrics-0" "backup" "bucketName") "prefix" (index .Values "victoria-metrics-0" "backup" "s3Prefix")) -}}
+{{- end -}}
+{{- $vm1Enabled := eq (include "victoria-metrics-1.effectivelyEnabled" .) "true" -}}
+{{- if $vm1Enabled -}}
+  {{- $locations = append $locations (dict "bucket" (index .Values "victoria-metrics-1" "backup" "bucketName") "prefix" (index .Values "victoria-metrics-1" "backup" "s3Prefix")) -}}
+{{- end -}}
+{{- if $locations -}}
+{{ toYaml $locations }}
+{{- else -}}
+  []
+{{- end -}}
+{{- end -}}
+
+{{/*
+  The default database used by the clickhouse backup client
+*/}}
+{{- define "clickhouse.default.database" -}}
+default
+{{- end -}}
+
+{{- define "stackstate.backup-config.configmap" -}}
+{{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
+{{- $serverServiceConfig := dict "ServiceName" "server" "ServiceConfig" .Values.stackstate.components.server }}
+config: |
+  kubernetes:
+    commonLabels:
+      app.kubernetes.io/name: sts-backup
+      app.kubernetes.io/managed-by: sts-backup
+  minio:
+    enabled: {{ .Values.global.backup.enabled }}
+    service:
+      name: {{ .Values.minio.fullnameOverride | quote }}
+      port: 9000
+      localPortForwardPort: 9000
+  stackgraph:
+    bucket: {{ .Values.backup.stackGraph.bucketName | quote }}
+    s3Prefix: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.stackGraph.s3Prefix | quote }}
+    multipartArchive: {{ ne (toString .Values.backup.stackGraph.splitArchiveSize) "0" }}
+    restore:
+      loggingConfigConfigMap: {{ template "common.fullname.short" . }}-backup-log
+      scaleDownLabelSelector: {{ include "stackstate.backup.stackgraph.restore.scaleDownLabelsCommaSeparated" . }}
+      zookeeperQuorum: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
+      pvc:
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+        {{- if eq $deploymentMode "Distributed" }}
+        size: {{ .Values.backup.stackGraph.restore.tempData.size | default (include "suse-observability.sizing.hbase.hdfs.datanode.persistence.size" .) }}
+        {{- else}}
+        size: {{ .Values.backup.stackGraph.restore.tempData.size | default (include "suse-observability.sizing.hbase.stackgraph.persistence.size" .) }}
+        {{- end }}
+        accessModes: {{ .Values.backup.stackGraph.restore.tempData.accessModes }}
+        {{ include "common.storage.class" ( dict "persistence" .Values.backup.stackGraph.restore.tempData "global" .Values.global) | nindent 8 }}
+      job:
+        image: {{ include "stackstate.image.registry" (merge (dict) $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}
+        waitImage: {{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}
+        {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 8 }}
+        {{- include "stackstate.backup.podLabels" . | nindent 8 }}
+        {{- with .Values.stackstate.components.backup.resources }}
+        resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- if .Values.backup.stackGraph.securityContext.enabled }}
+        securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 12 }}
+        {{- end }}
+        {{- include "stackstate.backup.nodeSelector" . | nindent 8 }}
+        {{- include "stackstate.backup.affinity" . | nindent 8 }}
+        {{- include "stackstate.backup.tolerations" . | nindent 8 }}
+  settings:
+    bucket: {{ .Values.backup.configuration.bucketName | quote }}
+    s3Prefix: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.configuration.s3Prefix | quote }}
+    restore:
+      loggingConfigConfigMap: {{ template "common.fullname.short" . }}-backup-log
+      baseUrl: {{ include "suse-observability.global.baseUrl" . | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is required" | quote }}
+      receiverBaseUrl: {{ printf "%s/%s" ( include "suse-observability.global.baseUrl" . | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is required" ) "receiver" | quote }}
+      platformVersion: {{ if and .Values.testHelper .Values.testHelper.chartVersion -}}{{ .Values.testHelper.chartVersion | quote }}{{- else -}}{{ .Chart.Version | quote }}{{- end }}
+      scaleDownLabelSelector: {{ include "stackstate.backup.configuration.restore.scaleDownLabelsCommaSeparated" . }}
+      zookeeperQuorum: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
+      pvc: {{ template "common.fullname.short" . }}-settings-backup-data
+      job:
+        image: {{ include "stackstate.image.registry" (merge (dict) $serverServiceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}
+        waitImage: {{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}
+        {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 8 }}
+        {{- include "stackstate.backup.podLabels" . | nindent 8 }}
+        {{- with .Values.stackstate.components.backup.resources }}
+        resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- if .Values.backup.configuration.securityContext.enabled }}
+        securityContext: {{- omit .Values.backup.configuration.securityContext "enabled" | toYaml | nindent 12 }}
+        {{- end }}
+        {{- include "stackstate.backup.nodeSelector" . | nindent 8 }}
+        {{- include "stackstate.backup.affinity" . | nindent 8 }}
+        {{- include "stackstate.backup.tolerations" . | nindent 8 }}
+  elasticsearch:
+    snapshotRepository:
+      name: "sts-backup"
+      bucket: {{ .Values.backup.elasticsearch.bucketName | quote }}
+      endpoint: {{ include "stackstate.minio.endpoint" . | quote }}
+      basepath: {{ include "trimTrailingSlashes" .Values.backup.elasticsearch.s3Prefix | quote }}
+    slm:
+      name: "auto-sts-backup"
+      schedule: {{ .Values.backup.elasticsearch.scheduled.schedule | quote }}
+      snapshotTemplateName: "<sts-backup-{now{yyyyMMdd-HHmm}}>"
+      repository: "sts-backup"
+      indices: "sts*"
+      retentionExpireAfter: {{ .Values.backup.elasticsearch.scheduled.snapshotRetentionExpireAfter | quote }}
+      retentionMinCount: {{ .Values.backup.elasticsearch.scheduled.snapshotRetentionMinCount }}
+      retentionMaxCount: {{ .Values.backup.elasticsearch.scheduled.snapshotRetentionMaxCount }}
+    service:
+      name: {{ include "stackstate.es.host" . | quote }}
+      port: 9200
+      localPortForwardPort: 9200
+    restore:
+      repository: "sts-backup"
+      scaleDownLabelSelector: {{ include "stackstate.backup.elasticsearch.restore.scaleDownLabelsCommaSeparated" . }}
+      indexPrefix: sts
+      datastreamIndexPrefix: .ds-sts_k8s_logs
+      datastreamName: sts_k8s_logs
+      indicesPattern: sts*,.ds-sts_k8s_logs*
+  victoriaMetrics:
+    S3Locations: {{ include "backupS3Locations" . | nindent 6 }}
+    restore:
+      haMode: {{ include "victoria-metrics.ha.mode" . }}
+      persistentVolumeClaimPrefix: server-volume-suse-observability-
+      scaleDownLabelSelector: {{ include "stackstate.backup.victoriametrics.restore.scaleDownLabelsCommaSeparated" . }}
+      job:
+        image: {{ include "stackstate.vmrestore.image.registry" . }}/{{ index .Values "victoria-metrics" "restore" "image" "repository" }}:{{ index .Values "victoria-metrics" "restore" "image" "tag" }}
+        waitImage: {{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}
+        {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 8 }}
+        {{- include "stackstate.backup.podLabels" . | nindent 8 }}
+        {{- with .Values.stackstate.components.backup.resources }}
+        resources:
+          {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- if .Values.backup.stackGraph.securityContext.enabled }}
+        securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 12 }}
+        {{- end }}
+        {{- include "stackstate.backup.nodeSelector" . | nindent 8 }}
+        {{- include "stackstate.backup.affinity" . | nindent 8 }}
+        {{- include "stackstate.backup.tolerations" . | nindent 8 }}
+  clickhouse:
+    database: {{ include "clickhouse.default.database" . }}
+    service:
+      name: {{ include "stackstate.backup.clickhouse.backup.service" .}}
+      port: 9000
+      localPortForwardPort: 9000
+    backupService:
+      name: {{ include "stackstate.backup.clickhouse.backup.service" .}}
+      port: 7171
+      localPortForwardPort: 7171
+    restore:
+      scaleDownLabelSelector: {{ include "stackstate.backup.clickhouse.restore.scaleDownLabelsCommaSeparated" . }}
+{{- end -}}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-backup-config
+  labels:
+    {{- include "common.labels.standard" . | nindent 4 }}
+data:
+{{- include "stackstate.backup-config.configmap" . | nindent 4 }}

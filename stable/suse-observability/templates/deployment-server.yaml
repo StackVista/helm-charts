@@ -5,11 +5,34 @@ command:
 - -c
 - |
   /entrypoint -c {{ include "stackstate.initializer.prerequisites" . }} -t 300
-image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- end -}}
 
 {{- define "stackstate.server.deployment.container.main" -}}
+{{- $profileResources := include "common.sizing.stackstate.server.resources" . | trim -}}
+{{- $evaluatedResources := .Values.stackstate.components.server.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end }}
+{{- $profileEnv := include "common.sizing.stackstate.server.env" . | trim -}}
+{{- $evaluatedExtraEnvOpen := .Values.stackstate.components.server.extraEnv.open }}
+{{- if $profileEnv }}
+{{- $profileEnvDict := fromYaml $profileEnv }}
+{{- $evaluatedExtraEnvOpen = $profileEnvDict }}
+{{- end }}
+{{- $evaluatedExtraEnv := dict "open" $evaluatedExtraEnvOpen "secret" .Values.stackstate.components.server.extraEnv.secret }}
+{{- $profileBaseMemory := include "common.sizing.stackstate.server.baseMemoryConsumption" . | trim -}}
+{{- $profileJavaHeapFraction := include "common.sizing.stackstate.server.javaHeapMemoryFraction" . | trim -}}
+{{- $evaluatedSizing := .Values.stackstate.components.server.sizing }}
+{{- if $profileBaseMemory }}
+{{- $evaluatedSizing = merge (dict) (dict "baseMemoryConsumption" $profileBaseMemory) $evaluatedSizing }}
+{{- end }}
+{{- if $profileJavaHeapFraction }}
+{{- $evaluatedSizing = merge (dict) (dict "javaHeapMemoryFraction" $profileJavaHeapFraction) $evaluatedSizing }}
+{{- end }}
+{{- $componentConfigWithResources := merge (dict) (dict "resources" $evaluatedResources "extraEnv" $evaluatedExtraEnv "sizing" $evaluatedSizing) .Values.stackstate.components.server -}}
 args:
 {{- include "stackstate.service.args" . }}
 - -start
@@ -18,6 +41,7 @@ envFrom:
       name: {{ include "stackstate.secret.name.license" .  }}
   - secretRef:
       name: {{ include "stackstate.secret.name.apiKey" .  }}
+      optional: true
   - secretRef:
       name: {{ include "stackstate.secret.name.auth" .  }}
   {{- if .Values.stackstate.email.enabled }}
@@ -25,9 +49,9 @@ envFrom:
       name: {{ include "stackstate.secret.name.email" .  }}
   {{- end }}
 env:
-{{- $serviceConfig := dict "ServiceName" "server" "ServiceConfig" .Values.stackstate.components.server }}
+{{- $serviceConfig := dict "ServiceName" "server" "ServiceConfig" $componentConfigWithResources }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
-{{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
+{{- include "stackstate.service.envvars" (merge (dict) $serviceConfig .) }}
 {{- include "stackstate.baseurls.envvars" . }}
 {{- include "stackstate.metricstore.envvar" . }}
 {{ if .Values.stackstate.components.api.yaml.maxSizeLimit }}
@@ -50,7 +74,7 @@ env:
 {{ end }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.server.envsFromExistingSecrets }}
-image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
+image: "{{ include "stackstate.image.registry" (merge (dict) $serviceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.server.image.pullPolicy | quote }}
 livenessProbe:
   httpGet:
@@ -82,7 +106,7 @@ readinessProbe:
     port: health
   initialDelaySeconds: 10
   timeoutSeconds: 5
-{{- with .Values.stackstate.components.server.resources }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -90,7 +114,8 @@ volumeMounts:
 {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
 {{ include "stackstate.stackpacks.volumeMount" . }}
 {{- end }}
-{{- if eq .Values.hbase.deployment.mode "Mono" }}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+{{- if eq $deploymentMode "Mono" }}
 {{ include "stackstate.stackpacks.local.volumeMount" . }}
 {{- end }}
 {{- include "stackstate.service.container.volumes" . }}
@@ -159,14 +184,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.server.affinity }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.server.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- if $affinity }}
       affinity:
-      {{- with .Values.stackstate.components.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.server.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- $affinity | nindent 8 }}
     {{- end }}
     {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.server.tolerations }}
       tolerations:
@@ -185,7 +206,8 @@ spec:
       {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
       {{ include "stackstate.stackpacks.volume" . | nindent 6 }}
       {{- end }}
-      {{- if eq .Values.hbase.deployment.mode "Mono" }}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+      {{- if eq $deploymentMode "Mono" }}
       {{ include "stackstate.stackpacks.local.volume" . | nindent 6 }}
       {{- end }}
 {{- end -}}

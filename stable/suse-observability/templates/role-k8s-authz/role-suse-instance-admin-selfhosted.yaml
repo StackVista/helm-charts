@@ -13,6 +13,7 @@ rules:
   - monitors
   - notifications
   - dashboards
+  - otelmappings
   verbs:
   - create
   - update

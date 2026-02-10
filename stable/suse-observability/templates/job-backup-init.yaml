@@ -25,8 +25,8 @@ template:
           - -c
           - |
             /entrypoint -c {{ include "stackstate.es.endpoint" . }},{{ include "stackstate.minio.endpoint" . }} -t 300
-        image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-        imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+        image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+        imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
     containers:
       - name: configure
         image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
@@ -44,10 +44,8 @@ template:
           {{- include "stackstate.backup.volumeMounts" . | nindent 10 }}
           - name: workdir-container-tools
             mountPath: /work
-{{- if and .Values.backup.enabled .Values.backup.stackGraph.scheduled.enabled }}
           - name: tmp-data
             mountPath: /tmp-data
-{{- end }}
     {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 4 }}
     restartPolicy: Never
 {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.backup.nodeSelector }}
@@ -59,14 +57,10 @@ template:
       {{- toYaml . | nindent 6 }}
     {{- end }}
 {{- end }}
-{{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.backup.affinity }}
+{{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.backup.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) -}}
+{{- if $affinity }}
     affinity:
-    {{- with .Values.stackstate.components.all.affinity }}
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
-    {{- with .Values.stackstate.components.backup.affinity }}
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
+      {{- $affinity | nindent 6 }}
 {{- end }}
 {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.backup.tolerations }}
     tolerations:
@@ -84,14 +78,12 @@ template:
       {{- include "stackstate.backup.volumes" . | nindent 6 }}
       - name: workdir-container-tools
         emptyDir: { }
-{{- if and .Values.backup.enabled .Values.backup.stackGraph.scheduled.enabled }}
       - name: tmp-data
         persistentVolumeClaim:
           claimName: {{ template "common.fullname.short" . }}-backup-stackgraph-tmp-data
-{{- end }}
 {{- end -}}
 
-{{- if and .Values.backup.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticsearch.restore.enabled .Values.backup.elasticsearch.scheduled.enabled (index .Values "victoria-metrics-0" "backup" "enabled") (index .Values "victoria-metrics-1" "backup" "enabled") (index .Values "victoria-metrics-0" "restore" "enabled") (index .Values "victoria-metrics-1" "restore" "enabled") .Values.clickhouse.backup.enabled .Values.clickhouse.restore.enabled) }}
+{{- if .Values.global.backup.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:

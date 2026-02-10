@@ -56,10 +56,11 @@ We use HDFS_CONF_dfs_namenode_replication_min to ensure the desired amount of re
 - name: HDFS_CONF_dfs_replication
   value: "2"
 - name: HDFS_CONF_dfs_namenode_replication_min
-  {{- if gt .Values.hdfs.datanode.replicaCount .Values.hdfs.minReplication  }}
+  {{- $effectiveDatanodeCount := include "common.sizing.hdfs.datanode.effectiveReplicaCount" . | int -}}
+  {{- if gt $effectiveDatanodeCount (int .Values.hdfs.minReplication) }}
   value: {{ .Values.hdfs.minReplication | quote }}
   {{- else }}
-  value: {{ .Values.hdfs.datanode.replicaCount | quote }}
+  value: {{ $effectiveDatanodeCount | quote }}
   {{- end }}
 - name: HDFS_CONF_dfs_client_block_write_replace___datanode___on___failure_enable
   value: "true"
@@ -77,6 +78,11 @@ Common environment variables for HBase configuration.
   value: "hdfs://{{ template "common.fullname.short" . }}-hdfs-nn-headful:9000/hbase"
 - name: HBASE_CONF_hbase_zookeeper_quorum
   value: {{ include "hbase.zookeeper.endpoint" . | quote }}
+{{ $diskSpaceMB := (include "hbase.storage.to.megabytes" (include "hbase.hdfs.datanode.persistence.size" .)) }}
+{{ if $diskSpaceMB  }}
+- name: HBASE_CONF_hbase_master_stackstate_logcleaner_max_size_mb
+  value: "{{ mulf $diskSpaceMB 0.01 | int }}"
+{{ end }}
 {{- end }}
 
 {{/*
@@ -254,9 +260,9 @@ Derive hadoop version
 */}}
 {{- define "hdfs.version" -}}
 {{- if eq .Values.version "2.5" }}
-{{- "3.4.1" }}
+{{- "3.4.2" }}
 {{- else }}
-{{- "2.10.2" }}
+{{- fail "Only HBase version 2.5 is supported at the moment" }}
 {{- end }}
 {{- end -}}
 
@@ -282,4 +288,87 @@ Uses global.commonLabels only.
 {{ $key }}: {{ $value | quote }}
 {{- end }}
 {{- end }}
+{{- end -}}
+
+{{/*
+Helpful to derive limits from the diskspace
+*/}}
+{{- define "hbase.storage.to.megabytes" -}}
+{{- if hasSuffix "Ti" . -}}
+    {{- $ti := trimSuffix "Ti" . | int -}}
+    {{- mul $ti 1100000 -}}
+{{- else if hasSuffix "T" . -}}
+    {{- $t := trimSuffix "T" . | int -}}
+    {{- mul $t 1000000 -}}
+{{- else if hasSuffix "Gi" . -}}
+    {{- $gi := trimSuffix "Gi" . | int -}}
+    {{- mul $gi 1074 -}}
+{{- else if hasSuffix "G" . -}}
+    {{- $g := trimSuffix "G" . | int -}}
+    {{- mul $g 1000 -}}
+{{- else if hasSuffix "Mi" . -}}
+    {{- $mi := trimSuffix "Mi" . | int -}}
+    {{- mul $mi 1.049 -}}
+{{- else if hasSuffix "M" . -}}
+    {{- trimSuffix "M" . | int -}}
+{{- else -}}
+    {{- fail (printf "Invalid storage format: %q. Input must be a number with a supported suffix (Ti, T, Gi, G, Mi, M)." .) -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "hbase.server.memory.resource" -}}
+{{- $podMemoryLimitMB := (include "hbase.storage.to.megabytes" .Mem) -}}
+{{- $grossMemoryLimit := (subf $podMemoryLimitMB .BaseMemoryConsumptionMB) | int -}}
+{{- $javaHeapMemory := (divf (mulf $grossMemoryLimit (.JavaHeapFraction | int)) 100) | int -}}
+{{- max $javaHeapMemory 0 -}}
+{{- end -}}
+
+{{- define "hbase.service.envvars" -}}
+{{/*
+Memory used by a JVM process can be calculated as follows:
+JVM memory = Heap memory+ Metaspace + CodeCache + (ThreadStackSize * Number of Threads) + DirectByteBuffers + Jvm-native.
+'BaseMemoryConsumption' encapsulates OS-level memory requirements and following parts of JVM memory: Metaspace, CodeCache,
+ThreadStackSize * Number of Threads and Jvm-native.
+'JavaHeapMemoryFraction' percent of the remainder of 'BaseMemoryConsumption' subtracted from pod's memory limit is given to 'Xmx'.
+'JavaHeapMemoryFraction' percent of the remainder of 'BaseMemoryConsumption' subtracted from pod's memory request is given to 'Xms'.
+Remainder of 'BaseMemoryConsumption' and 'Xmx' subtracted from pod's memory limit is given to 'DirectMemory'.
+Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory limit.
+*/}}
+{{- $baseMemoryConsumptionMB := (include "hbase.storage.to.megabytes" .ServiceConfig.sizing.baseMemoryConsumption)}}
+{{- $xmxConfig := dict "Mem" .ServiceConfig.resources.limits.memory "BaseMemoryConsumptionMB" $baseMemoryConsumptionMB "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
+{{- $xmx := (include "hbase.server.memory.resource" $xmxConfig) | int }}
+{{- $xmsConfig := dict "Mem" .ServiceConfig.resources.requests.memory "BaseMemoryConsumptionMB" $baseMemoryConsumptionMB "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
+{{- $xms := include "hbase.server.memory.resource" $xmsConfig | int }}
+{{- $xmxParam := ( (gt $xmx 0) | ternary (printf "-Xmx%dm" $xmx) "") }}
+{{- $xmsParam := ( (gt $xms 0) | ternary (printf "-Xms%dm" $xms) "") }}
+{{- $directMem := (subf (subf (include "hbase.storage.to.megabytes" .ServiceConfig.resources.limits.memory) $baseMemoryConsumptionMB) $xmx) | int }}
+{{- $directMemParam := ( (gt $directMem 0) | ternary ( printf "-XX:MaxDirectMemorySize=%dm" $directMem) "") }}
+- name: "JAVA_CONTAINER_OPTS"
+  value: "{{ $directMemParam }} {{ $xmxParam }} {{ $xmsParam }}"
+{{- end -}}
+
+{{/*
+Return the proper Docker Image Registry Secret Names evaluating values as templates
+{{ include "stackstate.image.pullSecret.name" ( dict "images" (list .Values.path.to.the.image1, .Values.path.to.the.image2) "context" $) }}
+*/}}
+{{- define "hbase.image.pullSecret.name" -}}
+  {{- $pullSecrets := list }}
+  {{- $context := .context }}
+
+  {{- if and $context.Values.global $context.Values.global.suseObservability $context.Values.global.suseObservability.pullSecret $context.Values.global.suseObservability.pullSecret.username $context.Values.global.suseObservability.pullSecret.password -}}
+    {{- $pullSecrets = append $pullSecrets "suse-observability-pull-secret" -}}
+  {{- else -}}
+    {{- if and $context.Values.global }}
+      {{- range $context.Values.global.imagePullSecrets -}}
+        {{- $pullSecrets = append $pullSecrets . -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- if (not (empty $pullSecrets)) }}
+imagePullSecrets:
+    {{- range $pullSecrets | uniq }}
+  - name: {{ . }}
+    {{- end }}
+  {{- end }}
 {{- end -}}

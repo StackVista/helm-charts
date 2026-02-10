@@ -9,6 +9,13 @@ receivers:
         auth:
           authenticator: service_token_auth
         endpoint: ${env:MY_POD_IP}:4318
+  prometheus/internal:
+    config:
+      scrape_configs:
+        - job_name: "opentelemetry-collector-internal"
+          scrape_interval: 10s
+          static_configs:
+            - targets: ["localhost:8888"]  # by default, the collector exposes internal metrics on 127.0.0.1:8888
 connectors:
   stsservicegraph:
     latency_histogram_buckets: [2ms, 4ms, 6ms, 8ms, 10ms, 50ms, 100ms, 200ms, 400ms, 800ms, 1s, 1400ms, 2s, 5s, 10s, 15s, 30s]
@@ -21,7 +28,26 @@ connectors:
       ttl: 30s
       max_items: 50000
   forward: {}
-  tracetotopo: {}
+  topology:
+    expression_cache:
+      enable_metrics: true
+      size: 100000
+      ttl: 0 # 0 == eviction disabled
+    tag_regex_cache:
+      enable_metrics: true
+      size: 2000
+      ttl: 0 # 0 == eviction disabled
+    tag_template_cache:
+      enable_metrics: true
+      size: 2000
+      ttl: 0 # 0 == eviction disabled
+    deduplication:
+      enabled: true
+      refresh_fraction: 0.5
+      cache:
+        enable_metrics: true
+        size: 100000
+        ttl: 1h
 processors:
   stsusage: {}
   batch:
@@ -50,6 +76,20 @@ processors:
   # extension point to massage data so it conforms to the semantic conventions
   transform/semconv:
     error_mode: ignore
+    trace_statements:
+      - context: span
+        statements:
+          - delete_key(attributes, "peer.service") where attributes["db.system"] == "redis"
+      - context: span
+        statements:
+          - set(attributes["db.system"], "other_sql") where attributes["db.type"] == "sql"
+            and attributes["db.system"] == nil
+  # Using a relabel rule on the scrape_configs' metric_relabel_configs could also work, but that strips metric metadata
+  transform/internalMetricsPrefix:
+    metric_statements:
+      - context: metric
+        statements:
+          - set(name, Concat(["otelcol_", name], "")) where not HasPrefix(name, "otelcol")
 exporters:
   clickhousests:
     endpoint: tcp://suse-observability-clickhouse:9000?dial_timeout=10s&compress=lz4
@@ -73,8 +113,6 @@ exporters:
     endpoint: 'http://suse-observability-vmagent:8429/api/v1/write'
     resource_to_telemetry_conversion:
       enabled: true
-  ststopology:
-    endpoint: "${env:INTAKE_URL}"
   sts_kafka_exporter:
     brokers:
       - "suse-observability-kafka-headless:9092"
@@ -106,21 +144,24 @@ extensions:
   # The health_check extension can be modified, but should never be removed.
   health_check:
     endpoint: ${env:MY_POD_IP}:13133
-  memory_ballast: {}
   sts_settings_provider:
     kafka:
       brokers:
         - "suse-observability-kafka-headless:9092"
       topic: "sts_internal_settings"
 service:
-  telemetry:
-    metrics:
-      address: 0.0.0.0:8888
   extensions:
     - health_check
-    - memory_ballast
     - service_token_auth
     - sts_settings_provider
+  telemetry:
+    metrics:
+      readers:
+        - pull:
+            exporter:
+              prometheus:
+                host: '0.0.0.0'
+                port: 8888
   pipelines:
     traces:
       receivers:
@@ -133,7 +174,7 @@ service:
       exporters:
         - forward
         - stsservicegraph
-        - tracetotopo
+        - topology
     traces/clickhouse:
       receivers:
         - forward
@@ -151,6 +192,13 @@ service:
         - batch
       exporters:
         - forward
+    metrics/internal:
+      receivers:
+        - prometheus/internal
+      processors:
+        - transform/internalMetricsPrefix
+      exporters:
+        - forward
     metrics/victoria-metrics:
       receivers:
         - forward
@@ -165,9 +213,9 @@ service:
         - forward
         - stsservicegraph
       exporters:
-        - ststopology
+        - topology
     logs:
       receivers:
-        - tracetotopo
+        - topology
       exporters:
         - sts_kafka_exporter

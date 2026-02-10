@@ -36,6 +36,15 @@ env:
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "all.commonEnv" . }}
 {{- include "hdfs.namenode.commonEnv" . }}
+{{- $profileResources := include "common.sizing.hbase.hdfs.namenode.resources" . | trim -}}
+{{- $evaluatedResources := .Values.hdfs.namenode.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.hdfs.namenode.resources }}
+{{- end }}
+{{- $namenodeWithResources := merge (dict "resources" $evaluatedResources) .Values.hdfs.namenode }}
+{{- $serviceConfig := dict "ServiceConfig" (merge $namenodeWithResources .Values.all) }}
+{{- include "hbase.service.envvars" $serviceConfig }}
 ports:
 - containerPort: 9000
   name: nn
@@ -62,7 +71,7 @@ readinessProbe:
   httpGet:
     path: /
     port: nninfo
-{{- with .Values.hdfs.namenode.resources }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -80,7 +89,7 @@ volumeMounts:
 {{- $overrideContainer := fromYaml (include "hbase.hdfs.namenode.container.init" .) -}}
 {{- $stackstateHbaseHdfsNamenodeInitContainer := (merge $overrideContainer $commonContainer) }}
 metadata:
-  labels:
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: hdfs-nn
 {{- if .Values.global.commonLabels }}
 {{- include "hbase.commonLabels" . | indent 4 }}
@@ -92,17 +101,21 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: hdfs-nn
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      app.kubernetes.io/name: {{ template "common.name" . }}
   template:
     metadata:
       labels:
         app.kubernetes.io/component: hdfs-nn
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        app.kubernetes.io/name: {{ template "common.name" . }}
 {{- if .Values.global.commonLabels }}
 {{- include "hbase.podLabels" . | indent 8 }}
 {{- end }}
       annotations:
       {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404" "container_name" "namenode" "filter" .Values.hdfs.namenode.agentMetricsFilter) | indent 8 }}
     spec:
-      {{- include "common.image.pullSecret.name" (dict "images" (list .Values.all.image) "context" $) | nindent 6 }}
+      {{- include "hbase.image.pullSecret.name" (dict "images" (list .Values.all.image) "context" $) | nindent 6 }}
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ template "common.fullname.short" . }}-hdfs
       {{- end }}
@@ -122,8 +135,12 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.all.affinity .Values.hdfs.namenode.affinity }}
+    {{- $sizingAffinity := include "common.sizing.hbase.hdfs.namenode.affinityConfig" . | fromYaml -}}
+    {{- if or .Values.all.affinity .Values.hdfs.namenode.affinity $sizingAffinity }}
       affinity:
+      {{- with $sizingAffinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.all.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -131,6 +148,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.hdfs.namenode.terminationGracePeriodSeconds }}
     {{- if or .Values.all.tolerations .Values.hdfs.namenode.tolerations }}
       tolerations:
       {{- with .Values.all.tolerations }}
@@ -158,8 +176,8 @@ spec:
 {{- end }}
 {{- end -}}
 
-{{- if eq .Values.deployment.mode "Distributed" -}}
-{{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
-{{- $stackstateHbaseHdfsNamenodeStatefulSet := fromYaml (include "hbase.hdfs.namenode.statefulset" .) -}}
-{{- toYaml (merge $stackstateHbaseHdfsNamenodeStatefulSet $commonStatefulSet) -}}
+{{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
+apiVersion: apps/v1
+kind: StatefulSet
+{{ include "hbase.hdfs.namenode.statefulset" . }}
 {{- end -}}

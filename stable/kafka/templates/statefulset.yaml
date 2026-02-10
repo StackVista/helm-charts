@@ -1,4 +1,4 @@
-{{- $replicaCount := int .Values.replicaCount }}
+{{- $replicaCount := include "common.sizing.kafka.effectiveReplicaCount" . | int -}}
 {{- $fullname := include "common.names.fullname" . }}
 {{- $releaseNamespace := .Release.Namespace }}
 {{- $clusterDomain := .Values.clusterDomain }}
@@ -20,7 +20,7 @@ metadata:
   {{- end }}
 spec:
   podManagementPolicy: {{ .Values.podManagementPolicy }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ $replicaCount }}
   selector:
     matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
       app.kubernetes.io/component: kafka
@@ -60,8 +60,13 @@ spec:
       {{- if .Values.schedulerName }}
       schedulerName: {{ .Values.schedulerName | quote }}
       {{- end }}
-      {{- if .Values.affinity }}
-      affinity: {{- include "common.tplvalues.render" (dict "value" .Values.affinity "context" $) | nindent 8 }}
+      {{- $sizingAffinity := include "common.sizing.kafka.affinityConfig" . | fromYaml -}}
+      {{- $finalAffinity := .Values.affinity | default dict -}}
+      {{- if and (not .Values.affinity) $sizingAffinity -}}
+        {{- $finalAffinity = $sizingAffinity -}}
+      {{- end -}}
+      {{- if $finalAffinity }}
+      affinity: {{- include "common.tplvalues.render" (dict "value" $finalAffinity "context" $) | nindent 8 }}
       {{- else }}
       affinity:
         podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.podAffinityPreset "component" "kafka" "context" $) | nindent 10 }}
@@ -297,7 +302,8 @@ spec:
             - name: KAFKA_LOG_DIR
               value: {{ .Values.logPersistence.mountPath | quote }}
             - name: KAFKA_CFG_DELETE_TOPIC_ENABLE
-              value: {{ .Values.deleteTopicEnable | quote }}
+              {{- $sizingDeleteTopicEnable := include "common.sizing.kafka.deleteTopicEnable" . | trim }}
+              value: {{ default .Values.deleteTopicEnable $sizingDeleteTopicEnable | quote }}
             - name: KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE
               value: {{ .Values.autoCreateTopicsEnable | quote }}
             - name: KAFKA_HEAP_OPTS
@@ -319,11 +325,14 @@ spec:
             - name: KAFKA_CFG_LOG_DIRS
               value: {{ .Values.logsDirs | quote }}
             - name: KAFKA_CFG_DEFAULT_REPLICATION_FACTOR
-              value: {{ .Values.defaultReplicationFactor | quote }}
+              {{- $sizingDefaultRF := include "common.sizing.kafka.defaultReplicationFactor" . | trim }}
+              value: {{ default .Values.defaultReplicationFactor $sizingDefaultRF | quote }}
             - name: KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR
-              value: {{ .Values.offsetsTopicReplicationFactor | quote }}
+              {{- $sizingOffsetsRF := include "common.sizing.kafka.offsetsTopicReplicationFactor" . | trim }}
+              value: {{ default .Values.offsetsTopicReplicationFactor $sizingOffsetsRF | quote }}
             - name: KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
-              value: {{ .Values.transactionStateLogReplicationFactor | quote }}
+              {{- $sizingTransactionRF := include "common.sizing.kafka.transactionStateLogReplicationFactor" . | trim }}
+              value: {{ default .Values.transactionStateLogReplicationFactor $sizingTransactionRF | quote }}
             - name: KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR
               value: {{ .Values.transactionStateLogMinIsr | quote }}
             - name: KAFKA_CFG_NUM_IO_THREADS
@@ -333,7 +342,8 @@ spec:
             - name: KAFKA_CFG_NUM_PARTITIONS
               value: {{ .Values.numPartitions | quote }}
             - name: KAFKA_CFG_NUM_RECOVERY_THREADS_PER_DATA_DIR
-              value: {{ .Values.numRecoveryThreadsPerDataDir | quote }}
+              {{- $sizingNumRecoveryThreadsPerDataDir := include "common.sizing.kafka.numRecoveryThreadsPerDataDir" . | trim }}
+              value: {{ default .Values.numRecoveryThreadsPerDataDir $sizingNumRecoveryThreadsPerDataDir | quote }}
             - name: KAFKA_CFG_SOCKET_RECEIVE_BUFFER_BYTES
               value: {{ .Values.socketReceiveBufferBytes | quote }}
             - name: KAFKA_CFG_SOCKET_REQUEST_MAX_BYTES
@@ -397,8 +407,14 @@ spec:
           {{- if .Values.lifecycleHooks }}
           lifecycle: {{- include "common.tplvalues.render" (dict "value" .Values.lifecycleHooks "context" $) | nindent 12 }}
           {{- end }}
-          {{- if .Values.resources }}
-          resources: {{- toYaml .Values.resources | nindent 12 }}
+          {{- $profileResources := include "common.sizing.kafka.resources" . | trim -}}
+          {{- $evaluatedResources := .Values.resources }}
+          {{- if $profileResources }}
+          {{- $profileResourcesDict := fromYaml $profileResources }}
+          {{- $evaluatedResources = merge $profileResourcesDict .Values.resources }}
+          {{- end }}
+          {{- with $evaluatedResources }}
+          resources: {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
             - name: data
@@ -464,7 +480,7 @@ spec:
           command:
             - java
           args:
-            - -XX:MaxRAMPercentage=100
+            - -Xmx{{ .Values.metrics.kafka.heapSizeMB }}m
             - -XshowSettings:vm
             - -jar
             - jmx_prometheus_httpserver.jar
@@ -474,8 +490,13 @@ spec:
           ports:
             - name: metrics
               containerPort: {{ .Values.metrics.jmx.containerPorts.metrics }}
-          {{- if .Values.metrics.jmx.resources }}
-          resources: {{- toYaml .Values.metrics.jmx.resources | nindent 12 }}
+          {{- $sizingJmxResources := include "common.sizing.kafka.metrics.jmx.resources" . | trim -}}
+          {{- $jmxResources := .Values.metrics.jmx.resources -}}
+          {{- if $sizingJmxResources -}}
+          {{- $jmxResources = fromYaml $sizingJmxResources -}}
+          {{- end -}}
+          {{- if $jmxResources }}
+          resources: {{- toYaml $jmxResources | nindent 12 }}
           {{- end }}
           volumeMounts:
             - name: jmx-config
@@ -575,7 +596,8 @@ spec:
         {{- end }}
         resources:
           requests:
-            storage: {{ .Values.persistence.size | quote }}
+            {{ $storageSize := include "common.sizing.kafka.persistence.size" . | trim }}
+            storage: {{ $storageSize | default .Values.persistence.size | quote }}
         {{ include "kafka.storageClass" . | nindent 8 }}
         {{- if .Values.persistence.selector }}
         selector: {{- include "common.tplvalues.render" (dict "value" .Values.persistence.selector "context" $) | nindent 10 }}

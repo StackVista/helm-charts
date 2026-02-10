@@ -26,6 +26,15 @@ env:
 - name: HBASE_MASTER_LIVENESS_HTTP_PORT
   value: "16010"
 {{- end }}
+{{- $profileResources := include "common.sizing.hbase.master.resources" . | trim -}}
+{{- $evaluatedResources := .Values.hbase.master.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.hbase.master.resources }}
+{{- end }}
+{{- $masterWithResources := merge (dict "resources" $evaluatedResources) .Values.hbase.master }}
+{{- $serviceConfig := dict "ServiceConfig" (merge $masterWithResources .Values.all) }}
+{{- include "hbase.service.envvars" $serviceConfig }}
 ports:
 - containerPort: 16000
   name: master
@@ -49,7 +58,7 @@ readinessProbe:
   httpGet:
     path: /
     port: masterinfo
-{{- with .Values.hbase.master.resources }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -64,7 +73,7 @@ securityContext:
 {{- $overrideContainer := fromYaml (include "hbase.hbase.master.container.init" .) -}}
 {{- $stackstateHbaseMasterInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  labels:
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: hbase-master
 {{- if .Values.global.commonLabels }}
 {{- include "hbase.commonLabels" . | indent 4 }}
@@ -72,22 +81,27 @@ metadata:
   name: {{ template "common.fullname.short" . }}-hbase-master
 spec:
   podManagementPolicy: Parallel
-  replicas: {{ .Values.hbase.master.replicaCount }}
+  {{- $replicaCount := include "common.sizing.hbase.master.effectiveReplicaCount" . }}
+  replicas: {{ $replicaCount }}
   serviceName: {{ template "common.fullname.short" . }}-hbase-master
   selector:
     matchLabels:
       app.kubernetes.io/component: hbase-master
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      app.kubernetes.io/name: {{ template "common.name" . }}
   template:
     metadata:
       labels:
         app.kubernetes.io/component: hbase-master
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        app.kubernetes.io/name: {{ template "common.name" . }}
 {{- if .Values.global.commonLabels }}
 {{- include "hbase.podLabels" . | indent 8 }}
 {{- end }}
       annotations:
       {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404" "container_name" "master" "filter" .Values.hbase.master.agentMetricsFilter ) | indent 8 }}
     spec:
-      {{- include "common.image.pullSecret.name" (dict "images" (list .Values.all.image) "context" $) | nindent 6 }}
+      {{- include "hbase.image.pullSecret.name" (dict "images" (list .Values.all.image) "context" $) | nindent 6 }}
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ template "common.fullname.short" . }}-hbase
       {{- end }}
@@ -108,8 +122,12 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.all.affinity .Values.hbase.master.affinity }}
+    {{- $sizingAffinity := include "common.sizing.hbase.master.affinityConfig" . | fromYaml -}}
+    {{- if or .Values.all.affinity .Values.hbase.master.affinity $sizingAffinity }}
       affinity:
+      {{- with $sizingAffinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.all.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -117,6 +135,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.hbase.master.terminationGracePeriodSeconds }}
     {{- if or .Values.all.tolerations .Values.hbase.master.tolerations }}
       tolerations:
       {{- with .Values.all.tolerations }}
@@ -128,8 +147,8 @@ spec:
     {{- end }}
 {{- end -}}
 
-{{- if eq .Values.deployment.mode "Distributed" -}}
-{{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
-{{- $stackstateHbaseMasterStatefulSet := fromYaml (include "hbase.hbase.master.statefulset" .) -}}
-{{- toYaml (merge $stackstateHbaseMasterStatefulSet $commonStatefulSet) -}}
+{{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
+apiVersion: apps/v1
+kind: StatefulSet
+{{ include "hbase.hbase.master.statefulset" . }}
 {{- end }}

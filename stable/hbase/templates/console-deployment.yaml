@@ -6,18 +6,25 @@ imagePullPolicy: {{ default .Values.stackgraph.image.pullPolicy .Values.console.
 args:
 - /bin/bash
 - -c
-- while true; do sleep 10; done
+- {{ .console_command }}
 env:
 {{- include "all.commonEnv" . }}
 {{- include "console.commonEnv" . }}
 - name: ZOOKEEPER_QUORUM
-{{- if eq .Values.deployment.mode "Distributed" }}
+{{- if eq (include "hbase.deployment.mode" .) "Distributed" }}
   value: {{ include "hbase.zookeeper.endpoint" . | quote }}
 {{- else }}
   value: {{ template "common.fullname.short" . }}-stackgraph:2182
 {{- end }}
-
-{{- with .Values.console.resources }}
+- name: "JAVA_TOOL_OPTIONS"
+  value: "-XX:InitialRAMPercentage=70.0 -XX:MaxRAMPercentage=70.0"
+{{- $profileResources := include "common.sizing.hbase.console.resources" . | trim -}}
+{{- $evaluatedResources := .Values.console.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.console.resources }}
+{{- end }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -28,10 +35,10 @@ workingDir: /tmp
 
 {{- define "hbase.console.deployment" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $overrideContainer := fromYaml (include "hbase.console.container.main" .) -}}
+{{- $overrideContainer := fromYaml (include "hbase.console.container.main" (merge (dict "console_command" "while true; do sleep 10; done") .)) -}}
 {{- $stackstateHbaseConsoleContainer := (merge $overrideContainer $commonContainer) }}
 metadata:
-  labels:
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: console
 {{- if .Values.global.commonLabels }}
 {{- include "hbase.commonLabels" . | indent 4 }}
@@ -42,6 +49,8 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/component: console
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      app.kubernetes.io/name: {{ template "common.name" . }}
 {{- with .Values.console.strategy }}
   strategy:
     {{- toYaml . | nindent 4 }}
@@ -50,17 +59,19 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/component: console
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        app.kubernetes.io/name: {{ template "common.name" . }}
 {{- if .Values.global.commonLabels }}
 {{- include "hbase.podLabels" . | indent 8 }}
 {{- end }}
     spec:
-      {{- include "common.image.pullSecret.name" (dict "images" (list .Values.all.image) "context" $) | nindent 6 }}
-      {{- if .Values.serviceAccount.create }}
+      {{- include "hbase.image.pullSecret.name" (dict "images" (list .Values.all.image) "context" $) | nindent 6 }}
+    {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ template "common.fullname.short" . }}-console
-      {{- end }}
-      {{- if .Values.console.securityContext.enabled }}
+    {{- end }}
+    {{- if .Values.console.securityContext.enabled }}
       securityContext: {{- omit .Values.console.securityContext "enabled" | toYaml | nindent 8 }}
-      {{- end }}
+    {{- end }}
       containers:
       - {{ toYaml $stackstateHbaseConsoleContainer | nindent 8 }}
     {{- if or .Values.all.nodeSelector .Values.console.nodeSelector }}
@@ -72,8 +83,12 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.all.affinity .Values.console.affinity }}
+    {{- $sizingAffinity := include "common.sizing.hbase.console.affinityConfig" . | fromYaml -}}
+    {{- if or .Values.all.affinity .Values.console.affinity $sizingAffinity }}
       affinity:
+      {{- with $sizingAffinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.all.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -93,7 +108,7 @@ spec:
 {{- end -}}
 
 {{- if .Values.console.enabled }}
-{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
-{{- $stackstateHbaseConsoleDeployment := fromYaml (include "hbase.console.deployment" .) -}}
-{{- toYaml (mergeOverwrite $commonDeployment $stackstateHbaseConsoleDeployment) -}}
+apiVersion: apps/v1
+kind: Deployment
+{{ include "hbase.console.deployment" . }}
 {{- end -}}

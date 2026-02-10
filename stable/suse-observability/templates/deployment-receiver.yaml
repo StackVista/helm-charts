@@ -16,19 +16,59 @@ command:
 - -c
 - |
   /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackstate.es.endpoint" . }} -t 300
-image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- end -}}
 
 
 {{- define "stackstate.receiver.deployment.container.main" -}}
+{{- /* Determine the correct sizing template based on ReceiverType (split mode) */ -}}
+{{- $profileResources := "" -}}
+{{- if eq .ReceiverType "base" -}}
+{{- $profileResources = include "common.sizing.stackstate.receiver.split.base.resources" . | trim -}}
+{{- else if eq .ReceiverType "logs" -}}
+{{- $profileResources = include "common.sizing.stackstate.receiver.split.logs.resources" . | trim -}}
+{{- else if eq .ReceiverType "process-agent" -}}
+{{- $profileResources = include "common.sizing.stackstate.receiver.split.processAgent.resources" . | trim -}}
+{{- else -}}
+{{- $profileResources = include "common.sizing.stackstate.receiver.resources" . | trim -}}
+{{- end -}}
+{{- $evaluatedResources := .Values.stackstate.components.receiver.resources }}
+{{- if and .TypeConfig.resources .TypeConfig.resources.limits .TypeConfig.resources.limits.memory }}
+{{- $evaluatedResources = .TypeConfig.resources }}
+{{- end }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end }}
+{{- $profileEnv := include "common.sizing.stackstate.receiver.env" . | trim -}}
+{{- $evaluatedExtraEnvOpen := .Values.stackstate.components.receiver.extraEnv.open }}
+{{- if $profileEnv }}
+{{- $profileEnvDict := fromYaml $profileEnv }}
+{{- $evaluatedExtraEnvOpen = $profileEnvDict }}
+{{- else }}
+{{- if and .TypeConfig .TypeConfig.extraEnv }}
+{{- if .TypeConfig.extraEnv.open }}
+{{- $evaluatedExtraEnvOpen = merge (dict) .TypeConfig.extraEnv.open $evaluatedExtraEnvOpen }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- $evaluatedExtraEnv := dict "open" $evaluatedExtraEnvOpen "secret" .Values.stackstate.components.receiver.extraEnv.secret }}
+{{- $baseConfig := omit .Values.stackstate.components.receiver "resources" "extraEnv" }}
+{{- $componentConfigWithResources := merge $baseConfig (dict "resources" $evaluatedResources "extraEnv" $evaluatedExtraEnv) -}}
+{{- $serviceTypeConfig := dict }}
+{{- if $profileResources }}
+{{- $serviceTypeConfig = merge (omit $componentConfigWithResources "split") (omit .TypeConfig "resources" "extraEnv" "split") }}
+{{- else }}
+{{- $serviceTypeConfig = merge (omit $componentConfigWithResources "split") (omit .TypeConfig "split") }}
+{{- end }}
 envFrom:
   - secretRef:
       name: {{ include "stackstate.secret.name.apiKey" .  }}
+      optional: true
 env:
-{{- $serviceTypeConfig := merge .TypeConfig (omit .Values.stackstate.components.receiver "split") }}
 {{- $serviceConfig := dict "ServiceName" "receiver" "ServiceConfig" $serviceTypeConfig }}
-{{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
+{{- include "stackstate.service.envvars" (merge (dict) . $serviceConfig) }}
 - name: ELASTICSEARCH_URI
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS
@@ -39,16 +79,18 @@ env:
   value: "true"
 - name: PROMETHEUS_WRITE_ENDPOINT
   value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
-{{ $replicationFactor := ternary "1" "0" (gt .Values.elasticsearch.replicas 2.0) }}
+{{- $esReplicas := include "suse-observability.sizing.elasticsearch.replicas" . | trim | int -}}
+{{ $replicationFactor := ternary "1" "0" (gt $esReplicas 2) }}
 - name: CONFIG_FORCE_stackstate_receiver_k8sLogs_replicas
   value: "{{ $replicationFactor  }}"
-{{ $diskSpaceMB := (include "stackstate.storage.to.megabytes" .Values.elasticsearch.volumeClaimTemplate.resources.requests.storage) }}
+{{- $esStorage := include "suse-observability.sizing.elasticsearch.volumeClaimTemplate.resources.requests.storage" . | trim -}}
+{{ $diskSpaceMB := (include "stackstate.storage.to.megabytes" $esStorage) }}
 {{ if $diskSpaceMB  }}
 - name: CONFIG_FORCE_stackstate_receiver_elasticsearchDiskSpaceMB
-  value: "{{ divf (mulf (divf (mulf $diskSpaceMB .Values.elasticsearch.replicas) (add1 $replicationFactor)) .Values.stackstate.components.receiver.esDiskSpaceShare) 100 | int }}"
+  value: "{{ divf (mulf (divf (mulf $diskSpaceMB $esReplicas) (add1 $replicationFactor)) .Values.stackstate.components.receiver.esDiskSpaceShare) 100 | int }}"
 {{ end }}
 - name: CONFIG_FORCE_stackstate_receiver_k8sLogs.indexMaxAge
-  value: "{{ .Values.stackstate.components.receiver.retention }} days"
+  value: "{{ include "suse-observability.global.receiverRetention" . }} days"
 - name: CONFIG_FORCE_stackstate_receiver_agentLeases_agentServiceBaseUri
   value: "http://{{ template "common.fullname.short" . }}-{{ template "stackstate.api.name" . }}-headless:7070/internal/api/agents"
 - name: CONFIG_FORCE_stackstate_receiver_authorizationService_authorizationServiceBaseUri
@@ -63,7 +105,7 @@ env:
 {{- end }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.receiver.envsFromExistingSecrets }}
-image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.receiver.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.receiver.image.tag }}"
+image: "{{ include "stackstate.image.registry" (merge (dict) . $serviceConfig) }}/{{ .Values.stackstate.components.receiver.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.receiver.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.receiver.image.pullPolicy | quote }}
 name: receiver
 args:
@@ -91,7 +133,11 @@ readinessProbe:
     port: health
   initialDelaySeconds: 10
   timeoutSeconds: 5
-{{- with (merge .TypeConfig.resources .Values.stackstate.components.receiver.resources) }}
+{{- $finalResources := $evaluatedResources }}
+{{- if .TypeConfig.resources }}
+{{- $finalResources = merge $evaluatedResources .TypeConfig.resources }}
+{{- end }}
+{{- with $finalResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -159,17 +205,14 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity (or .Values.stackstate.components.receiver.affinity .TypeConfig.affinity) }}
+    {{- $componentAffinity := .Values.stackstate.components.receiver.affinity }}
+    {{- if .TypeConfig.affinity }}
+      {{- $componentAffinity = .TypeConfig.affinity }}
+    {{- end }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" $componentAffinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- if $affinity }}
       affinity:
-      {{- with .Values.stackstate.components.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.receiver.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .TypeConfig.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- $affinity | nindent 8 }}
     {{- end }}
     {{- if or .Values.stackstate.components.all.tolerations (or .Values.stackstate.components.receiver.tolerations .TypeConfig.tolerations) }}
       tolerations:
@@ -190,7 +233,7 @@ spec:
 
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 
-{{- if .Values.stackstate.components.receiver.split.enabled }}
+{{- if eq (include "stackstate.receiver.split.enabled" .) "true" }}
 {{- $receiverBaseArgs := merge (dict "ReceiverType" "base" "TypeConfig" .Values.stackstate.components.receiver.split.base) . -}}
 {{- $receiverBaseDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverBaseArgs) -}}
 {{- toYaml (merge $receiverBaseDeployment $commonDeployment) }}
@@ -201,9 +244,33 @@ spec:
 ---
 {{- $receiverProcessAgentArgs := merge (dict "ReceiverType" "process-agent" "TypeConfig" .Values.stackstate.components.receiver.split.processAgent) . -}}
 {{- $receiverProcessAgentDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverProcessAgentArgs) -}}
-{{ toYaml (merge $receiverProcessAgentDeployment $commonDeployment) }}
-{{ else }}
-{{- $receiverArgs := merge (dict "ReceiverType" "" "TypeConfig" .Values.stackstate.components.receiver) . -}}
+{{- toYaml (merge $receiverProcessAgentDeployment $commonDeployment) }}
+{{- else }}
+{{- $profileResources := include "common.sizing.stackstate.receiver.resources" . | trim -}}
+{{- $evaluatedResources := .Values.stackstate.components.receiver.resources }}
+{{- if and .TypeConfig .TypeConfig.resources }}
+{{- $evaluatedResources = .TypeConfig.resources }}
+{{- end }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end }}
+{{- $profileEnv := include "common.sizing.stackstate.receiver.env" . | trim -}}
+{{- $evaluatedExtraEnvOpen := .Values.stackstate.components.receiver.extraEnv.open }}
+{{- if $profileEnv }}
+{{- $profileEnvDict := fromYaml $profileEnv }}
+{{- $evaluatedExtraEnvOpen = $profileEnvDict }}
+{{- else }}
+{{- if and .TypeConfig .TypeConfig.extraEnv }}
+{{- if .TypeConfig.extraEnv.open }}
+{{- $evaluatedExtraEnvOpen = merge (dict) .TypeConfig.extraEnv.open $evaluatedExtraEnvOpen }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- $evaluatedExtraEnv := dict "open" $evaluatedExtraEnvOpen "secret" .Values.stackstate.components.receiver.extraEnv.secret }}
+{{- $baseConfig := omit .Values.stackstate.components.receiver "resources" "extraEnv" }}
+{{- $evaluatedConfig := merge $baseConfig (dict "resources" $evaluatedResources "extraEnv" $evaluatedExtraEnv) }}
+{{- $receiverArgs := merge (dict "ReceiverType" "" "TypeConfig" $evaluatedConfig) . -}}
 {{- $receiverDeployment := fromYaml (include "stackstate.receiver.deployment" $receiverArgs) -}}
 {{- toYaml (merge $receiverDeployment $commonDeployment) }}
 {{- end }}

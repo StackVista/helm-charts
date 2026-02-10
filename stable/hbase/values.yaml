@@ -7,7 +7,7 @@ global:
   # global.commonLabels -- Labels to add to deployments, StatefulSets, and Pods managed by the chart.
   commonLabels: {}
 # version -- Version of hbase to use
-version: "1.2"
+version: "2.5"
 # stackstate.deployment.mode -- (Distributed, Mono) Run a single stackgraph service or split in multiple sub services as hbase-master, hbase-rs ....
 deployment:
   mode: "Distributed"
@@ -36,6 +36,10 @@ all:
       additionalLabels: {}
       # all.metrics.servicemonitor.enabled -- Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled.
       enabled: false
+  # all.sizing -- Default memory sizing for JVMs in pods
+  sizing:
+    baseMemoryConsumption: "125Mi"
+    javaHeapMemoryFraction: "75"
   # all.nodeSelector -- Node labels for pod assignment on all components.
   nodeSelector: {}
   # all.tolerations -- Toleration labels for pod assignment on all components.
@@ -72,6 +76,9 @@ stackgraph:
     requests:
       memory: "2Gi"
       cpu: "1000m"
+  # stackgraph.sizing -- Stackgraph memory sizing for JVM
+  sizing:
+    javaHeapMemoryFraction: "60"
   securityContext:
     # stackgraph.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.
     enabled: true
@@ -84,7 +91,7 @@ stackgraph:
   # stackgraph.tolerations -- Toleration labels for pod assignment.
   tolerations: []
   # stackgraph.version -- Version of stackgraph to use
-  version: 7.11.11
+  version: 7.13.18
 console:
   # console.enabled -- Enable / disable deployment of the stackgraph-console for debugging.
   enabled: true
@@ -110,10 +117,10 @@ console:
   # console.resources -- Resources to allocate for HDFS console.
   resources:
     limits:
-      memory: "1Gi"
+      memory: "4Gi"
       cpu: "500m"
     requests:
-      memory: "512Mi"
+      memory: "4Gi"
       cpu: "50m"
   # console.replicaCount -- Amount of console replicas to provision. Default of 0,
   replicaCount: 0
@@ -128,6 +135,11 @@ console:
   tolerations: []
   # console.affinity -- Affinity settings for pod assignment.
   affinity: {}
+  integrity:
+    # console.integrity.enabled -- Enable / disable periodic integrity check to run though a cronjob.
+    enabled: false
+    # console.integrity.schedule -- Schedule at which the integrity check runs
+    schedule: '*/30 * * * *'
 wait:
   image:
     # wait.image.registry -- Base container image registry for wait containers.
@@ -165,14 +177,22 @@ hbase:
       # hbase.master.image.tag -- Container image tag for HBase masters, defaults to `version`-`stackgraph.version`
       tag:
     # hbase.master.replicaCount -- Number of pods for HBase masters.
-    replicaCount: 1
+    replicaCount: null
     # hbase.master.resources -- Resources to allocate for HBase masters.
     resources:
       limits:
         memory: "1Gi"
+        cpu: "500m"
+        ephemeral-storage: "1Gi"
       requests:
         memory: "1Gi"
         cpu: "50m"
+        ephemeral-storage: "1Mi"
+    # hbase.master.terminationGracePeriodSeconds -- Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook
+    terminationGracePeriodSeconds: 30
+    # hbase.master.sizing -- HBase master memory sizing for JVM
+    sizing:
+      javaHeapMemoryFraction: "75"
     # hbase.master.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hbase.master.tolerations -- Toleration labels for pod assignment.
@@ -193,14 +213,22 @@ hbase:
       # hbase.regionserver.image.tag -- Container image tag for HBase region servers, defaults to `version`-`stackgraph.version`
       tag:
     # hbase.regionserver.replicaCount -- Number of HBase regionserver nodes.
-    replicaCount: 1
+    replicaCount: null
     # hbase.regionserver.resources -- Resources to allocate for HBase region servers.
     resources:
       limits:
         memory: "3Gi"
+        cpu: "3000m"
+        ephemeral-storage: "1Gi"
       requests:
-        memory: "2Gi"
-        cpu: "2000m"
+        memory: "3Gi"
+        cpu: "500m"
+        ephemeral-storage: "1Mi"
+    # hbase.regionserver.terminationGracePeriodSeconds -- Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook
+    terminationGracePeriodSeconds: 30
+    # hbase.regionserver.sizing -- HBase region server memory sizing for JVM
+    sizing:
+      javaHeapMemoryFraction: "75"
     # hbase.regionserver.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hbase.regionserver.tolerations -- Toleration labels for pod assignment.
@@ -211,7 +239,8 @@ hbase:
     # hbase.zookeeper.quorum -- Zookeeper quorum used for single-node Zookeeper installations; not used if `zookeeper.replicaCount` is more than `1`.
     quorum: hbase
 hdfs:
-  version: java21-8-11835454
+  # hdfs.version -- The hadoop version is automatically derived from the hbase version, this is the specific build version of the HDFS image for that version
+  version: java21-8-5e4f83b6
   # hdfs.minReplication -- Sets the minimum synchronous replication that the namenode will enforce when writing a block. This gives guarantees about the amount of copies of a single block. (If hdfs.datanode.replicaCount is set to a value less than this, the replication factor will be equal to the replicaCount.)
   minReplication: 1
   scc:
@@ -262,14 +291,20 @@ hdfs:
       # hdfs.datanode.persistence.storageClass -- Storage class of the volume for HDFS data nodes.
       storageClass:
     # hdfs.datanode.replicaCount -- Number of HDFS data nodes.
-    replicaCount: 1
+    replicaCount: null
     # hdfs.datanode.resources -- Resources to allocate for HDFS data nodes.
     resources:
       limits:
         memory: "4Gi"
+        cpu: "500m"
+        ephemeral-storage: "1Gi"
       requests:
-        memory: "2Gi"
-        cpu: "50m"
+        memory: "4Gi"
+        cpu: "100m"
+        ephemeral-storage: "1Mi"
+    # hdfs.datanode.sizing -- HDFS Datanode memory sizing for JVMs in pods
+    sizing:
+      javaHeapMemoryFraction: "75"
     # hdfs.datanode.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hdfs.datanode.tolerations -- Toleration labels for pod assignment.
@@ -297,9 +332,17 @@ hdfs:
     resources:
       limits:
         memory: "1Gi"
+        cpu: "500m"
+        ephemeral-storage: "1Gi"
       requests:
         memory: "1Gi"
         cpu: "50m"
+        ephemeral-storage: "1Mi"
+    # hdfs.namenode.terminationGracePeriodSeconds -- Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook
+    terminationGracePeriodSeconds: 30
+    # hdfs.namenode.sizing -- HDFS name node memory sizing for JVM
+    sizing:
+      javaHeapMemoryFraction: "75"
     # hdfs.namenode.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hdfs.namenode.tolerations -- Toleration labels for pod assignment.
@@ -327,9 +370,17 @@ hdfs:
     resources:
       limits:
         memory: "1Gi"
+        cpu: "500m"
+        ephemeral-storage: "1Gi"
       requests:
         memory: "1Gi"
         cpu: "50m"
+        ephemeral-storage: "1Mi"
+    # hdfs.secondarynamenode.terminationGracePeriodSeconds -- Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook
+    terminationGracePeriodSeconds: 30
+    # hdfs.secondarynamenode.sizing -- HDFS secondary name node memory sizing for JVM
+    sizing:
+      javaHeapMemoryFraction: "75"
     # hdfs.secondarynamenode.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hdfs.secondarynamenode.tolerations -- Toleration labels for pod assignment.
@@ -359,14 +410,20 @@ tephra:
     # tephra.image.tag -- Container image tag for Tephra pods, defaults to `version`-`stackgraph.version`
     tag:
   # tephra.replicaCount -- Number of pods for Tephra pods.
-  replicaCount: 1
+  replicaCount: null
   # tephra.resources -- Resources to allocate for Tephra pods.
   resources:
     limits:
       memory: "3Gi"
+      cpu: "500m"
+      ephemeral-storage: "1Gi"
     requests:
-      memory: "2Gi"
-      cpu: "50m"
+      memory: "3Gi"
+      cpu: "250m"
+      ephemeral-storage: "1Mi"
+  # tephra.sizing -- Tephra memory sizing for JVM
+  sizing:
+    javaHeapMemoryFraction: "65"
   # tephra.nodeSelector -- Node labels for pod assignment.
   nodeSelector: {}
   # tephra.tolerations -- Toleration labels for pod assignment.

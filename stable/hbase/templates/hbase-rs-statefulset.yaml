@@ -30,6 +30,15 @@ env:
   value: $(POD_NAME).{{ template "common.fullname.short" . }}-hbase-rs.$(POD_NAMESPACE).svc.cluster.local
 - name: HBASE_CONF_hbase_master_hostname
   value: "{{ template "common.fullname.short" . }}-hbase-master"
+{{- $profileResources := include "common.sizing.hbase.regionserver.resources" . | trim -}}
+{{- $evaluatedResources := .Values.hbase.regionserver.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.hbase.regionserver.resources }}
+{{- end }}
+{{- $regionserverWithResources := merge (dict "resources" $evaluatedResources) .Values.hbase.regionserver }}
+{{- $serviceConfig := dict "ServiceConfig" (merge $regionserverWithResources .Values.all) }}
+{{- include "hbase.service.envvars" $serviceConfig }}
 ports:
 - containerPort: 16020
   name: rs
@@ -47,7 +56,7 @@ readinessProbe:
   exec:
     command:
       - /rs-scripts/check-status.sh
-{{- with .Values.hbase.regionserver.resources }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -65,7 +74,7 @@ volumeMounts:
 {{- $overrideContainer := fromYaml (include "hbase.hbase.regionserver.container.init" .) -}}
 {{- $stackstateHbaseRegionServerInitContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  labels:
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
     app.kubernetes.io/component: hbase-rs
 {{- if .Values.global.commonLabels }}
 {{- include "hbase.commonLabels" . | indent 4 }}
@@ -73,22 +82,27 @@ metadata:
   name: {{ template "common.fullname.short" . }}-hbase-rs
 spec:
   podManagementPolicy: Parallel
-  replicas: {{ .Values.hbase.regionserver.replicaCount }}
+  {{- $replicaCount := include "common.sizing.hbase.regionserver.effectiveReplicaCount" . }}
+  replicas: {{ $replicaCount }}
   serviceName: {{ template "common.fullname.short" . }}-hbase-rs
   selector:
     matchLabels:
       app.kubernetes.io/component: hbase-rs
+      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      app.kubernetes.io/name: {{ template "common.name" . }}
   template:
     metadata:
       labels:
         app.kubernetes.io/component: hbase-rs
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        app.kubernetes.io/name: {{ template "common.name" . }}
 {{- if .Values.global.commonLabels }}
 {{- include "hbase.podLabels" . | indent 8 }}
 {{- end }}
       annotations:
       {{ include "common.metrics.annotations" (dict "metrics" .Values.all.metrics "port" "9404" "container_name" "regionserver" "filter" .Values.hbase.regionserver.agentMetricsFilter) | indent 8 }}
     spec:
-      {{- include "common.image.pullSecret.name" (dict "images" (list .Values.all.image) "context" $) | nindent 6 }}
+      {{- include "hbase.image.pullSecret.name" (dict "images" (list .Values.all.image) "context" $) | nindent 6 }}
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ template "common.fullname.short" . }}-hbase
       {{- end }}
@@ -114,8 +128,12 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.all.affinity .Values.hbase.regionserver.affinity }}
+    {{- $sizingAffinity := include "common.sizing.hbase.regionserver.affinityConfig" . | fromYaml -}}
+    {{- if or .Values.all.affinity .Values.hbase.regionserver.affinity $sizingAffinity }}
       affinity:
+      {{- with $sizingAffinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.all.affinity }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -123,6 +141,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.hbase.regionserver.terminationGracePeriodSeconds }}
     {{- if or .Values.all.tolerations .Values.hbase.regionserver.tolerations }}
       tolerations:
       {{- with .Values.all.tolerations }}
@@ -134,8 +153,8 @@ spec:
     {{- end }}
 {{- end -}}
 
-{{- if eq .Values.deployment.mode "Distributed" -}}
-{{- $commonStatefulSet := fromYaml (include "common.statefulset" .) -}}
-{{- $stackstateHbaseRegionServerStatefulSet := fromYaml (include "hbase.hbase.regionserver.statefulset" .) -}}
-{{- toYaml (merge $stackstateHbaseRegionServerStatefulSet $commonStatefulSet) -}}
+{{- if eq (include "hbase.deployment.mode" .) "Distributed" -}}
+apiVersion: apps/v1
+kind: StatefulSet
+{{ include "hbase.hbase.regionserver.statefulset" . }}
 {{- end -}}

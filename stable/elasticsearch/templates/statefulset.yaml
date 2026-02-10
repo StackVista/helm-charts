@@ -60,6 +60,8 @@ exec:
       fi
 {{- end -}}
 ---
+{{- $sizingReplicas := include "common.sizing.elasticsearch.replicas" . | trim -}}
+{{- $replicas := int (default .Values.replicas $sizingReplicas) }}
 apiVersion: {{ template "elasticsearch.statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
@@ -79,7 +81,7 @@ spec:
     matchLabels:
         {{/* Only kept for backwards compatible in upgrades, selector cannot be updated */}}
         app: "{{ template "elasticsearch.uname" . }}"
-  replicas: {{ .Values.replicas }}
+  replicas: {{ $replicas }}
   podManagementPolicy: {{ .Values.podManagementPolicy }}
   updateStrategy:
     type: {{ .Values.updateStrategy }}
@@ -92,8 +94,14 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
     spec:
-
-{{- include "elasticsearch.tplvalue.render" ( dict "value" .Values.volumeClaimTemplate "context" $) | trim | nindent 6 }}
+      accessModes:
+      {{- range .Values.volumeClaimTemplate.accessModes }}
+        - {{ . | quote }}
+      {{- end }}
+      resources:
+        requests:
+          {{ $storageSize := include "common.sizing.elasticsearch.storage" . | trim }}
+          storage: {{ $storageSize | default .Values.volumeClaimTemplate.resources.requests.storage | quote }}
   {{- if (.Values.global).storageClass }}
       storageClassName: "{{ .Values.global.storageClass }}"
   {{- end }}
@@ -142,13 +150,24 @@ spec:
       nodeSelector:
 {{ toYaml . | indent 8 }}
       {{- end }}
-      {{- if or (eq .Values.antiAffinity "hard") (eq .Values.antiAffinity "soft") .Values.nodeAffinity }}
+      {{- $sizingAntiAffinity := include "common.sizing.elasticsearch.antiAffinityConfig" . | trim -}}
+      {{- $sizingAntiAffinityTopologyKey := include "common.sizing.elasticsearch.antiAffinityTopologyKeyConfig" . | trim -}}
+      {{- $sizingNodeAffinity := include "common.sizing.elasticsearch.nodeAffinityConfig" . | trim -}}
+      {{- $antiAffinity := .Values.antiAffinity | default $sizingAntiAffinity | toString -}}
+      {{- $antiAffinity = tpl $antiAffinity . -}}
+      {{- $antiAffinityTopologyKey := .Values.antiAffinityTopologyKey | default $sizingAntiAffinityTopologyKey | toString -}}
+      {{- $antiAffinityTopologyKey = tpl $antiAffinityTopologyKey . -}}
+      {{- $nodeAffinity := .Values.nodeAffinity -}}
+      {{- if and (not $nodeAffinity) $sizingNodeAffinity -}}
+        {{- $nodeAffinity = $sizingNodeAffinity | fromYaml -}}
+      {{- end -}}
+      {{- if or (eq $antiAffinity "hard") (eq $antiAffinity "soft") $nodeAffinity }}
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
       affinity:
       {{- end }}
-      {{- if eq .Values.antiAffinity "hard" }}
+      {{- if eq $antiAffinity "hard" }}
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
@@ -157,13 +176,13 @@ spec:
                 operator: In
                 values:
                 - "{{ template "elasticsearch.uname" .}}"
-            topologyKey: {{ .Values.antiAffinityTopologyKey }}
-      {{- else if eq .Values.antiAffinity "soft" }}
+            topologyKey: {{ $antiAffinityTopologyKey }}
+      {{- else if eq $antiAffinity "soft" }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 1
             podAffinityTerm:
-              topologyKey: {{ .Values.antiAffinityTopologyKey }}
+              topologyKey: {{ $antiAffinityTopologyKey }}
               labelSelector:
                 matchExpressions:
                 - key: app
@@ -171,7 +190,7 @@ spec:
                   values:
                   - "{{ template "elasticsearch.uname" . }}"
       {{- end }}
-      {{- with .Values.nodeAffinity }}
+      {{- with $nodeAffinity }}
         nodeAffinity:
 {{ toYaml . | indent 10 }}
       {{- end }}
@@ -276,8 +295,16 @@ spec:
           containerPort: {{ .Values.httpPort }}
         - name: transport
           containerPort: {{ .Values.transportPort }}
+{{- $profileResources := include "common.sizing.elasticsearch.resources" . | trim -}}
+{{- $evaluatedResources := .Values.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict .Values.resources }}
+{{- end }}
+{{- with $evaluatedResources }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+{{ toYaml . | indent 10 }}
+{{- end }}
         env:
           - name: node.name
             valueFrom:
@@ -312,7 +339,7 @@ spec:
             {{/* Remain compatible with existing configurations, the esJavaOpts is often overriden by users via the small profiles of SUSE Observability.
                  by removing the logging options because they are defined in the docker image now and this settings breaks in the new image version due to different working directory*/}}
           - name: ES_JAVA_OPTS
-            value: {{ .Values.esJavaOpts | replace " -Xlog:disable -Xlog:gc*,gc+age=trace,safepoint:file=logs/gc.log:utctime,pid,tags:filecount=8,filesize=16m" "" | quote }}
+            value: {{ include "elasticsearch.esJavaOpts" . | replace " -Xlog:disable -Xlog:gc*,gc+age=trace,safepoint:file=logs/gc.log:utctime,pid,tags:filecount=8,filesize=16m" "" | quote }}
           {{- if .Values.createCert }}
           - name: xpack.security.enabled
             value: "true"

@@ -1,4 +1,4 @@
-{{- if and .Values.server.scrape.enabled (eq .Values.server.scrape.configMap "") }}
+{{- if and .Values.server.scrape.enabled (eq .Values.server.scrape.configMap "") (eq (include "victoria-metrics.isEnabled" .) "true") }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

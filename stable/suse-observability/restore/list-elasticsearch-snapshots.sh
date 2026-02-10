@@ -13,7 +13,7 @@ if [ -z "${CM_NAME}" ]; then
 fi
 
 if (! (kubectl get configmap "${CM_NAME}" -o jsonpath="{.data.job-${JOB_NAME_TEMPLATE}\.yaml}" | sed -e "s/${JOB_NAME_TEMPLATE}/${JOB_NAME}/" > "${JOB_YAML_FILE}")) || [ ! -s "${JOB_YAML_FILE}" ]; then
-    echo "Did you set backup.enabled and backup.elasticsearch.restore.enabled to true?"
+    echo "Did you set backup.enabled to true?"
     exit 1
 fi
 

@@ -1,4 +1,10 @@
 {{- define "stackstate.ui.deployment.main.container" -}}
+{{- $profileResources := include "common.sizing.stackstate.ui.resources" . | trim -}}
+{{- $evaluatedResources := .Values.stackstate.components.ui.resources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict $evaluatedResources }}
+{{- end }}
 {{- $serviceConfig := dict "ServiceName" "ui" "ServiceConfig" .Values.stackstate.components.ui }}
 
 env:
@@ -24,7 +30,7 @@ readinessProbe:
     path: /
     port: ui
   initialDelaySeconds: 5
-{{- with .Values.stackstate.components.ui.resources }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
@@ -70,6 +76,8 @@ resources:
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 {{- $stsstackstateUiMainContainer := fromYaml (include "stackstate.ui.deployment.main.container" .) }}
 {{- $stsstackstateUiMonitoringContainer := fromYaml (include "stackstate.ui.deployment.monitoring.container" .) }}
+{{- $sizingReplicaCount := include "common.sizing.stackstate.ui.replicaCount" . | trim -}}
+{{- $evaluatedReplicaCount := ternary .Values.stackstate.components.ui.replicaCount (default 2 $sizingReplicaCount | int) (not (kindIs "invalid" .Values.stackstate.components.ui.replicaCount)) -}}
 
 metadata:
   name: {{ template "common.fullname.short" . }}-ui
@@ -77,7 +85,7 @@ metadata:
     app.kubernetes.io/component: ui
     {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.stackstate.components.ui.replicaCount }}
+  replicas: {{ $evaluatedReplicaCount }}
   selector:
     matchLabels:
       app.kubernetes.io/component: ui
@@ -113,14 +121,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.ui.affinity }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.ui.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- if $affinity }}
       affinity:
-      {{- with .Values.stackstate.components.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.ui.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- $affinity | nindent 8 }}
     {{- end }}
     {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.ui.tolerations }}
       tolerations:

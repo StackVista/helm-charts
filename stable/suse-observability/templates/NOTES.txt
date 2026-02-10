@@ -42,3 +42,52 @@ Check for deprecated stackstate.experimental usage and show warnings
 The stackstate.experimental.* configuration keys are deprecated and will be removed in a future release.
 Please update your values.yaml to use stackstate.features.* instead.
 {{- end }}
+
+{{- if include "suse-observability.global.enabled" . }}
+=============================================================================
+SUSE Observability Installation (Simplified Configuration Mode)
+=============================================================================
+
+Simplified configuration mode is active (auto-detected from global.suseObservability.* values).
+
+Configuration Summary:
+  • Base URL: {{ include "suse-observability.global.baseUrl" . }}
+  • License: {{ if include "suse-observability.global.license" . }}✓ Configured{{ else }}⚠ Missing{{ end }}
+  • Admin Password: {{ if or (include "suse-observability.global.adminPassword" .) (include "suse-observability.global.adminPasswordBcrypt" .) }}✓ Configured{{ else }}⚠ Missing{{ end }}
+  {{- if include "suse-observability.global.hasPullSecret" . }}
+  • Pull Secret: ✓ Configured (automatically applied to all pods)
+  {{- end }}
+  {{- if .Values.global.suseObservability.sizing.profile }}
+  • Sizing Profile: {{ .Values.global.suseObservability.sizing.profile }} ✓
+  {{- end }}
+
+{{- if include "suse-observability.global.receiverApiKey" . }}
+
+⚠️ WARNING:
+   You are using the 'receiverApiKey' configuration.
+   Instead of a global, unlimited, API key, please use (per-cluster) Service Tokens.
+   For service token usage and migration instructions, see: https://l.stackstate.com/v7.0/ui-service-tokens
+{{- end }}
+
+
+{{- else }}
+=============================================================================
+SUSE Observability Installation
+=============================================================================
+
+Your SUSE Observability instance has been installed.
+
+For simplified configuration, you can use the global.suseObservability section:
+  helm install suse-observability suse-observability/suse-observability \
+    --set global.suseObservability.license=<your-license> \
+    --set global.suseObservability.baseUrl=<your-base-url> \
+    --set global.suseObservability.adminPassword=<plain-text-password> \
+    --set global.suseObservability.sizing.profile=<profile-name>
+
+  With image pull secret (optional):
+    --set global.suseObservability.pullSecret.username=<username> \
+    --set global.suseObservability.pullSecret.password=<password>
+
+{{- end }}
+
+For more information, visit: https://documentation.suse.com/cloudnative/suse-observability/latest/en/k8s-quick-start-guide.html

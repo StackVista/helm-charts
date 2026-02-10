@@ -1,4 +1,4 @@
-{{- if .Values.server.persistentVolume.enabled -}}
+{{- if and .Values.server.persistentVolume.enabled (eq (include "victoria-metrics.isEnabled" .) "true") -}}
 {{- if not .Values.server.statefulSet.enabled -}}
 {{- if not .Values.server.persistentVolume.existingClaim -}}
 kind: PersistentVolumeClaim
@@ -19,7 +19,12 @@ spec:
 {{- end }}
   resources:
     requests:
+{{- $storageSize := include "common.sizing.victoria-metrics.storage" $ | trim -}}
+{{- if $storageSize }}
+      storage: {{ $storageSize | quote }}
+{{- else }}
       storage: {{ .Values.server.persistentVolume.size | quote }}
+{{- end }}
 {{- if .Values.server.persistentVolume.storageClass }}
   {{ include "common.storage.class" ( dict "persistence" .Values.server.persistentVolume "global" .Values.global) | nindent 2 }}
 {{- end }}

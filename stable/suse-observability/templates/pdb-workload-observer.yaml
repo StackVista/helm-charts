@@ -1,0 +1,4 @@
+{{- if .Values.stackstate.components.workloadObserver.enabled }}
+{{- $valuesPdb := dict "PdbName" "workload-observer" "PdbBudget" .Values.stackstate.components.workloadObserver.poddisruptionbudget -}}
+{{- (include "stackstate.service.poddisruptionbudget" (merge $valuesPdb .)) -}}
+{{- end }}

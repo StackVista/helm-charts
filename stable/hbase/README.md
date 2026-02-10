@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.2.81`
+Current chart version is `0.2.112`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -11,6 +11,7 @@ Current chart version is `0.2.81`
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common/ | common | * |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.2 |
 
 ## Required Values
 
@@ -30,6 +31,7 @@ Current chart version is `0.2.81`
 | all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
 | all.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
 | all.nodeSelector | object | `{}` | Node labels for pod assignment on all components. |
+| all.sizing | object | `{"baseMemoryConsumption":"125Mi","javaHeapMemoryFraction":"75"}` | Default memory sizing for JVMs in pods |
 | all.tolerations | list | `[]` | Toleration labels for pod assignment on all components. |
 | console.affinity | object | `{}` | Affinity settings for pod assignment. |
 | console.enabled | bool | `true` | Enable / disable deployment of the stackgraph-console for debugging. |
@@ -38,9 +40,11 @@ Current chart version is `0.2.81`
 | console.image.pullPolicy | string | `nil` | Pull policy for console pods, defaults to `stackgraph.image.pullPolicy` |
 | console.image.repository | string | `"stackstate/stackgraph-console"` | Base container image repository for console pods. |
 | console.image.tag | string | `nil` | Container image tag for console pods, defaults to `version`-`stackgraph.version` |
+| console.integrity.enabled | bool | `false` | Enable / disable periodic integrity check to run though a cronjob. |
+| console.integrity.schedule | string | `"*/30 * * * *"` | Schedule at which the integrity check runs |
 | console.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | console.replicaCount | int | `0` | Amount of console replicas to provision. Default of 0, |
-| console.resources | object | `{"limits":{"cpu":"500m","memory":"1Gi"},"requests":{"cpu":"50m","memory":"512Mi"}}` | Resources to allocate for HDFS console. |
+| console.resources | object | `{"limits":{"cpu":"500m","memory":"4Gi"},"requests":{"cpu":"50m","memory":"4Gi"}}` | Resources to allocate for HDFS console. |
 | console.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
 | console.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | console.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
@@ -57,8 +61,10 @@ Current chart version is `0.2.81`
 | hbase.master.image.repository | string | `"stackstate/hbase-master"` | Base container image repository for HBase masters. |
 | hbase.master.image.tag | string | `nil` | Container image tag for HBase masters, defaults to `version`-`stackgraph.version` |
 | hbase.master.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| hbase.master.replicaCount | int | `1` | Number of pods for HBase masters. |
-| hbase.master.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HBase masters. |
+| hbase.master.replicaCount | string | `nil` | Number of pods for HBase masters. |
+| hbase.master.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"1Gi"},"requests":{"cpu":"50m","ephemeral-storage":"1Mi","memory":"1Gi"}}` | Resources to allocate for HBase masters. |
+| hbase.master.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HBase master memory sizing for JVM |
+| hbase.master.terminationGracePeriodSeconds | int | `30` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
 | hbase.master.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.regionserver.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hbase.regionserver.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -67,8 +73,10 @@ Current chart version is `0.2.81`
 | hbase.regionserver.image.repository | string | `"stackstate/hbase-regionserver"` | Base container image repository for HBase region servers. |
 | hbase.regionserver.image.tag | string | `nil` | Container image tag for HBase region servers, defaults to `version`-`stackgraph.version` |
 | hbase.regionserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| hbase.regionserver.replicaCount | int | `1` | Number of HBase regionserver nodes. |
-| hbase.regionserver.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"2000m","memory":"2Gi"}}` | Resources to allocate for HBase region servers. |
+| hbase.regionserver.replicaCount | string | `nil` | Number of HBase regionserver nodes. |
+| hbase.regionserver.resources | object | `{"limits":{"cpu":"3000m","ephemeral-storage":"1Gi","memory":"3Gi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"3Gi"}}` | Resources to allocate for HBase region servers. |
+| hbase.regionserver.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HBase region server memory sizing for JVM |
+| hbase.regionserver.terminationGracePeriodSeconds | int | `30` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
 | hbase.regionserver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
 | hbase.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
@@ -82,8 +90,9 @@ Current chart version is `0.2.81`
 | hdfs.datanode.persistence.enabled | bool | `true` | Enable persistence for HDFS data nodes. |
 | hdfs.datanode.persistence.size | string | `"250Gi"` | Size of volume for HDFS data nodes. |
 | hdfs.datanode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS data nodes. |
-| hdfs.datanode.replicaCount | int | `1` | Number of HDFS data nodes. |
-| hdfs.datanode.resources | object | `{"limits":{"memory":"4Gi"},"requests":{"cpu":"50m","memory":"2Gi"}}` | Resources to allocate for HDFS data nodes. |
+| hdfs.datanode.replicaCount | string | `nil` | Number of HDFS data nodes. |
+| hdfs.datanode.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"4Gi"},"requests":{"cpu":"100m","ephemeral-storage":"1Mi","memory":"4Gi"}}` | Resources to allocate for HDFS data nodes. |
+| hdfs.datanode.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HDFS Datanode memory sizing for JVMs in pods |
 | hdfs.datanode.terminationGracePeriodSeconds | int | `600` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
 | hdfs.datanode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.image.pullPolicy | string | `"IfNotPresent"` | Pull policy for HDFS datanode. |
@@ -98,7 +107,9 @@ Current chart version is `0.2.81`
 | hdfs.namenode.persistence.enabled | bool | `true` | Enable persistence for HDFS name nodes. |
 | hdfs.namenode.persistence.size | string | `"20Gi"` | Size of volume for HDFS name nodes. |
 | hdfs.namenode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS name nodes. |
-| hdfs.namenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HDFS name nodes. |
+| hdfs.namenode.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"1Gi"},"requests":{"cpu":"50m","ephemeral-storage":"1Mi","memory":"1Gi"}}` | Resources to allocate for HDFS name nodes. |
+| hdfs.namenode.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HDFS name node memory sizing for JVM |
+| hdfs.namenode.terminationGracePeriodSeconds | int | `30` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
 | hdfs.namenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.scc.enabled | bool | `false` | Whether to create an OpenShift SecurityContextConfiguration (required when running on OpenShift) |
 | hdfs.secondarynamenode.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -110,13 +121,15 @@ Current chart version is `0.2.81`
 | hdfs.secondarynamenode.persistence.enabled | bool | `true` | Enable persistence for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.persistence.size | string | `"20Gi"` | Size of volume for HDFS secondary name nodes. |
 | hdfs.secondarynamenode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS secondary name nodes. |
-| hdfs.secondarynamenode.resources | object | `{"limits":{"memory":"1Gi"},"requests":{"cpu":"50m","memory":"1Gi"}}` | Resources to allocate for HDFS secondary name nodes. |
+| hdfs.secondarynamenode.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"1Gi"},"requests":{"cpu":"50m","ephemeral-storage":"1Mi","memory":"1Gi"}}` | Resources to allocate for HDFS secondary name nodes. |
+| hdfs.secondarynamenode.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HDFS secondary name node memory sizing for JVM |
+| hdfs.secondarynamenode.terminationGracePeriodSeconds | int | `30` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
 | hdfs.secondarynamenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
 | hdfs.securityContext.fsGroup | int | `65534` |  |
 | hdfs.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | hdfs.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
-| hdfs.version | string | `"java21-8-11835454"` |  |
+| hdfs.version | string | `"java21-8-5e4f83b6"` | The hadoop version is automatically derived from the hbase version, this is the specific build version of the HDFS image for that version |
 | hdfs.volumePermissions.enabled | bool | `false` | Whether to explicitly change the volume permissions for the data/name nodes. If permissions on volume mounts are not correct for whatever reason this can be used to set them properly. Usually also requires enabling the securityContext because root user is required. |
 | hdfs.volumePermissions.securityContext.allowPrivilegeEscalation | bool | `true` | Run the volumePermissions init container with privilege escalation mode (Do not change unless instructed) |
 | hdfs.volumePermissions.securityContext.enabled | bool | `false` | Whether to add a securityContext to the volumePermissions init container |
@@ -139,8 +152,9 @@ Current chart version is `0.2.81`
 | stackgraph.securityContext.fsGroup | int | `65534` | UID of the Linux user to use for all pod. |
 | stackgraph.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | stackgraph.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
+| stackgraph.sizing | object | `{"javaHeapMemoryFraction":"60"}` | Stackgraph memory sizing for JVM |
 | stackgraph.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| stackgraph.version | string | `"7.11.11"` | Version of stackgraph to use |
+| stackgraph.version | string | `"7.13.18"` | Version of stackgraph to use |
 | statefulset.antiAffinity.strategy | string | `"soft"` | AntiAffinity strategy to use for all StatefulSets. |
 | statefulset.antiAffinity.topologyKey | string | `"kubernetes.io/hostname"` | AntiAffinity topology key to use for all StatefulSets. |
 | tephra.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -153,14 +167,15 @@ Current chart version is `0.2.81`
 | tephra.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for Tephra on Mono mode. |
 | tephra.persistence.size | string | `"1Gi"` | Size of volume for Tephra on Mono mode. |
 | tephra.persistence.storageClass | string | `nil` | Storage class of the volume for Tephra on Mono mode |
-| tephra.replicaCount | int | `1` | Number of pods for Tephra pods. |
-| tephra.resources | object | `{"limits":{"memory":"3Gi"},"requests":{"cpu":"50m","memory":"2Gi"}}` | Resources to allocate for Tephra pods. |
+| tephra.replicaCount | string | `nil` | Number of pods for Tephra pods. |
+| tephra.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"3Gi"},"requests":{"cpu":"250m","ephemeral-storage":"1Mi","memory":"3Gi"}}` | Resources to allocate for Tephra pods. |
 | tephra.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |
 | tephra.securityContext.fsGroup | int | `65534` | GID of the Linux user to use for fs. |
 | tephra.securityContext.runAsGroup | int | `65534` | GID of the Linux group to use for all pod. |
 | tephra.securityContext.runAsUser | int | `65534` | UID of the Linux user to use for all pod. |
+| tephra.sizing | object | `{"javaHeapMemoryFraction":"65"}` | Tephra memory sizing for JVM |
 | tephra.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| version | string | `"1.2"` | Version of hbase to use |
+| version | string | `"2.5"` | Version of hbase to use |
 | wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | wait.image.repository | string | `"stackstate/wait"` | Container image tag for wait containers. |

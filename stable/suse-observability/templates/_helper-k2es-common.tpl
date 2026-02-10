@@ -8,37 +8,47 @@ command:
 - -c
 - |
   /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackstate.es.endpoint" . }} -t 300
-image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- end -}}
 
 {{- define "stackstate.k2es.deployment.common.container" -}}
+{{- $profileResources := include (printf "common.sizing.stackstate.%s.resources" .K2esName) . | trim -}}
+{{- $defaultResources := .K2esConfig.resources }}
+{{- $evaluatedResources := $defaultResources }}
+{{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge $profileResourcesDict $defaultResources }}
+{{- end }}
+{{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .K2esConfig -}}
 env:
-{{- $serviceConfig := dict "ServiceName" .K2esName "ServiceConfig" .K2esConfig }}
+{{- $serviceConfig := dict "ServiceName" .K2esName "ServiceConfig" $componentConfigWithResources }}
 {{- include "stackstate.service.envvars" (merge $serviceConfig .) }}
 {{/*
     Currently we use a single replicationFactor config for all indices on ES, that works fine with calculating the available disk space
     and on the STS processes assigning diskSpaceWeights to each process. But if in the future we have need to configure different
     replicationFactors per index we will need to revisit and adapt the diskSpaceWeights login on STS
 */}}
-{{ $replicationFactor := ternary "1" "0" (gt .Values.elasticsearch.replicas 2.0) }}
+{{- $esReplicas := include "suse-observability.sizing.elasticsearch.replicas" . | trim | int -}}
+{{ $replicationFactor := ternary "1" "0" (gt $esReplicas 2) }}
 - name: CONFIG_FORCE_stackstate_kafkaTopologyEventsToES_elasticsearch_index_replicas
   value: "{{ $replicationFactor  }}"
 {{/*
 Run validation of total ESDiskShare
 */}}
 {{ include "stackstate.elastic.storage.total" . }}
-{{ $diskSpaceMB := (include "stackstate.storage.to.megabytes" .Values.elasticsearch.volumeClaimTemplate.resources.requests.storage) }}
+{{- $esStorage := include "suse-observability.sizing.elasticsearch.volumeClaimTemplate.resources.requests.storage" . | trim -}}
+{{ $diskSpaceMB := (include "stackstate.storage.to.megabytes" $esStorage) }}
 {{ if $diskSpaceMB  }}
 - name: CONFIG_FORCE_stackstate_elasticsearchDiskSpaceMB
-  value: "{{ divf (mulf (divf (mulf $diskSpaceMB .Values.elasticsearch.replicas) (add1 $replicationFactor)) .esDiskSpaceShare) 100 | int }}"
+  value: "{{ divf (mulf (divf (mulf $diskSpaceMB $esReplicas) (add1 $replicationFactor)) .esDiskSpaceShare) 100 | int }}"
 {{ end }}
 {{- $k2esShare := .Values.stackstate.components.e2es.esDiskSpaceShare | int -}}
 {{- $e2EsShare := (mulf (divf (.Values.stackstate.components.e2es.esDiskSpaceShare | int) $k2esShare) 100) | int  -}}
 - name: CONFIG_FORCE_stackstate_kafkaTopologyEventsToES_elasticsearch_index_diskSpaceWeight
   value: "{{ $e2EsShare }}"
 - name: CONFIG_FORCE_stackstate_kafkaTopologyEventsToES_elasticsearch_index_maxIndicesRetained
-  value: "{{ .Values.stackstate.components.e2es.retention }}"
+  value: "{{ include "common.sizing.stackstate.e2es.retention" . | default .Values.stackstate.components.e2es.retention }}"
 - name: ELASTICSEARCH_URI
   value: "http://{{ include "stackstate.es.endpoint" . }}"
 - name: KAFKA_BROKERS
@@ -68,7 +78,7 @@ readinessProbe:
     port: health
   initialDelaySeconds: 10
   timeoutSeconds: 5
-{{- with .K2esConfig.resources }}
+{{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}

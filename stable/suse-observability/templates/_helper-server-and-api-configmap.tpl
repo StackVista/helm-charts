@@ -63,7 +63,8 @@ stackstate.api.authorization.staticSubjects.stackstate-aad: { systemPermissions:
 {{- end }}
 
 stackstate.stackPacks {
-  {{- if eq .Values.hbase.deployment.mode "Distributed" }}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+  {{- if eq $deploymentMode "Distributed" }}
   localStackPacksUri = "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
   {{- else }}
   localStackPacksUri = "file:///var/stackpacks_local"
@@ -96,8 +97,9 @@ stackstate.stackPacks {
   Users can extend this list by setting: stackstate.stackpacks.upgradeOnStartup
 */}}
   {{ $defaultStackPacksToUpgrade := list "kubernetes-v2" "stackstate-k8s-agent-v2" "open-telemetry" "aad-v2" "stackstate" -}}
+  {{ $stackpacks2ToUpgrade := .Values.global.features.experimentalStackpacks | ternary (list "open-telemetry-2") (list) -}}
   {{ $userStackPacksToUpgrade := .Values.stackstate.stackpacks.upgradeOnStartup | default list -}}
-  {{ $upgradeList := concat $defaultStackPacksToUpgrade $userStackPacksToUpgrade | uniq -}}
+  {{ $upgradeList := concat $defaultStackPacksToUpgrade $stackpacks2ToUpgrade $userStackPacksToUpgrade | uniq -}}
   upgradeOnStartUp = {{ toJson $upgradeList }}
 
   {{- $editionStackPack := printf "%s-kubernetes" (lower .Values.stackstate.deployment.edition) }}
@@ -306,11 +308,7 @@ for production this should be replaced with one of the other mechanisms.
 {{- if eq (len $authTypes) 0 }}
 {{- $authTypes = append $authTypes "stackstateAuthServer" }}
 {{ $authnPrefix }}.authServer.stackstateAuthServer {
-{{- if $global.Values.stackstate.authentication.adminPassword }}
   defaultPassword = ${default_password}
-{{- else }}
-{{- fail "Helm value 'stackstate.authentication.adminPassword' is required when neither LDAP, OIDC, Keycloak nor file-based authentication has been configured" -}}
-{{- end }}
 }
 {{- end }}
 

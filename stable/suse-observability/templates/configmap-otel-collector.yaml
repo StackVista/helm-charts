@@ -3,13 +3,13 @@ metadata:
   name: suse-observability-otel-collector
 data:
   api.url:
-  {{- if .Values.stackstate.components.receiver.split.enabled }}
+  {{- if eq (include "stackstate.receiver.split.enabled" .) "true" }}
     "http://{{ template "common.fullname.short" . }}-receiver-base:7077/stsAgent/api/v1/validate"
   {{ else }}
     "http://{{ template "common.fullname.short" . }}-receiver:7077/stsAgent/api/v1/validate"
   {{- end }}
   intake.url:
-  {{- if .Values.stackstate.components.receiver.split.enabled }}
+  {{- if eq (include "stackstate.receiver.split.enabled" .) "true" }}
     "http://{{ template "common.fullname.short" . }}-receiver-base:7077/stsAgent/intake"
   {{ else }}
     "http://{{ template "common.fullname.short" . }}-receiver:7077/stsAgent/intake"

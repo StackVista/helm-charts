@@ -1,0 +1,157 @@
+kubernetes:
+  commonLabels:
+    app.kubernetes.io/name: sts-backup
+    app.kubernetes.io/managed-by: sts-backup
+minio:
+  enabled: true
+  service:
+    name: "suse-observability-minio"
+    port: 9000
+    localPortForwardPort: 9000
+stackgraph:
+  bucket: "sts-stackgraph-backup"
+  s3Prefix: ""
+  multipartArchive: false
+  restore:
+    loggingConfigConfigMap: suse-observability-backup-log
+    scaleDownLabelSelector: stackstate.com/connects-to-stackgraph=true
+    zookeeperQuorum: "suse-observability-zookeeper-headless:2181"
+    pvc:
+      size: 250Gi
+      accessModes: [ReadWriteOnce]
+      
+      
+    job:
+      image: registry.rancher.com/stackstate/stackstate-server:stackstate_image_test_tag-2.5
+      waitImage: registry.rancher.com/stackstate/wait:wait_image_test_tag
+      
+      imagePullSecrets:
+        - name: suse-observability-pull-secret
+      labels:
+        app.kubernetes.io/component: backup
+      resources:
+          limits:
+            cpu: 3000m
+            ephemeral-storage: 1Gi
+            memory: 4000Mi
+          requests:
+            cpu: 1000m
+            ephemeral-storage: 1Mi
+            memory: 4000Mi
+      securityContext:
+          fsGroup: 65534
+          runAsGroup: 65534
+          runAsNonRoot: true
+          runAsUser: 65534
+      
+      
+      
+settings:
+  bucket: "sts-configuration-backup"
+  s3Prefix: ""
+  restore:
+    loggingConfigConfigMap: suse-observability-backup-log
+    baseUrl: "http://localhost"
+    receiverBaseUrl: "http://localhost/receiver"
+    platformVersion: "test_chart_version"
+    scaleDownLabelSelector: stackstate.com/connects-to-stackgraph=true
+    zookeeperQuorum: "suse-observability-zookeeper-headless:2181"
+    pvc: suse-observability-settings-backup-data
+    job:
+      image: registry.rancher.com/stackstate/stackstate-server:stackstate_image_test_tag-2.5
+      waitImage: registry.rancher.com/stackstate/wait:wait_image_test_tag
+      
+      imagePullSecrets:
+        - name: suse-observability-pull-secret
+      labels:
+        app.kubernetes.io/component: backup
+      resources:
+          limits:
+            cpu: 3000m
+            ephemeral-storage: 1Gi
+            memory: 4000Mi
+          requests:
+            cpu: 1000m
+            ephemeral-storage: 1Mi
+            memory: 4000Mi
+      securityContext:
+          fsGroup: 65534
+          runAsGroup: 65534
+          runAsNonRoot: true
+          runAsUser: 65534
+      
+      
+      
+elasticsearch:
+  snapshotRepository:
+    name: "sts-backup"
+    bucket: "sts-elasticsearch-backup"
+    endpoint: "suse-observability-minio:9000"
+    basepath: ""
+  slm:
+    name: "auto-sts-backup"
+    schedule: "0 0 3 * * ?"
+    snapshotTemplateName: "<sts-backup-{now{yyyyMMdd-HHmm}}>"
+    repository: "sts-backup"
+    indices: "sts*"
+    retentionExpireAfter: "30d"
+    retentionMinCount: 5
+    retentionMaxCount: 30
+  service:
+    name: "suse-observability-elasticsearch-master-headless"
+    port: 9200
+    localPortForwardPort: 9200
+  restore:
+    repository: "sts-backup"
+    scaleDownLabelSelector: observability.suse.com/scalable-during-es-restore=true
+    indexPrefix: sts
+    datastreamIndexPrefix: .ds-sts_k8s_logs
+    datastreamName: sts_k8s_logs
+    indicesPattern: sts*,.ds-sts_k8s_logs*
+victoriaMetrics:
+  S3Locations: 
+    - bucket: sts-victoria-metrics-backup
+      prefix: victoria-metrics-0
+    - bucket: sts-victoria-metrics-backup
+      prefix: victoria-metrics-1
+  restore:
+    haMode: mirror
+    persistentVolumeClaimPrefix: server-volume-suse-observability-
+    scaleDownLabelSelector: observability.suse.com/scalable-during-vm-restore=true
+    job:
+      image: registry.rancher.com/stackstate/vmrestore:vm_image_test_tag
+      waitImage: registry.rancher.com/stackstate/wait:wait_image_test_tag
+      
+      imagePullSecrets:
+        - name: suse-observability-pull-secret
+      labels:
+        app.kubernetes.io/component: backup
+      resources:
+          limits:
+            cpu: 3000m
+            ephemeral-storage: 1Gi
+            memory: 4000Mi
+          requests:
+            cpu: 1000m
+            ephemeral-storage: 1Mi
+            memory: 4000Mi
+      securityContext:
+          fsGroup: 65534
+          runAsGroup: 65534
+          runAsNonRoot: true
+          runAsUser: 65534
+      
+      
+      
+clickhouse:
+  database: default
+  service:
+    name: suse-observability-clickhouse-backup
+    port: 9000
+    localPortForwardPort: 9000
+  backupService:
+    name: suse-observability-clickhouse-backup
+    port: 7171
+    localPortForwardPort: 7171
+  restore:
+    scaleDownLabelSelector: observability.suse.com/scalable-during-clickhouse-restore=true

@@ -2,5 +2,8 @@ dependencies:
 - name: common
   repository: https://charts.bitnami.com/bitnami
   version: 1.17.1
-digest: sha256:dacc73770a5640c011e067ff8840ddf89631fc19016c8d0a9e5ea160e7da8690
-generated: "2025-09-08T17:25:27.942776+02:00"
+- name: suse-observability-sizing
+  repository: file://../suse-observability-sizing
+  version: 0.1.3
+digest: sha256:d6dd72ab5ad8912cc563ccbabd1d0ff961c6b15aeb9fb41ac0d97b45d21c0132
+generated: "2026-02-03T08:50:05.084304836+01:00"

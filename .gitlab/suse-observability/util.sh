@@ -5,7 +5,12 @@ set -e
 quay_token=${QUAY_TOKEN:?"Please set the QUAY_TOKEN environment variable"}
 
 export STACKSTATE_VERSION_REGEX="^(?<version>[0-9]+\\.[0-9]+\\.[0-9]+-snapshot.[0-9]+-master.*)$"
-export STACKPACKS_VERSION_REGEX="^(?<version>[0-9]+-master.*)-(prime|community)-(selfhosted|saas)$"
+# We have two variants of the StackPacks docker image. For StackPacks 2.0, a logical version has been added to the image tag, i.e. `2_0`.
+# We only match master build tags without a version suffix (e.g., -2_0-) before the variant.
+# Example of matched tag:    20251028112254-master-4e2e7f4-prime-selfhosted
+# Example of excluded tag:   20251028112254-master-4e2e7f4-2_0-prime-selfhosted
+# This avoids picking up 2.x builds while 1.x remains the default StackPack version.
+export STACKPACKS_VERSION_REGEX="^(?<version>[0-9]+-master-[0-9a-f]+)-(prime|community)-(selfhosted|saas)$"
 
 function get_latest_master_version() {
   image=${1:?"Please provide the image name"}

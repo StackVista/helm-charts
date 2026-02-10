@@ -6,9 +6,20 @@ global:
   commonLabels: {}
   # global.features -- Feature switches for SUSE Observability.
   features:
-    # global.features.enableStackPacks2 -- Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec.
-    enableStackPacks2: false
-
+    # global.features.experimentalStackpacks -- Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec.
+    # This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed.
+    experimentalStackpacks: false
+  # Wait image for init containers
+  wait:
+    image:
+      # global.wait.image.registry -- Base container image registry for wait containers.
+      registry: ''
+      # global.wait.image.repository -- Base container image repository for wait containers.
+      repository: ''
+      # global.wait.image.tag -- Container image tag for wait containers.
+      tag: ''
+      # global.wait.image.pullPolicy -- Image pull policy for wait containers.
+      pullPolicy: ''
 # Declare variables to be passed into your templates.
 nameOverride: ""
 fullnameOverride: ""
@@ -99,16 +110,38 @@ configMap:
 # Supports templating. To escape existing instances of {{ }}, use {{` <original content> `}}.
 # For example, {{ REDACTED_EMAIL }} becomes {{` {{ REDACTED_EMAIL }} `}}.
 config:
-  exporters:
-    debug: {}
-  extensions:
-    # The health_check extension is mandatory for this chart.
-    # Without the health_check extension the collector will fail the readiness and liveliness probes.
-    # The health_check extension can be modified, but should never be removed.
-    health_check:
-      endpoint: ${env:MY_POD_IP}:13133
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          auth:
+            authenticator: service_token_auth
+          endpoint: ${env:MY_POD_IP}:4317
+        http:
+          auth:
+            authenticator: service_token_auth
+          endpoint: ${env:MY_POD_IP}:4318
+    prometheus/internal:
+      config:
+        scrape_configs:
+          - job_name: "opentelemetry-collector-internal"
+            scrape_interval: 10s
+            static_configs:
+              - targets: ["localhost:8888"]  # by default, the collector exposes internal metrics on 127.0.0.1:8888
+  connectors:
+    stsservicegraph:
+      latency_histogram_buckets: [2ms, 4ms, 6ms, 8ms, 10ms, 50ms, 100ms, 200ms, 400ms, 800ms, 1s, 1400ms, 2s, 5s, 10s, 15s, 30s]
+      dimensions:
+        - service.namespace
+        - service.instance.id
+        - sts_api_key
+        - peer.service
+      store:
+        ttl: 30s
+        max_items: 50000
+    forward: {}
   processors:
-    batch: {}
+    stsusage: {}
     # Default memory limiter configuration for the collector based on k8s resource limits.
     memory_limiter:
       # check_interval is the time between measurements of memory usage.
@@ -117,65 +150,142 @@ config:
       limit_percentage: 80
       # By default spike_limit_mib is set to 25% of ".Values.resources.limits.memory"
       spike_limit_percentage: 25
-  receivers:
-    jaeger:
-      protocols:
-        grpc:
-          endpoint: ${env:MY_POD_IP}:14250
-        thrift_http:
-          endpoint: ${env:MY_POD_IP}:14268
-        thrift_compact:
-          endpoint: ${env:MY_POD_IP}:6831
-    otlp:
-      protocols:
-        grpc:
-          endpoint: ${env:MY_POD_IP}:4317
-        http:
-          endpoint: ${env:MY_POD_IP}:4318
-    prometheus:
-      config:
-        scrape_configs:
-          - job_name: opentelemetry-collector
-            scrape_interval: 10s
-            static_configs:
-              - targets:
-                  - ${env:MY_POD_IP}:8888
-    zipkin:
-      endpoint: ${env:MY_POD_IP}:9411
+    batch:
+      timeout: 2s
+      send_batch_size: 100000
+    resource/addDefaultNamespace:
+      attributes:
+        - key: service.namespace
+          action: insert
+          value: default
+    resource/addStsApiKey:
+      attributes:
+        - key: sts_api_key
+          action: upsert
+          from_context: auth.apiKey
+    resource/removeStsApiKey:
+      attributes:
+        - key: sts_api_key
+          action: delete
+    attributes/removeStsApiKey:
+      actions:
+        - key: client_sts_api_key
+          action: delete
+        - key: server_sts_api_key
+          action: delete
+    # extension point to massage data so it conforms to the semantic conventions
+    transform/semconv:
+      error_mode: ignore
+    # Using a relabel rule on the scrape_configs' metric_relabel_configs could also work, but that strips metric metadata
+    transform/internalMetricsPrefix:
+      metric_statements:
+        - context: metric
+          statements:
+            - set(name, Concat(["otelcol_", name], "")) where not HasPrefix(name, "otelcol")
+  exporters:
+    debug: {}
+    clickhousests:
+      endpoint: tcp://suse-observability-clickhouse:9000?dial_timeout=10s&compress=lz4
+      username: admin
+      password: admin
+      database: otel
+      ttl: 72h
+      logs_table_name: otel_logs
+      traces_table_name: otel_traces
+      metrics_table_name: otel_metrics
+      resources_table_name: otel_resources
+      create_traces_table: false
+      create_resources_table: false
+      timeout: 5s
+      retry_on_failure:
+        enabled: true
+        initial_interval: 5s
+        max_interval: 30s
+        max_elapsed_time: 300s
+    prometheusremotewrite/victoria-metrics:
+      endpoint: 'http://suse-observability-vmagent:8429/api/v1/write'
+      resource_to_telemetry_conversion:
+        enabled: true
+    ststopology:
+      endpoint: "${env:INTAKE_URL}"
+  extensions:
+    service_token_auth:
+      endpoint:
+        url: "${env:API_URL}"
+      cache:
+        valid_size: 100
+        valid_ttl: 5m
+        invalid_size: 100
+      schema: "SUSEObservability"
+    # The health_check extension is mandatory for this chart.
+    # Without the health_check extension the collector will fail the readiness and liveliness probes.
+    # The health_check extension can be modified, but should never be removed.
+    health_check:
+      endpoint: ${env:MY_POD_IP}:13133
   service:
-    telemetry:
-      metrics:
-        address: ${env:MY_POD_IP}:8888
     extensions:
       - health_check
-    pipelines:
-      logs:
-        exporters:
-          - debug
-        processors:
-          - memory_limiter
-          - batch
-        receivers:
-          - otlp
+      - service_token_auth
+    telemetry:
       metrics:
-        exporters:
-          - debug
-        processors:
-          - memory_limiter
-          - batch
-        receivers:
-          - otlp
-          - prometheus
+        readers:
+          - pull:
+              exporter:
+                prometheus:
+                  host: '0.0.0.0'
+                  port: 8888
+    pipelines:
       traces:
-        exporters:
-          - debug
-        processors:
-          - memory_limiter
-          - batch
         receivers:
           - otlp
-          - jaeger
-          - zipkin
+        processors:
+          - transform/semconv
+          - resource/addDefaultNamespace
+          - resource/addStsApiKey
+          - batch
+        exporters:
+          - forward
+          - stsservicegraph
+          - ststopology
+      traces/clickhouse:
+        receivers:
+          - forward
+        processors:
+          - stsusage
+          - resource/removeStsApiKey
+        exporters:
+          - clickhousests
+      metrics:
+        receivers:
+          - otlp
+        processors:
+          - resource/addDefaultNamespace
+          - resource/addStsApiKey
+          - batch
+        exporters:
+          - forward
+      metrics/internal:
+        receivers:
+          - prometheus/internal
+        processors:
+          - transform/internalMetricsPrefix
+        exporters:
+          - forward
+      metrics/victoria-metrics:
+        receivers:
+          - forward
+          - stsservicegraph
+        processors:
+          - resource/removeStsApiKey
+          - attributes/removeStsApiKey
+        exporters:
+          - prometheusremotewrite/victoria-metrics
+      metrics/topology:
+        receivers:
+          - forward
+          - stsservicegraph
+        exporters:
+          - ststopology
 
 # Helm currently has an issue (https://github.com/helm/helm/pull/12879) when using null to remove
 # default configuration from a subchart. The result is that you cannot remove default configuration
@@ -206,7 +316,7 @@ imagePullSecrets: []
 
 # OpenTelemetry Collector executable
 command:
-  name: ""
+  name: usr/bin/sts-opentelemetry-collector
   extraArgs: []
 
 serviceAccount:
@@ -296,25 +406,25 @@ ports:
     hostPort: 4318
     protocol: TCP
   jaeger-compact:
-    enabled: true
+    enabled: false
     containerPort: 6831
     servicePort: 6831
     hostPort: 6831
     protocol: UDP
   jaeger-thrift:
-    enabled: true
+    enabled: false
     containerPort: 14268
     servicePort: 14268
     hostPort: 14268
     protocol: TCP
   jaeger-grpc:
-    enabled: true
+    enabled: false
     containerPort: 14250
     servicePort: 14250
     hostPort: 14250
     protocol: TCP
   zipkin:
-    enabled: true
+    enabled: false
     containerPort: 9411
     servicePort: 9411
     hostPort: 9411
@@ -322,7 +432,7 @@ ports:
   metrics:
     # The metrics port is disabled by default. However you need to enable the port
     # in order to use the ServiceMonitor (serviceMonitor.enabled) or PodMonitor (podMonitor.enabled).
-    enabled: false
+    enabled: true
     containerPort: 8888
     servicePort: 8888
     protocol: TCP

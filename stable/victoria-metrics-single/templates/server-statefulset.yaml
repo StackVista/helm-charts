@@ -1,4 +1,4 @@
-{{- if and .Values.server.enabled .Values.server.statefulSet.enabled -}}
+{{- if and .Values.server.enabled .Values.server.statefulSet.enabled (eq (include "victoria-metrics.isEnabled" .) "true") -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 apiVersion: apps/v1
 kind: StatefulSet
@@ -11,6 +11,7 @@ metadata:
   labels:
     {{- include "victoria-metrics.server.labels" . | nindent 4 }}
     {{- include "victoria-metrics.server.statefulsetLabels" . | nindent 4 }}
+    {{- include "victoria-metrics.server.scaleDownRestoreLabels" . | nindent 4 }}
   name: {{ template "victoria-metrics.server.fullname" . }}
 spec:
   serviceName: {{ template "victoria-metrics.server.fullname" . }}
@@ -37,7 +38,7 @@ spec:
 {{- end }}
       automountServiceAccountToken: {{ .Values.serviceAccount.automountToken }}
       initContainers:
-        {{- if .Values.backup.enabled }}
+        {{- if .Values.global.backup.enabled }}
         - name: create-crontab
           image: {{ include "victoria-metrics.image.registry" (dict "image" .Values.backup.setupCron.image "context" $) }}/{{ .Values.backup.setupCron.image.repository }}:{{ .Values.backup.setupCron.image.tag }}
           imagePullPolicy: IfNotPresent
@@ -77,7 +78,12 @@ spec:
           workingDir: {{ .Values.server.containerWorkingDir }}
           {{- end }}
           args:
+            {{- $retention := include "common.sizing.victoria-metrics.retention" . | trim -}}
+            {{- if $retention }}
+            - {{ printf "%s=%s" "--retentionPeriod" $retention | quote}}
+            {{- else }}
             - {{ printf "%s=%s" "--retentionPeriod" (toString .Values.server.retentionPeriod) | quote}}
+            {{- end }}
             - {{ printf "%s=%s" "--storageDataPath" .Values.server.persistentVolume.mountPath | quote}}
           {{- if .Values.server.scrape.enabled }}
             - -promscrape.config=/scrapeconfig/scrape.yml
@@ -139,7 +145,7 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
-            {{- toYaml .Values.server.resources | nindent 12 }}
+            {{- include "victoria-metrics.server.resources" . | nindent 12 }}
           securityContext:
             {{- $commonContainer.securityContext | toYaml | nindent 12 }}
           volumeMounts:
@@ -171,7 +177,7 @@ spec:
           {{- with .Values.server.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-        {{- if .Values.backup.enabled }}
+        {{- if .Values.global.backup.enabled }}
         - name: vmbackup
           image: {{ include "victoria-metrics.image.registry" (dict "image" .Values.backup.vmbackup.image "context" $) }}/{{ .Values.backup.vmbackup.image.repository }}:{{ .Values.backup.vmbackup.image.tag }}
           imagePullPolicy: IfNotPresent
@@ -271,7 +277,17 @@ spec:
       tolerations:
 {{ toYaml .Values.server.tolerations | indent 8 }}
     {{- end }}
-    {{- with .Values.server.affinity }}
+    {{- $sizingAffinity := dict -}}
+    {{- if contains "victoria-metrics-0" (include "victoria-metrics.server.fullname" .) -}}
+      {{- $sizingAffinity = include "common.sizing.victoria-metrics-0.affinityConfig" . | fromYaml -}}
+    {{- else if contains "victoria-metrics-1" (include "victoria-metrics.server.fullname" .) -}}
+      {{- $sizingAffinity = include "common.sizing.victoria-metrics-1.affinityConfig" . | fromYaml -}}
+    {{- end -}}
+    {{- $finalAffinity := .Values.server.affinity | default dict -}}
+    {{- if and (not .Values.server.affinity) $sizingAffinity -}}
+      {{- $finalAffinity = $sizingAffinity -}}
+    {{- end -}}
+    {{- with $finalAffinity }}
       affinity: {{ toYaml . | nindent 8 }}
     {{- end }}
       terminationGracePeriodSeconds: {{ .Values.server.terminationGracePeriodSeconds }}
@@ -291,7 +307,7 @@ spec:
             claimName: {{ .Values.server.persistentVolume.existingClaim }}
         {{- end }}
         {{- end }}
-        {{- if .Values.backup.enabled }}
+        {{- if .Values.global.backup.enabled }}
         - name: crontab
           emptyDir: { }
         {{- end }}
@@ -315,7 +331,12 @@ spec:
 {{ toYaml .Values.server.persistentVolume.accessModes | indent 10 }}
         resources:
           requests:
+{{- $storageSize := include "common.sizing.victoria-metrics.storage" $ | trim -}}
+{{- if $storageSize }}
+            storage: "{{ $storageSize }}"
+{{- else }}
             storage: "{{ .Values.server.persistentVolume.size }}"
+{{- end }}
        {{ include "common.storage.class" ( dict "persistence" .Values.server.persistentVolume "global" .Values.global) | nindent 8 }}
       {{- with .Values.server.persistentVolume.matchLabels }}
         selector:

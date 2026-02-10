@@ -1,0 +1,38 @@
+# Test that adminPassword is optional when OIDC is configured in global mode
+global:
+  suseObservability:
+    license: "test-license-key-12345"
+    baseUrl: "http://test.example.com"
+    # No adminPassword or adminPasswordBcrypt - should succeed because OIDC is configured
+
+# Minimal stackstate config required for chart to render
+stackstate:
+  components:
+    all:
+      metricStore:
+        remoteWriteEndpoint: "test-$vmInstance:8148"
+        queryApiEndpoint: "test:8148"
+    server:
+      java:
+        trustStorePassword: "secretTrustStorePassword"
+  admin:
+    authentication:
+      password: 5a4961367d65d570e20d2d69156581b4
+  baseUrl: "http://test.example.com"
+  authentication:
+    oidc:
+      clientId: stackstate-client-id
+      secret: "some-secret"
+      discoveryUri: http://oidc-provider
+
+anomaly-detection:
+  enabled: false
+backup:
+  enabled: false
+
+# Disable PodSecurityPolicy to avoid test framework parsing issues with deprecated resources
+victoria-metrics-0:
+  rbac:
+    pspEnabled: false
+victoria-metrics-1:
+  enabled: false

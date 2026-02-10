@@ -22,9 +22,13 @@ readinessProbe:
     path: /ready
     port: admin
   initialDelaySeconds: 5
-{{- with .Values.stackstate.components.router.resources }}
+{{- $profileResources := include "common.sizing.stackstate.router.resources" . | trim }}
+{{- if $profileResources }}
 resources:
-  {{- toYaml . | nindent 2 }}
+  {{- $profileResources | nindent 2 }}
+{{- else if .Values.stackstate.components.router.resources }}
+resources:
+  {{- toYaml .Values.stackstate.components.router.resources | nindent 2 }}
 {{- end }}
 volumeMounts:
 - mountPath: /etc/envoy
@@ -86,14 +90,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.affinity .Values.stackstate.components.router.affinity }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.router.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- if $affinity }}
       affinity:
-      {{- with .Values.stackstate.components.all.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.stackstate.components.router.affinity }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- $affinity | nindent 8 }}
     {{- end }}
     {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.router.tolerations }}
       tolerations:

@@ -2,7 +2,7 @@
 metadata:
   name: suse-observability-clickhouse-backup
 data:
-  backup_enabled: {{ .Values.clickhouse.backup.enabled | quote }}
+  backup_enabled: {{ .Values.global.backup.enabled | quote }}
   entrypoint.sh: |
     {{- .Files.Get "scripts/backup-clickhouse-entrypoint.sh" | nindent 4 }}
   post_restore.sh: |

@@ -6,21 +6,29 @@ command:
 - -c
 - |
   /entrypoint -c {{ include "stackstate.kafka.endpoint" . }} -t 300
-image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.stackstate.components.wait.image.repository }}:{{ .Values.stackstate.components.wait.image.tag }}"
-imagePullPolicy: {{ .Values.stackstate.components.wait.image.pullPolicy | quote }}
+image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 securityContext:
   {{- $commonContainer.securityContext | toYaml | nindent 2 }}
 {{- end }}
 
 {{- define "stackstate.kafkaTopicCreate.job.container.main" -}}
+{{- $profileEnv := include "common.sizing.stackstate.kafkaTopicCreate.env" . | trim -}}
+{{- $evaluatedExtraEnvOpen := .Values.stackstate.components.kafkaTopicCreate.extraEnv.open }}
+{{- if $profileEnv }}
+{{- $profileEnvDict := fromYaml $profileEnv }}
+{{- $evaluatedExtraEnvOpen = $profileEnvDict }}
+{{- end }}
 command:
 - bash
 - -c
 - |
   {{ .Files.Get "scripts/job-kafka-topic-create.sh" | nindent 2 }}
 env:
+
 - name: KAFKA_REPLICAS
-  value: {{ .Values.kafka.replicaCount | quote }}
+  {{ $sizingReplicaCount := include "common.sizing.kafka.replicaCount" . | trim -}}
+  value: {{ include "common.sizing.effectiveReplicaCount" (dict "sizingReplicaCount" $sizingReplicaCount "chartDefault" "3" "valuesReplicaCount" .Values.kafka.replicaCount) | quote }}
 - name: KAFKA_TOPIC_RETENTION
   value: {{ .Values.kafka.topicRetention | quote }}
 - name: KAFKA_BROKERS
@@ -29,8 +37,8 @@ env:
   value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
 - name: STS_METRICS_V2_PARTITION_COUNT
   value: {{ .Values.kafka.topic.stsMetricsV2.partitionCount | quote }}
-{{- if .Values.stackstate.components.kafkaTopicCreate.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.kafkaTopicCreate.extraEnv.open  }}
+{{- if $evaluatedExtraEnvOpen }}
+  {{- range $key, $value := $evaluatedExtraEnvOpen  }}
 - name: {{ $key }}
   value: {{ $value | quote }}
   {{- end }}
