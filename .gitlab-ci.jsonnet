@@ -214,33 +214,6 @@ local resource_usage = {
   },
 };
 
-// Push charts to `helm-test.stackstate.io` registry
-local push_test_charts_jobs = {
-  push_test_charts: {
-    image: variables.images.stackstate_devops,
-    script: [
-      'source .gitlab/aws_auth_setup.sh',
-      'sh test/sync-repo.sh',
-    ],
-    rules: [
-      {
-        @'if': '$CI_COMMIT_BRANCH == "master"',
-        when: 'never',
-      },
-      {
-        @'if': '$CI_COMMIT_TAG',
-        when: 'never',
-      },
-      { when: 'on_success' },
-    ],
-    variables: {
-      AWS_BUCKET: 's3://helm-test.stackstate.io',
-      REPO_URL: 'https://helm-test.stackstate.io/',
-    },
-    stage: 'push-charts-to-test',
-  },
-};
-
 local push_chart_job_if(chart, script, rules) = {
   script: script,
   image: variables.images.stackstate_devops,
@@ -527,7 +500,6 @@ local beest_triggers = {
 + check_chart_version_jobs
 + check_sizing_chart_jobs
 + test_chart_jobs
-+ push_test_charts_jobs
 + resource_usage
 
 + push_charts_to_internal_jobs

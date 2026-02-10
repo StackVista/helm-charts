@@ -4591,21 +4591,6 @@ push_tenantprovisioning_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/tenantprovisioning
-push_test_charts:
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $CI_COMMIT_BRANCH == "master"
-      when: never
-    - if: $CI_COMMIT_TAG
-      when: never
-    - when: on_success
-  script:
-    - source .gitlab/aws_auth_setup.sh
-    - sh test/sync-repo.sh
-  stage: push-charts-to-test
-  variables:
-    AWS_BUCKET: s3://helm-test.stackstate.io
-    REPO_URL: https://helm-test.stackstate.io/
 push_trafficmirror_to_internal:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
