@@ -29,7 +29,7 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- $evaluatedExtraEnvOpen := .Values.stackstate.components.sync.extraEnv.open }}
 {{- if $profileEnv }}
 {{- $profileEnvDict := fromYaml $profileEnv }}
-{{- $evaluatedExtraEnvOpen = $profileEnvDict }}
+{{- $evaluatedExtraEnvOpen = merge (dict) $evaluatedExtraEnvOpen $profileEnvDict }}
 {{- end }}
 {{- $evaluatedExtraEnv := dict "open" $evaluatedExtraEnvOpen "secret" .Values.stackstate.components.sync.extraEnv.secret }}
 {{- $profileBaseMemory := include "common.sizing.stackstate.sync.baseMemoryConsumption" . | trim -}}
@@ -49,31 +49,26 @@ envFrom:
 env:
 {{- $serviceConfig := dict "ServiceName" "sync" "ServiceConfig" $componentConfigWithResources }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.sync.image.tag }}
-{{- include "stackstate.service.envvars" (merge (dict) $serviceConfig .) }}
-{{- include "stackstate.baseurls.envvars" . }}
-{{- include "stackstate.metricstore.envvar" . }}
-{{- include "stackstate.server.cpu.parallelism" $evaluatedResources.requests.cpu }}
-- name: CONFIG_FORCE_stackstate_cacheStorage_backend
-  value: {{ .Values.stackstate.components.sync.cache.backend }}
+{{/* Build deployment-specific env vars that can be overridden via extraEnv */}}
+{{- $baseUrl := include "suse-observability.global.baseUrl" . | default .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl or global.suseObservability.baseUrl is required" }}
+{{- $deploymentEnv := dict
+    "STACKSTATE_BASE_URL" $baseUrl
+    "RECEIVER_BASE_URL" (printf "%s/%s" $baseUrl "receiver")
+    "METRICSTORE_URI" (include "stackstate.metrics.query.url" .)
+    "CONFIG_FORCE_stackstate_sync_parallelWorkers" (max (include "stackstate.cpu_resource.to.cpu_core" $evaluatedResources.requests.cpu) 1 | toString)
+    "CONFIG_FORCE_stackstate_cacheStorage_backend" .Values.stackstate.components.sync.cache.backend
+    "ELASTICSEARCH_URI" (printf "http://%s" (include "stackstate.es.endpoint" .))
+    "KAFKA_BROKERS" (include "stackstate.kafka.endpoint" .)
+    "PROMETHEUS_WRITE_ENDPOINT" (printf "http://%s:8429/api/v1/write" (include "stackstate.vmagent.endpoint" .))
+    "HADOOP_USER_NAME" "nobody"
+    "ZOOKEEPER_QUORUM" (include "stackgraph.zookeeper.endpoint" .)
+    "CONFIG_FORCE_stackgraph_vertex_cache_expireAfterSeconds" "600"
+}}
 {{- if eq (lower .Values.stackstate.components.sync.cache.backend) "rocksdb" }}
 {{- $config := dict "Mem" $serviceConfig.ServiceConfig.resources.limits.memory "BaseMem" $serviceConfig.ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" $serviceConfig.ServiceConfig.sizing.javaHeapMemoryFraction }}
-- name: CONFIG_FORCE_stackstate_rocksdb_cacheSizeBytes
-  value: {{ include "stackstate.server.cache.memory.limit" $config | int | quote }}
+{{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_rocksdb_cacheSizeBytes" (include "stackstate.server.cache.memory.limit" $config | int | toString) }}
 {{- end }}
-- name: ELASTICSEARCH_URI
-  value: "http://{{ include "stackstate.es.endpoint" . }}"
-- name: KAFKA_BROKERS
-  value: {{ include "stackstate.kafka.endpoint" . | quote }}
-- name: PROMETHEUS_WRITE_ENDPOINT
-  value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
-- name: HADOOP_USER_NAME
-  value: nobody
-- name: ZOOKEEPER_QUORUM
-  value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
-  # No need to keep data for a long time, data is very ephemeral.
-  # Only stuff that is used often is cached
-- name: CONFIG_FORCE_stackgraph_vertex_cache_expireAfterSeconds
-  value: "600"
+{{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.sync.envsFromExistingSecrets }}
 image: "{{ include "stackstate.image.registry" (merge (dict) . $serviceConfig) }}/{{ .Values.stackstate.components.sync.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"

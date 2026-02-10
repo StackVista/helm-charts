@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 1.2.12
-version: 0.2.114
+version: 0.2.115
 description: Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 keywords:
   - aiops
@@ -22,4 +22,4 @@ dependencies:
     repository: file://../common/
   - name: suse-observability-sizing
     repository: file://../suse-observability-sizing
-    version: 0.1.3
+    version: 0.1.4

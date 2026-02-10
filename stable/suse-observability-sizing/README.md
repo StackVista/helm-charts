@@ -92,23 +92,29 @@ User Sets Profile
 ┌──────────────────────────────────────────────────────────────┐
 │ suse-observability/templates/_helper-service-config.tpl      │
 │                                                               │
-│ Merge order (LAST WINS):                                     │
+│ Merge order (HIGHEST PRIORITY FIRST):                        │
 │                                                               │
-│ 1. Default all-level env                                     │
+│ 1. Component-specific extraEnv.open                          │
+│    stackstate.components.<component>.extraEnv.open           │
+│                                                               │
+│ 2. Common extraEnv.open                                      │
 │    stackstate.components.all.extraEnv.open                   │
 │                                                               │
-│ 2. ┌────────────────────────────────────────────┐            │
-│    │ Profile all-level env                      │            │
+│ 3. ┌────────────────────────────────────────────┐            │
+│    │ Sizing profile all-level env               │            │
 │    │ common.sizing.stackstate.all.extraEnv.open │            │
 │    └────────────────────────────────────────────┘            │
 │                                                               │
-│ 3. Default component-level env                               │
-│    stackstate.components.<component>.extraEnv.open           │
+│ 4. Deployment-specific defaults (DeploymentEnv)              │
+│    KAFKA_BROKERS, ELASTICSEARCH_URI, etc.                    │
 │                                                               │
-│ 4. ┌────────────────────────────────────────────┐            │
-│    │ Profile component-level env                │            │
-│    │ common.sizing.stackstate.<component>.env   │            │
-│    └────────────────────────────────────────────┘            │
+│ 5. Chart defaults (lowest priority)                          │
+│    STACKSTATE_EDITION, PLATFORM_VERSION, etc.                │
+│                                                               │
+│ Component-level sizing profile env                           │
+│ (common.sizing.stackstate.<component>.env)                   │
+│ is merged INTO component extraEnv.open with user values      │
+│ winning.                                                     │
 │                                                               │
 │ Result: Component pod gets merged env vars                   │
 └──────────────────────────────────────────────────────────────┘

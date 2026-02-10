@@ -32,32 +32,22 @@
 
 {{/*
     Extra environment variables for pods inherited through `stackstate.components.*.extraEnv`
-    We merge the service specific env vars into the common ones to avoid duplicate entries in the env
+    We merge the service specific env vars into the common ones to avoid duplicate entries in the env.
+
+    Env var precedence (highest to lowest):
+    1. Component-specific extraEnv.open (e.g., stackstate.components.api.extraEnv.open)
+    2. Common extraEnv.open (stackstate.components.all.extraEnv.open)
+    3. Sizing profile env vars
+    4. Deployment-specific defaults (passed via .DeploymentEnv)
+    5. Chart defaults (hardcoded values in this helper)
+
+    This allows users to override any pre-defined env var via extraEnv.
+
+    Usage:
+    {{- $deploymentEnv := dict "KAFKA_BROKERS" (include "stackstate.kafka.endpoint" .) "ELASTICSEARCH_URI" (printf "http://%s" (include "stackstate.es.endpoint" .)) }}
+    {{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
 */}}
 {{- define "stackstate.service.envvars" -}}
-{{- $profileEnv := include "common.sizing.stackstate.all.extraEnv.open" . | trim -}}
-{{- $evaluatedAllExtraEnvOpen := .Values.stackstate.components.all.extraEnv.open }}
-{{- if $profileEnv }}
-{{- $profileEnvDict := fromYaml $profileEnv }}
-{{- $evaluatedAllExtraEnvOpen = merge (dict) $profileEnvDict $evaluatedAllExtraEnvOpen }}
-{{- end }}
-{{- $openEnvVars := merge (dict) .ServiceConfig.extraEnv.open $evaluatedAllExtraEnvOpen }}
-{{- $secretEnvVars := merge (dict) .ServiceConfig.extraEnv.secret .Values.stackstate.components.all.extraEnv.secret }}
-{{- if eq (lower .Values.stackstate.components.all.deploymentStrategy.type) "rollingupdate" }}
-  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_singleWriter_releaseRevision" .Release.Revision }}
-{{- else }}
-  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_singleWriter_releaseRevision" "1" }}
-{{- end -}}
-{{- if include "suse-observability.features.enabled" (dict "key" "traces" "context" .) }}
-  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_traces" "true" }}
-{{- end -}}
-{{- if .Values.global.features.experimentalStackpacks }}
-  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_featureSwitches_enableStackPacks2" "true" }}
-  {{- $__ := set $openEnvVars "CONFIG_FORCE_stackstate_featureSwitches_enableTopologyStreamSync" "true" }}
-{{- end -}}
-
-
-  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_newMetrics" "true" }}
 {{/*
 Memory used by a JVM process can be calculated as follows:
 JVM memory = Heap memory+ Metaspace + CodeCache + (ThreadStackSize * Number of Threads) + DirectByteBuffers + Jvm-native.
@@ -79,8 +69,71 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
 {{- $directMemParam := ( (gt $directMem 0) | ternary ( printf "-XX:MaxDirectMemorySize=%dm" $directMem) "") }}
 {{- $otelInstrumentationServiceConfig := .ServiceConfig.otelInstrumentation | default dict }}
 {{- $otelJavaAgentOpt := or .Values.stackstate.components.all.otelInstrumentation.enabled $otelInstrumentationServiceConfig.enabled | default false | ternary " -javaagent:/opt/docker/opentelemetry-javaagent.jar" "" }}
-- name: STACKSTATE_EDITION
-  value: "{{- .Values.stackstate.deployment.edition -}}"
+{{- $defaultJavaOpts := printf "%s %s %s%s" $directMemParam $xmxParam $xmsParam $otelJavaAgentOpt | trim }}
+
+{{/* Start with chart defaults - these can be overridden by user extraEnv */}}
+{{- $openEnvVars := dict }}
+{{- $_ := set $openEnvVars "STACKSTATE_EDITION" .Values.stackstate.deployment.edition }}
+{{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_featureSwitches_instanceDebugApi" (.Values.stackstate.instanceDebugApi.enabled | toString) }}
+{{- $_ := set $openEnvVars "PLATFORM_VERSION" .Chart.Version }}
+{{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_newMetrics" "true" }}
+{{- if eq (lower .Values.stackstate.components.all.deploymentStrategy.type) "rollingupdate" }}
+  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_singleWriter_releaseRevision" (.Release.Revision | toString) }}
+{{- else }}
+  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_singleWriter_releaseRevision" "1" }}
+{{- end -}}
+{{- if include "suse-observability.features.enabled" (dict "key" "traces" "context" .) }}
+  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_traces" "true" }}
+{{- end -}}
+{{- if .Values.global.features.experimentalStackpacks }}
+  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_featureSwitches_enableStackPacks2" "true" }}
+  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_featureSwitches_enableTopologyStreamSync" "true" }}
+{{- end -}}
+{{- if .Values.stackstate.topology.retentionHours }}
+  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackgraph_retentionWindowMs" (mul (.Values.stackstate.topology.retentionHours | int) (mul 60 (mul 60 1000)) | toString) }}
+{{- end }}
+{{/* OTEL env vars that have simple string values */}}
+{{- if or .Values.stackstate.components.all.otelInstrumentation.enabled $otelInstrumentationServiceConfig.enabled }}
+  {{- $_ := set $openEnvVars "OTEL_EXPORTER_OTLP_ENDPOINT" (index $otelInstrumentationServiceConfig "otlpExporterEndpoint" | default .Values.stackstate.components.all.otelInstrumentation.otlpExporterEndpoint) }}
+  {{- $_ := set $openEnvVars "OTEL_EXPORTER_OTLP_PROTOCOL" (index $otelInstrumentationServiceConfig "otlpExporterProtocol" | default .Values.stackstate.components.all.otelInstrumentation.otlpExporterProtocol) }}
+  {{- $_ := set $openEnvVars "OTEL_SERVICE_NAME" "stackstate-$(STS_SERVICE_NAME)" }}
+  {{- $_ := set $openEnvVars "OTEL_RESOURCE_ATTRIBUTES" (printf "service.namespace=%s,service.instance.id=$(POD_NAME)" (tpl (default .Values.stackstate.components.all.otelInstrumentation.serviceNamespace $otelInstrumentationServiceConfig.serviceNamespace) .)) }}
+{{- end }}
+
+{{/* Merge deployment-specific env vars (passed via .DeploymentEnv, lower priority than user extraEnv) */}}
+{{/* IMPORTANT: Use merge (dict) as first arg to avoid mutating .DeploymentEnv */}}
+{{- if .DeploymentEnv }}
+  {{- $openEnvVars = merge (dict) .DeploymentEnv $openEnvVars }}
+{{- end }}
+
+{{/* Merge sizing profile env vars (lower priority than user extraEnv) */}}
+{{/* IMPORTANT: Use merge (dict) as first arg to avoid mutating profile dict */}}
+{{- $profileEnv := include "common.sizing.stackstate.all.extraEnv.open" . | trim -}}
+{{- if $profileEnv }}
+  {{- $profileEnvDict := fromYaml $profileEnv }}
+  {{- $openEnvVars = merge (dict) $profileEnvDict $openEnvVars }}
+{{- end }}
+
+{{/* Merge common extraEnv.open (user values override profile and defaults) */}}
+{{/* IMPORTANT: Use merge (dict) as first arg to avoid mutating .Values */}}
+{{- $openEnvVars = merge (dict) .Values.stackstate.components.all.extraEnv.open $openEnvVars }}
+
+{{/* Merge component-specific extraEnv.open (highest priority) */}}
+{{/* IMPORTANT: Use merge (dict) as first arg to avoid mutating .ServiceConfig */}}
+{{- $openEnvVars = merge (dict) .ServiceConfig.extraEnv.open $openEnvVars }}
+
+{{/* Merge secret env vars */}}
+{{- $secretEnvVars := merge (dict) .ServiceConfig.extraEnv.secret .Values.stackstate.components.all.extraEnv.secret }}
+
+{{/* Handle JAVA_OPTS specially - append user value to computed JVM params if provided */}}
+{{- $userJavaOpts := index $openEnvVars "JAVA_OPTS" }}
+{{- if $userJavaOpts }}
+  {{- $_ := set $openEnvVars "JAVA_OPTS" (printf "%s %s" $defaultJavaOpts $userJavaOpts | trim) }}
+{{- else }}
+  {{- $_ := set $openEnvVars "JAVA_OPTS" $defaultJavaOpts }}
+{{- end }}
+
+{{/* Output env vars that use valueFrom (cannot be merged via dict) */}}
 {{- if .Values.stackstate.java.trustStorePassword }}
 - name: JAVA_TRUSTSTORE_PASSWORD
   valueFrom:
@@ -89,10 +142,6 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
       key: javaTrustStorePassword
 {{- end }}
 {{- if or .Values.stackstate.components.all.otelInstrumentation.enabled $otelInstrumentationServiceConfig.enabled }}
-- name: "OTEL_EXPORTER_OTLP_ENDPOINT"
-  value: {{ index $otelInstrumentationServiceConfig "otlpExporterEndpoint" | default .Values.stackstate.components.all.otelInstrumentation.otlpExporterEndpoint | quote }}
-- name: "OTEL_EXPORTER_OTLP_PROTOCOL"
-  value: {{ index $otelInstrumentationServiceConfig "otlpExporterProtocol" | default .Values.stackstate.components.all.otelInstrumentation.otlpExporterProtocol | quote }}
 - name: "STS_SERVICE_NAME"
   valueFrom:
     fieldRef:
@@ -103,32 +152,13 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
     fieldRef:
       apiVersion: v1
       fieldPath: metadata.name
-- name: "OTEL_SERVICE_NAME"
-  value: "stackstate-$(STS_SERVICE_NAME)"
-- name: "OTEL_RESOURCE_ATTRIBUTES"
-  value: service.namespace={{ tpl (default .Values.stackstate.components.all.otelInstrumentation.serviceNamespace $otelInstrumentationServiceConfig.serviceNamespace) . }},service.instance.id=$(POD_NAME)
 {{- end }}
-{{- if not $openEnvVars.JAVA_OPTS }}
-- name: "JAVA_OPTS"
-  value: "{{ $directMemParam }} {{ $xmxParam }} {{ $xmsParam }}{{ $otelJavaAgentOpt }}"
-{{- end }}
-{{- if .Values.stackstate.topology.retentionHours }}
-- name: "CONFIG_FORCE_stackgraph_retentionWindowMs"
-  value: "{{ mul (.Values.stackstate.topology.retentionHours | int) (mul 60 (mul 60 1000)) }}"
-{{- end }}
-- name: "CONFIG_FORCE_stackstate_featureSwitches_instanceDebugApi"
-  value: {{ .Values.stackstate.instanceDebugApi.enabled | toString | quote }}
-{{- if $openEnvVars }}
-  {{- range $key, $value := $openEnvVars }}
-  {{- if eq $key "JAVA_OPTS" }}
-- name: {{ $key }}
-  value: "{{ $directMemParam }} {{ $xmxParam }} {{ $xmsParam }}{{ $otelJavaAgentOpt }} {{ $value }}"
-  {{- else }}
+{{/* Output all merged open env vars */}}
+{{- range $key, $value := $openEnvVars }}
 - name: {{ $key }}
   value: {{ $value | quote }}
-  {{- end }}
-  {{- end }}
 {{- end }}
+{{/* Output secret env vars */}}
 {{- if $secretEnvVars }}
   {{- range $key :=  (keys $secretEnvVars | sortAlpha)  }}
 - name: {{ $key }}
@@ -138,9 +168,13 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
       key: {{ $key }}
   {{- end }}
 {{- end }}
-{{- include "stackstate.env.platform_version" . }}
 {{- end -}}
 
+{{/*
+Helper to output PLATFORM_VERSION env var.
+Note: For deployments using stackstate.service.envvars, this is already included via merge.
+This helper is kept for backward compatibility with other templates (e.g., backup jobs).
+*/}}
 {{- define "stackstate.env.platform_version" }}
 - name: PLATFORM_VERSION
   value: "{{- .Chart.Version -}}"

@@ -1,9 +1,9 @@
 dependencies:
 - name: prometheus-elasticsearch-exporter
   repository: file://../prometheus-elasticsearch-exporter
-  version: 5.8.0-suse-observability.6
+  version: 5.8.0-suse-observability.7
 - name: suse-observability-sizing
   repository: file://../suse-observability-sizing
-  version: 0.1.3
-digest: sha256:579f65f94a756122c5a2232dd8953f41d81c0b1238c889c7262d488953f7465f
-generated: "2026-02-06T10:02:02.434580442+01:00"
+  version: 0.1.4
+digest: sha256:f2cc559235b12aa3dee1a78eae7971b456f205ffb875d01400139375a58736bf
+generated: "2026-02-10T15:13:39.965827+01:00"

@@ -17,7 +17,7 @@ securityContext:
 {{- $evaluatedExtraEnvOpen := .Values.stackstate.components.kafkaTopicCreate.extraEnv.open }}
 {{- if $profileEnv }}
 {{- $profileEnvDict := fromYaml $profileEnv }}
-{{- $evaluatedExtraEnvOpen = $profileEnvDict }}
+{{- $evaluatedExtraEnvOpen = merge (dict) $evaluatedExtraEnvOpen $profileEnvDict }}
 {{- end }}
 command:
 - bash

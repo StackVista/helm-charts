@@ -20,7 +20,7 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- $evaluatedExtraEnvOpen := .Values.stackstate.components.server.extraEnv.open }}
 {{- if $profileEnv }}
 {{- $profileEnvDict := fromYaml $profileEnv }}
-{{- $evaluatedExtraEnvOpen = $profileEnvDict }}
+{{- $evaluatedExtraEnvOpen = merge (dict) $evaluatedExtraEnvOpen $profileEnvDict }}
 {{- end }}
 {{- $evaluatedExtraEnv := dict "open" $evaluatedExtraEnvOpen "secret" .Values.stackstate.components.server.extraEnv.secret }}
 {{- $profileBaseMemory := include "common.sizing.stackstate.server.baseMemoryConsumption" . | trim -}}
@@ -51,27 +51,25 @@ envFrom:
 env:
 {{- $serviceConfig := dict "ServiceName" "server" "ServiceConfig" $componentConfigWithResources }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.server.image.tag }}
-{{- include "stackstate.service.envvars" (merge (dict) $serviceConfig .) }}
-{{- include "stackstate.baseurls.envvars" . }}
-{{- include "stackstate.metricstore.envvar" . }}
-{{ if .Values.stackstate.components.api.yaml.maxSizeLimit }}
-- name: CONFIG_FORCE_stackstate_yaml_codePointLimit
-  value: "{{ include "stackstate.server.yaml.maxSizeLimit" . }}"
-{{ end }}
-- name: ELASTICSEARCH_URI
-  value: "http://{{ include "stackstate.es.endpoint" . }}"
-- name: KAFKA_BROKERS
-  value: {{ include "stackstate.kafka.endpoint" . | quote }}
-- name: PROMETHEUS_WRITE_ENDPOINT
-  value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
-- name: HADOOP_USER_NAME
-  value: nobody
-- name: ZOOKEEPER_QUORUM
-  value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
-{{ if .Values.stackstate.k8sAuthorization.enabled }}
-- name: CONFIG_FORCE_stackstate_featureSwitches_authorizationSyncService
-  value: "true"
-{{ end }}
+{{/* Build deployment-specific env vars that can be overridden via extraEnv */}}
+{{- $baseUrl := include "suse-observability.global.baseUrl" . | default .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl or global.suseObservability.baseUrl is required" }}
+{{- $deploymentEnv := dict
+    "STACKSTATE_BASE_URL" $baseUrl
+    "RECEIVER_BASE_URL" (printf "%s/%s" $baseUrl "receiver")
+    "METRICSTORE_URI" (include "stackstate.metrics.query.url" .)
+    "ELASTICSEARCH_URI" (printf "http://%s" (include "stackstate.es.endpoint" .))
+    "KAFKA_BROKERS" (include "stackstate.kafka.endpoint" .)
+    "PROMETHEUS_WRITE_ENDPOINT" (printf "http://%s:8429/api/v1/write" (include "stackstate.vmagent.endpoint" .))
+    "HADOOP_USER_NAME" "nobody"
+    "ZOOKEEPER_QUORUM" (include "stackgraph.zookeeper.endpoint" .)
+}}
+{{- if .Values.stackstate.components.api.yaml.maxSizeLimit }}
+  {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_yaml_codePointLimit" (include "stackstate.server.yaml.maxSizeLimit" .) }}
+{{- end }}
+{{- if .Values.stackstate.k8sAuthorization.enabled }}
+  {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_featureSwitches_authorizationSyncService" "true" }}
+{{- end }}
+{{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.server.envsFromExistingSecrets }}
 image: "{{ include "stackstate.image.registry" (merge (dict) $serviceConfig .) }}/{{ .Values.stackstate.components.server.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge (dict) $imageTagConfig .) }}"

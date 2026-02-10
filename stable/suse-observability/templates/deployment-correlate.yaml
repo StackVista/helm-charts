@@ -18,16 +18,14 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 env:
 {{- $serviceTypeConfig := merge (omit $componentConfigWithResources "split") .TypeConfig }}
 {{- $serviceConfig := dict "ServiceName" "correlate" "ServiceConfig" $serviceTypeConfig }}
-
-{{- include "stackstate.service.envvars" (merge (dict) . $serviceConfig) }}
-- name: KAFKA_BROKERS
-  value: {{ include "stackstate.kafka.endpoint" . | quote }}
-- name: CORRELATE_WRITE_STS_METRICS
-  value: "false"
-- name: CORRELATE_WRITE_PROMETHEUS
-  value: "true"
-- name: PROMETHEUS_WRITE_ENDPOINT
-  value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
+{{/* Build deployment-specific env vars that can be overridden via extraEnv */}}
+{{- $deploymentEnv := dict
+    "KAFKA_BROKERS" (include "stackstate.kafka.endpoint" .)
+    "CORRELATE_WRITE_STS_METRICS" "false"
+    "CORRELATE_WRITE_PROMETHEUS" "true"
+    "PROMETHEUS_WRITE_ENDPOINT" (printf "http://%s:8429/api/v1/write" (include "stackstate.vmagent.endpoint" .))
+}}
+{{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.correlate.envsFromExistingSecrets }}
 image: "{{ include "stackstate.image.registry" (merge (dict) . $serviceConfig) }}/{{ .Values.stackstate.components.correlate.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.correlate.image.tag }}"
@@ -173,7 +171,7 @@ spec:
 {{- $evaluatedExtraEnvOpen := .Values.stackstate.components.correlate.extraEnv.open }}
 {{- if $profileEnv }}
 {{- $profileEnvDict := fromYaml $profileEnv }}
-{{- $evaluatedExtraEnvOpen = $profileEnvDict }}
+{{- $evaluatedExtraEnvOpen = merge (dict) $evaluatedExtraEnvOpen $profileEnvDict }}
 {{- else }}
 {{- if .Values.stackstate.components.correlate.extraEnv }}
 {{- if .Values.stackstate.components.correlate.extraEnv.open }}

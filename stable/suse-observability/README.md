@@ -10,19 +10,19 @@ Current chart version is `2.7.1-pre.83`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.10 |
+| file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.11 |
 | file://../common/ | common | * |
-| file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.7 |
-| file://../hbase/ | hbase | 0.2.114 |
-| file://../kafka/ | kafka | 19.1.3-suse-observability.9 |
-| file://../kafkaup-operator/ | kafkaup-operator | 0.1.15 |
+| file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.8 |
+| file://../hbase/ | hbase | 0.2.115 |
+| file://../kafka/ | kafka | 19.1.3-suse-observability.10 |
+| file://../kafkaup-operator/ | kafkaup-operator | 0.1.16 |
 | file://../minio/ | minio | 8.0.10-stackstate.18 |
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.19 |
 | file://../pull-secret/ | pull-secret | * |
-| file://../suse-observability-sizing/ | suse-observability-sizing | 0.1.3 |
-| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.35 |
-| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.35 |
-| file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.7 |
+| file://../suse-observability-sizing/ | suse-observability-sizing | 0.1.4 |
+| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.36 |
+| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.36 |
+| file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.8 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.177 |
 | https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.24 |
 

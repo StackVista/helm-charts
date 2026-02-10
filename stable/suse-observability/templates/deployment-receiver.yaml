@@ -42,7 +42,7 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- $evaluatedExtraEnvOpen := .Values.stackstate.components.receiver.extraEnv.open }}
 {{- if $profileEnv }}
 {{- $profileEnvDict := fromYaml $profileEnv }}
-{{- $evaluatedExtraEnvOpen = $profileEnvDict }}
+{{- $evaluatedExtraEnvOpen = merge (dict) $evaluatedExtraEnvOpen $profileEnvDict }}
 {{- else }}
 {{- if and .TypeConfig .TypeConfig.extraEnv }}
 {{- if .TypeConfig.extraEnv.open }}
@@ -65,41 +65,32 @@ envFrom:
       optional: true
 env:
 {{- $serviceConfig := dict "ServiceName" "receiver" "ServiceConfig" $serviceTypeConfig }}
-{{- include "stackstate.service.envvars" (merge (dict) . $serviceConfig) }}
-- name: ELASTICSEARCH_URI
-  value: "http://{{ include "stackstate.es.endpoint" . }}"
-- name: KAFKA_BROKERS
-  value: {{ include "stackstate.kafka.endpoint" . | quote }}
-- name: RECEIVER_WRITE_STS_METRICS
-  value: "false"
-- name: RECEIVER_WRITE_PROMETHEUS
-  value: "true"
-- name: PROMETHEUS_WRITE_ENDPOINT
-  value: http://{{ include "stackstate.vmagent.endpoint" . }}:8429/api/v1/write
+{{/* Build deployment-specific env vars that can be overridden via extraEnv */}}
 {{- $esReplicas := include "suse-observability.sizing.elasticsearch.replicas" . | trim | int -}}
-{{ $replicationFactor := ternary "1" "0" (gt $esReplicas 2) }}
-- name: CONFIG_FORCE_stackstate_receiver_k8sLogs_replicas
-  value: "{{ $replicationFactor  }}"
+{{- $replicationFactor := ternary "1" "0" (gt $esReplicas 2) }}
 {{- $esStorage := include "suse-observability.sizing.elasticsearch.volumeClaimTemplate.resources.requests.storage" . | trim -}}
-{{ $diskSpaceMB := (include "stackstate.storage.to.megabytes" $esStorage) }}
-{{ if $diskSpaceMB  }}
-- name: CONFIG_FORCE_stackstate_receiver_elasticsearchDiskSpaceMB
-  value: "{{ divf (mulf (divf (mulf $diskSpaceMB $esReplicas) (add1 $replicationFactor)) .Values.stackstate.components.receiver.esDiskSpaceShare) 100 | int }}"
-{{ end }}
-- name: CONFIG_FORCE_stackstate_receiver_k8sLogs.indexMaxAge
-  value: "{{ include "suse-observability.global.receiverRetention" . }} days"
-- name: CONFIG_FORCE_stackstate_receiver_agentLeases_agentServiceBaseUri
-  value: "http://{{ template "common.fullname.short" . }}-{{ template "stackstate.api.name" . }}-headless:7070/internal/api/agents"
-- name: CONFIG_FORCE_stackstate_receiver_authorizationService_authorizationServiceBaseUri
-  value: "http://{{ template "common.fullname.short" . }}-{{ template "stackstate.api.name" . }}-headless:7070/api/user/authorization"
-{{- if .Values.stackstate.k8sAuthorization.enabled }}
-- name: CONFIG_FORCE_stackstate_receiver_authorizationSyncApi_authorizationSyncApiBaseUri
-  value: "http://{{ template "common.fullname.short" . }}-{{ template "stackstate.authSync.name" . }}:7075/rbac"
-- name: CONFIG_FORCE_stackstate_receiver_authorizationSyncApi_enabled
-  value: "true"
-- name: CONFIG_FORCE_stackstate_receiver_featureSwitches_receiveRbacData
-  value: "true"
+{{- $diskSpaceMB := (include "stackstate.storage.to.megabytes" $esStorage) }}
+{{- $deploymentEnv := dict
+    "ELASTICSEARCH_URI" (printf "http://%s" (include "stackstate.es.endpoint" .))
+    "KAFKA_BROKERS" (include "stackstate.kafka.endpoint" .)
+    "RECEIVER_WRITE_STS_METRICS" "false"
+    "RECEIVER_WRITE_PROMETHEUS" "true"
+    "PROMETHEUS_WRITE_ENDPOINT" (printf "http://%s:8429/api/v1/write" (include "stackstate.vmagent.endpoint" .))
+    "CONFIG_FORCE_stackstate_receiver_k8sLogs_replicas" $replicationFactor
+    "CONFIG_FORCE_stackstate_receiver_k8sLogs.indexMaxAge" (printf "%s days" (include "suse-observability.global.receiverRetention" .))
+    "CONFIG_FORCE_stackstate_receiver_agentLeases_agentServiceBaseUri" (printf "http://%s-%s-headless:7070/internal/api/agents" (include "common.fullname.short" .) (include "stackstate.api.name" .))
+    "CONFIG_FORCE_stackstate_receiver_authorizationService_authorizationServiceBaseUri" (printf "http://%s-%s-headless:7070/api/user/authorization" (include "common.fullname.short" .) (include "stackstate.api.name" .))
+}}
+{{- if $diskSpaceMB }}
+  {{- $diskSpaceValue := divf (mulf (divf (mulf $diskSpaceMB $esReplicas) (add1 $replicationFactor)) .Values.stackstate.components.receiver.esDiskSpaceShare) 100 | int }}
+  {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_receiver_elasticsearchDiskSpaceMB" ($diskSpaceValue | toString) }}
 {{- end }}
+{{- if .Values.stackstate.k8sAuthorization.enabled }}
+  {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_receiver_authorizationSyncApi_authorizationSyncApiBaseUri" (printf "http://%s-%s:7075/rbac" (include "common.fullname.short" .) (include "stackstate.authSync.name" .)) }}
+  {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_receiver_authorizationSyncApi_enabled" "true" }}
+  {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_receiver_featureSwitches_receiveRbacData" "true" }}
+{{- end }}
+{{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.receiver.envsFromExistingSecrets }}
 image: "{{ include "stackstate.image.registry" (merge (dict) . $serviceConfig) }}/{{ .Values.stackstate.components.receiver.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.receiver.image.tag }}"
@@ -234,7 +225,7 @@ spec:
 {{- $evaluatedExtraEnvOpen := .Values.stackstate.components.receiver.extraEnv.open }}
 {{- if $profileEnv }}
   {{- $profileEnvDict := fromYaml $profileEnv }}
-  {{- $evaluatedExtraEnvOpen = $profileEnvDict }}
+  {{- $evaluatedExtraEnvOpen = merge (dict) $evaluatedExtraEnvOpen $profileEnvDict }}
 {{- else }}
   {{- if and .TypeConfig .TypeConfig.extraEnv }}
     {{- if .TypeConfig.extraEnv.open }}

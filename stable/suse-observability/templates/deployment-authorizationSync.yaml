@@ -29,15 +29,17 @@ envFrom:
 env:
 {{- $serviceConfig := dict "ServiceName" "authorization-sync" "ServiceConfig" .Values.stackstate.components.authorizationSync }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.authorizationSync.image.tag }}
-{{- include "stackstate.service.envvars" (merge (dict) . $serviceConfig) }}
-{{- include "stackstate.baseurls.envvars" . }}
-{{- include "stackstate.metricstore.envvar" . }}
-- name: KAFKA_BROKERS
-  value: {{ include "stackstate.kafka.endpoint" . | quote }}
-- name: HADOOP_USER_NAME
-  value: nobody
-- name: ZOOKEEPER_QUORUM
-  value: {{ include "stackgraph.zookeeper.endpoint" . | quote }}
+{{/* Build deployment-specific env vars that can be overridden via extraEnv */}}
+{{- $baseUrl := include "suse-observability.global.baseUrl" . | default .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl or global.suseObservability.baseUrl is required" }}
+{{- $deploymentEnv := dict
+    "STACKSTATE_BASE_URL" $baseUrl
+    "RECEIVER_BASE_URL" (printf "%s/%s" $baseUrl "receiver")
+    "METRICSTORE_URI" (include "stackstate.metrics.query.url" .)
+    "KAFKA_BROKERS" (include "stackstate.kafka.endpoint" .)
+    "HADOOP_USER_NAME" "nobody"
+    "ZOOKEEPER_QUORUM" (include "stackgraph.zookeeper.endpoint" .)
+}}
+{{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.authorizationSync.envsFromExistingSecrets }}
 image: "{{ include "stackstate.image.registry" (merge (dict) . $serviceConfig) }}/{{ .Values.stackstate.components.authorizationSync.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
