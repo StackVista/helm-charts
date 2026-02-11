@@ -12,7 +12,6 @@ chart-repos:
   - stable=https://charts.helm.sh/stable
   - stackstate=https://helm.stackstate.io
   - stackstate-internal=https://helm-internal.stackstate.io
-  - stackstate-test=https://helm-test.stackstate.io
 excluded-charts:
   - gitlab-runner
 helm-extra-args: --debug --kubeconfig ${KUBECONFIG} --timeout 1200

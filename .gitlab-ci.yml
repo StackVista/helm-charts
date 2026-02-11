@@ -51,7 +51,6 @@ build_artifactory-cleaner:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -80,7 +79,6 @@ build_aws-amicleaner:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -109,7 +107,6 @@ build_aws-nuke:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -138,7 +135,6 @@ build_aws-pod-identity-webhook:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -167,7 +163,6 @@ build_beacher-job:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -196,7 +191,6 @@ build_chartmuseum:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -225,7 +219,6 @@ build_ci-test:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -254,7 +247,6 @@ build_clickhouse:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -283,7 +275,6 @@ build_common:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -312,7 +303,6 @@ build_elasticsearch:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -341,7 +331,6 @@ build_falco-reporter:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -370,7 +359,6 @@ build_gitlab-proxy:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -399,7 +387,6 @@ build_gitlab-steward:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -428,7 +415,6 @@ build_hbase:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -457,7 +443,6 @@ build_helm-reaper:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -486,7 +471,6 @@ build_iceman:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -515,7 +499,6 @@ build_k8s-image-list-to-s3:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -544,7 +527,6 @@ build_k8s-spot-termination-handler:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -573,7 +555,6 @@ build_kafka:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -602,7 +583,6 @@ build_kafkaup-operator:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -631,7 +611,6 @@ build_kommoner-operator:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -660,7 +639,6 @@ build_minio:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -689,7 +667,6 @@ build_notification-operator:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -718,7 +695,6 @@ build_opentelemetry-collector:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -747,7 +723,6 @@ build_otel-demo:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -776,7 +751,6 @@ build_petros-d-kubelet-stats-exporter:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -805,7 +779,6 @@ build_prometheus-elasticsearch-exporter:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -834,7 +807,6 @@ build_pull-secret:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -863,7 +835,6 @@ build_receiveramplifier:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -892,7 +863,6 @@ build_redirector:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -921,7 +891,6 @@ build_sandbox-operator:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -950,7 +919,6 @@ build_sock-shop:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -979,7 +947,6 @@ build_stackstate:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -1008,7 +975,6 @@ build_stackstate-agent:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -1037,7 +1003,6 @@ build_stackstate-k8s-agent:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -1066,7 +1031,6 @@ build_stackstate-monitoring:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -1095,7 +1059,6 @@ build_stackstate-standalone:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -1124,7 +1087,6 @@ build_stackstate-values:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -1153,7 +1115,6 @@ build_suse-observability:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -1182,7 +1143,6 @@ build_suse-observability-agent:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -1211,7 +1171,6 @@ build_suse-observability-values:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -1240,7 +1199,6 @@ build_tenant-cleanup-controller:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -1269,7 +1227,6 @@ build_tenantmanagement:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -1298,7 +1255,6 @@ build_tenantprovisioning:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -1327,7 +1283,6 @@ build_trafficmirror:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -1356,7 +1311,6 @@ build_victoria-metrics-single:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -1385,7 +1339,6 @@ build_zookeeper:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -1930,7 +1883,6 @@ push_artifactory-cleaner_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -1971,7 +1923,6 @@ push_artifactory-cleaner_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2014,7 +1965,6 @@ push_aws-amicleaner_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2055,7 +2005,6 @@ push_aws-nuke_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2096,7 +2045,6 @@ push_aws-pod-identity-webhook_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2137,7 +2085,6 @@ push_beacher-job_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2178,7 +2125,6 @@ push_chartmuseum_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2219,7 +2165,6 @@ push_ci-test_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2260,7 +2205,6 @@ push_clickhouse_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2301,7 +2245,6 @@ push_clickhouse_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2344,7 +2287,6 @@ push_common_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2385,7 +2327,6 @@ push_common_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2428,7 +2369,6 @@ push_elasticsearch_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2469,7 +2409,6 @@ push_elasticsearch_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2512,7 +2451,6 @@ push_falco-reporter_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2553,7 +2491,6 @@ push_gitlab-proxy_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2594,7 +2531,6 @@ push_gitlab-steward_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2635,7 +2571,6 @@ push_hbase_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2676,7 +2611,6 @@ push_hbase_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2719,7 +2653,6 @@ push_helm-reaper_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2760,7 +2693,6 @@ push_iceman_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2801,7 +2733,6 @@ push_k8s-image-list-to-s3_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2842,7 +2773,6 @@ push_k8s-spot-termination-handler_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2883,7 +2813,6 @@ push_kafka_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2924,7 +2853,6 @@ push_kafka_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2967,7 +2895,6 @@ push_kafkaup-operator_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3008,7 +2935,6 @@ push_kafkaup-operator_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3051,7 +2977,6 @@ push_kommoner-operator_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3092,7 +3017,6 @@ push_minio_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3133,7 +3057,6 @@ push_minio_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3176,7 +3099,6 @@ push_notification-operator_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3217,7 +3139,6 @@ push_opentelemetry-collector_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3258,7 +3179,6 @@ push_otel-demo_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3299,7 +3219,6 @@ push_petros-d-kubelet-stats-exporter_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3340,7 +3259,6 @@ push_prometheus-elasticsearch-exporter_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3381,7 +3299,6 @@ push_prometheus-elasticsearch-exporter_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3424,7 +3341,6 @@ push_pull-secret_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3465,7 +3381,6 @@ push_pull-secret_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3508,7 +3423,6 @@ push_receiveramplifier_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3549,7 +3463,6 @@ push_redirector_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3590,7 +3503,6 @@ push_sandbox-operator_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3631,7 +3543,6 @@ push_sock-shop_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3672,7 +3583,6 @@ push_stackstate-agent_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3713,7 +3623,6 @@ push_stackstate-agent_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3756,7 +3665,6 @@ push_stackstate-k8s-agent_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3797,7 +3705,6 @@ push_stackstate-k8s-agent_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3840,7 +3747,6 @@ push_stackstate-monitoring_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3881,7 +3787,6 @@ push_stackstate-monitoring_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3924,7 +3829,6 @@ push_stackstate-standalone_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3965,7 +3869,6 @@ push_stackstate-standalone_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4008,7 +3911,6 @@ push_stackstate-values_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4049,7 +3951,6 @@ push_stackstate-values_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4092,7 +3993,6 @@ push_stackstate_release_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4132,7 +4032,6 @@ push_stackstate_release_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4166,7 +4065,6 @@ push_stackstate_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - .gitlab/bump_sts_chart_master_version.sh stackstate-internal stackstate
@@ -4209,7 +4107,6 @@ push_suse-observability-agent_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4250,7 +4147,6 @@ push_suse-observability-agent_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4321,7 +4217,6 @@ push_suse-observability-values_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4362,7 +4257,6 @@ push_suse-observability-values_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4433,7 +4327,6 @@ push_suse-observability_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - .gitlab/configure_git.sh
@@ -4480,7 +4373,6 @@ push_tenant-cleanup-controller_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4521,7 +4413,6 @@ push_tenantmanagement_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4562,7 +4453,6 @@ push_tenantprovisioning_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4603,7 +4493,6 @@ push_trafficmirror_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4644,7 +4533,6 @@ push_trafficmirror_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4687,7 +4575,6 @@ push_victoria-metrics-single_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4728,7 +4615,6 @@ push_victoria-metrics-single_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4771,7 +4657,6 @@ push_zookeeper_to_internal:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4812,7 +4697,6 @@ push_zookeeper_to_public:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4858,7 +4742,6 @@ resource_usage:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   cache:
@@ -6037,7 +5920,6 @@ update_aad_chart_version:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
@@ -6060,7 +5942,6 @@ update_stackgraph_version:
     - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add stackstate-test https://helm-test.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
