@@ -53,7 +53,7 @@ build_artifactory-cleaner:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/artifactory-cleaner/**/*
@@ -81,7 +81,7 @@ build_aws-amicleaner:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/aws-amicleaner/**/*
@@ -109,7 +109,7 @@ build_aws-nuke:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/aws-nuke/**/*
@@ -137,7 +137,7 @@ build_aws-pod-identity-webhook:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/aws-pod-identity-webhook/**/*
@@ -165,7 +165,7 @@ build_beacher-job:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/beacher-job/**/*
@@ -193,7 +193,7 @@ build_chartmuseum:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/chartmuseum/**/*
@@ -221,7 +221,7 @@ build_ci-test:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/ci-test/**/*
@@ -249,7 +249,7 @@ build_clickhouse:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/clickhouse/**/*
@@ -277,7 +277,7 @@ build_common:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/common/**/*
@@ -305,7 +305,7 @@ build_elasticsearch:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/elasticsearch/**/*
@@ -333,7 +333,7 @@ build_falco-reporter:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/falco-reporter/**/*
@@ -361,7 +361,7 @@ build_gitlab-proxy:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/gitlab-proxy/**/*
@@ -389,7 +389,7 @@ build_gitlab-steward:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/gitlab-steward/**/*
@@ -417,7 +417,7 @@ build_hbase:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/hbase/**/*
@@ -445,7 +445,7 @@ build_helm-reaper:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/helm-reaper/**/*
@@ -473,7 +473,7 @@ build_iceman:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/iceman/**/*
@@ -501,7 +501,7 @@ build_k8s-image-list-to-s3:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/k8s-image-list-to-s3/**/*
@@ -529,7 +529,7 @@ build_k8s-spot-termination-handler:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/k8s-spot-termination-handler/**/*
@@ -557,7 +557,7 @@ build_kafka:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/kafka/**/*
@@ -585,7 +585,7 @@ build_kafkaup-operator:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/kafkaup-operator/**/*
@@ -613,7 +613,7 @@ build_kommoner-operator:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/kommoner-operator/**/*
@@ -641,7 +641,7 @@ build_minio:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/minio/**/*
@@ -669,7 +669,7 @@ build_notification-operator:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/notification-operator/**/*
@@ -697,7 +697,7 @@ build_opentelemetry-collector:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/opentelemetry-collector/**/*
@@ -725,7 +725,7 @@ build_otel-demo:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/otel-demo/**/*
@@ -753,7 +753,7 @@ build_petros-d-kubelet-stats-exporter:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
@@ -781,7 +781,7 @@ build_prometheus-elasticsearch-exporter:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/prometheus-elasticsearch-exporter/**/*
@@ -809,7 +809,7 @@ build_pull-secret:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/pull-secret/**/*
@@ -837,7 +837,7 @@ build_receiveramplifier:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/receiveramplifier/**/*
@@ -865,7 +865,7 @@ build_redirector:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/redirector/**/*
@@ -893,7 +893,7 @@ build_sandbox-operator:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/sandbox-operator/**/*
@@ -921,7 +921,7 @@ build_sock-shop:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/sock-shop/**/*
@@ -949,7 +949,7 @@ build_stackstate:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/stackstate/**/*
@@ -977,7 +977,7 @@ build_stackstate-agent:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/stackstate-agent/**/*
@@ -1005,7 +1005,7 @@ build_stackstate-k8s-agent:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/stackstate-k8s-agent/**/*
@@ -1033,7 +1033,7 @@ build_stackstate-monitoring:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/stackstate-monitoring/**/*
@@ -1061,7 +1061,7 @@ build_stackstate-standalone:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/stackstate-standalone/**/*
@@ -1089,7 +1089,7 @@ build_stackstate-values:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/stackstate-values/**/*
@@ -1117,7 +1117,7 @@ build_suse-observability:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/suse-observability/**/*
@@ -1145,7 +1145,7 @@ build_suse-observability-agent:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
@@ -1173,7 +1173,7 @@ build_suse-observability-values:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/suse-observability-values/**/*
@@ -1201,7 +1201,7 @@ build_tenant-cleanup-controller:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/tenant-cleanup-controller/**/*
@@ -1229,7 +1229,7 @@ build_tenantmanagement:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/tenantmanagement/**/*
@@ -1257,7 +1257,7 @@ build_tenantprovisioning:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/tenantprovisioning/**/*
@@ -1285,7 +1285,7 @@ build_trafficmirror:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/trafficmirror/**/*
@@ -1313,7 +1313,7 @@ build_victoria-metrics-single:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/victoria-metrics-single/**/*
@@ -1341,7 +1341,7 @@ build_zookeeper:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/zookeeper/**/*
@@ -4751,7 +4751,7 @@ resource_usage:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - test/*.go
@@ -4788,7 +4788,7 @@ test_artifactory-cleaner:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/artifactory-cleaner/**/*
@@ -4812,7 +4812,7 @@ test_aws-amicleaner:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/aws-amicleaner/**/*
@@ -4836,7 +4836,7 @@ test_aws-nuke:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/aws-nuke/**/*
@@ -4860,7 +4860,7 @@ test_aws-pod-identity-webhook:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/aws-pod-identity-webhook/**/*
@@ -4884,7 +4884,7 @@ test_beacher-job:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/beacher-job/**/*
@@ -4908,7 +4908,7 @@ test_chartmuseum:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/chartmuseum/**/*
@@ -4932,7 +4932,7 @@ test_ci-test:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/ci-test/**/*
@@ -4956,7 +4956,7 @@ test_clickhouse:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/clickhouse/**/*
@@ -4980,7 +4980,7 @@ test_common:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/common/**/*
@@ -5004,7 +5004,7 @@ test_elasticsearch:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/elasticsearch/**/*
@@ -5028,7 +5028,7 @@ test_falco-reporter:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/falco-reporter/**/*
@@ -5052,7 +5052,7 @@ test_gitlab-proxy:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/gitlab-proxy/**/*
@@ -5076,7 +5076,7 @@ test_gitlab-steward:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/gitlab-steward/**/*
@@ -5100,7 +5100,7 @@ test_hbase:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/hbase/**/*
@@ -5124,7 +5124,7 @@ test_helm-reaper:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/helm-reaper/**/*
@@ -5148,7 +5148,7 @@ test_iceman:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/iceman/**/*
@@ -5172,7 +5172,7 @@ test_k8s-image-list-to-s3:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/k8s-image-list-to-s3/**/*
@@ -5196,7 +5196,7 @@ test_k8s-spot-termination-handler:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/k8s-spot-termination-handler/**/*
@@ -5220,7 +5220,7 @@ test_kafka:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/kafka/**/*
@@ -5244,7 +5244,7 @@ test_kafkaup-operator:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/kafkaup-operator/**/*
@@ -5268,7 +5268,7 @@ test_kommoner-operator:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/kommoner-operator/**/*
@@ -5292,7 +5292,7 @@ test_minio:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/minio/**/*
@@ -5316,7 +5316,7 @@ test_notification-operator:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/notification-operator/**/*
@@ -5340,7 +5340,7 @@ test_opentelemetry-collector:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/opentelemetry-collector/**/*
@@ -5364,7 +5364,7 @@ test_otel-demo:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/otel-demo/**/*
@@ -5388,7 +5388,7 @@ test_petros-d-kubelet-stats-exporter:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
@@ -5412,7 +5412,7 @@ test_prometheus-elasticsearch-exporter:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/prometheus-elasticsearch-exporter/**/*
@@ -5436,7 +5436,7 @@ test_pull-secret:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/pull-secret/**/*
@@ -5460,7 +5460,7 @@ test_receiveramplifier:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/receiveramplifier/**/*
@@ -5484,7 +5484,7 @@ test_redirector:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/redirector/**/*
@@ -5508,7 +5508,7 @@ test_sandbox-operator:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/sandbox-operator/**/*
@@ -5532,7 +5532,7 @@ test_sock-shop:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/sock-shop/**/*
@@ -5556,7 +5556,7 @@ test_stackstate:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/stackstate/**/*
@@ -5580,7 +5580,7 @@ test_stackstate-agent:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/stackstate-agent/**/*
@@ -5604,7 +5604,7 @@ test_stackstate-k8s-agent:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/stackstate-k8s-agent/**/*
@@ -5628,7 +5628,7 @@ test_stackstate-monitoring:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/stackstate-monitoring/**/*
@@ -5652,7 +5652,7 @@ test_stackstate-standalone:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/stackstate-standalone/**/*
@@ -5676,7 +5676,7 @@ test_stackstate-values:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/stackstate-values/**/*
@@ -5700,7 +5700,7 @@ test_suse-observability:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/suse-observability/**/*
@@ -5724,7 +5724,7 @@ test_suse-observability-agent:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/suse-observability-agent/**/*
@@ -5748,7 +5748,7 @@ test_suse-observability-values:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/suse-observability-values/**/*
@@ -5772,7 +5772,7 @@ test_tenant-cleanup-controller:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/tenant-cleanup-controller/**/*
@@ -5796,7 +5796,7 @@ test_tenantmanagement:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/tenantmanagement/**/*
@@ -5820,7 +5820,7 @@ test_tenantprovisioning:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/tenantprovisioning/**/*
@@ -5844,7 +5844,7 @@ test_trafficmirror:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/trafficmirror/**/*
@@ -5868,7 +5868,7 @@ test_victoria-metrics-single:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/victoria-metrics-single/**/*
@@ -5892,7 +5892,7 @@ test_zookeeper:
         - go.sum
     paths:
       - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - changes:
         - stable/zookeeper/**/*
@@ -5922,7 +5922,7 @@ update_aad_chart_version:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - if: $UPDATE_AAD_CHART_VERSION
       when: always
@@ -5944,7 +5944,7 @@ update_stackgraph_version:
     - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-cd6837ab
+  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
   rules:
     - if: $UPDATE_STACKGRAPH_VERSION
       when: always
