@@ -183,7 +183,7 @@ Authentication config
   {{- if $apiAuth.oidc.redirectUri }}
   redirectUri = {{ $apiAuth.oidc.redirectUri | trimSuffix "/" | quote }}
   {{- else }}
-  redirectUri = "{{ $global.Values.stackstate.baseUrl | default $global.Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "Could not determine redirectUri for OIDC. Please specify explicitly." }}/loginCallback"
+  redirectUri = "{{ include "suse-observability.global.baseUrl" . | trimSuffix "/" | required "Could not determine redirectUri for OIDC. Please specify explicitly." }}/loginCallback"
   {{- end }}
   {{- if $apiAuth.oidc.scope }}
   {{- if not (kindIs "slice" $apiAuth.oidc.scope) -}}
@@ -230,7 +230,7 @@ Authentication config
   {{- if $apiAuth.rancher.redirectUri }}
   redirectUri = {{ $apiAuth.rancher.redirectUri | trimSuffix "/" | quote }}
   {{- else }}
-  redirectUri = "{{ $global.Values.stackstate.baseUrl | default $global.Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "Cannot configure Rancher authentication: baseUrl or receiver.baseUrl must be provided to construct the redirectUri." }}/loginCallback"
+  redirectUri = "{{ include "suse-observability.global.baseUrl" . | trimSuffix "/" | required "Cannot configure Rancher authentication: baseUrl or receiver.baseUrl must be provided to construct the redirectUri." }}/loginCallback"
   {{- end }}
   scope = ["openid", "profile", "offline_access"]
   jwsAlgorithm = "RS256"
@@ -254,7 +254,7 @@ Authentication config
   {{- if $apiAuth.keycloak.redirectUri }}
   redirectUri = {{ $apiAuth.keycloak.redirectUri | trimSuffix "/" | quote }}
   {{- else }}
-  redirectUri = "{{ $global.Values.stackstate.baseUrl | default $global.Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is a required value." }}/loginCallback"
+  redirectUri = "{{ include "suse-observability.global.baseUrl" . | trimSuffix "/" | required "stackstate.baseUrl is a required value." }}/loginCallback"
   {{- end }}
   {{- if $apiAuth.keycloak.scope }}
   {{- if not (kindIs "slice" $apiAuth.keycloak.scope) -}}
