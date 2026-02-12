@@ -228,7 +228,7 @@ hbase:
     terminationGracePeriodSeconds: 30
     # hbase.regionserver.sizing -- HBase region server memory sizing for JVM
     sizing:
-      javaHeapMemoryFraction: "75"
+      javaHeapMemoryFraction: "70"
     # hbase.regionserver.nodeSelector -- Node labels for pod assignment.
     nodeSelector: {}
     # hbase.regionserver.tolerations -- Toleration labels for pod assignment.
