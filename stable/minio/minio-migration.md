@@ -1,13 +1,20 @@
 # Migration from Minio AND settings-backup-pvc -> S3Proxy
 
-The new setup should have:
-* S3Proxy always deployed (https://github.com/gaul/s3proxy)? Or Versity Gateway (https://github.com/versity/versitygw)?  Using s3proxy as placeholder in the rest of the doc.
-* Settings backup by default using S3Proxy instead of a local PVC, with a bucket that uses a small PVC as storage backend (e.g. 1Gi)
-* When global backup is enabled S3Proxy should proxy the other buckets to the configured S3 provider, so that the backup can be stored there
+This migration replaces the MinIO subchart with an always-on S3-compatible proxy (S3Proxy) and moves all backup/restore traffic through that proxy.
 
-Questions:
-* Next to running a local object storage solution (which could be anything from rustfs, garagefs or S3Proxy), do we want to support anything except S3 compatible APIs? Mainly Azure Blob storage, for Google you need to do some extra steps to use (get specific credentials) but it works fine especially for simply storing backups.
-* Do we want to have a proxy for S3 compatible apis or simply directly configure the S3 credentials in the different backup settings?
+## Target design (decision)
+
+* Use **S3Proxy** as the always-present gateway.
+* Settings backup defaults to S3Proxy using a small PVC-backed bucket (e.g. 1Gi) when global backup is disabled.
+* When `global.backup.enabled=true`, S3Proxy proxies all buckets to the configured external S3 backend so backups land in the configured provider.
+* Single place for authentication/authorization (S3Proxy), which also supports AWS instance profiles / IRSA without duplicating credentials across components.
+* When versitygw adds support for S3 isntance profiles etc, it should be easy to switch to that instead
+
+## Scope and compatibility
+
+* Primary backend interface is **S3-compatible APIs**.
+* **Azure Blob Storage** remains supported by using S3Proxy with an Azure backend (gateway).
+* **GCP** remains supported via S3 interoperability keys (XML API).
 
 ## Migration of configuration
 
@@ -56,8 +63,8 @@ minio:
 ```
 
 New configuration options:
-* The backup subsections remain the same
-* We drop the `minio` section in favor of introducing a `backup.storage` section that contains a solution-agnostic configuration:
+* The backup subsections remain the same.
+* We drop the `minio` section and introduce `backup.storage` as the single, solution-agnostic place to configure the proxy and its backend.
 
 ```
 backup:
@@ -65,50 +72,209 @@ backup:
     credentials:
       accessKey: <make-up-an-access-key>
       secretKey: <make-up-a-secret-key>
-    localPvc:
-      enabled: true
-      size: 500Gi
-    s3
-
-    type: s3proxy
-    s3proxy:
-      accessKey: AWS_ACCESS_KEY
-      secretKey: AWS_SECRET_KEY
-      endpoint: http://s3proxy:9000
-      region: us-east-1
-      bucketName: BACKUP_BUCKET_NAME
-    azure:
-      accountName: AZURE_STORAGE_ACCOUNT_NAME
-      accountKey: AZURE_STORAGE_ACCOUNT_KEY
-      containerName: BACKUP_CONTAINER_NAME
+    backend:
+      # One of the following options can be enabled
+      pvc:
+        size: 500Gi
+      s3:
+        # Optional: if access key and secret key are not provided, the proxy will fallback to default authentication flow (based on instance profile, etc.)
+        accessKey: AWS_ACCESS_KEY
+        secretKey: AWS_SECRET_KEY
+        # Optional: if not provided, the proxy will fallback to the default AWS endpoint for the configured region
+        endpoint:
+        # Optional: if not provided, the proxy will fallback to the default AWS region
+        region: eu-west-1
+      azure:
+        accountName: AZURE_STORAGE_ACCOUNT_NAME
+        accountKey: AZURE_STORAGE_ACCOUNT_KEY
 ```
 
-Questions:
-* Do we need to specify credentials for connection to S3Proxy or do we leave it unauthenticated (the former seems to be the safer choice tbh)?
+Backward compatibility can be preserved by accepting the legacy `minio.*` values and mapping them to `backup.storage.*` on render. For Azure, legacy credentials can be reused for both proxy and backend, but the strongly recommended setup is to define distinct proxy credentials.
 
+### Mapping: old `minio.*` to new `backup.storage.*`
+
+| Old value | New value | Notes |
+| --- | --- | --- |
+| `minio.accessKey` | `backup.storage.credentials.accessKey` | Proxy (frontend) credentials used by all backup/restore jobs. |
+| `minio.secretKey` | `backup.storage.credentials.secretKey` | Proxy (frontend) credentials used by all backup/restore jobs. |
+| `minio.persistence.enabled` | `backup.storage.backend.pvc` | If enabled, use PVC backend for proxy storage. Size comes from `backup.storage.backend.pvc.size`. |
+| `minio.s3gateway.enabled` | `backup.storage.backend.s3` | Use external S3 backend through the proxy. |
+| `minio.s3gateway.accessKey` | `backup.storage.backend.s3.accessKey` | Optional; falls back to instance profile / default SDK flow. |
+| `minio.s3gateway.secretKey` | `backup.storage.backend.s3.secretKey` | Optional. |
+| `minio.s3gateway.endpoint` | `backup.storage.backend.s3.endpoint` | Optional. |
+| `minio.s3gateway.region` | `backup.storage.backend.s3.region` | Optional. |
+| `minio.azuregateway.enabled` | `backup.storage.backend.azure` | Azure Blob backend through the proxy. |
+| `minio.azuregateway.accountName` | `backup.storage.backend.azure.accountName` | Required when Azure backend is used. |
+| `minio.azuregateway.accountKey` | `backup.storage.backend.azure.accountKey` | Required when Azure backend is used. |
+
+### Current chart usage that must be updated
+
+The following areas reference MinIO explicitly and should be updated to use the new proxy endpoint and credentials:
+
+* Backup env vars use `MINIO_ENDPOINT` and MinIO keys: [stable/suse-observability/templates/_helper-backup.tpl](stable/suse-observability/templates/_helper-backup.tpl)
+* Backup config map has a `minio` section: [stable/suse-observability/templates/configmap-backup-config.yaml](stable/suse-observability/templates/configmap-backup-config.yaml)
+* Helper endpoints and secret naming are MinIO-specific: [stable/suse-observability/templates/_helper-endpoints.tpl](stable/suse-observability/templates/_helper-endpoints.tpl)
+* Values still require `minio.accessKey` / `minio.secretKey`: [stable/suse-observability/values.yaml](stable/suse-observability/values.yaml)
 
 ## Migration of data
-* Local PVC for all backups (global.backup.enabled=true):
-    * If this PVC was already in use by Minio before it should be reused by S3Proxy, so that the data is not lost and the migration is seamless
-* Settings backup PVC:
-    * We cannot reuse the same PVC, because in some cases the existing PVCs (settings backup and Minio) can be in a different region/zone which will make it impossible to mount both
-    * When upgrading we should preserve the backups from this PVC to the PVC for S3Proxy, so that the migration is seamless and no data is lost. We can do this by copying the data from the existing PVC to the new PVC for S3Proxy before deleting the old PVC via a k8s job
 
-Alternative migration setup:
-* Local PVC for all backups (global.backup.enabled=true):
-    * If this PVC was already in use by Minio before it should be reused by S3Proxy, so that the data is not lost and the migration is seamless
-* Settings backup PVC:
-    * We reuse the same PVC for S3Proxy, but we change the settings backup logic to only use a local PVC when the global backup is not enabled.
-    * This works because in the existing situation settings backups are stored both on the local PVC **and** in the object store.
-    * Benefits:
-        * No need to copy data from the old PVC to the new PVC, so the migration is faster and simpler
-        * We can drop the special handling for settings backups in the restore and backup logic, backups always go to s3proxy and the bucket location depends on the global backup setting
-    * Downsides:
-        * First installing observability with just the local settings backup PVC and then enabling global backup will cause the existing settings backups to be lost. This is a bit of an edge case, but it can be mitigated by adding a warning in the documentation about this. Note that the local settings backup is limited to only 10 backups anyway and a backup is made daily. A similar job (or init container on S3Proxy) can be added to take care of copying the existing settings backups to the S3Proxy bucket when global backup is enabled, so that the data is not lost and the migration is seamless in this case as well. It can also do the cleanup of the old PVC after copying the data. This can even be done in both directions, but it also feels like an optimization we could do later.
+### Current setup (before migration)
 
+Two independent storage paths exist for settings (configuration) backups:
 
+| Storage | Created when | What's on it | Retention |
+| --- | --- | --- | --- |
+| **Settings-backup PVC** (`<release>-settings-backup-data`, ~1Gi) | Always (regardless of `global.backup.enabled`) | Last N `.sty` files (max `backup.configuration.maxLocalFiles`, default 10) | Rolling, up to 10 files |
+| **MinIO / external S3** (`sts-configuration-backup` bucket) | Only when `global.backup.enabled=true` | Same `.sty` files, uploaded after each backup | Independent retention (default 365 days) |
 
+The backup CronJob always writes to the PVC first. If `BACKUP_CONFIGURATION_UPLOAD_REMOTE=true` (i.e. `global.backup.enabled=true`), it also uploads to MinIO/S3. Restores check the PVC first, then fall back to S3.
 
+Other backup types (StackGraph, Elasticsearch, Victoria Metrics, ClickHouse) only go through MinIO/S3 and are not affected by the settings-backup PVC.
+
+### Goal
+
+* Remove the settings-backup PVC as a directly-mounted volume from backup jobs.
+* Route **all** backup traffic (including settings) through S3Proxy.
+* Keep at least one copy of every existing backup during the upgrade.
+
+---
+
+### Option A: S3Proxy-only with a local PVC backend
+
+S3Proxy always uses a PVC as its backend. Settings backups go to the `sts-configuration-backup` bucket on S3Proxy, which stores them on its own PVC. When `global.backup.enabled=true`, S3Proxy proxies the bucket to the external S3 provider instead.
+
+**New behavior:**
+* Settings backups always go through S3Proxy, never directly to a PVC.
+* When `global.backup.enabled=false`: S3Proxy stores to a local PVC (replaces the old settings-backup PVC).
+* When `global.backup.enabled=true`: S3Proxy proxies to the external backend; no local PVC needed for settings.
+* Only one copy of settings backups exists (either local PVC via proxy **or** remote S3).
+
+**Migration:**
+* `global.backup.enabled=false`:
+  * A one-off init container/job copies `.sty` files from the old settings-backup PVC into the S3Proxy PVC bucket before the old PVC is removed.
+* `global.backup.enabled=true`:
+  * Backups are already in the external S3 bucket. No data migration needed. The old settings-backup PVC can be removed directly.
+* MinIO PVC (local persistence mode): reused asthe S3Proxy PVC.
+
+**Pros:**
+* Clean, uniform model — everything goes through S3Proxy.
+* Settings-backup PVC goes away entirely.
+* Remote-backup users need zero data migration for settings.
+
+**Cons:**
+* Local-only users require a copy job on upgrade.
+* Switching from `global.backup.enabled=false` to `true` later means the local PVC stops being used for settings; existing backups on it become orphaned unless a copy-up job runs. *(Mitigated by the sync init container described below.)*
+
+### Option A.1: S3Proxy-only but keeping 2 PVCs (dual-bucket)
+
+Settings backups are stored in two places as they are today, but both are accessed via S3Proxy. S3Proxy always has a small dedicated settings PVC backing a `settings-local` bucket; backups are always written there. When `global.backup.enabled=true`, S3Proxy also proxies the normal `sts-configuration-backup` bucket to the external S3 provider (or, in local persistence mode, to the main S3Proxy PVC that replaces the old MinIO PVC).
+
+**New behavior:**
+* Settings backups always go through S3Proxy to the `settings-local` bucket (backed by a dedicated small PVC). This replaces the old settings-backup PVC.
+* When `global.backup.enabled=true`: backups are additionally written to the `sts-configuration-backup` bucket, which S3Proxy proxies to the external backend (or the main S3Proxy PVC in local persistence mode).
+* When `global.backup.enabled=false`: only the `settings-local` bucket is used.
+* Two copies of settings backups exist when global backup is enabled (local + remote), matching today's behavior.
+
+**Migration:**
+* `global.backup.enabled=false`:
+  * A one-off init container copies `.sty` files from the old settings-backup PVC into the `settings-local` bucket on the new S3Proxy settings PVC.
+* `global.backup.enabled=true`:
+  * Backups are already in the external S3 bucket. The init container copies the old PVC files into `settings-local` for completeness, but this could even be skipped.
+  * The old settings-backup PVC can then be removed.
+* MinIO PVC (local persistence mode): reused as the main S3Proxy PVC.
+
+**Pros:**
+* Preserves today's dual-copy safety model — a local copy always exists regardless of remote backend availability.
+* Switching `global.backup.enabled` on or off never orphans backups; the `settings-local` bucket always has a copy.
+* No sync init container needed for backend switches (the local copy is always present).
+
+**Cons:**
+* Two PVCs instead of one (the settings PVC is small, ≤1Gi).
+* Slightly more complex S3Proxy configuration (two buckets with different backends).
+* Backup jobs need to write to two buckets when global backup is enabled (or S3Proxy replicates internally).
+
+---
+
+### Option B: S3Proxy with the settings-backup PVC reused as its backend
+
+Instead of provisioning a new PVC for S3Proxy, reuse the existing settings-backup PVC as the S3Proxy filesystem backend. S3Proxy serves buckets from that PVC.
+
+**New behavior:**
+* Same as Option A from the application's perspective (all traffic via S3Proxy).
+* The PVC is "owned" by S3Proxy now, not mounted by backup jobs directly.
+* When `global.backup.enabled=true`, S3Proxy proxies to the external backend; the local PVC may still exist but isn't used for settings.
+
+**Migration:**
+* `global.backup.enabled=false`:
+  * The existing settings-backup PVC is adopted by the S3Proxy StatefulSet/Deployment.
+  * S3Proxy needs to be configured to use the existing directory layout or a one-time restructure (move files into a bucket-prefixed directory) is performed by an init container.
+* `global.backup.enabled=true`:
+  * Same as Option A — no data copy needed for settings.
+
+**Pros:**
+* No new PVC; no copy job for local-only users (if directory layout is compatible).
+* Simplest upgrade path.
+
+**Cons:**
+* The internal layout of the old PVC (flat `.sty` files) may not match S3Proxy's expected bucket directory structure, requiring a restructure step anyway.
+* Reusing an existing PVC across different workload types can hit zone/topology constraints if the PVC was bound to a node in a different zone.
+* Switching from `global.backup.enabled=false` to `true` later means the local PVC stops being used for settings; existing backups on it become orphaned unless a copy-up job runs. *(Mitigated by the sync init container described below.)*
+
+---
+
+### Mitigating backup loss when switching PVC backends
+
+Options A and B both have the risk that switching from `global.backup.enabled=false` to `true` (or vice versa) silently orphans the backups stored on the local PVC. This can be handled by an **init container on the S3Proxy pod** that runs before S3Proxy starts:
+
+1. **Detect backend change.** The init container compares the currently configured backend (PVC vs remote S3) against a small marker file on the local PVC (e.g. `.backend-type`).
+2. **If the backend changed from PVC → remote S3** (user enabled global backup):
+   * List all `.sty` files on the local PVC bucket directory.
+   * Upload each file to the remote S3 bucket via the configured backend credentials.
+   * Update the marker file.
+3. **If the backend changed from remote S3 → PVC** (user disabled global backup):
+   * List the remote bucket and download the most recent N files to the local PVC.
+   * Update the marker file.
+4. **If the backend did not change**, do nothing.
+
+This makes the transition seamless in both directions. Because settings backups are small (≤10 files, each a few MB at most), the sync completes in seconds.
+
+The same init container can also handle the **initial migration from the old settings-backup PVC**: if S3Proxy's own PVC is empty and the old PVC still exists (mounted read-only as a second volume), it copies the files over before the first start. After one successful upgrade cycle the old PVC volume mount can be removed from the chart.
+
+---
+
+### Option C: Dual-write transition period
+
+Keep the settings-backup PVC for one release cycle while also writing to S3Proxy. After the transition release, drop the PVC.
+
+**Release N (transition):**
+* Backup CronJob writes settings to both the old PVC (directly) and the S3Proxy bucket.
+* Restore prefers S3Proxy, falls back to PVC.
+* All existing PVC backups remain accessible.
+
+**Release N+1 (cleanup):**
+* Remove PVC mounts from backup jobs.
+* Old PVC is no longer used and can be deleted.
+
+**Pros:**
+* Zero-risk migration; no copy job; no data loss at any point.
+* Users can roll back to Release N-1 without losing data.
+
+**Cons:**
+* Two releases to fully complete the migration.
+* Increased complexity during the transition release (dual-write logic).
+* Temporary storage overhead (two copies of each new backup during the transition).
+
+---
+
+### Recommendation
+
+**Option A.1** has the least changes in runtime behavior and gives a consistent endstate without having to deal with orphaned backups when enabling/disabling global backup. The copy job for local-only users is a one-time cost that can be automated in an init container, and the dual-bucket setup preserves the safety of having a local copy regardless of remote backend status:
+
+* For the production users that really care about backups (`global.backup.enabled=true`),  backups are already in S3.
+* For local-only users, a simple init container copies ≤10 small `.sty` files from the old PVC to the S3Proxy PVC and then the old PVC can be cleaned up.
+* The MinIO PVC (when it exists) can be reused or replaced by the S3Proxy PVC.
+
+**Option B** is the simplest from a chart perspective but has more risks around PVC reuse and orphaned backups when switching backends.
 
 ## S3 compatibility of cloud providers
 
