@@ -1,0 +1,20 @@
+{{- if include "stackstate.s3proxy.enabled" . }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "stackstate.s3proxy.fullname" . }}
+  labels:
+    app.kubernetes.io/name: s3proxy
+    app.kubernetes.io/component: s3proxy
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: {{ include "stackstate.s3proxy.port" . }}
+      targetPort: {{ include "stackstate.s3proxy.port" . }}
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: s3proxy
+    app.kubernetes.io/component: s3proxy
+{{- end }}

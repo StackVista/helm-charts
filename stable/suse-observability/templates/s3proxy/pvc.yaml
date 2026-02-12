@@ -1,0 +1,52 @@
+{{- if include "stackstate.s3proxy.enabled" . }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "stackstate.s3proxy.fullname" . }}-settings-data
+  labels:
+    app.kubernetes.io/name: s3proxy
+    app.kubernetes.io/component: s3proxy
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
+  annotations:
+    monitor.kubernetes-v2.stackstate.io/pvc-orphan: |-
+      {
+        "enabled": false
+      }
+spec:
+  accessModes: {{ .Values.backup.storage.settingsPvc.accessModes | toYaml | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.backup.storage.settingsPvc.size }}
+  {{- if .Values.backup.storage.settingsPvc.storageClass }}
+  storageClassName: {{ .Values.backup.storage.settingsPvc.storageClass }}
+  {{- else if .Values.global.storageClass }}
+  storageClassName: {{ .Values.global.storageClass }}
+  {{- end }}
+{{- if and .Values.global.backup.enabled (include "stackstate.s3proxy.mainBackendUsesPVC" .) }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "stackstate.s3proxy.fullname" . }}-data
+  labels:
+    app.kubernetes.io/name: s3proxy
+    app.kubernetes.io/component: s3proxy
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
+  annotations:
+    monitor.kubernetes-v2.stackstate.io/pvc-orphan: |-
+      {
+        "enabled": false
+      }
+spec:
+  accessModes: {{ .Values.backup.storage.backend.pvc.accessModes | toYaml | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.backup.storage.backend.pvc.size }}
+  {{- if .Values.backup.storage.backend.pvc.storageClass }}
+  storageClassName: {{ .Values.backup.storage.backend.pvc.storageClass }}
+  {{- else if .Values.global.storageClass }}
+  storageClassName: {{ .Values.global.storageClass }}
+  {{- end }}
+{{- end }}
+{{- end }}

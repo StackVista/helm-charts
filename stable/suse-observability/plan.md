@@ -146,7 +146,7 @@ backup:
       # backup.storage.image.repository -- Image repository for S3Proxy
       repository: stackstate/s3proxy
       # backup.storage.image.tag -- Image tag for S3Proxy
-      tag: "3.0.0"
+      tag: "sha-1281afd"
       # backup.storage.image.pullPolicy -- Image pull policy for S3Proxy
       pullPolicy: IfNotPresent
 
@@ -159,7 +159,7 @@ backup:
       # backup.storage.credentials.existingSecret -- Use existing secret for credentials (keys: accessKey, secretKey)
       existingSecret: ""
 
-    # backup.storage.settingsPvc -- PVC for local settings backup (sts-configuration-backup bucket)
+    # backup.storage.settingsPvc -- PVC for local settings backup (settings-local-backup bucket)
     # This PVC is ALWAYS present regardless of global.backup.enabled status.
     # It provides the dual-copy safety model where settings are always stored locally.
     settingsPvc:
@@ -210,33 +210,31 @@ backup:
         # backup.storage.backend.azure.endpoint -- Azure blob endpoint (auto-derived from accountName if not set)
         endpoint: ""
 
-    # backup.storage.service -- Service configuration
-    service:
-      # backup.storage.service.port -- Service port for S3Proxy
-      port: 9000
+    # backup.storage.migration -- Settings for migration from old MinIO installation
+    migration:
+      # backup.storage.migration.enabled -- Enable migration init container
+      enabled: true
 
-    # backup.storage.resources -- Resource limits and requests for S3Proxy containers
-    resources:
-      limits:
-        cpu: 500m
-        memory: 512Mi
-        ephemeral-storage: 1Gi
-      requests:
-        cpu: 100m
-        memory: 256Mi
-        ephemeral-storage: 1Mi
-
-    # NOTE: securityContext is inherited from stackstate.components.all.securityContext
-    # This ensures consistency with all other components in the chart.
-
-    # backup.storage.nodeSelector -- Node selector for S3Proxy pod (merged with stackstate.components.all.nodeSelector)
-    nodeSelector: {}
-    # backup.storage.tolerations -- Tolerations for S3Proxy pod (appended to stackstate.components.all.tolerations)
-    tolerations: []
-    # backup.storage.affinity -- Affinity settings for S3Proxy pod (merged with stackstate.components.all.affinity via global helper)
-    affinity: {}
-    # backup.storage.podAnnotations -- Annotations for S3Proxy pod
-    podAnnotations: {}
+# S3Proxy deployment configuration (resources, scheduling, annotations)
+s3proxy:
+  # s3proxy.resources -- Resource limits and requests for S3Proxy container
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+      ephemeral-storage: 1Gi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+      ephemeral-storage: 1Mi
+  # s3proxy.nodeSelector -- Node selector for S3Proxy pod (merged with stackstate.components.all.nodeSelector)
+  nodeSelector: {}
+  # s3proxy.tolerations -- Tolerations for S3Proxy pod (appended to stackstate.components.all.tolerations)
+  tolerations: []
+  # s3proxy.affinity -- Affinity settings for S3Proxy pod (merged with stackstate.components.all.affinity)
+  affinity: {}
+  # s3proxy.podAnnotations -- Annotations for S3Proxy pod
+  podAnnotations: {}
 
 # Legacy minio values (deprecated, mapped to backup.storage)
 minio:
@@ -245,7 +243,7 @@ minio:
   # minio.secretKey -- DEPRECATED: Use backup.storage.credentials.secretKey
   secretKey: ""
   # minio.fullnameOverride -- Service name override (used for endpoint compatibility)
-  fullnameOverride: "suse-observability-minio"
+  fullnameOverride: ""
 ```
 
 ---
@@ -1264,8 +1262,8 @@ Create test value files in `test/values/`:
 
 ### High Priority
 
-- [ ] Create `templates/s3proxy/` directory structure
-- [ ] Implement `_helper-s3proxy.tpl` helper functions:
+- [x] Create `templates/s3proxy/` directory structure
+- [x] Implement `_helper-s3proxy.tpl` helper functions:
   - `stackstate.s3proxy.enabled` - Always returns true (settings bucket always needed)
   - `stackstate.s3proxy.fullname` - Resource naming with `minio.fullnameOverride` backward compatibility
   - `stackstate.s3proxy.secretName` - Secret name resolution
@@ -1274,53 +1272,69 @@ Create test value files in `test/values/`:
   - `stackstate.s3proxy.accessKey` / `secretKey` - Credential resolution with legacy fallback
   - `stackstate.s3proxy.image.registry` - Image registry using common helper
   - `stackstate.s3proxy.nodeSelector` / `affinity` / `tolerations` - Scheduling helpers
-- [ ] Create S3Proxy Deployment template:
+- [x] Create S3Proxy Deployment template:
   - Single container with bucket-locator middleware
   - Multiple `--properties` args passed to s3proxy
   - Single port 9000
   - Settings properties file always present
   - Main properties file conditional on `global.backup.enabled`
-- [ ] Create S3Proxy Service template (single port 9000)
-- [ ] Create S3Proxy ConfigMap template:
+- [x] Create S3Proxy Service template (single port 9000)
+- [x] Create S3Proxy ConfigMap template:
   - `s3proxy-settings.properties` - Filesystem backend for `settings-local-backup` bucket
   - `s3proxy-main.properties` - Configurable backend (PVC/S3/Azure) for main buckets (conditional)
   - Uses `s3proxy.bucket-locator.N=bucketname` directives for routing
-- [ ] Create S3Proxy Secret template
-- [ ] Create S3Proxy PVC template:
+- [x] Create S3Proxy Secret template
+- [x] Create S3Proxy PVC template:
   - `settings-data` PVC (~1Gi) - Always present
   - `data` PVC (configurable) - Only when using PVC backend for main backups
-- [ ] Update `_helper-endpoints.tpl` for S3Proxy
-- [ ] Update `_helper-backup.tpl` for S3Proxy
-- [ ] Add `backup.storage` values to `values.yaml` (including `settingsPvc` section)
-- [ ] Update `configmap-backup-config.yaml`
-- [ ] Update `job-backup-init.yaml`
-- [ ] Update settings backup cronjob and scripts:
+- [x] Update `_helper-endpoints.tpl` for S3Proxy
+- [x] Update `_helper-backup.tpl` for S3Proxy
+- [x] Add `backup.storage` values to `values.yaml` (including `settingsPvc` section)
+- [x] Update `configmap-backup-config.yaml`
+- [x] Update `job-backup-init.yaml`
+- [x] Update settings backup cronjob and scripts:
   - Update `templates/cronjob-backup.yaml` - Remove PVC mount, add S3 credentials
   - Update `scripts/backup-configuration.sh` - Write to S3 bucket instead of PVC
   - Update `scripts/restore-configuration-backup.sh` - Read from S3 bucket
   - Update `scripts/list-configuration-backups.sh` - List from S3 bucket
-  - Update `templates/configmap-backup-restore-scripts.yaml` - Embed updated scripts
+  - Update `scripts/download-configuration-backup.sh` - Download from S3 bucket
+  - Update `templates/configmap-backup-restore-scripts.yaml` - Updated all scripts
 
 ### Medium Priority
 
-- [ ] Add backward compatibility for `minio.*` values (mapLegacyValues helper)
-- [ ] Create migration init container (copy from old settings-backup PVC)
-- [ ] Update Chart.yaml dependencies (remove or conditionally disable MinIO subchart)
-- [ ] Write unit tests for S3Proxy templates:
-  - `TestS3ProxyDeploymentDefault` - Verify single-container with bucket-locator
-  - `TestS3ProxyBackupDisabled` - Verify settings-only mode
-  - `TestS3ProxyS3Backend` - Verify S3 backend configuration
-  - `TestS3ProxyAzureBackend` - Verify Azure backend configuration
-  - `TestS3ProxyLegacyMinioValues` - Verify backward compatibility
-  - `TestS3ProxySingleService` - Verify single port 9000 service
-- [ ] Write tests for PVC creation scenarios
+- [x] Add backward compatibility for `minio.*` values (mapLegacyValues helper)
+- [x] Create migration init container (copy from old settings-backup PVC)
+- [x] Update Chart.yaml dependencies (removed MinIO subchart)
+- [x] Write unit tests for S3Proxy templates:
+  - `TestS3ProxyAlwaysEnabled` - Verify S3Proxy is always deployed
+  - `TestS3ProxyWithBackupEnabledPVC` - Verify PVC backend configuration
+  - `TestS3ProxyWithBackupEnabledS3` - Verify S3 backend configuration
+  - `TestS3ProxyWithBackupEnabledAzure` - Verify Azure backend configuration
+  - `TestS3ProxyLegacyS3GatewayBackwardCompatibility` - Verify legacy s3gateway values work
+  - `TestS3ProxyLegacyAzureGatewayBackwardCompatibility` - Verify legacy azuregateway values work
+  - `TestS3ProxyConfigMapBuckets` - Verify bucket-locator configuration
+  - `TestS3ProxyService` - Verify single port 9000 service
+  - `TestS3ProxyFullnameOverride` - Verify backward compat with minio.fullnameOverride
+  - `TestS3ProxyResources` - Verify resource configuration
+  - `TestS3ProxyDeploymentArgs` - Verify properties file arguments
+  - `TestS3ProxyExistingSecret` - Verify existing secret configuration
+  - `TestS3ProxyNodeSelector` - Verify node selector merging
+  - `TestS3ProxyTolerations` - Verify tolerations merging
+  - `TestS3ProxySettingsPVCSize` - Verify settings PVC configuration
+  - `TestS3ProxyMainPVCSize` - Verify main PVC configuration
+- [x] Update existing tests for S3Proxy changes:
+  - Updated `TestGlobalBackupDisabledEnsureResources` - S3Proxy deployment is now always enabled
+  - Updated `TestGetImages` - Updated image count (33 after removing MinIO subchart)
+  - Updated `TestK8sAuthz*` tests - Updated role counts (removed MinIO role)
+  - Added S3Proxy resources to always-enabled lists
+- [x] Write tests for PVC creation scenarios
 
 ### Low Priority
 
-- [ ] Update documentation (README.md.gotmpl)
-- [ ] Add deprecation warnings for minio values
-- [ ] Create migration guide for users
-- [ ] Performance testing with large backups
+- [x] Update documentation (README.md.gotmpl) - Added Backup Storage Configuration section
+- [x] Add deprecation warnings for minio values - Added to ConfigMap annotations
+- [ ] Create migration guide for users (optional - documentation in README covers basics)
+- [ ] Performance testing with large backups (optional - to be done during QA)
 
 ---
 

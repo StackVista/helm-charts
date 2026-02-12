@@ -31,8 +31,29 @@ var backupManuallyEnabledCronjobs = []string{
 	"suse-observability-clickhouse-incremental-backup",
 }
 
-var backupManuallyEnabledDeployments = []string{
-	"suse-observability-minio",
+var backupManuallyEnabledDeployments = []string{}
+
+// S3Proxy is always enabled for settings backup, so the s3proxy deployment is always present
+var backupAlwaysEnabledDeployments = []string{
+	"suse-observability-s3proxy",
+}
+
+// S3Proxy-related resources that are always present
+var backupAlwaysEnabledSecrets = []string{
+	"suse-observability-s3proxy",
+}
+
+var s3proxyAlwaysEnabledConfigMaps = []string{
+	"suse-observability-s3proxy-config",
+}
+
+var s3proxyAlwaysEnabledPVCs = []string{
+	"suse-observability-s3proxy-settings-data",
+}
+
+// S3Proxy-related resources that are only present when global.backup.enabled=true
+var s3proxyManuallyEnabledPVCs = []string{
+	"suse-observability-s3proxy-data",
 }
 
 var backupAlwaysPresentSecrets = []string{
@@ -46,9 +67,7 @@ var backupAlwaysEnabledConfigMaps = []string{
 	"suse-observability-clickhouse-backup-scripts",
 }
 
-var backupAlwaysEnabledPVCs = []string{
-	"suse-observability-settings-backup-data",
-}
+var backupAlwaysEnabledPVCs = []string{}
 
 var backupManuallyEnabledPVCs = []string{
 	"suse-observability-backup-stackgraph-tmp-data",
@@ -78,6 +97,31 @@ func TestGlobalBackupEnabledEnsureResources(t *testing.T) {
 	for _, component := range backupManuallyEnabledDeployments {
 		_, ok := resources.Deployments[component]
 		assert.Equal(t, true, ok, "%s Deployment should exist", component)
+	}
+
+	for _, component := range backupAlwaysEnabledDeployments {
+		_, ok := resources.Deployments[component]
+		assert.Equal(t, true, ok, "%s Deployment should exist", component)
+	}
+
+	for _, component := range backupAlwaysEnabledSecrets {
+		_, ok := resources.Secrets[component]
+		assert.Equal(t, true, ok, "%s Secret should exist", component)
+	}
+
+	for _, component := range s3proxyAlwaysEnabledConfigMaps {
+		_, ok := resources.ConfigMaps[component]
+		assert.Equal(t, true, ok, "%s ConfigMap should exist", component)
+	}
+
+	for _, component := range s3proxyAlwaysEnabledPVCs {
+		_, ok := resources.PersistentVolumeClaims[component]
+		assert.Equal(t, true, ok, "%s PersistentVolumeClaim should exist", component)
+	}
+
+	for _, component := range s3proxyManuallyEnabledPVCs {
+		_, ok := resources.PersistentVolumeClaims[component]
+		assert.Equal(t, true, ok, "%s PersistentVolumeClaim should exist", component)
 	}
 
 	for _, component := range backupAlwaysPresentSecrets {
@@ -117,9 +161,15 @@ func TestGlobalBackupDisabledEnsureResources(t *testing.T) {
 		assert.Equal(t, true, ok, "%s Cronjob should exist", component)
 	}
 
-	for _, component := range backupAlwaysEnabledCronjobs {
+	for _, component := range backupManuallyEnabledCronjobs {
 		_, ok := resources.CronJobs[component]
-		assert.Equal(t, true, ok, "%s Cronjob should not exist", component)
+		assert.Equal(t, false, ok, "%s Cronjob should not exist", component)
+	}
+
+	// S3Proxy deployment is always enabled for settings backup
+	for _, component := range backupAlwaysEnabledDeployments {
+		_, ok := resources.Deployments[component]
+		assert.Equal(t, true, ok, "%s Deployment should exist", component)
 	}
 
 	for _, component := range backupManuallyEnabledDeployments {
@@ -132,7 +182,17 @@ func TestGlobalBackupDisabledEnsureResources(t *testing.T) {
 		assert.Equal(t, true, ok, "%s Secret should exist", component)
 	}
 
+	for _, component := range backupAlwaysEnabledSecrets {
+		_, ok := resources.Secrets[component]
+		assert.Equal(t, true, ok, "%s Secret should exist", component)
+	}
+
 	for _, component := range backupAlwaysEnabledConfigMaps {
+		_, ok := resources.ConfigMaps[component]
+		assert.Equal(t, true, ok, "%s ConfigMap should exist", component)
+	}
+
+	for _, component := range s3proxyAlwaysEnabledConfigMaps {
 		_, ok := resources.ConfigMaps[component]
 		assert.Equal(t, true, ok, "%s ConfigMap should exist", component)
 	}
@@ -142,7 +202,17 @@ func TestGlobalBackupDisabledEnsureResources(t *testing.T) {
 		assert.Equal(t, true, ok, "%s PersistentVolumeClaim should exist", component)
 	}
 
+	for _, component := range s3proxyAlwaysEnabledPVCs {
+		_, ok := resources.PersistentVolumeClaims[component]
+		assert.Equal(t, true, ok, "%s PersistentVolumeClaim should exist", component)
+	}
+
 	for _, component := range backupManuallyEnabledPVCs {
+		_, ok := resources.PersistentVolumeClaims[component]
+		assert.Equal(t, false, ok, "%s PersistentVolumeClaim should not exist", component)
+	}
+
+	for _, component := range s3proxyManuallyEnabledPVCs {
 		_, ok := resources.PersistentVolumeClaims[component]
 		assert.Equal(t, false, ok, "%s PersistentVolumeClaim should not exist", component)
 	}

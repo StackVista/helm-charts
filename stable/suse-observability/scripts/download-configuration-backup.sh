@@ -1,30 +1,32 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-export BACKUP_DIR=/settings-backup-data
 export TMP_DIR=/tmp
+
+# Set up AWS credentials for S3Proxy access
+export AWS_ACCESS_KEY_ID
+AWS_ACCESS_KEY_ID="$(cat /aws-keys/accesskey)"
+export AWS_SECRET_ACCESS_KEY
+AWS_SECRET_ACCESS_KEY="$(cat /aws-keys/secretkey)"
 
 RESTORE_FILE="${TMP_DIR}/${BACKUP_FILE}"
 
-if [ -f "${BACKUP_DIR}/${BACKUP_FILE}" ]; then
-  cp "${BACKUP_DIR}/${BACKUP_FILE}" "${RESTORE_FILE}"
-
+# First try to download from local settings bucket
+echo "=== Attempting to download Settings backup \"${BACKUP_FILE}\" from local settings bucket \"${S3_BUCKET_SETTINGS}\"..."
+if sts-toolbox aws s3 --endpoint "${S3_ENDPOINT}" --region minio cp "s3://${S3_BUCKET_SETTINGS}/${BACKUP_FILE}" "${RESTORE_FILE}" 2>/dev/null; then
+  echo "Downloaded from local settings bucket"
 elif [ "$BACKUP_CONFIGURATION_UPLOAD_REMOTE" == "true" ]; then
-  export AWS_ACCESS_KEY_ID
-  AWS_ACCESS_KEY_ID="$(cat /aws-keys/accesskey)"
-  export AWS_SECRET_ACCESS_KEY
-  AWS_SECRET_ACCESS_KEY="$(cat /aws-keys/secretkey)"
-
-  echo "=== Downloading Settings backup \"${BACKUP_FILE}\" from bucket \"${BACKUP_CONFIGURATION_BUCKET_NAME}\"..."
-  sts-toolbox aws s3 --endpoint "http://${MINIO_ENDPOINT}" --region minio cp "s3://${BACKUP_CONFIGURATION_BUCKET_NAME}/${BACKUP_CONFIGURATION_S3_PREFIX}${BACKUP_FILE}" "${RESTORE_FILE}"
+  # Fall back to remote bucket if local not found and remote backup is enabled
+  echo "=== Not found in local bucket, downloading from remote bucket \"${BACKUP_CONFIGURATION_BUCKET_NAME}\"..."
+  sts-toolbox aws s3 --endpoint "${S3_ENDPOINT}" --region minio cp "s3://${BACKUP_CONFIGURATION_BUCKET_NAME}/${BACKUP_CONFIGURATION_S3_PREFIX}${BACKUP_FILE}" "${RESTORE_FILE}"
 fi
 
- if [ ! -f  "${RESTORE_FILE}" ]; then
-  echo "=== Backup file not found (\"${RESTORE_FILE}\"), exiting..."
+if [ ! -f "${RESTORE_FILE}" ]; then
+  echo "=== Backup file not found (\"${BACKUP_FILE}\"), exiting..."
   exit 1
- fi
+fi
 
-echo "=== Waiting for backup file to be downloaded..."
+echo "=== Backup file downloaded to \"${RESTORE_FILE}\". Waiting for user to retrieve..."
 while true; do
   sleep 1
 done

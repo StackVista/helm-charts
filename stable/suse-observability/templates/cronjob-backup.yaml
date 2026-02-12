@@ -5,7 +5,7 @@ command:
   - sh
   - -c
   - |
-    /entrypoint -c {{ include "stackstate.minio.endpoint" . }},{{ include "stackgraph.hbase.waitfor" . }},{{ template "common.fullname.short" . }}-{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
+    /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }},{{ include "stackgraph.hbase.waitfor" . }},{{ template "common.fullname.short" . }}-{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
 imagePullPolicy: Always
 {{- end }}
@@ -127,7 +127,7 @@ command:
   - sh
   - -c
   - |
-    /entrypoint -c {{- if .Values.global.backup.enabled -}}{{ include "stackstate.minio.endpoint" . }},{{- end -}}{{ include "stackgraph.hbase.waitfor" . }},{{ template "common.fullname.short" . }}-{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
+    /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }},{{ include "stackgraph.hbase.waitfor" . }},{{ template "common.fullname.short" . }}-{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}initializer:1618{{ else }}server-headless:7070{{ end }} -t 300
 image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
 imagePullPolicy: Always
 {{- end }}
@@ -161,8 +161,6 @@ resources:
 {{- end }}
 volumeMounts:
   {{- include "stackstate.backup.volumeMounts" . | nindent 2 }}
-  - name: settings-backup-data
-    mountPath: /settings-backup-data
 {{- end }}
 
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
@@ -227,9 +225,6 @@ spec:
           serviceAccountName: ""
           volumes:
             {{- include "stackstate.backup.volumes" . | nindent 12 }}
-            - name: settings-backup-data
-              persistentVolumeClaim:
-                claimName: {{ template "common.fullname.short" . }}-settings-backup-data
         {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.configurationBackup.nodeSelector }}
           nodeSelector:
           {{- with .Values.stackstate.components.all.nodeSelector }}

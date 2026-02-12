@@ -1,0 +1,56 @@
+{{- if include "stackstate.s3proxy.enabled" . }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "stackstate.s3proxy.fullname" . }}-config
+  labels:
+    app.kubernetes.io/name: s3proxy
+    app.kubernetes.io/component: s3proxy
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
+  {{- if include "stackstate.s3proxy.hasDeprecatedValues" . }}
+  annotations:
+    helm.sh/deprecation-warnings: {{ include "stackstate.s3proxy.deprecationWarnings" . | quote }}
+  {{- end }}
+data:
+  s3proxy-settings.properties: |
+    s3proxy.endpoint=http://0.0.0.0:9000
+    s3proxy.authorization=aws-v2-or-v4
+    jclouds.provider=filesystem
+    jclouds.filesystem.basedir=/settings-data
+    s3proxy.bucket-locator.1={{ include "stackstate.s3proxy.settingsBucketName" . }}
+  {{- if .Values.global.backup.enabled }}
+  s3proxy-main.properties: |
+    s3proxy.endpoint=http://0.0.0.0:9000
+    s3proxy.authorization=aws-v2-or-v4
+    {{- if include "stackstate.s3proxy.mainBackendUsesPVC" . }}
+    jclouds.provider=filesystem
+    jclouds.filesystem.basedir=/main-data
+    {{- else if include "stackstate.s3proxy.s3BackendEnabled" . }}
+    jclouds.provider=aws-s3
+    jclouds.endpoint={{ include "stackstate.s3proxy.s3BackendEndpoint" . }}
+    jclouds.region={{ .Values.backup.storage.backend.s3.region }}
+    {{- if not (include "stackstate.s3proxy.s3BackendAccessKey" .) }}
+    jclouds.identity=
+    jclouds.credential=
+    {{- end }}
+    {{- else if include "stackstate.s3proxy.azureBackendEnabled" . }}
+    jclouds.provider=azureblob
+    {{- $azureAccountName := include "stackstate.s3proxy.azureBackendAccountName" . }}
+    {{- if .Values.backup.storage.backend.azure.endpoint }}
+    jclouds.endpoint={{ .Values.backup.storage.backend.azure.endpoint }}
+    {{- else if $azureAccountName }}
+    jclouds.endpoint=https://{{ $azureAccountName }}.blob.core.windows.net
+    {{- end }}
+    {{- if not (include "stackstate.s3proxy.azureBackendAccountKey" .) }}
+    jclouds.identity=
+    jclouds.credential=
+    {{- end }}
+    {{- end }}
+    s3proxy.bucket-locator.1={{ .Values.backup.configuration.bucketName }}
+    s3proxy.bucket-locator.2={{ .Values.backup.stackGraph.bucketName }}
+    s3proxy.bucket-locator.3={{ .Values.backup.elasticsearch.bucketName }}
+    s3proxy.bucket-locator.4={{ index .Values "victoria-metrics-0" "backup" "bucketName" }}
+    s3proxy.bucket-locator.5={{ index .Values "victoria-metrics-1" "backup" "bucketName" }}
+    s3proxy.bucket-locator.6={{ .Values.clickhouse.backup.bucketName }}
+  {{- end }}
+{{- end }}

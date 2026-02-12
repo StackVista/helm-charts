@@ -560,6 +560,192 @@ stackstate:
           roles: [stackstate-power-user, stackstate-guest]
 ```
 
+## Backup Storage Configuration
+
+SUSE Observability uses S3Proxy to provide an S3-compatible API for all backup operations. This enables consistent backup workflows regardless of whether you're using local storage or cloud providers like AWS S3 or Azure Blob Storage.
+
+### Architecture Overview
+
+S3Proxy manages two types of storage:
+
+1. **Settings backup** (always local) - A small PVC (~1Gi) that stores configuration backups locally, ensuring they're always available for restore operations
+2. **Main backup storage** (configurable) - Stores StackGraph, Elasticsearch, ClickHouse, and VictoriaMetrics backups
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                      S3Proxy                            │
+│                                                         │
+│   settings-local-backup    →  Local PVC (always)       │
+│   sts-stackgraph-backup    →  PVC / S3 / Azure         │
+│   sts-elasticsearch-backup →  PVC / S3 / Azure         │
+│   sts-clickhouse-backup    →  PVC / S3 / Azure         │
+│   sts-victoria-*           →  PVC / S3 / Azure         │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Default Configuration (Local PVC)
+
+By default, all backups are stored on local PVCs:
+
+```yaml
+global:
+  backup:
+    enabled: true  # Enable backup functionality
+
+backup:
+  storage:
+    backend:
+      pvc:
+        enabled: true
+        size: 500Gi  # Size for main backup storage
+```
+
+### Using AWS S3
+
+To store backups in AWS S3:
+
+```yaml
+global:
+  backup:
+    enabled: true
+
+backup:
+  storage:
+    backend:
+      pvc:
+        enabled: false
+      s3:
+        enabled: true
+        region: "eu-west-1"
+        # Option 1: Use IAM role / IRSA (recommended)
+        # Leave accessKey and secretKey empty
+
+        # Option 2: Use explicit credentials
+        accessKey: "aws-access-key"
+        secretKey: "aws-secret-key"
+
+        # Optional: Custom S3-compatible endpoint (e.g., MinIO)
+        # endpoint: "https://minio.example.com"
+```
+
+### Using Azure Blob Storage
+
+To store backups in Azure Blob Storage:
+
+```yaml
+global:
+  backup:
+    enabled: true
+
+backup:
+  storage:
+    backend:
+      pvc:
+        enabled: false
+      azure:
+        enabled: true
+        accountName: "mystorageaccount"
+        # Option 1: Use managed identity (recommended)
+        # Leave accountKey empty
+
+        # Option 2: Use explicit credentials
+        accountKey: "your-storage-account-key"
+```
+
+### S3Proxy Credentials
+
+S3Proxy requires credentials for clients (backup jobs) to authenticate. These are auto-generated if not specified:
+
+```yaml
+backup:
+  storage:
+    credentials:
+      # Auto-generated if empty (recommended for new installations)
+      accessKey: ""
+      secretKey: ""
+
+      # Or use an existing secret
+      existingSecret: "my-s3proxy-credentials"
+```
+
+### Storage Class and PVC Configuration
+
+Configure storage classes for the PVCs:
+
+```yaml
+backup:
+  storage:
+    # Settings backup PVC (always present)
+    settingsPvc:
+      size: 1Gi
+      storageClass: "fast-ssd"
+      accessModes:
+        - ReadWriteOnce
+
+    # Main backup PVC (when using PVC backend)
+    backend:
+      pvc:
+        enabled: true
+        size: 500Gi
+        storageClass: "standard"
+        accessModes:
+          - ReadWriteOnce
+```
+
+### Migration from MinIO
+
+If you're upgrading from a previous version that used MinIO, S3Proxy automatically migrates your settings backups. The migration init container copies `.sty` files from the old `settings-backup-data` PVC to the new S3Proxy bucket structure.
+
+Migration is enabled by default:
+
+```yaml
+backup:
+  storage:
+    migration:
+      enabled: true
+      # Auto-detects the old PVC name, or specify explicitly:
+      # oldPvcName: "suse-observability-settings-backup-data"
+```
+
+**Legacy MinIO values** (deprecated but still supported):
+
+```yaml
+# These values still work for backward compatibility
+minio:
+  accessKey: "old-access-key"
+  secretKey: "old-secret-key"
+
+  # S3 gateway (maps to backup.storage.backend.s3)
+  s3gateway:
+    enabled: true
+    accessKey: "aws-key"
+    secretKey: "aws-secret"
+    serviceEndpoint: "https://s3.amazonaws.com"
+
+  # Azure gateway (maps to backup.storage.backend.azure)
+  azuregateway:
+    enabled: true
+```
+
+### S3Proxy Deployment Configuration
+
+Configure resources and scheduling for the S3Proxy pod:
+
+```yaml
+s3proxy:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
+```
+
 ## Auto-installing StackPacks
 It can be useful to have some StackPacks always installed in StackState. For example the Kuberentes StackPack configured for the cluster running StackState. For that purpose the value `stackstate.stackpacks.installed` can be used to specify the StackPacks that should be installed (by name) and their (required) configuration. As an example here the Kubernetes StackPack will be pre-installed:
 ```

@@ -84,6 +84,72 @@ backup:
   enabled: false
   # backup.initJobAnnotations -- Annotations for Backup-init Job.
   initJobAnnotations: {}
+  storage:
+    # backup.storage.enabled -- Enable the S3Proxy deployment. Always enabled for settings backup.
+    enabled: true
+    image:
+      # backup.storage.image.registry -- Image registry for S3Proxy
+      registry: quay.io
+      # backup.storage.image.repository -- Image repository for S3Proxy
+      repository: stackstate/s3proxy
+      # backup.storage.image.tag -- Image tag for S3Proxy
+      tag: "sha-1281afd"
+      # backup.storage.image.pullPolicy -- Image pull policy for S3Proxy
+      pullPolicy: IfNotPresent
+    credentials:
+      # backup.storage.credentials.accessKey -- Access key for S3Proxy authentication (auto-generated if empty)
+      accessKey: ""
+      # backup.storage.credentials.secretKey -- Secret key for S3Proxy authentication (auto-generated if empty)
+      secretKey: ""
+      # backup.storage.credentials.existingSecret -- Use existing secret for credentials (keys: accessKey, secretKey)
+      existingSecret: ""
+    # backup.storage.settingsPvc -- PVC for local settings backup (always present)
+    settingsPvc:
+      # backup.storage.settingsPvc.size -- Size of the settings backup PVC
+      size: 1Gi
+      # backup.storage.settingsPvc.storageClass -- Storage class for the settings PVC
+      storageClass: ""
+      # backup.storage.settingsPvc.accessModes -- Access modes for the settings PVC
+      accessModes:
+        - ReadWriteOnce
+    backend:
+      # backup.storage.backend.pvc -- Use local PVC storage (default when no other backend configured)
+      pvc:
+        # backup.storage.backend.pvc.enabled -- Enable PVC backend
+        enabled: true
+        # backup.storage.backend.pvc.size -- Size of the PVC for S3Proxy data
+        size: 500Gi
+        # backup.storage.backend.pvc.storageClass -- Storage class for the PVC
+        storageClass: ""
+        # backup.storage.backend.pvc.accessModes -- Access modes for the PVC
+        accessModes:
+          - ReadWriteOnce
+      # backup.storage.backend.s3 -- Use external S3-compatible storage
+      s3:
+        # backup.storage.backend.s3.enabled -- Enable S3 backend
+        enabled: false
+        # backup.storage.backend.s3.accessKey -- AWS access key (optional, falls back to instance profile/IRSA)
+        accessKey: ""
+        # backup.storage.backend.s3.secretKey -- AWS secret key (optional)
+        secretKey: ""
+        # backup.storage.backend.s3.endpoint -- S3 endpoint URL (optional, defaults to AWS)
+        endpoint: ""
+        # backup.storage.backend.s3.region -- AWS region (defaults to us-east-1)
+        region: "us-east-1"
+      # backup.storage.backend.azure -- Use Azure Blob Storage
+      azure:
+        # backup.storage.backend.azure.enabled -- Enable Azure backend
+        enabled: false
+        # backup.storage.backend.azure.accountName -- Azure storage account name
+        accountName: ""
+        # backup.storage.backend.azure.accountKey -- Azure storage account key (optional, falls back to managed identity)
+        accountKey: ""
+        # backup.storage.backend.azure.endpoint -- Azure blob endpoint (auto-derived from accountName if not set)
+        endpoint: ""
+    # backup.storage.migration -- Migration settings for moving data from old settings-backup PVC
+    migration:
+      # backup.storage.migration.enabled -- Enable migration init container to copy data from old settings-backup PVC
+      enabled: true
   elasticsearch:
     # backup.elasticsearch.bucketName -- Name of the MinIO bucket where ElasticSearch snapshots are stored.
     bucketName: "sts-elasticsearch-backup"
@@ -2098,31 +2164,55 @@ kafka:
     runAsNonRoot: true
     seccompProfile:
       type: RuntimeDefault
+# minio -- DEPRECATED: MinIO subchart has been replaced by S3Proxy. These values are kept for backward compatibility only.
+# Please migrate to backup.storage.* values. Legacy minio.* values will be removed in a future release.
 minio:
-  # minio.replicas -- Number of MinIO replicas.
-  replicas: 1
-  persistence:
-    # minio.persistence.enabled -- Enables MinIO persistence. Must be enabled when MinIO is not configured as a gateway to AWS S3 or Azure Blob Storage.
-    enabled: false
-  # minio.fullnameOverride -- **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components.
-  fullnameOverride: suse-observability-minio
-  image:
-    # minio.image.registry -- MinIO image registry
-    registry: quay.io
-    # minio.image.repository -- MinIO image repository
-    repository: stackstate/minio
-    # minio.image.tag -- MinIO image tag. Updated by updatecli.
-    tag: RELEASE.2025-11-19T12-41-50Z-e064c44f-186-release
-  # minio.accessKey -- Access key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
-  accessKey: setme
-  # minio.secretKey -- Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
-  secretKey: setme
-  azuregateway:
-    # azuregateway.replicas -- Number of azure gateway instances to run in parallel
-    replicas: 1
+  # minio.fullnameOverride -- DEPRECATED: Used for backward compatibility with existing deployments.
+  fullnameOverride: ""
+  # minio.accessKey -- DEPRECATED: Use backup.storage.credentials.accessKey instead.
+  # If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials.
+  accessKey: ""
+  # minio.secretKey -- DEPRECATED: Use backup.storage.credentials.secretKey instead.
+  # If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials.
+  secretKey: ""
+  # minio.s3gateway -- DEPRECATED: Use backup.storage.backend.s3 instead.
+  # When minio.s3gateway.enabled is true, S3Proxy will be configured to use S3 as the backend.
   s3gateway:
-    # s3gateway.replicas -- Number of s3 gateway instances to run in parallel
-    replicas: 1
+    # minio.s3gateway.enabled -- DEPRECATED: Use backup.storage.backend.s3.enabled instead.
+    enabled: false
+    # minio.s3gateway.serviceEndpoint -- DEPRECATED: Use backup.storage.backend.s3.endpoint instead.
+    serviceEndpoint: ""
+    # minio.s3gateway.accessKey -- DEPRECATED: Use backup.storage.backend.s3.accessKey instead.
+    accessKey: ""
+    # minio.s3gateway.secretKey -- DEPRECATED: Use backup.storage.backend.s3.secretKey instead.
+    secretKey: ""
+  # minio.azuregateway -- DEPRECATED: Use backup.storage.backend.azure instead.
+  # When minio.azuregateway.enabled is true, S3Proxy will be configured to use Azure Blob as the backend.
+  azuregateway:
+    # minio.azuregateway.enabled -- DEPRECATED: Use backup.storage.backend.azure.enabled instead.
+    enabled: false
+
+# S3Proxy deployment configuration
+s3proxy:
+  # s3proxy.resources -- Resource limits and requests for S3Proxy container
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+      ephemeral-storage: 1Gi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+      ephemeral-storage: 1Mi
+  # s3proxy.nodeSelector -- Node selector for S3Proxy pod (merged with stackstate.components.all.nodeSelector)
+  nodeSelector: {}
+  # s3proxy.tolerations -- Tolerations for S3Proxy pod (appended to stackstate.components.all.tolerations)
+  tolerations: []
+  # s3proxy.affinity -- Affinity settings for S3Proxy pod (merged with stackstate.components.all.affinity)
+  affinity: {}
+  # s3proxy.podAnnotations -- Annotations for S3Proxy pod
+  podAnnotations: {}
+
 zookeeper:
   # zookeeper.enabled -- Enable / disable chart-based Zookeeper.
   enabled: true

@@ -101,6 +101,10 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   value: {{ include "ensureTrailingSlashIfNotEmpty" .Values.clickhouse.backup.s3Prefix }}
 - name: MINIO_ENDPOINT
   value: {{ include "stackstate.minio.endpoint" . | quote }}
+- name: S3_ENDPOINT
+  value: "http://{{ include "stackstate.minio.endpoint" . }}"
+- name: S3_BUCKET_SETTINGS
+  value: {{ include "stackstate.s3proxy.settingsBucketName" . | quote }}
 {{- include "stackstate.env.platform_version" . }}
 {{- end -}}
 
@@ -109,10 +113,8 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   mountPath: /opt/docker/etc_log
 - name: backup-restore-scripts
   mountPath: /backup-restore-scripts
-{{- if .Values.global.backup.enabled }}
-- name: minio-keys
+- name: s3proxy-keys
   mountPath: /aws-keys
-{{- end -}}
 {{- end -}}
 
 {{- define "stackstate.backup.volumes" -}}
@@ -123,11 +125,9 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   configMap:
     name: {{ template "common.fullname.short" . }}-backup-restore-scripts
     defaultMode: 0755
-{{- if .Values.global.backup.enabled }}
-- name: minio-keys
+- name: s3proxy-keys
   secret:
     secretName: {{ include "stackstate.minio.keys" . }}
-{{- end -}}
 {{- end -}}
 
 {{- define "stackstate.backup.elasticsearch.restore.scaleDownLabels" -}}

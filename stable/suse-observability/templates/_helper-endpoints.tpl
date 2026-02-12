@@ -59,7 +59,7 @@ Logic to determine Kafka endpoint.
 Logic to determine MinIO endpoint.
 */}}
 {{- define "stackstate.minio.endpoint" -}}
-{{- .Values.minio.fullnameOverride -}}:9000
+{{- include "stackstate.s3proxy.endpoint" . -}}
 {{- end -}}
 
 {{/*
@@ -73,7 +73,7 @@ http://{{ template "stackstate.router.name" . }}:8080
 Logic to determine MinIO keys.
 */}}
 {{- define "stackstate.minio.keys" -}}
-{{- .Values.minio.fullnameOverride -}}
+{{- include "stackstate.s3proxy.secretName" . -}}
 {{- end -}}
 
 {{/*

@@ -459,6 +459,36 @@ If you encounter issues not covered here:
 | backup.stackGraph.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | backup.stackGraph.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
 | backup.stackGraph.splitArchiveSize | int | `0` | Split the Stackgraph dump into chunks of the specified size in bytes. Accepts an integer greater or equal to 0 with optional suffix K,M,G (powers of 1024) or KB,MB,GB (powers of 1000) If set to 0, the dump is not split. |
+| backup.storage.backend.azure | object | `{"accountKey":"","accountName":"","enabled":false,"endpoint":""}` | Use Azure Blob Storage |
+| backup.storage.backend.azure.accountKey | string | `""` | Azure storage account key (optional, falls back to managed identity) |
+| backup.storage.backend.azure.accountName | string | `""` | Azure storage account name |
+| backup.storage.backend.azure.enabled | bool | `false` | Enable Azure backend |
+| backup.storage.backend.azure.endpoint | string | `""` | Azure blob endpoint (auto-derived from accountName if not set) |
+| backup.storage.backend.pvc | object | `{"accessModes":["ReadWriteOnce"],"enabled":true,"size":"500Gi","storageClass":""}` | Use local PVC storage (default when no other backend configured) |
+| backup.storage.backend.pvc.accessModes | list | `["ReadWriteOnce"]` | Access modes for the PVC |
+| backup.storage.backend.pvc.enabled | bool | `true` | Enable PVC backend |
+| backup.storage.backend.pvc.size | string | `"500Gi"` | Size of the PVC for S3Proxy data |
+| backup.storage.backend.pvc.storageClass | string | `""` | Storage class for the PVC |
+| backup.storage.backend.s3 | object | `{"accessKey":"","enabled":false,"endpoint":"","region":"us-east-1","secretKey":""}` | Use external S3-compatible storage |
+| backup.storage.backend.s3.accessKey | string | `""` | AWS access key (optional, falls back to instance profile/IRSA) |
+| backup.storage.backend.s3.enabled | bool | `false` | Enable S3 backend |
+| backup.storage.backend.s3.endpoint | string | `""` | S3 endpoint URL (optional, defaults to AWS) |
+| backup.storage.backend.s3.region | string | `"us-east-1"` | AWS region (defaults to us-east-1) |
+| backup.storage.backend.s3.secretKey | string | `""` | AWS secret key (optional) |
+| backup.storage.credentials.accessKey | string | `""` | Access key for S3Proxy authentication (auto-generated if empty) |
+| backup.storage.credentials.existingSecret | string | `""` | Use existing secret for credentials (keys: accessKey, secretKey) |
+| backup.storage.credentials.secretKey | string | `""` | Secret key for S3Proxy authentication (auto-generated if empty) |
+| backup.storage.enabled | bool | `true` | Enable the S3Proxy deployment. Always enabled for settings backup. |
+| backup.storage.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for S3Proxy |
+| backup.storage.image.registry | string | `"quay.io"` | Image registry for S3Proxy |
+| backup.storage.image.repository | string | `"stackstate/s3proxy"` | Image repository for S3Proxy |
+| backup.storage.image.tag | string | `"sha-1281afd"` | Image tag for S3Proxy |
+| backup.storage.migration | object | `{"enabled":true}` | Migration settings for moving data from old settings-backup PVC |
+| backup.storage.migration.enabled | bool | `true` | Enable migration init container to copy data from old settings-backup PVC |
+| backup.storage.settingsPvc | object | `{"accessModes":["ReadWriteOnce"],"size":"1Gi","storageClass":""}` | PVC for local settings backup (always present) |
+| backup.storage.settingsPvc.accessModes | list | `["ReadWriteOnce"]` | Access modes for the settings PVC |
+| backup.storage.settingsPvc.size | string | `"1Gi"` | Size of the settings backup PVC |
+| backup.storage.settingsPvc.storageClass | string | `""` | Storage class for the settings PVC |
 | clickhouse.auth.password | string | `"admin"` | ClickHouse Admin password. If left empty the random value is generated. |
 | clickhouse.auth.username | string | `"admin"` | ClickHouse Admin username |
 | clickhouse.backup.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -685,16 +715,17 @@ If you encounter issues not covered here:
 | kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory | string | `"25Mi"` | Memory resource requests. |
 | kubernetes-rbac-agent.containers.rbacAgent.tolerations | list | `[]` | Set tolerations |
 | kubernetes-rbac-agent.url.value | string | `"{{ include \"stackstate.rbacAgent.url\" . }}"` |  |
-| minio.accessKey | string | `"setme"` | Access key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value. |
-| minio.azuregateway.replicas | int | `1` |  |
-| minio.fullnameOverride | string | `"suse-observability-minio"` | **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components. |
-| minio.image.registry | string | `"quay.io"` | MinIO image registry |
-| minio.image.repository | string | `"stackstate/minio"` | MinIO image repository |
-| minio.image.tag | string | `"RELEASE.2025-11-19T12-41-50Z-e064c44f-186-release"` | MinIO image tag. Updated by updatecli. |
-| minio.persistence.enabled | bool | `false` | Enables MinIO persistence. Must be enabled when MinIO is not configured as a gateway to AWS S3 or Azure Blob Storage. |
-| minio.replicas | int | `1` | Number of MinIO replicas. |
-| minio.s3gateway.replicas | int | `1` |  |
-| minio.secretKey | string | `"setme"` | Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value. |
+| minio | object | `{"accessKey":"","azuregateway":{"enabled":false},"fullnameOverride":"","s3gateway":{"accessKey":"","enabled":false,"secretKey":"","serviceEndpoint":""},"secretKey":""}` | DEPRECATED: MinIO subchart has been replaced by S3Proxy. These values are kept for backward compatibility only. Please migrate to backup.storage.* values. Legacy minio.* values will be removed in a future release. |
+| minio.accessKey | string | `""` | DEPRECATED: Use backup.storage.credentials.accessKey instead. If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials. |
+| minio.azuregateway | object | `{"enabled":false}` | DEPRECATED: Use backup.storage.backend.azure instead. When minio.azuregateway.enabled is true, S3Proxy will be configured to use Azure Blob as the backend. |
+| minio.azuregateway.enabled | bool | `false` | DEPRECATED: Use backup.storage.backend.azure.enabled instead. |
+| minio.fullnameOverride | string | `""` | DEPRECATED: Used for backward compatibility with existing deployments. |
+| minio.s3gateway | object | `{"accessKey":"","enabled":false,"secretKey":"","serviceEndpoint":""}` | DEPRECATED: Use backup.storage.backend.s3 instead. When minio.s3gateway.enabled is true, S3Proxy will be configured to use S3 as the backend. |
+| minio.s3gateway.accessKey | string | `""` | DEPRECATED: Use backup.storage.backend.s3.accessKey instead. |
+| minio.s3gateway.enabled | bool | `false` | DEPRECATED: Use backup.storage.backend.s3.enabled instead. |
+| minio.s3gateway.secretKey | string | `""` | DEPRECATED: Use backup.storage.backend.s3.secretKey instead. |
+| minio.s3gateway.serviceEndpoint | string | `""` | DEPRECATED: Use backup.storage.backend.s3.endpoint instead. |
+| minio.secretKey | string | `""` | DEPRECATED: Use backup.storage.credentials.secretKey instead. If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials. |
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
 | opentelemetry-collector.extraEnvs | list | `[{"name":"API_URL","valueFrom":{"configMapKeyRef":{"key":"api.url","name":"suse-observability-otel-collector"}}},{"name":"INTAKE_URL","valueFrom":{"configMapKeyRef":{"key":"intake.url","name":"suse-observability-otel-collector"}}}]` | Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/). Contains API_URL with path to api server used to authorize requests |
@@ -722,6 +753,11 @@ If you encounter issues not covered here:
 | pull-secret.credentials | list | `[]` | Registry and associated credentials (username, password) that will be stored in the pull-secret |
 | pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |
 | pull-secret.fullNameOverride | string | `""` | Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart. |
+| s3proxy.affinity | object | `{}` | Affinity settings for S3Proxy pod (merged with stackstate.components.all.affinity) |
+| s3proxy.nodeSelector | object | `{}` | Node selector for S3Proxy pod (merged with stackstate.components.all.nodeSelector) |
+| s3proxy.podAnnotations | object | `{}` | Annotations for S3Proxy pod |
+| s3proxy.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"512Mi"},"requests":{"cpu":"100m","ephemeral-storage":"1Mi","memory":"256Mi"}}` | Resource limits and requests for S3Proxy container |
+| s3proxy.tolerations | list | `[]` | Tolerations for S3Proxy pod (appended to stackstate.components.all.tolerations) |
 | scc.enabled | bool | `false` | Create `SecurityContextConstraints` resource to manage Openshift security constraints for Stackstate. Has to be enabled when installing to Openshift >= 4.12 The resource is deployed as a Helm pre-install hook to avoid any warning for the first deployment. Because `helm uninstall` does not consider Helm hooks, the resource must be manually deleted after the Helm release is removed. |
 | stackstate.allowedOrigins | list | `[]` | Third-party web domains allowed to make cross-origin requests |
 | stackstate.apiKey | object | `{"fromExternalSecret":null,"key":null}` | Optional, API key configuration for StackState. prefer to use Service Tokens instead for more control and better security. |
@@ -1621,6 +1657,192 @@ stackstate:
         - username: maintainer
           passwordHash: 098f6bcd4621d373cade4e832627b4f6
           roles: [stackstate-power-user, stackstate-guest]
+```
+
+## Backup Storage Configuration
+
+SUSE Observability uses S3Proxy to provide an S3-compatible API for all backup operations. This enables consistent backup workflows regardless of whether you're using local storage or cloud providers like AWS S3 or Azure Blob Storage.
+
+### Architecture Overview
+
+S3Proxy manages two types of storage:
+
+1. **Settings backup** (always local) - A small PVC (~1Gi) that stores configuration backups locally, ensuring they're always available for restore operations
+2. **Main backup storage** (configurable) - Stores StackGraph, Elasticsearch, ClickHouse, and VictoriaMetrics backups
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                      S3Proxy                            │
+│                                                         │
+│   settings-local-backup    →  Local PVC (always)       │
+│   sts-stackgraph-backup    →  PVC / S3 / Azure         │
+│   sts-elasticsearch-backup →  PVC / S3 / Azure         │
+│   sts-clickhouse-backup    →  PVC / S3 / Azure         │
+│   sts-victoria-*           →  PVC / S3 / Azure         │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Default Configuration (Local PVC)
+
+By default, all backups are stored on local PVCs:
+
+```yaml
+global:
+  backup:
+    enabled: true  # Enable backup functionality
+
+backup:
+  storage:
+    backend:
+      pvc:
+        enabled: true
+        size: 500Gi  # Size for main backup storage
+```
+
+### Using AWS S3
+
+To store backups in AWS S3:
+
+```yaml
+global:
+  backup:
+    enabled: true
+
+backup:
+  storage:
+    backend:
+      pvc:
+        enabled: false
+      s3:
+        enabled: true
+        region: "eu-west-1"
+        # Option 1: Use IAM role / IRSA (recommended)
+        # Leave accessKey and secretKey empty
+
+        # Option 2: Use explicit credentials
+        accessKey: "AKIAIOSFODNN7EXAMPLE"
+        secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+
+        # Optional: Custom S3-compatible endpoint (e.g., MinIO)
+        # endpoint: "https://minio.example.com"
+```
+
+### Using Azure Blob Storage
+
+To store backups in Azure Blob Storage:
+
+```yaml
+global:
+  backup:
+    enabled: true
+
+backup:
+  storage:
+    backend:
+      pvc:
+        enabled: false
+      azure:
+        enabled: true
+        accountName: "mystorageaccount"
+        # Option 1: Use managed identity (recommended)
+        # Leave accountKey empty
+
+        # Option 2: Use explicit credentials
+        accountKey: "your-storage-account-key"
+```
+
+### S3Proxy Credentials
+
+S3Proxy requires credentials for clients (backup jobs) to authenticate. These are auto-generated if not specified:
+
+```yaml
+backup:
+  storage:
+    credentials:
+      # Auto-generated if empty (recommended for new installations)
+      accessKey: ""
+      secretKey: ""
+
+      # Or use an existing secret
+      existingSecret: "my-s3proxy-credentials"
+```
+
+### Storage Class and PVC Configuration
+
+Configure storage classes for the PVCs:
+
+```yaml
+backup:
+  storage:
+    # Settings backup PVC (always present)
+    settingsPvc:
+      size: 1Gi
+      storageClass: "fast-ssd"
+      accessModes:
+        - ReadWriteOnce
+
+    # Main backup PVC (when using PVC backend)
+    backend:
+      pvc:
+        enabled: true
+        size: 500Gi
+        storageClass: "standard"
+        accessModes:
+          - ReadWriteOnce
+```
+
+### Migration from MinIO
+
+If you're upgrading from a previous version that used MinIO, S3Proxy automatically migrates your settings backups. The migration init container copies `.sty` files from the old `settings-backup-data` PVC to the new S3Proxy bucket structure.
+
+Migration is enabled by default:
+
+```yaml
+backup:
+  storage:
+    migration:
+      enabled: true
+      # Auto-detects the old PVC name, or specify explicitly:
+      # oldPvcName: "suse-observability-settings-backup-data"
+```
+
+**Legacy MinIO values** (deprecated but still supported):
+
+```yaml
+# These values still work for backward compatibility
+minio:
+  accessKey: "old-access-key"
+  secretKey: "old-secret-key"
+
+  # S3 gateway (maps to backup.storage.backend.s3)
+  s3gateway:
+    enabled: true
+    accessKey: "aws-key"
+    secretKey: "aws-secret"
+    serviceEndpoint: "https://s3.amazonaws.com"
+
+  # Azure gateway (maps to backup.storage.backend.azure)
+  azuregateway:
+    enabled: true
+```
+
+### S3Proxy Deployment Configuration
+
+Configure resources and scheduling for the S3Proxy pod:
+
+```yaml
+s3proxy:
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  podAnnotations: {}
 ```
 
 ## Auto-installing StackPacks

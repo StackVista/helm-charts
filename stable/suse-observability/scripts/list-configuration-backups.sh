@@ -1,20 +1,18 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-export BACKUP_DIR=/settings-backup-data
-echo "=== Listing StackGraph backups in local persistent volume..."
+# Set up AWS credentials for S3Proxy access
+export AWS_ACCESS_KEY_ID
+AWS_ACCESS_KEY_ID="$(cat /aws-keys/accesskey)"
+export AWS_SECRET_ACCESS_KEY
+AWS_SECRET_ACCESS_KEY="$(cat /aws-keys/secretkey)"
 
-find "${BACKUP_DIR}" -maxdepth 1 -type f -printf '%T@ %f\n' | sort -n | awk '{print $2}'
-
+echo "=== Listing Settings backups in local settings bucket \"${S3_BUCKET_SETTINGS}\"..."
+sts-toolbox aws s3 ls --endpoint "${S3_ENDPOINT}" --region minio --bucket "${S3_BUCKET_SETTINGS}" --prefix "" 2>/dev/null || echo "(no backups found)"
 echo "==="
 
 if [ "$BACKUP_CONFIGURATION_UPLOAD_REMOTE" == "true" ]; then
-  export AWS_ACCESS_KEY_ID
-  AWS_ACCESS_KEY_ID="$(cat /aws-keys/accesskey)"
-  export AWS_SECRET_ACCESS_KEY
-  AWS_SECRET_ACCESS_KEY="$(cat /aws-keys/secretkey)"
-
-  echo "=== Listing settings backups in storage bucket \"${BACKUP_CONFIGURATION_BUCKET_NAME}\"..."
-  sts-toolbox aws s3 ls --endpoint "http://${MINIO_ENDPOINT}" --region minio --bucket "${BACKUP_CONFIGURATION_BUCKET_NAME}" --prefix "${BACKUP_CONFIGURATION_S3_PREFIX}"
+  echo "=== Listing settings backups in remote storage bucket \"${BACKUP_CONFIGURATION_BUCKET_NAME}\"..."
+  sts-toolbox aws s3 ls --endpoint "${S3_ENDPOINT}" --region minio --bucket "${BACKUP_CONFIGURATION_BUCKET_NAME}" --prefix "${BACKUP_CONFIGURATION_S3_PREFIX}" 2>/dev/null || echo "(no backups found)"
   echo "==="
 fi

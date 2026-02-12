@@ -73,7 +73,7 @@ config: |
   minio:
     enabled: {{ .Values.global.backup.enabled }}
     service:
-      name: {{ .Values.minio.fullnameOverride | quote }}
+      name: {{ include "stackstate.s3proxy.fullname" . | quote }}
       port: 9000
       localPortForwardPort: 9000
   stackgraph:
@@ -138,7 +138,7 @@ config: |
     snapshotRepository:
       name: "sts-backup"
       bucket: {{ .Values.backup.elasticsearch.bucketName | quote }}
-      endpoint: {{ include "stackstate.minio.endpoint" . | quote }}
+      endpoint: {{ include "stackstate.s3proxy.endpoint" . | quote }}
       basepath: {{ include "trimTrailingSlashes" .Values.backup.elasticsearch.s3Prefix | quote }}
     slm:
       name: "auto-sts-backup"

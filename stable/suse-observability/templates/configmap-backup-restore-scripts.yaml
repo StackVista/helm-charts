@@ -87,7 +87,7 @@ spec:
             - sh
             - -c
             - |
-              /entrypoint -c {{ include "stackstate.es.endpoint" . }},{{ include "stackstate.minio.endpoint" . }} -t 300
+              /entrypoint -c {{ include "stackstate.es.endpoint" . }},{{ include "stackstate.s3proxy.endpoint" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
       containers:
@@ -152,7 +152,7 @@ spec:
             - sh
             - -c
             - |
-              /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
+              /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
       containers:
@@ -213,7 +213,7 @@ spec:
             - sh
             - -c
             - |
-              /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
+              /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
       containers:
@@ -301,17 +301,15 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.global.backup.enabled }}
       initContainers:
         - name: wait
           command:
             - sh
             - -c
             - |
-              /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
+              /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
-      {{- end }}
       containers:
         - name: list
           image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
@@ -326,17 +324,12 @@ spec:
           {{- end }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
-            - name: settings-backup-data
-              mountPath: /settings-backup-data
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
 {{- if .Values.backup.stackGraph.securityContext.enabled }}
       securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 8 }}
 {{- end }}
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
-        - name: settings-backup-data
-          persistentVolumeClaim:
-            claimName: {{ template "common.fullname.short" . }}-settings-backup-data
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.configurationBackup.nodeSelector }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}
@@ -401,7 +394,7 @@ spec:
             - sh
             - -c
             - |
-              /entrypoint -c {{- if .Values.global.backup.enabled -}}{{ include "stackstate.minio.endpoint" . }},{{- end -}}{{ include "stackgraph.hbase.waitfor" . }} -t 300
+              /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }},{{ include "stackgraph.hbase.waitfor" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
       containers:
@@ -437,8 +430,6 @@ spec:
           {{- end }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
-            - name: settings-backup-data
-              mountPath: /settings-backup-data
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
 {{- if .Values.backup.stackGraph.securityContext.enabled }}
       securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 8 }}
@@ -469,9 +460,6 @@ spec:
       restartPolicy: Never
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
-        - name: settings-backup-data
-          persistentVolumeClaim:
-            claimName: {{ template "common.fullname.short" . }}-settings-backup-data
 {{- end -}}
 
 {{- define "job-configuration-download-backup.yaml" -}}
@@ -503,17 +491,15 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.global.backup.enabled }}
       initContainers:
         - name: wait
           command:
             - sh
             - -c
             - |
-              /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
+              /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
-      {{- end }}
       containers:
         - name: download
           image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
@@ -530,8 +516,6 @@ spec:
           {{- end }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
-            - name: settings-backup-data
-              mountPath: /settings-backup-data
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
 {{- if .Values.backup.configuration.securityContext.enabled }}
       securityContext: {{- omit .Values.backup.configuration.securityContext "enabled" | toYaml | nindent 8 }}
@@ -562,9 +546,6 @@ spec:
       restartPolicy: Never
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
-        - name: settings-backup-data
-          persistentVolumeClaim:
-            claimName: {{ template "common.fullname.short" . }}-settings-backup-data
 {{- end -}}
 
 {{- define "job-configuration-upload-backup.yaml" -}}
@@ -596,17 +577,15 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.global.backup.enabled }}
       initContainers:
         - name: wait
           command:
             - sh
             - -c
             - |
-              /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
+              /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
-      {{- end }}
       containers:
         - name: upload
           image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
@@ -623,8 +602,6 @@ spec:
           {{- end }}
           volumeMounts:
             {{- include "stackstate.backup.volumeMounts" . | nindent 12 }}
-            - name: settings-backup-data
-              mountPath: /settings-backup-data
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
 {{- if .Values.backup.configuration.securityContext.enabled }}
       securityContext: {{- omit .Values.backup.configuration.securityContext "enabled" | toYaml | nindent 8 }}
@@ -655,9 +632,6 @@ spec:
       restartPolicy: Never
       volumes:
         {{- include "stackstate.backup.volumes" . | nindent 8 }}
-        - name: settings-backup-data
-          persistentVolumeClaim:
-            claimName: {{ template "common.fullname.short" . }}-settings-backup-data
 {{- end -}}
 
 {{- define "job-victoria-metrics-list-backups.yaml" -}}
@@ -690,7 +664,7 @@ spec:
             - sh
             - -c
             - |
-              /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
+              /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
       containers:
@@ -749,7 +723,7 @@ spec:
             - sh
             - -c
             - |
-              /entrypoint -c {{ include "stackstate.minio.endpoint" . }} -t 300
+              /entrypoint -c {{ include "stackstate.s3proxy.endpoint" . }} -t 300
           image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
           imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
       containers:
