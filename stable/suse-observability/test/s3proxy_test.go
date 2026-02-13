@@ -40,11 +40,11 @@ func TestS3ProxyAlwaysEnabled(t *testing.T) {
 	assert.False(t, foundMainVolume, "Main data volume should NOT be present when backup is disabled")
 
 	// Settings PVC should exist
-	_, ok = resources.PersistentVolumeClaims["suse-observability-s3proxy-settings-data"]
+	_, ok = resources.PersistentVolumeClaims["suse-observability-backup-settings-data"]
 	require.True(t, ok, "Settings data PVC should exist")
 
 	// Main data PVC should NOT exist
-	_, ok = resources.PersistentVolumeClaims["suse-observability-s3proxy-data"]
+	_, ok = resources.PersistentVolumeClaims["suse-observability-minio"]
 	assert.False(t, ok, "Main data PVC should NOT exist when backup is disabled")
 }
 
@@ -78,10 +78,10 @@ func TestS3ProxyWithBackupEnabledPVC(t *testing.T) {
 	assert.True(t, foundMainVolume, "Main data volume should be present with PVC backend")
 
 	// Both PVCs should exist
-	_, ok = resources.PersistentVolumeClaims["suse-observability-s3proxy-settings-data"]
+	_, ok = resources.PersistentVolumeClaims["suse-observability-backup-settings-data"]
 	require.True(t, ok, "Settings data PVC should exist")
 
-	mainPvc, ok := resources.PersistentVolumeClaims["suse-observability-s3proxy-data"]
+	mainPvc, ok := resources.PersistentVolumeClaims["suse-observability-minio"]
 	require.True(t, ok, "Main data PVC should exist with PVC backend")
 	assert.Equal(t, "500Gi", mainPvc.Spec.Resources.Requests.Storage().String(), "Main PVC should have default size")
 }
@@ -120,11 +120,11 @@ func TestS3ProxyWithBackupEnabledS3(t *testing.T) {
 	assert.False(t, foundMainVolume, "Main data volume should NOT be present with S3 backend")
 
 	// Settings PVC should exist
-	_, ok = resources.PersistentVolumeClaims["suse-observability-s3proxy-settings-data"]
+	_, ok = resources.PersistentVolumeClaims["suse-observability-backup-settings-data"]
 	require.True(t, ok, "Settings data PVC should exist")
 
 	// Main data PVC should NOT exist with S3 backend
-	_, ok = resources.PersistentVolumeClaims["suse-observability-s3proxy-data"]
+	_, ok = resources.PersistentVolumeClaims["suse-observability-minio"]
 	assert.False(t, ok, "Main data PVC should NOT exist with S3 backend")
 
 	// Secret should contain backend credentials
@@ -138,8 +138,8 @@ func TestS3ProxyWithBackupEnabledS3(t *testing.T) {
 	// ConfigMap should contain S3 backend config
 	configMap, ok := resources.ConfigMaps["suse-observability-s3proxy-config"]
 	require.True(t, ok, "S3Proxy ConfigMap should exist")
-	assert.Contains(t, configMap.Data["s3proxy-main.properties"], "jclouds.provider=aws-s3", "ConfigMap should have S3 provider")
-	assert.Contains(t, configMap.Data["s3proxy-main.properties"], "jclouds.region=eu-west-1", "ConfigMap should have correct region")
+	assert.Contains(t, configMap.Data["s3proxy-main.properties"], "jclouds.provider=aws-s3-sdk", "ConfigMap should have S3 provider")
+	assert.Contains(t, configMap.Data["s3proxy-main.properties"], "aws-s3-sdk.region=eu-west-1", "ConfigMap should have correct region")
 }
 
 // TestS3ProxyWithBackupEnabledAzure verifies S3Proxy deployment with Azure backend
@@ -180,7 +180,7 @@ func TestS3ProxyWithBackupEnabledAzure(t *testing.T) {
 	// ConfigMap should contain Azure backend config
 	configMap, ok := resources.ConfigMaps["suse-observability-s3proxy-config"]
 	require.True(t, ok, "S3Proxy ConfigMap should exist")
-	assert.Contains(t, configMap.Data["s3proxy-main.properties"], "jclouds.provider=azureblob", "ConfigMap should have Azure provider")
+	assert.Contains(t, configMap.Data["s3proxy-main.properties"], "jclouds.provider=azureblob-sdk", "ConfigMap should have Azure provider")
 	assert.Contains(t, configMap.Data["s3proxy-main.properties"], "mystorageaccount.blob.core.windows.net", "ConfigMap should have correct Azure endpoint")
 }
 
@@ -206,7 +206,7 @@ func TestS3ProxyLegacyS3GatewayBackwardCompatibility(t *testing.T) {
 	// ConfigMap should contain the legacy S3 endpoint
 	configMap, ok := resources.ConfigMaps["suse-observability-s3proxy-config"]
 	require.True(t, ok, "S3Proxy ConfigMap should exist")
-	assert.Contains(t, configMap.Data["s3proxy-main.properties"], "jclouds.provider=aws-s3", "ConfigMap should have S3 provider from legacy values")
+	assert.Contains(t, configMap.Data["s3proxy-main.properties"], "jclouds.provider=aws-s3-sdk", "ConfigMap should have S3 provider from legacy values")
 	assert.Contains(t, configMap.Data["s3proxy-main.properties"], "jclouds.endpoint=https://custom-s3.example.com", "ConfigMap should have legacy S3 endpoint")
 
 	// Secret should contain legacy credentials
@@ -239,7 +239,7 @@ func TestS3ProxyLegacyAzureGatewayBackwardCompatibility(t *testing.T) {
 	// ConfigMap should contain Azure backend config from legacy values
 	configMap, ok := resources.ConfigMaps["suse-observability-s3proxy-config"]
 	require.True(t, ok, "S3Proxy ConfigMap should exist")
-	assert.Contains(t, configMap.Data["s3proxy-main.properties"], "jclouds.provider=azureblob", "ConfigMap should have Azure provider from legacy values")
+	assert.Contains(t, configMap.Data["s3proxy-main.properties"], "jclouds.provider=azureblob-sdk", "ConfigMap should have Azure provider from legacy values")
 	assert.Contains(t, configMap.Data["s3proxy-main.properties"], "legacystorageaccount.blob.core.windows.net", "ConfigMap should have Azure endpoint from legacy values")
 
 	// Secret should contain Azure credentials from legacy values
@@ -289,27 +289,6 @@ func TestS3ProxyService(t *testing.T) {
 	require.True(t, ok, "S3Proxy service should exist")
 	assert.Equal(t, int32(9000), service.Spec.Ports[0].Port, "Service port should be 9000")
 	assert.Equal(t, "http", service.Spec.Ports[0].Name, "Service port name should be http")
-}
-
-// TestS3ProxyFullnameOverride verifies that minio.fullnameOverride is respected for backward compatibility
-func TestS3ProxyFullnameOverride(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
-		ValuesFiles: []string{"values/full.yaml"},
-		SetValues: map[string]string{
-			"minio.fullnameOverride": "custom-minio-name",
-		},
-	})
-	resources := helmtestutil.NewKubernetesResources(t, output)
-
-	// Should use the custom name
-	_, ok := resources.Deployments["custom-minio-name"]
-	require.True(t, ok, "S3Proxy deployment should use fullnameOverride")
-
-	_, ok = resources.Services["custom-minio-name"]
-	require.True(t, ok, "S3Proxy service should use fullnameOverride")
-
-	_, ok = resources.PersistentVolumeClaims["custom-minio-name-settings-data"]
-	require.True(t, ok, "Settings PVC should use fullnameOverride")
 }
 
 // TestS3ProxyResources verifies resource configuration
@@ -453,7 +432,7 @@ func TestS3ProxySettingsPVCSize(t *testing.T) {
 	})
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	pvc, ok := resources.PersistentVolumeClaims["suse-observability-s3proxy-settings-data"]
+	pvc, ok := resources.PersistentVolumeClaims["suse-observability-backup-settings-data"]
 	require.True(t, ok, "Settings PVC should exist")
 	assert.Equal(t, "5Gi", pvc.Spec.Resources.Requests.Storage().String(), "Settings PVC size should be customized")
 }
@@ -469,7 +448,7 @@ func TestS3ProxyMainPVCSize(t *testing.T) {
 	})
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	pvc, ok := resources.PersistentVolumeClaims["suse-observability-s3proxy-data"]
+	pvc, ok := resources.PersistentVolumeClaims["suse-observability-minio"]
 	require.True(t, ok, "Main PVC should exist")
 	assert.Equal(t, "1Ti", pvc.Spec.Resources.Requests.Storage().String(), "Main PVC size should be customized")
 }

@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "stackstate.s3proxy.fullname" . }}-settings-data
+  name: {{ include "stackstate.backup.settingsPvcName" . }}
   labels:
     app.kubernetes.io/name: s3proxy
     app.kubernetes.io/component: s3proxy
@@ -28,7 +28,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "stackstate.s3proxy.fullname" . }}-data
+  name: {{ include "stackstate.backup.mainPvcName" . }}
   labels:
     app.kubernetes.io/name: s3proxy
     app.kubernetes.io/component: s3proxy

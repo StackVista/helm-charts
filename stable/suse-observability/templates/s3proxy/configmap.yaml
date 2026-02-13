@@ -15,26 +15,30 @@ data:
   s3proxy-settings.properties: |
     s3proxy.endpoint=http://0.0.0.0:9000
     s3proxy.authorization=aws-v2-or-v4
-    jclouds.provider=filesystem
+    jclouds.provider=filesystem-nio2
     jclouds.filesystem.basedir=/settings-data
-    s3proxy.bucket-locator.1={{ include "stackstate.s3proxy.settingsBucketName" . }}
+    s3proxy.bucket-locator.1={{ include "stackstate.s3proxy.localSettingsBucketName" . }}
   {{- if .Values.global.backup.enabled }}
   s3proxy-main.properties: |
     s3proxy.endpoint=http://0.0.0.0:9000
     s3proxy.authorization=aws-v2-or-v4
     {{- if include "stackstate.s3proxy.mainBackendUsesPVC" . }}
-    jclouds.provider=filesystem
+    jclouds.provider=filesystem-nio2
     jclouds.filesystem.basedir=/main-data
     {{- else if include "stackstate.s3proxy.s3BackendEnabled" . }}
-    jclouds.provider=aws-s3
-    jclouds.endpoint={{ include "stackstate.s3proxy.s3BackendEndpoint" . }}
-    jclouds.region={{ .Values.backup.storage.backend.s3.region }}
+    jclouds.provider=aws-s3-sdk
+    {{- $s3Endpoint := include "stackstate.s3proxy.s3BackendEndpoint" . }}
+    {{- if ne $s3Endpoint "" }}
+    jclouds.endpoint={{ $s3Endpoint }}
+    {{- end }}
+    aws-s3-sdk.region={{ .Values.backup.storage.backend.s3.region }}
+    aws-s3-sdk.conditional-writes=native
     {{- if not (include "stackstate.s3proxy.s3BackendAccessKey" .) }}
     jclouds.identity=
     jclouds.credential=
     {{- end }}
     {{- else if include "stackstate.s3proxy.azureBackendEnabled" . }}
-    jclouds.provider=azureblob
+    jclouds.provider=azureblob-sdk
     {{- $azureAccountName := include "stackstate.s3proxy.azureBackendAccountName" . }}
     {{- if .Values.backup.storage.backend.azure.endpoint }}
     jclouds.endpoint={{ .Values.backup.storage.backend.azure.endpoint }}

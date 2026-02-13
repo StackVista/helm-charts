@@ -10,14 +10,9 @@ true
 
 {{/*
 Full name for S3Proxy resources.
-Uses minio.fullnameOverride for backward compatibility.
 */}}
 {{- define "stackstate.s3proxy.fullname" -}}
-{{- if and .Values.minio.fullnameOverride (ne .Values.minio.fullnameOverride "") -}}
-{{- .Values.minio.fullnameOverride -}}
-{{- else -}}
 suse-observability-s3proxy
-{{- end -}}
 {{- end -}}
 
 {{/*
@@ -94,10 +89,10 @@ Falls back to minio.secretKey for backward compatibility, or generates random ke
 
 {{/*
 Return the image registry for S3Proxy.
-Uses the common.image.registry helper with the backup.storage.image configuration.
+Uses the common.image.registry helper with the s3proxy.image configuration.
 */}}
 {{- define "stackstate.s3proxy.image.registry" -}}
-{{- include "common.image.registry" (dict "image" .Values.backup.storage.image "context" $) -}}
+{{- include "common.image.registry" (dict "image" .Values.s3proxy.image "context" $) -}}
 {{- end -}}
 
 {{/*
@@ -143,7 +138,7 @@ tolerations:
 {{/*
 Get the settings bucket name for local settings backup.
 */}}
-{{- define "stackstate.s3proxy.settingsBucketName" -}}
+{{- define "stackstate.s3proxy.localSettingsBucketName" -}}
 settings-local-backup
 {{- end -}}
 
@@ -177,8 +172,6 @@ Get S3 backend endpoint (from new or legacy values).
 {{- .Values.backup.storage.backend.s3.endpoint -}}
 {{- else if and .Values.minio.s3gateway .Values.minio.s3gateway.serviceEndpoint -}}
 {{- .Values.minio.s3gateway.serviceEndpoint -}}
-{{- else -}}
-https://s3.{{ .Values.backup.storage.backend.s3.region }}.amazonaws.com
 {{- end -}}
 {{- end -}}
 
@@ -266,8 +259,6 @@ Returns "true" if deprecated values are detected.
 {{- $hasDeprecated = true -}}
 {{- else if and .Values.minio.secretKey (ne .Values.minio.secretKey "") (ne .Values.minio.secretKey "setme") -}}
 {{- $hasDeprecated = true -}}
-{{- else if and .Values.minio.fullnameOverride (ne .Values.minio.fullnameOverride "") -}}
-{{- $hasDeprecated = true -}}
 {{- end -}}
 {{- if $hasDeprecated -}}
 true
@@ -280,4 +271,20 @@ Auto-detects based on the release name pattern used in previous versions.
 */}}
 {{- define "stackstate.s3proxy.migration.oldPvcName" -}}
 {{- include "common.fullname.short" . -}}-settings-backup-data
+{{- end -}}
+
+{{/*
+Get the settings PVC name.
+Uses a consistent naming scheme: backup-settings-data
+*/}}
+{{- define "stackstate.backup.settingsPvcName" -}}
+{{- include "common.fullname.short" . -}}-backup-settings-data
+{{- end -}}
+
+{{/*
+Get the main backup PVC name.
+For backward compatibility, we keep the old name "suse-observability-minio" since it was used in previous versions and may already exist in user clusters.
+*/}}
+{{- define "stackstate.backup.mainPvcName" -}}
+suse-observability-minio
 {{- end -}}

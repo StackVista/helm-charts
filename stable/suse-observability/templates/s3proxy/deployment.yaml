@@ -83,8 +83,8 @@ spec:
       {{- end }}
       containers:
         - name: s3proxy
-          image: "{{ include "stackstate.s3proxy.image.registry" . }}/{{ .Values.backup.storage.image.repository }}:{{ .Values.backup.storage.image.tag }}"
-          imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.backup.storage.image.pullPolicy | quote }}
+          image: "{{ include "stackstate.s3proxy.image.registry" . }}/{{ .Values.s3proxy.image.repository }}:{{ .Values.s3proxy.image.tag }}"
+          imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.s3proxy.image.pullPolicy | quote }}
           args:
             - "--properties"
             - "/etc/s3proxy/s3proxy-settings.properties"
@@ -166,11 +166,11 @@ spec:
             name: {{ include "stackstate.s3proxy.fullname" . }}-config
         - name: settings-data
           persistentVolumeClaim:
-            claimName: {{ include "stackstate.s3proxy.fullname" . }}-settings-data
+            claimName: {{ include "stackstate.backup.settingsPvcName" . }}
         {{- if and .Values.global.backup.enabled (include "stackstate.s3proxy.mainBackendUsesPVC" .) }}
         - name: main-data
           persistentVolumeClaim:
-            claimName: {{ include "stackstate.s3proxy.fullname" . }}-data
+            claimName: {{ include "stackstate.backup.mainPvcName" . }}
         {{- end }}
         {{- if .Values.backup.storage.migration.enabled }}
         - name: old-settings

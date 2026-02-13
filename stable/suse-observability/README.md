@@ -479,15 +479,11 @@ If you encounter issues not covered here:
 | backup.storage.credentials.existingSecret | string | `""` | Use existing secret for credentials (keys: accessKey, secretKey) |
 | backup.storage.credentials.secretKey | string | `""` | Secret key for S3Proxy authentication (auto-generated if empty) |
 | backup.storage.enabled | bool | `true` | Enable the S3Proxy deployment. Always enabled for settings backup. |
-| backup.storage.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for S3Proxy |
-| backup.storage.image.registry | string | `"quay.io"` | Image registry for S3Proxy |
-| backup.storage.image.repository | string | `"stackstate/s3proxy"` | Image repository for S3Proxy |
-| backup.storage.image.tag | string | `"sha-1281afd"` | Image tag for S3Proxy |
 | backup.storage.migration | object | `{"enabled":true}` | Migration settings for moving data from old settings-backup PVC |
 | backup.storage.migration.enabled | bool | `true` | Enable migration init container to copy data from old settings-backup PVC |
-| backup.storage.settingsPvc | object | `{"accessModes":["ReadWriteOnce"],"size":"1Gi","storageClass":""}` | PVC for local settings backup (always present) |
+| backup.storage.settingsPvc | object | `{"accessModes":["ReadWriteOnce"],"size":"2Gi","storageClass":""}` | PVC for local settings backup (always present) |
 | backup.storage.settingsPvc.accessModes | list | `["ReadWriteOnce"]` | Access modes for the settings PVC |
-| backup.storage.settingsPvc.size | string | `"1Gi"` | Size of the settings backup PVC |
+| backup.storage.settingsPvc.size | string | `"2Gi"` | Size of the settings backup PVC |
 | backup.storage.settingsPvc.storageClass | string | `""` | Storage class for the settings PVC |
 | clickhouse.auth.password | string | `"admin"` | ClickHouse Admin password. If left empty the random value is generated. |
 | clickhouse.auth.username | string | `"admin"` | ClickHouse Admin username |
@@ -754,6 +750,10 @@ If you encounter issues not covered here:
 | pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |
 | pull-secret.fullNameOverride | string | `""` | Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart. |
 | s3proxy.affinity | object | `{}` | Affinity settings for S3Proxy pod (merged with stackstate.components.all.affinity) |
+| s3proxy.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for S3Proxy |
+| s3proxy.image.registry | string | `"quay.io"` | Image registry for S3Proxy |
+| s3proxy.image.repository | string | `"stackstate/s3proxy"` | Image repository for S3Proxy |
+| s3proxy.image.tag | string | `"sha-1281afd"` | Image tag for S3Proxy |
 | s3proxy.nodeSelector | object | `{}` | Node selector for S3Proxy pod (merged with stackstate.components.all.nodeSelector) |
 | s3proxy.podAnnotations | object | `{}` | Annotations for S3Proxy pod |
 | s3proxy.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"512Mi"},"requests":{"cpu":"100m","ephemeral-storage":"1Mi","memory":"256Mi"}}` | Resource limits and requests for S3Proxy container |

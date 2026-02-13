@@ -48,12 +48,12 @@ var s3proxyAlwaysEnabledConfigMaps = []string{
 }
 
 var s3proxyAlwaysEnabledPVCs = []string{
-	"suse-observability-s3proxy-settings-data",
+	"suse-observability-backup-settings-data",
 }
 
 // S3Proxy-related resources that are only present when global.backup.enabled=true
 var s3proxyManuallyEnabledPVCs = []string{
-	"suse-observability-s3proxy-data",
+	"suse-observability-minio",
 }
 
 var backupAlwaysPresentSecrets = []string{

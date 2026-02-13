@@ -87,15 +87,6 @@ backup:
   storage:
     # backup.storage.enabled -- Enable the S3Proxy deployment. Always enabled for settings backup.
     enabled: true
-    image:
-      # backup.storage.image.registry -- Image registry for S3Proxy
-      registry: quay.io
-      # backup.storage.image.repository -- Image repository for S3Proxy
-      repository: stackstate/s3proxy
-      # backup.storage.image.tag -- Image tag for S3Proxy
-      tag: "sha-1281afd"
-      # backup.storage.image.pullPolicy -- Image pull policy for S3Proxy
-      pullPolicy: IfNotPresent
     credentials:
       # backup.storage.credentials.accessKey -- Access key for S3Proxy authentication (auto-generated if empty)
       accessKey: ""
@@ -106,7 +97,7 @@ backup:
     # backup.storage.settingsPvc -- PVC for local settings backup (always present)
     settingsPvc:
       # backup.storage.settingsPvc.size -- Size of the settings backup PVC
-      size: 1Gi
+      size: 2Gi
       # backup.storage.settingsPvc.storageClass -- Storage class for the settings PVC
       storageClass: ""
       # backup.storage.settingsPvc.accessModes -- Access modes for the settings PVC
@@ -2194,6 +2185,15 @@ minio:
 
 # S3Proxy deployment configuration
 s3proxy:
+  image:
+    # s3proxy.image.registry -- Image registry for S3Proxy
+    registry: quay.io
+    # s3proxy.image.repository -- Image repository for S3Proxy
+    repository: stackstate/s3proxy
+    # s3proxy.image.tag -- Image tag for S3Proxy
+    tag: "sha-1281afd"
+    # s3proxy.image.pullPolicy -- Image pull policy for S3Proxy
+    pullPolicy: IfNotPresent
   # s3proxy.resources -- Resource limits and requests for S3Proxy container
   resources:
     limits:
