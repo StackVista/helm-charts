@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.2.115`
+Current chart version is `0.2.117`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -75,7 +75,7 @@ Current chart version is `0.2.115`
 | hbase.regionserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hbase.regionserver.replicaCount | string | `nil` | Number of HBase regionserver nodes. |
 | hbase.regionserver.resources | object | `{"limits":{"cpu":"3000m","ephemeral-storage":"1Gi","memory":"3Gi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"3Gi"}}` | Resources to allocate for HBase region servers. |
-| hbase.regionserver.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HBase region server memory sizing for JVM |
+| hbase.regionserver.sizing | object | `{"javaHeapMemoryFraction":"70"}` | HBase region server memory sizing for JVM |
 | hbase.regionserver.terminationGracePeriodSeconds | int | `30` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
 | hbase.regionserver.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hbase.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |

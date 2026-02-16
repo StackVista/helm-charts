@@ -13,7 +13,7 @@ Current chart version is `2.7.1-pre.94`
 | file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.11 |
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.8 |
-| file://../hbase/ | hbase | 0.2.115 |
+| file://../hbase/ | hbase | 0.2.117 |
 | file://../kafka/ | kafka | 19.1.3-suse-observability.10 |
 | file://../kafkaup-operator/ | kafkaup-operator | 0.1.16 |
 | file://../minio/ | minio | 8.0.10-stackstate.18 |
@@ -666,6 +666,7 @@ If you encounter issues not covered here:
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
 | kubernetes-rbac-agent.containers.rbacAgent.image.repository | string | `"stackstate/kubernetes-rbac-agent"` |  |
+| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"042257c3-575"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
 | kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{"ad.stackstate.com/kubernetes-rbac-agent.check_names":"[\"openmetrics\"]","ad.stackstate.com/kubernetes-rbac-agent.init_configs":"[{}]","ad.stackstate.com/kubernetes-rbac-agent.instances":"[ { \"prometheus_url\": \"http://%%host%%:8080/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Additional annotations on the pod |
 | kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |

@@ -36,7 +36,7 @@ dependencies:
   - name: hbase
     condition: hbase.enabled
     repository: file://../hbase/
-    version: "0.2.116"
+    version: "0.2.117"
   - name: kafka
     condition: kafka.enabled
     repository: file://../kafka/
@@ -82,6 +82,7 @@ dependencies:
     # Local debugging: left here for future reference
     # repository: file:///home/bram/stackvista/agent/kubernetes-rbac-agent/charts/kubernetes-rbac-agent
     # version: "*"
+    # Docker image tag now being overridden in the values file to make automated security updates possible.
     repository: https://helm.stackstate.io
     version: 0.0.24
     condition: stackstate.k8sAuthorization.enabled
