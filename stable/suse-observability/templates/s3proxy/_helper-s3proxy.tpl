@@ -92,7 +92,11 @@ Return the image registry for S3Proxy.
 Uses the common.image.registry helper with the s3proxy.image configuration.
 */}}
 {{- define "stackstate.s3proxy.image.registry" -}}
-{{- include "common.image.registry" (dict "image" .Values.s3proxy.image "context" $) -}}
+{{- if .Values.s3proxy.image.registry -}}
+  {{- .Values.s3proxy.image.registry -}}
+{{- else -}}
+  {{- include "common.image.registry" (dict "image" .Values.s3proxy.image "context" $) -}}
+{{- end -}}
 {{- end -}}
 
 {{/*

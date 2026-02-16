@@ -140,7 +140,7 @@ backup:
     # backup.storage.migration -- Migration settings for moving data from old settings-backup PVC
     migration:
       # backup.storage.migration.enabled -- Enable migration init container to copy data from old settings-backup PVC
-      enabled: true
+      enabled: false
   elasticsearch:
     # backup.elasticsearch.bucketName -- Name of the MinIO bucket where ElasticSearch snapshots are stored.
     bucketName: "sts-elasticsearch-backup"
@@ -2186,12 +2186,13 @@ minio:
 # S3Proxy deployment configuration
 s3proxy:
   image:
-    # s3proxy.image.registry -- Image registry for S3Proxy
-    registry: quay.io
+    # stackstate.components.server.image.imageRegistry -- imageRegistry used for the S3Proxy Docker image; this will override `global.imageRegistry`
+    # s3proxy.image.registry -- imageRegistry used for the S3Proxy Docker image; this will override `global.imageRegistry`
+    registry: docker.io
     # s3proxy.image.repository -- Image repository for S3Proxy
-    repository: stackstate/s3proxy
+    repository: andrewgaul/s3proxy
     # s3proxy.image.tag -- Image tag for S3Proxy
-    tag: "sha-1281afd"
+    tag: "master"
     # s3proxy.image.pullPolicy -- Image pull policy for S3Proxy
     pullPolicy: IfNotPresent
   # s3proxy.resources -- Resource limits and requests for S3Proxy container
@@ -2471,7 +2472,8 @@ victoria-metrics-0:
     s3Prefix: victoria-metrics-0
     scheduled:
       # victoria-metrics-0.backup.scheduled.schedule -- Cron schedule for automatic backups of Victoria Metrics
-      schedule: "25 * * * *"
+      schedule: '25 * * * *'
+    awsSecrets: "suse-observability-s3proxy"
 victoria-metrics-1:
   enabled: true
   rbac:
@@ -2554,7 +2556,8 @@ victoria-metrics-1:
     s3Prefix: victoria-metrics-1
     scheduled:
       # victoria-metrics-1.backup.scheduled.schedule -- Cron schedule for automatic backups of Victoria Metrics
-      schedule: "35 * * * *"
+      schedule: '35 * * * *'
+    awsSecrets: "suse-observability-s3proxy"
 victoria-metrics:
   restore:
     image:

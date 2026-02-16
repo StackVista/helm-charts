@@ -86,12 +86,22 @@ spec:
           image: "{{ include "stackstate.s3proxy.image.registry" . }}/{{ .Values.s3proxy.image.repository }}:{{ .Values.s3proxy.image.tag }}"
           imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.s3proxy.image.pullPolicy | quote }}
           args:
-            - "--properties"
-            - "/etc/s3proxy/s3proxy-settings.properties"
-            {{- if .Values.global.backup.enabled }}
-            - "--properties"
-            - "/etc/s3proxy/s3proxy-main.properties"
-            {{- end }}
+            - sh
+            - -c
+            - |-
+              java \
+              -DLOG_LEVEL="INFO" \
+              -Ds3proxy.endpoint=http://0.0.0.0:9000 \
+              -Ds3proxy.authorization=aws-v2-or-v4 \
+              -Ds3proxy.identity=${S3PROXY_IDENTITY} \
+              -Ds3proxy.credential=${S3PROXY_CREDENTIAL} \
+              -Ds3proxy.keystore-path=keystore.jks \
+              -Ds3proxy.keystore-password=password \
+              -Djclouds.identity="${JCLOUDS_IDENTITY}" \
+              -Djclouds.credential="${JCLOUDS_CREDENTIAL}" \
+              "-jar" \
+              "/opt/s3proxy/s3proxy" \
+              "--properties" "/etc/s3proxy/s3proxy-settings.properties" {{ if .Values.global.backup.enabled }} "--properties" "/etc/s3proxy/s3proxy-main.properties" {{ end }}
           ports:
             - name: http
               containerPort: {{ include "stackstate.s3proxy.port" . }}
@@ -101,13 +111,14 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ include "stackstate.s3proxy.secretName" . }}
-                  key: accessKey
+                  key: accesskey
             - name: S3PROXY_CREDENTIAL
               valueFrom:
                 secretKeyRef:
                   name: {{ include "stackstate.s3proxy.secretName" . }}
-                  key: secretKey
-            {{- if and .Values.global.backup.enabled (include "stackstate.s3proxy.s3BackendEnabled" .) (include "stackstate.s3proxy.s3BackendAccessKey" .) }}
+                  key: secretkey
+            {{- if .Values.global.backup.enabled }}
+            {{- if (include "stackstate.s3proxy.s3BackendEnabled" .) }}
             - name: JCLOUDS_IDENTITY
               valueFrom:
                 secretKeyRef:
@@ -118,8 +129,7 @@ spec:
                 secretKeyRef:
                   name: {{ include "stackstate.s3proxy.secretName" . }}
                   key: backendSecretKey
-            {{- end }}
-            {{- if and .Values.global.backup.enabled (include "stackstate.s3proxy.azureBackendEnabled" .) }}
+            {{- else if (include "stackstate.s3proxy.azureBackendEnabled" .) }}
             - name: JCLOUDS_IDENTITY
               valueFrom:
                 secretKeyRef:
@@ -131,6 +141,7 @@ spec:
                 secretKeyRef:
                   name: {{ include "stackstate.s3proxy.secretName" . }}
                   key: azureAccountKey
+            {{- end }}
             {{- end }}
             {{- end }}
           volumeMounts:
@@ -145,18 +156,18 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.s3proxy.resources | nindent 12 }}
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-            initialDelaySeconds: 10
-            periodSeconds: 30
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-            initialDelaySeconds: 5
-            periodSeconds: 10
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 30
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 10
       {{- include "stackstate.s3proxy.nodeSelector" . | nindent 6 }}
       {{- include "stackstate.s3proxy.affinity" . | nindent 6 }}
       {{- include "stackstate.s3proxy.tolerations" . | nindent 6 }}

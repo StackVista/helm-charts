@@ -149,7 +149,7 @@ Change the values according to the need of the environment in ``victoria-metrics
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | automountServiceAccountToken | bool | `true` |  |
-| backup.awsSecrets | string | `"suse-observability-minio"` | Name of k8s secrets with Access Key and Secret Key to the MinIO service. |
+| backup.awsSecrets | string | `""` | Name of k8s secrets with Access Key and Secret Key to the MinIO service. |
 | backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the MinIO bucket where Victoria Metrics backups are stored. |
 | backup.enabled | bool | `false` | Enable scheduled backups of Victoria Metrics. |
 | backup.overrideS3Endpoint | string | `"http://suse-observability-minio:9000"` | Override location of S3 endpoints, it should point to MinIO service. **Do not change this value! It must base on 'minio.fullnameOverride'** |

@@ -479,8 +479,8 @@ If you encounter issues not covered here:
 | backup.storage.credentials.existingSecret | string | `""` | Use existing secret for credentials (keys: accessKey, secretKey) |
 | backup.storage.credentials.secretKey | string | `""` | Secret key for S3Proxy authentication (auto-generated if empty) |
 | backup.storage.enabled | bool | `true` | Enable the S3Proxy deployment. Always enabled for settings backup. |
-| backup.storage.migration | object | `{"enabled":true}` | Migration settings for moving data from old settings-backup PVC |
-| backup.storage.migration.enabled | bool | `true` | Enable migration init container to copy data from old settings-backup PVC |
+| backup.storage.migration | object | `{"enabled":false}` | Migration settings for moving data from old settings-backup PVC |
+| backup.storage.migration.enabled | bool | `false` | Enable migration init container to copy data from old settings-backup PVC |
 | backup.storage.settingsPvc | object | `{"accessModes":["ReadWriteOnce"],"size":"2Gi","storageClass":""}` | PVC for local settings backup (always present) |
 | backup.storage.settingsPvc.accessModes | list | `["ReadWriteOnce"]` | Access modes for the settings PVC |
 | backup.storage.settingsPvc.size | string | `"2Gi"` | Size of the settings backup PVC |
@@ -751,9 +751,9 @@ If you encounter issues not covered here:
 | pull-secret.fullNameOverride | string | `""` | Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart. |
 | s3proxy.affinity | object | `{}` | Affinity settings for S3Proxy pod (merged with stackstate.components.all.affinity) |
 | s3proxy.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for S3Proxy |
-| s3proxy.image.registry | string | `"quay.io"` | Image registry for S3Proxy |
-| s3proxy.image.repository | string | `"stackstate/s3proxy"` | Image repository for S3Proxy |
-| s3proxy.image.tag | string | `"sha-1281afd"` | Image tag for S3Proxy |
+| s3proxy.image.registry | string | `"docker.io"` |  |
+| s3proxy.image.repository | string | `"andrewgaul/s3proxy"` | Image repository for S3Proxy |
+| s3proxy.image.tag | string | `"master"` | Image tag for S3Proxy |
 | s3proxy.nodeSelector | object | `{}` | Node selector for S3Proxy pod (merged with stackstate.components.all.nodeSelector) |
 | s3proxy.podAnnotations | object | `{}` | Annotations for S3Proxy pod |
 | s3proxy.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"512Mi"},"requests":{"cpu":"100m","ephemeral-storage":"1Mi","memory":"256Mi"}}` | Resource limits and requests for S3Proxy container |
@@ -1190,7 +1190,7 @@ If you encounter issues not covered here:
 | stackstate.components.server.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
 | stackstate.components.server.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.server.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.server.image.imageRegistry | string | `""` | `imageRegistry` used for the `server` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
+| stackstate.components.server.image.imageRegistry | string | `""` | imageRegistry used for the S3Proxy Docker image; this will override `global.imageRegistry` s3proxy.image.registry -- imageRegistry used for the S3Proxy Docker image; this will override `global.imageRegistry` |
 | stackstate.components.server.image.pullPolicy | string | `""` | `pullPolicy` used for the `server` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.server.image.repository | string | `"stackstate/stackstate-server"` | Repository of the server component Docker image. |
 | stackstate.components.server.image.tag | string | `""` | Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
@@ -1347,6 +1347,7 @@ If you encounter issues not covered here:
 | stackstate.stackpacks.upgradeOnStartup | list | `[]` | Specify additional stackpacks that will, on startup only, be upgraded to the latest version available. Note: The following StackPacks are automatically upgraded with SUSE Observability: kubernetes-v2, open-telemetry, stackstate-k8s-agent-v2, aad-v2, stackstate, plus either prime-kubernetes or community-kubernetes (based on stackstate.deployment.edition). Additional StackPacks declared in upgradeOnStartup will be merged with these defaults. |
 | stackstate.topology.retentionHours | integer | `nil` | Number of hours topology will be retained. |
 | stackstate.ui.defaultTimeRange | string | `nil` | Default time range  in the UI. One of LAST_5_MINUTES, LAST_15_MINUTES, LAST_30_MINUTES, LAST_1_HOUR, LAST_3_HOURS, LAST_6_HOURS, LAST_12_HOURS, LAST_24_HOURS, LAST_2_DAYS. No value or an unsupported value will automatically fall-back to LAST_1_HOUR. |
+| victoria-metrics-0.backup.awsSecrets | string | `"suse-observability-s3proxy"` |  |
 | victoria-metrics-0.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the MinIO bucket where Victoria Metrics backups are stored. |
 | victoria-metrics-0.backup.s3Prefix | string | `"victoria-metrics-0"` |  |
 | victoria-metrics-0.backup.scheduled.schedule | string | `"25 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
@@ -1370,6 +1371,7 @@ If you encounter issues not covered here:
 | victoria-metrics-0.server.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` |
 | victoria-metrics-0.server.serviceMonitor.extraLabels | object | `{}` | Add extra labels to target a specific prometheus instance |
 | victoria-metrics-0.server.serviceMonitor.interval | string | `"15s"` | Scrape interval for service monitor |
+| victoria-metrics-1.backup.awsSecrets | string | `"suse-observability-s3proxy"` |  |
 | victoria-metrics-1.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the MinIO bucket where Victoria Metrics backups are stored. |
 | victoria-metrics-1.backup.s3Prefix | string | `"victoria-metrics-1"` | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. |
 | victoria-metrics-1.backup.scheduled.schedule | string | `"35 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |

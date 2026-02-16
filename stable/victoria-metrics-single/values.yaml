@@ -686,7 +686,7 @@ backup:
   # -- Override location of S3 endpoints, it should point to MinIO service. **Do not change this value! It must base on 'minio.fullnameOverride'**
   overrideS3Endpoint: "http://suse-observability-minio:9000"
   # -- Name of k8s secrets with Access Key and Secret Key to the MinIO service.
-  awsSecrets: "suse-observability-minio"
+  awsSecrets: ""
   scheduled:
     # -- Cron schedule for automatic backups of Victoria Metrics
     schedule: '25 * * * *'
