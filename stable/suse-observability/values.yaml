@@ -107,7 +107,7 @@ backup:
       # backup.storage.backend.pvc -- Use local PVC storage (default when no other backend configured)
       pvc:
         # backup.storage.backend.pvc.enabled -- Enable PVC backend
-        enabled: true
+        enabled: false
         # backup.storage.backend.pvc.size -- Size of the PVC for S3Proxy data
         size: 500Gi
         # backup.storage.backend.pvc.storageClass -- Storage class for the PVC

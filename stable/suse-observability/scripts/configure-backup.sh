@@ -12,7 +12,7 @@ SC=$(curl --request PUT "http://${ELASTICSEARCH_ENDPOINT}/_snapshot/${BACKUP_ELA
     \"type\": \"s3\",
     \"settings\": {
         \"bucket\": \"${BACKUP_ELASTICSEARCH_BUCKET_NAME}\",
-        \"region\": \"minio\",
+        \"region\": \"us-east-1\",
         \"endpoint\": \"${MINIO_ENDPOINT}\",
         \"base_path\": \"${BACKUP_ELASTICSEARCH_S3_PREFIX}\",
         \"protocol\": \"http\",

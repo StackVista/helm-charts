@@ -45,11 +45,6 @@ dependencies:
     condition: kafkaup-operator.enabled
     repository: file://../kafkaup-operator/
     version: "0.1.26"
-  - name: minio
-    repository: file://../minio/
-    # For some reason * does not work
-    version: "8.0.10-stackstate.26"
-    condition: global.backup.enabled
   - name: pull-secret
     version: "*"
     repository: file://../pull-secret/

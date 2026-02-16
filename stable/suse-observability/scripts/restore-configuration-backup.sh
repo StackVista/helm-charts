@@ -13,12 +13,12 @@ RESTORE_FILE="${TMP_DIR}/${BACKUP_FILE}"
 
 # First try to download from local settings bucket
 echo "=== Attempting to download Settings backup \"${BACKUP_FILE}\" from local settings bucket \"${S3_BUCKET_SETTINGS}\"..."
-if sts-toolbox aws s3 --endpoint "${S3_ENDPOINT}" --region minio cp "s3://${S3_BUCKET_SETTINGS}/${BACKUP_FILE}" "${RESTORE_FILE}" 2>/dev/null; then
+if sts-toolbox aws s3 --endpoint "${S3_ENDPOINT}" --region us-east-1 cp "s3://${S3_BUCKET_SETTINGS}/${BACKUP_FILE}" "${RESTORE_FILE}" 2>/dev/null; then
   echo "Downloaded from local settings bucket"
 elif [ "$BACKUP_CONFIGURATION_UPLOAD_REMOTE" == "true" ]; then
   # Fall back to remote bucket if local not found and remote backup is enabled
   echo "=== Not found in local bucket, downloading from remote bucket \"${BACKUP_CONFIGURATION_BUCKET_NAME}\"..."
-  sts-toolbox aws s3 --endpoint "${S3_ENDPOINT}" --region minio cp "s3://${BACKUP_CONFIGURATION_BUCKET_NAME}/${BACKUP_CONFIGURATION_S3_PREFIX}${BACKUP_FILE}" "${RESTORE_FILE}"
+  sts-toolbox aws s3 --endpoint "${S3_ENDPOINT}" --region us-east-1 cp "s3://${BACKUP_CONFIGURATION_BUCKET_NAME}/${BACKUP_CONFIGURATION_S3_PREFIX}${BACKUP_FILE}" "${RESTORE_FILE}"
 fi
 
 if [ ! -f "${RESTORE_FILE}" ]; then

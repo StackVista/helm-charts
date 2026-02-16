@@ -6,7 +6,7 @@ function uploadFileToS3() {
     destObject=$2
     s3_endpoint=$3
     echo "=== Uploading StackGraph backup \"${srcFile}\" to bucket \"${destObject}\"..."
-    sts-toolbox aws s3 cp --endpoint "${s3_endpoint}" --region minio "${srcFile}" "${destObject}"
+    sts-toolbox aws s3 cp --endpoint "${s3_endpoint}" --region us-east-1 "${srcFile}" "${destObject}"
 }
 
 export TMP_DIR=/tmp-data

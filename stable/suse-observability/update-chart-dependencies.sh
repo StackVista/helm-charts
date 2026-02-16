@@ -4,7 +4,7 @@ dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd "${dir}/../.." || exit
 
 
-for SUBCHART in clickhouse  elasticsearch hbase kafka kafkaup-operator minio suse-observability victoria-metrics-single zookeeper
+for SUBCHART in clickhouse elasticsearch hbase kafka kafkaup-operator suse-observability victoria-metrics-single zookeeper
 do
   rm -Rf "stable/${SUBCHART}/charts/*"
 done

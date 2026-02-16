@@ -21,11 +21,11 @@ function fetchBackupDate() {
 
   INSTANCE_NAME=$(basename "${INSTANCE_S3_PREFIX}")
   set +e
-  ALL_S3_prefixes=$(sts-toolbox aws s3 ls --endpoint "http://${MINIO_ENDPOINT}" --region minio --bucket "${BACKUP_VICTORIA_METRICS_0_BUCKET_NAME}" --prefix "${INSTANCE_S3_PREFIX}" )
+  ALL_S3_prefixes=$(sts-toolbox aws s3 ls --endpoint "http://${MINIO_ENDPOINT}" --region us-east-1 --bucket "${BACKUP_VICTORIA_METRICS_0_BUCKET_NAME}" --prefix "${INSTANCE_S3_PREFIX}" )
   for S3_PREFIX in $ALL_S3_prefixes
   do
     if [ "$S3_PREFIX" != "None" ]; then
-      BACKUP_DATE=$(sts-toolbox aws s3 head --endpoint "http://${MINIO_ENDPOINT}" --region minio --bucket "${BUCKET}" --key "${INSTANCE_S3_ROOTDIR}${S3_PREFIX}backup_complete.ignore" | jq -r .lastModified)
+      BACKUP_DATE=$(sts-toolbox aws s3 head --endpoint "http://${MINIO_ENDPOINT}" --region us-east-1 --bucket "${BUCKET}" --key "${INSTANCE_S3_ROOTDIR}${S3_PREFIX}backup_complete.ignore" | jq -r .lastModified)
       BACKUP_EXISTS=$?
       set -e
       if [ ${BACKUP_EXISTS} -eq 0 ]; then

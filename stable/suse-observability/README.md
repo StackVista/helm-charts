@@ -446,9 +446,9 @@ If you encounter issues not covered here:
 | backup.storage.backend.azure.accountName | string | `""` | Azure storage account name |
 | backup.storage.backend.azure.enabled | bool | `false` | Enable Azure backend |
 | backup.storage.backend.azure.endpoint | string | `""` | Azure blob endpoint (auto-derived from accountName if not set) |
-| backup.storage.backend.pvc | object | `{"accessModes":["ReadWriteOnce"],"enabled":true,"size":"500Gi","storageClass":""}` | Use local PVC storage (default when no other backend configured) |
+| backup.storage.backend.pvc | object | `{"accessModes":["ReadWriteOnce"],"enabled":false,"size":"500Gi","storageClass":""}` | Use local PVC storage (default when no other backend configured) |
 | backup.storage.backend.pvc.accessModes | list | `["ReadWriteOnce"]` | Access modes for the PVC |
-| backup.storage.backend.pvc.enabled | bool | `true` | Enable PVC backend |
+| backup.storage.backend.pvc.enabled | bool | `false` | Enable PVC backend |
 | backup.storage.backend.pvc.size | string | `"500Gi"` | Size of the PVC for S3Proxy data |
 | backup.storage.backend.pvc.storageClass | string | `""` | Storage class for the PVC |
 | backup.storage.backend.s3 | object | `{"accessKey":"","enabled":false,"endpoint":"","region":"us-east-1","secretKey":""}` | Use external S3-compatible storage |

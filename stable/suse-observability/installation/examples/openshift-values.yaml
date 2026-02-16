@@ -43,7 +43,7 @@ kafka:
     enabled: false
   volumePermissions:
     enabled: false
-minio:
+s3proxy:
   securityContext:
     enabled: false
 zookeeper:
