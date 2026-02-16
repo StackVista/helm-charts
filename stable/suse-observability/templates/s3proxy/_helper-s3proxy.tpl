@@ -143,7 +143,7 @@ tolerations:
 Get the settings bucket name for local settings backup.
 */}}
 {{- define "stackstate.s3proxy.localSettingsBucketName" -}}
-settings-local-backup
+local-settings-backup
 {{- end -}}
 
 {{/*

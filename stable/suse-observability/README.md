@@ -734,6 +734,11 @@ If you encounter issues not covered here:
 | s3proxy.image.registry | string | `"docker.io"` |  |
 | s3proxy.image.repository | string | `"andrewgaul/s3proxy"` | Image repository for S3Proxy |
 | s3proxy.image.tag | string | `"master"` | Image tag for S3Proxy |
+| s3proxy.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
+| s3proxy.metrics.defaultAgentMetricsFilter | string | `"[\"*\"]"` |  |
+| s3proxy.metrics.enabled | bool | `true` | Enable / disable S3Proxy Prometheus metrics. |
+| s3proxy.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
+| s3proxy.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
 | s3proxy.nodeSelector | object | `{}` | Node selector for S3Proxy pod (merged with stackstate.components.all.nodeSelector) |
 | s3proxy.podAnnotations | object | `{}` | Annotations for S3Proxy pod |
 | s3proxy.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"512Mi"},"requests":{"cpu":"100m","ephemeral-storage":"1Mi","memory":"256Mi"}}` | Resource limits and requests for S3Proxy container |

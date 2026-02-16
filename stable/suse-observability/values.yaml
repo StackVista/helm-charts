@@ -2209,7 +2209,17 @@ s3proxy:
   affinity: {}
   # s3proxy.podAnnotations -- Annotations for S3Proxy pod
   podAnnotations: {}
-
+  metrics:
+    # s3proxy.metrics.enabled -- Enable / disable S3Proxy Prometheus metrics.
+    enabled: true
+    defaultAgentMetricsFilter: '["*"]'
+    # s3proxy.metrics.agentAnnotationsEnabled -- Put annotations on each pod to instruct the stackstate agent to scrape the metrics
+    agentAnnotationsEnabled: true
+    servicemonitor:
+      # s3proxy.metrics.servicemonitor.additionalLabels -- Additional labels for targeting Prometheus operator instances.
+      additionalLabels: {}
+      # s3proxy.metrics.servicemonitor.enabled -- Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled.
+      enabled: false
 zookeeper:
   # zookeeper.enabled -- Enable / disable chart-based Zookeeper.
   enabled: true

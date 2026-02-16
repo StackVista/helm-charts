@@ -24,6 +24,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/s3proxy/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/s3proxy/secret.yaml") . | sha256sum }}
+        {{- include "common.metrics.annotations" (dict "metrics" .Values.s3proxy.metrics "port" "9090" "container_name" "s3proxy") | indent 8 }}
         {{- with .Values.s3proxy.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -44,8 +45,11 @@ spec:
               -DLOG_LEVEL="INFO" \
               -Ds3proxy.endpoint=http://0.0.0.0:9000 \
               -Ds3proxy.authorization=aws-v2-or-v4 \
-              -Ds3proxy.identity=${S3PROXY_IDENTITY} \
-              -Ds3proxy.credential=${S3PROXY_CREDENTIAL} \
+              -Ds3proxy.identity="${S3PROXY_IDENTITY}" \
+              -Ds3proxy.credential="${S3PROXY_CREDENTIAL}" \
+              -Ds3proxy.metrics.enabled="true" \
+              -Ds3proxy.metrics.port="9090" \
+              -Ds3proxy.metrics.host="0.0.0.0" \
               -Ds3proxy.keystore-path=keystore.jks \
               -Ds3proxy.keystore-password=password \
               -Djclouds.identity="${JCLOUDS_IDENTITY}" \
@@ -56,6 +60,9 @@ spec:
           ports:
             - name: http
               containerPort: {{ include "stackstate.s3proxy.port" . }}
+              protocol: TCP
+            - name: metrics
+              containerPort: 9090
               protocol: TCP
           env:
             - name: S3PROXY_IDENTITY
@@ -107,18 +114,18 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.s3proxy.resources | nindent 12 }}
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          #   initialDelaySeconds: 10
-          #   periodSeconds: 30
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          #   initialDelaySeconds: 5
-          #   periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: metrics
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: metrics
+            initialDelaySeconds: 5
+            periodSeconds: 10
       {{- include "stackstate.s3proxy.nodeSelector" . | nindent 6 }}
       {{- include "stackstate.s3proxy.affinity" . | nindent 6 }}
       {{- include "stackstate.s3proxy.tolerations" . | nindent 6 }}
