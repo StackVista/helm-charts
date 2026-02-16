@@ -19,6 +19,17 @@
   {{- fail "Please use `global.backup.enabled=true` instead of `backup.enabled=true`" -}}
 {{- end }}
 
+{{- /* Validate that only one backup storage backend is enabled */ -}}
+{{- if .Values.global.backup.enabled -}}
+  {{- $pvcEnabled := .Values.backup.storage.backend.pvc.enabled -}}
+  {{- $s3Enabled := .Values.backup.storage.backend.s3.enabled -}}
+  {{- $azureEnabled := .Values.backup.storage.backend.azure.enabled -}}
+  {{- $enabledCount := add (ternary 1 0 $pvcEnabled) (add (ternary 1 0 $s3Enabled) (ternary 1 0 $azureEnabled)) -}}
+  {{- if gt $enabledCount 1 -}}
+    {{- fail "Only one backup storage backend can be enabled at a time. Please enable only one of: backup.storage.backend.pvc.enabled, backup.storage.backend.s3.enabled, or backup.storage.backend.azure.enabled" -}}
+  {{- end -}}
+{{- end }}
+
 {{- /* Validate that both pull-secret mechanisms are not enabled simultaneously */ -}}
 {{- $pullSecretSubchartEnabled := index .Values "pull-secret" "enabled" -}}
 {{- $globalPullSecretConfigured := and .Values.global.suseObservability.pullSecret.username .Values.global.suseObservability.pullSecret.password -}}

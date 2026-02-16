@@ -33,6 +33,32 @@ spec:
       {{- if .Values.stackstate.components.all.securityContext.enabled }}
       securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
       {{- end }}
+      initContainers:
+        - name: create-bucket-dirs
+          image: "{{ include "stackstate.containerTools.image.registry" . }}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
+          imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
+          command:
+            - sh
+            - -c
+            - |
+              # Create settings bucket directory (always needed)
+              mkdir -p /settings-data/{{ include "stackstate.s3proxy.localSettingsBucketName" . }}
+              echo "Created settings bucket directory: /settings-data/{{ include "stackstate.s3proxy.localSettingsBucketName" . }}"
+              {{- if and .Values.global.backup.enabled (include "stackstate.s3proxy.mainBackendUsesPVC" .) }}
+              # Create main backup bucket directories
+              {{- $buckets := list .Values.backup.configuration.bucketName .Values.backup.stackGraph.bucketName .Values.backup.elasticsearch.bucketName .Values.clickhouse.backup.bucketName (index .Values "victoria-metrics-0" "backup" "bucketName") (index .Values "victoria-metrics-1" "backup" "bucketName") | compact | uniq }}
+              {{- range $bucket := $buckets }}
+              mkdir -p /main-data/{{ $bucket }}
+              echo "Created main backup bucket directory: /main-data/{{ $bucket }}"
+              {{- end }}
+              {{- end }}
+          volumeMounts:
+            - name: settings-data
+              mountPath: /settings-data
+            {{- if and .Values.global.backup.enabled (include "stackstate.s3proxy.mainBackendUsesPVC" .) }}
+            - name: main-data
+              mountPath: /main-data
+            {{- end }}
       containers:
         - name: s3proxy
           image: "{{ include "stackstate.s3proxy.image.registry" . }}/{{ .Values.s3proxy.image.repository }}:{{ .Values.s3proxy.image.tag }}"

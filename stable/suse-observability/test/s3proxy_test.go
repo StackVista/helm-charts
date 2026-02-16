@@ -452,3 +452,352 @@ func TestS3ProxyMainPVCSize(t *testing.T) {
 	require.True(t, ok, "Main PVC should exist")
 	assert.Equal(t, "1Ti", pvc.Spec.Resources.Requests.Storage().String(), "Main PVC size should be customized")
 }
+
+// TestS3ProxyInitContainerBackupDisabled verifies init container creates only settings bucket when backup is disabled
+func TestS3ProxyInitContainerBackupDisabled(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled": "false",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	// Should have init container
+	require.Len(t, deployment.Spec.Template.Spec.InitContainers, 1, "Should have exactly one init container")
+	initContainer := deployment.Spec.Template.Spec.InitContainers[0]
+	assert.Equal(t, "create-bucket-dirs", initContainer.Name, "Init container should be named create-bucket-dirs")
+
+	// Init container should only mount settings-data volume
+	var settingsMount, mainMount *corev1.VolumeMount
+	for i := range initContainer.VolumeMounts {
+		if initContainer.VolumeMounts[i].Name == "settings-data" {
+			settingsMount = &initContainer.VolumeMounts[i]
+		}
+		if initContainer.VolumeMounts[i].Name == "main-data" {
+			mainMount = &initContainer.VolumeMounts[i]
+		}
+	}
+	require.NotNil(t, settingsMount, "Init container should mount settings-data volume")
+	assert.Equal(t, "/settings-data", settingsMount.MountPath, "Settings data should be mounted at /settings-data")
+	assert.Nil(t, mainMount, "Init container should NOT mount main-data volume when backup is disabled")
+
+	// Verify the command creates only settings bucket directory
+	require.Len(t, initContainer.Command, 3, "Command should have 3 elements (sh, -c, script)")
+	script := initContainer.Command[2]
+	assert.Contains(t, script, "mkdir -p /settings-data/local-settings-backup", "Should create settings bucket directory")
+	assert.NotContains(t, script, "/main-data/", "Should NOT create any main-data directories when backup is disabled")
+}
+
+// TestS3ProxyInitContainerBackupEnabledPVC verifies init container creates all bucket directories with PVC backend
+func TestS3ProxyInitContainerBackupEnabledPVC(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled":              "true",
+			"backup.storage.backend.pvc.enabled": "true",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	// Should have init container
+	require.Len(t, deployment.Spec.Template.Spec.InitContainers, 1, "Should have exactly one init container")
+	initContainer := deployment.Spec.Template.Spec.InitContainers[0]
+	assert.Equal(t, "create-bucket-dirs", initContainer.Name, "Init container should be named create-bucket-dirs")
+
+	// Init container should mount both volumes
+	var settingsMount, mainMount *corev1.VolumeMount
+	for i := range initContainer.VolumeMounts {
+		if initContainer.VolumeMounts[i].Name == "settings-data" {
+			settingsMount = &initContainer.VolumeMounts[i]
+		}
+		if initContainer.VolumeMounts[i].Name == "main-data" {
+			mainMount = &initContainer.VolumeMounts[i]
+		}
+	}
+	require.NotNil(t, settingsMount, "Init container should mount settings-data volume")
+	assert.Equal(t, "/settings-data", settingsMount.MountPath, "Settings data should be mounted at /settings-data")
+	require.NotNil(t, mainMount, "Init container should mount main-data volume when PVC backend is used")
+	assert.Equal(t, "/main-data", mainMount.MountPath, "Main data should be mounted at /main-data")
+
+	// Verify the command creates all bucket directories
+	require.Len(t, initContainer.Command, 3, "Command should have 3 elements (sh, -c, script)")
+	script := initContainer.Command[2]
+	assert.Contains(t, script, "mkdir -p /settings-data/local-settings-backup", "Should create settings bucket directory")
+	assert.Contains(t, script, "mkdir -p /main-data/sts-configuration-backup", "Should create configuration backup bucket directory")
+	assert.Contains(t, script, "mkdir -p /main-data/sts-stackgraph-backup", "Should create stackgraph backup bucket directory")
+	assert.Contains(t, script, "mkdir -p /main-data/sts-elasticsearch-backup", "Should create elasticsearch backup bucket directory")
+	assert.Contains(t, script, "mkdir -p /main-data/sts-clickhouse-backup", "Should create clickhouse backup bucket directory")
+	assert.Contains(t, script, "mkdir -p /main-data/sts-victoria-metrics-backup", "Should create victoria-metrics backup bucket directory")
+}
+
+// TestS3ProxyInitContainerBackupEnabledS3 verifies init container creates only settings bucket with S3 backend
+func TestS3ProxyInitContainerBackupEnabledS3(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled":               "true",
+			"backup.storage.backend.pvc.enabled":  "false",
+			"backup.storage.backend.s3.enabled":   "true",
+			"backup.storage.backend.s3.region":    "eu-west-1",
+			"backup.storage.backend.s3.accessKey": "test-access-key",
+			"backup.storage.backend.s3.secretKey": "test-secret-key",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	// Should have init container
+	require.Len(t, deployment.Spec.Template.Spec.InitContainers, 1, "Should have exactly one init container")
+	initContainer := deployment.Spec.Template.Spec.InitContainers[0]
+
+	// Init container should only mount settings-data volume (not main-data since S3 backend is used)
+	var settingsMount, mainMount *corev1.VolumeMount
+	for i := range initContainer.VolumeMounts {
+		if initContainer.VolumeMounts[i].Name == "settings-data" {
+			settingsMount = &initContainer.VolumeMounts[i]
+		}
+		if initContainer.VolumeMounts[i].Name == "main-data" {
+			mainMount = &initContainer.VolumeMounts[i]
+		}
+	}
+	require.NotNil(t, settingsMount, "Init container should mount settings-data volume")
+	assert.Nil(t, mainMount, "Init container should NOT mount main-data volume with S3 backend")
+
+	// Verify the command creates only settings bucket directory
+	require.Len(t, initContainer.Command, 3, "Command should have 3 elements (sh, -c, script)")
+	script := initContainer.Command[2]
+	assert.Contains(t, script, "mkdir -p /settings-data/local-settings-backup", "Should create settings bucket directory")
+	assert.NotContains(t, script, "/main-data/", "Should NOT create any main-data directories with S3 backend")
+}
+
+// TestS3ProxyInitContainerBackupEnabledAzure verifies init container creates only settings bucket with Azure backend
+func TestS3ProxyInitContainerBackupEnabledAzure(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled":                    "true",
+			"backup.storage.backend.pvc.enabled":       "false",
+			"backup.storage.backend.azure.enabled":     "true",
+			"backup.storage.backend.azure.accountName": "mystorageaccount",
+			"backup.storage.backend.azure.accountKey":  "secret-key-here",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	// Should have init container
+	require.Len(t, deployment.Spec.Template.Spec.InitContainers, 1, "Should have exactly one init container")
+	initContainer := deployment.Spec.Template.Spec.InitContainers[0]
+
+	// Init container should only mount settings-data volume (not main-data since Azure backend is used)
+	var mainMount *corev1.VolumeMount
+	for i := range initContainer.VolumeMounts {
+		if initContainer.VolumeMounts[i].Name == "main-data" {
+			mainMount = &initContainer.VolumeMounts[i]
+		}
+	}
+	assert.Nil(t, mainMount, "Init container should NOT mount main-data volume with Azure backend")
+
+	// Verify the command creates only settings bucket directory
+	require.Len(t, initContainer.Command, 3, "Command should have 3 elements (sh, -c, script)")
+	script := initContainer.Command[2]
+	assert.Contains(t, script, "mkdir -p /settings-data/local-settings-backup", "Should create settings bucket directory")
+	assert.NotContains(t, script, "/main-data/", "Should NOT create any main-data directories with Azure backend")
+}
+
+// TestS3ProxyInitContainerCustomBucketNames verifies init container uses custom bucket names
+func TestS3ProxyInitContainerCustomBucketNames(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled":                "true",
+			"backup.storage.backend.pvc.enabled":   "true",
+			"backup.configuration.bucketName":      "custom-config-backup",
+			"backup.stackGraph.bucketName":         "custom-stackgraph-backup",
+			"backup.elasticsearch.bucketName":      "custom-es-backup",
+			"clickhouse.backup.bucketName":         "custom-clickhouse-backup",
+			"victoria-metrics-0.backup.bucketName": "custom-vm-backup",
+			"victoria-metrics-1.backup.bucketName": "custom-vm-backup",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	initContainer := deployment.Spec.Template.Spec.InitContainers[0]
+	require.Len(t, initContainer.Command, 3, "Command should have 3 elements (sh, -c, script)")
+	script := initContainer.Command[2]
+
+	// Verify custom bucket names are used
+	assert.Contains(t, script, "mkdir -p /main-data/custom-config-backup", "Should create custom configuration backup bucket directory")
+	assert.Contains(t, script, "mkdir -p /main-data/custom-stackgraph-backup", "Should create custom stackgraph backup bucket directory")
+	assert.Contains(t, script, "mkdir -p /main-data/custom-es-backup", "Should create custom elasticsearch backup bucket directory")
+	assert.Contains(t, script, "mkdir -p /main-data/custom-clickhouse-backup", "Should create custom clickhouse backup bucket directory")
+	assert.Contains(t, script, "mkdir -p /main-data/custom-vm-backup", "Should create custom victoria-metrics backup bucket directory")
+}
+
+// TestS3ProxyInitContainerImage verifies init container uses the correct container-tools image
+func TestS3ProxyInitContainerImage(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	initContainer := deployment.Spec.Template.Spec.InitContainers[0]
+	assert.Contains(t, initContainer.Image, "container-tools", "Init container should use container-tools image")
+}
+
+// TestS3ProxyBackendValidationPVCAndS3 verifies that enabling both PVC and S3 backends fails
+func TestS3ProxyBackendValidationPVCAndS3(t *testing.T) {
+	// Now test with both PVC and S3 enabled
+	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled":               "true",
+			"backup.storage.backend.pvc.enabled":  "true",
+			"backup.storage.backend.s3.enabled":   "true",
+			"backup.storage.backend.s3.region":    "eu-west-1",
+			"backup.storage.backend.s3.accessKey": "test-access-key",
+			"backup.storage.backend.s3.secretKey": "test-secret-key",
+		},
+	})
+	require.NotNil(t, err, "Should fail when both PVC and S3 backends are enabled")
+	assert.Contains(t, err.Error(), "Only one backup storage backend can be enabled at a time", "Error message should mention mutually exclusive backends")
+}
+
+// TestS3ProxyBackendValidationPVCAndAzure verifies that enabling both PVC and Azure backends fails
+func TestS3ProxyBackendValidationPVCAndAzure(t *testing.T) {
+	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled":                    "true",
+			"backup.storage.backend.pvc.enabled":       "true",
+			"backup.storage.backend.azure.enabled":     "true",
+			"backup.storage.backend.azure.accountName": "mystorageaccount",
+			"backup.storage.backend.azure.accountKey":  "secret-key-here",
+		},
+	})
+	require.NotNil(t, err, "Should fail when both PVC and Azure backends are enabled")
+	assert.Contains(t, err.Error(), "Only one backup storage backend can be enabled at a time", "Error message should mention mutually exclusive backends")
+}
+
+// TestS3ProxyBackendValidationS3AndAzure verifies that enabling both S3 and Azure backends fails
+func TestS3ProxyBackendValidationS3AndAzure(t *testing.T) {
+	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled":                    "true",
+			"backup.storage.backend.pvc.enabled":       "false",
+			"backup.storage.backend.s3.enabled":        "true",
+			"backup.storage.backend.s3.region":         "eu-west-1",
+			"backup.storage.backend.s3.accessKey":      "test-access-key",
+			"backup.storage.backend.s3.secretKey":      "test-secret-key",
+			"backup.storage.backend.azure.enabled":     "true",
+			"backup.storage.backend.azure.accountName": "mystorageaccount",
+			"backup.storage.backend.azure.accountKey":  "secret-key-here",
+		},
+	})
+	require.NotNil(t, err, "Should fail when both S3 and Azure backends are enabled")
+	assert.Contains(t, err.Error(), "Only one backup storage backend can be enabled at a time", "Error message should mention mutually exclusive backends")
+}
+
+// TestS3ProxyBackendValidationAllThree verifies that enabling all three backends fails
+func TestS3ProxyBackendValidationAllThree(t *testing.T) {
+	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled":                    "true",
+			"backup.storage.backend.pvc.enabled":       "true",
+			"backup.storage.backend.s3.enabled":        "true",
+			"backup.storage.backend.s3.region":         "eu-west-1",
+			"backup.storage.backend.s3.accessKey":      "test-access-key",
+			"backup.storage.backend.s3.secretKey":      "test-secret-key",
+			"backup.storage.backend.azure.enabled":     "true",
+			"backup.storage.backend.azure.accountName": "mystorageaccount",
+			"backup.storage.backend.azure.accountKey":  "secret-key-here",
+		},
+	})
+	require.NotNil(t, err, "Should fail when all three backends are enabled")
+	assert.Contains(t, err.Error(), "Only one backup storage backend can be enabled at a time", "Error message should mention mutually exclusive backends")
+}
+
+// TestS3ProxyBackendValidationSingleBackendAllowed verifies that enabling a single backend works
+func TestS3ProxyBackendValidationSingleBackendAllowed(t *testing.T) {
+	t.Run("PVC only", func(t *testing.T) {
+		output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+			ValuesFiles: []string{"values/full.yaml"},
+			SetValues: map[string]string{
+				"global.backup.enabled":              "true",
+				"backup.storage.backend.pvc.enabled": "true",
+			},
+		})
+		resources := helmtestutil.NewKubernetesResources(t, output)
+		_, ok := resources.Deployments["suse-observability-s3proxy"]
+		assert.True(t, ok, "S3Proxy deployment should exist with PVC backend only")
+	})
+
+	t.Run("S3 only", func(t *testing.T) {
+		output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+			ValuesFiles: []string{"values/full.yaml"},
+			SetValues: map[string]string{
+				"global.backup.enabled":               "true",
+				"backup.storage.backend.pvc.enabled":  "false",
+				"backup.storage.backend.s3.enabled":   "true",
+				"backup.storage.backend.s3.region":    "eu-west-1",
+				"backup.storage.backend.s3.accessKey": "test-access-key",
+				"backup.storage.backend.s3.secretKey": "test-secret-key",
+			},
+		})
+		resources := helmtestutil.NewKubernetesResources(t, output)
+		_, ok := resources.Deployments["suse-observability-s3proxy"]
+		assert.True(t, ok, "S3Proxy deployment should exist with S3 backend only")
+	})
+
+	t.Run("Azure only", func(t *testing.T) {
+		output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+			ValuesFiles: []string{"values/full.yaml"},
+			SetValues: map[string]string{
+				"global.backup.enabled":                    "true",
+				"backup.storage.backend.pvc.enabled":       "false",
+				"backup.storage.backend.azure.enabled":     "true",
+				"backup.storage.backend.azure.accountName": "mystorageaccount",
+				"backup.storage.backend.azure.accountKey":  "secret-key-here",
+			},
+		})
+		resources := helmtestutil.NewKubernetesResources(t, output)
+		_, ok := resources.Deployments["suse-observability-s3proxy"]
+		assert.True(t, ok, "S3Proxy deployment should exist with Azure backend only")
+	})
+}
+
+// TestS3ProxyBackendValidationNotAppliedWhenBackupDisabled verifies validation is skipped when backup is disabled
+func TestS3ProxyBackendValidationNotAppliedWhenBackupDisabled(t *testing.T) {
+	// When backup is disabled, the validation should not fail even if multiple backends are "enabled"
+	// because the backend settings are irrelevant
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled":              "false",
+			"backup.storage.backend.pvc.enabled": "true",
+			"backup.storage.backend.s3.enabled":  "true",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+	_, ok := resources.Deployments["suse-observability-s3proxy"]
+	assert.True(t, ok, "S3Proxy deployment should exist even with conflicting backend settings when backup is disabled")
+}
