@@ -137,10 +137,6 @@ backup:
         accountKey: ""
         # backup.storage.backend.azure.endpoint -- Azure blob endpoint (auto-derived from accountName if not set)
         endpoint: ""
-    # backup.storage.migration -- Migration settings for moving data from old settings-backup PVC
-    migration:
-      # backup.storage.migration.enabled -- Enable migration init container to copy data from old settings-backup PVC
-      enabled: false
   elasticsearch:
     # backup.elasticsearch.bucketName -- Name of the MinIO bucket where ElasticSearch snapshots are stored.
     bucketName: "sts-elasticsearch-backup"

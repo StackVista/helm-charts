@@ -311,24 +311,6 @@ stackstate:
 
 However, we strongly recommend migrating to sizing profiles for easier maintenance and upgrades.
 
-### Troubleshooting Migration Issues
-
-**Problem: Pods stuck in Pending state after migration**
-
-This usually indicates a scheduling issue, often related to anti-affinity rules:
-
-```shell
-# Check pod events
-kubectl describe pod <pod-name> -n <namespace>
-
-# If anti-affinity is the issue, use soft anti-affinity
-global:
-  suseObservability:
-    affinity:
-      podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution: false  # Soft anti-affinity
-```
-
 **Problem: Resources differ from previous installation**
 
 Sizing profiles may have updated resource recommendations. To preserve your previous settings:
@@ -479,8 +461,6 @@ If you encounter issues not covered here:
 | backup.storage.credentials.existingSecret | string | `""` | Use existing secret for credentials (keys: accessKey, secretKey) |
 | backup.storage.credentials.secretKey | string | `""` | Secret key for S3Proxy authentication (auto-generated if empty) |
 | backup.storage.enabled | bool | `true` | Enable the S3Proxy deployment. Always enabled for settings backup. |
-| backup.storage.migration | object | `{"enabled":false}` | Migration settings for moving data from old settings-backup PVC |
-| backup.storage.migration.enabled | bool | `false` | Enable migration init container to copy data from old settings-backup PVC |
 | backup.storage.settingsPvc | object | `{"accessModes":["ReadWriteOnce"],"size":"2Gi","storageClass":""}` | PVC for local settings backup (always present) |
 | backup.storage.settingsPvc.accessModes | list | `["ReadWriteOnce"]` | Access modes for the settings PVC |
 | backup.storage.settingsPvc.size | string | `"2Gi"` | Size of the settings backup PVC |
@@ -1722,8 +1702,8 @@ backup:
         # Leave accessKey and secretKey empty
 
         # Option 2: Use explicit credentials
-        accessKey: "AKIAIOSFODNN7EXAMPLE"
-        secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+        accessKey: "aws-access-key"
+        secretKey: "aws-secret-key"
 
         # Optional: Custom S3-compatible endpoint (e.g., MinIO)
         # endpoint: "https://minio.example.com"
@@ -1795,18 +1775,9 @@ backup:
 
 ### Migration from MinIO
 
-If you're upgrading from a previous version that used MinIO, S3Proxy automatically migrates your settings backups. The migration init container copies `.sty` files from the old `settings-backup-data` PVC to the new S3Proxy bucket structure.
+If you're upgrading from a previous version that used MinIO, a new PVC and bucket are created for the local settings backup. The existing settings-backup-pvc will not be removed automatically. Backups from that PVC can still be restored with the sts-backup cli by providing --migration.
 
-Migration is enabled by default:
-
-```yaml
-backup:
-  storage:
-    migration:
-      enabled: true
-      # Auto-detects the old PVC name, or specify explicitly:
-      # oldPvcName: "suse-observability-settings-backup-data"
-```
+After a few days the old PVC can be removed. It is recommended to first check that new settings backups have been made (using the sts-backup-cli `settings list` command) and then manually delete the old PVC.
 
 **Legacy MinIO values** (deprecated but still supported):
 

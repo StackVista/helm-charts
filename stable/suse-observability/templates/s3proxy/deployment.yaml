@@ -32,55 +32,6 @@ spec:
       {{- if .Values.stackstate.components.all.securityContext.enabled }}
       securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
       {{- end }}
-      {{- if .Values.backup.storage.migration.enabled }}
-      initContainers:
-        - name: migrate-settings
-          image: "{{ include "common.image.registry" (dict "image" .Values.global.wait.image "context" $) }}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
-          imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.global.wait.image.pullPolicy | quote }}
-          command:
-            - /bin/sh
-            - -c
-            - |
-              set -e
-              echo "Checking if settings migration is needed..."
-
-              # Check if migration is already completed
-              if [ -f /settings-data/.migrated ]; then
-                echo "Migration already completed, skipping."
-                exit 0
-              fi
-
-              # Check if old settings PVC is mounted and has data
-              if [ -d /old-settings ] && ls /old-settings/*.sty >/dev/null 2>&1; then
-                echo "Found settings backup files in old PVC, migrating..."
-
-                # Create bucket directory structure (S3Proxy stores files in bucket-named directories)
-                mkdir -p /settings-data/settings-local-backup
-
-                # Copy all .sty files to the new location
-                for file in /old-settings/*.sty; do
-                  if [ -f "$file" ]; then
-                    filename=$(basename "$file")
-                    echo "Copying $filename..."
-                    cp "$file" "/settings-data/settings-local-backup/$filename"
-                  fi
-                done
-
-                echo "Migration completed successfully."
-              else
-                echo "No old settings backup data found, nothing to migrate."
-              fi
-
-              # Create migration marker
-              touch /settings-data/.migrated
-              echo "Migration marker created."
-          volumeMounts:
-            - name: settings-data
-              mountPath: /settings-data
-            - name: old-settings
-              mountPath: /old-settings
-              readOnly: true
-      {{- end }}
       containers:
         - name: s3proxy
           image: "{{ include "stackstate.s3proxy.image.registry" . }}/{{ .Values.s3proxy.image.repository }}:{{ .Values.s3proxy.image.tag }}"
@@ -182,10 +133,5 @@ spec:
         - name: main-data
           persistentVolumeClaim:
             claimName: {{ include "stackstate.backup.mainPvcName" . }}
-        {{- end }}
-        {{- if .Values.backup.storage.migration.enabled }}
-        - name: old-settings
-          persistentVolumeClaim:
-            claimName: {{ include "stackstate.s3proxy.migration.oldPvcName" . }}
         {{- end }}
 {{- end }}

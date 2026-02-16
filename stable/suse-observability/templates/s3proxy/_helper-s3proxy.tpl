@@ -270,14 +270,6 @@ true
 {{- end -}}
 
 {{/*
-Get the old settings-backup PVC name for migration.
-Auto-detects based on the release name pattern used in previous versions.
-*/}}
-{{- define "stackstate.s3proxy.migration.oldPvcName" -}}
-{{- include "common.fullname.short" . -}}-settings-backup-data
-{{- end -}}
-
-{{/*
 Get the settings PVC name.
 Uses a consistent naming scheme: backup-settings-data
 */}}

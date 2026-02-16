@@ -292,24 +292,6 @@ stackstate:
 
 However, we strongly recommend migrating to sizing profiles for easier maintenance and upgrades.
 
-### Troubleshooting Migration Issues
-
-**Problem: Pods stuck in Pending state after migration**
-
-This usually indicates a scheduling issue, often related to anti-affinity rules:
-
-```shell
-# Check pod events
-kubectl describe pod <pod-name> -n <namespace>
-
-# If anti-affinity is the issue, use soft anti-affinity
-global:
-  suseObservability:
-    affinity:
-      podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution: false  # Soft anti-affinity
-```
-
 **Problem: Resources differ from previous installation**
 
 Sizing profiles may have updated resource recommendations. To preserve your previous settings:
@@ -694,18 +676,9 @@ backup:
 
 ### Migration from MinIO
 
-If you're upgrading from a previous version that used MinIO, S3Proxy automatically migrates your settings backups. The migration init container copies `.sty` files from the old `settings-backup-data` PVC to the new S3Proxy bucket structure.
+If you're upgrading from a previous version that used MinIO, a new PVC and bucket are created for the local settings backup. The existing settings-backup-pvc will not be removed automatically. Backups from that PVC can still be restored with the sts-backup cli by providing --migration.
 
-Migration is enabled by default:
-
-```yaml
-backup:
-  storage:
-    migration:
-      enabled: true
-      # Auto-detects the old PVC name, or specify explicitly:
-      # oldPvcName: "suse-observability-settings-backup-data"
-```
+After a few days the old PVC can be removed. It is recommended to first check that new settings backups have been made (using the sts-backup-cli `settings list` command) and then manually delete the old PVC.
 
 **Legacy MinIO values** (deprecated but still supported):
 
