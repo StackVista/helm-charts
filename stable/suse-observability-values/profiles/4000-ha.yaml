@@ -298,7 +298,7 @@ victoria-metrics-0:
     resources:
       requests:
         cpu: "7"
-        memory: 16Gi
+        memory: 18Gi
       limits:
         cpu: 8000m
         memory: 18Gi
@@ -316,7 +316,7 @@ victoria-metrics-1:
     resources:
       requests:
         cpu: 7
-        memory: 16Gi
+        memory: 18Gi
       limits:
         cpu: 8000m
         memory: 18Gi
