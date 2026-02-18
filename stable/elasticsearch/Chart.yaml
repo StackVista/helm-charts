@@ -2,7 +2,7 @@ apiVersion: v2
 description: Official Elastic helm chart for Elasticsearch
 home: https://github.com/elastic/helm-charts
 name: elasticsearch
-version: 8.19.4-stackstate.8
+version: 8.19.4-stackstate.9
 appVersion: 8.19.4
 sources:
   - https://github.com/elastic/elasticsearch
@@ -13,8 +13,8 @@ maintainers:
 dependencies:
   - name: prometheus-elasticsearch-exporter
     repository: file://../prometheus-elasticsearch-exporter
-    version: "5.8.0-suse-observability.7"
+    version: "5.8.0-suse-observability.8"
     condition: prometheus-elasticsearch-exporter.enabled
   - name: suse-observability-sizing
     repository: file://../suse-observability-sizing
-    version: 0.1.4
+    version: 0.1.5

@@ -1,6 +1,6 @@
 # zookeeper
 
-![Version: 8.1.2-suse-observability.8](https://img.shields.io/badge/Version-8.1.2--suse--observability.8-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
+![Version: 8.1.2-suse-observability.9](https://img.shields.io/badge/Version-8.1.2--suse--observability.9-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
 
 Apache ZooKeeper provides a reliable, centralized register of configuration data and services for distributed applications.
 
@@ -21,7 +21,7 @@ Apache ZooKeeper provides a reliable, centralized register of configuration data
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.4 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.5 |
 | https://charts.bitnami.com/bitnami | common | 1.x.x |
 
 ## Values

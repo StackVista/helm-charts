@@ -17,8 +17,8 @@ maintainers:
 name: prometheus-elasticsearch-exporter
 sources:
   - https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-elasticsearch-exporter
-version: 5.8.0-suse-observability.7
+version: 5.8.0-suse-observability.8
 dependencies:
   - name: suse-observability-sizing
     repository: file://../suse-observability-sizing
-    version: 0.1.4
+    version: 0.1.5
