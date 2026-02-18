@@ -504,10 +504,12 @@ If you encounter issues not covered here:
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
 | elasticsearch.esJavaOpts | string | `"-Xmx3g -Xms3g -Des.allow_insecure_settings=true"` | JVM options |
 | elasticsearch.extraEnvs | list | `[{"name":"action.auto_create_index","value":"true"},{"name":"indices.query.bool.max_clause_count","value":"10000"}]` | Extra settings that StackState uses for Elasticsearch. |
+| elasticsearch.imageTag | string | `"8.19.4-8fb32031"` | Elasticsearch image tag. Updated by updatecli. |
 | elasticsearch.minimumMasterNodes | int | `2` | Minimum number of Elasticsearch master nodes. |
 | elasticsearch.nodeGroup | string | `"master"` |  |
 | elasticsearch.prometheus-elasticsearch-exporter.enabled | bool | `true` |  |
 | elasticsearch.prometheus-elasticsearch-exporter.es.uri | string | `"http://suse-observability-elasticsearch-master:9200"` |  |
+| elasticsearch.prometheus-elasticsearch-exporter.image.tag | string | `"v1.8.0-d2aa61ab"` | Elasticsearch Prometheus exporter image tag. Updated by updatecli. |
 | elasticsearch.prometheus-elasticsearch-exporter.podAnnotations."ad.stackstate.com/exporter.check_names" | string | `"[\"openmetrics\"]"` |  |
 | elasticsearch.prometheus-elasticsearch-exporter.podAnnotations."ad.stackstate.com/exporter.init_configs" | string | `"[{}]"` |  |
 | elasticsearch.prometheus-elasticsearch-exporter.podAnnotations."ad.stackstate.com/exporter.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:9108/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"elasticsearch_indices_store_*\", \"elasticsearch_cluster_health_*\"] } ]"` |  |
@@ -580,6 +582,7 @@ If you encounter issues not covered here:
 | hbase.hdfs.secondarynamenode.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for HDFS secondary namenode pods. |
 | hbase.hdfs.secondarynamenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into HDFS secondary namenode pods. |
 | hbase.hdfs.secondarynamenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into HDFS secondary namenode pods via a Secret object. |
+| hbase.hdfs.version | string | `"java21-8-e86b1b03-349"` | HDFS image build version (e.g. java21-8-27156f06-353). Derived from hadoop docker tag with semver prefix stripped. Updated by updatecli. |
 | hbase.stackgraph.version | string | `"7.13.18"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for Tephra pods. |
 | hbase.tephra.extraEnv.open | object | `{}` | Extra open environment variables to inject into Tephra pods. |
@@ -680,6 +683,7 @@ If you encounter issues not covered here:
 | minio.fullnameOverride | string | `"suse-observability-minio"` | **N.B.: Do not change this value!** The fullname override for MinIO subchart is hardcoded so that the stackstate chart can refer to its components. |
 | minio.image.registry | string | `"quay.io"` | MinIO image registry |
 | minio.image.repository | string | `"stackstate/minio"` | MinIO image repository |
+| minio.image.tag | string | `"RELEASE.2025-11-19T12-41-50Z-15bb6f44-173"` | MinIO image tag. Updated by updatecli. |
 | minio.persistence.enabled | bool | `false` | Enables MinIO persistence. Must be enabled when MinIO is not configured as a gateway to AWS S3 or Azure Blob Storage. |
 | minio.replicas | int | `1` | Number of MinIO replicas. |
 | minio.s3gateway.replicas | int | `1` |  |
@@ -1268,6 +1272,8 @@ If you encounter issues not covered here:
 | victoria-metrics-0.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the MinIO bucket where Victoria Metrics backups are stored. |
 | victoria-metrics-0.backup.s3Prefix | string | `"victoria-metrics-0"` |  |
 | victoria-metrics-0.backup.scheduled.schedule | string | `"25 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
+| victoria-metrics-0.backup.setupCron.image.tag | string | `"1.8.2-bci-517"` | Container-tools image for cron setup. Updated by updatecli. |
+| victoria-metrics-0.backup.vmbackup.image.tag | string | `"v1.109.0-4c7c50f9"` | VM backup image tag. Updated by updatecli. |
 | victoria-metrics-0.enabled | bool | `true` |  |
 | victoria-metrics-0.rbac.namespaced | bool | `true` |  |
 | victoria-metrics-0.rbac.pspEnabled | bool | `false` |  |
@@ -1275,6 +1281,7 @@ If you encounter issues not covered here:
 | victoria-metrics-0.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":60,"search.cacheTimestampOffset":"10m"}` | Extra arguments for Victoria Metrics |
 | victoria-metrics-0.server.extraLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Extra labels for Victoria Metrics StatefulSet |
 | victoria-metrics-0.server.fullnameOverride | string | `"suse-observability-victoria-metrics-0"` | Full name override |
+| victoria-metrics-0.server.image.tag | string | `"v1.109.0-accea47f"` | Victoria Metrics server image tag. Updated by updatecli. |
 | victoria-metrics-0.server.persistentVolume.size | string | `"250Gi"` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
 | victoria-metrics-0.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\"] } ]","ad.stackstate.com/vmbackup.check_names":"[\"openmetrics\"]","ad.stackstate.com/vmbackup.init_configs":"[{}]","ad.stackstate.com/vmbackup.instances":"[ { \"prometheus_url\": \"http://%%host%%:9746/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"supercronic_*\"] } ]"}` | Annotations for Victoria Metrics server pod |
 | victoria-metrics-0.server.podLabels | object | `{"app.kubernetes.io/part-of":"suse-observability","stackstate-service":"victoriametrics"}` | Extra labels for Victoria Metrics pod |
@@ -1291,6 +1298,8 @@ If you encounter issues not covered here:
 | victoria-metrics-1.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the MinIO bucket where Victoria Metrics backups are stored. |
 | victoria-metrics-1.backup.s3Prefix | string | `"victoria-metrics-1"` | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. |
 | victoria-metrics-1.backup.scheduled.schedule | string | `"35 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
+| victoria-metrics-1.backup.setupCron.image.tag | string | `"1.8.2-bci-517"` | Container-tools image for cron setup. Updated by updatecli. |
+| victoria-metrics-1.backup.vmbackup.image.tag | string | `"v1.109.0-4c7c50f9"` | VM backup image tag. Updated by updatecli. |
 | victoria-metrics-1.enabled | bool | `true` |  |
 | victoria-metrics-1.rbac.namespaced | bool | `true` |  |
 | victoria-metrics-1.rbac.pspEnabled | bool | `false` |  |
@@ -1298,6 +1307,7 @@ If you encounter issues not covered here:
 | victoria-metrics-1.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":60}` | Extra arguments for Victoria Metrics |
 | victoria-metrics-1.server.extraLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | victoria-metrics-1.server.fullnameOverride | string | `"suse-observability-victoria-metrics-1"` | Full name override |
+| victoria-metrics-1.server.image.tag | string | `"v1.109.0-accea47f"` | Victoria Metrics server image tag. Updated by updatecli. |
 | victoria-metrics-1.server.persistentVolume.size | string | `"250Gi"` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
 | victoria-metrics-1.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]","ad.stackstate.com/vmbackup.check_names":"[\"openmetrics\"]","ad.stackstate.com/vmbackup.init_configs":"[{}]","ad.stackstate.com/vmbackup.instances":"[ { \"prometheus_url\": \"http://%%host%%:9746/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"supercronic_*\"] } ]"}` | Annotations for Victoria Metrics server pod |
 | victoria-metrics-1.server.podLabels | object | `{"app.kubernetes.io/part-of":"suse-observability","stackstate-service":"victoriametrics"}` | Extra arguments for Victoria Metrics pod |

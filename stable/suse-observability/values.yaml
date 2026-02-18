@@ -1802,6 +1802,8 @@ stackstate:
 # Dependency chart overrides #
 ##############################
 elasticsearch:
+  # elasticsearch.imageTag -- Elasticsearch image tag. Updated by updatecli.
+  imageTag: "8.19.4-8fb32031"
   # elasticsearch.sysctlInitContainer -- Enable privileged init container to increase Elasticsearch virtual memory on underlying nodes.
   sysctlInitContainer:
     enabled: true
@@ -1846,6 +1848,9 @@ elasticsearch:
         storage: 250Gi
   prometheus-elasticsearch-exporter:
     enabled: true
+    # elasticsearch.prometheus-elasticsearch-exporter.image.tag -- Elasticsearch Prometheus exporter image tag. Updated by updatecli.
+    image:
+      tag: "v1.8.0-d2aa61ab"
     # elasticsearch.prometheus-elasticsearch-exporter.podSecurityContext -- Set to "" for OpenShift compatibility
     # podSecurityContext: ""
     serviceMonitor:
@@ -1916,6 +1921,8 @@ hbase:
       replicaCount: null
       # hbase.hbase.regionserver.resources -- Resources will be set by sizing profile. Only override if needed.
   hdfs:
+    # hbase.hdfs.version -- HDFS image build version (e.g. java21-8-27156f06-353). Derived from hadoop docker tag with semver prefix stripped. Updated by updatecli.
+    version: java21-8-e86b1b03-349
     # hbase.hdfs.minReplication -- Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead)
     minReplication: 2
     datanode:
@@ -2196,6 +2203,8 @@ minio:
     registry: quay.io
     # minio.image.repository -- MinIO image repository
     repository: stackstate/minio
+    # minio.image.tag -- MinIO image tag. Updated by updatecli.
+    tag: RELEASE.2025-11-19T12-41-50Z-15bb6f44-173
   # minio.accessKey -- Access key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
   accessKey: setme
   # minio.secretKey -- Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
@@ -2399,6 +2408,9 @@ victoria-metrics-0:
     # victoria-metrics-0.namespaced -- Make sure all resources are namespaced
     namespaced: true
   server:
+    # victoria-metrics-0.server.image.tag -- Victoria Metrics server image tag. Updated by updatecli.
+    image:
+      tag: v1.109.0-accea47f
     # victoria-metrics-0.server.fullnameOverride -- Full name override
     fullnameOverride: suse-observability-victoria-metrics-0
     # victoria-metrics-0.server.podAnnotations -- Annotations for Victoria Metrics server pod
@@ -2463,6 +2475,14 @@ victoria-metrics-0:
       # victoria-metrics-0.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
       extraLabels: {}
   backup:
+    # victoria-metrics-0.backup.setupCron.image.tag -- Container-tools image for cron setup. Updated by updatecli.
+    setupCron:
+      image:
+        tag: 1.8.2-bci-517
+    # victoria-metrics-0.backup.vmbackup.image.tag -- VM backup image tag. Updated by updatecli.
+    vmbackup:
+      image:
+        tag: v1.109.0-4c7c50f9
     # victoria-metrics-0.backup.bucketName -- Name of the MinIO bucket where Victoria Metrics backups are stored.
     bucketName: 'sts-victoria-metrics-backup'
     # victoria-metrics-1.backup.s3Prefix -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
@@ -2478,6 +2498,9 @@ victoria-metrics-1:
     # victoria-metrics-1.namespaced -- Make sure all resources are namespaced
     namespaced: true
   server:
+    # victoria-metrics-1.server.image.tag -- Victoria Metrics server image tag. Updated by updatecli.
+    image:
+      tag: v1.109.0-accea47f
     # victoria-metrics-1.server.fullnameOverride -- Full name override
     fullnameOverride: suse-observability-victoria-metrics-1
     # victoria-metrics-1.server.podAnnotations -- Annotations for Victoria Metrics server pod
@@ -2541,6 +2564,14 @@ victoria-metrics-1:
       # victoria-metrics-1.server.serviceMonitor.extraLabels -- Add extra labels to target a specific prometheus instance
       extraLabels: {}
   backup:
+    # victoria-metrics-1.backup.setupCron.image.tag -- Container-tools image for cron setup. Updated by updatecli.
+    setupCron:
+      image:
+        tag: 1.8.2-bci-517
+    # victoria-metrics-1.backup.vmbackup.image.tag -- VM backup image tag. Updated by updatecli.
+    vmbackup:
+      image:
+        tag: v1.109.0-4c7c50f9
     # victoria-metrics-1.backup.bucketName -- Name of the MinIO bucket where Victoria Metrics backups are stored.
     bucketName: 'sts-victoria-metrics-backup'
     # victoria-metrics-1.backup.s3Prefix -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
