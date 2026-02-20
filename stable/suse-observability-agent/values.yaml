@@ -166,7 +166,7 @@ nodeAgent:
       env: {}
       # nodeAgent.containers.agent.logLevel -- Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off
       ## If not set, fall back to the value of agent.logLevel.
-      logLevel:  # INFO
+      logLevel:
 
       resources:
         limits:
@@ -222,7 +222,7 @@ nodeAgent:
       env: {}
       # nodeAgent.containers.processAgent.logLevel -- Set logging verbosity, valid log levels are: trace, debug, info, warn, error, critical, and off
       ## If not set, fall back to the value of agent.logLevel.
-      logLevel:  # INFO
+      logLevel:
 
       # nodeAgent.containers.processAgent.procVolumeReadOnly -- Configure whether /host/proc is read only for the process agent container
       procVolumeReadOnly: true

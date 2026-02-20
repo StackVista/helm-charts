@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.2.19`
+Current chart version is `1.2.20`
 
 **Homepage:** <https://github.com/StackVista/stackstate-agent>
 
