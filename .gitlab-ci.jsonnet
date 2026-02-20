@@ -34,6 +34,9 @@ local skip_when_dependency_upgrade = {
   }, {
     @'if': '$UPDATE_STACKPACKS_DOCKER_VERSION',
     when: 'never',
+  }, {
+    @'if': '$RUN_UPDATECLI',
+    when: 'never',
   }] + super.rules,
 };
 

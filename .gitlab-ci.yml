@@ -1928,6 +1928,8 @@ push_artifactory-cleaner_to_internal:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/artifactory-cleaner/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-artifactory-cleaner]/
@@ -1970,6 +1972,8 @@ push_artifactory-cleaner_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/artifactory-cleaner/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-artifactory-cleaner]/
@@ -2009,6 +2013,8 @@ push_aws-amicleaner_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/aws-amicleaner/**/*
@@ -2050,6 +2056,8 @@ push_aws-nuke_to_internal:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/aws-nuke/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-aws-nuke]/
@@ -2089,6 +2097,8 @@ push_aws-pod-identity-webhook_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/aws-pod-identity-webhook/**/*
@@ -2130,6 +2140,8 @@ push_beacher-job_to_internal:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/beacher-job/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-beacher-job]/
@@ -2169,6 +2181,8 @@ push_chartmuseum_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/chartmuseum/**/*
@@ -2210,6 +2224,8 @@ push_ci-test_to_internal:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/ci-test/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-ci-test]/
@@ -2249,6 +2265,8 @@ push_clickhouse_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/clickhouse/**/*
@@ -2292,6 +2310,8 @@ push_clickhouse_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/clickhouse/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-clickhouse]/
@@ -2331,6 +2351,8 @@ push_common_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/common/**/*
@@ -2374,6 +2396,8 @@ push_common_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/common/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-common]/
@@ -2413,6 +2437,8 @@ push_elasticsearch_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/elasticsearch/**/*
@@ -2456,6 +2482,8 @@ push_elasticsearch_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/elasticsearch/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-elasticsearch]/
@@ -2495,6 +2523,8 @@ push_falco-reporter_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/falco-reporter/**/*
@@ -2536,6 +2566,8 @@ push_gitlab-proxy_to_internal:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/gitlab-proxy/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-gitlab-proxy]/
@@ -2576,6 +2608,8 @@ push_gitlab-steward_to_internal:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/gitlab-steward/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-gitlab-steward]/
@@ -2615,6 +2649,8 @@ push_hbase_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/hbase/**/*
@@ -2658,6 +2694,8 @@ push_hbase_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/hbase/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-hbase]/
@@ -2697,6 +2735,8 @@ push_helm-reaper_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/helm-reaper/**/*
@@ -2738,6 +2778,8 @@ push_iceman_to_internal:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/iceman/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-iceman]/
@@ -2777,6 +2819,8 @@ push_k8s-image-list-to-s3_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/k8s-image-list-to-s3/**/*
@@ -2818,6 +2862,8 @@ push_k8s-spot-termination-handler_to_internal:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/k8s-spot-termination-handler/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-spot-termination-handler]/
@@ -2857,6 +2903,8 @@ push_kafka_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/kafka/**/*
@@ -2900,6 +2948,8 @@ push_kafka_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/kafka/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-kafka]/
@@ -2939,6 +2989,8 @@ push_kafkaup-operator_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/kafkaup-operator/**/*
@@ -2982,6 +3034,8 @@ push_kafkaup-operator_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/kafkaup-operator/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-kafkaup-operator]/
@@ -3022,6 +3076,8 @@ push_kommoner-operator_to_internal:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/kommoner-operator/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-kommoner-operator]/
@@ -3061,6 +3117,8 @@ push_minio_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/minio/**/*
@@ -3104,6 +3162,8 @@ push_minio_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/minio/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-minio]/
@@ -3143,6 +3203,8 @@ push_notification-operator_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/notification-operator/**/*
@@ -3184,6 +3246,8 @@ push_opentelemetry-collector_to_internal:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/opentelemetry-collector/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-opentelemetry-collector]/
@@ -3223,6 +3287,8 @@ push_otel-demo_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/otel-demo/**/*
@@ -3264,6 +3330,8 @@ push_petros-d-kubelet-stats-exporter_to_internal:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/petros-d-kubelet-stats-exporter/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-petros-d-kubelet-stats-exporter]/
@@ -3303,6 +3371,8 @@ push_prometheus-elasticsearch-exporter_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/prometheus-elasticsearch-exporter/**/*
@@ -3346,6 +3416,8 @@ push_prometheus-elasticsearch-exporter_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/prometheus-elasticsearch-exporter/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-prometheus-elasticsearch-exporter]/
@@ -3385,6 +3457,8 @@ push_pull-secret_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/pull-secret/**/*
@@ -3428,6 +3502,8 @@ push_pull-secret_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/pull-secret/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-pull-secret]/
@@ -3467,6 +3543,8 @@ push_receiveramplifier_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/receiveramplifier/**/*
@@ -3508,6 +3586,8 @@ push_redirector_to_internal:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/redirector/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-redirector]/
@@ -3547,6 +3627,8 @@ push_sandbox-operator_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/sandbox-operator/**/*
@@ -3588,6 +3670,8 @@ push_sock-shop_to_internal:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/sock-shop/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-sock-shop]/
@@ -3627,6 +3711,8 @@ push_stackstate-agent_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/stackstate-agent/**/*
@@ -3670,6 +3756,8 @@ push_stackstate-agent_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/stackstate-agent/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-agent]/
@@ -3709,6 +3797,8 @@ push_stackstate-k8s-agent_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
@@ -3752,6 +3842,8 @@ push_stackstate-k8s-agent_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/stackstate-k8s-agent/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-agent]/
@@ -3791,6 +3883,8 @@ push_stackstate-monitoring_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/stackstate-monitoring/**/*
@@ -3834,6 +3928,8 @@ push_stackstate-monitoring_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/stackstate-monitoring/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-monitoring]/
@@ -3873,6 +3969,8 @@ push_stackstate-standalone_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/stackstate-standalone/**/*
@@ -3916,6 +4014,8 @@ push_stackstate-standalone_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/stackstate-standalone/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-standalone]/
@@ -3955,6 +4055,8 @@ push_stackstate-values_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/stackstate-values/**/*
@@ -3998,6 +4100,8 @@ push_stackstate-values_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/stackstate-values/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-stackstate-values]/
@@ -4038,6 +4142,8 @@ push_stackstate_release_to_internal:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)-pre\.(\d+)\.rc\.(\d+)$/
       when: on_success
     - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)-rc\.(\d+)$/
@@ -4077,6 +4183,8 @@ push_stackstate_release_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - if: $CI_COMMIT_TAG =~ /^(\d+)\.(\d+)\.(\d+)$/
       when: on_success
   script:
@@ -4110,6 +4218,8 @@ push_stackstate_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/stackstate/**/*
@@ -4151,6 +4261,8 @@ push_suse-observability-agent_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
@@ -4194,6 +4306,8 @@ push_suse-observability-agent_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/suse-observability-agent/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-agent]/
@@ -4222,6 +4336,8 @@ push_suse-observability-agent_to_rancher:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/suse-observability-agent/**/*
@@ -4261,6 +4377,8 @@ push_suse-observability-values_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/suse-observability-values/**/*
@@ -4304,6 +4422,8 @@ push_suse-observability-values_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/suse-observability-values/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-suse-observability-values]/
@@ -4332,6 +4452,8 @@ push_suse-observability-values_to_rancher:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/suse-observability-values/**/*
@@ -4374,6 +4496,8 @@ push_suse-observability_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/suse-observability/**/*
@@ -4418,6 +4542,8 @@ push_tenant-cleanup-controller_to_internal:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/tenant-cleanup-controller/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-tenant-cleanup-controller]/
@@ -4457,6 +4583,8 @@ push_tenantmanagement_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/tenantmanagement/**/*
@@ -4498,6 +4626,8 @@ push_tenantprovisioning_to_internal:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/tenantprovisioning/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-tenantprovisioning]/
@@ -4537,6 +4667,8 @@ push_trafficmirror_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/trafficmirror/**/*
@@ -4580,6 +4712,8 @@ push_trafficmirror_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/trafficmirror/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-trafficmirror]/
@@ -4619,6 +4753,8 @@ push_victoria-metrics-single_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/victoria-metrics-single/**/*
@@ -4662,6 +4798,8 @@ push_victoria-metrics-single_to_public:
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
       when: never
+    - if: $RUN_UPDATECLI
+      when: never
     - changes:
         - stable/victoria-metrics-single/**/*
       if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-victoria-metrics-single]/
@@ -4701,6 +4839,8 @@ push_zookeeper_to_internal:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/zookeeper/**/*
@@ -4743,6 +4883,8 @@ push_zookeeper_to_public:
     - if: $UPDATE_STACKSTATE_DOCKER_VERSION
       when: never
     - if: $UPDATE_STACKPACKS_DOCKER_VERSION
+      when: never
+    - if: $RUN_UPDATECLI
       when: never
     - changes:
         - stable/zookeeper/**/*
