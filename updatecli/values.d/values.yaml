@@ -1,0 +1,16 @@
+
+scm:
+  kind: gitlab
+  owner: stackvista
+  repository: devops/helm-charts
+  branch: master
+  userEnv: UPDATE_CLI_USER
+  emailEnv: UPDATE_CLI_EMAIL
+  tokenEnv: GITLAB_TOKEN
+  gpgKeyEnv: UPDATE_CLI_PGP_KEY
+  gpgKeyPassEnv: UPDATE_CLI_PGP_PASSPHRASE
+
+docker:
+  sts:
+    usernameEnv: REGISTRY_USER
+    passwordEnv: REGISTRY_PASSWORD

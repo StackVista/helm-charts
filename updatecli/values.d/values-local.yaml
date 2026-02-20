@@ -1,0 +1,17 @@
+# Local testing: persist clone to ./updatecli-work for inspection (uses master from values.yaml).
+# WARNING: Never set directory to "/workspace" - updatecli may clear it before cloning.
+#
+# Usage (from helm-charts root):
+#   source .env
+#   docker run --rm --network host -v $(pwd):/workspace:z -w /workspace -e GITLAB_TOKEN \
+#     quay.io/stackstate/container-tools:23b0c0da-591-dev \
+#     updatecli apply --commit=false --push=false --clean=false \
+#     -c updatecli/updatecli.d/update-docker-images/ \
+#     -v updatecli/values.d/values.yaml -v updatecli/values.d/values-local.yaml
+#
+# Inspect changes after run:
+#   find updatecli-work -name ".git" -type d  # locate the clone
+#   git -C <clone-path> diff                  # see applied changes
+#   diff -r <clone-path>/stable stable        # compare to your working tree
+scm:
+  directory: "/workspace/updatecli-work"

@@ -5,6 +5,7 @@
     stackstate_helm_test: '${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa',
     stackstate_devops: '${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a',
     chart_testing: 'quay.io/helmpack/chart-testing:v3.10.1',
+    container_tools_dev: 'quay.io/stackstate/container-tools:088bf46e-602-dev',
   },
   helm: {
     repositories: {

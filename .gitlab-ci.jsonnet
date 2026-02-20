@@ -403,6 +403,83 @@ local update_aad_chart_version = {
   },
 };
 
+local updatecli_job = {
+  update_helm_chart_docker_images: {
+    image: variables.images.container_tools_dev,
+    stage: 'update',
+    variables: {
+      UPDATE_CLI_EMAIL: '$STACKSTATE_SYSTEM_USER_EMAIL',
+      UPDATE_CLI_USER: '$STACKSTATE_SYSTEM_USER_NAME',
+    },
+    before_script: [
+      '.gitlab/configure_git.sh',
+      'export GITLAB_TOKEN="$gitlab_api_scope_token"',
+      'export UPDATE_CLI_PGP_KEY="$(cat $STACKSTATE_SYSTEM_USER_PGP_KEY)"',
+      'export UPDATE_CLI_PGP_PASSPHRASE="$STACKSTATE_SYSTEM_USER_PGP_PASS_PHRASE"',
+    ],
+    rules: [
+      {
+        @'if': '$RUN_UPDATECLI',
+        when: 'always',
+      },
+      {
+        when: 'never',
+      },
+    ],
+    script: [
+      'updatecli apply -c updatecli/updatecli.d/update-docker-images/ -v updatecli/values.d/values.yaml',
+    ],
+  },
+  finalize_helm_chart_docker_images: {
+    image: variables.images.container_tools_dev,
+    stage: 'update',
+    variables: {
+      UPDATE_CLI_EMAIL: '$STACKSTATE_SYSTEM_USER_EMAIL',
+      UPDATE_CLI_USER: '$STACKSTATE_SYSTEM_USER_NAME',
+    },
+    before_script: [
+      '.gitlab/configure_git.sh',
+      'export GITLAB_TOKEN="$gitlab_api_scope_token"',
+      'export UPDATE_CLI_PGP_KEY="$(cat $STACKSTATE_SYSTEM_USER_PGP_KEY)"',
+      'export UPDATE_CLI_PGP_PASSPHRASE="$STACKSTATE_SYSTEM_USER_PGP_PASS_PHRASE"',
+    ],
+    rules: [
+      {
+        @'if': '$RUN_UPDATECLI',
+        when: 'always',
+      },
+      {
+        when: 'never',
+      },
+    ],
+    needs: ['update_helm_chart_docker_images'],
+    script: [
+      'updatecli apply -c updatecli/updatecli.d/finalize-docker-images/ -v updatecli/values.d/values.yaml',
+    ],
+  },
+  open_updatecli_docker_images_mr: {
+    image: variables.images.container_tools_dev,
+    stage: 'update',
+    before_script: [
+      '.gitlab/configure_git.sh',
+      'export GITLAB_TOKEN="$gitlab_api_scope_token"',
+    ],
+    rules: [
+      {
+        @'if': '$RUN_UPDATECLI',
+        when: 'always',
+      },
+      {
+        when: 'never',
+      },
+    ],
+    needs: ['finalize_helm_chart_docker_images'],
+    script: [
+      '.gitlab/open_updatecli_mr.sh updatecli-master-docker-images master "[master] Bump helm chart docker images"',
+    ],
+  },
+};
+
 local update_docker_images = {
   local job(requiredEnvName, scripts) = {
     image: variables.images.stackstate_devops,
@@ -479,12 +556,13 @@ local beest_triggers = {
 
 // Main
 {
-  // Only run for merge requests, tags, or the default (master) branch
+  // Only run for merge requests, tags, the default (master) branch, or when RUN_UPDATECLI triggers
   workflow: {
     rules: [
       { @'if': '$CI_MERGE_REQUEST_IID' },
       { @'if': '$CI_COMMIT_TAG' },
       { @'if': '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH' },
+      { @'if': '$RUN_UPDATECLI' },
     ],
   },
   image: variables.images.chart_testing,
@@ -507,6 +585,7 @@ local beest_triggers = {
 + push_stackstate_chart_releases
 + update_sg_version
 + update_aad_chart_version
++ updatecli_job
 + update_docker_images
 + push_suse_observability_to_rancher_registry
 + beest_triggers

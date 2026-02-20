@@ -1870,7 +1870,40 @@ check_zookeeper_version:
   script:
     - .gitlab/verify_versions_bumped.sh zookeeper
   stage: validate
+finalize_helm_chart_docker_images:
+  before_script:
+    - .gitlab/configure_git.sh
+    - export GITLAB_TOKEN="$gitlab_api_scope_token"
+    - export UPDATE_CLI_PGP_KEY="$(cat $STACKSTATE_SYSTEM_USER_PGP_KEY)"
+    - export UPDATE_CLI_PGP_PASSPHRASE="$STACKSTATE_SYSTEM_USER_PGP_PASS_PHRASE"
+  image: quay.io/stackstate/container-tools:088bf46e-602-dev
+  needs:
+    - update_helm_chart_docker_images
+  rules:
+    - if: $RUN_UPDATECLI
+      when: always
+    - when: never
+  script:
+    - updatecli apply -c updatecli/updatecli.d/finalize-docker-images/ -v updatecli/values.d/values.yaml
+  stage: update
+  variables:
+    UPDATE_CLI_EMAIL: $STACKSTATE_SYSTEM_USER_EMAIL
+    UPDATE_CLI_USER: $STACKSTATE_SYSTEM_USER_NAME
 image: quay.io/helmpack/chart-testing:v3.10.1
+open_updatecli_docker_images_mr:
+  before_script:
+    - .gitlab/configure_git.sh
+    - export GITLAB_TOKEN="$gitlab_api_scope_token"
+  image: quay.io/stackstate/container-tools:088bf46e-602-dev
+  needs:
+    - finalize_helm_chart_docker_images
+  rules:
+    - if: $RUN_UPDATECLI
+      when: always
+    - when: never
+  script:
+    - .gitlab/open_updatecli_mr.sh updatecli-master-docker-images master "[master] Bump helm chart docker images"
+  stage: update
 push_artifactory-cleaner_to_internal:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -5930,6 +5963,23 @@ update_aad_chart_version:
     - .gitlab/update_chart_version.sh stable/suse-observability anomaly-detection $UPDATE_AAD_CHART_VERSION
     - .gitlab/commit_changes_and_push.sh anomaly-detection $UPDATE_AAD_CHART_VERSION
   stage: update
+update_helm_chart_docker_images:
+  before_script:
+    - .gitlab/configure_git.sh
+    - export GITLAB_TOKEN="$gitlab_api_scope_token"
+    - export UPDATE_CLI_PGP_KEY="$(cat $STACKSTATE_SYSTEM_USER_PGP_KEY)"
+    - export UPDATE_CLI_PGP_PASSPHRASE="$STACKSTATE_SYSTEM_USER_PGP_PASS_PHRASE"
+  image: quay.io/stackstate/container-tools:088bf46e-602-dev
+  rules:
+    - if: $RUN_UPDATECLI
+      when: always
+    - when: never
+  script:
+    - updatecli apply -c updatecli/updatecli.d/update-docker-images/ -v updatecli/values.d/values.yaml
+  stage: update
+  variables:
+    UPDATE_CLI_EMAIL: $STACKSTATE_SYSTEM_USER_EMAIL
+    UPDATE_CLI_USER: $STACKSTATE_SYSTEM_USER_NAME
 update_stackgraph_version:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -6738,3 +6788,4 @@ workflow:
     - if: $CI_MERGE_REQUEST_IID
     - if: $CI_COMMIT_TAG
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $RUN_UPDATECLI

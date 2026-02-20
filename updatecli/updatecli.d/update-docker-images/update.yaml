@@ -1,0 +1,432 @@
+name: Update Helm Chart Docker Images
+pipelineid: docker-images
+
+scms:
+  default:
+    kind: gitlab
+    spec:
+      owner: "{{ .scm.owner }}"
+      repository: "{{ .scm.repository }}"
+      branch: "{{ .scm.branch }}"
+{{- if .scm.directory }}
+      directory: "{{ .scm.directory }}"
+{{- end }}
+      user: "{{ env .scm.userEnv }}"
+      email: "{{ env .scm.emailEnv }}"
+      token: "{{ requiredEnv .scm.tokenEnv }}"
+      workingbranchseparator: "-"
+      type: ""
+      gpg:
+        signingkey: |-
+{{ env .scm.gpgKeyEnv | nindent 10 }}
+        passphrase: "{{ env .scm.gpgKeyPassEnv }}"
+
+sources:
+  clickhouseBackup:
+    name: "clickhouse-backup"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/clickhouse-backup"
+      architecture: "linux/amd64"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  clickhouse:
+    name: "clickhouse"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/clickhouse"
+      architecture: "linux/amd64"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  containerTools:
+    name: "container-tools"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/container-tools"
+      architecture: "linux/amd64"
+      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  elasticsearch:
+    name: "elasticsearch"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/elasticsearch"
+      architecture: "linux/amd64"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  elasticsearchExporter:
+    name: "elasticsearch-exporter"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/elasticsearch-exporter"
+      architecture: "linux/amd64"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  envoy:
+    name: "envoy"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/envoy"
+      architecture: "linux/amd64"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  hadoop:
+    name: "hadoop"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/hadoop"
+      architecture: "linux/amd64"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  jmxExporter:
+    name: "jmx-exporter"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/jmx-exporter"
+      architecture: "linux/amd64"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  kafka:
+    name: "kafka"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/kafka"
+      architecture: "linux/amd64"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  kubernetesRbacAgent:
+    name: "kubernetes-rbac-agent"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/kubernetes-rbac-agent"
+      architecture: "linux/amd64"
+      tagfilter: "^[a-f0-9]{8}-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  minio:
+    name: "minio"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/minio"
+      architecture: "linux/amd64"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  nginxPrometheusExporter:
+    name: "nginx-prometheus-exporter"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/nginx-prometheus-exporter"
+      architecture: "linux/amd64"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  victoriaMetrics:
+    name: "victoria-metrics"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/victoria-metrics"
+      architecture: "linux/amd64"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  vmagent:
+    name: "vmagent"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/vmagent"
+      architecture: "linux/amd64"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  vmbackup:
+    name: "vmbackup"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/vmbackup"
+      architecture: "linux/amd64"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  vmrestore:
+    name: "vmrestore"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/vmrestore"
+      architecture: "linux/amd64"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  wait:
+    name: "wait"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/wait"
+      architecture: "linux/amd64"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  workloadObserver:
+    name: "workload-observer"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/workload-observer"
+      architecture: "linux/amd64"
+      tagfilter: "^[a-f0-9]{8}-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+  zookeeper:
+    name: "zookeeper"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/zookeeper"
+      architecture: "linux/amd64"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
+
+# Single pipeline: all targets chained with dependson so they run sequentially.
+# All suse-observability subchart image tags are in stable/suse-observability/values.yaml
+# (victoria-metrics-0/1 are aliases for victoria-metrics-single subchart).
+targets:
+  clickhouseBackup:
+    name: "clickhouse-backup"
+    kind: yaml
+    scmid: "default"
+    sourceid: clickhouseBackup
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.clickhouse.backup.image.tag"
+  clickhouse:
+    name: "clickhouse"
+    kind: yaml
+    scmid: "default"
+    sourceid: clickhouse
+    dependson: ["target#clickhouseBackup"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      keys:
+        - "$.clickhouse.image.tag"
+        - "$.stackstate.components.clickhouseCleanup.image.tag"
+  containerToolsSuseObservability:
+    name: "container-tools (suse-observability)"
+    kind: yaml
+    scmid: "default"
+    sourceid: containerTools
+    dependson: ["target#clickhouse"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      keys:
+        - "$.stackstate.components.router.mode.image.tag"
+        - "$.stackstate.components.containerTools.image.tag"
+  containerToolsVictoriaMetrics:
+    name: "container-tools (victoria-metrics backup cron)"
+    kind: yaml
+    scmid: "default"
+    sourceid: containerTools
+    dependson: ["target#containerToolsSuseObservability"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      keys:
+        - "$.victoria-metrics-0.backup.setupCron.image.tag"
+        - "$.victoria-metrics-1.backup.setupCron.image.tag"
+  containerToolsSuseObservabilityAgent:
+    name: "container-tools (suse-observability-agent)"
+    kind: yaml
+    scmid: "default"
+    sourceid: containerTools
+    dependson: ["target#containerToolsVictoriaMetrics"]
+    spec:
+      file: "stable/suse-observability-agent/values.yaml"
+      key: "$.httpHeaderInjectorWebhook.certificatePrehook.image.tag"
+  elasticsearch:
+    name: "elasticsearch"
+    kind: yaml
+    scmid: "default"
+    sourceid: elasticsearch
+    dependson: ["target#containerToolsSuseObservabilityAgent"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.elasticsearch.imageTag"
+  elasticsearchExporter:
+    name: "elasticsearch-exporter"
+    kind: yaml
+    scmid: "default"
+    sourceid: elasticsearchExporter
+    dependson: ["target#elasticsearch"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.elasticsearch.prometheus-elasticsearch-exporter.image.tag"
+  envoy:
+    name: "envoy"
+    kind: yaml
+    scmid: "default"
+    sourceid: envoy
+    dependson: ["target#elasticsearchExporter"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.stackstate.components.router.image.tag"
+  hadoop:
+    name: "hadoop"
+    kind: yaml
+    scmid: "default"
+    sourceid: hadoop
+    dependson: ["target#envoy"]
+    transformers:
+      - findsubmatch:
+          pattern: '^\d+\.\d+\.\d+-(.+)$'
+          captureindex: 1
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.hbase.hdfs.version"
+  jmxExporter:
+    name: "jmx-exporter"
+    kind: yaml
+    scmid: "default"
+    sourceid: jmxExporter
+    dependson: ["target#hadoop"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.kafka.metrics.jmx.image.tag"
+  kafka:
+    name: "kafka"
+    kind: yaml
+    scmid: "default"
+    sourceid: kafka
+    dependson: ["target#jmxExporter"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      keys:
+        - "$.kafka.image.tag"
+        - "$.stackstate.components.kafkaTopicCreate.image.tag"
+  kubernetesRbacAgent:
+    name: "kubernetes-rbac-agent (suse-observability)"
+    kind: yaml
+    scmid: "default"
+    sourceid: kubernetesRbacAgent
+    dependson: ["target#kafka"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.kubernetes-rbac-agent.containers.rbacAgent.image.tag"
+  kubernetesRbacAgentSuseObservabilityAgent:
+    name: "kubernetes-rbac-agent (suse-observability-agent)"
+    kind: yaml
+    scmid: "default"
+    sourceid: kubernetesRbacAgent
+    dependson: ["target#kubernetesRbacAgent"]
+    spec:
+      file: "stable/suse-observability-agent/values.yaml"
+      key: "$.kubernetes-rbac-agent.containers.rbacAgent.image.tag"
+  minio:
+    name: "minio"
+    kind: yaml
+    scmid: "default"
+    sourceid: minio
+    dependson: ["target#kubernetesRbacAgentSuseObservabilityAgent"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.minio.image.tag"
+  nginxPrometheusExporter:
+    name: "nginx-prometheus-exporter"
+    kind: yaml
+    scmid: "default"
+    sourceid: nginxPrometheusExporter
+    dependson: ["target#minio"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.stackstate.components.nginxPrometheusExporter.image.tag"
+  victoriaMetrics:
+    name: "victoria-metrics (victoria-metrics-0/1 server)"
+    kind: yaml
+    scmid: "default"
+    sourceid: victoriaMetrics
+    dependson: ["target#nginxPrometheusExporter"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      keys:
+        - "$.victoria-metrics-0.server.image.tag"
+        - "$.victoria-metrics-1.server.image.tag"
+  vmagent:
+    name: "vmagent"
+    kind: yaml
+    scmid: "default"
+    sourceid: vmagent
+    dependson: ["target#victoriaMetrics"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.stackstate.components.vmagent.image.tag"
+  vmbackup:
+    name: "vmbackup (victoria-metrics-0/1 backup)"
+    kind: yaml
+    scmid: "default"
+    sourceid: vmbackup
+    dependson: ["target#vmagent"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      keys:
+        - "$.victoria-metrics-0.backup.vmbackup.image.tag"
+        - "$.victoria-metrics-1.backup.vmbackup.image.tag"
+  vmrestore:
+    name: "vmrestore"
+    kind: yaml
+    scmid: "default"
+    sourceid: vmrestore
+    dependson: ["target#vmbackup"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.victoria-metrics.restore.image.tag"
+  wait:
+    name: "wait"
+    kind: yaml
+    scmid: "default"
+    sourceid: wait
+    dependson: ["target#vmrestore"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.global.wait.image.tag"
+  workloadObserver:
+    name: "workload-observer"
+    kind: yaml
+    scmid: "default"
+    sourceid: workloadObserver
+    dependson: ["target#wait"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.stackstate.components.workloadObserver.image.tag"
+  zookeeper:
+    name: "zookeeper"
+    kind: yaml
+    scmid: "default"
+    sourceid: zookeeper
+    dependson: ["target#workloadObserver"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.zookeeper.image.tag"

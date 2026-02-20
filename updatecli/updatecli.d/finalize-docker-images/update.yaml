@@ -1,0 +1,70 @@
+name: Finalize Helm Chart Docker Images
+# Use the same pipeline ID as the first pipeline so both use the same branch
+# (updatecli-docker-images-master). Since they run sequentially, this is safe.
+pipelineid: docker-images
+
+scms:
+  default:
+    kind: gitlab
+    spec:
+      owner: "{{ .scm.owner }}"
+      repository: "{{ .scm.repository }}"
+      branch: "{{ .scm.branch }}"
+{{- if .scm.directory }}
+      directory: "{{ .scm.directory }}"
+{{- end }}
+      user: "{{ env .scm.userEnv }}"
+      email: "{{ env .scm.emailEnv }}"
+      token: "{{ requiredEnv .scm.tokenEnv }}"
+      workingbranchseparator: "-"
+      type: ""
+      gpg:
+        signingkey: |-
+{{ env .scm.gpgKeyEnv | nindent 10 }}
+        passphrase: "{{ env .scm.gpgKeyPassEnv }}"
+
+actions:
+  default:
+    kind: gitlab/mergerequest
+    scmid: "default"
+    title: '[{{ .scm.branch }}] Bump helm chart docker images'
+
+targets:
+  suseObservabilityAgentChartVersion:
+    name: "suse-observability-agent Chart.yaml version"
+    kind: shell
+    scmid: "default"
+    disablesourceinput: true
+    spec:
+      command: |
+        set -e
+
+        # Ensure PyYAML is available for bump_chart_version.py
+        python3.11 -m pip install --quiet pyyaml
+
+        VALUES_FILE="stable/suse-observability-agent/values.yaml"
+        CHART_YAML="stable/suse-observability-agent/Chart.yaml"
+
+        # Ensure we have an up-to-date view of master
+        git fetch origin master >/dev/null 2>&1 || true
+
+        # If the agent values file did not change compared to master, skip
+        if git diff --quiet origin/master...HEAD -- "$VALUES_FILE"; then
+          echo "Agent values file unchanged vs master; skipping chart bump"
+          exit 0
+        fi
+
+        echo "Agent values file changed vs master; bumping suse-observability-agent chart version"
+
+        # Helm repos required for bump_chart_version.py to regenerate Chart.lock
+        helm repo add stackstate https://helm.stackstate.io >/dev/null 2>&1 || true
+        helm repo update >/dev/null 2>&1 || true
+
+        python3.11 scripts/bump-chart-version/bump_chart_version.py suse-observability-agent
+        echo "Bumped suse-observability-agent chart version"
+      changedif:
+        kind: file/checksum
+        spec:
+          files:
+            - stable/suse-observability-agent/Chart.yaml
+            - stable/suse-observability-agent/Chart.lock
