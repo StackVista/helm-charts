@@ -5,8 +5,8 @@ command:
   - -c
   - |
     mkdir -p "/hadoop-data/data/tephra/default"
-image: "{{ include "common.image.registry" (dict "image" .Values.wait.image "context" .) }}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
-imagePullPolicy: {{ .Values.wait.image.pullPolicy | quote }}
+image: "{{ include "common.image.registry" (dict "image" .Values.global.wait.image "context" .) }}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 volumeMounts:
   - name: data
     mountPath: /hadoop-data/data

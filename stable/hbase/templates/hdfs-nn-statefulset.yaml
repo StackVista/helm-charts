@@ -13,8 +13,8 @@ command:
   {{- if .Values.hdfs.volumePermissions.enabled }}
   chown -R {{ .Values.hdfs.securityContext.runAsUser }}:{{ .Values.hdfs.securityContext.runAsGroup }} /hadoop-data
   {{- end }}
-image: "{{ include "common.image.registry" (dict "image" .Values.wait.image "context" .) }}/{{ .Values.wait.image.repository }}:{{ .Values.wait.image.tag }}"
-imagePullPolicy: {{ .Values.wait.image.pullPolicy | quote }}
+image: "{{ include "common.image.registry" (dict "image" .Values.global.wait.image "context" .) }}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- if .Values.hdfs.volumePermissions.securityContext.enabled }}
 securityContext: {{- omit .Values.hdfs.volumePermissions.securityContext "enabled" | toYaml | nindent 2 }}
 {{- end }}

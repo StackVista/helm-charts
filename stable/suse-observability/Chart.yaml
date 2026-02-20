@@ -36,7 +36,7 @@ dependencies:
   - name: hbase
     condition: hbase.enabled
     repository: file://../hbase/
-    version: "0.2.118"
+    version: "0.2.119"
   - name: kafka
     condition: kafka.enabled
     repository: file://../kafka/

@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.2.118`
+Current chart version is `0.2.119`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -53,6 +53,10 @@ Current chart version is `0.2.118`
 | deployment.mode | string | `"Distributed"` |  |
 | global.commonLabels | object | `{}` | Labels to add to deployments, StatefulSets, and Pods managed by the chart. |
 | global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overridden per PVC. |
+| global.wait.image.pullPolicy | string | `""` | Image pull policy for wait containers. |
+| global.wait.image.registry | string | `""` | Base container image registry for wait containers. |
+| global.wait.image.repository | string | `""` | Base container image repository for wait containers. |
+| global.wait.image.tag | string | `""` | Container image tag for wait containers. |
 | hbase.master.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hbase.master.experimental.execLivenessProbe.enabled | bool | `false` | Whether to use a new scripted livenessProbe instead of the original HTTP check. Requires >= 4.11.5 version of the StackGraph docker images |
 | hbase.master.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -176,8 +180,4 @@ Current chart version is `0.2.118`
 | tephra.sizing | object | `{"javaHeapMemoryFraction":"65"}` | Tephra memory sizing for JVM |
 | tephra.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | version | string | `"2.5"` | Version of hbase to use |
-| wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
-| wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
-| wait.image.repository | string | `"stackstate/wait"` | Container image tag for wait containers. |
-| wait.image.tag | string | `"1.0.11-04b49abf"` |  |
 | zookeeper.externalServers | string | `""` | The list of external Zookeeper servers. |

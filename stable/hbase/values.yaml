@@ -6,6 +6,17 @@ global:
   storageClass:
   # global.commonLabels -- Labels to add to deployments, StatefulSets, and Pods managed by the chart.
   commonLabels: {}
+  # Wait image for init containers
+  wait:
+    image:
+      # global.wait.image.registry -- Base container image registry for wait containers.
+      registry: ''
+      # global.wait.image.repository -- Base container image repository for wait containers.
+      repository: ''
+      # global.wait.image.tag -- Container image tag for wait containers.
+      tag: ''
+      # global.wait.image.pullPolicy -- Image pull policy for wait containers.
+      pullPolicy: ''
 # version -- Version of hbase to use
 version: "2.5"
 # stackstate.deployment.mode -- (Distributed, Mono) Run a single stackgraph service or split in multiple sub services as hbase-master, hbase-rs ....
@@ -140,16 +151,6 @@ console:
     enabled: false
     # console.integrity.schedule -- Schedule at which the integrity check runs
     schedule: '*/30 * * * *'
-wait:
-  image:
-    # wait.image.registry -- Base container image registry for wait containers.
-    registry: quay.io
-    # wait.image.repository -- Base container image repository for wait containers.
-    repository: stackstate/wait
-    # wait.image.repository -- Container image tag for wait containers.
-    tag: 1.0.11-04b49abf
-    # wait.image.pullPolicy -- Image pull policy for wait containers.
-    pullPolicy: IfNotPresent
 hbase:
   securityContext:
     # hbase.securityContext.enabled -- Whether to explicitly set the UID/GID of the pod.
