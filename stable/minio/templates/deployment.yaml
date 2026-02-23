@@ -185,9 +185,13 @@ spec:
 {{ toYaml . | indent 8 }}
 {{- end }}
 {{- include "minio.image.pullSecret.name" (dict "images" (list .Values.image) "context" $) | indent 6 }}
-{{- with .Values.affinity }}
-      affinity:
-{{ toYaml . | indent 8 }}
+{{- $sizingAffinity := include "common.sizing.minio.affinityConfig" . | fromYaml -}}
+{{- $finalAffinity := .Values.affinity | default dict -}}
+{{- if and (not .Values.affinity) $sizingAffinity -}}
+  {{- $finalAffinity = $sizingAffinity -}}
+{{- end -}}
+{{- if $finalAffinity }}
+      affinity: {{- include "common.tplvalues.render" (dict "value" $finalAffinity "context" $) | nindent 8 }}
 {{- end }}
 {{- with .Values.tolerations }}
       tolerations:

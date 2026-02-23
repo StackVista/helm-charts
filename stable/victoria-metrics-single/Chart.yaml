@@ -6,11 +6,11 @@ description:
 name: victoria-metrics-single
 sources:
   - https://github.com/VictoriaMetrics/helm-charts
-version: 0.8.53-stackstate.37
+version: 0.8.53-stackstate.38
 dependencies:
   - name: common
     version: "*"
     repository: file://../common/
   - name: suse-observability-sizing
     repository: file://../suse-observability-sizing
-    version: 0.1.5
+    version: 0.1.6

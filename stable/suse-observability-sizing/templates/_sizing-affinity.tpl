@@ -281,3 +281,43 @@ Usage: {{ include "common.sizing.opentelemetry-collector.affinity" . }}
 {{- define "common.sizing.opentelemetry-collector.affinity" -}}
 {{- include "common.sizing.podAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "statefulset-collector") "context" .) }}
 {{- end }}
+
+{{/*
+Get minio affinity
+Usage: {{ include "common.sizing.minio.affinity" . }}
+*/}}
+{{- define "common.sizing.minio.affinity" -}}
+{{- include "common.sizing.podAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "minio") "context" .) }}
+{{- end }}
+
+{{/*
+Get kafkaup-operator affinity
+Usage: {{ include "common.sizing.kafkaup-operator.affinity" . }}
+*/}}
+{{- define "common.sizing.kafkaup-operator.affinity" -}}
+{{- include "common.sizing.podAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "kafkaup-operator") "context" .) }}
+{{- end }}
+
+{{/*
+Get prometheus-elasticsearch-exporter affinity
+Usage: {{ include "common.sizing.prometheus-elasticsearch-exporter.affinity" . }}
+*/}}
+{{- define "common.sizing.prometheus-elasticsearch-exporter.affinity" -}}
+{{- include "common.sizing.podAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "prometheus-elasticsearch-exporter") "context" .) }}
+{{- end }}
+
+{{/*
+Get anomaly-detection affinity
+Usage: {{ include "common.sizing.anomaly-detection.affinity" . }}
+*/}}
+{{- define "common.sizing.anomaly-detection.affinity" -}}
+{{- include "common.sizing.podAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "anomaly-detection") "context" .) }}
+{{- end }}
+
+{{/*
+Get kubernetes-rbac affinity
+Usage: {{ include "common.sizing.kubernetes-rbac.affinity" . }}
+*/}}
+{{- define "common.sizing.kubernetes-rbac.affinity" -}}
+{{- include "common.sizing.podAntiAffinity" (dict "labels" (dict "app.kubernetes.io/component" "kubernetes-rbac") "context" .) }}
+{{- end }}

@@ -2,5 +2,8 @@ dependencies:
 - name: common
   repository: file://../common/
   version: 0.4.27
-digest: sha256:01ccedebb05370d67194b5e9019cd371ad278bf201936a90c9476ede3e9f8603
-generated: "2026-01-12T18:44:15.535466+01:00"
+- name: suse-observability-sizing
+  repository: file://../suse-observability-sizing
+  version: 0.1.6
+digest: sha256:c2ee61c9e31e2dca963d1ffd5d2ea8689559af66e5e3630ebee503b013d8c6ae
+generated: "2026-02-23T09:18:46.753195+01:00"

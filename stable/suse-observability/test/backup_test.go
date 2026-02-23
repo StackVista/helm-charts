@@ -2,6 +2,7 @@ package test
 
 import (
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/helm"
@@ -9,6 +10,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
+	batchv1 "k8s.io/api/batch/v1"
+	corev1 "k8s.io/api/core/v1"
+	"sigs.k8s.io/yaml"
 )
 
 func TestDeprecatedBackupEnableShouldFail(t *testing.T) {
@@ -190,4 +194,44 @@ func TestBackupConfigmapDefault(t *testing.T) {
 	require.NoError(t, err, "Should be able to read expected config file")
 
 	assert.Equal(t, string(expectedConfig), configData, "ConfigMap 'config' data should match expected backup-config-default.yaml")
+}
+
+func testJobsFromBackupRestoreScriptsConfigMap(t *testing.T, resources *helmtestutil.KubernetesResources) map[string]batchv1.Job {
+	// Find the backup-restore-scripts ConfigMap
+	var backupConfigMap *corev1.ConfigMap
+	for _, cm := range resources.ConfigMaps {
+		if strings.HasSuffix(cm.Name, "-backup-restore-scripts") {
+			backupConfigMap = &cm
+			break
+		}
+	}
+	require.NotNil(t, backupConfigMap, "backup-restore-scripts ConfigMap should exist")
+
+	// List of expected Job template keys in the ConfigMap
+	expectedJobTemplateKeys := []string{
+		"job-elasticsearch-list-snapshots.yaml",
+		"job-elasticsearch-restore-snapshot.yaml",
+		"job-stackgraph-list-backups.yaml",
+		"job-stackgraph-restore-backup.yaml",
+		"job-configuration-list-backups.yaml",
+		"job-configuration-restore-backup.yaml",
+		"job-configuration-download-backup.yaml",
+		"job-configuration-upload-backup.yaml",
+		"job-victoria-metrics-list-backups.yaml",
+		"job-victoria-metrics-restore-backup.yaml",
+	}
+
+	backupJobs := map[string]batchv1.Job{}
+	// Test each Job template in the ConfigMap data
+	for _, jobTemplateKey := range expectedJobTemplateKeys {
+		jobYaml, exists := backupConfigMap.Data[jobTemplateKey]
+		require.True(t, exists, "ConfigMap should have %s key", jobTemplateKey)
+
+		// Unmarshal the YAML into a Job struct
+		var job batchv1.Job
+		err := yaml.Unmarshal([]byte(jobYaml), &job)
+		assert.NoError(t, err, "Job template '%s' should be valid YAML", jobTemplateKey)
+		backupJobs[jobTemplateKey] = job
+	}
+	return backupJobs
 }

@@ -1,6 +1,6 @@
 dependencies:
 - name: suse-observability-sizing
   repository: file://../suse-observability-sizing
-  version: 0.1.5
-digest: sha256:4a6df8c817d51cdf105e8d3305db353092435c365bf9552ef46e7274a2c34fb1
-generated: "2026-02-18T18:31:20.58542143+01:00"
+  version: 0.1.6
+digest: sha256:458075b3ed6da9243a7520361b82d1b4c1b8e92df4ca1ff45a58a25335e6ae3f
+generated: "2026-02-22T12:22:02.357257+01:00"

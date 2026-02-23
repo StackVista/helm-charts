@@ -24,6 +24,9 @@ stackstate:
         trustStorePassword: "secretTrustStorePassword"
     trace2es:
       enabled: true
+    receiver:
+      split:
+        enabled: true
   authentication:
     adminPassword: 098f6bcd4621d373cade4e832627b4f6
   admin:
@@ -34,13 +37,15 @@ stackstate:
     - https://rancher.localhost
   license:
     key: "api01"
-.  features:
+  features:
     server:
-      split: false
+      split: true
+  k8sAuthorization:
+    enabled: true
 hbase:
   version: "2.5"
   deployment:
-    mode: "Mono"
+    mode: "Distributed"
 anomaly-detection:
   enabled: true
 victoria-metrics-1:

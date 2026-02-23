@@ -8,9 +8,12 @@ global:
     team: "platform"
   backup:
     enabled: true
-
-pull-secret:
-  enabled: true
+  suseObservability:
+    license: "test-license-key-12345"
+    baseUrl: "http://test.example.com"
+    adminPassword: "tssss"
+    sizing:
+      profile: "10-nonha"
 
 stackstate:
   components:
@@ -23,26 +26,9 @@ stackstate:
         trustStorePassword: "secretTrustStorePassword"
     trace2es:
       enabled: true
-  authentication:
-    adminPassword: 098f6bcd4621d373cade4e832627b4f6
-  admin:
-    authentication:
-      password: 5a4961367d65d570e20d2d69156581b4
-  baseUrl: "http://localhost"
   allowedOrigins:
     - https://rancher.localhost
-  license:
-    key: "api01"
-  features:
-    server:
-      split: false
   k8sAuthorization:
     enabled: true
-hbase:
-  version: "2.5"
-  deployment:
-    mode: "Mono"
 anomaly-detection:
   enabled: true
-victoria-metrics-1:
-  enabled: false

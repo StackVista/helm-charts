@@ -26,7 +26,9 @@ var expectedWorkloadsHA = []string{
 	"Deployment/suse-observability-initializer",
 	"Deployment/suse-observability-e2es",
 	"Deployment/suse-observability-notification",
-	"Deployment/suse-observability-receiver",
+	"Deployment/suse-observability-receiver-base",
+	"Deployment/suse-observability-receiver-logs",
+	"Deployment/suse-observability-receiver-process-agent",
 	"Deployment/suse-observability-router",
 	"Deployment/suse-observability-slicing",
 	"Deployment/suse-observability-state",
@@ -35,8 +37,12 @@ var expectedWorkloadsHA = []string{
 	// StatefulSets
 	"StatefulSet/suse-observability-clickhouse-shard0",
 	"StatefulSet/suse-observability-elasticsearch-master",
-	"StatefulSet/suse-observability-hbase-stackgraph",
-	"StatefulSet/suse-observability-hbase-tephra-mono",
+	"StatefulSet/suse-observability-hbase-hbase-master",
+	"StatefulSet/suse-observability-hbase-hdfs-nn",
+	"StatefulSet/suse-observability-hbase-hbase-rs",
+	"StatefulSet/suse-observability-hbase-hdfs-dn",
+	"StatefulSet/suse-observability-hbase-hdfs-snn",
+	"StatefulSet/suse-observability-hbase-tephra",
 	"StatefulSet/suse-observability-kafka",
 	"StatefulSet/suse-observability-otel-collector",
 	"StatefulSet/suse-observability-victoria-metrics-0",
@@ -107,6 +113,22 @@ func TestWorkloadHARendering(t *testing.T) {
 
 func TestWorkloadNonHARendering(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/workload_nonha.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// Test that ONLY expected workloads are rendered (no more, no less)
+	testExactWorkloadsRendered(t, &resources, expectedWorkloadsNonHA, "Non-HA")
+}
+
+func TestWorkloadGlobalHARendering(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/workload_global_ha.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// Test that ONLY expected workloads are rendered (no more, no less)
+	testExactWorkloadsRendered(t, &resources, expectedWorkloadsHA, "HA")
+}
+
+func TestWorkloadGlobalNonHARendering(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/workload_global_nonha.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	// Test that ONLY expected workloads are rendered (no more, no less)

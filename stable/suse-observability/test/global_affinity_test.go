@@ -9,78 +9,119 @@ import (
 	v1 "k8s.io/api/core/v1"
 )
 
-// TestGlobalAffinityNodeAffinity tests that global.suseObservability.affinity.nodeAffinity is applied to all components
-func TestGlobalAffinityNodeAffinity(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_node_affinity.yaml")
+// TestGlobalHAAffinityNodeAffinity tests that global.suseObservability.affinity.nodeAffinity is applied to all components in HA mode
+func TestGlobalHAAffinityNodeAffinity(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_node_affinity.yaml", "values/workload_global_ha.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	// List of components that should have affinity applied
-	componentNames := []string{
-		"suse-observability-api",
-		"suse-observability-checks",
-		"suse-observability-correlate-aggregator",
-		"suse-observability-correlate-connection",
-		"suse-observability-correlate-http-tracing",
-		"suse-observability-health-sync",
-		"suse-observability-initializer",
-		"suse-observability-k2es-events-to-es",
-		"suse-observability-notification",
-		"suse-observability-receiver-base",
-		"suse-observability-receiver-logs",
-		"suse-observability-receiver-process-agent",
-		"suse-observability-router",
-		"suse-observability-slicing",
-		"suse-observability-state",
-		"suse-observability-sync",
-		"suse-observability-ui",
-		"suse-observability-authorization-sync",
+	validateGlobalNodeAffinity(t, resources)
+}
+
+// TestGlobalNonHAAffinityNodeAffinity tests that global.suseObservability.affinity.nodeAffinity is applied to all components in non-HA mode
+func TestGlobalNonHAAffinityNodeAffinity(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_node_affinity.yaml", "values/workload_global_nonha.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	validateGlobalNodeAffinity(t, resources)
+}
+
+// TestGlobalNonHAAffinityNodeAffinity tests that global.suseObservability.affinity.nodeAffinity is applied to all components in non-HA mode
+func TestGlobalAffinityNodeAffinityInBackupRestoreScriptsConfigMap(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_affinity_node_affinity.yaml", "values/workload_global_ha.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// Check all Jobs
+	for backupJobName, job := range testJobsFromBackupRestoreScriptsConfigMap(t, &resources) {
+		t.Run("BackupRestoreScriptsConfigMap/"+backupJobName, func(t *testing.T) {
+			// Check that nodeAffinity is present
+			require.NotNil(t, job.Spec.Template.Spec.Affinity, "Affinity should be set for the job from the backup-restore-scripts configmap %s", backupJobName)
+			require.NotNil(t, job.Spec.Template.Spec.Affinity.NodeAffinity, "NodeAffinity should be set for the job from the backup-restore-scripts configmap %s", backupJobName)
+			require.NotNil(t, job.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution, "RequiredDuringSchedulingIgnoredDuringExecution should be set for the job from the backup-restore-scripts configmap %s", backupJobName)
+
+			// Verify the nodeAffinity matches what we set in global.suseObservability.affinity.nodeAffinity
+			nodeSelectorTerms := job.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution.NodeSelectorTerms
+			require.Len(t, nodeSelectorTerms, 1, "Should have one node selector term for the job from the backup-restore-scripts configmap %s", backupJobName)
+			require.Len(t, nodeSelectorTerms[0].MatchExpressions, 1, "Should have one match expression for the job from the backup-restore-scripts configmap %s", backupJobName)
+			assert.Equal(t, "node-type", nodeSelectorTerms[0].MatchExpressions[0].Key, "Match expression key should be node-type for the job from the backup-restore-scripts configmap %s", backupJobName)
+			assert.Equal(t, v1.NodeSelectorOpIn, nodeSelectorTerms[0].MatchExpressions[0].Operator, "Match expression operator should be In for the job from the backup-restore-scripts configmap %s", backupJobName)
+			assert.Equal(t, []string{"observability"}, nodeSelectorTerms[0].MatchExpressions[0].Values, "Match expression values should be [observability] for the job from the backup-restore-scripts configmap %s", backupJobName)
+		})
+	}
+}
+
+// validateGlobalNodeAffinity validates that all Deployments, StatefulSets, CronJobs, and Jobs
+// have the expected global nodeAffinity configuration applied
+func validateGlobalNodeAffinity(t *testing.T, resources helmtestutil.KubernetesResources) {
+	// Check all Deployments
+	for deploymentName, deployment := range resources.Deployments {
+		t.Run("Deployment/"+deploymentName, func(t *testing.T) {
+			// Check that nodeAffinity is present
+			require.NotNil(t, deployment.Spec.Template.Spec.Affinity, "Affinity should be set for deployment %s", deploymentName)
+			require.NotNil(t, deployment.Spec.Template.Spec.Affinity.NodeAffinity, "NodeAffinity should be set for deployment %s", deploymentName)
+			require.NotNil(t, deployment.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution, "RequiredDuringSchedulingIgnoredDuringExecution should be set for deployment %s", deploymentName)
+
+			// Verify the nodeAffinity matches what we set in global.suseObservability.affinity.nodeAffinity
+			nodeSelectorTerms := deployment.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution.NodeSelectorTerms
+			require.Len(t, nodeSelectorTerms, 1, "Should have one node selector term for deployment %s", deploymentName)
+			require.Len(t, nodeSelectorTerms[0].MatchExpressions, 1, "Should have one match expression for deployment %s", deploymentName)
+			assert.Equal(t, "node-type", nodeSelectorTerms[0].MatchExpressions[0].Key, "Match expression key should be node-type for deployment %s", deploymentName)
+			assert.Equal(t, v1.NodeSelectorOpIn, nodeSelectorTerms[0].MatchExpressions[0].Operator, "Match expression operator should be In for deployment %s", deploymentName)
+			assert.Equal(t, []string{"observability"}, nodeSelectorTerms[0].MatchExpressions[0].Values, "Match expression values should be [observability] for deployment %s", deploymentName)
+		})
 	}
 
-	// Verify each component has the global nodeAffinity applied
-	for _, componentName := range componentNames {
-		deployment, exists := resources.Deployments[componentName]
-		if !exists {
-			t.Logf("Skipping %s (not found in rendered output)", componentName)
-			continue
-		}
+	// Check all StatefulSets
+	for statefulsetName, statefulset := range resources.Statefulsets {
+		t.Run("Statefulset/"+statefulsetName, func(t *testing.T) {
+			// Check that nodeAffinity is present
+			require.NotNil(t, statefulset.Spec.Template.Spec.Affinity, "Affinity should be set for statefulset %s", statefulsetName)
+			require.NotNil(t, statefulset.Spec.Template.Spec.Affinity.NodeAffinity, "NodeAffinity should be set for statefulset %s", statefulsetName)
+			require.NotNil(t, statefulset.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution, "RequiredDuringSchedulingIgnoredDuringExecution should be set for statefulset %s", statefulsetName)
 
-		// Check that nodeAffinity is present
-		require.NotNil(t, deployment.Spec.Template.Spec.Affinity, "Affinity should be set for %s", componentName)
-		require.NotNil(t, deployment.Spec.Template.Spec.Affinity.NodeAffinity, "NodeAffinity should be set for %s", componentName)
-		require.NotNil(t, deployment.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution, "RequiredDuringSchedulingIgnoredDuringExecution should be set for %s", componentName)
-
-		// Verify the nodeAffinity matches what we set in global.suseObservability.affinity.nodeAffinity
-		nodeSelectorTerms := deployment.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution.NodeSelectorTerms
-		require.Len(t, nodeSelectorTerms, 1, "Should have one node selector term for %s", componentName)
-		require.Len(t, nodeSelectorTerms[0].MatchExpressions, 1, "Should have one match expression for %s", componentName)
-		assert.Equal(t, "node-type", nodeSelectorTerms[0].MatchExpressions[0].Key, "Match expression key should be node-type for %s", componentName)
-		assert.Equal(t, v1.NodeSelectorOpIn, nodeSelectorTerms[0].MatchExpressions[0].Operator, "Match expression operator should be In for %s", componentName)
-		assert.Equal(t, []string{"observability"}, nodeSelectorTerms[0].MatchExpressions[0].Values, "Match expression values should be [observability] for %s", componentName)
+			// Verify the nodeAffinity matches what we set in global.suseObservability.affinity.nodeAffinity
+			nodeSelectorTerms := statefulset.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution.NodeSelectorTerms
+			require.Len(t, nodeSelectorTerms, 1, "Should have one node selector term for statefulset %s", statefulsetName)
+			require.Len(t, nodeSelectorTerms[0].MatchExpressions, 1, "Should have one match expression for statefulset %s", statefulsetName)
+			assert.Equal(t, "node-type", nodeSelectorTerms[0].MatchExpressions[0].Key, "Match expression key should be node-type for statefulset %s", statefulsetName)
+			assert.Equal(t, v1.NodeSelectorOpIn, nodeSelectorTerms[0].MatchExpressions[0].Operator, "Match expression operator should be In for statefulset %s", statefulsetName)
+			assert.Equal(t, []string{"observability"}, nodeSelectorTerms[0].MatchExpressions[0].Values, "Match expression values should be [observability] for statefulset %s", statefulsetName)
+		})
 	}
 
-	// Also check statefulsets
-	statefulsetNames := []string{
-		"suse-observability-vmagent",
-		"suse-observability-workload-observer",
+	// Check all CronJobs
+	for cronjobName, cronjob := range resources.CronJobs {
+		t.Run("CronJob/"+cronjobName, func(t *testing.T) {
+			// Check that nodeAffinity is present
+			require.NotNil(t, cronjob.Spec.JobTemplate.Spec.Template.Spec.Affinity, "Affinity should be set for cronjob %s", cronjobName)
+			require.NotNil(t, cronjob.Spec.JobTemplate.Spec.Template.Spec.Affinity.NodeAffinity, "NodeAffinity should be set for cronjob %s", cronjobName)
+			require.NotNil(t, cronjob.Spec.JobTemplate.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution, "RequiredDuringSchedulingIgnoredDuringExecution should be set for cronjob %s", cronjobName)
+
+			// Verify the nodeAffinity matches what we set in global.suseObservability.affinity.nodeAffinity
+			nodeSelectorTerms := cronjob.Spec.JobTemplate.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution.NodeSelectorTerms
+			require.Len(t, nodeSelectorTerms, 1, "Should have one node selector term for cronjob %s", cronjobName)
+			require.Len(t, nodeSelectorTerms[0].MatchExpressions, 1, "Should have one match expression for cronjob %s", cronjobName)
+			assert.Equal(t, "node-type", nodeSelectorTerms[0].MatchExpressions[0].Key, "Match expression key should be node-type for cronjob %s", cronjobName)
+			assert.Equal(t, v1.NodeSelectorOpIn, nodeSelectorTerms[0].MatchExpressions[0].Operator, "Match expression operator should be In for cronjob %s", cronjobName)
+			assert.Equal(t, []string{"observability"}, nodeSelectorTerms[0].MatchExpressions[0].Values, "Match expression values should be [observability] for cronjob %s", cronjobName)
+		})
 	}
 
-	for _, statefulsetName := range statefulsetNames {
-		statefulset, exists := resources.Statefulsets[statefulsetName]
-		if !exists {
-			t.Logf("Skipping %s (not found in rendered output)", statefulsetName)
-			continue
-		}
+	// Check all Jobs
+	for jobName, job := range resources.Jobs {
+		t.Run("Job/"+jobName, func(t *testing.T) {
+			// Check that nodeAffinity is present
+			require.NotNil(t, job.Spec.Template.Spec.Affinity, "Affinity should be set for job %s", jobName)
+			require.NotNil(t, job.Spec.Template.Spec.Affinity.NodeAffinity, "NodeAffinity should be set for job %s", jobName)
+			require.NotNil(t, job.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution, "RequiredDuringSchedulingIgnoredDuringExecution should be set for job %s", jobName)
 
-		// Check that nodeAffinity is present
-		require.NotNil(t, statefulset.Spec.Template.Spec.Affinity, "Affinity should be set for %s", statefulsetName)
-		require.NotNil(t, statefulset.Spec.Template.Spec.Affinity.NodeAffinity, "NodeAffinity should be set for %s", statefulsetName)
-		require.NotNil(t, statefulset.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution, "RequiredDuringSchedulingIgnoredDuringExecution should be set for %s", statefulsetName)
-
-		// Verify the nodeAffinity matches what we set in global.suseObservability.affinity.nodeAffinity
-		nodeSelectorTerms := statefulset.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution.NodeSelectorTerms
-		require.Len(t, nodeSelectorTerms, 1, "Should have one node selector term for %s", statefulsetName)
-		require.Len(t, nodeSelectorTerms[0].MatchExpressions, 1, "Should have one match expression for %s", statefulsetName)
-		assert.Equal(t, "node-type", nodeSelectorTerms[0].MatchExpressions[0].Key, "Match expression key should be node-type for %s", statefulsetName)
+			// Verify the nodeAffinity matches what we set in global.suseObservability.affinity.nodeAffinity
+			nodeSelectorTerms := job.Spec.Template.Spec.Affinity.NodeAffinity.RequiredDuringSchedulingIgnoredDuringExecution.NodeSelectorTerms
+			require.Len(t, nodeSelectorTerms, 1, "Should have one node selector term for job %s", jobName)
+			require.Len(t, nodeSelectorTerms[0].MatchExpressions, 1, "Should have one match expression for job %s", jobName)
+			assert.Equal(t, "node-type", nodeSelectorTerms[0].MatchExpressions[0].Key, "Match expression key should be node-type for job %s", jobName)
+			assert.Equal(t, v1.NodeSelectorOpIn, nodeSelectorTerms[0].MatchExpressions[0].Operator, "Match expression operator should be In for job %s", jobName)
+			assert.Equal(t, []string{"observability"}, nodeSelectorTerms[0].MatchExpressions[0].Values, "Match expression values should be [observability] for job %s", jobName)
+		})
 	}
 }
 

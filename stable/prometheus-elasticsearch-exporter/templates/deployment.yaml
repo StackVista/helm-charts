@@ -197,9 +197,13 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
+      {{- $sizingAffinity := include "common.sizing.prometheus-elasticsearch-exporter.affinityConfig" . | fromYaml -}}
+      {{- $finalAffinity := .Values.affinity | default dict -}}
+      {{- if and (not .Values.affinity) $sizingAffinity -}}
+        {{- $finalAffinity = $sizingAffinity -}}
+      {{- end -}}
+      {{- if $finalAffinity }}
+      affinity: {{- include "common.tplvalues.render" (dict "value" $finalAffinity "context" $) | nindent 8 }}
       {{- end }}
       volumes:
         {{- if and .Values.es.ssl.enabled (eq .Values.es.ssl.useExistingSecrets false) }}
