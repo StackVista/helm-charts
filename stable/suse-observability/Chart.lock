@@ -1,7 +1,7 @@
 dependencies:
 - name: anomaly-detection
   repository: https://helm.stackstate.io
-  version: 5.2.0-snapshot.177
+  version: 5.2.0-snapshot.179
 - name: common
   repository: file://../common/
   version: 0.4.27
@@ -44,5 +44,5 @@ dependencies:
 - name: kubernetes-rbac-agent
   repository: https://helm.stackstate.io
   version: 0.0.24
-digest: sha256:89fd79747db2f4dc3df8ee289cd43522ad6d38426b025cbf76e351b7cb02251d
-generated: "2026-02-20T16:48:52.175410567+01:00"
+digest: sha256:d969e0c8e39160ed4d0da5e11a0ef40192449a473cade68fa33df027bc75e466
+generated: "2026-02-23T08:32:41.315815003Z"
