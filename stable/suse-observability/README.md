@@ -731,9 +731,9 @@ If you encounter issues not covered here:
 | pull-secret.fullNameOverride | string | `""` | Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart. |
 | s3proxy.affinity | object | `{}` | Affinity settings for S3Proxy pod (merged with stackstate.components.all.affinity) |
 | s3proxy.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for S3Proxy |
-| s3proxy.image.registry | string | `"docker.io"` |  |
-| s3proxy.image.repository | string | `"andrewgaul/s3proxy"` | Image repository for S3Proxy |
-| s3proxy.image.tag | string | `"master"` | Image tag for S3Proxy |
+| s3proxy.image.registry | string | `""` |  |
+| s3proxy.image.repository | string | `"stackstate/s3proxy"` | Image repository for S3Proxy |
+| s3proxy.image.tag | string | `"3.0.0-3137dcb1-amd64-7"` | Image tag for S3Proxy |
 | s3proxy.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | s3proxy.metrics.defaultAgentMetricsFilter | string | `"[\"*\"]"` |  |
 | s3proxy.metrics.enabled | bool | `true` | Enable / disable S3Proxy Prometheus metrics. |
