@@ -801,3 +801,103 @@ func TestS3ProxyBackendValidationNotAppliedWhenBackupDisabled(t *testing.T) {
 	_, ok := resources.Deployments["suse-observability-s3proxy"]
 	assert.True(t, ok, "S3Proxy deployment should exist even with conflicting backend settings when backup is disabled")
 }
+
+// TestS3ProxyJavaHeapDefaultValues verifies that JVM heap is calculated correctly with default values
+func TestS3ProxyJavaHeapDefaultValues(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	container := deployment.Spec.Template.Spec.Containers[0]
+
+	// Find JAVA_OPTS env var
+	var javaOpts string
+	for _, env := range container.Env {
+		if env.Name == "JAVA_OPTS" {
+			javaOpts = env.Value
+			break
+		}
+	}
+	require.NotEmpty(t, javaOpts, "JAVA_OPTS should be set")
+
+	// With default values: memory limit 512Mi, base consumption 100Mi, heap fraction 70%
+	// Available for heap: 512Mi * 1.048576 - 100Mi * 1.048576 = ~432MB
+	// Heap: 432 * 70% = ~302MB for Xmx
+	// Memory request 256Mi: (256 * 1.048576 - 100 * 1.048576) * 70% = ~114MB for Xms
+	assert.Contains(t, javaOpts, "-Xmx", "JAVA_OPTS should contain -Xmx")
+	assert.Contains(t, javaOpts, "-Xms", "JAVA_OPTS should contain -Xms")
+	assert.Contains(t, javaOpts, "-DLOG_LEVEL", "JAVA_OPTS should contain other s3proxy options")
+}
+
+// TestS3ProxyJavaHeapCustomValues verifies that JVM heap is calculated correctly with custom values
+func TestS3ProxyJavaHeapCustomValues(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"s3proxy.resources.limits.memory":       "1Gi",
+			"s3proxy.resources.requests.memory":     "512Mi",
+			"s3proxy.sizing.baseMemoryConsumption":  "200Mi",
+			"s3proxy.sizing.javaHeapMemoryFraction": "60",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	container := deployment.Spec.Template.Spec.Containers[0]
+
+	// Find JAVA_OPTS env var
+	var javaOpts string
+	for _, env := range container.Env {
+		if env.Name == "JAVA_OPTS" {
+			javaOpts = env.Value
+			break
+		}
+	}
+	require.NotEmpty(t, javaOpts, "JAVA_OPTS should be set")
+
+	// With custom values: memory limit 1Gi, base consumption 200Mi, heap fraction 60%
+	// Available for heap: 1Gi * 1.07374 - 200Mi * 1.048576 = ~863MB
+	// Heap: 863 * 60% = ~518MB for Xmx
+	// Memory request 512Mi: (512 * 1.048576 - 200 * 1.048576) * 60% = ~196MB for Xms
+	assert.Contains(t, javaOpts, "-Xmx", "JAVA_OPTS should contain -Xmx with custom memory settings")
+	assert.Contains(t, javaOpts, "-Xms", "JAVA_OPTS should contain -Xms with custom memory settings")
+}
+
+// TestS3ProxyJavaHeapHighFraction verifies that JVM heap calculation handles high heap fractions
+func TestS3ProxyJavaHeapHighFraction(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"s3proxy.resources.limits.memory":       "2Gi",
+			"s3proxy.resources.requests.memory":     "1Gi",
+			"s3proxy.sizing.baseMemoryConsumption":  "50Mi",
+			"s3proxy.sizing.javaHeapMemoryFraction": "85",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	container := deployment.Spec.Template.Spec.Containers[0]
+
+	// Find JAVA_OPTS env var
+	var javaOpts string
+	for _, env := range container.Env {
+		if env.Name == "JAVA_OPTS" {
+			javaOpts = env.Value
+			break
+		}
+	}
+	require.NotEmpty(t, javaOpts, "JAVA_OPTS should be set")
+
+	// High heap fraction should still work
+	assert.Contains(t, javaOpts, "-Xmx", "JAVA_OPTS should contain -Xmx with high heap fraction")
+	assert.Contains(t, javaOpts, "-Xms", "JAVA_OPTS should contain -Xms with high heap fraction")
+}

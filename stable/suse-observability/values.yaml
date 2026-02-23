@@ -2201,6 +2201,11 @@ s3proxy:
       cpu: 100m
       memory: 256Mi
       ephemeral-storage: 1Mi
+  sizing:
+    # s3proxy.sizing.baseMemoryConsumption -- Memory reserved for OS and non-heap JVM usage (metaspace, threads, etc)
+    baseMemoryConsumption: "100Mi"
+    # s3proxy.sizing.javaHeapMemoryFraction -- Percentage of remaining memory (after baseMemoryConsumption) allocated to Java heap
+    javaHeapMemoryFraction: "70"
   # s3proxy.nodeSelector -- Node selector for S3Proxy pod (merged with stackstate.components.all.nodeSelector)
   nodeSelector: {}
   # s3proxy.tolerations -- Tolerations for S3Proxy pod (appended to stackstate.components.all.tolerations)

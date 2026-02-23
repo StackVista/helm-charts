@@ -79,7 +79,7 @@ spec:
               protocol: TCP
           env:
             - name: JAVA_OPTS
-              value: -DLOG_LEVEL="INFO" -Ds3proxy.endpoint=http://0.0.0.0:9000 -Ds3proxy.authorization=aws-v2-or-v4 -Ds3proxy.identity="${S3PROXY_IDENTITY}" -Ds3proxy.credential="${S3PROXY_CREDENTIAL}" -Ds3proxy.metrics.enabled=true -Ds3proxy.metrics.port=9090 -Ds3proxy.metrics.host=0.0.0.0 -Djclouds.identity="${JCLOUDS_IDENTITY}" -Djclouds.credential="${JCLOUDS_CREDENTIAL}"
+              value: {{ include "stackstate.s3proxy.javaOpts" . }} -DLOG_LEVEL="INFO" -Ds3proxy.endpoint=http://0.0.0.0:9000 -Ds3proxy.authorization=aws-v2-or-v4 -Ds3proxy.identity="${S3PROXY_IDENTITY}" -Ds3proxy.credential="${S3PROXY_CREDENTIAL}" -Ds3proxy.metrics.enabled=true -Ds3proxy.metrics.port=9090 -Ds3proxy.metrics.host=0.0.0.0 -Djclouds.identity="${JCLOUDS_IDENTITY}" -Djclouds.credential="${JCLOUDS_CREDENTIAL}"
             - name: S3PROXY_IDENTITY
               valueFrom:
                 secretKeyRef:

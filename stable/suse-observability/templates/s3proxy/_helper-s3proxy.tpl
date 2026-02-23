@@ -284,3 +284,21 @@ For backward compatibility, we keep the old name "suse-observability-minio" sinc
 {{- define "stackstate.backup.mainPvcName" -}}
 suse-observability-minio
 {{- end -}}
+
+{{/*
+Calculate JVM heap parameters (Xms, Xmx) for S3Proxy based on resource configuration.
+Uses the same pattern as other StackState services:
+- BaseMemoryConsumption: Memory reserved for OS and non-heap JVM usage
+- JavaHeapMemoryFraction: Percentage of remaining memory allocated to heap
+Returns the JAVA_OPTS string with calculated -Xms and -Xmx values.
+*/}}
+{{- define "stackstate.s3proxy.javaOpts" -}}
+{{- $baseMemoryConsumptionMB := (include "stackstate.storage.to.megabytes" .Values.s3proxy.sizing.baseMemoryConsumption) -}}
+{{- $xmxConfig := dict "Mem" .Values.s3proxy.resources.limits.memory "BaseMemoryConsumptionMB" $baseMemoryConsumptionMB "JavaHeapFraction" .Values.s3proxy.sizing.javaHeapMemoryFraction -}}
+{{- $xmx := (include "stackstate.server.memory.resource" $xmxConfig) | int -}}
+{{- $xmsConfig := dict "Mem" .Values.s3proxy.resources.requests.memory "BaseMemoryConsumptionMB" $baseMemoryConsumptionMB "JavaHeapFraction" .Values.s3proxy.sizing.javaHeapMemoryFraction -}}
+{{- $xms := include "stackstate.server.memory.resource" $xmsConfig | int -}}
+{{- $xmxParam := ( (gt $xmx 0) | ternary (printf "-Xmx%dm" $xmx) "") -}}
+{{- $xmsParam := ( (gt $xms 0) | ternary (printf "-Xms%dm" $xms) "") -}}
+{{- printf "%s %s" $xmxParam $xmsParam | trim -}}
+{{- end -}}
