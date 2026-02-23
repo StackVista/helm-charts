@@ -35,8 +35,8 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 
 ## Tag Format Reference
 
-- **Standard:** `prefix-hash-buildId` (e.g. `v1.109.0-614527d8-138`), tagfilter `.*-[a-f0-9]{8}-[0-9]+$`
-- **workload-observer, kubernetes-rbac-agent:** `hash-buildId` only (e.g. `f40221cf-76`), tagfilter `^[a-f0-9]{8}-[0-9]+$`
+- **Standard:** `prefix-hash-release-buildId` (e.g. `v1.109.0-614527d8-release-138`), tagfilter `.*-[a-f0-9]{8}-release-[0-9]+$`
+- **workload-observer, kubernetes-rbac-agent:** `hash-buildId-release` (e.g. `f40221cf-76-release`), tagfilter `^[a-f0-9]{8}-[0-9]+-release$`
 - **container-tools:** `version-buildId` (e.g. `1.8.3-573`), tagfilter `^[0-9]+\.[0-9]+\.[0-9]+-[0-9]+$`
 
 ## Run Locally

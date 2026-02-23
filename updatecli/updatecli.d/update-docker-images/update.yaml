@@ -28,17 +28,17 @@ sources:
     spec:
       image: "quay.io/stackstate/clickhouse-backup"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+-release$"
       versionfilter:
         kind: regex/semver
-        regex: ".*-(\\d+)$"
+        regex: ".*-([0-9]+)-release$"
   clickhouse:
     name: "clickhouse"
     kind: dockerimage
     spec:
       image: "quay.io/stackstate/clickhouse"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      tagfilter: ".*-[a-f0-9]{8}-release-[0-9]+$"
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
@@ -58,7 +58,7 @@ sources:
     spec:
       image: "quay.io/stackstate/elasticsearch"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      tagfilter: ".*-[a-f0-9]{8}-release-[0-9]+$"
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
@@ -68,7 +68,7 @@ sources:
     spec:
       image: "quay.io/stackstate/elasticsearch-exporter"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      tagfilter: ".*-[a-f0-9]{8}-release-[0-9]+$"
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
@@ -78,7 +78,7 @@ sources:
     spec:
       image: "quay.io/stackstate/envoy"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      tagfilter: ".*-[a-f0-9]{8}-release-[0-9]+$"
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
@@ -88,7 +88,7 @@ sources:
     spec:
       image: "quay.io/stackstate/hadoop"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      tagfilter: ".*-[a-f0-9]{8}-release-[0-9]+$"
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
@@ -98,57 +98,57 @@ sources:
     spec:
       image: "quay.io/stackstate/jmx-exporter"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+-release$"
       versionfilter:
         kind: regex/semver
-        regex: ".*-(\\d+)$"
+        regex: ".*-([0-9]+)-release$"
   kafka:
     name: "kafka"
     kind: dockerimage
     spec:
       image: "quay.io/stackstate/kafka"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+-release$"
       versionfilter:
         kind: regex/semver
-        regex: ".*-(\\d+)$"
+        regex: ".*-([0-9]+)-release$"
   kubernetesRbacAgent:
     name: "kubernetes-rbac-agent"
     kind: dockerimage
     spec:
       image: "quay.io/stackstate/kubernetes-rbac-agent"
       architecture: "linux/amd64"
-      tagfilter: "^[a-f0-9]{8}-[0-9]+$"
+      tagfilter: "^[a-f0-9]{8}-[0-9]+-release$"
       versionfilter:
         kind: regex/semver
-        regex: ".*-(\\d+)$"
+        regex: "^[a-f0-9]{8}-([0-9]+)-release$"
   minio:
     name: "minio"
     kind: dockerimage
     spec:
       image: "quay.io/stackstate/minio"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+-release$"
       versionfilter:
         kind: regex/semver
-        regex: ".*-(\\d+)$"
+        regex: ".*-([0-9]+)-release$"
   nginxPrometheusExporter:
     name: "nginx-prometheus-exporter"
     kind: dockerimage
     spec:
       image: "quay.io/stackstate/nginx-prometheus-exporter"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+-release$"
       versionfilter:
         kind: regex/semver
-        regex: ".*-(\\d+)$"
+        regex: ".*-([0-9]+)-release$"
   victoriaMetrics:
     name: "victoria-metrics"
     kind: dockerimage
     spec:
       image: "quay.io/stackstate/victoria-metrics"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      tagfilter: ".*-[a-f0-9]{8}-release-[0-9]+$"
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
@@ -158,7 +158,7 @@ sources:
     spec:
       image: "quay.io/stackstate/vmagent"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      tagfilter: ".*-[a-f0-9]{8}-release-[0-9]+$"
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
@@ -168,7 +168,7 @@ sources:
     spec:
       image: "quay.io/stackstate/vmbackup"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      tagfilter: ".*-[a-f0-9]{8}-release-[0-9]+$"
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
@@ -178,7 +178,7 @@ sources:
     spec:
       image: "quay.io/stackstate/vmrestore"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      tagfilter: ".*-[a-f0-9]{8}-release-[0-9]+$"
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
@@ -188,7 +188,7 @@ sources:
     spec:
       image: "quay.io/stackstate/wait"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      tagfilter: ".*-[a-f0-9]{8}-release-[0-9]+$"
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
@@ -198,20 +198,20 @@ sources:
     spec:
       image: "quay.io/stackstate/workload-observer"
       architecture: "linux/amd64"
-      tagfilter: "^[a-f0-9]{8}-[0-9]+$"
+      tagfilter: "^[a-f0-9]{8}-[0-9]+-release$"
       versionfilter:
         kind: regex/semver
-        regex: ".*-(\\d+)$"
+        regex: "^[a-f0-9]{8}-([0-9]+)-release$"
   zookeeper:
     name: "zookeeper"
     kind: dockerimage
     spec:
       image: "quay.io/stackstate/zookeeper"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+$"
+      tagfilter: ".*-[a-f0-9]{8}-[0-9]+-release$"
       versionfilter:
         kind: regex/semver
-        regex: ".*-(\\d+)$"
+        regex: ".*-([0-9]+)-release$"
 
 # Single pipeline: all targets chained with dependson so they run sequentially.
 # All suse-observability subchart image tags are in stable/suse-observability/values.yaml
