@@ -731,9 +731,9 @@ If you encounter issues not covered here:
 | pull-secret.fullNameOverride | string | `""` | Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart. |
 | s3proxy.affinity | object | `{}` | Affinity settings for S3Proxy pod (merged with stackstate.components.all.affinity) |
 | s3proxy.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for S3Proxy |
-| s3proxy.image.registry | string | `""` |  |
-| s3proxy.image.repository | string | `"quay.io/stackstate/s3proxy"` | Image repository for S3Proxy |
-| s3proxy.image.tag | string | `"3.0.0-3137dcb1-amd64-7"` | Image tag for S3Proxy |
+| s3proxy.image.registry | string | `"quay.io"` | imageRegistry used for the S3Proxy Docker image |
+| s3proxy.image.repository | string | `"stackstate/s3proxy"` | Image repository for S3Proxy |
+| s3proxy.image.tag | string | `"3.0.0-3137dcb1-7"` | Image tag for S3Proxy |
 | s3proxy.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | s3proxy.metrics.defaultAgentMetricsFilter | string | `"[\"*\"]"` |  |
 | s3proxy.metrics.enabled | bool | `true` | Enable / disable S3Proxy Prometheus metrics. |
@@ -1177,7 +1177,7 @@ If you encounter issues not covered here:
 | stackstate.components.server.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
 | stackstate.components.server.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | stackstate.components.server.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
-| stackstate.components.server.image.imageRegistry | string | `""` | imageRegistry used for the S3Proxy Docker image; this will override `global.imageRegistry` s3proxy.image.registry -- imageRegistry used for the S3Proxy Docker image; this will override `global.imageRegistry` |
+| stackstate.components.server.image.imageRegistry | string | `""` | `imageRegistry` used for the `server` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.server.image.pullPolicy | string | `""` | `pullPolicy` used for the `server` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.server.image.repository | string | `"stackstate/stackstate-server"` | Repository of the server component Docker image. |
 | stackstate.components.server.image.tag | string | `""` | Tag used for the `server` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
