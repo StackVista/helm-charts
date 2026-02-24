@@ -5,6 +5,26 @@
 {{- max $javaHeapMemory 0 -}}
 {{- end -}}
 
+{{/*
+Calculate JVM heap parameters (Xmx, Xms) from resource configuration.
+Expects a dict with:
+  - MemoryLimit:  pod memory limit (e.g. "2Gi")
+  - MemoryRequest: pod memory request (e.g. "1Gi")
+  - BaseMemoryConsumption: memory reserved for OS/non-heap (e.g. "500Mi")
+  - JavaHeapMemoryFraction: percentage of remaining memory for heap (e.g. 75)
+Returns a string like "-Xmx1234m -Xms567m", omitting params when <= 0.
+*/}}
+{{- define "stackstate.jvm.heapParams" -}}
+{{- $baseMemoryConsumptionMB := (include "stackstate.storage.to.megabytes" .BaseMemoryConsumption) -}}
+{{- $xmxConfig := dict "Mem" .MemoryLimit "BaseMemoryConsumptionMB" $baseMemoryConsumptionMB "JavaHeapFraction" .JavaHeapMemoryFraction -}}
+{{- $xmx := (include "stackstate.server.memory.resource" $xmxConfig) | int -}}
+{{- $xmsConfig := dict "Mem" .MemoryRequest "BaseMemoryConsumptionMB" $baseMemoryConsumptionMB "JavaHeapFraction" .JavaHeapMemoryFraction -}}
+{{- $xms := include "stackstate.server.memory.resource" $xmsConfig | int -}}
+{{- $xmxParam := ( (gt $xmx 0) | ternary (printf "-Xmx%dm" $xmx) "") -}}
+{{- $xmsParam := ( (gt $xms 0) | ternary (printf "-Xms%dm" $xms) "") -}}
+{{- printf "%s %s" $xmxParam $xmsParam | trim -}}
+{{- end -}}
+
 {{- define "stackstate.server.cache.memory.limit" -}}
 {{- $podMemoryLimitMB := ( include "stackstate.storage.to.megabytes" .Mem ) -}}
 {{- $podMemoryLimitBytes := (mulf (mulf $podMemoryLimitMB 1000) 1000) -}}
@@ -58,18 +78,16 @@ ThreadStackSize * Number of Threads and Jvm-native.
 Remainder of 'BaseMemoryConsumption' and 'Xmx' subtracted from pod's memory limit is given to 'DirectMemory'.
 Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory limit.
 */}}
+{{- $heapConfig := dict "MemoryLimit" .ServiceConfig.resources.limits.memory "MemoryRequest" .ServiceConfig.resources.requests.memory "BaseMemoryConsumption" .ServiceConfig.sizing.baseMemoryConsumption "JavaHeapMemoryFraction" .ServiceConfig.sizing.javaHeapMemoryFraction -}}
+{{- $heapParams := include "stackstate.jvm.heapParams" $heapConfig -}}
 {{- $baseMemoryConsumptionMB := (include "stackstate.storage.to.megabytes" .ServiceConfig.sizing.baseMemoryConsumption)}}
 {{- $xmxConfig := dict "Mem" .ServiceConfig.resources.limits.memory "BaseMemoryConsumptionMB" $baseMemoryConsumptionMB "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
 {{- $xmx := (include "stackstate.server.memory.resource" $xmxConfig) | int }}
-{{- $xmsConfig := dict "Mem" .ServiceConfig.resources.requests.memory "BaseMemoryConsumptionMB" $baseMemoryConsumptionMB "JavaHeapFraction" .ServiceConfig.sizing.javaHeapMemoryFraction }}
-{{- $xms := include "stackstate.server.memory.resource" $xmsConfig | int }}
-{{- $xmxParam := ( (gt $xmx 0) | ternary (printf "-Xmx%dm" $xmx) "") }}
-{{- $xmsParam := ( (gt $xms 0) | ternary (printf "-Xms%dm" $xms) "") }}
 {{- $directMem := (subf (subf (include "stackstate.storage.to.megabytes" .ServiceConfig.resources.limits.memory) $baseMemoryConsumptionMB) $xmx) | int }}
 {{- $directMemParam := ( (gt $directMem 0) | ternary ( printf "-XX:MaxDirectMemorySize=%dm" $directMem) "") }}
 {{- $otelInstrumentationServiceConfig := .ServiceConfig.otelInstrumentation | default dict }}
 {{- $otelJavaAgentOpt := or .Values.stackstate.components.all.otelInstrumentation.enabled $otelInstrumentationServiceConfig.enabled | default false | ternary " -javaagent:/opt/docker/opentelemetry-javaagent.jar" "" }}
-{{- $defaultJavaOpts := printf "%s %s %s%s" $directMemParam $xmxParam $xmsParam $otelJavaAgentOpt | trim }}
+{{- $defaultJavaOpts := printf "%s %s%s" $directMemParam $heapParams $otelJavaAgentOpt | trim }}
 
 {{/* Start with chart defaults - these can be overridden by user extraEnv */}}
 {{- $openEnvVars := dict }}
