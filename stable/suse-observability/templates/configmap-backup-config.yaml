@@ -108,6 +108,7 @@ config: |
         {{- include "stackstate.backup.affinity" . | nindent 8 }}
         {{- include "stackstate.backup.tolerations" . | nindent 8 }}
   settings:
+    localBucket: {{ include "stackstate.s3proxy.localSettingsBucketName" . | quote }}
     bucket: {{ .Values.backup.configuration.bucketName | quote }}
     s3Prefix: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.configuration.s3Prefix | quote }}
     restore:
