@@ -1,2 +1,0 @@
-Run the CronJob manually by running the following command:
-  kubectl create job --namespace {{ .Release.Namespace }} --from=cronjob/{{ include "k8s-image-list-to-s3.fullname" . }} {{ .Release.Name }}-$(date +%s)

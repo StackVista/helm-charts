@@ -63,62 +63,6 @@ build_artifactory-cleaner:
     - helm dependencies build stable/artifactory-cleaner
     - mkdir -p stable/artifactory-cleaner/build; helm package --destination stable/artifactory-cleaner/build stable/artifactory-cleaner
   stage: build
-build_aws-amicleaner:
-  artifacts:
-    paths:
-      - stable/aws-amicleaner/charts/
-      - stable/aws-amicleaner/build/
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/aws-amicleaner/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/aws-amicleaner/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/aws-amicleaner/%
-    - helm dependencies build stable/aws-amicleaner
-    - mkdir -p stable/aws-amicleaner/build; helm package --destination stable/aws-amicleaner/build stable/aws-amicleaner
-  stage: build
-build_aws-nuke:
-  artifacts:
-    paths:
-      - stable/aws-nuke/charts/
-      - stable/aws-nuke/build/
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/aws-nuke/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/aws-nuke/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/aws-nuke/%
-    - helm dependencies build stable/aws-nuke
-    - mkdir -p stable/aws-nuke/build; helm package --destination stable/aws-nuke/build stable/aws-nuke
-  stage: build
 build_aws-pod-identity-webhook:
   artifacts:
     paths:
@@ -315,34 +259,6 @@ build_elasticsearch:
     - helm dependencies build stable/elasticsearch
     - mkdir -p stable/elasticsearch/build; helm package --destination stable/elasticsearch/build stable/elasticsearch
   stage: build
-build_falco-reporter:
-  artifacts:
-    paths:
-      - stable/falco-reporter/charts/
-      - stable/falco-reporter/build/
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/falco-reporter/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/falco-reporter/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/falco-reporter/%
-    - helm dependencies build stable/falco-reporter
-    - mkdir -p stable/falco-reporter/build; helm package --destination stable/falco-reporter/build stable/falco-reporter
-  stage: build
 build_gitlab-proxy:
   artifacts:
     paths:
@@ -454,62 +370,6 @@ build_helm-reaper:
     - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/helm-reaper/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/helm-reaper/%
     - helm dependencies build stable/helm-reaper
     - mkdir -p stable/helm-reaper/build; helm package --destination stable/helm-reaper/build stable/helm-reaper
-  stage: build
-build_iceman:
-  artifacts:
-    paths:
-      - stable/iceman/charts/
-      - stable/iceman/build/
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/iceman/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/iceman/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/iceman/%
-    - helm dependencies build stable/iceman
-    - mkdir -p stable/iceman/build; helm package --destination stable/iceman/build stable/iceman
-  stage: build
-build_k8s-image-list-to-s3:
-  artifacts:
-    paths:
-      - stable/k8s-image-list-to-s3/charts/
-      - stable/k8s-image-list-to-s3/build/
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/k8s-image-list-to-s3/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/k8s-image-list-to-s3/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/k8s-image-list-to-s3/%
-    - helm dependencies build stable/k8s-image-list-to-s3
-    - mkdir -p stable/k8s-image-list-to-s3/build; helm package --destination stable/k8s-image-list-to-s3/build stable/k8s-image-list-to-s3
   stage: build
 build_k8s-spot-termination-handler:
   artifacts:
@@ -875,34 +735,6 @@ build_redirector:
     - helm dependencies build stable/redirector
     - mkdir -p stable/redirector/build; helm package --destination stable/redirector/build stable/redirector
   stage: build
-build_sandbox-operator:
-  artifacts:
-    paths:
-      - stable/sandbox-operator/charts/
-      - stable/sandbox-operator/build/
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/sandbox-operator/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/sandbox-operator/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/sandbox-operator/%
-    - helm dependencies build stable/sandbox-operator
-    - mkdir -p stable/sandbox-operator/build; helm package --destination stable/sandbox-operator/build stable/sandbox-operator
-  stage: build
 build_sock-shop:
   artifacts:
     paths:
@@ -1222,28 +1054,6 @@ check_artifactory-cleaner_version:
   script:
     - .gitlab/verify_versions_bumped.sh artifactory-cleaner
   stage: validate
-check_aws-amicleaner_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/aws-amicleaner/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh aws-amicleaner
-  stage: validate
-check_aws-nuke_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/aws-nuke/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh aws-nuke
-  stage: validate
 check_aws-pod-identity-webhook_version:
   before_script:
     - .gitlab/validate_before_script.sh
@@ -1321,17 +1131,6 @@ check_elasticsearch_version:
   script:
     - .gitlab/verify_versions_bumped.sh elasticsearch
   stage: validate
-check_falco-reporter_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/falco-reporter/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh falco-reporter
-  stage: validate
 check_gitlab-proxy_version:
   before_script:
     - .gitlab/validate_before_script.sh
@@ -1375,28 +1174,6 @@ check_helm-reaper_version:
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - .gitlab/verify_versions_bumped.sh helm-reaper
-  stage: validate
-check_iceman_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/iceman/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh iceman
-  stage: validate
-check_k8s-image-list-to-s3_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/k8s-image-list-to-s3/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh k8s-image-list-to-s3
   stage: validate
 check_k8s-spot-termination-handler_version:
   before_script:
@@ -1540,17 +1317,6 @@ check_redirector_version:
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - .gitlab/verify_versions_bumped.sh redirector
-  stage: validate
-check_sandbox-operator_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/sandbox-operator/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh sandbox-operator
   stage: validate
 check_sizing_chart_dependencies:
   before_script:
@@ -1806,90 +1572,6 @@ push_artifactory-cleaner_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/artifactory-cleaner
-push_aws-amicleaner_to_internal:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/aws-amicleaner/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-aws-amicleaner]/
-      when: on_success
-    - changes:
-        - stable/aws-amicleaner/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^aws-amicleaner\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/aws-amicleaner
-push_aws-nuke_to_internal:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/aws-nuke/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-aws-nuke]/
-      when: on_success
-    - changes:
-        - stable/aws-nuke/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^aws-nuke\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/aws-nuke
 push_aws-pod-identity-webhook_to_internal:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -2316,48 +1998,6 @@ push_elasticsearch_to_public:
   stage: push-charts-to-public
   variables:
     CHART: stable/elasticsearch
-push_falco-reporter_to_internal:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/falco-reporter/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-falco-reporter]/
-      when: on_success
-    - changes:
-        - stable/falco-reporter/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^falco-reporter\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/falco-reporter
 push_gitlab-proxy_to_internal:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -2570,90 +2210,6 @@ push_helm-reaper_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/helm-reaper
-push_iceman_to_internal:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/iceman/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-iceman]/
-      when: on_success
-    - changes:
-        - stable/iceman/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^iceman\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/iceman
-push_k8s-image-list-to-s3_to_internal:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/k8s-image-list-to-s3/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-k8s-image-list-to-s3]/
-      when: on_success
-    - changes:
-        - stable/k8s-image-list-to-s3/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^k8s-image-list-to-s3\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/k8s-image-list-to-s3
 push_k8s-spot-termination-handler_to_internal:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -3420,48 +2976,6 @@ push_redirector_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/redirector
-push_sandbox-operator_to_internal:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/sandbox-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-sandbox-operator]/
-      when: on_success
-    - changes:
-        - stable/sandbox-operator/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^sandbox-operator\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/sandbox-operator
 push_sock-shop_to_internal:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -4407,54 +3921,6 @@ test_artifactory-cleaner:
   variables:
     CGO_ENABLED: 0
     GOPATH: /go
-test_aws-amicleaner:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/aws-amicleaner/**/*
-      exists:
-        - stable/aws-amicleaner/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/aws-amicleaner/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
-test_aws-nuke:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/aws-nuke/**/*
-      exists:
-        - stable/aws-nuke/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/aws-nuke/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
 test_aws-pod-identity-webhook:
   cache:
     key:
@@ -4623,30 +4089,6 @@ test_elasticsearch:
   variables:
     CGO_ENABLED: 0
     GOPATH: /go
-test_falco-reporter:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/falco-reporter/**/*
-      exists:
-        - stable/falco-reporter/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/falco-reporter/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
 test_gitlab-proxy:
   cache:
     key:
@@ -4737,54 +4179,6 @@ test_helm-reaper:
   script:
     - go mod download
     - go test ./stable/helm-reaper/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
-test_iceman:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/iceman/**/*
-      exists:
-        - stable/iceman/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/iceman/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
-test_k8s-image-list-to-s3:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/k8s-image-list-to-s3/**/*
-      exists:
-        - stable/k8s-image-list-to-s3/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/k8s-image-list-to-s3/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
@@ -5097,30 +4491,6 @@ test_redirector:
   script:
     - go mod download
     - go test ./stable/redirector/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
-test_sandbox-operator:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/sandbox-operator/**/*
-      exists:
-        - stable/sandbox-operator/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/sandbox-operator/test/...
   stage: test
   tags:
     - sts-k8s-xl-runner
@@ -5494,38 +4864,6 @@ validate_artifactory-cleaner:
     - if [ -f stable/artifactory-cleaner/ci/default-values.yaml ]; then helm lint stable/artifactory-cleaner --values stable/artifactory-cleaner/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
-validate_aws-amicleaner:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/aws-amicleaner/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/aws-amicleaner/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-amicleaner/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-amicleaner/values.yaml
-    - if [ -f stable/aws-amicleaner/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/aws-amicleaner/ci/default-values.yaml; fi
-    - if [ -f stable/aws-amicleaner/ci/default-values.yaml ]; then helm lint stable/aws-amicleaner --values stable/aws-amicleaner/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
-  stage: validate
-validate_aws-nuke:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/aws-nuke/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/aws-nuke/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-nuke/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/aws-nuke/values.yaml
-    - if [ -f stable/aws-nuke/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/aws-nuke/ci/default-values.yaml; fi
-    - if [ -f stable/aws-nuke/ci/default-values.yaml ]; then helm lint stable/aws-nuke --values stable/aws-nuke/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
-  stage: validate
 validate_aws-pod-identity-webhook:
   before_script:
     - .gitlab/validate_before_script.sh
@@ -5638,22 +4976,6 @@ validate_elasticsearch:
     - if [ -f stable/elasticsearch/ci/default-values.yaml ]; then helm lint stable/elasticsearch --values stable/elasticsearch/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
-validate_falco-reporter:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/falco-reporter/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/falco-reporter/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/falco-reporter/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/falco-reporter/values.yaml
-    - if [ -f stable/falco-reporter/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/falco-reporter/ci/default-values.yaml; fi
-    - if [ -f stable/falco-reporter/ci/default-values.yaml ]; then helm lint stable/falco-reporter --values stable/falco-reporter/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
-  stage: validate
 validate_gitlab-proxy:
   before_script:
     - .gitlab/validate_before_script.sh
@@ -5716,38 +5038,6 @@ validate_helm-reaper:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/helm-reaper/values.yaml
     - if [ -f stable/helm-reaper/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/helm-reaper/ci/default-values.yaml; fi
     - if [ -f stable/helm-reaper/ci/default-values.yaml ]; then helm lint stable/helm-reaper --values stable/helm-reaper/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
-  stage: validate
-validate_iceman:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/iceman/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/iceman/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/iceman/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/iceman/values.yaml
-    - if [ -f stable/iceman/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/iceman/ci/default-values.yaml; fi
-    - if [ -f stable/iceman/ci/default-values.yaml ]; then helm lint stable/iceman --values stable/iceman/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
-  stage: validate
-validate_k8s-image-list-to-s3:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/k8s-image-list-to-s3/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/k8s-image-list-to-s3/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-image-list-to-s3/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-image-list-to-s3/values.yaml
-    - if [ -f stable/k8s-image-list-to-s3/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/k8s-image-list-to-s3/ci/default-values.yaml; fi
-    - if [ -f stable/k8s-image-list-to-s3/ci/default-values.yaml ]; then helm lint stable/k8s-image-list-to-s3 --values stable/k8s-image-list-to-s3/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 validate_k8s-spot-termination-handler:
@@ -5956,22 +5246,6 @@ validate_redirector:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/redirector/values.yaml
     - if [ -f stable/redirector/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/redirector/ci/default-values.yaml; fi
     - if [ -f stable/redirector/ci/default-values.yaml ]; then helm lint stable/redirector --values stable/redirector/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
-  stage: validate
-validate_sandbox-operator:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/sandbox-operator/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/sandbox-operator/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/sandbox-operator/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/sandbox-operator/values.yaml
-    - if [ -f stable/sandbox-operator/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/sandbox-operator/ci/default-values.yaml; fi
-    - if [ -f stable/sandbox-operator/ci/default-values.yaml ]; then helm lint stable/sandbox-operator --values stable/sandbox-operator/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 validate_sock-shop:

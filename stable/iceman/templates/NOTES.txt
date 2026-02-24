@@ -1,2 +1,0 @@
-Run the CronJob manually by running the following command:
-  kubectl create job --namespace {{ .Release.Namespace }} --from=cronjob/{{ include "iceman.fullname" . }} {{ .Release.Name }}-$(date +%s)

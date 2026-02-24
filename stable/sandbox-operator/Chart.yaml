@@ -1,9 +1,0 @@
-apiVersion: v1
-name: "sandbox-operator"
-description: "The StackState Sandboxer"
-version: 0.1.7
-appVersion: 0.5.0
-home: https://github.com/StackVista/sandbox-operator
-maintainers:
-- name: Stackstate Ops Team
-  email: ops@stackstate.com

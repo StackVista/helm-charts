@@ -1,4 +1,0 @@
-dependencies:
-- name: common
-  version: 0.4.8
-  repository: https://helm.stackstate.io/

@@ -1,7 +1,0 @@
-slack:
-  token: xoxb-111111
-cluster: test
-storageProvider: gcp
-gcp:
-  project: test
-  bucket: test
