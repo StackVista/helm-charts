@@ -2,7 +2,6 @@
 # Chart dependencies
 **/charts/*.tgz
 **/cluster-agent/**/*.tar.gz
-**/stackstate-agent/**/*.tar.gz
 .idea/*
 *.swp
 .DS_Store

@@ -2,9 +2,9 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.2.22`
+Current chart version is `1.2.23`
 
-**Homepage:** <https://github.com/StackVista/stackstate-agent>
+**Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
 ## Requirements
 
@@ -30,7 +30,7 @@ helm install \
 --set-string 'stackstate.apiKey'='<your-api-key>' \
 --set-string 'stackstate.cluster.name'='<your-cluster-name>' \
 --set-string 'stackstate.url'='<your-stackstate-url>' \
-stackstate/stackstate-k8s-agent
+stackstate/suse-observability-agent
 ```
 
 ## Recommended Values
@@ -45,7 +45,7 @@ helm install \
 --set-string 'stackstate.cluster.name'='<your-cluster-name>' \
 --set-string 'stackstate.cluster.authToken'='<your-cluster-token>' \
 --set-string 'stackstate.url'='<your-stackstate-url>' \
-stackstate/stackstate-k8s-agent
+stackstate/suse-observability-agent
 ```
 
 ## Values
@@ -167,7 +167,7 @@ stackstate/stackstate-k8s-agent
 | global.proxy.url | string | `""` | Proxy for all traffic to stackstate |
 | global.skipSslValidation | bool | `false` | Enable tls validation from client |
 | httpHeaderInjectorWebhook.certificatePrehook.image.repository | string | `"stackstate/container-tools"` |  |
-| httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.2-bci-517"` |  |
+| httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.3-610"` |  |
 | httpHeaderInjectorWebhook.enabled | bool | `false` | Enable the webhook for injection http header injection sidecar proxy |
 | httpHeaderInjectorWebhook.proxy.image.repository | string | `"stackstate/http-header-injector-proxy"` |  |
 | httpHeaderInjectorWebhook.proxyInit.image.repository | string | `"stackstate/http-header-injector-proxy-init"` |  |
@@ -176,7 +176,7 @@ stackstate/stackstate-k8s-agent
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
 | kubernetes-rbac-agent.containers.rbacAgent.image.repository | string | `"stackstate/kubernetes-rbac-agent"` |  |
-| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"042257c3-575"` |  |
+| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"13b1a255-590"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
 | kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{}` | Additional annotations on the pod |
 | kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |

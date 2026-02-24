@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 3.0.0
-version: 1.2.22
+version: 1.2.23
 description: Helm chart for the SUSE observability Agent.
 keywords:
 - monitoring
@@ -15,7 +15,7 @@ annotations:
   # We would like to put a default namespace here, much like the release name, but fixing both namespace and release name
   # hides does fields and allows selecting a project on rancher, which is not what we want. For now this is configurable.
   # catalog.cattle.io/namespace: suse-observability
-home: https://github.com/StackVista/stackstate-agent
+home: https://github.com/StackVista/suse-observability-agent
 icon: https://raw.githubusercontent.com/StackVista/helm-charts/master/stable/suse-observability-agent/logo.svg
 maintainers:
 - name: SUSE

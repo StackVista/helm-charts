@@ -24,7 +24,7 @@ helm install \
 --set-string 'stackstate.apiKey'='<your-api-key>' \
 --set-string 'stackstate.cluster.name'='<your-cluster-name>' \
 --set-string 'stackstate.url'='<your-stackstate-url>' \
-stackstate/stackstate-k8s-agent
+stackstate/suse-observability-agent
 ```
 
 ## Recommended Values
@@ -39,7 +39,7 @@ helm install \
 --set-string 'stackstate.cluster.name'='<your-cluster-name>' \
 --set-string 'stackstate.cluster.authToken'='<your-cluster-token>' \
 --set-string 'stackstate.url'='<your-stackstate-url>' \
-stackstate/stackstate-k8s-agent
+stackstate/suse-observability-agent
 ```
 
 {{ template "chart.valuesSection" . }}

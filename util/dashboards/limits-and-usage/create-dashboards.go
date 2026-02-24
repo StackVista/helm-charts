@@ -4,13 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	grafana "gitlab.com/StackVista/DevOps/helm-charts/util/dashboards/limits-and-usage/grafana"
-	agent "gitlab.com/StackVista/DevOps/helm-charts/util/dashboards/limits-and-usage/stackstate-k8s-agent-dashboard"
 	"io/ioutil"
 	"math/rand"
 	"strconv"
 	"strings"
 	"time"
+
+	grafana "gitlab.com/StackVista/DevOps/helm-charts/util/dashboards/limits-and-usage/grafana"
+	agent "gitlab.com/StackVista/DevOps/helm-charts/util/dashboards/limits-and-usage/stackstate-k8s-agent-dashboard"
 )
 
 // Global incremental counter to never let panel ids overlap
@@ -313,7 +314,7 @@ func main() {
 		Links:                []string{},
 		LiveNow:              false,
 		Panels: []grafana.Panel{
-			createGrafanaBlockPanel(1, namespace, "stackstate-k8s-agent", data.ChecksAgent.Resources),
+			createGrafanaBlockPanel(1, namespace, "suse-observability-agent", data.ChecksAgent.Resources),
 			createGrafanaBlockPanel(2, namespace, "cluster-agent", data.ClusterAgent.Resources),
 			createGrafanaBlockPanel(3, namespace, "logs-agent", data.LogsAgent.Resources),
 			createGrafanaBlockPanel(4, namespace, "node-agent", data.NodeAgent.Containers.Agent.Resources),
