@@ -1,7 +1,0 @@
-stackstate:
-  components:
-    api:
-      additionalLogging: |
-        logger("org.pac4j.core.engine", DEBUG)
-        logger("org.pac4j.oidc.profile.creator", DEBUG)
-        logger("org.pac4j.oidc.credentials.authenticator", DEBUG)

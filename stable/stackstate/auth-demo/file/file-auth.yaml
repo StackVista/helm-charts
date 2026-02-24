@@ -1,7 +1,0 @@
-stackstate:
-  authentication:
-    file:
-      logins:
-        - username: test-user
-          passwordHash: 5f4dcc3b5aa765d61d8327deb882cf99
-          roles: [ stackstate-admin ]

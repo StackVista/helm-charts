@@ -1,9 +1,0 @@
-stackstate:
-  authentication:
-    keycloak:
-      url: https://auth-demo-keycloak.test.stackstate.io/auth
-      realm: StackState
-      authenticationMethod: client_secret_basic
-      clientId: stackstate
-      secret:
-      jwsAlgorithm: RS256

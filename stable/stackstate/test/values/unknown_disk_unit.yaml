@@ -1,5 +1,0 @@
-elasticsearch:
-  volumeClaimTemplate:
-    resources:
-      requests:
-        storage: 250Ki

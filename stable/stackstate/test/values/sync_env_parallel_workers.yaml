@@ -1,6 +1,0 @@
-stackstate:
-  components:
-    sync:
-      extraEnv:
-        open:
-          CONFIG_FORCE_stackstate_sync_parallelWorkers: "3"

@@ -1,8 +1,0 @@
-{{- if and .Values.backup.enabled .Values.backup.configuration.scheduled.enabled }}
-kind: Role
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: stackstate-admin
-  labels:
-    app.kubernetes.io/component: backup
-{{- end -}}

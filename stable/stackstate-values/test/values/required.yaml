@@ -1,7 +1,0 @@
-pullSecret:
-  username: "john"
-  password: "doe"
-
-baseUrl: "https://some-test-helm-render.stackstate.io"
-
-license: "some-test-license-key"

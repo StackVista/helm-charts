@@ -1,4 +1,0 @@
-stackstate:
-  java:
-    trustStore: "some data, this normally is loaded from a file and is binary"
-    trustStorePassword: "the password"

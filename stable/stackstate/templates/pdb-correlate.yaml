@@ -1,2 +1,0 @@
-{{- $valuesPdb := dict "PdbName" "correlate" "PdbBudget" .Values.stackstate.components.correlate.poddisruptionbudget -}}
-{{- (include "stackstate.service.poddisruptionbudget" (merge $valuesPdb .) ) -}}

@@ -1,6 +1,0 @@
-stackstate:
-  components:
-    sync:
-      resources:
-        requests:
-          cpu: "12001m"

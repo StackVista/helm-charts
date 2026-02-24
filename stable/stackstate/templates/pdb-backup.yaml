@@ -1,4 +1,0 @@
-{{- if and .Values.backup.enabled (or .Values.backup.stackGraph.restore.enabled .Values.backup.stackGraph.scheduled.enabled .Values.backup.elasticsearch.restore.enabled .Values.backup.elasticsearch.scheduled.enabled) }}
-{{- $valuesPdb := dict "PdbName" "backup" "PdbBudget" .Values.backup.poddisruptionbudget -}}
-{{- (include "stackstate.service.poddisruptionbudget" (merge $valuesPdb .) ) -}}
-{{- end }}

@@ -1,4 +1,0 @@
-{{- if .Values.stackstate.experimental.server.split }}
-{{- $valuesPdb := dict "PdbName" "api" "PdbBudget" .Values.stackstate.components.api.poddisruptionbudget -}}
-{{- (include "stackstate.service.poddisruptionbudget" (merge $valuesPdb .) ) -}}
-{{- end }}

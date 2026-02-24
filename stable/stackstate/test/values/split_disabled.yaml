@@ -1,4 +1,0 @@
-stackstate:
-  experimental:
-    server:
-      split: false

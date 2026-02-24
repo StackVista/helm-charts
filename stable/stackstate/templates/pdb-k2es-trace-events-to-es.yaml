@@ -1,4 +1,0 @@
-{{- if .Values.stackstate.components.trace2es.enabled }}
-  {{- $valuesPdb := dict "PdbName" "trace2es" "PdbBudget" .Values.stackstate.components.trace2es.poddisruptionbudget -}}
-  {{- (include "stackstate.service.poddisruptionbudget" (merge $valuesPdb .)) -}}
-{{- end -}}

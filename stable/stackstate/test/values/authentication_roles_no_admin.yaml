@@ -1,7 +1,0 @@
-stackstate:
-  authentication:
-    roles:
-      # stackstate.authentication.roles.powerUser -- Extend the role names that have power user permissions (default: 'stackstate-power-user')
-      powerUser: []
-      # stackstate.authentication.roles.guest -- Extend the role names that have guest permissions (default: 'stackstate-guest')
-      guest: []

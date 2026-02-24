@@ -1,5 +1,0 @@
-stackstate:
-  components:
-    sync:
-      cache:
-        backend: "inmemory"
