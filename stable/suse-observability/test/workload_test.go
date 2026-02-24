@@ -53,16 +53,15 @@ var expectedWorkloadsHA = []string{
 	"StatefulSet/suse-observability-workload-observer",
 	"StatefulSet/suse-observability-ai-assistant",
 	// Jobs (dynamic names will be handled with pattern matching)
-	"Job/suse-observability-backup-conf-*",
 	"Job/suse-observability-backup-init-*",
 	"Job/suse-observability-topic-create-*",
 	"Job/suse-observability-ch-clean*",
 	// CronJobs
 	"CronJob/suse-observability-backup-sg",
-	"CronJob/suse-observability-backup-conf",
 	"CronJob/suse-observability-backup-init",
 	"CronJob/suse-observability-clickhouse-incremental-backup",
 	"CronJob/suse-observability-clickhouse-full-backup",
+	"CronJob/suse-observability-backup-conf",
 }
 
 // expectedWorkloadsNonHA defines ALL expected workloads when in Non-HA mode (from nonha_workload file)
@@ -95,16 +94,15 @@ var expectedWorkloadsNonHA = []string{
 	"StatefulSet/suse-observability-workload-observer",
 	"StatefulSet/suse-observability-ai-assistant",
 	// Jobs (dynamic names will be handled with pattern matching)
-	"Job/suse-observability-backup-conf-*",
 	"Job/suse-observability-backup-init-*",
 	"Job/suse-observability-topic-create-*",
 	"Job/suse-observability-ch-clean*",
 	// CronJobs
 	"CronJob/suse-observability-backup-sg",
-	"CronJob/suse-observability-backup-conf",
 	"CronJob/suse-observability-backup-init",
 	"CronJob/suse-observability-clickhouse-incremental-backup",
 	"CronJob/suse-observability-clickhouse-full-backup",
+	"CronJob/suse-observability-backup-conf",
 }
 
 func TestWorkloadHARendering(t *testing.T) {

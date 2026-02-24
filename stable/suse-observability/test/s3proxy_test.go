@@ -265,17 +265,16 @@ func TestS3ProxyConfigMapBuckets(t *testing.T) {
 	require.True(t, ok, "S3Proxy ConfigMap should exist")
 
 	// Settings properties should have settings-local-backup bucket
-	assert.Contains(t, configMap.Data["s3proxy-settings.properties"], "s3proxy.bucket-locator.1=settings-local-backup",
-		"Settings properties should route settings-local-backup bucket")
+	assert.Contains(t, configMap.Data["s3proxy-settings.properties"], "s3proxy.bucket-locator.1=local-settings-backup",
+		"Settings properties should route local-settings-backup bucket")
 
 	// Main properties should have all backup buckets
 	mainProps := configMap.Data["s3proxy-main.properties"]
 	assert.Contains(t, mainProps, "s3proxy.bucket-locator.1=sts-configuration-backup", "Main properties should route configuration backup bucket")
 	assert.Contains(t, mainProps, "s3proxy.bucket-locator.2=sts-stackgraph-backup", "Main properties should route stackgraph backup bucket")
 	assert.Contains(t, mainProps, "s3proxy.bucket-locator.3=sts-elasticsearch-backup", "Main properties should route elasticsearch backup bucket")
-	assert.Contains(t, mainProps, "s3proxy.bucket-locator.4=sts-victoria-metrics-backup", "Main properties should route victoria-metrics-0 backup bucket")
-	assert.Contains(t, mainProps, "s3proxy.bucket-locator.5=sts-victoria-metrics-backup", "Main properties should route victoria-metrics-1 backup bucket")
-	assert.Contains(t, mainProps, "s3proxy.bucket-locator.6=sts-clickhouse-backup", "Main properties should route clickhouse backup bucket")
+	assert.Contains(t, mainProps, "s3proxy.bucket-locator.4=sts-clickhouse-backup", "Main properties should route clickhouse backup bucket")
+	assert.Contains(t, mainProps, "s3proxy.bucket-locator.5=sts-victoria-metrics-backup", "Main properties should route victoria-metrics-0 backup bucket")
 }
 
 // TestS3ProxyService verifies the S3Proxy service configuration

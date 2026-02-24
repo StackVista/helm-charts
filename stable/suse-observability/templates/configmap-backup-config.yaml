@@ -70,11 +70,10 @@ config: |
     commonLabels:
       app.kubernetes.io/name: sts-backup
       app.kubernetes.io/managed-by: sts-backup
-  minio:
-    enabled: {{ .Values.global.backup.enabled }}
+  storage:
     service:
       name: {{ include "stackstate.s3proxy.fullname" . | quote }}
-      port: 9000
+      port: {{ include "stackstate.s3proxy.port" . }}
       localPortForwardPort: 9000
   stackgraph:
     bucket: {{ .Values.backup.stackGraph.bucketName | quote }}

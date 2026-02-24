@@ -2186,7 +2186,7 @@ s3proxy:
     # s3proxy.image.registry -- imageRegistry used for the S3Proxy Docker image; this will override `global.imageRegistry`
     registry: ""
     # s3proxy.image.repository -- Image repository for S3Proxy
-    repository: stackstate/s3proxy
+    repository: quay.io/stackstate/s3proxy
     # s3proxy.image.tag -- Image tag for S3Proxy
     tag: "3.0.0-3137dcb1-amd64-7"
     # s3proxy.image.pullPolicy -- Image pull policy for S3Proxy

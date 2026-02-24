@@ -2,8 +2,7 @@ kubernetes:
   commonLabels:
     app.kubernetes.io/name: sts-backup
     app.kubernetes.io/managed-by: sts-backup
-minio:
-  enabled: true
+storage:
   service:
     name: "suse-observability-s3proxy"
     port: 9000
