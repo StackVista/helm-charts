@@ -24,6 +24,9 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/s3proxy/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/s3proxy/secret.yaml") . | sha256sum }}
+        {{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }}
+        checksum/common-secret: {{ include (print $.Template.BasePath "/secret-common.yaml") . | sha256sum }}
+        {{- end }}
         {{- include "common.metrics.annotations" (dict "metrics" .Values.s3proxy.metrics "port" "9090" "container_name" "s3proxy") | indent 8 }}
         {{- with .Values.s3proxy.podAnnotations }}
         {{- toYaml . | nindent 8 }}
@@ -79,7 +82,14 @@ spec:
               protocol: TCP
           env:
             - name: JAVA_OPTS
-              value: {{ include "stackstate.s3proxy.javaOpts" . }} -DLOG_LEVEL="INFO" -Ds3proxy.endpoint=http://0.0.0.0:9000 -Ds3proxy.authorization=aws-v2-or-v4 -Ds3proxy.identity="${S3PROXY_IDENTITY}" -Ds3proxy.credential="${S3PROXY_CREDENTIAL}" -Ds3proxy.metrics.enabled=true -Ds3proxy.metrics.port=9090 -Ds3proxy.metrics.host=0.0.0.0 -Djclouds.identity="${JCLOUDS_IDENTITY}" -Djclouds.credential="${JCLOUDS_CREDENTIAL}"
+              value: {{ include "stackstate.s3proxy.javaOpts" . }}{{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }} -Djavax.net.ssl.trustStore=/opt/s3proxy/secrets/java-cacerts -Djavax.net.ssl.trustStoreType=jks{{- if .Values.stackstate.java.trustStorePassword }} -Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD){{- end }}{{- end }} -DLOG_LEVEL="INFO" -Ds3proxy.endpoint=http://0.0.0.0:9000 -Ds3proxy.authorization=aws-v2-or-v4 -Ds3proxy.identity="${S3PROXY_IDENTITY}" -Ds3proxy.credential="${S3PROXY_CREDENTIAL}" -Ds3proxy.metrics.enabled=true -Ds3proxy.metrics.port=9090 -Ds3proxy.metrics.host=0.0.0.0 -Djclouds.identity="${JCLOUDS_IDENTITY}" -Djclouds.credential="${JCLOUDS_CREDENTIAL}"
+            {{- if .Values.stackstate.java.trustStorePassword }}
+            - name: JAVA_TRUSTSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "common.fullname.short" . }}-common
+                  key: javaTrustStorePassword
+            {{- end }}
             - name: S3PROXY_IDENTITY
               valueFrom:
                 secretKeyRef:
@@ -123,6 +133,11 @@ spec:
               readOnly: true
             - name: settings-data
               mountPath: /settings-data
+            {{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }}
+            - name: common-secrets
+              mountPath: /opt/s3proxy/secrets
+              readOnly: true
+            {{- end }}
             {{- if and .Values.global.backup.enabled (include "stackstate.s3proxy.mainBackendUsesPVC" .) }}
             - name: main-data
               mountPath: /main-data
@@ -151,6 +166,14 @@ spec:
         - name: settings-data
           persistentVolumeClaim:
             claimName: {{ include "stackstate.backup.settingsPvcName" . }}
+        {{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }}
+        - name: common-secrets
+          secret:
+            secretName: {{ template "common.fullname.short" . }}-common
+            items:
+              - key: javaTrustStore
+                path: java-cacerts
+        {{- end }}
         {{- if and .Values.global.backup.enabled (include "stackstate.s3proxy.mainBackendUsesPVC" .) }}
         - name: main-data
           persistentVolumeClaim:

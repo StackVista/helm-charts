@@ -900,3 +900,177 @@ func TestS3ProxyJavaHeapHighFraction(t *testing.T) {
 	assert.Contains(t, javaOpts, "-Xmx", "JAVA_OPTS should contain -Xmx with high heap fraction")
 	assert.Contains(t, javaOpts, "-Xms", "JAVA_OPTS should contain -Xms with high heap fraction")
 }
+
+// TestS3ProxyCustomCATrustStore verifies that custom CA truststore is mounted and configured in JAVA_OPTS
+func TestS3ProxyCustomCATrustStore(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml", "values/dummy_trust_store.yaml"},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	container := deployment.Spec.Template.Spec.Containers[0]
+
+	// Verify JAVA_OPTS contains truststore JVM arguments
+	var javaOpts string
+	for _, env := range container.Env {
+		if env.Name == "JAVA_OPTS" {
+			javaOpts = env.Value
+			break
+		}
+	}
+	require.NotEmpty(t, javaOpts, "JAVA_OPTS should be set")
+	assert.Contains(t, javaOpts, "-Djavax.net.ssl.trustStore=/opt/s3proxy/secrets/java-cacerts", "JAVA_OPTS should contain trustStore path")
+	assert.Contains(t, javaOpts, "-Djavax.net.ssl.trustStoreType=jks", "JAVA_OPTS should contain trustStoreType")
+	assert.Contains(t, javaOpts, "-Djavax.net.ssl.trustStorefPassword=$(JAVA_TRUSTSTORE_PASSWORD)", "JAVA_OPTS should contain trustStorePassword reference")
+
+	// Verify JAVA_TRUSTSTORE_PASSWORD env var is set from the common secret
+	var trustStorePasswordEnv *corev1.EnvVar
+	for i := range container.Env {
+		if container.Env[i].Name == "JAVA_TRUSTSTORE_PASSWORD" {
+			trustStorePasswordEnv = &container.Env[i]
+			break
+		}
+	}
+	require.NotNil(t, trustStorePasswordEnv, "JAVA_TRUSTSTORE_PASSWORD env var should exist")
+	assert.Equal(t, "suse-observability-common", trustStorePasswordEnv.ValueFrom.SecretKeyRef.Name, "Should reference the common secret")
+	assert.Equal(t, "javaTrustStorePassword", trustStorePasswordEnv.ValueFrom.SecretKeyRef.Key, "Should reference the javaTrustStorePassword key")
+
+	// Verify volume mount for common secrets
+	var secretsMount *corev1.VolumeMount
+	for i := range container.VolumeMounts {
+		if container.VolumeMounts[i].Name == "common-secrets" {
+			secretsMount = &container.VolumeMounts[i]
+			break
+		}
+	}
+	require.NotNil(t, secretsMount, "common-secrets volume mount should exist")
+	assert.Equal(t, "/opt/s3proxy/secrets", secretsMount.MountPath, "Secrets should be mounted at /opt/s3proxy/secrets")
+	assert.True(t, secretsMount.ReadOnly, "Secrets mount should be read-only")
+
+	// Verify volume definition for common secrets
+	var secretsVolume *corev1.Volume
+	for i := range deployment.Spec.Template.Spec.Volumes {
+		if deployment.Spec.Template.Spec.Volumes[i].Name == "common-secrets" {
+			secretsVolume = &deployment.Spec.Template.Spec.Volumes[i]
+			break
+		}
+	}
+	require.NotNil(t, secretsVolume, "common-secrets volume should exist")
+	require.NotNil(t, secretsVolume.Secret, "common-secrets volume should be a secret volume")
+	assert.Equal(t, "suse-observability-common", secretsVolume.Secret.SecretName, "Should reference the common secret")
+	require.Len(t, secretsVolume.Secret.Items, 1, "Should project exactly one item")
+	assert.Equal(t, "javaTrustStore", secretsVolume.Secret.Items[0].Key, "Should project the javaTrustStore key")
+	assert.Equal(t, "java-cacerts", secretsVolume.Secret.Items[0].Path, "Should project to java-cacerts path")
+
+	// Verify common secret contains the truststore data
+	commonSecret, ok := resources.Secrets["suse-observability-common"]
+	require.True(t, ok, "Common secret should exist")
+	_, hasTrustStore := commonSecret.Data["javaTrustStore"]
+	assert.True(t, hasTrustStore, "Common secret should contain javaTrustStore")
+	_, hasTrustStorePassword := commonSecret.Data["javaTrustStorePassword"]
+	assert.True(t, hasTrustStorePassword, "Common secret should contain javaTrustStorePassword")
+
+	// Verify checksum annotation for common secret
+	annotations := deployment.Spec.Template.Annotations
+	_, hasChecksumAnnotation := annotations["checksum/common-secret"]
+	assert.True(t, hasChecksumAnnotation, "Deployment should have checksum annotation for common secret")
+}
+
+// TestS3ProxyCustomCATrustStoreBase64NoPassword verifies that base64-encoded truststore without password works
+func TestS3ProxyCustomCATrustStoreBase64NoPassword(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"stackstate.java.trustStoreBase64Encoded": "c29tZSBkYXRh",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	container := deployment.Spec.Template.Spec.Containers[0]
+
+	// Verify JAVA_OPTS contains truststore path but NOT password
+	var javaOpts string
+	for _, env := range container.Env {
+		if env.Name == "JAVA_OPTS" {
+			javaOpts = env.Value
+			break
+		}
+	}
+	require.NotEmpty(t, javaOpts, "JAVA_OPTS should be set")
+	assert.Contains(t, javaOpts, "-Djavax.net.ssl.trustStore=/opt/s3proxy/secrets/java-cacerts", "JAVA_OPTS should contain trustStore path")
+	assert.Contains(t, javaOpts, "-Djavax.net.ssl.trustStoreType=jks", "JAVA_OPTS should contain trustStoreType")
+	assert.NotContains(t, javaOpts, "trustStorePassword", "JAVA_OPTS should NOT contain trustStorePassword when not set")
+
+	// Verify JAVA_TRUSTSTORE_PASSWORD env var is NOT present
+	for _, env := range container.Env {
+		assert.NotEqual(t, "JAVA_TRUSTSTORE_PASSWORD", env.Name, "JAVA_TRUSTSTORE_PASSWORD should not be set when password is not configured")
+	}
+
+	// Verify volume mount and volume still exist
+	var secretsMount *corev1.VolumeMount
+	for i := range container.VolumeMounts {
+		if container.VolumeMounts[i].Name == "common-secrets" {
+			secretsMount = &container.VolumeMounts[i]
+			break
+		}
+	}
+	require.NotNil(t, secretsMount, "common-secrets volume mount should exist with base64-encoded truststore")
+
+	var secretsVolume *corev1.Volume
+	for i := range deployment.Spec.Template.Spec.Volumes {
+		if deployment.Spec.Template.Spec.Volumes[i].Name == "common-secrets" {
+			secretsVolume = &deployment.Spec.Template.Spec.Volumes[i]
+			break
+		}
+	}
+	require.NotNil(t, secretsVolume, "common-secrets volume should exist with base64-encoded truststore")
+}
+
+// TestS3ProxyNoCustomCA verifies that no truststore configuration is added when no custom CA is set
+func TestS3ProxyNoCustomCA(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	container := deployment.Spec.Template.Spec.Containers[0]
+
+	// Verify JAVA_OPTS does NOT contain truststore arguments
+	var javaOpts string
+	for _, env := range container.Env {
+		if env.Name == "JAVA_OPTS" {
+			javaOpts = env.Value
+			break
+		}
+	}
+	require.NotEmpty(t, javaOpts, "JAVA_OPTS should be set")
+	assert.NotContains(t, javaOpts, "javax.net.ssl.trustStore", "JAVA_OPTS should NOT contain trustStore when no custom CA is set")
+
+	// Verify no JAVA_TRUSTSTORE_PASSWORD env var
+	for _, env := range container.Env {
+		assert.NotEqual(t, "JAVA_TRUSTSTORE_PASSWORD", env.Name, "JAVA_TRUSTSTORE_PASSWORD should not be set when no custom CA is configured")
+	}
+
+	// Verify no common-secrets volume mount
+	for _, vm := range container.VolumeMounts {
+		assert.NotEqual(t, "common-secrets", vm.Name, "common-secrets volume mount should NOT exist when no custom CA is set")
+	}
+
+	// Verify no common-secrets volume
+	for _, vol := range deployment.Spec.Template.Spec.Volumes {
+		assert.NotEqual(t, "common-secrets", vol.Name, "common-secrets volume should NOT exist when no custom CA is set")
+	}
+
+	// Verify no checksum/common-secret annotation
+	_, hasChecksumAnnotation := deployment.Spec.Template.Annotations["checksum/common-secret"]
+	assert.False(t, hasChecksumAnnotation, "Should NOT have checksum annotation for common secret when no custom CA is set")
+}
