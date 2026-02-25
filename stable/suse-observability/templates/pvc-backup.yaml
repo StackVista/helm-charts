@@ -21,6 +21,9 @@ spec:
   {{ include "common.storage.class" ( dict "persistence" .Values.backup.stackGraph.scheduled.tempData "global" .Values.global) | nindent 2 }}
 {{- end }}
 ---
+{{/*
+PVC and Job are kept around to keep old settings backups available, they should be removed after several releases (i.e. Q3 2026 or later)
+*/}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

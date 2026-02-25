@@ -1,0 +1,96 @@
+{{/*
+PVC and Job are kept around to keep old settings backups available, they should be removed after several releases (i.e. Q3 2026 or later)
+*/}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  {{- if .Values.deployment.compatibleWithArgoCD }}
+  generateName: init-pvc-
+  {{- else }}
+  name: {{ template "common.fullname.short" . }}-init-pvc-{{ now | date "02t150405" }}
+  {{- end }}
+  labels:
+    app.kubernetes.io/component: backup-settings-init
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
+  annotations:
+    {{- if .Values.deployment.compatibleWithArgoCD }}
+    argocd.argoproj.io/hook: Sync
+    {{- end }}
+  {{- with .Values.backup.initJobAnnotations }}
+    {{- toYaml . | nindent 4}}
+  {{- end }}
+spec:
+  ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
+  template:
+    metadata:
+    {{- if or .Values.stackstate.components.all.podAnnotations .Values.stackstate.components.configurationBackup.podAnnotations }}
+      annotations:
+      {{- with .Values.stackstate.components.all.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.configurationBackup.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+      labels:
+        app.kubernetes.io/component: backup
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
+      {{- with .Values.stackstate.components.configurationBackup.podLabels }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      containers:
+        - name: init
+          image: "{{include "stackstate.containerTools.image.registry" .}}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
+          imagePullPolicy: {{ .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
+          command:
+            - "echo"
+            - "Init settings backup pvc"
+          {{- with .Values.stackstate.components.containerTools.resources }}
+          securityContext:
+            {{- $commonContainer.securityContext | toYaml | nindent 12 }}
+          resources:
+            limits:
+              cpu: 10m
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 100Mi
+          {{- end }}
+          volumeMounts:
+            - name: settings-backup-data
+              mountPath: /settings-backup-data
+
+    {{- include "stackstate.image.pullSecret.name" (dict "images" (list .Values.stackstate.components.all.image) "context" $) | nindent 6 }}
+      restartPolicy: Never
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.configurationBackup.nodeSelector }}
+      nodeSelector:
+      {{- with .Values.stackstate.components.all.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.configurationBackup.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.configurationBackup.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- if $affinity }}
+      affinity:
+        {{- $affinity | nindent 8 }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.configurationBackup.tolerations }}
+      tolerations:
+      {{- with .Values.stackstate.components.all.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.configurationBackup.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+{{- if .Values.backup.stackGraph.securityContext.enabled }}
+      securityContext: {{- omit .Values.backup.stackGraph.securityContext "enabled" | toYaml | nindent 8 }}
+{{- end }}
+      volumes:
+      - name: settings-backup-data
+        persistentVolumeClaim:
+          claimName: {{ template "common.fullname.short" . }}-settings-backup-data
