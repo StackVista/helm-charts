@@ -267,6 +267,57 @@ suse-observability-minio
 {{- end -}}
 
 {{/*
+Service account name for S3Proxy.
+Precedence: s3proxy.serviceAccount.name > minio.serviceAccount.name (deprecated) > "suse-observability-minio" (default).
+The default "suse-observability-minio" matches the service account name that was created by the old
+Minio subchart (minio.fullnameOverride was set to "suse-observability-minio").
+This name is important because it may be referenced in IAM role bindings.
+*/}}
+{{- define "stackstate.s3proxy.serviceAccountName" -}}
+{{- if .Values.s3proxy.serviceAccount.name -}}
+{{- .Values.s3proxy.serviceAccount.name -}}
+{{- else if and .Values.minio.serviceAccount .Values.minio.serviceAccount.name -}}
+{{- .Values.minio.serviceAccount.name -}}
+{{- else -}}
+suse-observability-minio
+{{- end -}}
+{{- end -}}
+
+{{/*
+Whether to create the S3Proxy service account.
+Disabled when explicitly set to false on either s3proxy.serviceAccount.create or
+minio.serviceAccount.create (deprecated). If s3proxy.serviceAccount.create is
+explicitly false, creation is skipped regardless of minio. If s3proxy.serviceAccount.create
+is true (the default), minio.serviceAccount.create=false will also suppress creation
+for backward compatibility.
+*/}}
+{{- define "stackstate.s3proxy.serviceAccount.create" -}}
+{{- if and (kindIs "bool" .Values.s3proxy.serviceAccount.create) (not .Values.s3proxy.serviceAccount.create) -}}
+false
+{{- else if and .Values.minio.serviceAccount (kindIs "bool" .Values.minio.serviceAccount.create) (not .Values.minio.serviceAccount.create) -}}
+false
+{{- else -}}
+true
+{{- end -}}
+{{- end -}}
+
+{{/*
+Annotations for the S3Proxy service account.
+Merges minio.serviceAccount.annotations (deprecated, lower precedence) with
+s3proxy.serviceAccount.annotations (higher precedence).
+*/}}
+{{- define "stackstate.s3proxy.serviceAccount.annotations" -}}
+{{- $legacyAnnotations := dict -}}
+{{- if and .Values.minio.serviceAccount .Values.minio.serviceAccount.annotations -}}
+{{- $legacyAnnotations = .Values.minio.serviceAccount.annotations -}}
+{{- end -}}
+{{- $annotations := merge (.Values.s3proxy.serviceAccount.annotations | default dict) $legacyAnnotations -}}
+{{- if $annotations -}}
+{{- toYaml $annotations -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Calculate JVM heap parameters (Xms, Xmx) for S3Proxy based on resource configuration.
 Uses the common stackstate.jvm.heapParams helper.
 Returns the JAVA_OPTS string with calculated -Xms and -Xmx values.

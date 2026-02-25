@@ -161,6 +161,7 @@ spec:
         {{- end }}
     spec:
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
+      serviceAccountName: {{ include "stackstate.s3proxy.serviceAccountName" . | quote }}
       {{- if .Values.s3proxy.securityContext.enabled }}
       securityContext: {{- omit .Values.s3proxy.securityContext "enabled" | toYaml | nindent 8 }}
       {{- end }}

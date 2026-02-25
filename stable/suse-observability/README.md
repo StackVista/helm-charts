@@ -690,7 +690,7 @@ If you encounter issues not covered here:
 | kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory | string | `"25Mi"` | Memory resource requests. |
 | kubernetes-rbac-agent.containers.rbacAgent.tolerations | list | `[]` | Set tolerations |
 | kubernetes-rbac-agent.url.value | string | `"{{ include \"stackstate.rbacAgent.url\" . }}"` |  |
-| minio | object | `{"accessKey":"","azuregateway":{"enabled":false},"fullnameOverride":"","s3gateway":{"accessKey":"","enabled":false,"secretKey":"","serviceEndpoint":""},"secretKey":""}` | DEPRECATED: MinIO subchart has been replaced by S3Proxy. These values are kept for backward compatibility only. Please migrate to backup.storage.* values. Legacy minio.* values will be removed in a future release. |
+| minio | object | `{"accessKey":"","azuregateway":{"enabled":false},"fullnameOverride":"","s3gateway":{"accessKey":"","enabled":false,"secretKey":"","serviceEndpoint":""},"secretKey":"","serviceAccount":{"annotations":{},"create":true,"name":""}}` | DEPRECATED: MinIO subchart has been replaced by S3Proxy. These values are kept for backward compatibility only. Please migrate to backup.storage.* values. Legacy minio.* values will be removed in a future release. |
 | minio.accessKey | string | `""` | DEPRECATED: Use backup.storage.credentials.accessKey instead. If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials. |
 | minio.azuregateway | object | `{"enabled":false}` | DEPRECATED: Use backup.storage.backend.azure instead. When minio.azuregateway.enabled is true, S3Proxy will be configured to use Azure Blob as the backend. |
 | minio.azuregateway.enabled | bool | `false` | DEPRECATED: Use backup.storage.backend.azure.enabled instead. |
@@ -701,6 +701,10 @@ If you encounter issues not covered here:
 | minio.s3gateway.secretKey | string | `""` | DEPRECATED: Use backup.storage.backend.s3.secretKey instead. |
 | minio.s3gateway.serviceEndpoint | string | `""` | DEPRECATED: Use backup.storage.backend.s3.endpoint instead. |
 | minio.secretKey | string | `""` | DEPRECATED: Use backup.storage.credentials.secretKey instead. If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials. |
+| minio.serviceAccount | object | `{"annotations":{},"create":true,"name":""}` | DEPRECATED: Use s3proxy.serviceAccount instead. |
+| minio.serviceAccount.annotations | object | `{}` | DEPRECATED: Use s3proxy.serviceAccount.annotations instead. If set, will be merged into the S3Proxy service account annotations (s3proxy values take precedence). |
+| minio.serviceAccount.create | bool | `true` | DEPRECATED: Use s3proxy.serviceAccount.create instead. |
+| minio.serviceAccount.name | string | `""` | DEPRECATED: Use s3proxy.serviceAccount.name instead. If set, will be used as fallback for the S3Proxy service account name. |
 | networkPolicy.enabled | bool | `false` | Enable creating of `NetworkPolicy` object and associated rules for StackState. |
 | networkPolicy.spec | object | `{"ingress":[{"from":[{"podSelector":{}}]}],"podSelector":{"matchLabels":{}},"policyTypes":["Ingress"]}` | `NetworkPolicy` rules for StackState. |
 | opentelemetry-collector.extraEnvs | list | `[{"name":"API_URL","valueFrom":{"configMapKeyRef":{"key":"api.url","name":"suse-observability-otel-collector"}}},{"name":"INTAKE_URL","valueFrom":{"configMapKeyRef":{"key":"intake.url","name":"suse-observability-otel-collector"}}}]` | Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/). Contains API_URL with path to api server used to authorize requests |
@@ -746,6 +750,9 @@ If you encounter issues not covered here:
 | s3proxy.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
 | s3proxy.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | s3proxy.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
+| s3proxy.serviceAccount.annotations | object | `{}` | Annotations for the S3Proxy service account (e.g. for IAM roles). |
+| s3proxy.serviceAccount.create | bool | `true` | Whether to create the service account for S3Proxy. |
+| s3proxy.serviceAccount.name | string | `""` | Override the service account name. Defaults to "suse-observability-minio" for backward compatibility with the old Minio subchart (e.g. IAM role bindings). |
 | s3proxy.sizing.baseMemoryConsumption | string | `"100Mi"` | Memory reserved for OS and non-heap JVM usage (metaspace, threads, etc) |
 | s3proxy.sizing.javaHeapMemoryFraction | string | `"70"` | Percentage of remaining memory (after baseMemoryConsumption) allocated to Java heap |
 | s3proxy.tolerations | list | `[]` | Tolerations for S3Proxy pod (appended to stackstate.components.all.tolerations) |

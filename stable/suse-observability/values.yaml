@@ -2176,6 +2176,16 @@ minio:
   azuregateway:
     # minio.azuregateway.enabled -- DEPRECATED: Use backup.storage.backend.azure.enabled instead.
     enabled: false
+  # minio.serviceAccount -- DEPRECATED: Use s3proxy.serviceAccount instead.
+  serviceAccount:
+    # minio.serviceAccount.create -- DEPRECATED: Use s3proxy.serviceAccount.create instead.
+    create: true
+    # minio.serviceAccount.name -- DEPRECATED: Use s3proxy.serviceAccount.name instead.
+    # If set, will be used as fallback for the S3Proxy service account name.
+    name: ""
+    # minio.serviceAccount.annotations -- DEPRECATED: Use s3proxy.serviceAccount.annotations instead.
+    # If set, will be merged into the S3Proxy service account annotations (s3proxy values take precedence).
+    annotations: {}
 
 # S3Proxy deployment configuration
 s3proxy:
@@ -2211,6 +2221,13 @@ s3proxy:
   affinity: {}
   # s3proxy.podAnnotations -- Annotations for S3Proxy pod
   podAnnotations: {}
+  serviceAccount:
+    # s3proxy.serviceAccount.create -- Whether to create the service account for S3Proxy.
+    create: true
+    # s3proxy.serviceAccount.name -- Override the service account name. Defaults to "suse-observability-minio" for backward compatibility with the old Minio subchart (e.g. IAM role bindings).
+    name: ""
+    # s3proxy.serviceAccount.annotations -- Annotations for the S3Proxy service account (e.g. for IAM roles).
+    annotations: {}
   securityContext:
     # s3proxy.securityContext.enabled -- Whether or not to enable the securityContext
     enabled: true
