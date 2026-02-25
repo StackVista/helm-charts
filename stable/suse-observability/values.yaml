@@ -19,7 +19,7 @@ global:
     # global.features.experimentalStackpacks -- Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec.
     # This is a preproduction feature, usage may break your entire installation with upcoming releases. No backwards compatibility is guaranteed.
     experimentalStackpacks: false
-  # backup.enabled -- Enables backup/restore, including the MinIO subsystem.
+  # backup.enabled -- Enables backup/restore for all data
   backup:
     enabled: false
   wait:
@@ -80,7 +80,7 @@ commonLabels: {}
 backup:
   # backup.additionalLogging -- Additional logback config for backup components
   additionalLogging: ""
-  # backup.enabled -- Enables backup/restore, including the MinIO subsystem.
+  # backup.enabled -- Enables backup/restore for all data
   enabled: false
   # backup.initJobAnnotations -- Annotations for Backup-init Job.
   initJobAnnotations: {}
@@ -138,8 +138,8 @@ backup:
         # backup.storage.backend.azure.endpoint -- Azure blob endpoint (auto-derived from accountName if not set)
         endpoint: ""
   elasticsearch:
-    # backup.elasticsearch.bucketName -- Name of the MinIO bucket where ElasticSearch snapshots are stored.
-    bucketName: "sts-elasticsearch-backup"
+    # backup.elasticsearch.bucketName -- Name of the storage bucket where ElasticSearch snapshots are stored.
+    bucketName: 'sts-elasticsearch-backup'
     # backup.elasticsearch.snapshotRepositoryName -- Name of the ElasticSearch snapshot repository.
     # backup.elasticsearch.s3Prefix -- Prefix (dir name) used to store backup files.
     s3Prefix: ""
@@ -178,8 +178,8 @@ backup:
     # backup.poddisruptionbudget.maxUnavailable -- Maximum number of pods that can be unavailable during the backup.
     maxUnavailable: 0
   stackGraph:
-    # backup.stackGraph.bucketName -- Name of the MinIO bucket to store StackGraph backups.
-    bucketName: "sts-stackgraph-backup"
+    # backup.stackGraph.bucketName -- Name of the storage bucket to store StackGraph backups.
+    bucketName: 'sts-stackgraph-backup'
     # backup.stackGraph.s3Prefix -- Prefix (dir name) used to store backup files.
     s3Prefix: ""
     # backup.stackGraph.splitArchiveSize -- Split the Stackgraph dump into chunks of the specified size in bytes.
@@ -224,8 +224,8 @@ backup:
       # backup.stackGraph.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
       runAsUser: 65534
   configuration:
-    # backup.configuration.bucketName -- Name of the MinIO bucket to store configuration backups.
-    bucketName: "sts-configuration-backup"
+    # backup.configuration.bucketName -- Name of the storage bucket to store configuration backups.
+    bucketName: 'sts-configuration-backup'
     # backup.configuration.s3Prefix -- Prefix (dir name) used to store backup files.
     s3Prefix: ""
     yaml:
@@ -2476,14 +2476,16 @@ victoria-metrics-0:
     vmbackup:
       image:
         tag: v1.109.0-4cfc610b-release-58
-    # victoria-metrics-0.backup.bucketName -- Name of the MinIO bucket where Victoria Metrics backups are stored.
-    bucketName: "sts-victoria-metrics-backup"
+    # victoria-metrics-0.backup.bucketName -- Name of the storage bucket where Victoria Metrics backups are stored.
+    bucketName: 'sts-victoria-metrics-backup'
     # victoria-metrics-1.backup.s3Prefix -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
     s3Prefix: victoria-metrics-0
     scheduled:
       # victoria-metrics-0.backup.scheduled.schedule -- Cron schedule for automatic backups of Victoria Metrics
       schedule: '25 * * * *'
     awsSecrets: "suse-observability-s3proxy"
+    # -- Override location of S3 endpoints, it should point to storage service. **Do not change this value! It must refer to the storage service (s3proxy)**
+    overrideS3Endpoint: "http://suse-observability-s3proxy:9000"
 victoria-metrics-1:
   enabled: true
   rbac:
@@ -2560,14 +2562,16 @@ victoria-metrics-1:
     vmbackup:
       image:
         tag: v1.109.0-4cfc610b-release-58
-    # victoria-metrics-1.backup.bucketName -- Name of the MinIO bucket where Victoria Metrics backups are stored.
-    bucketName: "sts-victoria-metrics-backup"
+    # victoria-metrics-1.backup.bucketName -- Name of the storage bucket where Victoria Metrics backups are stored.
+    bucketName: 'sts-victoria-metrics-backup'
     # victoria-metrics-1.backup.s3Prefix -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
     s3Prefix: victoria-metrics-1
     scheduled:
       # victoria-metrics-1.backup.scheduled.schedule -- Cron schedule for automatic backups of Victoria Metrics
       schedule: '35 * * * *'
     awsSecrets: "suse-observability-s3proxy"
+    # -- Override location of S3 endpoints, it should point to storage service. **Do not change this value! It must refer to the storage service (s3proxy)**
+    overrideS3Endpoint: "http://suse-observability-s3proxy:9000"
 victoria-metrics:
   restore:
     image:
@@ -2809,8 +2813,8 @@ clickhouse:
       repository: stackstate/clickhouse-backup
       # clickhouse.backup.image.tag -- Container image tag for 'clickhouse' backup containers.
       tag: 2.6.39-a7171eea-149-release
-    # clickhouse.backup.bucketName -- Name of the MinIO bucket where ClickHouse backups are stored.
-    bucketName: "sts-clickhouse-backup"
+    # clickhouse.backup.bucketName -- Name of the storage bucket where ClickHouse backups are stored.
+    bucketName: 'sts-clickhouse-backup'
     # backup.clickhouse.s3Prefix -- Prefix (dir name) used to store backup files.
     s3Prefix: ""
     # clickhouse.backup.nodeSelector -- Node labels for pod assignment.

@@ -679,13 +679,13 @@ server:
 backup:
   # -- Enable scheduled backups of Victoria Metrics.
   enabled: false
-  # -- Name of the MinIO bucket where Victoria Metrics backups are stored.
+  # -- Name of the storage bucket where Victoria Metrics backups are stored.
   bucketName: 'sts-victoria-metrics-backup'
   # -- Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory.
   s3Prefix: null
-  # -- Override location of S3 endpoints, it should point to MinIO service. **Do not change this value! It must base on 'minio.fullnameOverride'**
-  overrideS3Endpoint: "http://suse-observability-minio:9000"
-  # -- Name of k8s secrets with Access Key and Secret Key to the MinIO service.
+  # -- Override location of S3 endpoints, it should point to storage service. **Do not change this value!**
+  overrideS3Endpoint: ""
+  # -- Name of k8s secrets with Access Key and Secret Key to the storage service.
   awsSecrets: ""
   scheduled:
     # -- Cron schedule for automatic backups of Victoria Metrics
