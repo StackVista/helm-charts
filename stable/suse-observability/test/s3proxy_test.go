@@ -313,6 +313,32 @@ func TestS3ProxyResources(t *testing.T) {
 	assert.Equal(t, "512Mi", container.Resources.Requests.Memory().String(), "Memory request should be set")
 }
 
+// TestS3ProxyDefaultArgs verifies the exact default commandline arguments for the s3proxy container
+func TestS3ProxyDefaultArgs(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	container := deployment.Spec.Template.Spec.Containers[0]
+
+	// Default values in full.yaml have global.backup.enabled=true,
+	// so we expect both settings and main properties files
+	expectedArgs := []string{
+		"--properties",
+		"/etc/s3proxy/s3proxy-settings.properties",
+		"--properties",
+		"/etc/s3proxy/s3proxy-main.properties",
+	}
+	assert.Equal(t, expectedArgs, container.Args, "Default args should load both settings and main properties files")
+
+	// Container should not have a custom command (uses image entrypoint)
+	assert.Empty(t, container.Command, "Container should use the default image entrypoint (no custom command)")
+}
+
 // TestS3ProxyDeploymentArgs verifies the deployment args based on backup.enabled
 func TestS3ProxyDeploymentArgs(t *testing.T) {
 	t.Run("backup disabled", func(t *testing.T) {
@@ -924,7 +950,7 @@ func TestS3ProxyCustomCATrustStore(t *testing.T) {
 	require.NotEmpty(t, javaOpts, "JAVA_OPTS should be set")
 	assert.Contains(t, javaOpts, "-Djavax.net.ssl.trustStore=/opt/s3proxy/secrets/java-cacerts", "JAVA_OPTS should contain trustStore path")
 	assert.Contains(t, javaOpts, "-Djavax.net.ssl.trustStoreType=jks", "JAVA_OPTS should contain trustStoreType")
-	assert.Contains(t, javaOpts, "-Djavax.net.ssl.trustStorefPassword=$(JAVA_TRUSTSTORE_PASSWORD)", "JAVA_OPTS should contain trustStorePassword reference")
+	assert.Contains(t, javaOpts, "-Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD)", "JAVA_OPTS should contain trustStorePassword reference")
 
 	// Verify JAVA_TRUSTSTORE_PASSWORD env var is set from the common secret
 	var trustStorePasswordEnv *corev1.EnvVar

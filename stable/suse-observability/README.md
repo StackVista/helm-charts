@@ -733,7 +733,7 @@ If you encounter issues not covered here:
 | s3proxy.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for S3Proxy |
 | s3proxy.image.registry | string | `"quay.io"` | imageRegistry used for the S3Proxy Docker image |
 | s3proxy.image.repository | string | `"stackstate/s3proxy"` | Image repository for S3Proxy |
-| s3proxy.image.tag | string | `"3.0.0-3137dcb1-7"` | Image tag for S3Proxy |
+| s3proxy.image.tag | string | `"3.0.0-b23a8e7b-10"` | Image tag for S3Proxy |
 | s3proxy.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | s3proxy.metrics.defaultAgentMetricsFilter | string | `"[\"*\"]"` |  |
 | s3proxy.metrics.enabled | bool | `true` | Enable / disable S3Proxy Prometheus metrics. |
