@@ -86,10 +86,10 @@ backup:
   initJobAnnotations: {}
   storage:
     credentials:
-      # backup.storage.credentials.accessKey -- Access key for S3Proxy authentication (auto-generated if empty)
-      accessKey: ""
-      # backup.storage.credentials.secretKey -- Secret key for S3Proxy authentication (auto-generated if empty)
-      secretKey: ""
+      # backup.storage.credentials.accessKey -- Access key for S3Proxy authentication (override for production usage with global.backup.enabled)
+      accessKey: "default-access-key-for-settings-only"
+      # backup.storage.credentials.secretKey -- Secret key for S3Proxy authentication (override for production usage with global.backup.enabled)
+      secretKey: "default-secret-key-for-settings-only"
       # backup.storage.credentials.existingSecret -- Use existing secret for credentials (keys: accessKey, secretKey)
       existingSecret: ""
     # backup.storage.settingsPvc -- PVC for local settings backup (always present)

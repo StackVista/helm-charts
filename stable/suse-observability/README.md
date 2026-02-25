@@ -457,9 +457,9 @@ If you encounter issues not covered here:
 | backup.storage.backend.s3.endpoint | string | `""` | S3 endpoint URL (optional, defaults to AWS) |
 | backup.storage.backend.s3.region | string | `"us-east-1"` | AWS region (defaults to us-east-1) |
 | backup.storage.backend.s3.secretKey | string | `""` | AWS secret key (optional) |
-| backup.storage.credentials.accessKey | string | `""` | Access key for S3Proxy authentication (auto-generated if empty) |
+| backup.storage.credentials.accessKey | string | `"default-access-key-for-settings-only"` | Access key for S3Proxy authentication (override for production usage with global.backup.enabled) |
 | backup.storage.credentials.existingSecret | string | `""` | Use existing secret for credentials (keys: accessKey, secretKey) |
-| backup.storage.credentials.secretKey | string | `""` | Secret key for S3Proxy authentication (auto-generated if empty) |
+| backup.storage.credentials.secretKey | string | `"default-secret-key-for-settings-only"` | Secret key for S3Proxy authentication (override for production usage with global.backup.enabled) |
 | backup.storage.settingsPvc | object | `{"accessModes":["ReadWriteOnce"],"size":"2Gi","storageClass":""}` | PVC for local settings backup (always present) |
 | backup.storage.settingsPvc.accessModes | list | `["ReadWriteOnce"]` | Access modes for the settings PVC |
 | backup.storage.settingsPvc.size | string | `"2Gi"` | Size of the settings backup PVC |

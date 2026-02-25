@@ -61,13 +61,7 @@ Get S3Proxy access key.
 Falls back to minio.accessKey for backward compatibility, or generates random key.
 */}}
 {{- define "stackstate.s3proxy.accessKey" -}}
-{{- if .Values.backup.storage.credentials.accessKey -}}
 {{- .Values.backup.storage.credentials.accessKey -}}
-{{- else if and .Values.minio.accessKey (ne .Values.minio.accessKey "") (ne .Values.minio.accessKey "setme") -}}
-{{- .Values.minio.accessKey -}}
-{{- else -}}
-{{- randAlphaNum 20 -}}
-{{- end -}}
 {{- end -}}
 
 {{/*
@@ -75,13 +69,7 @@ Get S3Proxy secret key.
 Falls back to minio.secretKey for backward compatibility, or generates random key.
 */}}
 {{- define "stackstate.s3proxy.secretKey" -}}
-{{- if .Values.backup.storage.credentials.secretKey -}}
 {{- .Values.backup.storage.credentials.secretKey -}}
-{{- else if and .Values.minio.secretKey (ne .Values.minio.secretKey "") (ne .Values.minio.secretKey "setme") -}}
-{{- .Values.minio.secretKey -}}
-{{- else -}}
-{{- randAlphaNum 40 -}}
-{{- end -}}
 {{- end -}}
 
 {{/*

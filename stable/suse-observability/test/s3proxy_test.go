@@ -284,7 +284,7 @@ func TestS3ProxyService(t *testing.T) {
 	})
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	service, ok := resources.Services["suse-observability-s3proxy"]
+	service, ok := resources.Services["suse-observability-objectstorage"]
 	require.True(t, ok, "S3Proxy service should exist")
 	assert.Equal(t, int32(9000), service.Spec.Ports[0].Port, "Service port should be 9000")
 	assert.Equal(t, "http", service.Spec.Ports[0].Name, "Service port name should be http")
@@ -350,7 +350,8 @@ func TestS3ProxyDeploymentArgs(t *testing.T) {
 		})
 		resources := helmtestutil.NewKubernetesResources(t, output)
 
-		deployment := resources.Deployments["suse-observability-s3proxy"]
+		deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+		require.True(t, ok, "S3Proxy deployment should exist")
 		container := deployment.Spec.Template.Spec.Containers[0]
 
 		// Should only have settings properties
@@ -368,7 +369,8 @@ func TestS3ProxyDeploymentArgs(t *testing.T) {
 		})
 		resources := helmtestutil.NewKubernetesResources(t, output)
 
-		deployment := resources.Deployments["suse-observability-s3proxy"]
+		deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+		require.True(t, ok, "S3Proxy deployment should exist")
 		container := deployment.Spec.Template.Spec.Containers[0]
 
 		// Should have both settings and main properties
@@ -392,7 +394,8 @@ func TestS3ProxyExistingSecret(t *testing.T) {
 	assert.False(t, ok, "S3Proxy managed secret should NOT exist when using existingSecret")
 
 	// Deployment should reference the existing secret
-	deployment := resources.Deployments["suse-observability-s3proxy"]
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
 	container := deployment.Spec.Template.Spec.Containers[0]
 
 	// Find the S3PROXY_IDENTITY env var
@@ -417,7 +420,8 @@ func TestS3ProxyNodeSelector(t *testing.T) {
 	})
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	deployment := resources.Deployments["suse-observability-s3proxy"]
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
 	assert.Equal(t, "ssd", deployment.Spec.Template.Spec.NodeSelector["disk-type"], "Node selector should be set")
 }
 
@@ -434,7 +438,8 @@ func TestS3ProxyTolerations(t *testing.T) {
 	})
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	deployment := resources.Deployments["suse-observability-s3proxy"]
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
 	require.NotEmpty(t, deployment.Spec.Template.Spec.Tolerations, "Tolerations should be set")
 
 	found := false
