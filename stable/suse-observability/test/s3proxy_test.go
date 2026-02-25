@@ -1100,3 +1100,95 @@ func TestS3ProxyNoCustomCA(t *testing.T) {
 	_, hasChecksumAnnotation := deployment.Spec.Template.Annotations["checksum/common-secret"]
 	assert.False(t, hasChecksumAnnotation, "Should NOT have checksum annotation for common secret when no custom CA is set")
 }
+
+// TestS3ProxySecurityContextDefault verifies the default securityContext configuration
+func TestS3ProxySecurityContextDefault(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	// Verify pod-level securityContext defaults
+	podSecCtx := deployment.Spec.Template.Spec.SecurityContext
+	require.NotNil(t, podSecCtx, "Pod securityContext should be set")
+	assert.Equal(t, int64(65534), *podSecCtx.RunAsUser, "Pod runAsUser should be 65534")
+	assert.Equal(t, int64(65534), *podSecCtx.RunAsGroup, "Pod runAsGroup should be 65534")
+	assert.Equal(t, int64(65534), *podSecCtx.FSGroup, "Pod fsGroup should be 65534")
+	assert.True(t, *podSecCtx.RunAsNonRoot, "Pod runAsNonRoot should be true")
+
+	// Verify main container securityContext (from common.container defaults - no runAsUser/runAsGroup)
+	container := deployment.Spec.Template.Spec.Containers[0]
+	require.NotNil(t, container.SecurityContext, "Container securityContext should be set")
+	assert.True(t, *container.SecurityContext.RunAsNonRoot, "Container runAsNonRoot should be true")
+	assert.False(t, *container.SecurityContext.AllowPrivilegeEscalation, "Container allowPrivilegeEscalation should be false")
+	require.NotNil(t, container.SecurityContext.Capabilities, "Container capabilities should be set")
+	assert.Contains(t, container.SecurityContext.Capabilities.Drop, corev1.Capability("ALL"), "Container should drop ALL capabilities")
+	require.NotNil(t, container.SecurityContext.SeccompProfile, "Container seccomp profile should be set")
+	assert.Equal(t, corev1.SeccompProfileTypeRuntimeDefault, container.SecurityContext.SeccompProfile.Type, "Container seccomp profile should be RuntimeDefault")
+
+	// Verify init container securityContext (from common.container defaults - no runAsUser/runAsGroup)
+	require.Len(t, deployment.Spec.Template.Spec.InitContainers, 1, "Should have one init container")
+	initContainer := deployment.Spec.Template.Spec.InitContainers[0]
+	require.NotNil(t, initContainer.SecurityContext, "Init container securityContext should be set")
+	assert.True(t, *initContainer.SecurityContext.RunAsNonRoot, "Init container runAsNonRoot should be true")
+	assert.False(t, *initContainer.SecurityContext.AllowPrivilegeEscalation, "Init container allowPrivilegeEscalation should be false")
+	require.NotNil(t, initContainer.SecurityContext.Capabilities, "Init container capabilities should be set")
+	assert.Contains(t, initContainer.SecurityContext.Capabilities.Drop, corev1.Capability("ALL"), "Init container should drop ALL capabilities")
+	require.NotNil(t, initContainer.SecurityContext.SeccompProfile, "Init container seccomp profile should be set")
+	assert.Equal(t, corev1.SeccompProfileTypeRuntimeDefault, initContainer.SecurityContext.SeccompProfile.Type, "Init container seccomp profile should be RuntimeDefault")
+}
+
+// TestS3ProxySecurityContextDisabled verifies that pod-level securityContext can be disabled
+func TestS3ProxySecurityContextDisabled(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"s3proxy.securityContext.enabled": "false",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	// Pod-level securityContext should be empty/nil when disabled
+	podSecCtx := deployment.Spec.Template.Spec.SecurityContext
+	if podSecCtx != nil {
+		assert.Nil(t, podSecCtx.RunAsUser, "Pod runAsUser should not be set when securityContext is disabled")
+		assert.Nil(t, podSecCtx.RunAsGroup, "Pod runAsGroup should not be set when securityContext is disabled")
+		assert.Nil(t, podSecCtx.FSGroup, "Pod fsGroup should not be set when securityContext is disabled")
+	}
+
+	// Container-level securityContext should still be present (from common.container defaults)
+	container := deployment.Spec.Template.Spec.Containers[0]
+	require.NotNil(t, container.SecurityContext, "Container securityContext should still be set even when pod-level is disabled")
+	assert.False(t, *container.SecurityContext.AllowPrivilegeEscalation, "Container allowPrivilegeEscalation should be false")
+	assert.True(t, *container.SecurityContext.RunAsNonRoot, "Container runAsNonRoot should be true")
+}
+
+// TestS3ProxySecurityContextCustomValues verifies custom securityContext values
+func TestS3ProxySecurityContextCustomValues(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"s3proxy.securityContext.enabled":    "true",
+			"s3proxy.securityContext.runAsUser":  "1000",
+			"s3proxy.securityContext.runAsGroup": "1000",
+			"s3proxy.securityContext.fsGroup":    "1000",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	// Verify pod-level securityContext uses custom values
+	podSecCtx := deployment.Spec.Template.Spec.SecurityContext
+	require.NotNil(t, podSecCtx, "Pod securityContext should be set")
+	assert.Equal(t, int64(1000), *podSecCtx.RunAsUser, "Pod runAsUser should be custom value 1000")
+	assert.Equal(t, int64(1000), *podSecCtx.RunAsGroup, "Pod runAsGroup should be custom value 1000")
+	assert.Equal(t, int64(1000), *podSecCtx.FSGroup, "Pod fsGroup should be custom value 1000")
+}

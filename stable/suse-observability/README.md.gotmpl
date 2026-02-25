@@ -700,25 +700,6 @@ minio:
     enabled: true
 ```
 
-### S3Proxy Deployment Configuration
-
-Configure resources and scheduling for the S3Proxy pod:
-
-```yaml
-s3proxy:
-  resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
-    requests:
-      cpu: 100m
-      memory: 256Mi
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  podAnnotations: {}
-```
-
 ## Auto-installing StackPacks
 It can be useful to have some StackPacks always installed in StackState. For example the Kuberentes StackPack configured for the cluster running StackState. For that purpose the value `stackstate.stackpacks.installed` can be used to specify the StackPacks that should be installed (by name) and their (required) configuration. As an example here the Kubernetes StackPack will be pre-installed:
 ```

@@ -1,14 +1,4 @@
 {{/*
-Determine if S3Proxy should be enabled.
-S3Proxy is ALWAYS enabled because the settings-local PVC needs it.
-Even when global.backup.enabled=false, we need S3Proxy to serve the
-settings-local-backup bucket from the local settings PVC.
-*/}}
-{{- define "stackstate.s3proxy.enabled" -}}
-true
-{{- end -}}
-
-{{/*
 Full name for S3Proxy resources.
 */}}
 {{- define "stackstate.s3proxy.fullname" -}}

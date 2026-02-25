@@ -1,6 +1,134 @@
-{{- if include "stackstate.s3proxy.enabled" . }}
-apiVersion: apps/v1
-kind: Deployment
+{{- define "stackstate.s3proxy.deployment.container.init" -}}
+name: create-bucket-dirs
+image: "{{ include "stackstate.containerTools.image.registry" . }}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
+command:
+  - sh
+  - -c
+  - |
+    # Create settings bucket directory (always needed)
+    mkdir -p /settings-data/{{ include "stackstate.s3proxy.localSettingsBucketName" . }}
+    echo "Created settings bucket directory: /settings-data/{{ include "stackstate.s3proxy.localSettingsBucketName" . }}"
+    {{- if and .Values.global.backup.enabled (include "stackstate.s3proxy.mainBackendUsesPVC" .) }}
+    # Create main backup bucket directories
+    {{- $buckets := list .Values.backup.configuration.bucketName .Values.backup.stackGraph.bucketName .Values.backup.elasticsearch.bucketName .Values.clickhouse.backup.bucketName (index .Values "victoria-metrics-0" "backup" "bucketName") (index .Values "victoria-metrics-1" "backup" "bucketName") | compact | uniq }}
+    {{- range $bucket := $buckets }}
+    mkdir -p /main-data/{{ $bucket }}
+    echo "Created main backup bucket directory: /main-data/{{ $bucket }}"
+    {{- end }}
+    {{- end }}
+volumeMounts:
+  - name: settings-data
+    mountPath: /settings-data
+  {{- if and .Values.global.backup.enabled (include "stackstate.s3proxy.mainBackendUsesPVC" .) }}
+  - name: main-data
+    mountPath: /main-data
+  {{- end }}
+{{- end -}}
+
+{{- define "stackstate.s3proxy.deployment.container.main" -}}
+name: s3proxy
+image: "{{ include "stackstate.s3proxy.image.registry" . }}/{{ .Values.s3proxy.image.repository }}:{{ .Values.s3proxy.image.tag }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.s3proxy.image.pullPolicy | quote }}
+args:
+  - --properties
+  - "/etc/s3proxy/s3proxy-settings.properties"
+  {{ if .Values.global.backup.enabled }}
+  - --properties
+  - "/etc/s3proxy/s3proxy-main.properties"
+  {{ end }}
+ports:
+  - name: http
+    containerPort: {{ include "stackstate.s3proxy.port" . }}
+    protocol: TCP
+  - name: metrics
+    containerPort: 9090
+    protocol: TCP
+env:
+  {{- if .Values.stackstate.java.trustStorePassword }}
+  - name: JAVA_TRUSTSTORE_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "common.fullname.short" . }}-common
+        key: javaTrustStorePassword
+  {{- end }}
+  - name: S3PROXY_IDENTITY
+    valueFrom:
+      secretKeyRef:
+        name: {{ include "stackstate.s3proxy.secretName" . }}
+        key: accesskey
+  - name: S3PROXY_CREDENTIAL
+    valueFrom:
+      secretKeyRef:
+        name: {{ include "stackstate.s3proxy.secretName" . }}
+        key: secretkey
+  {{- if .Values.global.backup.enabled }}
+  {{- if (include "stackstate.s3proxy.s3BackendEnabled" .) }}
+  - name: JCLOUDS_IDENTITY
+    valueFrom:
+      secretKeyRef:
+        name: {{ include "stackstate.s3proxy.secretName" . }}
+        key: backendAccessKey
+  - name: JCLOUDS_CREDENTIAL
+    valueFrom:
+      secretKeyRef:
+        name: {{ include "stackstate.s3proxy.secretName" . }}
+        key: backendSecretKey
+  {{- else if (include "stackstate.s3proxy.azureBackendEnabled" .) }}
+  - name: JCLOUDS_IDENTITY
+    valueFrom:
+      secretKeyRef:
+        name: {{ include "stackstate.s3proxy.secretName" . }}
+        key: azureAccountName
+  {{- if include "stackstate.s3proxy.azureBackendAccountKey" . }}
+  - name: JCLOUDS_CREDENTIAL
+    valueFrom:
+      secretKeyRef:
+        name: {{ include "stackstate.s3proxy.secretName" . }}
+        key: azureAccountKey
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  - name: JAVA_OPTS
+    value: {{ include "stackstate.s3proxy.javaOpts" . }}{{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }} -Djavax.net.ssl.trustStore=/opt/s3proxy/secrets/java-cacerts -Djavax.net.ssl.trustStoreType=jks{{- if .Values.stackstate.java.trustStorePassword }} -Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD){{- end }}{{- end }} -DLOG_LEVEL="INFO" -Ds3proxy.endpoint=http://0.0.0.0:9000 -Ds3proxy.authorization=aws-v2-or-v4 -Ds3proxy.identity=$(S3PROXY_IDENTITY) -Ds3proxy.credential=$(S3PROXY_CREDENTIAL) -Ds3proxy.metrics.enabled=true -Ds3proxy.metrics.port=9090 -Ds3proxy.metrics.host=0.0.0.0 -Djclouds.identity=$(JCLOUDS_IDENTITY) -Djclouds.credential=$(JCLOUDS_CREDENTIAL)
+volumeMounts:
+  - name: config
+    mountPath: /etc/s3proxy
+    readOnly: true
+  - name: settings-data
+    mountPath: /settings-data
+  {{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }}
+  - name: common-secrets
+    mountPath: /opt/s3proxy/secrets
+    readOnly: true
+  {{- end }}
+  {{- if and .Values.global.backup.enabled (include "stackstate.s3proxy.mainBackendUsesPVC" .) }}
+  - name: main-data
+    mountPath: /main-data
+  {{- end }}
+resources:
+  {{- toYaml .Values.s3proxy.resources | nindent 2 }}
+livenessProbe:
+  httpGet:
+    path: /
+    port: metrics
+  initialDelaySeconds: 10
+  periodSeconds: 30
+readinessProbe:
+  httpGet:
+    path: /
+    port: metrics
+  initialDelaySeconds: 5
+  periodSeconds: 10
+{{- end -}}
+
+{{- define "stackstate.s3proxy.deployment" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.s3proxy.deployment.container.main" .) -}}
+{{- $s3proxyMainContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.s3proxy.deployment.container.init" .) -}}
+{{- $s3proxyInitContainer := (merge $overrideContainer $commonContainer) -}}
+
 metadata:
   name: {{ include "stackstate.s3proxy.fullname" . }}
   labels:
@@ -33,129 +161,13 @@ spec:
         {{- end }}
     spec:
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
-      {{- if .Values.stackstate.components.all.securityContext.enabled }}
-      securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
+      {{- if .Values.s3proxy.securityContext.enabled }}
+      securityContext: {{- omit .Values.s3proxy.securityContext "enabled" | toYaml | nindent 8 }}
       {{- end }}
       initContainers:
-        - name: create-bucket-dirs
-          image: "{{ include "stackstate.containerTools.image.registry" . }}/{{ .Values.stackstate.components.containerTools.image.repository }}:{{ .Values.stackstate.components.containerTools.image.tag }}"
-          imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.containerTools.image.pullPolicy | quote }}
-          command:
-            - sh
-            - -c
-            - |
-              # Create settings bucket directory (always needed)
-              mkdir -p /settings-data/{{ include "stackstate.s3proxy.localSettingsBucketName" . }}
-              echo "Created settings bucket directory: /settings-data/{{ include "stackstate.s3proxy.localSettingsBucketName" . }}"
-              {{- if and .Values.global.backup.enabled (include "stackstate.s3proxy.mainBackendUsesPVC" .) }}
-              # Create main backup bucket directories
-              {{- $buckets := list .Values.backup.configuration.bucketName .Values.backup.stackGraph.bucketName .Values.backup.elasticsearch.bucketName .Values.clickhouse.backup.bucketName (index .Values "victoria-metrics-0" "backup" "bucketName") (index .Values "victoria-metrics-1" "backup" "bucketName") | compact | uniq }}
-              {{- range $bucket := $buckets }}
-              mkdir -p /main-data/{{ $bucket }}
-              echo "Created main backup bucket directory: /main-data/{{ $bucket }}"
-              {{- end }}
-              {{- end }}
-          volumeMounts:
-            - name: settings-data
-              mountPath: /settings-data
-            {{- if and .Values.global.backup.enabled (include "stackstate.s3proxy.mainBackendUsesPVC" .) }}
-            - name: main-data
-              mountPath: /main-data
-            {{- end }}
+      - {{ toYaml $s3proxyInitContainer | nindent 8 }}
       containers:
-        - name: s3proxy
-          image: "{{ include "stackstate.s3proxy.image.registry" . }}/{{ .Values.s3proxy.image.repository }}:{{ .Values.s3proxy.image.tag }}"
-          imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.s3proxy.image.pullPolicy | quote }}
-          args:
-            - --properties
-            - "/etc/s3proxy/s3proxy-settings.properties"
-            {{ if .Values.global.backup.enabled }}
-            - --properties
-            - "/etc/s3proxy/s3proxy-main.properties"
-            {{ end }}
-          ports:
-            - name: http
-              containerPort: {{ include "stackstate.s3proxy.port" . }}
-              protocol: TCP
-            - name: metrics
-              containerPort: 9090
-              protocol: TCP
-          env:
-            {{- if .Values.stackstate.java.trustStorePassword }}
-            - name: JAVA_TRUSTSTORE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "common.fullname.short" . }}-common
-                  key: javaTrustStorePassword
-            {{- end }}
-            - name: S3PROXY_IDENTITY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "stackstate.s3proxy.secretName" . }}
-                  key: accesskey
-            - name: S3PROXY_CREDENTIAL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "stackstate.s3proxy.secretName" . }}
-                  key: secretkey
-            {{- if .Values.global.backup.enabled }}
-            {{- if (include "stackstate.s3proxy.s3BackendEnabled" .) }}
-            - name: JCLOUDS_IDENTITY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "stackstate.s3proxy.secretName" . }}
-                  key: backendAccessKey
-            - name: JCLOUDS_CREDENTIAL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "stackstate.s3proxy.secretName" . }}
-                  key: backendSecretKey
-            {{- else if (include "stackstate.s3proxy.azureBackendEnabled" .) }}
-            - name: JCLOUDS_IDENTITY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "stackstate.s3proxy.secretName" . }}
-                  key: azureAccountName
-            {{- if include "stackstate.s3proxy.azureBackendAccountKey" . }}
-            - name: JCLOUDS_CREDENTIAL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "stackstate.s3proxy.secretName" . }}
-                  key: azureAccountKey
-            {{- end }}
-            {{- end }}
-            {{- end }}
-            - name: JAVA_OPTS
-              value: {{ include "stackstate.s3proxy.javaOpts" . }}{{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }} -Djavax.net.ssl.trustStore=/opt/s3proxy/secrets/java-cacerts -Djavax.net.ssl.trustStoreType=jks{{- if .Values.stackstate.java.trustStorePassword }} -Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD){{- end }}{{- end }} -DLOG_LEVEL="INFO" -Ds3proxy.endpoint=http://0.0.0.0:9000 -Ds3proxy.authorization=aws-v2-or-v4 -Ds3proxy.identity=$(S3PROXY_IDENTITY) -Ds3proxy.credential=$(S3PROXY_CREDENTIAL) -Ds3proxy.metrics.enabled=true -Ds3proxy.metrics.port=9090 -Ds3proxy.metrics.host=0.0.0.0 -Djclouds.identity=$(JCLOUDS_IDENTITY) -Djclouds.credential=$(JCLOUDS_CREDENTIAL)
-          volumeMounts:
-            - name: config
-              mountPath: /etc/s3proxy
-              readOnly: true
-            - name: settings-data
-              mountPath: /settings-data
-            {{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }}
-            - name: common-secrets
-              mountPath: /opt/s3proxy/secrets
-              readOnly: true
-            {{- end }}
-            {{- if and .Values.global.backup.enabled (include "stackstate.s3proxy.mainBackendUsesPVC" .) }}
-            - name: main-data
-              mountPath: /main-data
-            {{- end }}
-          resources:
-            {{- toYaml .Values.s3proxy.resources | nindent 12 }}
-          livenessProbe:
-            httpGet:
-              path: /
-              port: metrics
-            initialDelaySeconds: 10
-            periodSeconds: 30
-          readinessProbe:
-            httpGet:
-              path: /
-              port: metrics
-            initialDelaySeconds: 5
-            periodSeconds: 10
+      - {{ toYaml $s3proxyMainContainer | nindent 8 }}
       {{- include "stackstate.s3proxy.nodeSelector" . | nindent 6 }}
       {{- include "stackstate.s3proxy.affinity" . | nindent 6 }}
       {{- include "stackstate.s3proxy.tolerations" . | nindent 6 }}
@@ -179,4 +191,8 @@ spec:
           persistentVolumeClaim:
             claimName: {{ include "stackstate.backup.mainPvcName" . }}
         {{- end }}
-{{- end }}
+{{- end -}}
+
+{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $s3proxyDeployment := fromYaml (include "stackstate.s3proxy.deployment" .) -}}
+{{- toYaml (merge $s3proxyDeployment $commonDeployment) -}}

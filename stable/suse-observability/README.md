@@ -742,6 +742,11 @@ If you encounter issues not covered here:
 | s3proxy.nodeSelector | object | `{}` | Node selector for S3Proxy pod (merged with stackstate.components.all.nodeSelector) |
 | s3proxy.podAnnotations | object | `{}` | Annotations for S3Proxy pod |
 | s3proxy.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"512Mi"},"requests":{"cpu":"100m","ephemeral-storage":"1Mi","memory":"256Mi"}}` | Resource limits and requests for S3Proxy container |
+| s3proxy.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
+| s3proxy.securityContext.fsGroup | int | `65534` | The GID (group ID) used to mount volumes |
+| s3proxy.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
+| s3proxy.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
+| s3proxy.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
 | s3proxy.sizing.baseMemoryConsumption | string | `"100Mi"` | Memory reserved for OS and non-heap JVM usage (metaspace, threads, etc) |
 | s3proxy.sizing.javaHeapMemoryFraction | string | `"70"` | Percentage of remaining memory (after baseMemoryConsumption) allocated to Java heap |
 | s3proxy.tolerations | list | `[]` | Tolerations for S3Proxy pod (appended to stackstate.components.all.tolerations) |
@@ -1806,25 +1811,6 @@ minio:
   # Azure gateway (maps to backup.storage.backend.azure)
   azuregateway:
     enabled: true
-```
-
-### S3Proxy Deployment Configuration
-
-Configure resources and scheduling for the S3Proxy pod:
-
-```yaml
-s3proxy:
-  resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
-    requests:
-      cpu: 100m
-      memory: 256Mi
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  podAnnotations: {}
 ```
 
 ## Auto-installing StackPacks

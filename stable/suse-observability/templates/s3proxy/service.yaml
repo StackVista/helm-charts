@@ -1,4 +1,3 @@
-{{- if include "stackstate.s3proxy.enabled" . }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -17,4 +16,3 @@ spec:
   selector:
     app.kubernetes.io/name: s3proxy
     app.kubernetes.io/component: s3proxy
-{{- end }}
