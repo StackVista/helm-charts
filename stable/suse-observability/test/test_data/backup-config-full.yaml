@@ -65,6 +65,7 @@ stackgraph:
           key: node-role.kubernetes.io/backup-config-full-backup
           operator: Exists
 settings:
+  localBucket: "local-settings-backup"
   bucket: "sts-configuration-backup"
   s3Prefix: ""
   restore:

@@ -46,6 +46,7 @@ stackgraph:
       
       
 settings:
+  localBucket: "local-settings-backup"
   bucket: "sts-configuration-backup"
   s3Prefix: ""
   restore:
