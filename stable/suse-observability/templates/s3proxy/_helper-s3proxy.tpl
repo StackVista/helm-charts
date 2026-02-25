@@ -6,6 +6,13 @@ suse-observability-s3proxy
 {{- end -}}
 
 {{/*
+Full name for S3Proxy resources.
+*/}}
+{{- define "stackstate.s3proxy.service.fullname" -}}
+suse-observability-objectstorage
+{{- end -}}
+
+{{/*
 S3Proxy secret name.
 */}}
 {{- define "stackstate.s3proxy.secretName" -}}
@@ -22,7 +29,7 @@ With bucket-locator middleware, all buckets are served from the same endpoint.
 The middleware routes requests to the appropriate backend based on bucket name.
 */}}
 {{- define "stackstate.s3proxy.endpoint" -}}
-{{ include "stackstate.s3proxy.fullname" . }}:{{ include "stackstate.s3proxy.port" . }}
+{{ include "stackstate.s3proxy.service.fullname" . }}:{{ include "stackstate.s3proxy.port" . }}
 {{- end -}}
 
 {{/*

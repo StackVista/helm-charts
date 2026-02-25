@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "stackstate.s3proxy.fullname" . }}
+  name: {{ include "stackstate.s3proxy.service.fullname" . }}
   labels:
     app.kubernetes.io/name: s3proxy
     app.kubernetes.io/component: s3proxy

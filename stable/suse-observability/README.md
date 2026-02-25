@@ -460,7 +460,6 @@ If you encounter issues not covered here:
 | backup.storage.credentials.accessKey | string | `""` | Access key for S3Proxy authentication (auto-generated if empty) |
 | backup.storage.credentials.existingSecret | string | `""` | Use existing secret for credentials (keys: accessKey, secretKey) |
 | backup.storage.credentials.secretKey | string | `""` | Secret key for S3Proxy authentication (auto-generated if empty) |
-| backup.storage.enabled | bool | `true` | Enable the S3Proxy deployment. Always enabled for settings backup. |
 | backup.storage.settingsPvc | object | `{"accessModes":["ReadWriteOnce"],"size":"2Gi","storageClass":""}` | PVC for local settings backup (always present) |
 | backup.storage.settingsPvc.accessModes | list | `["ReadWriteOnce"]` | Access modes for the settings PVC |
 | backup.storage.settingsPvc.size | string | `"2Gi"` | Size of the settings backup PVC |
@@ -1761,30 +1760,6 @@ backup:
 
       # Or use an existing secret
       existingSecret: "my-s3proxy-credentials"
-```
-
-### Storage Class and PVC Configuration
-
-Configure storage classes for the PVCs:
-
-```yaml
-backup:
-  storage:
-    # Settings backup PVC (always present)
-    settingsPvc:
-      size: 1Gi
-      storageClass: "fast-ssd"
-      accessModes:
-        - ReadWriteOnce
-
-    # Main backup PVC (when using PVC backend)
-    backend:
-      pvc:
-        enabled: true
-        size: 500Gi
-        storageClass: "standard"
-        accessModes:
-          - ReadWriteOnce
 ```
 
 ### Migration from MinIO

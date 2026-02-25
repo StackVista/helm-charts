@@ -85,8 +85,6 @@ backup:
   # backup.initJobAnnotations -- Annotations for Backup-init Job.
   initJobAnnotations: {}
   storage:
-    # backup.storage.enabled -- Enable the S3Proxy deployment. Always enabled for settings backup.
-    enabled: true
     credentials:
       # backup.storage.credentials.accessKey -- Access key for S3Proxy authentication (auto-generated if empty)
       accessKey: ""

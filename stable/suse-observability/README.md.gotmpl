@@ -650,30 +650,6 @@ backup:
       existingSecret: "my-s3proxy-credentials"
 ```
 
-### Storage Class and PVC Configuration
-
-Configure storage classes for the PVCs:
-
-```yaml
-backup:
-  storage:
-    # Settings backup PVC (always present)
-    settingsPvc:
-      size: 1Gi
-      storageClass: "fast-ssd"
-      accessModes:
-        - ReadWriteOnce
-
-    # Main backup PVC (when using PVC backend)
-    backend:
-      pvc:
-        enabled: true
-        size: 500Gi
-        storageClass: "standard"
-        accessModes:
-          - ReadWriteOnce
-```
-
 ### Migration from MinIO
 
 If you're upgrading from a previous version that used MinIO, a new PVC and bucket are created for the local settings backup. The existing settings-backup-pvc will not be removed automatically. Backups from that PVC can still be restored with the sts-backup cli by providing --migration.
