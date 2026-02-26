@@ -56,6 +56,7 @@ var expectedWorkloadsHA = []string{
 	"Job/suse-observability-backup-init-*",
 	"Job/suse-observability-topic-create-*",
 	"Job/suse-observability-ch-clean*",
+	"Job/suse-observability-init-pvc-*",
 	// CronJobs
 	"CronJob/suse-observability-backup-sg",
 	"CronJob/suse-observability-backup-init",
@@ -97,6 +98,7 @@ var expectedWorkloadsNonHA = []string{
 	"Job/suse-observability-backup-init-*",
 	"Job/suse-observability-topic-create-*",
 	"Job/suse-observability-ch-clean*",
+	"Job/suse-observability-init-pvc-*",
 	// CronJobs
 	"CronJob/suse-observability-backup-sg",
 	"CronJob/suse-observability-backup-init",

@@ -72,7 +72,7 @@ config: |
       app.kubernetes.io/managed-by: sts-backup
   storage:
     service:
-      name: {{ include "stackstate.s3proxy.fullname" . | quote }}
+      name: {{ include "stackstate.s3proxy.service.fullname" . | quote }}
       port: {{ include "stackstate.s3proxy.port" . }}
       localPortForwardPort: 9000
   stackgraph:
