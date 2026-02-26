@@ -99,10 +99,8 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
   value: {{ .Values.clickhouse.backup.bucketName | quote }}
 - name: BACKUP_CLICKHOUSE_S3_PREFIX
   value: {{ include "ensureTrailingSlashIfNotEmpty" .Values.clickhouse.backup.s3Prefix }}
-- name: MINIO_ENDPOINT
-  value: {{ include "stackstate.minio.endpoint" . | quote }}
 - name: S3_ENDPOINT
-  value: "http://{{ include "stackstate.minio.endpoint" . }}"
+  value: {{ include "stackstate.minio.endpoint" . | quote }}
 - name: S3_BUCKET_SETTINGS
   value: {{ include "stackstate.s3proxy.localSettingsBucketName" . | quote }}
 {{- include "stackstate.env.platform_version" . }}

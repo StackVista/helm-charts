@@ -690,11 +690,13 @@ If you encounter issues not covered here:
 | kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory | string | `"25Mi"` | Memory resource requests. |
 | kubernetes-rbac-agent.containers.rbacAgent.tolerations | list | `[]` | Set tolerations |
 | kubernetes-rbac-agent.url.value | string | `"{{ include \"stackstate.rbacAgent.url\" . }}"` |  |
-| minio | object | `{"accessKey":"","azuregateway":{"enabled":false},"fullnameOverride":"","s3gateway":{"accessKey":"","enabled":false,"secretKey":"","serviceEndpoint":""},"secretKey":"","serviceAccount":{"annotations":{},"create":true,"name":""}}` | DEPRECATED: MinIO subchart has been replaced by S3Proxy. These values are kept for backward compatibility only. Please migrate to backup.storage.* values. Legacy minio.* values will be removed in a future release. |
+| minio | object | `{"accessKey":"","azuregateway":{"enabled":false},"fullnameOverride":"","persistence":{"enabled":false},"s3gateway":{"accessKey":"","enabled":false,"secretKey":"","serviceEndpoint":""},"secretKey":"","serviceAccount":{"annotations":{},"create":true,"name":""}}` | DEPRECATED: MinIO subchart has been replaced by S3Proxy. These values are kept for backward compatibility only. Please migrate to backup.storage.* values. Legacy minio.* values will be removed in a future release. |
 | minio.accessKey | string | `""` | DEPRECATED: Use backup.storage.credentials.accessKey instead. If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials. |
 | minio.azuregateway | object | `{"enabled":false}` | DEPRECATED: Use backup.storage.backend.azure instead. When minio.azuregateway.enabled is true, S3Proxy will be configured to use Azure Blob as the backend. |
 | minio.azuregateway.enabled | bool | `false` | DEPRECATED: Use backup.storage.backend.azure.enabled instead. |
 | minio.fullnameOverride | string | `""` | DEPRECATED: Used for backward compatibility with existing deployments. |
+| minio.persistence | object | `{"enabled":false}` | DEPRECATED: Use backup.storage.pvc |
+| minio.persistence.enabled | bool | `false` | DEPRECATED: Use backup.storage.pvc.enabled instead. |
 | minio.s3gateway | object | `{"accessKey":"","enabled":false,"secretKey":"","serviceEndpoint":""}` | DEPRECATED: Use backup.storage.backend.s3 instead. When minio.s3gateway.enabled is true, S3Proxy will be configured to use S3 as the backend. |
 | minio.s3gateway.accessKey | string | `""` | DEPRECATED: Use backup.storage.backend.s3.accessKey instead. |
 | minio.s3gateway.enabled | bool | `false` | DEPRECATED: Use backup.storage.backend.s3.enabled instead. |
@@ -736,7 +738,8 @@ If you encounter issues not covered here:
 | s3proxy.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for S3Proxy |
 | s3proxy.image.registry | string | `"quay.io"` | imageRegistry used for the S3Proxy Docker image |
 | s3proxy.image.repository | string | `"stackstate/s3proxy"` | Image repository for S3Proxy |
-| s3proxy.image.tag | string | `"3.0.0-b23a8e7b-10"` | Image tag for S3Proxy |
+| s3proxy.image.tag | string | `"3.0.0-7da596d5-11"` | Image tag for S3Proxy |
+| s3proxy.logLevel | string | `"info"` |  |
 | s3proxy.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | s3proxy.metrics.defaultAgentMetricsFilter | string | `"[\"*\"]"` |  |
 | s3proxy.metrics.enabled | bool | `true` | Enable / disable S3Proxy Prometheus metrics. |
@@ -1347,7 +1350,7 @@ If you encounter issues not covered here:
 | stackstate.ui.defaultTimeRange | string | `nil` | Default time range  in the UI. One of LAST_5_MINUTES, LAST_15_MINUTES, LAST_30_MINUTES, LAST_1_HOUR, LAST_3_HOURS, LAST_6_HOURS, LAST_12_HOURS, LAST_24_HOURS, LAST_2_DAYS. No value or an unsupported value will automatically fall-back to LAST_1_HOUR. |
 | victoria-metrics-0.backup.awsSecrets | string | `"suse-observability-s3proxy"` |  |
 | victoria-metrics-0.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the storage bucket where Victoria Metrics backups are stored. |
-| victoria-metrics-0.backup.overrideS3Endpoint | string | `"http://suse-observability-s3proxy:9000"` | Override location of S3 endpoints, it should point to storage service. **Do not change this value! It must refer to the storage service (s3proxy)** |
+| victoria-metrics-0.backup.overrideS3Endpoint | string | `"http://suse-observability-objectstorage:9000"` | Override location of S3 endpoints, it should point to storage service. **Do not change this value! It must refer to the storage service (s3proxy)** |
 | victoria-metrics-0.backup.s3Prefix | string | `"victoria-metrics-0"` |  |
 | victoria-metrics-0.backup.scheduled.schedule | string | `"25 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
 | victoria-metrics-0.backup.setupCron.image.tag | string | `"1.8.3-610"` | Container-tools image for cron setup. Updated by updatecli. |
@@ -1372,7 +1375,7 @@ If you encounter issues not covered here:
 | victoria-metrics-0.server.serviceMonitor.interval | string | `"15s"` | Scrape interval for service monitor |
 | victoria-metrics-1.backup.awsSecrets | string | `"suse-observability-s3proxy"` |  |
 | victoria-metrics-1.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the storage bucket where Victoria Metrics backups are stored. |
-| victoria-metrics-1.backup.overrideS3Endpoint | string | `"http://suse-observability-s3proxy:9000"` | Override location of S3 endpoints, it should point to storage service. **Do not change this value! It must refer to the storage service (s3proxy)** |
+| victoria-metrics-1.backup.overrideS3Endpoint | string | `"http://suse-observability-objectstorage:9000"` | Override location of S3 endpoints, it should point to storage service. **Do not change this value! It must refer to the storage service (s3proxy)** |
 | victoria-metrics-1.backup.s3Prefix | string | `"victoria-metrics-1"` | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. |
 | victoria-metrics-1.backup.scheduled.schedule | string | `"35 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
 | victoria-metrics-1.backup.setupCron.image.tag | string | `"1.8.3-610"` | Container-tools image for cron setup. Updated by updatecli. |

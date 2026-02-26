@@ -2160,6 +2160,10 @@ minio:
   # minio.secretKey -- DEPRECATED: Use backup.storage.credentials.secretKey instead.
   # If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials.
   secretKey: ""
+  # minio.persistence -- DEPRECATED: Use backup.storage.pvc
+  persistence:
+    # minio.persistence.enabled -- DEPRECATED: Use backup.storage.pvc.enabled instead.
+    enabled: false
   # minio.s3gateway -- DEPRECATED: Use backup.storage.backend.s3 instead.
   # When minio.s3gateway.enabled is true, S3Proxy will be configured to use S3 as the backend.
   s3gateway:
@@ -2195,10 +2199,11 @@ s3proxy:
     # s3proxy.image.repository -- Image repository for S3Proxy
     repository: stackstate/s3proxy
     # s3proxy.image.tag -- Image tag for S3Proxy
-    tag: "3.0.0-b23a8e7b-10"
+    tag: "3.0.0-7da596d5-11"
     # s3proxy.image.pullPolicy -- Image pull policy for S3Proxy
     pullPolicy: IfNotPresent
   # s3proxy.resources -- Resource limits and requests for S3Proxy container
+  logLevel: "info"
   resources:
     limits:
       cpu: 500m
@@ -2511,7 +2516,7 @@ victoria-metrics-0:
       schedule: '25 * * * *'
     awsSecrets: "suse-observability-s3proxy"
     # -- Override location of S3 endpoints, it should point to storage service. **Do not change this value! It must refer to the storage service (s3proxy)**
-    overrideS3Endpoint: "http://suse-observability-s3proxy:9000"
+    overrideS3Endpoint: "http://suse-observability-objectstorage:9000"
 victoria-metrics-1:
   enabled: true
   rbac:
@@ -2597,7 +2602,7 @@ victoria-metrics-1:
       schedule: '35 * * * *'
     awsSecrets: "suse-observability-s3proxy"
     # -- Override location of S3 endpoints, it should point to storage service. **Do not change this value! It must refer to the storage service (s3proxy)**
-    overrideS3Endpoint: "http://suse-observability-s3proxy:9000"
+    overrideS3Endpoint: "http://suse-observability-objectstorage:9000"
 victoria-metrics:
   restore:
     image:

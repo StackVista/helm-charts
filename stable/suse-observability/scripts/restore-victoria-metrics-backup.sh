@@ -17,4 +17,4 @@ AWS_SECRET_ACCESS_KEY="$(cat /aws-keys/secretkey)"
 BUCKET_NAME_ENV_NAME="BACKUP_${INSTANCE_NAME_AS_ENV_NAME}_BUCKET_NAME"
 BUCKET_NAME=$(printenv "$BUCKET_NAME_ENV_NAME")
 
-/vmrestore-prod -storageDataPath=/storage -src="s3://$BUCKET_NAME/$S3_PREFIX" -customS3Endpoint="http://$MINIO_ENDPOINT"
+/vmrestore-prod -storageDataPath=/storage -src="s3://$BUCKET_NAME/$S3_PREFIX" -customS3Endpoint="http://${S3_ENDPOINT}"

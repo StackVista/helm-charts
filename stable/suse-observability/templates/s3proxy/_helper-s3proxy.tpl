@@ -46,12 +46,7 @@ This is separate from the settings PVC which is always present.
 Also checks legacy minio gateway values for backward compatibility.
 */}}
 {{- define "stackstate.s3proxy.mainBackendUsesPVC" -}}
-{{- $pvcEnabled := .Values.backup.storage.backend.pvc.enabled -}}
-{{- $s3Enabled := .Values.backup.storage.backend.s3.enabled -}}
-{{- $azureEnabled := .Values.backup.storage.backend.azure.enabled -}}
-{{- $legacyS3Enabled := and .Values.minio.s3gateway .Values.minio.s3gateway.enabled -}}
-{{- $legacyAzureEnabled := and .Values.minio.azuregateway .Values.minio.azuregateway.enabled -}}
-{{- if or $pvcEnabled (not (or $s3Enabled $azureEnabled $legacyS3Enabled $legacyAzureEnabled)) -}}
+{{- if or .Values.backup.storage.backend.pvc.enabled .Values.minio.persistence.enabled -}}
 true
 {{- end -}}
 {{- end -}}

@@ -8,14 +8,14 @@ if [ -z "${OLDER_THAN}" ]; then
   exit 1
 fi
 
-sts-toolbox aws s3 ls --endpoint "http://${MINIO_ENDPOINT}" --region us-east-1 --bucket "${BACKUP_BUCKET_NAME}" --prefix "${S3_PREFIX}" | while read -r backup_file
+sts-toolbox aws s3 ls --endpoint "http://${S3_ENDPOINT}" --region us-east-1 --bucket "${BACKUP_BUCKET_NAME}" --prefix "${S3_PREFIX}" | while read -r backup_file
 do
   if [[ "${backup_file}" =~ ${BACKUP_SCHEDULED_BACKUP_NAME_PARSE_REGEXP} ]];
   then
     BACKUP_DATE="${BASH_REMATCH[1]}"
     if [[ "${BACKUP_DATE}" < "${OLDER_THAN}" ]];
     then
-      sts-toolbox aws s3 delete --endpoint "http://${MINIO_ENDPOINT}" --region us-east-1 --bucket "${BACKUP_BUCKET_NAME}" --key "${S3_PREFIX}${backup_file}"
+      sts-toolbox aws s3 delete --endpoint "http://${S3_ENDPOINT}" --region us-east-1 --bucket "${BACKUP_BUCKET_NAME}" --key "${S3_PREFIX}${backup_file}"
     else
         echo "${S3_PREFIX}${backup_file} is not older than ${OLDER_THAN}. Skipping deletion."
     fi

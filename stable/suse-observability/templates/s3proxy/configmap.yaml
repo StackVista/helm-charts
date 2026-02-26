@@ -44,6 +44,8 @@ data:
     jclouds.identity=
     jclouds.credential=
     {{- end }}
+    {{- else if .Values.global.backup.enabled }}
+    {{- fail "No valid backend configured for backup storage. Please enable and configure one of the supported backends (PVC, S3, Azure)." }}
     {{- end }}
     {{- $buckets := list .Values.backup.configuration.bucketName .Values.backup.stackGraph.bucketName .Values.backup.elasticsearch.bucketName .Values.clickhouse.backup.bucketName (index .Values "victoria-metrics-0" "backup" "bucketName") (index .Values "victoria-metrics-1" "backup" "bucketName") | compact | uniq }}
     {{- range $i, $bucket := $buckets }}

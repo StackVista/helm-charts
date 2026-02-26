@@ -31,13 +31,14 @@ if [ ! -f "${TMP_DIR}/${BACKUP_FILE}" ]; then
 fi
 
 if [ "${BACKUP_STACKGRAPH_ARCHIVE_SPLIT_SIZE:-0}" == "0" ]; then
-    uploadFileToS3 "${TMP_DIR}/${BACKUP_FILE}" "s3://${BACKUP_STACKGRAPH_BUCKET_NAME}/${BACKUP_STACKGRAPH_S3_PREFIX}${BACKUP_FILE}" "http://${MINIO_ENDPOINT}"
+    # shellcheck disable=SC2153
+    uploadFileToS3 "${TMP_DIR}/${BACKUP_FILE}" "s3://${BACKUP_STACKGRAPH_BUCKET_NAME}/${BACKUP_STACKGRAPH_S3_PREFIX}${BACKUP_FILE}" "http://${S3_ENDPOINT}"
 else
     # Split Stackgraph dump, sts-backup-20240223-0915.graph -> sts-backup-20240223-0915.graph.00, sts-backup-20240223-0915.graph.01, sts-backup-20240223-0915.graph.XX
     (cd "${TMP_DIR}" && split --verbose -d -b "${BACKUP_STACKGRAPH_ARCHIVE_SPLIT_SIZE}" "${TMP_DIR}/${BACKUP_FILE}" "$(basename "${BACKUP_FILE}").")
     find ${TMP_DIR} -name "${BACKUP_FILE}.*" | while read -r file
     do
-        uploadFileToS3 "${file}" "s3://${BACKUP_STACKGRAPH_BUCKET_NAME}/${BACKUP_STACKGRAPH_S3_PREFIX}$(basename "${file}")" "http://${MINIO_ENDPOINT}"
+        uploadFileToS3 "${file}" "s3://${BACKUP_STACKGRAPH_BUCKET_NAME}/${BACKUP_STACKGRAPH_S3_PREFIX}$(basename "${file}")" "http://${S3_ENDPOINT}"
     done
 fi
 
