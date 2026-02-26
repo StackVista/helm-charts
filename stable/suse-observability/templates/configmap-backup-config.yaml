@@ -71,6 +71,7 @@ config: |
       app.kubernetes.io/name: sts-backup
       app.kubernetes.io/managed-by: sts-backup
   storage:
+    globalBackupEnabled: {{ .Values.global.backup.enabled }}
     service:
       name: {{ include "stackstate.s3proxy.service.fullname" . | quote }}
       port: {{ include "stackstate.s3proxy.port" . }}
