@@ -738,7 +738,7 @@ If you encounter issues not covered here:
 | s3proxy.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for S3Proxy |
 | s3proxy.image.registry | string | `"quay.io"` | imageRegistry used for the S3Proxy Docker image |
 | s3proxy.image.repository | string | `"stackstate/s3proxy"` | Image repository for S3Proxy |
-| s3proxy.image.tag | string | `"3.0.0-7da596d5-11"` | Image tag for S3Proxy |
+| s3proxy.image.tag | string | `"3.0.0-8dd2c1dc-12"` | Image tag for S3Proxy |
 | s3proxy.logLevel | string | `"info"` |  |
 | s3proxy.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | s3proxy.metrics.defaultAgentMetricsFilter | string | `"[\"*\"]"` |  |
@@ -747,7 +747,7 @@ If you encounter issues not covered here:
 | s3proxy.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
 | s3proxy.nodeSelector | object | `{}` | Node selector for S3Proxy pod (merged with stackstate.components.all.nodeSelector) |
 | s3proxy.podAnnotations | object | `{}` | Annotations for S3Proxy pod |
-| s3proxy.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"512Mi"},"requests":{"cpu":"100m","ephemeral-storage":"1Mi","memory":"256Mi"}}` | Resource limits and requests for S3Proxy container |
+| s3proxy.resources | object | `{"limits":{"cpu":"500m","ephemeral-storage":"1Gi","memory":"700Mi"},"requests":{"cpu":"200m","ephemeral-storage":"1Mi","memory":"700Mi"}}` | Resource limits and requests for S3Proxy container |
 | s3proxy.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
 | s3proxy.securityContext.fsGroup | int | `65534` | The GID (group ID) used to mount volumes |
 | s3proxy.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |

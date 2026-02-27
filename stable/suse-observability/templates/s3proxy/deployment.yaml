@@ -42,7 +42,7 @@ ports:
     containerPort: {{ include "stackstate.s3proxy.port" . }}
     protocol: TCP
   - name: metrics
-    containerPort: 9090
+    containerPort: 9464
     protocol: TCP
 env:
   {{- if .Values.stackstate.java.trustStorePassword }}
@@ -92,7 +92,7 @@ env:
   - name: LOG_LEVEL
     value: {{ .Values.s3proxy.logLevel | quote }}
   - name: JAVA_OPTS
-    value: {{ include "stackstate.s3proxy.javaOpts" . }}{{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }} -Djavax.net.ssl.trustStore=/opt/s3proxy/secrets/java-cacerts -Djavax.net.ssl.trustStoreType=jks{{- if .Values.stackstate.java.trustStorePassword }} -Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD){{- end }}{{- end }} -Ds3proxy.endpoint=http://0.0.0.0:9000 -Ds3proxy.authorization=aws-v2-or-v4 -Ds3proxy.identity=$(S3PROXY_IDENTITY) -Ds3proxy.credential=$(S3PROXY_CREDENTIAL) -Ds3proxy.metrics.enabled=true -Ds3proxy.metrics.port=9090 -Ds3proxy.metrics.host=0.0.0.0 -Djclouds.identity=$(JCLOUDS_IDENTITY) -Djclouds.credential=$(JCLOUDS_CREDENTIAL)
+    value: {{ include "stackstate.s3proxy.javaOpts" . }}{{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }} -Djavax.net.ssl.trustStore=/opt/s3proxy/secrets/java-cacerts -Djavax.net.ssl.trustStoreType=jks{{- if .Values.stackstate.java.trustStorePassword }} -Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD){{- end }}{{- end }} -Ds3proxy.endpoint=http://0.0.0.0:9000 -Ds3proxy.authorization=aws-v2-or-v4 -Ds3proxy.ignore-unknown-headers=true -Ds3proxy.identity=$(S3PROXY_IDENTITY) -Ds3proxy.credential=$(S3PROXY_CREDENTIAL) -Djclouds.identity=$(JCLOUDS_IDENTITY) -Djclouds.credential=$(JCLOUDS_CREDENTIAL)
 volumeMounts:
   - name: config
     mountPath: /etc/s3proxy
@@ -157,7 +157,7 @@ spec:
         {{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }}
         checksum/common-secret: {{ include (print $.Template.BasePath "/secret-common.yaml") . | sha256sum }}
         {{- end }}
-        {{- include "common.metrics.annotations" (dict "metrics" .Values.s3proxy.metrics "port" "9090" "container_name" "s3proxy") | indent 8 }}
+        {{- include "common.metrics.annotations" (dict "metrics" .Values.s3proxy.metrics "port" "9464" "container_name" "s3proxy") | indent 8 }}
         {{- with .Values.s3proxy.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

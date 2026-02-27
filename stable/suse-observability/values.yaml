@@ -2199,7 +2199,7 @@ s3proxy:
     # s3proxy.image.repository -- Image repository for S3Proxy
     repository: stackstate/s3proxy
     # s3proxy.image.tag -- Image tag for S3Proxy
-    tag: "3.0.0-7da596d5-11"
+    tag: "3.0.0-8dd2c1dc-12"
     # s3proxy.image.pullPolicy -- Image pull policy for S3Proxy
     pullPolicy: IfNotPresent
   # s3proxy.resources -- Resource limits and requests for S3Proxy container
@@ -2207,11 +2207,11 @@ s3proxy:
   resources:
     limits:
       cpu: 500m
-      memory: 512Mi
+      memory: 700Mi
       ephemeral-storage: 1Gi
     requests:
-      cpu: 100m
-      memory: 256Mi
+      cpu: 200m
+      memory: 700Mi
       ephemeral-storage: 1Mi
   sizing:
     # s3proxy.sizing.baseMemoryConsumption -- Memory reserved for OS and non-heap JVM usage (metaspace, threads, etc)
