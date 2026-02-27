@@ -45,7 +45,7 @@ spec:
             pathType: {{ .pathType }}
             backend:
               service:
-                name: {{ include "opentelemetry-collector.fullname" $ }}
+                name: {{ .serviceName | default (include "opentelemetry-collector.fullname" $) }}
                 port:
                   number: {{ .port }}
           {{- end }}

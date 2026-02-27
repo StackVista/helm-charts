@@ -1,0 +1,13 @@
+# Test configuration for Ingress with default service name
+mode: "deployment"
+image:
+  repository: "otel/opentelemetry-collector-contrib"
+
+ingress:
+  enabled: true
+  hosts:
+    - host: collector.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+          port: 4318

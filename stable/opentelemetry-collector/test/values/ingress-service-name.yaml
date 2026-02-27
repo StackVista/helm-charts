@@ -1,0 +1,17 @@
+# Test configuration for Ingress with custom serviceName
+mode: "deployment"
+image:
+  repository: "otel/opentelemetry-collector-contrib"
+
+ingress:
+  enabled: true
+  hosts:
+    - host: collector.example.com
+      paths:
+        - path: /otlp-grpc
+          pathType: Prefix
+          port: 4317
+          serviceName: otel-opentelemetry-collector-grpc
+        - path: /otlp-http
+          pathType: Prefix
+          port: 4318

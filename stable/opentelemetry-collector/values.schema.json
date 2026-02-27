@@ -697,6 +697,9 @@
                     },
                     "port": {
                       "type": "integer"
+                    },
+                    "serviceName": {
+                      "type": "string"
                     }
                   },
                   "required": ["path", "pathType", "port"]
@@ -767,6 +770,9 @@
                           },
                           "port": {
                             "type": "integer"
+                          },
+                          "serviceName": {
+                            "type": "string"
                           }
                         },
                         "required": ["path", "pathType", "port"]

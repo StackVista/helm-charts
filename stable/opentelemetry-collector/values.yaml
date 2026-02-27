@@ -618,6 +618,7 @@ ingress:
   #       - path: /
   #         pathType: Prefix
   #         port: 4318
+  #         serviceName: ""  # Optional: override the backend service name. Defaults to the main service.
   # tls:
   #   - secretName: collector-tls
   #     hosts:
@@ -636,6 +637,7 @@ ingress:
   #         - path: /
   #           pathType: Prefix
   #           port: 4318
+  #           serviceName: ""  # Optional: override the backend service name. Defaults to the main service.
   #   tls:
   #     - secretName: collector-tls
   #       hosts:
