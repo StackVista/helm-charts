@@ -20,9 +20,6 @@ dependencies:
 - name: kafkaup-operator
   repository: file://../kafkaup-operator/
   version: 0.1.26
-- name: minio
-  repository: file://../minio/
-  version: 8.0.10-stackstate.26
 - name: pull-secret
   repository: file://../pull-secret/
   version: 1.0.3
@@ -44,5 +41,5 @@ dependencies:
 - name: kubernetes-rbac-agent
   repository: https://helm.stackstate.io
   version: 0.0.25
-digest: sha256:a5ceab1f89a789aea87be10a38fe137168b6d5947c79093fce45b66a815d6567
-generated: "2026-03-27T14:10:36.806974+01:00"
+digest: sha256:80d67b11154c686c0ddb698bd232957ff0ae7952fdef2b7ddc23f77ed2a413cb
+generated: "2026-03-30T14:54:35.146057943+02:00"
