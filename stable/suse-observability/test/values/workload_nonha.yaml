@@ -50,3 +50,8 @@ anomaly-detection:
   enabled: true
 victoria-metrics-1:
   enabled: false
+backup:
+  storage:
+    backend:
+      pvc:
+        enabled: true

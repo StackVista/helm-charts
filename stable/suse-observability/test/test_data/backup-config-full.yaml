@@ -3,6 +3,7 @@ kubernetes:
     app.kubernetes.io/name: sts-backup
     app.kubernetes.io/managed-by: sts-backup
 storage:
+  globalBackupEnabled: true
   service:
     name: "suse-observability-objectstorage"
     port: 9000

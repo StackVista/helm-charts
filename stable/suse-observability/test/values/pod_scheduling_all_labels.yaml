@@ -36,3 +36,8 @@ stackstate:
           operator: Equal
           value: all-value
           effect: NoSchedule
+backup:
+  storage:
+    backend:
+      pvc:
+        enabled: true

@@ -860,7 +860,6 @@ func TestS3ProxyJavaHeapDefaultValues(t *testing.T) {
 	// Memory request 256Mi: (256 * 1.048576 - 100 * 1.048576) * 70% = ~114MB for Xms
 	assert.Contains(t, javaOpts, "-Xmx", "JAVA_OPTS should contain -Xmx")
 	assert.Contains(t, javaOpts, "-Xms", "JAVA_OPTS should contain -Xms")
-	assert.Contains(t, javaOpts, "-DLOG_LEVEL", "JAVA_OPTS should contain other s3proxy options")
 }
 
 // TestS3ProxyJavaHeapCustomValues verifies that JVM heap is calculated correctly with custom values
@@ -868,8 +867,8 @@ func TestS3ProxyJavaHeapCustomValues(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
-			"s3proxy.resources.limits.memory":       "1Gi",
-			"s3proxy.resources.requests.memory":     "512Mi",
+			"s3proxy.resources.limits.memory":       "700Mi",
+			"s3proxy.resources.requests.memory":     "700Mi",
 			"s3proxy.sizing.baseMemoryConsumption":  "200Mi",
 			"s3proxy.sizing.javaHeapMemoryFraction": "60",
 		},

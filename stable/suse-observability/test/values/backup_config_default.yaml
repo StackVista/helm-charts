@@ -12,6 +12,11 @@ global:
   wait:
     image:
       tag: "wait_image_test_tag"
+backup:
+  storage:
+    backend:
+      pvc:
+        enabled: true
 stackstate:
   components:
     server:

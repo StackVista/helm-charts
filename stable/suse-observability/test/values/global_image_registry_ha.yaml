@@ -19,3 +19,8 @@ ai:
 
 anomaly-detection:
   enabled: true
+backup:
+  storage:
+    backend:
+      pvc:
+        enabled: true
