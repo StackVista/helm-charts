@@ -53,7 +53,6 @@ true
 
 {{/*
 Get S3Proxy access key.
-Falls back to minio.accessKey for backward compatibility, or generates random key.
 */}}
 {{- define "stackstate.s3proxy.accessKey" -}}
 {{- .Values.backup.storage.credentials.accessKey -}}
@@ -61,7 +60,6 @@ Falls back to minio.accessKey for backward compatibility, or generates random ke
 
 {{/*
 Get S3Proxy secret key.
-Falls back to minio.secretKey for backward compatibility, or generates random key.
 */}}
 {{- define "stackstate.s3proxy.secretKey" -}}
 {{- .Values.backup.storage.credentials.secretKey -}}
