@@ -109,8 +109,8 @@ data:
       check_parts_columns: true # CLICKHOUSE_CHECK_PARTS_COLUMNS, check data types from system.parts_columns during create backup to guarantee mutation is complete
       max_connections: 1 # CLICKHOUSE_MAX_CONNECTIONS, how many parallel connections could be opened during operations
     s3:
-      access_key: "{{ include "stackstate.s3proxy.accessKey" . }}"                   # S3_ACCESS_KEY
-      secret_key: "{{ include "stackstate.s3proxy.secretKey" . }}"                   # S3_SECRET_KEY
+      access_key: ""                   # S3_ACCESS_KEY, injected via env var from secret
+      secret_key: ""                   # S3_SECRET_KEY, injected via env var from secret
       bucket: "{{ .Values.clickhouse.backup.bucketName }}"                       # S3_BUCKET
       endpoint: "http://{{ include "stackstate.s3proxy.endpoint" . }}"                     # S3_ENDPOINT
       #  region: us-east-1                # S3_REGION

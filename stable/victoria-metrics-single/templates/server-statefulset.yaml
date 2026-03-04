@@ -22,8 +22,12 @@ spec:
   podManagementPolicy: {{ .Values.server.podManagementPolicy }}
   template:
     metadata:
-    {{- if .Values.server.podAnnotations }}
       annotations:
+        checksum/scripts: {{ include (print $.Template.BasePath "/configmap-scripts.yaml") . | sha256sum }}
+        {{- if .Values.global.backup.enabled }}
+        checksum/backup-config: {{ toJson .Values.backup | sha256sum | quote }}
+        {{- end }}
+    {{- if .Values.server.podAnnotations }}
 {{ toYaml .Values.server.podAnnotations | indent 8 }}
     {{- end }}
       labels:

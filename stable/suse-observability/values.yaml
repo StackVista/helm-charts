@@ -2765,7 +2765,7 @@ clickhouse:
     ad.stackstate.com/backup.check_names: '["openmetrics"]'
     ad.stackstate.com/backup.init_configs: "[{}]"
     ad.stackstate.com/backup.instances: '[ { "prometheus_url": "http://%%host%%:7171/metrics", "namespace": "stackstate", "metrics": ["clickhouse_backup_*"] } ]'
-    checksum/stackstate-backup-config: "{{ toJson .Values.backup | sha256sum }}"
+    checksum/stackstate-backup-config: "{{ toJson (dict \"backup\" .Values.backup \"auth\" .Values.auth) | sha256sum }}"
   # clickhouse.extraVolumes -- extra volumes for ClickHouse Pods
   extraVolumes:
     - name: clickhouse-backup-config
@@ -2814,6 +2814,16 @@ clickhouse:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.name
+        - name: S3_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: suse-observability-s3proxy
+              key: accesskey
+        - name: S3_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: suse-observability-s3proxy
+              key: secretkey
       resources:
         requests:
           memory: "{{ .Values.backup.resources.requests.memory }}"
