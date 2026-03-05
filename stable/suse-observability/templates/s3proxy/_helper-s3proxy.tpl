@@ -16,8 +16,8 @@ suse-observability-objectstorage
 S3Proxy secret name.
 */}}
 {{- define "stackstate.s3proxy.secretName" -}}
-{{- if .Values.s3proxy.credentials.existingSecret -}}
-{{- .Values.s3proxy.credentials.existingSecret -}}
+{{- if .Values.s3proxy.credentials.fromExternalSecret -}}
+{{- .Values.s3proxy.credentials.fromExternalSecret -}}
 {{- else -}}
 {{- include "stackstate.s3proxy.fullname" . -}}
 {{- end -}}

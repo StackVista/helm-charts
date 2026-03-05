@@ -382,19 +382,19 @@ func TestS3ProxyDeploymentArgs(t *testing.T) {
 	})
 }
 
-// TestS3ProxyExistingSecret verifies using an existing secret
-func TestS3ProxyExistingSecret(t *testing.T) {
+// TestS3ProxyFromExternalSecret verifies using an externally-managed secret
+func TestS3ProxyFromExternalSecret(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
-			"s3proxy.credentials.existingSecret": "my-existing-secret",
+			"s3proxy.credentials.fromExternalSecret": "my-existing-secret",
 		},
 	})
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	// S3Proxy managed secret should NOT exist
 	_, ok := resources.Secrets["suse-observability-s3proxy"]
-	assert.False(t, ok, "S3Proxy managed secret should NOT exist when using existingSecret")
+	assert.False(t, ok, "S3Proxy managed secret should NOT exist when using fromExternalSecret")
 
 	// Deployment should reference the existing secret
 	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
@@ -411,6 +411,47 @@ func TestS3ProxyExistingSecret(t *testing.T) {
 	}
 	require.NotNil(t, accessKeyEnv, "S3PROXY_IDENTITY env var should exist")
 	assert.Equal(t, "my-existing-secret", accessKeyEnv.ValueFrom.SecretKeyRef.Name, "Should reference existing secret")
+}
+
+// TestS3ProxyFromExternalSecretCredentialsNotRequired verifies that when fromExternalSecret is set,
+// the accessKey and secretKey values are not required and can be empty
+func TestS3ProxyFromExternalSecretCredentialsNotRequired(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"s3proxy.credentials.fromExternalSecret": "my-external-secret",
+			"s3proxy.credentials.accessKey":          "",
+			"s3proxy.credentials.secretKey":          "",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// S3Proxy managed secret should NOT exist
+	_, ok := resources.Secrets["suse-observability-s3proxy"]
+	assert.False(t, ok, "S3Proxy managed secret should NOT exist when using fromExternalSecret")
+
+	// Deployment should exist and reference the external secret
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+	container := deployment.Spec.Template.Spec.Containers[0]
+
+	// Both S3PROXY_IDENTITY and S3PROXY_CREDENTIAL should reference the external secret
+	var identityEnv, credentialEnv *corev1.EnvVar
+	for i := range container.Env {
+		if container.Env[i].Name == "S3PROXY_IDENTITY" {
+			identityEnv = &container.Env[i]
+		}
+		if container.Env[i].Name == "S3PROXY_CREDENTIAL" {
+			credentialEnv = &container.Env[i]
+		}
+	}
+	require.NotNil(t, identityEnv, "S3PROXY_IDENTITY env var should exist")
+	assert.Equal(t, "my-external-secret", identityEnv.ValueFrom.SecretKeyRef.Name, "S3PROXY_IDENTITY should reference external secret")
+	assert.Equal(t, "accesskey", identityEnv.ValueFrom.SecretKeyRef.Key, "S3PROXY_IDENTITY should use accesskey key")
+
+	require.NotNil(t, credentialEnv, "S3PROXY_CREDENTIAL env var should exist")
+	assert.Equal(t, "my-external-secret", credentialEnv.ValueFrom.SecretKeyRef.Name, "S3PROXY_CREDENTIAL should reference external secret")
+	assert.Equal(t, "secretkey", credentialEnv.ValueFrom.SecretKeyRef.Key, "S3PROXY_CREDENTIAL should use secretkey key")
 }
 
 // TestS3ProxyNodeSelector verifies node selector configuration

@@ -2191,8 +2191,8 @@ s3proxy:
     accessKey: "default-for-settings-only"
     # s3proxy.credentials.secretKey -- Secret key for S3Proxy authentication (override for production usage with global.backup.enabled)
     secretKey: "default-secret-for-settings-only"
-    # s3proxy.credentials.existingSecret -- Use existing secret for credentials (keys: accessKey, secretKey)
-    existingSecret: ""
+    # s3proxy.credentials.fromExternalSecret -- Use an externally-managed secret for credentials (keys: accesskey, secretkey). When set, the chart will not create a secret and accessKey/secretKey values are not required.
+    fromExternalSecret: ""
   image:
     # s3proxy.image.registry -- imageRegistry used for the S3Proxy Docker image
     registry: quay.io
