@@ -191,7 +191,7 @@ spec:
           {{- $evaluatedResources := .Values.resources }}
           {{- if $profileResources }}
           {{- $profileResourcesDict := fromYaml $profileResources }}
-          {{- $evaluatedResources = merge $profileResourcesDict .Values.resources }}
+          {{- $evaluatedResources = merge (dict) .Values.resources $profileResourcesDict }}
           {{- end }}
           {{- with $evaluatedResources }}
           resources: {{- toYaml . | nindent 12 }}

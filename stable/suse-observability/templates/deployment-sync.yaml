@@ -23,7 +23,7 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- $evaluatedResources := .Values.stackstate.components.sync.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = $profileResourcesDict }}
+{{- $evaluatedResources = merge (dict) .Values.stackstate.components.sync.resources $profileResourcesDict }}
 {{- end }}
 {{- $profileEnv := include "common.sizing.stackstate.sync.env" . | trim -}}
 {{- $evaluatedExtraEnvOpen := .Values.stackstate.components.sync.extraEnv.open }}

@@ -31,7 +31,7 @@ env:
 {{- $evaluatedResources := .Values.stackstate.components.healthSync.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = $profileResourcesDict }}
+{{- $evaluatedResources = merge (dict) .Values.stackstate.components.healthSync.resources $profileResourcesDict }}
 {{- end }}
 {{- $profileEnv := include "common.sizing.stackstate.healthSync.env" . | trim -}}
 {{- $evaluatedExtraEnvOpen := .Values.stackstate.components.healthSync.extraEnv.open }}

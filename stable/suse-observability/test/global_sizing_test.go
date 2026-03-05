@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 )
 
 // TestGlobalSizingProfilesRender tests that all 9 sizing profiles render successfully
@@ -516,4 +517,38 @@ func TestGlobalSizingReplicaCounts(t *testing.T) {
 			t.Fatalf("Component %s not found in StatefulSets or Deployments", tc.componentName)
 		})
 	}
+}
+
+// TestGlobalSizingUserResourceOverrides tests that user-specified resource overrides take precedence over sizing profile defaults
+func TestGlobalSizingUserResourceOverrides(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_sizing_500_ha_resource_override.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// Test Pattern A fix: api deployment should use user-specified 12Gi, not profile default 6Gi
+	t.Run("api-deployment-user-override", func(t *testing.T) {
+		apiDeployment, exists := resources.Deployments["suse-observability-api"]
+		require.True(t, exists, "API deployment should exist")
+		containers := apiDeployment.Spec.Template.Spec.Containers
+		require.NotEmpty(t, containers, "API deployment should have containers")
+
+		memLimit := containers[0].Resources.Limits[corev1.ResourceMemory]
+		assert.Equal(t, resource.MustParse("12Gi"), memLimit, "API memory limit should be user-specified 12Gi, not profile default 6Gi")
+
+		cpuLimit := containers[0].Resources.Limits[corev1.ResourceCPU]
+		assert.Equal(t, resource.MustParse("8000m"), cpuLimit, "API CPU limit should be user-specified 8000m, not profile default 6000m")
+	})
+
+	// Test Pattern B fix: kafka statefulset should use user-specified 8Gi, not profile default 4Gi
+	t.Run("kafka-statefulset-user-override", func(t *testing.T) {
+		kafkaSts, exists := resources.Statefulsets["suse-observability-kafka"]
+		require.True(t, exists, "Kafka statefulset should exist")
+		containers := kafkaSts.Spec.Template.Spec.Containers
+		require.NotEmpty(t, containers, "Kafka statefulset should have containers")
+
+		memLimit := containers[0].Resources.Limits[corev1.ResourceMemory]
+		assert.Equal(t, resource.MustParse("8Gi"), memLimit, "Kafka memory limit should be user-specified 8Gi, not profile default 4Gi")
+
+		cpuLimit := containers[0].Resources.Limits[corev1.ResourceCPU]
+		assert.Equal(t, resource.MustParse("8"), cpuLimit, "Kafka CPU limit should be user-specified 8, not profile default 6")
+	})
 }

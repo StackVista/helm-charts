@@ -18,7 +18,7 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- $evaluatedResources := $defaultResources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = merge $profileResourcesDict $defaultResources }}
+{{- $evaluatedResources = merge (dict) $defaultResources $profileResourcesDict }}
 {{- end }}
 {{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .K2esConfig -}}
 env:

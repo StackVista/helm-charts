@@ -41,7 +41,7 @@ env:
 {{- $evaluatedResources := .Values.hdfs.secondarynamenode.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = merge $profileResourcesDict .Values.hdfs.secondarynamenode.resources }}
+{{- $evaluatedResources = merge (dict) .Values.hdfs.secondarynamenode.resources $profileResourcesDict }}
 {{- end }}
 {{- $secondarynamenodeWithResources := merge (dict "resources" $evaluatedResources) .Values.hdfs.secondarynamenode }}
 {{- $serviceConfig := dict "ServiceConfig" (merge $secondarynamenodeWithResources .Values.all) }}

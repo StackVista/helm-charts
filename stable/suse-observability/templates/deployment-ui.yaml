@@ -3,7 +3,7 @@
 {{- $evaluatedResources := .Values.stackstate.components.ui.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = merge $profileResourcesDict $evaluatedResources }}
+{{- $evaluatedResources = merge (dict) $evaluatedResources $profileResourcesDict }}
 {{- end }}
 {{- $serviceConfig := dict "ServiceName" "ui" "ServiceConfig" .Values.stackstate.components.ui }}
 

@@ -22,7 +22,7 @@ env:
 {{- $evaluatedResources := .Values.stackstate.components.initializer.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = $profileResourcesDict }}
+{{- $evaluatedResources = merge (dict) .Values.stackstate.components.initializer.resources $profileResourcesDict }}
 {{- end }}
 {{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.initializer -}}
 {{- $serviceConfig := dict "ServiceName" "initializer" "ServiceConfig" $componentConfigWithResources }}

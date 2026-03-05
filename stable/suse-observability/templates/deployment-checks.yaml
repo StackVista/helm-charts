@@ -31,7 +31,7 @@ env:
 {{- $evaluatedResources := .Values.stackstate.components.checks.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = $profileResourcesDict }}
+{{- $evaluatedResources = merge (dict) .Values.stackstate.components.checks.resources $profileResourcesDict }}
 {{- end }}
 {{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.checks -}}
 {{- $serviceConfig := dict "ServiceName" "checks" "ServiceConfig" $componentConfigWithResources }}

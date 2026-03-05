@@ -22,7 +22,7 @@ env:
 {{- $evaluatedResources := .Values.console.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = merge $profileResourcesDict .Values.console.resources }}
+{{- $evaluatedResources = merge (dict) .Values.console.resources $profileResourcesDict }}
 {{- end }}
 {{- with $evaluatedResources }}
 resources:

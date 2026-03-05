@@ -14,7 +14,7 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- $evaluatedResources := .Values.stackstate.components.server.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
-{{- $evaluatedResources = $profileResourcesDict }}
+{{- $evaluatedResources = merge (dict) .Values.stackstate.components.server.resources $profileResourcesDict }}
 {{- end }}
 {{- $profileEnv := include "common.sizing.stackstate.server.env" . | trim -}}
 {{- $evaluatedExtraEnvOpen := .Values.stackstate.components.server.extraEnv.open }}
