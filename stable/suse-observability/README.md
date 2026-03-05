@@ -1675,7 +1675,7 @@ SUSE Observability uses S3Proxy to provide an S3-compatible API for all backup o
 
 S3Proxy manages two types of storage:
 
-1. **Settings backup** (always local) - A small PVC (~1Gi) that stores configuration backups locally, ensuring they're always available for restore operations
+1. **Settings backup** (always local) - A small PVC (~2Gi) that stores configuration backups locally, ensuring they're always available for restore operations
 2. **Main backup storage** (configurable) - Stores StackGraph, Elasticsearch, ClickHouse, and VictoriaMetrics backups
 
 ```
@@ -1692,22 +1692,31 @@ S3Proxy manages two types of storage:
 
 ### Default Configuration (Local PVC)
 
-By default, all backups are stored on local PVCs:
+By default, only configuration backups are enabled and stored on local PVCs.
+
+### Enable all backups using PVC
+
+To store all backups on PVCs:
 
 ```yaml
 global:
   backup:
-    enabled: true  # Enable backup functionality
+    enabled: true
 
 backup:
   storage:
     backend:
       pvc:
         enabled: true
-        size: 500Gi  # Size for main backup storage
+        size: 500Gi  # Size for main backup storage, size depends on the expected combined backups size
+s3proxy:
+  credentials:
+    # Credentials used internally in the cluster to access the backup storage (S3Proxy). Override with your own values for production use.
+    accessKey: "my-access-key"
+    secretKey: "my-secret-key"
 ```
 
-### Using AWS S3
+### Enable all backups using AWS S3
 
 To store backups in AWS S3:
 
@@ -1723,6 +1732,7 @@ backup:
         enabled: false
       s3:
         enabled: true
+        # Optional: Specify AWS region (required for AWS S3, can also be set via environment variable if needed, optional for S3-compatible storage)
         region: "eu-west-1"
         # Option 1: Use IAM role / IRSA (recommended)
         # Leave accessKey and secretKey empty
@@ -1731,11 +1741,19 @@ backup:
         accessKey: "aws-access-key"
         secretKey: "aws-secret-key"
 
+        # Option 3: Use credentials from external secret:
+        fromExternalSecret: "my-aws-credentials" # Kubernetes secret containing backendAccessKey and backendSecretKey
         # Optional: Custom S3-compatible endpoint (e.g., MinIO)
         # endpoint: "https://minio.example.com"
+
+s3proxy:
+  credentials:
+    # Credentials used internally in the cluster to access the backup storage (S3Proxy). Override with your own values for production use.
+    accessKey: "my-access-key"
+    secretKey: "my-secret-key"
 ```
 
-### Using Azure Blob Storage
+### Enable all backups using Azure Blob Storage
 
 To store backups in Azure Blob Storage:
 
@@ -1757,49 +1775,39 @@ backup:
 
         # Option 2: Use explicit credentials
         accountKey: "your-storage-account-key"
+
+        # Option 3: Use credentials from external secret:
+        fromExternalSecret: "my-azure-credentials" # Kubernetes secret containing azureAccountName and azureAccountKey
+
+s3proxy:
+  credentials:
+    # Credentials used internally in the cluster to access the backup storage (S3Proxy). Override with your own values for production use.
+    accessKey: "my-access-key"
+    secretKey: "my-secret-key"
 ```
 
 ### S3Proxy Credentials
 
-S3Proxy requires credentials for clients (backup jobs) to authenticate. These are auto-generated if not specified:
+S3Proxy requires credentials for clients (backup jobs) to authenticate. There are defaults pre-defined but for production usage it is recommended to set your own credentials.
 
 ```yaml
-backup:
-  storage:
-    credentials:
-      # Auto-generated if empty (recommended for new installations)
-      accessKey: ""
-      secretKey: ""
+s3proxy:
+  credentials:
+    # Option 1: Set credentials directly
+    accessKey: "my-access-key"
+    secretKey: "my-secret-key"
 
-      # Or use an existing secret
-      existingSecret: "my-s3proxy-credentials"
+    # Or use an existing secret
+    fromExternalSecret: "my-s3proxy-credentials"
 ```
 
 ### Migration from MinIO
 
-If you're upgrading from a previous version that used MinIO, a new PVC and bucket are created for the local settings backup. The existing settings-backup-pvc will not be removed automatically. Backups from that PVC can still be restored with the sts-backup cli by providing --migration.
+If you're upgrading from a previous version that used MinIO, a new PVC and bucket are created for the local settings backup. The existing settings-backup-pvc will not be removed automatically. Backups from that PVC can still be restored with the sts-backup cli by providing --from-pvc.
 
-After a few days the old PVC can be removed. It is recommended to first check that new settings backups have been made (using the sts-backup-cli `settings list` command) and then manually delete the old PVC.
+After a while (these backups only have 10 days retention), the old backup PVC can be removed. It is recommended to first check that new settings backups have been made (using the sts-backup-cli `settings list` command) and then manually delete the old PVC.
 
-**Legacy MinIO values** (deprecated but still supported):
-
-```yaml
-# These values still work for backward compatibility
-minio:
-  accessKey: "old-access-key"
-  secretKey: "old-secret-key"
-
-  # S3 gateway (maps to backup.storage.backend.s3)
-  s3gateway:
-    enabled: true
-    accessKey: "aws-key"
-    secretKey: "aws-secret"
-    serviceEndpoint: "https://s3.amazonaws.com"
-
-  # Azure gateway (maps to backup.storage.backend.azure)
-  azuregateway:
-    enabled: true
-```
+**Legacy MinIO values are deprecated and will be removed in a future release. Please migrate to the new backup storage configuration as soon as possible.**
 
 ## Auto-installing StackPacks
 It can be useful to have some StackPacks always installed in StackState. For example the Kuberentes StackPack configured for the cluster running StackState. For that purpose the value `stackstate.stackpacks.installed` can be used to specify the StackPacks that should be installed (by name) and their (required) configuration. As an example here the Kubernetes StackPack will be pre-installed:
