@@ -235,7 +235,9 @@ Usage:
 {{- define "suse-observability.global.validate" -}}
 {{- /* Validate global.suseObservability configuration when auto-detected */ -}}
 {{- if include "suse-observability.global.enabled" . -}}
-  {{- $license := .Values.global.suseObservability.license | required "global.suseObservability.license is required when using global.suseObservability configuration" -}}
+  {{- if not .Values.stackstate.license.fromExternalSecret -}}
+  {{- $license := .Values.global.suseObservability.license | required "global.suseObservability.license is required when using global.suseObservability configuration (unless stackstate.license.fromExternalSecret is set)" -}}
+  {{- end -}}
   {{- $baseUrl := .Values.global.suseObservability.baseUrl | required "global.suseObservability.baseUrl is required when using global.suseObservability configuration" -}}
   {{- include "stackstate.values.validateUrl" (dict "value" $baseUrl "errorMessage" "Please provide your SUSE Observability base URL in 'global.suseObservability.baseUrl'") -}}
 

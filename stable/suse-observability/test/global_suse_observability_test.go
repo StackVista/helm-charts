@@ -220,6 +220,30 @@ func TestGlobalSuseObservabilityWithOIDCNoPassword(t *testing.T) {
 	assert.False(t, hasDefaultPassword, "Auth secret should NOT contain default_password when OIDC is configured and no admin password is provided")
 }
 
+// TestGlobalSuseObservabilityWithExternalSecretLicense tests that chart renders without global.suseObservability.license when fromExternalSecret is set
+func TestGlobalSuseObservabilityWithExternalSecretLicense(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_external_secrets.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// Verify the chart renders successfully without global.suseObservability.license
+	assert.NotEmpty(t, resources.Deployments, "Should have deployments")
+	assert.NotEmpty(t, resources.Statefulsets, "Should have statefulsets")
+
+	// Verify API deployment exists (proves chart rendered correctly)
+	_, exists := resources.Deployments["suse-observability-api"]
+	require.True(t, exists, "API deployment should exist")
+}
+
+// TestGlobalSuseObservabilityWithExternalSecretNoLicenseSecret tests that license secret is NOT created when fromExternalSecret is set
+func TestGlobalSuseObservabilityWithExternalSecretNoLicenseSecret(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_suse_observability_external_secrets.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// License secret should NOT be created when fromExternalSecret is used
+	_, exists := resources.Secrets["suse-observability-license"]
+	assert.False(t, exists, "License secret should NOT be created when stackstate.license.fromExternalSecret is set")
+}
+
 // Helper function to convert environment variables array to map for easier testing
 func getEnvVars(envVars []v1.EnvVar) map[string]string {
 	envMap := make(map[string]string)
