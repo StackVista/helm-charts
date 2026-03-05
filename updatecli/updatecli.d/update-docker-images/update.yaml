@@ -122,16 +122,6 @@ sources:
       versionfilter:
         kind: regex/semver
         regex: "^[a-f0-9]{8}-([0-9]+)-release$"
-  minio:
-    name: "minio"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/minio"
-      architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+-release$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-([0-9]+)-release$"
   nginxPrometheusExporter:
     name: "nginx-prometheus-exporter"
     kind: dockerimage
@@ -345,21 +335,12 @@ targets:
     spec:
       file: "stable/suse-observability-agent/values.yaml"
       key: "$.kubernetes-rbac-agent.containers.rbacAgent.image.tag"
-  minio:
-    name: "minio"
-    kind: yaml
-    scmid: "default"
-    sourceid: minio
-    dependson: ["target#kubernetesRbacAgentSuseObservabilityAgent"]
-    spec:
-      file: "stable/suse-observability/values.yaml"
-      key: "$.minio.image.tag"
   nginxPrometheusExporter:
     name: "nginx-prometheus-exporter"
     kind: yaml
     scmid: "default"
     sourceid: nginxPrometheusExporter
-    dependson: ["target#minio"]
+    dependson: ["target#kubernetesRbacAgentSuseObservabilityAgent"]
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.stackstate.components.nginxPrometheusExporter.image.tag"

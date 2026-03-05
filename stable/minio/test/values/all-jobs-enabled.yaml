@@ -1,7 +1,0 @@
-# Test with both bucket creation and ServiceMonitor enabled
-defaultBucket:
-  enabled: true
-
-metrics:
-  serviceMonitor:
-    enabled: true

@@ -30,7 +30,6 @@
       'hbase',
       'kafka',
       'kafkaup-operator',
-      'minio',
       'prometheus-elasticsearch-exporter',
       'pull-secret',
       'suse-observability',

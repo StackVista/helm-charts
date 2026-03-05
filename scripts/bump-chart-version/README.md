@@ -78,7 +78,6 @@ Would show output like:
   - clickhouse
   - hbase
   - kafka
-  - minio
   - suse-observability
   - victoria-metrics-single
   ...

@@ -483,34 +483,6 @@ build_kommoner-operator:
     - helm dependencies build stable/kommoner-operator
     - mkdir -p stable/kommoner-operator/build; helm package --destination stable/kommoner-operator/build stable/kommoner-operator
   stage: build
-build_minio:
-  artifacts:
-    paths:
-      - stable/minio/charts/
-      - stable/minio/build/
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/minio/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yq e '.dependencies[] | select (.repository == "file*").repository | sub("^file://","")' stable/minio/Chart.yaml  | xargs -I % helm dependencies build --skip-refresh stable/minio/%
-    - helm dependencies build stable/minio
-    - mkdir -p stable/minio/build; helm package --destination stable/minio/build stable/minio
-  stage: build
 build_notification-operator:
   artifacts:
     paths:
@@ -1218,17 +1190,6 @@ check_kommoner-operator_version:
       if: $CI_PIPELINE_SOURCE == "merge_request_event"
   script:
     - .gitlab/verify_versions_bumped.sh kommoner-operator
-  stage: validate
-check_minio_version:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/minio/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - .gitlab/verify_versions_bumped.sh minio
   stage: validate
 check_notification-operator_version:
   before_script:
@@ -2558,100 +2519,6 @@ push_kommoner-operator_to_internal:
   stage: push-charts-to-internal
   variables:
     CHART: stable/kommoner-operator
-push_minio_to_internal:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_MCP_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_AI_ASSISTANT_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/minio/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-minio]/
-      when: on_success
-    - changes:
-        - stable/minio/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: on_success
-    - if: $CI_COMMIT_TAG =~ /^minio\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_INTERNAL_USERNAME} --password ${CHARTMUSEUM_INTERNAL_PASSWORD} ${CHART} ${CHARTMUSEUM_INTERNAL_URL}
-  stage: push-charts-to-internal
-  variables:
-    CHART: stable/minio
-push_minio_to_public:
-  before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
-    - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
-    - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
-    - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
-    - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
-    - helm repo update
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
-  needs:
-    - push_minio_to_internal
-  rules:
-    - if: $UPDATE_STACKGRAPH_VERSION
-      when: never
-    - if: $UPDATE_AAD_CHART_VERSION
-      when: never
-    - if: $UPDATE_STACKSTATE_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_MCP_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_AI_ASSISTANT_DOCKER_VERSION
-      when: never
-    - if: $UPDATE_STACKPACKS_DOCKER_VERSION
-      when: never
-    - if: $RUN_UPDATECLI
-      when: never
-    - changes:
-        - stable/minio/**/*
-      if: $CI_COMMIT_BRANCH == "master" && $CI_COMMIT_AUTHOR == "stackstate-system-user <suse-observability-ops@stackstate.com>"  && $CI_COMMIT_MESSAGE =~ /\[publish-minio]/
-      when: on_success
-    - changes:
-        - stable/minio/**/*
-      if: $CI_COMMIT_BRANCH == "master"
-      when: manual
-    - if: $CI_COMMIT_TAG =~ /^minio\/.*/
-      when: on_success
-  script:
-    - helm dependencies update --skip-refresh ${CHART}
-    - helm cm-push --username ${CHARTMUSEUM_USERNAME} --password ${CHARTMUSEUM_PASSWORD} ${CHART} ${CHARTMUSEUM_URL}
-  stage: push-charts-to-public
-  variables:
-    CHART: stable/minio
 push_notification-operator_to_internal:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -4505,30 +4372,6 @@ test_kommoner-operator:
   variables:
     CGO_ENABLED: 0
     GOPATH: /go
-test_minio:
-  cache:
-    key:
-      files:
-        - go.mod
-        - go.sum
-    paths:
-      - /go/pkg/mod/
-  image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
-  rules:
-    - changes:
-        - stable/minio/**/*
-      exists:
-        - stable/minio/test/*.go
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - go mod download
-    - go test ./stable/minio/test/...
-  stage: test
-  tags:
-    - sts-k8s-xl-runner
-  variables:
-    CGO_ENABLED: 0
-    GOPATH: /go
 test_notification-operator:
   cache:
     key:
@@ -5350,22 +5193,6 @@ validate_kommoner-operator:
     - yamllint --config-file /etc/ct/lintconf.yaml stable/kommoner-operator/values.yaml
     - if [ -f stable/kommoner-operator/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/kommoner-operator/ci/default-values.yaml; fi
     - if [ -f stable/kommoner-operator/ci/default-values.yaml ]; then helm lint stable/kommoner-operator --values stable/kommoner-operator/ci/default-values.yaml; fi
-    - .gitlab/validate_kubeconform.sh
-  stage: validate
-validate_minio:
-  before_script:
-    - .gitlab/validate_before_script.sh
-  image: quay.io/helmpack/chart-testing:v3.10.1
-  rules:
-    - changes:
-        - stable/minio/**/*
-      if: $CI_PIPELINE_SOURCE == "merge_request_event"
-  script:
-    - yamale --schema /etc/ct/chart_schema.yaml stable/minio/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/minio/Chart.yaml
-    - yamllint --config-file /etc/ct/lintconf.yaml stable/minio/values.yaml
-    - if [ -f stable/minio/ci/default-values.yaml ]; then yamllint --config-file /etc/ct/lintconf.yaml stable/minio/ci/default-values.yaml; fi
-    - if [ -f stable/minio/ci/default-values.yaml ]; then helm lint stable/minio --values stable/minio/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
 validate_notification-operator:

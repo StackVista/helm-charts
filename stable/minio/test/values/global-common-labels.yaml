@@ -1,5 +1,0 @@
-# Test global.commonLabels
-global:
-  commonLabels:
-    global.label1: "global-value1"
-    global.label2: "global-value2"
