@@ -1,6 +1,6 @@
 # zookeeper
 
-![Version: 8.1.2-suse-observability.10](https://img.shields.io/badge/Version-8.1.2--suse--observability.10-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
+![Version: 8.1.2-suse-observability.11](https://img.shields.io/badge/Version-8.1.2--suse--observability.11-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
 
 Apache ZooKeeper provides a reliable, centralized register of configuration data and services for distributed applications.
 
