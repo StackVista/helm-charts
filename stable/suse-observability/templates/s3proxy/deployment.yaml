@@ -97,6 +97,17 @@ env:
     value: {{ .Values.s3proxy.logLevel | quote }}
   - name: JAVA_OPTS
     value: {{ include "stackstate.s3proxy.javaOpts" . }}{{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }} -Djavax.net.ssl.trustStore=/opt/s3proxy/secrets/java-cacerts -Djavax.net.ssl.trustStoreType=jks{{- if .Values.stackstate.java.trustStorePassword }} -Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD){{- end }}{{- end }}
+  {{- range $key, $value := .Values.s3proxy.extraEnv.open }}
+  - name: {{ $key }}
+    value: {{ $value | quote }}
+  {{- end }}
+  {{- range $key := (keys .Values.s3proxy.extraEnv.secret | sortAlpha) }}
+  - name: {{ $key }}
+    valueFrom:
+      secretKeyRef:
+        name: {{ include "stackstate.s3proxy.fullname" $ }}-extra-env
+        key: {{ $key }}
+  {{- end }}
 volumeMounts:
   - name: config
     mountPath: /etc/s3proxy
@@ -162,6 +173,9 @@ spec:
         checksum/common-secret: {{ include (print $.Template.BasePath "/secret-common.yaml") . | sha256sum }}
         {{- end }}
         {{- include "common.metrics.annotations" (dict "metrics" .Values.s3proxy.metrics "port" "9464" "container_name" "s3proxy") | indent 8 }}
+        {{- if .Values.s3proxy.extraEnv.secret }}
+        checksum/extra-env-secret: {{ include (print $.Template.BasePath "/s3proxy/secret-extra-env.yaml") . | sha256sum }}
+        {{- end }}
         {{- with .Values.s3proxy.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

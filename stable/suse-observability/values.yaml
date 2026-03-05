@@ -85,13 +85,6 @@ backup:
   # backup.initJobAnnotations -- Annotations for Backup-init Job.
   initJobAnnotations: {}
   storage:
-    credentials:
-      # backup.storage.credentials.accessKey -- Access key for S3Proxy authentication (override for production usage with global.backup.enabled)
-      accessKey: "default-for-settings-only"
-      # backup.storage.credentials.secretKey -- Secret key for S3Proxy authentication (override for production usage with global.backup.enabled)
-      secretKey: "default-secret-for-settings-only"
-      # backup.storage.credentials.existingSecret -- Use existing secret for credentials (keys: accessKey, secretKey)
-      existingSecret: ""
     # backup.storage.settingsPvc -- PVC for local settings backup (always present)
     settingsPvc:
       # backup.storage.settingsPvc.size -- Size of the settings backup PVC
@@ -2154,10 +2147,10 @@ kafka:
 minio:
   # minio.fullnameOverride -- DEPRECATED: Used for backward compatibility with existing deployments.
   fullnameOverride: ""
-  # minio.accessKey -- DEPRECATED: Use backup.storage.credentials.accessKey instead.
+  # minio.accessKey -- DEPRECATED: Use s3proxy.credentials.accessKey instead.
   # If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials.
   accessKey: ""
-  # minio.secretKey -- DEPRECATED: Use backup.storage.credentials.secretKey instead.
+  # minio.secretKey -- DEPRECATED: Use s3proxy.credentials.secretKey instead.
   # If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials.
   secretKey: ""
   # minio.persistence -- DEPRECATED: Use backup.storage.pvc
@@ -2193,6 +2186,13 @@ minio:
 
 # S3Proxy deployment configuration
 s3proxy:
+  credentials:
+    # s3proxy.credentials.accessKey -- Access key for S3Proxy authentication (override for production usage with global.backup.enabled)
+    accessKey: "default-for-settings-only"
+    # s3proxy.credentials.secretKey -- Secret key for S3Proxy authentication (override for production usage with global.backup.enabled)
+    secretKey: "default-secret-for-settings-only"
+    # s3proxy.credentials.existingSecret -- Use existing secret for credentials (keys: accessKey, secretKey)
+    existingSecret: ""
   image:
     # s3proxy.image.registry -- imageRegistry used for the S3Proxy Docker image
     registry: quay.io
@@ -2218,6 +2218,11 @@ s3proxy:
     baseMemoryConsumption: "100Mi"
     # s3proxy.sizing.javaHeapMemoryFraction -- Percentage of remaining memory (after baseMemoryConsumption) allocated to Java heap
     javaHeapMemoryFraction: "70"
+  extraEnv:
+    # s3proxy.extraEnv.open -- Extra open environment variables to inject into the S3Proxy pod.
+    open: {}
+    # s3proxy.extraEnv.secret -- Extra secret environment variables to inject into the S3Proxy pod via a `Secret` object.
+    secret: {}
   # s3proxy.nodeSelector -- Node selector for S3Proxy pod (merged with stackstate.components.all.nodeSelector)
   nodeSelector: {}
   # s3proxy.tolerations -- Tolerations for S3Proxy pod (appended to stackstate.components.all.tolerations)

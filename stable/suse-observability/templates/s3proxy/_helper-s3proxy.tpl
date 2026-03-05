@@ -16,8 +16,8 @@ suse-observability-objectstorage
 S3Proxy secret name.
 */}}
 {{- define "stackstate.s3proxy.secretName" -}}
-{{- if .Values.backup.storage.credentials.existingSecret -}}
-{{- .Values.backup.storage.credentials.existingSecret -}}
+{{- if .Values.s3proxy.credentials.existingSecret -}}
+{{- .Values.s3proxy.credentials.existingSecret -}}
 {{- else -}}
 {{- include "stackstate.s3proxy.fullname" . -}}
 {{- end -}}
@@ -55,14 +55,14 @@ true
 Get S3Proxy access key.
 */}}
 {{- define "stackstate.s3proxy.accessKey" -}}
-{{- .Values.backup.storage.credentials.accessKey -}}
+{{- .Values.s3proxy.credentials.accessKey -}}
 {{- end -}}
 
 {{/*
 Get S3Proxy secret key.
 */}}
 {{- define "stackstate.s3proxy.secretKey" -}}
-{{- .Values.backup.storage.credentials.secretKey -}}
+{{- .Values.s3proxy.credentials.secretKey -}}
 {{- end -}}
 
 {{/*
@@ -212,10 +212,10 @@ This helper is used to generate ConfigMap annotations that surface warnings to u
 {{- $warnings = append $warnings "DEPRECATED: minio.azuregateway.* values are deprecated. Use backup.storage.backend.azure.* instead." -}}
 {{- end -}}
 {{- if and .Values.minio.accessKey (ne .Values.minio.accessKey "") (ne .Values.minio.accessKey "setme") (not (and .Values.minio.azuregateway .Values.minio.azuregateway.enabled)) -}}
-{{- $warnings = append $warnings "DEPRECATED: minio.accessKey is deprecated. Use backup.storage.credentials.accessKey instead." -}}
+{{- $warnings = append $warnings "DEPRECATED: minio.accessKey is deprecated. Use s3proxy.credentials.accessKey instead." -}}
 {{- end -}}
 {{- if and .Values.minio.secretKey (ne .Values.minio.secretKey "") (ne .Values.minio.secretKey "setme") (not (and .Values.minio.azuregateway .Values.minio.azuregateway.enabled)) -}}
-{{- $warnings = append $warnings "DEPRECATED: minio.secretKey is deprecated. Use backup.storage.credentials.secretKey instead." -}}
+{{- $warnings = append $warnings "DEPRECATED: minio.secretKey is deprecated. Use s3proxy.credentials.secretKey instead." -}}
 {{- end -}}
 {{- if and .Values.minio.fullnameOverride (ne .Values.minio.fullnameOverride "") -}}
 {{- $warnings = append $warnings "DEPRECATED: minio.fullnameOverride is deprecated. S3Proxy resources now use 'suse-observability-s3proxy' naming by default." -}}

@@ -139,7 +139,10 @@ func TestS3ProxyWithBackupEnabledS3(t *testing.T) {
 	configMap, ok := resources.ConfigMaps["suse-observability-s3proxy-config"]
 	require.True(t, ok, "S3Proxy ConfigMap should exist")
 	assert.Contains(t, configMap.Data["s3proxy-main.properties"], "jclouds.provider=aws-s3-sdk", "ConfigMap should have S3 provider")
-	assert.Contains(t, configMap.Data["s3proxy-main.properties"], "aws-s3-sdk.region=eu-west-1", "ConfigMap should have correct region")
+
+	// Region should be set via environment variable on the deployment
+	expectedRegionEnv := corev1.EnvVar{Name: "AWS_REGION", Value: "eu-west-1"}
+	assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Env, expectedRegionEnv, "Deployment should have AWS_REGION env var set to the configured region")
 }
 
 // TestS3ProxyWithBackupEnabledAzure verifies S3Proxy deployment with Azure backend
@@ -384,7 +387,7 @@ func TestS3ProxyExistingSecret(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
-			"backup.storage.credentials.existingSecret": "my-existing-secret",
+			"s3proxy.credentials.existingSecret": "my-existing-secret",
 		},
 	})
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -1393,4 +1396,136 @@ func TestS3ProxyServiceAccountAnnotationsMerge(t *testing.T) {
 
 	// Conflicting key should use s3proxy value (higher precedence)
 	assert.Equal(t, "arn:aws:iam::123456789012:role/new-role", sa.Annotations["eks.amazonaws.com/role-arn"], "Conflicting annotation should use s3proxy value over legacy minio value")
+}
+
+// TestS3ProxyExtraEnvOpenDefault verifies no extra env vars are present by default
+func TestS3ProxyExtraEnvOpenDefault(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	mainContainer := deployment.Spec.Template.Spec.Containers[0]
+
+	// Should not have any extra env vars beyond the defaults
+	for _, env := range mainContainer.Env {
+		assert.NotEqual(t, "MY_CUSTOM_VAR", env.Name, "Custom env var should not be present by default")
+	}
+
+	// Extra env secret should not exist
+	_, ok = resources.Secrets["suse-observability-s3proxy-extra-env"]
+	assert.False(t, ok, "Extra env secret should not exist by default")
+}
+
+// TestS3ProxyExtraEnvOpen verifies that extraEnv.open values are injected as plain env vars
+func TestS3ProxyExtraEnvOpen(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"s3proxy.extraEnv.open.MY_CUSTOM_VAR":      "my-custom-value",
+			"s3proxy.extraEnv.open.ANOTHER_CUSTOM_VAR": "another-value",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	mainContainer := deployment.Spec.Template.Spec.Containers[0]
+
+	expectedMyCustomVar := corev1.EnvVar{Name: "MY_CUSTOM_VAR", Value: "my-custom-value"}
+	expectedAnotherVar := corev1.EnvVar{Name: "ANOTHER_CUSTOM_VAR", Value: "another-value"}
+	assert.Contains(t, mainContainer.Env, expectedMyCustomVar, "MY_CUSTOM_VAR should be present")
+	assert.Contains(t, mainContainer.Env, expectedAnotherVar, "ANOTHER_CUSTOM_VAR should be present")
+}
+
+// TestS3ProxyExtraEnvSecret verifies that extraEnv.secret values are injected via secretKeyRef
+func TestS3ProxyExtraEnvSecret(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"s3proxy.extraEnv.secret.SECRET_VAR":         "secret-value",
+			"s3proxy.extraEnv.secret.ANOTHER_SECRET_VAR": "another-secret",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	mainContainer := deployment.Spec.Template.Spec.Containers[0]
+
+	// Verify env vars reference the secret
+	expectedSecretVar := corev1.EnvVar{
+		Name: "ANOTHER_SECRET_VAR",
+		ValueFrom: &corev1.EnvVarSource{
+			SecretKeyRef: &corev1.SecretKeySelector{
+				LocalObjectReference: corev1.LocalObjectReference{
+					Name: "suse-observability-s3proxy-extra-env",
+				},
+				Key: "ANOTHER_SECRET_VAR",
+			},
+		},
+	}
+	expectedSecretVar2 := corev1.EnvVar{
+		Name: "SECRET_VAR",
+		ValueFrom: &corev1.EnvVarSource{
+			SecretKeyRef: &corev1.SecretKeySelector{
+				LocalObjectReference: corev1.LocalObjectReference{
+					Name: "suse-observability-s3proxy-extra-env",
+				},
+				Key: "SECRET_VAR",
+			},
+		},
+	}
+	assert.Contains(t, mainContainer.Env, expectedSecretVar, "ANOTHER_SECRET_VAR should reference secret")
+	assert.Contains(t, mainContainer.Env, expectedSecretVar2, "SECRET_VAR should reference secret")
+
+	// Verify the secret object exists with correct data
+	secret, ok := resources.Secrets["suse-observability-s3proxy-extra-env"]
+	require.True(t, ok, "Extra env secret should exist")
+	assert.Contains(t, secret.Data, "SECRET_VAR", "Secret should contain SECRET_VAR key")
+	assert.Contains(t, secret.Data, "ANOTHER_SECRET_VAR", "Secret should contain ANOTHER_SECRET_VAR key")
+}
+
+// TestS3ProxyExtraEnvOpenAndSecret verifies that both open and secret extra env vars work together
+func TestS3ProxyExtraEnvOpenAndSecret(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"s3proxy.extraEnv.open.OPEN_VAR":     "open-value",
+			"s3proxy.extraEnv.secret.SECRET_VAR": "secret-value",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+
+	mainContainer := deployment.Spec.Template.Spec.Containers[0]
+
+	// Verify open env var
+	expectedOpenVar := corev1.EnvVar{Name: "OPEN_VAR", Value: "open-value"}
+	assert.Contains(t, mainContainer.Env, expectedOpenVar, "OPEN_VAR should be present as plain env var")
+
+	// Verify secret env var
+	expectedSecretVar := corev1.EnvVar{
+		Name: "SECRET_VAR",
+		ValueFrom: &corev1.EnvVarSource{
+			SecretKeyRef: &corev1.SecretKeySelector{
+				LocalObjectReference: corev1.LocalObjectReference{
+					Name: "suse-observability-s3proxy-extra-env",
+				},
+				Key: "SECRET_VAR",
+			},
+		},
+	}
+	assert.Contains(t, mainContainer.Env, expectedSecretVar, "SECRET_VAR should reference secret")
+
+	// Verify both secret and deployment exist
+	_, ok = resources.Secrets["suse-observability-s3proxy-extra-env"]
+	require.True(t, ok, "Extra env secret should exist when secret env vars are set")
 }

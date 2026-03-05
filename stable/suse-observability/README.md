@@ -456,9 +456,6 @@ If you encounter issues not covered here:
 | backup.storage.backend.s3.endpoint | string | `""` | S3 endpoint URL (optional, defaults to AWS) |
 | backup.storage.backend.s3.region | string | `nil` | AWS region (defaults to us-east-1) |
 | backup.storage.backend.s3.secretKey | string | `""` | AWS secret key (optional) |
-| backup.storage.credentials.accessKey | string | `"default-for-settings-only"` | Access key for S3Proxy authentication (override for production usage with global.backup.enabled) |
-| backup.storage.credentials.existingSecret | string | `""` | Use existing secret for credentials (keys: accessKey, secretKey) |
-| backup.storage.credentials.secretKey | string | `"default-secret-for-settings-only"` | Secret key for S3Proxy authentication (override for production usage with global.backup.enabled) |
 | backup.storage.settingsPvc | object | `{"accessModes":["ReadWriteOnce"],"size":"2Gi","storageClass":""}` | PVC for local settings backup (always present) |
 | backup.storage.settingsPvc.accessModes | list | `["ReadWriteOnce"]` | Access modes for the settings PVC |
 | backup.storage.settingsPvc.size | string | `"2Gi"` | Size of the settings backup PVC |
@@ -690,7 +687,7 @@ If you encounter issues not covered here:
 | kubernetes-rbac-agent.containers.rbacAgent.tolerations | list | `[]` | Set tolerations |
 | kubernetes-rbac-agent.url.value | string | `"{{ include \"stackstate.rbacAgent.url\" . }}"` |  |
 | minio | object | `{"accessKey":"","azuregateway":{"enabled":false},"fullnameOverride":"","persistence":{"enabled":false},"s3gateway":{"accessKey":"","enabled":false,"secretKey":"","serviceEndpoint":""},"secretKey":"","serviceAccount":{"annotations":{},"create":true,"name":""}}` | DEPRECATED: MinIO subchart has been replaced by S3Proxy. These values are kept for backward compatibility only. Please migrate to backup.storage.* values. Legacy minio.* values will be removed in a future release. |
-| minio.accessKey | string | `""` | DEPRECATED: Use backup.storage.credentials.accessKey instead. If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials. |
+| minio.accessKey | string | `""` | DEPRECATED: Use s3proxy.credentials.accessKey instead. If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials. |
 | minio.azuregateway | object | `{"enabled":false}` | DEPRECATED: Use backup.storage.backend.azure instead. When minio.azuregateway.enabled is true, S3Proxy will be configured to use Azure Blob as the backend. |
 | minio.azuregateway.enabled | bool | `false` | DEPRECATED: Use backup.storage.backend.azure.enabled instead. |
 | minio.fullnameOverride | string | `""` | DEPRECATED: Used for backward compatibility with existing deployments. |
@@ -701,7 +698,7 @@ If you encounter issues not covered here:
 | minio.s3gateway.enabled | bool | `false` | DEPRECATED: Use backup.storage.backend.s3.enabled instead. |
 | minio.s3gateway.secretKey | string | `""` | DEPRECATED: Use backup.storage.backend.s3.secretKey instead. |
 | minio.s3gateway.serviceEndpoint | string | `""` | DEPRECATED: Use backup.storage.backend.s3.endpoint instead. |
-| minio.secretKey | string | `""` | DEPRECATED: Use backup.storage.credentials.secretKey instead. If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials. |
+| minio.secretKey | string | `""` | DEPRECATED: Use s3proxy.credentials.secretKey instead. If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials. |
 | minio.serviceAccount | object | `{"annotations":{},"create":true,"name":""}` | DEPRECATED: Use s3proxy.serviceAccount instead. |
 | minio.serviceAccount.annotations | object | `{}` | DEPRECATED: Use s3proxy.serviceAccount.annotations instead. If set, will be merged into the S3Proxy service account annotations (s3proxy values take precedence). |
 | minio.serviceAccount.create | bool | `true` | DEPRECATED: Use s3proxy.serviceAccount.create instead. |
@@ -734,6 +731,11 @@ If you encounter issues not covered here:
 | pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |
 | pull-secret.fullNameOverride | string | `""` | Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart. |
 | s3proxy.affinity | object | `{}` | Affinity settings for S3Proxy pod (merged with stackstate.components.all.affinity) |
+| s3proxy.credentials.accessKey | string | `"default-for-settings-only"` | Access key for S3Proxy authentication (override for production usage with global.backup.enabled) |
+| s3proxy.credentials.existingSecret | string | `""` | Use existing secret for credentials (keys: accessKey, secretKey) |
+| s3proxy.credentials.secretKey | string | `"default-secret-for-settings-only"` | Secret key for S3Proxy authentication (override for production usage with global.backup.enabled) |
+| s3proxy.extraEnv.open | object | `{}` | Extra open environment variables to inject into the S3Proxy pod. |
+| s3proxy.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into the S3Proxy pod via a `Secret` object. |
 | s3proxy.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for S3Proxy |
 | s3proxy.image.registry | string | `"quay.io"` | imageRegistry used for the S3Proxy Docker image |
 | s3proxy.image.repository | string | `"stackstate/s3proxy"` | Image repository for S3Proxy |
