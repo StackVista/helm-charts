@@ -56,13 +56,6 @@ Logic to determine Kafka endpoint.
 {{- end -}}
 
 {{/*
-Logic to determine MinIO endpoint.
-*/}}
-{{- define "stackstate.minio.endpoint" -}}
-{{- include "stackstate.s3proxy.endpoint" . -}}
-{{- end -}}
-
-{{/*
 Logic to determine Router endpoint.
 */}}
 {{- define "stackstate.router.endpoint" -}}

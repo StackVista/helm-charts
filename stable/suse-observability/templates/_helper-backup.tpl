@@ -100,7 +100,7 @@ Check if the backup.stackGraph.splitArchiveSize has a valid value.
 - name: BACKUP_CLICKHOUSE_S3_PREFIX
   value: {{ include "ensureTrailingSlashIfNotEmpty" .Values.clickhouse.backup.s3Prefix }}
 - name: S3_ENDPOINT
-  value: {{ include "stackstate.minio.endpoint" . | quote }}
+  value: {{ include "stackstate.s3proxy.endpoint" . | quote }}
 - name: S3_BUCKET_SETTINGS
   value: {{ include "stackstate.s3proxy.localSettingsBucketName" . | quote }}
 {{- include "stackstate.env.platform_version" . }}
