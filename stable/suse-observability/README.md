@@ -450,15 +450,15 @@ If you encounter issues not covered here:
 | backup.storage.backend.pvc.enabled | bool | `false` | Enable PVC backend |
 | backup.storage.backend.pvc.size | string | `"500Gi"` | Size of the PVC for S3Proxy data |
 | backup.storage.backend.pvc.storageClass | string | `""` | Storage class for the PVC |
-| backup.storage.backend.s3 | object | `{"accessKey":"","enabled":false,"endpoint":"","region":"us-east-1","secretKey":""}` | Use external S3-compatible storage |
+| backup.storage.backend.s3 | object | `{"accessKey":"","enabled":false,"endpoint":"","region":null,"secretKey":""}` | Use external S3-compatible storage |
 | backup.storage.backend.s3.accessKey | string | `""` | AWS access key (optional, falls back to instance profile/IRSA) |
 | backup.storage.backend.s3.enabled | bool | `false` | Enable S3 backend |
 | backup.storage.backend.s3.endpoint | string | `""` | S3 endpoint URL (optional, defaults to AWS) |
-| backup.storage.backend.s3.region | string | `"us-east-1"` | AWS region (defaults to us-east-1) |
+| backup.storage.backend.s3.region | string | `nil` | AWS region (defaults to us-east-1) |
 | backup.storage.backend.s3.secretKey | string | `""` | AWS secret key (optional) |
-| backup.storage.credentials.accessKey | string | `"default-access-key-for-settings-only"` | Access key for S3Proxy authentication (override for production usage with global.backup.enabled) |
+| backup.storage.credentials.accessKey | string | `"default-for-settings-only"` | Access key for S3Proxy authentication (override for production usage with global.backup.enabled) |
 | backup.storage.credentials.existingSecret | string | `""` | Use existing secret for credentials (keys: accessKey, secretKey) |
-| backup.storage.credentials.secretKey | string | `"default-secret-key-for-settings-only"` | Secret key for S3Proxy authentication (override for production usage with global.backup.enabled) |
+| backup.storage.credentials.secretKey | string | `"default-secret-for-settings-only"` | Secret key for S3Proxy authentication (override for production usage with global.backup.enabled) |
 | backup.storage.settingsPvc | object | `{"accessModes":["ReadWriteOnce"],"size":"2Gi","storageClass":""}` | PVC for local settings backup (always present) |
 | backup.storage.settingsPvc.accessModes | list | `["ReadWriteOnce"]` | Access modes for the settings PVC |
 | backup.storage.settingsPvc.size | string | `"2Gi"` | Size of the settings backup PVC |
@@ -737,7 +737,7 @@ If you encounter issues not covered here:
 | s3proxy.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for S3Proxy |
 | s3proxy.image.registry | string | `"quay.io"` | imageRegistry used for the S3Proxy Docker image |
 | s3proxy.image.repository | string | `"stackstate/s3proxy"` | Image repository for S3Proxy |
-| s3proxy.image.tag | string | `"3.0.0-8dd2c1dc-12"` | Image tag for S3Proxy |
+| s3proxy.image.tag | string | `"3.0.0-dcc87dd9-14"` | Image tag for S3Proxy |
 | s3proxy.logLevel | string | `"info"` |  |
 | s3proxy.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | s3proxy.metrics.defaultAgentMetricsFilter | string | `"[\"*\"]"` |  |

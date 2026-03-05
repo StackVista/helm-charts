@@ -64,6 +64,10 @@ env:
         key: secretkey
   {{- if .Values.global.backup.enabled }}
   {{- if (include "stackstate.s3proxy.s3BackendEnabled" .) }}
+  {{- if .Values.backup.storage.backend.s3.region }}
+  - name: AWS_REGION
+    value: {{ .Values.backup.storage.backend.s3.region }}
+  {{- end }}
   - name: JCLOUDS_IDENTITY
     valueFrom:
       secretKeyRef:
@@ -92,7 +96,7 @@ env:
   - name: LOG_LEVEL
     value: {{ .Values.s3proxy.logLevel | quote }}
   - name: JAVA_OPTS
-    value: {{ include "stackstate.s3proxy.javaOpts" . }}{{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }} -Djavax.net.ssl.trustStore=/opt/s3proxy/secrets/java-cacerts -Djavax.net.ssl.trustStoreType=jks{{- if .Values.stackstate.java.trustStorePassword }} -Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD){{- end }}{{- end }} -Ds3proxy.endpoint=http://0.0.0.0:9000 -Ds3proxy.authorization=aws-v2-or-v4 -Ds3proxy.ignore-unknown-headers=true -Ds3proxy.identity=$(S3PROXY_IDENTITY) -Ds3proxy.credential=$(S3PROXY_CREDENTIAL) -Djclouds.identity=$(JCLOUDS_IDENTITY) -Djclouds.credential=$(JCLOUDS_CREDENTIAL)
+    value: {{ include "stackstate.s3proxy.javaOpts" . }}{{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }} -Djavax.net.ssl.trustStore=/opt/s3proxy/secrets/java-cacerts -Djavax.net.ssl.trustStoreType=jks{{- if .Values.stackstate.java.trustStorePassword }} -Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD){{- end }}{{- end }}
 volumeMounts:
   - name: config
     mountPath: /etc/s3proxy

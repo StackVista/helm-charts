@@ -87,9 +87,9 @@ backup:
   storage:
     credentials:
       # backup.storage.credentials.accessKey -- Access key for S3Proxy authentication (override for production usage with global.backup.enabled)
-      accessKey: "default-access-key-for-settings-only"
+      accessKey: "default-for-settings-only"
       # backup.storage.credentials.secretKey -- Secret key for S3Proxy authentication (override for production usage with global.backup.enabled)
-      secretKey: "default-secret-key-for-settings-only"
+      secretKey: "default-secret-for-settings-only"
       # backup.storage.credentials.existingSecret -- Use existing secret for credentials (keys: accessKey, secretKey)
       existingSecret: ""
     # backup.storage.settingsPvc -- PVC for local settings backup (always present)
@@ -124,7 +124,7 @@ backup:
         # backup.storage.backend.s3.endpoint -- S3 endpoint URL (optional, defaults to AWS)
         endpoint: ""
         # backup.storage.backend.s3.region -- AWS region (defaults to us-east-1)
-        region: "us-east-1"
+        region: null
       # backup.storage.backend.azure -- Use Azure Blob Storage
       azure:
         # backup.storage.backend.azure.enabled -- Enable Azure backend
@@ -2199,7 +2199,7 @@ s3proxy:
     # s3proxy.image.repository -- Image repository for S3Proxy
     repository: stackstate/s3proxy
     # s3proxy.image.tag -- Image tag for S3Proxy
-    tag: "3.0.0-8dd2c1dc-12"
+    tag: "3.0.0-dcc87dd9-14"
     # s3proxy.image.pullPolicy -- Image pull policy for S3Proxy
     pullPolicy: IfNotPresent
   # s3proxy.resources -- Resource limits and requests for S3Proxy container
