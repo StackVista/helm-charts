@@ -9,7 +9,7 @@ suse-observability-s3proxy
 Full name for S3Proxy resources.
 */}}
 {{- define "stackstate.s3proxy.service.fullname" -}}
-suse-observability-objectstorage
+suse-observability-s3proxy
 {{- end -}}
 
 {{/*

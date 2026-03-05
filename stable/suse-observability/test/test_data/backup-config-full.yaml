@@ -5,7 +5,7 @@ kubernetes:
 storage:
   globalBackupEnabled: true
   service:
-    name: "suse-observability-objectstorage"
+    name: "suse-observability-s3proxy"
     port: 9000
     localPortForwardPort: 9000
 stackgraph:
@@ -125,7 +125,7 @@ elasticsearch:
   snapshotRepository:
     name: "sts-backup"
     bucket: "sts-elasticsearch-backup"
-    endpoint: "suse-observability-objectstorage:9000"
+    endpoint: "suse-observability-s3proxy:9000"
     basepath: "elasticsearch"
   slm:
     name: "auto-sts-backup"

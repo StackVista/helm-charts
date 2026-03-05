@@ -2525,7 +2525,7 @@ victoria-metrics-0:
       schedule: '25 * * * *'
     awsSecrets: "suse-observability-s3proxy"
     # -- Override location of S3 endpoints, it should point to storage service. **Do not change this value! It must refer to the storage service (s3proxy)**
-    overrideS3Endpoint: "http://suse-observability-objectstorage:9000"
+    overrideS3Endpoint: "http://suse-observability-s3proxy:9000"
 victoria-metrics-1:
   enabled: true
   rbac:
@@ -2611,7 +2611,7 @@ victoria-metrics-1:
       schedule: '35 * * * *'
     awsSecrets: "suse-observability-s3proxy"
     # -- Override location of S3 endpoints, it should point to storage service. **Do not change this value! It must refer to the storage service (s3proxy)**
-    overrideS3Endpoint: "http://suse-observability-objectstorage:9000"
+    overrideS3Endpoint: "http://suse-observability-s3proxy:9000"
 victoria-metrics:
   restore:
     image:

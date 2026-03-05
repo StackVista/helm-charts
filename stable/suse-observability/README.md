@@ -1353,7 +1353,7 @@ If you encounter issues not covered here:
 | stackstate.ui.defaultTimeRange | string | `nil` | Default time range  in the UI. One of LAST_5_MINUTES, LAST_15_MINUTES, LAST_30_MINUTES, LAST_1_HOUR, LAST_3_HOURS, LAST_6_HOURS, LAST_12_HOURS, LAST_24_HOURS, LAST_2_DAYS. No value or an unsupported value will automatically fall-back to LAST_1_HOUR. |
 | victoria-metrics-0.backup.awsSecrets | string | `"suse-observability-s3proxy"` |  |
 | victoria-metrics-0.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the storage bucket where Victoria Metrics backups are stored. |
-| victoria-metrics-0.backup.overrideS3Endpoint | string | `"http://suse-observability-objectstorage:9000"` | Override location of S3 endpoints, it should point to storage service. **Do not change this value! It must refer to the storage service (s3proxy)** |
+| victoria-metrics-0.backup.overrideS3Endpoint | string | `"http://suse-observability-s3proxy:9000"` | Override location of S3 endpoints, it should point to storage service. **Do not change this value! It must refer to the storage service (s3proxy)** |
 | victoria-metrics-0.backup.s3Prefix | string | `"victoria-metrics-0"` |  |
 | victoria-metrics-0.backup.scheduled.schedule | string | `"25 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
 | victoria-metrics-0.backup.setupCron.image.tag | string | `"1.8.3-610"` | Container-tools image for cron setup. Updated by updatecli. |
@@ -1378,7 +1378,7 @@ If you encounter issues not covered here:
 | victoria-metrics-0.server.serviceMonitor.interval | string | `"15s"` | Scrape interval for service monitor |
 | victoria-metrics-1.backup.awsSecrets | string | `"suse-observability-s3proxy"` |  |
 | victoria-metrics-1.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the storage bucket where Victoria Metrics backups are stored. |
-| victoria-metrics-1.backup.overrideS3Endpoint | string | `"http://suse-observability-objectstorage:9000"` | Override location of S3 endpoints, it should point to storage service. **Do not change this value! It must refer to the storage service (s3proxy)** |
+| victoria-metrics-1.backup.overrideS3Endpoint | string | `"http://suse-observability-s3proxy:9000"` | Override location of S3 endpoints, it should point to storage service. **Do not change this value! It must refer to the storage service (s3proxy)** |
 | victoria-metrics-1.backup.s3Prefix | string | `"victoria-metrics-1"` | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. |
 | victoria-metrics-1.backup.scheduled.schedule | string | `"35 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
 | victoria-metrics-1.backup.setupCron.image.tag | string | `"1.8.3-610"` | Container-tools image for cron setup. Updated by updatecli. |

@@ -287,7 +287,7 @@ func TestS3ProxyService(t *testing.T) {
 	})
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	service, ok := resources.Services["suse-observability-objectstorage"]
+	service, ok := resources.Services["suse-observability-s3proxy"]
 	require.True(t, ok, "S3Proxy service should exist")
 	assert.Equal(t, int32(9000), service.Spec.Ports[0].Port, "Service port should be 9000")
 	assert.Equal(t, "http", service.Spec.Ports[0].Name, "Service port name should be http")
