@@ -71,24 +71,24 @@ env:
   - name: JCLOUDS_IDENTITY
     valueFrom:
       secretKeyRef:
-        name: {{ include "stackstate.s3proxy.secretName" . }}
+        name: {{ include "stackstate.s3proxy.s3BackendSecretName" . }}
         key: backendAccessKey
   - name: JCLOUDS_CREDENTIAL
     valueFrom:
       secretKeyRef:
-        name: {{ include "stackstate.s3proxy.secretName" . }}
+        name: {{ include "stackstate.s3proxy.s3BackendSecretName" . }}
         key: backendSecretKey
   {{- else if (include "stackstate.s3proxy.azureBackendEnabled" .) }}
   - name: JCLOUDS_IDENTITY
     valueFrom:
       secretKeyRef:
-        name: {{ include "stackstate.s3proxy.secretName" . }}
+        name: {{ include "stackstate.s3proxy.azureBackendSecretName" . }}
         key: azureAccountName
-  {{- if include "stackstate.s3proxy.azureBackendAccountKey" . }}
+  {{- if or (include "stackstate.s3proxy.azureBackendAccountKey" .) .Values.backup.storage.backend.azure.fromExternalSecret }}
   - name: JCLOUDS_CREDENTIAL
     valueFrom:
       secretKeyRef:
-        name: {{ include "stackstate.s3proxy.secretName" . }}
+        name: {{ include "stackstate.s3proxy.azureBackendSecretName" . }}
         key: azureAccountKey
   {{- end }}
   {{- end }}

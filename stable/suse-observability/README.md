@@ -440,20 +440,22 @@ If you encounter issues not covered here:
 | backup.stackGraph.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | backup.stackGraph.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
 | backup.stackGraph.splitArchiveSize | int | `0` | Split the Stackgraph dump into chunks of the specified size in bytes. Accepts an integer greater or equal to 0 with optional suffix K,M,G (powers of 1024) or KB,MB,GB (powers of 1000) If set to 0, the dump is not split. |
-| backup.storage.backend.azure | object | `{"accountKey":"","accountName":"","enabled":false,"endpoint":""}` | Use Azure Blob Storage |
+| backup.storage.backend.azure | object | `{"accountKey":"","accountName":"","enabled":false,"endpoint":"","fromExternalSecret":""}` | Use Azure Blob Storage |
 | backup.storage.backend.azure.accountKey | string | `""` | Azure storage account key (optional, falls back to managed identity) |
 | backup.storage.backend.azure.accountName | string | `""` | Azure storage account name |
 | backup.storage.backend.azure.enabled | bool | `false` | Enable Azure backend |
 | backup.storage.backend.azure.endpoint | string | `""` | Azure blob endpoint (auto-derived from accountName if not set) |
+| backup.storage.backend.azure.fromExternalSecret | string | `""` | Use an externally-managed secret for Azure backend credentials (keys: azureAccountName, azureAccountKey). When set, accountName/accountKey values are not required. |
 | backup.storage.backend.pvc | object | `{"accessModes":["ReadWriteOnce"],"enabled":false,"size":"500Gi","storageClass":""}` | Use local PVC storage (default when no other backend configured) |
 | backup.storage.backend.pvc.accessModes | list | `["ReadWriteOnce"]` | Access modes for the PVC |
 | backup.storage.backend.pvc.enabled | bool | `false` | Enable PVC backend |
 | backup.storage.backend.pvc.size | string | `"500Gi"` | Size of the PVC for S3Proxy data |
 | backup.storage.backend.pvc.storageClass | string | `""` | Storage class for the PVC |
-| backup.storage.backend.s3 | object | `{"accessKey":"","enabled":false,"endpoint":"","region":null,"secretKey":""}` | Use external S3-compatible storage |
+| backup.storage.backend.s3 | object | `{"accessKey":"","enabled":false,"endpoint":"","fromExternalSecret":"","region":null,"secretKey":""}` | Use external S3-compatible storage |
 | backup.storage.backend.s3.accessKey | string | `""` | AWS access key (optional, falls back to instance profile/IRSA) |
 | backup.storage.backend.s3.enabled | bool | `false` | Enable S3 backend |
 | backup.storage.backend.s3.endpoint | string | `""` | S3 endpoint URL (optional, defaults to AWS) |
+| backup.storage.backend.s3.fromExternalSecret | string | `""` | Use an externally-managed secret for S3 backend credentials (keys: backendAccessKey, backendSecretKey). When set, accessKey/secretKey values are not required. |
 | backup.storage.backend.s3.region | string | `nil` | AWS region (defaults to us-east-1) |
 | backup.storage.backend.s3.secretKey | string | `""` | AWS secret key (optional) |
 | backup.storage.settingsPvc | object | `{"accessModes":["ReadWriteOnce"],"size":"2Gi","storageClass":""}` | PVC for local settings backup (always present) |

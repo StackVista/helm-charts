@@ -110,6 +110,8 @@ backup:
       s3:
         # backup.storage.backend.s3.enabled -- Enable S3 backend
         enabled: false
+        # backup.storage.backend.s3.fromExternalSecret -- Use an externally-managed secret for S3 backend credentials (keys: backendAccessKey, backendSecretKey). When set, accessKey/secretKey values are not required.
+        fromExternalSecret: ""
         # backup.storage.backend.s3.accessKey -- AWS access key (optional, falls back to instance profile/IRSA)
         accessKey: ""
         # backup.storage.backend.s3.secretKey -- AWS secret key (optional)
@@ -122,6 +124,8 @@ backup:
       azure:
         # backup.storage.backend.azure.enabled -- Enable Azure backend
         enabled: false
+        # backup.storage.backend.azure.fromExternalSecret -- Use an externally-managed secret for Azure backend credentials (keys: azureAccountName, azureAccountKey). When set, accountName/accountKey values are not required.
+        fromExternalSecret: ""
         # backup.storage.backend.azure.accountName -- Azure storage account name
         accountName: ""
         # backup.storage.backend.azure.accountKey -- Azure storage account key (optional, falls back to managed identity)

@@ -454,6 +454,190 @@ func TestS3ProxyFromExternalSecretCredentialsNotRequired(t *testing.T) {
 	assert.Equal(t, "secretkey", credentialEnv.ValueFrom.SecretKeyRef.Key, "S3PROXY_CREDENTIAL should use secretkey key")
 }
 
+// TestS3ProxyS3BackendFromExternalSecret verifies that when fromExternalSecret is set for the S3 backend,
+// the managed secret does not contain backend credentials and the deployment references the external secret
+func TestS3ProxyS3BackendFromExternalSecret(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled":                        "true",
+			"backup.storage.backend.pvc.enabled":           "false",
+			"backup.storage.backend.s3.enabled":            "true",
+			"backup.storage.backend.s3.fromExternalSecret": "my-s3-backend-secret",
+			"backup.storage.backend.s3.region":             "eu-west-1",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// Managed secret should still exist (for s3proxy credentials) but should NOT contain backend keys
+	secret, ok := resources.Secrets["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy managed secret should still exist for s3proxy credentials")
+	_, hasBackendAccessKey := secret.Data["backendAccessKey"]
+	_, hasBackendSecretKey := secret.Data["backendSecretKey"]
+	assert.False(t, hasBackendAccessKey, "Managed secret should NOT contain backendAccessKey when S3 fromExternalSecret is set")
+	assert.False(t, hasBackendSecretKey, "Managed secret should NOT contain backendSecretKey when S3 fromExternalSecret is set")
+
+	// Deployment should reference the external secret for JCLOUDS env vars
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+	container := deployment.Spec.Template.Spec.Containers[0]
+
+	var identityEnv, credentialEnv *corev1.EnvVar
+	for i := range container.Env {
+		if container.Env[i].Name == "JCLOUDS_IDENTITY" {
+			identityEnv = &container.Env[i]
+		}
+		if container.Env[i].Name == "JCLOUDS_CREDENTIAL" {
+			credentialEnv = &container.Env[i]
+		}
+	}
+	require.NotNil(t, identityEnv, "JCLOUDS_IDENTITY env var should exist")
+	assert.Equal(t, "my-s3-backend-secret", identityEnv.ValueFrom.SecretKeyRef.Name, "JCLOUDS_IDENTITY should reference S3 external secret")
+	assert.Equal(t, "backendAccessKey", identityEnv.ValueFrom.SecretKeyRef.Key, "JCLOUDS_IDENTITY should use backendAccessKey key")
+
+	require.NotNil(t, credentialEnv, "JCLOUDS_CREDENTIAL env var should exist")
+	assert.Equal(t, "my-s3-backend-secret", credentialEnv.ValueFrom.SecretKeyRef.Name, "JCLOUDS_CREDENTIAL should reference S3 external secret")
+	assert.Equal(t, "backendSecretKey", credentialEnv.ValueFrom.SecretKeyRef.Key, "JCLOUDS_CREDENTIAL should use backendSecretKey key")
+}
+
+// TestS3ProxyS3BackendFromExternalSecretCredentialsNotRequired verifies that when fromExternalSecret
+// is set for the S3 backend, the accessKey and secretKey values are not required
+func TestS3ProxyS3BackendFromExternalSecretCredentialsNotRequired(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled":                        "true",
+			"backup.storage.backend.pvc.enabled":           "false",
+			"backup.storage.backend.s3.enabled":            "true",
+			"backup.storage.backend.s3.fromExternalSecret": "my-s3-backend-secret",
+			"backup.storage.backend.s3.accessKey":          "",
+			"backup.storage.backend.s3.secretKey":          "",
+			"backup.storage.backend.s3.region":             "eu-west-1",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// Managed secret should NOT contain backend keys
+	secret, ok := resources.Secrets["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy managed secret should still exist for s3proxy credentials")
+	_, hasBackendAccessKey := secret.Data["backendAccessKey"]
+	_, hasBackendSecretKey := secret.Data["backendSecretKey"]
+	assert.False(t, hasBackendAccessKey, "Managed secret should NOT contain backendAccessKey")
+	assert.False(t, hasBackendSecretKey, "Managed secret should NOT contain backendSecretKey")
+
+	// Deployment should reference the external secret
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+	container := deployment.Spec.Template.Spec.Containers[0]
+
+	var identityEnv, credentialEnv *corev1.EnvVar
+	for i := range container.Env {
+		if container.Env[i].Name == "JCLOUDS_IDENTITY" {
+			identityEnv = &container.Env[i]
+		}
+		if container.Env[i].Name == "JCLOUDS_CREDENTIAL" {
+			credentialEnv = &container.Env[i]
+		}
+	}
+	require.NotNil(t, identityEnv, "JCLOUDS_IDENTITY env var should exist")
+	assert.Equal(t, "my-s3-backend-secret", identityEnv.ValueFrom.SecretKeyRef.Name, "JCLOUDS_IDENTITY should reference external secret")
+
+	require.NotNil(t, credentialEnv, "JCLOUDS_CREDENTIAL env var should exist")
+	assert.Equal(t, "my-s3-backend-secret", credentialEnv.ValueFrom.SecretKeyRef.Name, "JCLOUDS_CREDENTIAL should reference external secret")
+}
+
+// TestS3ProxyAzureBackendFromExternalSecret verifies that when fromExternalSecret is set for the Azure backend,
+// the managed secret does not contain Azure credentials and the deployment references the external secret
+func TestS3ProxyAzureBackendFromExternalSecret(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled":                           "true",
+			"backup.storage.backend.pvc.enabled":              "false",
+			"backup.storage.backend.azure.enabled":            "true",
+			"backup.storage.backend.azure.fromExternalSecret": "my-azure-backend-secret",
+			"backup.storage.backend.azure.endpoint":           "https://mystorageaccount.blob.core.windows.net",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// Managed secret should still exist (for s3proxy credentials) but should NOT contain Azure keys
+	secret, ok := resources.Secrets["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy managed secret should still exist for s3proxy credentials")
+	_, hasAzureAccountName := secret.Data["azureAccountName"]
+	_, hasAzureAccountKey := secret.Data["azureAccountKey"]
+	assert.False(t, hasAzureAccountName, "Managed secret should NOT contain azureAccountName when Azure fromExternalSecret is set")
+	assert.False(t, hasAzureAccountKey, "Managed secret should NOT contain azureAccountKey when Azure fromExternalSecret is set")
+
+	// Deployment should reference the external secret for JCLOUDS env vars
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+	container := deployment.Spec.Template.Spec.Containers[0]
+
+	var identityEnv, credentialEnv *corev1.EnvVar
+	for i := range container.Env {
+		if container.Env[i].Name == "JCLOUDS_IDENTITY" {
+			identityEnv = &container.Env[i]
+		}
+		if container.Env[i].Name == "JCLOUDS_CREDENTIAL" {
+			credentialEnv = &container.Env[i]
+		}
+	}
+	require.NotNil(t, identityEnv, "JCLOUDS_IDENTITY env var should exist")
+	assert.Equal(t, "my-azure-backend-secret", identityEnv.ValueFrom.SecretKeyRef.Name, "JCLOUDS_IDENTITY should reference Azure external secret")
+	assert.Equal(t, "azureAccountName", identityEnv.ValueFrom.SecretKeyRef.Key, "JCLOUDS_IDENTITY should use azureAccountName key")
+
+	require.NotNil(t, credentialEnv, "JCLOUDS_CREDENTIAL env var should exist")
+	assert.Equal(t, "my-azure-backend-secret", credentialEnv.ValueFrom.SecretKeyRef.Name, "JCLOUDS_CREDENTIAL should reference Azure external secret")
+	assert.Equal(t, "azureAccountKey", credentialEnv.ValueFrom.SecretKeyRef.Key, "JCLOUDS_CREDENTIAL should use azureAccountKey key")
+}
+
+// TestS3ProxyAzureBackendFromExternalSecretCredentialsNotRequired verifies that when fromExternalSecret
+// is set for the Azure backend, the accountName and accountKey values are not required
+func TestS3ProxyAzureBackendFromExternalSecretCredentialsNotRequired(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled":                           "true",
+			"backup.storage.backend.pvc.enabled":              "false",
+			"backup.storage.backend.azure.enabled":            "true",
+			"backup.storage.backend.azure.fromExternalSecret": "my-azure-backend-secret",
+			"backup.storage.backend.azure.accountName":        "",
+			"backup.storage.backend.azure.accountKey":         "",
+			"backup.storage.backend.azure.endpoint":           "https://mystorageaccount.blob.core.windows.net",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// Managed secret should NOT contain Azure keys
+	secret, ok := resources.Secrets["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy managed secret should still exist for s3proxy credentials")
+	_, hasAzureAccountName := secret.Data["azureAccountName"]
+	_, hasAzureAccountKey := secret.Data["azureAccountKey"]
+	assert.False(t, hasAzureAccountName, "Managed secret should NOT contain azureAccountName")
+	assert.False(t, hasAzureAccountKey, "Managed secret should NOT contain azureAccountKey")
+
+	// Deployment should reference the external secret
+	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy deployment should exist")
+	container := deployment.Spec.Template.Spec.Containers[0]
+
+	var identityEnv, credentialEnv *corev1.EnvVar
+	for i := range container.Env {
+		if container.Env[i].Name == "JCLOUDS_IDENTITY" {
+			identityEnv = &container.Env[i]
+		}
+		if container.Env[i].Name == "JCLOUDS_CREDENTIAL" {
+			credentialEnv = &container.Env[i]
+		}
+	}
+	require.NotNil(t, identityEnv, "JCLOUDS_IDENTITY env var should exist")
+	assert.Equal(t, "my-azure-backend-secret", identityEnv.ValueFrom.SecretKeyRef.Name, "JCLOUDS_IDENTITY should reference external secret")
+
+	require.NotNil(t, credentialEnv, "JCLOUDS_CREDENTIAL env var should exist")
+	assert.Equal(t, "my-azure-backend-secret", credentialEnv.ValueFrom.SecretKeyRef.Name, "JCLOUDS_CREDENTIAL should reference external secret")
+}
+
 // TestS3ProxyNodeSelector verifies node selector configuration
 func TestS3ProxyNodeSelector(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
