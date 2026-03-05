@@ -22,13 +22,15 @@ readinessProbe:
     path: /ready
     port: admin
   initialDelaySeconds: 5
-{{- $profileResources := include "common.sizing.stackstate.router.resources" . | trim }}
+{{- $profileResources := include "common.sizing.stackstate.router.resources" . | trim -}}
+{{- $evaluatedResources := .Values.stackstate.components.router.resources }}
 {{- if $profileResources }}
+{{- $profileResourcesDict := fromYaml $profileResources }}
+{{- $evaluatedResources = merge (dict) .Values.stackstate.components.router.resources $profileResourcesDict }}
+{{- end }}
+{{- if $evaluatedResources }}
 resources:
-  {{- $profileResources | nindent 2 }}
-{{- else if .Values.stackstate.components.router.resources }}
-resources:
-  {{- toYaml .Values.stackstate.components.router.resources | nindent 2 }}
+  {{- toYaml $evaluatedResources | nindent 2 }}
 {{- end }}
 volumeMounts:
 - mountPath: /etc/envoy

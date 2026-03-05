@@ -6,12 +6,15 @@ global:
       username: "test"
       password: "secret"
     sizing:
-      profile: "500-ha"
+      profile: "10-nonha"
     license: "test-license-key"
     baseUrl: "https://test.example.com"
     adminPassword: "$2b$10$N9qo8uLOickgx2ZMRZoMye.IUIrCxGvz9/6pN.XMlqL9hzTgDaPGy"
 
 pull-secret:
+  enabled: false
+
+victoria-metrics-1:
   enabled: false
 
 stackstate:
@@ -20,46 +23,48 @@ stackstate:
       metricStore:
         remoteWriteEndpoint: "test-$vmInstance:8148"
         queryApiEndpoint: "test:8148"
-    api:
+    server:
       resources:
         limits:
-          memory: "12Gi"
-          cpu: "8000m"
+          memory: "10Gi"
+          cpu: "6000m"
         requests:
-          memory: "12Gi"
+          memory: "10Gi"
+          cpu: "3000m"
+      java:
+        trustStorePassword: "secretTrustStorePassword"
+    receiver:
+      resources:
+        limits:
+          memory: "2000Mi"
           cpu: "4000m"
-    checks:
-      resources:
-        limits:
-          memory: "10Gi"
-    state:
-      resources:
-        limits:
-          memory: "10Gi"
+        requests:
+          memory: "2000Mi"
+          cpu: "2000m"
     correlate:
       resources:
         limits:
-          memory: "6000Mi"
-          cpu: "8000m"
+          memory: "2500Mi"
+          cpu: "2000m"
         requests:
-          memory: "6000Mi"
-          cpu: "4000m"
+          memory: "2500Mi"
+          cpu: "1000m"
     healthSync:
       resources:
         limits:
-          memory: "16Gi"
-          cpu: "16000m"
+          memory: "7000Mi"
+          cpu: "3000m"
         requests:
-          memory: "16Gi"
-          cpu: "8000m"
+          memory: "7000Mi"
+          cpu: "1500m"
     notification:
       resources:
         limits:
-          memory: "6000Mi"
-          cpu: "6000m"
+          memory: "3000Mi"
+          cpu: "1500m"
         requests:
-          memory: "6000Mi"
-          cpu: "3000m"
+          memory: "3000Mi"
+          cpu: "750m"
     sync:
       resources:
         limits:
@@ -88,10 +93,10 @@ stackstate:
       resources:
         limits:
           memory: "256Mi"
-          cpu: "480m"
+          cpu: "200m"
         requests:
           memory: "256Mi"
-          cpu: "240m"
+          cpu: "100m"
     slicing:
       resources:
         limits:
@@ -119,49 +124,20 @@ stackstate:
     vmagent:
       resources:
         limits:
-          memory: "4Gi"
-          cpu: "10000m"
+          memory: "1024Mi"
+          cpu: "400m"
         requests:
-          memory: "4Gi"
-          cpu: "5000m"
-    receiver:
-      split:
-        base:
-          resources:
-            limits:
-              memory: "14Gi"
-              cpu: "24000m"
-            requests:
-              memory: "14Gi"
-              cpu: "12000m"
-        logs:
-          resources:
-            limits:
-              memory: "6Gi"
-              cpu: "4000m"
-            requests:
-              memory: "6Gi"
-              cpu: "2000m"
-        processAgent:
-          resources:
-            limits:
-              memory: "6Gi"
-              cpu: "4000m"
-            requests:
-              memory: "6Gi"
-              cpu: "2000m"
-    server:
-      java:
-        trustStorePassword: "secretTrustStorePassword"
+          memory: "1024Mi"
+          cpu: "200m"
 
 kafka:
   resources:
     limits:
-      memory: "8Gi"
-      cpu: "8"
+      memory: "4Gi"
+      cpu: "3200m"
     requests:
-      memory: "8Gi"
-      cpu: "4"
+      memory: "4Gi"
+      cpu: "1600m"
 
 zookeeper:
   resources:
@@ -175,75 +151,39 @@ zookeeper:
 elasticsearch:
   resources:
     limits:
-      memory: "8Gi"
-      cpu: "4000m"
-    requests:
-      memory: "8Gi"
+      memory: "5Gi"
       cpu: "2000m"
+    requests:
+      memory: "5Gi"
+      cpu: "1000m"
 
 hbase:
-  hbase:
-    master:
-      resources:
-        limits:
-          memory: "2Gi"
-          cpu: "2000m"
-        requests:
-          memory: "2Gi"
-          cpu: "1000m"
-    regionserver:
-      resources:
-        limits:
-          memory: "12Gi"
-          cpu: "16000m"
-        requests:
-          memory: "12Gi"
-          cpu: "8000m"
+  stackgraph:
+    resources:
+      limits:
+        memory: "4500Mi"
+        cpu: "3000m"
+      requests:
+        memory: "4500Mi"
+        cpu: "1500m"
   tephra:
     resources:
       limits:
-        memory: "2Gi"
-        cpu: "2000m"
-      requests:
-        memory: "2Gi"
+        memory: "1Gi"
         cpu: "1000m"
-  hdfs:
-    datanode:
-      resources:
-        limits:
-          memory: "2Gi"
-          cpu: "2400m"
-        requests:
-          memory: "2Gi"
-          cpu: "1200m"
-    namenode:
-      resources:
-        limits:
-          memory: "2Gi"
-          cpu: "800m"
-        requests:
-          memory: "2Gi"
-          cpu: "400m"
+      requests:
+        memory: "1Gi"
+        cpu: "500m"
 
 victoria-metrics-0:
   server:
     resources:
       limits:
-        memory: "20Gi"
-        cpu: "12"
+        memory: "3500Mi"
+        cpu: "2000m"
       requests:
-        memory: "20Gi"
-        cpu: "6"
-
-victoria-metrics-1:
-  server:
-    resources:
-      limits:
-        memory: "20Gi"
-        cpu: "12"
-      requests:
-        memory: "20Gi"
-        cpu: "6"
+        memory: "3500Mi"
+        cpu: "1000m"
 
 clickhouse:
   resources:

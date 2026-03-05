@@ -519,36 +519,117 @@ func TestGlobalSizingReplicaCounts(t *testing.T) {
 	}
 }
 
+type expectedResources struct {
+	memoryLimit string
+	cpuLimit    string
+}
+
 // TestGlobalSizingUserResourceOverrides tests that user-specified resource overrides take precedence over sizing profile defaults
 func TestGlobalSizingUserResourceOverrides(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_sizing_500_ha_resource_override.yaml")
-	resources := helmtestutil.NewKubernetesResources(t, output)
+	testCases := []struct {
+		name         string
+		valuesFile   string
+		deployments  map[string]expectedResources
+		statefulsets map[string]expectedResources
+	}{
+		{
+			name:       "10-nonha",
+			valuesFile: "values/global_sizing_10_nonha_resource_override.yaml",
+			deployments: map[string]expectedResources{
+				"suse-observability-server":   {memoryLimit: "10Gi", cpuLimit: "6000m"},
+				"suse-observability-receiver": {memoryLimit: "2000Mi", cpuLimit: "4000m"},
+				"suse-observability-correlate": {memoryLimit: "2500Mi", cpuLimit: "2000m"},
+				"suse-observability-e2es":     {memoryLimit: "1024Mi", cpuLimit: "1000m"},
+				"suse-observability-router":   {memoryLimit: "256Mi", cpuLimit: "200m"},
+				"suse-observability-ui":       {memoryLimit: "128Mi", cpuLimit: "100m"},
+			},
+			statefulsets: map[string]expectedResources{
+				"suse-observability-kafka":               {memoryLimit: "4Gi", cpuLimit: "3200m"},
+				"suse-observability-zookeeper":            {memoryLimit: "1Gi", cpuLimit: "1000m"},
+				"suse-observability-elasticsearch-master": {memoryLimit: "5Gi", cpuLimit: "2000m"},
+				"suse-observability-hbase-stackgraph":     {memoryLimit: "4500Mi", cpuLimit: "3000m"},
+				"suse-observability-hbase-tephra-mono":    {memoryLimit: "1Gi", cpuLimit: "1000m"},
+				"suse-observability-victoria-metrics-0":   {memoryLimit: "3500Mi", cpuLimit: "2000m"},
+				"suse-observability-clickhouse-shard0":    {memoryLimit: "8Gi", cpuLimit: "2000m"},
+				"suse-observability-vmagent":              {memoryLimit: "1024Mi", cpuLimit: "400m"},
+			},
+		},
+		{
+			name:       "500-ha",
+			valuesFile: "values/global_sizing_500_ha_resource_override.yaml",
+			deployments: map[string]expectedResources{
+				"suse-observability-api":                    {memoryLimit: "12Gi", cpuLimit: "8000m"},
+				"suse-observability-checks":                 {memoryLimit: "10Gi"},
+				"suse-observability-state":                  {memoryLimit: "10Gi"},
+				"suse-observability-correlate":              {memoryLimit: "6000Mi", cpuLimit: "8000m"},
+				"suse-observability-health-sync":            {memoryLimit: "16Gi", cpuLimit: "16000m"},
+				"suse-observability-notification":           {memoryLimit: "6000Mi", cpuLimit: "6000m"},
+				"suse-observability-sync":                   {memoryLimit: "16Gi", cpuLimit: "16000m"},
+				"suse-observability-ui":                     {memoryLimit: "128Mi", cpuLimit: "100m"},
+				"suse-observability-initializer":            {memoryLimit: "3000Mi", cpuLimit: "3000m"},
+				"suse-observability-router":                 {memoryLimit: "256Mi", cpuLimit: "480m"},
+				"suse-observability-slicing":                {memoryLimit: "4000Mi", cpuLimit: "3000m"},
+				"suse-observability-e2es":                   {memoryLimit: "1024Mi", cpuLimit: "1000m"},
+				"suse-observability-authorization-sync":     {memoryLimit: "2Gi", cpuLimit: "3000m"},
+				"suse-observability-receiver-base":          {memoryLimit: "14Gi", cpuLimit: "24000m"},
+				"suse-observability-receiver-logs":          {memoryLimit: "6Gi", cpuLimit: "4000m"},
+				"suse-observability-receiver-process-agent": {memoryLimit: "6Gi", cpuLimit: "4000m"},
+			},
+			statefulsets: map[string]expectedResources{
+				"suse-observability-kafka":               {memoryLimit: "8Gi", cpuLimit: "8"},
+				"suse-observability-zookeeper":            {memoryLimit: "1Gi", cpuLimit: "1000m"},
+				"suse-observability-elasticsearch-master": {memoryLimit: "8Gi", cpuLimit: "4000m"},
+				"suse-observability-hbase-hbase-master":   {memoryLimit: "2Gi", cpuLimit: "2000m"},
+				"suse-observability-hbase-hbase-rs":       {memoryLimit: "12Gi", cpuLimit: "16000m"},
+				"suse-observability-hbase-tephra":         {memoryLimit: "2Gi", cpuLimit: "2000m"},
+				"suse-observability-hbase-hdfs-dn":        {memoryLimit: "2Gi", cpuLimit: "2400m"},
+				"suse-observability-hbase-hdfs-nn":        {memoryLimit: "2Gi", cpuLimit: "800m"},
+				"suse-observability-victoria-metrics-0":   {memoryLimit: "20Gi", cpuLimit: "12"},
+				"suse-observability-victoria-metrics-1":   {memoryLimit: "20Gi", cpuLimit: "12"},
+				"suse-observability-clickhouse-shard0":    {memoryLimit: "8Gi", cpuLimit: "2000m"},
+				"suse-observability-vmagent":              {memoryLimit: "4Gi", cpuLimit: "10000m"},
+			},
+		},
+	}
 
-	// Test Pattern A fix: api deployment should use user-specified 12Gi, not profile default 6Gi
-	t.Run("api-deployment-user-override", func(t *testing.T) {
-		apiDeployment, exists := resources.Deployments["suse-observability-api"]
-		require.True(t, exists, "API deployment should exist")
-		containers := apiDeployment.Spec.Template.Spec.Containers
-		require.NotEmpty(t, containers, "API deployment should have containers")
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			output := helmtestutil.RenderHelmTemplate(t, "suse-observability", tc.valuesFile)
+			resources := helmtestutil.NewKubernetesResources(t, output)
 
-		memLimit := containers[0].Resources.Limits[corev1.ResourceMemory]
-		assert.Equal(t, resource.MustParse("12Gi"), memLimit, "API memory limit should be user-specified 12Gi, not profile default 6Gi")
+			for name, expected := range tc.deployments {
+				t.Run("deployment-"+name, func(t *testing.T) {
+					dep, exists := resources.Deployments[name]
+					require.True(t, exists, "Deployment %s should exist", name)
+					containers := dep.Spec.Template.Spec.Containers
+					require.NotEmpty(t, containers)
+					memLimit := containers[0].Resources.Limits[corev1.ResourceMemory]
+					assert.Equal(t, resource.MustParse(expected.memoryLimit), memLimit,
+						"Deployment %s memory limit should be %s", name, expected.memoryLimit)
+					if expected.cpuLimit != "" {
+						cpuLimit := containers[0].Resources.Limits[corev1.ResourceCPU]
+						assert.Equal(t, resource.MustParse(expected.cpuLimit), cpuLimit,
+							"Deployment %s CPU limit should be %s", name, expected.cpuLimit)
+					}
+				})
+			}
 
-		cpuLimit := containers[0].Resources.Limits[corev1.ResourceCPU]
-		assert.Equal(t, resource.MustParse("8000m"), cpuLimit, "API CPU limit should be user-specified 8000m, not profile default 6000m")
-	})
-
-	// Test Pattern B fix: kafka statefulset should use user-specified 8Gi, not profile default 4Gi
-	t.Run("kafka-statefulset-user-override", func(t *testing.T) {
-		kafkaSts, exists := resources.Statefulsets["suse-observability-kafka"]
-		require.True(t, exists, "Kafka statefulset should exist")
-		containers := kafkaSts.Spec.Template.Spec.Containers
-		require.NotEmpty(t, containers, "Kafka statefulset should have containers")
-
-		memLimit := containers[0].Resources.Limits[corev1.ResourceMemory]
-		assert.Equal(t, resource.MustParse("8Gi"), memLimit, "Kafka memory limit should be user-specified 8Gi, not profile default 4Gi")
-
-		cpuLimit := containers[0].Resources.Limits[corev1.ResourceCPU]
-		assert.Equal(t, resource.MustParse("8"), cpuLimit, "Kafka CPU limit should be user-specified 8, not profile default 6")
-	})
+			for name, expected := range tc.statefulsets {
+				t.Run("statefulset-"+name, func(t *testing.T) {
+					ss, exists := resources.Statefulsets[name]
+					require.True(t, exists, "StatefulSet %s should exist", name)
+					containers := ss.Spec.Template.Spec.Containers
+					require.NotEmpty(t, containers)
+					memLimit := containers[0].Resources.Limits[corev1.ResourceMemory]
+					assert.Equal(t, resource.MustParse(expected.memoryLimit), memLimit,
+						"StatefulSet %s memory limit should be %s", name, expected.memoryLimit)
+					if expected.cpuLimit != "" {
+						cpuLimit := containers[0].Resources.Limits[corev1.ResourceCPU]
+						assert.Equal(t, resource.MustParse(expected.cpuLimit), cpuLimit,
+							"StatefulSet %s CPU limit should be %s", name, expected.cpuLimit)
+					}
+				})
+			}
+		})
+	}
 }
