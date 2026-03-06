@@ -1728,8 +1728,6 @@ global:
 backup:
   storage:
     backend:
-      pvc:
-        enabled: false
       s3:
         enabled: true
         # Optional: Specify AWS region (required for AWS S3, can also be set via environment variable if needed, optional for S3-compatible storage)
@@ -1765,8 +1763,6 @@ global:
 backup:
   storage:
     backend:
-      pvc:
-        enabled: false
       azure:
         enabled: true
         accountName: "mystorageaccount"
