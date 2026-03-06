@@ -26,3 +26,15 @@ app.gitlab.com/env: {{ .Values.gitlab.env | quote }}
 {{ $key | quote }}: {{ $value | quote }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Generate a checksum annotation for a given value (map/object).
+Takes a dict with:
+  - value: the object to checksum
+  - name: (optional) the annotation name, defaults to "checksum/object"
+Usage:
+  {{- include "common.annotations.checksumObject" (dict "value" .Values.global.s3proxy.credentials "name" "checksum/s3proxy-credentials") }}
+*/}}
+{{- define "common.annotations.checksumObject" -}}
+{{ default "checksum/object" .name }}: {{ toJson .value | sha256sum | quote }}
+{{- end -}}

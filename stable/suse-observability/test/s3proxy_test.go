@@ -387,7 +387,7 @@ func TestS3ProxyFromExternalSecret(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
-			"s3proxy.credentials.fromExternalSecret": "my-existing-secret",
+			"global.s3proxy.credentials.fromExternalSecret": "my-existing-secret",
 		},
 	})
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -419,9 +419,9 @@ func TestS3ProxyFromExternalSecretCredentialsNotRequired(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
-			"s3proxy.credentials.fromExternalSecret": "my-external-secret",
-			"s3proxy.credentials.accessKey":          "",
-			"s3proxy.credentials.secretKey":          "",
+			"global.s3proxy.credentials.fromExternalSecret": "my-external-secret",
+			"global.s3proxy.credentials.accessKey":          "",
+			"global.s3proxy.credentials.secretKey":          "",
 		},
 	})
 	resources := helmtestutil.NewKubernetesResources(t, output)
@@ -1753,4 +1753,55 @@ func TestS3ProxyExtraEnvOpenAndSecret(t *testing.T) {
 	// Verify both secret and deployment exist
 	_, ok = resources.Secrets["suse-observability-s3proxy-extra-env"]
 	require.True(t, ok, "Extra env secret should exist when secret env vars are set")
+}
+
+// TestS3ProxyCredentialsChecksumAnnotation verifies that victoria-metrics and clickhouse
+// pods include a checksum annotation for s3proxy credentials when backup is enabled,
+// so they restart when credentials change.
+func TestS3ProxyCredentialsChecksumAnnotation(t *testing.T) {
+	outputEnabled := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled": "true",
+		},
+	})
+	resourcesEnabled := helmtestutil.NewKubernetesResources(t, outputEnabled)
+
+	// With backup enabled: Victoria Metrics 0 should have the checksum annotation
+	vm0, ok := resourcesEnabled.Statefulsets["suse-observability-victoria-metrics-0"]
+	require.True(t, ok, "Victoria Metrics 0 StatefulSet should exist")
+	assert.Contains(t, vm0.Spec.Template.Annotations, "checksum/s3proxy-credentials",
+		"Victoria Metrics 0 pods should have checksum/s3proxy-credentials annotation when backup enabled")
+
+	// With backup enabled: Victoria Metrics 1 should have the checksum annotation
+	vm1, ok := resourcesEnabled.Statefulsets["suse-observability-victoria-metrics-1"]
+	require.True(t, ok, "Victoria Metrics 1 StatefulSet should exist")
+	assert.Contains(t, vm1.Spec.Template.Annotations, "checksum/s3proxy-credentials",
+		"Victoria Metrics 1 pods should have checksum/s3proxy-credentials annotation when backup enabled")
+
+	// With backup enabled: Clickhouse should have the checksum annotation
+	ch, ok := resourcesEnabled.Statefulsets["suse-observability-clickhouse-shard0"]
+	require.True(t, ok, "ClickHouse StatefulSet should exist")
+	assert.Contains(t, ch.Spec.Template.Annotations, "checksum/s3proxy-credentials",
+		"ClickHouse pods should have checksum/s3proxy-credentials annotation when backup enabled")
+
+	outputDisabled := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled": "false",
+		},
+	})
+	resourcesDisabled := helmtestutil.NewKubernetesResources(t, outputDisabled)
+
+	// With backup disabled: Victoria Metrics 0 should NOT have the checksum annotation
+	vm0Disabled, ok := resourcesDisabled.Statefulsets["suse-observability-victoria-metrics-0"]
+	require.True(t, ok, "Victoria Metrics 0 StatefulSet should exist")
+	assert.NotContains(t, vm0Disabled.Spec.Template.Annotations, "checksum/s3proxy-credentials",
+		"Victoria Metrics 0 pods should NOT have checksum/s3proxy-credentials annotation when backup disabled")
+
+	// With backup disabled: Clickhouse should NOT have the checksum annotation
+	chDisabled, ok := resourcesDisabled.Statefulsets["suse-observability-clickhouse-shard0"]
+	require.True(t, ok, "ClickHouse StatefulSet should exist")
+	assert.NotContains(t, chDisabled.Spec.Template.Annotations, "checksum/s3proxy-credentials",
+		"ClickHouse pods should NOT have checksum/s3proxy-credentials annotation when backup disabled")
 }

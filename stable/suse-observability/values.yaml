@@ -75,6 +75,14 @@ global:
         requiredDuringSchedulingIgnoredDuringExecution: true
         # global.suseObservability.affinity.podAntiAffinity.topologyKey -- Topology key for pod anti-affinity. Determines the domain for spreading pods (e.g., kubernetes.io/hostname for node-level, topology.kubernetes.io/zone for zone-level).
         topologyKey: "kubernetes.io/hostname"
+  s3proxy:
+    credentials:
+      # global.s3proxy.credentials.accessKey -- Access key for S3Proxy authentication (override for production usage with global.backup.enabled)
+      accessKey: "default-for-settings-only"
+      # global.s3proxy.credentials.secretKey -- Secret key for S3Proxy authentication (override for production usage with global.backup.enabled)
+      secretKey: "default-secret-for-settings-only"
+      # global.s3proxy.credentials.fromExternalSecret -- Use an externally-managed secret for credentials (keys: accesskey, secretkey). When set, the chart will not create a secret and accessKey/secretKey values are not required.
+      fromExternalSecret: ""
 # commonLabels -- Labels that will be added to all resources created by the stackstate chart (not the subcharts though)
 commonLabels: {}
 backup:
@@ -2151,10 +2159,10 @@ kafka:
 minio:
   # minio.fullnameOverride -- DEPRECATED: Used for backward compatibility with existing deployments.
   fullnameOverride: ""
-  # minio.accessKey -- DEPRECATED: Use s3proxy.credentials.accessKey instead.
+  # minio.accessKey -- DEPRECATED: Use global.s3proxy.credentials.accessKey instead.
   # If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials.
   accessKey: ""
-  # minio.secretKey -- DEPRECATED: Use s3proxy.credentials.secretKey instead.
+  # minio.secretKey -- DEPRECATED: Use global.s3proxy.credentials.secretKey instead.
   # If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials.
   secretKey: ""
   # minio.persistence -- DEPRECATED: Use backup.storage.pvc
@@ -2190,13 +2198,6 @@ minio:
 
 # S3Proxy deployment configuration
 s3proxy:
-  credentials:
-    # s3proxy.credentials.accessKey -- Access key for S3Proxy authentication (override for production usage with global.backup.enabled)
-    accessKey: "default-for-settings-only"
-    # s3proxy.credentials.secretKey -- Secret key for S3Proxy authentication (override for production usage with global.backup.enabled)
-    secretKey: "default-secret-for-settings-only"
-    # s3proxy.credentials.fromExternalSecret -- Use an externally-managed secret for credentials (keys: accesskey, secretkey). When set, the chart will not create a secret and accessKey/secretKey values are not required.
-    fromExternalSecret: ""
   image:
     # s3proxy.image.registry -- imageRegistry used for the S3Proxy Docker image
     registry: quay.io
@@ -2774,7 +2775,6 @@ clickhouse:
     ad.stackstate.com/backup.check_names: '["openmetrics"]'
     ad.stackstate.com/backup.init_configs: "[{}]"
     ad.stackstate.com/backup.instances: '[ { "prometheus_url": "http://%%host%%:7171/metrics", "namespace": "stackstate", "metrics": ["clickhouse_backup_*"] } ]'
-    checksum/stackstate-backup-config: "{{ toJson (dict \"backup\" .Values.backup \"auth\" .Values.auth) | sha256sum }}"
   # clickhouse.extraVolumes -- extra volumes for ClickHouse Pods
   extraVolumes:
     - name: clickhouse-backup-config

@@ -9,7 +9,7 @@ nc="\033[0m"
 red="\\033[0;31m"
 helm_chart=stackstate-k8s
 helm_repository=https://helm.stackstate.io
-helm_values="backup.enabled=true,s3proxy.credentials.accessKey=ABCDEFGH,s3proxy.credentials.secretKey=ABCDEFGHABCDEFGH,stackstate.baseUrl=http://dummy.stackstate.io,stackstate.admin.authentication.password=dummy,stackstate.authentication.adminPassword=dummy,stackstate.license.key=dummy,global.receiverApiKey=dummy"
+helm_values="backup.enabled=true,stackstate.baseUrl=http://dummy.stackstate.io,stackstate.admin.authentication.password=dummy,stackstate.authentication.adminPassword=dummy,stackstate.license.key=dummy,global.receiverApiKey=dummy"
 dry_run=false
 
 # usage

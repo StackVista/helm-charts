@@ -25,7 +25,8 @@ spec:
       annotations:
         checksum/scripts: {{ include (print $.Template.BasePath "/configmap-scripts.yaml") . | sha256sum }}
         {{- if .Values.global.backup.enabled }}
-        checksum/backup-config: {{ toJson .Values.backup | sha256sum | quote }}
+        {{- include "common.annotations.checksumObject" (dict "value" .Values.backup "name" "checksum/backup-config") | nindent 8 }}
+        {{- include "common.annotations.checksumObject" (dict "value" .Values.global.s3proxy.credentials "name" "checksum/s3proxy-credentials") | nindent 8 }}
         {{- end }}
     {{- if .Values.server.podAnnotations }}
 {{ toYaml .Values.server.podAnnotations | indent 8 }}

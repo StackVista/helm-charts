@@ -103,6 +103,7 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 | extraVolumeMounts | list | `[]` |  |
 | extraVolumes | list | `[]` |  |
 | fullnameOverride | string | `""` |  |
+| global.backup.enabled | bool | `false` |  |
 | global.imagePullSecrets | list | `[]` |  |
 | global.imageRegistry | string | `""` |  |
 | global.storageClass | string | `""` |  |

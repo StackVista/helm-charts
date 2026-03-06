@@ -497,7 +497,6 @@ If you encounter issues not covered here:
 | clickhouse.podAnnotations."ad.stackstate.com/clickhouse.check_names" | string | `"[\"openmetrics\"]"` |  |
 | clickhouse.podAnnotations."ad.stackstate.com/clickhouse.init_configs" | string | `"[{}]"` |  |
 | clickhouse.podAnnotations."ad.stackstate.com/clickhouse.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8001/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"ClickHouseAsyncMetrics_*\", \"ClickHouseMetrics_*\", \"ClickHouseProfileEvents_*\"] } ]"` |  |
-| clickhouse.podAnnotations.checksum/stackstate-backup-config | string | `"{{ toJson (dict \"backup\" .Values.backup \"auth\" .Values.auth) | sha256sum }}"` |  |
 | clickhouse.replicaCount | string | `nil` | Number of ClickHouse replicas per shard to deploy. When using global.suseObservability.sizing.profile, this value is determined by the sizing profile (1 for most profiles, 3 for 4000-ha). |
 | clickhouse.resources | object | `{}` |  |
 | clickhouse.shards | int | `1` | Number of ClickHouse shards to deploy |
@@ -545,6 +544,9 @@ If you encounter issues not covered here:
 | global.imagePullSecrets | list | `[]` | List of image pull secret names to be used by all images across all charts. |
 | global.imageRegistry | string | `nil` | Image registry to be used by all images across all charts. When using global.suseObservability (global mode), set this to "registry.rancher.com" to match the default behavior of the suse-observability-values chart. |
 | global.receiverApiKey | string | `""` | Deprecated. Use global.suseObservability.receiverApiKey instead. |
+| global.s3proxy.credentials.accessKey | string | `"default-for-settings-only"` | Access key for S3Proxy authentication (override for production usage with global.backup.enabled) |
+| global.s3proxy.credentials.fromExternalSecret | string | `""` | Use an externally-managed secret for credentials (keys: accesskey, secretkey). When set, the chart will not create a secret and accessKey/secretKey values are not required. |
+| global.s3proxy.credentials.secretKey | string | `"default-secret-for-settings-only"` | Secret key for S3Proxy authentication (override for production usage with global.backup.enabled) |
 | global.storageClass | string | `nil` | StorageClass for all PVCs created by the chart. Can be overridden per PVC. |
 | global.suseObservability | object | `{"adminPassword":"","adminPasswordBcrypt":"","affinity":{"nodeAffinity":null,"podAffinity":null,"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":true,"topologyKey":"kubernetes.io/hostname"}},"applicationDomains":["Observability"],"baseUrl":"","license":"","pullSecret":{"password":"","username":""},"receiverApiKey":"","sizing":{"profile":""}}` | Simplified configuration section that allows users to specify high-level settings. When any values in this section are configured (license, baseUrl, sizing.profile, etc.), the chart will automatically use this configuration instead of the legacy stackstate.* values. This provides a single-chart installation experience without needing the separate suse-observability-values chart. NOTE: This section works in conjunction with existing global settings (imageRegistry, receiverApiKey, imagePullSecrets). IMPORTANT: When using this section, also set global.imageRegistry to "registry.rancher.com" for SUSE Observability images. |
 | global.suseObservability.adminPassword | string | `""` | Admin password for the default 'admin' user (plain text). Mutually exclusive with adminPasswordBcrypt. Required (one of the two) when using global.suseObservability configuration unless other authentication methods (LDAP, OIDC, Keycloak) are configured. |
@@ -689,7 +691,7 @@ If you encounter issues not covered here:
 | kubernetes-rbac-agent.containers.rbacAgent.tolerations | list | `[]` | Set tolerations |
 | kubernetes-rbac-agent.url.value | string | `"{{ include \"stackstate.rbacAgent.url\" . }}"` |  |
 | minio | object | `{"accessKey":"","azuregateway":{"enabled":false},"fullnameOverride":"","persistence":{"enabled":false},"s3gateway":{"accessKey":"","enabled":false,"secretKey":"","serviceEndpoint":""},"secretKey":"","serviceAccount":{"annotations":{},"create":true,"name":""}}` | DEPRECATED: MinIO subchart has been replaced by S3Proxy. These values are kept for backward compatibility only. Please migrate to backup.storage.* values. Legacy minio.* values will be removed in a future release. |
-| minio.accessKey | string | `""` | DEPRECATED: Use s3proxy.credentials.accessKey instead. If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials. |
+| minio.accessKey | string | `""` | DEPRECATED: Use global.s3proxy.credentials.accessKey instead. If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials. |
 | minio.azuregateway | object | `{"enabled":false}` | DEPRECATED: Use backup.storage.backend.azure instead. When minio.azuregateway.enabled is true, S3Proxy will be configured to use Azure Blob as the backend. |
 | minio.azuregateway.enabled | bool | `false` | DEPRECATED: Use backup.storage.backend.azure.enabled instead. |
 | minio.fullnameOverride | string | `""` | DEPRECATED: Used for backward compatibility with existing deployments. |
@@ -700,7 +702,7 @@ If you encounter issues not covered here:
 | minio.s3gateway.enabled | bool | `false` | DEPRECATED: Use backup.storage.backend.s3.enabled instead. |
 | minio.s3gateway.secretKey | string | `""` | DEPRECATED: Use backup.storage.backend.s3.secretKey instead. |
 | minio.s3gateway.serviceEndpoint | string | `""` | DEPRECATED: Use backup.storage.backend.s3.endpoint instead. |
-| minio.secretKey | string | `""` | DEPRECATED: Use s3proxy.credentials.secretKey instead. If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials. |
+| minio.secretKey | string | `""` | DEPRECATED: Use global.s3proxy.credentials.secretKey instead. If set (not empty and not "setme"), will be used as fallback for S3Proxy credentials. |
 | minio.serviceAccount | object | `{"annotations":{},"create":true,"name":""}` | DEPRECATED: Use s3proxy.serviceAccount instead. |
 | minio.serviceAccount.annotations | object | `{}` | DEPRECATED: Use s3proxy.serviceAccount.annotations instead. If set, will be merged into the S3Proxy service account annotations (s3proxy values take precedence). |
 | minio.serviceAccount.create | bool | `true` | DEPRECATED: Use s3proxy.serviceAccount.create instead. |
@@ -733,9 +735,6 @@ If you encounter issues not covered here:
 | pull-secret.enabled | bool | `false` | Deploy the ImagePullSecret for the chart. |
 | pull-secret.fullNameOverride | string | `""` | Name of the ImagePullSecret that will be created. This can be referenced by setting the `global.imagePullSecrets[0].name` value in the chart. |
 | s3proxy.affinity | object | `{}` | Affinity settings for S3Proxy pod (merged with stackstate.components.all.affinity) |
-| s3proxy.credentials.accessKey | string | `"default-for-settings-only"` | Access key for S3Proxy authentication (override for production usage with global.backup.enabled) |
-| s3proxy.credentials.fromExternalSecret | string | `""` | Use an externally-managed secret for credentials (keys: accesskey, secretkey). When set, the chart will not create a secret and accessKey/secretKey values are not required. |
-| s3proxy.credentials.secretKey | string | `"default-secret-for-settings-only"` | Secret key for S3Proxy authentication (override for production usage with global.backup.enabled) |
 | s3proxy.extraEnv.open | object | `{}` | Extra open environment variables to inject into the S3Proxy pod. |
 | s3proxy.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into the S3Proxy pod via a `Secret` object. |
 | s3proxy.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for S3Proxy |
