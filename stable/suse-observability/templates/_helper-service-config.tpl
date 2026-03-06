@@ -87,7 +87,6 @@ Sum of 'BaseMemoryConsumption', 'Xmx' and 'DirectMemory' totals to pod's memory 
 {{- end -}}
 {{- if .Values.global.features.experimentalStackpacks }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_featureSwitches_enableStackPacks2" "true" }}
-  {{- $_ := set $openEnvVars "CONFIG_FORCE_stackstate_featureSwitches_enableTopologyStreamSync" "true" }}
 {{- end -}}
 {{- if .Values.stackstate.topology.retentionHours }}
   {{- $_ := set $openEnvVars "CONFIG_FORCE_stackgraph_retentionWindowMs" (mul (.Values.stackstate.topology.retentionHours | int) (mul 60 (mul 60 1000)) | toString) }}
