@@ -23,7 +23,11 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- $evaluatedResources := .Values.stackstate.components.slicing.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
+{{- if .Values.stackstate.components.slicing.sizingResourceOverride -}}
 {{- $evaluatedResources = merge (dict) .Values.stackstate.components.slicing.resources $profileResourcesDict }}
+{{- else -}}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end -}}
 {{- end }}
 {{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.slicing -}}
 args:

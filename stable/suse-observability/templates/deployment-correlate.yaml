@@ -165,7 +165,11 @@ spec:
 {{- $evaluatedResources := .Values.stackstate.components.correlate.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
+{{- if .Values.stackstate.components.correlate.sizingResourceOverride -}}
 {{- $evaluatedResources = merge (dict) .Values.stackstate.components.correlate.resources $profileResourcesDict }}
+{{- else -}}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end -}}
 {{- end }}
 {{- $profileEnv := include "common.sizing.stackstate.correlate.env" . | trim -}}
 {{- $evaluatedExtraEnvOpen := .Values.stackstate.components.correlate.extraEnv.open }}

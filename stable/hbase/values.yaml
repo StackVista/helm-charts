@@ -81,6 +81,7 @@ stackgraph:
     size: 250Gi
     # stackgraph.persistence.storageClass -- Storage class of the volume for HDFS data nodes.
     storageClass:
+  sizingResourceOverride: false
   resources:
     limits:
       memory: "3Gi"
@@ -125,6 +126,7 @@ console:
     repository: stackstate/stackgraph-console
     # console.image.tag -- Container image tag for console pods, defaults to `version`-`stackgraph.version`
     tag:
+  sizingResourceOverride: false
   # console.resources -- Resources to allocate for HDFS console.
   resources:
     limits:
@@ -179,6 +181,7 @@ hbase:
       tag:
     # hbase.master.replicaCount -- Number of pods for HBase masters.
     replicaCount: null
+    sizingResourceOverride: false
     # hbase.master.resources -- Resources to allocate for HBase masters.
     resources:
       limits:
@@ -215,6 +218,7 @@ hbase:
       tag:
     # hbase.regionserver.replicaCount -- Number of HBase regionserver nodes.
     replicaCount: null
+    sizingResourceOverride: false
     # hbase.regionserver.resources -- Resources to allocate for HBase region servers.
     resources:
       limits:
@@ -293,6 +297,7 @@ hdfs:
       storageClass:
     # hdfs.datanode.replicaCount -- Number of HDFS data nodes.
     replicaCount: null
+    sizingResourceOverride: false
     # hdfs.datanode.resources -- Resources to allocate for HDFS data nodes.
     resources:
       limits:
@@ -329,6 +334,7 @@ hdfs:
       size: 20Gi
       # hdfs.namenode.persistence.storageClass -- Storage class of the volume for HDFS name nodes.
       storageClass:
+    sizingResourceOverride: false
     # hdfs.namenode.resources -- Resources to allocate for HDFS name nodes.
     resources:
       limits:
@@ -367,6 +373,7 @@ hdfs:
       size: 20Gi
       # hdfs.secondarynamenode.persistence.storageClass -- Storage class of the volume for HDFS secondary name nodes.
       storageClass:
+    sizingResourceOverride: false
     # hdfs.secondarynamenode.resources -- Resources to allocate for HDFS secondary name nodes.
     resources:
       limits:
@@ -412,6 +419,7 @@ tephra:
     tag:
   # tephra.replicaCount -- Number of pods for Tephra pods.
   replicaCount: null
+  sizingResourceOverride: false
   # tephra.resources -- Resources to allocate for Tephra pods.
   resources:
     limits:

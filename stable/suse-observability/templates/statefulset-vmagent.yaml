@@ -67,7 +67,11 @@ volumeMounts:
 {{- $evaluatedResources := .Values.stackstate.components.vmagent.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
+{{- if .Values.stackstate.components.vmagent.sizingResourceOverride -}}
 {{- $evaluatedResources = merge (dict) .Values.stackstate.components.vmagent.resources $profileResourcesDict }}
+{{- else -}}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end -}}
 {{- end }}
 {{- with $evaluatedResources }}
 resources:

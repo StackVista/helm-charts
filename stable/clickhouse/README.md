@@ -1,6 +1,6 @@
 # clickhouse
 
-![Version: 3.6.9-suse-observability.14](https://img.shields.io/badge/Version-3.6.9--suse--observability.14-informational?style=flat-square) ![AppVersion: 23.7.4](https://img.shields.io/badge/AppVersion-23.7.4-informational?style=flat-square)
+![Version: 3.6.9-suse-observability.15](https://img.shields.io/badge/Version-3.6.9--suse--observability.15-informational?style=flat-square) ![AppVersion: 23.7.4](https://img.shields.io/badge/AppVersion-23.7.4-informational?style=flat-square)
 
 ClickHouse is an open-source column-oriented OLAP database management system. Use it to boost your database performance while providing linear scalability and hardware efficiency.
 
@@ -233,6 +233,7 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 | serviceAccount.name | string | `""` |  |
 | shards | int | `2` |  |
 | sidecars | list | `[]` |  |
+| sizingResourceOverride | bool | `false` |  |
 | startdbScripts | object | `{}` |  |
 | startdbScriptsSecret | string | `""` |  |
 | startupProbe.enabled | bool | `false` |  |

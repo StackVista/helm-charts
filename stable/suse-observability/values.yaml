@@ -366,6 +366,7 @@ stackstate:
       # stackstate.components.api.poddisruptionbudget -- PodDisruptionBudget settings for `api` pods.
       poddisruptionbudget:
         maxUnavailable: 1
+      sizingResourceOverride: false
       # stackstate.components.api.resources -- Resource allocation for `api` pods.
       resources:
         limits:
@@ -427,6 +428,7 @@ stackstate:
       # stackstate.components.authorizationSync.poddisruptionbudget -- PodDisruptionBudget settings for `notification` pods.
       poddisruptionbudget:
         maxUnavailable: 1
+      sizingResourceOverride: false
       # stackstate.components.authorizationSync.resources -- Resource allocation for `notification` pods.
       resources:
         limits:
@@ -521,6 +523,7 @@ stackstate:
       # stackstate.components.correlate.poddisruptionbudget -- PodDisruptionBudget settings for `correlate` pods.
       poddisruptionbudget:
         maxUnavailable: 1
+      sizingResourceOverride: false
       # stackstate.components.correlate.resources -- Resource allocation for `correlate` pods.
       resources:
         limits:
@@ -672,6 +675,7 @@ stackstate:
       # stackstate.components.checks.poddisruptionbudget -- PodDisruptionBudget settings for `checks` pods.
       poddisruptionbudget:
         maxUnavailable: 1
+      sizingResourceOverride: false
       # stackstate.components.checks.resources -- Resource allocation for `state` pods.
       resources:
         limits:
@@ -732,6 +736,7 @@ stackstate:
       # stackstate.components.healthSync.poddisruptionbudget -- PodDisruptionBudget settings for `healthSync` pods.
       poddisruptionbudget:
         maxUnavailable: 1
+      sizingResourceOverride: false
       # stackstate.components.healthSync.resources -- Resource allocation for `healthSync` pods.
       resources:
         limits:
@@ -792,6 +797,7 @@ stackstate:
         tag: ""
       # stackstate.components.initializer.podAnnotations -- Extra annotations
       podAnnotations: {}
+      sizingResourceOverride: false
       # stackstate.components.initializer.resources -- Resource allocation for `initializer` pods.
       resources:
         limits:
@@ -833,6 +839,7 @@ stackstate:
       # stackstate.components.e2es.poddisruptionbudget -- PodDisruptionBudget settings for `e2es` pods.
       poddisruptionbudget:
         maxUnavailable: 1
+      sizingResourceOverride: false
       # stackstate.components.e2es.resources -- Resource allocation for `e2es` pods.
       resources:
         limits:
@@ -889,6 +896,7 @@ stackstate:
       # stackstate.components.notification.poddisruptionbudget -- PodDisruptionBudget settings for `notification` pods.
       poddisruptionbudget:
         maxUnavailable: 1
+      sizingResourceOverride: false
       # stackstate.components.notification.resources -- Resource allocation for `notification` pods.
       resources:
         limits:
@@ -944,6 +952,7 @@ stackstate:
       # stackstate.components.receiver.poddisruptionbudget -- PodDisruptionBudget settings for `receiver` pods.
       poddisruptionbudget:
         maxUnavailable: 1
+      sizingResourceOverride: false
       # stackstate.components.receiver.resources -- Resource allocation for `receiver` pods.
       resources:
         limits:
@@ -1096,6 +1105,7 @@ stackstate:
       # stackstate.components.router.poddisruptionbudget -- PodDisruptionBudget settings for `router` pods.
       poddisruptionbudget:
         maxUnavailable: 1
+      sizingResourceOverride: false
       # stackstate.components.router.resources -- Resource allocation for `router` pods.
       resources:
         limits:
@@ -1194,6 +1204,7 @@ stackstate:
       # stackstate.components.server.poddisruptionbudget -- PodDisruptionBudget settings for `server` pods.
       poddisruptionbudget:
         maxUnavailable: 1
+      sizingResourceOverride: false
       # stackstate.components.server.resources -- Resource allocation for `server` pods.
       resources:
         limits:
@@ -1248,6 +1259,7 @@ stackstate:
       # stackstate.components.state.poddisruptionbudget -- PodDisruptionBudget settings for `state` pods.
       poddisruptionbudget:
         maxUnavailable: 1
+      sizingResourceOverride: false
       # stackstate.components.state.resources -- Resource allocation for `state` pods.
       resources:
         limits:
@@ -1308,6 +1320,7 @@ stackstate:
       # stackstate.components.sync.poddisruptionbudget -- PodDisruptionBudget settings for `sync` pods.
       poddisruptionbudget:
         maxUnavailable: 1
+      sizingResourceOverride: false
       # stackstate.components.sync.resources -- Resource allocation for `sync` pods.
       resources:
         limits:
@@ -1368,6 +1381,7 @@ stackstate:
         tag: ""
       # stackstate.components.slicing.podAnnotations -- Extra annotations
       podAnnotations: {}
+      sizingResourceOverride: false
       # stackstate.components.slicing.resources -- Resource allocation for `slicing` pods.
       resources:
         limits:
@@ -1415,6 +1429,7 @@ stackstate:
       # stackstate.components.ui.poddisruptionbudget -- PodDisruptionBudget settings for `ui` pods.
       poddisruptionbudget:
         maxUnavailable: 1
+      sizingResourceOverride: false
       # stackstate.components.ui.resources -- Resource allocation for `ui` pods.
       resources:
         limits:
@@ -1579,6 +1594,7 @@ stackstate:
       persistence:
         size: 10Gi
         storageClass:
+      sizingResourceOverride: false
       # stackstate.components.vmagent.resources -- Resource allocation for vmagent pod.
       resources:
         limits:
@@ -1829,6 +1845,7 @@ elasticsearch:
   nodeGroup: "master"
   # elasticsearch.replicas -- Number of Elasticsearch replicas.
   replicas: 3
+  sizingResourceOverride: false
   # elasticsearch.resources -- Override Elasticsearch resources
   resources:
     requests:
@@ -2156,6 +2173,7 @@ kafka:
     ad.stackstate.com/jmx-exporter.instances: '[ { "prometheus_url": "http://%%host%%:5556/metrics", "namespace": "stackstate", "metrics": ["*"], "type_overrides": {"kafka_server_replicamanager_total_underreplicatedpartitions_value":"gauge", "kafka_controller_kafkacontroller_offlinepartitionscount_value":"gauge", "kafka_controller_kafkacontroller_activecontrollercount_value": "gauge"}}]'
     # When changing this version, be sure to also change the image, such that the image version and this version are in sync
     stackstate.com/kafkaup-operator.kafka_version: "3.9.1"
+  sizingResourceOverride: false
   # kafka.resources -- Kafka resources per pods.
   resources:
     limits:
@@ -2279,6 +2297,7 @@ zookeeper:
       enabled: false
       # zookeeper.metrics.serviceMonitor.selector -- Default selector to use to target a certain Prometheus instance.
       selector: {}
+  sizingResourceOverride: false
   resources:
     limits:
       # zookeeper.resources.limits.memory -- Allocated memory should be bigger than JVM Heap Size (env var ZOO_HEAP_SIZE) and space used by Off-Heap Memory (e.g. Metaspace)
@@ -2451,6 +2470,7 @@ victoria-metrics-0:
       size: 250Gi
     # victoria-metrics-0.server.retentionPeriod -- How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1)
     retentionPeriod: 1
+    sizingResourceOverride: false
     # victoria-metrics-0.server.resources - CPU/Memory requests and limits
     resources:
       requests:
@@ -2540,6 +2560,7 @@ victoria-metrics-1:
       size: 250Gi
     # victoria-metrics-1.server.retentionPeriod -- How long is data retained, when changing also consider updating the persistentVolume.size to match. The following optional suffixes are supported: h (hour), d (day), w (week), y (year). If suffix isn't set, then the duration is counted in months (default 1)
     retentionPeriod: 1
+    sizingResourceOverride: false
     # victoria-metrics-1.server.resources - CPU/Memory requests and limits
     resources:
       requests:
@@ -2629,6 +2650,7 @@ clickhouse:
   persistence:
     # clickhouse.persistence.size -- Size of persistent volume for each clickhouse pod
     size: 50Gi
+  sizingResourceOverride: false
   resources:
     limits:
       memory: "4Gi"

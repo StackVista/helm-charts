@@ -71,6 +71,7 @@ labels: {}
 
 esJavaOpts: "-Xmx1g -Xms1g"
 
+sizingResourceOverride: false
 resources:
   requests:
     cpu: "1000m"

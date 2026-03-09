@@ -187,6 +187,7 @@ customStartupProbe: {}
 ## @param resources.limits The resources limits for the ClickHouse containers
 ## @param resources.requests The requested resources for the ClickHouse containers
 ##
+sizingResourceOverride: false
 resources:
   limits: {}
   requests: {}

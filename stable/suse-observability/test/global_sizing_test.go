@@ -519,6 +519,57 @@ func TestGlobalSizingReplicaCounts(t *testing.T) {
 	}
 }
 
+// TestGlobalSizingProfileWinsOverDefaults verifies that when a sizing profile is active
+// and no sizingResourceOverride flag is set, profile resources are used directly
+// (not merged with/overridden by values.yaml defaults).
+func TestGlobalSizingProfileWinsOverDefaults(t *testing.T) {
+	// Render 500-ha profile WITHOUT any resource overrides
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_sizing_500_ha.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// Check that Kafka resources are from profile, not from values.yaml defaults
+	t.Run("kafka-uses-profile-resources", func(t *testing.T) {
+		ss, exists := resources.Statefulsets["suse-observability-kafka"]
+		require.True(t, exists, "kafka StatefulSet should exist")
+		containers := ss.Spec.Template.Spec.Containers
+		require.NotEmpty(t, containers)
+
+		// Profile should set non-empty resources
+		memLimit := containers[0].Resources.Limits[corev1.ResourceMemory]
+		assert.True(t, memLimit.Value() > 0,
+			"kafka memory limit should be > 0 from profile, got %s", memLimit.String())
+	})
+
+	// Check that elasticsearch resources come from profile, not from subchart defaults
+	// Subchart default (elasticsearch/values.yaml) is 2Gi memory / 1000m CPU
+	// Profile should set something larger for 500-ha
+	t.Run("elasticsearch-uses-profile-resources", func(t *testing.T) {
+		ss, exists := resources.Statefulsets["suse-observability-elasticsearch-master"]
+		require.True(t, exists, "elasticsearch StatefulSet should exist")
+		containers := ss.Spec.Template.Spec.Containers
+		require.NotEmpty(t, containers)
+
+		// elasticsearch subchart default memory limit is 2Gi
+		// Profile should set it higher
+		memLimit := containers[0].Resources.Limits[corev1.ResourceMemory]
+		subchartDefaultMemLimit := resource.MustParse("2Gi")
+		assert.True(t, memLimit.Cmp(subchartDefaultMemLimit) > 0,
+			"elasticsearch memory limit should be greater than subchart default 2Gi, got %s", memLimit.String())
+	})
+
+	// Check that a stackstate component (correlate) gets profile resources
+	t.Run("correlate-uses-profile-resources", func(t *testing.T) {
+		dep, exists := resources.Deployments["suse-observability-correlate"]
+		require.True(t, exists, "correlate deployment should exist")
+		containers := dep.Spec.Template.Spec.Containers
+		require.NotEmpty(t, containers)
+
+		memLimit := containers[0].Resources.Limits[corev1.ResourceMemory]
+		assert.True(t, memLimit.Value() > 0,
+			"correlate memory limit should be > 0 from profile, got %s", memLimit.String())
+	})
+}
+
 type expectedResources struct {
 	memoryLimit string
 	cpuLimit    string

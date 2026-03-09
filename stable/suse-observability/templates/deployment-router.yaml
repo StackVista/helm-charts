@@ -26,7 +26,11 @@ readinessProbe:
 {{- $evaluatedResources := .Values.stackstate.components.router.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
+{{- if .Values.stackstate.components.router.sizingResourceOverride -}}
 {{- $evaluatedResources = merge (dict) .Values.stackstate.components.router.resources $profileResourcesDict }}
+{{- else -}}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end -}}
 {{- end }}
 {{- if $evaluatedResources }}
 resources:

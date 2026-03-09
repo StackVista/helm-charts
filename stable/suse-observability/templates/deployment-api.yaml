@@ -40,7 +40,11 @@ env:
 {{- $evaluatedResources := .Values.stackstate.components.api.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
+{{- if .Values.stackstate.components.api.sizingResourceOverride -}}
 {{- $evaluatedResources = merge (dict) .Values.stackstate.components.api.resources $profileResourcesDict }}
+{{- else -}}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end -}}
 {{- end }}
 {{- $profileEnv := include "common.sizing.stackstate.api.env" . | trim -}}
 {{- $evaluatedExtraEnvOpen := .Values.stackstate.components.api.extraEnv.open }}

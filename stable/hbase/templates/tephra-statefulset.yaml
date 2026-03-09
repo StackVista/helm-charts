@@ -71,7 +71,11 @@ env:
 {{- $evaluatedResources := .Values.tephra.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
+{{- if .Values.tephra.sizingResourceOverride -}}
 {{- $evaluatedResources = merge (dict) .Values.tephra.resources $profileResourcesDict }}
+{{- else -}}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end -}}
 {{- end }}
 {{- $tephraWithResources := merge (dict "resources" $evaluatedResources) .Values.tephra }}
 {{- $serviceConfig := dict "ServiceConfig" (merge $tephraWithResources .Values.all) }}

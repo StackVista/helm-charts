@@ -299,7 +299,11 @@ spec:
 {{- $evaluatedResources := .Values.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
+{{- if .Values.sizingResourceOverride -}}
 {{- $evaluatedResources = merge (dict) .Values.resources $profileResourcesDict }}
+{{- else -}}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end -}}
 {{- end }}
 {{- with $evaluatedResources }}
         resources:

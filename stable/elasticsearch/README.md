@@ -1,6 +1,6 @@
 # elasticsearch
 
-![Version: 8.19.4-stackstate.11](https://img.shields.io/badge/Version-8.19.4--stackstate.11-informational?style=flat-square) ![AppVersion: 8.19.4](https://img.shields.io/badge/AppVersion-8.19.4-informational?style=flat-square)
+![Version: 8.19.4-stackstate.12](https://img.shields.io/badge/Version-8.19.4--stackstate.12-informational?style=flat-square) ![AppVersion: 8.19.4](https://img.shields.io/badge/AppVersion-8.19.4-informational?style=flat-square)
 Official Elastic helm chart for Elasticsearch
 **Homepage:** <https://github.com/elastic/helm-charts>
 ## Maintainers
@@ -126,6 +126,7 @@ Official Elastic helm chart for Elasticsearch
 | service.transportPortName | string | `"transport"` |  |
 | service.type | string | `"ClusterIP"` |  |
 | sidecarResources | object | `{}` |  |
+| sizingResourceOverride | bool | `false` |  |
 | startupProbe.failureThreshold | int | `17` |  |
 | startupProbe.initialDelaySeconds | int | `90` |  |
 | startupProbe.periodSeconds | int | `30` |  |

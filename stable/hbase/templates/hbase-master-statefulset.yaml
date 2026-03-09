@@ -30,7 +30,11 @@ env:
 {{- $evaluatedResources := .Values.hbase.master.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
+{{- if .Values.hbase.master.sizingResourceOverride -}}
 {{- $evaluatedResources = merge (dict) .Values.hbase.master.resources $profileResourcesDict }}
+{{- else -}}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end -}}
 {{- end }}
 {{- $masterWithResources := merge (dict "resources" $evaluatedResources) .Values.hbase.master }}
 {{- $serviceConfig := dict "ServiceConfig" (merge $masterWithResources .Values.all) }}

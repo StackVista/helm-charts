@@ -35,7 +35,11 @@ env:
 {{- $evaluatedResources := .Values.stackgraph.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
+{{- if .Values.stackgraph.sizingResourceOverride -}}
 {{- $evaluatedResources = merge (dict) .Values.stackgraph.resources $profileResourcesDict }}
+{{- else -}}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end -}}
 {{- end }}
 {{- $stackgraphWithResources := merge (dict "resources" $evaluatedResources) .Values.stackgraph }}
 {{- $serviceConfig := dict "ServiceConfig" (merge $stackgraphWithResources .Values.all) }}

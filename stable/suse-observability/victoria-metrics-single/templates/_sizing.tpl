@@ -20,7 +20,11 @@ Automatically detects victoria-metrics-0 or victoria-metrics-1 based on the full
 {{- $serverResources := include $sizingTemplate . | trim -}}
 {{- if $serverResources -}}
 {{- $profileResourcesDict := fromYaml $serverResources -}}
+{{- if .Values.server.sizingResourceOverride -}}
 {{- $evaluatedResources = merge (dict) .Values.server.resources $profileResourcesDict -}}
+{{- else -}}
+{{- $evaluatedResources = $profileResourcesDict -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}

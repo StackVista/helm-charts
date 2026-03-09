@@ -3,7 +3,11 @@
 {{- $evaluatedResources := .Values.stackstate.components.ui.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
+{{- if .Values.stackstate.components.ui.sizingResourceOverride -}}
 {{- $evaluatedResources = merge (dict) $evaluatedResources $profileResourcesDict }}
+{{- else -}}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end -}}
 {{- end }}
 {{- $serviceConfig := dict "ServiceName" "ui" "ServiceConfig" .Values.stackstate.components.ui }}
 

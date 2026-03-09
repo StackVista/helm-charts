@@ -36,7 +36,11 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- $evaluatedResources := merge .TypeConfig.resources .Values.stackstate.components.receiver.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
+{{- if .Values.stackstate.components.receiver.sizingResourceOverride -}}
 {{- $evaluatedResources = merge (dict) $evaluatedResources $profileResourcesDict }}
+{{- else -}}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end -}}
 {{- end }}
 {{- $profileEnv := include "common.sizing.stackstate.receiver.env" . | trim -}}
 {{- $evaluatedExtraEnvOpen := .Values.stackstate.components.receiver.extraEnv.open }}

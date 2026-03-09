@@ -35,7 +35,11 @@ env:
 {{- $evaluatedResources := .Values.stackstate.components.notification.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
+{{- if .Values.stackstate.components.notification.sizingResourceOverride -}}
 {{- $evaluatedResources = merge (dict) .Values.stackstate.components.notification.resources $profileResourcesDict }}
+{{- else -}}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end -}}
 {{- end }}
 {{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.notification -}}
 {{- $serviceConfig := dict "ServiceName" "notification" "ServiceConfig" $componentConfigWithResources }}

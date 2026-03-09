@@ -40,7 +40,11 @@ env:
 {{- $evaluatedResources := .Values.hdfs.namenode.resources }}
 {{- if $profileResources }}
 {{- $profileResourcesDict := fromYaml $profileResources }}
+{{- if .Values.hdfs.namenode.sizingResourceOverride -}}
 {{- $evaluatedResources = merge (dict) .Values.hdfs.namenode.resources $profileResourcesDict }}
+{{- else -}}
+{{- $evaluatedResources = $profileResourcesDict }}
+{{- end -}}
 {{- end }}
 {{- $namenodeWithResources := merge (dict "resources" $evaluatedResources) .Values.hdfs.namenode }}
 {{- $serviceConfig := dict "ServiceConfig" (merge $namenodeWithResources .Values.all) }}
