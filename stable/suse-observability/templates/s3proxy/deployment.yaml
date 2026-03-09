@@ -96,7 +96,7 @@ env:
   - name: LOG_LEVEL
     value: {{ .Values.s3proxy.logLevel | quote }}
   - name: JAVA_OPTS
-    value: {{ include "stackstate.s3proxy.javaOpts" . }}{{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }} -Djavax.net.ssl.trustStore=/opt/s3proxy/secrets/java-cacerts -Djavax.net.ssl.trustStoreType=jks{{- if .Values.stackstate.java.trustStorePassword }} -Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD){{- end }}{{- end }}
+    value: {{ include "stackstate.s3proxy.javaOpts" . }} -XX:+ExitOnOutOfMemoryError {{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }} -Djavax.net.ssl.trustStore=/opt/s3proxy/secrets/java-cacerts -Djavax.net.ssl.trustStoreType=jks{{- if .Values.stackstate.java.trustStorePassword }} -Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD){{- end }}{{- end }}
   {{- range $key, $value := .Values.s3proxy.extraEnv.open }}
   - name: {{ $key }}
     value: {{ $value | quote }}
