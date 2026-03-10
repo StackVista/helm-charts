@@ -743,6 +743,43 @@ stackstate:
       config: ""
       # stackstate.components.initializer.additionalLogging -- Additional logback config
       additionalLogging: ""
+    mcpServer:
+      # stackstate.components.mcpServer.enabled -- Enable MCP server deployment and service.
+      enabled: false
+      image:
+        # stackstate.components.mcpServer.image.imageRegistry -- `imageRegistry` used for the `mcpServer` component Docker image; this will override `global.imageRegistry` on a per-service basis.
+        imageRegistry: ""
+        # stackstate.components.mcpServer.image.pullPolicy -- `pullPolicy` used for the `mcpServer` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        pullPolicy: ""
+        # stackstate.components.mcpServer.image.repository -- Repository of the mcpServer component Docker image.
+        repository: stackstate/suse-observability-mcp
+        # stackstate.components.mcpServer.image.tag -- Tag used for the `mcpServer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        tag: ""
+      # stackstate.components.mcpServer.replicaCount -- Number of `mcpServer` replicas.
+      replicaCount: 1
+      # stackstate.components.mcpServer.listenAddress -- Listen address passed to `-http`.
+      listenAddress: ":8080"
+      # stackstate.components.mcpServer.service.port -- Service port for the MCP server.
+      service:
+        port: 8080
+      # stackstate.components.mcpServer.podAnnotations -- Extra annotations
+      podAnnotations: {}
+      # stackstate.components.mcpServer.resources -- Resource allocation for `mcpServer` pods.
+      resources:
+        limits:
+          memory: "512Mi"
+          cpu: "500m"
+          ephemeral-storage: "1Gi"
+        requests:
+          memory: "128Mi"
+          cpu: "100m"
+          ephemeral-storage: "1Mi"
+      # stackstate.components.mcpServer.nodeSelector -- Node labels for pod assignment.
+      nodeSelector: {}
+      # stackstate.components.mcpServer.tolerations -- Toleration labels for pod assignment.
+      tolerations: []
+      # stackstate.components.mcpServer.affinity -- Affinity settings for pod assignment.
+      affinity: {}
     e2es:
       extraEnv:
         # stackstate.components.e2es.extraEnv.open -- Extra open environment variables to inject into pods.

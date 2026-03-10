@@ -1,0 +1,20 @@
+{{- define "stackstate.mcpServer.service" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-mcp-server
+  labels:
+    app.kubernetes.io/component: mcp-server
+spec:
+  ports:
+    - name: http
+      port: {{ .Values.stackstate.components.mcpServer.service.port }}
+      protocol: TCP
+      targetPort: http
+  selector:
+    app.kubernetes.io/component: mcp-server
+{{- end -}}
+
+{{- if .Values.stackstate.components.mcpServer.enabled }}
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $mcpServerService := fromYaml (include "stackstate.mcpServer.service" .) -}}
+{{- toYaml (merge $mcpServerService $commonService) -}}
+{{- end }}

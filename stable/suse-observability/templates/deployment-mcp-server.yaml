@@ -1,0 +1,86 @@
+{{- define "stackstate.mcpServer.deployment.container.main" -}}
+{{- $serviceConfig := dict "ServiceName" "mcpServer" "ServiceConfig" .Values.stackstate.components.mcpServer }}
+{{- $stackstateService := ternary "api-headless" "server-headless" (eq (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) | trim) "true") }}
+{{- $stackstateUrl := printf "http://%s-%s:7070" (include "common.fullname.short" .) $stackstateService }}
+name: mcp-server
+image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.mcpServer.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default "latest" .Values.stackstate.components.mcpServer.image.tag }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.mcpServer.image.pullPolicy | quote }}
+args:
+  - -url
+  - {{ $stackstateUrl | quote }}
+  - -http
+  - {{ .Values.stackstate.components.mcpServer.listenAddress | quote }}
+ports:
+  - containerPort: {{ .Values.stackstate.components.mcpServer.service.port }}
+    name: http
+    protocol: TCP
+{{- with .Values.stackstate.components.mcpServer.resources }}
+resources:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+{{- end -}}
+
+{{- define "stackstate.mcpServer.deployment" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.mcpServer.deployment.container.main" .) -}}
+{{- $mcpServerMainContainer := (merge $overrideContainer $commonContainer) -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-mcp-server
+  labels:
+    app.kubernetes.io/component: mcp-server
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.stackstate.components.mcpServer.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: mcp-server
+  strategy:
+{{- if eq (lower .Values.stackstate.components.all.deploymentStrategy.type) "recreatesingletonsonly" }}
+    type: Recreate
+{{- else }}
+    {{- toYaml .Values.stackstate.components.all.deploymentStrategy | nindent 4 }}
+{{- end }}
+  template:
+    metadata:
+      annotations:
+        {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "mcpServer") .) }}
+      labels:
+        app.kubernetes.io/component: mcp-server
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
+    spec:
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
+      containers:
+      - {{ toYaml $mcpServerMainContainer | nindent 8 }}
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.mcpServer.nodeSelector }}
+      nodeSelector:
+      {{- with .Values.stackstate.components.all.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.mcpServer.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.mcpServer.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- if $affinity }}
+      affinity:
+        {{- $affinity | nindent 8 }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.mcpServer.tolerations }}
+      tolerations:
+      {{- with .Values.stackstate.components.all.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.mcpServer.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.stackstate.components.all.securityContext.enabled }}
+      securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
+    {{- end }}
+{{- end -}}
+
+{{- if .Values.stackstate.components.mcpServer.enabled }}
+{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $mcpServerDeployment := fromYaml (include "stackstate.mcpServer.deployment" .) -}}
+{{- toYaml (merge $mcpServerDeployment $commonDeployment) -}}
+{{- end }}
