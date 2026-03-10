@@ -519,9 +519,8 @@ func TestGlobalSizingReplicaCounts(t *testing.T) {
 	}
 }
 
-// TestGlobalSizingProfileWinsOverDefaults verifies that when a sizing profile is active
-// and no sizingResourceOverride flag is set, profile resources are used directly
-// (not merged with/overridden by values.yaml defaults).
+// TestGlobalSizingProfileWinsOverDefaults verifies that when a sizing profile is active,
+// profile resources are used directly (not merged with/overridden by values.yaml defaults).
 func TestGlobalSizingProfileWinsOverDefaults(t *testing.T) {
 	// Render 500-ha profile WITHOUT any resource overrides
 	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/global_sizing_500_ha.yaml")

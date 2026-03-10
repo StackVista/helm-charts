@@ -24,7 +24,7 @@ stackstate:
         remoteWriteEndpoint: "test-$vmInstance:8148"
         queryApiEndpoint: "test:8148"
     server:
-      sizingResourceOverride: true
+
       resources:
         limits:
           memory: "10Gi"
@@ -35,7 +35,7 @@ stackstate:
       java:
         trustStorePassword: "secretTrustStorePassword"
     receiver:
-      sizingResourceOverride: true
+
       resources:
         limits:
           memory: "2000Mi"
@@ -44,7 +44,7 @@ stackstate:
           memory: "2000Mi"
           cpu: "2000m"
     correlate:
-      sizingResourceOverride: true
+
       resources:
         limits:
           memory: "2500Mi"
@@ -53,7 +53,7 @@ stackstate:
           memory: "2500Mi"
           cpu: "1000m"
     healthSync:
-      sizingResourceOverride: true
+
       resources:
         limits:
           memory: "7000Mi"
@@ -62,7 +62,7 @@ stackstate:
           memory: "7000Mi"
           cpu: "1500m"
     notification:
-      sizingResourceOverride: true
+
       resources:
         limits:
           memory: "3000Mi"
@@ -71,7 +71,7 @@ stackstate:
           memory: "3000Mi"
           cpu: "750m"
     sync:
-      sizingResourceOverride: true
+
       resources:
         limits:
           memory: "16Gi"
@@ -80,7 +80,7 @@ stackstate:
           memory: "16Gi"
           cpu: "8000m"
     ui:
-      sizingResourceOverride: true
+
       resources:
         limits:
           memory: "128Mi"
@@ -89,7 +89,7 @@ stackstate:
           memory: "128Mi"
           cpu: "50m"
     initializer:
-      sizingResourceOverride: true
+
       resources:
         limits:
           memory: "3000Mi"
@@ -98,7 +98,7 @@ stackstate:
           memory: "3000Mi"
           cpu: "1500m"
     router:
-      sizingResourceOverride: true
+
       resources:
         limits:
           memory: "256Mi"
@@ -107,7 +107,7 @@ stackstate:
           memory: "256Mi"
           cpu: "100m"
     slicing:
-      sizingResourceOverride: true
+
       resources:
         limits:
           memory: "4000Mi"
@@ -116,7 +116,7 @@ stackstate:
           memory: "4000Mi"
           cpu: "1500m"
     e2es:
-      sizingResourceOverride: true
+
       resources:
         limits:
           memory: "1024Mi"
@@ -125,7 +125,7 @@ stackstate:
           memory: "1024Mi"
           cpu: "500m"
     authorizationSync:
-      sizingResourceOverride: true
+
       resources:
         limits:
           memory: "2Gi"
@@ -134,7 +134,7 @@ stackstate:
           memory: "2Gi"
           cpu: "1500m"
     vmagent:
-      sizingResourceOverride: true
+
       resources:
         limits:
           memory: "1024Mi"
@@ -144,7 +144,7 @@ stackstate:
           cpu: "200m"
 
 kafka:
-  sizingResourceOverride: true
+
   resources:
     limits:
       memory: "4Gi"
@@ -154,7 +154,7 @@ kafka:
       cpu: "1600m"
 
 zookeeper:
-  sizingResourceOverride: true
+
   resources:
     limits:
       memory: "1Gi"
@@ -164,7 +164,7 @@ zookeeper:
       cpu: "500m"
 
 elasticsearch:
-  sizingResourceOverride: true
+
   resources:
     limits:
       memory: "5Gi"
@@ -175,7 +175,7 @@ elasticsearch:
 
 hbase:
   stackgraph:
-    sizingResourceOverride: true
+
     resources:
       limits:
         memory: "4500Mi"
@@ -184,7 +184,7 @@ hbase:
         memory: "4500Mi"
         cpu: "1500m"
   tephra:
-    sizingResourceOverride: true
+
     resources:
       limits:
         memory: "1Gi"
@@ -195,7 +195,7 @@ hbase:
 
 victoria-metrics-0:
   server:
-    sizingResourceOverride: true
+
     resources:
       limits:
         memory: "3500Mi"
@@ -205,7 +205,7 @@ victoria-metrics-0:
         cpu: "1000m"
 
 clickhouse:
-  sizingResourceOverride: true
+
   resources:
     limits:
       memory: "8Gi"

@@ -8,8 +8,10 @@ Get zookeeper resources based on sizing profile
 Usage: {{ include "common.sizing.zookeeper.resources" . }}
 */}}
 {{- define "common.sizing.zookeeper.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") }}
 requests:
   cpu: 100m
@@ -27,7 +29,15 @@ requests:
 limits:
   cpu: 1500m
   memory: 768Mi
-{{- end }}
+{{- else }}
+requests:
+  cpu: "100m"
+  memory: "640Mi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "250m"
+  memory: "640Mi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 

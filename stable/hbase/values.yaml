@@ -81,13 +81,7 @@ stackgraph:
     size: 250Gi
     # stackgraph.persistence.storageClass -- Storage class of the volume for HDFS data nodes.
     storageClass:
-  sizingResourceOverride: false
-  resources:
-    limits:
-      memory: "3Gi"
-    requests:
-      memory: "2Gi"
-      cpu: "1000m"
+  resources: {}
   # stackgraph.sizing -- Stackgraph memory sizing for JVM
   sizing:
     javaHeapMemoryFraction: "60"
@@ -126,15 +120,8 @@ console:
     repository: stackstate/stackgraph-console
     # console.image.tag -- Container image tag for console pods, defaults to `version`-`stackgraph.version`
     tag:
-  sizingResourceOverride: false
   # console.resources -- Resources to allocate for HDFS console.
-  resources:
-    limits:
-      memory: "4Gi"
-      cpu: "500m"
-    requests:
-      memory: "4Gi"
-      cpu: "50m"
+  resources: {}
   # console.replicaCount -- Amount of console replicas to provision. Default of 0,
   replicaCount: 0
   # console.strategy -- The strategy for the Deployment object.
@@ -181,17 +168,8 @@ hbase:
       tag:
     # hbase.master.replicaCount -- Number of pods for HBase masters.
     replicaCount: null
-    sizingResourceOverride: false
     # hbase.master.resources -- Resources to allocate for HBase masters.
-    resources:
-      limits:
-        memory: "1Gi"
-        cpu: "500m"
-        ephemeral-storage: "1Gi"
-      requests:
-        memory: "1Gi"
-        cpu: "50m"
-        ephemeral-storage: "1Mi"
+    resources: {}
     # hbase.master.terminationGracePeriodSeconds -- Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook
     terminationGracePeriodSeconds: 30
     # hbase.master.sizing -- HBase master memory sizing for JVM
@@ -218,17 +196,8 @@ hbase:
       tag:
     # hbase.regionserver.replicaCount -- Number of HBase regionserver nodes.
     replicaCount: null
-    sizingResourceOverride: false
     # hbase.regionserver.resources -- Resources to allocate for HBase region servers.
-    resources:
-      limits:
-        memory: "3Gi"
-        cpu: "3000m"
-        ephemeral-storage: "1Gi"
-      requests:
-        memory: "3Gi"
-        cpu: "500m"
-        ephemeral-storage: "1Mi"
+    resources: {}
     # hbase.regionserver.terminationGracePeriodSeconds -- Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook
     terminationGracePeriodSeconds: 30
     # hbase.regionserver.sizing -- HBase region server memory sizing for JVM
@@ -297,17 +266,8 @@ hdfs:
       storageClass:
     # hdfs.datanode.replicaCount -- Number of HDFS data nodes.
     replicaCount: null
-    sizingResourceOverride: false
     # hdfs.datanode.resources -- Resources to allocate for HDFS data nodes.
-    resources:
-      limits:
-        memory: "4Gi"
-        cpu: "500m"
-        ephemeral-storage: "1Gi"
-      requests:
-        memory: "4Gi"
-        cpu: "100m"
-        ephemeral-storage: "1Mi"
+    resources: {}
     # hdfs.datanode.sizing -- HDFS Datanode memory sizing for JVMs in pods
     sizing:
       javaHeapMemoryFraction: "75"
@@ -334,17 +294,8 @@ hdfs:
       size: 20Gi
       # hdfs.namenode.persistence.storageClass -- Storage class of the volume for HDFS name nodes.
       storageClass:
-    sizingResourceOverride: false
     # hdfs.namenode.resources -- Resources to allocate for HDFS name nodes.
-    resources:
-      limits:
-        memory: "1Gi"
-        cpu: "500m"
-        ephemeral-storage: "1Gi"
-      requests:
-        memory: "1Gi"
-        cpu: "50m"
-        ephemeral-storage: "1Mi"
+    resources: {}
     # hdfs.namenode.terminationGracePeriodSeconds -- Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook
     terminationGracePeriodSeconds: 30
     # hdfs.namenode.sizing -- HDFS name node memory sizing for JVM
@@ -373,17 +324,8 @@ hdfs:
       size: 20Gi
       # hdfs.secondarynamenode.persistence.storageClass -- Storage class of the volume for HDFS secondary name nodes.
       storageClass:
-    sizingResourceOverride: false
     # hdfs.secondarynamenode.resources -- Resources to allocate for HDFS secondary name nodes.
-    resources:
-      limits:
-        memory: "1Gi"
-        cpu: "500m"
-        ephemeral-storage: "1Gi"
-      requests:
-        memory: "1Gi"
-        cpu: "50m"
-        ephemeral-storage: "1Mi"
+    resources: {}
     # hdfs.secondarynamenode.terminationGracePeriodSeconds -- Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook
     terminationGracePeriodSeconds: 30
     # hdfs.secondarynamenode.sizing -- HDFS secondary name node memory sizing for JVM
@@ -419,17 +361,8 @@ tephra:
     tag:
   # tephra.replicaCount -- Number of pods for Tephra pods.
   replicaCount: null
-  sizingResourceOverride: false
   # tephra.resources -- Resources to allocate for Tephra pods.
-  resources:
-    limits:
-      memory: "3Gi"
-      cpu: "500m"
-      ephemeral-storage: "1Gi"
-    requests:
-      memory: "3Gi"
-      cpu: "250m"
-      ephemeral-storage: "1Mi"
+  resources: {}
   # tephra.sizing -- Tephra memory sizing for JVM
   sizing:
     javaHeapMemoryFraction: "65"

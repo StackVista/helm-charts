@@ -8,10 +8,12 @@ Get clickhouse resources based on sizing profile
 Usage: {{ include "common.sizing.clickhouse.resources" . }}
 */}}
 {{- define "common.sizing.clickhouse.resources" -}}
-{{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
-{{- /* No profile-specific clickhouse resources for 500-ha */ -}}
-{{- end }}
+requests:
+  cpu: "500m"
+  memory: "4Gi"
+limits:
+  cpu: "1000m"
+  memory: "4Gi"
 {{- end }}
 
 {{/*

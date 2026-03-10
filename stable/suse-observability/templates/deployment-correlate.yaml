@@ -161,16 +161,9 @@ spec:
 {{- $correlateAggregatorDeployment := fromYaml (include "stackstate.correlate.deployment" $correlateAggregatorArgs) -}}
 {{ toYaml (merge $correlateAggregatorDeployment $commonDeployment) }}
 {{ else }}
-{{- $profileResources := include "common.sizing.stackstate.correlate.resources" . | trim -}}
-{{- $evaluatedResources := .Values.stackstate.components.correlate.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .Values.stackstate.components.correlate.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) .Values.stackstate.components.correlate.resources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include "common.sizing.stackstate.correlate.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.stackstate.components.correlate.resources $sizingResourcesDict }}
 {{- $profileEnv := include "common.sizing.stackstate.correlate.env" . | trim -}}
 {{- $evaluatedExtraEnvOpen := .Values.stackstate.components.correlate.extraEnv.open }}
 {{- if $profileEnv }}

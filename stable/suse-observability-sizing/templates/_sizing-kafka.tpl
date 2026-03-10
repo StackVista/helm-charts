@@ -102,8 +102,10 @@ Get kafka resources
 Usage: {{ include "common.sizing.kafka.resources" . }}
 */}}
 {{- define "common.sizing.kafka.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if or (eq $profile "trial") (eq $profile "10-nonha") }}
 requests:
   cpu: "800m"
@@ -160,7 +162,15 @@ requests:
 limits:
   cpu: "5000m"
   memory: "8Gi"
-{{- end }}
+{{- else }}
+requests:
+  cpu: "500m"
+  memory: "2Gi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "1000m"
+  memory: "2Gi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 

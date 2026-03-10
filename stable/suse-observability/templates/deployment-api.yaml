@@ -36,16 +36,9 @@ envFrom:
       name: {{ include "stackstate.secret.name.email" .  }}
   {{- end }}
 env:
-{{- $profileResources := include "common.sizing.stackstate.api.resources" . | trim -}}
-{{- $evaluatedResources := .Values.stackstate.components.api.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .Values.stackstate.components.api.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) .Values.stackstate.components.api.resources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include "common.sizing.stackstate.api.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.stackstate.components.api.resources $sizingResourcesDict }}
 {{- $profileEnv := include "common.sizing.stackstate.api.env" . | trim -}}
 {{- $evaluatedExtraEnvOpen := .Values.stackstate.components.api.extraEnv.open }}
 {{- if $profileEnv }}

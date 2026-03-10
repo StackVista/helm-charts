@@ -1,6 +1,6 @@
 # kafka
 
-![Version: 19.1.3-suse-observability.14](https://img.shields.io/badge/Version-19.1.3--suse--observability.14-informational?style=flat-square) ![AppVersion: 3.3.1](https://img.shields.io/badge/AppVersion-3.3.1-informational?style=flat-square)
+![Version: 19.1.3-suse-observability.15](https://img.shields.io/badge/Version-19.1.3--suse--observability.15-informational?style=flat-square) ![AppVersion: 3.3.1](https://img.shields.io/badge/AppVersion-3.3.1-informational?style=flat-square)
 
 Apache Kafka is a distributed streaming platform designed to build real-time pipelines and can be used as a message broker or as a replacement for a log aggregation solution for big data applications.
 
@@ -21,7 +21,7 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.6 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.7 |
 | file://charts/common | common | 2.x.x |
 
 ## Values
@@ -347,8 +347,7 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | readinessProbe.successThreshold | int | `1` |  |
 | readinessProbe.timeoutSeconds | int | `5` |  |
 | replicaCount | string | `nil` |  |
-| resources.limits | object | `{}` |  |
-| resources.requests | object | `{}` |  |
+| resources | object | `{}` |  |
 | schedulerName | string | `""` |  |
 | service.annotations | object | `{}` |  |
 | service.clusterIP | string | `""` |  |
@@ -371,7 +370,6 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.name | string | `""` |  |
 | sidecars | list | `[]` |  |
-| sizingResourceOverride | bool | `false` |  |
 | socketReceiveBufferBytes | int | `102400` |  |
 | socketRequestMaxBytes | string | `"_104857600"` |  |
 | socketSendBufferBytes | int | `102400` |  |

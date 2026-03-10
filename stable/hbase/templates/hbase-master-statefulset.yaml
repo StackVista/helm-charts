@@ -26,16 +26,9 @@ env:
 - name: HBASE_MASTER_LIVENESS_HTTP_PORT
   value: "16010"
 {{- end }}
-{{- $profileResources := include "common.sizing.hbase.master.resources" . | trim -}}
-{{- $evaluatedResources := .Values.hbase.master.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .Values.hbase.master.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) .Values.hbase.master.resources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include "common.sizing.hbase.master.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.hbase.master.resources $sizingResourcesDict }}
 {{- $masterWithResources := merge (dict "resources" $evaluatedResources) .Values.hbase.master }}
 {{- $serviceConfig := dict "ServiceConfig" (merge $masterWithResources .Values.all) }}
 {{- include "hbase.service.envvars" $serviceConfig }}

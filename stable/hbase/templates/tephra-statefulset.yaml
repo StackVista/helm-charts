@@ -67,16 +67,9 @@ env:
 {{ end }}
 {{ end }}
 {{- end }}
-{{- $profileResources := include "common.sizing.hbase.tephra.resources" . | trim -}}
-{{- $evaluatedResources := .Values.tephra.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .Values.tephra.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) .Values.tephra.resources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include "common.sizing.hbase.tephra.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.tephra.resources $sizingResourcesDict }}
 {{- $tephraWithResources := merge (dict "resources" $evaluatedResources) .Values.tephra }}
 {{- $serviceConfig := dict "ServiceConfig" (merge $tephraWithResources .Values.all) }}
 {{- include "hbase.service.envvars" $serviceConfig }}

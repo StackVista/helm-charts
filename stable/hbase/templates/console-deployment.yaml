@@ -18,16 +18,9 @@ env:
 {{- end }}
 - name: "JAVA_TOOL_OPTIONS"
   value: "-XX:InitialRAMPercentage=70.0 -XX:MaxRAMPercentage=70.0"
-{{- $profileResources := include "common.sizing.hbase.console.resources" . | trim -}}
-{{- $evaluatedResources := .Values.console.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .Values.console.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) .Values.console.resources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include "common.sizing.hbase.console.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.console.resources $sizingResourcesDict }}
 {{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}

@@ -31,16 +31,9 @@ env:
 - name: HBASE_CONF_hbase_master_stackstate_logcleaner_max_size_mb
   value: "{{ mulf $diskSpaceMB 0.01 | int }}"
 {{ end }}
-{{- $profileResources := include "common.sizing.hbase.stackgraph.resources" . | trim -}}
-{{- $evaluatedResources := .Values.stackgraph.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .Values.stackgraph.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) .Values.stackgraph.resources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include "common.sizing.hbase.stackgraph.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.stackgraph.resources $sizingResourcesDict }}
 {{- $stackgraphWithResources := merge (dict "resources" $evaluatedResources) .Values.stackgraph }}
 {{- $serviceConfig := dict "ServiceConfig" (merge $stackgraphWithResources .Values.all) }}
 {{- include "hbase.service.envvars" $serviceConfig }}

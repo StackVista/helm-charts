@@ -31,16 +31,9 @@ envFrom:
       name: {{ include "stackstate.secret.name.email" .  }}
   {{- end }}
 env:
-{{- $profileResources := include "common.sizing.stackstate.notification.resources" . | trim -}}
-{{- $evaluatedResources := .Values.stackstate.components.notification.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .Values.stackstate.components.notification.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) .Values.stackstate.components.notification.resources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include "common.sizing.stackstate.notification.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.stackstate.components.notification.resources $sizingResourcesDict }}
 {{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.notification -}}
 {{- $serviceConfig := dict "ServiceName" "notification" "ServiceConfig" $componentConfigWithResources }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.notification.image.tag }}

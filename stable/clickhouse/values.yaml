@@ -187,10 +187,7 @@ customStartupProbe: {}
 ## @param resources.limits The resources limits for the ClickHouse containers
 ## @param resources.requests The requested resources for the ClickHouse containers
 ##
-sizingResourceOverride: false
-resources:
-  limits: {}
-  requests: {}
+resources: {}
 ## Configure Pods Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
 ## @param podSecurityContext.enabled Enabled ClickHouse pods' Security Context

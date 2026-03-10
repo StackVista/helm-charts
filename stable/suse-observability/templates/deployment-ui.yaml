@@ -1,14 +1,7 @@
 {{- define "stackstate.ui.deployment.main.container" -}}
-{{- $profileResources := include "common.sizing.stackstate.ui.resources" . | trim -}}
-{{- $evaluatedResources := .Values.stackstate.components.ui.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .Values.stackstate.components.ui.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) $evaluatedResources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include "common.sizing.stackstate.ui.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.stackstate.components.ui.resources $sizingResourcesDict }}
 {{- $serviceConfig := dict "ServiceName" "ui" "ServiceConfig" .Values.stackstate.components.ui }}
 
 env:

@@ -13,17 +13,9 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- end -}}
 
 {{- define "stackstate.k2es.deployment.common.container" -}}
-{{- $profileResources := include (printf "common.sizing.stackstate.%s.resources" .K2esName) . | trim -}}
-{{- $defaultResources := .K2esConfig.resources }}
-{{- $evaluatedResources := $defaultResources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .K2esConfig.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) $defaultResources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include (printf "common.sizing.stackstate.%s.resources" .K2esName) . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .K2esConfig.resources $sizingResourcesDict }}
 {{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .K2esConfig -}}
 env:
 {{- $serviceConfig := dict "ServiceName" .K2esName "ServiceConfig" $componentConfigWithResources }}

@@ -18,16 +18,9 @@ envFrom:
   - secretRef:
       name: {{ include "stackstate.secret.name.license" .  }}
 env:
-{{- $profileResources := include "common.sizing.stackstate.initializer.resources" . | trim -}}
-{{- $evaluatedResources := .Values.stackstate.components.initializer.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .Values.stackstate.components.initializer.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) .Values.stackstate.components.initializer.resources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include "common.sizing.stackstate.initializer.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.stackstate.components.initializer.resources $sizingResourcesDict }}
 {{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.initializer -}}
 {{- $serviceConfig := dict "ServiceName" "initializer" "ServiceConfig" $componentConfigWithResources }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.initializer.image.tag }}

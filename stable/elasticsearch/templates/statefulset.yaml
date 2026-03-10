@@ -295,16 +295,9 @@ spec:
           containerPort: {{ .Values.httpPort }}
         - name: transport
           containerPort: {{ .Values.transportPort }}
-{{- $profileResources := include "common.sizing.elasticsearch.resources" . | trim -}}
-{{- $evaluatedResources := .Values.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .Values.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) .Values.resources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include "common.sizing.elasticsearch.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.resources $sizingResourcesDict }}
 {{- with $evaluatedResources }}
         resources:
 {{ toYaml . | indent 10 }}

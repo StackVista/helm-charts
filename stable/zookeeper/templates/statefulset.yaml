@@ -187,16 +187,9 @@ spec:
           {{- else if .Values.args }}
           args: {{- include "common.tplvalues.render" (dict "value" .Values.args "context" $) | nindent 12 }}
           {{- end }}
-          {{- $profileResources := include "common.sizing.zookeeper.resources" . | trim -}}
-          {{- $evaluatedResources := .Values.resources }}
-          {{- if $profileResources }}
-          {{- $profileResourcesDict := fromYaml $profileResources }}
-          {{- if .Values.sizingResourceOverride -}}
-          {{- $evaluatedResources = merge (dict) .Values.resources $profileResourcesDict }}
-          {{- else -}}
-          {{- $evaluatedResources = $profileResourcesDict }}
-          {{- end -}}
-          {{- end }}
+          {{- $sizingResources := include "common.sizing.zookeeper.resources" . | trim -}}
+          {{- $sizingResourcesDict := fromYaml $sizingResources }}
+          {{- $evaluatedResources := merge (dict) .Values.resources $sizingResourcesDict }}
           {{- with $evaluatedResources }}
           resources: {{- toYaml . | nindent 12 }}
           {{- end }}

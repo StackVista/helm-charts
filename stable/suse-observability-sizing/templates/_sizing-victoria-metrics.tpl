@@ -8,8 +8,10 @@ Get victoria-metrics-0 server resources
 Usage: {{ include "common.sizing.victoria-metrics-0.server.resources" . }}
 */}}
 {{- define "common.sizing.victoria-metrics-0.server.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if eq $profile "trial" -}}
 requests:
   cpu: 500m
@@ -73,7 +75,13 @@ requests:
 limits:
   cpu: 8000m
   memory: 18Gi
-{{- end -}}
+{{- else -}}
+requests:
+  cpu: 300m
+  memory: 3584Mi
+limits:
+  cpu: 1
+  memory: 4Gi
 {{- end -}}
 {{- end -}}
 
@@ -116,8 +124,10 @@ Get victoria-metrics-1 server resources
 Usage: {{ include "common.sizing.victoria-metrics-1.server.resources" . }}
 */}}
 {{- define "common.sizing.victoria-metrics-1.server.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if eq $profile "150-ha" }}
 requests:
   cpu: 2
@@ -146,7 +156,13 @@ requests:
 limits:
   cpu: 8000m
   memory: 18Gi
-{{- end }}
+{{- else }}
+requests:
+  cpu: 300m
+  memory: 3584Mi
+limits:
+  cpu: 1
+  memory: 4Gi
 {{- end }}
 {{- end }}
 

@@ -27,16 +27,9 @@ envFrom:
   - secretRef:
       name: {{ include "stackstate.secret.name.license" .  }}
 env:
-{{- $profileResources := include "common.sizing.stackstate.checks.resources" . | trim -}}
-{{- $evaluatedResources := .Values.stackstate.components.checks.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .Values.stackstate.components.checks.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) .Values.stackstate.components.checks.resources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include "common.sizing.stackstate.checks.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.stackstate.components.checks.resources $sizingResourcesDict }}
 {{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.checks -}}
 {{- $serviceConfig := dict "ServiceName" "checks" "ServiceConfig" $componentConfigWithResources }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.checks.image.tag }}

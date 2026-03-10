@@ -1,6 +1,6 @@
 # elasticsearch
 
-![Version: 8.19.4-stackstate.12](https://img.shields.io/badge/Version-8.19.4--stackstate.12-informational?style=flat-square) ![AppVersion: 8.19.4](https://img.shields.io/badge/AppVersion-8.19.4-informational?style=flat-square)
+![Version: 8.19.4-stackstate.13](https://img.shields.io/badge/Version-8.19.4--stackstate.13-informational?style=flat-square) ![AppVersion: 8.19.4](https://img.shields.io/badge/AppVersion-8.19.4-informational?style=flat-square)
 Official Elastic helm chart for Elasticsearch
 **Homepage:** <https://github.com/elastic/helm-charts>
 ## Maintainers
@@ -15,8 +15,8 @@ Official Elastic helm chart for Elasticsearch
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../prometheus-elasticsearch-exporter | prometheus-elasticsearch-exporter | 5.8.0-suse-observability.9 |
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.6 |
+| file://../prometheus-elasticsearch-exporter | prometheus-elasticsearch-exporter | 5.8.0-suse-observability.10 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.7 |
 ## Values
 
 | Key | Type | Default | Description |
@@ -99,10 +99,7 @@ Official Elastic helm chart for Elasticsearch
 | readinessProbe.successThreshold | int | `3` |  |
 | readinessProbe.timeoutSeconds | int | `5` |  |
 | replicas | int | `3` |  |
-| resources.limits.cpu | string | `"1000m"` |  |
-| resources.limits.memory | string | `"2Gi"` |  |
-| resources.requests.cpu | string | `"1000m"` |  |
-| resources.requests.memory | string | `"2Gi"` |  |
+| resources | object | `{}` |  |
 | roles[0] | string | `"master"` |  |
 | roles[1] | string | `"ingest"` |  |
 | roles[2] | string | `"data"` |  |
@@ -126,7 +123,6 @@ Official Elastic helm chart for Elasticsearch
 | service.transportPortName | string | `"transport"` |  |
 | service.type | string | `"ClusterIP"` |  |
 | sidecarResources | object | `{}` |  |
-| sizingResourceOverride | bool | `false` |  |
 | startupProbe.failureThreshold | int | `17` |  |
 | startupProbe.initialDelaySeconds | int | `90` |  |
 | startupProbe.periodSeconds | int | `30` |  |

@@ -19,16 +19,9 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- end -}}
 
 {{- define "stackstate.slicing.deployment.container.main" -}}
-{{- $profileResources := include "common.sizing.stackstate.slicing.resources" . | trim -}}
-{{- $evaluatedResources := .Values.stackstate.components.slicing.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .Values.stackstate.components.slicing.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) .Values.stackstate.components.slicing.resources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include "common.sizing.stackstate.slicing.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.stackstate.components.slicing.resources $sizingResourcesDict }}
 {{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.slicing -}}
 args:
 {{- include "stackstate.service.args" . }}

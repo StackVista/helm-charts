@@ -1,10 +1,10 @@
 # minio
 
-![Version: 8.0.10-stackstate.19](https://img.shields.io/badge/Version-8.0.10--stackstate.19-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
+![Version: 8.0.10-stackstate.20](https://img.shields.io/badge/Version-8.0.10--stackstate.20-informational?style=flat-square) ![AppVersion: master](https://img.shields.io/badge/AppVersion-master-informational?style=flat-square)
 
 High Performance, Kubernetes Native Object Storage
 
-Current chart version is `8.0.10-stackstate.19`
+Current chart version is `8.0.10-stackstate.20`
 
 **Homepage:** <https://min.io>
 
@@ -20,7 +20,7 @@ Current chart version is `8.0.10-stackstate.19`
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common/ | common | * |
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.6 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.7 |
 
 ## Values
 

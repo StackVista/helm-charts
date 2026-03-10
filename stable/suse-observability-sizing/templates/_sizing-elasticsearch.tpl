@@ -25,8 +25,10 @@ Get elasticsearch resources based on sizing profile
 Usage: {{ include "common.sizing.elasticsearch.resources" . }}
 */}}
 {{- define "common.sizing.elasticsearch.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if or (eq $profile "trial") (eq $profile "10-nonha") }}
 requests:
   cpu: 500m
@@ -62,7 +64,15 @@ requests:
 limits:
   cpu: "6"
   memory: 4Gi
-{{- end }}
+{{- else }}
+requests:
+  cpu: "1000m"
+  memory: "4Gi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "2000m"
+  memory: "4Gi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 

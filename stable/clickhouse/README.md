@@ -1,6 +1,6 @@
 # clickhouse
 
-![Version: 3.6.9-suse-observability.15](https://img.shields.io/badge/Version-3.6.9--suse--observability.15-informational?style=flat-square) ![AppVersion: 23.7.4](https://img.shields.io/badge/AppVersion-23.7.4-informational?style=flat-square)
+![Version: 3.6.9-suse-observability.16](https://img.shields.io/badge/Version-3.6.9--suse--observability.16-informational?style=flat-square) ![AppVersion: 23.7.4](https://img.shields.io/badge/AppVersion-23.7.4-informational?style=flat-square)
 
 ClickHouse is an open-source column-oriented OLAP database management system. Use it to boost your database performance while providing linear scalability and hardware efficiency.
 
@@ -20,7 +20,7 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.6 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.7 |
 | file://charts/common | common | 2.x.x |
 
 ## Values
@@ -192,8 +192,7 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 | readinessProbe.successThreshold | int | `1` |  |
 | readinessProbe.timeoutSeconds | int | `1` |  |
 | replicaCount | string | `nil` |  |
-| resources.limits | object | `{}` |  |
-| resources.requests | object | `{}` |  |
+| resources | object | `{}` |  |
 | schedulerName | string | `""` |  |
 | service.annotations | object | `{}` |  |
 | service.clusterIP | string | `""` |  |
@@ -233,7 +232,6 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 | serviceAccount.name | string | `""` |  |
 | shards | int | `2` |  |
 | sidecars | list | `[]` |  |
-| sizingResourceOverride | bool | `false` |  |
 | startdbScripts | object | `{}` |  |
 | startdbScriptsSecret | string | `""` |  |
 | startupProbe.enabled | bool | `false` |  |

@@ -1,6 +1,6 @@
 # zookeeper
 
-![Version: 8.1.2-suse-observability.12](https://img.shields.io/badge/Version-8.1.2--suse--observability.12-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
+![Version: 8.1.2-suse-observability.13](https://img.shields.io/badge/Version-8.1.2--suse--observability.13-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
 
 Apache ZooKeeper provides a reliable, centralized register of configuration data and services for distributed applications.
 
@@ -21,7 +21,7 @@ Apache ZooKeeper provides a reliable, centralized register of configuration data
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.6 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.7 |
 | https://charts.bitnami.com/bitnami | common | 1.x.x |
 
 ## Values
@@ -154,9 +154,7 @@ Apache ZooKeeper provides a reliable, centralized register of configuration data
 | readinessProbe.successThreshold | int | `1` |  |
 | readinessProbe.timeoutSeconds | int | `5` |  |
 | replicaCount | string | `nil` |  |
-| resources.limits | object | `{}` |  |
-| resources.requests.cpu | string | `"250m"` |  |
-| resources.requests.memory | string | `"256Mi"` |  |
+| resources | object | `{}` |  |
 | schedulerName | string | `""` |  |
 | service.annotations | object | `{}` |  |
 | service.clusterIP | string | `""` |  |
@@ -180,7 +178,6 @@ Apache ZooKeeper provides a reliable, centralized register of configuration data
 | serviceAccount.create | bool | `false` |  |
 | serviceAccount.name | string | `""` |  |
 | sidecars | list | `[]` |  |
-| sizingResourceOverride | bool | `false` |  |
 | snapCount | int | `100000` |  |
 | startupProbe.enabled | bool | `false` |  |
 | startupProbe.failureThreshold | int | `15` |  |

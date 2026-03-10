@@ -30,16 +30,9 @@ env:
   value: $(POD_NAME).{{ template "common.fullname.short" . }}-hbase-rs.$(POD_NAMESPACE).svc.cluster.local
 - name: HBASE_CONF_hbase_master_hostname
   value: "{{ template "common.fullname.short" . }}-hbase-master"
-{{- $profileResources := include "common.sizing.hbase.regionserver.resources" . | trim -}}
-{{- $evaluatedResources := .Values.hbase.regionserver.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .Values.hbase.regionserver.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) .Values.hbase.regionserver.resources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include "common.sizing.hbase.regionserver.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.hbase.regionserver.resources $sizingResourcesDict }}
 {{- $regionserverWithResources := merge (dict "resources" $evaluatedResources) .Values.hbase.regionserver }}
 {{- $serviceConfig := dict "ServiceConfig" (merge $regionserverWithResources .Values.all) }}
 {{- include "hbase.service.envvars" $serviceConfig }}

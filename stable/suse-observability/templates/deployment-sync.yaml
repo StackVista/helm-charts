@@ -19,16 +19,9 @@ imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- end -}}
 
 {{- define "stackstate.sync.deployment.container.main" -}}
-{{- $profileResources := include "common.sizing.stackstate.sync.resources" . | trim -}}
-{{- $evaluatedResources := .Values.stackstate.components.sync.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .Values.stackstate.components.sync.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) .Values.stackstate.components.sync.resources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include "common.sizing.stackstate.sync.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.stackstate.components.sync.resources $sizingResourcesDict }}
 {{- $profileEnv := include "common.sizing.stackstate.sync.env" . | trim -}}
 {{- $evaluatedExtraEnvOpen := .Values.stackstate.components.sync.extraEnv.open }}
 {{- if $profileEnv }}

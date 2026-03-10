@@ -63,16 +63,9 @@ volumeMounts:
     mountPath: /tmpData
   - name: vmagent-config
     mountPath: /etc/vmagent
-{{- $profileResources := include "common.sizing.stackstate.vmagent.resources" . | trim -}}
-{{- $evaluatedResources := .Values.stackstate.components.vmagent.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .Values.stackstate.components.vmagent.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) .Values.stackstate.components.vmagent.resources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include "common.sizing.stackstate.vmagent.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.stackstate.components.vmagent.resources $sizingResourcesDict }}
 {{- with $evaluatedResources }}
 resources:
   {{- toYaml . | nindent 2 }}

@@ -407,16 +407,9 @@ spec:
           {{- if .Values.lifecycleHooks }}
           lifecycle: {{- include "common.tplvalues.render" (dict "value" .Values.lifecycleHooks "context" $) | nindent 12 }}
           {{- end }}
-          {{- $profileResources := include "common.sizing.kafka.resources" . | trim -}}
-          {{- $evaluatedResources := .Values.resources }}
-          {{- if $profileResources }}
-          {{- $profileResourcesDict := fromYaml $profileResources }}
-          {{- if .Values.sizingResourceOverride -}}
-          {{- $evaluatedResources = merge (dict) .Values.resources $profileResourcesDict }}
-          {{- else -}}
-          {{- $evaluatedResources = $profileResourcesDict }}
-          {{- end -}}
-          {{- end }}
+          {{- $sizingResources := include "common.sizing.kafka.resources" . | trim -}}
+          {{- $sizingResourcesDict := fromYaml $sizingResources }}
+          {{- $evaluatedResources := merge (dict) .Values.resources $sizingResourcesDict }}
           {{- with $evaluatedResources }}
           resources: {{- toYaml . | nindent 12 }}
           {{- end }}

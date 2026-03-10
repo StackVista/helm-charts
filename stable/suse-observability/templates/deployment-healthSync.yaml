@@ -27,16 +27,9 @@ envFrom:
   - secretRef:
       name: {{ include "stackstate.secret.name.license" .  }}
 env:
-{{- $profileResources := include "common.sizing.stackstate.healthSync.resources" . | trim -}}
-{{- $evaluatedResources := .Values.stackstate.components.healthSync.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .Values.stackstate.components.healthSync.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) .Values.stackstate.components.healthSync.resources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include "common.sizing.stackstate.healthSync.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.stackstate.components.healthSync.resources $sizingResourcesDict }}
 {{- $profileEnv := include "common.sizing.stackstate.healthSync.env" . | trim -}}
 {{- $evaluatedExtraEnvOpen := .Values.stackstate.components.healthSync.extraEnv.open }}
 {{- if $profileEnv }}

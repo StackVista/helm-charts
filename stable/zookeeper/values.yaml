@@ -293,12 +293,7 @@ lifecycleHooks: {}
 ## @param resources.requests.memory The requested memory for the ZooKeeper containers
 ## @param resources.requests.cpu The requested cpu for the ZooKeeper containers
 ##
-sizingResourceOverride: false
-resources:
-  limits: {}
-  requests:
-    memory: 256Mi
-    cpu: 250m
+resources: {}
 ## Configure Pods Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
 ## @param podSecurityContext.enabled Enabled ZooKeeper pods' Security Context

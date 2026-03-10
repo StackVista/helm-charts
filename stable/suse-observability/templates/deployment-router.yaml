@@ -22,16 +22,9 @@ readinessProbe:
     path: /ready
     port: admin
   initialDelaySeconds: 5
-{{- $profileResources := include "common.sizing.stackstate.router.resources" . | trim -}}
-{{- $evaluatedResources := .Values.stackstate.components.router.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .Values.stackstate.components.router.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) .Values.stackstate.components.router.resources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include "common.sizing.stackstate.router.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.stackstate.components.router.resources $sizingResourcesDict }}
 {{- if $evaluatedResources }}
 resources:
   {{- toYaml $evaluatedResources | nindent 2 }}

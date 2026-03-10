@@ -27,7 +27,12 @@ envFrom:
   - secretRef:
       name: {{ include "stackstate.secret.name.license" .  }}
 env:
-{{- $serviceConfig := dict "ServiceName" "authorization-sync" "ServiceConfig" .Values.stackstate.components.authorizationSync }}
+{{- $sizingResources := include "common.sizing.stackstate.authorizationSync.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.stackstate.components.authorizationSync.resources $sizingResourcesDict }}
+{{- $baseConfig := omit .Values.stackstate.components.authorizationSync "resources" }}
+{{- $componentConfigWithResources := merge $baseConfig (dict "resources" $evaluatedResources) -}}
+{{- $serviceConfig := dict "ServiceName" "authorization-sync" "ServiceConfig" $componentConfigWithResources }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.authorizationSync.image.tag }}
 {{/* Build deployment-specific env vars that can be overridden via extraEnv */}}
 {{- $baseUrl := include "suse-observability.global.baseUrl" . | default .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl or global.suseObservability.baseUrl is required" }}

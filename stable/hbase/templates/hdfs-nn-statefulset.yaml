@@ -36,16 +36,9 @@ env:
 {{- include "hbase.hdfs.commonEnv" . }}
 {{- include "all.commonEnv" . }}
 {{- include "hdfs.namenode.commonEnv" . }}
-{{- $profileResources := include "common.sizing.hbase.hdfs.namenode.resources" . | trim -}}
-{{- $evaluatedResources := .Values.hdfs.namenode.resources }}
-{{- if $profileResources }}
-{{- $profileResourcesDict := fromYaml $profileResources }}
-{{- if .Values.hdfs.namenode.sizingResourceOverride -}}
-{{- $evaluatedResources = merge (dict) .Values.hdfs.namenode.resources $profileResourcesDict }}
-{{- else -}}
-{{- $evaluatedResources = $profileResourcesDict }}
-{{- end -}}
-{{- end }}
+{{- $sizingResources := include "common.sizing.hbase.hdfs.namenode.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.hdfs.namenode.resources $sizingResourcesDict }}
 {{- $namenodeWithResources := merge (dict "resources" $evaluatedResources) .Values.hdfs.namenode }}
 {{- $serviceConfig := dict "ServiceConfig" (merge $namenodeWithResources .Values.all) }}
 {{- include "hbase.service.envvars" $serviceConfig }}

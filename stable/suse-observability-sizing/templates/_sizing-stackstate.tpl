@@ -41,8 +41,10 @@ Get stackstate server resources (for non-split mode)
 Usage: {{ include "common.sizing.stackstate.server.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.server.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if eq $profile "trial" }}
 limits:
   ephemeral-storage: 5Gi
@@ -88,7 +90,15 @@ requests:
   cpu: 4000m
   memory: 8Gi
   ephemeral-storage: "1Mi"
-{{- end }}
+{{- else }}
+requests:
+  cpu: "3600m"
+  memory: "8Gi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "3600m"
+  memory: "8Gi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 
@@ -97,8 +107,10 @@ Get stackstate API component resources
 Usage: {{ include "common.sizing.stackstate.api.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.api.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if eq $profile "150-ha" }}
 requests:
   cpu: "1500m"
@@ -135,7 +147,15 @@ limits:
   cpu: "9000m"
   memory: "12Gi"
   ephemeral-storage: "2Gi"
-{{- end }}
+{{- else }}
+requests:
+  cpu: "1000m"
+  memory: "2Gi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "2000m"
+  memory: "2Gi"
+  ephemeral-storage: "2Gi"
 {{- end }}
 {{- end }}
 
@@ -144,8 +164,10 @@ Get stackstate checks component resources
 Usage: {{ include "common.sizing.stackstate.checks.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.checks.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if eq $profile "150-ha" }}
 requests:
   cpu: "3000m"
@@ -182,7 +204,15 @@ limits:
   cpu: "7000m"
   memory: 5Gi
   ephemeral-storage: "1Gi"
-{{- end }}
+{{- else }}
+requests:
+  cpu: "1000m"
+  memory: "4000Mi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "2000m"
+  memory: "4000Mi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 
@@ -191,8 +221,10 @@ Get stackstate healthSync component resources
 Usage: {{ include "common.sizing.stackstate.healthSync.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.healthSync.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if eq $profile "150-ha" }}
 limits:
   memory: 5Gi
@@ -229,7 +261,15 @@ requests:
   memory: 12Gi
   cpu: "5000m"
   ephemeral-storage: "1Mi"
-{{- end }}
+{{- else }}
+requests:
+  cpu: "400m"
+  memory: "3500Mi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "1500m"
+  memory: "3500Mi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 
@@ -329,11 +369,19 @@ Get stackstate initializer component resources
 Usage: {{ include "common.sizing.stackstate.initializer.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.initializer.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if or (eq $profile "150-ha") (eq $profile "250-ha") (eq $profile "500-ha") }}
 requests:
   cpu: "50m"
+  memory: "512Mi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "1500m"
+  memory: "1500Mi"
+  ephemeral-storage: "1Gi"
 {{- else if eq $profile "4000-ha" }}
 requests:
   cpu: "1000m"
@@ -341,7 +389,15 @@ requests:
 limits:
   cpu: "1500m"
   memory: "1Gi"
-{{- end }}
+{{- else }}
+requests:
+  cpu: "250m"
+  memory: "512Mi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "1500m"
+  memory: "1500Mi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 
@@ -350,8 +406,10 @@ Get stackstate notification component resources
 Usage: {{ include "common.sizing.stackstate.notification.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.notification.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if eq $profile "150-ha" }}
 requests:
   cpu: 500m
@@ -380,7 +438,15 @@ requests:
 limits:
   cpu: 3000m
   memory: "4500Mi"
-{{- end }}
+{{- else }}
+requests:
+  cpu: "250m"
+  memory: "1500Mi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "750m"
+  memory: "1500Mi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 
@@ -389,8 +455,10 @@ Get stackstate router component resources
 Usage: {{ include "common.sizing.stackstate.router.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.router.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if or (eq $profile "150-ha") (eq $profile "250-ha") }}
 requests:
   cpu: "120m"
@@ -418,7 +486,15 @@ limits:
   cpu: "2500m"
   memory: "512Mi"
   ephemeral-storage: "1Gi"
-{{- end }}
+{{- else }}
+requests:
+  cpu: "100m"
+  memory: "128Mi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "100m"
+  memory: "128Mi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 
@@ -427,11 +503,19 @@ Get stackstate slicing component resources
 Usage: {{ include "common.sizing.stackstate.slicing.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.slicing.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if or (eq $profile "150-ha") (eq $profile "500-ha") }}
 requests:
   cpu: "300m"
+  memory: "1800Mi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "1500m"
+  memory: "2000Mi"
+  ephemeral-storage: "1Gi"
 {{- else if eq $profile "250-ha" }}
 requests:
   cpu: "300m"
@@ -446,7 +530,15 @@ requests:
 limits:
   cpu: "1500m"
   memory: "4Gi"
-{{- end }}
+{{- else }}
+requests:
+  cpu: "250m"
+  memory: "1800Mi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "1500m"
+  memory: "2000Mi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 
@@ -455,8 +547,10 @@ Get stackstate state component resources
 Usage: {{ include "common.sizing.stackstate.state.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.state.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if or (eq $profile "150-ha") (eq $profile "250-ha") }}
 limits:
   cpu: "4"
@@ -484,7 +578,15 @@ requests:
   cpu: "3"
   memory: "4000Mi"
   ephemeral-storage: "1Mi"
-{{- end }}
+{{- else }}
+requests:
+  cpu: "500m"
+  memory: "1536Mi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "1000m"
+  memory: "2000Mi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 
@@ -505,8 +607,10 @@ Get stackstate sync component resources
 Usage: {{ include "common.sizing.stackstate.sync.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.sync.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if eq $profile "150-ha" }}
 limits:
   cpu: "4000m"
@@ -543,7 +647,15 @@ requests:
   cpu: "12"
   memory: "14000Mi"
   ephemeral-storage: "1Mi"
-{{- end }}
+{{- else }}
+requests:
+  cpu: "750m"
+  memory: "3Gi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "3000m"
+  memory: "4Gi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 
@@ -552,8 +664,10 @@ Get stackstate e2es component resources
 Usage: {{ include "common.sizing.stackstate.e2es.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.e2es.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") }}
 requests:
   memory: "512Mi"
@@ -573,7 +687,15 @@ requests:
 limits:
   memory: "1024Mi"
   cpu: "3000m"
-{{- end }}
+{{- else }}
+requests:
+  cpu: "250m"
+  memory: "768Mi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "500m"
+  memory: "1500Mi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 
@@ -596,8 +718,10 @@ Get stackstate correlate component resources
 Usage: {{ include "common.sizing.stackstate.correlate.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.correlate.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if or (eq $profile "trial") (eq $profile "10-nonha") }}
 requests:
   memory: "1250Mi"
@@ -670,7 +794,15 @@ requests:
   cpu: 5000m
   memory: 4000Mi
   ephemeral-storage: "1Mi"
-{{- end }}
+{{- else }}
+requests:
+  cpu: "600m"
+  memory: "2800Mi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "2000m"
+  memory: "2800Mi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 
@@ -692,8 +824,10 @@ Get stackstate receiver resources (non-split mode)
 Usage: {{ include "common.sizing.stackstate.receiver.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.receiver.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if or (eq $profile "trial") (eq $profile "10-nonha") }}
 requests:
   memory: "1000Mi"
@@ -729,7 +863,15 @@ requests:
 limits:
   memory: "6Gi"
   cpu: "12000m"
-{{- end }}
+{{- else }}
+requests:
+  cpu: "1000m"
+  memory: "4Gi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "3000m"
+  memory: "4Gi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 
@@ -750,8 +892,10 @@ Get stackstate receiver split base resources
 Usage: {{ include "common.sizing.stackstate.receiver.split.base.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.receiver.split.base.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if eq $profile "150-ha" }}
 requests:
   memory: "5500Mi"
@@ -788,7 +932,15 @@ limits:
   memory: "7Gi"
   cpu: "9000m"
   ephemeral-storage: "1Gi"
-{{- end }}
+{{- else }}
+requests:
+  cpu: "1000m"
+  memory: "4Gi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "3000m"
+  memory: "4Gi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 
@@ -797,8 +949,10 @@ Get stackstate receiver split processAgent resources
 Usage: {{ include "common.sizing.stackstate.receiver.split.processAgent.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.receiver.split.processAgent.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if eq $profile "150-ha" }}
 requests:
   memory: "2500Mi"
@@ -835,7 +989,15 @@ limits:
   memory: "6Gi"
   cpu: "8000m"
   ephemeral-storage: "1Gi"
-{{- end }}
+{{- else }}
+requests:
+  cpu: "1000m"
+  memory: "4Gi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "3000m"
+  memory: "4Gi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 
@@ -844,8 +1006,10 @@ Get stackstate receiver split logs resources
 Usage: {{ include "common.sizing.stackstate.receiver.split.logs.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.receiver.split.logs.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if eq $profile "150-ha" }}
 requests:
   memory: "3Gi"
@@ -882,8 +1046,31 @@ limits:
   memory: "6Gi"
   cpu: "3"
   ephemeral-storage: "1Gi"
+{{- else }}
+requests:
+  cpu: "1000m"
+  memory: "4Gi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "3000m"
+  memory: "4Gi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
+
+{{/*
+Get stackstate authorizationSync component resources
+Usage: {{ include "common.sizing.stackstate.authorizationSync.resources" . }}
+*/}}
+{{- define "common.sizing.stackstate.authorizationSync.resources" -}}
+requests:
+  cpu: "250m"
+  memory: "512Mi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "1500m"
+  memory: "1Gi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 
 {{/*
@@ -891,8 +1078,10 @@ Get stackstate vmagent resources
 Usage: {{ include "common.sizing.stackstate.vmagent.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.vmagent.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if or (eq $profile "trial") (eq $profile "10-nonha") }}
 limits:
   cpu: "200m"
@@ -965,7 +1154,15 @@ requests:
   cpu: 4000m
   memory: "5000Mi"
   ephemeral-storage: "1Mi"
-{{- end }}
+{{- else }}
+requests:
+  cpu: "200m"
+  memory: "256Mi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "200m"
+  memory: "512Mi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 
@@ -1085,14 +1282,28 @@ Get UI component resources
 Usage: {{ include "common.sizing.stackstate.ui.resources" . }}
 */}}
 {{- define "common.sizing.stackstate.ui.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if eq $profile "4000-ha" }}
 requests:
   cpu: 100m
+  memory: "64Mi"
+  ephemeral-storage: "1Mi"
 limits:
   cpu: 500m
-{{- end }}
+  memory: "64Mi"
+  ephemeral-storage: "1Gi"
+{{- else }}
+requests:
+  cpu: "50m"
+  memory: "64Mi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "50m"
+  memory: "64Mi"
+  ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}
 
