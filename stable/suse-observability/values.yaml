@@ -245,6 +245,22 @@ scc:
   # The resource is deployed as a Helm pre-install hook to avoid any warning for the first deployment.
   # Because `helm uninstall` does not consider Helm hooks, the resource must be manually deleted after the Helm release is removed.
   enabled: false
+
+#########################################
+# AI and Advanced Optimization Features #
+#########################################
+# ai -- Note: These features are General Availability (GA) but disabled by default because you need to provide an LLM to be able to use them.
+ai:
+  # ai.aiAssistant -- AI Assistant & MCP Server. Entitlement: Included with SUSE Observability (Rancher Prime)
+  aiAssistant:
+    # ai.aiAssistant.enabled -- Enables the AI Assistant UI, the dedicated backend process, and the MCP (Model Context Protocol) Server for Observability.
+    enabled: false
+
+  # ai.platformOptimization -- Automatic Troubleshooting & Remediation. Entitlement: Requires 'SUSE Platform Optimization' add-on (part of Rancher Suite). Enabling this flag indicates you have the appropriate license for Platform Optimization.
+  platformOptimization:
+    # ai.platformOptimization.enabled -- Enables advanced AI-driven automatic troubleshooting extensions. This builds upon the AI Assistant framework to provide proactive issue resolution.
+    enabled: false
+
 stackstate:
   components:
     all:
@@ -744,8 +760,6 @@ stackstate:
       # stackstate.components.initializer.additionalLogging -- Additional logback config
       additionalLogging: ""
     mcpServer:
-      # stackstate.components.mcpServer.enabled -- Enable MCP server deployment and service.
-      enabled: false
       image:
         # stackstate.components.mcpServer.image.imageRegistry -- `imageRegistry` used for the `mcpServer` component Docker image; this will override `global.imageRegistry` on a per-service basis.
         imageRegistry: ""

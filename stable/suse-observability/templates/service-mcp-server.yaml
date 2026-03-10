@@ -13,7 +13,7 @@ spec:
     app.kubernetes.io/component: mcp-server
 {{- end -}}
 
-{{- if .Values.stackstate.components.mcpServer.enabled }}
+{{- if .Values.ai.aiAssistant.enabled }}
 {{- $commonService := fromYaml (include "common.service" .) -}}
 {{- $mcpServerService := fromYaml (include "stackstate.mcpServer.service" .) -}}
 {{- toYaml (merge $mcpServerService $commonService) -}}

@@ -79,7 +79,7 @@ spec:
     {{- end }}
 {{- end -}}
 
-{{- if .Values.stackstate.components.mcpServer.enabled }}
+{{- if .Values.ai.aiAssistant.enabled }}
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
 {{- $mcpServerDeployment := fromYaml (include "stackstate.mcpServer.deployment" .) -}}
 {{- toYaml (merge $mcpServerDeployment $commonDeployment) -}}

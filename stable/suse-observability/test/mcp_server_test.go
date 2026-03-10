@@ -14,7 +14,7 @@ func TestMcpServerEnabledByDefault(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
-			"stackstate.components.mcpServer.enabled": "true",
+			"ai.aiAssistant.enabled": "true",
 		},
 	})
 
@@ -47,7 +47,7 @@ func TestMcpServerDisabled(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
-			"stackstate.components.mcpServer.enabled": "false",
+			"ai.aiAssistant.enabled": "false",
 		},
 	})
 

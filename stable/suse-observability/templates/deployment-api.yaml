@@ -75,7 +75,7 @@ env:
 {{- if .Values.stackstate.components.api.yaml.maxSizeLimit }}
   {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_yaml_codePointLimit" (include "stackstate.server.yaml.maxSizeLimit" .) }}
 {{- end }}
-{{- if .Values.stackstate.components.mcpServer.enabled }}
+{{- if .Values.ai.aiAssistant.enabled }}
   {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_featureSwitches_enableAi" "true" }}
 {{- end }}
 {{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}

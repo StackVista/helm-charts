@@ -372,6 +372,11 @@ If you encounter issues not covered here:
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| ai | object | `{"aiAssistant":{"enabled":false},"platformOptimization":{"enabled":false}}` | Note: These features are General Availability (GA) but disabled by default because you need to provide an LLM to be able to use them. |
+| ai.aiAssistant | object | `{"enabled":false}` | AI Assistant & MCP Server. Entitlement: Included with SUSE Observability (Rancher Prime) |
+| ai.aiAssistant.enabled | bool | `false` | Enables the AI Assistant UI, the dedicated backend process, and the MCP (Model Context Protocol) Server for Observability. |
+| ai.platformOptimization | object | `{"enabled":false}` | Automatic Troubleshooting & Remediation. Entitlement: Requires 'SUSE Platform Optimization' add-on (part of Rancher Suite). Enabling this flag indicates you have the appropriate license for Platform Optimization. |
+| ai.platformOptimization.enabled | bool | `false` | Enables advanced AI-driven automatic troubleshooting extensions. This builds upon the AI Assistant framework to provide proactive issue resolution. |
 | anomaly-detection.cpu.limit | string | `"2000m"` | CPU resource limit |
 | anomaly-detection.cpu.request | string | `"1000m"` | CPU resource request |
 | anomaly-detection.enabled | bool | `false` | Enables anomaly detection chart |
@@ -993,7 +998,6 @@ If you encounter issues not covered here:
 | stackstate.components.kafkaTopicCreate.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
 | stackstate.components.kafkaTopicCreate.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.mcpServer.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.mcpServer.enabled | bool | `false` | Enable MCP server deployment and service. |
 | stackstate.components.mcpServer.image.imageRegistry | string | `""` | `imageRegistry` used for the `mcpServer` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.mcpServer.image.pullPolicy | string | `""` | `pullPolicy` used for the `mcpServer` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.mcpServer.image.repository | string | `"stackstate/suse-observability-mcp"` | Repository of the mcpServer component Docker image. |
