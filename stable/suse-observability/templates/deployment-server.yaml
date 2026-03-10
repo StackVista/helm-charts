@@ -66,6 +66,9 @@ env:
 {{- if .Values.stackstate.k8sAuthorization.enabled }}
   {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_featureSwitches_authorizationSyncService" "true" }}
 {{- end }}
+{{- if .Values.stackstate.components.mcpServer.enabled }}
+  {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_featureSwitches_enableAi" "true" }}
+{{- end }}
 {{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.server.envsFromExistingSecrets }}
