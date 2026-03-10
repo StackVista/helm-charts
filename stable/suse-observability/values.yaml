@@ -754,7 +754,7 @@ stackstate:
         # stackstate.components.mcpServer.image.repository -- Repository of the mcpServer component Docker image.
         repository: stackstate/suse-observability-mcp
         # stackstate.components.mcpServer.image.tag -- Tag used for the `mcpServer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: ""
+        tag: "20260309131608-ac5e285b"
       # stackstate.components.mcpServer.replicaCount -- Number of `mcpServer` replicas.
       replicaCount: 1
       # stackstate.components.mcpServer.listenAddress -- Listen address passed to `-http`.
@@ -769,11 +769,9 @@ stackstate:
         limits:
           memory: "512Mi"
           cpu: "500m"
-          ephemeral-storage: "1Gi"
         requests:
           memory: "128Mi"
           cpu: "100m"
-          ephemeral-storage: "1Mi"
       # stackstate.components.mcpServer.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.mcpServer.tolerations -- Toleration labels for pod assignment.

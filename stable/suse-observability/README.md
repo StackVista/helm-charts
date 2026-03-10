@@ -992,6 +992,19 @@ If you encounter issues not covered here:
 | stackstate.components.kafkaTopicCreate.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | stackstate.components.kafkaTopicCreate.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
 | stackstate.components.kafkaTopicCreate.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.mcpServer.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.mcpServer.enabled | bool | `false` | Enable MCP server deployment and service. |
+| stackstate.components.mcpServer.image.imageRegistry | string | `""` | `imageRegistry` used for the `mcpServer` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
+| stackstate.components.mcpServer.image.pullPolicy | string | `""` | `pullPolicy` used for the `mcpServer` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.components.mcpServer.image.repository | string | `"stackstate/suse-observability-mcp"` | Repository of the mcpServer component Docker image. |
+| stackstate.components.mcpServer.image.tag | string | `"20260309131608-ac5e285b"` | Tag used for the `mcpServer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.mcpServer.listenAddress | string | `":8080"` | Listen address passed to `-http`. |
+| stackstate.components.mcpServer.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.mcpServer.podAnnotations | object | `{}` | Extra annotations |
+| stackstate.components.mcpServer.replicaCount | int | `1` | Number of `mcpServer` replicas. |
+| stackstate.components.mcpServer.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Resource allocation for `mcpServer` pods. |
+| stackstate.components.mcpServer.service.port | int | `8080` | Service port for the MCP server. |
+| stackstate.components.mcpServer.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.nginxPrometheusExporter.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.registry | string | `"quay.io"` | Base container image registry for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.repository | string | `"stackstate/nginx-prometheus-exporter"` | Base container image repository for nginx-prometheus-exporter containers. |
