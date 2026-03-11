@@ -14,20 +14,20 @@ func TestMcpServerEnabledByDefault(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
-			"ai.aiAssistant.enabled": "true",
+			"ai.assistant.enabled": "true",
 		},
 	})
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	deployment, ok := resources.Deployments["suse-observability-mcp-server"]
+	deployment, ok := resources.Deployments["suse-observability-mcp"]
 	require.True(t, ok, "MCP server deployment should exist")
 
-	service, ok := resources.Services["suse-observability-mcp-server"]
+	service, ok := resources.Services["suse-observability-mcp"]
 	require.True(t, ok, "MCP server service should exist")
 
 	container := deployment.Spec.Template.Spec.Containers[0]
-	assert.Equal(t, "mcp-server", container.Name)
+	assert.Equal(t, "mcp", container.Name)
 	assert.Contains(t, container.Args, "-url")
 	assert.Contains(t, container.Args, "http://suse-observability-api-headless:7070")
 	assert.Contains(t, container.Args, "-http")
@@ -47,13 +47,13 @@ func TestMcpServerDisabled(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
-			"ai.aiAssistant.enabled": "false",
+			"ai.assistant.enabled": "false",
 		},
 	})
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
-	assert.NotContains(t, resources.Deployments, "suse-observability-mcp-server")
-	assert.NotContains(t, resources.Services, "suse-observability-mcp-server")
+	assert.NotContains(t, resources.Deployments, "suse-observability-mcp")
+	assert.NotContains(t, resources.Services, "suse-observability-mcp")
 
 	apiDeployment, ok := resources.Deployments["suse-observability-api"]
 	require.True(t, ok, "API deployment should exist")

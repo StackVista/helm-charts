@@ -372,9 +372,9 @@ If you encounter issues not covered here:
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| ai | object | `{"aiAssistant":{"enabled":false},"platformOptimization":{"enabled":false}}` | Note: These features are General Availability (GA) but disabled by default because you need to provide an LLM to be able to use them. |
-| ai.aiAssistant | object | `{"enabled":false}` | AI Assistant & MCP Server. Entitlement: Included with SUSE Observability (Rancher Prime) |
-| ai.aiAssistant.enabled | bool | `false` | Enables the AI Assistant UI, the dedicated backend process, and the MCP (Model Context Protocol) Server for Observability. |
+| ai | object | `{"assistant":{"enabled":false},"platformOptimization":{"enabled":false}}` | Note: These features are General Availability (GA) but disabled by default because you need to provide an LLM to be able to use them. |
+| ai.assistant | object | `{"enabled":false}` | AI Assistant & MCP Server. Entitlement: Included with SUSE Observability (Rancher Prime) |
+| ai.assistant.enabled | bool | `false` | Enables the AI Assistant UI, the dedicated backend process, and the MCP (Model Context Protocol) Server for Observability. |
 | ai.platformOptimization | object | `{"enabled":false}` | Automatic Troubleshooting & Remediation. Entitlement: Requires 'SUSE Platform Optimization' add-on (part of Rancher Suite). Enabling this flag indicates you have the appropriate license for Platform Optimization. |
 | ai.platformOptimization.enabled | bool | `false` | Enables advanced AI-driven automatic troubleshooting extensions. This builds upon the AI Assistant framework to provide proactive issue resolution. |
 | anomaly-detection.cpu.limit | string | `"2000m"` | CPU resource limit |
@@ -997,18 +997,18 @@ If you encounter issues not covered here:
 | stackstate.components.kafkaTopicCreate.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | stackstate.components.kafkaTopicCreate.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
 | stackstate.components.kafkaTopicCreate.tolerations | list | `[]` | Toleration labels for pod assignment. |
-| stackstate.components.mcpServer.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.mcpServer.image.imageRegistry | string | `""` | `imageRegistry` used for the `mcpServer` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
-| stackstate.components.mcpServer.image.pullPolicy | string | `""` | `pullPolicy` used for the `mcpServer` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
-| stackstate.components.mcpServer.image.repository | string | `"stackstate/suse-observability-mcp"` | Repository of the mcpServer component Docker image. |
-| stackstate.components.mcpServer.image.tag | string | `"20260309131608-ac5e285b"` | Tag used for the `mcpServer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.mcpServer.listenAddress | string | `":8080"` | Listen address passed to `-http`. |
-| stackstate.components.mcpServer.nodeSelector | object | `{}` | Node labels for pod assignment. |
-| stackstate.components.mcpServer.podAnnotations | object | `{}` | Extra annotations |
-| stackstate.components.mcpServer.replicaCount | int | `1` | Number of `mcpServer` replicas. |
-| stackstate.components.mcpServer.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Resource allocation for `mcpServer` pods. |
-| stackstate.components.mcpServer.service.port | int | `8080` | Service port for the MCP server. |
-| stackstate.components.mcpServer.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.mcp.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.mcp.image.imageRegistry | string | `""` | `imageRegistry` used for the `mcp` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
+| stackstate.components.mcp.image.pullPolicy | string | `""` | `pullPolicy` used for the `mcp` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.components.mcp.image.repository | string | `"stackstate/suse-observability-mcp"` | Repository of the mcp component Docker image. |
+| stackstate.components.mcp.image.tag | string | `"20260309131608-ac5e285b"` | Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.mcp.listenAddress | string | `":8080"` | Listen address passed to `-http`. |
+| stackstate.components.mcp.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.mcp.podAnnotations | object | `{}` | Extra annotations |
+| stackstate.components.mcp.replicaCount | int | `1` | Number of `mcp` replicas. |
+| stackstate.components.mcp.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Resource allocation for `mcp` pods. |
+| stackstate.components.mcp.service.port | int | `8080` | Service port for the MCP server. |
+| stackstate.components.mcp.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.nginxPrometheusExporter.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.registry | string | `"quay.io"` | Base container image registry for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.repository | string | `"stackstate/nginx-prometheus-exporter"` | Base container image repository for nginx-prometheus-exporter containers. |

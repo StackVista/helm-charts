@@ -251,9 +251,9 @@ scc:
 #########################################
 # ai -- Note: These features are General Availability (GA) but disabled by default because you need to provide an LLM to be able to use them.
 ai:
-  # ai.aiAssistant -- AI Assistant & MCP Server. Entitlement: Included with SUSE Observability (Rancher Prime)
-  aiAssistant:
-    # ai.aiAssistant.enabled -- Enables the AI Assistant UI, the dedicated backend process, and the MCP (Model Context Protocol) Server for Observability.
+  # ai.assistant -- AI Assistant & MCP Server. Entitlement: Included with SUSE Observability (Rancher Prime)
+  assistant:
+    # ai.assistant.enabled -- Enables the AI Assistant UI, the dedicated backend process, and the MCP (Model Context Protocol) Server for Observability.
     enabled: false
 
   # ai.platformOptimization -- Automatic Troubleshooting & Remediation. Entitlement: Requires 'SUSE Platform Optimization' add-on (part of Rancher Suite). Enabling this flag indicates you have the appropriate license for Platform Optimization.
@@ -759,26 +759,26 @@ stackstate:
       config: ""
       # stackstate.components.initializer.additionalLogging -- Additional logback config
       additionalLogging: ""
-    mcpServer:
+    mcp:
       image:
-        # stackstate.components.mcpServer.image.imageRegistry -- `imageRegistry` used for the `mcpServer` component Docker image; this will override `global.imageRegistry` on a per-service basis.
+        # stackstate.components.mcp.image.imageRegistry -- `imageRegistry` used for the `mcp` component Docker image; this will override `global.imageRegistry` on a per-service basis.
         imageRegistry: ""
-        # stackstate.components.mcpServer.image.pullPolicy -- `pullPolicy` used for the `mcpServer` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        # stackstate.components.mcp.image.pullPolicy -- `pullPolicy` used for the `mcp` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
-        # stackstate.components.mcpServer.image.repository -- Repository of the mcpServer component Docker image.
+        # stackstate.components.mcp.image.repository -- Repository of the mcp component Docker image.
         repository: stackstate/suse-observability-mcp
-        # stackstate.components.mcpServer.image.tag -- Tag used for the `mcpServer` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        # stackstate.components.mcp.image.tag -- Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: "20260309131608-ac5e285b"
-      # stackstate.components.mcpServer.replicaCount -- Number of `mcpServer` replicas.
+      # stackstate.components.mcp.replicaCount -- Number of `mcp` replicas.
       replicaCount: 1
-      # stackstate.components.mcpServer.listenAddress -- Listen address passed to `-http`.
+      # stackstate.components.mcp.listenAddress -- Listen address passed to `-http`.
       listenAddress: ":8080"
-      # stackstate.components.mcpServer.service.port -- Service port for the MCP server.
+      # stackstate.components.mcp.service.port -- Service port for the MCP server.
       service:
         port: 8080
-      # stackstate.components.mcpServer.podAnnotations -- Extra annotations
+      # stackstate.components.mcp.podAnnotations -- Extra annotations
       podAnnotations: {}
-      # stackstate.components.mcpServer.resources -- Resource allocation for `mcpServer` pods.
+      # stackstate.components.mcp.resources -- Resource allocation for `mcp` pods.
       resources:
         limits:
           memory: "512Mi"
@@ -786,11 +786,11 @@ stackstate:
         requests:
           memory: "128Mi"
           cpu: "100m"
-      # stackstate.components.mcpServer.nodeSelector -- Node labels for pod assignment.
+      # stackstate.components.mcp.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
-      # stackstate.components.mcpServer.tolerations -- Toleration labels for pod assignment.
+      # stackstate.components.mcp.tolerations -- Toleration labels for pod assignment.
       tolerations: []
-      # stackstate.components.mcpServer.affinity -- Affinity settings for pod assignment.
+      # stackstate.components.mcp.affinity -- Affinity settings for pod assignment.
       affinity: {}
     e2es:
       extraEnv:
