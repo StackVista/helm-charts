@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.2.125`
+Current chart version is `0.2.126`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -11,7 +11,7 @@ Current chart version is `0.2.125`
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common/ | common | * |
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.9 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.10 |
 
 ## Required Values
 
