@@ -1,0 +1,255 @@
+---
+# Source: suse-observability-values/templates/sizing_values.yaml
+# profile 150-ha
+clickhouse:
+  replicaCount: 1
+  persistence:
+    size: 100Gi
+
+elasticsearch:
+  volumeClaimTemplate:
+    resources:
+      requests:
+        storage: 200Gi
+
+hbase:
+  version: "2.5"
+  deployment:
+    mode: "Distributed"
+  hbase:
+    console:
+      resources:
+        requests:
+          cpu: "20m"
+    master:
+      replicaCount: 2
+      resources:
+        requests:
+          cpu: "500m"
+        limits:
+          cpu: "1000m"
+    regionserver:
+      replicaCount: 3
+      resources:
+        requests:
+          cpu: "2000m"
+        limits:
+          cpu: "4000m"
+  hdfs:
+    datanode:
+      replicaCount: 3
+      resources:
+        requests:
+          cpu: "600m"
+        limits:
+          cpu: "1200m"
+    namenode:
+      resources:
+        requests:
+          cpu: "200m"
+        limits:
+          cpu: "400m"
+    secondarynamenode:
+      enabled: true
+      resources:
+        requests:
+          cpu: "10m"
+  tephra:
+    resources:
+      limits:
+        memory: "1Gi"
+        cpu: "1000m"
+      requests:
+        memory: "1Gi"
+        cpu: "500m"
+    replicaCount: 2
+kafka:
+  replicaCount: 3
+  transactionStateLogReplicationFactor: 1
+  resources:
+    requests:
+      cpu: "1"
+      memory: "3Gi"
+    limits:
+      cpu: "2"
+      memory: "4Gi"
+
+stackstate:
+  features:
+    server:
+      split: true
+  authentication:
+    adminPassword: 098f6bcd4621d373cade4e832627b4f6
+  admin:
+    authentication:
+      password: 5a4961367d65d570e20d2d69156581b4
+  baseUrl: "http://localhost"
+  license:
+    key: "api01"
+  components:
+    all:
+      extraEnv:
+        open:
+          CONFIG_FORCE_stackstate_agents_agentLimit: "150"
+    api:
+      resources:
+        requests:
+          cpu: "1500m"
+          memory: "4Gi"
+        limits:
+          cpu: "3000m"
+          memory: "4Gi"
+    checks:
+      resources:
+        requests:
+          cpu: "3000m"
+          memory: 5Gi
+        limits:
+          cpu: "6000m"
+          memory: 5Gi
+    healthSync:
+      resources:
+        limits:
+          memory: 5Gi
+          cpu: "2000m"
+        requests:
+          memory: 5Gi
+          cpu: "1000m"
+      sizing:
+        baseMemoryConsumption: "1200Mi"
+    initializer:
+      resources:
+        requests:
+          cpu: "50m"
+    notification:
+      resources:
+        requests:
+          cpu: 500m
+          memory: "3000Mi"
+        limits:
+          cpu: 1000m
+          memory: "3000Mi"
+    router:
+      resources:
+        requests:
+          cpu: "120m"
+        limits:
+          cpu: "240m"
+    slicing:
+      resources:
+        requests:
+          cpu: "300m"
+    state:
+      resources:
+        limits:
+          cpu: "4"
+          memory: "4000Mi"
+        requests:
+          cpu: "2"
+          memory: "4000Mi"
+    sync:
+      tmpToPVC:
+        volumeSize: 10Gi
+      resources:
+        limits:
+          cpu: "4000m"
+          memory: "6500Mi"
+        requests:
+          cpu: "2000m"
+          memory: "6500Mi"
+    e2es:
+      resources:
+        requests:
+          memory: "512Mi"
+          cpu: "50m"
+        limits:
+          memory: "512Mi"
+    correlate:
+      replicaCount: 3
+      resources:
+        limits:
+          cpu: 6
+          memory: 3500Mi
+        requests:
+          cpu: 3
+          memory: 3500Mi
+    receiver:
+      split:
+        enabled: true
+        base:
+          resources:
+            requests:
+              memory: "5500Mi"
+              cpu: "4000m"
+            limits:
+              memory: "5500Mi"
+              cpu: "8000m"
+        processAgent:
+          resources:
+            requests:
+              memory: "2500Mi"
+              cpu: "1000m"
+            limits:
+              memory: "2500Mi"
+              cpu: "2000m"
+        logs:
+          resources:
+            requests:
+              memory: "3Gi"
+              cpu: "1000m"
+            limits:
+              memory: "3Gi"
+              cpu: "2000m"
+      extraEnv:
+        open:
+          CONFIG_FORCE_akka_http_host__connection__pool_max__open__requests: "256"
+    vmagent:
+      resources:
+        limits:
+          cpu: 3000m
+          memory: "1500Mi"
+        requests:
+          cpu: 1500m
+          memory: "1500Mi"
+    ui:
+      replicaCount: 2
+zookeeper:
+  replicaCount: 3
+  resources:
+    requests:
+      cpu: 200m
+    limits:
+      cpu: 500m
+victoria-metrics-0:
+  server:
+    resources:
+      requests:
+        cpu: 2
+        memory: 9Gi
+      limits:
+        cpu: 4
+        memory: 9Gi
+  backup:
+    vmbackup:
+      resources:
+        requests:
+          memory: 512Mi
+        limits:
+          memory: 512Mi
+victoria-metrics-1:
+  enabled: true
+  server:
+    resources:
+      requests:
+        cpu: 2
+        memory: 9Gi
+      limits:
+        cpu: 4
+        memory: 9Gi
+  backup:
+    vmbackup:
+      resources:
+        requests:
+          memory: 512Mi
+        limits:
+          memory: 512Mi

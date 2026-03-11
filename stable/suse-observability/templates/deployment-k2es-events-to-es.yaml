@@ -1,8 +1,15 @@
 {{- define "stackstate.k2es.deployment.eventsToEs.container" -}}
+{{- $sizingResources := include "common.sizing.stackstate.e2es.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.stackstate.components.e2es.resources $sizingResourcesDict }}
 args:
 {{- include "stackstate.service.args" . }}
 - topology-events
 name: e2es
+{{- with $evaluatedResources }}
+resources:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
 volumeMounts:
 {{- include "stackstate.service.container.volumes" . }}
 {{- end -}}

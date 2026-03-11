@@ -140,14 +140,11 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           {{- $sizingResources := include "common.sizing.elasticsearch.prometheus-exporter.resources" . | trim -}}
-          {{- if $sizingResources }}
+          {{- $sizingResourcesDict := fromYaml $sizingResources }}
+          {{- $evaluatedResources := merge (dict) .Values.resources $sizingResourcesDict }}
+          {{- with $evaluatedResources }}
           resources:
-            {{- $sizingResources | nindent 12 }}
-          {{- else }}
-          {{- with .Values.resources }}
-          resources:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+          {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:
             - containerPort: {{ .Values.service.httpPort }}

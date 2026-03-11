@@ -1677,15 +1677,7 @@ elasticsearch:
       ad.stackstate.com/exporter.check_names: '["openmetrics"]'
       ad.stackstate.com/exporter.init_configs: "[{}]"
       ad.stackstate.com/exporter.instances: '[ { "prometheus_url": "http://%%host%%:9108/metrics", "namespace": "stackstate", "metrics": ["elasticsearch_indices_store_*", "elasticsearch_cluster_health_*"] } ]'
-    resources:
-      limits:
-        cpu: "100m"
-        memory: "100Mi"
-        ephemeral-storage: "1Gi"
-      requests:
-        cpu: "100m"
-        memory: "100Mi"
-        ephemeral-storage: "1Mi"
+    resources: {}
     es:
       uri: http://suse-observability-elasticsearch-master:9200
 hbase:

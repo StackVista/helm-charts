@@ -133,8 +133,10 @@ Get prometheus-elasticsearch-exporter resources based on sizing profile
 Usage: {{ include "common.sizing.elasticsearch.prometheus-exporter.resources" . }}
 */}}
 {{- define "common.sizing.elasticsearch.prometheus-exporter.resources" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") }}
 requests:
   cpu: "50m"
@@ -153,6 +155,5 @@ limits:
   cpu: "100m"
   memory: "100Mi"
   ephemeral-storage: "1Gi"
-{{- end }}
 {{- end }}
 {{- end }}

@@ -15,20 +15,30 @@ Usage: {{ include "common.sizing.zookeeper.resources" . }}
 {{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") }}
 requests:
   cpu: 100m
+  memory: "640Mi"
+  ephemeral-storage: "1Mi"
 limits:
   cpu: 250m
+  memory: "640Mi"
+  ephemeral-storage: "1Gi"
 {{- else if or (eq $profile "150-ha") (eq $profile "250-ha") (eq $profile "500-ha") }}
 requests:
   cpu: 200m
+  memory: "640Mi"
+  ephemeral-storage: "1Mi"
 limits:
   cpu: 500m
+  memory: "640Mi"
+  ephemeral-storage: "1Gi"
 {{- else if eq $profile "4000-ha" }}
 requests:
   cpu: 1000m
   memory: 768Mi
+  ephemeral-storage: "1Mi"
 limits:
   cpu: 1500m
   memory: 768Mi
+  ephemeral-storage: "1Gi"
 {{- else }}
 requests:
   cpu: "100m"

@@ -44,12 +44,12 @@ spec:
         - name: kafkaup-config-volume
           mountPath: /conf.d
 {{- $sizingResources := include "common.sizing.kafkaup-operator.resources" . | trim }}
-{{- $resources := .Values.resources }}
-{{- if $sizingResources }}
-{{- $resources = fromYaml $sizingResources }}
-{{- end }}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.resources $sizingResourcesDict }}
+{{- with $evaluatedResources }}
         resources:
-{{ toYaml $resources | indent 10 }}
+{{- toYaml . | nindent 10 }}
+{{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

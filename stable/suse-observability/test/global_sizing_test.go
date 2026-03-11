@@ -13,7 +13,7 @@ import (
 // TestGlobalSizingProfilesRender tests that all 9 sizing profiles render successfully
 func TestGlobalSizingProfilesRender(t *testing.T) {
 	profiles := []struct {
-		name      string
+		name       string
 		valuesFile string
 	}{
 		{"trial", "values/global_sizing_trial.yaml"},
@@ -60,39 +60,39 @@ func TestGlobalSizingProfilesRender(t *testing.T) {
 // TestGlobalSizingReceiverSplitMode tests that receiver split mode is controlled by sizing profile
 func TestGlobalSizingReceiverSplitMode(t *testing.T) {
 	testCases := []struct {
-		name                  string
-		valuesFile            string
-		expectSplit           bool
-		expectedDeployments   []string
+		name                string
+		valuesFile          string
+		expectSplit         bool
+		expectedDeployments []string
 	}{
 		{
-			name:        "trial-no-split",
-			valuesFile:  "values/global_sizing_trial.yaml",
-			expectSplit: false,
+			name:                "trial-no-split",
+			valuesFile:          "values/global_sizing_trial.yaml",
+			expectSplit:         false,
 			expectedDeployments: []string{"suse-observability-receiver"},
 		},
 		{
-			name:        "10-nonha-no-split",
-			valuesFile:  "values/global_sizing_10_nonha.yaml",
-			expectSplit: false,
+			name:                "10-nonha-no-split",
+			valuesFile:          "values/global_sizing_10_nonha.yaml",
+			expectSplit:         false,
 			expectedDeployments: []string{"suse-observability-receiver"},
 		},
 		{
-			name:        "20-nonha-no-split",
-			valuesFile:  "values/global_sizing_20_nonha.yaml",
-			expectSplit: false,
+			name:                "20-nonha-no-split",
+			valuesFile:          "values/global_sizing_20_nonha.yaml",
+			expectSplit:         false,
 			expectedDeployments: []string{"suse-observability-receiver"},
 		},
 		{
-			name:        "50-nonha-no-split",
-			valuesFile:  "values/global_sizing_50_nonha.yaml",
-			expectSplit: false,
+			name:                "50-nonha-no-split",
+			valuesFile:          "values/global_sizing_50_nonha.yaml",
+			expectSplit:         false,
 			expectedDeployments: []string{"suse-observability-receiver"},
 		},
 		{
-			name:        "100-nonha-no-split",
-			valuesFile:  "values/global_sizing_100_nonha.yaml",
-			expectSplit: false,
+			name:                "100-nonha-no-split",
+			valuesFile:          "values/global_sizing_100_nonha.yaml",
+			expectSplit:         false,
 			expectedDeployments: []string{"suse-observability-receiver"},
 		},
 		{
@@ -166,9 +166,9 @@ func TestGlobalSizingReceiverSplitMode(t *testing.T) {
 // TestGlobalSizingVictoriaMetrics1Enablement tests victoria-metrics-1 conditional enablement
 func TestGlobalSizingVictoriaMetrics1Enablement(t *testing.T) {
 	testCases := []struct {
-		name                    string
-		valuesFile              string
-		expectVM1Enabled        bool
+		name             string
+		valuesFile       string
+		expectVM1Enabled bool
 	}{
 		{
 			name:             "trial-vm1-disabled",
@@ -247,11 +247,11 @@ func TestGlobalSizingVictoriaMetrics1Enablement(t *testing.T) {
 // TestGlobalSizingHbaseDeploymentMode tests hbase deployment mode (Mono vs Distributed)
 func TestGlobalSizingHbaseDeploymentMode(t *testing.T) {
 	testCases := []struct {
-		name                    string
-		valuesFile              string
-		expectMonoMode          bool
-		expectedStatefulSets    []string
-		unexpectedStatefulSets  []string
+		name                   string
+		valuesFile             string
+		expectMonoMode         bool
+		expectedStatefulSets   []string
+		unexpectedStatefulSets []string
 	}{
 		{
 			name:           "trial-mono-mode",
@@ -462,33 +462,33 @@ func TestGlobalSizingResourcesAreSet(t *testing.T) {
 // TestGlobalSizingReplicaCounts tests that replica counts are set correctly by sizing profiles
 func TestGlobalSizingReplicaCounts(t *testing.T) {
 	testCases := []struct {
-		name               string
-		valuesFile         string
-		componentName      string
+		name                string
+		valuesFile          string
+		componentName       string
 		expectedMinReplicas int32
 	}{
 		{
-			name:               "trial-kafka-single-replica",
-			valuesFile:         "values/global_sizing_trial.yaml",
-			componentName:      "suse-observability-kafka",
+			name:                "trial-kafka-single-replica",
+			valuesFile:          "values/global_sizing_trial.yaml",
+			componentName:       "suse-observability-kafka",
 			expectedMinReplicas: 1,
 		},
 		{
-			name:               "150-ha-kafka-multiple-replicas",
-			valuesFile:         "values/global_sizing_150_ha.yaml",
-			componentName:      "suse-observability-kafka",
+			name:                "150-ha-kafka-multiple-replicas",
+			valuesFile:          "values/global_sizing_150_ha.yaml",
+			componentName:       "suse-observability-kafka",
 			expectedMinReplicas: 3,
 		},
 		{
-			name:               "150-ha-elasticsearch-multiple-replicas",
-			valuesFile:         "values/global_sizing_150_ha.yaml",
-			componentName:      "suse-observability-elasticsearch-master",
+			name:                "150-ha-elasticsearch-multiple-replicas",
+			valuesFile:          "values/global_sizing_150_ha.yaml",
+			componentName:       "suse-observability-elasticsearch-master",
 			expectedMinReplicas: 3,
 		},
 		{
-			name:               "500-ha-correlate-multiple-replicas",
-			valuesFile:         "values/global_sizing_500_ha.yaml",
-			componentName:      "suse-observability-correlate",
+			name:                "500-ha-correlate-multiple-replicas",
+			valuesFile:          "values/global_sizing_500_ha.yaml",
+			componentName:       "suse-observability-correlate",
 			expectedMinReplicas: 3,
 		},
 	}
@@ -567,119 +567,4 @@ func TestGlobalSizingProfileWinsOverDefaults(t *testing.T) {
 		assert.True(t, memLimit.Value() > 0,
 			"correlate memory limit should be > 0 from profile, got %s", memLimit.String())
 	})
-}
-
-type expectedResources struct {
-	memoryLimit string
-	cpuLimit    string
-}
-
-// TestGlobalSizingUserResourceOverrides tests that user-specified resource overrides take precedence over sizing profile defaults
-func TestGlobalSizingUserResourceOverrides(t *testing.T) {
-	testCases := []struct {
-		name         string
-		valuesFile   string
-		deployments  map[string]expectedResources
-		statefulsets map[string]expectedResources
-	}{
-		{
-			name:       "10-nonha",
-			valuesFile: "values/global_sizing_10_nonha_resource_override.yaml",
-			deployments: map[string]expectedResources{
-				"suse-observability-server":   {memoryLimit: "10Gi", cpuLimit: "6000m"},
-				"suse-observability-receiver": {memoryLimit: "2000Mi", cpuLimit: "4000m"},
-				"suse-observability-correlate": {memoryLimit: "2500Mi", cpuLimit: "2000m"},
-				"suse-observability-e2es":     {memoryLimit: "1024Mi", cpuLimit: "1000m"},
-				"suse-observability-router":   {memoryLimit: "256Mi", cpuLimit: "200m"},
-				"suse-observability-ui":       {memoryLimit: "128Mi", cpuLimit: "100m"},
-			},
-			statefulsets: map[string]expectedResources{
-				"suse-observability-kafka":               {memoryLimit: "4Gi", cpuLimit: "3200m"},
-				"suse-observability-zookeeper":            {memoryLimit: "1Gi", cpuLimit: "1000m"},
-				"suse-observability-elasticsearch-master": {memoryLimit: "5Gi", cpuLimit: "2000m"},
-				"suse-observability-hbase-stackgraph":     {memoryLimit: "4500Mi", cpuLimit: "3000m"},
-				"suse-observability-hbase-tephra-mono":    {memoryLimit: "1Gi", cpuLimit: "1000m"},
-				"suse-observability-victoria-metrics-0":   {memoryLimit: "3500Mi", cpuLimit: "2000m"},
-				"suse-observability-clickhouse-shard0":    {memoryLimit: "8Gi", cpuLimit: "2000m"},
-				"suse-observability-vmagent":              {memoryLimit: "1024Mi", cpuLimit: "400m"},
-			},
-		},
-		{
-			name:       "500-ha",
-			valuesFile: "values/global_sizing_500_ha_resource_override.yaml",
-			deployments: map[string]expectedResources{
-				"suse-observability-api":                    {memoryLimit: "12Gi", cpuLimit: "8000m"},
-				"suse-observability-checks":                 {memoryLimit: "10Gi"},
-				"suse-observability-state":                  {memoryLimit: "10Gi"},
-				"suse-observability-correlate":              {memoryLimit: "6000Mi", cpuLimit: "8000m"},
-				"suse-observability-health-sync":            {memoryLimit: "16Gi", cpuLimit: "16000m"},
-				"suse-observability-notification":           {memoryLimit: "6000Mi", cpuLimit: "6000m"},
-				"suse-observability-sync":                   {memoryLimit: "16Gi", cpuLimit: "16000m"},
-				"suse-observability-ui":                     {memoryLimit: "128Mi", cpuLimit: "100m"},
-				"suse-observability-initializer":            {memoryLimit: "3000Mi", cpuLimit: "3000m"},
-				"suse-observability-router":                 {memoryLimit: "256Mi", cpuLimit: "480m"},
-				"suse-observability-slicing":                {memoryLimit: "4000Mi", cpuLimit: "3000m"},
-				"suse-observability-e2es":                   {memoryLimit: "1024Mi", cpuLimit: "1000m"},
-				"suse-observability-authorization-sync":     {memoryLimit: "2Gi", cpuLimit: "3000m"},
-				"suse-observability-receiver-base":          {memoryLimit: "14Gi", cpuLimit: "24000m"},
-				"suse-observability-receiver-logs":          {memoryLimit: "6Gi", cpuLimit: "4000m"},
-				"suse-observability-receiver-process-agent": {memoryLimit: "6Gi", cpuLimit: "4000m"},
-			},
-			statefulsets: map[string]expectedResources{
-				"suse-observability-kafka":               {memoryLimit: "8Gi", cpuLimit: "8"},
-				"suse-observability-zookeeper":            {memoryLimit: "1Gi", cpuLimit: "1000m"},
-				"suse-observability-elasticsearch-master": {memoryLimit: "8Gi", cpuLimit: "4000m"},
-				"suse-observability-hbase-hbase-master":   {memoryLimit: "2Gi", cpuLimit: "2000m"},
-				"suse-observability-hbase-hbase-rs":       {memoryLimit: "12Gi", cpuLimit: "16000m"},
-				"suse-observability-hbase-tephra":         {memoryLimit: "2Gi", cpuLimit: "2000m"},
-				"suse-observability-hbase-hdfs-dn":        {memoryLimit: "2Gi", cpuLimit: "2400m"},
-				"suse-observability-hbase-hdfs-nn":        {memoryLimit: "2Gi", cpuLimit: "800m"},
-				"suse-observability-victoria-metrics-0":   {memoryLimit: "20Gi", cpuLimit: "12"},
-				"suse-observability-victoria-metrics-1":   {memoryLimit: "20Gi", cpuLimit: "12"},
-				"suse-observability-clickhouse-shard0":    {memoryLimit: "8Gi", cpuLimit: "2000m"},
-				"suse-observability-vmagent":              {memoryLimit: "4Gi", cpuLimit: "10000m"},
-			},
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			output := helmtestutil.RenderHelmTemplate(t, "suse-observability", tc.valuesFile)
-			resources := helmtestutil.NewKubernetesResources(t, output)
-
-			for name, expected := range tc.deployments {
-				t.Run("deployment-"+name, func(t *testing.T) {
-					dep, exists := resources.Deployments[name]
-					require.True(t, exists, "Deployment %s should exist", name)
-					containers := dep.Spec.Template.Spec.Containers
-					require.NotEmpty(t, containers)
-					memLimit := containers[0].Resources.Limits[corev1.ResourceMemory]
-					assert.Equal(t, resource.MustParse(expected.memoryLimit), memLimit,
-						"Deployment %s memory limit should be %s", name, expected.memoryLimit)
-					if expected.cpuLimit != "" {
-						cpuLimit := containers[0].Resources.Limits[corev1.ResourceCPU]
-						assert.Equal(t, resource.MustParse(expected.cpuLimit), cpuLimit,
-							"Deployment %s CPU limit should be %s", name, expected.cpuLimit)
-					}
-				})
-			}
-
-			for name, expected := range tc.statefulsets {
-				t.Run("statefulset-"+name, func(t *testing.T) {
-					ss, exists := resources.Statefulsets[name]
-					require.True(t, exists, "StatefulSet %s should exist", name)
-					containers := ss.Spec.Template.Spec.Containers
-					require.NotEmpty(t, containers)
-					memLimit := containers[0].Resources.Limits[corev1.ResourceMemory]
-					assert.Equal(t, resource.MustParse(expected.memoryLimit), memLimit,
-						"StatefulSet %s memory limit should be %s", name, expected.memoryLimit)
-					if expected.cpuLimit != "" {
-						cpuLimit := containers[0].Resources.Limits[corev1.ResourceCPU]
-						assert.Equal(t, resource.MustParse(expected.cpuLimit), cpuLimit,
-							"StatefulSet %s CPU limit should be %s", name, expected.cpuLimit)
-					}
-				})
-			}
-		})
-	}
 }

@@ -35,10 +35,10 @@ limits:
   memory: 2500Mi
 {{- else if eq $profile "50-nonha" -}}
 requests:
-  cpu: "1000m"
+  cpu: 1
   memory: 3500Mi
 limits:
-  cpu: "2000m"
+  cpu: 2
   memory: 3500Mi
 {{- else if eq $profile "100-nonha" -}}
 requests:
@@ -152,7 +152,7 @@ limits:
 {{- else if eq $profile "4000-ha" }}
 requests:
   cpu: 7
-  memory: 16Gi
+  memory: 18Gi
 limits:
   cpu: 8000m
   memory: 18Gi

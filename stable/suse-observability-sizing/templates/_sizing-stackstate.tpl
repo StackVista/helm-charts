@@ -668,34 +668,33 @@ Usage: {{ include "common.sizing.stackstate.e2es.resources" . }}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
 {{- $profile = .Values.global.suseObservability.sizing.profile -}}
 {{- end -}}
-{{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") }}
+{{- if or (eq $profile "trial") (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") (eq $profile "150-ha") (eq $profile "250-ha") (eq $profile "500-ha") }}
 requests:
   memory: "512Mi"
   cpu: "50m"
+  ephemeral-storage: "1Mi"
 limits:
   memory: "512Mi"
-{{- else if or (eq $profile "150-ha") (eq $profile "250-ha") (eq $profile "500-ha") }}
-requests:
-  memory: "512Mi"
-  cpu: "50m"
-limits:
-  memory: "512Mi"
+  cpu: "500m"
+  ephemeral-storage: "1Gi"
 {{- else if eq $profile "4000-ha" }}
 requests:
   memory: "768Mi"
   cpu: "2000m"
+  ephemeral-storage: "1Mi"
 limits:
   memory: "1024Mi"
   cpu: "3000m"
-{{- else }}
-requests:
-  cpu: "250m"
-  memory: "768Mi"
-  ephemeral-storage: "1Mi"
-limits:
-  cpu: "500m"
-  memory: "1500Mi"
   ephemeral-storage: "1Gi"
+{{- else }}
+limits:
+  memory: "1500Mi"
+  cpu: "500m"
+  ephemeral-storage: "1Gi"
+requests:
+  memory: "768Mi"
+  cpu: "250m"
+  ephemeral-storage: "1Mi"
 {{- end }}
 {{- end }}
 

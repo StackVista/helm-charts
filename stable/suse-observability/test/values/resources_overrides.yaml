@@ -1,0 +1,331 @@
+elasticsearch:
+  resources:
+    requests:
+      cpu: 111
+      memory: 111Gi
+    limits:
+      cpu: 111
+      memory: 111Gi
+  prometheus-elasticsearch-exporter:
+    resources:
+      requests:
+        cpu: 555
+        memory: 555Gi
+      limits:
+        cpu: 555
+        memory: 555Gi
+hbase:
+  stackgraph:
+    resources:
+      requests:
+        cpu: 222
+        memory: 222Gi
+      limits:
+        cpu: 222
+        memory: 222Gi
+  console:
+    resources:
+      requests:
+        cpu: 888
+        memory: 888Gi
+      limits:
+        cpu: 888
+        memory: 888Gi
+  hbase:
+    master:
+      resources:
+        requests:
+          cpu: 222
+          memory: 222Gi
+        limits:
+          cpu: 222
+          memory: 222Gi
+    regionserver:
+      resources:
+        requests:
+          cpu: 333
+          memory: 333Gi
+        limits:
+          cpu: 333
+          memory: 333Gi
+  hdfs:
+    datanode:
+      resources:
+        requests:
+          cpu: 444
+          memory: 444Gi
+        limits:
+          cpu: 444
+          memory: 444Gi
+    namenode:
+      resources:
+        requests:
+          cpu: 555
+          memory: 555Gi
+        limits:
+          cpu: 555
+          memory: 555Gi
+    secondarynamenode:
+      resources:
+        requests:
+          cpu: 333
+          memory: 333Gi
+        limits:
+          cpu: 333
+          memory: 333Gi
+  tephra:
+    resources:
+      requests:
+        cpu: 666
+        memory: 666Gi
+      limits:
+        cpu: 666
+        memory: 666Gi
+kafka:
+  resources:
+    requests:
+      cpu: 777
+      memory: 777Gi
+    limits:
+      cpu: 777
+      memory: 777Gi
+stackstate:
+  components:
+    server:
+      resources:
+        requests:
+          cpu: 666
+          memory: 666Gi
+        limits:
+          cpu: 666
+          memory: 666Gi
+    authorizationSync:
+      resources:
+        requests:
+          cpu: 444
+          memory: 444Gi
+        limits:
+          cpu: 444
+          memory: 444Gi
+    api:
+      resources:
+        requests:
+          cpu: 888
+          memory: 888Gi
+        limits:
+          cpu: 888
+          memory: 888Gi
+    checks:
+      resources:
+        requests:
+          cpu: 999
+          memory: 999Gi
+        limits:
+          cpu: 999
+          memory: 999Gi
+    healthSync:
+      resources:
+        requests:
+          cpu: 111
+          memory: 111Gi
+        limits:
+          cpu: 111
+          memory: 111Gi
+    initializer:
+      resources:
+        requests:
+          cpu: 222
+          memory: 222Gi
+        limits:
+          cpu: 222
+          memory: 222Gi
+    notification:
+      resources:
+        requests:
+          cpu: 333
+          memory: 333Gi
+        limits:
+          cpu: 333
+          memory: 333Gi
+    router:
+      resources:
+        requests:
+          cpu: 444
+          memory: 444Gi
+        limits:
+          cpu: 444
+          memory: 444Gi
+    slicing:
+      resources:
+        requests:
+          cpu: 555
+          memory: 555Gi
+        limits:
+          cpu: 555
+          memory: 555Gi
+    state:
+      resources:
+        requests:
+          cpu: 666
+          memory: 666Gi
+        limits:
+          cpu: 666
+          memory: 666Gi
+    sync:
+      resources:
+        requests:
+          cpu: 777
+          memory: 777Gi
+        limits:
+          cpu: 777
+          memory: 777Gi
+    e2es:
+      resources:
+        requests:
+          cpu: 888
+          memory: 888Gi
+        limits:
+          cpu: 888
+          memory: 888Gi
+    correlate:
+      resources:
+        requests:
+          cpu: 999
+          memory: 999Gi
+        limits:
+          cpu: 999
+          memory: 999Gi
+    receiver:
+      split:
+        logs:
+          resources:
+            requests:
+              cpu: 111
+              memory: 111Gi
+            limits:
+              cpu: 111
+              memory: 111Gi
+        processAgent:
+          resources:
+            requests:
+              cpu: 222
+              memory: 222Gi
+            limits:
+              cpu: 222
+              memory: 222Gi
+        base:
+          resources:
+            requests:
+              cpu: 333
+              memory: 333Gi
+            limits:
+              cpu: 333
+              memory: 333Gi
+      resources:
+        requests:
+          cpu: 444
+          memory: 444Gi
+        limits:
+          cpu: 444
+          memory: 444Gi
+    vmagent:
+      resources:
+        requests:
+          cpu: 555
+          memory: 555Gi
+        limits:
+          cpu: 555
+          memory: 555Gi
+    ui:
+      resources:
+        requests:
+          cpu: 666
+          memory: 666Gi
+        limits:
+          cpu: 666
+          memory: 666Gi
+    workloadObserver:
+      resources:
+        requests:
+          cpu: 999
+          memory: 999Gi
+        limits:
+          cpu: 999
+          memory: 999Gi
+zookeeper:
+  resources:
+    requests:
+      cpu: 777
+      memory: 777Gi
+    limits:
+      cpu: 777
+      memory: 777Gi
+minio:
+  resources:
+    requests:
+      cpu: 888
+      memory: 888Gi
+    limits:
+      cpu: 888
+      memory: 888Gi
+kafkaup-operator:
+  resources:
+    requests:
+      cpu: 999
+      memory: 999Gi
+    limits:
+      cpu: 999
+      memory: 999Gi
+victoria-metrics-0:
+  server:
+    resources:
+      requests:
+        cpu: 111
+        memory: 111Gi
+      limits:
+        cpu: 111
+        memory: 111Gi
+  backup:
+    vmbackup:
+      resources:
+        requests:
+          cpu: 222
+          memory: 222Gi
+        limits:
+          cpu: 222
+          memory: 222Gi
+victoria-metrics-1:
+  server:
+    resources:
+      requests:
+        cpu: 333
+        memory: 333Gi
+      limits:
+        cpu: 333
+        memory: 333Gi
+kubernetes-rbac-agent:
+  containers:
+    rbacAgent:
+      resources:
+        requests:
+          cpu: 555
+          memory: 555Gi
+        limits:
+          cpu: 555
+          memory: 555Gi
+clickhouse:
+  resources:
+    requests:
+      cpu: 999
+      memory: 999Gi
+    limits:
+      cpu: 999
+      memory: 999Gi
+opentelemetry-collector:
+  resources:
+    requests:
+      cpu: 333
+      memory: 333Gi
+    limits:
+      cpu: 333
+      memory: 333Gi
