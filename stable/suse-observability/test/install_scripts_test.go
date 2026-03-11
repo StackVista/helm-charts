@@ -17,7 +17,7 @@ func TestGetImages(t *testing.T) {
 	curDir, err := os.Getwd()
 	require.NoError(t, err)
 	images := strings.Split(RunGetImagesScript(t, filepath.Join(curDir, "..")), "\n")
-	require.Equal(t, 33, len(
+	require.Equal(t, 34, len(
 		slices.DeleteFunc(
 			images,
 			func(e string) bool {
