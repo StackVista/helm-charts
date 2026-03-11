@@ -10,19 +10,19 @@ Current chart version is `2.8.1-pre.24`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.16 |
+| file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.17 |
 | file://../common/ | common | * |
-| file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.13 |
-| file://../hbase/ | hbase | 0.2.123 |
-| file://../kafka/ | kafka | 19.1.3-suse-observability.15 |
-| file://../kafkaup-operator/ | kafkaup-operator | 0.1.19 |
-| file://../minio/ | minio | 8.0.10-stackstate.20 |
+| file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.14 |
+| file://../hbase/ | hbase | 0.2.124 |
+| file://../kafka/ | kafka | 19.1.3-suse-observability.16 |
+| file://../kafkaup-operator/ | kafkaup-operator | 0.1.20 |
+| file://../minio/ | minio | 8.0.10-stackstate.21 |
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.21 |
 | file://../pull-secret/ | pull-secret | * |
-| file://../suse-observability-sizing/ | suse-observability-sizing | 0.1.7 |
-| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.40 |
-| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.40 |
-| file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.13 |
+| file://../suse-observability-sizing/ | suse-observability-sizing | 0.1.8 |
+| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.41 |
+| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.41 |
+| file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.14 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.179 |
 | https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.25 |
 
@@ -477,7 +477,7 @@ If you encounter issues not covered here:
 | clickhouse.image.repository | string | `"stackstate/clickhouse"` | Repository where to get the image from. |
 | clickhouse.image.tag | string | `"25.9.5-c65c568c-release-160"` | Container image tag for 'clickhouse' containers. |
 | clickhouse.metrics.enabled | bool | `true` |  |
-| clickhouse.persistence.size | string | `"50Gi"` | Size of persistent volume for each clickhouse pod |
+| clickhouse.persistence.size | string | `nil` | Size of persistent volume for each clickhouse pod |
 | clickhouse.podAnnotations."ad.stackstate.com/backup.check_names" | string | `"[\"openmetrics\"]"` |  |
 | clickhouse.podAnnotations."ad.stackstate.com/backup.init_configs" | string | `"[{}]"` |  |
 | clickhouse.podAnnotations."ad.stackstate.com/backup.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:7171/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"clickhouse_backup_*\"] } ]"` |  |
@@ -499,7 +499,7 @@ If you encounter issues not covered here:
 | elasticsearch.clusterName | string | `"suse-observability-elasticsearch"` | Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | elasticsearch.commonLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Add additional labels to all resources created for elasticsearch |
 | elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
-| elasticsearch.esJavaOpts | string | `"-Xmx3g -Xms3g -Des.allow_insecure_settings=true"` | JVM options |
+| elasticsearch.esJavaOpts | string | `nil` | JVM options |
 | elasticsearch.extraEnvs | list | `[{"name":"action.auto_create_index","value":"true"},{"name":"indices.query.bool.max_clause_count","value":"10000"}]` | Extra settings that StackState uses for Elasticsearch. |
 | elasticsearch.imageTag | string | `"8.19.4-c4527168-release-207"` | Elasticsearch image tag. Updated by updatecli. |
 | elasticsearch.minimumMasterNodes | int | `2` | Minimum number of Elasticsearch master nodes. |
@@ -513,10 +513,10 @@ If you encounter issues not covered here:
 | elasticsearch.prometheus-elasticsearch-exporter.resources | object | `{}` |  |
 | elasticsearch.prometheus-elasticsearch-exporter.serviceMonitor.enabled | bool | `false` |  |
 | elasticsearch.prometheus-elasticsearch-exporter.serviceMonitor.labels | object | `{}` | Labels for the service monitor |
-| elasticsearch.replicas | int | `3` | Number of Elasticsearch replicas. |
+| elasticsearch.replicas | string | `nil` | Number of Elasticsearch replicas. |
 | elasticsearch.resources | object | `{}` | Override Elasticsearch resources |
 | elasticsearch.sysctlInitContainer | object | `{"enabled":true}` | Enable privileged init container to increase Elasticsearch virtual memory on underlying nodes. |
-| elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"250Gi"}}}` | PVC template defaulting to 250Gi default volumes |
+| elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":null}}}` | PVC template defaulting to 250Gi default volumes |
 | global.backup.enabled | bool | `false` |  |
 | global.commonLabels | object | `{}` | Labels that will be added to all Deployments, StatefulSets, CronJobs, Jobs and their pods |
 | global.features | object | `{"experimentalStackpacks":false}` | Feature switches for SUSE Observability. |
@@ -635,7 +635,7 @@ If you encounter issues not covered here:
 | kafka.pdb.create | bool | `true` |  |
 | kafka.pdb.maxUnavailable | int | `1` |  |
 | kafka.pdb.minAvailable | string | `""` |  |
-| kafka.persistence.size | string | `"100Gi"` | Size of persistent volume for each Kafka pod |
+| kafka.persistence.size | string | `nil` | Size of persistent volume for each Kafka pod |
 | kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"], \"type_overrides\": {\"kafka_server_replicamanager_total_underreplicatedpartitions_value\":\"gauge\", \"kafka_controller_kafkacontroller_offlinepartitionscount_value\":\"gauge\", \"kafka_controller_kafkacontroller_activecontrollercount_value\": \"gauge\"}}]","stackstate.com/kafkaup-operator.kafka_version":"3.9.1"}` | Kafka Pod annotations. |
 | kafka.podLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | kafka.readinessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
@@ -1274,7 +1274,7 @@ If you encounter issues not covered here:
 | victoria-metrics-0.server.extraLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Extra labels for Victoria Metrics StatefulSet |
 | victoria-metrics-0.server.fullnameOverride | string | `"suse-observability-victoria-metrics-0"` | Full name override |
 | victoria-metrics-0.server.image.tag | string | `"v1.109.0-9bebf8bd-release-144"` | Victoria Metrics server image tag. Updated by updatecli. |
-| victoria-metrics-0.server.persistentVolume.size | string | `"250Gi"` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
+| victoria-metrics-0.server.persistentVolume.size | string | `nil` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
 | victoria-metrics-0.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\"] } ]","ad.stackstate.com/vmbackup.check_names":"[\"openmetrics\"]","ad.stackstate.com/vmbackup.init_configs":"[{}]","ad.stackstate.com/vmbackup.instances":"[ { \"prometheus_url\": \"http://%%host%%:9746/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"supercronic_*\"] } ]"}` | Annotations for Victoria Metrics server pod |
 | victoria-metrics-0.server.podLabels | object | `{"app.kubernetes.io/part-of":"suse-observability","stackstate-service":"victoriametrics"}` | Extra labels for Victoria Metrics pod |
 | victoria-metrics-0.server.resources | object | `{}` |  |
@@ -1297,7 +1297,7 @@ If you encounter issues not covered here:
 | victoria-metrics-1.server.extraLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | victoria-metrics-1.server.fullnameOverride | string | `"suse-observability-victoria-metrics-1"` | Full name override |
 | victoria-metrics-1.server.image.tag | string | `"v1.109.0-9bebf8bd-release-144"` | Victoria Metrics server image tag. Updated by updatecli. |
-| victoria-metrics-1.server.persistentVolume.size | string | `"250Gi"` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
+| victoria-metrics-1.server.persistentVolume.size | string | `nil` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
 | victoria-metrics-1.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]","ad.stackstate.com/vmbackup.check_names":"[\"openmetrics\"]","ad.stackstate.com/vmbackup.init_configs":"[{}]","ad.stackstate.com/vmbackup.instances":"[ { \"prometheus_url\": \"http://%%host%%:9746/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"supercronic_*\"] } ]"}` | Annotations for Victoria Metrics server pod |
 | victoria-metrics-1.server.podLabels | object | `{"app.kubernetes.io/part-of":"suse-observability","stackstate-service":"victoriametrics"}` | Extra arguments for Victoria Metrics pod |
 | victoria-metrics-1.server.resources | object | `{}` |  |
@@ -1357,7 +1357,7 @@ If you encounter issues not covered here:
 | zookeeper.pdb.create | bool | `true` |  |
 | zookeeper.pdb.maxUnavailable | int | `1` |  |
 | zookeeper.pdb.minAvailable | string | `""` |  |
-| zookeeper.persistence.size | string | `"8Gi"` | Size of the PVC for Zookeeper data. Default is 8Gi, will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
+| zookeeper.persistence.size | string | `nil` | Size of the PVC for Zookeeper data. Default is 8Gi, will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | zookeeper.podAnnotations | object | `{"ad.stackstate.com/zookeeper.check_names":"[\"openmetrics\"]","ad.stackstate.com/zookeeper.init_configs":"[{}]","ad.stackstate.com/zookeeper.instances":"[ { \"prometheus_url\": \"http://%%host%%:9141/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Annotations for ZooKeeper pod. |
 | zookeeper.podLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | zookeeper.readinessProbe.enabled | bool | `false` | it must be disabled to apply the custom probe, the probe adds "-q" option to nc to wait 1sec until close the connection, it fixes problem of failing the probed |

@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.2.123`
+Current chart version is `0.2.124`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -11,7 +11,7 @@ Current chart version is `0.2.123`
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common/ | common | * |
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.7 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.8 |
 
 ## Required Values
 
@@ -92,7 +92,7 @@ Current chart version is `0.2.123`
 | hdfs.datanode.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | hdfs.datanode.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for HDFS data nodes. |
 | hdfs.datanode.persistence.enabled | bool | `true` | Enable persistence for HDFS data nodes. |
-| hdfs.datanode.persistence.size | string | `"250Gi"` | Size of volume for HDFS data nodes. |
+| hdfs.datanode.persistence.size | string | `nil` | Size of volume for HDFS data nodes. |
 | hdfs.datanode.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS data nodes. |
 | hdfs.datanode.replicaCount | string | `nil` | Number of HDFS data nodes. |
 | hdfs.datanode.resources | object | `{}` | Resources to allocate for HDFS data nodes. |
@@ -149,7 +149,7 @@ Current chart version is `0.2.123`
 | stackgraph.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackgraph.persistence.accessModes | list | `["ReadWriteOnce"]` | Access mode for stackgraph. |
 | stackgraph.persistence.enabled | bool | `true` | Enable persistence for HDFS data nodes. |
-| stackgraph.persistence.size | string | `"250Gi"` | Size of volume for HDFS data nodes. |
+| stackgraph.persistence.size | string | `nil` | Size of volume for HDFS data nodes. |
 | stackgraph.persistence.storageClass | string | `nil` | Storage class of the volume for HDFS data nodes. |
 | stackgraph.resources | object | `{}` | Resources to allocate for Stackgraph mono image. |
 | stackgraph.securityContext.enabled | bool | `true` | Whether to explicitly set the UID/GID of the pod. |

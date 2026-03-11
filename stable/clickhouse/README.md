@@ -1,6 +1,6 @@
 # clickhouse
 
-![Version: 3.6.9-suse-observability.16](https://img.shields.io/badge/Version-3.6.9--suse--observability.16-informational?style=flat-square) ![AppVersion: 23.7.4](https://img.shields.io/badge/AppVersion-23.7.4-informational?style=flat-square)
+![Version: 3.6.9-suse-observability.17](https://img.shields.io/badge/Version-3.6.9--suse--observability.17-informational?style=flat-square) ![AppVersion: 23.7.4](https://img.shields.io/badge/AppVersion-23.7.4-informational?style=flat-square)
 
 ClickHouse is an open-source column-oriented OLAP database management system. Use it to boost your database performance while providing linear scalability and hardware efficiency.
 
@@ -20,7 +20,7 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.7 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.8 |
 | file://charts/common | common | 2.x.x |
 
 ## Values
@@ -174,7 +174,7 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 | persistence.keepFreeSpaceBytes | int | `1073741824` |  |
 | persistence.labels | object | `{}` |  |
 | persistence.selector | object | `{}` |  |
-| persistence.size | string | `"8Gi"` |  |
+| persistence.size | string | `nil` |  |
 | persistence.storageClass | string | `""` |  |
 | podAffinityPreset | string | `""` |  |
 | podAnnotations | object | `{}` |  |

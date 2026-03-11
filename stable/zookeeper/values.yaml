@@ -571,7 +571,7 @@ persistence:
     - ReadWriteOnce
   ## @param persistence.size PVC Storage Request for ZooKeeper data volume
   ##
-  size: 8Gi
+  size: null
   ## @param persistence.annotations Annotations for the PVC
   ##
   annotations: {}

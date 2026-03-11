@@ -218,190 +218,94 @@ These helpers apply sizing-chart-based resources and storage to subcharts.
 Get ClickHouse replicaCount from sizing profile if applicable.
 */}}
 {{- define "suse-observability.sizing.clickhouse.replicaCount" -}}
-{{- if include "suse-observability.global.enabled" . -}}
-{{- $replicas := include "common.sizing.clickhouse.replicaCount" . | trim -}}
-{{- if $replicas -}}
-{{- $replicas -}}
-{{- else -}}
-{{- .Values.clickhouse.replicaCount -}}
-{{- end -}}
-{{- else -}}
-{{- .Values.clickhouse.replicaCount -}}
-{{- end -}}
+{{- $sizing := include "common.sizing.clickhouse.replicaCount" . | trim -}}
+{{- default $sizing .Values.clickhouse.replicaCount -}}
 {{- end -}}
 
 {{/*
 Get Elasticsearch storage size from sizing profile if applicable.
 */}}
 {{- define "suse-observability.sizing.elasticsearch.volumeClaimTemplate.resources.requests.storage" -}}
-{{- if include "suse-observability.global.enabled" . -}}
-{{- $storageSize := include "common.sizing.elasticsearch.storage" . | trim -}}
-{{- if $storageSize -}}
-{{- $storageSize -}}
-{{- else -}}
-{{- .Values.elasticsearch.volumeClaimTemplate.resources.requests.storage -}}
-{{- end -}}
-{{- else -}}
-{{- .Values.elasticsearch.volumeClaimTemplate.resources.requests.storage -}}
-{{- end -}}
+{{- $sizing := include "common.sizing.elasticsearch.storage" . | trim -}}
+{{- default $sizing .Values.elasticsearch.volumeClaimTemplate.resources.requests.storage -}}
 {{- end -}}
 
 {{/*
 Get Elasticsearch replicas from sizing profile if applicable.
 */}}
 {{- define "suse-observability.sizing.elasticsearch.replicas" -}}
-{{- if include "suse-observability.global.enabled" . -}}
-{{- $replicas := include "common.sizing.elasticsearch.replicas" . | trim -}}
-{{- if $replicas -}}
-{{- $replicas -}}
-{{- else -}}
-{{- .Values.elasticsearch.replicas -}}
-{{- end -}}
-{{- else -}}
-{{- .Values.elasticsearch.replicas -}}
-{{- end -}}
+{{- $sizing := include "common.sizing.elasticsearch.replicas" . | trim -}}
+{{- default $sizing .Values.elasticsearch.replicas -}}
 {{- end -}}
 
 {{/*
 Get Elasticsearch esJavaOpts from sizing profile if applicable.
 */}}
 {{- define "suse-observability.sizing.elasticsearch.esJavaOpts" -}}
-{{- if include "suse-observability.global.enabled" . -}}
-{{- $esJavaOpts := include "common.sizing.elasticsearch.esJavaOpts" . | trim -}}
-{{- if $esJavaOpts -}}
-{{- $esJavaOpts -}}
-{{- else -}}
--Xmx3g -Xms3g -Des.allow_insecure_settings=true
-{{- end -}}
-{{- else -}}
--Xmx3g -Xms3g -Des.allow_insecure_settings=true
-{{- end -}}
+{{- $sizing := include "common.sizing.elasticsearch.esJavaOpts" . | trim -}}
+{{- default $sizing .Values.elasticsearch.esJavaOpts -}}
 {{- end -}}
 
 {{/*
 Get Kafka persistence size from sizing profile if applicable.
 */}}
 {{- define "suse-observability.sizing.kafka.persistence.size" -}}
-{{- if include "suse-observability.global.enabled" . -}}
-{{- $storageSize := include "common.sizing.kafka.persistence.size" . | trim -}}
-{{- if $storageSize -}}
-{{- $storageSize -}}
-{{- else -}}
-{{- .Values.kafka.persistence.size -}}
-{{- end -}}
-{{- else -}}
-{{- .Values.kafka.persistence.size -}}
-{{- end -}}
+{{- $sizing := include "common.sizing.kafka.persistence.size" . | trim -}}
+{{- default $sizing .Values.kafka.persistence.size -}}
 {{- end -}}
 
 {{/*
 Get Zookeeper persistence size from sizing profile if applicable.
 */}}
 {{- define "suse-observability.sizing.zookeeper.persistence.size" -}}
-{{- if include "suse-observability.global.enabled" . -}}
-{{- $storageSize := include "common.sizing.zookeeper.persistence.size" . | trim -}}
-{{- if $storageSize -}}
-{{- $storageSize -}}
-{{- else -}}
-{{- .Values.zookeeper.persistence.size -}}
-{{- end -}}
-{{- else -}}
-{{- .Values.zookeeper.persistence.size -}}
-{{- end -}}
+{{- $sizing := include "common.sizing.zookeeper.persistence.size" . | trim -}}
+{{- default $sizing .Values.zookeeper.persistence.size -}}
 {{- end -}}
 
 {{/*
 Get HBase stackgraph persistence size from sizing profile if applicable.
 */}}
 {{- define "suse-observability.sizing.hbase.stackgraph.persistence.size" -}}
-{{- if include "suse-observability.global.enabled" . -}}
-{{- $storageSize := include "common.sizing.hbase.stackgraph.persistence.size" . | trim -}}
-{{- if $storageSize -}}
-{{- $storageSize -}}
-{{- else -}}
-{{- .Values.hbase.stackgraph.persistence.size -}}
-{{- end -}}
-{{- else -}}
-{{- .Values.hbase.stackgraph.persistence.size -}}
-{{- end -}}
+{{- $sizing := include "common.sizing.hbase.stackgraph.persistence.size" . | trim -}}
+{{- default $sizing .Values.hbase.stackgraph.persistence.size -}}
 {{- end -}}
 
 {{/*
 Get HBase HDFS datanode persistence size from sizing profile if applicable.
 */}}
 {{- define "suse-observability.sizing.hbase.hdfs.datanode.persistence.size" -}}
-{{- if include "suse-observability.global.enabled" . -}}
-{{- $storageSize := include "common.sizing.hbase.hdfs.datanode.persistence.size" . | trim -}}
-{{- if $storageSize -}}
-{{- $storageSize -}}
-{{- else -}}
-{{- .Values.hbase.hdfs.datanode.persistence.size -}}
-{{- end -}}
-{{- else -}}
-{{- .Values.hbase.hdfs.datanode.persistence.size -}}
-{{- end -}}
+{{- $sizing := include "common.sizing.hbase.hdfs.datanode.persistence.size" . | trim -}}
+{{- default $sizing .Values.hbase.hdfs.datanode.persistence.size -}}
 {{- end -}}
 
 {{/*
 Get Victoria Metrics 0 storage size from sizing profile if applicable.
 */}}
 {{- define "suse-observability.sizing.victoria-metrics-0.server.persistentVolume.size" -}}
-{{- if include "suse-observability.global.enabled" . -}}
-{{- $storageSize := include "common.sizing.victoria-metrics.storage" . | trim -}}
-{{- if $storageSize -}}
-{{- $storageSize -}}
-{{- else -}}
-{{- index .Values "victoria-metrics-0" "server" "persistentVolume" "size" -}}
-{{- end -}}
-{{- else -}}
-{{- index .Values "victoria-metrics-0" "server" "persistentVolume" "size" -}}
-{{- end -}}
+{{- $sizing := include "common.sizing.victoria-metrics.storage" . | trim -}}
+{{- default $sizing (index .Values "victoria-metrics-0" "server" "persistentVolume" "size") -}}
 {{- end -}}
 
 {{/*
 Get Victoria Metrics 1 storage size from sizing profile if applicable.
 */}}
 {{- define "suse-observability.sizing.victoria-metrics-1.server.persistentVolume.size" -}}
-{{- if include "suse-observability.global.enabled" . -}}
-{{- $storageSize := include "common.sizing.victoria-metrics.storage" . | trim -}}
-{{- if $storageSize -}}
-{{- $storageSize -}}
-{{- else -}}
-{{- index .Values "victoria-metrics-1" "server" "persistentVolume" "size" -}}
-{{- end -}}
-{{- else -}}
-{{- index .Values "victoria-metrics-1" "server" "persistentVolume" "size" -}}
-{{- end -}}
+{{- $sizing := include "common.sizing.victoria-metrics.storage" . | trim -}}
+{{- default $sizing (index .Values "victoria-metrics-1" "server" "persistentVolume" "size") -}}
 {{- end -}}
 
 {{/*
 Get Victoria Metrics 0 retentionPeriod from sizing profile if applicable.
 */}}
 {{- define "suse-observability.sizing.victoria-metrics-0.server.retentionPeriod" -}}
-{{- if include "suse-observability.global.enabled" . -}}
-{{- $retention := include "common.sizing.victoria-metrics.retention" . | trim -}}
-{{- if $retention -}}
-{{- $retention -}}
-{{- else -}}
-{{- index .Values "victoria-metrics-0" "server" "retentionPeriod" -}}
-{{- end -}}
-{{- else -}}
-{{- index .Values "victoria-metrics-0" "server" "retentionPeriod" -}}
-{{- end -}}
+{{- $sizing := include "common.sizing.victoria-metrics.retention" . | trim -}}
+{{- default $sizing (index .Values "victoria-metrics-0" "server" "retentionPeriod") -}}
 {{- end -}}
 
 {{/*
 Get Victoria Metrics 1 retentionPeriod from sizing profile if applicable.
 */}}
 {{- define "suse-observability.sizing.victoria-metrics-1.server.retentionPeriod" -}}
-{{- if include "suse-observability.global.enabled" . -}}
-{{- $retention := include "common.sizing.victoria-metrics.retention" . | trim -}}
-{{- if $retention -}}
-{{- $retention -}}
-{{- else -}}
-{{- index .Values "victoria-metrics-1" "server" "retentionPeriod" -}}
-{{- end -}}
-{{- else -}}
-{{- index .Values "victoria-metrics-1" "server" "retentionPeriod" -}}
-{{- end -}}
+{{- $sizing := include "common.sizing.victoria-metrics.retention" . | trim -}}
+{{- default $sizing (index .Values "victoria-metrics-1" "server" "retentionPeriod") -}}
 {{- end -}}

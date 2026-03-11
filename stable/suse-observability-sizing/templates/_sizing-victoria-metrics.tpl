@@ -188,12 +188,14 @@ Get victoria-metrics storage size based on sizing profile
 Usage: {{ include "common.sizing.victoria-metrics.storage" . }}
 */}}
 {{- define "common.sizing.victoria-metrics.storage" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if eq $profile "trial" }}10Gi
 {{- else if or (eq $profile "10-nonha") (eq $profile "20-nonha") (eq $profile "50-nonha") (eq $profile "100-nonha") }}50Gi
 {{- else if eq $profile "4000-ha" }}400Gi
-{{- end }}
+{{- else }}250Gi
 {{- end }}
 {{- end }}
 
@@ -202,10 +204,12 @@ Get victoria-metrics retention period based on sizing profile
 Usage: {{ include "common.sizing.victoria-metrics.retention" . }}
 */}}
 {{- define "common.sizing.victoria-metrics.retention" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if eq $profile "trial" }}3d
-{{- end }}
+{{- else }}1
 {{- end }}
 {{- end }}
 

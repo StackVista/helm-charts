@@ -1,6 +1,6 @@
 # elasticsearch
 
-![Version: 8.19.4-stackstate.13](https://img.shields.io/badge/Version-8.19.4--stackstate.13-informational?style=flat-square) ![AppVersion: 8.19.4](https://img.shields.io/badge/AppVersion-8.19.4-informational?style=flat-square)
+![Version: 8.19.4-stackstate.14](https://img.shields.io/badge/Version-8.19.4--stackstate.14-informational?style=flat-square) ![AppVersion: 8.19.4](https://img.shields.io/badge/AppVersion-8.19.4-informational?style=flat-square)
 Official Elastic helm chart for Elasticsearch
 **Homepage:** <https://github.com/elastic/helm-charts>
 ## Maintainers
@@ -15,8 +15,8 @@ Official Elastic helm chart for Elasticsearch
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../prometheus-elasticsearch-exporter | prometheus-elasticsearch-exporter | 5.8.0-suse-observability.10 |
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.7 |
+| file://../prometheus-elasticsearch-exporter | prometheus-elasticsearch-exporter | 5.8.0-suse-observability.11 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.8 |
 ## Values
 
 | Key | Type | Default | Description |
@@ -28,7 +28,7 @@ Official Elastic helm chart for Elasticsearch
 | commonLabels | object | `{}` |  |
 | createCert | bool | `false` |  |
 | esConfig | object | `{}` |  |
-| esJavaOpts | string | `"-Xmx1g -Xms1g"` |  |
+| esJavaOpts | string | `nil` |  |
 | esMajorVersion | string | `""` |  |
 | extraContainers | string | `""` |  |
 | extraEnvs | list | `[]` |  |
@@ -98,7 +98,7 @@ Official Elastic helm chart for Elasticsearch
 | readinessProbe.periodSeconds | int | `10` |  |
 | readinessProbe.successThreshold | int | `3` |  |
 | readinessProbe.timeoutSeconds | int | `5` |  |
-| replicas | int | `3` |  |
+| replicas | string | `nil` |  |
 | resources | object | `{}` |  |
 | roles[0] | string | `"master"` |  |
 | roles[1] | string | `"ingest"` |  |
@@ -134,4 +134,4 @@ Official Elastic helm chart for Elasticsearch
 | transportPort | int | `9300` |  |
 | updateStrategy | string | `"RollingUpdate"` |  |
 | volumeClaimTemplate.accessModes[0] | string | `"ReadWriteOnce"` |  |
-| volumeClaimTemplate.resources.requests.storage | string | `"30Gi"` |  |
+| volumeClaimTemplate.resources.requests.storage | string | `nil` |  |

@@ -199,10 +199,12 @@ Get kafka persistence.size
 Usage: {{ include "common.sizing.kafka.persistence.size" . }}
 */}}
 {{- define "common.sizing.kafka.persistence.size" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if or (eq $profile "trial") (eq $profile "10-nonha") }}60Gi
 {{- else if or (eq $profile "500-ha") (eq $profile "4000-ha") }}400Gi
-{{- end }}
+{{- else }}100Gi
 {{- end }}
 {{- end }}

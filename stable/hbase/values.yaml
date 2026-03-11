@@ -78,7 +78,7 @@ stackgraph:
     # stackgraph.persistence.enabled -- Enable persistence for HDFS data nodes.
     enabled: true
     # stackgraph.persistence.size -- Size of volume for HDFS data nodes.
-    size: 250Gi
+    size: null
     # stackgraph.persistence.storageClass -- Storage class of the volume for HDFS data nodes.
     storageClass:
   resources: {}
@@ -261,7 +261,7 @@ hdfs:
       # hdfs.datanode.persistence.enabled -- Enable persistence for HDFS data nodes.
       enabled: true
       # hdfs.datanode.persistence.size -- Size of volume for HDFS data nodes.
-      size: 250Gi
+      size: null
       # hdfs.datanode.persistence.storageClass -- Storage class of the volume for HDFS data nodes.
       storageClass:
     # hdfs.datanode.replicaCount -- Number of HDFS data nodes.

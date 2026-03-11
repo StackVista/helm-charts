@@ -18,7 +18,7 @@ roles:
   - ingest
   - data
 
-replicas: 3
+replicas: null
 minimumMasterNodes: 2
 
 esMajorVersion: ""
@@ -69,7 +69,7 @@ podAnnotations: {}
 # additionals labels
 labels: {}
 
-esJavaOpts: "-Xmx1g -Xms1g"
+esJavaOpts: null
 
 resources: {}
 
@@ -95,7 +95,7 @@ volumeClaimTemplate:
   accessModes: ["ReadWriteOnce"]
   resources:
     requests:
-      storage: 30Gi
+      storage: null
 
 rbac:
   create: false

@@ -568,3 +568,149 @@ func TestGlobalSizingProfileWinsOverDefaults(t *testing.T) {
 			"correlate memory limit should be > 0 from profile, got %s", memLimit.String())
 	})
 }
+
+// TestGlobalSizingUserStorageOverrides tests that user-specified storage overrides take precedence over sizing profile defaults
+func TestGlobalSizingUserStorageOverrides(t *testing.T) {
+	testCases := []struct {
+		name               string
+		valuesFile         string
+		expectedStorage    map[string]string // statefulset name -> expected storage size
+		expectedReplicas   map[string]int    // statefulset name -> expected replica count
+		expectedEsJavaOpts string
+	}{
+		{
+			name:       "150-ha with storage overrides",
+			valuesFile: "values/global_sizing_150_ha_storage_override.yaml",
+			expectedStorage: map[string]string{
+				"suse-observability-clickhouse-shard0":    "500Gi",
+				"suse-observability-elasticsearch-master": "400Gi",
+				"suse-observability-kafka":                "200Gi",
+				"suse-observability-zookeeper":            "16Gi",
+				"suse-observability-hbase-hdfs-dn":        "500Gi",
+				"suse-observability-victoria-metrics-0":   "500Gi",
+				"suse-observability-victoria-metrics-1":   "500Gi",
+			},
+			expectedReplicas: map[string]int{
+				"suse-observability-elasticsearch-master": 5,
+			},
+			expectedEsJavaOpts: "-Xmx8g -Xms8g -Des.allow_insecure_settings=true",
+		},
+		{
+			name:       "10-nonha with storage overrides",
+			valuesFile: "values/global_sizing_10_nonha_storage_override.yaml",
+			expectedStorage: map[string]string{
+				"suse-observability-clickhouse-shard0":    "200Gi",
+				"suse-observability-elasticsearch-master": "100Gi",
+				"suse-observability-kafka":                "150Gi",
+				"suse-observability-zookeeper":            "20Gi",
+				"suse-observability-hbase-stackgraph":     "300Gi",
+				"suse-observability-victoria-metrics-0":   "100Gi",
+			},
+			expectedReplicas: map[string]int{
+				"suse-observability-elasticsearch-master": 5,
+			},
+			expectedEsJavaOpts: "-Xmx8g -Xms8g -Des.allow_insecure_settings=true",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			output := helmtestutil.RenderHelmTemplate(t, "suse-observability", tc.valuesFile)
+			resources := helmtestutil.NewKubernetesResources(t, output)
+
+			// Verify storage sizes
+			for stsName, expectedSize := range tc.expectedStorage {
+				t.Run("storage-"+stsName, func(t *testing.T) {
+					ss, exists := resources.Statefulsets[stsName]
+					require.True(t, exists, "StatefulSet %s should exist", stsName)
+					require.NotEmpty(t, ss.Spec.VolumeClaimTemplates, "StatefulSet %s should have VolumeClaimTemplates", stsName)
+					storageReq := ss.Spec.VolumeClaimTemplates[0].Spec.Resources.Requests[corev1.ResourceStorage]
+					assert.Equal(t, resource.MustParse(expectedSize), storageReq,
+						"StatefulSet %s storage should be %s (user override)", stsName, expectedSize)
+				})
+			}
+
+			// Verify replica overrides
+			for stsName, expectedReplica := range tc.expectedReplicas {
+				t.Run("replicas-"+stsName, func(t *testing.T) {
+					ss, exists := resources.Statefulsets[stsName]
+					require.True(t, exists, "StatefulSet %s should exist", stsName)
+					assert.Equal(t, int32(expectedReplica), *ss.Spec.Replicas,
+						"StatefulSet %s replicas should be %d (user override)", stsName, expectedReplica)
+				})
+			}
+
+			// Verify esJavaOpts override
+			if tc.expectedEsJavaOpts != "" {
+				t.Run("esJavaOpts", func(t *testing.T) {
+					ss, exists := resources.Statefulsets["suse-observability-elasticsearch-master"]
+					require.True(t, exists, "Elasticsearch StatefulSet should exist")
+					containers := ss.Spec.Template.Spec.Containers
+					require.NotEmpty(t, containers)
+					found := false
+					for _, env := range containers[0].Env {
+						if env.Name == "ES_JAVA_OPTS" {
+							assert.Equal(t, tc.expectedEsJavaOpts, env.Value, "ES_JAVA_OPTS should match user override")
+							found = true
+							break
+						}
+					}
+					assert.True(t, found, "ES_JAVA_OPTS env var should be set")
+				})
+			}
+		})
+	}
+}
+
+// TestGlobalSizingStorageDefaultsWithoutOverrides tests that sizing profile storage defaults are applied when no user overrides
+func TestGlobalSizingStorageDefaultsWithoutOverrides(t *testing.T) {
+	testCases := []struct {
+		name            string
+		valuesFile      string
+		expectedStorage map[string]string
+	}{
+		{
+			name:       "150-ha defaults",
+			valuesFile: "values/global_sizing_150_ha.yaml",
+			expectedStorage: map[string]string{
+				"suse-observability-clickhouse-shard0":    "100Gi",
+				"suse-observability-elasticsearch-master": "200Gi",
+				"suse-observability-kafka":                "100Gi",
+				"suse-observability-zookeeper":            "8Gi",
+				"suse-observability-hbase-hdfs-dn":        "250Gi",
+				"suse-observability-victoria-metrics-0":   "250Gi",
+				"suse-observability-victoria-metrics-1":   "250Gi",
+			},
+		},
+		{
+			name:       "10-nonha defaults",
+			valuesFile: "values/global_sizing_10_nonha.yaml",
+			expectedStorage: map[string]string{
+				"suse-observability-clickhouse-shard0":    "50Gi",
+				"suse-observability-elasticsearch-master": "50Gi",
+				"suse-observability-kafka":                "60Gi",
+				"suse-observability-zookeeper":            "8Gi",
+				"suse-observability-hbase-stackgraph":     "50Gi",
+				"suse-observability-victoria-metrics-0":   "50Gi",
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			output := helmtestutil.RenderHelmTemplate(t, "suse-observability", tc.valuesFile)
+			resources := helmtestutil.NewKubernetesResources(t, output)
+
+			for stsName, expectedSize := range tc.expectedStorage {
+				t.Run("storage-"+stsName, func(t *testing.T) {
+					ss, exists := resources.Statefulsets[stsName]
+					require.True(t, exists, "StatefulSet %s should exist", stsName)
+					require.NotEmpty(t, ss.Spec.VolumeClaimTemplates, "StatefulSet %s should have VolumeClaimTemplates", stsName)
+					storageReq := ss.Spec.VolumeClaimTemplates[0].Spec.Resources.Requests[corev1.ResourceStorage]
+					assert.Equal(t, resource.MustParse(expectedSize), storageReq,
+						"StatefulSet %s storage should be %s (sizing profile default)", stsName, expectedSize)
+				})
+			}
+		})
+	}
+}

@@ -1,4 +1,6 @@
 {{- $replicaCount := include "common.sizing.kafka.effectiveReplicaCount" . | int -}}
+{{- $sizingPersistenceSize := include "common.sizing.kafka.persistence.size" . | trim -}}
+{{- $persistenceSize := default $sizingPersistenceSize .Values.persistence.size -}}
 {{- $fullname := include "common.names.fullname" . }}
 {{- $releaseNamespace := .Release.Namespace }}
 {{- $clusterDomain := .Values.clusterDomain }}
@@ -593,8 +595,7 @@ spec:
         {{- end }}
         resources:
           requests:
-            {{ $storageSize := include "common.sizing.kafka.persistence.size" . | trim }}
-            storage: {{ $storageSize | default .Values.persistence.size | quote }}
+            storage: {{ $persistenceSize | quote }}
         {{ include "kafka.storageClass" . | nindent 8 }}
         {{- if .Values.persistence.selector }}
         selector: {{- include "common.tplvalues.render" (dict "value" .Values.persistence.selector "context" $) | nindent 10 }}

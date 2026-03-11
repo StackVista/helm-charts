@@ -1,6 +1,6 @@
 # zookeeper
 
-![Version: 8.1.2-suse-observability.13](https://img.shields.io/badge/Version-8.1.2--suse--observability.13-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
+![Version: 8.1.2-suse-observability.14](https://img.shields.io/badge/Version-8.1.2--suse--observability.14-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
 
 Apache ZooKeeper provides a reliable, centralized register of configuration data and services for distributed applications.
 
@@ -21,7 +21,7 @@ Apache ZooKeeper provides a reliable, centralized register of configuration data
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.7 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.8 |
 | https://charts.bitnami.com/bitnami | common | 1.x.x |
 
 ## Values
@@ -135,7 +135,7 @@ Apache ZooKeeper provides a reliable, centralized register of configuration data
 | persistence.enabled | bool | `true` |  |
 | persistence.existingClaim | string | `""` |  |
 | persistence.selector | object | `{}` |  |
-| persistence.size | string | `"8Gi"` |  |
+| persistence.size | string | `nil` |  |
 | persistence.storageClass | string | `""` |  |
 | podAffinityPreset | string | `""` |  |
 | podAnnotations | object | `{}` |  |

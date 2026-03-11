@@ -332,10 +332,10 @@ spec:
         resources:
           requests:
 {{- $storageSize := include "common.sizing.victoria-metrics.storage" $ | trim -}}
-{{- if $storageSize }}
-            storage: "{{ $storageSize }}"
-{{- else }}
+{{- if .Values.server.persistentVolume.size }}
             storage: "{{ .Values.server.persistentVolume.size }}"
+{{- else }}
+            storage: "{{ $storageSize }}"
 {{- end }}
        {{ include "common.storage.class" ( dict "persistence" .Values.server.persistentVolume "global" .Values.global) | nindent 8 }}
       {{- with .Values.server.persistentVolume.matchLabels }}

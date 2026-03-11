@@ -56,14 +56,15 @@ Get zookeeper persistence size based on sizing profile
 Usage: {{ include "common.sizing.zookeeper.persistence.size" . }}
 */}}
 {{- define "common.sizing.zookeeper.persistence.size" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if eq $profile "trial" -}}
 2Gi
 {{- else -}}
 8Gi
 {{- end -}}
-{{- end }}
 {{- end }}
 
 {{/*

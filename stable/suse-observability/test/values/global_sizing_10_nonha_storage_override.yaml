@@ -1,0 +1,62 @@
+global:
+  imageRegistry: "my.registry.com"
+  suseObservability:
+    receiverApiKey: "test-key"
+    pullSecret:
+      username: "test"
+      password: "secret"
+    sizing:
+      profile: "10-nonha"
+    license: "test-license-key"
+    baseUrl: "https://test.example.com"
+    adminPassword: "$2b$10$N9qo8uLOickgx2ZMRZoMye.IUIrCxGvz9/6pN.XMlqL9hzTgDaPGy"
+
+pull-secret:
+  enabled: false
+
+victoria-metrics-1:
+  enabled: false
+
+stackstate:
+  components:
+    all:
+      metricStore:
+        remoteWriteEndpoint: "test-$vmInstance:8148"
+        queryApiEndpoint: "test:8148"
+    server:
+      java:
+        trustStorePassword: "secretTrustStorePassword"
+
+# User storage overrides that should win over sizing profile
+clickhouse:
+  persistence:
+    size: 200Gi
+
+elasticsearch:
+  replicas: 5
+  esJavaOpts: "-Xmx8g -Xms8g -Des.allow_insecure_settings=true"
+  volumeClaimTemplate:
+    resources:
+      requests:
+        storage: 100Gi
+
+kafka:
+  persistence:
+    size: 150Gi
+
+zookeeper:
+  persistence:
+    size: 20Gi
+
+hbase:
+  stackgraph:
+    persistence:
+      size: 300Gi
+
+victoria-metrics-0:
+  server:
+    persistentVolume:
+      size: 100Gi
+
+anomaly-detection:
+  enabled: false

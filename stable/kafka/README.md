@@ -1,6 +1,6 @@
 # kafka
 
-![Version: 19.1.3-suse-observability.15](https://img.shields.io/badge/Version-19.1.3--suse--observability.15-informational?style=flat-square) ![AppVersion: 3.3.1](https://img.shields.io/badge/AppVersion-3.3.1-informational?style=flat-square)
+![Version: 19.1.3-suse-observability.16](https://img.shields.io/badge/Version-19.1.3--suse--observability.16-informational?style=flat-square) ![AppVersion: 3.3.1](https://img.shields.io/badge/AppVersion-3.3.1-informational?style=flat-square)
 
 Apache Kafka is a distributed streaming platform designed to build real-time pipelines and can be used as a message broker or as a replacement for a log aggregation solution for big data applications.
 
@@ -21,7 +21,7 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.7 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.8 |
 | file://charts/common | common | 2.x.x |
 
 ## Values
@@ -282,7 +282,7 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | persistence.labels | object | `{}` |  |
 | persistence.mountPath | string | `"/bitnami/kafka"` |  |
 | persistence.selector | object | `{}` |  |
-| persistence.size | string | `"8Gi"` |  |
+| persistence.size | string | `nil` |  |
 | persistence.storageClass | string | `""` |  |
 | podAffinityPreset | string | `""` |  |
 | podAnnotations | object | `{}` |  |

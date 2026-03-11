@@ -21,8 +21,10 @@ Get hbase stackgraph persistence size (for Mono mode)
 Usage: {{ include "common.sizing.hbase.stackgraph.persistence.size" . }}
 */}}
 {{- define "common.sizing.hbase.stackgraph.persistence.size" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if eq $profile "trial" }}20Gi
 {{- else if eq $profile "10-nonha" }}50Gi
 {{- else if eq $profile "20-nonha" }}50Gi
@@ -32,7 +34,7 @@ Usage: {{ include "common.sizing.hbase.stackgraph.persistence.size" . }}
 {{- else if eq $profile "250-ha" }}250Gi
 {{- else if eq $profile "500-ha" }}250Gi
 {{- else if eq $profile "4000-ha" }}1000Gi
-{{- end }}
+{{- else }}250Gi
 {{- end }}
 {{- end }}
 
@@ -520,10 +522,12 @@ Get hbase hdfs datanode persistence size
 Usage: {{ include "common.sizing.hbase.hdfs.datanode.persistence.size" . }}
 */}}
 {{- define "common.sizing.hbase.hdfs.datanode.persistence.size" -}}
+{{- $profile := "" -}}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
-{{- $profile := .Values.global.suseObservability.sizing.profile -}}
+{{- $profile = .Values.global.suseObservability.sizing.profile -}}
+{{- end -}}
 {{- if eq $profile "4000-ha" }}1000Gi
-{{- end }}
+{{- else }}250Gi
 {{- end }}
 {{- end }}
 

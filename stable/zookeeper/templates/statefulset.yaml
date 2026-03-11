@@ -1,6 +1,6 @@
 {{- $replicaCount := include "common.sizing.zookeeper.effectiveReplicaCount" . | int -}}
 {{- $sizingPersistenceSize := include "common.sizing.zookeeper.persistence.size" . | trim -}}
-{{- $persistenceSize := default .Values.persistence.size $sizingPersistenceSize }}
+{{- $persistenceSize := default $sizingPersistenceSize .Values.persistence.size }}
 apiVersion: {{ include "common.capabilities.statefulset.apiVersion" . }}
 kind: StatefulSet
 metadata:
