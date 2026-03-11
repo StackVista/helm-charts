@@ -11,6 +11,7 @@ import (
 // expectedWorkloadsHA defines ALL expected workloads when in HA mode (from ha_workload file)
 var expectedWorkloadsHA = []string{
 	// Deployments
+	"Deployment/suse-observability-mcp",
 	"Deployment/suse-observability-anomaly-detection-spotlight-manager",
 	"Deployment/suse-observability-anomaly-detection-spotlight-worker",
 	"Deployment/suse-observability-prometheus-elasticsearch-exporter",
@@ -66,6 +67,7 @@ var expectedWorkloadsHA = []string{
 // expectedWorkloadsNonHA defines ALL expected workloads when in Non-HA mode (from nonha_workload file)
 var expectedWorkloadsNonHA = []string{
 	// Deployments
+	"Deployment/suse-observability-mcp",
 	"Deployment/suse-observability-anomaly-detection-spotlight-manager",
 	"Deployment/suse-observability-anomaly-detection-spotlight-worker",
 	"Deployment/suse-observability-prometheus-elasticsearch-exporter",

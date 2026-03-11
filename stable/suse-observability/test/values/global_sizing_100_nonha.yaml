@@ -11,6 +11,10 @@ global:
     baseUrl: "https://test.example.com"
     adminPassword: "$2b$10$N9qo8uLOickgx2ZMRZoMye.IUIrCxGvz9/6pN.XMlqL9hzTgDaPGy"
 
+ai:
+  assistant:
+    enabled: "true"
+
 stackstate:
   components:
     all:

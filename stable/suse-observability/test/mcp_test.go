@@ -13,9 +13,6 @@ import (
 func TestMcpServerEnabledByDefault(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
-		SetValues: map[string]string{
-			"ai.assistant.enabled": "true",
-		},
 	})
 
 	resources := helmtestutil.NewKubernetesResources(t, output)

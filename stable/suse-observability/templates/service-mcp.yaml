@@ -1,6 +1,6 @@
 {{- define "stackstate.mcp.service" -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-mcp
+  name: {{ template "stackstate.mcp.fullname" . }}
   labels:
     app.kubernetes.io/component: mcp
 spec:

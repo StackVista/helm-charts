@@ -5,6 +5,10 @@ global:
   backup:
     enabled: true
 
+ai:
+  assistant:
+    enabled: "true"
+
 stackstate:
   baseUrl: "http://localhost"
   license:

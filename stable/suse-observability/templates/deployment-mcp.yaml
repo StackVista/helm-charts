@@ -1,22 +1,30 @@
 {{- define "stackstate.mcp.deployment.container.main" -}}
 {{- $serviceConfig := dict "ServiceName" "mcp" "ServiceConfig" .Values.stackstate.components.mcp }}
 {{- $stackstateService := ternary "api-headless" "server-headless" (eq (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) | trim) "true") }}
-{{- $stackstateUrl := printf "http://%s-%s:7070" (include "common.fullname.short" .) $stackstateService }}
+{{- $stackstateUrl := printf "http://%s-%s:7070" (include "common.fullname.short" .) $stackstateService -}}
 name: mcp
-image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.mcp.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default "latest" .Values.stackstate.components.mcp.image.tag }}"
+image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.mcp.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .Values.stackstate.components.mcp.image.tag }}"
 imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.mcp.image.pullPolicy | quote }}
 args:
   - -url
   - {{ $stackstateUrl | quote }}
   - -http
   - {{ .Values.stackstate.components.mcp.listenAddress | quote }}
+env:
+{{- include "stackstate.common.envvars" . }}
+{{- include "stackstate.mcp.envvars" . }}
+{{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
+{{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.mcp.envsFromExistingSecrets }}
 ports:
   - containerPort: {{ .Values.stackstate.components.mcp.service.port }}
     name: http
     protocol: TCP
-{{- with .Values.stackstate.components.mcp.resources }}
+{{- $sizingResources := include "common.sizing.stackstate.mcp.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.stackstate.components.mcp.resources $sizingResourcesDict }}
+{{- if $evaluatedResources }}
 resources:
-  {{- toYaml . | nindent 2 }}
+  {{- toYaml $evaluatedResources | nindent 2 }}
 {{- end }}
 {{- end -}}
 
@@ -25,7 +33,7 @@ resources:
 {{- $overrideContainer := fromYaml (include "stackstate.mcp.deployment.container.main" .) -}}
 {{- $mcpMainContainer := (merge $overrideContainer $commonContainer) -}}
 metadata:
-  name: {{ template "common.fullname.short" . }}-mcp
+  name: {{ template "stackstate.mcp.fullname" . }}
   labels:
     app.kubernetes.io/component: mcp
     {{- include "suse-observability.labels.global" . | nindent 4 }}
@@ -36,7 +44,7 @@ spec:
       app.kubernetes.io/component: mcp
   strategy:
 {{- if eq (lower .Values.stackstate.components.all.deploymentStrategy.type) "recreatesingletonsonly" }}
-    type: Recreate
+    type: RollingUpdate
 {{- else }}
     {{- toYaml .Values.stackstate.components.all.deploymentStrategy | nindent 4 }}
 {{- end }}
@@ -48,6 +56,7 @@ spec:
         app.kubernetes.io/component: mcp
         {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
+      serviceAccountName: {{ template "stackstate.mcp.fullname" . }}
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       containers:
       - {{ toYaml $mcpMainContainer | nindent 8 }}

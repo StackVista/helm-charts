@@ -5,6 +5,10 @@ global:
     baseUrl: "http://test.example.com"
     # No adminPassword or adminPasswordBcrypt - should succeed because OIDC is configured
 
+ai:
+  assistant:
+    enabled: "true"
+
 # Minimal stackstate config required for chart to render
 stackstate:
   components:

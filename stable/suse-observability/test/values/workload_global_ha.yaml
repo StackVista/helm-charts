@@ -16,6 +16,10 @@ global:
     sizing:
       profile: "150-ha"
 
+ai:
+  assistant:
+    enabled: "true"
+
 stackstate:
   components:
     all:

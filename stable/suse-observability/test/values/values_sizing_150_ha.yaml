@@ -253,3 +253,7 @@ victoria-metrics-1:
           memory: 512Mi
         limits:
           memory: 512Mi
+
+ai:
+  assistant:
+    enabled: "true"

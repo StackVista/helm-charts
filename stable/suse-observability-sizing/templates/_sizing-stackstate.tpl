@@ -699,6 +699,21 @@ requests:
 {{- end }}
 
 {{/*
+Get stackstate mcp component resources
+Usage: {{ include "common.sizing.stackstate.mcp.resources" . }}
+*/}}
+{{- define "common.sizing.stackstate.mcp.resources" -}}
+requests:
+  cpu: "100m"
+  memory: "512Mi"
+  ephemeral-storage: "1Mi"
+limits:
+  cpu: "500m"
+  memory: "512Mi"
+  ephemeral-storage: "1Gi"
+{{- end }}
+
+{{/*
 Get stackstate correlate component replicaCount
 Usage: {{ include "common.sizing.stackstate.correlate.replicaCount" . }}
 */}}

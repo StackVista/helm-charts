@@ -12,6 +12,10 @@ global:
       username: "testuser"
       password: "testpassword"
 
+ai:
+  assistant:
+    enabled: "true"
+
 # Minimal stackstate config required for chart to render (copied from full.yaml)
 stackstate:
   components:

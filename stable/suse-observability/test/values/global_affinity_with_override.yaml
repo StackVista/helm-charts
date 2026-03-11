@@ -16,6 +16,10 @@ global:
               values:
               - observability
 
+ai:
+  assistant:
+    enabled: "true"
+
 # Minimal stackstate config required for chart to render
 stackstate:
   components:

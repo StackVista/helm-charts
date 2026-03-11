@@ -20,6 +20,10 @@ global:
         requiredDuringSchedulingIgnoredDuringExecution: false
         topologyKey: "kubernetes.io/hostname"
 
+ai:
+  assistant:
+    enabled: "true"
+
 # Minimal stackstate config required for chart to render
 stackstate:
   components:

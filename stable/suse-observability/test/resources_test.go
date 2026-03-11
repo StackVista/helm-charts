@@ -21,6 +21,7 @@ type expectedResources struct {
 func TestResources(t *testing.T) {
 	expectedDeployments := map[string]map[string]expectedResources{
 		"10-nonha": {
+			"suse-observability-mcp":                               {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-correlate":                         {cpuRequest: "500m", cpuLimit: "1000m", memoryRequest: "1250Mi", memoryLimit: "1250Mi"},
 			"suse-observability-e2es":                              {cpuRequest: "50m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-hbase-console":                     {cpuRequest: "50m", cpuLimit: "500m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
@@ -33,6 +34,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-ui":                                {cpuRequest: "50m", cpuLimit: "50m", memoryRequest: "64Mi", memoryLimit: "64Mi"},
 		},
 		"20-nonha": {
+			"suse-observability-mcp":                               {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-correlate":                         {cpuRequest: "1500m", cpuLimit: "3000m", memoryRequest: "1750Mi", memoryLimit: "1750Mi"},
 			"suse-observability-e2es":                              {cpuRequest: "50m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-hbase-console":                     {cpuRequest: "50m", cpuLimit: "500m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
@@ -45,6 +47,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-ui":                                {cpuRequest: "50m", cpuLimit: "50m", memoryRequest: "64Mi", memoryLimit: "64Mi"},
 		},
 		"50-nonha": {
+			"suse-observability-mcp":                               {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-correlate":                         {cpuRequest: "2000m", cpuLimit: "4000m", memoryRequest: "2000Mi", memoryLimit: "2000Mi"},
 			"suse-observability-e2es":                              {cpuRequest: "50m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-hbase-console":                     {cpuRequest: "50m", cpuLimit: "500m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
@@ -57,6 +60,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-ui":                                {cpuRequest: "50m", cpuLimit: "50m", memoryRequest: "64Mi", memoryLimit: "64Mi"},
 		},
 		"100-nonha": {
+			"suse-observability-mcp":                               {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-correlate":                         {cpuRequest: "5000m", cpuLimit: "10000m", memoryRequest: "4000Mi", memoryLimit: "4000Mi"},
 			"suse-observability-e2es":                              {cpuRequest: "50m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-hbase-console":                     {cpuRequest: "50m", cpuLimit: "500m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
@@ -69,6 +73,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-ui":                                {cpuRequest: "50m", cpuLimit: "50m", memoryRequest: "64Mi", memoryLimit: "64Mi"},
 		},
 		"150-ha": {
+			"suse-observability-mcp":                               {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-api":                               {cpuRequest: "1500m", cpuLimit: "3000m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
 			"suse-observability-authorization-sync":                {cpuRequest: "250m", cpuLimit: "1500m", memoryRequest: "512Mi", memoryLimit: "1Gi"},
 			"suse-observability-checks":                            {cpuRequest: "3000m", cpuLimit: "6000m", memoryRequest: "5Gi", memoryLimit: "5Gi"},
@@ -91,6 +96,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-ui":                                {cpuRequest: "50m", cpuLimit: "50m", memoryRequest: "64Mi", memoryLimit: "64Mi"},
 		},
 		"250-ha": {
+			"suse-observability-mcp":                               {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-api":                               {cpuRequest: "2000m", cpuLimit: "4000m", memoryRequest: "5Gi", memoryLimit: "5Gi"},
 			"suse-observability-authorization-sync":                {cpuRequest: "250m", cpuLimit: "1500m", memoryRequest: "512Mi", memoryLimit: "1Gi"},
 			"suse-observability-checks":                            {cpuRequest: "3000m", cpuLimit: "6000m", memoryRequest: "5Gi", memoryLimit: "5Gi"},
@@ -113,6 +119,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-ui":                                {cpuRequest: "50m", cpuLimit: "50m", memoryRequest: "64Mi", memoryLimit: "64Mi"},
 		},
 		"500-ha": {
+			"suse-observability-mcp":                               {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-api":                               {cpuRequest: "3000m", cpuLimit: "6000m", memoryRequest: "6Gi", memoryLimit: "6Gi"},
 			"suse-observability-authorization-sync":                {cpuRequest: "250m", cpuLimit: "1500m", memoryRequest: "512Mi", memoryLimit: "1Gi"},
 			"suse-observability-checks":                            {cpuRequest: "3000m", cpuLimit: "6000m", memoryRequest: "5Gi", memoryLimit: "5Gi"},
@@ -135,6 +142,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-ui":                                {cpuRequest: "50m", cpuLimit: "50m", memoryRequest: "64Mi", memoryLimit: "64Mi"},
 		},
 		"4000-ha": {
+			"suse-observability-mcp":                               {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-api":                               {cpuRequest: "7000m", cpuLimit: "9000m", memoryRequest: "10Gi", memoryLimit: "12Gi"},
 			"suse-observability-authorization-sync":                {cpuRequest: "250m", cpuLimit: "1500m", memoryRequest: "512Mi", memoryLimit: "1Gi"},
 			"suse-observability-checks":                            {cpuRequest: "6000m", cpuLimit: "7000m", memoryRequest: "5Gi", memoryLimit: "5Gi"},
@@ -157,6 +165,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-ui":                                {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "64Mi", memoryLimit: "64Mi"},
 		},
 		"default-nonha": {
+			"suse-observability-mcp":                                 {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-anomaly-detection-spotlight-manager": {cpuRequest: "1", cpuLimit: "1", memoryRequest: "1Gi", memoryLimit: "1Gi"},
 			"suse-observability-anomaly-detection-spotlight-worker":  {cpuRequest: "1000m", cpuLimit: "2000m", memoryRequest: "3Gi", memoryLimit: "3Gi"},
 			"suse-observability-correlate":                           {cpuRequest: "600m", cpuLimit: "2000m", memoryRequest: "2800Mi", memoryLimit: "2800Mi"},
@@ -172,6 +181,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-ui":                                  {cpuRequest: "50m", cpuLimit: "50m", memoryRequest: "64Mi", memoryLimit: "64Mi"},
 		},
 		"default-ha": {
+			"suse-observability-mcp":                                 {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-anomaly-detection-spotlight-manager": {cpuRequest: "1", cpuLimit: "1", memoryRequest: "1Gi", memoryLimit: "1Gi"},
 			"suse-observability-anomaly-detection-spotlight-worker":  {cpuRequest: "1000m", cpuLimit: "2000m", memoryRequest: "3Gi", memoryLimit: "3Gi"},
 			"suse-observability-api":                                 {cpuRequest: "1000m", cpuLimit: "2000m", memoryRequest: "2Gi", memoryLimit: "2Gi"},
@@ -197,6 +207,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-ui":                                  {cpuRequest: "50m", cpuLimit: "50m", memoryRequest: "64Mi", memoryLimit: "64Mi"},
 		},
 		"10-nonha-overrides": {
+			"suse-observability-mcp":                               {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-correlate":                         {cpuRequest: "999", cpuLimit: "999", memoryRequest: "999Gi", memoryLimit: "999Gi"},
 			"suse-observability-e2es":                              {cpuRequest: "888", cpuLimit: "888", memoryRequest: "888Gi", memoryLimit: "888Gi"},
 			"suse-observability-hbase-console":                     {cpuRequest: "888", cpuLimit: "888", memoryRequest: "888Gi", memoryLimit: "888Gi"},
@@ -209,6 +220,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-ui":                                {cpuRequest: "666", cpuLimit: "666", memoryRequest: "666Gi", memoryLimit: "666Gi"},
 		},
 		"150-ha-overrides": {
+			"suse-observability-mcp":                               {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-api":                               {cpuRequest: "888", cpuLimit: "888", memoryRequest: "888Gi", memoryLimit: "888Gi"},
 			"suse-observability-authorization-sync":                {cpuRequest: "444", cpuLimit: "444", memoryRequest: "444Gi", memoryLimit: "444Gi"},
 			"suse-observability-checks":                            {cpuRequest: "999", cpuLimit: "999", memoryRequest: "999Gi", memoryLimit: "999Gi"},
@@ -230,6 +242,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-sync":                              {cpuRequest: "777", cpuLimit: "777", memoryRequest: "777Gi", memoryLimit: "777Gi"},
 			"suse-observability-ui":                                {cpuRequest: "666", cpuLimit: "666", memoryRequest: "666Gi", memoryLimit: "666Gi"}},
 		"4000-ha-overrides": {
+			"suse-observability-mcp":                               {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-api":                               {cpuRequest: "888", cpuLimit: "888", memoryRequest: "888Gi", memoryLimit: "888Gi"},
 			"suse-observability-authorization-sync":                {cpuRequest: "444", cpuLimit: "444", memoryRequest: "444Gi", memoryLimit: "444Gi"},
 			"suse-observability-checks":                            {cpuRequest: "999", cpuLimit: "999", memoryRequest: "999Gi", memoryLimit: "999Gi"},
@@ -252,6 +265,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-ui":                                {cpuRequest: "666", cpuLimit: "666", memoryRequest: "666Gi", memoryLimit: "666Gi"},
 		},
 		"10-nonha-global-overrides": {
+			"suse-observability-mcp":                               {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-correlate":                         {cpuRequest: "999", cpuLimit: "999", memoryRequest: "999Gi", memoryLimit: "999Gi"},
 			"suse-observability-e2es":                              {cpuRequest: "888", cpuLimit: "888", memoryRequest: "888Gi", memoryLimit: "888Gi"},
 			"suse-observability-hbase-console":                     {cpuRequest: "888", cpuLimit: "888", memoryRequest: "888Gi", memoryLimit: "888Gi"},
@@ -264,6 +278,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-ui":                                {cpuRequest: "666", cpuLimit: "666", memoryRequest: "666Gi", memoryLimit: "666Gi"},
 		},
 		"150-ha-global-overrides": {
+			"suse-observability-mcp":                               {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-api":                               {cpuRequest: "888", cpuLimit: "888", memoryRequest: "888Gi", memoryLimit: "888Gi"},
 			"suse-observability-authorization-sync":                {cpuRequest: "444", cpuLimit: "444", memoryRequest: "444Gi", memoryLimit: "444Gi"},
 			"suse-observability-checks":                            {cpuRequest: "999", cpuLimit: "999", memoryRequest: "999Gi", memoryLimit: "999Gi"},
@@ -286,6 +301,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-ui":                                {cpuRequest: "666", cpuLimit: "666", memoryRequest: "666Gi", memoryLimit: "666Gi"},
 		},
 		"4000-ha-global-overrides": {
+			"suse-observability-mcp":                               {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "512Mi", memoryLimit: "512Mi"},
 			"suse-observability-api":                               {cpuRequest: "888", cpuLimit: "888", memoryRequest: "888Gi", memoryLimit: "888Gi"},
 			"suse-observability-authorization-sync":                {cpuRequest: "444", cpuLimit: "444", memoryRequest: "444Gi", memoryLimit: "444Gi"},
 			"suse-observability-checks":                            {cpuRequest: "999", cpuLimit: "999", memoryRequest: "999Gi", memoryLimit: "999Gi"},

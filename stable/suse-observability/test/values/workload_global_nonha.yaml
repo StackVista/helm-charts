@@ -15,6 +15,10 @@ global:
     sizing:
       profile: "10-nonha"
 
+ai:
+  assistant:
+    enabled: "true"
+
 stackstate:
   components:
     all:

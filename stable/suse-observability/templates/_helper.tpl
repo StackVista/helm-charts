@@ -141,6 +141,34 @@ Router extra environment variables for ui pods inherited through `stackstate.com
 {{- end -}}
 
 {{/*
+MCP fullname helper
+*/}}
+{{- define "stackstate.mcp.fullname" -}}
+suse-observability-mcp
+{{- end -}}
+
+{{/*
+MCP extra environment variables for mcp pods inherited through `stackstate.components.mcp.extraEnv`
+*/}}
+{{- define "stackstate.mcp.envvars" -}}
+{{- if .Values.stackstate.components.mcp.extraEnv.open }}
+  {{- range $key, $value := .Values.stackstate.components.mcp.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.stackstate.components.mcp.extraEnv.secret }}
+  {{- range $key, $value := .Values.stackstate.components.mcp.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "stackstate.mcp.fullname" $ }}
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Environment variables containing the properly sanitized StackState Base URLs
 */}}
 {{- define "stackstate.baseurls.envvars" }}

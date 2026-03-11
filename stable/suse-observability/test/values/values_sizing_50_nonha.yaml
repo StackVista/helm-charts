@@ -161,3 +161,7 @@ victoria-metrics-1:
 
 zookeeper:
   replicaCount: 1
+
+ai:
+  assistant:
+    enabled: "true"

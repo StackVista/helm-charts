@@ -998,6 +998,9 @@ If you encounter issues not covered here:
 | stackstate.components.kafkaTopicCreate.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
 | stackstate.components.kafkaTopicCreate.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.mcp.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.mcp.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: secret-key - name: MY_OTHER_SECRET_ENV_VAR   secretName: my-other-k8s-secret   secretKey: another-secret-key |
+| stackstate.components.mcp.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| stackstate.components.mcp.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | stackstate.components.mcp.image.imageRegistry | string | `""` | `imageRegistry` used for the `mcp` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.mcp.image.pullPolicy | string | `""` | `pullPolicy` used for the `mcp` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.mcp.image.repository | string | `"stackstate/suse-observability-mcp"` | Repository of the mcp component Docker image. |
@@ -1005,8 +1008,9 @@ If you encounter issues not covered here:
 | stackstate.components.mcp.listenAddress | string | `":8080"` | Listen address passed to `-http`. |
 | stackstate.components.mcp.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.mcp.podAnnotations | object | `{}` | Extra annotations |
+| stackstate.components.mcp.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `mcp` pods. |
 | stackstate.components.mcp.replicaCount | int | `1` | Number of `mcp` replicas. |
-| stackstate.components.mcp.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Resource allocation for `mcp` pods. |
+| stackstate.components.mcp.resources | object | `{}` | Resource allocation for `mcp` pods. |
 | stackstate.components.mcp.service.port | int | `8080` | Service port for the MCP server. |
 | stackstate.components.mcp.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.nginxPrometheusExporter.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for nginx-prometheus-exporter containers. |

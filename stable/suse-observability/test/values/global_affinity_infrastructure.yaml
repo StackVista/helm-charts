@@ -19,6 +19,10 @@ global:
         requiredDuringSchedulingIgnoredDuringExecution: true
         topologyKey: "topology.kubernetes.io/zone"
 
+ai:
+  assistant:
+    enabled: "true"
+
 # Minimal stackstate config required for chart to render
 stackstate:
   components:

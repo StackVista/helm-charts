@@ -760,6 +760,20 @@ stackstate:
       # stackstate.components.initializer.additionalLogging -- Additional logback config
       additionalLogging: ""
     mcp:
+      # stackstate.components.mcp.envsFromExistingSecrets -- Configure environment variables from existing secrets.
+      # envsFromExistingSecret
+      # - name: MY_SECRET_ENV_VAR
+      #   secretName: my-k8s-secret
+      #   secretKey: secret-key
+      # - name: MY_OTHER_SECRET_ENV_VAR
+      #   secretName: my-other-k8s-secret
+      #   secretKey: another-secret-key
+      envsFromExistingSecrets: []
+      extraEnv:
+        # stackstate.components.mcp.extraEnv.open -- Extra open environment variables to inject into pods.
+        open: {}
+        # stackstate.components.mcp.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        secret: {}
       image:
         # stackstate.components.mcp.image.imageRegistry -- `imageRegistry` used for the `mcp` component Docker image; this will override `global.imageRegistry` on a per-service basis.
         imageRegistry: ""
@@ -778,14 +792,11 @@ stackstate:
         port: 8080
       # stackstate.components.mcp.podAnnotations -- Extra annotations
       podAnnotations: {}
+      # stackstate.components.mcp.poddisruptionbudget -- PodDisruptionBudget settings for `mcp` pods.
+      poddisruptionbudget:
+        maxUnavailable: 1
       # stackstate.components.mcp.resources -- Resource allocation for `mcp` pods.
-      resources:
-        limits:
-          memory: "512Mi"
-          cpu: "500m"
-        requests:
-          memory: "128Mi"
-          cpu: "100m"
+      resources: {}
       # stackstate.components.mcp.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
       # stackstate.components.mcp.tolerations -- Toleration labels for pod assignment.
