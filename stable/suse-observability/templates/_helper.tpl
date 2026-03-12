@@ -144,7 +144,7 @@ Router extra environment variables for ui pods inherited through `stackstate.com
 MCP fullname helper
 */}}
 {{- define "stackstate.mcp.fullname" -}}
-suse-observability-mcp
+{{ template "common.fullname.short" . }}-mcp
 {{- end -}}
 
 {{/*
@@ -163,6 +163,34 @@ MCP extra environment variables for mcp pods inherited through `stackstate.compo
   valueFrom:
     secretKeyRef:
       name: {{ template "stackstate.mcp.fullname" $ }}
+      key: {{ $key }}
+  {{- end }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Borg fullname helper
+*/}}
+{{- define "stackstate.borg.fullname" -}}
+{{ template "common.fullname.short" . }}-borg
+{{- end -}}
+
+{{/*
+Borg extra environment variables for borg pods inherited through `stackstate.components.borg.extraEnv`
+*/}}
+{{- define "stackstate.borg.envvars" -}}
+{{- if .Values.stackstate.components.borg.extraEnv.open }}
+  {{- range $key, $value := .Values.stackstate.components.borg.extraEnv.open  }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+{{- if .Values.stackstate.components.borg.extraEnv.secret }}
+  {{- range $key, $value := .Values.stackstate.components.borg.extraEnv.secret  }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "stackstate.borg.fullname" $ }}
       key: {{ $key }}
   {{- end }}
 {{- end }}

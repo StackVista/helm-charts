@@ -1,0 +1,8 @@
+ai:
+  assistant:
+    enabled: true
+stackstate:
+  components:
+    borg:
+      image:
+        tag: ""

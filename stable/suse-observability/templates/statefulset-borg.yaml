@@ -1,0 +1,126 @@
+{{- define "stackstate.borg.statefulset.container.main" -}}
+{{- $serviceConfig := dict "ServiceName" "borg" "ServiceConfig" .Values.stackstate.components.borg }}
+{{- $mcpUrl := printf "http://%s:%d" (include "stackstate.mcp.fullname" .) (.Values.stackstate.components.mcp.service.port | int) -}}
+{{- $borgImageTag := .Values.stackstate.components.borg.image.tag -}}
+{{- if .Values.ai.assistant.enabled -}}
+{{- $borgImageTag = required "stackstate.components.borg.image.tag must be set" .Values.stackstate.components.borg.image.tag -}}
+{{- end -}}
+name: borg
+image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.borg.image.repository }}:{{ $borgImageTag }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.borg.image.pullPolicy | quote }}
+args:
+  - serve
+env:
+- name: MCP_SERVER_URL
+  value: {{ $mcpUrl | quote }}
+- name: SQLITE_PATH
+  value: "/data/borg.db"
+- name: USE_BEDROCK
+  value: "true"
+- name: API_PORT
+  value: {{ .Values.stackstate.components.borg.service.port | quote }}
+- name: API_BIND_ADDRESS
+  value: "0.0.0.0"
+{{- include "stackstate.borg.envvars" . }}
+{{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
+{{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.borg.envsFromExistingSecrets }}
+ports:
+  - containerPort: {{ .Values.stackstate.components.borg.service.port }}
+    name: http
+    protocol: TCP
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 15
+  timeoutSeconds: 5
+readinessProbe:
+  httpGet:
+    path: /readyz
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 15
+  timeoutSeconds: 5
+volumeMounts:
+  - name: data
+    mountPath: /data
+{{- $sizingResources := include "common.sizing.stackstate.borg.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.stackstate.components.borg.resources $sizingResourcesDict }}
+{{- if $evaluatedResources }}
+resources:
+  {{- toYaml $evaluatedResources | nindent 2 }}
+{{- end }}
+{{- end -}}
+
+{{- define "stackstate.borg.statefulset" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.borg.statefulset.container.main" .) -}}
+{{- $borgMainContainer := (merge $overrideContainer $commonContainer) -}}
+metadata:
+  name: {{ template "stackstate.borg.fullname" . }}
+  labels:
+    app.kubernetes.io/component: borg
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: borg
+  serviceName: {{ template "stackstate.borg.fullname" . }}
+  template:
+    metadata:
+      annotations:
+        {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "borg") .) }}
+      labels:
+        app.kubernetes.io/component: borg
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ template "stackstate.borg.fullname" . }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
+      containers:
+      - {{ toYaml $borgMainContainer | nindent 8 }}
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.borg.nodeSelector }}
+      nodeSelector:
+      {{- with .Values.stackstate.components.all.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.borg.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.borg.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- if $affinity }}
+      affinity:
+        {{- $affinity | nindent 8 }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.borg.tolerations }}
+      tolerations:
+      {{- with .Values.stackstate.components.all.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.borg.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.stackstate.components.all.securityContext.enabled }}
+      securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
+    {{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.stackstate.components.borg.persistence.size | quote }}
+        {{ include "common.storage.class" (dict "persistence" .Values.stackstate.components.borg.persistence "global" .Values.global) | nindent 8 }}
+{{- end -}}
+
+{{- if .Values.ai.assistant.enabled }}
+{{- $commonStatefulset := fromYaml (include "common.statefulset" .) -}}
+{{- $borgStatefulset := fromYaml (include "stackstate.borg.statefulset" .) -}}
+{{- toYaml (merge $borgStatefulset $commonStatefulset) -}}
+{{- end }}

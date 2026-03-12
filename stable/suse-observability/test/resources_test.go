@@ -335,6 +335,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-victoria-metrics-0":   {cpuRequest: "500m", cpuLimit: "1000m", memoryRequest: "1500Mi", memoryLimit: "1750Mi"},
 			"suse-observability-vmagent":              {cpuRequest: "200m", cpuLimit: "200m", memoryRequest: "384Mi", memoryLimit: "640Mi"},
 			"suse-observability-workload-observer":    {cpuRequest: "20m", cpuLimit: "50m", memoryRequest: "24Mi", memoryLimit: "128Mi"},
+			"suse-observability-borg":              {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "256Mi", memoryLimit: "512Mi"},
 			"suse-observability-zookeeper":            {cpuRequest: "100m", cpuLimit: "250m", memoryRequest: "640Mi", memoryLimit: "640Mi"},
 		},
 		"20-nonha": {
@@ -347,6 +348,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-victoria-metrics-0":   {cpuRequest: "500m", cpuLimit: "1000m", memoryRequest: "2Gi", memoryLimit: "2500Mi"},
 			"suse-observability-vmagent":              {cpuRequest: "300m", cpuLimit: "600m", memoryRequest: "600Mi", memoryLimit: "768Mi"},
 			"suse-observability-workload-observer":    {cpuRequest: "20m", cpuLimit: "50m", memoryRequest: "24Mi", memoryLimit: "128Mi"},
+			"suse-observability-borg":              {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "256Mi", memoryLimit: "512Mi"},
 			"suse-observability-zookeeper":            {cpuRequest: "100m", cpuLimit: "250m", memoryRequest: "640Mi", memoryLimit: "640Mi"},
 		},
 		"50-nonha": {
@@ -359,6 +361,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-victoria-metrics-0":   {cpuRequest: "1", cpuLimit: "2", memoryRequest: "3500Mi", memoryLimit: "3500Mi"},
 			"suse-observability-vmagent":              {cpuRequest: "500m", cpuLimit: "1000m", memoryRequest: "750Mi", memoryLimit: "750Mi"},
 			"suse-observability-workload-observer":    {cpuRequest: "20m", cpuLimit: "50m", memoryRequest: "24Mi", memoryLimit: "128Mi"},
+			"suse-observability-borg":              {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "256Mi", memoryLimit: "512Mi"},
 			"suse-observability-zookeeper":            {cpuRequest: "100m", cpuLimit: "250m", memoryRequest: "640Mi", memoryLimit: "640Mi"},
 		},
 		"100-nonha": {
@@ -371,6 +374,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-victoria-metrics-0":   {cpuRequest: "1500m", cpuLimit: "3000m", memoryRequest: "8Gi", memoryLimit: "8Gi"},
 			"suse-observability-vmagent":              {cpuRequest: "1250m", cpuLimit: "2500m", memoryRequest: "1250Mi", memoryLimit: "1250Mi"},
 			"suse-observability-workload-observer":    {cpuRequest: "20m", cpuLimit: "50m", memoryRequest: "24Mi", memoryLimit: "128Mi"},
+			"suse-observability-borg":              {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "256Mi", memoryLimit: "512Mi"},
 			"suse-observability-zookeeper":            {cpuRequest: "100m", cpuLimit: "250m", memoryRequest: "640Mi", memoryLimit: "640Mi"},
 		},
 		"150-ha": {
@@ -388,6 +392,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-victoria-metrics-1":   {cpuRequest: "2", cpuLimit: "4", memoryRequest: "9Gi", memoryLimit: "9Gi"},
 			"suse-observability-vmagent":              {cpuRequest: "1500m", cpuLimit: "3000m", memoryRequest: "1500Mi", memoryLimit: "1500Mi"},
 			"suse-observability-workload-observer":    {cpuRequest: "20m", cpuLimit: "50m", memoryRequest: "24Mi", memoryLimit: "128Mi"},
+			"suse-observability-borg":              {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "256Mi", memoryLimit: "512Mi"},
 			"suse-observability-zookeeper":            {cpuRequest: "200m", cpuLimit: "500m", memoryRequest: "640Mi", memoryLimit: "640Mi"},
 		},
 		"250-ha": {
@@ -405,6 +410,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-victoria-metrics-1":   {cpuRequest: "3", cpuLimit: "6", memoryRequest: "10Gi", memoryLimit: "10Gi"},
 			"suse-observability-vmagent":              {cpuRequest: "2", cpuLimit: "4", memoryRequest: "2Gi", memoryLimit: "2Gi"},
 			"suse-observability-workload-observer":    {cpuRequest: "20m", cpuLimit: "50m", memoryRequest: "24Mi", memoryLimit: "128Mi"},
+			"suse-observability-borg":              {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "256Mi", memoryLimit: "512Mi"},
 			"suse-observability-zookeeper":            {cpuRequest: "200m", cpuLimit: "500m", memoryRequest: "640Mi", memoryLimit: "640Mi"},
 		},
 		"500-ha": {
@@ -422,6 +428,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-victoria-metrics-1":   {cpuRequest: "3", cpuLimit: "6", memoryRequest: "10Gi", memoryLimit: "10Gi"},
 			"suse-observability-vmagent":              {cpuRequest: "2500m", cpuLimit: "5000m", memoryRequest: "2Gi", memoryLimit: "2Gi"},
 			"suse-observability-workload-observer":    {cpuRequest: "20m", cpuLimit: "50m", memoryRequest: "24Mi", memoryLimit: "128Mi"},
+			"suse-observability-borg":              {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "256Mi", memoryLimit: "512Mi"},
 			"suse-observability-zookeeper":            {cpuRequest: "200m", cpuLimit: "500m", memoryRequest: "640Mi", memoryLimit: "640Mi"},
 		},
 		"4000-ha": {
@@ -439,6 +446,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-victoria-metrics-1":   {cpuRequest: "7", cpuLimit: "8000m", memoryRequest: "18Gi", memoryLimit: "18Gi"},
 			"suse-observability-vmagent":              {cpuRequest: "4000m", cpuLimit: "5000m", memoryRequest: "5000Mi", memoryLimit: "5000Mi"},
 			"suse-observability-workload-observer":    {cpuRequest: "20m", cpuLimit: "50m", memoryRequest: "24Mi", memoryLimit: "128Mi"},
+			"suse-observability-borg":              {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "256Mi", memoryLimit: "512Mi"},
 			"suse-observability-zookeeper":            {cpuRequest: "1000m", cpuLimit: "1500m", memoryRequest: "768Mi", memoryLimit: "768Mi"},
 		},
 		"default-nonha": {
@@ -451,6 +459,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-victoria-metrics-0":   {cpuRequest: "300m", cpuLimit: "1", memoryRequest: "3584Mi", memoryLimit: "4Gi"},
 			"suse-observability-vmagent":              {cpuRequest: "200m", cpuLimit: "200m", memoryRequest: "256Mi", memoryLimit: "512Mi"},
 			"suse-observability-workload-observer":    {cpuRequest: "20m", cpuLimit: "50m", memoryRequest: "24Mi", memoryLimit: "128Mi"},
+			"suse-observability-borg":              {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "256Mi", memoryLimit: "512Mi"},
 			"suse-observability-zookeeper":            {cpuRequest: "100m", cpuLimit: "250m", memoryRequest: "640Mi", memoryLimit: "640Mi"},
 		},
 		"default-ha": {
@@ -468,6 +477,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-victoria-metrics-1":   {cpuRequest: "300m", cpuLimit: "1", memoryRequest: "3584Mi", memoryLimit: "4Gi"},
 			"suse-observability-vmagent":              {cpuRequest: "200m", cpuLimit: "200m", memoryRequest: "256Mi", memoryLimit: "512Mi"},
 			"suse-observability-workload-observer":    {cpuRequest: "20m", cpuLimit: "50m", memoryRequest: "24Mi", memoryLimit: "128Mi"},
+			"suse-observability-borg":              {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "256Mi", memoryLimit: "512Mi"},
 			"suse-observability-zookeeper":            {cpuRequest: "100m", cpuLimit: "250m", memoryRequest: "640Mi", memoryLimit: "640Mi"},
 		},
 		"10-nonha-overrides": {
@@ -480,6 +490,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-victoria-metrics-0":   {cpuRequest: "111", cpuLimit: "111", memoryRequest: "111Gi", memoryLimit: "111Gi"},
 			"suse-observability-vmagent":              {cpuRequest: "555", cpuLimit: "555", memoryRequest: "555Gi", memoryLimit: "555Gi"},
 			"suse-observability-workload-observer":    {cpuRequest: "999", cpuLimit: "999", memoryRequest: "999Gi", memoryLimit: "999Gi"},
+			"suse-observability-borg":              {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "256Mi", memoryLimit: "512Mi"},
 			"suse-observability-zookeeper":            {cpuRequest: "777", cpuLimit: "777", memoryRequest: "777Gi", memoryLimit: "777Gi"},
 		},
 		"150-ha-overrides": {
@@ -497,6 +508,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-victoria-metrics-1":   {cpuRequest: "333", cpuLimit: "333", memoryRequest: "333Gi", memoryLimit: "333Gi"},
 			"suse-observability-vmagent":              {cpuRequest: "555", cpuLimit: "555", memoryRequest: "555Gi", memoryLimit: "555Gi"},
 			"suse-observability-workload-observer":    {cpuRequest: "999", cpuLimit: "999", memoryRequest: "999Gi", memoryLimit: "999Gi"},
+			"suse-observability-borg":              {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "256Mi", memoryLimit: "512Mi"},
 			"suse-observability-zookeeper":            {cpuRequest: "777", cpuLimit: "777", memoryRequest: "777Gi", memoryLimit: "777Gi"},
 		},
 		"4000-ha-overrides": {
@@ -514,6 +526,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-victoria-metrics-1":   {cpuRequest: "333", cpuLimit: "333", memoryRequest: "333Gi", memoryLimit: "333Gi"},
 			"suse-observability-vmagent":              {cpuRequest: "555", cpuLimit: "555", memoryRequest: "555Gi", memoryLimit: "555Gi"},
 			"suse-observability-workload-observer":    {cpuRequest: "999", cpuLimit: "999", memoryRequest: "999Gi", memoryLimit: "999Gi"},
+			"suse-observability-borg":              {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "256Mi", memoryLimit: "512Mi"},
 			"suse-observability-zookeeper":            {cpuRequest: "777", cpuLimit: "777", memoryRequest: "777Gi", memoryLimit: "777Gi"},
 		},
 		"10-nonha-global-overrides": {
@@ -526,6 +539,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-victoria-metrics-0":   {cpuRequest: "111", cpuLimit: "111", memoryRequest: "111Gi", memoryLimit: "111Gi"},
 			"suse-observability-vmagent":              {cpuRequest: "555", cpuLimit: "555", memoryRequest: "555Gi", memoryLimit: "555Gi"},
 			"suse-observability-workload-observer":    {cpuRequest: "999", cpuLimit: "999", memoryRequest: "999Gi", memoryLimit: "999Gi"},
+			"suse-observability-borg":              {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "256Mi", memoryLimit: "512Mi"},
 			"suse-observability-zookeeper":            {cpuRequest: "777", cpuLimit: "777", memoryRequest: "777Gi", memoryLimit: "777Gi"},
 		},
 		"150-ha-global-overrides": {
@@ -543,6 +557,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-victoria-metrics-1":   {cpuRequest: "333", cpuLimit: "333", memoryRequest: "333Gi", memoryLimit: "333Gi"},
 			"suse-observability-vmagent":              {cpuRequest: "555", cpuLimit: "555", memoryRequest: "555Gi", memoryLimit: "555Gi"},
 			"suse-observability-workload-observer":    {cpuRequest: "999", cpuLimit: "999", memoryRequest: "999Gi", memoryLimit: "999Gi"},
+			"suse-observability-borg":              {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "256Mi", memoryLimit: "512Mi"},
 			"suse-observability-zookeeper":            {cpuRequest: "777", cpuLimit: "777", memoryRequest: "777Gi", memoryLimit: "777Gi"},
 		},
 		"4000-ha-global-overrides": {
@@ -560,6 +575,7 @@ func TestResources(t *testing.T) {
 			"suse-observability-victoria-metrics-1":   {cpuRequest: "333", cpuLimit: "333", memoryRequest: "333Gi", memoryLimit: "333Gi"},
 			"suse-observability-vmagent":              {cpuRequest: "555", cpuLimit: "555", memoryRequest: "555Gi", memoryLimit: "555Gi"},
 			"suse-observability-workload-observer":    {cpuRequest: "999", cpuLimit: "999", memoryRequest: "999Gi", memoryLimit: "999Gi"},
+			"suse-observability-borg":              {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "256Mi", memoryLimit: "512Mi"},
 			"suse-observability-zookeeper":            {cpuRequest: "777", cpuLimit: "777", memoryRequest: "777Gi", memoryLimit: "777Gi"},
 		},
 	}

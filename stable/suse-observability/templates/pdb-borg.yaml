@@ -1,0 +1,4 @@
+{{- if .Values.ai.assistant.enabled }}
+{{- $valuesPdb := dict "PdbName" "borg" "PdbBudget" .Values.stackstate.components.borg.poddisruptionbudget -}}
+{{- (include "stackstate.service.poddisruptionbudget" (merge $valuesPdb .) ) -}}
+{{- end }}

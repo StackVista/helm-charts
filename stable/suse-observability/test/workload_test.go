@@ -51,6 +51,7 @@ var expectedWorkloadsHA = []string{
 	"StatefulSet/suse-observability-zookeeper",
 	"StatefulSet/suse-observability-vmagent",
 	"StatefulSet/suse-observability-workload-observer",
+	"StatefulSet/suse-observability-borg",
 	// Jobs (dynamic names will be handled with pattern matching)
 	"Job/suse-observability-backup-conf-*",
 	"Job/suse-observability-backup-init-*",
@@ -92,6 +93,7 @@ var expectedWorkloadsNonHA = []string{
 	"StatefulSet/suse-observability-zookeeper",
 	"StatefulSet/suse-observability-vmagent",
 	"StatefulSet/suse-observability-workload-observer",
+	"StatefulSet/suse-observability-borg",
 	// Jobs (dynamic names will be handled with pattern matching)
 	"Job/suse-observability-backup-conf-*",
 	"Job/suse-observability-backup-init-*",
