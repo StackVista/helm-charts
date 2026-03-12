@@ -293,19 +293,3 @@ Get Victoria Metrics 1 storage size from sizing profile if applicable.
 {{- $sizing := include "common.sizing.victoria-metrics.storage" . | trim -}}
 {{- default $sizing (index .Values "victoria-metrics-1" "server" "persistentVolume" "size") -}}
 {{- end -}}
-
-{{/*
-Get Victoria Metrics 0 retentionPeriod from sizing profile if applicable.
-*/}}
-{{- define "suse-observability.sizing.victoria-metrics-0.server.retentionPeriod" -}}
-{{- $sizing := include "common.sizing.victoria-metrics.retention" . | trim -}}
-{{- default $sizing (index .Values "victoria-metrics-0" "server" "retentionPeriod") -}}
-{{- end -}}
-
-{{/*
-Get Victoria Metrics 1 retentionPeriod from sizing profile if applicable.
-*/}}
-{{- define "suse-observability.sizing.victoria-metrics-1.server.retentionPeriod" -}}
-{{- $sizing := include "common.sizing.victoria-metrics.retention" . | trim -}}
-{{- default $sizing (index .Values "victoria-metrics-1" "server" "retentionPeriod") -}}
-{{- end -}}

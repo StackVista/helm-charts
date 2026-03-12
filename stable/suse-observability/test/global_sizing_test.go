@@ -572,11 +572,12 @@ func TestGlobalSizingProfileWinsOverDefaults(t *testing.T) {
 // TestGlobalSizingUserStorageOverrides tests that user-specified storage overrides take precedence over sizing profile defaults
 func TestGlobalSizingUserStorageOverrides(t *testing.T) {
 	testCases := []struct {
-		name               string
-		valuesFile         string
-		expectedStorage    map[string]string // statefulset name -> expected storage size
-		expectedReplicas   map[string]int    // statefulset name -> expected replica count
-		expectedEsJavaOpts string
+		name                    string
+		valuesFile              string
+		expectedStorage         map[string]string // statefulset name -> expected storage size
+		expectedReplicas        map[string]int    // statefulset name -> expected replica count
+		expectedEsJavaOpts      string
+		expectedRetentionPeriod map[string]string // statefulset name -> expected retentionPeriod arg value
 	}{
 		{
 			name:       "150-ha with storage overrides",
@@ -594,6 +595,10 @@ func TestGlobalSizingUserStorageOverrides(t *testing.T) {
 				"suse-observability-elasticsearch-master": 5,
 			},
 			expectedEsJavaOpts: "-Xmx8g -Xms8g -Des.allow_insecure_settings=true",
+			expectedRetentionPeriod: map[string]string{
+				"suse-observability-victoria-metrics-0": "6",
+				"suse-observability-victoria-metrics-1": "6",
+			},
 		},
 		{
 			name:       "10-nonha with storage overrides",
@@ -656,6 +661,26 @@ func TestGlobalSizingUserStorageOverrides(t *testing.T) {
 						}
 					}
 					assert.True(t, found, "ES_JAVA_OPTS env var should be set")
+				})
+			}
+
+			// Verify retentionPeriod overrides
+			for stsName, expectedRetention := range tc.expectedRetentionPeriod {
+				t.Run("retentionPeriod-"+stsName, func(t *testing.T) {
+					ss, exists := resources.Statefulsets[stsName]
+					require.True(t, exists, "StatefulSet %s should exist", stsName)
+					containers := ss.Spec.Template.Spec.Containers
+					require.NotEmpty(t, containers, "StatefulSet %s should have containers", stsName)
+					expectedArg := "--retentionPeriod=" + expectedRetention
+					found := false
+					for _, arg := range containers[0].Args {
+						if arg == expectedArg {
+							found = true
+							break
+						}
+					}
+					assert.True(t, found,
+						"StatefulSet %s should have arg %s (user override), got args: %v", stsName, expectedArg, containers[0].Args)
 				})
 			}
 		})

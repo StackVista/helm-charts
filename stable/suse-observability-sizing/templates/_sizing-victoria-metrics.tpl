@@ -209,7 +209,6 @@ Usage: {{ include "common.sizing.victoria-metrics.retention" . }}
 {{- $profile = .Values.global.suseObservability.sizing.profile -}}
 {{- end -}}
 {{- if eq $profile "trial" }}3d
-{{- else if $profile }}1
 {{- end }}
 {{- end }}
 
