@@ -3,6 +3,8 @@ package test
 import (
 	"testing"
 
+	"github.com/gruntwork-io/terratest/modules/helm"
+	"github.com/gruntwork-io/terratest/modules/k8s"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
@@ -736,6 +738,50 @@ func TestGlobalSizingStorageDefaultsWithoutOverrides(t *testing.T) {
 						"StatefulSet %s storage should be %s (sizing profile default)", stsName, expectedSize)
 				})
 			}
+		})
+	}
+}
+
+// TestBackupPVCStorageWithSizingProfile tests that backup-stackgraph-tmp-data PVC gets a non-empty storage size from sizing profiles
+func TestBackupPVCStorageWithSizingProfile(t *testing.T) {
+	testCases := []struct {
+		name            string
+		valuesFile      string
+		expectedPVC     string
+		expectedStorage string
+	}{
+		{
+			name:            "150-ha distributed backup PVC defaults to hdfs datanode size",
+			valuesFile:      "values/global_sizing_150_ha.yaml",
+			expectedPVC:     "suse-observability-backup-stackgraph-tmp-data",
+			expectedStorage: "250Gi",
+		},
+		{
+			name:            "10-nonha mono backup PVC defaults to stackgraph size",
+			valuesFile:      "values/global_sizing_10_nonha.yaml",
+			expectedPVC:     "suse-observability-backup-stackgraph-tmp-data",
+			expectedStorage: "50Gi",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+				ValuesFiles: []string{tc.valuesFile},
+				SetValues: map[string]string{
+					"global.backup.enabled": "true",
+				},
+				KubectlOptions: &k8s.KubectlOptions{
+					Namespace: "suse-observability",
+				},
+			})
+			resources := helmtestutil.NewKubernetesResources(t, output)
+
+			pvc, exists := resources.PersistentVolumeClaims[tc.expectedPVC]
+			require.True(t, exists, "PVC %s should exist", tc.expectedPVC)
+			storageReq := pvc.Spec.Resources.Requests[corev1.ResourceStorage]
+			assert.Equal(t, resource.MustParse(tc.expectedStorage), storageReq,
+				"PVC %s storage should be %s (sizing profile default)", tc.expectedPVC, tc.expectedStorage)
 		})
 	}
 }

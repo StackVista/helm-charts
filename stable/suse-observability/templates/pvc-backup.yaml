@@ -14,9 +14,9 @@ spec:
     requests:
 {{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
       {{- if eq $deploymentMode "Distributed" }}
-      storage: {{ .Values.backup.stackGraph.scheduled.tempData.size | default .Values.hbase.hdfs.datanode.persistence.size }}
+      storage: {{ .Values.backup.stackGraph.scheduled.tempData.size | default (include "suse-observability.sizing.hbase.hdfs.datanode.persistence.size" . | trim) }}
       {{- else}}
-      storage: {{ .Values.backup.stackGraph.scheduled.tempData.size | default .Values.hbase.stackgraph.persistence.size }}
+      storage: {{ .Values.backup.stackGraph.scheduled.tempData.size | default (include "suse-observability.sizing.hbase.stackgraph.persistence.size" . | trim) }}
       {{- end }}
   {{ include "common.storage.class" ( dict "persistence" .Values.backup.stackGraph.scheduled.tempData "global" .Values.global) | nindent 2 }}
 {{- end }}
