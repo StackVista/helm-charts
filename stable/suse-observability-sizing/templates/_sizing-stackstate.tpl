@@ -720,7 +720,7 @@ Usage: {{ include "common.sizing.stackstate.ai-assistant.resources" . }}
 {{- define "common.sizing.stackstate.ai-assistant.resources" -}}
 requests:
   cpu: "100m"
-  memory: "256Mi"
+  memory: "512Mi"
   ephemeral-storage: "1Mi"
 limits:
   cpu: "500m"

@@ -144,7 +144,7 @@ Router extra environment variables for ui pods inherited through `stackstate.com
 MCP fullname helper
 */}}
 {{- define "stackstate.mcp.fullname" -}}
-{{ template "common.fullname.short" . }}-mcp
+suse-observability-mcp
 {{- end -}}
 
 {{/*
@@ -172,7 +172,7 @@ MCP extra environment variables for mcp pods inherited through `stackstate.compo
 AI Assistant fullname helper
 */}}
 {{- define "stackstate.ai-assistant.fullname" -}}
-{{ template "common.fullname.short" . }}-ai-assistant
+suse-observability-ai-assistant
 {{- end -}}
 
 {{/*
