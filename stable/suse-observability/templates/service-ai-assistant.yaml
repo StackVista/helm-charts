@@ -1,0 +1,20 @@
+{{- define "stackstate.ai-assistant.service" -}}
+metadata:
+  name: {{ template "stackstate.ai-assistant.fullname" . }}
+  labels:
+    app.kubernetes.io/component: ai-assistant
+spec:
+  ports:
+    - name: http
+      port: {{ .Values.stackstate.components.aiAssistant.service.port }}
+      protocol: TCP
+      targetPort: http
+  selector:
+    app.kubernetes.io/component: ai-assistant
+{{- end -}}
+
+{{- if .Values.ai.assistant.enabled }}
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $aiAssistantService := fromYaml (include "stackstate.ai-assistant.service" .) -}}
+{{- toYaml (merge $aiAssistantService $commonService) -}}
+{{- end }}

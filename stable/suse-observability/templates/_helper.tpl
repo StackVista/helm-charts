@@ -169,28 +169,28 @@ MCP extra environment variables for mcp pods inherited through `stackstate.compo
 {{- end -}}
 
 {{/*
-Borg fullname helper
+AI Assistant fullname helper
 */}}
-{{- define "stackstate.borg.fullname" -}}
-{{ template "common.fullname.short" . }}-borg
+{{- define "stackstate.ai-assistant.fullname" -}}
+{{ template "common.fullname.short" . }}-ai-assistant
 {{- end -}}
 
 {{/*
-Borg extra environment variables for borg pods inherited through `stackstate.components.borg.extraEnv`
+AI Assistant extra environment variables for ai-assistant pods inherited through `stackstate.components.aiAssistant.extraEnv`
 */}}
-{{- define "stackstate.borg.envvars" -}}
-{{- if .Values.stackstate.components.borg.extraEnv.open }}
-  {{- range $key, $value := .Values.stackstate.components.borg.extraEnv.open  }}
+{{- define "stackstate.ai-assistant.envvars" -}}
+{{- if .Values.stackstate.components.aiAssistant.extraEnv.open }}
+  {{- range $key, $value := .Values.stackstate.components.aiAssistant.extraEnv.open  }}
 - name: {{ $key }}
   value: {{ $value | quote }}
   {{- end }}
 {{- end }}
-{{- if .Values.stackstate.components.borg.extraEnv.secret }}
-  {{- range $key, $value := .Values.stackstate.components.borg.extraEnv.secret  }}
+{{- if .Values.stackstate.components.aiAssistant.extraEnv.secret }}
+  {{- range $key, $value := .Values.stackstate.components.aiAssistant.extraEnv.secret  }}
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ template "stackstate.borg.fullname" $ }}
+      name: {{ template "stackstate.ai-assistant.fullname" $ }}
       key: {{ $key }}
   {{- end }}
 {{- end }}

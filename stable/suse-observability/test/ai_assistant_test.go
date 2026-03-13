@@ -10,26 +10,26 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-func TestBorgEnabledWithAiAssistant(t *testing.T) {
+func TestAiAssistantEnabledWithAiAssistant(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 	})
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	statefulSet, ok := resources.Statefulsets["suse-observability-borg"]
-	require.True(t, ok, "Borg StatefulSet should exist")
+	statefulSet, ok := resources.Statefulsets["suse-observability-ai-assistant"]
+	require.True(t, ok, "AI Assistant StatefulSet should exist")
 
-	service, ok := resources.Services["suse-observability-borg"]
-	require.True(t, ok, "Borg service should exist")
+	service, ok := resources.Services["suse-observability-ai-assistant"]
+	require.True(t, ok, "AI Assistant service should exist")
 
-	serviceAccount, ok := resources.ServiceAccounts["suse-observability-borg"]
-	require.True(t, ok, "Borg service account should exist")
+	serviceAccount, ok := resources.ServiceAccounts["suse-observability-ai-assistant"]
+	require.True(t, ok, "AI Assistant service account should exist")
 
-	assert.Equal(t, "suse-observability-borg", serviceAccount.Name)
+	assert.Equal(t, "suse-observability-ai-assistant", serviceAccount.Name)
 
 	container := statefulSet.Spec.Template.Spec.Containers[0]
-	assert.Equal(t, "borg", container.Name)
+	assert.Equal(t, "ai-assistant", container.Name)
 	assert.Contains(t, container.Args, "serve")
 
 	// Verify MCP_SERVER_URL env var points to MCP service
@@ -41,7 +41,7 @@ func TestBorgEnabledWithAiAssistant(t *testing.T) {
 	// Verify SQLite path env var
 	assert.Contains(t, container.Env, corev1.EnvVar{
 		Name:  "SQLITE_PATH",
-		Value: "/data/borg.db",
+		Value: "/data/ai-assistant.db",
 	})
 
 	// Verify AWS Bedrock is enabled
@@ -55,7 +55,7 @@ func TestBorgEnabledWithAiAssistant(t *testing.T) {
 	assert.Equal(t, int32(8081), service.Spec.Ports[0].Port)
 
 	// Verify service account is referenced in the StatefulSet
-	assert.Equal(t, "suse-observability-borg", statefulSet.Spec.Template.Spec.ServiceAccountName)
+	assert.Equal(t, "suse-observability-ai-assistant", statefulSet.Spec.Template.Spec.ServiceAccountName)
 
 	// Verify PVC is defined
 	require.Len(t, statefulSet.Spec.VolumeClaimTemplates, 1)
@@ -74,7 +74,7 @@ func TestBorgEnabledWithAiAssistant(t *testing.T) {
 	assert.Equal(t, "/data", dataMount.MountPath)
 }
 
-func TestBorgDisabledWhenAiAssistantDisabled(t *testing.T) {
+func TestAiAssistantDisabledWhenAiAssistantDisabled(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
@@ -83,31 +83,31 @@ func TestBorgDisabledWhenAiAssistantDisabled(t *testing.T) {
 	})
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
-	assert.NotContains(t, resources.Statefulsets, "suse-observability-borg")
-	assert.NotContains(t, resources.Services, "suse-observability-borg")
-	assert.NotContains(t, resources.ServiceAccounts, "suse-observability-borg")
+	assert.NotContains(t, resources.Statefulsets, "suse-observability-ai-assistant")
+	assert.NotContains(t, resources.Services, "suse-observability-ai-assistant")
+	assert.NotContains(t, resources.ServiceAccounts, "suse-observability-ai-assistant")
 }
 
-func TestBorgServiceAccountAnnotations(t *testing.T) {
+func TestAiAssistantServiceAccountAnnotations(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
 		SetValues: map[string]string{
-			"stackstate.components.borg.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn": "arn:aws:iam::123456789012:role/my-borg-role",
+			"stackstate.components.aiAssistant.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn": "arn:aws:iam::123456789012:role/my-ai-assistant-role",
 		},
 	})
 
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	serviceAccount, ok := resources.ServiceAccounts["suse-observability-borg"]
-	require.True(t, ok, "Borg service account should exist")
+	serviceAccount, ok := resources.ServiceAccounts["suse-observability-ai-assistant"]
+	require.True(t, ok, "AI Assistant service account should exist")
 
-	assert.Equal(t, "arn:aws:iam::123456789012:role/my-borg-role", serviceAccount.Annotations["eks.amazonaws.com/role-arn"])
+	assert.Equal(t, "arn:aws:iam::123456789012:role/my-ai-assistant-role", serviceAccount.Annotations["eks.amazonaws.com/role-arn"])
 }
 
-func TestBorgImageTagRequired(t *testing.T) {
+func TestAiAssistantImageTagRequired(t *testing.T) {
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability",
 		"values/full.yaml",
-		"values/borg_missing_image_tag.yaml",
+		"values/ai_assistant_missing_image_tag.yaml",
 	)
-	require.Contains(t, err.Error(), "stackstate.components.borg.image.tag must be set")
+	require.Contains(t, err.Error(), "stackstate.components.aiAssistant.image.tag must be set")
 }

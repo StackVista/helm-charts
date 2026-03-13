@@ -1,0 +1,127 @@
+{{- define "stackstate.ai-assistant.statefulset.container.main" -}}
+{{- $serviceConfig := dict "ServiceName" "ai-assistant" "ServiceConfig" .Values.stackstate.components.aiAssistant }}
+{{- $mcpUrl := printf "http://%s:%d" (include "stackstate.mcp.fullname" .) (.Values.stackstate.components.mcp.service.port | int) -}}
+{{- $aiAssistantImageTag := .Values.stackstate.components.aiAssistant.image.tag -}}
+{{- if .Values.ai.assistant.enabled -}}
+{{- $aiAssistantImageTag = required "stackstate.components.aiAssistant.image.tag must be set" .Values.stackstate.components.aiAssistant.image.tag -}}
+{{- end -}}
+name: ai-assistant
+image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.aiAssistant.image.repository }}:{{ $aiAssistantImageTag }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.aiAssistant.image.pullPolicy | quote }}
+args:
+  - serve
+env:
+- name: MCP_SERVER_URL
+  value: {{ $mcpUrl | quote }}
+- name: SQLITE_PATH
+  value: "/data/ai-assistant.db"
+- name: USE_BEDROCK
+  value: "true"
+- name: API_PORT
+  value: {{ .Values.stackstate.components.aiAssistant.service.port | quote }}
+- name: API_BIND_ADDRESS
+  value: "0.0.0.0"
+{{- include "stackstate.common.envvars" . }}
+{{- include "stackstate.ai-assistant.envvars" . }}
+{{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
+{{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.aiAssistant.envsFromExistingSecrets }}
+ports:
+  - containerPort: {{ .Values.stackstate.components.aiAssistant.service.port }}
+    name: http
+    protocol: TCP
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 15
+  timeoutSeconds: 5
+readinessProbe:
+  httpGet:
+    path: /readyz
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 15
+  timeoutSeconds: 5
+volumeMounts:
+  - name: data
+    mountPath: /data
+{{- $sizingResources := include "common.sizing.stackstate.ai-assistant.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.stackstate.components.aiAssistant.resources $sizingResourcesDict }}
+{{- if $evaluatedResources }}
+resources:
+  {{- toYaml $evaluatedResources | nindent 2 }}
+{{- end }}
+{{- end -}}
+
+{{- define "stackstate.ai-assistant.statefulset" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.ai-assistant.statefulset.container.main" .) -}}
+{{- $aiAssistantMainContainer := (merge $overrideContainer $commonContainer) -}}
+metadata:
+  name: {{ template "stackstate.ai-assistant.fullname" . }}
+  labels:
+    app.kubernetes.io/component: ai-assistant
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: ai-assistant
+  serviceName: {{ template "stackstate.ai-assistant.fullname" . }}
+  template:
+    metadata:
+      annotations:
+        {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "ai-assistant") .) }}
+      labels:
+        app.kubernetes.io/component: ai-assistant
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ template "stackstate.ai-assistant.fullname" . }}
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
+      containers:
+      - {{ toYaml $aiAssistantMainContainer | nindent 8 }}
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.aiAssistant.nodeSelector }}
+      nodeSelector:
+      {{- with .Values.stackstate.components.all.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.aiAssistant.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.aiAssistant.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- if $affinity }}
+      affinity:
+        {{- $affinity | nindent 8 }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.aiAssistant.tolerations }}
+      tolerations:
+      {{- with .Values.stackstate.components.all.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.aiAssistant.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.stackstate.components.all.securityContext.enabled }}
+      securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
+    {{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.stackstate.components.aiAssistant.persistence.size | quote }}
+        {{ include "common.storage.class" (dict "persistence" .Values.stackstate.components.aiAssistant.persistence "global" .Values.global) | nindent 8 }}
+{{- end -}}
+
+{{- if .Values.ai.assistant.enabled }}
+{{- $commonStatefulset := fromYaml (include "common.statefulset" .) -}}
+{{- $aiAssistantStatefulset := fromYaml (include "stackstate.ai-assistant.statefulset" .) -}}
+{{- toYaml (merge $aiAssistantStatefulset $commonStatefulset) -}}
+{{- end }}

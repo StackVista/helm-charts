@@ -714,10 +714,10 @@ limits:
 {{- end }}
 
 {{/*
-Get stackstate borg component resources
-Usage: {{ include "common.sizing.stackstate.borg.resources" . }}
+Get stackstate ai-assistant component resources
+Usage: {{ include "common.sizing.stackstate.ai-assistant.resources" . }}
 */}}
-{{- define "common.sizing.stackstate.borg.resources" -}}
+{{- define "common.sizing.stackstate.ai-assistant.resources" -}}
 requests:
   cpu: "100m"
   memory: "256Mi"

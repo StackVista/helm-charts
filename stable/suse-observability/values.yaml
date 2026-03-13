@@ -800,8 +800,8 @@ stackstate:
       tolerations: []
       # stackstate.components.mcp.affinity -- Affinity settings for pod assignment.
       affinity: {}
-    borg:
-      # stackstate.components.borg.envsFromExistingSecrets -- Configure environment variables from existing secrets.
+    aiAssistant:
+      # stackstate.components.aiAssistant.envsFromExistingSecrets -- Configure environment variables from existing secrets.
       # envsFromExistingSecret
       # - name: MY_SECRET_ENV_VAR
       #   secretName: my-k8s-secret
@@ -811,43 +811,43 @@ stackstate:
       #   secretKey: another-secret-key
       envsFromExistingSecrets: []
       extraEnv:
-        # stackstate.components.borg.extraEnv.open -- Extra open environment variables to inject into pods.
+        # stackstate.components.aiAssistant.extraEnv.open -- Extra open environment variables to inject into pods.
         open: {}
-        # stackstate.components.borg.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
+        # stackstate.components.aiAssistant.extraEnv.secret -- Extra secret environment variables to inject into pods via a `Secret` object.
         secret: {}
       image:
-        # stackstate.components.borg.image.imageRegistry -- `imageRegistry` used for the `borg` component Docker image; this will override `global.imageRegistry` on a per-service basis.
+        # stackstate.components.aiAssistant.image.imageRegistry -- `imageRegistry` used for the `ai-assistant` component Docker image; this will override `global.imageRegistry` on a per-service basis.
         imageRegistry: ""
-        # stackstate.components.borg.image.pullPolicy -- `pullPolicy` used for the `borg` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
+        # stackstate.components.aiAssistant.image.pullPolicy -- `pullPolicy` used for the `ai-assistant` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis.
         pullPolicy: ""
-        # stackstate.components.borg.image.repository -- Repository of the borg component Docker image.
+        # stackstate.components.aiAssistant.image.repository -- Repository of the ai-assistant component Docker image.
         repository: stackstate/suse-observability-borg
-        # stackstate.components.borg.image.tag -- Tag used for the `borg` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
+        # stackstate.components.aiAssistant.image.tag -- Tag used for the `ai-assistant` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: "20260311082059-fa69371c"
-      # stackstate.components.borg.service.port -- Service port for the Borg (AI Assistant) server.
+      # stackstate.components.aiAssistant.service.port -- Service port for the AI Assistant server.
       service:
         port: 8081
       serviceAccount:
-        # stackstate.components.borg.serviceAccount.annotations -- Annotations for the borg `ServiceAccount`. Useful for e.g. AWS IAM Role binding via IRSA: `eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/my-borg-role`.
+        # stackstate.components.aiAssistant.serviceAccount.annotations -- Annotations for the ai-assistant `ServiceAccount`. Useful for e.g. AWS IAM Role binding via IRSA: `eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/my-ai-assistant-role`.
         annotations: {}
-      # stackstate.components.borg.podAnnotations -- Extra annotations
+      # stackstate.components.aiAssistant.podAnnotations -- Extra annotations
       podAnnotations: {}
-      # stackstate.components.borg.poddisruptionbudget -- PodDisruptionBudget settings for `borg` pods.
+      # stackstate.components.aiAssistant.poddisruptionbudget -- PodDisruptionBudget settings for `ai-assistant` pods.
       poddisruptionbudget:
         maxUnavailable: 1
-      # stackstate.components.borg.resources -- Resource allocation for `borg` pods.
+      # stackstate.components.aiAssistant.resources -- Resource allocation for `ai-assistant` pods.
       resources: {}
-      # stackstate.components.borg.persistence -- Persistence settings for the SQLite database.
+      # stackstate.components.aiAssistant.persistence -- Persistence settings for the SQLite database.
       persistence:
-        # stackstate.components.borg.persistence.size -- Size of the PVC for the SQLite database.
+        # stackstate.components.aiAssistant.persistence.size -- Size of the PVC for the SQLite database.
         size: 1Gi
-        # stackstate.components.borg.persistence.storageClass -- Storage class for the SQLite database PVC.
+        # stackstate.components.aiAssistant.persistence.storageClass -- Storage class for the SQLite database PVC.
         storageClass: ""
-      # stackstate.components.borg.nodeSelector -- Node labels for pod assignment.
+      # stackstate.components.aiAssistant.nodeSelector -- Node labels for pod assignment.
       nodeSelector: {}
-      # stackstate.components.borg.tolerations -- Toleration labels for pod assignment.
+      # stackstate.components.aiAssistant.tolerations -- Toleration labels for pod assignment.
       tolerations: []
-      # stackstate.components.borg.affinity -- Affinity settings for pod assignment.
+      # stackstate.components.aiAssistant.affinity -- Affinity settings for pod assignment.
       affinity: {}
     e2es:
       extraEnv:

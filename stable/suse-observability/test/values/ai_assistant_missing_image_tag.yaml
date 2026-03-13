@@ -3,6 +3,6 @@ ai:
     enabled: true
 stackstate:
   components:
-    borg:
+    aiAssistant:
       image:
         tag: ""
