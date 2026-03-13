@@ -300,14 +300,14 @@ checksum/license-env: {{ include (print $.Template.BasePath "/secret-license-key
 {{- end -}}
 
 {{/*
-License secret checksum annotations
+Apikey secret checksum annotations
 */}}
 {{- define "stackstate.apiKey.secret.checksum" -}}
 checksum/api-key-env: {{ include (print $.Template.BasePath "/secret-api-key.yaml") . | sha256sum }}
 {{- end -}}
 
 {{/*
-License secret checksum annotations
+Auth secret checksum annotations
 */}}
 {{- define "stackstate.auth.secret.checksum" -}}
 checksum/auth-env: {{ include (print $.Template.BasePath "/secret-auth.yaml") . | sha256sum }}
@@ -317,7 +317,7 @@ checksum/auth-env: {{ include (print $.Template.BasePath "/secret-auth.yaml") . 
 Email secret checksum annotations
 */}}
 {{- define "stackstate.email.secret.checksum" -}}
-checksum/auth-env: {{ include (print $.Template.BasePath "/secret-email.yaml") . | sha256sum }}
+checksum/email-env: {{ include (print $.Template.BasePath "/secret-email.yaml") . | sha256sum }}
 {{- end -}}
 
 {{/*
