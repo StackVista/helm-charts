@@ -73,7 +73,7 @@ spec:
   template:
     metadata:
       annotations:
-        {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "ai-assistant") .) }}
+        {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "aiAssistant") .) }}
       labels:
         app.kubernetes.io/component: ai-assistant
         {{- include "suse-observability.labels.global" . | nindent 8 }}
