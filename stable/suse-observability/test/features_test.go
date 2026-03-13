@@ -504,3 +504,95 @@ func assertBackupCronjobSplit(t *testing.T, resources *helmtestutil.KubernetesRe
 		}
 	}
 }
+
+func TestAiAssistantUrlMonoEnabled(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{
+			"values/full.yaml",
+		},
+		SetValues: map[string]string{
+			"stackstate.features.server.split": "false",
+			"ai.assistant.enabled":             "true",
+		},
+		KubectlOptions: &k8s.KubectlOptions{
+			Namespace: "suse-observability",
+		},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments[monolithComponent]
+	require.True(t, ok, "Server (mono) deployment should exist")
+
+	expected := corev1.EnvVar{Name: "AI_SERVICE_URL", Value: "http://suse-observability-ai-assistant:8081"}
+	assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Env, expected, "Server (mono) deployment should have AI_SERVICE_URL set when ai.assistant.enabled is true")
+}
+
+func TestAiAssistantUrlMonoDisabled(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{
+			"values/full.yaml",
+		},
+		SetValues: map[string]string{
+			"stackstate.features.server.split": "false",
+			"ai.assistant.enabled":             "false",
+		},
+		KubectlOptions: &k8s.KubectlOptions{
+			Namespace: "suse-observability",
+		},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments[monolithComponent]
+	require.True(t, ok, "Server (mono) deployment should exist")
+
+	for _, env := range deployment.Spec.Template.Spec.Containers[0].Env {
+		assert.NotEqual(t, "AI_SERVICE_URL", env.Name, "Server (mono) deployment should not have AI_SERVICE_URL when ai.assistant.enabled is false")
+	}
+}
+
+func TestAiAssistantUrlSplitEnabled(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{
+			"values/full.yaml",
+		},
+		SetValues: map[string]string{
+			"ai.assistant.enabled": "true",
+		},
+		KubectlOptions: &k8s.KubectlOptions{
+			Namespace: "suse-observability",
+		},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-api"]
+	require.True(t, ok, "API (split) deployment should exist")
+
+	expected := corev1.EnvVar{Name: "AI_SERVICE_URL", Value: "http://suse-observability-ai-assistant:8081"}
+	assert.Contains(t, deployment.Spec.Template.Spec.Containers[0].Env, expected, "API (split) deployment should have AI_SERVICE_URL set when ai.assistant.enabled is true")
+}
+
+func TestAiAssistantUrlSplitDisabled(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{
+			"values/full.yaml",
+		},
+		SetValues: map[string]string{
+			"ai.assistant.enabled": "false",
+		},
+		KubectlOptions: &k8s.KubectlOptions{
+			Namespace: "suse-observability",
+		},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, ok := resources.Deployments["suse-observability-api"]
+	require.True(t, ok, "API (split) deployment should exist")
+
+	for _, env := range deployment.Spec.Template.Spec.Containers[0].Env {
+		assert.NotEqual(t, "AI_SERVICE_URL", env.Name, "API (split) deployment should not have AI_SERVICE_URL when ai.assistant.enabled is false")
+	}
+}
