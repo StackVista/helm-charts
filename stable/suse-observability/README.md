@@ -10,19 +10,19 @@ Current chart version is `2.8.1-pre.36`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.20 |
+| file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.21 |
 | file://../common/ | common | * |
-| file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.17 |
-| file://../hbase/ | hbase | 0.2.127 |
-| file://../kafka/ | kafka | 19.1.3-suse-observability.19 |
-| file://../kafkaup-operator/ | kafkaup-operator | 0.1.23 |
-| file://../minio/ | minio | 8.0.10-stackstate.24 |
+| file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.18 |
+| file://../hbase/ | hbase | 0.2.128 |
+| file://../kafka/ | kafka | 19.1.3-suse-observability.20 |
+| file://../kafkaup-operator/ | kafkaup-operator | 0.1.24 |
+| file://../minio/ | minio | 8.0.10-stackstate.25 |
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.21 |
 | file://../pull-secret/ | pull-secret | * |
-| file://../suse-observability-sizing/ | suse-observability-sizing | 0.1.11 |
-| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.44 |
-| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.44 |
-| file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.17 |
+| file://../suse-observability-sizing/ | suse-observability-sizing | 0.1.12 |
+| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.45 |
+| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.45 |
+| file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.18 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.179 |
 | https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.25 |
 
@@ -823,6 +823,24 @@ If you encounter issues not covered here:
 | stackstate.components.backup.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | stackstate.components.backup.resources.requests.memory | string | `"4000Mi"` |  |
 | stackstate.components.backup.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| stackstate.components.borg.affinity | object | `{}` | Affinity settings for pod assignment. |
+| stackstate.components.borg.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: secret-key - name: MY_OTHER_SECRET_ENV_VAR   secretName: my-other-k8s-secret   secretKey: another-secret-key |
+| stackstate.components.borg.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
+| stackstate.components.borg.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
+| stackstate.components.borg.image.imageRegistry | string | `""` | `imageRegistry` used for the `borg` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
+| stackstate.components.borg.image.pullPolicy | string | `""` | `pullPolicy` used for the `borg` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
+| stackstate.components.borg.image.repository | string | `"stackstate/suse-observability-borg"` | Repository of the borg component Docker image. |
+| stackstate.components.borg.image.tag | string | `"20260311082059-fa69371c"` | Tag used for the `borg` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.borg.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| stackstate.components.borg.persistence | object | `{"size":"1Gi","storageClass":""}` | Persistence settings for the SQLite database. |
+| stackstate.components.borg.persistence.size | string | `"1Gi"` | Size of the PVC for the SQLite database. |
+| stackstate.components.borg.persistence.storageClass | string | `""` | Storage class for the SQLite database PVC. |
+| stackstate.components.borg.podAnnotations | object | `{}` | Extra annotations |
+| stackstate.components.borg.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `borg` pods. |
+| stackstate.components.borg.resources | object | `{}` | Resource allocation for `borg` pods. |
+| stackstate.components.borg.service.port | int | `8081` | Service port for the Borg (AI Assistant) server. |
+| stackstate.components.borg.serviceAccount.annotations | object | `{}` | Annotations for the borg `ServiceAccount`. Useful for e.g. AWS IAM Role binding via IRSA: `eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/my-borg-role`. |
+| stackstate.components.borg.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.checks.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.checks.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.checks.config | string | `""` | Configuration file contents to customize the default StackState state configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |

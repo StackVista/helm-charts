@@ -21,6 +21,7 @@ env:
   value: {{ .Values.stackstate.components.borg.service.port | quote }}
 - name: API_BIND_ADDRESS
   value: "0.0.0.0"
+{{- include "stackstate.common.envvars" . }}
 {{- include "stackstate.borg.envvars" . }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.borg.envsFromExistingSecrets }}
