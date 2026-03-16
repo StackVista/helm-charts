@@ -55,7 +55,7 @@ var expectedRoles = map[string]v1.Role{
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"componentactions", "monitors"},
+				Resources: []string{"componentactions", "monitors", "ai"},
 				Verbs:     []string{"execute"},
 			},
 			{
@@ -117,7 +117,7 @@ var expectedRoles = map[string]v1.Role{
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"componentactions", "monitors"},
+				Resources: []string{"componentactions", "monitors", "ai"},
 				Verbs:     []string{"execute"},
 			},
 			{
@@ -168,7 +168,7 @@ var expectedRoles = map[string]v1.Role{
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
-				Resources: []string{"componentactions", "monitors", "restrictedscripts"},
+				Resources: []string{"componentactions", "monitors", "restrictedscripts", "ai"},
 				Verbs:     []string{"execute"},
 			},
 			{
