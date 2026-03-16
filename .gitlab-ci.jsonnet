@@ -32,6 +32,9 @@ local skip_when_dependency_upgrade = {
     @'if': '$UPDATE_STACKSTATE_DOCKER_VERSION',
     when: 'never',
   }, {
+    @'if': '$UPDATE_MCP_DOCKER_VERSION',
+    when: 'never',
+  }, {
     @'if': '$UPDATE_STACKPACKS_DOCKER_VERSION',
     when: 'never',
   }, {
@@ -506,6 +509,7 @@ local update_docker_images = {
   },
 
   update_stackstate_version_to_latest: job('UPDATE_STACKSTATE_DOCKER_VERSION', ['.gitlab/suse-observability/update_stackstate_version_to_latest.sh']),
+  update_mcp_version_to_latest: job('UPDATE_MCP_DOCKER_VERSION', ['.gitlab/suse-observability/update_mcp_version_to_latest.sh']),
   update_stackpacks_version_to_latest: job('UPDATE_STACKPACKS_DOCKER_VERSION', ['.gitlab/suse-observability/update_stackpacks_version_to_latest.sh']),
 };
 
