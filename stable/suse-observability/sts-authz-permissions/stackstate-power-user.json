@@ -47,6 +47,7 @@
         "get-otel-mappings",
         "create-otel-mappings",
         "update-otel-mappings",
-        "delete-otel-mappings"
+        "delete-otel-mappings",
+        "execute-ai"
     ]
 }

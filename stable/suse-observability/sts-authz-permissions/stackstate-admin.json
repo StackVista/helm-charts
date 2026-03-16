@@ -57,6 +57,7 @@
         "create-otel-mappings",
         "update-otel-mappings",
         "delete-otel-mappings",
+        "execute-ai",
         # "unlock-settings" We disable unlock node by default because we do not encourage unlocking stackpack-provided settings
         # (rather update the settings). In dire straits this config part can be patched to allow the unlocking.
     ]
