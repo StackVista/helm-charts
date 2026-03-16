@@ -136,6 +136,13 @@ data:
                     cluster: "{{ template "common.fullname.short" . }}-receiver"
                     prefix_rewrite: "/"
                 {{- end }}
+                {{- if .Values.ai.assistant.enabled }}
+                - match:
+                    prefix: "/mcp"
+                  route:
+                    timeout: 0s
+                    cluster: "{{ template "stackstate.mcp.fullname" . }}"
+                {{- end }}
                 - match:
                     prefix: "/"
                   route:
@@ -243,4 +250,21 @@ data:
                 socket_address:
                   address: "{{ template "common.fullname.short" . }}-ui"
                   port_value: 8080
+    {{- if .Values.ai.assistant.enabled }}
+    - "@type": type.googleapis.com/envoy.config.cluster.v3.Cluster
+      name: "{{ template "stackstate.mcp.fullname" . }}"
+      type: STRICT_DNS
+      lb_policy: LEAST_REQUEST
+      http_protocol_options: {}
+      connect_timeout: 2s
+      load_assignment:
+        cluster_name: "{{ template "stackstate.mcp.fullname" . }}"
+        endpoints:
+        - lb_endpoints:
+          - endpoint:
+              address:
+                socket_address:
+                  address: "{{ template "stackstate.mcp.fullname" . }}"
+                  port_value: {{ .Values.stackstate.components.mcp.service.port }}
+    {{- end }}
 {{- end -}}

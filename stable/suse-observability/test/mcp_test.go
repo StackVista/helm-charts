@@ -38,6 +38,11 @@ func TestMcpServerEnabledByDefault(t *testing.T) {
 		Name:  "CONFIG_FORCE_stackstate_featureSwitches_enableAi",
 		Value: "true",
 	})
+
+	routerConfigMap, ok := resources.ConfigMaps["suse-observability-router-active"]
+	require.True(t, ok, "Active router configmap should exist")
+	assert.Contains(t, routerConfigMap.Data["listeners.yaml"], "prefix: \"/mcp\"")
+	assert.Contains(t, routerConfigMap.Data["clusters.yaml"], "name: \"suse-observability-mcp\"")
 }
 
 func TestMcpServerDisabled(t *testing.T) {
@@ -58,4 +63,30 @@ func TestMcpServerDisabled(t *testing.T) {
 		Name:  "CONFIG_FORCE_stackstate_featureSwitches_enableAi",
 		Value: "true",
 	})
+
+	routerConfigMap, ok := resources.ConfigMaps["suse-observability-router-active"]
+	require.True(t, ok, "Active router configmap should exist")
+	assert.NotContains(t, routerConfigMap.Data["listeners.yaml"], "prefix: \"/mcp\"")
+	assert.NotContains(t, routerConfigMap.Data["clusters.yaml"], "name: \"suse-observability-mcp\"")
+}
+
+func TestMcpServerPublicExposureUsesIngressWhenEnabled(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"ingress.enabled": "true",
+		},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	_, ok := resources.Ingresses["suse-observability"]
+	require.True(t, ok, "Ingress should exist when enabled")
+	assert.Contains(t, output, "kind: Ingress")
+	assert.Contains(t, output, "serviceName: suse-observability-router")
+
+	routerConfigMap, ok := resources.ConfigMaps["suse-observability-router-active"]
+	require.True(t, ok, "Active router configmap should exist")
+	assert.Contains(t, routerConfigMap.Data["listeners.yaml"], "prefix: \"/mcp\"")
+	assert.Contains(t, routerConfigMap.Data["clusters.yaml"], "address: \"suse-observability-mcp\"")
 }
