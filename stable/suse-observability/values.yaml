@@ -823,7 +823,7 @@ stackstate:
         # stackstate.components.aiAssistant.image.repository -- Repository of the ai-assistant component Docker image.
         repository: stackstate/suse-observability-borg
         # stackstate.components.aiAssistant.image.tag -- Tag used for the `ai-assistant` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: "20260313061655-9271faef"
+        tag: "20260317094211-a9276e26"
       # stackstate.components.aiAssistant.service.port -- Service port for the AI Assistant server.
       service:
         port: 8081
