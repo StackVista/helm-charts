@@ -573,8 +573,6 @@ local beest_triggers = {
       { @'if': '$CI_MERGE_REQUEST_IID' },
       { @'if': '$CI_COMMIT_TAG' },
       { @'if': '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH' },
-      { @'if': '$UPDATE_MCP_DOCKER_VERSION' },
-      { @'if': '$UPDATE_AI_ASSISTANT_DOCKER_VERSION' },
       { @'if': '$RUN_UPDATECLI' },
     ],
   },
