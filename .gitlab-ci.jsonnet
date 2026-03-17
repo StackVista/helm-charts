@@ -35,6 +35,9 @@ local skip_when_dependency_upgrade = {
     @'if': '$UPDATE_MCP_DOCKER_VERSION',
     when: 'never',
   }, {
+    @'if': '$UPDATE_AI_ASSISTANT_DOCKER_VERSION',
+    when: 'never',
+  }, {
     @'if': '$UPDATE_STACKPACKS_DOCKER_VERSION',
     when: 'never',
   }, {
@@ -510,6 +513,7 @@ local update_docker_images = {
 
   update_stackstate_version_to_latest: job('UPDATE_STACKSTATE_DOCKER_VERSION', ['.gitlab/suse-observability/update_stackstate_version_to_latest.sh']),
   update_mcp_version_to_latest: job('UPDATE_MCP_DOCKER_VERSION', ['.gitlab/suse-observability/update_mcp_version_to_latest.sh']),
+  update_ai_assistant_version_to_latest: job('UPDATE_AI_ASSISTANT_DOCKER_VERSION', ['.gitlab/suse-observability/update_ai_assistant_version_to_latest.sh']),
   update_stackpacks_version_to_latest: job('UPDATE_STACKPACKS_DOCKER_VERSION', ['.gitlab/suse-observability/update_stackpacks_version_to_latest.sh']),
 };
 
@@ -563,12 +567,14 @@ local beest_triggers = {
 
 // Main
 {
-  // Only run for merge requests, tags, the default (master) branch, or when RUN_UPDATECLI triggers
+  // Only run for merge requests, tags, the default (master) branch, or explicitly requested update pipelines
   workflow: {
     rules: [
       { @'if': '$CI_MERGE_REQUEST_IID' },
       { @'if': '$CI_COMMIT_TAG' },
       { @'if': '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH' },
+      { @'if': '$UPDATE_MCP_DOCKER_VERSION' },
+      { @'if': '$UPDATE_AI_ASSISTANT_DOCKER_VERSION' },
       { @'if': '$RUN_UPDATECLI' },
     ],
   },
