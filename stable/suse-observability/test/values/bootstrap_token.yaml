@@ -1,0 +1,7 @@
+stackstate:
+  authentication:
+    serviceToken:
+      bootstrap:
+        token: ea8ec1f6dc01149fc0a99cc55fb494b4
+        roles:
+          - stackstate-k8s-admin
