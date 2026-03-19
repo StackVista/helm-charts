@@ -41,6 +41,12 @@ func TestModesCustomApi(t *testing.T) {
 	assert.Contains(t, configData, `"SecurityHub"`)
 }
 
+func TestModesEmptyModes(t *testing.T) {
+	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/modes_empty.yaml")
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "global.suseObservability.modes must contain at least one mode")
+}
+
 func TestModesInvalidMode(t *testing.T) {
 	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
