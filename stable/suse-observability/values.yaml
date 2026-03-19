@@ -2751,6 +2751,10 @@ opentelemetry-collector:
     tag: v0.0.25
   # opentelemetry-collector.fullnameOverride -- Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
   fullnameOverride: suse-observability-otel-collector
+  ports:
+    otlp:
+      # opentelemetry-collector.ports.otlp.appProtocol -- appProtocol for the OTLP gRPC service port. Use `grpc` for nginx ingress or `kubernetes.io/h2c` for Gateway API (e.g. Traefik GRPCRoute).
+      appProtocol: grpc
   # opentelemetry-collector.mode -- deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset".
   mode: statefulset
   # opentelemetry-collector.replicaCount -- only used with deployment mode
