@@ -121,6 +121,14 @@ stackstate.webUIConfig.supportMode = "{{- .Values.stackstate.components.api.supp
 
 stackstate.deploymentMode = "{{- .Values.stackstate.deployment.mode -}}"
 stackstate.edition = "{{- .Values.stackstate.deployment.edition -}}"
+{{- $modes := .Values.global.suseObservability.modes | default (list "Observability") }}
+{{- $validModes := list "Observability" "SecurityHub" }}
+{{- range $modes }}
+  {{- if not (has . $validModes) }}
+    {{- fail (printf "Invalid mode %q in global.suseObservability.modes. Supported modes are: Observability" .) }}
+  {{- end }}
+{{- end }}
+stackstate.modes = {{ toJson $modes }}
 {{- include "stackstate.service.configmap.clickhouseconfig" . }}
 {{- include "stackstate.config.email" . }}
 
