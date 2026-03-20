@@ -17,7 +17,7 @@ Current chart version is `2.8.2-pre.24`
 | file://../kafka/ | kafka | 19.1.3-suse-observability.20 |
 | file://../kafkaup-operator/ | kafkaup-operator | 0.1.24 |
 | file://../minio/ | minio | 8.0.10-stackstate.25 |
-| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.21 |
+| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.22 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../suse-observability-sizing/ | suse-observability-sizing | 0.1.12 |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.45 |
@@ -527,6 +527,14 @@ If you encounter issues not covered here:
 | elasticsearch.resources | object | `{}` | Override Elasticsearch resources |
 | elasticsearch.sysctlInitContainer | object | `{"enabled":true}` | Enable privileged init container to increase Elasticsearch virtual memory on underlying nodes. |
 | elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":null}}}` | PVC template defaulting to 250Gi default volumes |
+| gateway | object | `{"annotations":{},"enabled":false,"filters":[],"hostnames":[],"parentRefs":[],"path":"","timeouts":{}}` | Gateway API configuration for exposing SUSE Observability via HTTPRoute. |
+| gateway.annotations | object | `{}` | Annotations for HTTPRoute objects. |
+| gateway.enabled | bool | `false` | Enable Gateway API HTTPRoute for SUSE Observability. |
+| gateway.filters | list | `[]` | Optional filters for the HTTPRoute rule. |
+| gateway.hostnames | list | `[]` | List of hostnames for the HTTPRoute. If not specified, derived from baseUrl. |
+| gateway.parentRefs | list | `[]` | List of parent Gateway references (required when gateway.enabled is true). |
+| gateway.path | string | `""` | Path prefix for the HTTPRoute rule. If not specified, derived from baseUrl or defaults to "/". |
+| gateway.timeouts | object | `{}` | Optional timeouts for the HTTPRoute rule. |
 | global.backup.enabled | bool | `false` |  |
 | global.commonLabels | object | `{}` | Labels that will be added to all Deployments, StatefulSets, CronJobs, Jobs and their pods |
 | global.features | object | `{"experimentalStackpacks":false}` | Feature switches for SUSE Observability. |

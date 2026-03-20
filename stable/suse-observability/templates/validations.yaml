@@ -25,3 +25,15 @@
 {{- if and $pullSecretSubchartEnabled $globalPullSecretConfigured -}}
   {{- fail "Cannot configure both pull-secret.enabled and global.suseObservability.pullSecret simultaneously. Use either the pull-secret subchart (pull-secret.enabled=true with pull-secret.credentials) OR the simplified global configuration (global.suseObservability.pullSecret.username/password), but not both." -}}
 {{- end }}
+
+{{- /* Validate Gateway API configuration */ -}}
+{{- if .Values.gateway.enabled -}}
+  {{- if not .Values.gateway.parentRefs -}}
+    {{- fail "Gateway API requires gateway.parentRefs to be set when gateway.enabled is true." -}}
+  {{- end -}}
+  {{- $hasHostnames := .Values.gateway.hostnames -}}
+  {{- $hasBaseUrl := include "suse-observability.global.baseUrl" . | trim -}}
+  {{- if not (or $hasHostnames $hasBaseUrl) -}}
+    {{- fail "Gateway API requires either gateway.hostnames or a baseUrl (global.suseObservability.baseUrl or stackstate.baseUrl) to derive hostnames from." -}}
+  {{- end -}}
+{{- end -}}

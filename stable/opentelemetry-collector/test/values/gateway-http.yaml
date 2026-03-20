@@ -1,0 +1,17 @@
+# Gateway API HTTPRoute configuration for OpenTelemetry Collector
+mode: "deployment"
+image:
+  repository: "otel/opentelemetry-collector-contrib"
+
+gateway:
+  enabled: true
+  kind: HTTPRoute
+  parentRefs:
+    - name: my-gateway
+      namespace: gateway-namespace
+      sectionName: https
+  hostnames:
+    - collector.example.com
+  path: "/"
+  pathType: PathPrefix
+  port: 4318

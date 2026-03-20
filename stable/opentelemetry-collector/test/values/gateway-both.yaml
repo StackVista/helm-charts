@@ -1,0 +1,28 @@
+# Gateway API with both HTTP and gRPC routes for OpenTelemetry Collector
+mode: "deployment"
+image:
+  repository: "otel/opentelemetry-collector-contrib"
+
+gateway:
+  enabled: true
+  kind: HTTPRoute
+  parentRefs:
+    - name: my-gateway
+      namespace: gateway-namespace
+      sectionName: https
+  hostnames:
+    - collector.example.com
+  path: "/"
+  pathType: PathPrefix
+  port: 4318
+
+  additionalGateways:
+    - name: grpc
+      kind: GRPCRoute
+      parentRefs:
+        - name: my-gateway
+          namespace: gateway-namespace
+          sectionName: grpc
+      hostnames:
+        - collector-grpc.example.com
+      port: 4317

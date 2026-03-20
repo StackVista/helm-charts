@@ -16,6 +16,7 @@ import (
 	policyv1 "k8s.io/api/policy/v1beta1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	gatewayv1 "sigs.k8s.io/gateway-api/apis/v1"
 )
 
 // KubernetesResources parsed from a multi-document template string
@@ -26,6 +27,8 @@ type KubernetesResources struct {
 	CronJobs                 map[string]batchv1beta1.CronJob
 	DaemonSets               map[string]appsv1.DaemonSet
 	Deployments              map[string]appsv1.Deployment
+	GRPCRoutes               map[string]gatewayv1.GRPCRoute
+	HTTPRoutes               map[string]gatewayv1.HTTPRoute
 	Ingresses                map[string]networkingv1.Ingress
 	Jobs                     map[string]batchv1.Job
 	PersistentVolumeClaims   map[string]corev1.PersistentVolumeClaim
@@ -52,6 +55,8 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 	cronJobs := make(map[string]batchv1beta1.CronJob)
 	daemonSets := make(map[string]appsv1.DaemonSet)
 	deployments := make(map[string]appsv1.Deployment)
+	grpcRoutes := make(map[string]gatewayv1.GRPCRoute)
+	httpRoutes := make(map[string]gatewayv1.HTTPRoute)
 	ingresses := make(map[string]networkingv1.Ingress)
 	jobs := make(map[string]batchv1.Job)
 	persistentVolumeClaims := make(map[string]corev1.PersistentVolumeClaim)
@@ -143,6 +148,16 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 			e := helm.UnmarshalK8SYamlE(t, v, &resource)
 			assert.NoError(t, e, "Ingress failed to parse: "+v)
 			ingresses[resource.Name] = resource
+		case "GRPCRoute":
+			var resource gatewayv1.GRPCRoute
+			e := helm.UnmarshalK8SYamlE(t, v, &resource)
+			assert.NoError(t, e, "GRPCRoute failed to parse: "+v)
+			grpcRoutes[resource.Name] = resource
+		case "HTTPRoute":
+			var resource gatewayv1.HTTPRoute
+			e := helm.UnmarshalK8SYamlE(t, v, &resource)
+			assert.NoError(t, e, "HTTPRoute failed to parse: "+v)
+			httpRoutes[resource.Name] = resource
 		case "Job":
 			var resource batchv1.Job
 			helm.UnmarshalK8SYaml(t, v, &resource)
@@ -214,6 +229,8 @@ func NewKubernetesResources(t *testing.T, helmOutput string) KubernetesResources
 		ConfigMaps:               configMaps,
 		DaemonSets:               daemonSets,
 		Deployments:              deployments,
+		GRPCRoutes:               grpcRoutes,
+		HTTPRoutes:               httpRoutes,
 		Ingresses:                ingresses,
 		CronJobs:                 cronJobs,
 		Jobs:                     jobs,

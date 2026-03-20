@@ -1,0 +1,15 @@
+# Gateway API GRPCRoute configuration for OpenTelemetry Collector
+mode: "deployment"
+image:
+  repository: "otel/opentelemetry-collector-contrib"
+
+gateway:
+  enabled: true
+  kind: GRPCRoute
+  parentRefs:
+    - name: my-gateway
+      namespace: gateway-namespace
+      sectionName: grpc
+  hostnames:
+    - collector-grpc.example.com
+  port: 4317

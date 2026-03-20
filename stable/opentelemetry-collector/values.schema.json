@@ -807,6 +807,52 @@
       },
       "required": ["enabled"]
     },
+    "gateway": {
+      "type": "object",
+      "description": "Configure Kubernetes Gateway API routes for OpenTelemetry Collector.",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["HTTPRoute", "GRPCRoute"]
+        },
+        "annotations": {
+          "type": "object"
+        },
+        "parentRefs": {
+          "type": "array"
+        },
+        "hostnames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "path": {
+          "type": "string"
+        },
+        "pathType": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer"
+        },
+        "filters": {
+          "type": "array"
+        },
+        "timeouts": {
+          "type": "object"
+        },
+        "backendWeight": {
+          "type": "integer"
+        },
+        "additionalGateways": {
+          "type": "array"
+        }
+      }
+    },
     "podMonitor": {
       "type": "object",
       "properties": {

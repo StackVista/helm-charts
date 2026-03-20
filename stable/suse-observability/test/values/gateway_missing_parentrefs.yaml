@@ -1,0 +1,11 @@
+# Gateway enabled but missing required parentRefs
+global:
+  suseObservability:
+    license: "xxxx-xxxx-xxxx"
+    baseUrl: https://test.example.com
+    adminPassword: "testpassword"
+    sizing:
+      profile: "10-nonha"
+gateway:
+  enabled: true
+# No gateway.parentRefs - should fail validation

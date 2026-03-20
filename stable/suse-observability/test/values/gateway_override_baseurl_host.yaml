@@ -1,0 +1,14 @@
+# Gateway enabled with hostname override
+global:
+  suseObservability:
+    license: "xxxx-xxxx-xxxx"
+    baseUrl: https://test.example.com/observability
+    adminPassword: "testpassword"
+    sizing:
+      profile: "10-nonha"
+gateway:
+  enabled: true
+  parentRefs:
+    - name: my-gateway
+  hostnames:
+    - override.example.com

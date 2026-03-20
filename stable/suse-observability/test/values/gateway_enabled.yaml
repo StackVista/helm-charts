@@ -1,0 +1,14 @@
+# Gateway API enabled via gateway.enabled flag
+global:
+  suseObservability:
+    license: "xxxx-xxxx-xxxx"
+    baseUrl: https://test.example.com
+    adminPassword: "testpassword"
+    sizing:
+      profile: "10-nonha"
+gateway:
+  enabled: true
+  parentRefs:
+    - name: my-gateway
+      namespace: gateway-namespace
+      sectionName: https

@@ -230,6 +230,29 @@ ingress:
   #  - secretName: chart-example-tls
   #    hosts:
   #      - stackstate.local
+# gateway -- Gateway API configuration for exposing SUSE Observability via HTTPRoute.
+gateway:
+  # gateway.enabled -- Enable Gateway API HTTPRoute for SUSE Observability.
+  enabled: false
+  # gateway.annotations -- Annotations for HTTPRoute objects.
+  annotations: {}
+  # gateway.parentRefs -- List of parent Gateway references (required when gateway.enabled is true).
+  parentRefs: []
+  # - name: my-gateway
+  #   namespace: gateway-namespace
+  #   sectionName: websecure
+  # gateway.hostnames -- List of hostnames for the HTTPRoute. If not specified, derived from baseUrl.
+  hostnames: []
+  # gateway.path -- Path prefix for the HTTPRoute rule. If not specified, derived from baseUrl or defaults to "/".
+  path: ""
+  # gateway.filters -- Optional filters for the HTTPRoute rule.
+  filters: []
+  # gateway.timeouts -- Optional timeouts for the HTTPRoute rule.
+  timeouts: {}
+  # request: 30s
+  # backendRequest: 30s
+  # gateway.backendWeight -- Optional weight for traffic splitting.
+  # backendWeight: 100
 networkPolicy:
   # networkPolicy.enabled -- Enable creating of `NetworkPolicy` object and associated rules for StackState.
   enabled: false
