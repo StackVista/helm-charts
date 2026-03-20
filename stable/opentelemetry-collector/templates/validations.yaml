@@ -1,0 +1,16 @@
+{{- /* Validate that ingress and gateway are not both enabled */ -}}
+{{- if and .Values.ingress.enabled .Values.gateway.enabled -}}
+  {{- fail "Cannot configure both ingress.enabled and gateway.enabled simultaneously. Use either Ingress (ingress.enabled=true) OR Gateway API (gateway.enabled=true), but not both." -}}
+{{- end }}
+
+{{- /* Validate Gateway API configuration */ -}}
+{{- if .Values.gateway.enabled -}}
+  {{- if not .Values.gateway.parentRefs -}}
+    {{- fail "Gateway API requires gateway.parentRefs to be set when gateway.enabled is true." -}}
+  {{- end -}}
+  {{- range $i, $gw := .Values.gateway.additionalGateways -}}
+    {{- if not $gw.parentRefs -}}
+      {{- fail (printf "Gateway API requires parentRefs for additionalGateways[%d] (name: %s)." $i ($gw.name | default "unnamed")) -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}

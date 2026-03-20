@@ -93,6 +93,11 @@ func TestGatewayFullConfiguration(t *testing.T) {
 	assert.Equal(t, int32(100), *rule.BackendRefs[0].Weight)
 }
 
+func TestGatewayAndIngressMutualExclusion(t *testing.T) {
+	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/gateway_with_ingress.yaml")
+	require.Contains(t, err.Error(), "Cannot configure both ingress.enabled and gateway.enabled simultaneously")
+}
+
 func TestGatewayMissingParentRefs(t *testing.T) {
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/gateway_missing_parentrefs.yaml")
 	require.Contains(t, err.Error(), "Gateway API requires gateway.parentRefs to be set")

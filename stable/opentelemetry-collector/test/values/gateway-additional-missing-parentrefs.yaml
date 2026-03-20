@@ -1,0 +1,17 @@
+# additionalGateways entry missing parentRefs - should fail validation
+mode: "deployment"
+image:
+  repository: "otel/opentelemetry-collector-contrib"
+
+gateway:
+  enabled: true
+  kind: HTTPRoute
+  parentRefs:
+    - name: my-gateway
+  hostnames:
+    - collector.example.com
+  additionalGateways:
+    - name: extra-route
+      hostnames:
+        - extra.example.com
+      # No parentRefs - should fail validation

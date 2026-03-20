@@ -822,7 +822,17 @@
           "type": "object"
         },
         "parentRefs": {
-          "type": "array"
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "namespace": { "type": "string" },
+              "sectionName": { "type": "string" },
+              "port": { "type": "integer" }
+            },
+            "required": ["name"]
+          }
         },
         "hostnames": {
           "type": "array",
@@ -849,7 +859,36 @@
           "type": "integer"
         },
         "additionalGateways": {
-          "type": "array"
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "kind": { "type": "string", "enum": ["HTTPRoute", "GRPCRoute"] },
+              "annotations": { "type": "object" },
+              "parentRefs": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "namespace": { "type": "string" },
+                    "sectionName": { "type": "string" },
+                    "port": { "type": "integer" }
+                  },
+                  "required": ["name"]
+                }
+              },
+              "hostnames": { "type": "array", "items": { "type": "string" } },
+              "path": { "type": "string" },
+              "pathType": { "type": "string" },
+              "port": { "type": "integer" },
+              "filters": { "type": "array" },
+              "timeouts": { "type": "object" },
+              "backendWeight": { "type": "integer" }
+            },
+            "required": ["name"]
+          }
         }
       }
     },

@@ -26,6 +26,11 @@
   {{- fail "Cannot configure both pull-secret.enabled and global.suseObservability.pullSecret simultaneously. Use either the pull-secret subchart (pull-secret.enabled=true with pull-secret.credentials) OR the simplified global configuration (global.suseObservability.pullSecret.username/password), but not both." -}}
 {{- end }}
 
+{{- /* Validate that ingress and gateway are not both enabled */ -}}
+{{- if and .Values.ingress.enabled .Values.gateway.enabled -}}
+  {{- fail "Cannot configure both ingress.enabled and gateway.enabled simultaneously. Use either Ingress (ingress.enabled=true) OR Gateway API (gateway.enabled=true), but not both." -}}
+{{- end }}
+
 {{- /* Validate Gateway API configuration */ -}}
 {{- if .Values.gateway.enabled -}}
   {{- if not .Values.gateway.parentRefs -}}

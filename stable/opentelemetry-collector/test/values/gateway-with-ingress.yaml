@@ -1,0 +1,19 @@
+# Both ingress and gateway enabled - should fail validation
+mode: "deployment"
+image:
+  repository: "otel/opentelemetry-collector-contrib"
+
+ingress:
+  enabled: true
+  hosts:
+    - host: collector.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+          port: 4318
+gateway:
+  enabled: true
+  parentRefs:
+    - name: my-gateway
+  hostnames:
+    - collector.example.com

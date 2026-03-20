@@ -79,6 +79,21 @@ func TestGatewayBothHTTPAndGRPCRoutes(t *testing.T) {
 	assert.Equal(t, gatewayv1.PortNumber(4317), *grpcRoute.Spec.Rules[0].BackendRefs[0].Port)
 }
 
+func TestGatewayAndIngressMutualExclusion(t *testing.T) {
+	err := helmtestutil.RenderHelmTemplateError(t, releaseName, "values/gateway-with-ingress.yaml")
+	require.Contains(t, err.Error(), "Cannot configure both ingress.enabled and gateway.enabled simultaneously")
+}
+
+func TestGatewayMissingParentRefs(t *testing.T) {
+	err := helmtestutil.RenderHelmTemplateError(t, releaseName, "values/gateway-missing-parentrefs.yaml")
+	require.Contains(t, err.Error(), "Gateway API requires gateway.parentRefs to be set")
+}
+
+func TestGatewayAdditionalMissingParentRefs(t *testing.T) {
+	err := helmtestutil.RenderHelmTemplateError(t, releaseName, "values/gateway-additional-missing-parentrefs.yaml")
+	require.Contains(t, err.Error(), "Gateway API requires parentRefs for additionalGateways")
+}
+
 func TestGatewayDisabledByDefault(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, releaseName, "values/default.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)

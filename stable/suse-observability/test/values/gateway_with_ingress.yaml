@@ -1,0 +1,17 @@
+# Both ingress and gateway enabled - should fail validation
+global:
+  suseObservability:
+    license: "xxxx-xxxx-xxxx"
+    baseUrl: https://test.example.com
+    adminPassword: "testpassword"
+    sizing:
+      profile: "10-nonha"
+ingress:
+  enabled: true
+  hosts:
+    - host: test.example.com
+gateway:
+  enabled: true
+  parentRefs:
+    - name: my-gateway
+      namespace: gateway-namespace
