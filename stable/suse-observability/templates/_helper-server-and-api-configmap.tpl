@@ -121,21 +121,21 @@ stackstate.webUIConfig.supportMode = "{{- .Values.stackstate.components.api.supp
 
 stackstate.deploymentMode = "{{- .Values.stackstate.deployment.mode -}}"
 stackstate.edition = "{{- .Values.stackstate.deployment.edition -}}"
-{{- $modes := .Values.global.suseObservability.modes }}
-{{- if not $modes }}
-  {{- if eq (.Values.global.suseObservability.modes | toJson) "[]" }}
-    {{- fail "global.suseObservability.modes must contain at least one mode. Supported modes are: Observability, SecurityHub" }}
+{{- $domains := .Values.global.suseObservability.applicationDomains }}
+{{- if not $domains }}
+  {{- if eq (.Values.global.suseObservability.applicationDomains | toJson) "[]" }}
+    {{- fail "global.suseObservability.applicationDomains must contain at least one application domain. Supported values are: Observability" }}
   {{- else }}
-    {{- $modes = list "Observability" }}
+    {{- $domains = list "Observability" }}
   {{- end }}
 {{- end }}
-{{- $validModes := list "Observability" "SecurityHub" }}
-{{- range $modes }}
-  {{- if not (has . $validModes) }}
-    {{- fail (printf "Invalid mode %q in global.suseObservability.modes. Supported modes are: Observability, SecurityHub" .) }}
+{{- $validDomains := list "Observability" "Security" }}
+{{- range $domains }}
+  {{- if not (has . $validDomains) }}
+    {{- fail (printf "Invalid application domain %q in global.suseObservability.applicationDomains. Supported values are: Observability" .) }}
   {{- end }}
 {{- end }}
-stackstate.modes = {{ toJson $modes }}
+stackstate.applicationDomains = {{ toJson $domains }}
 {{- include "stackstate.service.configmap.clickhouseconfig" . }}
 {{- include "stackstate.config.email" . }}
 

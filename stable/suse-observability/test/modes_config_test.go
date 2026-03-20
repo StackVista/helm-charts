@@ -11,11 +11,11 @@ import (
 )
 
 func TestModesDefaultApi(t *testing.T) {
-	RunConfigMapTest(t, "suse-observability-api", nil, `stackstate.modes = ["Observability"]`)
+	RunConfigMapTest(t, "suse-observability-api", nil, `stackstate.applicationDomains = ["Observability"]`)
 }
 
 func TestModesDefaultServer(t *testing.T) {
-	RunConfigMapTest(t, "suse-observability-server", []string{"values/split_disabled.yaml"}, `stackstate.modes = ["Observability"]`)
+	RunConfigMapTest(t, "suse-observability-server", []string{"values/split_disabled.yaml"}, `stackstate.applicationDomains = ["Observability"]`)
 }
 
 func TestModesCustomApi(t *testing.T) {
@@ -24,8 +24,8 @@ func TestModesCustomApi(t *testing.T) {
 			"values/full.yaml",
 		},
 		SetValues: map[string]string{
-			"global.suseObservability.modes[0]": "Observability",
-			"global.suseObservability.modes[1]": "SecurityHub",
+			"global.suseObservability.applicationDomains[0]": "Observability",
+			"global.suseObservability.applicationDomains[1]": "Security",
 		},
 		KubectlOptions: &k8s.KubectlOptions{
 			Namespace: "suse-observability",
@@ -38,13 +38,13 @@ func TestModesCustomApi(t *testing.T) {
 	require.True(t, ok, "API configmap should exist")
 	configData := configMap.Data["application_stackstate.conf"]
 	assert.Contains(t, configData, `"Observability"`)
-	assert.Contains(t, configData, `"SecurityHub"`)
+	assert.Contains(t, configData, `"Security"`)
 }
 
 func TestModesEmptyModes(t *testing.T) {
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability", "values/full.yaml", "values/modes_empty.yaml")
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "global.suseObservability.modes must contain at least one mode")
+	assert.Contains(t, err.Error(), "global.suseObservability.applicationDomains must contain at least one application domain")
 }
 
 func TestModesInvalidMode(t *testing.T) {
@@ -53,14 +53,14 @@ func TestModesInvalidMode(t *testing.T) {
 			"values/full.yaml",
 		},
 		SetValues: map[string]string{
-			"global.suseObservability.modes[0]": "InvalidMode",
+			"global.suseObservability.applicationDomains[0]": "InvalidMode",
 		},
 		KubectlOptions: &k8s.KubectlOptions{
 			Namespace: "suse-observability",
 		},
 	})
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), `Invalid mode "InvalidMode"`)
+	assert.Contains(t, err.Error(), `Invalid application domain "InvalidMode"`)
 }
 
 func TestModesCustomServer(t *testing.T) {
@@ -70,8 +70,8 @@ func TestModesCustomServer(t *testing.T) {
 			"values/split_disabled.yaml",
 		},
 		SetValues: map[string]string{
-			"global.suseObservability.modes[0]": "Observability",
-			"global.suseObservability.modes[1]": "SecurityHub",
+			"global.suseObservability.applicationDomains[0]": "Observability",
+			"global.suseObservability.applicationDomains[1]": "Security",
 		},
 		KubectlOptions: &k8s.KubectlOptions{
 			Namespace: "suse-observability",
@@ -84,5 +84,5 @@ func TestModesCustomServer(t *testing.T) {
 	require.True(t, ok, "Server configmap should exist")
 	configData := configMap.Data["application_stackstate.conf"]
 	assert.Contains(t, configData, `"Observability"`)
-	assert.Contains(t, configData, `"SecurityHub"`)
+	assert.Contains(t, configData, `"Security"`)
 }

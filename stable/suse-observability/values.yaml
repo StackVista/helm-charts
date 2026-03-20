@@ -57,8 +57,8 @@ global:
     sizing:
       # global.suseObservability.sizing.profile -- Sizing profile name. Must match one of the available profiles: 10-nonha, 20-nonha, 50-nonha, 100-nonha, 150-ha, 250-ha, 500-ha, 4000-ha, trial. The chart will automatically apply resource limits, replica counts, and affinity configurations based on the selected profile. These act as intelligent defaults that can be overridden by component-specific values.
       profile: ""
-    # global.suseObservability.modes -- Product modes. Default is ["Observability"]. Only "Observability" is currently supported.
-    modes:
+    # global.suseObservability.applicationDomains -- Enabled application domains. Default is ["Observability"]. Only "Observability" is currently supported.
+    applicationDomains:
       - "Observability"
     # global.suseObservability.receiverApiKey -- Optional, prefer to use Service Tokens instead for more control and better security. Will use stackstate.apiKey.key if not provided, stackstate.apiKey can also be used to provide the apiKey via an external secret.
     # Please see the documentation on how to use Service Tokens instead.
