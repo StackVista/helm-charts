@@ -2113,7 +2113,7 @@ minio:
     # minio.image.repository -- MinIO image repository
     repository: stackstate/minio
     # minio.image.tag -- MinIO image tag. Updated by updatecli.
-    tag: RELEASE.2025-11-19T12-41-50Z-e064c44f-185-release
+    tag: RELEASE.2025-11-19T12-41-50Z-e064c44f-186-release
   # minio.accessKey -- Access key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
   accessKey: setme
   # minio.secretKey -- Secret key for MinIO. Default is set to an invalid value that will cause MinIO to not start up to ensure users of this Helm chart set an explicit value.
