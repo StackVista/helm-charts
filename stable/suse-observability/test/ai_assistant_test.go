@@ -152,6 +152,33 @@ func TestAiAssistantAnthropicProvider(t *testing.T) {
 	assert.Equal(t, "ANTHROPIC_API_KEY", anthropicAPIKey.ValueFrom.SecretKeyRef.Key)
 }
 
+func TestAiAssistantAnthropicProviderWithExternalSecret(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"ai.assistant.provider":                          "anthropic",
+			"ai.assistant.anthropic.fromExternalSecret.name": "my-anthropic-secret",
+			"ai.assistant.anthropic.fromExternalSecret.key":  "api-token",
+		},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	_, ok := resources.Secrets["suse-observability-ai-assistant"]
+	assert.False(t, ok, "AI Assistant secret should not be created when using an external Anthropic secret")
+
+	statefulSet, ok := resources.Statefulsets["suse-observability-ai-assistant"]
+	require.True(t, ok, "AI Assistant StatefulSet should exist")
+
+	container := statefulSet.Spec.Template.Spec.Containers[0]
+	anthropicAPIKey := envVarByName(container.Env, "ANTHROPIC_API_KEY")
+	require.NotNil(t, anthropicAPIKey, "ANTHROPIC_API_KEY env var should exist")
+	require.NotNil(t, anthropicAPIKey.ValueFrom, "ANTHROPIC_API_KEY should come from a secret")
+	require.NotNil(t, anthropicAPIKey.ValueFrom.SecretKeyRef, "ANTHROPIC_API_KEY should use secretKeyRef")
+	assert.Equal(t, "my-anthropic-secret", anthropicAPIKey.ValueFrom.SecretKeyRef.Name)
+	assert.Equal(t, "api-token", anthropicAPIKey.ValueFrom.SecretKeyRef.Key)
+}
+
 func TestAiAssistantImageTagRequired(t *testing.T) {
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability",
 		"values/full.yaml",
@@ -165,5 +192,5 @@ func TestAiAssistantAnthropicAPIKeyRequired(t *testing.T) {
 		"values/full.yaml",
 		"values/ai_assistant_anthropic_missing_api_key.yaml",
 	)
-	require.Contains(t, err.Error(), "ai.assistant.anthropic.apiKey must be set when ai.assistant.provider=anthropic")
+	require.Contains(t, err.Error(), "ai.assistant.anthropic.apiKey must be set when ai.assistant.provider=anthropic and ai.assistant.anthropic.fromExternalSecret.name is empty")
 }

@@ -262,6 +262,11 @@ ai:
     anthropic:
       # ai.assistant.anthropic.apiKey -- Anthropic API key used when `ai.assistant.provider=anthropic`.
       apiKey: ""
+      fromExternalSecret:
+        # ai.assistant.anthropic.fromExternalSecret.name -- Existing secret name that contains the Anthropic API key. When set, the chart will not create an internal secret for `ANTHROPIC_API_KEY`.
+        name: ""
+        # ai.assistant.anthropic.fromExternalSecret.key -- Key in the external secret that contains the Anthropic API key.
+        key: ANTHROPIC_API_KEY
     bedrock:
       # ai.assistant.bedrock.awsRegion -- AWS region used when `ai.assistant.provider=bedrock`.
       awsRegion: eu-west-1

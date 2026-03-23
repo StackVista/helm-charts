@@ -3,6 +3,9 @@
 {{- $mcpUrl := printf "http://%s:%d" (include "stackstate.mcp.fullname" .) (.Values.stackstate.components.mcp.service.port | int) -}}
 {{- $aiAssistantImageTag := .Values.stackstate.components.aiAssistant.image.tag -}}
 {{- $provider := default "bedrock" .Values.ai.assistant.provider | lower -}}
+{{- $anthropicExternalSecretName := .Values.ai.assistant.anthropic.fromExternalSecret.name -}}
+{{- $anthropicExternalSecretKey := default "ANTHROPIC_API_KEY" .Values.ai.assistant.anthropic.fromExternalSecret.key -}}
+{{- $aiAssistantSecretName := include "stackstate.ai-assistant.fullname" . -}}
 {{- if .Values.ai.assistant.enabled -}}
 {{- $aiAssistantImageTag = required "stackstate.components.aiAssistant.image.tag must be set" .Values.stackstate.components.aiAssistant.image.tag -}}
 {{- if not (has $provider (list "bedrock" "anthropic")) -}}
@@ -28,8 +31,8 @@ env:
 - name: ANTHROPIC_API_KEY
   valueFrom:
     secretKeyRef:
-      name: {{ template "stackstate.ai-assistant.fullname" . }}
-      key: ANTHROPIC_API_KEY
+      name: {{ default $aiAssistantSecretName $anthropicExternalSecretName }}
+      key: {{ $anthropicExternalSecretKey }}
 {{- end }}
 - name: API_PORT
   value: {{ .Values.stackstate.components.aiAssistant.service.port | quote }}
