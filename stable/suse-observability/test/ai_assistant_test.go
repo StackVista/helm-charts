@@ -10,6 +10,16 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
+func envVarByName(envVars []corev1.EnvVar, name string) *corev1.EnvVar {
+	for i := range envVars {
+		if envVars[i].Name == name {
+			return &envVars[i]
+		}
+	}
+
+	return nil
+}
+
 func TestAiAssistantEnabledWithAiAssistant(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{"values/full.yaml"},
@@ -49,6 +59,11 @@ func TestAiAssistantEnabledWithAiAssistant(t *testing.T) {
 		Name:  "USE_BEDROCK",
 		Value: "true",
 	})
+	assert.Contains(t, container.Env, corev1.EnvVar{
+		Name:  "AWS_REGION",
+		Value: "eu-west-1",
+	})
+	assert.Nil(t, envVarByName(container.Env, "ANTHROPIC_API_KEY"))
 
 	// Verify service port
 	require.Len(t, service.Spec.Ports, 1)
@@ -104,10 +119,51 @@ func TestAiAssistantServiceAccountAnnotations(t *testing.T) {
 	assert.Equal(t, "arn:aws:iam::123456789012:role/my-ai-assistant-role", serviceAccount.Annotations["eks.amazonaws.com/role-arn"])
 }
 
+func TestAiAssistantAnthropicProvider(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"ai.assistant.provider":         "anthropic",
+			"ai.assistant.anthropic.apiKey": "sk-ant-test",
+		},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	statefulSet, ok := resources.Statefulsets["suse-observability-ai-assistant"]
+	require.True(t, ok, "AI Assistant StatefulSet should exist")
+
+	secret, ok := resources.Secrets["suse-observability-ai-assistant"]
+	require.True(t, ok, "AI Assistant secret should exist")
+	assert.Equal(t, []byte("sk-ant-test"), secret.Data["ANTHROPIC_API_KEY"])
+
+	container := statefulSet.Spec.Template.Spec.Containers[0]
+	assert.Contains(t, container.Env, corev1.EnvVar{
+		Name:  "USE_BEDROCK",
+		Value: "false",
+	})
+	assert.Nil(t, envVarByName(container.Env, "AWS_REGION"))
+
+	anthropicAPIKey := envVarByName(container.Env, "ANTHROPIC_API_KEY")
+	require.NotNil(t, anthropicAPIKey, "ANTHROPIC_API_KEY env var should exist")
+	require.NotNil(t, anthropicAPIKey.ValueFrom, "ANTHROPIC_API_KEY should come from a secret")
+	require.NotNil(t, anthropicAPIKey.ValueFrom.SecretKeyRef, "ANTHROPIC_API_KEY should use secretKeyRef")
+	assert.Equal(t, "suse-observability-ai-assistant", anthropicAPIKey.ValueFrom.SecretKeyRef.Name)
+	assert.Equal(t, "ANTHROPIC_API_KEY", anthropicAPIKey.ValueFrom.SecretKeyRef.Key)
+}
+
 func TestAiAssistantImageTagRequired(t *testing.T) {
 	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability",
 		"values/full.yaml",
 		"values/ai_assistant_missing_image_tag.yaml",
 	)
 	require.Contains(t, err.Error(), "stackstate.components.aiAssistant.image.tag must be set")
+}
+
+func TestAiAssistantAnthropicAPIKeyRequired(t *testing.T) {
+	err := helmtestutil.RenderHelmTemplateError(t, "suse-observability",
+		"values/full.yaml",
+		"values/ai_assistant_anthropic_missing_api_key.yaml",
+	)
+	require.Contains(t, err.Error(), "ai.assistant.anthropic.apiKey must be set when ai.assistant.provider=anthropic")
 }

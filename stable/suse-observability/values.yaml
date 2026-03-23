@@ -257,6 +257,14 @@ ai:
   assistant:
     # ai.assistant.enabled -- Enables the AI Assistant UI, the dedicated backend process, and the MCP (Model Context Protocol) Server for Observability.
     enabled: false
+    # ai.assistant.provider -- LLM provider for AI Assistant. Possible values: `bedrock` or `anthropic`.
+    provider: bedrock
+    anthropic:
+      # ai.assistant.anthropic.apiKey -- Anthropic API key used when `ai.assistant.provider=anthropic`.
+      apiKey: ""
+    bedrock:
+      # ai.assistant.bedrock.awsRegion -- AWS region used when `ai.assistant.provider=bedrock`.
+      awsRegion: eu-west-1
   # ai.platformOptimization -- Automatic Troubleshooting & Remediation. Entitlement: Requires 'SUSE Platform Optimization' add-on (part of Rancher Suite). Enabling this flag indicates you have the appropriate license for Platform Optimization.
   platformOptimization:
     # ai.platformOptimization.enabled -- Enables advanced AI-driven automatic troubleshooting extensions. This builds upon the AI Assistant framework to provide proactive issue resolution.

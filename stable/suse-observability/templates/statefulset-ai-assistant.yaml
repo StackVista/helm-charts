@@ -2,8 +2,12 @@
 {{- $serviceConfig := dict "ServiceName" "ai-assistant" "ServiceConfig" .Values.stackstate.components.aiAssistant }}
 {{- $mcpUrl := printf "http://%s:%d" (include "stackstate.mcp.fullname" .) (.Values.stackstate.components.mcp.service.port | int) -}}
 {{- $aiAssistantImageTag := .Values.stackstate.components.aiAssistant.image.tag -}}
+{{- $provider := default "bedrock" .Values.ai.assistant.provider | lower -}}
 {{- if .Values.ai.assistant.enabled -}}
 {{- $aiAssistantImageTag = required "stackstate.components.aiAssistant.image.tag must be set" .Values.stackstate.components.aiAssistant.image.tag -}}
+{{- if not (has $provider (list "bedrock" "anthropic")) -}}
+{{- fail (printf "ai.assistant.provider must be one of `bedrock` or `anthropic` (got %q)" .Values.ai.assistant.provider) -}}
+{{- end -}}
 {{- end -}}
 name: ai-assistant
 image: "{{ include "stackstate.image.registry" (merge $serviceConfig .) }}/{{ .Values.stackstate.components.aiAssistant.image.repository }}:{{ $aiAssistantImageTag }}"
@@ -16,7 +20,17 @@ env:
 - name: SQLITE_PATH
   value: "/data/ai-assistant.db"
 - name: USE_BEDROCK
-  value: "true"
+  value: {{ ternary "true" "false" (eq $provider "bedrock") | quote }}
+{{- if eq $provider "bedrock" }}
+- name: AWS_REGION
+  value: {{ .Values.ai.assistant.bedrock.awsRegion | quote }}
+{{- else }}
+- name: ANTHROPIC_API_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "stackstate.ai-assistant.fullname" . }}
+      key: ANTHROPIC_API_KEY
+{{- end }}
 - name: API_PORT
   value: {{ .Values.stackstate.components.aiAssistant.service.port | quote }}
 - name: API_BIND_ADDRESS
@@ -73,6 +87,7 @@ spec:
   template:
     metadata:
       annotations:
+        {{- include "stackstate.ai-assistant.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "aiAssistant") .) }}
       labels:
         app.kubernetes.io/component: ai-assistant

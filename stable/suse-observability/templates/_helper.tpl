@@ -236,6 +236,15 @@ UI extra environment variables for ui pods inherited through `stackstate.compone
 {{- end }}
 {{- end -}}
 
+{{/*
+AI Assistant secret checksum annotations
+*/}}
+{{- define "stackstate.ai-assistant.secret.checksum" -}}
+{{- if or .Values.stackstate.components.aiAssistant.extraEnv.secret (and .Values.ai.assistant.enabled (eq (default "bedrock" .Values.ai.assistant.provider | lower) "anthropic") .Values.ai.assistant.anthropic.apiKey) }}
+checksum/ai-assistant-env: {{ include (print $.Template.BasePath "/secret-ai-assistant.yaml") . | sha256sum }}
+{{- end }}
+{{- end -}}
+
 
 {{/*
 Common secret checksum annotations
