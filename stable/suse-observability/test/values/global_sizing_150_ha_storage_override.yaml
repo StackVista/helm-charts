@@ -20,9 +20,18 @@ stackstate:
       metricStore:
         remoteWriteEndpoint: "test-$vmInstance:8148"
         queryApiEndpoint: "test:8148"
+    aiAssistant:
+      persistence:
+        size: 666Gi
     server:
       java:
         trustStorePassword: "secretTrustStorePassword"
+    vmagent:
+      persistence:
+        size: 999Gi
+    workloadObserver:
+      persistence:
+        size: 888Gi
 
 # User storage overrides that should win over sizing profile
 clickhouse:
@@ -53,6 +62,12 @@ hbase:
     datanode:
       persistence:
         size: 500Gi
+    namenode:
+      persistence:
+        size: 444Gi
+    secondarynamenode:
+      persistence:
+        size: 555Gi
 
 victoria-metrics-0:
   server:
@@ -68,3 +83,7 @@ victoria-metrics-1:
 
 anomaly-detection:
   enabled: false
+
+ai:
+  assistant:
+    enabled: "true"
