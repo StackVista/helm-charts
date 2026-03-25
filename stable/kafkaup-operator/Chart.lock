@@ -1,7 +1,7 @@
 dependencies:
 - name: common
   repository: file://../common/
-  version: 0.4.27
+  version: 0.4.28
 - name: suse-observability-sizing
   repository: file://../suse-observability-sizing
   version: 0.1.13
