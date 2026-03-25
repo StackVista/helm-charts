@@ -769,7 +769,8 @@ func TestBackupPVCStorageWithSizingProfile(t *testing.T) {
 			output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
 				ValuesFiles: []string{tc.valuesFile},
 				SetValues: map[string]string{
-					"global.backup.enabled": "true",
+					"global.backup.enabled":              "true",
+					"backup.storage.backend.pvc.enabled": "true",
 				},
 				KubectlOptions: &k8s.KubectlOptions{
 					Namespace: "suse-observability",

@@ -9,6 +9,12 @@ global:
   backup:
     enabled: true
 
+backup:
+  storage:
+    backend:
+      pvc:
+        enabled: true
+
 pull-secret:
   enabled: true
 
