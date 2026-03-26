@@ -1483,7 +1483,7 @@ stackstate:
         # stackstate.components.kafkaTopicCreate.image.repository -- Base container image repository for kafka-topic-create containers.
         repository: stackstate/kafka
         # stackstate.components.kafkaTopicCreate.image.tag -- Container image tag for kafka-topic-create containers.
-        tag: 3.9.1-2f5d8989-290-release
+        tag: 3.9.1-6.7
         # stackstate.components.kafkaTopicCreate.image.pullPolicy -- Image pull policy for kafka-topic-create containers.
         pullPolicy: IfNotPresent
       # stackstate.components.kafkaTopicCreate.resources -- Resource allocation for `kafkaTopicCreate` pods.
@@ -1940,9 +1940,6 @@ kafkaup-operator:
   # versioning operator, this should not be changed
   startVersion: "2.3.1"
 kafka:
-  # kafka.command -- Override kafka container command.
-  command:
-    - "/scripts/custom-setup.sh"
   externalZookeeper:
     # kafka.externalZookeeper.servers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
     servers: suse-observability-zookeeper-headless
@@ -1958,50 +1955,16 @@ kafka:
   offsetsTopicReplicationFactor: 2
   ## kafka.transactionStateLogReplicationFactor -- The replication factor for the transaction topic
   transactionStateLogReplicationFactor: 2
-  # kafka.extraDeploy -- Array of extra objects to deploy with the release
-  extraDeploy:
-    - apiVersion: v1
-      kind: ConfigMap
-      metadata:
-        name: kafka-custom-scripts
-      data:
-        custom-setup.sh: |-
-          #!/bin/bash
-
-          ID="${MY_POD_NAME#"{{ include "common.names.fullname" . }}-"}"
-
-          KAFKA_META_PROPERTIES=/bitnami/kafka/data/meta.properties
-          if [[ -f ${KAFKA_META_PROPERTIES} ]]; then
-            ID=`grep -e ^broker.id= ${KAFKA_META_PROPERTIES} | sed 's/^broker.id=//'`
-            if [[ "${ID}" != "" ]] && [[ "${ID}" -gt 1000 ]]; then
-              echo "Using broker ID ${ID} from ${KAFKA_META_PROPERTIES} for compatibility (STAC-9614)"
-            fi
-          fi
-
-          export KAFKA_CFG_BROKER_ID="$ID"
-
-          exec /entrypoint.sh /run.sh
   # kafka.extraEnvVars -- Extra environment variables to add to kafka pods.
   extraEnvVars:
-    - name: KAFKA_CFG_RESERVED_BROKER_MAX_ID
+    - name: KAFKA_RESERVED_BROKER_MAX_ID
       value: "2000"
     # How long will a producer linger when no data is flowing? We make this quite a high number to make
     # sure that in POC like settings, where there is not always much activity, transactional producer do not get kicked out.
     # See STAC-15583
     # Using MaxInt value, giving 25 days of retention on txIds
-    - name: KAFKA_CFG_TRANSACTIONAL_ID_EXPIRATION_MS
+    - name: KAFKA_TRANSACTIONAL_ID_EXPIRATION_MS
       value: "2147483647"
-  # kafka.extraVolumes -- Extra volume(s) to add to Kafka statefulset.
-  extraVolumes:
-    - name: kafka-custom-scripts
-      configMap:
-        name: kafka-custom-scripts
-        defaultMode: 493
-  # kafka.extraVolumeMounts -- Extra volumeMount(s) to add to Kafka containers.
-  extraVolumeMounts:
-    - name: kafka-custom-scripts
-      mountPath: /scripts/custom-setup.sh
-      subPath: custom-setup.sh
   # kafka.initContainers -- required to make the kafka versionup operator work
   initContainers:
     - name: check-inter-broker-protocol-version
@@ -2033,7 +1996,7 @@ kafka:
     # kafka.image.tag -- Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.**
     # When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order
     # for the kafkaup operator to upgrade the inter broker protocol version
-    tag: 3.9.1-2f5d8989-290-release
+    tag: 3.9.1-6.7
   # kafka.logRetentionHours -- The minimum age of a log file to be eligible for deletion due to age.
   logRetentionHours: 24
   service:

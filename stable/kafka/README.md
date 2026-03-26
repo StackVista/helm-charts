@@ -1,6 +1,6 @@
 # kafka
 
-![Version: 19.1.3-suse-observability.20](https://img.shields.io/badge/Version-19.1.3--suse--observability.20-informational?style=flat-square) ![AppVersion: 3.3.1](https://img.shields.io/badge/AppVersion-3.3.1-informational?style=flat-square)
+![Version: 19.1.3-suse-observability.22](https://img.shields.io/badge/Version-19.1.3--suse--observability.22-informational?style=flat-square) ![AppVersion: 3.3.1](https://img.shields.io/badge/AppVersion-3.3.1-informational?style=flat-square)
 
 Apache Kafka is a distributed streaming platform designed to build real-time pipelines and can be used as a message broker or as a replacement for a log aggregation solution for big data applications.
 
@@ -21,7 +21,7 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.12 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.13 |
 | file://charts/common | common | 2.x.x |
 
 ## Values
@@ -134,7 +134,7 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | image.pullSecrets | list | `[]` |  |
 | image.registry | string | `"docker.io"` |  |
 | image.repository | string | `"bitnami/kafka"` |  |
-| image.tag | string | `"3.3.1-debian-11-r11"` |  |
+| image.tag | string | `"3.9.1-6.7"` |  |
 | initContainers | list | `[]` |  |
 | interBrokerListenerName | string | `"INTERNAL"` |  |
 | kubeVersion | string | `""` |  |
@@ -154,7 +154,7 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | logPersistence.annotations | object | `{}` |  |
 | logPersistence.enabled | bool | `false` |  |
 | logPersistence.existingClaim | string | `""` |  |
-| logPersistence.mountPath | string | `"/opt/bitnami/kafka/logs"` |  |
+| logPersistence.mountPath | string | `"/data/kafka/logs"` |  |
 | logPersistence.selector | object | `{}` |  |
 | logPersistence.size | string | `"8Gi"` |  |
 | logPersistence.storageClass | string | `""` |  |
@@ -162,7 +162,7 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | logRetentionCheckIntervalMs | int | `300000` |  |
 | logRetentionHours | int | `168` |  |
 | logSegmentBytes | string | `"_1073741824"` |  |
-| logsDirs | string | `"/bitnami/kafka/data"` |  |
+| logsDirs | string | `"/data/kafka/data"` |  |
 | maxMessageBytes | string | `"_1000012"` |  |
 | metrics.jmx.config | string | `"jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:5555/jmxrmi\nlowercaseOutputName: true\nlowercaseOutputLabelNames: true\nssl: false\n{{- if .Values.metrics.jmx.whitelistObjectNames }}\nwhitelistObjectNames: [\"{{ join \"\\\",\\\"\" .Values.metrics.jmx.whitelistObjectNames }}\"]\n{{- end }}"` |  |
 | metrics.jmx.containerPorts.metrics | int | `5556` |  |
@@ -280,7 +280,7 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | persistence.enabled | bool | `true` |  |
 | persistence.existingClaim | string | `""` |  |
 | persistence.labels | object | `{}` |  |
-| persistence.mountPath | string | `"/bitnami/kafka"` |  |
+| persistence.mountPath | string | `"/data/kafka"` |  |
 | persistence.selector | object | `{}` |  |
 | persistence.size | string | `nil` |  |
 | persistence.storageClass | string | `""` |  |

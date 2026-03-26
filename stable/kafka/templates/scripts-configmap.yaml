@@ -75,15 +75,17 @@ data:
   setup.sh: |-
     #!/bin/bash
 
+    set -e
+
     ID="${MY_POD_NAME#"{{ $fullname }}-"}"
     if [[ -f "{{ .Values.logsDirs | splitList "," | first }}/meta.properties" ]]; then
-        export KAFKA_CFG_BROKER_ID="$(grep "broker.id" "{{ .Values.logsDirs | splitList "," | first }}/meta.properties" | awk -F '=' '{print $2}')"
+        export KAFKA_BROKER_ID="$(grep "broker.id" "{{ .Values.logsDirs | splitList "," | first }}/meta.properties" | awk -F '=' '{print $2}')"
     else
-        export KAFKA_CFG_BROKER_ID="$((ID + {{ .Values.minBrokerId }}))"
+        export KAFKA_BROKER_ID="$((ID + {{ .Values.minBrokerId }}))"
     fi
 
     {{- if eq .Values.brokerRackAssignment "aws-az" }}
-    export KAFKA_CFG_BROKER_RACK=$(curl "http://169.254.169.254/latest/meta-data/placement/availability-zone-id")
+    export KAFKA_BROKER_RACK=$(curl "http://169.254.169.254/latest/meta-data/placement/availability-zone-id")
     {{- end }}
 
     {{- if .Values.externalAccess.enabled }}
@@ -117,14 +119,14 @@ data:
 
     # Configure Kafka advertised listeners
     {{- if .Values.advertisedListeners }}
-    export KAFKA_CFG_ADVERTISED_LISTENERS={{ join "," .Values.advertisedListeners }}
+    export KAFKA_ADVERTISED_LISTENERS={{ join "," .Values.advertisedListeners }}
     {{- else }}
-    export KAFKA_CFG_ADVERTISED_LISTENERS="INTERNAL://${MY_POD_NAME}.{{ $fullname }}-headless.{{ $releaseNamespace }}.svc.{{ $clusterDomain }}:{{ $interBrokerPort }},CLIENT://${MY_POD_NAME}.{{ $fullname }}-headless.{{ $releaseNamespace }}.svc.{{ $clusterDomain }}:{{ $clientPort }},EXTERNAL://${EXTERNAL_ACCESS_HOST}:${EXTERNAL_ACCESS_PORT}"
+    export KAFKA_ADVERTISED_LISTENERS="INTERNAL://${MY_POD_NAME}.{{ $fullname }}-headless.{{ $releaseNamespace }}.svc.{{ $clusterDomain }}:{{ $interBrokerPort }},CLIENT://${MY_POD_NAME}.{{ $fullname }}-headless.{{ $releaseNamespace }}.svc.{{ $clusterDomain }}:{{ $clientPort }},EXTERNAL://${EXTERNAL_ACCESS_HOST}:${EXTERNAL_ACCESS_PORT}"
     {{- end }}
     {{- end }}
 
     {{- if (include "kafka.tlsEncryption" .) }}
-    mkdir -p /opt/bitnami/kafka/config/certs
+    mkdir -p /usr/share/kafka/config/certs
     {{- if eq .Values.auth.tls.type "jks" }}
     {{- if not (empty .Values.auth.tls.existingSecrets) }}
     JKS_TRUSTSTORE={{ printf "/%s/%s" (ternary "certs-${ID}" "truststore" (empty $jksTruststoreSecret)) (default "kafka.truststore.jks" $jksTruststore) | quote }}
@@ -134,13 +136,12 @@ data:
     JKS_KEYSTORE={{ printf "/certs/%s" (default "kafka-${ID}.keystore.jks" $jksKeystoreSAN) | quote }}
     {{- end }}
     if [[ -f "$JKS_TRUSTSTORE" ]] && [[ -f "$JKS_KEYSTORE" ]]; then
-        cp "$JKS_TRUSTSTORE" "/opt/bitnami/kafka/config/certs/kafka.truststore.jks"
-        cp "$JKS_KEYSTORE" "/opt/bitnami/kafka/config/certs/kafka.keystore.jks"
+        cp "$JKS_TRUSTSTORE" "/usr/share/kafka/config/certs/kafka.truststore.jks"
+        cp "$JKS_KEYSTORE" "/usr/share/kafka/config/certs/kafka.keystore.jks"
     else
         echo "Couldn't find the expected Java Key Stores (JKS) files! They are mandatory when encryption via TLS is enabled."
         exit 1
     fi
-    export KAFKA_TLS_TRUSTSTORE_FILE="/opt/bitnami/kafka/config/certs/kafka.truststore.jks"
 
     {{- else if eq .Values.auth.tls.type "pem" }}
 
@@ -154,7 +155,7 @@ data:
     PEM_KEY="/certs/kafka-${ID}.keystore.key"
     {{- end }}
     if [[ -f "$PEM_CERT" ]] && [[ -f "$PEM_KEY" ]]; then
-        CERT_DIR="/opt/bitnami/kafka/config/certs"
+        CERT_DIR="/usr/share/kafka/config/certs"
         PEM_CA_LOCATION="${CERT_DIR}/kafka.truststore.pem"
         PEM_CERT_LOCATION="${CERT_DIR}/kafka.keystore.pem"
         {{- if .Values.auth.tls.pemChainIncluded }}
@@ -177,26 +178,41 @@ data:
         {{- end }}
 
         # Ensure the key used PEM format with PKCS#8
-        openssl pkcs8 -topk8 -nocrypt -in "$PEM_KEY" > "/opt/bitnami/kafka/config/certs/kafka.keystore.key"
+        openssl pkcs8 -topk8 -nocrypt -in "$PEM_KEY" > "/usr/share/kafka/config/certs/kafka.keystore.key"
     else
         echo "Couldn't find the expected PEM files! They are mandatory when encryption via TLS is enabled."
         exit 1
     fi
-    export KAFKA_TLS_TRUSTSTORE_FILE="/opt/bitnami/kafka/config/certs/kafka.truststore.pem"
     {{- end }}
     {{- end }}
 
-    # Configure zookeeper client
+    # Configure zookeeper client TLS
     {{- if and (not (empty .Values.auth.zookeeper.tls.existingSecret)) .Values.auth.zookeeper.tls.enabled }}
     JKS_TRUSTSTORE={{ printf "/kafka-zookeeper-cert/%s" (.Values.auth.zookeeper.tls.existingSecretTruststoreKey) | quote }}
     JKS_KEYSTORE={{ printf "/kafka-zookeeper-cert/%s" (.Values.auth.zookeeper.tls.existingSecretKeystoreKey) | quote }}
     if [[ -f "$JKS_TRUSTSTORE" ]] && [[ -f "$JKS_KEYSTORE" ]]; then
-      CERT_DIR="/opt/bitnami/kafka/config/certs"
+      CERT_DIR="/usr/share/kafka/config/certs"
       TRUSTSTORE_LOCATION="${CERT_DIR}/zookeeper.truststore.jks"
       cp "$JKS_TRUSTSTORE" "$TRUSTSTORE_LOCATION"
       cp "$JKS_KEYSTORE" "${CERT_DIR}/zookeeper.keystore.jks"
-      export KAFKA_ZOOKEEPER_TLS_TRUSTSTORE_FILE="${TRUSTSTORE_LOCATION}"
     fi
     {{- end }}
 
-    exec /entrypoint.sh /run.sh
+    # Run KafkaDockerWrapper to merge configuration
+    # Tolerate "legacy cluster" message when running in ZooKeeper mode
+    # CLUSTER_ID is required by KafkaDockerWrapper but unused in ZooKeeper mode
+    export CLUSTER_ID="${CLUSTER_ID:-$(kafka-storage.sh random-uuid)}"
+    export KAFKA_JVM_PERFORMANCE_OPTS="${KAFKA_JVM_PERFORMANCE_OPTS:-} -XX:SharedArchiveFile=/usr/share/kafka/storage.jsa"
+    result=$(/usr/share/kafka/bin/kafka-run-class.sh kafka.docker.KafkaDockerWrapper setup \
+          --default-configs-dir /etc/kafka/docker \
+          --mounted-configs-dir /mnt/kafka/config \
+          --final-configs-dir /usr/share/kafka/config 2>&1) || \
+          echo "$result" | grep -qi "legacy cluster\|already formatted" || \
+          { echo "$result" && exit 1; }
+    export KAFKA_JVM_PERFORMANCE_OPTS="${KAFKA_JVM_PERFORMANCE_OPTS/ -XX:SharedArchiveFile=\/usr\/share\/kafka\/storage.jsa/} -XX:SharedArchiveFile=/usr/share/kafka/kafka.jsa"
+
+    exec /usr/share/kafka/bin/kafka-server-start.sh /usr/share/kafka/config/server.properties
+  base-server.properties: |-
+    # ZooKeeper-mode Kafka base configuration
+    # Dynamic settings are applied via KAFKA_* environment variables
+    broker.id=-1

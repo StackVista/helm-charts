@@ -56,7 +56,7 @@ Usage: {{ include "common.sizing.kafka.extraEnv.open" . }}
 {{- if and .Values.global .Values.global.suseObservability .Values.global.suseObservability.sizing .Values.global.suseObservability.sizing.profile -}}
 {{- $profile := .Values.global.suseObservability.sizing.profile -}}
 {{- if eq $profile "4000-ha" }}
-KAFKA_CFG_REPLICA_FETCH_MAX_BYTES: "4194304"
+KAFKA_REPLICA_FETCH_MAX_BYTES: "4194304"
 {{- end }}
 {{- end }}
 {{- end }}

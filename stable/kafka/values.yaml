@@ -58,8 +58,7 @@ diagnosticMode:
 
 ## @section Kafka parameters
 
-## Bitnami Kafka image version
-## ref: https://hub.docker.com/r/bitnami/kafka/tags/
+## Apache Kafka image
 ## @param image.registry Kafka image registry
 ## @param image.repository Kafka image repository
 ## @param image.tag Kafka image tag (immutable tags are recommended)
@@ -71,7 +70,7 @@ diagnosticMode:
 image:
   registry: docker.io
   repository: bitnami/kafka
-  tag: 3.3.1-debian-11-r11
+  tag: 3.9.1-6.7
   digest: ""
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -91,7 +90,7 @@ image:
   debug: false
 ## @param config Configuration file for Kafka. Auto-generated based on other parameters when not specified
 ## Specify content for server.properties
-## NOTE: This will override any KAFKA_CFG_ environment variables (including those set by the chart)
+## NOTE: This will override any KAFKA_ environment variables (including those set by the chart)
 ## The server.properties is auto-generated based on other parameters when this parameter is not specified
 ## e.g:
 ## config: |-
@@ -121,7 +120,7 @@ image:
 ##
 config: ""
 ## @param existingConfigmap ConfigMap with Kafka Configuration
-## NOTE: This will override `config` AND any KAFKA_CFG_ environment variables
+## NOTE: This will override `config` AND any KAFKA_ environment variables
 ##
 existingConfigmap: ""
 ## @param log4j An optional log4j.properties file to overwrite the default of the Kafka brokers
@@ -163,7 +162,7 @@ logRetentionHours: 168
 logSegmentBytes: _1073741824
 ## @param logsDirs A comma separated list of directories in which kafka's log data is kept
 ## ref: https://kafka.apache.org/documentation/#brokerconfigs_log.dirs
-logsDirs: /bitnami/kafka/data
+logsDirs: /data/kafka/data
 ## @param maxMessageBytes The largest record batch size allowed by Kafka
 ##
 maxMessageBytes: _1000012
@@ -410,7 +409,7 @@ args: []
 ## ref: https://github.com/bitnami/containers/tree/main/bitnami/kafka#configuration
 ## e.g:
 ## extraEnvVars:
-##   - name: KAFKA_CFG_BACKGROUND_THREADS
+##   - name: KAFKA_BACKGROUND_THREADS
 ##     value: "10"
 ##
 extraEnvVars: []
@@ -625,7 +624,7 @@ extraVolumes: []
 ## @param extraVolumeMounts Optionally specify extra list of additional volumeMounts for the Kafka container(s)
 ## extraVolumeMounts:
 ##   - name: kafka-jaas
-##     mountPath: /bitnami/kafka/config/kafka_jaas.conf
+##     mountPath: /data/kafka/config/kafka_jaas.conf
 ##     subPath: kafka_jaas.conf
 ##
 extraVolumeMounts: []
@@ -934,7 +933,7 @@ persistence:
   selector: {}
   ## @param persistence.mountPath Mount path of the Kafka data volume
   ##
-  mountPath: /bitnami/kafka
+  mountPath: /data/kafka
 ## Log Persistence parameters
 ##
 logPersistence:
@@ -971,7 +970,7 @@ logPersistence:
   selector: {}
   ## @param logPersistence.mountPath Mount path of the Kafka logs volume
   ##
-  mountPath: /opt/bitnami/kafka/logs
+  mountPath: /data/kafka/logs
 
 ## @section Volume Permissions parameters
 ##
