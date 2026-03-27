@@ -46,7 +46,7 @@ spec:
   rules:
     {{- if eq $kind "GRPCRoute" }}
     - backendRefs:
-        - name: {{ include "opentelemetry-collector.fullname" $ }}
+        - name: {{ include "opentelemetry-collector.fullname" $ }}-grpc
           port: {{ .port | default 4317 }}
           {{- if .backendWeight }}
           weight: {{ .backendWeight }}

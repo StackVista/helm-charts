@@ -10,19 +10,19 @@ Current chart version is `2.9.1-pre.9`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.21 |
+| file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.22 |
 | file://../common/ | common | * |
-| file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.18 |
-| file://../hbase/ | hbase | 0.2.129 |
-| file://../kafka/ | kafka | 19.1.3-suse-observability.20 |
-| file://../kafkaup-operator/ | kafkaup-operator | 0.1.24 |
-| file://../minio/ | minio | 8.0.10-stackstate.25 |
-| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.22 |
+| file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.19 |
+| file://../hbase/ | hbase | 0.2.130 |
+| file://../kafka/ | kafka | 19.1.3-suse-observability.22 |
+| file://../kafkaup-operator/ | kafkaup-operator | 0.1.26 |
+| file://../minio/ | minio | 8.0.10-stackstate.26 |
+| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.23 |
 | file://../pull-secret/ | pull-secret | * |
-| file://../suse-observability-sizing/ | suse-observability-sizing | 0.1.12 |
-| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.45 |
-| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.45 |
-| file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.18 |
+| file://../suse-observability-sizing/ | suse-observability-sizing | 0.1.13 |
+| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.46 |
+| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.46 |
+| file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.19 |
 | https://helm.stackstate.io | anomaly-detection | 5.2.0-snapshot.179 |
 | https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.25 |
 
@@ -564,7 +564,7 @@ If you encounter issues not covered here:
 | global.wait.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for wait containers. |
 | global.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | global.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
-| global.wait.image.tag | string | `"1.0.12-6dabb0fe-release-186"` | Container image tag for wait containers. |
+| global.wait.image.tag | string | `"1.0.12-9657337c-release-188"` | Container image tag for wait containers. |
 | hbase.all.metrics.agentAnnotationsEnabled | bool | `true` |  |
 | hbase.all.metrics.enabled | bool | `true` |  |
 | hbase.commonLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Add additional labels to all resources created for all hbase resources |
@@ -607,7 +607,6 @@ If you encounter issues not covered here:
 | ingress.ingressClassName | string | `""` |  |
 | ingress.path | string | `"/"` |  |
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
-| kafka.command | list | `["/scripts/custom-setup.sh"]` | Override kafka container command. |
 | kafka.commonLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Add additional labels to all resources created for kafka |
 | kafka.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
 | kafka.containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |
@@ -618,14 +617,11 @@ If you encounter issues not covered here:
 | kafka.defaultReplicationFactor | int | `2` |  |
 | kafka.enabled | bool | `true` | Enable / disable chart-based Kafka. |
 | kafka.externalZookeeper.servers | string | `"suse-observability-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
-| kafka.extraDeploy | list | `[{"apiVersion":"v1","data":{"custom-setup.sh":"#!/bin/bash\n\nID=\"${MY_POD_NAME#\"{{ include \"common.names.fullname\" . }}-\"}\"\n\nKAFKA_META_PROPERTIES=/bitnami/kafka/data/meta.properties\nif [[ -f ${KAFKA_META_PROPERTIES} ]]; then\n  ID=`grep -e ^broker.id= ${KAFKA_META_PROPERTIES} | sed 's/^broker.id=//'`\n  if [[ \"${ID}\" != \"\" ]] && [[ \"${ID}\" -gt 1000 ]]; then\n    echo \"Using broker ID ${ID} from ${KAFKA_META_PROPERTIES} for compatibility (STAC-9614)\"\n  fi\nfi\n\nexport KAFKA_CFG_BROKER_ID=\"$ID\"\n\nexec /entrypoint.sh /run.sh"},"kind":"ConfigMap","metadata":{"name":"kafka-custom-scripts"}}]` | Array of extra objects to deploy with the release |
-| kafka.extraEnvVars | list | `[{"name":"KAFKA_CFG_RESERVED_BROKER_MAX_ID","value":"2000"},{"name":"KAFKA_CFG_TRANSACTIONAL_ID_EXPIRATION_MS","value":"2147483647"}]` | Extra environment variables to add to kafka pods. |
-| kafka.extraVolumeMounts | list | `[{"mountPath":"/scripts/custom-setup.sh","name":"kafka-custom-scripts","subPath":"custom-setup.sh"}]` | Extra volumeMount(s) to add to Kafka containers. |
-| kafka.extraVolumes | list | `[{"configMap":{"defaultMode":493,"name":"kafka-custom-scripts"},"name":"kafka-custom-scripts"}]` | Extra volume(s) to add to Kafka statefulset. |
+| kafka.extraEnvVars | list | `[{"name":"KAFKA_RESERVED_BROKER_MAX_ID","value":"2000"},{"name":"KAFKA_TRANSACTIONAL_ID_EXPIRATION_MS","value":"2147483647"}]` | Extra environment variables to add to kafka pods. |
 | kafka.fullnameOverride | string | `"suse-observability-kafka"` | Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | kafka.image.registry | string | `"quay.io"` | Kafka image registry |
 | kafka.image.repository | string | `"stackstate/kafka"` | Kafka image repository |
-| kafka.image.tag | string | `"3.9.1-2f5d8989-290-release"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order for the kafkaup operator to upgrade the inter broker protocol version |
+| kafka.image.tag | string | `"3.9.1-6.7"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order for the kafkaup operator to upgrade the inter broker protocol version |
 | kafka.initContainers | list | `[{"args":["-c","trap 'exit 1' INT TERM; while [ -z \"${KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION}\" ]; do echo \"KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION should be set by operator\"; sleep 1; done"],"command":["/bin/bash"],"image":"{{ include \"kafka.image\" . }}","imagePullPolicy":"","name":"check-inter-broker-protocol-version","resources":{"limits":{},"requests":{}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}}]` | required to make the kafka versionup operator work |
 | kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
 | kafka.metrics.jmx.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
@@ -1018,7 +1014,7 @@ If you encounter issues not covered here:
 | stackstate.components.kafkaTopicCreate.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.registry | string | `"quay.io"` | Base container image registry for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.image.repository | string | `"stackstate/kafka"` | Base container image repository for kafka-topic-create containers. |
-| stackstate.components.kafkaTopicCreate.image.tag | string | `"3.9.1-2f5d8989-290-release"` | Container image tag for kafka-topic-create containers. |
+| stackstate.components.kafkaTopicCreate.image.tag | string | `"3.9.1-6.7"` | Container image tag for kafka-topic-create containers. |
 | stackstate.components.kafkaTopicCreate.jobAnnotations | object | `{}` | Annotations for KafkaTopicCreate job. |
 | stackstate.components.kafkaTopicCreate.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.kafkaTopicCreate.podAnnotations | object | `{}` | Extra annotations for kafka topic create job pods. |
@@ -1319,7 +1315,7 @@ If you encounter issues not covered here:
 | victoria-metrics-0.backup.s3Prefix | string | `"victoria-metrics-0"` |  |
 | victoria-metrics-0.backup.scheduled.schedule | string | `"25 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
 | victoria-metrics-0.backup.setupCron.image.tag | string | `"1.8.3-610"` | Container-tools image for cron setup. Updated by updatecli. |
-| victoria-metrics-0.backup.vmbackup.image.tag | string | `"v1.109.0-3cb9d6ad-release-56"` | VM backup image tag. Updated by updatecli. |
+| victoria-metrics-0.backup.vmbackup.image.tag | string | `"v1.109.0-4cfc610b-release-58"` | VM backup image tag. Updated by updatecli. |
 | victoria-metrics-0.enabled | bool | `true` |  |
 | victoria-metrics-0.rbac.namespaced | bool | `true` |  |
 | victoria-metrics-0.rbac.pspEnabled | bool | `false` |  |
@@ -1342,7 +1338,7 @@ If you encounter issues not covered here:
 | victoria-metrics-1.backup.s3Prefix | string | `"victoria-metrics-1"` | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. |
 | victoria-metrics-1.backup.scheduled.schedule | string | `"35 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
 | victoria-metrics-1.backup.setupCron.image.tag | string | `"1.8.3-610"` | Container-tools image for cron setup. Updated by updatecli. |
-| victoria-metrics-1.backup.vmbackup.image.tag | string | `"v1.109.0-3cb9d6ad-release-56"` | VM backup image tag. Updated by updatecli. |
+| victoria-metrics-1.backup.vmbackup.image.tag | string | `"v1.109.0-4cfc610b-release-58"` | VM backup image tag. Updated by updatecli. |
 | victoria-metrics-1.enabled | bool | `true` |  |
 | victoria-metrics-1.rbac.namespaced | bool | `true` |  |
 | victoria-metrics-1.rbac.pspEnabled | bool | `false` |  |
@@ -1364,7 +1360,7 @@ If you encounter issues not covered here:
 | victoria-metrics.restore.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for `vmrestore` containers. |
 | victoria-metrics.restore.image.registry | string | `"quay.io"` | Base container image registry for 'vmrestore' containers. |
 | victoria-metrics.restore.image.repository | string | `"stackstate/vmrestore"` | Base container image repository for 'vmrestore' containers. |
-| victoria-metrics.restore.image.tag | string | `"v1.109.0-d1e2ca0c-release-43"` | Container image tag for 'vmrestore' containers. |
+| victoria-metrics.restore.image.tag | string | `"v1.109.0-97bc8d04-release-45"` | Container image tag for 'vmrestore' containers. |
 | victoria-metrics.restore.securityContext.enabled | bool | `true` |  |
 | victoria-metrics.restore.securityContext.fsGroup | int | `65534` |  |
 | victoria-metrics.restore.securityContext.runAsGroup | int | `65534` |  |

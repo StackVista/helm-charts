@@ -1,6 +1,6 @@
 # opentelemetry-collector
 
-![Version: 0.108.0-stackstate.22](https://img.shields.io/badge/Version-0.108.0--stackstate.22-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.25](https://img.shields.io/badge/AppVersion-0.0.25-informational?style=flat-square)
+![Version: 0.108.0-stackstate.23](https://img.shields.io/badge/Version-0.108.0--stackstate.23-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.25](https://img.shields.io/badge/AppVersion-0.0.25-informational?style=flat-square)
 
 OpenTelemetry Collector Helm chart for Kubernetes
 
@@ -229,7 +229,7 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | ports.otlp-http.hostPort | int | `4318` |  |
 | ports.otlp-http.protocol | string | `"TCP"` |  |
 | ports.otlp-http.servicePort | int | `4318` |  |
-| ports.otlp.appProtocol | string | `"grpc"` |  |
+| ports.otlp.appProtocol | string | `"kubernetes.io/h2c"` |  |
 | ports.otlp.containerPort | int | `4317` |  |
 | ports.otlp.enabled | bool | `true` |  |
 | ports.otlp.hostPort | int | `4317` |  |

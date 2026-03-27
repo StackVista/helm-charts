@@ -54,7 +54,7 @@ func TestGatewayGRPCRouteEnabled(t *testing.T) {
 
 	require.Len(t, route.Spec.Rules, 1, "Should have 1 rule")
 	backendRef := route.Spec.Rules[0].BackendRefs[0]
-	assert.Equal(t, gatewayv1.ObjectName(routeName), backendRef.Name)
+	assert.Equal(t, gatewayv1.ObjectName(routeName+"-grpc"), backendRef.Name)
 	require.NotNil(t, backendRef.Port)
 	assert.Equal(t, gatewayv1.PortNumber(4317), *backendRef.Port)
 }
