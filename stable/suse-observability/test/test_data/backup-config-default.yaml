@@ -11,9 +11,11 @@ storage:
 stackgraph:
   bucket: "sts-stackgraph-backup"
   s3Prefix: ""
+  stackpacksS3Prefix: "stackpacks/"
   multipartArchive: false
   restore:
     loggingConfigConfigMap: suse-observability-backup-log
+    stsBackupConfigConfigMap: suse-observability-sts-backup-conf
     scaleDownLabelSelector: stackstate.com/connects-to-stackgraph=true
     zookeeperQuorum: "suse-observability-zookeeper-headless:2181"
     pvc:
@@ -50,8 +52,10 @@ settings:
   localBucket: "local-settings-backup"
   bucket: "sts-configuration-backup"
   s3Prefix: ""
+  stackpacksS3Prefix: "stackpacks/"
   restore:
     loggingConfigConfigMap: suse-observability-backup-log
+    stsBackupConfigConfigMap: suse-observability-sts-backup-conf
     baseUrl: "http://localhost"
     receiverBaseUrl: "http://localhost/receiver"
     platformVersion: "test_chart_version"

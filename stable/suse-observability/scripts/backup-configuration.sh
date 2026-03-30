@@ -2,7 +2,6 @@
 set -Eeuo pipefail
 
 export TMP_BACKUP_DIR=/tmp/settings-backup
-export STACKPACKS_BACKUP_DIR="${TMP_BACKUP_DIR}/stackpacks"
 BACKUP_CONFIGURATION_MAX_LOCAL_FILES=${BACKUP_CONFIGURATION_MAX_LOCAL_FILES:-10}
 
 # Ensure temp directory exists
@@ -46,27 +45,17 @@ grep '_version:' "${BACKUP_FILE_WITH_PATH}" > /dev/null || (
 echo "=== Uploading backup \"${BACKUP_FILE}\" to local settings bucket \"${S3_BUCKET_SETTINGS}\"..."
 sts-toolbox aws s3 cp --endpoint "http://${S3_ENDPOINT}" --region us-east-1 "${BACKUP_FILE_WITH_PATH}" "s3://${S3_BUCKET_SETTINGS}/${BACKUP_FILE}"
 
-# Make sure stackpacks backup dir exists
-mkdir -p "${STACKPACKS_BACKUP_DIR}"
 # StackPacks backup (they work best when created right after the settings backup such that available stackpacks are in sync with the settings)
-echo "=== Removing oldest stackpacks backups from local storage \"${STACKPACKS_BACKUP_DIR}\", keeping at most $BACKUP_CONFIGURATION_MAX_LOCAL_FILES..."
-
-# Removing oldest backups (files only, there can be directories like `lost+found` that we want to ignore)
-current_count=$(find "${STACKPACKS_BACKUP_DIR}" -maxdepth 1 -type f | wc -l)
-if [ "$current_count" -ge "$BACKUP_CONFIGURATION_MAX_LOCAL_FILES" ]; then
-  files_to_remove=$((current_count - BACKUP_CONFIGURATION_MAX_LOCAL_FILES + 1))
-  find "${STACKPACKS_BACKUP_DIR}" -maxdepth 1 -type f -printf '%T@ %p\n' | sort -n | head -n "$files_to_remove" | awk '{print $2}' | xargs -I {} rm -f "{}"
-fi
-
-echo "=== Listing contents of \"${STACKPACKS_BACKUP_DIR}\"..."
-find "${STACKPACKS_BACKUP_DIR}" -maxdepth 1 -type f -printf '%T@ %f\n' | sort -n | awk '{print $2}'
-
 echo "=== Creating StackPacks backup..."
 STACKPACKS_BACKUP_FILE="${BACKUP_FILE}.stackpacks.zip"
-STACKPACKS_BACKUP_FILE_WITH_PATH="${STACKPACKS_BACKUP_DIR}/${STACKPACKS_BACKUP_FILE}"
+STACKPACKS_BACKUP_FILE_WITH_PATH="${TMP_BACKUP_DIR}/${STACKPACKS_BACKUP_FILE}"
 
 echo "=== Exporting StackPacks data to \"${STACKPACKS_BACKUP_FILE}\"..."
 /opt/docker/bin/stack-packs-backup -Dlogback.configurationFile=/opt/docker/etc_log/logback.xml -create "${STACKPACKS_BACKUP_FILE_WITH_PATH}" -remote "${BACKUP_STACKPACKS_SERVICE_URL}"
+
+# Always upload stackpacks to local settings bucket (S3Proxy routes to local PVC)
+echo "=== Uploading StackPacks backup \"${STACKPACKS_BACKUP_FILE}\" to local settings bucket \"${S3_BUCKET_SETTINGS}\"..."
+sts-toolbox aws s3 cp --endpoint "http://${S3_ENDPOINT}" --region us-east-1 "${STACKPACKS_BACKUP_FILE_WITH_PATH}" "s3://${S3_BUCKET_SETTINGS}/${BACKUP_CONFIGURATION_STACKPACKS_S3_PREFIX}${STACKPACKS_BACKUP_FILE}"
 
 # If remote backup is enabled, also upload to remote bucket
 if [ "$BACKUP_CONFIGURATION_UPLOAD_REMOTE" == "true" ]; then
@@ -82,7 +71,7 @@ if [ "$BACKUP_CONFIGURATION_UPLOAD_REMOTE" == "true" ]; then
     /backup-restore-scripts/expire-s3-backups.sh
 
     echo "=== Uploading StackPacks backup \"${STACKPACKS_BACKUP_FILE}\" to bucket \"${BACKUP_CONFIGURATION_BUCKET_NAME}\"..."
-    sts-toolbox aws s3 cp --endpoint "http://${MINIO_ENDPOINT}" --region minio "${STACKPACKS_BACKUP_FILE_WITH_PATH}" "s3://${BACKUP_CONFIGURATION_BUCKET_NAME}/${BACKUP_CONFIGURATION_STACKPACKS_S3_PREFIX}${STACKPACKS_BACKUP_FILE}"
+    sts-toolbox aws s3 cp --endpoint "http://${S3_ENDPOINT}" --region us-east-1 "${STACKPACKS_BACKUP_FILE_WITH_PATH}" "s3://${BACKUP_CONFIGURATION_BUCKET_NAME}/${BACKUP_CONFIGURATION_STACKPACKS_S3_PREFIX}${STACKPACKS_BACKUP_FILE}"
 
     echo "=== Expiring old StackPacks backups..."
     export BACKUP_BUCKET_NAME=${BACKUP_CONFIGURATION_BUCKET_NAME}
@@ -93,5 +82,6 @@ if [ "$BACKUP_CONFIGURATION_UPLOAD_REMOTE" == "true" ]; then
     /backup-restore-scripts/expire-s3-backups.sh
 fi
 
-# Clean up temp file
+# Clean up temp files
 rm -f "${BACKUP_FILE_WITH_PATH}"
+rm -f "${STACKPACKS_BACKUP_FILE_WITH_PATH}"

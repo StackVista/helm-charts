@@ -61,7 +61,7 @@ var backupAlwaysPresentSecrets = []string{
 }
 
 var backupAlwaysEnabledConfigMaps = []string{
-	"suse-observability-backup",
+	"suse-observability-sts-backup-conf",
 	"suse-observability-backup-config",
 	"suse-observability-backup-restore-scripts",
 	"suse-observability-clickhouse-backup",
@@ -265,6 +265,114 @@ func TestBackupConfigmapDefault(t *testing.T) {
 	require.NoError(t, err, "Should be able to read expected config file")
 
 	assert.Equal(t, string(expectedConfig), configData, "ConfigMap 'config' data should match expected backup-config-default.yaml")
+}
+
+func TestBackupStackpacksServiceSplitEnabled(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled":            "true",
+			"stackstate.features.server.split": "true",
+		},
+		KubectlOptions: &k8s.KubectlOptions{Namespace: "suse-observability"},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	service, ok := resources.Services["suse-observability-backup-stackpacks"]
+	require.True(t, ok, "backup-stackpacks Service should exist")
+	assert.Equal(t, "None", service.Spec.ClusterIP, "backup-stackpacks Service should be headless")
+	require.Len(t, service.Spec.Ports, 1)
+	assert.Equal(t, int32(7090), service.Spec.Ports[0].Port)
+	assert.Equal(t, "api", service.Spec.Selector["app.kubernetes.io/component"], "should select api component when server.split is enabled")
+}
+
+func TestBackupStackpacksServiceSplitDisabled(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled":            "true",
+			"stackstate.features.server.split": "false",
+		},
+		KubectlOptions: &k8s.KubectlOptions{Namespace: "suse-observability"},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	service, ok := resources.Services["suse-observability-backup-stackpacks"]
+	require.True(t, ok, "backup-stackpacks Service should exist")
+	assert.Equal(t, "server", service.Spec.Selector["app.kubernetes.io/component"], "should select server component when server.split is disabled")
+}
+
+func TestBackupStackpacksEnvVars(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled": "true",
+		},
+		KubectlOptions: &k8s.KubectlOptions{Namespace: "suse-observability"},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	expectedEnvVars := []corev1.EnvVar{
+		{Name: "BACKUP_STACKPACKS_SERVICE_URL", Value: "http://suse-observability-backup-stackpacks:7090"},
+		{Name: "BACKUP_STACKGRAPH_STACKPACKS_S3_PREFIX", Value: "stackpacks/"},
+		{Name: "BACKUP_CONFIGURATION_STACKPACKS_S3_PREFIX", Value: "stackpacks/"},
+	}
+
+	// Verify env vars on stackgraph backup cronjob
+	sgCronjob, ok := resources.CronJobs["suse-observability-backup-sg"]
+	require.True(t, ok, "backup-sg CronJob should exist")
+	sgEnv := sgCronjob.Spec.JobTemplate.Spec.Template.Spec.Containers[0].Env
+	for _, expected := range expectedEnvVars {
+		assert.Contains(t, sgEnv, expected, "backup-sg should have env var %s", expected.Name)
+	}
+
+	// Verify env vars on configuration backup cronjob
+	confCronjob, ok := resources.CronJobs["suse-observability-backup-conf"]
+	require.True(t, ok, "backup-conf CronJob should exist")
+	confEnv := confCronjob.Spec.JobTemplate.Spec.Template.Spec.Containers[0].Env
+	for _, expected := range expectedEnvVars {
+		assert.Contains(t, confEnv, expected, "backup-conf should have env var %s", expected.Name)
+	}
+}
+
+func TestBackupStackpacksVolumeMounts(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.backup.enabled": "true",
+		},
+		KubectlOptions: &k8s.KubectlOptions{Namespace: "suse-observability"},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	for _, cronjobName := range []string{"suse-observability-backup-sg", "suse-observability-backup-conf"} {
+		cronjob, ok := resources.CronJobs[cronjobName]
+		require.True(t, ok, "%s CronJob should exist", cronjobName)
+
+		volumeMounts := cronjob.Spec.JobTemplate.Spec.Template.Spec.Containers[0].VolumeMounts
+		var hasConfigVolume bool
+		for _, vm := range volumeMounts {
+			if vm.Name == "config-volume" && vm.SubPath == "application_stackstate.conf" {
+				hasConfigVolume = true
+				break
+			}
+		}
+		assert.True(t, hasConfigVolume, "%s should mount config-volume with application_stackstate.conf subPath", cronjobName)
+
+		volumes := cronjob.Spec.JobTemplate.Spec.Template.Spec.Volumes
+		var hasConfigVolumeSource bool
+		for _, v := range volumes {
+			if v.Name == "config-volume" && v.ConfigMap != nil && strings.HasSuffix(v.ConfigMap.Name, "-sts-backup-conf") {
+				hasConfigVolumeSource = true
+				break
+			}
+		}
+		assert.True(t, hasConfigVolumeSource, "%s should have config-volume sourced from sts-backup-conf ConfigMap", cronjobName)
+	}
 }
 
 func testJobsFromBackupRestoreScriptsConfigMap(t *testing.T, resources *helmtestutil.KubernetesResources) map[string]batchv1.Job {
