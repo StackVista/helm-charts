@@ -108,10 +108,10 @@ sources:
     spec:
       image: "quay.io/stackstate/kafka"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+-release$"
+      tagfilter: ".*-[0-9]+\\.[0-9]+-release$"
       versionfilter:
         kind: regex/semver
-        regex: ".*-([0-9]+)-release$"
+        regex: ".*-([0-9]+\\.[0-9]+)-release$"
   kubernetesRbacAgent:
     name: "kubernetes-rbac-agent"
     kind: dockerimage
