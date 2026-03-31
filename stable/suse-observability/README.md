@@ -1162,7 +1162,7 @@ If you encounter issues not covered here:
 | stackstate.components.router.image.pullPolicy | string | `""` | `pullPolicy` used for the `router` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.router.image.registry | string | `"quay.io"` | Registry of the router component Docker image. |
 | stackstate.components.router.image.repository | string | `"stackstate/envoy"` | Repository of the router component Docker image. |
-| stackstate.components.router.image.tag | string | `"v1.31.1-38312d95-release-167"` | Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
+| stackstate.components.router.image.tag | string | `"1.37.1-1.12-release"` | Tag used for the `router` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
 | stackstate.components.router.mode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | stackstate.components.router.mode.extraEnv.open | object | `{}` | Add additional environment variables to the pod |
 | stackstate.components.router.mode.image.pullPolicy | string | `nil` | Image pull policy for router mode containers. |

@@ -16,10 +16,9 @@ data:
             "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
             {{- if or .Values.stackstate.components.router.errorlog.enabled .Values.stackstate.components.router.accesslog.enabled }}
             access_log:
-            - name: envoy.access_loggers.file
+            - name: envoy.access_loggers.stdout
               typed_config:
-                "@type": type.googleapis.com/envoy.extensions.access_loggers.file.v3.FileAccessLog
-                path: /dev/stdout
+                "@type": type.googleapis.com/envoy.extensions.access_loggers.stream.v3.StdoutAccessLog
             {{- if not .Values.stackstate.components.router.accesslog.enabled }}
               filter:
                 status_code_filter:
@@ -152,7 +151,7 @@ data:
                     - header:
                         key: "X-Frame-Options"
                         value: "DENY"
-                      append: true
+                      append_action: APPEND_IF_EXISTS_OR_ADD
             http_filters:
             - name: envoy.filters.http.router
               typed_config:
@@ -163,7 +162,11 @@ data:
       name: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
       type: STRICT_DNS
       lb_policy: LEAST_REQUEST
-      http_protocol_options: {}
+      typed_extension_protocol_options:
+        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:
+          "@type": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions
+          explicit_http_config:
+            http_protocol_options: {}
       connect_timeout: 2s
       load_assignment:
         cluster_name: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
@@ -239,7 +242,11 @@ data:
       name: "{{ template "common.fullname.short" . }}-ui"
       type: STRICT_DNS
       lb_policy: LEAST_REQUEST
-      http_protocol_options: {}
+      typed_extension_protocol_options:
+        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:
+          "@type": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions
+          explicit_http_config:
+            http_protocol_options: {}
       connect_timeout: 2s
       load_assignment:
         cluster_name: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-ui"
@@ -255,7 +262,11 @@ data:
       name: "{{ template "stackstate.mcp.fullname" . }}"
       type: STRICT_DNS
       lb_policy: LEAST_REQUEST
-      http_protocol_options: {}
+      typed_extension_protocol_options:
+        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:
+          "@type": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions
+          explicit_http_config:
+            http_protocol_options: {}
       connect_timeout: 2s
       load_assignment:
         cluster_name: "{{ template "stackstate.mcp.fullname" . }}"

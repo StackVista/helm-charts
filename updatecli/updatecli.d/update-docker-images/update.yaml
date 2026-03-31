@@ -78,10 +78,10 @@ sources:
     spec:
       image: "quay.io/stackstate/envoy"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-release-[0-9]+$"
+      tagfilter: ".*-[0-9]+\\.[0-9]+-release$"
       versionfilter:
         kind: regex/semver
-        regex: ".*-(\\d+)$"
+        regex: ".*-([0-9]+\\.[0-9]+)-release$"
   hadoop:
     name: "hadoop"
     kind: dockerimage
