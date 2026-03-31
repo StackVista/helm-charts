@@ -68,7 +68,7 @@ dependencies:
     repository: file://../clickhouse/
     condition: clickhouse.enabled
   - name: opentelemetry-collector
-    version: 0.108.0-stackstate.23
+    version: 0.108.0-stackstate.24
     repository: file://../opentelemetry-collector
     condition: opentelemetry.enabled
   - name: kubernetes-rbac-agent
