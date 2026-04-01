@@ -96,7 +96,7 @@ env:
   - name: LOG_LEVEL
     value: {{ .Values.s3proxy.logLevel | quote }}
   - name: JAVA_OPTS
-    value: {{ include "stackstate.s3proxy.javaOpts" . }} -XX:+ExitOnOutOfMemoryError {{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }} -Djavax.net.ssl.trustStore=/opt/s3proxy/secrets/java-cacerts -Djavax.net.ssl.trustStoreType=jks{{- if .Values.stackstate.java.trustStorePassword }} -Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD){{- end }}{{- end }}
+    value: {{ include "stackstate.s3proxy.javaOpts" . }} -XX:+ExitOnOutOfMemoryError -XX:+UseG1GC {{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }} -Djavax.net.ssl.trustStore=/opt/s3proxy/secrets/java-cacerts -Djavax.net.ssl.trustStoreType=jks{{- if .Values.stackstate.java.trustStorePassword }} -Djavax.net.ssl.trustStorePassword=$(JAVA_TRUSTSTORE_PASSWORD){{- end }}{{- end }}
   {{- range $key, $value := .Values.s3proxy.extraEnv.open }}
   - name: {{ $key }}
     value: {{ $value | quote }}
@@ -151,6 +151,7 @@ metadata:
   labels:
     app.kubernetes.io/name: s3proxy
     app.kubernetes.io/component: s3proxy
+    app.kubernetes.io/part-of: suse-observability
     {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
   replicas: 1
@@ -165,6 +166,7 @@ spec:
       labels:
         app.kubernetes.io/name: s3proxy
         app.kubernetes.io/component: s3proxy
+        app.kubernetes.io/part-of: suse-observability
         {{- include "suse-observability.labels.global" . | nindent 8 }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/s3proxy/configmap.yaml") . | sha256sum }}

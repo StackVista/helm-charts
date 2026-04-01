@@ -5,6 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: s3proxy
     app.kubernetes.io/component: s3proxy
+    app.kubernetes.io/part-of: suse-observability
     {{- include "suse-observability.labels.global" . | nindent 4 }}
   {{- if include "stackstate.s3proxy.hasDeprecatedValues" . }}
   annotations:
