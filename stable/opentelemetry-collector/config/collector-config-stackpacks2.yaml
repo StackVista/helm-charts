@@ -216,6 +216,13 @@ service:
         - topology
     logs:
       receivers:
+        - otlp
+      processors:
+        - batch
+      exporters:
+        - topology
+    logs/topology:
+      receivers:
         - topology
       exporters:
         - sts_kafka_exporter
