@@ -383,7 +383,7 @@ stackstate:
         pullPolicy: IfNotPresent
         # When changing this value make sure to also update hbase.stackgraph.version to the matching StackGraph version
         # stackstate.components.all.image.tag -- The default tag used for all stateless components of StackState; individual service `tag`s can be overridden (see below).
-        tag: 7.0.0-snapshot.20260327144011-master-e00e098
+        tag: 7.0.0-snapshot.20260401093757-master-8cf97fc
       # stackstate.components.all.podAnnotations -- Extra annotations
       podAnnotations: {}
       metrics:
@@ -2195,7 +2195,6 @@ minio:
     # minio.serviceAccount.annotations -- DEPRECATED: Use s3proxy.serviceAccount.annotations instead.
     # If set, will be merged into the S3Proxy service account annotations (s3proxy values take precedence).
     annotations: {}
-
 # S3Proxy deployment configuration
 s3proxy:
   image:
