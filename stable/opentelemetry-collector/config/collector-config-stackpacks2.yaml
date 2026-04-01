@@ -212,6 +212,9 @@ service:
       receivers:
         - forward
         - stsservicegraph
+      processors:
+        - resource/removeStsApiKey
+        - attributes/removeStsApiKey
       exporters:
         - topology
     logs:
