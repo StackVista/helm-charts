@@ -1867,7 +1867,7 @@ elasticsearch:
     enabled: true
     # elasticsearch.prometheus-elasticsearch-exporter.image.tag -- Elasticsearch Prometheus exporter image tag. Updated by updatecli.
     image:
-      tag: v1.8.0-58570ea7-release-162
+      tag: v1.8.0-58570ea7-release-163
     # elasticsearch.prometheus-elasticsearch-exporter.podSecurityContext -- Set to "" for OpenShift compatibility
     # podSecurityContext: ""
     serviceMonitor:
