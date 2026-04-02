@@ -693,7 +693,7 @@ httpHeaderInjectorWebhook:
       # certificatePrehook.image.repository - Repository for the docker image.
       repository: stackstate/container-tools
       # certificatePrehook.image.tag
-      tag: 1.8.3-610
+      tag: 1.8.4-644
 
 ########################
 # Rbac Agent variables #
@@ -703,12 +703,10 @@ kubernetes-rbac-agent:
   # kubernetes-rbac-agent.enabled. Enables/disables the rbac agent.
   enabled: true
   url:
-    fromConfigMap: '{{ include "stackstate-k8s-agent.url.configmap.internal.name"
-      . }}'
+    fromConfigMap: '{{ include "stackstate-k8s-agent.url.configmap.internal.name" . }}'
 
   clusterName:
-    fromConfigMap: '{{ include "stackstate-k8s-agent.clusterName.configmap.internal.name"
-      . }}'
+    fromConfigMap: '{{ include "stackstate-k8s-agent.clusterName.configmap.internal.name" . }}'
 
   roleType: 'scope'
   containers:
