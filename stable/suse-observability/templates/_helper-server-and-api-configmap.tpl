@@ -1,14 +1,21 @@
 {{/*
+Returns the localStackPacksUri based on deployment mode.
+*/}}
+{{- define "stackstate.localStackPacksUri" -}}
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+{{- if eq $deploymentMode "Distributed" -}}
+hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks
+{{- else -}}
+file:///var/stackpacks_local
+{{- end -}}
+{{- end -}}
+
+{{/*
 Stackpack configuration section - shared between server, api, and backup jobs
 */}}
 {{- define "stackstate.configmap.stackpacks.storage" -}}
 stackstate.stackPacks {
-{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
-  {{- if eq $deploymentMode "Distributed" }}
-  localStackPacksUri = "hdfs://{{ .Release.Name }}-hbase-hdfs-nn-headful:9000/stackpacks"
-  {{- else }}
-  localStackPacksUri = "file:///var/stackpacks_local"
-  {{- end }}
+  localStackPacksUri = {{ include "stackstate.localStackPacksUri" . | quote }}
 
   {{- if eq .Values.stackstate.stackpacks.source "docker-image" }}
   latestVersionsStackPackStoreUri = "file:///var/stackpacks"

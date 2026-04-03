@@ -8,6 +8,11 @@ storage:
     name: "suse-observability-s3proxy"
     port: 9000
     localPortForwardPort: 9000
+stackpacks:
+  baseUrl: "http://localhost"
+  receiverBaseUrl: "http://localhost/receiver"
+  platformVersion: "test_chart_version"
+  localStackPacksUri: "hdfs://suse-observability-hbase-hdfs-nn-headful:9000/stackpacks"
 stackgraph:
   bucket: "sts-stackgraph-backup"
   s3Prefix: ""
@@ -15,7 +20,7 @@ stackgraph:
   multipartArchive: false
   restore:
     loggingConfigConfigMap: suse-observability-backup-log
-    stsBackupConfigConfigMap: suse-observability-sts-backup-conf
+
     scaleDownLabelSelector: stackstate.com/connects-to-stackgraph=true
     zookeeperQuorum: "suse-observability-zookeeper-headless:2181"
     pvc:
@@ -55,10 +60,7 @@ settings:
   stackpacksS3Prefix: "stackpacks/"
   restore:
     loggingConfigConfigMap: suse-observability-backup-log
-    stsBackupConfigConfigMap: suse-observability-sts-backup-conf
-    baseUrl: "http://localhost"
-    receiverBaseUrl: "http://localhost/receiver"
-    platformVersion: "test_chart_version"
+
     scaleDownLabelSelector: stackstate.com/connects-to-stackgraph=true
     zookeeperQuorum: "suse-observability-zookeeper-headless:2181"
     pvc: suse-observability-settings-backup-data

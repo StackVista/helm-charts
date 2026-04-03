@@ -375,6 +375,62 @@ func TestBackupStackpacksVolumeMounts(t *testing.T) {
 	}
 }
 
+func TestBackupConfigmapMonoMode(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{
+			"values/backup_config_default.yaml",
+			"values/mono_hbase.yaml",
+		},
+		KubectlOptions: &k8s.KubectlOptions{Namespace: "suse-observability"},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	backupConfigMap, ok := resources.ConfigMaps["suse-observability-backup-config"]
+	require.True(t, ok, "ConfigMap 'suse-observability-backup-config' should exist")
+
+	configData, ok := backupConfigMap.Data["config"]
+	require.True(t, ok, "ConfigMap should have 'config' key")
+
+	var config map[string]interface{}
+	err := yaml.Unmarshal([]byte(configData), &config)
+	require.NoError(t, err, "config data should be valid YAML")
+
+	stackpacks, ok := config["stackpacks"].(map[string]interface{})
+	require.True(t, ok, "config should have 'stackpacks' section")
+
+	assert.Equal(t, "file:///var/stackpacks_local", stackpacks["localStackPacksUri"],
+		"localStackPacksUri should use file:// scheme in Mono mode")
+	assert.Equal(t, "suse-observability-stackpacks-local", stackpacks["pvc"],
+		"stackpacks.pvc should reference the local stackpacks PVC in Mono mode")
+}
+
+func TestBackupConfigmapDistributedModeNoPvc(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/backup_config_default.yaml"},
+		KubectlOptions: &k8s.KubectlOptions{Namespace: "suse-observability"},
+	})
+
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	backupConfigMap, ok := resources.ConfigMaps["suse-observability-backup-config"]
+	require.True(t, ok, "ConfigMap 'suse-observability-backup-config' should exist")
+
+	configData, ok := backupConfigMap.Data["config"]
+	require.True(t, ok, "ConfigMap should have 'config' key")
+
+	var config map[string]interface{}
+	err := yaml.Unmarshal([]byte(configData), &config)
+	require.NoError(t, err, "config data should be valid YAML")
+
+	stackpacks, ok := config["stackpacks"].(map[string]interface{})
+	require.True(t, ok, "config should have 'stackpacks' section")
+
+	assert.Equal(t, "hdfs://suse-observability-hbase-hdfs-nn-headful:9000/stackpacks", stackpacks["localStackPacksUri"],
+		"localStackPacksUri should use hdfs:// scheme in Distributed mode")
+	assert.Nil(t, stackpacks["pvc"], "stackpacks.pvc should not be present in Distributed mode")
+}
+
 func testJobsFromBackupRestoreScriptsConfigMap(t *testing.T, resources *helmtestutil.KubernetesResources) map[string]batchv1.Job {
 	// Find the backup-restore-scripts ConfigMap
 	var backupConfigMap *corev1.ConfigMap
