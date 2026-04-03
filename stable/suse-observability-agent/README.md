@@ -181,8 +181,8 @@ stackstate/suse-observability-agent
 | kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{}` | Additional annotations on the pod |
 | kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |
 | kubernetes-rbac-agent.containers.rbacAgent.priorityClassName | string | `""` | Set priorityClassName |
-| kubernetes-rbac-agent.containers.rbacAgent.resources.limits.memory | string | `"40Mi"` | Memory resource limits. |
-| kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory | string | `"25Mi"` | Memory resource requests. |
+| kubernetes-rbac-agent.containers.rbacAgent.resources.limits.memory | string | `"256Mi"` | Memory resource limits. |
+| kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory | string | `"128Mi"` | Memory resource requests. |
 | kubernetes-rbac-agent.containers.rbacAgent.tolerations | list | `[]` | Set tolerations |
 | kubernetes-rbac-agent.enabled | bool | `true` |  |
 | kubernetes-rbac-agent.roleType | string | `"scope"` |  |
