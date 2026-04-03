@@ -1,0 +1,41 @@
+spotlight:
+  manager_api_port: 8090
+  manager_metrics_port: 9404
+  worker_api_port: 8090
+  worker_metrics_port: 9404
+
+  scheduler:
+    min_scheduling_latency_millis: 60000 # 1 minute
+    min_bucket_size_millis: 60000 # 1 minute
+    run_timeout_millis: 900000 # 15 minutes
+    hard_delete_state_after_millis: 3600000 # 1 hour
+
+  anomaly_detector:
+    artifact_root: /var/lib/spotlight/artifacts
+    scheduling_interval_millis: 300000 # 5 minutes
+    force_retrain_after_millis: 86400000 # 1 day
+    training_history_millis: 259200000 # 3 days
+    max_detect_history_millis: 7200000 # 2 hours
+    delay_scheduling_if_no_data_millis: 3600000 # 1 hour
+    delay_scheduling_if_model_not_selected_millis: 3600000 # 1 hour
+    anomalous_time_check_interval_millis: 3600000 # 1 hour
+    expected_anomalous_time_ratio: 0.2
+    train_spec_name: anomaly_train
+    detect_spec_name: anomaly_detect
+
+  stream_selection:
+    polling_interval_millis: 900000 # 15 minutes
+    retry_config:
+      timeout_seconds: 60
+      retry_attempts: 3
+      retry_after_millis: 3000
+      backoff_factor: 1.5
+
+  health_state_publisher:
+    state_expiration_millis: 480000  # 8 minutes
+    batch_size: 100
+
+  recording_job:
+    scheduling_interval_millis: 43200000  # 12 hours
+    scheduling_interval_dither: 21600000   # 6 hours
+    delay_scheduling_if_no_data_millis: 3600000 # 1 hour

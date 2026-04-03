@@ -1,0 +1,11 @@
+chart-dirs:
+- .helm/stable
+chart-repos:
+- bitnami=https://charts.bitnami.com/bitnami
+- stable=https://kubernetes-charts.storage.googleapis.com
+- stackstate-internal=https://helm-internal.stackstate.io
+- stackstate-test=https://helm-test.stackstate.io
+excluded-charts:
+helm-extra-args: --debug --kubeconfig ${KUBECONFIG} --timeout 1200
+remote: origin
+target-branch: master

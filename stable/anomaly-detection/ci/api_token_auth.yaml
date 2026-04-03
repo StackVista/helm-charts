@@ -1,0 +1,8 @@
+global:
+  receiverApiKey: "API_KEY"
+stackstate:
+  instance: "https://test.stackstate.io/"
+  authType: api-token
+  apiToken: hex
+ingress:
+  enabled: false

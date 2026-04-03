@@ -1,0 +1,9 @@
+global:
+  receiverApiKey: "API_KEY"
+stackstate:
+  instance: "https://test.stackstate.io/"
+  authType: cookie
+  username: user
+  password: pwd
+ingress:
+  enabled: false

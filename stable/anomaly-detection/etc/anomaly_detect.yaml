@@ -1,0 +1,28 @@
+apiVersion: 1.0
+kind : detect-anomaly
+metadata:
+    name: prediction-1
+    id: 4916d7ee-e5d1-11e9-b32e-3af9d3742541
+task:
+    source:
+        telemetry_query:
+
+             # Stackstate telemetry query
+             query: '{"conditions": [{"key": "~","value": "sum(rate(request_duration_seconds_count{status_code=~''4.+''}[1m])) * 100"}],"_type": "TelemetryMetricQuery","startTime": 1581349848000,"description": "QPS: 4XX","dataSourceId": 105892753076454, "metricField": "value", "aggregation": {"method": "MAX","bucketSize": 300000}}'
+             # Batch size (milliseconds)
+             batch_size_millis: 86400000
+             # Query timeout seconds.
+             timeout_seconds: 20
+
+    detect-anomaly:
+        models: anomaly_models
+        runtime_model_state: "none"
+        bucket_size_millis: 60000
+        diagnostics_path: "./anomaly-diagnostics"
+        anomaly-model:
+            merge_adjacent_anomalies_range_ms: 120000
+        dataset:
+            unimodal:
+
+    outputs:
+      - detect-anomaly

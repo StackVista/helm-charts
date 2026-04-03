@@ -1,0 +1,17 @@
+{{- define "anomaly-detection.poddisruptionbudget" -}}
+metadata:
+  name: {{ template "common.fullname.short" . }}-anomaly-detection
+  labels:
+    app.kubernetes.io/component: anomaly-detection
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: anomaly-detection
+{{- with .Values.pdb }}
+  {{ toYaml . | nindent 2 }}
+{{- end }}
+{{- end -}}
+
+{{- $commonPdb := fromYaml (include "common.poddisruptionbudget" .) -}}
+{{- $anomalyDetectionPdb := fromYaml (include "anomaly-detection.poddisruptionbudget" .) -}}
+{{- toYaml (merge $anomalyDetectionPdb $commonPdb) -}}

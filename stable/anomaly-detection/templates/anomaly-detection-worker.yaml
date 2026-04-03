@@ -1,0 +1,169 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "anomaly-detection.worker.name" . }}
+  labels:
+    name: {{ template "common.fullname.short" . }}
+    {{- with .Values.global.commonLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      name: {{ template "anomaly-detection.worker.name" . }}
+{{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
+  template:
+    metadata:
+      annotations:
+        {{ include "anomaly-detection.secret.checksum" . | nindent 8 }}
+      labels:
+        app.kubernetes.io/component: worker
+        app.kubernetes.io/instance: {{ .Release.Namespace }}
+        app.kubernetes.io/name: spotlight
+        app.kubernetes.io/part-of: stackstate
+        name: {{ template "anomaly-detection.worker.name" . }}
+        {{- with .Values.global.commonLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- include "anomaly-detection.image.pullSecret.name" (dict "images" (list .Values.image) "context" $) | nindent 6 }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+        {{- with .Values.nodeSelector }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+        {{- with .Values.tolerations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- $sizingAffinity := include "common.sizing.anomaly-detection.affinityConfig" . | fromYaml -}}
+      {{- $finalAffinity := .Values.affinity | default dict -}}
+      {{- if and (not .Values.affinity) $sizingAffinity -}}
+        {{- $finalAffinity = $sizingAffinity -}}
+      {{- end -}}
+      {{- if $finalAffinity }}
+      affinity: {{ $finalAffinity | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext: {{- omit .Values.securityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: spotlight
+        image: "{{ include "anomaly-detection.image.registry" . }}/{{ .Values.image.spotlightRepository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+        livenessProbe:
+          httpGet:
+            path: /liveness
+            port: status
+          initialDelaySeconds: 60
+          timeoutSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: status
+          initialDelaySeconds: 60
+          timeoutSeconds: 10
+        ports:
+        - name: status
+          containerPort: 8090
+        command: ["spotlight-worker"]
+        args:
+          - '--conf'
+          - './etc/spotlight.yaml'
+          - '--instance'
+          - '{{ include "anomaly-detection.stackstate.instance" . }}'
+          - '--instance-auth'
+        {{- if eq .Values.stackstate.authType "token" }}
+          - 'k8s-token'
+        {{- end }}
+        {{- if eq .Values.stackstate.authType "cookie" }}
+          - 'cookie'
+          - '--instance-username'
+          - $(STS_INSTANCE_USERNAME)
+          - '--instance-password'
+          - $(STS_INSTANCE_PASSWORD)
+        {{- end }}
+        {{- if eq .Values.stackstate.authType "api-token" }}
+          - 'api-token'
+          - '--instance-api-token'
+          - $(STS_INSTANCE_API_TOKEN)
+        {{- end }}
+          - '--instance-enable-notification'
+          {{- if .Values.global.receiverApiKey }}
+          - '--receiver-api-key'
+          - $(STS_INSTANCE_RECEIVER_KEY)
+          {{- end }}
+          - run
+          - '--thread-workers'
+          - '{{ .Values.threadWorkers }}'
+          - '--manager-host'
+          - {{ template "anomaly-detection.manager.name" . }}
+        {{- if or (or (eq .Values.stackstate.authType "cookie") (eq .Values.stackstate.authType "api-token")) (.Values.global.receiverApiKey) }}
+        env:
+        {{- if eq .Values.stackstate.authType "cookie" }}
+        - name: STS_INSTANCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "common.fullname.short" . }}-stackstate-auth-secret
+              key: stackstate-username
+        - name: STS_INSTANCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "common.fullname.short" . }}-stackstate-auth-secret
+              key: stackstate-password
+        {{- end }}
+        {{- if eq .Values.stackstate.authType "api-token" }}
+        - name: STS_INSTANCE_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "common.fullname.short" . }}-stackstate-auth-secret
+              key: stackstate-api-token
+        {{- end }}
+        {{- if .Values.global.receiverApiKey }}
+        - name: STS_INSTANCE_RECEIVER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "common.fullname.short" . }}-stackstate-auth-secret
+              key: receiver-api-key
+        {{- end }}
+        {{- end }}
+        resources:
+          limits:
+            cpu: {{ .Values.cpu.limit }}
+            memory: {{ .Values.memory.limit }}
+            ephemeral-storage: {{ .Values.ephemeralStorage.limit }}
+          requests:
+            cpu: {{ .Values.cpu.request }}
+            memory: {{ .Values.memory.request }}
+            ephemeral-storage: {{ .Values.ephemeralStorage.request }}
+        volumeMounts:
+        - name: spotlight-etc-streams
+          mountPath: /opt/spotlight/etc
+          readOnly: true
+      serviceAccountName: {{ template "common.fullname.short" . }}-sa
+      volumes:
+      - name: spotlight-etc-streams
+        projected:
+          sources:
+            - configMap:
+                name: {{ template "common.fullname.short" . }}-spotlight-config-base
+                items:
+                - key: spotlight.yaml
+                  path: spotlight.yaml
+                - key: anomaly_detect.yaml
+                  path: anomaly_detect.yaml
+                - key: anomaly_models.yaml
+                  path: anomaly_models.yaml
+                - key: anomaly_train.yaml
+                  path: anomaly_train.yaml
+                - key: task_logging.conf
+                  path: task_logging.conf

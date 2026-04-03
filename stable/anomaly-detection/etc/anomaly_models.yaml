@@ -1,0 +1,36 @@
+anomaly_tags:
+  anomaly_direction_std_threshold: 2.0
+constant:
+  name: constant
+  min_number_of_samples_required_for_train: 180
+  max_number_of_samples_used_for_train: 180
+  minimum_high_anomaly_duration: 180000
+generative:
+  -
+    name: kalman
+    algorithm: KalmanFilter
+    min_number_of_samples_required_for_train: 60
+    max_number_of_samples_used_for_train: 360
+    high_false_positive_rate: 0.000001
+    medium_false_positive_rate: 0.00003
+    low_false_positive_rate: 0.0001
+    minimum_high_anomaly_duration: 180000
+    include_trend: false
+    seasonality:
+      - 86400000 # 1 day
+      - 604800000 # 1 week
+    em_iterations: 20
+    batch_size: 60
+    convergence_threshold: 0.01
+  -
+    name: discrete
+    algorithm: DiscreteModel
+    min_number_of_samples_required_for_train: 60
+    max_number_of_samples_used_for_train: 1440
+    high_false_positive_rate: 0.000001
+    medium_false_positive_rate: 0.00003
+    low_false_positive_rate: 0.0001
+    minimum_high_anomaly_duration: 180000
+    window_size: 60
+    graininess: 20.0
+    alpha_rate: 2.0

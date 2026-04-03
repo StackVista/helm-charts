@@ -1,0 +1,12 @@
+global:
+  receiverApiKey: "API_KEY"
+image:
+  registry: quay.com
+  pullSecretUsername: user
+  pullSecretPassword: pwd
+stackstate:
+  instance: "https://test.stackstate.io/"
+manager:
+  persistentStorage:
+    size: 20Gi
+    storageClass: tape

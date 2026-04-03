@@ -1,0 +1,147 @@
+global:
+  # global.receiverApiKey -- **Required API key used by the Receiver.
+  receiverApiKey:
+  # global.commonLabels -- Common labels to be applied to Deployments and their pods.
+  commonLabels: {}
+
+# enabled -- Enables anomaly detection chart
+enabled: true
+
+image:
+  # image.tag -- the chart image tag, e.g. 4.1.0-latest
+  tag: "5.0.0"
+  # image.imagePullPolicy -- The default pullPolicy used for anomaly detection pods.
+  imagePullPolicy: Always
+  # image.pullSecretName -- Name of ImagePullSecret to use for all pods.
+  pullSecretName:
+  # image.pullSecretUsername -- Username used to login to the registry to pull Docker images of all pods.
+  pullSecretUsername:
+  # image.pullSecretUsername -- Password used to login to the registry to pull Docker images of all pods.
+  pullSecretPassword:
+  # image.registry -- Base container image registry for all containers, except for the wait container
+  registry: quay.io
+  # image.spotlightRepository -- Repository of the spotlight Docker image.
+  spotlightRepository: stackstate/spotlight
+
+stackstate:
+  # stackstate.instance -- **Required Stackstate instance URL, e.g http://stackstate-headless:7070
+  instance:
+  # stackstate.authType -- Type of authentication. There are three options 1) "token" - with service account token (default), 2) "api-token" - with Stackstate API Token, 3) "cookie" - username, password based auth.
+  authType: token
+  # stackstate.username -- Stackstate Username that used by spotlight for authentication, it is expected to be set only in case if authType = "cookie"
+  username:
+  # stackstate.password -- Stackstate Password that used by spotlight for authentication, it is expected to be set only in case if authType = "cookie"
+  password:
+  # stackstate.apiToken -- Stackstate Api token that used by spotlight for authentication, it is expected to be set only in case if authType = "api-token"
+  apiToken:
+
+metrics:
+  serviceMonitor:
+    enabled: false
+
+manager:
+  cpu:
+    # cpu.limit -- CPU resource limit
+    limit: 1
+    # cpu.request -- CPU resource request
+    request: 1
+  memory:
+    # memory.limit -- Memory resource limit
+    limit: 1Gi
+    # memory.request -- Memory resource request
+    request: 1Gi
+  ephemeralStorage:
+    # ephemeralStorage.limit -- Ephemeral storage resource limit
+    limit: 2Gi
+    # ephemeralStorage.request -- Ephemeral storage resource request
+    request: 1Mi
+  persistentStorage:
+    # persistentStorage.size -- size of persistent volume
+    size: 10Gi
+    # persistentStorage.storageClass -- storage class for persistent volume
+    storageClass:
+  # nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
+    # e.g.
+    # lifecycle: Ec2Spot
+  # tolerations -- Toleration labels for pod assignment.
+  tolerations: []
+  # affinity -- Affinity settings for pod assignment.
+  affinity: {}
+
+replicas: 1
+cpu:
+  # cpu.limit -- CPU resource limit
+  limit: 4
+  # cpu.request -- CPU resource request
+  request: 4
+memory:
+  # memory.limit -- Memory resource limit
+  limit: 6Gi
+  # memory.request -- Memory resource request
+  request: 6Gi
+ephemeralStorage:
+  # ephemeralStorage.limit -- Ephemeral storage resource limit
+  limit: 2Gi
+  # ephemeralStorage.request -- Ephemeral storage resource request
+  request: 1Mi
+# nodeSelector -- Node labels for pod assignment.
+nodeSelector: {}
+  # e.g.
+  # lifecycle: Ec2Spot
+# tolerations -- Toleration labels for pod assignment.
+tolerations: []
+# affinity -- Affinity settings for pod assignment.
+affinity: {}
+# threadWorkers -- The number of worker threads.
+threadWorkers: 8
+
+# strategy -- The strategy for the Deployment object.
+strategy:
+  type: RollingUpdate
+
+pdb:
+  # pdb.maxUnavailable -- PodDisruptionBudget settings for `anomaly-detection` pods.
+  maxUnavailable: 0
+# ingress -- Status interface ingress
+ingress:
+  # ingress.enabled -- Enables ingress controller for status interface
+  enabled: false
+  # ingress.hostname -- Status interface hostname e.g. spotlight.local.domain
+  hostname:
+  # ingress.port - Status Interface port
+  port: 8090
+  # ingress.annotations - Annotations for ingress objects.
+  annotations: {}
+  # e.g.
+  #     kubernetes.io/ingress.class: nginx
+  #     cert-manager.io/cluster-issuer: letsencrypt-prod
+  #     external-dns.alpha.kubernetes.io/hostname: spotlight.local.domain
+  #     nginx.ingress.kubernetes.io/ingress.class: nginx
+  #     nginx.ingress.kubernetes.io/proxy-body-size: 100m
+  #     nginx.ingress.kubernetes.io/rewrite-target: "/$1"
+  # ingress.hosts - List of ingress hostnames
+  hosts: []
+  # - host: spotlight.local.domain
+
+  # ingress.tls - List of ingress TLS certificates to use.
+  tls:
+    # - hosts:
+    #     - spotlight.local.domain
+
+# securityContext -- Pod Security Context
+securityContext:
+  # securityContext.enabled -- Whether or not to enable the securityContext
+  enabled: true
+  # securityContext.fsGroup -- The GID (group ID) used to mount volumes
+  fsGroup: 65534
+  # securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
+  runAsGroup: 65534
+  # securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
+  runAsNonRoot: true
+  # securityContext.runAsUser -- The UID (user ID) of the owning user of the process
+  runAsUser: 65534
+
+cluster-role:
+  # cluster-role.enabled -- Deploy the ClusterRoleBinding(s) together with the chart. Can be disabled if these need to be installed by an administrator of the Kubernetes cluster.
+  enabled: true

@@ -1,0 +1,4 @@
+global:
+  receiverApiKey: "API_KEY"
+stackstate:
+  instance: "https://test.stackstate.io/"

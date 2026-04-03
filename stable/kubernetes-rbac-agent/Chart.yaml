@@ -1,0 +1,17 @@
+apiVersion: v2
+appVersion: 0.0.1
+version: 0.0.26
+description: |
+  Helm chart for deploying the kubernetes-rbac-agent, which pick up (cluster)role(bindings) from a k8s cluster and forwards them
+  to the SUSE Observability platform
+keywords:
+  - monitoring
+  - suse
+  - observability
+  - stackstate
+home: https://github.com/StackVista/kubernetes-rbac-agent
+icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
+maintainers:
+  - name: SUSE Observability Ops Team
+    email: suse-observability-ops@suse.com
+name: kubernetes-rbac-agent
