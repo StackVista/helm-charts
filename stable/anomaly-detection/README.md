@@ -2,7 +2,7 @@
 
 A Helm chart for Anomaly Detection
 
-Current chart version is `5.2.0-snapshot.180`
+Current chart version is `5.2.0-snapshot.181`
 
 ## Requirements
 
@@ -59,7 +59,7 @@ helm template . --values values.yaml --set-file etcoverride.streams_stsl=etc/str
 | image.pullSecretUsername | string | `nil` | Password used to login to the registry to pull Docker images of all pods. |
 | image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
 | image.spotlightRepository | string | `"stackstate/spotlight"` | Repository of the spotlight Docker image. |
-| image.tag | string | `"5.0.0"` | the chart image tag, e.g. 4.1.0-latest |
+| image.tag | string | `"5.2.0-snapshot.179"` | the chart image tag, e.g. 4.1.0-latest |
 | ingress | object | `{"annotations":{},"enabled":false,"hostname":null,"hosts":[],"port":8090,"tls":null}` | Status interface ingress |
 | ingress.enabled | bool | `false` | Enables ingress controller for status interface |
 | ingress.hostname | string | `nil` | Status interface hostname e.g. spotlight.local.domain |

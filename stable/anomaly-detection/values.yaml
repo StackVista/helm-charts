@@ -9,7 +9,7 @@ enabled: true
 
 image:
   # image.tag -- the chart image tag, e.g. 4.1.0-latest
-  tag: "5.0.0"
+  tag: "5.2.0-snapshot.179"
   # image.imagePullPolicy -- The default pullPolicy used for anomaly detection pods.
   imagePullPolicy: Always
   # image.pullSecretName -- Name of ImagePullSecret to use for all pods.

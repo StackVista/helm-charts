@@ -1,7 +1,7 @@
 dependencies:
 - name: anomaly-detection
   repository: file://../anomaly-detection/
-  version: 5.2.0-snapshot.180
+  version: 5.2.0-snapshot.181
 - name: common
   repository: file://../common/
   version: 0.4.28
@@ -41,5 +41,5 @@ dependencies:
 - name: kubernetes-rbac-agent
   repository: file://../kubernetes-rbac-agent/
   version: 0.0.26
-digest: sha256:6544fa950c04043bbf6f0c2f5c708d2371608a1578be671f9e5f8ec1ff3e7cae
-generated: "2026-04-03T11:08:01.065473+02:00"
+digest: sha256:d2e3f9e9394626da250e028588d497f9eefac9e5251ead4e904ea65c77f8e3cd
+generated: "2026-04-03T13:58:20.4389+02:00"

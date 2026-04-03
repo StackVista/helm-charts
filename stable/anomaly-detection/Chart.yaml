@@ -11,4 +11,4 @@ maintainers:
 - name: SUSE Observability Ops Team
   email: suse-observability-ops@suse.com
 name: anomaly-detection
-version: 5.2.0-snapshot.180
+version: 5.2.0-snapshot.181
