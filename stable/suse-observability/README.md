@@ -21,8 +21,8 @@ Current chart version is `2.9.1-pre.36`
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.27 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../suse-observability-sizing/ | suse-observability-sizing | 0.1.13 |
-| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.47 |
-| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.47 |
+| file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.48 |
+| file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.48 |
 | file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.20 |
 
 ## Required Values
@@ -1352,11 +1352,14 @@ If you encounter issues not covered here:
 | stackstate.ui.defaultTimeRange | string | `nil` | Default time range  in the UI. One of LAST_5_MINUTES, LAST_15_MINUTES, LAST_30_MINUTES, LAST_1_HOUR, LAST_3_HOURS, LAST_6_HOURS, LAST_12_HOURS, LAST_24_HOURS, LAST_2_DAYS. No value or an unsupported value will automatically fall-back to LAST_1_HOUR. |
 | victoria-metrics-0.backup.awsSecrets | string | `"suse-observability-s3proxy"` |  |
 | victoria-metrics-0.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the storage bucket where Victoria Metrics backups are stored. |
+| victoria-metrics-0.backup.keepLastDaily | int | `7` | Number of daily backups to retain |
+| victoria-metrics-0.backup.keepLastWeekly | int | `4` | Number of weekly backups to retain |
 | victoria-metrics-0.backup.overrideS3Endpoint | string | `"http://suse-observability-s3proxy:9000"` | Override location of S3 endpoints, it should point to storage service. **Do not change this value! It must refer to the storage service (s3proxy)** |
 | victoria-metrics-0.backup.s3Prefix | string | `"victoria-metrics-0"` |  |
-| victoria-metrics-0.backup.scheduled.schedule | string | `"25 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
+| victoria-metrics-0.backup.scheduled.daily | string | `"55 0 * * *"` | Cron schedule for daily snapshot backups of Victoria Metrics |
+| victoria-metrics-0.backup.scheduled.hourly | string | `"25 * * * *"` | Cron schedule for hourly incremental backups of Victoria Metrics |
 | victoria-metrics-0.backup.setupCron.image.tag | string | `"1.8.4-644"` | Container-tools image for cron setup. Updated by updatecli. |
-| victoria-metrics-0.backup.vmbackup.image.tag | string | `"v1.109.0-4cfc610b-release-60"` | VM backup image tag. Updated by updatecli. |
+| victoria-metrics-0.backup.vmbackup.image.tag | string | `"v1.109.0-f74185cf-release-63"` | VM backup image tag. Updated by updatecli. |
 | victoria-metrics-0.enabled | bool | `true` |  |
 | victoria-metrics-0.rbac.namespaced | bool | `true` |  |
 | victoria-metrics-0.rbac.pspEnabled | bool | `false` |  |
@@ -1377,11 +1380,14 @@ If you encounter issues not covered here:
 | victoria-metrics-0.server.serviceMonitor.interval | string | `"15s"` | Scrape interval for service monitor |
 | victoria-metrics-1.backup.awsSecrets | string | `"suse-observability-s3proxy"` |  |
 | victoria-metrics-1.backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the storage bucket where Victoria Metrics backups are stored. |
+| victoria-metrics-1.backup.keepLastDaily | int | `7` | Number of daily backups to retain |
+| victoria-metrics-1.backup.keepLastWeekly | int | `4` | Number of weekly backups to retain |
 | victoria-metrics-1.backup.overrideS3Endpoint | string | `"http://suse-observability-s3proxy:9000"` | Override location of S3 endpoints, it should point to storage service. **Do not change this value! It must refer to the storage service (s3proxy)** |
 | victoria-metrics-1.backup.s3Prefix | string | `"victoria-metrics-1"` | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. |
-| victoria-metrics-1.backup.scheduled.schedule | string | `"35 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
+| victoria-metrics-1.backup.scheduled.daily | string | `"5 1 * * *"` | Cron schedule for daily snapshot backups of Victoria Metrics |
+| victoria-metrics-1.backup.scheduled.hourly | string | `"35 * * * *"` | Cron schedule for hourly incremental backups of Victoria Metrics |
 | victoria-metrics-1.backup.setupCron.image.tag | string | `"1.8.4-644"` | Container-tools image for cron setup. Updated by updatecli. |
-| victoria-metrics-1.backup.vmbackup.image.tag | string | `"v1.109.0-4cfc610b-release-60"` | VM backup image tag. Updated by updatecli. |
+| victoria-metrics-1.backup.vmbackup.image.tag | string | `"v1.109.0-f74185cf-release-63"` | VM backup image tag. Updated by updatecli. |
 | victoria-metrics-1.enabled | bool | `true` |  |
 | victoria-metrics-1.rbac.namespaced | bool | `true` |  |
 | victoria-metrics-1.rbac.pspEnabled | bool | `false` |  |

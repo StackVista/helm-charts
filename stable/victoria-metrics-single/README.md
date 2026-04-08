@@ -1,6 +1,6 @@
 # Victoria Metrics Helm Chart for Single Version
 
- ![Version: 0.8.53-stackstate.47](https://img.shields.io/badge/Version-0.8.53--stackstate.47-informational?style=flat-square)
+ ![Version: 0.8.53-stackstate.48](https://img.shields.io/badge/Version-0.8.53--stackstate.48-informational?style=flat-square)
 
 Victoria Metrics Single version - high-performance, cost-effective and scalable TSDB, long-term remote storage for Prometheus
 
@@ -152,9 +152,13 @@ Change the values according to the need of the environment in ``victoria-metrics
 | backup.awsSecrets | string | `""` | Name of k8s secrets with Access Key and Secret Key to the storage service. |
 | backup.bucketName | string | `"sts-victoria-metrics-backup"` | Name of the storage bucket where Victoria Metrics backups are stored. |
 | backup.enabled | bool | `false` | Enable scheduled backups of Victoria Metrics. |
+| backup.keepLastDaily | int | `7` | Number of daily backups to retain |
+| backup.keepLastWeekly | int | `4` | Number of weekly backups to retain (one per week, beyond the daily window) |
 | backup.overrideS3Endpoint | string | `""` | Override location of S3 endpoints, it should point to storage service. **Do not change this value!** |
 | backup.s3Prefix | string | `nil` | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. |
-| backup.scheduled.schedule | string | `"25 * * * *"` | Cron schedule for automatic backups of Victoria Metrics |
+| backup.scheduled.daily | string | `"55 0 * * *"` | Cron schedule for daily snapshot backups of Victoria Metrics |
+| backup.scheduled.hourly | string | `"25 * * * *"` | Cron schedule for hourly incremental backups of Victoria Metrics |
+| backup.scheduled.schedule | DEPRECATED | `nil` | Use backup.scheduled.hourly instead. If set, overrides hourly. |
 | backup.setupCron.image.registry | string | `"quay.io"` |  |
 | backup.setupCron.image.repository | string | `"stackstate/container-tools"` | Repository containing busybox image, it is used to prepare th cronjob (create a crontab file). |
 | backup.setupCron.image.tag | string | `"1.8.2-bci-517"` | Tag of the image for the busybox |

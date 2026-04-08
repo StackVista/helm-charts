@@ -28,10 +28,10 @@ dependencies:
   version: 8.1.2-suse-observability.20
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.47
+  version: 0.8.53-stackstate.48
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
-  version: 0.8.53-stackstate.47
+  version: 0.8.53-stackstate.48
 - name: clickhouse
   repository: file://../clickhouse/
   version: 3.6.9-suse-observability.23
@@ -41,5 +41,5 @@ dependencies:
 - name: kubernetes-rbac-agent
   repository: file://../kubernetes-rbac-agent/
   version: 0.0.26
-digest: sha256:d2e3f9e9394626da250e028588d497f9eefac9e5251ead4e904ea65c77f8e3cd
-generated: "2026-04-03T13:58:20.4389+02:00"
+digest: sha256:9b018a6f74139b89bcaea95619dea029eb3efdcb8fa44b9465264117c6a527dc
+generated: "2026-04-07T09:13:17.289643+02:00"

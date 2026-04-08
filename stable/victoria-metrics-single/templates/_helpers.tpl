@@ -287,6 +287,22 @@ For victoria-metrics-1: disable for non-HA profiles when global sizing is enable
 Usage:
 {{ include "victoria-metrics.isEnabled" . }}
 */}}
+{{/*
+Resolve the hourly backup schedule with backward compatibility.
+If the deprecated .backup.scheduled.schedule is set, use it (with a warning).
+Otherwise, use .backup.scheduled.hourly.
+
+Usage:
+{{ include "victoria-metrics.backup.hourlySchedule" . }}
+*/}}
+{{- define "victoria-metrics.backup.hourlySchedule" -}}
+{{- if .Values.backup.scheduled.schedule -}}
+  {{- .Values.backup.scheduled.schedule -}}
+{{- else -}}
+  {{- .Values.backup.scheduled.hourly -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "victoria-metrics.isEnabled" -}}
 {{- $chartName := .Chart.Name -}}
 {{- $isVictoriaMetrics1 := or (eq $chartName "victoria-metrics-1") (hasSuffix "-1" (include "victoria-metrics.fullname" .)) -}}

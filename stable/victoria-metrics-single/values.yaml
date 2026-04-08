@@ -688,8 +688,16 @@ backup:
   # -- Name of k8s secrets with Access Key and Secret Key to the storage service.
   awsSecrets: ""
   scheduled:
-    # -- Cron schedule for automatic backups of Victoria Metrics
-    schedule: '25 * * * *'
+    # -- (DEPRECATED) Use backup.scheduled.hourly instead. If set, overrides hourly.
+    schedule: null
+    # -- Cron schedule for hourly incremental backups of Victoria Metrics
+    hourly: '25 * * * *'
+    # -- Cron schedule for daily snapshot backups of Victoria Metrics
+    daily: '55 0 * * *'
+  # -- Number of daily backups to retain
+  keepLastDaily: 7
+  # -- Number of weekly backups to retain (one per week, beyond the daily window)
+  keepLastWeekly: 4
   # Configuration of an init container to create resources (crontab file) used by a cronjob tool to create backups
   setupCron:
     image:

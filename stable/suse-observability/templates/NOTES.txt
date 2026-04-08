@@ -31,9 +31,9 @@ Check for deprecated stackstate.experimental usage and show warnings
   {{- $hasExperimentalWarnings = true -}}
 {{- end -}}
 
+⚠️  DEPRECATION WARNINGS:
 {{/* Show deprecation warnings if any experimental keys are found */}}
 {{- if $hasExperimentalWarnings }}
-⚠️  DEPRECATION WARNINGS:
 {{- range $warnings }}
    • stackstate.experimental.{{ . }} is deprecated
      Please migrate to: stackstate.features.{{ . }}
@@ -42,6 +42,10 @@ Check for deprecated stackstate.experimental usage and show warnings
 The stackstate.experimental.* configuration keys are deprecated and will be removed in a future release.
 Please update your values.yaml to use stackstate.features.* instead.
 {{- end }}
+
+{{- if or (index .Values "victoria-metrics-0" "backup" "scheduled" "schedule") (index .Values "victoria-metrics-1" "backup" "scheduled" "schedule")  -}}
+   • victoria-metrics-0.backup.scheduled.schedule and victoria-metrics-1.backup.scheduled.schedule are deprecated and will be removed in a future release. Please use victoria-metrics-0.backup.scheduled.{hourly,daily} and victoria-metrics-1.backup.scheduled.{hourly,daily} instead.
+{{- end -}}
 
 {{- if include "suse-observability.global.enabled" . }}
 =============================================================================
