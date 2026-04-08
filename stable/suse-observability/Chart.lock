@@ -40,6 +40,6 @@ dependencies:
   version: 0.108.0-stackstate.27
 - name: kubernetes-rbac-agent
   repository: file://../kubernetes-rbac-agent/
-  version: 0.0.26
-digest: sha256:9b018a6f74139b89bcaea95619dea029eb3efdcb8fa44b9465264117c6a527dc
-generated: "2026-04-07T09:13:17.289643+02:00"
+  version: 0.0.27
+digest: sha256:5f5fe37b5f200e93fb9d350d789ea4550aedd6ae35c27d0baddcde2ce576b469
+generated: "2026-04-08T15:28:55.806416+02:00"

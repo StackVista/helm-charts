@@ -1,6 +1,6 @@
 # kubernetes-rbac-agent
 
-![Version: 0.0.26](https://img.shields.io/badge/Version-0.0.26-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
+![Version: 0.0.27](https://img.shields.io/badge/Version-0.0.27-informational?style=flat-square) ![AppVersion: 0.0.1](https://img.shields.io/badge/AppVersion-0.0.1-informational?style=flat-square)
 
 Helm chart for deploying the kubernetes-rbac-agent, which pick up (cluster)role(bindings) from a k8s cluster and forwards them
 to the SUSE Observability platform
@@ -30,8 +30,11 @@ to the SUSE Observability platform
 | containers.rbacAgent.podAnnotations | object | `{}` | Additional annotations on the pod |
 | containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |
 | containers.rbacAgent.priorityClassName | string | `""` | Set priorityClassName |
-| containers.rbacAgent.resources.limits.memory | string | `"40Mi"` | Memory resource limits. |
-| containers.rbacAgent.resources.requests.memory | string | `"25Mi"` | Memory resource requests. |
+| containers.rbacAgent.resources | object | `{"limits":{"cpu":"100m","memory":"256Mi"},"requests":{"cpu":"50m","memory":"256Mi"}}` | Resources for the rbac agent container |
+| containers.rbacAgent.resources.limits.cpu | string | `"100m"` | CPU resource limits. |
+| containers.rbacAgent.resources.limits.memory | string | `"256Mi"` | Memory resource limits. |
+| containers.rbacAgent.resources.requests.cpu | string | `"50m"` | CPU resource requests. |
+| containers.rbacAgent.resources.requests.memory | string | `"256Mi"` | Memory resource requests. |
 | containers.rbacAgent.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
 | containers.rbacAgent.securityContext.fsGroup | int | `65534` | The GID (group ID) of all files on all mounted volumes |
 | containers.rbacAgent.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |

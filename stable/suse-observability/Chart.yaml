@@ -68,5 +68,5 @@ dependencies:
     condition: opentelemetry.enabled
   - name: kubernetes-rbac-agent
     repository: file://../kubernetes-rbac-agent/
-    version: "0.0.26"
+    version: "0.0.27"
     condition: stackstate.k8sAuthorization.enabled

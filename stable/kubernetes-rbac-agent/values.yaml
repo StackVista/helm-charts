@@ -70,14 +70,18 @@ containers:
       # containers.rbacAgent.image.tag -- The tag for the docker image
       tag: "d8fef854"
 
-    # containers.rbacAgent.resource -- Resources for the proxy container
+    # containers.rbacAgent.resources -- Resources for the rbac agent container
     resources:
       requests:
+        # containers.rbacAgent.resources.requests.cpu -- CPU resource requests.
+        cpu: "50m"
         # containers.rbacAgent.resources.requests.memory -- Memory resource requests.
-        memory: "25Mi"
+        memory: "256Mi"
       limits:
+        # containers.rbacAgent.resources.limits.cpu -- CPU resource limits.
+        cpu: "100m"
         # containers.rbacAgent.resources.limits.memory -- Memory resource limits.
-        memory: "40Mi"
+        memory: "256Mi"
 
     # containers.rbacAgent.env -- Additional environment variables
     env: {}

@@ -38,5 +38,5 @@ dependencies:
   # version: "*"
   # Docker image tag now being overridden in the values file to make automated security updates possible.
   repository: https://helm.stackstate.io
-  version: 0.0.23
+  version: 0.0.27
   condition: kubernetes-rbac-agent.enabled
