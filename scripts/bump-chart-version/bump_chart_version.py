@@ -176,7 +176,7 @@ class BumpChartVersion:
         self.log_info(f"Updated {chart_yaml_path} to version {new_version}")
 
     def update_dependency_version(
-        self, chart_name: str, dep_name: str, new_version: str
+        self, chart_name: str, dep_name: str, dep_repository: str, new_version: str
     ) -> None:
         """Update a dependency's version in a chart's Chart.yaml file."""
         chart_yaml_path = self.get_chart_yaml_path(chart_name)
@@ -192,51 +192,38 @@ class BumpChartVersion:
             f"Updating dependency {dep_name} to version {new_version} in {chart_yaml_path}"
         )
 
-        # Read and parse the Chart.yaml
         with open(chart_yaml_path, "r") as f:
             content = f.read()
 
-        # Use regex to find and update the dependency version
-        # This handles the YAML structure where name and version may be on different lines
-        lines = content.split("\n")
-        in_dependencies = False
-        current_dep = None
-        result_lines = []
+        # Parse YAML to find the dependency's current version.
+        data = yaml.safe_load(content)
+        current_version = None
+        for dep in data.get("dependencies", []):
+            if dep.get("name") == dep_name and dep.get("repository") == dep_repository:
+                current_version = str(dep.get("version", ""))
+                break
 
-        for line in lines:
-            # Check if entering dependencies section
-            if line.strip() == "dependencies:":
-                in_dependencies = True
-                result_lines.append(line)
-                continue
+        if current_version is None or current_version == "*":
+            return
 
-            # Check if leaving dependencies section (new top-level key)
-            if in_dependencies and line and not line[0].isspace():
-                in_dependencies = False
-                current_dep = None
+        # Replace the version inside the matching dependency block.
+        # Each block starts with "  - " and continues with "    " lines.
+        def replace_version_in_block(match):
+            block = match.group(0)
+            has_name = re.search(r'name:\s*["\']?' + re.escape(dep_name) + r'["\']?\s*$', block, re.MULTILINE)
+            has_repo = re.search(r'repository:\s*["\']?' + re.escape(dep_repository) + r'["\']?\s*$', block, re.MULTILINE)
+            if has_name and has_repo:
+                block = re.sub(
+                    r'(version:\s*["\']?)' + re.escape(current_version) + r'(["\']?)',
+                    r'\g<1>' + new_version + r'\2',
+                    block,
+                )
+            return block
 
-            if in_dependencies:
-                # Check for new dependency item
-                name_match = re.match(r'^(\s*-\s*name:\s*)(["\']?)([^"\'#\s]+)', line)
-                if name_match:
-                    current_dep = name_match.group(3)
-
-                # Check for version line of target dependency
-                if current_dep == dep_name:
-                    version_match = re.match(
-                        r'^(\s*version:\s*)(["\']?)([^"\'#\s]+)(["\']?)(.*)$', line
-                    )
-                    if version_match:
-                        indent = version_match.group(1)
-                        quote = version_match.group(2)
-                        end_quote = version_match.group(4)
-                        rest = version_match.group(5)
-                        line = f"{indent}{quote}{new_version}{end_quote}{rest}"
-
-            result_lines.append(line)
+        content = re.sub(r'  - .*(?:\n    .*)*', replace_version_in_block, content)
 
         with open(chart_yaml_path, "w") as f:
-            f.write("\n".join(result_lines))
+            f.write(content)
 
     def build_dependency_graph(self) -> None:
         """Build the reverse dependency graph by scanning all Chart.yaml files."""
@@ -267,8 +254,8 @@ class BumpChartVersion:
                 dep_name = dep.get("name", "")
                 repository = dep.get("repository", "")
 
-                # Only consider local file:// dependencies
-                if dep_name and repository.startswith("file://"):
+                # Only consider local file://../ dependencies (i.e. relative path)
+                if dep_name and repository.startswith("file://../"):
                     self.reverse_deps[dep_name].add(chart_name)
                     self.log_debug(f"  {chart_name} depends on {dep_name} (local)")
 
@@ -318,8 +305,8 @@ class BumpChartVersion:
             dep_name = dep.get("name", "")
             repository = dep.get("repository", "")
 
-            # Only update local dependencies that were bumped
-            if dep_name in self.bumped_versions and repository.startswith("file://"):
+            # Only update local dependencies that were bumped (only include the relative path dependencies)
+            if dep_name in self.bumped_versions and repository.startswith("file://../"):
                 new_version = self.bumped_versions[dep_name]
                 if self.dry_run:
                     self.log_info(
@@ -329,7 +316,7 @@ class BumpChartVersion:
                     self.log_info(
                         f"Updating dependency {dep_name} to {new_version} in {chart_name}"
                     )
-                self.update_dependency_version(chart_name, dep_name, new_version)
+                self.update_dependency_version(chart_name, dep_name, repository, new_version)
                 updated_any = True
 
         if not updated_any:
@@ -439,7 +426,7 @@ class BumpChartVersion:
                 repository = dep.get("repository", "")
                 version = dep.get("version", "")
 
-                if dep_name == target_chart and repository.startswith("file://"):
+                if dep_name == target_chart and repository.startswith("file://../"):
                     if version != expected_version:
                         self.log_error(
                             f"Chart '{dependent}' has outdated dependency on '{target_chart}': "
