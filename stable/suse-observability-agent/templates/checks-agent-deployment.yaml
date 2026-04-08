@@ -74,6 +74,10 @@ spec:
             value: {{ .Values.checksAgent.logLevel | quote }}
           - name: STS_PROCESS_AGENT_ENABLED
             value: "false"
+          - name: STS_PROCESS_CONFIG_PROCESS_COLLECTION_ENABLED
+            value: "false"
+          - name: STS_PROCESS_CONFIG_CONTAINER_COLLECTION_ENABLED
+            value: "false"
           - name: STS_SKIP_SSL_VALIDATION
             value: {{ or .Values.global.skipSslValidation .Values.checksAgent.skipSslValidation | quote }}
           - name: STS_STS_URL
