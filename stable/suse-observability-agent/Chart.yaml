@@ -31,12 +31,6 @@ dependencies:
   version: 0.0.22
   condition: httpHeaderInjectorWebhook.enabled
 - name: kubernetes-rbac-agent
-  # chart source: https://gitlab.com/stackvista/agent/kubernetes-rbac-agent/-/tree/main/charts/kubernetes-rbac-agent
-
-  # Local debugging: left here for future reference
-  # repository: file:///home/bram/stackvista/agent/kubernetes-rbac-agent/charts/kubernetes-rbac-agent
-  # version: "*"
-  # Docker image tag now being overridden in the values file to make automated security updates possible.
-  repository: https://helm.stackstate.io
+  repository: file://../kubernetes-rbac-agent/
   version: 0.0.27
   condition: kubernetes-rbac-agent.enabled

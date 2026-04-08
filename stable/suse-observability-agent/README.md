@@ -10,8 +10,8 @@ Current chart version is `1.2.33`
 
 | Repository | Name | Version |
 |------------|------|---------|
+| file://../kubernetes-rbac-agent/ | kubernetes-rbac-agent | 0.0.27 |
 | https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.22 |
-| https://helm.stackstate.io | kubernetes-rbac-agent | 0.0.27 |
 
 ## Required Values
 
