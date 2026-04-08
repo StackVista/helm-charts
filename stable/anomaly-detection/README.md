@@ -2,13 +2,13 @@
 
 A Helm chart for Anomaly Detection
 
-Current chart version is `5.2.0-snapshot.181`
+Current chart version is `5.2.0-snapshot.182`
 
 ## Requirements
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://helm.stackstate.io | common | 0.4.17 |
+| file://../common | common | * |
 
 ## Required Values
 

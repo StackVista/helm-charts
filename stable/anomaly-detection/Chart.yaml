@@ -1,7 +1,7 @@
-apiVersion: v1
+apiVersion: v2
 appVersion: 5.0.0
 description: A Helm chart for Anomaly Detection
-home: git@gitlab.com:stackvista/stackstate-ailab.git
+home: https://gitlab.com/stackvista/stackstate-ailab
 icon: https://www.stackstate.com/wp-content/uploads/2019/02/152x152-favicon.png
 keywords:
 - aiops
@@ -11,4 +11,8 @@ maintainers:
 - name: SUSE Observability Ops Team
   email: suse-observability-ops@suse.com
 name: anomaly-detection
-version: 5.2.0-snapshot.181
+version: 5.2.0-snapshot.182
+dependencies:
+- name: common
+  repository: file://../common
+  version: '*'

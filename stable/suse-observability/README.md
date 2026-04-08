@@ -10,7 +10,7 @@ Current chart version is `2.9.1-pre.44`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../anomaly-detection/ | anomaly-detection | 5.2.0-snapshot.181 |
+| file://../anomaly-detection/ | anomaly-detection | 5.2.0-snapshot.182 |
 | file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.23 |
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.19 |
