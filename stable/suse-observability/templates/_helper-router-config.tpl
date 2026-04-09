@@ -61,6 +61,11 @@ data:
                     timeout: 0s
                     cluster: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
                 - match:
+                    prefix: "/ssoLogin"
+                  route:
+                    timeout: 0s
+                    cluster: "{{ template "common.fullname.short" . }}-{{ template "stackstate.router.api.name" . }}-main"
+                - match:
                     prefix: "/prometheus/api/v1/"
                   route:
                     timeout: 0s
