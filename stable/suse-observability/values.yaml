@@ -2210,7 +2210,7 @@ s3proxy:
   logLevel: "info"
   resources:
     limits:
-      cpu: 500m
+      cpu: 1000m
       memory: 700Mi
       ephemeral-storage: 1Gi
     requests:
@@ -2219,7 +2219,7 @@ s3proxy:
       ephemeral-storage: 1Mi
   sizing:
     # s3proxy.sizing.baseMemoryConsumption -- Memory reserved for OS and non-heap JVM usage (metaspace, threads, etc)
-    baseMemoryConsumption: "100Mi"
+    baseMemoryConsumption: "250Mi"
     # s3proxy.sizing.javaHeapMemoryFraction -- Percentage of remaining memory (after baseMemoryConsumption) allocated to Java heap
     javaHeapMemoryFraction: "70"
   extraEnv:
