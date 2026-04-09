@@ -317,8 +317,7 @@ func TestBackupStackpacksEnvVars(t *testing.T) {
 
 	expectedEnvVars := []corev1.EnvVar{
 		{Name: "BACKUP_STACKPACKS_SERVICE_URL", Value: "http://suse-observability-backup-stackpacks:7090"},
-		{Name: "BACKUP_STACKGRAPH_STACKPACKS_S3_PREFIX", Value: "stackpacks/"},
-		{Name: "BACKUP_CONFIGURATION_STACKPACKS_S3_PREFIX", Value: "stackpacks/"},
+		{Name: "BACKUP_STACKPACKS_DIR", Value: "stackpacks/"},
 	}
 
 	// Verify env vars on stackgraph backup cronjob
@@ -407,7 +406,7 @@ func TestBackupConfigmapMonoMode(t *testing.T) {
 
 func TestBackupConfigmapDistributedModeNoPvc(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
-		ValuesFiles: []string{"values/backup_config_default.yaml"},
+		ValuesFiles:    []string{"values/backup_config_default.yaml"},
 		KubectlOptions: &k8s.KubectlOptions{Namespace: "suse-observability"},
 	})
 

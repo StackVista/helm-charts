@@ -13,10 +13,10 @@ stackpacks:
   receiverBaseUrl: "http://localhost/receiver"
   platformVersion: "test_chart_version"
   localStackPacksUri: "hdfs://suse-observability-hbase-hdfs-nn-headful:9000/stackpacks"
+  backupDir: "stackpacks/"
 stackgraph:
   bucket: "sts-stackgraph-backup"
   s3Prefix: "stackgraph/"
-  stackpacksS3Prefix: "stackpacks/"
   multipartArchive: true
   restore:
     loggingConfigConfigMap: suse-observability-backup-log
@@ -76,7 +76,6 @@ settings:
   localBucket: "local-settings-backup"
   bucket: "sts-configuration-backup"
   s3Prefix: ""
-  stackpacksS3Prefix: "stackpacks/"
   restore:
     loggingConfigConfigMap: suse-observability-backup-log
 
