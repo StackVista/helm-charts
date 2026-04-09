@@ -202,6 +202,34 @@ sources:
       versionfilter:
         kind: regex/semver
         regex: ".*-([0-9]+)-release$"
+  kafkaupOperator:
+    name: "kafkaup-operator"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/kafkaup-operator"
+      architecture: "linux/amd64"
+      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+      versionfilter:
+        kind: semver
+  stsOpentelemetryCollector:
+    name: "sts-opentelemetry-collector"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/sts-opentelemetry-collector"
+      architecture: "linux/amd64"
+      tagfilter: "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+      versionfilter:
+        kind: semver
+  genericSidecarInjector:
+    name: "generic-sidecar-injector"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/generic-sidecar-injector"
+      architecture: "linux/amd64"
+      tagfilter: "^[a-f0-9]{8}-[0-9]+-release$"
+      versionfilter:
+        kind: regex/semver
+        regex: "^[a-f0-9]{8}-([0-9]+)-release$"
 
 # Single pipeline: all targets chained with dependson so they run sequentially.
 # All suse-observability subchart image tags are in stable/suse-observability/values.yaml
@@ -411,3 +439,30 @@ targets:
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.zookeeper.image.tag"
+  kafkaupOperator:
+    name: "kafkaup-operator"
+    kind: yaml
+    scmid: "default"
+    sourceid: kafkaupOperator
+    dependson: ["target#zookeeper"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.kafkaup-operator.image.tag"
+  stsOpentelemetryCollector:
+    name: "sts-opentelemetry-collector"
+    kind: yaml
+    scmid: "default"
+    sourceid: stsOpentelemetryCollector
+    dependson: ["target#kafkaupOperator"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.opentelemetry-collector.image.tag"
+  genericSidecarInjector:
+    name: "generic-sidecar-injector"
+    kind: yaml
+    scmid: "default"
+    sourceid: genericSidecarInjector
+    dependson: ["target#stsOpentelemetryCollector"]
+    spec:
+      file: "stable/suse-observability-agent/values.yaml"
+      key: "$.httpHeaderInjectorWebhook.sidecarInjector.image.tag"
