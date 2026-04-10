@@ -8,6 +8,7 @@ This script:
 3. Performs a patch version bump on all dependent charts
 4. Updates dependency versions in Chart.yaml files
 5. Regenerates Chart.lock files for all affected charts
+6. Runs helm-docs for all affected charts to regenerate README.md
 
 Alternatively, with --check mode:
 - Validates that all dependent charts have the correct dependency version
@@ -372,6 +373,33 @@ class BumpChartVersion:
         except FileNotFoundError:
             self.log_warn("helm command not found. Skipping Chart.lock regeneration.")
 
+    def run_helm_docs(self, chart_name: str) -> None:
+        """Run helm-docs for a chart to regenerate its README.md."""
+        chart_dir = self.charts_dir / chart_name
+
+        if self.dry_run:
+            self.log_info(f"[DRY-RUN] Would run helm-docs for {chart_name}")
+            return
+
+        self.log_info(f"Running helm-docs for {chart_name}")
+
+        try:
+            result = subprocess.run(
+                ["helm-docs", "--chart-search-root", str(chart_dir)],
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode != 0:
+                self.log_warn(
+                    f"Failed to run helm-docs for {chart_name}: {result.stderr}"
+                )
+            elif self.verbose:
+                for line in result.stdout.strip().split("\n"):
+                    if line:
+                        self.log_debug(f"  helm-docs: {line}")
+        except FileNotFoundError:
+            self.log_warn("helm-docs command not found. Skipping README generation.")
+
     def check_dependencies(self, target_chart: str) -> bool:
         """
         Check if all dependent charts have the correct dependency version for the target chart.
@@ -546,6 +574,14 @@ class BumpChartVersion:
             if dep_chart_dir.exists():
                 self.regenerate_chart_lock(dependent)
 
+        # Run helm-docs for all affected charts to regenerate README.md
+        self.log_info("Running helm-docs for affected charts...")
+        self.run_helm_docs(target_chart)
+        for dependent in dependents:
+            dep_chart_dir = self.charts_dir / dependent
+            if dep_chart_dir.exists():
+                self.run_helm_docs(dependent)
+
         self.log_info("Done!")
 
         if self.dry_run:
@@ -575,6 +611,7 @@ The script will:
 3. Perform a patch version bump on all dependent charts (once per chart)
 4. Update dependency versions in Chart.yaml files
 5. Regenerate Chart.lock files for all affected charts
+6. Run helm-docs for all affected charts to regenerate README.md
 
 Charts specified with --skip will have their dependency versions updated
 but will NOT have their own version bumped.
