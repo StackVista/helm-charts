@@ -1,29 +1,23 @@
 # kafka
 
-![Version: 19.1.3-suse-observability.22](https://img.shields.io/badge/Version-19.1.3--suse--observability.22-informational?style=flat-square) ![AppVersion: 3.3.1](https://img.shields.io/badge/AppVersion-3.3.1-informational?style=flat-square)
-
+![Version: 19.1.3-suse-observability.23](https://img.shields.io/badge/Version-19.1.3--suse--observability.23-informational?style=flat-square) ![AppVersion: 3.3.1](https://img.shields.io/badge/AppVersion-3.3.1-informational?style=flat-square)
 Apache Kafka is a distributed streaming platform designed to build real-time pipelines and can be used as a message broker or as a replacement for a log aggregation solution for big data applications.
-
 **Homepage:** <https://github.com/bitnami/charts/tree/main/bitnami/kafka>
-
 ## Maintainers
 
 | Name | Email | Url |
 | ---- | ------ | --- |
 | Bitnami |  | <https://github.com/bitnami/charts> |
-
 ## Source Code
 
 * <https://github.com/bitnami/containers/tree/main/bitnami/kafka>
 * <https://kafka.apache.org/>
-
 ## Requirements
 
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../suse-observability-sizing | suse-observability-sizing | 0.1.13 |
 | file://charts/common | common | 2.x.x |
-
 ## Values
 
 | Key | Type | Default | Description |
@@ -398,4 +392,3 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | volumePermissions.resources.requests | object | `{}` |  |
 | zookeeperChrootPath | string | `""` |  |
 | zookeeperConnectionTimeoutMs | int | `6000` |  |
-

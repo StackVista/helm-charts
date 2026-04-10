@@ -1,21 +1,16 @@
 # clickhouse
 
-![Version: 3.6.9-suse-observability.23](https://img.shields.io/badge/Version-3.6.9--suse--observability.23-informational?style=flat-square) ![AppVersion: 23.7.4](https://img.shields.io/badge/AppVersion-23.7.4-informational?style=flat-square)
-
+![Version: 3.6.9-suse-observability.24](https://img.shields.io/badge/Version-3.6.9--suse--observability.24-informational?style=flat-square) ![AppVersion: 23.7.4](https://img.shields.io/badge/AppVersion-23.7.4-informational?style=flat-square)
 ClickHouse is an open-source column-oriented OLAP database management system. Use it to boost your database performance while providing linear scalability and hardware efficiency.
-
 **Homepage:** <https://bitnami.com>
-
 ## Maintainers
 
 | Name | Email | Url |
 | ---- | ------ | --- |
 | VMware, Inc. |  | <https://github.com/bitnami/charts> |
-
 ## Source Code
 
 * <https://github.com/bitnami/charts/tree/main/bitnami/clickhouse>
-
 ## Requirements
 
 | Repository | Name | Version |
@@ -23,7 +18,6 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 | file://../common | stackstate-common(common) | * |
 | file://../suse-observability-sizing | suse-observability-sizing | 0.1.13 |
 | file://charts/common | common | 2.x.x |
-
 ## Values
 
 | Key | Type | Default | Description |
@@ -264,4 +258,3 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 | volumePermissions.image.tag | string | `"11-debian-11-r40"` |  |
 | volumePermissions.resources.limits | object | `{}` |  |
 | volumePermissions.resources.requests | object | `{}` |  |
-

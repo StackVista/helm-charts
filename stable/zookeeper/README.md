@@ -1,29 +1,23 @@
 # zookeeper
 
-![Version: 8.1.2-suse-observability.20](https://img.shields.io/badge/Version-8.1.2--suse--observability.20-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
-
+![Version: 8.1.2-suse-observability.21](https://img.shields.io/badge/Version-8.1.2--suse--observability.21-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
 Apache ZooKeeper provides a reliable, centralized register of configuration data and services for distributed applications.
-
 **Homepage:** <https://github.com/bitnami/charts/tree/master/bitnami/zookeeper>
-
 ## Maintainers
 
 | Name | Email | Url |
 | ---- | ------ | --- |
 | Bitnami | <containers@bitnami.com> |  |
-
 ## Source Code
 
 * <https://github.com/bitnami/bitnami-docker-zookeeper>
 * <https://zookeeper.apache.org/>
-
 ## Requirements
 
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../suse-observability-sizing | suse-observability-sizing | 0.1.13 |
 | file://charts/common | common | 1.x.x |
-
 ## Values
 
 | Key | Type | Default | Description |
@@ -218,4 +212,3 @@ Apache ZooKeeper provides a reliable, centralized register of configuration data
 | volumePermissions.image.tag | string | `"10-debian-10-r367"` |  |
 | volumePermissions.resources.limits | object | `{}` |  |
 | volumePermissions.resources.requests | object | `{}` |  |
-
