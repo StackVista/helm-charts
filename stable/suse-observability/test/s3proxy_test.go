@@ -254,6 +254,46 @@ func TestS3ProxyLegacyAzureGatewayBackwardCompatibility(t *testing.T) {
 	assert.True(t, hasAzureAccountKey, "Secret should contain azureAccountKey from legacy values")
 }
 
+// TestS3ProxyCredentialsFallbackToMinioAccessKey verifies that when minio.accessKey/secretKey are set
+// and global.s3proxy.credentials are at their defaults, the minio values are used as fallback
+func TestS3ProxyCredentialsFallbackToMinioAccessKey(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"minio.accessKey": "minio-legacy-access",
+			"minio.secretKey": "minio-legacy-secret",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// Secret should contain the minio legacy credentials as the s3proxy access/secret keys
+	secret, ok := resources.Secrets["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy secret should exist")
+	assert.Equal(t, []byte("minio-legacy-access"), secret.Data["accesskey"], "accesskey should fall back to minio.accessKey")
+	assert.Equal(t, []byte("minio-legacy-secret"), secret.Data["secretkey"], "secretkey should fall back to minio.secretKey")
+}
+
+// TestS3ProxyCredentialsExplicitOverridesMinioFallback verifies that when global.s3proxy.credentials
+// are explicitly set, they take precedence over minio.accessKey/secretKey
+func TestS3ProxyCredentialsExplicitOverridesMinioFallback(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{"values/full.yaml"},
+		SetValues: map[string]string{
+			"global.s3proxy.credentials.accessKey": "explicit-access",
+			"global.s3proxy.credentials.secretKey": "explicit-secret",
+			"minio.accessKey":                      "minio-legacy-access",
+			"minio.secretKey":                      "minio-legacy-secret",
+		},
+	})
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	// Secret should contain the explicit s3proxy credentials, not the minio ones
+	secret, ok := resources.Secrets["suse-observability-s3proxy"]
+	require.True(t, ok, "S3Proxy secret should exist")
+	assert.Equal(t, []byte("explicit-access"), secret.Data["accesskey"], "accesskey should use explicit global value, not minio fallback")
+	assert.Equal(t, []byte("explicit-secret"), secret.Data["secretkey"], "secretkey should use explicit global value, not minio fallback")
+}
+
 // TestS3ProxyConfigMapBuckets verifies the bucket-locator configuration in the ConfigMap
 func TestS3ProxyConfigMapBuckets(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{

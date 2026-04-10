@@ -52,17 +52,27 @@ true
 {{- end -}}
 
 {{/*
-Get S3Proxy access key.
+Get S3Proxy access key (from new or legacy values).
+Falls back to minio.accessKey for backward compatibility when the global value is the default.
 */}}
 {{- define "stackstate.s3proxy.accessKey" -}}
+{{- if and .Values.minio.accessKey (ne .Values.minio.accessKey "") (ne .Values.minio.accessKey "setme") (eq .Values.global.s3proxy.credentials.accessKey "default-for-settings-only") -}}
+{{- .Values.minio.accessKey -}}
+{{- else -}}
 {{- .Values.global.s3proxy.credentials.accessKey -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
-Get S3Proxy secret key.
+Get S3Proxy secret key (from new or legacy values).
+Falls back to minio.secretKey for backward compatibility when the global value is the default.
 */}}
 {{- define "stackstate.s3proxy.secretKey" -}}
+{{- if and .Values.minio.secretKey (ne .Values.minio.secretKey "") (ne .Values.minio.secretKey "setme") (eq .Values.global.s3proxy.credentials.secretKey "default-secret-for-settings-only") -}}
+{{- .Values.minio.secretKey -}}
+{{- else -}}
 {{- .Values.global.s3proxy.credentials.secretKey -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
