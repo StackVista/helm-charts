@@ -1,4 +1,4 @@
-{{- define "stackstate.k2es.service.eventsToEs" -}}
+{{- define "stackstate.e2es.service" -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-e2es
   labels:
@@ -18,5 +18,5 @@ spec:
 {{- end -}}
 
 {{- $commonService := fromYaml (include "common.service" .) -}}
-{{- $k2esEventsToEsService := fromYaml (include "stackstate.k2es.service.eventsToEs" .) -}}
-{{- toYaml (merge $k2esEventsToEsService $commonService) -}}
+{{- $e2esService := fromYaml (include "stackstate.e2es.service" .) -}}
+{{- toYaml (merge $e2esService $commonService) -}}

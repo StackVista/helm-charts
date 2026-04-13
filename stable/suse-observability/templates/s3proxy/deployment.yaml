@@ -172,7 +172,7 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/s3proxy/configmap.yaml") . | sha256sum }}
         checksum/secret: {{ include (print $.Template.BasePath "/s3proxy/secret.yaml") . | sha256sum }}
         {{- if or .Values.stackstate.java.trustStore .Values.stackstate.java.trustStoreBase64Encoded }}
-        checksum/common-secret: {{ include (print $.Template.BasePath "/secret-common.yaml") . | sha256sum }}
+        checksum/common-secret: {{ include (print $.Template.BasePath "/global/secret-common.yaml") . | sha256sum }}
         {{- end }}
         {{- include "common.metrics.annotations" (dict "metrics" .Values.s3proxy.metrics "port" "9464" "container_name" "s3proxy") | indent 8 }}
         {{- if .Values.s3proxy.extraEnv.secret }}

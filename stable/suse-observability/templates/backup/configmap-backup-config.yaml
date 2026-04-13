@@ -78,8 +78,8 @@ config: |-
       port: {{ include "stackstate.s3proxy.port" . }}
       localPortForwardPort: 9000
   stackpacks:
-    baseUrl: {{ include "suse-observability.global.baseUrl" . | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is required" | quote }}
-    receiverBaseUrl: {{ printf "%s/%s" ( include "suse-observability.global.baseUrl" . | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl is required" ) "receiver" | quote }}
+    baseUrl: {{ include "suse-observability.global.baseUrl" . | default .Values.stackstate.receiver.baseUrl | toString | trimSuffix "/" | required "stackstate.baseUrl is required" | quote }}
+    receiverBaseUrl: {{ printf "%s/%s" ( include "suse-observability.global.baseUrl" . | default .Values.stackstate.receiver.baseUrl | toString | trimSuffix "/" | required "stackstate.baseUrl is required" ) "receiver" | quote }}
     platformVersion: {{ if and .Values.testHelper .Values.testHelper.chartVersion -}}{{ .Values.testHelper.chartVersion | quote }}{{- else -}}{{ .Chart.Version | quote }}{{- end }}
     localStackPacksUri: {{ include "stackstate.localStackPacksUri" . | quote }}
     {{- if eq $deploymentMode "Mono" }}

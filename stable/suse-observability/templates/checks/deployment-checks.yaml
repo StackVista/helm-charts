@@ -1,4 +1,4 @@
-{{- define "stackstate.authorizationSync.deployment.container.init" -}}
+{{- define "stackstate.checks.deployment.container.init" -}}
 name: server-init
 {{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
 {{- if eq $deploymentMode "Distributed" }}
@@ -18,43 +18,45 @@ image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.im
 imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- end -}}
 
-{{- define "stackstate.authorizationSync.deployment.container.main" -}}
+{{- define "stackstate.checks.deployment.container.main" -}}
 args:
 {{- include "stackstate.service.args" . }}
 - -startRole
-- authorizationSync
+- checks
 envFrom:
   - secretRef:
       name: {{ include "stackstate.secret.name.license" .  }}
 env:
-{{- $sizingResources := include "common.sizing.stackstate.authorizationSync.resources" . | trim -}}
+{{- $sizingResources := include "common.sizing.stackstate.checks.resources" . | trim -}}
 {{- $sizingResourcesDict := fromYaml $sizingResources }}
-{{- $evaluatedResources := merge (dict) .Values.stackstate.components.authorizationSync.resources $sizingResourcesDict }}
-{{- $baseConfig := omit .Values.stackstate.components.authorizationSync "resources" }}
-{{- $componentConfigWithResources := merge $baseConfig (dict "resources" $evaluatedResources) -}}
-{{- $serviceConfig := dict "ServiceName" "authorization-sync" "ServiceConfig" $componentConfigWithResources }}
-{{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.authorizationSync.image.tag }}
+{{- $evaluatedResources := merge (dict) .Values.stackstate.components.checks.resources $sizingResourcesDict }}
+{{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.checks -}}
+{{- $serviceConfig := dict "ServiceName" "checks" "ServiceConfig" $componentConfigWithResources }}
+{{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.checks.image.tag }}
 {{/* Build deployment-specific env vars that can be overridden via extraEnv */}}
-{{- $baseUrl := include "suse-observability.global.baseUrl" . | default .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl or global.suseObservability.baseUrl is required" }}
+{{- $baseUrl := include "suse-observability.global.baseUrl" . | default .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | toString | trimSuffix "/" | required "stackstate.baseUrl or global.suseObservability.baseUrl is required" }}
 {{- $deploymentEnv := dict
     "STACKSTATE_BASE_URL" $baseUrl
     "RECEIVER_BASE_URL" (printf "%s/%s" $baseUrl "receiver")
     "METRICSTORE_URI" (include "stackstate.metrics.query.url" .)
+    "ELASTICSEARCH_URI" (printf "http://%s" (include "stackstate.es.endpoint" .))
     "KAFKA_BROKERS" (include "stackstate.kafka.endpoint" .)
+    "PROMETHEUS_WRITE_ENDPOINT" (printf "http://%s:8429/api/v1/write" (include "stackstate.vmagent.endpoint" .))
     "HADOOP_USER_NAME" "nobody"
     "ZOOKEEPER_QUORUM" (include "stackgraph.zookeeper.endpoint" .)
+    "CONFIG_FORCE_stackgraph_vertex_cache_expireAfterSeconds" "600"
+    "CONFIG_FORCE_stackgraph_vertex_cache_sizePercentage" "10"
+    "CONFIG_FORCE_stackstate_domainActorPool_fractionOfMemoryReservedForChecks" "0.80"
 }}
 {{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
-{{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.authorizationSync.envsFromExistingSecrets }}
-image: "{{ include "stackstate.image.registry" (merge (dict) . $serviceConfig) }}/{{ .Values.stackstate.components.authorizationSync.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
-imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.authorizationSync.image.pullPolicy | quote }}
-name: authorization-sync
+{{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.checks.envsFromExistingSecrets }}
+image: "{{ include "stackstate.image.registry" (merge (dict) . $serviceConfig) }}/{{ .Values.stackstate.components.checks.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.checks.image.pullPolicy | quote }}
+name: checks
 ports:
 - containerPort: 1618
   name: health
-- containerPort: 7075
-  name: authz-api
 {{- if .Values.stackstate.instanceDebugApi.enabled }}
 - containerPort: 7080
   name: instance
@@ -80,33 +82,37 @@ resources:
   {{- toYaml . | nindent 2 }}
 {{- end }}
 volumeMounts:
+{{- if .Values.stackstate.components.checks.tmpToPVC }}
+- name: tmp-volume
+  mountPath: /tmp
+{{- end}}
 {{- include "stackstate.service.container.volumes" . }}
 {{- if (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) }}
 {{ include "stackstate.service.transactionLog.volumeMount" . }}
 {{- end }}
 {{- end -}}
 
-{{- define "stackstate.authorizationSync.deployment" -}}
+{{- define "stackstate.checks.deployment" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.authorizationSync.deployment.container.main" .) -}}
-{{- $stsStackstateAuthorizationSyncMainContainer := (merge $overrideContainer $commonContainer) -}}
-{{- $overrideContainer := fromYaml (include "stackstate.authorizationSync.deployment.container.init" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.checks.deployment.container.main" .) -}}
+{{- $stsStackstateStateMainContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.checks.deployment.container.init" .) -}}
 {{- $stsStackstateServerInitContainer := (merge $overrideContainer $commonContainer) -}}
 {{- $overrideContainer := fromYaml (include "stackstate.initContainer.ensure.no.server.statefulset.pods.are.running" .) -}}
 {{- $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer := (merge $overrideContainer $commonContainer) -}}
 
 metadata:
-  name: {{ template "common.fullname.short" . }}-authorization-sync
+  name: {{ template "common.fullname.short" . }}-checks
   labels:
-    app.kubernetes.io/component: authorization-sync
+    app.kubernetes.io/component: checks
     stackstate.com/connects-to-stackgraph: "true"
     stackstate.com/replicas: "1"
     {{- include "suse-observability.labels.global" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.stackstate.components.authorizationSync.replicaCount }}
+  replicas: {{ .Values.stackstate.components.checks.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/component: authorization-sync
+      app.kubernetes.io/component: checks
   strategy:
 {{- if eq (lower .Values.stackstate.components.all.deploymentStrategy.type) "recreatesingletonsonly" }}
     type: Recreate
@@ -116,18 +122,18 @@ spec:
   template:
     metadata:
       annotations:
-        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "authorizationSync" "filter" .Values.stackstate.components.authorizationSync.agentMetricsFilter) | indent 8 }}
+        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "checks" "filter" .Values.stackstate.components.checks.agentMetricsFilter) | indent 8 }}
         {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
         {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
-        {{- include "stackstate.authorizationSync.secret.checksum" . | nindent 8 }}
-        {{- include "stackstate.authorizationSync.configmap.checksum" . | nindent 8 }}
-        {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "authorizationSync") .) }}
+        {{- include "stackstate.checks.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.checks.configmap.checksum" . | nindent 8 }}
+        {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "checks") .) }}
       labels:
-        app.kubernetes.io/component: authorization-sync
+        app.kubernetes.io/component: checks
         stackstate.com/connects-to-stackgraph: "true"
         {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ template "common.fullname.short" . }}-authorization-sync
+      serviceAccountName: {{ template "common.fullname.short" . }}-checks
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       initContainers:
       - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
@@ -135,28 +141,31 @@ spec:
       {{- if (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) }}
       - {{ include "stackstate.initContainer.cleanTransactionLogsDirectory" . | nindent 8 }}
       {{- end }}
+      {{- if .Values.stackstate.components.checks.tmpToPVC }}
+      - {{ include "stackstate.initContainer.cleanTmpDirectory" . | nindent 8 }}
+      {{- end }}
       containers:
-      - {{ toYaml $stsStackstateAuthorizationSyncMainContainer | nindent 8 }}
-    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.authorizationSync.nodeSelector }}
+      - {{ toYaml $stsStackstateStateMainContainer | nindent 8 }}
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.checks.nodeSelector }}
       nodeSelector:
       {{- with .Values.stackstate.components.all.nodeSelector }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.stackstate.components.authorizationSync.nodeSelector }}
+      {{- with .Values.stackstate.components.checks.nodeSelector }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
-    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.authorizationSync.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.checks.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
     {{- if $affinity }}
       affinity:
         {{- $affinity | nindent 8 }}
     {{- end }}
-    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.authorizationSync.tolerations }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.checks.tolerations }}
       tolerations:
       {{- with .Values.stackstate.components.all.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.stackstate.components.authorizationSync.tolerations }}
+      {{- with .Values.stackstate.components.checks.tolerations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     {{- end }}
@@ -164,14 +173,19 @@ spec:
       securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
     {{- end }}
       volumes:
-        {{- include "stackstate.service.pod.volumes" (dict "pod_name" "authorization-sync" "root" . ) | nindent 8 }}
+        {{- if .Values.stackstate.components.checks.tmpToPVC }}
+        - name: tmp-volume
+          persistentVolumeClaim:
+            claimName: {{ template "common.fullname.short" . }}-checks-tmp
+        {{- end}}
+        {{- include "stackstate.service.pod.volumes" (dict "pod_name" "checks" "root" . ) | nindent 8 }}
         {{- if (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) }}
-        {{- include "stackstate.service.transactionLog.volume" (dict "pod_name" "authorization-sync" "root" . ) | nindent 8 }}
+        {{- include "stackstate.service.transactionLog.volume" (dict "pod_name" "checks" "root" . ) | nindent 8 }}
         {{- end }}
 {{- end -}}
 
-{{- if and (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .)) (.Values.stackstate.k8sAuthorization.enabled) }}
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
-{{- $authorizationSyncDeployment := fromYaml (include "stackstate.authorizationSync.deployment" .) -}}
-{{- toYaml (merge $authorizationSyncDeployment $commonDeployment) -}}
+{{- $checksDeployment := fromYaml (include "stackstate.checks.deployment" .) -}}
+{{- toYaml (merge $checksDeployment $commonDeployment) -}}
 {{- end}}

@@ -1,0 +1,179 @@
+{{- define "stackstate.notification.deployment.container.init" -}}
+name: server-init
+{{- $deploymentMode := include "suse-observability.hbase.deploymentMode" . -}}
+{{- if eq $deploymentMode "Distributed" }}
+command:
+- sh
+- -c
+- |
+  /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{ include "stackgraph.hbase.waitfor" . }},{{ template "common.fullname.short" . }}-initializer:1618 -t 300
+{{- else }}
+command:
+  - sh
+  - -c
+  - |
+    /entrypoint -c {{ include "stackstate.kafka.endpoint" . }},{{- .Release.Name }}-hbase-stackgraph:2182,{{ template "common.fullname.short" . }}-initializer:1618 -t 300
+{{- end }}
+image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}"
+imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
+{{- end -}}
+
+{{- define "stackstate.notification.deployment.container.main" -}}
+args:
+{{- include "stackstate.service.args" . }}
+- -startRole
+- notification
+envFrom:
+  - secretRef:
+      name: {{ include "stackstate.secret.name.license" .  }}
+  {{- if .Values.stackstate.email.enabled }}
+  - secretRef:
+      name: {{ include "stackstate.secret.name.email" .  }}
+  {{- end }}
+env:
+{{- $sizingResources := include "common.sizing.stackstate.notification.resources" . | trim -}}
+{{- $sizingResourcesDict := fromYaml $sizingResources }}
+{{- $evaluatedResources := merge (dict) .Values.stackstate.components.notification.resources $sizingResourcesDict }}
+{{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .Values.stackstate.components.notification -}}
+{{- $serviceConfig := dict "ServiceName" "notification" "ServiceConfig" $componentConfigWithResources }}
+{{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.notification.image.tag }}
+{{/* Build deployment-specific env vars that can be overridden via extraEnv */}}
+{{- $baseUrl := include "suse-observability.global.baseUrl" . | default .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | toString | trimSuffix "/" | required "stackstate.baseUrl or global.suseObservability.baseUrl is required" }}
+{{- $deploymentEnv := dict
+    "STACKSTATE_BASE_URL" $baseUrl
+    "RECEIVER_BASE_URL" (printf "%s/%s" $baseUrl "receiver")
+    "METRICSTORE_URI" (include "stackstate.metrics.query.url" .)
+    "KAFKA_BROKERS" (include "stackstate.kafka.endpoint" .)
+    "PROMETHEUS_WRITE_ENDPOINT" (printf "http://%s:8429/api/v1/write" (include "stackstate.vmagent.endpoint" .))
+    "HADOOP_USER_NAME" "nobody"
+    "ZOOKEEPER_QUORUM" (include "stackgraph.zookeeper.endpoint" .)
+}}
+{{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
+{{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
+{{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.notification.envsFromExistingSecrets }}
+image: "{{ include "stackstate.image.registry" (merge (dict) . $serviceConfig) }}/{{ .Values.stackstate.components.notification.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ include "stackstate.server.image.tag" (merge $imageTagConfig .) }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .Values.stackstate.components.notification.image.pullPolicy | quote }}
+name: notification
+ports:
+- containerPort: 1618
+  name: health
+{{- if .Values.stackstate.instanceDebugApi.enabled }}
+- containerPort: 7080
+  name: instance
+{{- end }}
+{{- if .Values.stackstate.components.all.metrics.enabled }}
+- containerPort: 9404
+  name: metrics
+{{- end }}
+readinessProbe:
+  httpGet:
+    path: /readiness
+    port: health
+  initialDelaySeconds: 10
+  timeoutSeconds: 5
+livenessProbe:
+  httpGet:
+    path: /liveness
+    port: health
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
+{{- with $evaluatedResources }}
+resources:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+volumeMounts:
+{{- include "stackstate.service.container.volumes" . }}
+{{- if (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) }}
+{{ include "stackstate.service.transactionLog.volumeMount" . }}
+{{- end }}
+{{- end -}}
+
+{{- define "stackstate.notification.deployment" -}}
+{{- $commonContainer := fromYaml (include "common.container" .) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.notification.deployment.container.main" .) -}}
+{{- $stsStackstatenotificationMainContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.notification.deployment.container.init" .) -}}
+{{- $stsStackstateServerInitContainer := (merge $overrideContainer $commonContainer) -}}
+{{- $overrideContainer := fromYaml (include "stackstate.initContainer.ensure.no.server.statefulset.pods.are.running" .) -}}
+{{- $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer := (merge $overrideContainer $commonContainer) -}}
+
+metadata:
+  name: {{ template "common.fullname.short" . }}-notification
+  labels:
+    app.kubernetes.io/component: notification
+    stackstate.com/connects-to-stackgraph: "true"
+    stackstate.com/replicas: "1"
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.stackstate.components.notification.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: notification
+  strategy:
+{{- if eq (lower .Values.stackstate.components.all.deploymentStrategy.type) "recreatesingletonsonly" }}
+    type: Recreate
+{{- else }}
+    {{- toYaml .Values.stackstate.components.all.deploymentStrategy | nindent 4 }}
+{{- end }}
+  template:
+    metadata:
+      annotations:
+        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "9404" "container_name" "notification" "filter" .Values.stackstate.components.notification.agentMetricsFilter) | indent 8 }}
+        {{- include "stackstate.common.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.license.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.notification.secret.checksum" . | nindent 8 }}
+        {{- include "stackstate.notification.configmap.checksum" . | nindent 8 }}
+        {{- include "stackstate.component.podExtraAnnotations" (merge (dict "Name" "notification") .) }}
+      labels:
+        app.kubernetes.io/component: notification
+        stackstate.com/connects-to-stackgraph: "true"
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ template "common.fullname.short" . }}-notification
+      {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
+      initContainers:
+      - {{ toYaml $stsStackstateServerInitContainer | nindent 8 }}
+      - {{ toYaml $stsStackstateServerEnsureNoServerStatefulSetPodsAreRunningContainer | nindent 8 }}
+      {{- if (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) }}
+      - {{ include "stackstate.initContainer.cleanTransactionLogsDirectory" . | nindent 8 }}
+      {{- end }}
+      containers:
+      - {{ toYaml $stsStackstatenotificationMainContainer | nindent 8 }}
+    {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.state.nodeSelector }}
+      nodeSelector:
+      {{- with .Values.stackstate.components.all.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.notification.nodeSelector }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.stackstate.components.notification.affinity "allAffinity" .Values.stackstate.components.all.affinity "context" .) }}
+    {{- if $affinity }}
+      affinity:
+        {{- $affinity | nindent 8 }}
+    {{- end }}
+    {{- if or .Values.stackstate.components.all.tolerations .Values.stackstate.components.notification.tolerations }}
+      tolerations:
+      {{- with .Values.stackstate.components.all.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.stackstate.components.notification.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.stackstate.components.all.securityContext.enabled }}
+      securityContext: {{- omit .Values.stackstate.components.all.securityContext "enabled" | toYaml | nindent 8 }}
+    {{- end }}
+      volumes:
+        {{- include "stackstate.service.pod.volumes" (dict "pod_name" "notification" "root" . ) | nindent 8 }}
+        {{- if (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) }}
+        {{- include "stackstate.service.transactionLog.volume" (dict "pod_name" "notification" "root" . ) | nindent 8 }}
+        {{- end }}
+{{- end -}}
+
+{{- if include "suse-observability.features.enabled" (dict "key" "server.split" "context" .) }}
+{{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
+{{- $notificationDeployment := fromYaml (include "stackstate.notification.deployment" .) -}}
+{{- toYaml (merge $notificationDeployment $commonDeployment) -}}
+{{- end}}

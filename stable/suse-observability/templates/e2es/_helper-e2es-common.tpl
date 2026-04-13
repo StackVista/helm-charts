@@ -1,7 +1,7 @@
 {{/*
-Common container items for K2ES based deployments.
+Common container items for e2es (events-to-elasticsearch) deployments.
 */}}
-{{- define "stackstate.k2es.deployment.common.initcontainer" -}}
+{{- define "stackstate.e2es.deployment.common.initcontainer" -}}
 name: k2es-init
 command:
 - sh
@@ -12,13 +12,13 @@ image: "{{include "stackstate.wait.image.registry" .}}/{{ .Values.global.wait.im
 imagePullPolicy: {{ .Values.global.wait.image.pullPolicy | quote }}
 {{- end -}}
 
-{{- define "stackstate.k2es.deployment.common.container" -}}
-{{- $sizingResources := include (printf "common.sizing.stackstate.%s.resources" .K2esName) . | trim -}}
+{{- define "stackstate.e2es.deployment.common.container" -}}
+{{- $sizingResources := include (printf "common.sizing.stackstate.%s.resources" .E2esName) . | trim -}}
 {{- $sizingResourcesDict := fromYaml $sizingResources }}
-{{- $evaluatedResources := merge (dict) .K2esConfig.resources $sizingResourcesDict }}
-{{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .K2esConfig -}}
+{{- $evaluatedResources := merge (dict) .E2esConfig.resources $sizingResourcesDict }}
+{{- $componentConfigWithResources := merge (dict "resources" $evaluatedResources) .E2esConfig -}}
 env:
-{{- $serviceConfig := dict "ServiceName" .K2esName "ServiceConfig" $componentConfigWithResources }}
+{{- $serviceConfig := dict "ServiceName" .E2esName "ServiceConfig" $componentConfigWithResources }}
 {{/*
     Currently we use a single replicationFactor config for all indices on ES, that works fine with calculating the available disk space
     and on the STS processes assigning diskSpaceWeights to each process. But if in the future we have need to configure different
@@ -30,12 +30,12 @@ env:
 {{- include "stackstate.elastic.storage.total" . -}}
 {{- $esStorage := include "suse-observability.sizing.elasticsearch.volumeClaimTemplate.resources.requests.storage" . | trim -}}
 {{- $diskSpaceMB := (include "stackstate.storage.to.megabytes" $esStorage) -}}
-{{- $k2esShare := .Values.stackstate.components.e2es.esDiskSpaceShare | int -}}
-{{- $e2EsShare := (mulf (divf (.Values.stackstate.components.e2es.esDiskSpaceShare | int) $k2esShare) 100) | int -}}
+{{- $e2esShare := .Values.stackstate.components.e2es.esDiskSpaceShare | int -}}
+{{- $e2EsSharePct := (mulf (divf (.Values.stackstate.components.e2es.esDiskSpaceShare | int) $e2esShare) 100) | int -}}
 {{/* Build deployment-specific env vars that can be overridden via extraEnv */}}
 {{- $deploymentEnv := dict
     "CONFIG_FORCE_stackstate_kafkaTopologyEventsToES_elasticsearch_index_replicas" $replicationFactor
-    "CONFIG_FORCE_stackstate_kafkaTopologyEventsToES_elasticsearch_index_diskSpaceWeight" ($e2EsShare | toString)
+    "CONFIG_FORCE_stackstate_kafkaTopologyEventsToES_elasticsearch_index_diskSpaceWeight" ($e2EsSharePct | toString)
     "CONFIG_FORCE_stackstate_kafkaTopologyEventsToES_elasticsearch_index_maxIndicesRetained" (include "common.sizing.stackstate.e2es.retention" . | default (.Values.stackstate.components.e2es.retention | toString))
     "ELASTICSEARCH_URI" (printf "http://%s" (include "stackstate.es.endpoint" .))
     "KAFKA_BROKERS" (include "stackstate.kafka.endpoint" .)
@@ -45,8 +45,8 @@ env:
   {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_elasticsearchDiskSpaceMB" (divf (mulf (divf (mulf $diskSpaceMB $esReplicas) (add1 $replicationFactor)) .esDiskSpaceShare) 100 | int | toString) }}
 {{- end }}
 {{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) $serviceConfig .) }}
-image: "{{ include "stackstate.image.registry" . }}/{{ .K2esConfig.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .K2esConfig.image.tag }}"
-imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .K2esConfig.image.pullPolicy | quote }}
+image: "{{ include "stackstate.image.registry" . }}/{{ .E2esConfig.image.repository }}{{ .Values.stackstate.components.all.image.repositorySuffix }}:{{ default .Values.stackstate.components.all.image.tag .E2esConfig.image.tag }}"
+imagePullPolicy: {{ default .Values.stackstate.components.all.image.pullPolicy .E2esConfig.image.pullPolicy | quote }}
 livenessProbe:
   httpGet:
     path: /liveness

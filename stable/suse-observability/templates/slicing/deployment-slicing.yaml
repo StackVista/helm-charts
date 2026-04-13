@@ -34,7 +34,7 @@ env:
 {{- $serviceConfig := dict "ServiceName" "slicing" "ServiceConfig" $componentConfigWithResources }}
 {{- $imageTagConfig := dict "ImageTag" .Values.stackstate.components.slicing.image.tag }}
 {{/* Build deployment-specific env vars that can be overridden via extraEnv */}}
-{{- $baseUrl := include "suse-observability.global.baseUrl" . | default .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | trimSuffix "/" | required "stackstate.baseUrl or global.suseObservability.baseUrl is required" }}
+{{- $baseUrl := include "suse-observability.global.baseUrl" . | default .Values.stackstate.baseUrl | default .Values.stackstate.receiver.baseUrl | toString | trimSuffix "/" | required "stackstate.baseUrl or global.suseObservability.baseUrl is required" }}
 {{- $deploymentEnv := dict
     "STACKSTATE_BASE_URL" $baseUrl
     "RECEIVER_BASE_URL" (printf "%s/%s" $baseUrl "receiver")

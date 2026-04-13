@@ -1,4 +1,4 @@
-{{- define "stackstate.k2es.eventsToEs.servicemonitor" -}}
+{{- define "stackstate.e2es.servicemonitor" -}}
 metadata:
   labels:
     app.kubernetes.io/component: e2es
@@ -15,6 +15,6 @@ spec:
 
 {{- if and ( .Values.stackstate.components.all.metrics.enabled ) ( .Values.stackstate.components.all.metrics.servicemonitor.enabled ) }}
 {{- $commonServiceMonitor := fromYaml (include "common.servicemonitor" .) -}}
-{{- $k2esEventsToEsServiceMonitor := fromYaml (include "stackstate.k2es.eventsToEs.servicemonitor" .) -}}
-{{- toYaml (merge $k2esEventsToEsServiceMonitor $commonServiceMonitor) -}}
+{{- $e2esServiceMonitor := fromYaml (include "stackstate.e2es.servicemonitor" .) -}}
+{{- toYaml (merge $e2esServiceMonitor $commonServiceMonitor) -}}
 {{- end -}}

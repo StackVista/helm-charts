@@ -1,4 +1,4 @@
-{{- define "stackstate.k2es.deployment.eventsToEs.container" -}}
+{{- define "stackstate.e2es.deployment.container" -}}
 {{- $sizingResources := include "common.sizing.stackstate.e2es.resources" . | trim -}}
 {{- $sizingResourcesDict := fromYaml $sizingResources }}
 {{- $evaluatedResources := merge (dict) .Values.stackstate.components.e2es.resources $sizingResourcesDict }}
@@ -14,12 +14,12 @@ volumeMounts:
 {{- include "stackstate.service.container.volumes" . }}
 {{- end -}}
 
-{{- define "stackstate.k2es.eventsToEs.deployment" -}}
+{{- define "stackstate.e2es.deployment" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
-{{- $e2esConfig := dict "K2esName" "e2es" "K2esConfig" .Values.stackstate.components.e2es "esDiskSpaceShare" (sub 100 .Values.stackstate.components.receiver.esDiskSpaceShare) }}
-{{- $commonKafkaToEsContainer := fromYaml (include "stackstate.k2es.deployment.common.container" (merge $e2esConfig .)) -}}
-{{- $commonKafkaToEsInitContainer := fromYaml (include "stackstate.k2es.deployment.common.initcontainer" .) -}}
-{{- $eventsToEsContainer := fromYaml (include "stackstate.k2es.deployment.eventsToEs.container" .) -}}
+{{- $e2esConfig := dict "E2esName" "e2es" "E2esConfig" .Values.stackstate.components.e2es "esDiskSpaceShare" (sub 100 .Values.stackstate.components.receiver.esDiskSpaceShare) }}
+{{- $commonE2esContainer := fromYaml (include "stackstate.e2es.deployment.common.container" (merge $e2esConfig .)) -}}
+{{- $commonE2esInitContainer := fromYaml (include "stackstate.e2es.deployment.common.initcontainer" .) -}}
+{{- $eventsToEsContainer := fromYaml (include "stackstate.e2es.deployment.container" .) -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-e2es
   labels:
@@ -51,9 +51,9 @@ spec:
     spec:
       {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 6 }}
       initContainers:
-      - {{ toYaml (merge $commonKafkaToEsInitContainer $commonContainer) | nindent 8 }}
+      - {{ toYaml (merge $commonE2esInitContainer $commonContainer) | nindent 8 }}
       containers:
-      - {{ toYaml (merge $eventsToEsContainer $commonKafkaToEsContainer $commonContainer) | nindent 8 }}
+      - {{ toYaml (merge $eventsToEsContainer $commonE2esContainer $commonContainer) | nindent 8 }}
       volumes:
         {{- include "stackstate.service.pod.volumes" (dict "pod_name" "e2es" "root" . ) | nindent 8 }}
     {{- if or .Values.stackstate.components.all.nodeSelector .Values.stackstate.components.e2es.nodeSelector }}
@@ -85,5 +85,5 @@ spec:
 {{- end -}}
 
 {{- $commonDeployment := fromYaml (include "common.deployment" .) -}}
-{{- $k2esEventsToEsDeployment := fromYaml (include "stackstate.k2es.eventsToEs.deployment" .) -}}
-{{- toYaml (merge $k2esEventsToEsDeployment $commonDeployment) -}}
+{{- $e2esDeployment := fromYaml (include "stackstate.e2es.deployment" .) -}}
+{{- toYaml (merge $e2esDeployment $commonDeployment) -}}
