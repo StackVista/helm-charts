@@ -1931,7 +1931,7 @@ hbase:
       # hbase.hbase.regionserver.resources -- Resources will be set by sizing profile. Only override if needed.
   hdfs:
     # hbase.hdfs.version -- HDFS image build version (e.g. java21-8-27156f06-353). Derived from hadoop docker tag with semver prefix stripped. Updated by updatecli.
-    version: java21-8-aef270ee-release-364
+    version: java21-8-aef270ee-release-365
     # hbase.hdfs.minReplication -- Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead)
     minReplication: 2
     datanode:
