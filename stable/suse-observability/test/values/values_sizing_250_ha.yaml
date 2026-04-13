@@ -4,6 +4,13 @@
 clickhouse:
   replicaCount: 1
 
+elasticsearch:
+  resources:
+    requests:
+      memory: "5Gi"
+    limits:
+      memory: "5Gi"
+
 hbase:
   version: "2.5"
   deployment:

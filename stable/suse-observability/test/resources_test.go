@@ -380,7 +380,7 @@ func TestResources(t *testing.T) {
 		},
 		"100-nonha": {
 			"suse-observability-clickhouse-shard0":    {cpuRequest: "500m", cpuLimit: "1000m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
-			"suse-observability-elasticsearch-master": {cpuRequest: "750m", cpuLimit: "1500m", memoryRequest: "7Gi", memoryLimit: "7Gi"},
+			"suse-observability-elasticsearch-master": {cpuRequest: "1000m", cpuLimit: "2000m", memoryRequest: "5Gi", memoryLimit: "5Gi"},
 			"suse-observability-hbase-stackgraph":     {cpuRequest: "2000m", cpuLimit: "4000m", memoryRequest: "4500Mi", memoryLimit: "4500Mi"},
 			"suse-observability-hbase-tephra-mono":    {cpuRequest: "100m", cpuLimit: "200m", memoryRequest: "1Gi", memoryLimit: "1Gi"},
 			"suse-observability-kafka":                {cpuRequest: "2000m", cpuLimit: "4000m", memoryRequest: "3000Mi", memoryLimit: "3000Mi"},
@@ -393,7 +393,7 @@ func TestResources(t *testing.T) {
 		},
 		"150-ha": {
 			"suse-observability-clickhouse-shard0":    {cpuRequest: "500m", cpuLimit: "1000m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
-			"suse-observability-elasticsearch-master": {cpuRequest: "1000m", cpuLimit: "2000m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
+			"suse-observability-elasticsearch-master": {cpuRequest: "1000m", cpuLimit: "2000m", memoryRequest: "5Gi", memoryLimit: "5Gi"},
 			"suse-observability-hbase-hbase-master":   {cpuRequest: "500m", cpuLimit: "1000m", memoryRequest: "1Gi", memoryLimit: "1Gi"},
 			"suse-observability-hbase-hbase-rs":       {cpuRequest: "2000m", cpuLimit: "4000m", memoryRequest: "3Gi", memoryLimit: "3Gi"},
 			"suse-observability-hbase-hdfs-dn":        {cpuRequest: "600m", cpuLimit: "1200m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
@@ -411,7 +411,7 @@ func TestResources(t *testing.T) {
 		},
 		"250-ha": {
 			"suse-observability-clickhouse-shard0":    {cpuRequest: "500m", cpuLimit: "1000m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
-			"suse-observability-elasticsearch-master": {cpuRequest: "1000m", cpuLimit: "2000m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
+			"suse-observability-elasticsearch-master": {cpuRequest: "1000m", cpuLimit: "2000m", memoryRequest: "5Gi", memoryLimit: "5Gi"},
 			"suse-observability-hbase-hbase-master":   {cpuRequest: "500m", cpuLimit: "1000m", memoryRequest: "1Gi", memoryLimit: "1Gi"},
 			"suse-observability-hbase-hbase-rs":       {cpuRequest: "3000m", cpuLimit: "6000m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
 			"suse-observability-hbase-hdfs-dn":        {cpuRequest: "600m", cpuLimit: "1200m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
@@ -429,9 +429,9 @@ func TestResources(t *testing.T) {
 		},
 		"500-ha": {
 			"suse-observability-clickhouse-shard0":    {cpuRequest: "500m", cpuLimit: "1000m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
-			"suse-observability-elasticsearch-master": {cpuRequest: "1000m", cpuLimit: "2000m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
+			"suse-observability-elasticsearch-master": {cpuRequest: "1000m", cpuLimit: "2000m", memoryRequest: "5Gi", memoryLimit: "5Gi"},
 			"suse-observability-hbase-hbase-master":   {cpuRequest: "500m", cpuLimit: "1000m", memoryRequest: "1Gi", memoryLimit: "1Gi"},
-			"suse-observability-hbase-hbase-rs":       {cpuRequest: "4000m", cpuLimit: "8000m", memoryRequest: "6Gi", memoryLimit: "6Gi"},
+			"suse-observability-hbase-hbase-rs":       {cpuRequest: "4000m", cpuLimit: "8000m", memoryRequest: "8Gi", memoryLimit: "8Gi"},
 			"suse-observability-hbase-hdfs-dn":        {cpuRequest: "600m", cpuLimit: "1200m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
 			"suse-observability-hbase-hdfs-nn":        {cpuRequest: "200m", cpuLimit: "400m", memoryRequest: "1Gi", memoryLimit: "1Gi"},
 			"suse-observability-hbase-hdfs-snn":       {cpuRequest: "10m", cpuLimit: "500m", memoryRequest: "1Gi", memoryLimit: "1Gi"},
@@ -447,7 +447,7 @@ func TestResources(t *testing.T) {
 		},
 		"4000-ha": {
 			"suse-observability-clickhouse-shard0":    {cpuRequest: "500m", cpuLimit: "1000m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
-			"suse-observability-elasticsearch-master": {cpuRequest: "4", cpuLimit: "6", memoryRequest: "4Gi", memoryLimit: "4Gi"},
+			"suse-observability-elasticsearch-master": {cpuRequest: "4", cpuLimit: "6", memoryRequest: "5Gi", memoryLimit: "5Gi"},
 			"suse-observability-hbase-hbase-master":   {cpuRequest: "2000m", cpuLimit: "2500m", memoryRequest: "1024Mi", memoryLimit: "1024Mi"},
 			"suse-observability-hbase-hbase-rs":       {cpuRequest: "6000m", cpuLimit: "8000m", memoryRequest: "10Gi", memoryLimit: "12Gi"},
 			"suse-observability-hbase-hdfs-dn":        {cpuRequest: "4000m", cpuLimit: "6000m", memoryRequest: "3Gi", memoryLimit: "5Gi"},
@@ -465,7 +465,7 @@ func TestResources(t *testing.T) {
 		},
 		"default-nonha": {
 			"suse-observability-clickhouse-shard0":    {cpuRequest: "500m", cpuLimit: "1000m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
-			"suse-observability-elasticsearch-master": {cpuRequest: "1000m", cpuLimit: "2000m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
+			"suse-observability-elasticsearch-master": {cpuRequest: "1000m", cpuLimit: "2000m", memoryRequest: "5Gi", memoryLimit: "5Gi"},
 			"suse-observability-hbase-stackgraph":     {cpuRequest: "1000m", cpuLimit: "", memoryRequest: "2Gi", memoryLimit: "3Gi"},
 			"suse-observability-hbase-tephra-mono":    {cpuRequest: "250m", cpuLimit: "500m", memoryRequest: "3Gi", memoryLimit: "3Gi"},
 			"suse-observability-kafka":                {cpuRequest: "500m", cpuLimit: "1000m", memoryRequest: "2Gi", memoryLimit: "2Gi"},
@@ -478,7 +478,7 @@ func TestResources(t *testing.T) {
 		},
 		"default-ha": {
 			"suse-observability-clickhouse-shard0":    {cpuRequest: "500m", cpuLimit: "1000m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
-			"suse-observability-elasticsearch-master": {cpuRequest: "1000m", cpuLimit: "2000m", memoryRequest: "4Gi", memoryLimit: "4Gi"},
+			"suse-observability-elasticsearch-master": {cpuRequest: "1000m", cpuLimit: "2000m", memoryRequest: "5Gi", memoryLimit: "5Gi"},
 			"suse-observability-hbase-hbase-master":   {cpuRequest: "50m", cpuLimit: "500m", memoryRequest: "1Gi", memoryLimit: "1Gi"},
 			"suse-observability-hbase-hbase-rs":       {cpuRequest: "500m", cpuLimit: "3000m", memoryRequest: "3Gi", memoryLimit: "3Gi"},
 			"suse-observability-hbase-hdfs-dn":        {cpuRequest: "100m", cpuLimit: "500m", memoryRequest: "4Gi", memoryLimit: "4Gi"},

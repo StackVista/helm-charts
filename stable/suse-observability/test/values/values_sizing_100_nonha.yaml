@@ -11,11 +11,11 @@ elasticsearch:
   replicas: 1
   resources:
     requests:
-      cpu: "750m"
-      memory: "7Gi"
+      cpu: "1000m"
+      memory: "5Gi"
     limits:
-      cpu: "1500m"
-      memory: "7Gi"
+      cpu: "2000m"
+      memory: "5Gi"
   volumeClaimTemplate:
     resources:
       requests:
