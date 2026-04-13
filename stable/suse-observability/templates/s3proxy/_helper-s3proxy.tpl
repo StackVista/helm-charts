@@ -306,7 +306,7 @@ This name is important because it may be referenced in IAM role bindings.
 {{- else if and .Values.minio.serviceAccount .Values.minio.serviceAccount.name -}}
 {{- .Values.minio.serviceAccount.name -}}
 {{- else -}}
-suse-observability-minio
+suse-observability-s3proxy
 {{- end -}}
 {{- end -}}
 

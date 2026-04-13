@@ -1473,14 +1473,14 @@ func TestS3ProxyServiceAccountDefault(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	// Service account should exist with backward-compatible name (same as old Minio subchart)
-	sa, ok := resources.ServiceAccounts["suse-observability-minio"]
+	sa, ok := resources.ServiceAccounts["suse-observability-s3proxy"]
 	require.True(t, ok, "S3Proxy service account should exist with backward-compatible name 'suse-observability-minio'")
-	assert.Equal(t, "suse-observability-minio", sa.Name, "Service account name should match old Minio name for backward compatibility")
+	assert.Equal(t, "suse-observability-s3proxy", sa.Name, "Service account name should match old Minio name for backward compatibility")
 
 	// Deployment should reference the service account
 	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
 	require.True(t, ok, "S3Proxy deployment should exist")
-	assert.Equal(t, "suse-observability-minio", deployment.Spec.Template.Spec.ServiceAccountName, "Deployment should reference the backward-compatible service account name")
+	assert.Equal(t, "suse-observability-s3proxy", deployment.Spec.Template.Spec.ServiceAccountName, "Deployment should reference the backward-compatible service account name")
 }
 
 // TestS3ProxyServiceAccountCustomName verifies a custom service account name can be set
@@ -1514,7 +1514,7 @@ func TestS3ProxyServiceAccountAnnotations(t *testing.T) {
 	})
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	sa, ok := resources.ServiceAccounts["suse-observability-minio"]
+	sa, ok := resources.ServiceAccounts["suse-observability-s3proxy"]
 	require.True(t, ok, "S3Proxy service account should exist")
 	assert.Equal(t, "arn:aws:iam::123456789012:role/s3-access-role", sa.Annotations["eks.amazonaws.com/role-arn"], "Service account should have IAM role annotation")
 }
@@ -1530,13 +1530,13 @@ func TestS3ProxyServiceAccountDisabled(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	// Service account should NOT exist
-	_, ok := resources.ServiceAccounts["suse-observability-minio"]
+	_, ok := resources.ServiceAccounts["suse-observability-s3proxy"]
 	assert.False(t, ok, "S3Proxy service account should NOT exist when create is false")
 
 	// Deployment should still reference the service account name (for pre-existing or externally managed SAs)
 	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
 	require.True(t, ok, "S3Proxy deployment should exist")
-	assert.Equal(t, "suse-observability-minio", deployment.Spec.Template.Spec.ServiceAccountName, "Deployment should still reference the service account name even when create is false")
+	assert.Equal(t, "suse-observability-s3proxy", deployment.Spec.Template.Spec.ServiceAccountName, "Deployment should still reference the service account name even when create is false")
 }
 
 // TestS3ProxyServiceAccountLegacyMinioName verifies backward compatibility with minio.serviceAccount.name
@@ -1597,13 +1597,13 @@ func TestS3ProxyServiceAccountLegacyMinioCreateFalse(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	// Service account should NOT exist (legacy minio.serviceAccount.create=false should be respected)
-	_, ok := resources.ServiceAccounts["suse-observability-minio"]
+	_, ok := resources.ServiceAccounts["suse-observability-s3proxy"]
 	assert.False(t, ok, "S3Proxy service account should NOT exist when legacy minio.serviceAccount.create is false")
 
 	// Deployment should still reference the service account name
 	deployment, ok := resources.Deployments["suse-observability-s3proxy"]
 	require.True(t, ok, "S3Proxy deployment should exist")
-	assert.Equal(t, "suse-observability-minio", deployment.Spec.Template.Spec.ServiceAccountName, "Deployment should still reference the service account name even when create is false via legacy")
+	assert.Equal(t, "suse-observability-s3proxy", deployment.Spec.Template.Spec.ServiceAccountName, "Deployment should still reference the service account name even when create is false via legacy")
 }
 
 // TestS3ProxyServiceAccountCreateOverridesLegacyMinioCreate verifies s3proxy.serviceAccount.create=false takes precedence over minio.serviceAccount.create=true
@@ -1618,7 +1618,7 @@ func TestS3ProxyServiceAccountCreateOverridesLegacyMinioCreate(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	// s3proxy.serviceAccount.create=false should override minio.serviceAccount.create=true
-	_, ok := resources.ServiceAccounts["suse-observability-minio"]
+	_, ok := resources.ServiceAccounts["suse-observability-s3proxy"]
 	assert.False(t, ok, "S3Proxy service account should NOT exist when s3proxy.serviceAccount.create=false, even if minio.serviceAccount.create=true")
 }
 
@@ -1632,7 +1632,7 @@ func TestS3ProxyServiceAccountLegacyMinioAnnotations(t *testing.T) {
 	})
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	sa, ok := resources.ServiceAccounts["suse-observability-minio"]
+	sa, ok := resources.ServiceAccounts["suse-observability-s3proxy"]
 	require.True(t, ok, "S3Proxy service account should exist")
 	assert.Equal(t, "arn:aws:iam::123456789012:role/legacy-minio-role", sa.Annotations["eks.amazonaws.com/role-arn"], "Service account should have IAM role annotation from legacy minio values")
 }
@@ -1650,7 +1650,7 @@ func TestS3ProxyServiceAccountAnnotationsMerge(t *testing.T) {
 	})
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	sa, ok := resources.ServiceAccounts["suse-observability-minio"]
+	sa, ok := resources.ServiceAccounts["suse-observability-s3proxy"]
 	require.True(t, ok, "S3Proxy service account should exist")
 
 	// Legacy-only key should be present (merged from minio)
