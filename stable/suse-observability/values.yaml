@@ -1828,7 +1828,7 @@ stackstate:
 ##############################
 elasticsearch:
   # elasticsearch.imageTag -- Elasticsearch image tag. Updated by updatecli.
-  imageTag: 8.19.4-c4527168-release-211
+  imageTag: 8.19.4-c4527168-release-212
   # elasticsearch.sysctlInitContainer -- Enable privileged init container to increase Elasticsearch virtual memory on underlying nodes.
   sysctlInitContainer:
     enabled: true
