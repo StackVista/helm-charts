@@ -5,6 +5,11 @@ clickhouse:
     size: 100Gi
 
 elasticsearch:
+  resources:
+    requests:
+      memory: "5Gi"
+    limits:
+      memory: "5Gi"
   volumeClaimTemplate:
     resources:
       requests:

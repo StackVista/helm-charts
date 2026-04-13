@@ -2,6 +2,13 @@
 clickhouse:
   replicaCount: 1
 
+elasticsearch:
+  resources:
+    requests:
+      memory: "5Gi"
+    limits:
+      memory: "5Gi"
+
 hbase:
   version: "2.5"
   deployment:
@@ -22,10 +29,10 @@ hbase:
       resources:
         requests:
           cpu: "4000m"
-          memory: 6Gi
+          memory: 8Gi
         limits:
           cpu: "8000m"
-          memory: 6Gi
+          memory: 8Gi
   hdfs:
     datanode:
       replicaCount: 3

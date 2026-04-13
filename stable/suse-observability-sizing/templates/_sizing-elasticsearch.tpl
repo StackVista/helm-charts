@@ -54,26 +54,26 @@ limits:
   memory: 4Gi
 {{- else if eq $profile "100-nonha" }}
 requests:
-  cpu: 750m
-  memory: 7Gi
+  cpu: 1000m
+  memory: 5Gi
 limits:
-  cpu: 1500m
-  memory: 7Gi
+  cpu: 2000m
+  memory: 5Gi
 {{- else if eq $profile "4000-ha" }}
 requests:
   cpu: "4"
-  memory: 4Gi
+  memory: 5Gi
 limits:
   cpu: "6"
-  memory: 4Gi
+  memory: 5Gi
 {{- else }}
 requests:
   cpu: "1000m"
-  memory: "4Gi"
+  memory: "5Gi"
   ephemeral-storage: "1Mi"
 limits:
   cpu: "2000m"
-  memory: "4Gi"
+  memory: "5Gi"
   ephemeral-storage: "1Gi"
 {{- end }}
 {{- end }}

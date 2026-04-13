@@ -196,11 +196,11 @@ limits:
 {{- else if eq $profile "500-ha" }}
 requests:
   cpu: "4000m"
-  memory: 6Gi
+  memory: 8Gi
   ephemeral-storage: "1Mi"
 limits:
   cpu: "8000m"
-  memory: 6Gi
+  memory: 8Gi
   ephemeral-storage: "1Gi"
 {{- else if eq $profile "4000-ha" }}
 requests:
