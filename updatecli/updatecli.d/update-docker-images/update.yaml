@@ -483,5 +483,5 @@ targets:
     sourceid: spotlight
     dependson: ["target#genericSidecarInjector"]
     spec:
-      file: "stable/anomaly-detection/values.yaml"
-      key: "$.image.tag"
+      file: "stable/suse-observability/values.yaml"
+      key: "$.anomaly-detection.image.tag"
