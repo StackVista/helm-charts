@@ -41,16 +41,9 @@ build_anomaly-detection:
       - stable/anomaly-detection/charts/
       - stable/anomaly-detection/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -69,16 +62,9 @@ build_artifactory-cleaner:
       - stable/artifactory-cleaner/charts/
       - stable/artifactory-cleaner/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -97,16 +83,9 @@ build_aws-pod-identity-webhook:
       - stable/aws-pod-identity-webhook/charts/
       - stable/aws-pod-identity-webhook/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -125,16 +104,9 @@ build_beacher-job:
       - stable/beacher-job/charts/
       - stable/beacher-job/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -153,16 +125,9 @@ build_chartmuseum:
       - stable/chartmuseum/charts/
       - stable/chartmuseum/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -181,16 +146,9 @@ build_ci-test:
       - stable/ci-test/charts/
       - stable/ci-test/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -209,16 +167,9 @@ build_clickhouse:
       - stable/clickhouse/charts/
       - stable/clickhouse/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -237,16 +188,9 @@ build_common:
       - stable/common/charts/
       - stable/common/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -265,16 +209,9 @@ build_elasticsearch:
       - stable/elasticsearch/charts/
       - stable/elasticsearch/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -293,16 +230,9 @@ build_gitlab-proxy:
       - stable/gitlab-proxy/charts/
       - stable/gitlab-proxy/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -321,16 +251,9 @@ build_gitlab-steward:
       - stable/gitlab-steward/charts/
       - stable/gitlab-steward/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -349,16 +272,9 @@ build_hbase:
       - stable/hbase/charts/
       - stable/hbase/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -377,16 +293,9 @@ build_helm-reaper:
       - stable/helm-reaper/charts/
       - stable/helm-reaper/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -405,16 +314,9 @@ build_k8s-spot-termination-handler:
       - stable/k8s-spot-termination-handler/charts/
       - stable/k8s-spot-termination-handler/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -433,16 +335,9 @@ build_kafka:
       - stable/kafka/charts/
       - stable/kafka/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -461,16 +356,9 @@ build_kafkaup-operator:
       - stable/kafkaup-operator/charts/
       - stable/kafkaup-operator/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -489,16 +377,9 @@ build_kommoner-operator:
       - stable/kommoner-operator/charts/
       - stable/kommoner-operator/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -517,16 +398,9 @@ build_kubernetes-rbac-agent:
       - stable/kubernetes-rbac-agent/charts/
       - stable/kubernetes-rbac-agent/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -545,16 +419,9 @@ build_notification-operator:
       - stable/notification-operator/charts/
       - stable/notification-operator/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -573,16 +440,9 @@ build_opentelemetry-collector:
       - stable/opentelemetry-collector/charts/
       - stable/opentelemetry-collector/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -601,16 +461,9 @@ build_otel-demo:
       - stable/otel-demo/charts/
       - stable/otel-demo/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -629,16 +482,9 @@ build_petros-d-kubelet-stats-exporter:
       - stable/petros-d-kubelet-stats-exporter/charts/
       - stable/petros-d-kubelet-stats-exporter/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -657,16 +503,9 @@ build_prometheus-elasticsearch-exporter:
       - stable/prometheus-elasticsearch-exporter/charts/
       - stable/prometheus-elasticsearch-exporter/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -685,16 +524,9 @@ build_pull-secret:
       - stable/pull-secret/charts/
       - stable/pull-secret/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -713,16 +545,9 @@ build_receiveramplifier:
       - stable/receiveramplifier/charts/
       - stable/receiveramplifier/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -741,16 +566,9 @@ build_redirector:
       - stable/redirector/charts/
       - stable/redirector/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -769,16 +587,9 @@ build_sock-shop:
       - stable/sock-shop/charts/
       - stable/sock-shop/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -797,16 +608,9 @@ build_stackstate-monitoring:
       - stable/stackstate-monitoring/charts/
       - stable/stackstate-monitoring/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -825,16 +629,9 @@ build_suse-observability:
       - stable/suse-observability/charts/
       - stable/suse-observability/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -853,16 +650,9 @@ build_suse-observability-agent:
       - stable/suse-observability-agent/charts/
       - stable/suse-observability-agent/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -881,16 +671,9 @@ build_suse-observability-values:
       - stable/suse-observability-values/charts/
       - stable/suse-observability-values/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -909,16 +692,9 @@ build_tenant-cleanup-controller:
       - stable/tenant-cleanup-controller/charts/
       - stable/tenant-cleanup-controller/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -937,16 +713,9 @@ build_tenantmanagement:
       - stable/tenantmanagement/charts/
       - stable/tenantmanagement/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -965,16 +734,9 @@ build_tenantprovisioning:
       - stable/tenantprovisioning/charts/
       - stable/tenantprovisioning/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -993,16 +755,9 @@ build_trafficmirror:
       - stable/trafficmirror/charts/
       - stable/trafficmirror/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -1021,16 +776,9 @@ build_victoria-metrics-single:
       - stable/victoria-metrics-single/charts/
       - stable/victoria-metrics-single/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -1049,16 +797,9 @@ build_zookeeper:
       - stable/zookeeper/charts/
       - stable/zookeeper/build/
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -1527,16 +1268,9 @@ open_updatecli_docker_images_mr:
   stage: update
 push_anomaly-detection_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -1573,16 +1307,9 @@ push_anomaly-detection_to_internal:
     CHART: stable/anomaly-detection
 push_anomaly-detection_to_public:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -1621,16 +1348,9 @@ push_anomaly-detection_to_public:
     CHART: stable/anomaly-detection
 push_artifactory-cleaner_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -1667,16 +1387,9 @@ push_artifactory-cleaner_to_internal:
     CHART: stable/artifactory-cleaner
 push_artifactory-cleaner_to_public:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -1715,16 +1428,9 @@ push_artifactory-cleaner_to_public:
     CHART: stable/artifactory-cleaner
 push_aws-pod-identity-webhook_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -1761,16 +1467,9 @@ push_aws-pod-identity-webhook_to_internal:
     CHART: stable/aws-pod-identity-webhook
 push_beacher-job_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -1807,16 +1506,9 @@ push_beacher-job_to_internal:
     CHART: stable/beacher-job
 push_chartmuseum_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -1853,16 +1545,9 @@ push_chartmuseum_to_internal:
     CHART: stable/chartmuseum
 push_ci-test_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -1899,16 +1584,9 @@ push_ci-test_to_internal:
     CHART: stable/ci-test
 push_clickhouse_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -1945,16 +1623,9 @@ push_clickhouse_to_internal:
     CHART: stable/clickhouse
 push_clickhouse_to_public:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -1993,16 +1664,9 @@ push_clickhouse_to_public:
     CHART: stable/clickhouse
 push_common_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2039,16 +1703,9 @@ push_common_to_internal:
     CHART: stable/common
 push_common_to_public:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2087,16 +1744,9 @@ push_common_to_public:
     CHART: stable/common
 push_elasticsearch_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2133,16 +1783,9 @@ push_elasticsearch_to_internal:
     CHART: stable/elasticsearch
 push_elasticsearch_to_public:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2181,16 +1824,9 @@ push_elasticsearch_to_public:
     CHART: stable/elasticsearch
 push_gitlab-proxy_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2227,16 +1863,9 @@ push_gitlab-proxy_to_internal:
     CHART: stable/gitlab-proxy
 push_gitlab-steward_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2273,16 +1902,9 @@ push_gitlab-steward_to_internal:
     CHART: stable/gitlab-steward
 push_hbase_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2319,16 +1941,9 @@ push_hbase_to_internal:
     CHART: stable/hbase
 push_hbase_to_public:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2367,16 +1982,9 @@ push_hbase_to_public:
     CHART: stable/hbase
 push_helm-reaper_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2413,16 +2021,9 @@ push_helm-reaper_to_internal:
     CHART: stable/helm-reaper
 push_k8s-spot-termination-handler_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2459,16 +2060,9 @@ push_k8s-spot-termination-handler_to_internal:
     CHART: stable/k8s-spot-termination-handler
 push_kafka_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2505,16 +2099,9 @@ push_kafka_to_internal:
     CHART: stable/kafka
 push_kafka_to_public:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2553,16 +2140,9 @@ push_kafka_to_public:
     CHART: stable/kafka
 push_kafkaup-operator_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2599,16 +2179,9 @@ push_kafkaup-operator_to_internal:
     CHART: stable/kafkaup-operator
 push_kafkaup-operator_to_public:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2647,16 +2220,9 @@ push_kafkaup-operator_to_public:
     CHART: stable/kafkaup-operator
 push_kommoner-operator_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2693,16 +2259,9 @@ push_kommoner-operator_to_internal:
     CHART: stable/kommoner-operator
 push_kubernetes-rbac-agent_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2739,16 +2298,9 @@ push_kubernetes-rbac-agent_to_internal:
     CHART: stable/kubernetes-rbac-agent
 push_kubernetes-rbac-agent_to_public:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2787,16 +2339,9 @@ push_kubernetes-rbac-agent_to_public:
     CHART: stable/kubernetes-rbac-agent
 push_notification-operator_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2833,16 +2378,9 @@ push_notification-operator_to_internal:
     CHART: stable/notification-operator
 push_opentelemetry-collector_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2879,16 +2417,9 @@ push_opentelemetry-collector_to_internal:
     CHART: stable/opentelemetry-collector
 push_otel-demo_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2925,16 +2456,9 @@ push_otel-demo_to_internal:
     CHART: stable/otel-demo
 push_petros-d-kubelet-stats-exporter_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -2971,16 +2495,9 @@ push_petros-d-kubelet-stats-exporter_to_internal:
     CHART: stable/petros-d-kubelet-stats-exporter
 push_prometheus-elasticsearch-exporter_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3017,16 +2534,9 @@ push_prometheus-elasticsearch-exporter_to_internal:
     CHART: stable/prometheus-elasticsearch-exporter
 push_prometheus-elasticsearch-exporter_to_public:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3065,16 +2575,9 @@ push_prometheus-elasticsearch-exporter_to_public:
     CHART: stable/prometheus-elasticsearch-exporter
 push_pull-secret_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3111,16 +2614,9 @@ push_pull-secret_to_internal:
     CHART: stable/pull-secret
 push_pull-secret_to_public:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3159,16 +2655,9 @@ push_pull-secret_to_public:
     CHART: stable/pull-secret
 push_receiveramplifier_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3205,16 +2694,9 @@ push_receiveramplifier_to_internal:
     CHART: stable/receiveramplifier
 push_redirector_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3251,16 +2733,9 @@ push_redirector_to_internal:
     CHART: stable/redirector
 push_sock-shop_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3297,16 +2772,9 @@ push_sock-shop_to_internal:
     CHART: stable/sock-shop
 push_stackstate-monitoring_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3343,16 +2811,9 @@ push_stackstate-monitoring_to_internal:
     CHART: stable/stackstate-monitoring
 push_stackstate-monitoring_to_public:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3391,16 +2852,9 @@ push_stackstate-monitoring_to_public:
     CHART: stable/stackstate-monitoring
 push_stackstate_release_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3436,16 +2890,9 @@ push_stackstate_release_to_internal:
     CHART: stable/stackstate
 push_stackstate_release_to_public:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3475,16 +2922,9 @@ push_stackstate_release_to_public:
     CHART: stable/stackstate
 push_suse-observability-agent_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3521,16 +2961,9 @@ push_suse-observability-agent_to_internal:
     CHART: stable/suse-observability-agent
 push_suse-observability-agent_to_public:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3603,16 +3036,9 @@ push_suse-observability-agent_to_rancher:
     CHART: stable/suse-observability-agent
 push_suse-observability-values_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3649,16 +3075,9 @@ push_suse-observability-values_to_internal:
     CHART: stable/suse-observability-values
 push_suse-observability-values_to_public:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3731,16 +3150,9 @@ push_suse-observability-values_to_rancher:
     CHART: stable/suse-observability-values
 push_suse-observability_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
     - .gitlab/configure_git.sh
@@ -3783,16 +3195,9 @@ push_suse-observability_to_internal:
     CHART: stable/suse-observability
 push_tenant-cleanup-controller_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3829,16 +3234,9 @@ push_tenant-cleanup-controller_to_internal:
     CHART: stable/tenant-cleanup-controller
 push_tenantmanagement_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3875,16 +3273,9 @@ push_tenantmanagement_to_internal:
     CHART: stable/tenantmanagement
 push_tenantprovisioning_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3921,16 +3312,9 @@ push_tenantprovisioning_to_internal:
     CHART: stable/tenantprovisioning
 push_trafficmirror_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -3967,16 +3351,9 @@ push_trafficmirror_to_internal:
     CHART: stable/trafficmirror
 push_trafficmirror_to_public:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4015,16 +3392,9 @@ push_trafficmirror_to_public:
     CHART: stable/trafficmirror
 push_victoria-metrics-single_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4061,16 +3431,9 @@ push_victoria-metrics-single_to_internal:
     CHART: stable/victoria-metrics-single
 push_victoria-metrics-single_to_public:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4109,16 +3472,9 @@ push_victoria-metrics-single_to_public:
     CHART: stable/victoria-metrics-single
 push_zookeeper_to_internal:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4155,16 +3511,9 @@ push_zookeeper_to_internal:
     CHART: stable/zookeeper
 push_zookeeper_to_public:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-devops-fd4b135a
@@ -4206,16 +3555,9 @@ resource_usage:
     paths:
       - test/resource_usage.txt
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   cache:
@@ -5144,16 +4486,9 @@ test_zookeeper:
     GOPATH: /go
 update_aad_chart_version:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
@@ -5207,16 +4542,9 @@ update_mcp_version_to_latest:
   stage: update
 update_stackgraph_version:
   before_script:
-    - helm repo add bitnami https://charts.bitnami.com/bitnami
-    - helm repo add bitnami-full-archive https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
-    - helm repo add bitnami-pre-2022 https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami
     - helm repo add deliveryhero https://charts.deliveryhero.io
-    - helm repo add elastic https://helm.elastic.co
     - helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
-    - helm repo add prometheus https://prometheus-community.github.io/helm-charts
-    - helm repo add stable https://charts.helm.sh/stable
     - helm repo add stackstate https://helm.stackstate.io
-    - helm repo add stackstate-internal https://helm-internal.stackstate.io
     - helm repo add victoriametrics https://victoriametrics.github.io/helm-charts
     - helm repo update
   image: ${REGISTRY_QUAY_URL}/stackstate/sts-ci-images:stackstate-helm-test-4423bdaa
