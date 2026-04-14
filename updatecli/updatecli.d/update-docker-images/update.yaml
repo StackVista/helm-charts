@@ -239,6 +239,7 @@ sources:
       tagfilter: "^\\d+\\.\\d+\\.\\d+-snapshot\\.\\d+$"
       versionfilter:
         kind: semver
+        pattern: ">=0.0.0-0"
 
 # Single pipeline: all targets chained with dependson so they run sequentially.
 # All suse-observability subchart image tags are in stable/suse-observability/values.yaml
