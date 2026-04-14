@@ -93,7 +93,7 @@ stackstate.api.authorization.staticSubjects.stackstate-aad: { systemPermissions:
 {{- end }}
 {{- end }}
 
-{{- include "stackstate.configmap.stackpacks.storage" . }}
+{{ include "stackstate.configmap.stackpacks.storage" . }}
 
 stackstate.stackPacks {
 {{- with .Values.stackstate.stackpacks.installed }}
