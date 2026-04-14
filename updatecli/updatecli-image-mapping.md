@@ -32,6 +32,7 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 | workload-observer | stable/suse-observability/values.yaml | $.stackstate.components.workloadObserver.image.tag | Tag format: `hash-buildId` only |
 | zookeeper | stable/suse-observability/values.yaml | $.zookeeper.image.tag | |
 | spotlight | stable/suse-observability/values.yaml | $.anomaly-detection.image.tag | Tag format: `X.Y.Z-snapshot.N` (master snapshots only, semver with pre-release) |
+| promtail | stable/suse-observability-agent/values.yaml | $.logsAgent.image.tag | Agent chart — not a subchart of suse-observability |
 
 ## Tag Format Reference
 

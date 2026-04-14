@@ -240,6 +240,16 @@ sources:
       versionfilter:
         kind: semver
         pattern: ">=0.0.0-0"
+  promtail:
+    name: "promtail"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/promtail"
+      architecture: "linux/amd64"
+      tagfilter: ".*-[a-f0-9]{8}-release-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
 
 # Single pipeline: all targets chained with dependson so they run sequentially.
 # All suse-observability subchart image tags are in stable/suse-observability/values.yaml
@@ -485,3 +495,12 @@ targets:
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.anomaly-detection.image.tag"
+  promtail:
+    name: "promtail (suse-observability-agent)"
+    kind: yaml
+    scmid: "default"
+    sourceid: promtail
+    dependson: ["target#spotlight"]
+    spec:
+      file: "stable/suse-observability-agent/values.yaml"
+      key: "$.logsAgent.image.tag"
