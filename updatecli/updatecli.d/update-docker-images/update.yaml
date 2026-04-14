@@ -230,6 +230,15 @@ sources:
       versionfilter:
         kind: regex/semver
         regex: "^[a-f0-9]{8}-([0-9]+)-release$"
+  spotlight:
+    name: "spotlight"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/spotlight"
+      architecture: "linux/amd64"
+      tagfilter: "^\\d+\\.\\d+\\.\\d+-snapshot\\.\\d+$"
+      versionfilter:
+        kind: semver
 
 # Single pipeline: all targets chained with dependson so they run sequentially.
 # All suse-observability subchart image tags are in stable/suse-observability/values.yaml
@@ -466,3 +475,12 @@ targets:
     spec:
       file: "stable/suse-observability-agent/values.yaml"
       key: "$.httpHeaderInjectorWebhook.sidecarInjector.image.tag"
+  spotlight:
+    name: "spotlight"
+    kind: yaml
+    scmid: "default"
+    sourceid: spotlight
+    dependson: ["target#genericSidecarInjector"]
+    spec:
+      file: "stable/anomaly-detection/values.yaml"
+      key: "$.image.tag"
