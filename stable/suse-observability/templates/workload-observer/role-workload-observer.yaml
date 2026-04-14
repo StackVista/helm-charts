@@ -1,6 +1,4 @@
-{{- if .Values.stackstate.components.workloadObserver.enabled }}
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+{{- define "stackstate.role.workload-observer" -}}
 metadata:
   name: {{ include "namePrefix" . }}-workload-observer
   labels:
@@ -9,4 +7,10 @@ rules:
   - apiGroups: ["apps"]
     resources: ["statefulsets", "deployments"]
     verbs: ["get", "list", "watch"]
+{{- end -}}
+
+{{- if .Values.stackstate.components.workloadObserver.enabled }}
+{{- $commonRole := fromYaml (include "common.role" .) -}}
+{{- $woRole := fromYaml (include "stackstate.role.workload-observer" .) -}}
+{{- toYaml (merge $woRole $commonRole) -}}
 {{- end }}

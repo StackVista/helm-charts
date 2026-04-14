@@ -1,5 +1,4 @@
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+{{- define "stackstate.rolebinding.get-pods" -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-get-pods
 roleRef:
@@ -30,3 +29,8 @@ subjects:
 - kind: ServiceAccount
   name: {{ template "common.fullname.short" . }}-server
 {{- end -}}
+{{- end -}}
+
+{{- $commonRoleBinding := fromYaml (include "common.rolebinding" .) -}}
+{{- $getPodsRoleBinding := fromYaml (include "stackstate.rolebinding.get-pods" .) -}}
+{{- toYaml (merge $getPodsRoleBinding $commonRoleBinding) -}}

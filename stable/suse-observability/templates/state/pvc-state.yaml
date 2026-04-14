@@ -1,38 +1,39 @@
-{{- if and (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .)) }}
-{{- $storageClass := include "suse-observability.features.get" (dict "key" "storeTransactionLogsToPVC.storageClass" "context" . ) | trim }}
-apiVersion: v1
-kind: PersistentVolumeClaim
+{{- define "stackstate.state.txlog.persistentvolumeclaim" -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-state-txlog
-  labels:
-    {{- include "common.labels.standard" . | nindent 4 }}
-    {{- include "common.labels.custom" . | nindent 4 }}
-{{- if .Values.gitlab }}
-  annotations:
-    {{- include "common.annotations.gitlab" . | nindent 4 }}
-{{- end }}
 spec:
   accessModes:
   - ReadWriteOnce
   resources:
     requests:
-      storage: {{ include "suse-observability.features.get" (dict "key" "storeTransactionLogsToPVC.volumeSize" "context" . ) | trim }}
+      storage: {{ include "suse-observability.features.get" (dict "key" "storeTransactionLogsToPVC.volumeSize" "context" .) | trim }}
+{{- $storageClass := include "suse-observability.features.get" (dict "key" "storeTransactionLogsToPVC.storageClass" "context" .) | trim }}
 {{- if and $storageClass (ne $storageClass "<no value>") }}
   storageClassName: {{ $storageClass }}
 {{- end }}
 {{- end -}}
 
-{{- if and .Values.stackstate.components.state.tmpToPVC (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .)) }}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
+{{- define "stackstate.state.tmp.persistentvolumeclaim" -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-state-tmp
 spec:
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   resources:
     requests:
       storage: {{ .Values.stackstate.components.state.tmpToPVC.volumeSize }}
-  {{ include "common.storage.class" ( dict "persistence" .Values.stackstate.components.state.tmpToPVC "global" .Values.global) | nindent 2}}
-{{- end}}
+  {{ include "common.storage.class" ( dict "persistence" .Values.stackstate.components.state.tmpToPVC "global" .Values.global) | nindent 2 }}
+{{- end -}}
+
+{{- if and (include "suse-observability.features.enabled" (dict "key" "storeTransactionLogsToPVC.enabled" "context" .)) (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .)) }}
+{{- $commonPVC := fromYaml (include "common.persistentvolumeclaim" .) -}}
+{{- $txlogPVC := fromYaml (include "stackstate.state.txlog.persistentvolumeclaim" .) -}}
+{{- toYaml (merge $txlogPVC $commonPVC) -}}
+{{- end -}}
+
+{{- if and .Values.stackstate.components.state.tmpToPVC (include "suse-observability.features.enabled" (dict "key" "server.split" "context" .)) }}
+---
+{{ $commonPVC := fromYaml (include "common.persistentvolumeclaim" .) -}}
+{{- $tmpPVC := fromYaml (include "stackstate.state.tmp.persistentvolumeclaim" .) -}}
+{{- toYaml (merge $tmpPVC $commonPVC) }}
+{{- end -}}

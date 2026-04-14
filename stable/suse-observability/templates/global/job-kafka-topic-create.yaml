@@ -1,3 +1,4 @@
+{{- /* Does not use common.job: complex standalone job with custom init containers */ -}}
 {{- define "stackstate.kafkaTopicCreate.job.initContainer.main" -}}
 {{- $commonContainer := fromYaml (include "common.container" .) -}}
 name: kafka-topic-create-init

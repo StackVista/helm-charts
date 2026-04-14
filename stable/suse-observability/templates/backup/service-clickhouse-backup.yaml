@@ -6,8 +6,6 @@ suse-observability-clickhouse-backup
 {{- end -}}
 
 {{- define "stackstate.clickhouse-backup.service" -}}
-apiVersion: {{ .Values.common.service.apiVersion }}
-kind: Service
 metadata:
   name: {{ include "stackstate.backup.clickhouse.backup.service" . }}
   labels:
@@ -31,5 +29,7 @@ spec:
 {{- end -}}
 
 {{- if .Values.global.backup.enabled }}
-{{- include "stackstate.clickhouse-backup.service" . -}}
+{{- $commonService := fromYaml (include "common.service" .) -}}
+{{- $chBackupService := fromYaml (include "stackstate.clickhouse-backup.service" .) -}}
+{{- toYaml (merge $chBackupService $commonService) -}}
 {{- end -}}

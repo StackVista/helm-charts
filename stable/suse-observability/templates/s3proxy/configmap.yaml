@@ -1,5 +1,4 @@
-apiVersion: v1
-kind: ConfigMap
+{{- define "stackstate.s3proxy.configmap" -}}
 metadata:
   name: {{ include "stackstate.s3proxy.fullname" . }}-config
   labels:
@@ -52,3 +51,8 @@ data:
     s3proxy.bucket-locator.{{ add $i 1 }}={{ $bucket }}
     {{- end }}
   {{- end }}
+{{- end -}}
+
+{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
+{{- $s3proxyConfigMap := fromYaml (include "stackstate.s3proxy.configmap" .) -}}
+{{- toYaml (merge $s3proxyConfigMap $commonConfigMap) -}}

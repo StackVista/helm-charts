@@ -1,3 +1,4 @@
+{{- /* Does not use common.rolebinding: Helm hook + ArgoCD annotations would conflict with common merge */ -}}
 {{- if eq .Values.stackstate.components.router.mode.status "automatic" }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding

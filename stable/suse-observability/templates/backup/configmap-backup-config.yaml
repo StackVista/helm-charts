@@ -1,3 +1,4 @@
+{{- /* Does not use common.configmap: complex multi-section config assembled with custom helpers */ -}}
 {{/*
 Check if victoria-metrics-1 is effectively enabled.
 This considers both the values setting and global sizing profile override.

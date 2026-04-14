@@ -1,3 +1,4 @@
+{{- /* Does not use common.rolebinding: custom K8s authorization binding with specific structure */ -}}
 {{- define "stackstate.k8s.authorization.instance.recommended.rolebinding" -}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding

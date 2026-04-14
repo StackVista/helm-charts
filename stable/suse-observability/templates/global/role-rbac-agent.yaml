@@ -1,6 +1,4 @@
-{{- if .Values.stackstate.k8sAuthorization.enabled }}
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+{{- define "stackstate.role.rbac-agent" -}}
 metadata:
   name: {{ template "stackstate.rbacAgent.roleName" . }}
   labels:
@@ -9,4 +7,10 @@ rules:
   - apiGroups: [""]
     resources: ["ping"]
     verbs: ["get"]
+{{- end -}}
+
+{{- if .Values.stackstate.k8sAuthorization.enabled }}
+{{- $commonRole := fromYaml (include "common.role" .) -}}
+{{- $rbacAgentRole := fromYaml (include "stackstate.role.rbac-agent" .) -}}
+{{- toYaml (merge $rbacAgentRole $commonRole) -}}
 {{- end }}

@@ -1,6 +1,4 @@
-{{- if .Values.stackstate.k8sAuthorization.enabled }}
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+{{- define "stackstate.rolebinding.rbac-agent" -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-rbac-agent
 roleRef:
@@ -10,4 +8,10 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: {{ template "kubernetes-rbac-agent.serviceaccount.name" . }}
+{{- end -}}
+
+{{- if .Values.stackstate.k8sAuthorization.enabled }}
+{{- $commonRoleBinding := fromYaml (include "common.rolebinding" .) -}}
+{{- $rbacAgentRoleBinding := fromYaml (include "stackstate.rolebinding.rbac-agent" .) -}}
+{{- toYaml (merge $rbacAgentRoleBinding $commonRoleBinding) -}}
 {{- end }}

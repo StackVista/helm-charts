@@ -1,3 +1,4 @@
+{{- /* Does not use common.job: uses custom suse-observability.backup.init.jobSpec define */ -}}
 {{- define "suse-observability.backup.init.jobSpec" -}}
 ttlSecondsAfterFinished: {{ include "stackstate.job.ttlSecondsAfterFinished" . }}
 template:

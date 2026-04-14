@@ -1,6 +1,4 @@
-{{- if .Values.stackstate.components.workloadObserver.enabled }}
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+{{- define "stackstate.rolebinding.workload-observer" -}}
 metadata:
   name: {{ include "namePrefix" . }}-workload-observer
 roleRef:
@@ -10,4 +8,10 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: {{ include "namePrefix" . }}-workload-observer
+{{- end -}}
+
+{{- if .Values.stackstate.components.workloadObserver.enabled }}
+{{- $commonRoleBinding := fromYaml (include "common.rolebinding" .) -}}
+{{- $woRoleBinding := fromYaml (include "stackstate.rolebinding.workload-observer" .) -}}
+{{- toYaml (merge $woRoleBinding $commonRoleBinding) -}}
 {{- end }}

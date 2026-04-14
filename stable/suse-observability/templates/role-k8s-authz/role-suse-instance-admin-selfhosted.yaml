@@ -1,3 +1,4 @@
+{{- /* Does not use common.role: custom K8s authorization binding with specific structure */ -}}
 {{- define "stackstate.k8s.authorization.instance.admin.selfhosted.role" -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-instance-admin

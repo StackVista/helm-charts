@@ -1,5 +1,4 @@
-kind: Role
-apiVersion: rbac.authorization.k8s.io/v1
+{{- define "stackstate.role.get-pods" -}}
 metadata:
   name: {{ template "common.fullname.short" . }}-get-pods
   labels:
@@ -8,3 +7,8 @@ rules:
   - apiGroups: [""]
     resources: ["pods"]
     verbs: ["get", "list"]
+{{- end -}}
+
+{{- $commonRole := fromYaml (include "common.role" .) -}}
+{{- $getPodsRole := fromYaml (include "stackstate.role.get-pods" .) -}}
+{{- toYaml (merge $getPodsRole $commonRole) -}}
