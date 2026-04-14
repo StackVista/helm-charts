@@ -2,7 +2,7 @@
 
 Helm chart for SUSE Observability
 
-Current chart version is `2.9.1-pre.66`
+Current chart version is `2.9.1-pre.67`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -14,7 +14,7 @@ Current chart version is `2.9.1-pre.66`
 | file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.25 |
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.20 |
-| file://../hbase/ | hbase | 0.2.133 |
+| file://../hbase/ | hbase | 0.2.134 |
 | file://../kafka/ | kafka | 19.1.3-suse-observability.24 |
 | file://../kafkaup-operator/ | kafkaup-operator | 0.1.28 |
 | file://../kubernetes-rbac-agent/ | kubernetes-rbac-agent | 0.0.27 |
@@ -599,7 +599,7 @@ If you encounter issues not covered here:
 | hbase.hdfs.secondarynamenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into HDFS secondary namenode pods. |
 | hbase.hdfs.secondarynamenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into HDFS secondary namenode pods via a Secret object. |
 | hbase.hdfs.version | string | `"java21-8-aef270ee-release-364"` | HDFS image build version (e.g. java21-8-27156f06-353). Derived from hadoop docker tag with semver prefix stripped. Updated by updatecli. |
-| hbase.stackgraph.version | string | `"7.13.22"` | The StackGraph server version, must be compatible with the StackState version |
+| hbase.stackgraph.version | string | `"7.13.23"` | The StackGraph server version, must be compatible with the StackState version |
 | hbase.tephra.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for Tephra pods. |
 | hbase.tephra.extraEnv.open | object | `{}` | Extra open environment variables to inject into Tephra pods. |
 | hbase.tephra.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into Tephra pods via a Secret object. |
