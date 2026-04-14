@@ -2378,7 +2378,6 @@ anomaly-detection:
     imagePullPolicy: IfNotPresent
     # anomaly-detection.image.tag -- the chart image tag, e.g. 4.1.3-latest
     tag: "5.2.0-snapshot.192"
-
     # anomaly-detection.image.pullSecretName -- Name of ImagePullSecret to use for all pods.
     pullSecretName:
     # anomaly-detection.image.pullSecretUsername -- Username used to login to the registry to pull Docker images of all pods.
