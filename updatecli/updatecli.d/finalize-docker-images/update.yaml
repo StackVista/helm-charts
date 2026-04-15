@@ -48,13 +48,13 @@ targets:
         # Ensure we have an up-to-date view of master
         git fetch origin master >/dev/null 2>&1 || true
 
-        # If the agent values file did not change compared to master, skip
-        if git diff --quiet origin/master...HEAD -- "$VALUES_FILE"; then
-          echo "Agent values file unchanged vs master; skipping chart bump"
+        # If neither the agent values file nor Chart.yaml changed compared to master, skip
+        if git diff --quiet origin/master...HEAD -- "$VALUES_FILE" "$CHART_YAML"; then
+          echo "Agent values and Chart.yaml unchanged vs master; skipping chart bump"
           exit 0
         fi
 
-        echo "Agent values file changed vs master; bumping suse-observability-agent chart version"
+        echo "Agent chart files changed vs master; bumping suse-observability-agent chart version"
 
         # Helm repos required for bump_chart_version.py to regenerate Chart.lock
         helm repo add stackstate https://helm.stackstate.io >/dev/null 2>&1 || true

@@ -33,6 +33,7 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 | zookeeper | stable/suse-observability/values.yaml | $.zookeeper.image.tag | |
 | spotlight | stable/suse-observability/values.yaml | $.anomaly-detection.image.tag | Tag format: `X.Y.Z-snapshot.N` (master snapshots only, semver with pre-release) |
 | promtail | stable/suse-observability-agent/values.yaml | $.logsAgent.image.tag | Agent chart — not a subchart of suse-observability |
+| http-header-injector (chart) | stable/suse-observability-agent/Chart.yaml | dependencies[].version | Helm chart version from helm.stackstate.io — shell target matches by name |
 
 ## Tag Format Reference
 

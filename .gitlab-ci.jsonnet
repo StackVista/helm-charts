@@ -533,6 +533,20 @@ local validate_updatecli_config = {
       },
     ],
   },
+  validate_updatecli_diff: {
+    image: variables.images.container_tools_dev,
+    stage: 'validate',
+    script: [
+      'export GITLAB_TOKEN="$gitlab_api_scope_token"',
+      'updatecli diff --config updatecli/updatecli.d/update-docker-images/ --values updatecli/values.d/values.yaml',
+    ],
+    rules: [
+      {
+        @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
+        changes: ['updatecli/**/*'],
+      },
+    ],
+  },
 };
 
 local beest_triggers = {

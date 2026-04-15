@@ -5152,6 +5152,16 @@ validate_updatecli_config:
     - test -f updatecli/values.d/values.yaml
     - 'yamllint -d "{rules: {document-start: disable, line-length: disable}}" updatecli/values.d/values.yaml'
   stage: validate
+validate_updatecli_diff:
+  image: quay.io/stackstate/container-tools:088bf46e-602-dev
+  rules:
+    - changes:
+        - updatecli/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - export GITLAB_TOKEN="$gitlab_api_scope_token"
+    - updatecli diff --config updatecli/updatecli.d/update-docker-images/ --values updatecli/values.d/values.yaml
+  stage: validate
 validate_victoria-metrics-single:
   before_script:
     - .gitlab/validate_before_script.sh

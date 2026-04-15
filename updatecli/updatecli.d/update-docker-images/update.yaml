@@ -250,6 +250,14 @@ sources:
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
+  httpHeaderInjectorChart:
+    name: "http-header-injector chart"
+    kind: helmchart
+    spec:
+      url: https://helm.stackstate.io
+      name: http-header-injector
+      versionfilter:
+        kind: semver
 
 # Single pipeline: all targets chained with dependson so they run sequentially.
 # All suse-observability subchart image tags are in stable/suse-observability/values.yaml
@@ -504,3 +512,12 @@ targets:
     spec:
       file: "stable/suse-observability-agent/values.yaml"
       key: "$.logsAgent.image.tag"
+  httpHeaderInjectorChartVersion:
+    name: "http-header-injector chart version (suse-observability-agent)"
+    kind: yaml
+    scmid: "default"
+    sourceid: httpHeaderInjectorChart
+    dependson: ["target#promtail"]
+    spec:
+      file: "stable/suse-observability-agent/Chart.yaml"
+      key: "$.dependencies[0].version"
