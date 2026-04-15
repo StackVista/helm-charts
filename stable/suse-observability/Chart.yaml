@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: "7.0.0-snapshot.20260415100616-master-60d1f71"
+appVersion: "7.0.0-snapshot.20260415181022-master-2b9c6fe"
 version: 2.9.1-pre.83
 description: Helm chart for SUSE Observability
 keywords:
