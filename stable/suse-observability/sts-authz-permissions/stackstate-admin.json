@@ -31,6 +31,7 @@
         "update-settings",
         "get-stackpacks",
         "update-stackpacks",
+        "delete-stackpacks",
         "create-stackpack-configurations",
         "update-stackpack-configurations",
         "delete-stackpack-configurations",

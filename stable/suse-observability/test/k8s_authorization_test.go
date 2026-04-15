@@ -154,7 +154,7 @@ var expectedRoles = map[string]v1.Role{
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},
 				Resources: []string{"stackpacks"},
-				Verbs:     []string{"create", "get"},
+				Verbs:     []string{"create", "get", "delete"},
 			},
 			{
 				APIGroups: []string{"instance.observability.cattle.io"},

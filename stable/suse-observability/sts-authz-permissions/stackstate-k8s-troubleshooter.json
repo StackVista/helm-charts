@@ -34,6 +34,7 @@
         "execute-monitors",
         "get-stackpacks",
         "update-stackpacks",
+        "delete-stackpacks",
         "get-topology",
         "execute-ai"
     ]

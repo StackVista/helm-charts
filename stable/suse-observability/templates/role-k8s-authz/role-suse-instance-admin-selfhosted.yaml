@@ -33,6 +33,7 @@ rules:
   verbs:
     - create
     - get
+    - delete
 - apiGroups:
     - instance.observability.cattle.io
   resources:
