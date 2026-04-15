@@ -70,14 +70,12 @@ func TestFeaturesStoreTransactionLogsToPVCEnabled(t *testing.T) {
 	}
 }
 
-func TestFeaturesStoreTransactionLogsToPVCExperimentalOverFeatures(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+func TestFeaturesStoreTransactionLogsToPVCExperimentalRejected(t *testing.T) {
+	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
 		},
 		SetValues: map[string]string{
-			"stackstate.k8sAuthorization.enabled":                       "true",
-			"stackstate.features.storeTransactionLogsToPVC.enabled":     "true",
 			"stackstate.experimental.storeTransactionLogsToPVC.enabled": "false",
 		},
 		KubectlOptions: &k8s.KubectlOptions{
@@ -85,12 +83,8 @@ func TestFeaturesStoreTransactionLogsToPVCExperimentalOverFeatures(t *testing.T)
 		},
 	})
 
-	resources := helmtestutil.NewKubernetesResources(t, output)
-	for _, component := range components {
-		deploymentDoesntHaveTransactionLogPVC(t, &resources, component)
-		pvcName := component + "-txlog"
-		assert.NotContains(t, resources.PersistentVolumeClaims, pvcName, "PVC '%s' should not exist when experimental override disables storeTransactionLogsToPVC", pvcName)
-	}
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "stackstate.experimental is removed")
 }
 
 func TestFeaturesStoreTransactionLogsToPVCCustomSettings(t *testing.T) {

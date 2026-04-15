@@ -784,9 +784,6 @@ Return ttlSecondsAfterFinished. We make this a very high value for argo so failu
 
 {{/*
 Return a value for a feature flag with support for nested keys.
-It gives precedence to the deprecated `experimental` section for backward compatibility.
-If the value is not found in the `experimental` section, it will be looked up in the `features` section.
-Eventually, the `experimental` section will be removed and this helper will be replaced by a direct access to the `features` section.
 
 This helper supports both simple keys (e.g., "traces") and nested keys (e.g., "server.split", "storeTransactionLogsToPVC.enabled").
 
@@ -796,21 +793,13 @@ Usage:
 {{ include "suse-observability.features.get" (dict "key" "storeTransactionLogsToPVC.enabled" "context" $) }}
 */}}
 {{- define "suse-observability.features.get" -}}
-{{/* Initialize the return value as empty */}}
 {{- $value := "" -}}
-
-{{/* found to mark if the key is found in either of hierarchies */}}
 {{- $found := false -}}
 
-{{/* Split the key by dots to handle nested properties (e.g., "server.split" becomes ["server", "split"]) */}}
 {{- $keyParts := split "." .key -}}
-
-{{/* Get references to both the experimental and features sections */}}
-{{- $experimental := .context.Values.stackstate.experimental -}}
 {{- $features := .context.Values.stackstate.features -}}
 
 {{/* STEP 0: If sizing profile is set, check profile-based defaults FIRST for specific keys */}}
-{{/* This ensures profile-based values take precedence over defaults in values.yaml */}}
 {{- if and .context.Values.global .context.Values.global.suseObservability .context.Values.global.suseObservability.sizing .context.Values.global.suseObservability.sizing.profile -}}
   {{- if eq .key "server.split" -}}
     {{- $value = include "common.sizing.stackstate.server.split" .context | trim -}}
@@ -825,60 +814,25 @@ Usage:
   {{- end -}}
 {{- end -}}
 
-{{/* STEP 1: Check experimental section first for backward compatibility */}}
-{{- if $experimental -}}
-  {{/* Start traversing from the experimental object */}}
-  {{- $current := $experimental -}}
-  {{/* Assume we'll find the value unless proven otherwise */}}
-  {{- $found = true -}}
-
-  {{/* Navigate through each part of the key path (e.g., for "server.split": "server" then "split") */}}
-  {{- range $keyParts -}}
-    {{/* Check if current object exists and has the current key part */}}
-    {{- if and $current (hasKey $current .) -}}
-      {{/* Move deeper into the object hierarchy */}}
-      {{- $current = get $current . -}}
-    {{- else -}}
-      {{/* Key path doesn't exist, mark as not found and stop searching */}}
-      {{- $found = false -}}
-      {{- break -}}
-    {{- end -}}
-  {{- end -}}
-
-  {{/* If we successfully navigated the entire key path, use the found value */}}
-  {{- if $found -}}
-    {{- $value = $current -}}
-  {{- end -}}
-{{- end -}}
-
-{{/* STEP 2: If not found in experimental section, check features section */}}
+{{/* STEP 1: Check features section */}}
 {{- if and (not $found) $features -}}
-  {{/* Start traversing from the features object */}}
   {{- $current := $features -}}
-  {{/* Assume we'll find the value unless proven otherwise */}}
   {{- $found = true -}}
 
-  {{/* Navigate through each part of the key path (same logic as experimental section) */}}
   {{- range $keyParts -}}
-    {{/* Check if current object exists and has the current key part */}}
     {{- if and $current (hasKey $current .) -}}
-      {{/* Move deeper into the object hierarchy */}}
       {{- $current = get $current . -}}
     {{- else -}}
-      {{/* Key path doesn't exist, mark as not found and stop searching */}}
       {{- $found = false -}}
       {{- break -}}
     {{- end -}}
   {{- end -}}
 
-  {{/* If we successfully navigated the entire key path, use the found value */}}
   {{- if $found -}}
     {{- $value = $current -}}
   {{- end -}}
 {{- end -}}
 
-{{/* Return the final value (will be empty string if not found in any section) */}}
-{{/* Note: Step 0 above handles global mode profile-based defaults */}}
 {{- $value -}}
 {{- end -}}
 

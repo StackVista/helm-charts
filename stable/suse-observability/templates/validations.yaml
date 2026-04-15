@@ -15,6 +15,10 @@
   {{- fail "Please set stackstate.deployment.edition to either Prime or Community." -}}
 {{- end }}
 
+{{- if .Values.stackstate.experimental -}}
+  {{- fail "stackstate.experimental is removed. Use stackstate.features instead." -}}
+{{- end }}
+
 {{- if .Values.backup.enabled -}}
   {{- fail "Please use `global.backup.enabled=true` instead of `backup.enabled=true`" -}}
 {{- end }}

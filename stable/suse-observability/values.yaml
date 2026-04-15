@@ -1768,8 +1768,6 @@ stackstate:
     baseUrl:
   # stackstate.allowedOrigins -- Third-party web domains allowed to make cross-origin requests
   allowedOrigins: []
-  # stackstate.experimental -- (object) Enable experimental features in StackState. Deprecated, use `stackstate.features` instead.
-  experimental: {}
   features:
     # stackstate.features.role-k8s-authz -- (boolean) Deploy the Role(s) to populate permissions on Suse Observability
     role-k8s-authz: true

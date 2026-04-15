@@ -402,13 +402,12 @@ func TestK8sAuthzFeatureFlagDisabled(t *testing.T) {
 	assert.NotContains(t, resources.RoleBindings, "suse-observability-instance-recommended-access", "Default config should not include recommended-access role binding")
 }
 
-func TestK8sAuthzExperimentalOverFeaturesDisabled(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+func TestK8sAuthzExperimentalRejectedDisabled(t *testing.T) {
+	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
 		},
 		SetValues: map[string]string{
-			"stackstate.features.role-k8s-authz":     "true",
 			"stackstate.experimental.role-k8s-authz": "false",
 		},
 		KubectlOptions: &k8s.KubectlOptions{
@@ -416,29 +415,16 @@ func TestK8sAuthzExperimentalOverFeaturesDisabled(t *testing.T) {
 		},
 	})
 
-	resources := helmtestutil.NewKubernetesResources(t, output)
-
-	require.Equal(t, 6, len(resources.Roles), "Experimental override (false) should disable k8s-authz feature, generating only 6 roles")
-	assert.NotContains(t, resources.Roles, "suse-observability-instance-observer", "Experimental override should disable observer role")
-	assert.NotContains(t, resources.Roles, "suse-observability-instance-troubleshooter", "Experimental override should disable troubleshooter role")
-	assert.NotContains(t, resources.Roles, "suse-observability-instance-admin", "Experimental override should disable admin role")
-	assert.NotContains(t, resources.Roles, "suse-observability-instance-recommended-access", "Experimental override should disable recommended-access role")
-
-	require.Equal(t, 6, len(resources.RoleBindings), "Experimental override (false) should disable k8s-authz feature, generating only 6 role bindings")
-	assert.NotContains(t, resources.RoleBindings, "suse-observability-instance-observer", "Experimental override should disable observer role binding")
-	assert.NotContains(t, resources.RoleBindings, "suse-observability-instance-troubleshooter", "Experimental override should disable troubleshooter role binding")
-	assert.NotContains(t, resources.RoleBindings, "suse-observability-instance-admin", "Experimental override should disable admin role binding")
-	assert.NotContains(t, resources.RoleBindings, "suse-observability-instance-recommended-access", "Experimental override should disable recommended-access role binding")
-
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "stackstate.experimental is removed")
 }
 
-func TestK8sAuthzExperimentalOverFeaturesEnabled(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+func TestK8sAuthzExperimentalRejectedEnabled(t *testing.T) {
+	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
 		},
 		SetValues: map[string]string{
-			"stackstate.features.role-k8s-authz":     "false",
 			"stackstate.experimental.role-k8s-authz": "true",
 		},
 		KubectlOptions: &k8s.KubectlOptions{
@@ -446,20 +432,8 @@ func TestK8sAuthzExperimentalOverFeaturesEnabled(t *testing.T) {
 		},
 	})
 
-	resources := helmtestutil.NewKubernetesResources(t, output)
-
-	require.Equal(t, 10, len(resources.Roles), "Experimental override (true) should enable k8s-authz feature, generating 10 roles")
-	assert.Contains(t, resources.Roles, "suse-observability-instance-observer", "Experimental override should enable observer role")
-	assert.Contains(t, resources.Roles, "suse-observability-instance-troubleshooter", "Experimental override should enable troubleshooter role")
-	assert.Contains(t, resources.Roles, "suse-observability-instance-admin", "Experimental override should enable admin role")
-	assert.Contains(t, resources.Roles, "suse-observability-instance-recommended-access", "Experimental override should enable recommended-access role")
-
-	require.Equal(t, 10, len(resources.RoleBindings), "Experimental override (true) should enable k8s-authz feature, generating 10 role bindings")
-	assert.Contains(t, resources.RoleBindings, "suse-observability-instance-observer", "Experimental override should enable observer role binding")
-	assert.Contains(t, resources.RoleBindings, "suse-observability-instance-troubleshooter", "Experimental override should enable troubleshooter role binding")
-	assert.Contains(t, resources.RoleBindings, "suse-observability-instance-admin", "Experimental override should enable admin role binding")
-	assert.Contains(t, resources.RoleBindings, "suse-observability-instance-recommended-access", "Experimental override should enable recommended-access role binding")
-
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "stackstate.experimental is removed")
 }
 
 func TestK8sAuthzFeatureFlagEnabledSelfHosted(t *testing.T) {

@@ -271,13 +271,12 @@ func TestFeaturesTracesDisabled(t *testing.T) {
 	assert.NotContains(t, configMap.Data["application_stackstate.conf"], expectedClickhouseConfig, "API configmap should not contain traces ClickHouse configuration when traces disabled")
 }
 
-func TestFeaturesTracesExperimentalOverFeatures(t *testing.T) {
-	output := helmtestutil.RenderHelmTemplateOptsNoError(t, "suse-observability", &helm.Options{
+func TestFeaturesExperimentalRejected(t *testing.T) {
+	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
 		ValuesFiles: []string{
 			"values/full.yaml",
 		},
 		SetValues: map[string]string{
-			"stackstate.features.traces":     "true",
 			"stackstate.experimental.traces": "false",
 		},
 		KubectlOptions: &k8s.KubectlOptions{
@@ -285,17 +284,8 @@ func TestFeaturesTracesExperimentalOverFeatures(t *testing.T) {
 		},
 	})
 
-	resources := helmtestutil.NewKubernetesResources(t, output)
-
-	deployment, ok := resources.Deployments["suse-observability-api"]
-	require.True(t, ok, "API deployment should exist")
-
-	notExpected := corev1.EnvVar{Name: "CONFIG_FORCE_stackstate_webUIConfig_featureFlags_traces", Value: "true"}
-	assert.NotContains(t, deployment.Spec.Template.Spec.Containers[0].Env, notExpected, "API deployment should not have traces feature flag when experimental override disables it")
-
-	configMap, ok := resources.ConfigMaps["suse-observability-api"]
-	require.True(t, ok, "API configmap should exist")
-	assert.NotContains(t, configMap.Data["application_stackstate.conf"], expectedClickhouseConfig, "API configmap should not contain traces ClickHouse configuration when experimental override disables traces")
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "stackstate.experimental is removed")
 }
 
 func TestFeaturesServerSplitDefault(t *testing.T) {
@@ -342,20 +332,21 @@ func TestFeaturesServerSplitDisabled(t *testing.T) {
 	assertBackupCronjobSplit(t, resources, false)
 }
 
-func TestFeaturesServerSplitExperimentalOverFeatures(t *testing.T) {
-	setValues := map[string]string{
-		"stackstate.features.server.split":                         "false",
-		"stackstate.experimental.server.split":                     "true",
-		"stackstate.k8sAuthorization.enabled":                      "true",
-		"stackstate.components.all.metrics.servicemonitor.enabled": "true",
-	}
-	resources := renderHelmTemplateForServerSplitTest(t, setValues)
+func TestFeaturesServerSplitExperimentalRejected(t *testing.T) {
+	_, err := helmtestutil.RenderHelmTemplateOpts(t, "suse-observability", &helm.Options{
+		ValuesFiles: []string{
+			"values/full.yaml",
+		},
+		SetValues: map[string]string{
+			"stackstate.experimental.server.split": "true",
+		},
+		KubectlOptions: &k8s.KubectlOptions{
+			Namespace: "suse-observability",
+		},
+	})
 
-	assertMonolithResourcesExist(t, resources, false)
-	assertSplitComponentResourcesExist(t, resources, true)
-	assertRoleBindings(t, resources, true)
-	assertReceiverDeploymentSplit(t, resources, true)
-	assertBackupCronjobSplit(t, resources, true)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "stackstate.experimental is removed")
 }
 
 func renderHelmTemplateForServerSplitTest(t *testing.T, setValues map[string]string) *helmtestutil.KubernetesResources {
