@@ -31,7 +31,6 @@ backup:
         enabled: true
   stackGraph:
     s3Prefix: "stackgraph/"
-    splitArchiveSize: 5GB
     restore:
       tmpData:
         storageClass: "test-class"

@@ -17,7 +17,6 @@ stackpacks:
 stackgraph:
   bucket: "sts-stackgraph-backup"
   s3Prefix: "stackgraph/"
-  multipartArchive: true
   restore:
     loggingConfigConfigMap: suse-observability-backup-log
 

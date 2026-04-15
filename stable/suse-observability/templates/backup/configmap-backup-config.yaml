@@ -90,7 +90,6 @@ config: |-
   stackgraph:
     bucket: {{ .Values.backup.stackGraph.bucketName | quote }}
     s3Prefix: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.stackGraph.s3Prefix | quote }}
-    multipartArchive: {{ ne (toString .Values.backup.stackGraph.splitArchiveSize) "0" }}
     restore:
       loggingConfigConfigMap: {{ template "common.fullname.short" . }}-backup-log
 
