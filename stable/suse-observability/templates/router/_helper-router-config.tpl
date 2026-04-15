@@ -281,6 +281,6 @@ data:
               address:
                 socket_address:
                   address: "{{ template "stackstate.mcp.fullname" . }}"
-                  port_value: {{ .Values.stackstate.components.mcp.service.port }}
+                  port_value: {{ include "stackstate.mcp.port" . }}
     {{- end }}
 {{- end -}}

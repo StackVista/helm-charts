@@ -53,7 +53,7 @@ env:
     "RECEIVER_BASE_URL" (printf "%s/%s" $baseUrl "receiver")
     "METRICSTORE_URI" (include "stackstate.metrics.query.url" .)
     "CONFIG_FORCE_stackstate_sync_parallelWorkers" (max (include "stackstate.cpu_resource.to.cpu_core" $evaluatedResources.requests.cpu) 1 | toString)
-    "CONFIG_FORCE_stackstate_cacheStorage_backend" .Values.stackstate.components.sync.cache.backend
+    "CONFIG_FORCE_stackstate_cacheStorage_backend" (include "stackstate.cache.backend" .)
     "ELASTICSEARCH_URI" (printf "http://%s" (include "stackstate.es.endpoint" .))
     "KAFKA_BROKERS" (include "stackstate.kafka.endpoint" .)
     "PROMETHEUS_WRITE_ENDPOINT" (printf "http://%s:8429/api/v1/write" (include "stackstate.vmagent.endpoint" .))
@@ -61,10 +61,6 @@ env:
     "ZOOKEEPER_QUORUM" (include "stackgraph.zookeeper.endpoint" .)
     "CONFIG_FORCE_stackgraph_vertex_cache_expireAfterSeconds" "600"
 }}
-{{- if eq (lower .Values.stackstate.components.sync.cache.backend) "rocksdb" }}
-{{- $config := dict "Mem" $serviceConfig.ServiceConfig.resources.limits.memory "BaseMem" $serviceConfig.ServiceConfig.sizing.baseMemoryConsumption "JavaHeapFraction" $serviceConfig.ServiceConfig.sizing.javaHeapMemoryFraction }}
-{{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_rocksdb_cacheSizeBytes" (include "stackstate.server.cache.memory.limit" $config | int | toString) }}
-{{- end }}
 {{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.sync.envsFromExistingSecrets }}

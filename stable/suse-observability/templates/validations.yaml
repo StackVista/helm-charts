@@ -19,6 +19,83 @@
   {{- fail "stackstate.experimental is removed. Use stackstate.features instead." -}}
 {{- end }}
 
+{{- /* Validate removed internal constants (MR 2 — STAC-24384) */ -}}
+{{- if .Values.stackstate.components.mcp.listenAddress -}}
+  {{- fail "stackstate.components.mcp.listenAddress is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if (index .Values.stackstate.components.mcp "service" | default dict).port -}}
+  {{- fail "stackstate.components.mcp.service.port is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if (index .Values.stackstate.components.aiAssistant "service" | default dict).port -}}
+  {{- fail "stackstate.components.aiAssistant.service.port is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.stackstate.components.all.clickHouse.port -}}
+  {{- fail "stackstate.components.all.clickHouse.port is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.stackstate.components.all.clickHouse.database -}}
+  {{- fail "stackstate.components.all.clickHouse.database is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.stackstate.components.all.clickHouse.username -}}
+  {{- fail "stackstate.components.all.clickHouse.username is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.stackstate.components.all.clickHouse.protocol -}}
+  {{- fail "stackstate.components.all.clickHouse.protocol is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.stackstate.components.all.clickHouse.password -}}
+  {{- fail "stackstate.components.all.clickHouse.password is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.stackstate.components.all.clickHouse.parameters -}}
+  {{- fail "stackstate.components.all.clickHouse.parameters is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if (index .Values.stackstate.components.all "metricStore" | default dict).remoteWritePath -}}
+  {{- fail "stackstate.components.all.metricStore.remoteWritePath is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if (index .Values.stackstate.components.healthSync "cache" | default dict).backend -}}
+  {{- fail "stackstate.components.healthSync.cache.backend is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if (index .Values.stackstate.components.sync "cache" | default dict).backend -}}
+  {{- fail "stackstate.components.sync.cache.backend is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.stackstate.components.vmagent.fullNameOverride -}}
+  {{- fail "stackstate.components.vmagent.fullNameOverride is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.stackstate.components.vmagent.agentMetricsFilter -}}
+  {{- fail "stackstate.components.vmagent.agentMetricsFilter is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.backup.elasticsearch.snapshotRepositoryName -}}
+  {{- fail "backup.elasticsearch.snapshotRepositoryName is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.backup.elasticsearch.restore -}}
+  {{- fail "backup.elasticsearch.restore is removed (scaleDownLabels is now an internal constant). Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.backup.elasticsearch.scheduled.indices -}}
+  {{- fail "backup.elasticsearch.scheduled.indices is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.backup.elasticsearch.scheduled.snapshotPolicyName -}}
+  {{- fail "backup.elasticsearch.scheduled.snapshotPolicyName is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.backup.elasticsearch.scheduled.snapshotNameTemplate -}}
+  {{- fail "backup.elasticsearch.scheduled.snapshotNameTemplate is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.backup.stackGraph.scheduled.backupNameTemplate -}}
+  {{- fail "backup.stackGraph.scheduled.backupNameTemplate is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.backup.stackGraph.scheduled.backupNameParseRegexp -}}
+  {{- fail "backup.stackGraph.scheduled.backupNameParseRegexp is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.backup.stackGraph.scheduled.backupDatetimeParseFormat -}}
+  {{- fail "backup.stackGraph.scheduled.backupDatetimeParseFormat is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.backup.configuration.scheduled.backupNameTemplate -}}
+  {{- fail "backup.configuration.scheduled.backupNameTemplate is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.backup.configuration.scheduled.backupNameParseRegexp -}}
+  {{- fail "backup.configuration.scheduled.backupNameParseRegexp is removed. Please delete it from your values file." -}}
+{{- end }}
+{{- if .Values.backup.configuration.scheduled.backupDatetimeParseFormat -}}
+  {{- fail "backup.configuration.scheduled.backupDatetimeParseFormat is removed. Please delete it from your values file." -}}
+{{- end }}
+
 {{- if .Values.backup.enabled -}}
   {{- fail "Please use `global.backup.enabled=true` instead of `backup.enabled=true`" -}}
 {{- end }}

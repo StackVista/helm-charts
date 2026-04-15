@@ -1,6 +1,6 @@
 {{- define "stackstate.ai-assistant.statefulset.container.main" -}}
 {{- $serviceConfig := dict "ServiceName" "ai-assistant" "ServiceConfig" .Values.stackstate.components.aiAssistant }}
-{{- $mcpUrl := printf "http://%s:%d" (include "stackstate.mcp.fullname" .) (.Values.stackstate.components.mcp.service.port | int) -}}
+{{- $mcpUrl := printf "http://%s:%s" (include "stackstate.mcp.fullname" .) (include "stackstate.mcp.port" .) -}}
 {{- $aiAssistantImageTag := .Values.stackstate.components.aiAssistant.image.tag -}}
 {{- $provider := default "bedrock" .Values.ai.assistant.provider | lower -}}
 {{- $anthropicExternalSecretName := .Values.ai.assistant.anthropic.fromExternalSecret.name -}}
@@ -35,7 +35,7 @@ env:
       key: {{ $anthropicExternalSecretKey }}
 {{- end }}
 - name: API_PORT
-  value: {{ .Values.stackstate.components.aiAssistant.service.port | quote }}
+  value: {{ include "stackstate.aiAssistant.port" . | quote }}
 - name: API_BIND_ADDRESS
   value: "0.0.0.0"
 {{- include "stackstate.common.envvars" . }}
@@ -43,7 +43,7 @@ env:
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.aiAssistant.envsFromExistingSecrets }}
 ports:
-  - containerPort: {{ .Values.stackstate.components.aiAssistant.service.port }}
+  - containerPort: {{ include "stackstate.aiAssistant.port" . }}
     name: http
     protocol: TCP
 livenessProbe:

@@ -68,7 +68,7 @@ env:
 {{- end }}
 {{- if .Values.ai.assistant.enabled }}
   {{- $_ := set $deploymentEnv "CONFIG_FORCE_stackstate_featureSwitches_enableAi" "true" }}
-  {{- $_ := set $deploymentEnv "AI_SERVICE_URL" (printf "http://%s:%d" (include "stackstate.ai-assistant.fullname" .) (.Values.stackstate.components.aiAssistant.service.port | int)) }}
+  {{- $_ := set $deploymentEnv "AI_SERVICE_URL" (printf "http://%s:%s" (include "stackstate.ai-assistant.fullname" .) (include "stackstate.aiAssistant.port" .)) }}
 {{- end }}
 {{- include "stackstate.service.envvars" (merge (dict "DeploymentEnv" $deploymentEnv) . $serviceConfig) }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}

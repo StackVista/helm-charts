@@ -1,5 +1,0 @@
-stackstate:
-  components:
-    healthSync:
-      cache:
-        backend: "rocksdb"

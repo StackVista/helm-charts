@@ -13,14 +13,14 @@ args:
   - -url
   - {{ $stackstateUrl | quote }}
   - -http
-  - {{ .Values.stackstate.components.mcp.listenAddress | quote }}
+  - {{ include "stackstate.mcp.listenAddress" . | quote }}
 env:
 {{- include "stackstate.common.envvars" . }}
 {{- include "stackstate.mcp.envvars" . }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.all.envsFromExistingSecrets }}
 {{- include "stackstate.component.envsFromExistingSecrets" .Values.stackstate.components.mcp.envsFromExistingSecrets }}
 ports:
-  - containerPort: {{ .Values.stackstate.components.mcp.service.port }}
+  - containerPort: {{ include "stackstate.mcp.port" . }}
     name: http
     protocol: TCP
 {{- $sizingResources := include "common.sizing.stackstate.mcp.resources" . | trim -}}

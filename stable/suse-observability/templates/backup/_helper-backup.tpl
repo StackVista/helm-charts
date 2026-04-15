@@ -1,4 +1,18 @@
 {{- /*
+  Backup naming constants — internal conventions, not user-configurable.
+*/ -}}
+{{- define "stackstate.backup.elasticsearch.indices" -}}sts*{{- end -}}
+{{- define "stackstate.backup.elasticsearch.snapshotRepositoryName" -}}sts-backup{{- end -}}
+{{- define "stackstate.backup.elasticsearch.snapshotPolicyName" -}}auto-sts-backup{{- end -}}
+{{- define "stackstate.backup.elasticsearch.snapshotNameTemplate" -}}<sts-backup-{now{yyyyMMdd-HHmm}}>{{- end -}}
+{{- define "stackstate.backup.stackGraph.backupNameTemplate" -}}sts-backup-$(date +%Y%m%d-%H%M).graph{{- end -}}
+{{- define "stackstate.backup.stackGraph.backupNameParseRegexp" -}}sts-backup-([0-9]*-[0-9]*).graph{{- end -}}
+{{- define "stackstate.backup.stackGraph.backupDatetimeParseFormat" -}}%Y%m%d-%H%M{{- end -}}
+{{- define "stackstate.backup.configuration.backupNameTemplate" -}}sts-backup-$(date +%Y%m%d-%H%M).sty{{- end -}}
+{{- define "stackstate.backup.configuration.backupNameParseRegexp" -}}sts-backup-([0-9]*-[0-9]*).sty{{- end -}}
+{{- define "stackstate.backup.configuration.backupDatetimeParseFormat" -}}%Y%m%d-%H%M{{- end -}}
+
+{{- /*
   Adding a trailing slash to a value if it is not empty.
 */ -}}
 {{- define "ensureTrailingSlashIfNotEmpty" -}}
@@ -35,13 +49,13 @@ stackpacks/
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_SCHEDULED
   value: {{ .Values.backup.elasticsearch.scheduled.schedule | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_INDICES
-  value: {{ .Values.backup.elasticsearch.scheduled.indices | quote }}
+  value: {{ include "stackstate.backup.elasticsearch.indices" . | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_REPOSITORY_NAME
-  value: {{ .Values.backup.elasticsearch.snapshotRepositoryName | quote }}
+  value: {{ include "stackstate.backup.elasticsearch.snapshotRepositoryName" . | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_POLICY_NAME
-  value: {{ .Values.backup.elasticsearch.scheduled.snapshotPolicyName | quote }}
+  value: {{ include "stackstate.backup.elasticsearch.snapshotPolicyName" . | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_NAME_TEMPLATE
-  value: {{ .Values.backup.elasticsearch.scheduled.snapshotNameTemplate | quote }}
+  value: {{ include "stackstate.backup.elasticsearch.snapshotNameTemplate" . | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_RETENTION_EXPIRE_AFTER
   value: {{ .Values.backup.elasticsearch.scheduled.snapshotRetentionExpireAfter | quote }}
 - name: BACKUP_ELASTICSEARCH_SCHEDULED_SNAPSHOT_RETENTION_MIN_COUNT
@@ -53,11 +67,11 @@ stackpacks/
 - name: BACKUP_STACKGRAPH_S3_PREFIX
   value: {{ include "ensureTrailingSlashIfNotEmpty" .Values.backup.stackGraph.s3Prefix }}
 - name: BACKUP_STACKGRAPH_SCHEDULED_BACKUP_NAME_TEMPLATE
-  value: {{ .Values.backup.stackGraph.scheduled.backupNameTemplate | quote }}
+  value: {{ include "stackstate.backup.stackGraph.backupNameTemplate" . | quote }}
 - name: BACKUP_STACKGRAPH_SCHEDULED_BACKUP_NAME_PARSE_REGEXP
-  value: {{ .Values.backup.stackGraph.scheduled.backupNameParseRegexp | quote }}
+  value: {{ include "stackstate.backup.stackGraph.backupNameParseRegexp" . | quote }}
 - name: BACKUP_STACKGRAPH_SCHEDULED_BACKUP_DATETIME_PARSE_FORMAT
-  value: {{ .Values.backup.stackGraph.scheduled.backupDatetimeParseFormat | quote }}
+  value: {{ include "stackstate.backup.stackGraph.backupDatetimeParseFormat" . | quote }}
 - name: BACKUP_STACKGRAPH_SCHEDULED_BACKUP_RETENTION_TIME_DELTA
   value: {{ .Values.backup.stackGraph.scheduled.backupRetentionTimeDelta | quote }}
 - name: BACKUP_CONFIGURATION_UPLOAD_REMOTE
@@ -69,11 +83,11 @@ stackpacks/
 - name: BACKUP_CONFIGURATION_SCHEDULED_ENABLED
   value: {{ .Values.backup.configuration.scheduled.enabled | quote }}
 - name: BACKUP_CONFIGURATION_SCHEDULED_BACKUP_NAME_TEMPLATE
-  value: {{ .Values.backup.configuration.scheduled.backupNameTemplate | quote }}
+  value: {{ include "stackstate.backup.configuration.backupNameTemplate" . | quote }}
 - name: BACKUP_CONFIGURATION_SCHEDULED_BACKUP_NAME_PARSE_REGEXP
-  value: {{ .Values.backup.configuration.scheduled.backupNameParseRegexp | quote }}
+  value: {{ include "stackstate.backup.configuration.backupNameParseRegexp" . | quote }}
 - name: BACKUP_CONFIGURATION_SCHEDULED_BACKUP_DATETIME_PARSE_FORMAT
-  value: {{ .Values.backup.configuration.scheduled.backupDatetimeParseFormat | quote }}
+  value: {{ include "stackstate.backup.configuration.backupDatetimeParseFormat" . | quote }}
 - name: BACKUP_CONFIGURATION_SCHEDULED_BACKUP_RETENTION_TIME_DELTA
   value: {{ .Values.backup.configuration.scheduled.backupRetentionTimeDelta | quote }}
 - name: BACKUP_CONFIGURATION_MAX_LOCAL_FILES
@@ -138,21 +152,14 @@ stackpacks/
 {{- end -}}
 
 {{- define "stackstate.backup.elasticsearch.restore.scaleDownLabels" -}}
-{{- range $key, $value := .Values.backup.elasticsearch.restore.scaleDownLabels }}
-{{ $key }}: {{ $value | quote }}
-{{- end }}
+observability.suse.com/scalable-during-es-restore: "true"
 {{- end -}}
 
 {{- /*
-  Convert backup.elasticsearch.restore.scaleDownLabels map to comma-separated list of key=value pairs.
-  Example output: "observability.suse.com/scalable-during-es-restore=true,key=value"
+  Convert backup.elasticsearch.restore.scaleDownLabels to comma-separated list of key=value pairs.
 */ -}}
 {{- define "stackstate.backup.elasticsearch.restore.scaleDownLabelsCommaSeparated" -}}
-{{- $labels := list -}}
-{{- range $key, $value := .Values.backup.elasticsearch.restore.scaleDownLabels }}
-  {{- $labels = append $labels (printf "%s=%s" $key $value) -}}
-{{- end }}
-{{- $labels | join "," -}}
+observability.suse.com/scalable-during-es-restore=true
 {{- end -}}
 
 {{- /*

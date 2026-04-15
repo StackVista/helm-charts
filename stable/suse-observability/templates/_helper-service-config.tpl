@@ -221,7 +221,7 @@ data:
 
 {{- define "stackstate.service.configmap.clickhouseconfig" -}}
 {{- if include "suse-observability.features.enabled" (dict "key" "traces" "context" .) }}
-stackstate.traces.clickHouse = {{- .Values.stackstate.components.all.clickHouse | toPrettyJson }}
+stackstate.traces.clickHouse = {{- include "stackstate.clickhouse.config" . }}
 {{- end }}
 {{- end -}}
 

@@ -91,7 +91,7 @@ spec:
   template:
     metadata:
       annotations:
-        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "8429" "container_name" "vmagent" "filter" .Values.stackstate.components.vmagent.agentMetricsFilter) | indent 8 }}
+        {{- include "common.metrics.annotations" (dict "metrics" .Values.stackstate.components.all.metrics "port" "8429" "container_name" "vmagent" "filter" (include "stackstate.vmagent.agentMetricsFilter" .)) | indent 8 }}
         {{- include "stackstate.vmagent.configmap.checksum" . | nindent 8 }}
       labels:
         app.kubernetes.io/component: vmagent

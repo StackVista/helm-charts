@@ -19,6 +19,35 @@ Parameters:
 {{- end -}}
 
 {{/*
+Internal constants — values that are fixed by the application and not user-configurable.
+*/}}
+{{- define "stackstate.mcp.port" -}}8080{{- end -}}
+{{- define "stackstate.mcp.listenAddress" -}}:{{ include "stackstate.mcp.port" . }}{{- end -}}
+{{- define "stackstate.aiAssistant.port" -}}8081{{- end -}}
+{{- define "stackstate.cache.backend" -}}mapdb{{- end -}}
+{{- define "stackstate.metricStore.remoteWritePath" -}}/api/v1/write{{- end -}}
+{{- define "stackstate.metrics.defaultAgentMetricsFilter" -}}["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "akka_http_requests_active", "stackstate*", "receiver*", "stackgraph*", "caffeine*"]{{- end -}}
+{{- define "stackstate.vmagent.agentMetricsFilter" -}}["vm*", "go*"]{{- end -}}
+{{- define "stackstate.vmagent.fullname" -}}suse-observability-vmagent{{- end -}}
+
+{{/*
+Build the full ClickHouse connection config dict, merging constants with user-configurable values.
+Returns a JSON string suitable for HOCON config rendering.
+*/}}
+{{- define "stackstate.clickhouse.config" -}}
+{{- $config := dict
+    "hostnames" .Values.stackstate.components.all.clickHouse.hostnames
+    "port" 8123
+    "database" "otel"
+    "username" "stackstate"
+    "password" ""
+    "protocol" "http"
+    "parameters" (dict "health_check_interval" "5000")
+-}}
+{{- $config | toPrettyJson -}}
+{{- end -}}
+
+{{/*
 Return the image registry
 */}}
 {{- define "stackstate.image.registry" -}}

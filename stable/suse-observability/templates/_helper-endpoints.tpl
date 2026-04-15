@@ -2,7 +2,7 @@
 Logic to determine remote write endpoint for single node deployment of Victoria Metrics.
 */}}
 {{- define "stackstate.metrics.victoriametrics.singleNode.remotewrite.url" -}}
-http://{{- include "stackstate.metrics.victoriametrics.singleNode.remoteWriteEndpoint" . -}}{{.Values.stackstate.components.all.metricStore.remoteWritePath}}
+http://{{- include "stackstate.metrics.victoriametrics.singleNode.remoteWriteEndpoint" . -}}{{ include "stackstate.metricStore.remoteWritePath" . }}
 {{- end -}}
 
 {{/*
@@ -125,11 +125,7 @@ Comma-separated list of the endpoints that need to be up and running before the 
 Logic to determine Kafka endpoint.
 */}}
 {{- define "stackstate.vmagent.endpoint" -}}
-{{- if .Values.stackstate.components.vmagent.fullNameOverride -}}
-{{- .Values.stackstate.components.vmagent.fullNameOverride -}}
-{{- else -}}
-http://{{ template "common.fullname.short" . }}-vmagent
-{{- end -}}
+{{- include "stackstate.vmagent.fullname" . -}}
 {{- end -}}
 
 {{/*

@@ -143,23 +143,11 @@ backup:
   elasticsearch:
     # backup.elasticsearch.bucketName -- Name of the storage bucket where ElasticSearch snapshots are stored.
     bucketName: 'sts-elasticsearch-backup'
-    # backup.elasticsearch.snapshotRepositoryName -- Name of the ElasticSearch snapshot repository.
     # backup.elasticsearch.s3Prefix -- Prefix (dir name) used to store backup files.
     s3Prefix: ""
-    snapshotRepositoryName: "sts-backup"
-    restore:
-      # backup.elasticsearch.restore.scaleDownLabels -- Labels used to identify deployments that should be scaled down during Elasticsearch restore procedure.
-      scaleDownLabels:
-        observability.suse.com/scalable-during-es-restore: "true"
     scheduled:
       # backup.elasticsearch.scheduled.schedule -- Cron schedule for automatic ElasticSearch snaphosts in [ElasticSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html).
       schedule: "0 0 3 * * ?"
-      # backup.elasticsearch.scheduled.indices -- ElasticSearch indices to snapshot in [JSON array format](https://www.w3schools.com/js/js_json_arrays.asp).
-      indices: "sts*"
-      # backup.elasticsearch.scheduled.snapshotPolicyName -- Name of the ElasticSearch snapshot policy.
-      snapshotPolicyName: "auto-sts-backup"
-      # backup.elasticsearch.scheduled.snapshotNameTemplate -- Template for the ElasticSearch snapshot name in [ElasticSearch date math format](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/date-math-index-names.html).
-      snapshotNameTemplate: "<sts-backup-{now{yyyyMMdd-HHmm}}>"
       # backup.elasticsearch.scheduled.snapshotRetentionExpireAfter -- Amount of time to keep ElasticSearch snapshots in [ElasticSearch time units](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/common-options.html#time-units). *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule).
       snapshotRetentionExpireAfter: "30d"
       # backup.elasticsearch.scheduled.snapshotRetentionMinCount -- Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule).
@@ -196,12 +184,6 @@ backup:
     scheduled:
       # backup.stackGraph.scheduled.schedule -- Cron schedule for automatic StackGraph backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax).
       schedule: "0 3 * * *"
-      # backup.stackGraph.scheduled.backupNameTemplate -- Template for the StackGraph backup name as a double-quoted shell string value.
-      backupNameTemplate: "sts-backup-$(date +%Y%m%d-%H%M).graph"
-      # backup.stackGraph.scheduled.backupNameParseRegexp -- Regular expression to retrieve date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`.
-      backupNameParseRegexp: "sts-backup-([0-9]*-[0-9]*).graph"
-      # backup.stackGraph.scheduled.backupDatetimeParseFormat -- Format to parse date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`.
-      backupDatetimeParseFormat: "%Y%m%d-%H%M"
       # backup.stackGraph.scheduled.backupRetentionTimeDelta -- Time to keep StackGraph backups in. The value is passed to GNU date tool  to determine a specific date, and files older than this date will be deleted.
       backupRetentionTimeDelta: "30 days ago"
       tempData:
@@ -235,12 +217,6 @@ backup:
     scheduled:
       # backup.configuration.scheduled.schedule -- Cron schedule for automatic configuration backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax).
       schedule: "0 4 * * *"
-      # backup.configuration.scheduled.backupNameTemplate -- Template for the configuration backup name as a double-quoted shell string value.
-      backupNameTemplate: "sts-backup-$(date +%Y%m%d-%H%M).sty"
-      # backup.configuration.scheduled.backupNameParseRegexp -- Regular expression to retrieve date/time from configuration backup name. *Note:* This should match the value for `backupNameTemplate`.
-      backupNameParseRegexp: "sts-backup-([0-9]*-[0-9]*).sty"
-      # backup.configuration.scheduled.backupDatetimeParseFormat -- Format to parse date/time from configuration backup name. *Note:* This should match the value for `backupNameTemplate`.
-      backupDatetimeParseFormat: "%Y%m%d-%H%M"
       # backup.configuration.scheduled.backupRetentionTimeDelta -- Time to keep configuration backups. The value is passed to GNU date tool to determine a specific date, and files older than this date will be deleted.
       backupRetentionTimeDelta: "365 days ago"
       pvc:
@@ -415,22 +391,6 @@ stackstate:
       clickHouse:
         ## stackstate.components.all.clickhouse.hostnames - The hostnames for Clickhouse, can be multiple comma-seperated hostnames
         hostnames: suse-observability-clickhouse-headless
-        ## stackstate.components.all.clickhouse.port -- The default port on Clickhouse is 8123
-        port: 8123
-        ## stackstate.components.all.clickhouse.database -- Which database to use
-        database: otel
-        ## stackstate.components.all.clickhouse.username -- The Clickhouse username
-        username: stackstate
-        ## stackstate.components.all.clickhouse.password-- The Clickhouse password
-        password: ""
-        ## stackstate.components.all.clickhouse.protocol -- Either http or https
-        protocol: http
-        ## stackstate.components.all.clickhouse.parameters -- Extra client configuration options, see https://github.com/ClickHouse/clickhouse-java/blob/main/clickhouse-client/src/main/java/com/clickhouse/client/config/ClickHouseClientOption.java
-        parameters:
-          health_check_interval: "5000"
-      metricStore:
-        # stackstate.components.all.metricStore.remoteWritePath -- Remote write path used to ingest metrics, /api/v1/write is most common
-        remoteWritePath: "/api/v1/write"
       # stackstate.components.all.kafkaEndpoint -- **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker.
       kafkaEndpoint: ""
       # stackstate.components.all.zookeeperEndpoint -- **Required if `zookeeper.enabled` is `false`** Endpoint for shared Zookeeper nodes.
@@ -797,9 +757,6 @@ stackstate:
       config: ""
       # stackstate.components.healthSync.additionalLogging -- Additional logback config
       additionalLogging: ""
-      cache:
-        # stackstate.components.healthSync.cache.backend -- Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory
-        backend: "mapdb"
       # stackstate.components.healthSync.tmpToPVC -- Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage.
       tmpToPVC:
         # stackstate.components.healthSync.tmpToPVC.volumeSize -- (string) The size of the PersistentVolume for "/tmp" directory.
@@ -873,11 +830,6 @@ stackstate:
         tag: "20260326141755-fe7a6469"
       # stackstate.components.mcp.replicaCount -- Number of `mcp` replicas.
       replicaCount: 1
-      # stackstate.components.mcp.listenAddress -- Listen address passed to `-http`.
-      listenAddress: ":8080"
-      # stackstate.components.mcp.service.port -- Service port for the MCP server.
-      service:
-        port: 8080
       # stackstate.components.mcp.podAnnotations -- Extra annotations
       podAnnotations: {}
       # stackstate.components.mcp.poddisruptionbudget -- PodDisruptionBudget settings for `mcp` pods.
@@ -915,9 +867,6 @@ stackstate:
         repository: stackstate/suse-observability-borg
         # stackstate.components.aiAssistant.image.tag -- Tag used for the `ai-assistant` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
         tag: "20260318165448-8cc501ea"
-      # stackstate.components.aiAssistant.service.port -- Service port for the AI Assistant server.
-      service:
-        port: 8081
       serviceAccount:
         # stackstate.components.aiAssistant.serviceAccount.annotations -- Annotations for the ai-assistant `ServiceAccount`. Useful for e.g. AWS IAM Role binding via IRSA: `eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/my-ai-assistant-role`.
         annotations: {}
@@ -1378,9 +1327,6 @@ stackstate:
       config: ""
       # stackstate.components.sync.additionalLogging -- Additional logback config
       additionalLogging: ""
-      cache:
-        # stackstate.components.sync.cache.backend -- Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory
-        backend: "mapdb"
       # stackstate.components.sync.tmpToPVC -- Whether to use PersistentVolume to store temporary files (/tmp) instead of pod ephemeral storage, empty - use pod ephemeral storage.
       tmpToPVC:
         # stackstate.components.sync.tmpToPVC.volumeSize -- (string) The size of the PersistentVolume for "/tmp" directory.
@@ -1596,8 +1542,6 @@ stackstate:
           memory: "2000Mi"
           ephemeral-storage: "1Mi"
     vmagent:
-      # stackstate.components.vmagent.fullNameOverride -- Name for the service
-      fullNameOverride: suse-observability-vmagent
       image:
         repository: stackstate/vmagent
         tag: v1.136.0-068f508b-release-149
@@ -1627,7 +1571,6 @@ stackstate:
                       values:
                         - stackstate
                 topologyKey: kubernetes.io/hostname
-      agentMetricsFilter: '["vm*", "go*"]'
     workloadObserver:
       # stackstate.components.workloadObserver.enabled -- Enable/disable the workload observer
       enabled: true

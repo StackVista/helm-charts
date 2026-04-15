@@ -389,9 +389,6 @@ If you encounter issues not covered here:
 | backup.configuration.bucketName | string | `"sts-configuration-backup"` | Name of the storage bucket to store configuration backups. |
 | backup.configuration.maxLocalFiles | int | `10` | The maximum number of configuration backup files stored on the PVC for the configuration backup (which is only of limited size, see backup.configuration.scheduled.pvc.size. |
 | backup.configuration.s3Prefix | string | `""` | Prefix (dir name) used to store backup files. |
-| backup.configuration.scheduled.backupDatetimeParseFormat | string | `"%Y%m%d-%H%M"` | Format to parse date/time from configuration backup name. *Note:* This should match the value for `backupNameTemplate`. |
-| backup.configuration.scheduled.backupNameParseRegexp | string | `"sts-backup-([0-9]*-[0-9]*).sty"` | Regular expression to retrieve date/time from configuration backup name. *Note:* This should match the value for `backupNameTemplate`. |
-| backup.configuration.scheduled.backupNameTemplate | string | `"sts-backup-$(date +%Y%m%d-%H%M).sty"` | Template for the configuration backup name as a double-quoted shell string value. |
 | backup.configuration.scheduled.backupRetentionTimeDelta | string | `"365 days ago"` | Time to keep configuration backups. The value is passed to GNU date tool to determine a specific date, and files older than this date will be deleted. |
 | backup.configuration.scheduled.pvc.accessModes | list | `["ReadWriteOnce"]` | Access mode for settings backup data. |
 | backup.configuration.scheduled.pvc.size | string | `"1Gi"` | Size of volume for settings backup |
@@ -404,12 +401,8 @@ If you encounter issues not covered here:
 | backup.configuration.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
 | backup.configuration.yaml.maxSizeLimit | string | `"100Mi"` | Max size of the settings backup or installed via a stackpack |
 | backup.elasticsearch.bucketName | string | `"sts-elasticsearch-backup"` | Name of the storage bucket where ElasticSearch snapshots are stored. |
-| backup.elasticsearch.restore.scaleDownLabels | object | `{"observability.suse.com/scalable-during-es-restore":"true"}` | Labels used to identify deployments that should be scaled down during Elasticsearch restore procedure. |
-| backup.elasticsearch.s3Prefix | string | `""` |  |
-| backup.elasticsearch.scheduled.indices | string | `"sts*"` | ElasticSearch indices to snapshot in [JSON array format](https://www.w3schools.com/js/js_json_arrays.asp). |
+| backup.elasticsearch.s3Prefix | string | `""` | Prefix (dir name) used to store backup files. |
 | backup.elasticsearch.scheduled.schedule | string | `"0 0 3 * * ?"` | Cron schedule for automatic ElasticSearch snaphosts in [ElasticSearch cron schedule syntax](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/cron-expressions.html). |
-| backup.elasticsearch.scheduled.snapshotNameTemplate | string | `"<sts-backup-{now{yyyyMMdd-HHmm}}>"` | Template for the ElasticSearch snapshot name in [ElasticSearch date math format](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/date-math-index-names.html). |
-| backup.elasticsearch.scheduled.snapshotPolicyName | string | `"auto-sts-backup"` | Name of the ElasticSearch snapshot policy. |
 | backup.elasticsearch.scheduled.snapshotRetentionExpireAfter | string | `"30d"` | Amount of time to keep ElasticSearch snapshots in [ElasticSearch time units](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/common-options.html#time-units). *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
 | backup.elasticsearch.scheduled.snapshotRetentionMaxCount | string | `"30"` | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
 | backup.elasticsearch.scheduled.snapshotRetentionMinCount | string | `"5"` | Minimum number of ElasticSearch snapshots to keep. *Note:* By default, the retention task itself [runs daily at 1:30 AM UTC](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/slm-settings.html#slm-retention-schedule). |
@@ -418,7 +411,6 @@ If you encounter issues not covered here:
 | backup.elasticsearch.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
 | backup.elasticsearch.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
 | backup.elasticsearch.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
-| backup.elasticsearch.snapshotRepositoryName | string | `"sts-backup"` | Name of the ElasticSearch snapshot repository. backup.elasticsearch.s3Prefix -- Prefix (dir name) used to store backup files. |
 | backup.enabled | bool | `false` | Enables backup/restore for all data |
 | backup.initJobAnnotations | object | `{}` | Annotations for Backup-init Job. |
 | backup.poddisruptionbudget.maxUnavailable | int | `0` | Maximum number of pods that can be unavailable during the backup. |
@@ -427,9 +419,6 @@ If you encounter issues not covered here:
 | backup.stackGraph.restore.tempData.size | string | `nil` |  |
 | backup.stackGraph.restore.tempData.storageClass | string | `nil` |  |
 | backup.stackGraph.s3Prefix | string | `""` | Prefix (dir name) used to store backup files. |
-| backup.stackGraph.scheduled.backupDatetimeParseFormat | string | `"%Y%m%d-%H%M"` | Format to parse date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`. |
-| backup.stackGraph.scheduled.backupNameParseRegexp | string | `"sts-backup-([0-9]*-[0-9]*).graph"` | Regular expression to retrieve date/time from StackGraph backup name. *Note:* This should match the value for `backupNameTemplate`. |
-| backup.stackGraph.scheduled.backupNameTemplate | string | `"sts-backup-$(date +%Y%m%d-%H%M).graph"` | Template for the StackGraph backup name as a double-quoted shell string value. |
 | backup.stackGraph.scheduled.backupRetentionTimeDelta | string | `"30 days ago"` | Time to keep StackGraph backups in. The value is passed to GNU date tool  to determine a specific date, and files older than this date will be deleted. |
 | backup.stackGraph.scheduled.schedule | string | `"0 3 * * *"` | Cron schedule for automatic StackGraph backups in [Kubernetes cron schedule syntax](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#cron-schedule-syntax). |
 | backup.stackGraph.scheduled.tempData.accessModes[0] | string | `"ReadWriteOnce"` |  |
@@ -801,17 +790,10 @@ If you encounter issues not covered here:
 | stackstate.components.aiAssistant.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.aiAssistant.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `ai-assistant` pods. |
 | stackstate.components.aiAssistant.resources | object | `{}` | Resource allocation for `ai-assistant` pods. |
-| stackstate.components.aiAssistant.service.port | int | `8081` | Service port for the AI Assistant server. |
 | stackstate.components.aiAssistant.serviceAccount.annotations | object | `{}` | Annotations for the ai-assistant `ServiceAccount`. Useful for e.g. AWS IAM Role binding via IRSA: `eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/my-ai-assistant-role`. |
 | stackstate.components.aiAssistant.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.all.affinity | object | `{}` | Affinity settings for pod assignment on all components. |
-| stackstate.components.all.clickHouse.database | string | `"otel"` |  |
 | stackstate.components.all.clickHouse.hostnames | string | `"suse-observability-clickhouse-headless"` |  |
-| stackstate.components.all.clickHouse.parameters.health_check_interval | string | `"5000"` |  |
-| stackstate.components.all.clickHouse.password | string | `""` |  |
-| stackstate.components.all.clickHouse.port | int | `8123` |  |
-| stackstate.components.all.clickHouse.protocol | string | `"http"` |  |
-| stackstate.components.all.clickHouse.username | string | `"stackstate"` |  |
 | stackstate.components.all.deploymentStrategy.type | string | `"RecreateSingletonsOnly"` | Deployment strategy for StackState components. Possible values: `RollingUpdate`, `Recreate` and `RecreateSingletonsOnly`. `RecreateSingletonsOnly` uses `Recreate` for the singleton Deployments and `RollingUpdate` for the other Deployments. |
 | stackstate.components.all.elasticsearchEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Elasticsearch cluster. |
 | stackstate.components.all.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
@@ -822,7 +804,6 @@ If you encounter issues not covered here:
 | stackstate.components.all.image.repositorySuffix | string | `""` |  |
 | stackstate.components.all.image.tag | string | `"7.0.0-snapshot.20260415181022-master-2b9c6fe"` | The default tag used for all stateless components of StackState; individual service `tag`s can be overridden (see below). |
 | stackstate.components.all.kafkaEndpoint | string | `""` | **Required if `elasticsearch.enabled` is `false`** Endpoint for shared Kafka broker. |
-| stackstate.components.all.metricStore.remoteWritePath | string | `"/api/v1/write"` | Remote write path used to ingest metrics, /api/v1/write is most common |
 | stackstate.components.all.metrics.agentAnnotationsEnabled | bool | `true` | Put annotations on each pod to instruct the stackstate agent to scrape the metrics |
 | stackstate.components.all.metrics.defaultAgentMetricsFilter | string | `"[\"kafka_consumer_consumer_fetch_manager_metrics*\", \"kafka_producer_producer_topic_metrics*\", \"jvm*\", \"akka_http_requests_active\", \"stackstate*\", \"receiver*\", \"stackgraph*\", \"caffeine*\"]"` |  |
 | stackstate.components.all.metrics.enabled | bool | `true` | Enable metrics port. |
@@ -1012,7 +993,6 @@ If you encounter issues not covered here:
 | stackstate.components.e2es.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.healthSync.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.healthSync.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.healthSync.cache.backend | string | `"mapdb"` | Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory |
 | stackstate.components.healthSync.config | string | `""` | Configuration file contents to customize the default StackState healthSync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.healthSync.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
 | stackstate.components.healthSync.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -1073,13 +1053,11 @@ If you encounter issues not covered here:
 | stackstate.components.mcp.image.pullPolicy | string | `""` | `pullPolicy` used for the `mcp` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.mcp.image.repository | string | `"stackstate/suse-observability-mcp"` | Repository of the mcp component Docker image. |
 | stackstate.components.mcp.image.tag | string | `"20260326141755-fe7a6469"` | Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis. |
-| stackstate.components.mcp.listenAddress | string | `":8080"` | Listen address passed to `-http`. |
 | stackstate.components.mcp.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.mcp.podAnnotations | object | `{}` | Extra annotations |
 | stackstate.components.mcp.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `mcp` pods. |
 | stackstate.components.mcp.replicaCount | int | `1` | Number of `mcp` replicas. |
 | stackstate.components.mcp.resources | object | `{}` | Resource allocation for `mcp` pods. |
-| stackstate.components.mcp.service.port | int | `8080` | Service port for the MCP server. |
 | stackstate.components.mcp.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.nginxPrometheusExporter.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for nginx-prometheus-exporter containers. |
 | stackstate.components.nginxPrometheusExporter.image.registry | string | `"quay.io"` | Base container image registry for nginx-prometheus-exporter containers. |
@@ -1245,7 +1223,6 @@ If you encounter issues not covered here:
 | stackstate.components.state.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.sync.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.sync.affinity | object | `{}` | Affinity settings for pod assignment. |
-| stackstate.components.sync.cache.backend | string | `"mapdb"` | Type of cache backend used by the service, possible values are mapdb, rocksdb and inmemory |
 | stackstate.components.sync.config | string | `""` | Configuration file contents to customize the default StackState sync configuration, environment variables have higher precedence and can be used as overrides. StackState configuration is in the [HOCON](https://github.com/lightbend/config/blob/master/HOCON.md) format, see [StackState documentation](https://docs.stackstate.com/setup/installation/kubernetes/) for examples. |
 | stackstate.components.sync.envsFromExistingSecrets | list | `[]` | Configure environment variables from existing secrets. envsFromExistingSecret - name: MY_SECRET_ENV_VAR   secretName: my-k8s-secret   secretKey: my-secret-key - name: ANOTHER_ENV_VAR   secretName: another-k8s-secret   secretKey: another-secret-key |
 | stackstate.components.sync.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -1286,9 +1263,7 @@ If you encounter issues not covered here:
 | stackstate.components.ui.securityContext.runAsUser | int | `101` | The UID (user ID) of the owning user of the process |
 | stackstate.components.ui.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | stackstate.components.vmagent.affinity | object | `{"podAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app.kubernetes.io/component","operator":"In","values":["receiver"]},{"key":"app.kubernetes.io/instance","operator":"In","values":["stackstate"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":80}]}}` | Affinity settings for vmagent pod. |
-| stackstate.components.vmagent.agentMetricsFilter | string | `"[\"vm*\", \"go*\"]"` |  |
 | stackstate.components.vmagent.extraArgs | object | `{}` |  |
-| stackstate.components.vmagent.fullNameOverride | string | `"suse-observability-vmagent"` | Name for the service |
 | stackstate.components.vmagent.image.repository | string | `"stackstate/vmagent"` |  |
 | stackstate.components.vmagent.image.tag | string | `"v1.109.0-4a074fa6-release-146"` |  |
 | stackstate.components.vmagent.persistence.size | string | `"10Gi"` |  |
