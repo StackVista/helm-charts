@@ -517,6 +517,23 @@ local update_docker_images = {
   update_stackpacks_version_to_latest: job('UPDATE_STACKPACKS_DOCKER_VERSION', ['.gitlab/suse-observability/update_stackpacks_version_to_latest.sh']),
 };
 
+local validate_updatecli_config = {
+  validate_updatecli_config: {
+    image: variables.images.container_tools_dev,
+    stage: 'validate',
+    script: [
+      'updatecli manifest show -c updatecli/updatecli.d/update-docker-images/ -v updatecli/values.d/values.yaml',
+      'updatecli manifest show -c updatecli/updatecli.d/finalize-docker-images/ -v updatecli/values.d/values.yaml',
+    ],
+    rules: [
+      {
+        @'if': '$CI_PIPELINE_SOURCE == "merge_request_event"',
+        changes: ['updatecli/**/*'],
+      },
+    ],
+  },
+};
+
 local beest_triggers = {
   beest_agent_trigger: {
     image: variables.images.stackstate_devops,
@@ -586,6 +603,7 @@ local beest_triggers = {
 }
 + build_chart_jobs
 + validate_chart_jobs
++ validate_updatecli_config
 + check_chart_version_jobs
 + check_sizing_chart_jobs
 + test_chart_jobs

@@ -5141,6 +5141,16 @@ validate_trafficmirror:
     - if [ -f stable/trafficmirror/ci/default-values.yaml ]; then helm lint stable/trafficmirror --values stable/trafficmirror/ci/default-values.yaml; fi
     - .gitlab/validate_kubeconform.sh
   stage: validate
+validate_updatecli_config:
+  image: quay.io/stackstate/container-tools:088bf46e-602-dev
+  rules:
+    - changes:
+        - updatecli/**/*
+      if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - updatecli manifest show -c updatecli/updatecli.d/update-docker-images/ -v updatecli/values.d/values.yaml
+    - updatecli manifest show -c updatecli/updatecli.d/finalize-docker-images/ -v updatecli/values.d/values.yaml
+  stage: validate
 validate_victoria-metrics-single:
   before_script:
     - .gitlab/validate_before_script.sh
