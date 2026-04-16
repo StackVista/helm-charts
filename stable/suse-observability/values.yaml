@@ -1600,7 +1600,7 @@ stackstate:
       fullNameOverride: suse-observability-vmagent
       image:
         repository: stackstate/vmagent
-        tag: v1.109.0-4a074fa6-release-146
+        tag: v1.136.0-068f508b-release-149
       # stackstate.components.vmagent.poddisruptionbudget -- PodDisruptionBudget settings for `vmagent` pods.
       poddisruptionbudget:
         maxUnavailable: 1
