@@ -29,6 +29,12 @@ Internal constants — values that are fixed by the application and not user-con
 {{- define "stackstate.metrics.defaultAgentMetricsFilter" -}}["kafka_consumer_consumer_fetch_manager_metrics*", "kafka_producer_producer_topic_metrics*", "jvm*", "akka_http_requests_active", "stackstate*", "receiver*", "stackgraph*", "caffeine*"]{{- end -}}
 {{- define "stackstate.vmagent.agentMetricsFilter" -}}["vm*", "go*"]{{- end -}}
 {{- define "stackstate.vmagent.fullname" -}}suse-observability-vmagent{{- end -}}
+{{- define "stackstate.kafka.fullname" -}}suse-observability-kafka{{- end -}}
+{{- define "stackstate.zookeeper.fullname" -}}suse-observability-zookeeper{{- end -}}
+{{- define "stackstate.elasticsearch.fullname" -}}suse-observability-elasticsearch{{- end -}}
+{{- define "stackstate.clickhouse.fullname" -}}suse-observability-clickhouse{{- end -}}
+{{- define "stackstate.kafka.topicRetention" -}}86400000{{- end -}}
+{{- define "stackstate.kafka.topic.stsMetricsV2.partitionCount" -}}10{{- end -}}
 
 {{/*
 Build the full ClickHouse connection config dict, merging constants with user-configurable values.

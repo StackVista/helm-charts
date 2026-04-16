@@ -28,13 +28,14 @@ kubeVersion: ""
 nameOverride: ""
 ## @param fullnameOverride String to fully override common.names.fullname
 ##
-fullnameOverride: ""
+fullnameOverride: "suse-observability-kafka"
 ## @param clusterDomain Default Kubernetes cluster domain
 ##
 clusterDomain: cluster.local
 ## @param commonLabels Labels to add to all deployed objects
 ##
-commonLabels: {}
+commonLabels:
+  app.kubernetes.io/part-of: suse-observability
 ## @param commonAnnotations Annotations to add to all deployed objects
 ##
 commonAnnotations: {}
@@ -156,7 +157,7 @@ logRetentionBytes: _1073741824
 logRetentionCheckIntervalMs: 300000
 ## @param logRetentionHours The minimum age of a log file to be eligible for deletion due to age
 ##
-logRetentionHours: 168
+logRetentionHours: 24
 ## @param logSegmentBytes The maximum size of a log segment file. When this size is reached a new log segment will be created
 ##
 logSegmentBytes: _1073741824
@@ -168,13 +169,13 @@ logsDirs: /data/kafka/data
 maxMessageBytes: _1000012
 ## @param defaultReplicationFactor Default replication factors for automatically created topics
 ##
-defaultReplicationFactor: 1
+defaultReplicationFactor: 2
 ## @param offsetsTopicReplicationFactor The replication factor for the offsets topic
 ##
-offsetsTopicReplicationFactor: 1
+offsetsTopicReplicationFactor: 2
 ## @param transactionStateLogReplicationFactor The replication factor for the transaction topic
 ##
-transactionStateLogReplicationFactor: 1
+transactionStateLogReplicationFactor: 2
 ## @param transactionStateLogMinIsr Overridden min.insync.replicas config for the transaction topic
 ##
 transactionStateLogMinIsr: 1
@@ -412,7 +413,15 @@ args: []
 ##   - name: KAFKA_BACKGROUND_THREADS
 ##     value: "10"
 ##
-extraEnvVars: []
+extraEnvVars:
+  - name: KAFKA_RESERVED_BROKER_MAX_ID
+    value: "2000"
+  # How long will a producer linger when no data is flowing? We make this quite a high number to make
+  # sure that in POC like settings, where there is not always much activity, transactional producer do not get kicked out.
+  # See STAC-15583
+  # Using MaxInt value, giving 25 days of retention on txIds
+  - name: KAFKA_TRANSACTIONAL_ID_EXPIRATION_MS
+    value: "2147483647"
 ## @param extraEnvVarsCM ConfigMap with extra environment variables
 ##
 extraEnvVarsCM: ""
@@ -467,7 +476,7 @@ livenessProbe:
 ##
 readinessProbe:
   enabled: true
-  initialDelaySeconds: 5
+  initialDelaySeconds: 45
   failureThreshold: 6
   timeoutSeconds: 5
   periodSeconds: 10
@@ -530,6 +539,11 @@ containerSecurityContext:
   runAsUser: 1001
   runAsNonRoot: true
   allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  seccompProfile:
+    type: RuntimeDefault
 ## @param hostAliases Kafka pods host aliases
 ## https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
 ##
@@ -543,11 +557,17 @@ hostIPC: false
 ## @param podLabels Extra labels for Kafka pods
 ## Ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 ##
-podLabels: {}
+podLabels:
+  app.kubernetes.io/part-of: suse-observability
 ## @param podAnnotations Extra annotations for Kafka pods
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 ##
-podAnnotations: {}
+podAnnotations:
+  ad.stackstate.com/jmx-exporter.check_names: '["openmetrics"]'
+  ad.stackstate.com/jmx-exporter.init_configs: "[{}]"
+  ad.stackstate.com/jmx-exporter.instances: '[ { "prometheus_url": "http://%%host%%:5556/metrics", "namespace": "stackstate", "metrics": ["*"], "type_overrides": {"kafka_server_replicamanager_total_underreplicatedpartitions_value":"gauge", "kafka_controller_kafkacontroller_offlinepartitionscount_value":"gauge", "kafka_controller_kafkacontroller_activecontrollercount_value": "gauge"}}]'
+  # When changing this version, be sure to also change the image, such that the image version and this version are in sync
+  stackstate.com/kafkaup-operator.kafka_version: "3.9.1"
 ## @param podAffinityPreset Pod affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
 ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
 ##
@@ -649,7 +669,26 @@ sidecars: []
 ##       - name: portname
 ##         containerPort: 1234
 ##
-initContainers: []
+initContainers:
+  - name: check-inter-broker-protocol-version
+    image: '{{ include "kafka.image" . }}'
+    imagePullPolicy: ""
+    command:
+      - /bin/bash
+    args:
+      - -c
+      - 'trap ''exit 1'' INT TERM; while [ -z "${KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION}" ]; do echo "KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION should be set by operator"; sleep 1; done'
+    resources:
+      limits: {}
+      requests: {}
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
 ## Kafka Pod Disruption Budget
 ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
 ## @param pdb.create Deploy a pdb object for the Kafka pod
@@ -657,7 +696,7 @@ initContainers: []
 ## @param pdb.maxUnavailable Maximum number/percentage of unavailable Kafka replicas
 ##
 pdb:
-  create: false
+  create: true
   minAvailable: ""
   maxUnavailable: 1
 
@@ -717,13 +756,17 @@ service:
   externalTrafficPolicy: Cluster
   ## @param service.annotations Additional custom annotations for Kafka service
   ##
-  annotations: {}
+  annotations:
+    # Change http metric threshold, because kafka jmx metrics can become quite slow. Not something we fix now, it does not do harm: https://github.com/prometheus/jmx_exporter/issues/955
+    monitor.kubernetes-v2.stackstate.io/http-response-time: '{ "deviatingThreshold": 10.0, "criticalThreshold": 10.0 }'
   ## Headless service properties
   ##
   headless:
     ## @param service.headless.annotations Annotations for the headless service.
     ##
-    annotations: {}
+    annotations:
+      # Change http metric threshold, because kafka jmx metrics can become quite slow. Not something we fix now, it does not do harm: https://github.com/prometheus/jmx_exporter/issues/955
+      monitor.kubernetes-v2.stackstate.io/http-response-time: '{ "deviatingThreshold": 10.0, "criticalThreshold": 10.0 }'
     ## @param service.headless.labels Labels for the headless service.
     ##
     labels: {}
@@ -1298,7 +1341,7 @@ metrics:
   jmx:
     ## @param metrics.jmx.enabled Whether or not to expose JMX metrics to Prometheus
     ##
-    enabled: false
+    enabled: true
     ## Bitnami JMX exporter image
     ## ref: https://hub.docker.com/r/bitnami/jmx-exporter/tags/
     ## @param metrics.jmx.image.registry JMX exporter image registry
@@ -1340,7 +1383,13 @@ metrics:
     containerSecurityContext:
       enabled: true
       runAsUser: 1001
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
       runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
     ## @param metrics.jmx.containerPorts.metrics Prometheus JMX exporter metrics container port
     ##
     containerPorts:
@@ -1375,6 +1424,8 @@ metrics:
         prometheus.io/scrape: "true"
         prometheus.io/port: "{{ .Values.metrics.jmx.service.ports.metrics }}"
         prometheus.io/path: "/"
+        # Change http metric threshold, because kafka jmx metrics can become quite slow. Not something we fix now, it does not do harm: https://github.com/prometheus/jmx_exporter/issues/955
+        monitor.kubernetes-v2.stackstate.io/http-response-time: '{ "deviatingThreshold": 10.0, "criticalThreshold": 10.0 }'
     ## @param metrics.jmx.whitelistObjectNames Allows setting which JMX objects you want to expose to via JMX stats to JMX exporter
     ## Only whitelisted values will be exposed via JMX exporter. They must also be exposed via Rules. To expose all metrics
     ## (warning its crazy excessive and they aren't formatted in a prometheus style) (1) `whitelistObjectNames: []`
@@ -1697,4 +1748,4 @@ provisioning:
 externalZookeeper:
   ## @param externalZookeeper.servers List of external zookeeper servers to use. Typically used in combination with 'zookeeperChrootPath'.
   ##
-  servers: []
+  servers: suse-observability-zookeeper-headless

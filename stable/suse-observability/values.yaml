@@ -1766,29 +1766,8 @@ stackstate:
 elasticsearch:
   # elasticsearch.imageTag -- Elasticsearch image tag. Updated by updatecli.
   imageTag: 8.19.4-c4527168-release-212
-  # elasticsearch.sysctlInitContainer -- Enable privileged init container to increase Elasticsearch virtual memory on underlying nodes.
-  sysctlInitContainer:
-    enabled: true
-  # elasticsearch.clusterHealthCheckParams -- The Elasticsearch cluster health status params that will be used by readinessProbe command
-  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
-  # elasticsearch.clusterName -- Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
-  clusterName: suse-observability-elasticsearch
-  # elasticsearch.enabled -- Enable / disable chart-based Elasticsearch.
-  enabled: true
   # elasticsearch.esJavaOpts -- JVM options
   esJavaOpts: null
-  # elasticsearch.commonLabels -- Add additional labels to all resources created for elasticsearch
-  commonLabels:
-    app.kubernetes.io/part-of: suse-observability
-  # elasticsearch.extraEnvs -- Extra settings that StackState uses for Elasticsearch.
-  extraEnvs:
-    - name: action.auto_create_index
-      value: "true"
-    - name: indices.query.bool.max_clause_count
-      value: "10000"
-  # elasticsearch.minimumMasterNodes -- Minimum number of Elasticsearch master nodes.
-  minimumMasterNodes: 2
-  nodeGroup: "master"
   # elasticsearch.replicas -- Number of Elasticsearch replicas.
   replicas: null
   # elasticsearch.resources -- Override Elasticsearch resources
@@ -1801,23 +1780,10 @@ elasticsearch:
       requests:
         storage: null
   prometheus-elasticsearch-exporter:
-    enabled: true
     # elasticsearch.prometheus-elasticsearch-exporter.image.tag -- Elasticsearch Prometheus exporter image tag. Updated by updatecli.
     image:
       tag: v1.10.0-6159e1ba-release-173
-    # elasticsearch.prometheus-elasticsearch-exporter.podSecurityContext -- Set to "" for OpenShift compatibility
-    # podSecurityContext: ""
-    serviceMonitor:
-      enabled: false
-      # elasticsearch.prometheus-elasticsearch-exporter.serviceMonitor.labels -- Labels for the service monitor
-      labels: {}
-    podAnnotations:
-      ad.stackstate.com/exporter.check_names: '["openmetrics"]'
-      ad.stackstate.com/exporter.init_configs: "[{}]"
-      ad.stackstate.com/exporter.instances: '[ { "prometheus_url": "http://%%host%%:9108/metrics", "namespace": "stackstate", "metrics": ["elasticsearch_indices_store_*", "elasticsearch_cluster_health_*"] } ]'
     resources: {}
-    es:
-      uri: http://suse-observability-elasticsearch-master:9200
 hbase:
   # hbase.enabled -- Enable / disable chart-based HBase.
   enabled: true
@@ -1933,54 +1899,6 @@ kafkaup-operator:
   # versioning operator, this should not be changed
   startVersion: "2.3.1"
 kafka:
-  externalZookeeper:
-    # kafka.externalZookeeper.servers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
-    servers: suse-observability-zookeeper-headless
-  # kafka.enabled -- Enable / disable chart-based Kafka.
-  enabled: true
-  podLabels:
-    app.kubernetes.io/part-of: suse-observability
-  volumePermissions:
-    enabled: false
-  ## kafka.defaultReplicationFactor -- Default replication factors for automatically created topics
-  defaultReplicationFactor: 2
-  ## kafka.offsetTopicReplicationFactor --  The replication factor for the offsets topic
-  offsetsTopicReplicationFactor: 2
-  ## kafka.transactionStateLogReplicationFactor -- The replication factor for the transaction topic
-  transactionStateLogReplicationFactor: 2
-  # kafka.extraEnvVars -- Extra environment variables to add to kafka pods.
-  extraEnvVars:
-    - name: KAFKA_RESERVED_BROKER_MAX_ID
-      value: "2000"
-    # How long will a producer linger when no data is flowing? We make this quite a high number to make
-    # sure that in POC like settings, where there is not always much activity, transactional producer do not get kicked out.
-    # See STAC-15583
-    # Using MaxInt value, giving 25 days of retention on txIds
-    - name: KAFKA_TRANSACTIONAL_ID_EXPIRATION_MS
-      value: "2147483647"
-  # kafka.initContainers -- required to make the kafka versionup operator work
-  initContainers:
-    - name: check-inter-broker-protocol-version
-      image: '{{ include "kafka.image" . }}'
-      imagePullPolicy: ""
-      command:
-        - /bin/bash
-      args:
-        - -c
-        - 'trap ''exit 1'' INT TERM; while [ -z "${KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION}" ]; do echo "KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION should be set by operator"; sleep 1; done'
-      resources:
-        limits: {}
-        requests: {}
-      securityContext:
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop:
-            - ALL
-        runAsNonRoot: true
-        seccompProfile:
-          type: RuntimeDefault
-  # kafka.fullnameOverride -- Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
-  fullnameOverride: suse-observability-kafka
   image:
     # kafka.image.registry -- Kafka image registry
     registry: quay.io
@@ -1990,27 +1908,8 @@ kafka:
     # When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order
     # for the kafkaup operator to upgrade the inter broker protocol version
     tag: 3.9.1-9.2-release
-  # kafka.logRetentionHours -- The minimum age of a log file to be eligible for deletion due to age.
-  logRetentionHours: 24
-  service:
-    annotations:
-      # Change http metric threshold, because kafka jmx metrics can become quite slow. Not something we fix now, it does not do harm: https://github.com/prometheus/jmx_exporter/issues/955
-      monitor.kubernetes-v2.stackstate.io/http-response-time: '{ "deviatingThreshold": 10.0, "criticalThreshold": 10.0 }'
-    headless:
-      annotations:
-        # Change http metric threshold, because kafka jmx metrics can become quite slow. Not something we fix now, it does not do harm: https://github.com/prometheus/jmx_exporter/issues/955
-        monitor.kubernetes-v2.stackstate.io/http-response-time: '{ "deviatingThreshold": 10.0, "criticalThreshold": 10.0 }'
   metrics:
-    kafka:
-      # kafka.metrics.kafka.enabled -- Whether or not to create a standalone Kafka exporter to expose Kafka metrics.
-      enabled: false
     jmx:
-      # kafka.metrics.jmx.enabled -- Whether or not to expose JMX metrics to Prometheus.
-      enabled: true
-      service:
-        annotations:
-          # Change http metric threshold, because kafka jmx metrics can become quite slow. Not something we fix now, it does not do harm: https://github.com/prometheus/jmx_exporter/issues/955
-          monitor.kubernetes-v2.stackstate.io/http-response-time: '{ "deviatingThreshold": 10.0, "criticalThreshold": 10.0 }'
       image:
         # kafka.metrics.jmx.image.registry -- Kafka JMX exporter image registry
         registry: quay.io
@@ -2027,70 +1926,13 @@ kafka:
           cpu: "200m"
           memory: "300Mi"
           ephemeral-storage: "1Mi"
-      heapSizeMB: 256
-      containerSecurityContext:
-        enabled: true
-        runAsUser: 1001
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop:
-            - ALL
-        runAsNonRoot: true
-        seccompProfile:
-          type: RuntimeDefault
-    serviceMonitor:
-      # kafka.metrics.serviceMonitor.enabled -- If `true`, creates a Prometheus Operator `ServiceMonitor` (also requires `kafka.metrics.kafka.enabled` or `kafka.metrics.jmx.enabled` to be `true`).
-      enabled: false
-      # kafka.metrics.serviceMonitor.interval -- How frequently to scrape metrics.
-      interval: 20s
-      # kafka.metrics.serviceMonitor.labels -- Add extra labels to target a specific prometheus instance
-      labels: {}
-  readinessProbe:
-    # kafka.readinessProbe.initialDelaySeconds -- Delay before readiness probe is initiated.
-    initialDelaySeconds: 45
   # kafka.replicaCount -- Number of Kafka replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
   replicaCount: null
-  # kafka.topicRetention -- Max time in milliseconds to retain data in each topic.
-  topicRetention: "86400000"
   persistence:
     # kafka.persistence.size -- Size of persistent volume for each Kafka pod
     size: null
-  # kafka.commonLabels -- Add additional labels to all resources created for kafka
-  commonLabels:
-    app.kubernetes.io/part-of: suse-observability
-  # kafka.podAnnotations -- Kafka Pod annotations.
-  podAnnotations:
-    ad.stackstate.com/jmx-exporter.check_names: '["openmetrics"]'
-    ad.stackstate.com/jmx-exporter.init_configs: "[{}]"
-    ad.stackstate.com/jmx-exporter.instances: '[ { "prometheus_url": "http://%%host%%:5556/metrics", "namespace": "stackstate", "metrics": ["*"], "type_overrides": {"kafka_server_replicamanager_total_underreplicatedpartitions_value":"gauge", "kafka_controller_kafkacontroller_offlinepartitionscount_value":"gauge", "kafka_controller_kafkacontroller_activecontrollercount_value": "gauge"}}]'
-    # When changing this version, be sure to also change the image, such that the image version and this version are in sync
-    stackstate.com/kafkaup-operator.kafka_version: "3.9.1"
   # kafka.resources -- Kafka resources per pods.
   resources: {}
-  # kafka.zookeeper.enabled -- Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**.
-  zookeeper:
-    enabled: false
-  topic:
-    stsMetricsV2:
-      partitionCount: 10
-  pdb:
-    ## kafka.pdb.create Deploy a pdb object for the Kafka pod
-    create: true
-    ## kafka.pdb.minAvailable Maximum number/percentage of unavailable Kafka replicas
-    minAvailable: ""
-    ## kafka.pdb.maxUnavailable Maximum number/percentage of unavailable Kafka replicas
-    maxUnavailable: 1
-  # kafka.containterSecurityContext - Kafka containers' Security Context
-  containerSecurityContext:
-    enabled: true
-    runAsUser: 1001
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop:
-        - ALL
-    runAsNonRoot: true
-    seccompProfile:
-      type: RuntimeDefault
 # minio -- DEPRECATED: MinIO subchart has been replaced by S3Proxy. These values are kept for backward compatibility only.
 # Please migrate to backup.storage.* values. Legacy minio.* values will be removed in a future release.
 minio:
@@ -2202,53 +2044,6 @@ s3proxy:
       # s3proxy.metrics.servicemonitor.enabled -- Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled.
       enabled: false
 zookeeper:
-  # zookeeper.enabled -- Enable / disable chart-based Zookeeper.
-  enabled: true
-  # zookeeper.externalServers -- If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead.
-  externalServers: ""
-  # zookeeper.heapSize -- HeapSize Size (in MB) for the Java Heap options (Xmx and Xms)
-  heapSize: 400
-  # zookeeper.fourlwCommandsWhitelist -- Zookeeper four-letter-word (FLW) commands that are enabled.
-  fourlwCommandsWhitelist: "mntr, ruok, stat, srvr"
-  jvmFlags: "-Djute.maxbuffer=2097150"
-  # zookeeper.autopurge -- configurations of ZooKeeper auto purge, it deletes old snapshot and log files. ClickHouse creates a lot of operation and it should be purged to avoud out of disk space.
-  autopurge:
-    snapRetainCount: 5
-    purgeInterval: 3
-  # zookeeper.fullnameOverride -- Name override for Zookeeper child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
-  fullnameOverride: suse-observability-zookeeper
-  podLabels:
-    app.kubernetes.io/part-of: suse-observability
-  commonLabels:
-    app.kubernetes.io/part-of: suse-observability
-  livenessProbe:
-    # zookeeper.livenessProbe.enabled -- it must be disabled to apply the custom probe, the probe adds "-q" option to nc to wait 1sec until close the connection, it fixes problem of failing the probed
-    enabled: false
-  customLivenessProbe:
-    exec:
-      command:
-        - /bin/bash
-        - -c
-        - echo "ruok" | timeout 2 nc -w 2 -q 1 localhost 2181 | grep imok
-    failureThreshold: 6
-    initialDelaySeconds: 30
-    periodSeconds: 10
-    successThreshold: 1
-    timeoutSeconds: 5
-  readinessProbe:
-    # zookeeper.readinessProbe.enabled -- it must be disabled to apply the custom probe, the probe adds "-q" option to nc to wait 1sec until close the connection, it fixes problem of failing the probed
-    enabled: false
-  customReadinessProbe:
-    exec:
-      command:
-        - /bin/bash
-        - -c
-        - echo "ruok" | timeout 2 nc -w 2 -q 1 localhost 2181 | grep imok
-    failureThreshold: 6
-    initialDelaySeconds: 5
-    periodSeconds: 10
-    successThreshold: 1
-    timeoutSeconds: 5
   image:
     # zookeeper.image.registry -- ZooKeeper image registry
     registry: quay.io
@@ -2256,44 +2051,12 @@ zookeeper:
     repository: stackstate/zookeeper
     # zookeeper.image.tag -- ZooKeeper image tag
     tag: 3.9.3-352e04a1-311-release
-  metrics:
-    # zookeeper.metrics.enabled -- Enable / disable Zookeeper Prometheus metrics.
-    enabled: true
-    # zookeeper.metrics.serviceMonitor --
-    serviceMonitor:
-      # zookeeper.metrics.serviceMonitor.enabled -- Enable creation of `ServiceMonitor` objects for Prometheus operator.
-      enabled: false
-      # zookeeper.metrics.serviceMonitor.selector -- Default selector to use to target a certain Prometheus instance.
-      selector: {}
   resources: {}
-  # zookeeper.podAnnotations -- Annotations for ZooKeeper pod.
-  podAnnotations:
-    ad.stackstate.com/zookeeper.check_names: '["openmetrics"]'
-    ad.stackstate.com/zookeeper.init_configs: "[{}]"
-    ad.stackstate.com/zookeeper.instances: '[ { "prometheus_url": "http://%%host%%:9141/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
   # zookeeper.replicaCount -- Default amount of Zookeeper replicas to provision. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
   replicaCount: null
   persistence:
     # zookeeper.persistence.size -- Size of the PVC for Zookeeper data. Default is 8Gi, will be overridden by sizing profile if using global.suseObservability.sizing.profile.
     size: null
-  pdb:
-    ## zookeeper.pdb.create Deploy a pdb object for the Zookeeper pod
-    create: true
-    ## zookeeper.pdb.minAvailable Maximum number/percentage of unavailable Zookeeper replicas
-    minAvailable: ""
-    ## zookeeper.pdb.maxUnavailable Maximum number/percentage of unavailable Zookeeper replicas
-    maxUnavailable: 1
-  # zookeper.containerSecurityContext - Configure Container Security Context
-  containerSecurityContext:
-    enabled: true
-    runAsUser: 1001
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop:
-        - ALL
-    runAsNonRoot: true
-    seccompProfile:
-      type: RuntimeDefault
 anomaly-detection:
   # anomaly-detection.enabled -- Enables anomaly detection chart
   enabled: false

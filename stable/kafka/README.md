@@ -1,6 +1,6 @@
 # kafka
 
-![Version: 19.1.3-suse-observability.24](https://img.shields.io/badge/Version-19.1.3--suse--observability.24-informational?style=flat-square) ![AppVersion: 3.3.1](https://img.shields.io/badge/AppVersion-3.3.1-informational?style=flat-square)
+![Version: 19.1.3-suse-observability.25](https://img.shields.io/badge/Version-19.1.3--suse--observability.25-informational?style=flat-square) ![AppVersion: 3.3.1](https://img.shields.io/badge/AppVersion-3.3.1-informational?style=flat-square)
 Apache Kafka is a distributed streaming platform designed to build real-time pipelines and can be used as a message broker or as a replacement for a log aggregation solution for big data applications.
 **Homepage:** <https://github.com/bitnami/charts/tree/main/bitnami/kafka>
 ## Maintainers
@@ -64,19 +64,21 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | clusterDomain | string | `"cluster.local"` |  |
 | command[0] | string | `"/scripts/setup.sh"` |  |
 | commonAnnotations | object | `{}` |  |
-| commonLabels | object | `{}` |  |
+| commonLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | config | string | `""` |  |
 | containerPorts.client | int | `9092` |  |
 | containerPorts.external | int | `9094` |  |
 | containerPorts.internal | int | `9093` |  |
 | containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
+| containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | containerSecurityContext.enabled | bool | `true` |  |
 | containerSecurityContext.runAsNonRoot | bool | `true` |  |
 | containerSecurityContext.runAsUser | int | `1001` |  |
+| containerSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | customLivenessProbe | object | `{}` |  |
 | customReadinessProbe | object | `{}` |  |
 | customStartupProbe | object | `{}` |  |
-| defaultReplicationFactor | int | `1` |  |
+| defaultReplicationFactor | int | `2` |  |
 | deleteTopicEnable | bool | `false` |  |
 | diagnosticMode.args[0] | string | `"infinity"` |  |
 | diagnosticMode.command[0] | string | `"sleep"` |  |
@@ -106,14 +108,17 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | externalAccess.service.type | string | `"LoadBalancer"` |  |
 | externalAccess.service.useHostIPs | bool | `false` |  |
 | externalAccess.service.usePodIPs | bool | `false` |  |
-| externalZookeeper.servers | list | `[]` |  |
+| externalZookeeper.servers | string | `"suse-observability-zookeeper-headless"` |  |
 | extraDeploy | list | `[]` |  |
-| extraEnvVars | list | `[]` |  |
 | extraEnvVarsCM | string | `""` |  |
 | extraEnvVarsSecret | string | `""` |  |
+| extraEnvVars[0].name | string | `"KAFKA_RESERVED_BROKER_MAX_ID"` |  |
+| extraEnvVars[0].value | string | `"2000"` |  |
+| extraEnvVars[1].name | string | `"KAFKA_TRANSACTIONAL_ID_EXPIRATION_MS"` |  |
+| extraEnvVars[1].value | string | `"2147483647"` |  |
 | extraVolumeMounts | list | `[]` |  |
 | extraVolumes | list | `[]` |  |
-| fullnameOverride | string | `""` |  |
+| fullnameOverride | string | `"suse-observability-kafka"` |  |
 | global.commonLabels | object | `{}` |  |
 | global.imagePullSecrets | list | `[]` |  |
 | global.imageRegistry | string | `""` |  |
@@ -129,7 +134,18 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | image.registry | string | `"docker.io"` |  |
 | image.repository | string | `"bitnami/kafka"` |  |
 | image.tag | string | `"3.9.1-6.7"` |  |
-| initContainers | list | `[]` |  |
+| initContainers[0].args[0] | string | `"-c"` |  |
+| initContainers[0].args[1] | string | `"trap 'exit 1' INT TERM; while [ -z \"${KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION}\" ]; do echo \"KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION should be set by operator\"; sleep 1; done"` |  |
+| initContainers[0].command[0] | string | `"/bin/bash"` |  |
+| initContainers[0].image | string | `"{{ include \"kafka.image\" . }}"` |  |
+| initContainers[0].imagePullPolicy | string | `""` |  |
+| initContainers[0].name | string | `"check-inter-broker-protocol-version"` |  |
+| initContainers[0].resources.limits | object | `{}` |  |
+| initContainers[0].resources.requests | object | `{}` |  |
+| initContainers[0].securityContext.allowPrivilegeEscalation | bool | `false` |  |
+| initContainers[0].securityContext.capabilities.drop[0] | string | `"ALL"` |  |
+| initContainers[0].securityContext.runAsNonRoot | bool | `true` |  |
+| initContainers[0].securityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | interBrokerListenerName | string | `"INTERNAL"` |  |
 | kubeVersion | string | `""` |  |
 | lifecycleHooks | object | `{}` |  |
@@ -154,16 +170,19 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | logPersistence.storageClass | string | `""` |  |
 | logRetentionBytes | string | `"_1073741824"` |  |
 | logRetentionCheckIntervalMs | int | `300000` |  |
-| logRetentionHours | int | `168` |  |
+| logRetentionHours | int | `24` |  |
 | logSegmentBytes | string | `"_1073741824"` |  |
 | logsDirs | string | `"/data/kafka/data"` |  |
 | maxMessageBytes | string | `"_1000012"` |  |
 | metrics.jmx.config | string | `"jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:5555/jmxrmi\nlowercaseOutputName: true\nlowercaseOutputLabelNames: true\nssl: false\n{{- if .Values.metrics.jmx.whitelistObjectNames }}\nwhitelistObjectNames: [\"{{ join \"\\\",\\\"\" .Values.metrics.jmx.whitelistObjectNames }}\"]\n{{- end }}"` |  |
 | metrics.jmx.containerPorts.metrics | int | `5556` |  |
+| metrics.jmx.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
+| metrics.jmx.containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | metrics.jmx.containerSecurityContext.enabled | bool | `true` |  |
 | metrics.jmx.containerSecurityContext.runAsNonRoot | bool | `true` |  |
 | metrics.jmx.containerSecurityContext.runAsUser | int | `1001` |  |
-| metrics.jmx.enabled | bool | `false` |  |
+| metrics.jmx.containerSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
+| metrics.jmx.enabled | bool | `true` |  |
 | metrics.jmx.existingConfigmap | string | `""` |  |
 | metrics.jmx.extraRules | string | `""` |  |
 | metrics.jmx.image.digest | string | `""` |  |
@@ -174,6 +193,7 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | metrics.jmx.image.tag | string | `"0.17.2-debian-11-r15"` |  |
 | metrics.jmx.resources.limits | object | `{}` |  |
 | metrics.jmx.resources.requests | object | `{}` |  |
+| metrics.jmx.service.annotations."monitor.kubernetes-v2.stackstate.io/http-response-time" | string | `"{ \"deviatingThreshold\": 10.0, \"criticalThreshold\": 10.0 }"` |  |
 | metrics.jmx.service.annotations."prometheus.io/path" | string | `"/"` |  |
 | metrics.jmx.service.annotations."prometheus.io/port" | string | `"{{ .Values.metrics.jmx.service.ports.metrics }}"` |  |
 | metrics.jmx.service.annotations."prometheus.io/scrape" | string | `"true"` |  |
@@ -265,8 +285,8 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | numNetworkThreads | int | `3` |  |
 | numPartitions | int | `1` |  |
 | numRecoveryThreadsPerDataDir | int | `1` |  |
-| offsetsTopicReplicationFactor | int | `1` |  |
-| pdb.create | bool | `false` |  |
+| offsetsTopicReplicationFactor | int | `2` |  |
+| pdb.create | bool | `true` |  |
 | pdb.maxUnavailable | int | `1` |  |
 | pdb.minAvailable | string | `""` |  |
 | persistence.accessModes[0] | string | `"ReadWriteOnce"` |  |
@@ -279,9 +299,12 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | persistence.size | string | `nil` |  |
 | persistence.storageClass | string | `""` |  |
 | podAffinityPreset | string | `""` |  |
-| podAnnotations | object | `{}` |  |
+| podAnnotations."ad.stackstate.com/jmx-exporter.check_names" | string | `"[\"openmetrics\"]"` |  |
+| podAnnotations."ad.stackstate.com/jmx-exporter.init_configs" | string | `"[{}]"` |  |
+| podAnnotations."ad.stackstate.com/jmx-exporter.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"], \"type_overrides\": {\"kafka_server_replicamanager_total_underreplicatedpartitions_value\":\"gauge\", \"kafka_controller_kafkacontroller_offlinepartitionscount_value\":\"gauge\", \"kafka_controller_kafkacontroller_activecontrollercount_value\": \"gauge\"}}]"` |  |
+| podAnnotations."stackstate.com/kafkaup-operator.kafka_version" | string | `"3.9.1"` |  |
 | podAntiAffinityPreset | string | `"soft"` |  |
-| podLabels | object | `{}` |  |
+| podLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | podManagementPolicy | string | `"Parallel"` |  |
 | podSecurityContext.enabled | bool | `true` |  |
 | podSecurityContext.fsGroup | int | `1001` |  |
@@ -336,18 +359,18 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | rbac.create | bool | `false` |  |
 | readinessProbe.enabled | bool | `true` |  |
 | readinessProbe.failureThreshold | int | `6` |  |
-| readinessProbe.initialDelaySeconds | int | `5` |  |
+| readinessProbe.initialDelaySeconds | int | `45` |  |
 | readinessProbe.periodSeconds | int | `10` |  |
 | readinessProbe.successThreshold | int | `1` |  |
 | readinessProbe.timeoutSeconds | int | `5` |  |
 | replicaCount | string | `nil` |  |
 | resources | object | `{}` |  |
 | schedulerName | string | `""` |  |
-| service.annotations | object | `{}` |  |
+| service.annotations."monitor.kubernetes-v2.stackstate.io/http-response-time" | string | `"{ \"deviatingThreshold\": 10.0, \"criticalThreshold\": 10.0 }"` |  |
 | service.clusterIP | string | `""` |  |
 | service.externalTrafficPolicy | string | `"Cluster"` |  |
 | service.extraPorts | list | `[]` |  |
-| service.headless.annotations | object | `{}` |  |
+| service.headless.annotations."monitor.kubernetes-v2.stackstate.io/http-response-time" | string | `"{ \"deviatingThreshold\": 10.0, \"criticalThreshold\": 10.0 }"` |  |
 | service.headless.labels | object | `{}` |  |
 | service.loadBalancerIP | string | `""` |  |
 | service.loadBalancerSourceRanges | list | `[]` |  |
@@ -378,7 +401,7 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | tolerations | list | `[]` |  |
 | topologySpreadConstraints | list | `[]` |  |
 | transactionStateLogMinIsr | int | `1` |  |
-| transactionStateLogReplicationFactor | int | `1` |  |
+| transactionStateLogReplicationFactor | int | `2` |  |
 | updateStrategy.type | string | `"RollingUpdate"` |  |
 | volumePermissions.containerSecurityContext.runAsUser | int | `0` |  |
 | volumePermissions.enabled | bool | `false` |  |

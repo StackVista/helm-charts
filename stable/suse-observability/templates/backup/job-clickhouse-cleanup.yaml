@@ -3,7 +3,7 @@
 {{- $replicaCount := include "common.sizing.effectiveReplicaCount" (dict "sizingReplicaCount" $sizingReplicaCount "chartDefault" "3" "valuesReplicaCount" .Values.clickhouse.replicaCount) | int -}}
 {{- $hostList := list -}}
 {{- range $i, $e := reverse (until $replicaCount) -}}
-{{- $hostList = append $hostList (printf "%s-shard0-%d.%s-headless.%s.svc.cluster.local:8123" $.Values.clickhouse.fullnameOverride  $e $.Values.clickhouse.fullnameOverride $.Release.Namespace) -}}
+{{- $hostList = append $hostList (printf "%s-shard0-%d.%s-headless.%s.svc.cluster.local:8123" ( include "stackstate.clickhouse.fullname" $ )  $e ( include "stackstate.clickhouse.fullname" $ ) $.Release.Namespace) -}}
 {{- end -}}
 name: clickhouse-cleanup-init
 command:
@@ -27,7 +27,7 @@ env:
 - name: PASSWORD
   value: {{ .Values.clickhouse.auth.password | quote }}
 - name: CLICKHOUSE_HOST_PREFIX
-  value: {{ .Values.clickhouse.fullnameOverride | quote }}
+  value: {{ ( include "stackstate.clickhouse.fullname" . ) | quote }}
 - name: CLICKHOUSE_REPLICA_COUNT
   value: {{ include "common.sizing.effectiveReplicaCount" (dict "sizingReplicaCount" $sizingReplicaCount "chartDefault" "3" "valuesReplicaCount" .Values.clickhouse.replicaCount) | quote}}
 - name: NAMESPACE

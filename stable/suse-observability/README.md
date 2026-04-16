@@ -13,9 +13,9 @@ Current chart version is `2.9.1-pre.89`
 | file://../anomaly-detection/ | anomaly-detection | 5.2.0-snapshot.182 |
 | file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.25 |
 | file://../common/ | common | * |
-| file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.20 |
+| file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.21 |
 | file://../hbase/ | hbase | 0.2.134 |
-| file://../kafka/ | kafka | 19.1.3-suse-observability.24 |
+| file://../kafka/ | kafka | 19.1.3-suse-observability.25 |
 | file://../kafkaup-operator/ | kafkaup-operator | 0.1.28 |
 | file://../kubernetes-rbac-agent/ | kubernetes-rbac-agent | 0.0.27 |
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.27 |
@@ -23,7 +23,7 @@ Current chart version is `2.9.1-pre.89`
 | file://../suse-observability-sizing/ | suse-observability-sizing | 0.1.15 |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.49 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.49 |
-| file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.22 |
+| file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.23 |
 
 ## Required Values
 
@@ -459,7 +459,7 @@ If you encounter issues not covered here:
 | clickhouse.backup.config.tables | string | `"otel.*"` | Create and upload backup only matched with table name patterns, separated by comma, allow ? and * as wildcard. |
 | clickhouse.backup.image.registry | string | `"quay.io"` | Registry where to get the image from. |
 | clickhouse.backup.image.repository | string | `"stackstate/clickhouse-backup"` | Repository where to get the image from. |
-| clickhouse.backup.image.tag | string | `"2.6.39-a7171eea-161-release"` | Container image tag for 'clickhouse' backup containers. |
+| clickhouse.backup.image.tag | string | `"2.6.43-47a710b2-169-release"` | Container image tag for 'clickhouse' backup containers. |
 | clickhouse.backup.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | clickhouse.backup.podAnnotations | object | `{}` | Extra annotations for ClickHouse backup pods. |
 | clickhouse.backup.podLabels | object | `{}` | Extra labels for ClickHouse backup pods. |
@@ -496,27 +496,12 @@ If you encounter issues not covered here:
 | cluster-role.enabled | bool | `true` | Deploy the ClusterRole(s) and ClusterRoleBinding(s) together with the chart. Can be disabled if these need to be installed by an administrator of the Kubernetes cluster. |
 | commonLabels | object | `{}` | Labels that will be added to all resources created by the stackstate chart (not the subcharts though) |
 | deployment.compatibleWithArgoCD | bool | `false` | Whether to adjust the Chart to be compatible with ArgoCD. This feature is as of yet not deployed in the o11y-tenants and saas-tenants directories, so should be considered unfinished (see STAC-21445) |
-| elasticsearch.clusterHealthCheckParams | string | `"wait_for_status=yellow&timeout=1s"` | The Elasticsearch cluster health status params that will be used by readinessProbe command |
-| elasticsearch.clusterName | string | `"suse-observability-elasticsearch"` | Name override for Elasticsearch child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
-| elasticsearch.commonLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Add additional labels to all resources created for elasticsearch |
-| elasticsearch.enabled | bool | `true` | Enable / disable chart-based Elasticsearch. |
 | elasticsearch.esJavaOpts | string | `nil` | JVM options |
-| elasticsearch.extraEnvs | list | `[{"name":"action.auto_create_index","value":"true"},{"name":"indices.query.bool.max_clause_count","value":"10000"}]` | Extra settings that StackState uses for Elasticsearch. |
 | elasticsearch.imageTag | string | `"8.19.4-c4527168-release-212"` | Elasticsearch image tag. Updated by updatecli. |
-| elasticsearch.minimumMasterNodes | int | `2` | Minimum number of Elasticsearch master nodes. |
-| elasticsearch.nodeGroup | string | `"master"` |  |
-| elasticsearch.prometheus-elasticsearch-exporter.enabled | bool | `true` |  |
-| elasticsearch.prometheus-elasticsearch-exporter.es.uri | string | `"http://suse-observability-elasticsearch-master:9200"` |  |
-| elasticsearch.prometheus-elasticsearch-exporter.image.tag | string | `"v1.10.0-2c0b3290-release-171"` | Elasticsearch Prometheus exporter image tag. Updated by updatecli. |
-| elasticsearch.prometheus-elasticsearch-exporter.podAnnotations."ad.stackstate.com/exporter.check_names" | string | `"[\"openmetrics\"]"` |  |
-| elasticsearch.prometheus-elasticsearch-exporter.podAnnotations."ad.stackstate.com/exporter.init_configs" | string | `"[{}]"` |  |
-| elasticsearch.prometheus-elasticsearch-exporter.podAnnotations."ad.stackstate.com/exporter.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:9108/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"elasticsearch_indices_store_*\", \"elasticsearch_cluster_health_*\"] } ]"` |  |
+| elasticsearch.prometheus-elasticsearch-exporter.image.tag | string | `"v1.10.0-6159e1ba-release-173"` | Elasticsearch Prometheus exporter image tag. Updated by updatecli. |
 | elasticsearch.prometheus-elasticsearch-exporter.resources | object | `{}` |  |
-| elasticsearch.prometheus-elasticsearch-exporter.serviceMonitor.enabled | bool | `false` |  |
-| elasticsearch.prometheus-elasticsearch-exporter.serviceMonitor.labels | object | `{}` | Labels for the service monitor |
 | elasticsearch.replicas | string | `nil` | Number of Elasticsearch replicas. |
 | elasticsearch.resources | object | `{}` | Override Elasticsearch resources |
-| elasticsearch.sysctlInitContainer | object | `{"enabled":true}` | Enable privileged init container to increase Elasticsearch virtual memory on underlying nodes. |
 | elasticsearch.volumeClaimTemplate | object | `{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":null}}}` | PVC template defaulting to 250Gi default volumes |
 | gateway | object | `{"annotations":{},"enabled":false,"filters":[],"hostnames":[],"parentRefs":[],"path":"","timeouts":{}}` | Gateway API configuration for exposing SUSE Observability via HTTPRoute. |
 | gateway.annotations | object | `{}` | Annotations for HTTPRoute objects. |
@@ -601,31 +586,9 @@ If you encounter issues not covered here:
 | ingress.ingressClassName | string | `""` |  |
 | ingress.path | string | `"/"` |  |
 | ingress.tls | list | `[]` | List of ingress TLS certificates to use. |
-| kafka.commonLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Add additional labels to all resources created for kafka |
-| kafka.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
-| kafka.containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |
-| kafka.containerSecurityContext.enabled | bool | `true` |  |
-| kafka.containerSecurityContext.runAsNonRoot | bool | `true` |  |
-| kafka.containerSecurityContext.runAsUser | int | `1001` |  |
-| kafka.containerSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
-| kafka.defaultReplicationFactor | int | `2` |  |
-| kafka.enabled | bool | `true` | Enable / disable chart-based Kafka. |
-| kafka.externalZookeeper.servers | string | `"suse-observability-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
-| kafka.extraEnvVars | list | `[{"name":"KAFKA_RESERVED_BROKER_MAX_ID","value":"2000"},{"name":"KAFKA_TRANSACTIONAL_ID_EXPIRATION_MS","value":"2147483647"}]` | Extra environment variables to add to kafka pods. |
-| kafka.fullnameOverride | string | `"suse-observability-kafka"` | Name override for Kafka child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | kafka.image.registry | string | `"quay.io"` | Kafka image registry |
 | kafka.image.repository | string | `"stackstate/kafka"` | Kafka image repository |
 | kafka.image.tag | string | `"3.9.1-9.2-release"` | Kafka image tag. **Since StackState relies on this specific version, it's advised NOT to change this.** When changing this version, be sure to change the pod annotation stackstate.com/kafkaup-operator.kafka_version aswell, in order for the kafkaup operator to upgrade the inter broker protocol version |
-| kafka.initContainers | list | `[{"args":["-c","trap 'exit 1' INT TERM; while [ -z \"${KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION}\" ]; do echo \"KAFKA_CFG_INTER_BROKER_PROTOCOL_VERSION should be set by operator\"; sleep 1; done"],"command":["/bin/bash"],"image":"{{ include \"kafka.image\" . }}","imagePullPolicy":"","name":"check-inter-broker-protocol-version","resources":{"limits":{},"requests":{}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}}]` | required to make the kafka versionup operator work |
-| kafka.logRetentionHours | int | `24` | The minimum age of a log file to be eligible for deletion due to age. |
-| kafka.metrics.jmx.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
-| kafka.metrics.jmx.containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |
-| kafka.metrics.jmx.containerSecurityContext.enabled | bool | `true` |  |
-| kafka.metrics.jmx.containerSecurityContext.runAsNonRoot | bool | `true` |  |
-| kafka.metrics.jmx.containerSecurityContext.runAsUser | int | `1001` |  |
-| kafka.metrics.jmx.containerSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
-| kafka.metrics.jmx.enabled | bool | `true` | Whether or not to expose JMX metrics to Prometheus. |
-| kafka.metrics.jmx.heapSizeMB | int | `256` |  |
 | kafka.metrics.jmx.image.registry | string | `"quay.io"` | Kafka JMX exporter image registry |
 | kafka.metrics.jmx.image.repository | string | `"stackstate/jmx-exporter"` | Kafka JMX exporter image repository |
 | kafka.metrics.jmx.image.tag | string | `"0.20.0-58a72255-303-release"` | Kafka JMX exporter image tag |
@@ -635,28 +598,9 @@ If you encounter issues not covered here:
 | kafka.metrics.jmx.resources.requests.cpu | string | `"200m"` |  |
 | kafka.metrics.jmx.resources.requests.ephemeral-storage | string | `"1Mi"` |  |
 | kafka.metrics.jmx.resources.requests.memory | string | `"300Mi"` |  |
-| kafka.metrics.jmx.service.annotations."monitor.kubernetes-v2.stackstate.io/http-response-time" | string | `"{ \"deviatingThreshold\": 10.0, \"criticalThreshold\": 10.0 }"` |  |
-| kafka.metrics.kafka.enabled | bool | `false` | Whether or not to create a standalone Kafka exporter to expose Kafka metrics. |
-| kafka.metrics.serviceMonitor.enabled | bool | `false` | If `true`, creates a Prometheus Operator `ServiceMonitor` (also requires `kafka.metrics.kafka.enabled` or `kafka.metrics.jmx.enabled` to be `true`). |
-| kafka.metrics.serviceMonitor.interval | string | `"20s"` | How frequently to scrape metrics. |
-| kafka.metrics.serviceMonitor.labels | object | `{}` | Add extra labels to target a specific prometheus instance |
-| kafka.offsetsTopicReplicationFactor | int | `2` |  |
-| kafka.pdb.create | bool | `true` |  |
-| kafka.pdb.maxUnavailable | int | `1` |  |
-| kafka.pdb.minAvailable | string | `""` |  |
 | kafka.persistence.size | string | `nil` | Size of persistent volume for each Kafka pod |
-| kafka.podAnnotations | object | `{"ad.stackstate.com/jmx-exporter.check_names":"[\"openmetrics\"]","ad.stackstate.com/jmx-exporter.init_configs":"[{}]","ad.stackstate.com/jmx-exporter.instances":"[ { \"prometheus_url\": \"http://%%host%%:5556/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"], \"type_overrides\": {\"kafka_server_replicamanager_total_underreplicatedpartitions_value\":\"gauge\", \"kafka_controller_kafkacontroller_offlinepartitionscount_value\":\"gauge\", \"kafka_controller_kafkacontroller_activecontrollercount_value\": \"gauge\"}}]","stackstate.com/kafkaup-operator.kafka_version":"3.9.1"}` | Kafka Pod annotations. |
-| kafka.podLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
-| kafka.readinessProbe.initialDelaySeconds | int | `45` | Delay before readiness probe is initiated. |
 | kafka.replicaCount | string | `nil` | Number of Kafka replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | kafka.resources | object | `{}` | Kafka resources per pods. |
-| kafka.service.annotations."monitor.kubernetes-v2.stackstate.io/http-response-time" | string | `"{ \"deviatingThreshold\": 10.0, \"criticalThreshold\": 10.0 }"` |  |
-| kafka.service.headless.annotations."monitor.kubernetes-v2.stackstate.io/http-response-time" | string | `"{ \"deviatingThreshold\": 10.0, \"criticalThreshold\": 10.0 }"` |  |
-| kafka.topic.stsMetricsV2.partitionCount | int | `10` |  |
-| kafka.topicRetention | string | `"86400000"` | Max time in milliseconds to retain data in each topic. |
-| kafka.transactionStateLogReplicationFactor | int | `2` |  |
-| kafka.volumePermissions.enabled | bool | `false` |  |
-| kafka.zookeeper.enabled | bool | `false` | Disable Zookeeper from the Kafka chart **Don't change unless otherwise specified**. |
 | kafkaup-operator.enabled | bool | `true` |  |
 | kafkaup-operator.image.pullPolicy | string | `""` |  |
 | kafkaup-operator.image.registry | string | `"quay.io"` |  |
@@ -670,7 +614,7 @@ If you encounter issues not covered here:
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
 | kubernetes-rbac-agent.containers.rbacAgent.image.repository | string | `"stackstate/kubernetes-rbac-agent"` |  |
-| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"0ac70f3d-686-release"` |  |
+| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"0ac70f3d-690-release"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
 | kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{"ad.stackstate.com/kubernetes-rbac-agent.check_names":"[\"openmetrics\"]","ad.stackstate.com/kubernetes-rbac-agent.init_configs":"[{}]","ad.stackstate.com/kubernetes-rbac-agent.instances":"[ { \"prometheus_url\": \"http://%%host%%:8080/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Additional annotations on the pod |
 | kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |
@@ -924,7 +868,7 @@ If you encounter issues not covered here:
 | stackstate.components.containerTools.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for container-tools containers. |
 | stackstate.components.containerTools.image.registry | string | `"quay.io"` | Base container image registry for container-tools containers. |
 | stackstate.components.containerTools.image.repository | string | `"stackstate/container-tools"` | Base container image repository for container-tools containers. |
-| stackstate.components.containerTools.image.tag | string | `"1.8.4-644"` | Container image tag for container-tools containers. |
+| stackstate.components.containerTools.image.tag | string | `"1.8.5-653"` | Container image tag for container-tools containers. |
 | stackstate.components.containerTools.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"2000Mi"},"requests":{"cpu":"500m","ephemeral-storage":"1Mi","memory":"2000Mi"}}` | Resource allocation for `kafkaTopicCreate` pods. |
 | stackstate.components.correlate.additionalLogging | string | `""` | Additional logback config |
 | stackstate.components.correlate.affinity | object | `{}` | Affinity settings for pod assignment. |
@@ -1146,7 +1090,7 @@ If you encounter issues not covered here:
 | stackstate.components.router.mode.image.pullPolicy | string | `nil` | Image pull policy for router mode containers. |
 | stackstate.components.router.mode.image.registry | string | `"quay.io"` | Base container image registry for router mode containers. |
 | stackstate.components.router.mode.image.repository | string | `"stackstate/container-tools"` | Base container image repository for router mode containers. |
-| stackstate.components.router.mode.image.tag | string | `"1.8.4-644"` | Container image tag for router mode containers. |
+| stackstate.components.router.mode.image.tag | string | `"1.8.5-653"` | Container image tag for router mode containers. |
 | stackstate.components.router.mode.jobAnnotations | object | `{}` | Annotations for the router mode jobs. |
 | stackstate.components.router.mode.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.router.mode.podAnnotations | object | `{}` | Extra annotations for router mode job pods. |
@@ -1265,7 +1209,7 @@ If you encounter issues not covered here:
 | stackstate.components.vmagent.affinity | object | `{"podAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"app.kubernetes.io/component","operator":"In","values":["receiver"]},{"key":"app.kubernetes.io/instance","operator":"In","values":["stackstate"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":80}]}}` | Affinity settings for vmagent pod. |
 | stackstate.components.vmagent.extraArgs | object | `{}` |  |
 | stackstate.components.vmagent.image.repository | string | `"stackstate/vmagent"` |  |
-| stackstate.components.vmagent.image.tag | string | `"v1.109.0-4a074fa6-release-146"` |  |
+| stackstate.components.vmagent.image.tag | string | `"v1.136.0-068f508b-release-149"` |  |
 | stackstate.components.vmagent.persistence.size | string | `"10Gi"` |  |
 | stackstate.components.vmagent.persistence.storageClass | string | `nil` |  |
 | stackstate.components.vmagent.poddisruptionbudget | object | `{"maxUnavailable":1}` | PodDisruptionBudget settings for `vmagent` pods. |
@@ -1276,7 +1220,7 @@ If you encounter issues not covered here:
 | stackstate.components.workloadObserver.image.imageRegistry | string | `""` | `imageRegistry` used for the `workloadObserver` component Docker image; this will override `global.imageRegistry` on a per-service basis. |
 | stackstate.components.workloadObserver.image.pullPolicy | string | `""` | `pullPolicy` used for the `workloadObserver` component Docker image; this will override `stackstate.components.all.image.pullPolicy` on a per-service basis. |
 | stackstate.components.workloadObserver.image.repository | string | `"stackstate/workload-observer"` | Repository of the workloadObserver component Docker image. |
-| stackstate.components.workloadObserver.image.tag | string | `"864f55e0-153-release"` | Tag used for the `workloadObserver` component Docker image.. |
+| stackstate.components.workloadObserver.image.tag | string | `"864f55e0-164-release"` | Tag used for the `workloadObserver` component Docker image.. |
 | stackstate.components.workloadObserver.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | stackstate.components.workloadObserver.persistence.size | string | `"1Gi"` |  |
 | stackstate.components.workloadObserver.persistence.storageClass | string | `nil` |  |
@@ -1332,8 +1276,8 @@ If you encounter issues not covered here:
 | victoria-metrics-0.backup.s3Prefix | string | `"victoria-metrics-0"` |  |
 | victoria-metrics-0.backup.scheduled.daily | string | `"55 0 * * *"` | Cron schedule for daily snapshot backups of Victoria Metrics |
 | victoria-metrics-0.backup.scheduled.hourly | string | `"25 * * * *"` | Cron schedule for hourly incremental backups of Victoria Metrics |
-| victoria-metrics-0.backup.setupCron.image.tag | string | `"1.8.4-644"` | Container-tools image for cron setup. Updated by updatecli. |
-| victoria-metrics-0.backup.vmbackup.image.tag | string | `"v1.109.0-f74185cf-release-63"` | VM backup image tag. Updated by updatecli. |
+| victoria-metrics-0.backup.setupCron.image.tag | string | `"1.8.5-653"` | Container-tools image for cron setup. Updated by updatecli. |
+| victoria-metrics-0.backup.vmbackup.image.tag | string | `"v1.136.0-47ff639a-release-69"` | VM backup image tag. Updated by updatecli. |
 | victoria-metrics-0.enabled | bool | `true` |  |
 | victoria-metrics-0.rbac.namespaced | bool | `true` |  |
 | victoria-metrics-0.rbac.pspEnabled | bool | `false` |  |
@@ -1341,7 +1285,7 @@ If you encounter issues not covered here:
 | victoria-metrics-0.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":60,"search.cacheTimestampOffset":"10m"}` | Extra arguments for Victoria Metrics |
 | victoria-metrics-0.server.extraLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Extra labels for Victoria Metrics StatefulSet |
 | victoria-metrics-0.server.fullnameOverride | string | `"suse-observability-victoria-metrics-0"` | Full name override |
-| victoria-metrics-0.server.image.tag | string | `"v1.109.0-3d9ca9db-release-152"` | Victoria Metrics server image tag. Updated by updatecli. |
+| victoria-metrics-0.server.image.tag | string | `"v1.136.0-621be04a-release-155"` | Victoria Metrics server image tag. Updated by updatecli. |
 | victoria-metrics-0.server.persistentVolume.size | string | `nil` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
 | victoria-metrics-0.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\"] } ]","ad.stackstate.com/vmbackup.check_names":"[\"openmetrics\"]","ad.stackstate.com/vmbackup.init_configs":"[{}]","ad.stackstate.com/vmbackup.instances":"[ { \"prometheus_url\": \"http://%%host%%:9746/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"supercronic_*\"] } ]"}` | Annotations for Victoria Metrics server pod |
 | victoria-metrics-0.server.podLabels | object | `{"app.kubernetes.io/part-of":"suse-observability","stackstate-service":"victoriametrics"}` | Extra labels for Victoria Metrics pod |
@@ -1360,8 +1304,8 @@ If you encounter issues not covered here:
 | victoria-metrics-1.backup.s3Prefix | string | `"victoria-metrics-1"` | Prefix (dir name) used to store backup files, we may have multiple instances of Victoria Metrics, each of them should be stored into their own directory. |
 | victoria-metrics-1.backup.scheduled.daily | string | `"5 1 * * *"` | Cron schedule for daily snapshot backups of Victoria Metrics |
 | victoria-metrics-1.backup.scheduled.hourly | string | `"35 * * * *"` | Cron schedule for hourly incremental backups of Victoria Metrics |
-| victoria-metrics-1.backup.setupCron.image.tag | string | `"1.8.4-644"` | Container-tools image for cron setup. Updated by updatecli. |
-| victoria-metrics-1.backup.vmbackup.image.tag | string | `"v1.109.0-f74185cf-release-63"` | VM backup image tag. Updated by updatecli. |
+| victoria-metrics-1.backup.setupCron.image.tag | string | `"1.8.5-653"` | Container-tools image for cron setup. Updated by updatecli. |
+| victoria-metrics-1.backup.vmbackup.image.tag | string | `"v1.136.0-47ff639a-release-69"` | VM backup image tag. Updated by updatecli. |
 | victoria-metrics-1.enabled | bool | `true` |  |
 | victoria-metrics-1.rbac.namespaced | bool | `true` |  |
 | victoria-metrics-1.rbac.pspEnabled | bool | `false` |  |
@@ -1369,7 +1313,7 @@ If you encounter issues not covered here:
 | victoria-metrics-1.server.extraArgs | object | `{"dedup.minScrapeInterval":"1ms","maxLabelsPerTimeseries":60}` | Extra arguments for Victoria Metrics |
 | victoria-metrics-1.server.extraLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | victoria-metrics-1.server.fullnameOverride | string | `"suse-observability-victoria-metrics-1"` | Full name override |
-| victoria-metrics-1.server.image.tag | string | `"v1.109.0-3d9ca9db-release-152"` | Victoria Metrics server image tag. Updated by updatecli. |
+| victoria-metrics-1.server.image.tag | string | `"v1.136.0-621be04a-release-155"` | Victoria Metrics server image tag. Updated by updatecli. |
 | victoria-metrics-1.server.persistentVolume.size | string | `nil` | Size of storage for Victoria Metrics, ideally 20% of free space remains available at all times |
 | victoria-metrics-1.server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]","ad.stackstate.com/vmbackup.check_names":"[\"openmetrics\"]","ad.stackstate.com/vmbackup.init_configs":"[{}]","ad.stackstate.com/vmbackup.instances":"[ { \"prometheus_url\": \"http://%%host%%:9746/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"supercronic_*\"] } ]"}` | Annotations for Victoria Metrics server pod |
 | victoria-metrics-1.server.podLabels | object | `{"app.kubernetes.io/part-of":"suse-observability","stackstate-service":"victoriametrics"}` | Extra arguments for Victoria Metrics pod |
@@ -1383,57 +1327,16 @@ If you encounter issues not covered here:
 | victoria-metrics.restore.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy for `vmrestore` containers. |
 | victoria-metrics.restore.image.registry | string | `"quay.io"` | Base container image registry for 'vmrestore' containers. |
 | victoria-metrics.restore.image.repository | string | `"stackstate/vmrestore"` | Base container image repository for 'vmrestore' containers. |
-| victoria-metrics.restore.image.tag | string | `"v1.109.0-97bc8d04-release-48"` | Container image tag for 'vmrestore' containers. |
+| victoria-metrics.restore.image.tag | string | `"v1.136.0-2ca23936-release-51"` | Container image tag for 'vmrestore' containers. |
 | victoria-metrics.restore.securityContext.enabled | bool | `true` |  |
 | victoria-metrics.restore.securityContext.fsGroup | int | `65534` |  |
 | victoria-metrics.restore.securityContext.runAsGroup | int | `65534` |  |
 | victoria-metrics.restore.securityContext.runAsNonRoot | bool | `true` |  |
 | victoria-metrics.restore.securityContext.runAsUser | int | `65534` |  |
-| zookeeper.autopurge | object | `{"purgeInterval":3,"snapRetainCount":5}` | configurations of ZooKeeper auto purge, it deletes old snapshot and log files. ClickHouse creates a lot of operation and it should be purged to avoud out of disk space. |
-| zookeeper.commonLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
-| zookeeper.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
-| zookeeper.containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |
-| zookeeper.containerSecurityContext.enabled | bool | `true` |  |
-| zookeeper.containerSecurityContext.runAsNonRoot | bool | `true` |  |
-| zookeeper.containerSecurityContext.runAsUser | int | `1001` |  |
-| zookeeper.containerSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
-| zookeeper.customLivenessProbe.exec.command[0] | string | `"/bin/bash"` |  |
-| zookeeper.customLivenessProbe.exec.command[1] | string | `"-c"` |  |
-| zookeeper.customLivenessProbe.exec.command[2] | string | `"echo \"ruok\" | timeout 2 nc -w 2 -q 1 localhost 2181 | grep imok"` |  |
-| zookeeper.customLivenessProbe.failureThreshold | int | `6` |  |
-| zookeeper.customLivenessProbe.initialDelaySeconds | int | `30` |  |
-| zookeeper.customLivenessProbe.periodSeconds | int | `10` |  |
-| zookeeper.customLivenessProbe.successThreshold | int | `1` |  |
-| zookeeper.customLivenessProbe.timeoutSeconds | int | `5` |  |
-| zookeeper.customReadinessProbe.exec.command[0] | string | `"/bin/bash"` |  |
-| zookeeper.customReadinessProbe.exec.command[1] | string | `"-c"` |  |
-| zookeeper.customReadinessProbe.exec.command[2] | string | `"echo \"ruok\" | timeout 2 nc -w 2 -q 1 localhost 2181 | grep imok"` |  |
-| zookeeper.customReadinessProbe.failureThreshold | int | `6` |  |
-| zookeeper.customReadinessProbe.initialDelaySeconds | int | `5` |  |
-| zookeeper.customReadinessProbe.periodSeconds | int | `10` |  |
-| zookeeper.customReadinessProbe.successThreshold | int | `1` |  |
-| zookeeper.customReadinessProbe.timeoutSeconds | int | `5` |  |
-| zookeeper.enabled | bool | `true` | Enable / disable chart-based Zookeeper. |
-| zookeeper.externalServers | string | `""` | If `zookeeper.enabled` is set to `false`, use this list of external Zookeeper servers instead. |
-| zookeeper.fourlwCommandsWhitelist | string | `"mntr, ruok, stat, srvr"` | Zookeeper four-letter-word (FLW) commands that are enabled. |
-| zookeeper.fullnameOverride | string | `"suse-observability-zookeeper"` | Name override for Zookeeper child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
-| zookeeper.heapSize | int | `400` | HeapSize Size (in MB) for the Java Heap options (Xmx and Xms) |
 | zookeeper.image.registry | string | `"quay.io"` | ZooKeeper image registry |
 | zookeeper.image.repository | string | `"stackstate/zookeeper"` | ZooKeeper image repository |
 | zookeeper.image.tag | string | `"3.9.3-352e04a1-311-release"` | ZooKeeper image tag |
-| zookeeper.jvmFlags | string | `"-Djute.maxbuffer=2097150"` |  |
-| zookeeper.livenessProbe.enabled | bool | `false` | it must be disabled to apply the custom probe, the probe adds "-q" option to nc to wait 1sec until close the connection, it fixes problem of failing the probed |
-| zookeeper.metrics.enabled | bool | `true` | Enable / disable Zookeeper Prometheus metrics. |
-| zookeeper.metrics.serviceMonitor | object | `{"enabled":false,"selector":{}}` |  |
-| zookeeper.metrics.serviceMonitor.enabled | bool | `false` | Enable creation of `ServiceMonitor` objects for Prometheus operator. |
-| zookeeper.metrics.serviceMonitor.selector | object | `{}` | Default selector to use to target a certain Prometheus instance. |
-| zookeeper.pdb.create | bool | `true` |  |
-| zookeeper.pdb.maxUnavailable | int | `1` |  |
-| zookeeper.pdb.minAvailable | string | `""` |  |
 | zookeeper.persistence.size | string | `nil` | Size of the PVC for Zookeeper data. Default is 8Gi, will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
-| zookeeper.podAnnotations | object | `{"ad.stackstate.com/zookeeper.check_names":"[\"openmetrics\"]","ad.stackstate.com/zookeeper.init_configs":"[{}]","ad.stackstate.com/zookeeper.instances":"[ { \"prometheus_url\": \"http://%%host%%:9141/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | Annotations for ZooKeeper pod. |
-| zookeeper.podLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
-| zookeeper.readinessProbe.enabled | bool | `false` | it must be disabled to apply the custom probe, the probe adds "-q" option to nc to wait 1sec until close the connection, it fixes problem of failing the probed |
 | zookeeper.replicaCount | string | `nil` | Default amount of Zookeeper replicas to provision. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | zookeeper.resources | object | `{}` |  |
 

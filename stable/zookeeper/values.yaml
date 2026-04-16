@@ -31,7 +31,7 @@ kubeVersion: ""
 nameOverride: ""
 ## @param fullnameOverride String to fully override common.names.fullname template
 ##
-fullnameOverride: ""
+fullnameOverride: "suse-observability-zookeeper"
 ## @param clusterDomain Kubernetes Cluster Domain
 ##
 clusterDomain: cluster.local
@@ -40,7 +40,8 @@ clusterDomain: cluster.local
 extraDeploy: []
 ## @param commonLabels Add labels to all the deployed resources
 ##
-commonLabels: {}
+commonLabels:
+  app.kubernetes.io/part-of: suse-observability
 ## @param commonAnnotations Add annotations to all the deployed resources
 ## Precedence order: .Values.podLabels (highest) -> .Values.commonLabels (middle) -> .Values.global.commonLabels (lowest)
 ##
@@ -144,10 +145,10 @@ maxSessionTimeout: 40000
 ## @param heapSize Size (in MB) for the Java Heap options (Xmx and Xms)
 ## This env var is ignored if Xmx an Xms are configured via `jvmFlags`
 ##
-heapSize: 1024
+heapSize: 400
 ## @param fourlwCommandsWhitelist A list of comma separated Four Letter Words commands that can be executed
 ##
-fourlwCommandsWhitelist: srvr, mntr, ruok
+fourlwCommandsWhitelist: "mntr, ruok, stat, srvr"
 ## @param minServerId Minimal SERVER_ID value, nodes increment their IDs respectively
 ## Servers increment their ID starting at this minimal value.
 ## E.g., with `minServerId=10` and 3 replicas, server IDs will be 10, 11, 12 for z-0, z-1 and z-2 respectively.
@@ -161,18 +162,18 @@ listenOnAllIPs: false
 autopurge:
   ## @param autopurge.snapRetainCount The most recent snapshots amount (and corresponding transaction logs) to retain
   ##
-  snapRetainCount: 3
+  snapRetainCount: 5
   ## @param autopurge.purgeInterval The time interval (in hours) for which the purge task has to be triggered
   ## Set to a positive integer to enable the auto purging
   ##
-  purgeInterval: 0
+  purgeInterval: 3
 ## @param logLevel Log level for the ZooKeeper server. ERROR by default
 ## Have in mind if you set it to INFO or WARN the ReadinessProve will produce a lot of logs
 ##
 logLevel: ERROR
 ## @param jvmFlags Default JVM flags for the ZooKeeper process
 ##
-jvmFlags: ""
+jvmFlags: "-Djute.maxbuffer=2097150"
 ## @param dataLogDir Dedicated data log directory
 ## This allows a dedicated log device to be used, and helps avoid competition between logging and snapshots.
 ## E.g.
@@ -238,7 +239,7 @@ containerPorts:
 ## @param livenessProbe.probeCommandTimeout Probe command timeout for livenessProbe
 ##
 livenessProbe:
-  enabled: true
+  enabled: false
   initialDelaySeconds: 30
   periodSeconds: 10
   timeoutSeconds: 5
@@ -254,7 +255,7 @@ livenessProbe:
 ## @param readinessProbe.probeCommandTimeout Probe command timeout for readinessProbe
 ##
 readinessProbe:
-  enabled: true
+  enabled: false
   initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 5
@@ -277,10 +278,30 @@ startupProbe:
   successThreshold: 1
 ## @param customLivenessProbe Custom livenessProbe that overrides the default one
 ##
-customLivenessProbe: {}
+customLivenessProbe:
+  exec:
+    command:
+      - /bin/bash
+      - -c
+      - echo "ruok" | timeout 2 nc -w 2 -q 1 localhost 2181 | grep imok
+  failureThreshold: 6
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 5
 ## @param customReadinessProbe Custom readinessProbe that overrides the default one
 ##
-customReadinessProbe: {}
+customReadinessProbe:
+  exec:
+    command:
+      - /bin/bash
+      - -c
+      - echo "ruok" | timeout 2 nc -w 2 -q 1 localhost 2181 | grep imok
+  failureThreshold: 6
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 5
 ## @param customStartupProbe Custom startupProbe that overrides the default one
 ##
 customStartupProbe: {}
@@ -311,7 +332,13 @@ podSecurityContext:
 containerSecurityContext:
   enabled: true
   runAsUser: 1001
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
   runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
 ## @param hostAliases ZooKeeper pods host aliases
 ## https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
 ##
@@ -320,11 +347,15 @@ hostAliases: []
 ## Precedence order: .Values.podLabels (highest) -> .Values.commonLabels (middle) -> .Values.global.commonLabels (lowest)
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 ##
-podLabels: {}
+podLabels:
+  app.kubernetes.io/part-of: suse-observability
 ## @param podAnnotations Annotations for ZooKeeper pods
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 ##
-podAnnotations: {}
+podAnnotations:
+  ad.stackstate.com/zookeeper.check_names: '["openmetrics"]'
+  ad.stackstate.com/zookeeper.init_configs: "[{}]"
+  ad.stackstate.com/zookeeper.instances: '[ { "prometheus_url": "http://%%host%%:9141/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
 ## @param podAffinityPreset Pod affinity preset. Ignored if `affinity` is set. Allowed values: `soft` or `hard`
 ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
 ##
@@ -443,7 +474,7 @@ initContainers: []
 ## @param pdb.maxUnavailable Maximum unavailable ZooKeeper replicas
 ##
 pdb:
-  create: false
+  create: true
   minAvailable: ""
   maxUnavailable: 1
 
@@ -656,7 +687,7 @@ volumePermissions:
 metrics:
   ## @param metrics.enabled Enable Prometheus to access ZooKeeper metrics endpoint
   ##
-  enabled: false
+  enabled: true
   ## @param metrics.containerPort ZooKeeper Prometheus Exporter container port
   ##
   containerPort: 9141

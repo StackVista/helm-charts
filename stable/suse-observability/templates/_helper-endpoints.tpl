@@ -30,29 +30,21 @@ Logic to determine metric store consumer group
 Logic to determine ElasticSearch endpoint.
 */}}
 {{- define "stackstate.es.endpoint" -}}
-{{- if .Values.elasticsearch.enabled -}}
-{{- .Values.elasticsearch.clusterName -}}-{{ .Values.elasticsearch.nodeGroup }}-headless:9200
-{{- else -}}
-{{- .Values.stackstate.components.all.elasticsearchEndpoint -}}
-{{- end -}}
+{{- include "stackstate.elasticsearch.fullname" . -}}-master-headless:9200
 {{- end -}}
 
 {{/*
 Logic to determine ElasticSearch host.
 */}}
 {{- define "stackstate.es.host" -}}
-{{- .Values.elasticsearch.clusterName -}}-{{ .Values.elasticsearch.nodeGroup }}-headless
+{{- include "stackstate.elasticsearch.fullname" . -}}-master-headless
 {{- end -}}
 
 {{/*
 Logic to determine Kafka endpoint.
 */}}
 {{- define "stackstate.kafka.endpoint" -}}
-{{- if .Values.kafka.enabled -}}
-{{- .Values.kafka.fullnameOverride -}}-headless:9092
-{{- else -}}
-{{- .Values.stackstate.components.all.kafkaEndpoint -}}
-{{- end -}}
+{{- include "stackstate.kafka.fullname" . -}}-headless:9092
 {{- end -}}
 
 {{/*
@@ -73,18 +65,14 @@ Logic to determine MinIO keys.
 Logic to determine Zookeeper endpoint.
 */}}
 {{- define "stackstate.zookeeper.endpoint" -}}
-{{- if .Values.zookeeper.enabled -}}
-{{- .Values.zookeeper.fullnameOverride -}}-headless:2181
-{{- else -}}
-{{- .Values.stackstate.components.all.zookeeperEndpoint -}}
-{{- end -}}
+{{- include "stackstate.zookeeper.fullname" . -}}-headless:2181
 {{- end -}}
 
 {{/*
 Clickhouse endpoint.
 */}}
 {{- define "stackstate.clickhouse.endpoint" -}}
-{{- .Values.clickhouse.fullnameOverride }}-headless:8123
+{{- include "stackstate.clickhouse.fullname" . -}}-headless:8123
 {{- end -}}
 
 {{/*

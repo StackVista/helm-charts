@@ -4,7 +4,7 @@ global:
   # Allows adding a label to all resources deployed by this chart
   commonLabels: {}
 
-clusterName: "elasticsearch"
+clusterName: "suse-observability-elasticsearch"
 nodeGroup: "master"
 
 # The service that non master groups will try to connect to when joining the cluster
@@ -24,7 +24,8 @@ minimumMasterNodes: 2
 esMajorVersion: ""
 
 # Allows adding a label to all resources deployed by this chart
-commonLabels: {}
+commonLabels:
+  app.kubernetes.io/part-of: suse-observability
 
 # Allows you to add any config files in /usr/share/elasticsearch/config/
 # such as elasticsearch.yml and log4j2.properties
@@ -40,9 +41,11 @@ createCert: false
 # Extra environment variables to append to this nodeGroup
 # This will be appended to the current 'env:' key. You can use any of the kubernetes env
 # syntax here
-extraEnvs: []
-#  - name: MY_ENVIRONMENT_VAR
-#    value: the_value_goes_here
+extraEnvs:
+  - name: action.auto_create_index
+    value: "true"
+  - name: indices.query.bool.max_clause_count
+    value: "10000"
 
 # Disable it to use your own elastic-credential Secret.
 secret:
@@ -229,7 +232,7 @@ startupProbe:
   failureThreshold: 17
 
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster-health.html#request-params wait_for_status
-clusterHealthCheckParams: "local=true"
+clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
 
 ## Use an alternate scheduler.
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
@@ -288,7 +291,7 @@ keystore: []
 
 prometheus-elasticsearch-exporter:
   # prometheus-elasticsearch-exporter.enabled -- Enable to expose prometheus metrics
-  enabled: false
+  enabled: true
   image:
     registry: quay.io
     # prometheus-elasticsearch-exporter.image.repository -- Elastichsearch Prometheus exporter image repository
@@ -299,7 +302,13 @@ prometheus-elasticsearch-exporter:
   # prometheus-elasticsearch-exporter.servicemonitor.enabled -- enable to create a servicemonitor for prometheus operator
     enabled: false
   # prometheus-elasticsearch-exporter.podAnnotations -- custom annotations on the pod
-  podAnnotations: {}
+  podAnnotations:
+    ad.stackstate.com/exporter.check_names: '["openmetrics"]'
+    ad.stackstate.com/exporter.init_configs: "[{}]"
+    ad.stackstate.com/exporter.instances: '[ { "prometheus_url": "http://%%host%%:9108/metrics", "namespace": "stackstate", "metrics": ["elasticsearch_indices_store_*", "elasticsearch_cluster_health_*"] } ]'
+  serviceMonitor:
+    enabled: false
+    labels: {}
   es:
     # prometheus-elasticsearch-exporter.es.uri -- URI of Elasticsearch to monitor, override when changing clusterName or nodeGroup (format is <protocol>://<clusterName>-<nodegroup>:<httpPort>)
-    uri: http://elasticsearch-master:9200
+    uri: http://suse-observability-elasticsearch-master:9200
