@@ -2864,7 +2864,7 @@ clickhouse:
       # clickhouse.backup.image.repository -- Repository where to get the image from.
       repository: stackstate/clickhouse-backup
       # clickhouse.backup.image.tag -- Container image tag for 'clickhouse' backup containers.
-      tag: 2.6.39-a7171eea-161-release
+      tag: 2.6.43-47a710b2-169-release
     # clickhouse.backup.bucketName -- Name of the storage bucket where ClickHouse backups are stored.
     bucketName: 'sts-clickhouse-backup'
     # backup.clickhouse.s3Prefix -- Prefix (dir name) used to store backup files.
