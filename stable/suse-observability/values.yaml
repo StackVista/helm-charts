@@ -2623,7 +2623,7 @@ victoria-metrics:
       # victoria-metrics.restore.image.repository -- Base container image repository for 'vmrestore' containers.
       repository: stackstate/vmrestore
       # victoria-metrics.restore.image.tag -- Container image tag for 'vmrestore' containers.
-      tag: v1.109.0-97bc8d04-release-48
+      tag: v1.136.0-2ca23936-release-51
       # victoria-metrics.restore.image.pullPolicy -- Image pull policy for `vmrestore` containers.
       pullPolicy: IfNotPresent
     securityContext:
