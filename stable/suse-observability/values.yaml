@@ -1642,7 +1642,7 @@ stackstate:
         # stackstate.components.workloadObserver.image.repository -- Repository of the workloadObserver component Docker image.
         repository: stackstate/workload-observer
         # stackstate.components.workloadObserver.image.tag -- Tag used for the `workloadObserver` component Docker image..
-        tag: 864f55e0-153-release
+        tag: 864f55e0-164-release
       # stackstate.components.workloadObserver.podAnnotations -- Extra annotations
       podAnnotations: {}
       # stackstate.components.workloadObserver.resources -- Resource allocation for `workloadObserver` pods.
