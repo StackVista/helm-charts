@@ -4,7 +4,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"gitlab.com/StackVista/DevOps/helm-charts/helmtestutil"
+	"gopkg.in/yaml.v3"
 )
 
 const releaseName = "otel"
@@ -123,4 +125,26 @@ func TestOpenTelemetryCollectorConfigSelection(t *testing.T) {
 	assert.NotContains(t, stackPacks2CollectorConfig, "ststopology") // current topology connector
 	assert.Contains(t, stackPacks2CollectorConfig, "sts_kafka_exporter")
 	assert.Contains(t, stackPacks2CollectorConfig, "trace_statements", "trace_statements are only present for testing purposes and should not be in standard config")
+}
+
+func TestStackpacks2SendingQueueNoEnabledField(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, releaseName, "values/enable-stackpacks2.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	configYaml := resources.ConfigMaps["otel-opentelemetry-collector"].Data["relay"]
+	require.NotEmpty(t, configYaml, "ConfigMap relay data should not be empty")
+
+	var config struct {
+		Exporters map[string]map[string]interface{} `yaml:"exporters"`
+	}
+	require.NoError(t, yaml.Unmarshal([]byte(configYaml), &config))
+
+	// OTel Collector v0.149.0+ removed 'enabled' from QueueBatchConfig — the queue
+	// is enabled by its presence, not by an internal flag. Verify no exporter uses it.
+	for name, exporter := range config.Exporters {
+		if sq, ok := exporter["sending_queue"].(map[string]interface{}); ok {
+			_, hasEnabled := sq["enabled"]
+			assert.False(t, hasEnabled, "exporters.%s.sending_queue must not contain 'enabled'", name)
+		}
+	}
 }
