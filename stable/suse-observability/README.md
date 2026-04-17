@@ -18,7 +18,7 @@ Current chart version is `2.9.1-pre.90`
 | file://../kafka/ | kafka | 19.1.3-suse-observability.25 |
 | file://../kafkaup-operator/ | kafkaup-operator | 0.1.28 |
 | file://../kubernetes-rbac-agent/ | kubernetes-rbac-agent | 0.0.27 |
-| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.27 |
+| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.28 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../suse-observability-sizing/ | suse-observability-sizing | 0.1.15 |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.49 |
