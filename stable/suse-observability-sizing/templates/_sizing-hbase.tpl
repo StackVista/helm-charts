@@ -496,6 +496,16 @@ Returns: Resolved replica count (callers pipe to | int as needed)
 {{- end }}
 
 {{/*
+Get effective hdfs datanode replication, overridable through the chart.
+Usage: {{ include "common.sizing.hdfs.datanode.effectiveReplication" . }}
+Returns: Resolved replication (callers pipe to | int as needed)
+*/}}
+{{- define "common.sizing.hdfs.datanode.effectiveReplication" -}}
+{{- $sizingReplication := include "common.sizing.hdfs.replication" . | trim -}}
+{{- include "common.sizing.effectiveCount" (dict "sizingCount" $sizingReplication "chartDefault" "2" "valuesCount" .Values.hdfs.replication) -}}
+{{- end }}
+
+{{/*
 Get hbase experimental.execLivenessProbe.enabled
 Usage: {{ include "common.sizing.hbase.experimental.execLivenessProbe.enabled" . }}
 */}}
@@ -567,12 +577,23 @@ Returns: 1 for non-HA profiles, 2 for HA profiles, empty if no profile set
 {{/*
 Get hdfs datanode replicaCount
 Usage: {{ include "common.sizing.hdfs.datanode.replicaCount" . }}
-Returns: 1 for non-HA profiles, 3 for HA profiles, empty if no profile set
+Returns: 1 for non-HA profiles, 3 for HA profiles, 5 for 4000-ha profile, empty if no profile set
 */}}
 {{- define "common.sizing.hdfs.datanode.replicaCount" -}}
-{{- $profileMap := dict "trial" "1" "10-nonha" "1" "20-nonha" "1" "50-nonha" "1" "100-nonha" "1" "150-ha" "3" "250-ha" "3" "500-ha" "3" "4000-ha" "3" -}}
+{{- $profileMap := dict "trial" "1" "10-nonha" "1" "20-nonha" "1" "50-nonha" "1" "100-nonha" "1" "150-ha" "3" "250-ha" "3" "500-ha" "3" "4000-ha" "5" -}}
 {{- include "common.sizing.profileLookup" (dict "profileMap" $profileMap "context" .) -}}
 {{- end }}
+
+{{/*
+Get hdfs datanode replication
+Usage: {{ include "common.sizing.hdfs.replication" . }}
+Returns: 1 for non-HA profiles 2 for 150-500ha profiles, 3 for 4000-HA profile
+*/}}
+{{- define "common.sizing.hdfs.replication" -}}
+{{- $profileMap := dict "trial" "1" "10-nonha" "1" "20-nonha" "1" "50-nonha" "1" "100-nonha" "1" "150-ha" "2" "250-ha" "2" "500-ha" "2" "4000-ha" "3" -}}
+{{- include "common.sizing.profileLookup" (dict "profileMap" $profileMap "context" .) -}}
+{{- end }}
+
 
 {{/*
 Get hdfs secondarynamenode replicaCount

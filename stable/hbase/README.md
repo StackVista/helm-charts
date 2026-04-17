@@ -116,6 +116,7 @@ Current chart version is `0.2.137`
 | hdfs.namenode.sizing | object | `{"javaHeapMemoryFraction":"75"}` | HDFS name node memory sizing for JVM |
 | hdfs.namenode.terminationGracePeriodSeconds | int | `30` | Grace period to stop the pod. We give some time to fix under replicated blocks in Pre Stop hook |
 | hdfs.namenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| hdfs.replication | string | `nil` | Sets the target amount of replication. These are the amount replicas hdfs strives for. (If hdfs.datanode.replicaCount is set to a value less than this, the replication factor will be equal to the replicaCount.) |
 | hdfs.scc.enabled | bool | `false` | Whether to create an OpenShift SecurityContextConfiguration (required when running on OpenShift) |
 | hdfs.secondarynamenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.secondarynamenode.enabled | bool | `true` | Enable / disable secondary name nodes. |

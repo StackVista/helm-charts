@@ -98,13 +98,18 @@ Fails if global.suseObservability.sizing.profile is set but invalid
 {{- end -}}
 
 {{/*
-Profile lookup helper - returns value from a dict based on current sizing profile
-Usage: {{ include "common.sizing.profileLookup" (dict "profileMap" $profileMap "context" .) }}
+Resolve effective replica count with backwards-compatibility support.
+Usage: {{ include "common.sizing.effectiveCount" (dict "sizingCount" $sizing "chartDefault" "3" "valuesCount" .Values.replicaCount) }}
 Parameters:
-  - profileMap: A dict mapping profile names to values
-  - context: The template context (.)
-Returns: The value for the current profile, or empty string if no profile is set
+  - sizingCount: Already-resolved sizing profile value (from common.sizing.<component>.replicaCount)
+  - chartDefault: Backwards-compatibility default matching pre-global-mode parent chart
+  - valuesCount: The .Values.xxx.replicaCount value
+Returns: The raw resolved value (callers pipe to | int as needed)
 */}}
+{{- define "common.sizing.effectiveCount" -}}
+{{- ternary .valuesCount (.sizingCount | default .chartDefault) (not (kindIs "invalid" .valuesCount)) -}}
+{{- end -}}
+
 {{/*
 Resolve effective replica count with backwards-compatibility support.
 Usage: {{ include "common.sizing.effectiveReplicaCount" (dict "sizingReplicaCount" $sizing "chartDefault" "3" "valuesReplicaCount" .Values.replicaCount) }}
@@ -115,9 +120,17 @@ Parameters:
 Returns: The raw resolved value (callers pipe to | int as needed)
 */}}
 {{- define "common.sizing.effectiveReplicaCount" -}}
-{{- ternary .valuesReplicaCount (.sizingReplicaCount | default .chartDefault) (not (kindIs "invalid" .valuesReplicaCount)) -}}
+{{- include "common.sizing.effectiveCount" (dict "sizingCount" .sizingReplicaCount "chartDefault" .chartDefault "valuesCount" .valuesReplicaCount) -}}
 {{- end -}}
 
+{{/*
+Profile lookup helper - returns value from a dict based on current sizing profile
+Usage: {{ include "common.sizing.profileLookup" (dict "profileMap" $profileMap "context" .) }}
+Parameters:
+  - profileMap: A dict mapping profile names to values
+  - context: The template context (.)
+Returns: The value for the current profile, or empty string if no profile is set
+*/}}
 {{- define "common.sizing.profileLookup" -}}
 {{- $profileMap := .profileMap -}}
 {{- $context := .context -}}

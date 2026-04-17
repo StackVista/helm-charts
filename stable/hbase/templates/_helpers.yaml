@@ -54,7 +54,13 @@ We use HDFS_CONF_dfs_namenode_replication_min to ensure the desired amount of re
 - name: HDFS_CONF_dfs_datanode_address
   value: "0.0.0.0:50010"
 - name: HDFS_CONF_dfs_replication
-  value: "2"
+  {{- $effectiveDatanodeCount := include "common.sizing.hdfs.datanode.effectiveReplicaCount" . | int -}}
+  {{- $replicationCount := include "common.sizing.hdfs.datanode.effectiveReplication" . | int -}}
+  {{- if gt $effectiveDatanodeCount $replicationCount }}
+  value: {{ $replicationCount | quote }}
+  {{- else }}
+  value: {{ $effectiveDatanodeCount | quote }}
+  {{- end }}
 - name: HDFS_CONF_dfs_namenode_replication_min
   {{- $effectiveDatanodeCount := include "common.sizing.hdfs.datanode.effectiveReplicaCount" . | int -}}
   {{- if gt $effectiveDatanodeCount (int .Values.hdfs.minReplication) }}
