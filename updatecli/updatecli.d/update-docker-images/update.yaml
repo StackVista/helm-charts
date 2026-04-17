@@ -250,6 +250,16 @@ sources:
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
+  s3proxy:
+    name: "s3proxy"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/s3proxy"
+      architecture: "linux/amd64"
+      tagfilter: ".*-[a-f0-9]{8}-release-[0-9]+$"
+      versionfilter:
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
   httpHeaderInjectorChart:
     name: "http-header-injector chart"
     kind: helmchart
@@ -521,3 +531,12 @@ targets:
     spec:
       file: "stable/suse-observability-agent/Chart.yaml"
       key: "$.dependencies[0].version"
+  s3proxy:
+    name: "s3proxy"
+    kind: yaml
+    scmid: "default"
+    sourceid: s3proxy
+    dependson: ["target#httpHeaderInjectorChartVersion"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.s3proxy.image.tag"
