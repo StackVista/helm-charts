@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.2.43`
+Current chart version is `1.2.44`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
