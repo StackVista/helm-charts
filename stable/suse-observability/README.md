@@ -646,7 +646,7 @@ If you encounter issues not covered here:
 | opentelemetry-collector.fullnameOverride | string | `"suse-observability-otel-collector"` | Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.** |
 | opentelemetry-collector.image.registry | string | `"quay.io"` |  |
 | opentelemetry-collector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Repository where to get the image from. |
-| opentelemetry-collector.image.tag | string | `"v0.0.30"` | Container image tag for 'opentelemetry-collector' containers. |
+| opentelemetry-collector.image.tag | string | `"v0.0.31"` | Container image tag for 'opentelemetry-collector' containers. |
 | opentelemetry-collector.initContainers[0].command[0] | string | `"sh"` |  |
 | opentelemetry-collector.initContainers[0].command[1] | string | `"-c"` |  |
 | opentelemetry-collector.initContainers[0].command[2] | string | `"/entrypoint -c suse-observability-clickhouse:9000,suse-observability-vmagent:8429,suse-observability-kafka-headless:9092 -t 300\n"` |  |
