@@ -52,6 +52,25 @@ data:
       regex: "pod"
 
     # Metrics scope
+    # Okey here it goes: We might have cluster scoped or namespace scoped metrics.
+    # - Cluster scoped metric get just the cluster, but with the ':' at the end. This makes is possible to do a prefix match
+    #   on scoped clusters without accidentally matching cluster with the same prefix in the name.
+    # - If a metric has cluster+namespace, the vmagent relabel logic will make sure that the namespace relabels lower in this
+    #   list will replace the cluster ones, avoiding accidentally making a namespace metric cluster-wide.
+
+    # Cluster scoped
+    - action: replace
+      source_labels: [cluster_name]
+      target_label: "_scope_"
+      regex: "(.+)"
+      replacement: "k8s:{{ "{{cluster_name}}" }}:"
+    - action: replace
+      source_labels: [k8s_cluster_name]
+      target_label: "_scope_"
+      regex: "(.+)"
+      replacement: "k8s:{{ "{{k8s_cluster_name}}" }}:"
+
+    # Namespace scoped
     - action: replace
       source_labels: [cluster_name, namespace]
       target_label: "_scope_"
