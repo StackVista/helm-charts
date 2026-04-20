@@ -536,7 +536,7 @@ logsAgent:
     # logsAgent.image.repository -- Base container image repository.
     repository: stackstate/promtail
     # logsAgent.image.tag -- Default container image tag.
-    tag: 3.6.10-f51a4334-release-134
+    tag: 3.6.10-f51a4334-release-135
     # logsAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
