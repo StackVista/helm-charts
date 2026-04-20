@@ -22,11 +22,11 @@ func TestHBaseDistributedMode(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, releaseName, "values/distributed-mode.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	// In Distributed mode, should have multiple StatefulSets (hdfs-snn is disabled by default)
 	expectedStatefulSets := []string{
 		releaseName + "-hbase-hbase-master",
 		releaseName + "-hbase-hbase-rs",
 		releaseName + "-hbase-hdfs-nn",
+		releaseName + "-hbase-hdfs-snn",
 		releaseName + "-hbase-hdfs-dn",
 		releaseName + "-hbase-tephra",
 	}

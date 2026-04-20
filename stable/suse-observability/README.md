@@ -14,7 +14,7 @@ Current chart version is `2.9.1-pre.102`
 | file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.27 |
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.21 |
-| file://../hbase/ | hbase | 0.2.134 |
+| file://../hbase/ | hbase | 0.2.135 |
 | file://../kafka/ | kafka | 19.1.3-suse-observability.25 |
 | file://../kafkaup-operator/ | kafkaup-operator | 0.1.28 |
 | file://../kubernetes-rbac-agent/ | kubernetes-rbac-agent | 0.0.27 |
@@ -513,42 +513,11 @@ If you encounter issues not covered here:
 | global.wait.image.registry | string | `"quay.io"` | Base container image registry for wait containers. |
 | global.wait.image.repository | string | `"stackstate/wait"` | Base container image repository for wait containers. |
 | global.wait.image.tag | string | `"1.0.12-9657337c-release-191"` | Container image tag for wait containers. |
-| hbase.all.metrics.agentAnnotationsEnabled | bool | `true` |  |
-| hbase.all.metrics.enabled | bool | `true` |  |
-| hbase.commonLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Add additional labels to all resources created for all hbase resources |
-| hbase.console.enabled | bool | `true` | Enabled by default for debugging, but with 0 replicas. Manually scale up to 1 replica and open a shell in the container to access the stackgraph console. |
-| hbase.console.integrity.enabled | bool | `false` | Enable / disable periodic integrity check to run though a cronjob. |
-| hbase.console.integrity.schedule | string | `"*/30 * * * *"` | Schedule at which the integrity check runs |
-| hbase.enabled | bool | `true` | Enable / disable chart-based HBase. |
-| hbase.hbase.master.experimental.execLivenessProbe.enabled | bool | `true` |  |
-| hbase.hbase.master.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for HBase master pods. |
-| hbase.hbase.master.extraEnv.open | object | `{}` | Extra open environment variables to inject into HBase master pods. |
-| hbase.hbase.master.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into HBase master pods via a Secret object. |
 | hbase.hbase.master.replicaCount | string | `nil` | Number of HBase master node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
-| hbase.hbase.regionserver.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for HBase regionserver pods. |
-| hbase.hbase.regionserver.extraEnv.open | object | `{}` | Extra open environment variables to inject into HBase regionserver pods. |
-| hbase.hbase.regionserver.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into HBase regionserver pods via a Secret object. |
 | hbase.hbase.regionserver.replicaCount | string | `nil` | Number of HBase regionserver node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
-| hbase.hdfs.datanode.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for HDFS datanode pods. |
-| hbase.hdfs.datanode.extraEnv.open | object | `{}` | Extra open environment variables to inject into HDFS datanode pods. |
-| hbase.hdfs.datanode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into HDFS datanode pods via a Secret object. |
 | hbase.hdfs.datanode.replicaCount | string | `nil` | Number of HDFS datanode replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
-| hbase.hdfs.minReplication | int | `2` | Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead) |
-| hbase.hdfs.namenode.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for HDFS namenode pods. |
-| hbase.hdfs.namenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into HDFS namenode pods. |
-| hbase.hdfs.namenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into HDFS namenode pods via a Secret object. |
-| hbase.hdfs.secondarynamenode.enabled | bool | `true` |  |
-| hbase.hdfs.secondarynamenode.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for HDFS secondary namenode pods. |
-| hbase.hdfs.secondarynamenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into HDFS secondary namenode pods. |
-| hbase.hdfs.secondarynamenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into HDFS secondary namenode pods via a Secret object. |
 | hbase.hdfs.version | string | `"java21-8-aef270ee-release-365"` | HDFS image build version (e.g. java21-8-27156f06-353). Derived from hadoop docker tag with semver prefix stripped. Updated by updatecli. |
-| hbase.stackgraph.version | string | `"7.13.23"` | The StackGraph server version, must be compatible with the StackState version |
-| hbase.tephra.extraEnv | object | `{"open":{},"secret":{}}` | Extra environment variables for Tephra pods. |
-| hbase.tephra.extraEnv.open | object | `{}` | Extra open environment variables to inject into Tephra pods. |
-| hbase.tephra.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into Tephra pods via a Secret object. |
 | hbase.tephra.replicaCount | string | `nil` | Number of Tephra replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
-| hbase.version | string | `"2.5"` | Version of hbase to use |
-| hbase.zookeeper.externalServers | string | `"suse-observability-zookeeper-headless"` | External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**. |
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |
 | ingress.enabled | bool | `false` | Enable use of ingress controllers. |
 | ingress.hosts | list | `[]` | List of ingress hostnames; the paths are fixed to StackState backend services |

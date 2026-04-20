@@ -2,7 +2,7 @@
 
 Helm chart for StackState HBase -- includes Zookeeper, and Hadoop for persistent storage.
 
-Current chart version is `0.2.134`
+Current chart version is `0.2.135`
 
 **Homepage:** <https://gitlab.com/stackvista/devops/helm-charts.git>
 
@@ -27,12 +27,13 @@ Current chart version is `0.2.134`
 | all.image.pullSecretUsername | string | `nil` | Username used to log in to the registry to pull Docker images of all pods. |
 | all.image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
 | all.metrics.agentAnnotationsEnabled | bool | `true` |  |
-| all.metrics.enabled | bool | `false` | Enable metrics port. |
+| all.metrics.enabled | bool | `true` | Enable metrics port. |
 | all.metrics.servicemonitor.additionalLabels | object | `{}` | Additional labels for targeting Prometheus operator instances. |
 | all.metrics.servicemonitor.enabled | bool | `false` | Enable `ServiceMonitor` object; `all.metrics.enabled` *must* be enabled. |
 | all.nodeSelector | object | `{}` | Node labels for pod assignment on all components. |
 | all.sizing | object | `{"baseMemoryConsumption":"125Mi","javaHeapMemoryFraction":"75"}` | Default memory sizing for JVMs in pods |
 | all.tolerations | list | `[]` | Toleration labels for pod assignment on all components. |
+| commonLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Add additional labels to all resources created for all hbase resources |
 | console.affinity | object | `{}` | Affinity settings for pod assignment. |
 | console.enabled | bool | `true` | Enable / disable deployment of the stackgraph-console for debugging. |
 | console.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
@@ -58,7 +59,7 @@ Current chart version is `0.2.134`
 | global.wait.image.repository | string | `""` | Base container image repository for wait containers. |
 | global.wait.image.tag | string | `""` | Container image tag for wait containers. |
 | hbase.master.affinity | object | `{}` | Affinity settings for pod assignment. |
-| hbase.master.experimental.execLivenessProbe.enabled | bool | `false` | Whether to use a new scripted livenessProbe instead of the original HTTP check. Requires >= 4.11.5 version of the StackGraph docker images |
+| hbase.master.experimental.execLivenessProbe.enabled | bool | `true` | Whether to use a new scripted livenessProbe instead of the original HTTP check. Requires >= 4.11.5 version of the StackGraph docker images |
 | hbase.master.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hbase.master.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | hbase.master.image.pullPolicy | string | `nil` | Pull policy for HBase masters, defaults to `stackgraph.image.pullPolicy` |
@@ -102,7 +103,7 @@ Current chart version is `0.2.134`
 | hdfs.image.pullPolicy | string | `"IfNotPresent"` | Pull policy for HDFS datanode. |
 | hdfs.image.repository | string | `"stackstate/hadoop"` | Base container image repository for HDFS datanode. |
 | hdfs.image.tag | string | `nil` | Default container image tag for HDFS datanode. |
-| hdfs.minReplication | int | `1` | Sets the minimum synchronous replication that the namenode will enforce when writing a block. This gives guarantees about the amount of copies of a single block. (If hdfs.datanode.replicaCount is set to a value less than this, the replication factor will be equal to the replicaCount.) |
+| hdfs.minReplication | int | `2` | Sets the minimum synchronous replication that the namenode will enforce when writing a block. This gives guarantees about the amount of copies of a single block. (If hdfs.datanode.replicaCount is set to a value less than this, the replication factor will be equal to the replicaCount.) |
 | hdfs.namenode.affinity | object | `{}` | Affinity settings for pod assignment. |
 | hdfs.namenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hdfs.namenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
@@ -117,7 +118,7 @@ Current chart version is `0.2.134`
 | hdfs.namenode.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | hdfs.scc.enabled | bool | `false` | Whether to create an OpenShift SecurityContextConfiguration (required when running on OpenShift) |
 | hdfs.secondarynamenode.affinity | object | `{}` | Affinity settings for pod assignment. |
-| hdfs.secondarynamenode.enabled | bool | `false` | Enable / disable secondary name nodes. |
+| hdfs.secondarynamenode.enabled | bool | `true` | Enable / disable secondary name nodes. |
 | hdfs.secondarynamenode.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | hdfs.secondarynamenode.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | hdfs.secondarynamenode.nodeSelector | object | `{}` | Node labels for pod assignment. |
@@ -180,4 +181,4 @@ Current chart version is `0.2.134`
 | tephra.sizing | object | `{"javaHeapMemoryFraction":"65"}` | Tephra memory sizing for JVM |
 | tephra.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | version | string | `"2.5"` | Version of hbase to use |
-| zookeeper.externalServers | string | `""` | The list of external Zookeeper servers. |
+| zookeeper.externalServers | string | `"suse-observability-zookeeper-headless"` | The list of external Zookeeper servers. |

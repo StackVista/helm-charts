@@ -1785,98 +1785,22 @@ elasticsearch:
       tag: v1.10.0-6159e1ba-release-174
     resources: {}
 hbase:
-  # hbase.enabled -- Enable / disable chart-based HBase.
-  enabled: true
-  # hbase.commonLabels -- Add additional labels to all resources created for all hbase resources
-  commonLabels:
-    app.kubernetes.io/part-of: suse-observability
-  # hbase.version -- Version of hbase to use
-  version: "2.5"
-  all:
-    metrics:
-      enabled: true
-      # stackstate.components.all.metrics.agentAnnotationsEnabled -- Put annotations on each pod to instruct the stackstate agent to scrape the metrics
-      agentAnnotationsEnabled: true
-  stackgraph:
-    # hbase.stackgraph.version -- The StackGraph server version, must be compatible with the StackState version
-    version: 7.13.23
-  console:
-    # hbase.console.enabled -- Enabled by default for debugging, but with 0 replicas. Manually scale up to 1 replica and open a shell in the container to access the stackgraph console.
-    enabled: true
-    integrity:
-      # hbase.console.integrity.enabled -- Enable / disable periodic integrity check to run though a cronjob.
-      enabled: false
-      # hbase.console.integrity.schedule -- Schedule at which the integrity check runs
-      schedule: "*/30 * * * *"
   hbase:
     master:
-      experimental:
-        execLivenessProbe:
-          enabled: true
-      # hbase.hbase.master.extraEnv -- Extra environment variables for HBase master pods.
-      extraEnv:
-        # hbase.hbase.master.extraEnv.open -- Extra open environment variables to inject into HBase master pods.
-        open: {}
-        # hbase.hbase.master.extraEnv.secret -- Extra secret environment variables to inject into HBase master pods via a Secret object.
-        secret: {}
       # hbase.hbase.master.replicaCount -- Number of HBase master node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
       replicaCount: null
-      # hbase.hbase.master.resources -- Resources will be set by sizing profile. Only override if needed.
     regionserver:
-      # hbase.hbase.regionserver.extraEnv -- Extra environment variables for HBase regionserver pods.
-      extraEnv:
-        # hbase.hbase.regionserver.extraEnv.open -- Extra open environment variables to inject into HBase regionserver pods.
-        open: {}
-        # hbase.hbase.regionserver.extraEnv.secret -- Extra secret environment variables to inject into HBase regionserver pods via a Secret object.
-        secret: {}
       # hbase.hbase.regionserver.replicaCount -- Number of HBase regionserver node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
       replicaCount: null
-      # hbase.hbase.regionserver.resources -- Resources will be set by sizing profile. Only override if needed.
   hdfs:
     # hbase.hdfs.version -- HDFS image build version (e.g. java21-8-27156f06-353). Derived from hadoop docker tag with semver prefix stripped. Updated by updatecli.
     version: java21-8-aef270ee-release-366
-    # hbase.hdfs.minReplication -- Min number of copies we create from any data block. (If the hbase.hdfs.datanode.replicaCount is set to a lower value than this, we will use the replicaCount instead)
-    minReplication: 2
     datanode:
-      # hbase.hdfs.datanode.extraEnv -- Extra environment variables for HDFS datanode pods.
-      extraEnv:
-        # hbase.hdfs.datanode.extraEnv.open -- Extra open environment variables to inject into HDFS datanode pods.
-        open: {}
-        # hbase.hdfs.datanode.extraEnv.secret -- Extra secret environment variables to inject into HDFS datanode pods via a Secret object.
-        secret: {}
       # hbase.hdfs.datanode.replicaCount -- Number of HDFS datanode replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
       replicaCount: null
-      # hbase.hdfs.datanode.resources -- Resources will be set by sizing profile. Only override if needed.
-    namenode:
-      # hbase.hdfs.namenode.extraEnv -- Extra environment variables for HDFS namenode pods.
-      extraEnv:
-        # hbase.hdfs.namenode.extraEnv.open -- Extra open environment variables to inject into HDFS namenode pods.
-        open: {}
-        # hbase.hdfs.namenode.extraEnv.secret -- Extra secret environment variables to inject into HDFS namenode pods via a Secret object.
-        secret: {}
-        # hbase.hdfs.namenode.resources -- Resources will be set by sizing profile. Only override if needed.
-    secondarynamenode:
-      enabled: true
-      # hbase.hdfs.secondarynamenode.extraEnv -- Extra environment variables for HDFS secondary namenode pods.
-      extraEnv:
-        # hbase.hdfs.secondarynamenode.extraEnv.open -- Extra open environment variables to inject into HDFS secondary namenode pods.
-        open: {}
-        # hbase.hdfs.secondarynamenode.extraEnv.secret -- Extra secret environment variables to inject into HDFS secondary namenode pods via a Secret object.
-        secret: {}
-        # hbase.hdfs.secondarynamenode.resources -- Resources will be set by sizing profile. Only override if needed.
   tephra:
-    # hbase.tephra.extraEnv -- Extra environment variables for Tephra pods.
-    extraEnv:
-      # hbase.tephra.extraEnv.open -- Extra open environment variables to inject into Tephra pods.
-      open: {}
-      # hbase.tephra.extraEnv.secret -- Extra secret environment variables to inject into Tephra pods via a Secret object.
-      secret: {}
     # hbase.tephra.replicaCount -- Number of Tephra replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
     replicaCount: null
-    # hbase.tephra.resources -- Resources will be set by sizing profile. Only override if needed.
-  zookeeper:
-    # hbase.zookeeper.externalServers -- External Zookeeper if not used bundled Zookeeper chart **Don't change unless otherwise specified**.
-    externalServers: suse-observability-zookeeper-headless
 kafkaup-operator:
   enabled: true
   image:
