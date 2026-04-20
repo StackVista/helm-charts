@@ -203,7 +203,6 @@ func testCronJobPodSchedulingAndLabels(t *testing.T, resources *helmtestutil.Kub
 		podTemplate := getCronJobPodTemplate(cronjob)
 
 		testPodAnnotations(t, podTemplate.Annotations, map[string]string{
-			"all-annotation":               "all-value",
 			"clickhouse-backup-annotation": "clickhouse-value",
 		}, "CronJob", name)
 
@@ -213,7 +212,6 @@ func testCronJobPodSchedulingAndLabels(t *testing.T, resources *helmtestutil.Kub
 		}, "CronJob", name)
 
 		testNodeSelector(t, podTemplate.Spec.NodeSelector, map[string]string{
-			"all-node":               "all-value",
 			"clickhouse-backup-node": "clickhouse-value",
 		}, "CronJob", name)
 	})
@@ -227,7 +225,6 @@ func testCronJobPodSchedulingAndLabels(t *testing.T, resources *helmtestutil.Kub
 		podTemplate := getCronJobPodTemplate(cronjob)
 
 		testPodAnnotations(t, podTemplate.Annotations, map[string]string{
-			"all-annotation":               "all-value",
 			"clickhouse-backup-annotation": "clickhouse-value",
 		}, "CronJob", name)
 
@@ -368,6 +365,16 @@ func getCronJobPodTemplate(cronjob interface{}) *corev1.PodTemplateSpec {
 	return nil
 }
 
+func getCronJobLabels(cronjob interface{}) map[string]string {
+	switch cj := cronjob.(type) {
+	case batchv1.CronJob:
+		return cj.Labels
+	case batchv1beta1.CronJob:
+		return cj.Labels
+	}
+	return nil
+}
+
 func testPodAnnotations(t *testing.T, annotations map[string]string, expectedAnnotations map[string]string, resourceType string, resourceName string) {
 	for key, expectedValue := range expectedAnnotations {
 		actualValue, exists := annotations[key]
@@ -442,10 +449,13 @@ func TestJobSchedulingAllComponentLabels(t *testing.T) {
 		}
 	})
 
-	// Test all CronJobs
+	// Test all CronJobs except clickhouse backup cronjobs (covered by TestClickHouseBackupCronJobScheduling)
 	t.Run("CronJobs", func(t *testing.T) {
 		for _, cronjob := range resources.CronJobs {
 			name := getCronJobName(cronjob)
+			if getCronJobLabels(cronjob)["app.kubernetes.io/name"] == "clickhouse" {
+				continue
+			}
 			podTemplate := getCronJobPodTemplate(cronjob)
 			t.Run(name, func(t *testing.T) {
 				testPodAnnotations(t, podTemplate.Annotations, expectedAnnotations, "CronJob", name)
@@ -498,4 +508,41 @@ func testTolerationsAll(t *testing.T, tolerations []corev1.Toleration, resourceT
 	assert.NotNil(t, tolerations, "%s '%s' should have tolerations", resourceType, resourceName)
 	// We expect at least 1 toleration from "all"
 	assert.GreaterOrEqual(t, len(tolerations), 1, "%s '%s' should have at least 1 toleration", resourceType, resourceName)
+}
+
+// TestClickHouseBackupCronJobScheduling tests that the clickhouse backup CronJobs source pod
+// scheduling and labels from global.* and clickhouse.backup.* values rather than legacy
+// stackstate.components.* values.
+func TestClickHouseBackupCronJobScheduling(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability", "values/pod_scheduling_labels.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	expectedAnnotations := map[string]string{
+		"clickhouse-backup-annotation": "clickhouse-value",
+	}
+	expectedLabels := map[string]string{
+		"all-label":               "all-value",
+		"clickhouse-backup-label": "clickhouse-value",
+	}
+	expectedNodeSelector := map[string]string{
+		"clickhouse-backup-node": "clickhouse-value",
+	}
+
+	found := 0
+	for _, cronjob := range resources.CronJobs {
+		if getCronJobLabels(cronjob)["app.kubernetes.io/name"] != "clickhouse" {
+			continue
+		}
+		found++
+		name := getCronJobName(cronjob)
+		podTemplate := getCronJobPodTemplate(cronjob)
+		t.Run(name, func(t *testing.T) {
+			testPodAnnotations(t, podTemplate.Annotations, expectedAnnotations, "CronJob", name)
+			testPodLabels(t, podTemplate.Labels, expectedLabels, "CronJob", name)
+			testNodeSelector(t, podTemplate.Spec.NodeSelector, expectedNodeSelector, "CronJob", name)
+			testAffinity(t, podTemplate.Spec.Affinity, "CronJob", name)
+			testTolerationsAll(t, podTemplate.Spec.Tolerations, "CronJob", name)
+		})
+	}
+	assert.GreaterOrEqual(t, found, 2, "expected at least 2 clickhouse backup cronjobs (full + incremental), got %d", found)
 }

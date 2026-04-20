@@ -13,7 +13,7 @@ func TestClickhouseMergeTreeDefaults(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	// Check ConfigMap exists
-	configMap, ok := resources.ConfigMaps["clickhouse"]
+	configMap, ok := resources.ConfigMaps["suse-observability-clickhouse"]
 	assert.True(t, ok, "clickhouse ConfigMap should exist")
 
 	// Get the configuration data
@@ -38,7 +38,7 @@ func TestClickhouseMergeTreeCustomValues(t *testing.T) {
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
 	// Check ConfigMap exists
-	configMap, ok := resources.ConfigMaps["clickhouse"]
+	configMap, ok := resources.ConfigMaps["suse-observability-clickhouse"]
 	assert.True(t, ok, "clickhouse ConfigMap should exist")
 
 	// Get the configuration data

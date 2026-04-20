@@ -102,9 +102,7 @@ Comma-separated list of the endpoints that need to be up to consider hdfs runnin
 Comma-separated list of the endpoints that need to be up and running before the initializer can be started.
 */}}
 {{ define "stackstate.initializer.prerequisites" -}}
-{{- if .Values.clickhouse.enabled -}}
 {{- include "stackstate.clickhouse.endpoint" . -}},
-{{- end -}}
 {{- include "stackstate.kafka.endpoint" . -}},
 {{- include "stackgraph.hbase.waitfor" . -}}
 {{- end -}}

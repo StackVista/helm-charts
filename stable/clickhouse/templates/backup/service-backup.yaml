@@ -1,0 +1,25 @@
+{{- if .Values.global.backup.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "clickhouse.backup.service.name" . }}
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: clickhouse-backup
+spec:
+  clusterIP: None
+  ports:
+    - name: backup-api
+      port: 7171
+      protocol: TCP
+      targetPort: backup-api
+    - name: tcp
+      port: 9000
+      protocol: TCP
+      targetPort: tcp
+  selector:
+    app.kubernetes.io/component: clickhouse
+    app.kubernetes.io/name: clickhouse
+    shard: "0"
+    statefulset.kubernetes.io/pod-name: "suse-observability-clickhouse-shard0-0"
+  type: ClusterIP
+{{- end }}

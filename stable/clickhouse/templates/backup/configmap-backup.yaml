@@ -1,4 +1,5 @@
-{{- define "stackstate.clickhouse-backup.configmap" -}}
+apiVersion: v1
+kind: ConfigMap
 metadata:
   name: suse-observability-clickhouse-backup
 data:
@@ -14,7 +15,7 @@ data:
       backups_to_keep_local: -1      # BACKUPS_TO_KEEP_LOCAL, how many latest local backup should be kept, 0 means all created backups will be stored on local disk
       # -1 means backup will keep after `create` but will delete after `create_remote` command
       # You can run `clickhouse-backup delete local <backup_name>` command to remove temporary backup files from the local disk
-      backups_to_keep_remote: {{ .Values.clickhouse.backup.config.keep_remote }}      # BACKUPS_TO_KEEP_REMOTE, how many latest backup should be kept on remote storage, 0 means all uploaded backups will be stored on remote storage.
+      backups_to_keep_remote: {{ .Values.backup.config.keep_remote }}      # BACKUPS_TO_KEEP_REMOTE, how many latest backup should be kept on remote storage, 0 means all uploaded backups will be stored on remote storage.
       # If old backups are required for newer incremental backup then it won't be deleted. Be careful with long incremental backup sequences.
       log_level: info                # LOG_LEVEL, a choice from `debug`, `info`, `warn`, `error`
       allow_empty_backups: false     # ALLOW_EMPTY_BACKUPS
@@ -56,8 +57,8 @@ data:
       rbac_backup_always: true # always, backup RBAC objects
       rbac_resolve_conflicts: "recreate"  # action, when RBAC object with the same name already exists, allow "recreate", "ignore", "fail" values
     clickhouse:
-      username: "{{ .Values.clickhouse.auth.username }}"                # CLICKHOUSE_USERNAME
-      password: "{{ .Values.clickhouse.auth.password }}"                     # CLICKHOUSE_PASSWORD
+      username: "{{ .Values.auth.username }}"                # CLICKHOUSE_USERNAME
+      password: "{{ .Values.auth.password }}"                     # CLICKHOUSE_PASSWORD
       host: localhost                  # CLICKHOUSE_HOST, To make backup data `clickhouse-backup` requires access to the same file system as clickhouse-server, so `host` should localhost or address of another docker container on the same machine, or IP address bound to some network interface on the same host.
       port: 9000                       # CLICKHOUSE_PORT, don't use 8123, clickhouse-backup doesn't support HTTP protocol
       # CLICKHOUSE_DISK_MAPPING, use this mapping when your `system.disks` are different between the source and destination clusters during backup and restore process.
@@ -111,8 +112,8 @@ data:
     s3:
       access_key: ""                   # S3_ACCESS_KEY, injected via env var from secret
       secret_key: ""                   # S3_SECRET_KEY, injected via env var from secret
-      bucket: "{{ .Values.clickhouse.backup.bucketName }}"                       # S3_BUCKET
-      endpoint: "http://{{ include "stackstate.s3proxy.endpoint" . }}"                     # S3_ENDPOINT
+      bucket: "{{ .Values.backup.bucketName }}"                       # S3_BUCKET
+      endpoint: "http://{{ .Values.backup.s3.endpoint }}"                     # S3_ENDPOINT
       #  region: us-east-1                # S3_REGION
       # AWS changed S3 defaults in April 2023 so that all new buckets have ACL disabled: https://aws.amazon.com/blogs/aws/heads-up-amazon-s3-security-changes-are-coming-in-april-of-2023/
       # They also recommend that ACLs are disabled: https://docs.aws.amazon.com/AmazonS3/latest/userguide/ensure-object-ownership.html
@@ -120,7 +121,7 @@ data:
       acl: private                     # S3_ACL
       assume_role_arn: ""              # S3_ASSUME_ROLE_ARN
       force_path_style: true           # S3_FORCE_PATH_STYLE
-      path: "{{ include "ensureTrailingSlashIfNotEmpty" .Values.clickhouse.backup.s3Prefix }}" # S3_PATH, `system.macros` values can be applied as {macro_name}
+      path: "{{ include "clickhouse.ensureTrailingSlashIfNotEmpty" .Values.backup.s3Prefix }}" # S3_PATH, `system.macros` values can be applied as {macro_name}
       object_disk_path: ""             # S3_OBJECT_DISK_PATH, path for backup of part from `s3` object disk, if disk present, then shall not be zero and shall not be prefixed by `path`
       disable_ssl: true               # S3_DISABLE_SSL
       compression_level: 1             # S3_COMPRESSION_LEVEL
@@ -172,8 +173,3 @@ data:
       create_integration_tables: true # API_CREATE_INTEGRATION_TABLES, create `system.backup_list` and `system.backup_actions`
       complete_resumable_after_restart: true # API_COMPLETE_RESUMABLE_AFTER_RESTART, after API server startup, if `/var/lib/clickhouse/backup/*/(upload|download).state` present, then operation will continue in the background
       watch_is_main_process: false # WATCH_IS_MAIN_PROCESS, treats 'watch' command as a main api process, if it is stopped unexpectedly, api server is also stopped. Does not stop api server if 'watch' command canceled by the user.
-{{- end -}}
-
-{{- $commonConfigMap := fromYaml (include "common.configmap" .) -}}
-{{- $clickHouseBackuConfigmap := fromYaml (include "stackstate.clickhouse-backup.configmap" .) -}}
-{{- toYaml (merge $clickHouseBackuConfigmap $commonConfigMap) -}}

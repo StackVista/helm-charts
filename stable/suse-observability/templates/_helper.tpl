@@ -33,6 +33,7 @@ Internal constants — values that are fixed by the application and not user-con
 {{- define "stackstate.zookeeper.fullname" -}}suse-observability-zookeeper{{- end -}}
 {{- define "stackstate.elasticsearch.fullname" -}}suse-observability-elasticsearch{{- end -}}
 {{- define "stackstate.clickhouse.fullname" -}}suse-observability-clickhouse{{- end -}}
+{{- define "stackstate.backup.clickhouse.backup.service" -}}suse-observability-clickhouse-backup{{- end -}}
 {{- define "stackstate.kafka.topicRetention" -}}86400000{{- end -}}
 {{- define "stackstate.kafka.topic.stsMetricsV2.partitionCount" -}}10{{- end -}}
 

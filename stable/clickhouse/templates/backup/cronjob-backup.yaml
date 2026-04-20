@@ -1,0 +1,80 @@
+{{- define "clickhouse.backup.cronjob" -}}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: suse-observability-clickhouse-{{ .job_name }}
+  labels:
+    app.kubernetes.io/name: clickhouse
+    app.kubernetes.io/component: backup
+    {{- include "suse-observability.labels.global" . | nindent 4 }}
+spec:
+  concurrencyPolicy: Forbid
+  schedule: {{ .cron_schedule | quote }}
+  jobTemplate:
+    metadata:
+      labels:
+        app.kubernetes.io/name: clickhouse
+        app.kubernetes.io/component: backup
+        {{- include "suse-observability.labels.global" . | nindent 8 }}
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+        {{- with .Values.backup.podAnnotations }}
+          annotations:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+          labels:
+            app.kubernetes.io/name: clickhouse
+            app.kubernetes.io/component: backup
+            {{- include "suse-observability.labels.global" . | nindent 12 }}
+          {{- with .Values.backup.podLabels }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        spec:
+          containers:
+            - name: backup-clickhouse-{{ .job_name }}
+              image: "{{ default .Values.backup.image.registry .Values.global.imageRegistry }}/{{ .Values.backup.image.repository }}:{{ .Values.backup.image.tag }}"
+              imagePullPolicy: IfNotPresent
+              command:
+                - '/app/scripts/{{ .script_name }}.sh'
+              env:
+                - name: BACKUP_TABLES
+                  value: "{{ .Values.backup.config.tables }}"
+              volumeMounts:
+                - mountPath: /app/scripts/{{ .script_name }}.sh
+                  name: clickhouse-backup-scripts
+                  subPath: {{ .script_name }}.sh
+              securityContext:
+                runAsUser: 1001
+          {{- include "stackstate.image.pullSecret.name" (dict "context" $) | nindent 10 }}
+          volumes:
+            - name: clickhouse-backup-scripts
+              configMap:
+                name: suse-observability-clickhouse-backup-scripts
+                defaultMode: 0550
+        {{- with .Values.backup.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+        {{- $affinity := include "suse-observability.global.affinity" (dict "componentAffinity" .Values.backup.affinity "context" .) }}
+        {{- if $affinity }}
+          affinity:
+            {{- $affinity | nindent 12 }}
+        {{- end }}
+        {{- with .Values.backup.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+        {{- end }}
+          restartPolicy: Never
+{{- end -}}
+
+{{- if .Values.global.backup.enabled }}
+
+{{- $fullBackupConfig := dict "job_name" "full-backup" "script_name" "full-backup" "cron_schedule" .Values.backup.scheduled.full_schedule }}
+{{- include "clickhouse.backup.cronjob" (merge $fullBackupConfig .) }}
+---
+{{- $incrementalBackupConfig := dict "job_name" "incremental-backup" "script_name" "incremental-backup" "cron_schedule" .Values.backup.scheduled.incremental_schedule }}
+{{- include "clickhouse.backup.cronjob" (merge $incrementalBackupConfig .) }}
+
+{{- end }}

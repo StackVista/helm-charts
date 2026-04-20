@@ -1,6 +1,6 @@
 # clickhouse
 
-![Version: 3.6.9-suse-observability.25](https://img.shields.io/badge/Version-3.6.9--suse--observability.25-informational?style=flat-square) ![AppVersion: 23.7.4](https://img.shields.io/badge/AppVersion-23.7.4-informational?style=flat-square)
+![Version: 3.6.9-suse-observability.26](https://img.shields.io/badge/Version-3.6.9--suse--observability.26-informational?style=flat-square) ![AppVersion: 23.7.4](https://img.shields.io/badge/AppVersion-23.7.4-informational?style=flat-square)
 ClickHouse is an open-source column-oriented OLAP database management system. Use it to boost your database performance while providing linear scalability and hardware efficiency.
 **Homepage:** <https://bitnami.com>
 ## Maintainers
@@ -26,8 +26,25 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 | args | list | `[]` |  |
 | auth.existingSecret | string | `""` |  |
 | auth.existingSecretKey | string | `""` |  |
-| auth.password | string | `""` |  |
-| auth.username | string | `"default"` |  |
+| auth.password | string | `"admin"` |  |
+| auth.username | string | `"admin"` |  |
+| backup.affinity | object | `{}` | Affinity settings for pod assignment. |
+| backup.bucketName | string | `"sts-clickhouse-backup"` | Name of the storage bucket where ClickHouse backups are stored. |
+| backup.config.keep_remote | int | `308` | How many latest backup should be kept on remote storage. Incremental backups are executed every 1h so 308 = ~14 days. |
+| backup.config.tables | string | `"otel.*"` | Create and upload backup only matched with table name patterns, separated by comma. |
+| backup.image.registry | string | `"quay.io"` | Registry where to get the backup image from. |
+| backup.image.repository | string | `"stackstate/clickhouse-backup"` | Repository where to get the backup image from. |
+| backup.image.tag | string | `"2.6.43-47a710b2-169-release"` | Container image tag for clickhouse backup containers. |
+| backup.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| backup.podAnnotations | object | `{}` | Extra annotations for ClickHouse backup pods. |
+| backup.podLabels | object | `{}` | Extra labels for ClickHouse backup pods. |
+| backup.resources | object | `{"limit":{"cpu":"100m","memory":"250Mi"},"requests":{"cpu":"50m","memory":"250Mi"}}` | Resources of the backup tool. |
+| backup.s3.endpoint | string | `""` | S3-compatible endpoint for backup storage (set by parent chart). |
+| backup.s3.secretName | string | `""` | Name of the secret containing S3 credentials (set by parent chart). |
+| backup.s3Prefix | string | `""` | Prefix (dir name) used to store backup files. |
+| backup.scheduled.full_schedule | string | `"45 0 * * *"` | Cron schedule for automatic full backups of ClickHouse. |
+| backup.scheduled.incremental_schedule | string | `"45 3-23 * * *"` | Cron schedule for automatic incremental backups of ClickHouse. |
+| backup.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | clusterDomain | string | `"cluster.local"` |  |
 | command[0] | string | `"/scripts/setup.sh"` |  |
 | commonAnnotations | object | `{}` |  |
@@ -86,18 +103,24 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 | externalAccess.service.ports.tcp | int | `9000` |  |
 | externalAccess.service.ports.tcpSecure | int | `9440` |  |
 | externalAccess.service.type | string | `"LoadBalancer"` |  |
-| externalZookeeper.port | int | `2888` |  |
-| externalZookeeper.servers | list | `[]` |  |
+| externalZookeeper.port | int | `2181` |  |
+| externalZookeeper.servers[0] | string | `"suse-observability-zookeeper-headless"` |  |
 | extraDeploy | list | `[]` |  |
 | extraEnvVars | list | `[]` |  |
 | extraEnvVarsCM | string | `""` |  |
 | extraEnvVarsSecret | string | `""` |  |
-| extraOverrides | string | `""` |  |
+| extraOverrides | string | `"<clickhouse>\n  <!-- Recommended settings for low memory systems https://clickhouse.com/docs/operations/tips#ram -->\n  <mark_cache_size>1073741824</mark_cache_size>\n  <concurrent_threads_soft_limit_num>1</concurrent_threads_soft_limit_num>\n\n  <profiles>\n    <default>\n      <!-- Recommended settings for low memory systems https://clickhouse.com/docs/operations/tips#ram -->\n      <max_block_size>8192</max_block_size>\n      <max_download_threads>1</max_download_threads>\n      <input_format_parallel_parsing>0</input_format_parallel_parsing>\n      <output_format_parallel_formatting>0</output_format_parallel_formatting>\n    </default>\n  </profiles>\n\n  <!-- Disable unused logs to avoid filling up disks -->\n  <!-- For more details see https://kb.altinity.com/altinity-kb-setup-and-maintenance/altinity-kb-system-tables-eat-my-disk/ -->\n  <asynchronous_metric_log remove=\"1\"/>\n  <backup_log remove=\"1\"/>\n  <error_log remove=\"1\"/>\n  <metric_log remove=\"1\"/>\n  <query_metric_log remove=\"1\" />\n  <query_views_log remove=\"1\" />\n  <part_log remove=\"1\"/>\n  <session_log remove=\"1\"/>\n  <text_log remove=\"1\" />\n  <trace_log remove=\"1\"/>\n  <crash_log remove=\"1\"/>\n  <opentelemetry_span_log remove=\"1\"/>\n  <zookeeper_log remove=\"1\"/>\n  <processors_profile_log remove=\"1\"/>\n\n  <!-- keeping these for debugging purposes, but configuring TTL -->\n  <query_thread_log replace=\"1\">\n    <database>system</database>\n    <table>query_thread_log</table>\n    <engine>ENGINE = MergeTree PARTITION BY (event_date)\n      ORDER BY (event_time)\n      TTL event_date + INTERVAL 7 DAY DELETE\n    </engine>\n  </query_thread_log>\n\n  <query_log replace=\"1\">\n    <database>system</database>\n    <table>query_log</table>\n    <engine>ENGINE = MergeTree PARTITION BY (event_date)\n      ORDER BY (event_time)\n      TTL event_date + INTERVAL 7 DAY DELETE\n    </engine>\n  </query_log>\n\n  <aggregated_zookeeper_log replace=\"1\">\n    <database>system</database>\n    <table>aggregated_zookeeper_log</table>\n    <engine>ENGINE = MergeTree PARTITION BY (event_date)\n      ORDER BY (event_date, event_time)\n      TTL event_date + INTERVAL 3 DAY DELETE\n    </engine>\n  </aggregated_zookeeper_log>\n\n  {{- $effectiveReplicaCount := include \"common.sizing.clickhouse.effectiveReplicaCount\" . | int -}}\n  <!-- Cluster configuration - Any update of the shards and replicas requires helm upgrade -->\n  <remote_servers>\n    <default>\n      {{- $shards := $.Values.shards | int }}\n      {{- range $shard, $e := until $shards }}\n      <shard>\n          {{- range $i, $_e := until $effectiveReplicaCount }}\n          <replica>\n              <host>{{ printf \"%s-shard%d-%d.%s.%s.svc.%s\" (include \"common.names.fullname\" $ ) $shard $i (include \"clickhouse.headlessServiceName\" $) (include \"common.names.namespace\" $) $.Values.clusterDomain }}</host>\n              <port>{{ $.Values.service.ports.tcp }}</port>\n              <user from_env=\"CLICKHOUSE_ADMIN_USER\"></user>\n              <password from_env=\"CLICKHOUSE_ADMIN_PASSWORD\"></password>\n          </replica>\n          {{- end }}\n      </shard>\n      {{- end }}\n    </default>\n  </remote_servers>\n</clickhouse>\n"` |  |
 | extraOverridesConfigmap | string | `""` |  |
 | extraOverridesSecret | string | `""` |  |
-| extraVolumeMounts | list | `[]` |  |
-| extraVolumes | list | `[]` |  |
-| fullnameOverride | string | `""` |  |
+| extraVolumeMounts[0].mountPath | string | `"/app/post_restore.sh"` |  |
+| extraVolumeMounts[0].name | string | `"clickhouse-backup-scripts"` |  |
+| extraVolumeMounts[0].subPath | string | `"post_restore.sh"` |  |
+| extraVolumes[0].configMap.name | string | `"{{ include \"common.names.fullname\" . }}-backup"` |  |
+| extraVolumes[0].name | string | `"clickhouse-backup-config"` |  |
+| extraVolumes[1].configMap.defaultMode | int | `360` |  |
+| extraVolumes[1].configMap.name | string | `"{{ include \"common.names.fullname\" . }}-backup"` |  |
+| extraVolumes[1].name | string | `"clickhouse-backup-scripts"` |  |
+| fullnameOverride | string | `"suse-observability-clickhouse"` |  |
 | global.backup.enabled | bool | `false` |  |
 | global.imagePullSecrets | list | `[]` |  |
 | global.imageRegistry | string | `""` |  |
@@ -138,7 +161,7 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 | livenessProbe.timeoutSeconds | int | `1` |  |
 | logLevel | string | `"information"` |  |
 | mergeTree.minFreeDiskRatioToPerformInsert | float | `0.1` |  |
-| metrics.enabled | bool | `false` |  |
+| metrics.enabled | bool | `true` |  |
 | metrics.podAnnotations."prometheus.io/port" | string | `"{{ .Values.containerPorts.metrics }}"` |  |
 | metrics.podAnnotations."prometheus.io/scrape" | string | `"true"` |  |
 | metrics.prometheusRule.additionalLabels | object | `{}` |  |
@@ -173,7 +196,12 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 | persistence.size | string | `nil` |  |
 | persistence.storageClass | string | `""` |  |
 | podAffinityPreset | string | `""` |  |
-| podAnnotations | object | `{}` |  |
+| podAnnotations."ad.stackstate.com/backup.check_names" | string | `"[\"openmetrics\"]"` |  |
+| podAnnotations."ad.stackstate.com/backup.init_configs" | string | `"[{}]"` |  |
+| podAnnotations."ad.stackstate.com/backup.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:7171/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"clickhouse_backup_*\"] } ]"` |  |
+| podAnnotations."ad.stackstate.com/clickhouse.check_names" | string | `"[\"openmetrics\"]"` |  |
+| podAnnotations."ad.stackstate.com/clickhouse.init_configs" | string | `"[{}]"` |  |
+| podAnnotations."ad.stackstate.com/clickhouse.instances" | string | `"[ { \"prometheus_url\": \"http://%%host%%:8001/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"ClickHouseAsyncMetrics_*\", \"ClickHouseMetrics_*\", \"ClickHouseProfileEvents_*\"] } ]"` |  |
 | podAntiAffinityPreset | string | `"soft"` |  |
 | podLabels | object | `{}` |  |
 | podManagementPolicy | string | `"Parallel"` |  |
@@ -226,8 +254,52 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 | serviceAccount.automountServiceAccountToken | bool | `true` |  |
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.name | string | `""` |  |
-| shards | int | `2` |  |
-| sidecars | list | `[]` |  |
+| shards | int | `1` |  |
+| sidecars[0].command[0] | string | `"/app/entrypoint.sh"` |  |
+| sidecars[0].env[0].name | string | `"BACKUP_CLICKHOUSE_ENABLED"` |  |
+| sidecars[0].env[0].valueFrom.configMapKeyRef.key | string | `"backup_enabled"` |  |
+| sidecars[0].env[0].valueFrom.configMapKeyRef.name | string | `"{{ include \"common.names.fullname\" . }}-backup"` |  |
+| sidecars[0].env[1].name | string | `"BACKUP_TABLES"` |  |
+| sidecars[0].env[1].value | string | `"{{ .Values.backup.config.tables }}"` |  |
+| sidecars[0].env[2].name | string | `"CLICKHOUSE_REPLICA_ID"` |  |
+| sidecars[0].env[2].valueFrom.fieldRef.apiVersion | string | `"v1"` |  |
+| sidecars[0].env[2].valueFrom.fieldRef.fieldPath | string | `"metadata.name"` |  |
+| sidecars[0].env[3].name | string | `"S3_ACCESS_KEY"` |  |
+| sidecars[0].env[3].valueFrom.secretKeyRef.key | string | `"accesskey"` |  |
+| sidecars[0].env[3].valueFrom.secretKeyRef.name | string | `"{{ .Values.backup.s3.secretName }}"` |  |
+| sidecars[0].env[4].name | string | `"S3_SECRET_KEY"` |  |
+| sidecars[0].env[4].valueFrom.secretKeyRef.key | string | `"secretkey"` |  |
+| sidecars[0].env[4].valueFrom.secretKeyRef.name | string | `"{{ .Values.backup.s3.secretName }}"` |  |
+| sidecars[0].image | string | `"{{ default .Values.backup.image.registry .Values.global.imageRegistry }}/{{ .Values.backup.image.repository }}:{{ .Values.backup.image.tag }}"` |  |
+| sidecars[0].imagePullPolicy | string | `"IfNotPresent"` |  |
+| sidecars[0].name | string | `"backup"` |  |
+| sidecars[0].ports[0].containerPort | int | `9746` |  |
+| sidecars[0].ports[0].name | string | `"supercronic"` |  |
+| sidecars[0].ports[1].containerPort | int | `7171` |  |
+| sidecars[0].ports[1].name | string | `"backup-api"` |  |
+| sidecars[0].resources.limits.cpu | string | `"{{ .Values.backup.resources.limit.cpu }}"` |  |
+| sidecars[0].resources.limits.memory | string | `"{{ .Values.backup.resources.limit.memory }}"` |  |
+| sidecars[0].resources.requests.cpu | string | `"{{ .Values.backup.resources.requests.cpu }}"` |  |
+| sidecars[0].resources.requests.memory | string | `"{{ .Values.backup.resources.requests.memory }}"` |  |
+| sidecars[0].securityContext.allowPrivilegeEscalation | bool | `false` |  |
+| sidecars[0].securityContext.capabilities.drop[0] | string | `"ALL"` |  |
+| sidecars[0].securityContext.runAsNonRoot | bool | `true` |  |
+| sidecars[0].securityContext.runAsUser | int | `1001` |  |
+| sidecars[0].securityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
+| sidecars[0].volumeMounts[0].mountPath | string | `"/bitnami/clickhouse"` |  |
+| sidecars[0].volumeMounts[0].name | string | `"data"` |  |
+| sidecars[0].volumeMounts[1].mountPath | string | `"/bitnami/clickhouse/etc/conf.d/default"` |  |
+| sidecars[0].volumeMounts[1].name | string | `"config"` |  |
+| sidecars[0].volumeMounts[2].mountPath | string | `"/bitnami/clickhouse/etc/conf.d/extra-configmap"` |  |
+| sidecars[0].volumeMounts[2].name | string | `"extra-config"` |  |
+| sidecars[0].volumeMounts[3].mountPath | string | `"/bitnami/clickhouse/etc/users.d/users-extra-configmap"` |  |
+| sidecars[0].volumeMounts[3].name | string | `"users-extra-config"` |  |
+| sidecars[0].volumeMounts[4].mountPath | string | `"/etc/clickhouse-backup.yaml"` |  |
+| sidecars[0].volumeMounts[4].name | string | `"clickhouse-backup-config"` |  |
+| sidecars[0].volumeMounts[4].subPath | string | `"config.yaml"` |  |
+| sidecars[0].volumeMounts[5].mountPath | string | `"/app/entrypoint.sh"` |  |
+| sidecars[0].volumeMounts[5].name | string | `"clickhouse-backup-scripts"` |  |
+| sidecars[0].volumeMounts[5].subPath | string | `"entrypoint.sh"` |  |
 | startdbScripts | object | `{}` |  |
 | startdbScriptsSecret | string | `""` |  |
 | startupProbe.enabled | bool | `false` |  |
@@ -246,7 +318,7 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 | tolerations | list | `[]` |  |
 | topologySpreadConstraints | list | `[]` |  |
 | updateStrategy.type | string | `"RollingUpdate"` |  |
-| usersExtraOverrides | string | `""` |  |
+| usersExtraOverrides | string | `"<clickhouse>\n  <users>\n    <stackstate>\n        <no_password></no_password>\n        <grants>\n            <query>GRANT ALL ON *.*</query>\n        </grants>\n    </stackstate>\n  </users>\n</clickhouse>\n"` |  |
 | usersExtraOverridesConfigmap | string | `""` |  |
 | usersExtraOverridesSecret | string | `""` |  |
 | volumePermissions.containerSecurityContext.runAsUser | int | `0` |  |
