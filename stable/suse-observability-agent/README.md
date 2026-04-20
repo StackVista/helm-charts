@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.2.44`
+Current chart version is `1.2.45`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -11,7 +11,7 @@ Current chart version is `1.2.44`
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../kubernetes-rbac-agent/ | kubernetes-rbac-agent | 0.0.27 |
-| https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.24 |
+| https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.25 |
 
 ## Required Values
 
@@ -172,7 +172,7 @@ stackstate/suse-observability-agent
 | httpHeaderInjectorWebhook.proxy.image.repository | string | `"stackstate/http-header-injector-proxy"` |  |
 | httpHeaderInjectorWebhook.proxyInit.image.repository | string | `"stackstate/http-header-injector-proxy-init"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
-| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"638bbb3c-45-release"` |  |
+| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"638bbb3c-46-release"` |  |
 | kubernetes-rbac-agent.clusterName.fromConfigMap | string | `"{{ include \"stackstate-k8s-agent.clusterName.configmap.internal.name\" . }}"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
@@ -192,7 +192,7 @@ stackstate/suse-observability-agent
 | logsAgent.enabled | bool | `true` | Enable / disable k8s pod log collection |
 | logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | logsAgent.image.repository | string | `"stackstate/promtail"` | Base container image repository. |
-| logsAgent.image.tag | string | `"3.6.10-f51a4334-release-134"` | Default container image tag. |
+| logsAgent.image.tag | string | `"3.6.10-f51a4334-release-135"` | Default container image tag. |
 | logsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | logsAgent.priorityClassName | string | `""` | Priority class for logsAgent pods. |
 | logsAgent.resources.limits.cpu | string | `"1300m"` | CPU resource limits. |
