@@ -213,7 +213,7 @@ nodeAgent:
         # nodeAgent.containers.processAgent.image.repository -- Process-agent container image repository.
         repository: stackstate/stackstate-k8s-process-agent
         # nodeAgent.containers.processAgent.image.tag -- Default process-agent container image tag.
-        tag: "19a5b791"
+        tag: "4f8c0a0f"
         # nodeAgent.containers.processAgent.image.pullPolicy -- Process-agent container image pull policy.
         pullPolicy: IfNotPresent
       # nodeAgent.containers.processAgent.env -- Additional environment variables for the process-agent container
@@ -705,10 +705,12 @@ kubernetes-rbac-agent:
   # kubernetes-rbac-agent.enabled. Enables/disables the rbac agent.
   enabled: true
   url:
-    fromConfigMap: '{{ include "stackstate-k8s-agent.url.configmap.internal.name" . }}'
+    fromConfigMap: '{{ include "stackstate-k8s-agent.url.configmap.internal.name"
+      . }}'
 
   clusterName:
-    fromConfigMap: '{{ include "stackstate-k8s-agent.clusterName.configmap.internal.name" . }}'
+    fromConfigMap: '{{ include "stackstate-k8s-agent.clusterName.configmap.internal.name"
+      . }}'
 
   roleType: 'scope'
   containers:
