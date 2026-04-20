@@ -18,6 +18,7 @@ spec:
         {{- include "suse-observability.labels.global" . | nindent 8 }}
     spec:
       backoffLimit: 1
+      ttlSecondsAfterFinished: 3600
       template:
         metadata:
         {{- with .Values.backup.podAnnotations }}

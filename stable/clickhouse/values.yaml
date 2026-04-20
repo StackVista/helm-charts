@@ -696,12 +696,12 @@ sidecars:
       - name: S3_ACCESS_KEY
         valueFrom:
           secretKeyRef:
-            name: '{{ .Values.backup.s3.secretName }}'
+            name: '{{ tpl .Values.backup.s3.secretName $ }}'
             key: accesskey
       - name: S3_SECRET_KEY
         valueFrom:
           secretKeyRef:
-            name: '{{ .Values.backup.s3.secretName }}'
+            name: '{{ tpl .Values.backup.s3.secretName $ }}'
             key: secretkey
     resources:
       requests:

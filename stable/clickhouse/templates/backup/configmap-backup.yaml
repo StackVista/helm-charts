@@ -113,7 +113,7 @@ data:
       access_key: ""                   # S3_ACCESS_KEY, injected via env var from secret
       secret_key: ""                   # S3_SECRET_KEY, injected via env var from secret
       bucket: "{{ .Values.backup.bucketName }}"                       # S3_BUCKET
-      endpoint: "http://{{ .Values.backup.s3.endpoint }}"                     # S3_ENDPOINT
+      endpoint: "http://{{ tpl .Values.backup.s3.endpoint $ }}"                     # S3_ENDPOINT
       #  region: us-east-1                # S3_REGION
       # AWS changed S3 defaults in April 2023 so that all new buckets have ACL disabled: https://aws.amazon.com/blogs/aws/heads-up-amazon-s3-security-changes-are-coming-in-april-of-2023/
       # They also recommend that ACLs are disabled: https://docs.aws.amazon.com/AmazonS3/latest/userguide/ensure-object-ownership.html

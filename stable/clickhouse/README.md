@@ -1,6 +1,6 @@
 # clickhouse
 
-![Version: 3.6.9-suse-observability.26](https://img.shields.io/badge/Version-3.6.9--suse--observability.26-informational?style=flat-square) ![AppVersion: 23.7.4](https://img.shields.io/badge/AppVersion-23.7.4-informational?style=flat-square)
+![Version: 3.6.9-suse-observability.27](https://img.shields.io/badge/Version-3.6.9--suse--observability.27-informational?style=flat-square) ![AppVersion: 23.7.4](https://img.shields.io/badge/AppVersion-23.7.4-informational?style=flat-square)
 ClickHouse is an open-source column-oriented OLAP database management system. Use it to boost your database performance while providing linear scalability and hardware efficiency.
 **Homepage:** <https://bitnami.com>
 ## Maintainers
@@ -266,10 +266,10 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 | sidecars[0].env[2].valueFrom.fieldRef.fieldPath | string | `"metadata.name"` |  |
 | sidecars[0].env[3].name | string | `"S3_ACCESS_KEY"` |  |
 | sidecars[0].env[3].valueFrom.secretKeyRef.key | string | `"accesskey"` |  |
-| sidecars[0].env[3].valueFrom.secretKeyRef.name | string | `"{{ .Values.backup.s3.secretName }}"` |  |
+| sidecars[0].env[3].valueFrom.secretKeyRef.name | string | `"{{ tpl .Values.backup.s3.secretName $ }}"` |  |
 | sidecars[0].env[4].name | string | `"S3_SECRET_KEY"` |  |
 | sidecars[0].env[4].valueFrom.secretKeyRef.key | string | `"secretkey"` |  |
-| sidecars[0].env[4].valueFrom.secretKeyRef.name | string | `"{{ .Values.backup.s3.secretName }}"` |  |
+| sidecars[0].env[4].valueFrom.secretKeyRef.name | string | `"{{ tpl .Values.backup.s3.secretName $ }}"` |  |
 | sidecars[0].image | string | `"{{ default .Values.backup.image.registry .Values.global.imageRegistry }}/{{ .Values.backup.image.repository }}:{{ .Values.backup.image.tag }}"` |  |
 | sidecars[0].imagePullPolicy | string | `"IfNotPresent"` |  |
 | sidecars[0].name | string | `"backup"` |  |
