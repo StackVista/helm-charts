@@ -1801,6 +1801,8 @@ hbase:
   tephra:
     # hbase.tephra.replicaCount -- Number of Tephra replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile.
     replicaCount: null
+  stackgraph:
+    version: 7.14.0
 kafkaup-operator:
   enabled: true
   image:

@@ -2,7 +2,7 @@
 
 Helm chart for SUSE Observability
 
-Current chart version is `2.9.1-pre.104`
+Current chart version is `2.9.1-pre.105`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -14,7 +14,7 @@ Current chart version is `2.9.1-pre.104`
 | file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.27 |
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.21 |
-| file://../hbase/ | hbase | 0.2.135 |
+| file://../hbase/ | hbase | 0.2.136 |
 | file://../kafka/ | kafka | 19.1.3-suse-observability.25 |
 | file://../kafkaup-operator/ | kafkaup-operator | 0.1.28 |
 | file://../kubernetes-rbac-agent/ | kubernetes-rbac-agent | 0.0.27 |
