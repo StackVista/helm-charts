@@ -11,9 +11,10 @@ global:
 
 rbac:
   create: true
-  # Note: The PSP will only be deployed, if Kubernetes (<1.25) supports the resource.
-  pspEnabled: true
-  namespaced: false
+  # Note: PodSecurityPolicy was removed in Kubernetes 1.25; defaulted off.
+  pspEnabled: false
+  # Use namespaced RBAC (Role/RoleBinding) instead of cluster-scoped resources.
+  namespaced: true
   extraLabels: {}
   # annotations: {}
 
@@ -62,6 +63,13 @@ server:
     envflag.enable: "true"
     envflag.prefix: VM_
     loggerFormat: json
+    # Required for SUSE Observability: deduplicate samples within 1ms windows
+    # and cap labels per timeseries to control cardinality.
+    dedup.minScrapeInterval: 1ms
+    maxLabelsPerTimeseries: 60
+    # Offset cache timestamps by 10m so late-arriving historical writes aren't
+    # masked by recently-cached query results.
+    search.cacheTimestampOffset: 10m
 
   # Additional hostPath mounts
   extraHostPathMounts:
@@ -157,11 +165,20 @@ server:
     size: null
 
   # -- Sts/Deploy additional labels
-  extraLabels: {}
+  extraLabels:
+    app.kubernetes.io/part-of: suse-observability
   # -- Pod's additional labels
-  podLabels: {}
-  # -- Pod's annotations
-  podAnnotations: {}
+  podLabels:
+    stackstate-service: victoriametrics
+    app.kubernetes.io/part-of: suse-observability
+  # -- Pod's annotations (Datadog autodiscovery for VM server + vmbackup metrics).
+  podAnnotations:
+    ad.stackstate.com/victoria-metrics-0-server.check_names: '["openmetrics"]'
+    ad.stackstate.com/victoria-metrics-0-server.init_configs: "[{}]"
+    ad.stackstate.com/victoria-metrics-0-server.instances: '[ { "prometheus_url": "http://%%host%%:8428/metrics", "namespace": "stackstate", "metrics": ["vm*", "go*"] } ]'
+    ad.stackstate.com/vmbackup.check_names: '["openmetrics"]'
+    ad.stackstate.com/vmbackup.init_configs: "[{}]"
+    ad.stackstate.com/vmbackup.instances: '[ { "prometheus_url": "http://%%host%%:9746/metrics", "namespace": "stackstate", "metrics": ["supercronic_*"] } ]'
   # -- Pod's management policy
   podManagementPolicy: OrderedReady
 
@@ -205,8 +222,11 @@ server:
     # successThreshold: 1
     # timeoutSeconds: 5
 
-  # -- Security context to be added to server pods
-  securityContext: {}
+  # -- Security context for server pods. Defaults to non-root (UID 65534 = nobody).
+  securityContext:
+    runAsUser: 65534
+    runAsGroup: 65534
+    fsGroup: 65534
   # -- Pod's security context. Ref: [https://kubernetes.io/docs/tasks/configure-pod-container/security-context/](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/)
   podSecurityContext: {}
   ingress:
@@ -348,8 +368,8 @@ server:
     extraLabels: {}
     # -- Service Monitor annotations
     annotations: {}
-    # -- Commented. Prometheus scrape interval for server component
-#    interval: 15s
+    # -- Prometheus scrape interval for server component
+    interval: 15s
     # -- Commented. Prometheus pre-scrape timeout for server component
 #    scrapeTimeout: 5s
     # -- Commented. HTTP scheme to use for scraping.

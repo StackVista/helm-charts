@@ -1,6 +1,6 @@
 # Victoria Metrics Helm Chart for Single Version
 
- ![Version: 0.8.53-stackstate.49](https://img.shields.io/badge/Version-0.8.53--stackstate.49-informational?style=flat-square)
+ ![Version: 0.8.53-stackstate.50](https://img.shields.io/badge/Version-0.8.53--stackstate.50-informational?style=flat-square)
 
 Victoria Metrics Single version - high-performance, cost-effective and scalable TSDB, long-term remote storage for Prometheus
 
@@ -182,18 +182,21 @@ Change the values according to the need of the environment in ``victoria-metrics
 | printNotes | bool | `true` | Print chart notes |
 | rbac.create | bool | `true` |  |
 | rbac.extraLabels | object | `{}` |  |
-| rbac.namespaced | bool | `false` |  |
-| rbac.pspEnabled | bool | `true` |  |
+| rbac.namespaced | bool | `true` |  |
+| rbac.pspEnabled | bool | `false` |  |
 | server.affinity | object | `{}` | Pod affinity |
 | server.containerWorkingDir | string | `""` | Container workdir |
 | server.enabled | bool | `true` | Enable deployment of server component. Deployed as StatefulSet |
 | server.env | list | `[]` | Additional environment variables (ex.: secret tokens, flags) https://github.com/VictoriaMetrics/VictoriaMetrics#environment-variables |
+| server.extraArgs."dedup.minScrapeInterval" | string | `"1ms"` |  |
 | server.extraArgs."envflag.enable" | string | `"true"` |  |
 | server.extraArgs."envflag.prefix" | string | `"VM_"` |  |
+| server.extraArgs."search.cacheTimestampOffset" | string | `"10m"` |  |
 | server.extraArgs.loggerFormat | string | `"json"` |  |
+| server.extraArgs.maxLabelsPerTimeseries | int | `60` |  |
 | server.extraContainers | list | `[]` |  |
 | server.extraHostPathMounts | list | `[]` |  |
-| server.extraLabels | object | `{}` | Sts/Deploy additional labels |
+| server.extraLabels | object | `{"app.kubernetes.io/part-of":"suse-observability"}` | Sts/Deploy additional labels |
 | server.extraVolumeMounts | list | `[]` |  |
 | server.extraVolumes | list | `[]` |  |
 | server.fullnameOverride | string | `nil` | Overrides the full name of server component |
@@ -226,8 +229,8 @@ Change the values according to the need of the environment in ``victoria-metrics
 | server.persistentVolume.size | string | `nil` | Size of the volume. Should be calculated based on the metrics you send and retention policy you set. |
 | server.persistentVolume.storageClass | string | `""` | StorageClass to use for persistent volume. Requires server.persistentVolume.enabled: true. If defined, PVC created automatically |
 | server.persistentVolume.subPath | string | `""` | Mount subpath |
-| server.podAnnotations | object | `{}` | Pod's annotations |
-| server.podLabels | object | `{}` | Pod's additional labels |
+| server.podAnnotations | object | `{"ad.stackstate.com/victoria-metrics-0-server.check_names":"[\"openmetrics\"]","ad.stackstate.com/victoria-metrics-0-server.init_configs":"[{}]","ad.stackstate.com/victoria-metrics-0-server.instances":"[ { \"prometheus_url\": \"http://%%host%%:8428/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"vm*\", \"go*\"] } ]","ad.stackstate.com/vmbackup.check_names":"[\"openmetrics\"]","ad.stackstate.com/vmbackup.init_configs":"[{}]","ad.stackstate.com/vmbackup.instances":"[ { \"prometheus_url\": \"http://%%host%%:9746/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"supercronic_*\"] } ]"}` | Pod's annotations (Datadog autodiscovery for VM server + vmbackup metrics). |
+| server.podLabels | object | `{"app.kubernetes.io/part-of":"suse-observability","stackstate-service":"victoriametrics"}` | Pod's additional labels |
 | server.podManagementPolicy | string | `"OrderedReady"` | Pod's management policy |
 | server.podSecurityContext | object | `{}` | Pod's security context. Ref: [https://kubernetes.io/docs/tasks/configure-pod-container/security-context/](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) |
 | server.priorityClassName | string | `""` | Name of Priority Class |
@@ -250,7 +253,7 @@ Change the values according to the need of the environment in ``victoria-metrics
 | server.scrape.configMap | string | `""` | Use existing configmap if specified otherwise .config values will be used |
 | server.scrape.enabled | bool | `false` | If true scrapes targets, creates config map or use specified one with scrape targets |
 | server.scrape.extraScrapeConfigs | list | `[]` | Extra scrape configs that will be appended to `server.scrape.config` |
-| server.securityContext | object | `{}` | Security context to be added to server pods |
+| server.securityContext | object | `{"fsGroup":65534,"runAsGroup":65534,"runAsUser":65534}` | Security context for server pods. Defaults to non-root (UID 65534 = nobody). |
 | server.service.annotations | object | `{}` | Service annotations |
 | server.service.clusterIP | string | `""` | Service ClusterIP |
 | server.service.externalIPs | list | `[]` | Service External IPs. Ref: [https://kubernetes.io/docs/user-guide/services/#external-ips]( https://kubernetes.io/docs/user-guide/services/#external-ips) |
@@ -262,6 +265,7 @@ Change the values according to the need of the environment in ``victoria-metrics
 | server.serviceMonitor.annotations | object | `{}` | Service Monitor annotations |
 | server.serviceMonitor.enabled | bool | `false` | Enable deployment of Service Monitor for server component. This is Prometheus operator object |
 | server.serviceMonitor.extraLabels | object | `{}` | Service Monitor labels |
+| server.serviceMonitor.interval | string | `"15s"` | Prometheus scrape interval for server component |
 | server.serviceMonitor.relabelings | list | `[]` | Service Monitor relabelings |
 | server.startupProbe | object | `{}` |  |
 | server.statefulSet.enabled | bool | `true` | Creates statefulset instead of deployment, useful when you want to keep the cache |
