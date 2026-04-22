@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -51,14 +52,15 @@ func TestKafkaDefaultValuesProducesExpectedResources(t *testing.T) {
 	// Test Services
 	assert.GreaterOrEqual(t, len(resources.Services), 1, "Should have at least one Service")
 
-	// Find the main Kafka service
+	// Find the main Kafka service by name
 	var kafkaService corev1.Service
 	var headlessService corev1.Service
 
 	for _, svc := range resources.Services {
-		if svc.Spec.ClusterIP != "None" {
+		switch svc.Name {
+		case "suse-observability-kafka":
 			kafkaService = svc
-		} else {
+		case "suse-observability-kafka-headless":
 			headlessService = svc
 		}
 	}
@@ -76,7 +78,7 @@ func TestKafkaDefaultValuesProducesExpectedResources(t *testing.T) {
 			break
 		}
 	}
-	assert.True(t, portFound, "Service should expose port 9092 for client connections")
+	assert.True(t, portFound, fmt.Sprintf("Service should expose port 9092 for client connections: %v", kafkaService.Spec.Ports))
 
 	// Validate headless service
 	assert.NotEmpty(t, headlessService.Name, "Headless service should exist")
