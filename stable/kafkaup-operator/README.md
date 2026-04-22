@@ -1,10 +1,10 @@
 # kafkaup-operator
 
-![Version: 0.1.28](https://img.shields.io/badge/Version-0.1.28-informational?style=flat-square) ![AppVersion: v0.1.0](https://img.shields.io/badge/AppVersion-v0.1.0-informational?style=flat-square)
+![Version: 0.1.29](https://img.shields.io/badge/Version-0.1.29-informational?style=flat-square) ![AppVersion: v0.1.0](https://img.shields.io/badge/AppVersion-v0.1.0-informational?style=flat-square)
 
 The StackState Kafka upgrade operator
 
-Current chart version is `0.1.28`
+Current chart version is `0.1.29`
 
 **Homepage:** <https://gitlab.com/StackVista/platform/kafkaup-operator>
 
@@ -19,7 +19,7 @@ Current chart version is `0.1.28`
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../common/ | common | * |
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.15 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.16 |
 
 ## Values
 

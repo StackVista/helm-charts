@@ -1,6 +1,6 @@
 # elasticsearch
 
-![Version: 8.19.4-stackstate.21](https://img.shields.io/badge/Version-8.19.4--stackstate.21-informational?style=flat-square) ![AppVersion: 8.19.4](https://img.shields.io/badge/AppVersion-8.19.4-informational?style=flat-square)
+![Version: 8.19.4-stackstate.22](https://img.shields.io/badge/Version-8.19.4--stackstate.22-informational?style=flat-square) ![AppVersion: 8.19.4](https://img.shields.io/badge/AppVersion-8.19.4-informational?style=flat-square)
 Official Elastic helm chart for Elasticsearch
 **Homepage:** <https://github.com/elastic/helm-charts>
 ## Maintainers
@@ -15,8 +15,8 @@ Official Elastic helm chart for Elasticsearch
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../prometheus-elasticsearch-exporter | prometheus-elasticsearch-exporter | 5.8.0-suse-observability.17 |
-| file://../suse-observability-sizing | suse-observability-sizing | 0.1.15 |
+| file://../prometheus-elasticsearch-exporter | prometheus-elasticsearch-exporter | 5.8.0-suse-observability.18 |
+| file://../suse-observability-sizing | suse-observability-sizing | 0.1.16 |
 ## Values
 
 | Key | Type | Default | Description |
