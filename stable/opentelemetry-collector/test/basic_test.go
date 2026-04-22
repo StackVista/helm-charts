@@ -9,7 +9,11 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const releaseName = "otel"
+const (
+	releaseName = "otel"
+	// fullName matches the subchart's default fullnameOverride.
+	fullName = "suse-observability-otel-collector"
+)
 
 func TestOpenTelemetryCollectorBasicTemplate(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, releaseName, "values/default.yaml")
@@ -25,7 +29,7 @@ func TestOpenTelemetryCollectorDeploymentMode(t *testing.T) {
 
 	// In Deployment mode, should have a Deployment
 	expectedDeployments := []string{
-		releaseName + "-opentelemetry-collector",
+		fullName,
 	}
 
 	assert.Len(t, resources.Deployments, len(expectedDeployments), "Should have exactly %d Deployments in Deployment mode", len(expectedDeployments))
@@ -53,7 +57,7 @@ func TestOpenTelemetryCollectorDaemonSetMode(t *testing.T) {
 
 	// In DaemonSet mode, should have a DaemonSet
 	expectedDaemonSets := []string{
-		releaseName + "-opentelemetry-collector-agent",
+		fullName + "-agent",
 	}
 
 	assert.Len(t, resources.DaemonSets, len(expectedDaemonSets), "Should have exactly %d DaemonSets in DaemonSet mode", len(expectedDaemonSets))
@@ -81,7 +85,7 @@ func TestOpenTelemetryCollectorStatefulSetMode(t *testing.T) {
 
 	// In StatefulSet mode, should have a StatefulSet
 	expectedStatefulSets := []string{
-		releaseName + "-opentelemetry-collector",
+		fullName,
 	}
 
 	assert.Len(t, resources.Statefulsets, len(expectedStatefulSets), "Should have exactly %d StatefulSets in StatefulSet mode", len(expectedStatefulSets))
@@ -107,7 +111,7 @@ func TestOpenTelemetryCollectorConfigSelection(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, releaseName, "values/default.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	defaultCollectorConfig := resources.ConfigMaps["otel-opentelemetry-collector"].Data["relay"]
+	defaultCollectorConfig := resources.ConfigMaps[fullName].Data["relay"]
 
 	assert.Contains(t, defaultCollectorConfig, "ststopology") // current topology connector
 	assert.NotContains(t, defaultCollectorConfig, "sts_settings_provider")
@@ -118,7 +122,7 @@ func TestOpenTelemetryCollectorConfigSelection(t *testing.T) {
 	output = helmtestutil.RenderHelmTemplate(t, releaseName, "values/enable-stackpacks2.yaml")
 	resources = helmtestutil.NewKubernetesResources(t, output)
 
-	stackPacks2CollectorConfig := resources.ConfigMaps["otel-opentelemetry-collector"].Data["relay"]
+	stackPacks2CollectorConfig := resources.ConfigMaps[fullName].Data["relay"]
 
 	assert.Contains(t, stackPacks2CollectorConfig, "sts_settings_provider")
 	assert.Contains(t, stackPacks2CollectorConfig, "topology")       // new topology connector
@@ -131,7 +135,7 @@ func TestStackpacks2SendingQueueNoEnabledField(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, releaseName, "values/enable-stackpacks2.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	configYaml := resources.ConfigMaps["otel-opentelemetry-collector"].Data["relay"]
+	configYaml := resources.ConfigMaps[fullName].Data["relay"]
 	require.NotEmpty(t, configYaml, "ConfigMap relay data should not be empty")
 
 	var config struct {

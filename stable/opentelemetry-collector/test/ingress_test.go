@@ -13,14 +13,14 @@ func TestOpenTelemetryCollectorIngressDefaultServiceName(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, releaseName, "values/default.yaml", "values/ingress-default.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	ingress, ok := resources.Ingresses[releaseName+"-opentelemetry-collector"]
+	ingress, ok := resources.Ingresses[fullName]
 	require.True(t, ok, "Ingress should exist")
 
 	require.Len(t, ingress.Spec.Rules, 1, "Should have exactly 1 rule")
 	require.Len(t, ingress.Spec.Rules[0].HTTP.Paths, 1, "Should have exactly 1 path")
 
 	backend := ingress.Spec.Rules[0].HTTP.Paths[0].Backend
-	assert.Equal(t, releaseName+"-opentelemetry-collector", backend.Service.Name, "Backend service name should default to the main service")
+	assert.Equal(t, fullName, backend.Service.Name, "Backend service name should default to the main service")
 	assert.Equal(t, int32(4318), backend.Service.Port.Number, "Backend service port should match")
 }
 
@@ -29,7 +29,7 @@ func TestOpenTelemetryCollectorIngressCustomServiceName(t *testing.T) {
 	output := helmtestutil.RenderHelmTemplate(t, releaseName, "values/default.yaml", "values/ingress-service-name.yaml")
 	resources := helmtestutil.NewKubernetesResources(t, output)
 
-	ingress, ok := resources.Ingresses[releaseName+"-opentelemetry-collector"]
+	ingress, ok := resources.Ingresses[fullName]
 	require.True(t, ok, "Ingress should exist")
 
 	require.Len(t, ingress.Spec.Rules, 1, "Should have exactly 1 rule")
@@ -44,6 +44,6 @@ func TestOpenTelemetryCollectorIngressCustomServiceName(t *testing.T) {
 	// Second path has no serviceName, should default to the main service
 	httpPath := ingress.Spec.Rules[0].HTTP.Paths[1]
 	assert.Equal(t, "/otlp-http", httpPath.Path, "Second path should be /otlp-http")
-	assert.Equal(t, releaseName+"-opentelemetry-collector", httpPath.Backend.Service.Name, "Second path should default to the main service name")
+	assert.Equal(t, fullName, httpPath.Backend.Service.Name, "Second path should default to the main service name")
 	assert.Equal(t, int32(4318), httpPath.Backend.Service.Port.Number, "Second path port should match")
 }

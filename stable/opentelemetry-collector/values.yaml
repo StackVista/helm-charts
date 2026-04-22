@@ -22,10 +22,11 @@ global:
       pullPolicy: ''
 # Declare variables to be passed into your templates.
 nameOverride: ""
-fullnameOverride: ""
+# fullnameOverride -- Name override. Helm v2 limitation; the parent ConfigMap and helpers reference this hardcoded name.
+fullnameOverride: suse-observability-otel-collector
 
 # Valid values are "daemonset", "deployment", and "statefulset".
-mode: ""
+mode: "statefulset"
 
 # Specify which namespace should be used to deploy the resources into
 namespaceOverride: ""
@@ -305,8 +306,10 @@ config:
 alternateConfig: {}
 
 image:
-  # If you want to use the core image `otel/opentelemetry-collector`, you also need to change `command.name` value to `otelcol`.
-  repository: ""
+  # image.registry -- Base container image registry. SUSE Observability ships its fork from quay.io.
+  registry: quay.io
+  # image.repository -- Image repository. This subchart is the SUSE Observability fork of OpenTelemetry Collector.
+  repository: stackstate/sts-opentelemetry-collector
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -380,7 +383,18 @@ topologySpreadConstraints: []
 # Allows for pod scheduler prioritisation
 priorityClassName: ""
 
-extraEnvs: []
+# extraEnvs -- API_URL/INTAKE_URL come from the parent ConfigMap (`suse-observability-otel-collector`).
+extraEnvs:
+  - name: API_URL
+    valueFrom:
+      configMapKeyRef:
+        name: suse-observability-otel-collector
+        key: api.url
+  - name: INTAKE_URL
+    valueFrom:
+      configMapKeyRef:
+        name: suse-observability-otel-collector
+        key: intake.url
 extraEnvsFrom: []
 # This also supports template content, which will eventually be converted to yaml.
 extraVolumes: []
@@ -398,7 +412,8 @@ ports:
     hostPort: 4317
     protocol: TCP
     # nodePort: 30317
-    appProtocol: kubernetes.io/h2c
+    # ports.otlp.appProtocol -- appProtocol for the OTLP gRPC service port. Use `grpc` for nginx ingress or `kubernetes.io/h2c` for Gateway API (e.g. Traefik GRPCRoute).
+    appProtocol: grpc
   otlp-http:
     enabled: true
     containerPort: 4318
@@ -450,7 +465,11 @@ resources: {}
 #     cpu: 250m
 #     memory: 512Mi
 
-podAnnotations: {}
+# podAnnotations -- SUSE Observability scrape config (Datadog auto-discovery format) — applied to every install.
+podAnnotations:
+  ad.stackstate.com/opentelemetry-collector.check_names: '["openmetrics"]'
+  ad.stackstate.com/opentelemetry-collector.init_configs: "[{}]"
+  ad.stackstate.com/opentelemetry-collector.instances: '[ { "prometheus_url": "http://%%host%%:8888/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
 
 podLabels: {}
 
@@ -500,7 +519,16 @@ extraContainers: []
 # List of init container specs, e.g. for copying a binary to be executed as a lifecycle hook.
 # This also supports template content, which will eventually be converted to yaml.
 # Another usage of init containers is e.g. initializing filesystem permissions to the OTLP Collector user `10001` in case you are using persistence and the volume is producing a permission denied error for the OTLP Collector container.
-initContainers: []
+# initContainers -- Wait for ClickHouse, vmagent, and Kafka to be reachable before starting the collector.
+initContainers:
+  - name: otel-collector-init
+    image: '{{ include "opentelemetry-collector.waitImageRegistry" . }}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}'
+    imagePullPolicy: IfNotPresent
+    command:
+      - sh
+      - -c
+      - |
+        /entrypoint -c suse-observability-clickhouse:9000,suse-observability-vmagent:8429,suse-observability-kafka-headless:9092 -t 300
 # initContainers:
 #   - name: test
 #     image: busybox:latest

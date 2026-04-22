@@ -1,6 +1,6 @@
 # opentelemetry-collector
 
-![Version: 0.108.0-stackstate.28](https://img.shields.io/badge/Version-0.108.0--stackstate.28-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.29](https://img.shields.io/badge/AppVersion-0.0.29-informational?style=flat-square)
+![Version: 0.108.0-stackstate.29](https://img.shields.io/badge/Version-0.108.0--stackstate.29-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.29](https://img.shields.io/badge/AppVersion-0.0.29-informational?style=flat-square)
 
 OpenTelemetry Collector Helm chart for Kubernetes
 
@@ -153,11 +153,11 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | dnsConfig | object | `{}` |  |
 | dnsPolicy | string | `""` |  |
 | extraContainers | list | `[]` |  |
-| extraEnvs | list | `[]` |  |
+| extraEnvs | list | `[{"name":"API_URL","valueFrom":{"configMapKeyRef":{"key":"api.url","name":"suse-observability-otel-collector"}}},{"name":"INTAKE_URL","valueFrom":{"configMapKeyRef":{"key":"intake.url","name":"suse-observability-otel-collector"}}}]` | API_URL/INTAKE_URL come from the parent ConfigMap (`suse-observability-otel-collector`). |
 | extraEnvsFrom | list | `[]` |  |
 | extraVolumeMounts | list | `[]` |  |
 | extraVolumes | list | `[]` |  |
-| fullnameOverride | string | `""` |  |
+| fullnameOverride | string | `"suse-observability-otel-collector"` | Name override. Helm v2 limitation; the parent ConfigMap and helpers reference this hardcoded name. |
 | gateway | object | `{"additionalGateways":[],"annotations":{},"enabled":false,"filters":[],"hostnames":[],"kind":"HTTPRoute","parentRefs":[],"path":"/","pathType":"PathPrefix","timeouts":{}}` | Configure Kubernetes Gateway API routes for OpenTelemetry Collector. |
 | gateway.additionalGateways | list | `[]` | Additional gateway routes (e.g. for both HTTP and gRPC). |
 | gateway.annotations | object | `{}` | Annotations for the route resource. |
@@ -180,16 +180,17 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | hostNetwork | bool | `false` |  |
 | image.digest | string | `""` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
-| image.repository | string | `""` |  |
+| image.registry | string | `"quay.io"` | Base container image registry. SUSE Observability ships its fork from quay.io. |
+| image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Image repository. This subchart is the SUSE Observability fork of OpenTelemetry Collector. |
 | image.tag | string | `""` |  |
 | imagePullSecrets | list | `[]` |  |
 | ingress.additionalIngresses | list | `[]` |  |
 | ingress.enabled | bool | `false` |  |
-| initContainers | list | `[]` |  |
+| initContainers | list | `[{"command":["sh","-c","/entrypoint -c suse-observability-clickhouse:9000,suse-observability-vmagent:8429,suse-observability-kafka-headless:9092 -t 300\n"],"image":"{{ include \"opentelemetry-collector.waitImageRegistry\" . }}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}","imagePullPolicy":"IfNotPresent","name":"otel-collector-init"}]` | Wait for ClickHouse, vmagent, and Kafka to be reachable before starting the collector. |
 | lifecycleHooks | object | `{}` |  |
 | livenessProbe.httpGet.path | string | `"/"` |  |
 | livenessProbe.httpGet.port | int | `13133` |  |
-| mode | string | `""` |  |
+| mode | string | `"statefulset"` |  |
 | nameOverride | string | `""` |  |
 | namespaceOverride | string | `""` |  |
 | networkPolicy.allowIngressFrom | list | `[]` |  |
@@ -198,7 +199,7 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | networkPolicy.enabled | bool | `false` |  |
 | networkPolicy.extraIngressRules | list | `[]` |  |
 | nodeSelector | object | `{}` |  |
-| podAnnotations | object | `{}` |  |
+| podAnnotations | object | `{"ad.stackstate.com/opentelemetry-collector.check_names":"[\"openmetrics\"]","ad.stackstate.com/opentelemetry-collector.init_configs":"[{}]","ad.stackstate.com/opentelemetry-collector.instances":"[ { \"prometheus_url\": \"http://%%host%%:8888/metrics\", \"namespace\": \"stackstate\", \"metrics\": [\"*\"] } ]"}` | SUSE Observability scrape config (Datadog auto-discovery format) — applied to every install. |
 | podDisruptionBudget.enabled | bool | `false` |  |
 | podLabels | object | `{}` |  |
 | podMonitor.enabled | bool | `false` |  |
@@ -229,7 +230,7 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | ports.otlp-http.hostPort | int | `4318` |  |
 | ports.otlp-http.protocol | string | `"TCP"` |  |
 | ports.otlp-http.servicePort | int | `4318` |  |
-| ports.otlp.appProtocol | string | `"kubernetes.io/h2c"` |  |
+| ports.otlp.appProtocol | string | `"grpc"` | appProtocol for the OTLP gRPC service port. Use `grpc` for nginx ingress or `kubernetes.io/h2c` for Gateway API (e.g. Traefik GRPCRoute). |
 | ports.otlp.containerPort | int | `4317` |  |
 | ports.otlp.enabled | bool | `true` |  |
 | ports.otlp.hostPort | int | `4317` |  |
@@ -287,4 +288,3 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | tolerations | list | `[]` |  |
 | topologySpreadConstraints | list | `[]` |  |
 | useGOMEMLIMIT | bool | `true` |  |
-

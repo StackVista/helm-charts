@@ -79,11 +79,7 @@ Clickhouse endpoint.
 Logic to determine otel collector endpoint.
 */}}
 {{- define "stackstate.otel.http.host" -}}
-{{- if .Values.opentelemetry.enabled -}}
 {{- index .Values "opentelemetry-collector" "fullnameOverride" }}
-{{- else -}}
-{{- .Values.stackstate.components.all.otelCollectorEndpoint -}}
-{{- end -}}
 {{- end -}}
 
 {{/*

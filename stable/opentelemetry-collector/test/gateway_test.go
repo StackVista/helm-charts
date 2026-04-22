@@ -15,7 +15,7 @@ func TestGatewayHTTPRouteEnabled(t *testing.T) {
 
 	require.Len(t, resources.HTTPRoutes, 1, "Should have exactly 1 HTTPRoute")
 
-	routeName := releaseName + "-opentelemetry-collector"
+	routeName := fullName
 	route, ok := resources.HTTPRoutes[routeName]
 	require.True(t, ok, "HTTPRoute %s should exist", routeName)
 
@@ -42,7 +42,7 @@ func TestGatewayGRPCRouteEnabled(t *testing.T) {
 
 	require.Len(t, resources.GRPCRoutes, 1, "Should have exactly 1 GRPCRoute")
 
-	routeName := releaseName + "-opentelemetry-collector"
+	routeName := fullName
 	route, ok := resources.GRPCRoutes[routeName]
 	require.True(t, ok, "GRPCRoute %s should exist", routeName)
 
@@ -66,13 +66,13 @@ func TestGatewayBothHTTPAndGRPCRoutes(t *testing.T) {
 	require.Len(t, resources.HTTPRoutes, 1, "Should have exactly 1 HTTPRoute")
 	require.Len(t, resources.GRPCRoutes, 1, "Should have exactly 1 GRPCRoute")
 
-	httpRouteName := releaseName + "-opentelemetry-collector"
+	httpRouteName := fullName
 	httpRoute, ok := resources.HTTPRoutes[httpRouteName]
 	require.True(t, ok, "HTTPRoute %s should exist", httpRouteName)
 	require.Len(t, httpRoute.Spec.Rules, 1)
 	assert.Equal(t, gatewayv1.PortNumber(4318), *httpRoute.Spec.Rules[0].BackendRefs[0].Port)
 
-	grpcRouteName := releaseName + "-opentelemetry-collector-grpc"
+	grpcRouteName := fullName + "-grpc"
 	grpcRoute, ok := resources.GRPCRoutes[grpcRouteName]
 	require.True(t, ok, "GRPCRoute %s should exist", grpcRouteName)
 	require.Len(t, grpcRoute.Spec.Rules, 1)

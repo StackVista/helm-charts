@@ -2133,42 +2133,14 @@ clickhouse:
       endpoint: '{{ include "stackstate.s3proxy.endpoint" . }}'
       # clickhouse.backup.s3.secretName -- Name of the secret containing S3 credentials.
       secretName: '{{ include "stackstate.s3proxy.secretName" . }}'
-opentelemetry:
-  # opentelemetry.enabled -- Enable / disable chart-based OTEL.
-  enabled: true
 opentelemetry-collector:
   image:
+    # opentelemetry-collector.image.registry -- Base container image registry.
     registry: quay.io
     # opentelemetry-collector.image.repository -- Repository where to get the image from.
     repository: stackstate/sts-opentelemetry-collector
     # opentelemetry-collector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
     tag: v0.0.31
-  # opentelemetry-collector.fullnameOverride -- Name override for OTEL collector child chart. **Don't change unless otherwise specified; this is a Helm v2 limitation, and will be addressed in a later Helm v3 chart.**
-  fullnameOverride: suse-observability-otel-collector
-  ports:
-    otlp:
-      # opentelemetry-collector.ports.otlp.appProtocol -- appProtocol for the OTLP gRPC service port. Use `grpc` for nginx ingress or `kubernetes.io/h2c` for Gateway API (e.g. Traefik GRPCRoute).
-      appProtocol: grpc
-  # opentelemetry-collector.mode -- deployment mode of OTEL collector. Valid values are "daemonset", "deployment", and "statefulset".
-  mode: statefulset
-  # opentelemetry-collector.replicaCount -- only used with deployment mode
-  replicaCount: 1
-  # opentelemetry-collector.extraEnvs -- Collector configuration, see: [doc](https://opentelemetry.io/docs/collector/configuration/). Contains API_URL with path to api server used to authorize requests
-  extraEnvs:
-    - name: API_URL
-      valueFrom:
-        configMapKeyRef:
-          name: suse-observability-otel-collector
-          key: api.url
-    - name: INTAKE_URL
-      valueFrom:
-        configMapKeyRef:
-          name: suse-observability-otel-collector
-          key: intake.url
-  podAnnotations:
-    ad.stackstate.com/opentelemetry-collector.check_names: '["openmetrics"]'
-    ad.stackstate.com/opentelemetry-collector.init_configs: "[{}]"
-    ad.stackstate.com/opentelemetry-collector.instances: '[ { "prometheus_url": "http://%%host%%:8888/metrics", "namespace": "stackstate", "metrics": ["*"] } ]'
   resources:
     requests:
       cpu: 250m
@@ -2176,15 +2148,6 @@ opentelemetry-collector:
     limits:
       cpu: 500m
       memory: 512Mi
-  initContainers:
-    - name: otel-collector-init
-      image: '{{ include "opentelemetry-collector.waitImageRegistry" . }}/{{ .Values.global.wait.image.repository }}:{{ .Values.global.wait.image.tag }}'
-      imagePullPolicy: IfNotPresent
-      command:
-        - sh
-        - -c
-        - |
-          /entrypoint -c suse-observability-clickhouse:9000,suse-observability-vmagent:8429,suse-observability-kafka-headless:9092 -t 300
 kubernetes-rbac-agent:
   url:
     value: '{{ include "stackstate.rbacAgent.url" . }}'
