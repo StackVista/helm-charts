@@ -10,7 +10,7 @@ Current chart version is `2.9.1-pre.112`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| file://../anomaly-detection/ | anomaly-detection | 5.2.0-snapshot.182 |
+| file://../anomaly-detection/ | anomaly-detection | 5.2.0-snapshot.183 |
 | file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.27 |
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.21 |
@@ -363,28 +363,11 @@ If you encounter issues not covered here:
 | ai.assistant.provider | string | `"bedrock"` | LLM provider for AI Assistant. Possible values: `bedrock` or `anthropic`. |
 | ai.platformOptimization | object | `{"enabled":false}` | Automatic Troubleshooting & Remediation. Entitlement: Requires 'SUSE Platform Optimization' add-on (part of Rancher Suite). Enabling this flag indicates you have the appropriate license for Platform Optimization. |
 | ai.platformOptimization.enabled | bool | `false` | Enables advanced AI-driven automatic troubleshooting extensions. This builds upon the AI Assistant framework to provide proactive issue resolution. |
-| anomaly-detection.cpu.limit | string | `"2000m"` | CPU resource limit |
-| anomaly-detection.cpu.request | string | `"1000m"` | CPU resource request |
 | anomaly-detection.enabled | bool | `false` | Enables anomaly detection chart |
-| anomaly-detection.image.imagePullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for anomaly detection pods. |
-| anomaly-detection.image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
-| anomaly-detection.image.pullSecretPassword | string | `nil` |  |
-| anomaly-detection.image.pullSecretUsername | string | `nil` | Password used to login to the registry to pull Docker images of all pods. |
 | anomaly-detection.image.registry | string | `"quay.io"` | Base container image registry for all containers, except for the wait container |
 | anomaly-detection.image.spotlightRepository | string | `"stackstate/spotlight"` | Repository of the spotlight Docker image. |
 | anomaly-detection.image.tag | string | `"5.2.0-snapshot.192"` | the chart image tag, e.g. 4.1.3-latest |
-| anomaly-detection.ingress | object | `{"annotations":{},"enabled":false,"hostname":null,"hosts":[],"port":8090,"tls":null}` | Status interface ingress |
-| anomaly-detection.ingress.enabled | bool | `false` | Enables ingress controller for status interface |
-| anomaly-detection.ingress.hostname | string | `nil` | Status interface hostname e.g. spotlight.local.domain |
-| anomaly-detection.memory.limit | string | `"3Gi"` | Memory resource limit |
-| anomaly-detection.memory.request | string | `"3Gi"` | Memory resource request |
-| anomaly-detection.pdb.maxUnavailable | int | `0` | Maximum number of pods that can be unavailable for the anomaly detection |
-| anomaly-detection.stackstate.apiToken | string | `nil` | Stackstate Api token that used by spotlight for authentication, it is expected to be set only in case if authType = "api-token" |
-| anomaly-detection.stackstate.authType | string | `"token"` | Type of authentication. There are three options 1) "token" - with service account token (default), 2) "api-token" - with Stackstate API Token, 3) "cookie" - username, password based auth. |
-| anomaly-detection.stackstate.instance | string | `"{{ include \"stackstate.router.endpoint\" . }}"` | **Required Stackstate instance URL, e.g http://stackstate-router:8080 |
-| anomaly-detection.stackstate.password | string | `nil` | Stackstate Password used by spotlight for authentication, it is expected to be set only in case if authType = "cookie" |
-| anomaly-detection.stackstate.username | string | `nil` | Stackstate Username used by spotlight for authentication, it is expected to be set only in case if authType = "cookie" |
-| anomaly-detection.threadWorkers | int | `3` | The number of worker threads. |
+| anomaly-detection.stackstate.instance | string | `"{{ include \"stackstate.router.endpoint\" . }}"` | **Required Stackstate instance URL. |
 | backup.additionalLogging | string | `""` | Additional logback config for backup components |
 | backup.configuration.bucketName | string | `"sts-configuration-backup"` | Name of the storage bucket to store configuration backups. |
 | backup.configuration.maxLocalFiles | int | `10` | The maximum number of configuration backup files stored on the PVC for the configuration backup (which is only of limited size, see backup.configuration.scheduled.pvc.size. |
@@ -517,6 +500,7 @@ If you encounter issues not covered here:
 | hbase.hbase.regionserver.replicaCount | string | `nil` | Number of HBase regionserver node replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | hbase.hdfs.datanode.replicaCount | string | `nil` | Number of HDFS datanode replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | hbase.hdfs.version | string | `"java21-8-aef270ee-release-366"` | HDFS image build version (e.g. java21-8-27156f06-353). Derived from hadoop docker tag with semver prefix stripped. Updated by updatecli. |
+| hbase.stackgraph.version | string | `"7.14.0"` |  |
 | hbase.tephra.replicaCount | string | `nil` | Number of Tephra replicas. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | ingress.annotations | object | `{}` | Annotations for ingress objects. |
 | ingress.enabled | bool | `false` | Enable use of ingress controllers. |

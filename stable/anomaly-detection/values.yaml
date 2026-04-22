@@ -11,7 +11,7 @@ image:
   # image.tag -- the chart image tag, e.g. 4.1.0-latest
   tag: "5.2.0-snapshot.179"
   # image.imagePullPolicy -- The default pullPolicy used for anomaly detection pods.
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   # image.pullSecretName -- Name of ImagePullSecret to use for all pods.
   pullSecretName:
   # image.pullSecretUsername -- Username used to login to the registry to pull Docker images of all pods.
@@ -72,14 +72,14 @@ manager:
 replicas: 1
 cpu:
   # cpu.limit -- CPU resource limit
-  limit: 4
+  limit: "2000m"
   # cpu.request -- CPU resource request
-  request: 4
+  request: "1000m"
 memory:
   # memory.limit -- Memory resource limit
-  limit: 6Gi
+  limit: "3Gi"
   # memory.request -- Memory resource request
-  request: 6Gi
+  request: "3Gi"
 ephemeralStorage:
   # ephemeralStorage.limit -- Ephemeral storage resource limit
   limit: 2Gi
@@ -94,7 +94,7 @@ tolerations: []
 # affinity -- Affinity settings for pod assignment.
 affinity: {}
 # threadWorkers -- The number of worker threads.
-threadWorkers: 8
+threadWorkers: 3
 
 # strategy -- The strategy for the Deployment object.
 strategy:

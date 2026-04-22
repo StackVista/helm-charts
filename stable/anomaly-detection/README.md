@@ -2,7 +2,7 @@
 
 A Helm chart for Anomaly Detection
 
-Current chart version is `5.2.0-snapshot.182`
+Current chart version is `5.2.0-snapshot.183`
 
 ## Requirements
 
@@ -46,14 +46,14 @@ helm template . --values values.yaml --set-file etcoverride.streams_stsl=etc/str
 |-----|------|---------|-------------|
 | affinity | object | `{}` | Affinity settings for pod assignment. |
 | cluster-role.enabled | bool | `true` | Deploy the ClusterRoleBinding(s) together with the chart. Can be disabled if these need to be installed by an administrator of the Kubernetes cluster. |
-| cpu.limit | int | `4` | CPU resource limit |
-| cpu.request | int | `4` | CPU resource request |
+| cpu.limit | string | `"2000m"` | CPU resource limit |
+| cpu.request | string | `"1000m"` | CPU resource request |
 | enabled | bool | `true` | Enables anomaly detection chart |
 | ephemeralStorage.limit | string | `"2Gi"` | Ephemeral storage resource limit |
 | ephemeralStorage.request | string | `"1Mi"` | Ephemeral storage resource request |
 | global.commonLabels | object | `{}` | Common labels to be applied to Deployments and their pods. |
 | global.receiverApiKey | string | `nil` | **Required API key used by the Receiver. |
-| image.imagePullPolicy | string | `"Always"` | The default pullPolicy used for anomaly detection pods. |
+| image.imagePullPolicy | string | `"IfNotPresent"` | The default pullPolicy used for anomaly detection pods. |
 | image.pullSecretName | string | `nil` | Name of ImagePullSecret to use for all pods. |
 | image.pullSecretPassword | string | `nil` |  |
 | image.pullSecretUsername | string | `nil` | Password used to login to the registry to pull Docker images of all pods. |
@@ -74,8 +74,8 @@ helm template . --values values.yaml --set-file etcoverride.streams_stsl=etc/str
 | manager.persistentStorage.size | string | `"10Gi"` |  |
 | manager.persistentStorage.storageClass | string | `nil` |  |
 | manager.tolerations | list | `[]` |  |
-| memory.limit | string | `"6Gi"` | Memory resource limit |
-| memory.request | string | `"6Gi"` | Memory resource request |
+| memory.limit | string | `"3Gi"` | Memory resource limit |
+| memory.request | string | `"3Gi"` | Memory resource request |
 | metrics.serviceMonitor.enabled | bool | `false` |  |
 | nodeSelector | object | `{}` | Node labels for pod assignment. |
 | pdb.maxUnavailable | int | `0` | PodDisruptionBudget settings for `anomaly-detection` pods. |
@@ -92,5 +92,5 @@ helm template . --values values.yaml --set-file etcoverride.streams_stsl=etc/str
 | stackstate.password | string | `nil` | Stackstate Password that used by spotlight for authentication, it is expected to be set only in case if authType = "cookie" |
 | stackstate.username | string | `nil` | Stackstate Username that used by spotlight for authentication, it is expected to be set only in case if authType = "cookie" |
 | strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
-| threadWorkers | int | `8` | The number of worker threads. |
+| threadWorkers | int | `3` | The number of worker threads. |
 | tolerations | list | `[]` | Toleration labels for pod assignment. |

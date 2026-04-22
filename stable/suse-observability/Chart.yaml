@@ -15,7 +15,7 @@ name: suse-observability
 dependencies:
   - name: anomaly-detection
     repository: file://../anomaly-detection/
-    version: "5.2.0-snapshot.182"
+    version: "5.2.0-snapshot.183"
     condition: anomaly-detection.enabled
   - name: common
     repository: file://../common/

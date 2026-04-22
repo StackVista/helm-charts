@@ -1986,72 +1986,16 @@ zookeeper:
 anomaly-detection:
   # anomaly-detection.enabled -- Enables anomaly detection chart
   enabled: false
-  cpu:
-    # anomaly-detection.cpu.limit -- CPU resource limit
-    limit: "2000m"
-    # anomaly-detection.cpu.request -- CPU resource request
-    request: "1000m"
-  memory:
-    # anomaly-detection.memory.limit -- Memory resource limit
-    limit: "3Gi"
-    # anomaly-detection.memory.request -- Memory resource request
-    request: "3Gi"
-  pdb:
-    # anomaly-detection.pdb.maxUnavailable -- Maximum number of pods that can be unavailable for the anomaly detection
-    maxUnavailable: 0
   image:
-    # anomaly-detection.image.imagePullPolicy -- The default pullPolicy used for anomaly detection pods.
-    imagePullPolicy: IfNotPresent
     # anomaly-detection.image.tag -- the chart image tag, e.g. 4.1.3-latest
     tag: 5.2.0-snapshot.192
-    # anomaly-detection.image.pullSecretName -- Name of ImagePullSecret to use for all pods.
-    pullSecretName:
-    # anomaly-detection.image.pullSecretUsername -- Username used to login to the registry to pull Docker images of all pods.
-    pullSecretUsername:
-    # anomaly-detection.image.pullSecretUsername -- Password used to login to the registry to pull Docker images of all pods.
-    pullSecretPassword:
     # anomaly-detection.image.registry -- Base container image registry for all containers, except for the wait container
     registry: quay.io
     # anomaly-detection.image.spotlightRepository -- Repository of the spotlight Docker image.
     spotlightRepository: stackstate/spotlight
   stackstate:
-    # anomaly-detection.stackstate.instance -- **Required Stackstate instance URL, e.g http://stackstate-router:8080
+    # anomaly-detection.stackstate.instance -- **Required Stackstate instance URL.
     instance: '{{ include "stackstate.router.endpoint" . }}'
-    # anomaly-detection.stackstate.authType -- Type of authentication. There are three options 1) "token" - with service account token (default), 2) "api-token" - with Stackstate API Token, 3) "cookie" - username, password based auth.
-    authType: token
-    # anomaly-detection.stackstate.username -- Stackstate Username used by spotlight for authentication, it is expected to be set only in case if authType = "cookie"
-    username:
-    # anomaly-detection.stackstate.password -- Stackstate Password used by spotlight for authentication, it is expected to be set only in case if authType = "cookie"
-    password:
-    # anomaly-detection.stackstate.apiToken -- Stackstate Api token that used by spotlight for authentication, it is expected to be set only in case if authType = "api-token"
-    apiToken:
-  # anomaly-detection.threadWorkers -- The number of worker threads.
-  threadWorkers: 3
-  # anomaly-detection.ingress -- Status interface ingress
-  ingress:
-    # anomaly-detection.ingress.enabled -- Enables ingress controller for status interface
-    enabled: false
-    # anomaly-detection.ingress.hostname -- Status interface hostname e.g. spotlight.local.domain
-    hostname:
-    # anomaly-detection.ingress.port - Status Interface port
-    port: 8090
-    # anomaly-detection.ingress.annotations - Annotations for ingress objects.
-    annotations: {}
-    # e.g.
-    #     kubernetes.io/ingress.class: nginx
-    #     cert-manager.io/cluster-issuer: letsencrypt-prod
-    #     external-dns.alpha.kubernetes.io/hostname: spotlight.local.domain
-    #     nginx.ingress.kubernetes.io/ingress.class: nginx
-    #     nginx.ingress.kubernetes.io/proxy-body-size: 100m
-    #     nginx.ingress.kubernetes.io/rewrite-target: "/$1"
-    # anomaly-detection.ingress.hosts - List of ingress hostnames
-    hosts: []
-    # - host: spotlight.local.domain
-
-    # anomaly-detection.ingress.tls - List of ingress TLS certificates to use.
-    tls:
-    # - hosts:
-    #     - spotlight.local.domain
 cluster-role:
   # cluster-role.enabled -- Deploy the ClusterRole(s) and ClusterRoleBinding(s) together with the chart. Can be disabled if these need to be installed by an administrator of the Kubernetes cluster.
   enabled: true
