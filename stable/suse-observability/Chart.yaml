@@ -42,7 +42,7 @@ dependencies:
     repository: file://../pull-secret/
     condition: pull-secret.enabled
   - name: zookeeper
-    version: 8.1.2-suse-observability.24
+    version: 8.1.2-suse-observability.25
     repository: file://../zookeeper/
   - name: victoria-metrics-single
     alias: victoria-metrics-0

@@ -1,4 +1,15 @@
 {{- if (include "zookeeper.createConfigmap" .) }}
+{{- $replicaCount := include "common.sizing.zookeeper.effectiveReplicaCount" . | int -}}
+{{- $minServerId := int .Values.minServerId -}}
+{{- $followerPort := int .Values.containerPorts.follower -}}
+{{- $electionPort := int .Values.containerPorts.election -}}
+{{- $clientPort := int .Values.containerPorts.client -}}
+{{- $releaseNamespace := include "zookeeper.namespace" . -}}
+{{- $zookeeperFullname := include "common.names.fullname" . -}}
+{{- $zookeeperHeadlessServiceName := printf "%s-%s" $zookeeperFullname "headless" | trunc 63 -}}
+{{- $clusterDomain := .Values.clusterDomain -}}
+{{- $dataDir := .Values.dataDir -}}
+{{- $dataLogDir := .Values.dataLogDir | default $dataDir -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -12,6 +23,39 @@ metadata:
   annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
 data:
-  zoo.cfg: |-
+  zoo.cfg: |
+    {{- if .Values.configuration }}
     {{- include "common.tplvalues.render" ( dict "value" .Values.configuration "context" $ ) | nindent 4 }}
+    {{- else }}
+    dataDir={{ $dataDir }}
+    dataLogDir={{ $dataLogDir }}
+    tickTime={{ .Values.tickTime }}
+    initLimit={{ .Values.initLimit }}
+    syncLimit={{ .Values.syncLimit }}
+    preAllocSize={{ .Values.preAllocSize }}
+    snapCount={{ .Values.snapCount }}
+    maxClientCnxns={{ .Values.maxClientCnxns }}
+    maxSessionTimeout={{ .Values.maxSessionTimeout }}
+    autopurge.snapRetainCount={{ .Values.autopurge.snapRetainCount }}
+    autopurge.purgeInterval={{ .Values.autopurge.purgeInterval }}
+    4lw.commands.whitelist={{ .Values.fourlwCommandsWhitelist | replace " " "" }}
+    admin.enableServer=true
+    admin.serverPort=8080
+    {{- if .Values.listenOnAllIPs }}
+    clientPortAddress=0.0.0.0
+    quorumListenOnAllIPs=true
+    {{- end }}
+    {{- if not .Values.service.disableBaseClientPort }}
+    clientPort={{ $clientPort }}
+    {{- end }}
+    {{- if .Values.metrics.enabled }}
+    metricsProvider.className=org.apache.zookeeper.metrics.prometheus.PrometheusMetricsProvider
+    metricsProvider.httpHost=0.0.0.0
+    metricsProvider.httpPort={{ .Values.metrics.containerPort }}
+    metricsProvider.exportJvmInfo=true
+    {{- end }}
+    {{- range $i, $e := until $replicaCount }}
+    server.{{ add $e $minServerId }}={{ $zookeeperFullname }}-{{ $e }}.{{ $zookeeperHeadlessServiceName }}.{{ $releaseNamespace }}.svc.{{ $clusterDomain }}:{{ $followerPort }}:{{ $electionPort }}
+    {{- end }}
+    {{- end }}
 {{- end }}

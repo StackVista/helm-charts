@@ -124,10 +124,13 @@ Return the ZooKeeper configuration ConfigMap name
 {{- end -}}
 
 {{/*
-Return true if a ConfigMap object should be created for ZooKeeper configuration
+Return true if a ConfigMap object should be created for ZooKeeper configuration.
+The chart now always renders a full zoo.cfg unless the user supplies their own
+ConfigMap via `.Values.existingConfigmap`. The optional `.Values.configuration`
+value, when set, replaces the chart-rendered body.
 */}}
 {{- define "zookeeper.createConfigmap" -}}
-{{- if and .Values.configuration (not .Values.existingConfigmap) }}
+{{- if not .Values.existingConfigmap -}}
     {{- true -}}
 {{- end -}}
 {{- end -}}

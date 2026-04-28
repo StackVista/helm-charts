@@ -1,6 +1,6 @@
 # zookeeper
 
-![Version: 8.1.2-suse-observability.24](https://img.shields.io/badge/Version-8.1.2--suse--observability.24-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
+![Version: 8.1.2-suse-observability.25](https://img.shields.io/badge/Version-8.1.2--suse--observability.25-informational?style=flat-square) ![AppVersion: 3.7.0](https://img.shields.io/badge/AppVersion-3.7.0-informational?style=flat-square)
 Apache ZooKeeper provides a reliable, centralized register of configuration data and services for distributed applications.
 **Homepage:** <https://github.com/bitnami/charts/tree/master/bitnami/zookeeper>
 ## Maintainers
@@ -45,11 +45,11 @@ Apache ZooKeeper provides a reliable, centralized register of configuration data
 | containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | containerSecurityContext.enabled | bool | `true` |  |
 | containerSecurityContext.runAsNonRoot | bool | `true` |  |
-| containerSecurityContext.runAsUser | int | `1001` |  |
+| containerSecurityContext.runAsUser | int | `1000` |  |
 | containerSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
 | customLivenessProbe.exec.command[0] | string | `"/bin/bash"` |  |
 | customLivenessProbe.exec.command[1] | string | `"-c"` |  |
-| customLivenessProbe.exec.command[2] | string | `"echo \"ruok\" | timeout 2 nc -w 2 -q 1 localhost 2181 | grep imok"` |  |
+| customLivenessProbe.exec.command[2] | string | `"exec 3<>/dev/tcp/127.0.0.1/2181; printf ruok >&3; read -r -t 2 -u 3 r; [ \"$r\" = imok ]"` |  |
 | customLivenessProbe.failureThreshold | int | `6` |  |
 | customLivenessProbe.initialDelaySeconds | int | `30` |  |
 | customLivenessProbe.periodSeconds | int | `10` |  |
@@ -57,13 +57,14 @@ Apache ZooKeeper provides a reliable, centralized register of configuration data
 | customLivenessProbe.timeoutSeconds | int | `5` |  |
 | customReadinessProbe.exec.command[0] | string | `"/bin/bash"` |  |
 | customReadinessProbe.exec.command[1] | string | `"-c"` |  |
-| customReadinessProbe.exec.command[2] | string | `"echo \"ruok\" | timeout 2 nc -w 2 -q 1 localhost 2181 | grep imok"` |  |
+| customReadinessProbe.exec.command[2] | string | `"exec 3<>/dev/tcp/127.0.0.1/2181; printf ruok >&3; read -r -t 2 -u 3 r; [ \"$r\" = imok ]"` |  |
 | customReadinessProbe.failureThreshold | int | `6` |  |
 | customReadinessProbe.initialDelaySeconds | int | `5` |  |
 | customReadinessProbe.periodSeconds | int | `10` |  |
 | customReadinessProbe.successThreshold | int | `1` |  |
 | customReadinessProbe.timeoutSeconds | int | `5` |  |
 | customStartupProbe | object | `{}` |  |
+| dataDir | string | `"/data/zookeeper/data"` |  |
 | dataLogDir | string | `""` |  |
 | diagnosticMode.args[0] | string | `"infinity"` |  |
 | diagnosticMode.command[0] | string | `"sleep"` |  |
@@ -86,9 +87,9 @@ Apache ZooKeeper provides a reliable, centralized register of configuration data
 | image.debug | bool | `false` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.pullSecrets | list | `[]` |  |
-| image.registry | string | `"docker.io"` |  |
-| image.repository | string | `"bitnami/zookeeper"` |  |
-| image.tag | string | `"3.7.0-debian-10-r320"` |  |
+| image.registry | string | `"quay.io"` |  |
+| image.repository | string | `"stackstate/zookeeper"` |  |
+| image.tag | string | `"3.9.5-3.2-release"` |  |
 | initContainers | list | `[]` |  |
 | initLimit | int | `10` |  |
 | jvmFlags | string | `"-Djute.maxbuffer=2097150"` |  |
@@ -127,6 +128,7 @@ Apache ZooKeeper provides a reliable, centralized register of configuration data
 | metrics.serviceMonitor.scrapeTimeout | string | `""` |  |
 | metrics.serviceMonitor.selector | object | `{}` |  |
 | minServerId | int | `1` |  |
+| mountPath | string | `"/data/zookeeper"` |  |
 | nameOverride | string | `""` |  |
 | namespaceOverride | string | `""` |  |
 | networkPolicy.allowExternal | bool | `true` |  |
@@ -156,7 +158,7 @@ Apache ZooKeeper provides a reliable, centralized register of configuration data
 | podLabels."app.kubernetes.io/part-of" | string | `"suse-observability"` |  |
 | podManagementPolicy | string | `"Parallel"` |  |
 | podSecurityContext.enabled | bool | `true` |  |
-| podSecurityContext.fsGroup | int | `1001` |  |
+| podSecurityContext.fsGroup | int | `1000` |  |
 | preAllocSize | int | `65536` |  |
 | priorityClassName | string | `""` |  |
 | readinessProbe.enabled | bool | `false` |  |

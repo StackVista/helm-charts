@@ -23,7 +23,7 @@ Current chart version is `2.9.1-pre.124`
 | file://../suse-observability-sizing/ | suse-observability-sizing | 0.1.16 |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.51 |
 | file://../victoria-metrics-single/ | victoria-metrics-1(victoria-metrics-single) | 0.8.53-stackstate.51 |
-| file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.24 |
+| file://../zookeeper/ | zookeeper | 8.1.2-suse-observability.25 |
 
 ## Required Values
 
@@ -1216,7 +1216,7 @@ If you encounter issues not covered here:
 | victoria-metrics.restore.securityContext.runAsUser | int | `65534` |  |
 | zookeeper.image.registry | string | `"quay.io"` | ZooKeeper image registry |
 | zookeeper.image.repository | string | `"stackstate/zookeeper"` | ZooKeeper image repository |
-| zookeeper.image.tag | string | `"3.9.3-352e04a1-315-release"` | ZooKeeper image tag |
+| zookeeper.image.tag | string | `"3.9.5-3.2-release"` | ZooKeeper image tag |
 | zookeeper.persistence.size | string | `nil` | Size of the PVC for Zookeeper data. Default is 8Gi, will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | zookeeper.replicaCount | string | `nil` | Default amount of Zookeeper replicas to provision. Will be overridden by sizing profile if using global.suseObservability.sizing.profile. |
 | zookeeper.resources | object | `{}` |  |

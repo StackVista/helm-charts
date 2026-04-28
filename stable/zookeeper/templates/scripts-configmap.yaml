@@ -79,20 +79,21 @@ data:
     {{- end }}
   setup.sh: |-
     #!/bin/bash
+    set -e
 
-    # Execute entrypoint as usual after obtaining ZOO_SERVER_ID
-    # check ZOO_SERVER_ID in persistent volume via myid
-    # if not present, set based on POD hostname
-    if [[ -f "/bitnami/zookeeper/data/myid" ]]; then
-        export ZOO_SERVER_ID="$(cat /bitnami/zookeeper/data/myid)"
+    # Derive ZOO_MY_ID from the StatefulSet pod ordinal so the SUSE Apache
+    # ZooKeeper image's docker-entrypoint.sh can write the correct `myid` on
+    # first start. If `myid` already exists on the persistent volume, the
+    # entrypoint preserves it and ZOO_MY_ID is ignored.
+    if [[ "$HOSTNAME" =~ -([0-9]+)$ ]]; then
+        export ZOO_MY_ID="$(( ${BASH_REMATCH[1]} + {{ .Values.minServerId }} ))"
     else
-        HOSTNAME="$(hostname -s)"
-        if [[ $HOSTNAME =~ (.*)-([0-9]+)$ ]]; then
-            ORD=${BASH_REMATCH[2]}
-            export ZOO_SERVER_ID="$((ORD + {{ .Values.minServerId }} ))"
-        else
-            echo "Failed to get index from hostname $HOST"
-            exit 1
-        fi
+        echo "Failed to derive server id from hostname '$HOSTNAME'"
+        exit 1
     fi
-    exec /entrypoint.sh /run.sh
+
+    # Ensure the data directory exists on a fresh PVC; the entrypoint writes
+    # `myid` directly into $ZOO_DATA_DIR and would otherwise fail on first start.
+    mkdir -p "$ZOO_DATA_DIR"
+
+    exec /usr/bin/docker-entrypoint.sh /usr/share/zookeeper/bin/zkServer.sh start-foreground

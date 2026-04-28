@@ -25,7 +25,7 @@ dependencies:
   version: 1.0.3
 - name: zookeeper
   repository: file://../zookeeper/
-  version: 8.1.2-suse-observability.24
+  version: 8.1.2-suse-observability.25
 - name: victoria-metrics-single
   repository: file://../victoria-metrics-single/
   version: 0.8.53-stackstate.51
@@ -41,5 +41,5 @@ dependencies:
 - name: kubernetes-rbac-agent
   repository: file://../kubernetes-rbac-agent/
   version: 0.0.27
-digest: sha256:6c863127f5bd678927178e2c88cf89c6750a9b396656fba3130d677106daea93
-generated: "2026-04-23T08:53:26.105801+02:00"
+digest: sha256:852b60eb79675677af3ff755c2c9dd93043e95ba14dbf0a8d529eaa81ae085e5
+generated: "2026-04-28T10:23:17.804118+02:00"

@@ -88,11 +88,11 @@ spec:
           args:
             - -ec
             - |
-              mkdir -p /bitnami/zookeeper
-              find /bitnami/zookeeper -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | xargs -r chown -R {{ .Values.containerSecurityContext.runAsUser }}:{{ .Values.podSecurityContext.fsGroup }}
+              mkdir -p {{ .Values.mountPath }}
+              chown -R {{ .Values.containerSecurityContext.runAsUser }}:{{ .Values.podSecurityContext.fsGroup }} {{ .Values.mountPath }}
               {{- if .Values.dataLogDir }}
               mkdir -p {{ .Values.dataLogDir }}
-              find {{ .Values.dataLogDir }} -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | xargs -r chown -R {{ .Values.containerSecurityContext.runAsUser }}:{{ .Values.podSecurityContext.fsGroup }}
+              chown -R {{ .Values.containerSecurityContext.runAsUser }}:{{ .Values.podSecurityContext.fsGroup }} {{ .Values.dataLogDir }}
               {{- end }}
           {{- if .Values.volumePermissions.containerSecurityContext.enabled }}
           securityContext: {{- omit .Values.volumePermissions.containerSecurityContext "enabled" | toYaml | nindent 12 }}
@@ -102,7 +102,7 @@ spec:
           {{- end }}
           volumeMounts:
             - name: data
-              mountPath: /bitnami/zookeeper
+              mountPath: {{ .Values.mountPath }}
             {{- if .Values.dataLogDir }}
             - name: data-log
               mountPath: {{ .Values.dataLogDir }}
@@ -194,125 +194,19 @@ spec:
           resources: {{- toYaml . | nindent 12 }}
           {{- end }}
           env:
-            - name: BITNAMI_DEBUG
-              value: {{ ternary "true" "false" (or .Values.image.debug .Values.diagnosticMode.enabled) | quote }}
+            # The SUSE Apache ZooKeeper image's docker-entrypoint.sh reads
+            # ZOO_DATA_DIR to locate (and write, on first start) the `myid` file.
+            # Most ZooKeeper tunables are rendered into zoo.cfg by the chart
+            # ConfigMap rather than passed via env vars.
+            - name: ZOO_DATA_DIR
+              value: {{ .Values.dataDir | quote }}
             - name: ZOO_DATA_LOG_DIR
-              value: {{ .Values.dataLogDir | quote }}
-            - name: ZOO_PORT_NUMBER
-              value: {{ .Values.containerPorts.client | quote }}
-            - name: ZOO_TICK_TIME
-              value: {{ .Values.tickTime | quote }}
-            - name: ZOO_INIT_LIMIT
-              value: {{ .Values.initLimit | quote }}
-            - name: ZOO_SYNC_LIMIT
-              value: {{ .Values.syncLimit | quote }}
-            - name: ZOO_PRE_ALLOC_SIZE
-              value: {{ .Values.preAllocSize | quote }}
-            - name: ZOO_SNAPCOUNT
-              value: {{ .Values.snapCount | quote }}
-            - name: ZOO_MAX_CLIENT_CNXNS
-              value: {{ .Values.maxClientCnxns | quote }}
-            - name: ZOO_4LW_COMMANDS_WHITELIST
-              value: {{ .Values.fourlwCommandsWhitelist | quote }}
-            - name: ZOO_LISTEN_ALLIPS_ENABLED
-              value: {{ ternary "yes" "no" .Values.listenOnAllIPs | quote }}
-            - name: ZOO_AUTOPURGE_INTERVAL
-              value: {{ .Values.autopurge.purgeInterval | quote }}
-            - name: ZOO_AUTOPURGE_RETAIN_COUNT
-              value: {{ .Values.autopurge.snapRetainCount | quote }}
-            - name: ZOO_MAX_SESSION_TIMEOUT
-              value: {{ .Values.maxSessionTimeout | quote }}
-            - name: ZOO_SERVERS
-              {{- $replicaCount := include "common.sizing.zookeeper.effectiveReplicaCount" . | int -}}
-              {{- $minServerId := int .Values.minServerId }}
-              {{- $followerPort := int .Values.containerPorts.follower }}
-              {{- $electionPort := int .Values.containerPorts.election }}
-              {{- $releaseNamespace := include "zookeeper.namespace" . }}
-              {{- $zookeeperFullname := include "common.names.fullname" . }}
-              {{- $zookeeperHeadlessServiceName := printf "%s-%s" $zookeeperFullname "headless" | trunc 63  }}
-              {{- $clusterDomain := .Values.clusterDomain }}
-              value: {{ range $i, $e := until $replicaCount }}{{ $zookeeperFullname }}-{{ $e }}.{{ $zookeeperHeadlessServiceName }}.{{ $releaseNamespace }}.svc.{{ $clusterDomain }}:{{ $followerPort }}:{{ $electionPort }}::{{ add $e $minServerId }} {{ end }}
-            - name: ZOO_ENABLE_AUTH
-              value: {{ ternary "yes" "no" .Values.auth.enabled | quote }}
-            {{- if .Values.auth.enabled }}
-            - name: ZOO_CLIENT_USER
-              value: {{ .Values.auth.clientUser | quote }}
-            - name: ZOO_CLIENT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "zookeeper.secretName" . }}
-                  key: client-password
-            - name: ZOO_SERVER_USERS
-              value: {{ .Values.auth.serverUsers | quote }}
-            - name: ZOO_SERVER_PASSWORDS
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "zookeeper.secretName" . }}
-                  key: server-password
-            {{- end }}
-            - name: ZOO_HEAP_SIZE
+              value: {{ .Values.dataLogDir | default .Values.dataDir | quote }}
+            - name: ZK_SERVER_HEAP
               value: {{ include "common.sizing.zookeeper.heapSize" . | trim | default .Values.heapSize | quote }}
-            {{- if .Values.log4jProp }}
-            - name: ZOO_LOG4J_PROP
-              value: {{ .Values.log4jProp | quote }}
-            {{- end }}
-            - name: ZOO_LOG_LEVEL
-              value: {{ .Values.logLevel | quote }}
-            - name: ALLOW_ANONYMOUS_LOGIN
-              value: {{ ternary "no" "yes" .Values.auth.enabled | quote }}
             {{- if .Values.jvmFlags }}
-            - name: JVMFLAGS
+            - name: SERVER_JVMFLAGS
               value: {{ .Values.jvmFlags | quote }}
-            {{- end }}
-            {{- if .Values.metrics.enabled }}
-            - name: ZOO_ENABLE_PROMETHEUS_METRICS
-              value: "yes"
-            - name: ZOO_PROMETHEUS_METRICS_PORT_NUMBER
-              value: {{ .Values.metrics.containerPort | quote }}
-            {{- end }}
-            {{- if .Values.tls.client.enabled }}
-            - name: ZOO_TLS_CLIENT_ENABLE
-              value: {{ .Values.tls.client.enabled | quote }}
-            - name: ZOO_TLS_CLIENT_KEYSTORE_FILE
-              value: {{ .Values.tls.client.keystorePath | quote }}
-            - name: ZOO_TLS_CLIENT_TRUSTSTORE_FILE
-              value: {{ .Values.tls.client.truststorePath | quote }}
-            {{- if or .Values.tls.client.keystorePassword .Values.tls.client.passwordsSecretName .Values.tls.client.autoGenerated }}
-            - name: ZOO_TLS_CLIENT_KEYSTORE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "zookeeper.client.tlsPasswordsSecret" . }}
-                  key: "keystore-password"
-            {{- end }}
-            {{- if or .Values.tls.client.truststorePassword .Values.tls.client.passwordsSecretName .Values.tls.client.autoGenerated }}
-            - name: ZOO_TLS_CLIENT_TRUSTSTORE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "zookeeper.client.tlsPasswordsSecret" . }}
-                  key: "truststore-password"
-            {{- end }}
-            {{- end }}
-            {{- if .Values.tls.quorum.enabled }}
-            - name: ZOO_TLS_QUORUM_ENABLE
-              value: {{ .Values.tls.quorum.enabled | quote }}
-            - name: ZOO_TLS_QUORUM_KEYSTORE_FILE
-              value: {{ .Values.tls.quorum.keystorePath | quote }}
-            - name: ZOO_TLS_QUORUM_TRUSTSTORE_FILE
-              value: {{ .Values.tls.quorum.truststorePath | quote }}
-            {{- if or .Values.tls.quorum.keystorePassword .Values.tls.quorum.passwordsSecretName .Values.tls.quorum.autoGenerated }}
-            - name: ZOO_TLS_QUORUM_KEYSTORE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "zookeeper.quorum.tlsPasswordsSecret" . }}
-                  key: "keystore-password"
-            {{- end }}
-            {{- if or .Values.tls.quorum.truststorePassword .Values.tls.quorum.passwordsSecretName .Values.tls.quorum.autoGenerated }}
-            - name: ZOO_TLS_QUORUM_TRUSTSTORE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "zookeeper.quorum.tlsPasswordsSecret" . }}
-                  key: "truststore-password"
-            {{- end }}
             {{- end }}
             - name: POD_NAME
               valueFrom:
@@ -351,29 +245,29 @@ spec:
               containerPort: {{ .Values.metrics.containerPort }}
             {{- end }}
           {{- if not .Values.diagnosticMode.enabled }}
+          {{- /* The SUSE Apache ZooKeeper image lacks `nc`/`timeout`/`grep`/`openssl`, */ -}}
+          {{- /* so probes use a pure-bash `ruok` over /dev/tcp.                            */ -}}
+          {{- $probePort := .Values.containerPorts.client -}}
+          {{- if .Values.service.disableBaseClientPort -}}
+          {{-   $probePort = .Values.containerPorts.follower -}}
+          {{- end }}
           {{- if .Values.livenessProbe.enabled }}
           livenessProbe: {{- include "common.tplvalues.render" (dict "value" (omit .Values.livenessProbe "enabled" "probeCommandTimeout") "context" $) | nindent 12 }}
             exec:
-              {{- if not .Values.service.disableBaseClientPort }}
-              command: ['/bin/bash', '-c', 'echo "ruok" | timeout {{ .Values.livenessProbe.probeCommandTimeout }} nc -w {{ .Values.livenessProbe.probeCommandTimeout }} localhost {{ .Values.containerPorts.client }} | grep imok']
-              {{- else if not .Values.tls.client.enabled }}
-              command: ['/bin/bash', '-c', 'echo "ruok" | timeout {{ .Values.livenessProbe.probeCommandTimeout }} openssl s_client -quiet -crlf -connect localhost:{{ .Values.containerPorts.tls }} | grep imok']
-              {{- else }}
-              command: ['/bin/bash', '-c', 'echo "ruok" | timeout {{ .Values.livenessProbe.probeCommandTimeout }} openssl s_client -quiet -crlf -connect localhost:{{ .Values.containerPorts.tls }} -cert {{ .Values.service.tls.client_cert_pem_path }} -key {{ .Values.service.tls.client_key_pem_path }} | grep imok']
-              {{- end }}
+              command:
+                - /bin/bash
+                - -c
+                - 'exec 3<>/dev/tcp/127.0.0.1/{{ $probePort }}; printf ruok >&3; read -r -t {{ .Values.livenessProbe.probeCommandTimeout }} -u 3 r; [ "$r" = imok ]'
           {{- else if .Values.customLivenessProbe }}
           livenessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.customLivenessProbe "context" $) | nindent 12 }}
           {{- end }}
           {{- if .Values.readinessProbe.enabled }}
           readinessProbe: {{- include "common.tplvalues.render" (dict "value" (omit .Values.readinessProbe "enabled" "probeCommandTimeout") "context" $) | nindent 12 }}
             exec:
-              {{- if not .Values.service.disableBaseClientPort }}
-              command: ['/bin/bash', '-c', 'echo "ruok" | timeout {{ .Values.readinessProbe.probeCommandTimeout }} nc -w {{ .Values.readinessProbe.probeCommandTimeout }} localhost {{ .Values.containerPorts.client }} | grep imok']
-              {{- else if not .Values.tls.client.enabled }}
-              command: ['/bin/bash', '-c', 'echo "ruok" | timeout {{ .Values.readinessProbe.probeCommandTimeout }} openssl s_client -quiet -crlf -connect localhost:{{ .Values.containerPorts.tls }} | grep imok']
-              {{- else }}
-              command: ['/bin/bash', '-c', 'echo "ruok" | timeout {{ .Values.readinessProbe.probeCommandTimeout }} openssl s_client -quiet -crlf -connect localhost:{{ .Values.containerPorts.tls }} -cert {{ .Values.service.tls.client_cert_pem_path }} -key {{ .Values.service.tls.client_key_pem_path }} | grep imok']
-              {{- end }}
+              command:
+                - /bin/bash
+                - -c
+                - 'exec 3<>/dev/tcp/127.0.0.1/{{ $probePort }}; printf ruok >&3; read -r -t {{ .Values.readinessProbe.probeCommandTimeout }} -u 3 r; [ "$r" = imok ]'
           {{- else if .Values.customReadinessProbe }}
           readinessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.customReadinessProbe "context" $) | nindent 12 }}
           {{- end }}
@@ -397,16 +291,14 @@ spec:
               mountPath: /scripts/setup.sh
               subPath: setup.sh
             - name: data
-              mountPath: /bitnami/zookeeper
+              mountPath: {{ .Values.mountPath }}
             {{- if .Values.dataLogDir }}
             - name: data-log
               mountPath: {{ .Values.dataLogDir }}
             {{- end }}
-            {{- if or .Values.configuration .Values.existingConfigmap }}
             - name: config
-              mountPath: /opt/bitnami/zookeeper/conf/zoo.cfg
+              mountPath: /usr/share/zookeeper/conf/zoo.cfg
               subPath: zoo.cfg
-            {{- end }}
             {{- if .Values.tls.client.enabled }}
             - name: client-shared-certs
               mountPath: /opt/bitnami/zookeeper/config/certs/client
@@ -428,11 +320,9 @@ spec:
           configMap:
             name: {{ printf "%s-scripts" (include "common.names.fullname" .) }}
             defaultMode: 0755
-        {{- if or .Values.configuration .Values.existingConfigmap }}
         - name: config
           configMap:
             name: {{ include "zookeeper.configmapName" . }}
-        {{- end }}
         {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
         - name: data
           persistentVolumeClaim:
