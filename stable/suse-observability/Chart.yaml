@@ -58,7 +58,7 @@ dependencies:
     version: 3.6.9-suse-observability.28
     repository: file://../clickhouse/
   - name: opentelemetry-collector
-    version: 0.108.0-stackstate.29
+    version: 0.108.0-stackstate.30
     repository: file://../opentelemetry-collector
   - name: kubernetes-rbac-agent
     repository: file://../kubernetes-rbac-agent/
