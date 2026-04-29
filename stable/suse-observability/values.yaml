@@ -1782,7 +1782,7 @@ elasticsearch:
   prometheus-elasticsearch-exporter:
     # elasticsearch.prometheus-elasticsearch-exporter.image.tag -- Elasticsearch Prometheus exporter image tag. Updated by updatecli.
     image:
-      tag: v1.10.0-6159e1ba-release-174
+      tag: v1.10.0-6159e1ba-release-175
     resources: {}
 hbase:
   hbase:
