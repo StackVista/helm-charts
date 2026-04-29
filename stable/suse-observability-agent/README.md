@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.3.2`
+Current chart version is `1.3.3`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -11,7 +11,7 @@ Current chart version is `1.3.2`
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../kubernetes-rbac-agent/ | kubernetes-rbac-agent | 0.0.27 |
-| https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.25 |
+| https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.27 |
 
 ## Required Values
 
@@ -172,12 +172,12 @@ stackstate/suse-observability-agent
 | httpHeaderInjectorWebhook.proxy.image.repository | string | `"stackstate/http-header-injector-proxy"` |  |
 | httpHeaderInjectorWebhook.proxyInit.image.repository | string | `"stackstate/http-header-injector-proxy-init"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
-| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"638bbb3c-46-release"` |  |
+| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"638bbb3c-47-release"` |  |
 | kubernetes-rbac-agent.clusterName.fromConfigMap | string | `"{{ include \"stackstate-k8s-agent.clusterName.configmap.internal.name\" . }}"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
 | kubernetes-rbac-agent.containers.rbacAgent.image.repository | string | `"stackstate/kubernetes-rbac-agent"` |  |
-| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"c96a7ba1-699-release"` |  |
+| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"e78c10a7-712-release"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
 | kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{}` | Additional annotations on the pod |
 | kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |
@@ -192,7 +192,7 @@ stackstate/suse-observability-agent
 | logsAgent.enabled | bool | `true` | Enable / disable k8s pod log collection |
 | logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | logsAgent.image.repository | string | `"stackstate/promtail"` | Base container image repository. |
-| logsAgent.image.tag | string | `"3.6.10-f51a4334-release-135"` | Default container image tag. |
+| logsAgent.image.tag | string | `"3.6.10-f51a4334-release-136"` | Default container image tag. |
 | logsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | logsAgent.priorityClassName | string | `""` | Priority class for logsAgent pods. |
 | logsAgent.resources.limits.cpu | string | `"1300m"` | CPU resource limits. |
