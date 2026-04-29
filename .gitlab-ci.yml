@@ -1238,7 +1238,7 @@ finalize_helm_chart_docker_images:
     - export GITLAB_TOKEN="$gitlab_api_scope_token"
     - export UPDATE_CLI_PGP_KEY="$(cat $STACKSTATE_SYSTEM_USER_PGP_KEY)"
     - export UPDATE_CLI_PGP_PASSPHRASE="$STACKSTATE_SYSTEM_USER_PGP_PASS_PHRASE"
-  image: quay.io/stackstate/container-tools:088bf46e-602-dev
+  image: quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4
   needs:
     - update_helm_chart_docker_images
   rules:
@@ -1256,7 +1256,7 @@ open_updatecli_docker_images_mr:
   before_script:
     - .gitlab/configure_git.sh
     - export GITLAB_TOKEN="$gitlab_api_scope_token"
-  image: quay.io/stackstate/container-tools:088bf46e-602-dev
+  image: quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4
   needs:
     - finalize_helm_chart_docker_images
   rules:
@@ -4517,7 +4517,7 @@ update_helm_chart_docker_images:
     - export GITLAB_TOKEN="$gitlab_api_scope_token"
     - export UPDATE_CLI_PGP_KEY="$(cat $STACKSTATE_SYSTEM_USER_PGP_KEY)"
     - export UPDATE_CLI_PGP_PASSPHRASE="$STACKSTATE_SYSTEM_USER_PGP_PASS_PHRASE"
-  image: quay.io/stackstate/container-tools:088bf46e-602-dev
+  image: quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4
   rules:
     - if: $RUN_UPDATECLI
       when: always
@@ -5153,7 +5153,7 @@ validate_updatecli_config:
     - 'yamllint -d "{rules: {document-start: disable, line-length: disable}}" updatecli/values.d/values.yaml'
   stage: validate
 validate_updatecli_diff:
-  image: quay.io/stackstate/container-tools:088bf46e-602-dev
+  image: quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4
   rules:
     - changes:
         - updatecli/**/*

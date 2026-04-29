@@ -1,6 +1,6 @@
 # Victoria Metrics Helm Chart for Single Version
 
- ![Version: 0.8.53-stackstate.51](https://img.shields.io/badge/Version-0.8.53--stackstate.51-informational?style=flat-square)
+ ![Version: 0.8.53-stackstate.52](https://img.shields.io/badge/Version-0.8.53--stackstate.52-informational?style=flat-square)
 
 Victoria Metrics Single version - high-performance, cost-effective and scalable TSDB, long-term remote storage for Prometheus
 
@@ -161,7 +161,7 @@ Change the values according to the need of the environment in ``victoria-metrics
 | backup.scheduled.schedule | DEPRECATED | `nil` | Use backup.scheduled.hourly instead. If set, overrides hourly. |
 | backup.setupCron.image.registry | string | `"quay.io"` |  |
 | backup.setupCron.image.repository | string | `"stackstate/container-tools"` | Repository containing busybox image, it is used to prepare th cronjob (create a crontab file). |
-| backup.setupCron.image.tag | string | `"1.8.2-bci-517"` | Tag of the image for the busybox |
+| backup.setupCron.image.tag | string | `"1.8.6-fa52bb17-main-4"` | Tag of the image for the busybox |
 | backup.setupCron.resources.limits.cpu | string | `"20m"` |  |
 | backup.setupCron.resources.limits.memory | string | `"64Mi"` |  |
 | backup.setupCron.resources.requests.cpu | string | `"20m"` |  |

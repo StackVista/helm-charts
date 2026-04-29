@@ -12,7 +12,7 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 |-------|-------------|-----------------|-------|
 | clickhouse-backup | stable/suse-observability/values.yaml | $.clickhouse.backup.image.tag | |
 | clickhouse | stable/suse-observability/values.yaml | $.clickhouse.image.tag, $.stackstate.components.clickhouseCleanup.image.tag | |
-| container-tools | stable/suse-observability/values.yaml | $.stackstate.components.router.mode.image.tag, $.stackstate.components.containerTools.image.tag | Tag format: `1.8.3-573` |
+| container-tools | stable/suse-observability/values.yaml | $.stackstate.components.router.mode.image.tag, $.stackstate.components.containerTools.image.tag | Tag format: `1.8.6-fa52bb17-main-4`; standard `main` tags only |
 | container-tools | stable/suse-observability/values.yaml | $.victoria-metrics-0.backup.setupCron.image.tag, $.victoria-metrics-1.backup.setupCron.image.tag | Victoria-metrics-single subchart (aliased as victoria-metrics-0/1) |
 | container-tools | stable/suse-observability-agent/values.yaml | $.httpHeaderInjectorWebhook.certificatePrehook.image.tag | When values change, Chart.yaml version is bumped via shell target |
 | elasticsearch | stable/suse-observability/values.yaml | $.elasticsearch.imageTag | |
@@ -40,7 +40,7 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 
 - **Standard:** `prefix-hash-release-buildId` (e.g. `v1.109.0-614527d8-release-138`), tagfilter `.*-[a-f0-9]{8}-release-[0-9]+$`
 - **workload-observer, kubernetes-rbac-agent:** `hash-buildId-release` (e.g. `f40221cf-76-release`), tagfilter `^[a-f0-9]{8}-[0-9]+-release$`
-- **container-tools:** `version-buildId` (e.g. `1.8.3-573`), tagfilter `^[0-9]+\.[0-9]+\.[0-9]+-[0-9]+$`
+- **container-tools:** `version-hash-main-run` (e.g. `1.8.6-fa52bb17-main-4`), tagfilter `^[0-9]+\.[0-9]+\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$`; dev tags such as `1.8.6_dev-*` are intentionally ignored
 
 ## Run Locally
 
@@ -48,6 +48,6 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 cd helm-charts
 source .env
 docker run --rm -v $(pwd):/workspace -w /workspace -e GITLAB_TOKEN \
-  quay.io/stackstate/container-tools:23b0c0da-591-dev \
+  quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4 \
   updatecli diff --config updatecli/updatecli.d/update-docker-images/ --values updatecli/values.d/values.yaml
 ```
