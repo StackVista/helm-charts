@@ -2011,7 +2011,7 @@ victoria-metrics-0:
   server:
     # victoria-metrics-0.server.image.tag -- Victoria Metrics server image tag. Updated by updatecli.
     image:
-      tag: v1.136.0-621be04a-release-156
+      tag: v1.136.0-621be04a-release-157
     # victoria-metrics-0.server.fullnameOverride -- Full name override
     fullnameOverride: suse-observability-victoria-metrics-0
     persistentVolume:
@@ -2050,7 +2050,7 @@ victoria-metrics-1:
   server:
     # victoria-metrics-1.server.image.tag -- Victoria Metrics server image tag. Updated by updatecli.
     image:
-      tag: v1.136.0-621be04a-release-156
+      tag: v1.136.0-621be04a-release-157
     # victoria-metrics-1.server.fullnameOverride -- Full name override
     fullnameOverride: suse-observability-victoria-metrics-1
     persistentVolume:
