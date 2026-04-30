@@ -28,10 +28,10 @@ sources:
     spec:
       image: "quay.io/stackstate/clickhouse-backup"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+-release$"
+      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
       versionfilter:
         kind: regex/semver
-        regex: ".*-([0-9]+)-release$"
+        regex: ".*-(\\d+)$"
   clickhouse:
     name: "clickhouse"
     kind: dockerimage

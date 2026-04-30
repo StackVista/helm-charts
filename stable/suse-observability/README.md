@@ -436,7 +436,7 @@ If you encounter issues not covered here:
 | backup.storage.settingsPvc.storageClass | string | `""` | Storage class for the settings PVC |
 | clickhouse.backup.image.registry | string | `"quay.io"` | Registry where to get the image from. |
 | clickhouse.backup.image.repository | string | `"stackstate/clickhouse-backup"` | Repository where to get the image from. |
-| clickhouse.backup.image.tag | string | `"2.6.43-47a710b2-177-release"` | Container image tag for 'clickhouse' backup containers. |
+| clickhouse.backup.image.tag | string | `"2.6.43-4ac12b1a-main-13"` | Container image tag for 'clickhouse' backup containers. |
 | clickhouse.backup.s3.endpoint | string | `"{{ include \"stackstate.s3proxy.endpoint\" . }}"` | S3-compatible endpoint for backup storage (resolved from s3proxy). |
 | clickhouse.backup.s3.secretName | string | `"{{ include \"stackstate.s3proxy.secretName\" . }}"` | Name of the secret containing S3 credentials. |
 | clickhouse.image.registry | string | `"quay.io"` | Registry where to get the image from |

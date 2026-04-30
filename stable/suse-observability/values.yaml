@@ -2127,7 +2127,7 @@ clickhouse:
       # clickhouse.backup.image.repository -- Repository where to get the image from.
       repository: stackstate/clickhouse-backup
       # clickhouse.backup.image.tag -- Container image tag for 'clickhouse' backup containers.
-      tag: 2.6.43-47a710b2-177-release
+      tag: 2.6.43-4ac12b1a-main-13
     s3:
       # clickhouse.backup.s3.endpoint -- S3-compatible endpoint for backup storage (resolved from s3proxy).
       endpoint: '{{ include "stackstate.s3proxy.endpoint" . }}'

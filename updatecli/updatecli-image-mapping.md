@@ -10,7 +10,7 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 
 | Image | Values File | JSONPath Key(s) | Notes |
 |-------|-------------|-----------------|-------|
-| clickhouse-backup | stable/suse-observability/values.yaml | $.clickhouse.backup.image.tag | |
+| clickhouse-backup | stable/suse-observability/values.yaml | $.clickhouse.backup.image.tag | Tag format: `2.6.43-4ac12b1a-main-13`; standard `main` tags only |
 | clickhouse | stable/suse-observability/values.yaml | $.clickhouse.image.tag, $.stackstate.components.clickhouseCleanup.image.tag | |
 | container-tools | stable/suse-observability/values.yaml | $.stackstate.components.router.mode.image.tag, $.stackstate.components.containerTools.image.tag | Tag format: `1.8.6-fa52bb17-main-4`; standard `main` tags only |
 | container-tools | stable/suse-observability/values.yaml | $.victoria-metrics-0.backup.setupCron.image.tag, $.victoria-metrics-1.backup.setupCron.image.tag | Victoria-metrics-single subchart (aliased as victoria-metrics-0/1) |
@@ -40,7 +40,8 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 
 - **Standard:** `prefix-hash-release-buildId` (e.g. `v1.109.0-614527d8-release-138`), tagfilter `.*-[a-f0-9]{8}-release-[0-9]+$`
 - **workload-observer, kubernetes-rbac-agent:** `hash-buildId-release` (e.g. `f40221cf-76-release`), tagfilter `^[a-f0-9]{8}-[0-9]+-release$`
-- **container-tools:** `version-hash-main-run` (e.g. `1.8.6-fa52bb17-main-4`), tagfilter `^[0-9]+\.[0-9]+\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$`; dev tags such as `1.8.6_dev-*` are intentionally ignored
+- **GitHub main:** `version-hash-main-run` (e.g. `2.6.43-4ac12b1a-main-13`), tagfilter `^[0-9]+\.[0-9]+\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$`
+- **container-tools:** same `main` tag format for customer-runtime tags; dev tags such as `1.8.6_dev-*` are intentionally ignored
 
 ## Run Locally
 
