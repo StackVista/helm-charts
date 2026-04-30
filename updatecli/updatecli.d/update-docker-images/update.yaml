@@ -132,6 +132,28 @@ sources:
       versionfilter:
         kind: regex/semver
         regex: ".*-([0-9]+)-release$"
+  suseObservabilityMcp:
+    name: "suse-observability-mcp"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/suse-observability-mcp"
+      architecture: "linux/amd64"
+      tagfilter: "^[0-9]{14}-[0-9a-f]{8}$"
+      versionfilter:
+        kind: regex/time
+        regex: "^([0-9]{14})-[0-9a-f]{8}$"
+        pattern: "20060102150405"
+  suseObservabilityBorg:
+    name: "suse-observability-borg"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/suse-observability-borg"
+      architecture: "linux/amd64"
+      tagfilter: "^[0-9]{14}-[0-9a-f]{8}$"
+      versionfilter:
+        kind: regex/time
+        regex: "^([0-9]{14})-[0-9a-f]{8}$"
+        pattern: "20060102150405"
   victoriaMetrics:
     name: "victoria-metrics"
     kind: dockerimage
@@ -409,12 +431,30 @@ targets:
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.stackstate.components.nginxPrometheusExporter.image.tag"
+  suseObservabilityMcp:
+    name: "suse-observability-mcp"
+    kind: yaml
+    scmid: "default"
+    sourceid: suseObservabilityMcp
+    dependson: ["target#nginxPrometheusExporter"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.stackstate.components.mcp.image.tag"
+  suseObservabilityBorg:
+    name: "suse-observability-borg"
+    kind: yaml
+    scmid: "default"
+    sourceid: suseObservabilityBorg
+    dependson: ["target#suseObservabilityMcp"]
+    spec:
+      file: "stable/suse-observability/values.yaml"
+      key: "$.stackstate.components.aiAssistant.image.tag"
   victoriaMetrics:
     name: "victoria-metrics (victoria-metrics-0/1 server)"
     kind: yaml
     scmid: "default"
     sourceid: victoriaMetrics
-    dependson: ["target#nginxPrometheusExporter"]
+    dependson: ["target#suseObservabilityBorg"]
     spec:
       file: "stable/suse-observability/values.yaml"
       keys:
