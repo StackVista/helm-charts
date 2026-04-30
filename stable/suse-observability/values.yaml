@@ -2023,7 +2023,7 @@ victoria-metrics-0:
     # victoria-metrics-0.backup.setupCron.image.tag -- Container-tools image for cron setup. Updated by updatecli.
     setupCron:
       image:
-        tag: 1.8.6-fa52bb17-main-4
+        tag: 1.8.6-4ac12b1a-main-16
     # victoria-metrics-0.backup.vmbackup.image.tag -- VM backup image tag. Updated by updatecli.
     vmbackup:
       image:
@@ -2062,7 +2062,7 @@ victoria-metrics-1:
     # victoria-metrics-1.backup.setupCron.image.tag -- Container-tools image for cron setup. Updated by updatecli.
     setupCron:
       image:
-        tag: 1.8.6-fa52bb17-main-4
+        tag: 1.8.6-4ac12b1a-main-16
     # victoria-metrics-1.backup.vmbackup.image.tag -- VM backup image tag. Updated by updatecli.
     vmbackup:
       image:
