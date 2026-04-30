@@ -827,7 +827,7 @@ stackstate:
         # stackstate.components.mcp.image.repository -- Repository of the mcp component Docker image.
         repository: stackstate/suse-observability-mcp
         # stackstate.components.mcp.image.tag -- Tag used for the `mcp` component Docker image; this will override `stackstate.components.all.image.tag` on a per-service basis.
-        tag: "20260430073230-dc6221d7"
+        tag: "20260430144043-56d9899d"
       # stackstate.components.mcp.replicaCount -- Number of `mcp` replicas.
       replicaCount: 1
       # stackstate.components.mcp.podAnnotations -- Extra annotations
