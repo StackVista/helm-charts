@@ -266,7 +266,7 @@ Derive hadoop version
 */}}
 {{- define "hdfs.version" -}}
 {{- if eq .Values.version "2.5" }}
-{{- "3.4.2" }}
+{{- "3.4.3" }}
 {{- else }}
 {{- fail "Only HBase version 2.5 is supported at the moment" }}
 {{- end }}
