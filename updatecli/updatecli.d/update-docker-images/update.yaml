@@ -58,7 +58,7 @@ sources:
     spec:
       image: "quay.io/stackstate/elasticsearch"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-release-[0-9]+$"
+      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"

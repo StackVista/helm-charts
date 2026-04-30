@@ -449,7 +449,7 @@ If you encounter issues not covered here:
 | commonLabels | object | `{}` | Labels that will be added to all resources created by the stackstate chart (not the subcharts though) |
 | deployment.compatibleWithArgoCD | bool | `false` | Whether to adjust the Chart to be compatible with ArgoCD. This feature is as of yet not deployed in the o11y-tenants and saas-tenants directories, so should be considered unfinished (see STAC-21445) |
 | elasticsearch.esJavaOpts | string | `nil` | JVM options |
-| elasticsearch.imageTag | string | `"8.19.4-c4527168-release-214"` | Elasticsearch image tag. Updated by updatecli. |
+| elasticsearch.imageTag | string | `"8.19.14-fdb72fef-main-9"` | Elasticsearch image tag. Updated by updatecli. |
 | elasticsearch.prometheus-elasticsearch-exporter.image.tag | string | `"v1.10.0-6159e1ba-release-175"` | Elasticsearch Prometheus exporter image tag. Updated by updatecli. |
 | elasticsearch.prometheus-elasticsearch-exporter.resources | object | `{}` |  |
 | elasticsearch.replicas | string | `nil` | Number of Elasticsearch replicas. |
