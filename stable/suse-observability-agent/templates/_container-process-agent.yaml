@@ -107,7 +107,7 @@
     {{- end }}
   {{- with .Values.nodeAgent.containers.processAgent.resources }}
   resources:
-    {{- toYaml . | nindent 12 }}
+    {{- toYaml (omit . "override") | nindent 12 }}
   {{- end }}
   volumeMounts:
   {{- if .Values.nodeAgent.containerRuntime.customSocketPath }}

@@ -114,7 +114,7 @@ spec:
         {{- end }}
         {{- with .Values.clusterAgent.resources }}
           resources:
-            {{- toYaml . | nindent 12 }}
+            {{- toYaml (omit . "override") | nindent 12 }}
         {{- end }}
           volumeMounts:
           - name: logs
