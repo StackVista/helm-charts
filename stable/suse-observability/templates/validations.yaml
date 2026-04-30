@@ -19,7 +19,7 @@
   {{- fail "stackstate.experimental is removed. Use stackstate.features instead." -}}
 {{- end }}
 
-{{- /* Validate removed internal constants (MR 2 — STAC-24384) */ -}}
+{{- /* Validate removed internal constants — these were promoted to named templates and any user override is silently ignored. */ -}}
 {{- if .Values.stackstate.components.mcp.listenAddress -}}
   {{- fail "stackstate.components.mcp.listenAddress is removed. Please delete it from your values file." -}}
 {{- end }}
@@ -94,6 +94,63 @@
 {{- end }}
 {{- if .Values.backup.configuration.scheduled.backupDatetimeParseFormat -}}
   {{- fail "backup.configuration.scheduled.backupDatetimeParseFormat is removed. Please delete it from your values file." -}}
+{{- end }}
+
+{{- /* Validate removed subchart toggles. These subcharts are always installed; the `*.enabled` toggle has been removed. The check fires only when the user explicitly sets `enabled: false` — that intent (disable the subchart) is now silently overridden by the chart, so we fail fast to surface the disagreement. `enabled: true` and the key being absent are both fine. */ -}}
+{{- $kafka := .Values.kafka | default dict -}}
+{{- if and (hasKey $kafka "enabled") (not $kafka.enabled) -}}
+  {{- fail "kafka.enabled is removed. Kafka is always installed and cannot be disabled by setting `enabled: false`. Please remove this key from your values file." -}}
+{{- end }}
+{{- $zookeeper := .Values.zookeeper | default dict -}}
+{{- if and (hasKey $zookeeper "enabled") (not $zookeeper.enabled) -}}
+  {{- fail "zookeeper.enabled is removed. Zookeeper is always installed and cannot be disabled by setting `enabled: false`. Please remove this key from your values file." -}}
+{{- end }}
+{{- $elasticsearch := .Values.elasticsearch | default dict -}}
+{{- if and (hasKey $elasticsearch "enabled") (not $elasticsearch.enabled) -}}
+  {{- fail "elasticsearch.enabled is removed. Elasticsearch is always installed and cannot be disabled by setting `enabled: false`. Please remove this key from your values file." -}}
+{{- end }}
+{{- $clickhouse := .Values.clickhouse | default dict -}}
+{{- if and (hasKey $clickhouse "enabled") (not $clickhouse.enabled) -}}
+  {{- fail "clickhouse.enabled is removed. ClickHouse is always installed and cannot be disabled by setting `enabled: false`. Please remove this key from your values file." -}}
+{{- end }}
+{{- $hbase := .Values.hbase | default dict -}}
+{{- if and (hasKey $hbase "enabled") (not $hbase.enabled) -}}
+  {{- fail "hbase.enabled is removed. HBase is always installed and cannot be disabled by setting `enabled: false`. Please remove this key from your values file." -}}
+{{- end }}
+{{- $opentelemetry := .Values.opentelemetry | default dict -}}
+{{- if and (hasKey $opentelemetry "enabled") (not $opentelemetry.enabled) -}}
+  {{- fail "opentelemetry.enabled is removed. The OpenTelemetry collector is always installed and cannot be disabled by setting `enabled: false`. Please remove the `opentelemetry:` block from your values file." -}}
+{{- end }}
+
+{{- /* Validate removed Kafka constants. These were promoted to named templates and any user override is silently ignored. */ -}}
+{{- if hasKey (.Values.kafka | default dict) "topicRetention" -}}
+  {{- fail "kafka.topicRetention is removed. The retention value is now hardcoded as `86400000` in the named template `stackstate.kafka.topicRetention`. Please delete it from your values file." -}}
+{{- end }}
+{{- $kafkaTopic := (.Values.kafka | default dict).topic | default dict -}}
+{{- $stsMetricsV2 := $kafkaTopic.stsMetricsV2 | default dict -}}
+{{- if hasKey $stsMetricsV2 "partitionCount" -}}
+  {{- fail "kafka.topic.stsMetricsV2.partitionCount is removed. The partition count is now hardcoded as `10` in the named template `stackstate.kafka.topic.stsMetricsV2.partitionCount`. Please delete it from your values file." -}}
+{{- end }}
+
+{{- /* Validate ClickHouse backup migration. The ClickHouse backup CronJob no longer reads `stackstate.components.backup.*` for pod scheduling; those keys still apply to the Elasticsearch / StackGraph backup jobs. If the user has set `stackstate.components.backup.{podAnnotations,podLabels,nodeSelector,tolerations,affinity}` but has NOT set the corresponding `clickhouse.backup.*` overrides, fail to surface the silent loss. The user can either move the values to `clickhouse.backup.*` or set `clickhouse.backup.<key>: {}` (or `[]`) to acknowledge they don't want them on the ClickHouse backup pods. */ -}}
+{{- $stsBackup := .Values.stackstate.components.backup | default dict -}}
+{{- $chBackup := (.Values.clickhouse | default dict).backup | default dict -}}
+{{- $hasStsBackupOverrides := or
+    (not (empty $stsBackup.podAnnotations))
+    (not (empty $stsBackup.podLabels))
+    (not (empty $stsBackup.nodeSelector))
+    (not (empty $stsBackup.tolerations))
+    (not (empty $stsBackup.affinity))
+-}}
+{{- $hasChBackupAck := or
+    (hasKey $chBackup "podAnnotations")
+    (hasKey $chBackup "podLabels")
+    (hasKey $chBackup "nodeSelector")
+    (hasKey $chBackup "tolerations")
+    (hasKey $chBackup "affinity")
+-}}
+{{- if and $hasStsBackupOverrides (not $hasChBackupAck) -}}
+  {{- fail "stackstate.components.backup.{podAnnotations,podLabels,nodeSelector,tolerations,affinity} no longer applies to the ClickHouse backup CronJob (these still apply to Elasticsearch / StackGraph backup jobs). To override ClickHouse backup pod scheduling, set the corresponding clickhouse.backup.{podAnnotations,podLabels,nodeSelector,tolerations,affinity}. To acknowledge that you intentionally do NOT want these overrides on ClickHouse backup pods, set the corresponding clickhouse.backup.<key> to an explicit empty value (e.g. clickhouse.backup.podAnnotations: {})." -}}
 {{- end }}
 
 {{- if .Values.backup.enabled -}}
