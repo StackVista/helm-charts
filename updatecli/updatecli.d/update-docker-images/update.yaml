@@ -290,7 +290,7 @@ sources:
       versionfilter:
         kind: semver
 
-# Single pipeline: all targets chained with dependson so they run sequentially.
+# Single pipeline: each target reads from its own sourceid.
 # All suse-observability subchart image tags are in stable/suse-observability/values.yaml
 # (victoria-metrics-0/1 are aliases for victoria-metrics-single subchart).
 targets:
@@ -307,7 +307,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: clickhouse
-    dependson: ["target#clickhouseBackup"]
     spec:
       file: "stable/suse-observability/values.yaml"
       keys:
@@ -318,7 +317,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: containerTools
-    dependson: ["target#clickhouse"]
     spec:
       file: "stable/suse-observability/values.yaml"
       keys:
@@ -329,7 +327,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: containerTools
-    dependson: ["target#containerToolsSuseObservability"]
     spec:
       file: "stable/suse-observability/values.yaml"
       keys:
@@ -340,7 +337,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: containerTools
-    dependson: ["target#containerToolsVictoriaMetrics"]
     spec:
       file: "stable/suse-observability-agent/values.yaml"
       key: "$.httpHeaderInjectorWebhook.certificatePrehook.image.tag"
@@ -349,7 +345,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: elasticsearch
-    dependson: ["target#containerToolsSuseObservabilityAgent"]
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.elasticsearch.imageTag"
@@ -358,7 +353,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: elasticsearchExporter
-    dependson: ["target#elasticsearch"]
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.elasticsearch.prometheus-elasticsearch-exporter.image.tag"
@@ -367,7 +361,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: envoy
-    dependson: ["target#elasticsearchExporter"]
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.stackstate.components.router.image.tag"
@@ -376,7 +369,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: hadoop
-    dependson: ["target#envoy"]
     transformers:
       - findsubmatch:
           pattern: '^\d+\.\d+\.\d+-(.+)$'
@@ -389,7 +381,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: jmxExporter
-    dependson: ["target#hadoop"]
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.kafka.metrics.jmx.image.tag"
@@ -398,7 +389,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: kafka
-    dependson: ["target#jmxExporter"]
     spec:
       file: "stable/suse-observability/values.yaml"
       keys:
@@ -409,7 +399,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: kubernetesRbacAgent
-    dependson: ["target#kafka"]
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.kubernetes-rbac-agent.containers.rbacAgent.image.tag"
@@ -418,7 +407,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: kubernetesRbacAgent
-    dependson: ["target#kubernetesRbacAgent"]
     spec:
       file: "stable/suse-observability-agent/values.yaml"
       key: "$.kubernetes-rbac-agent.containers.rbacAgent.image.tag"
@@ -427,7 +415,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: nginxPrometheusExporter
-    dependson: ["target#kubernetesRbacAgentSuseObservabilityAgent"]
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.stackstate.components.nginxPrometheusExporter.image.tag"
@@ -436,7 +423,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: suseObservabilityMcp
-    dependson: ["target#nginxPrometheusExporter"]
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.stackstate.components.mcp.image.tag"
@@ -445,7 +431,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: suseObservabilityBorg
-    dependson: ["target#suseObservabilityMcp"]
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.stackstate.components.aiAssistant.image.tag"
@@ -454,7 +439,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: victoriaMetrics
-    dependson: ["target#suseObservabilityBorg"]
     spec:
       file: "stable/suse-observability/values.yaml"
       keys:
@@ -465,7 +449,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: vmagent
-    dependson: ["target#victoriaMetrics"]
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.stackstate.components.vmagent.image.tag"
@@ -474,7 +457,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: vmbackup
-    dependson: ["target#vmagent"]
     spec:
       file: "stable/suse-observability/values.yaml"
       keys:
@@ -485,7 +467,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: vmrestore
-    dependson: ["target#vmbackup"]
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.victoria-metrics.restore.image.tag"
@@ -494,7 +475,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: wait
-    dependson: ["target#vmrestore"]
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.global.wait.image.tag"
@@ -503,7 +483,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: workloadObserver
-    dependson: ["target#wait"]
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.stackstate.components.workloadObserver.image.tag"
@@ -512,7 +491,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: zookeeper
-    dependson: ["target#workloadObserver"]
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.zookeeper.image.tag"
@@ -521,7 +499,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: kafkaupOperator
-    dependson: ["target#zookeeper"]
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.kafkaup-operator.image.tag"
@@ -530,7 +507,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: stsOpentelemetryCollector
-    dependson: ["target#kafkaupOperator"]
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.opentelemetry-collector.image.tag"
@@ -539,7 +515,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: genericSidecarInjector
-    dependson: ["target#stsOpentelemetryCollector"]
     spec:
       file: "stable/suse-observability-agent/values.yaml"
       key: "$.httpHeaderInjectorWebhook.sidecarInjector.image.tag"
@@ -548,7 +523,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: spotlight
-    dependson: ["target#genericSidecarInjector"]
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.anomaly-detection.image.tag"
@@ -557,7 +531,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: promtail
-    dependson: ["target#spotlight"]
     spec:
       file: "stable/suse-observability-agent/values.yaml"
       key: "$.logsAgent.image.tag"
@@ -566,7 +539,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: httpHeaderInjectorChart
-    dependson: ["target#promtail"]
     spec:
       file: "stable/suse-observability-agent/Chart.yaml"
       key: "$.dependencies[0].version"
@@ -575,7 +547,6 @@ targets:
     kind: yaml
     scmid: "default"
     sourceid: s3proxy
-    dependson: ["target#httpHeaderInjectorChartVersion"]
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.s3proxy.image.tag"
