@@ -128,10 +128,10 @@ sources:
     spec:
       image: "quay.io/stackstate/nginx-prometheus-exporter"
       architecture: "linux/amd64"
-      tagfilter: ".*-[a-f0-9]{8}-[0-9]+-release$"
+      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
       versionfilter:
         kind: regex/semver
-        regex: ".*-([0-9]+)-release$"
+        regex: ".*-(\\d+)$"
   suseObservabilityMcp:
     name: "suse-observability-mcp"
     kind: dockerimage
@@ -220,9 +220,10 @@ sources:
     spec:
       image: "quay.io/stackstate/zookeeper"
       architecture: "linux/amd64"
-      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[0-9]+\\.[0-9]+-release$"
+      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+_[0-9]+\\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$"
       versionfilter:
-        kind: semver
+        kind: regex/semver
+        regex: ".*-(\\d+)$"
   kafkaupOperator:
     name: "kafkaup-operator"
     kind: dockerimage
@@ -494,6 +495,14 @@ targets:
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.zookeeper.image.tag"
+  zookeeperChart:
+    name: "zookeeper (standalone chart)"
+    kind: yaml
+    scmid: "default"
+    sourceid: zookeeper
+    spec:
+      file: "stable/zookeeper/values.yaml"
+      key: "$.image.tag"
   kafkaupOperator:
     name: "kafkaup-operator"
     kind: yaml

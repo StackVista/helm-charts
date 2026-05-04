@@ -23,7 +23,7 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 | kafka | stable/suse-observability/values.yaml | $.kafka.image.tag, $.stackstate.components.kafkaTopicCreate.image.tag | Digest-preserved AppCo retag; standard `main` tags only |
 | kubernetes-rbac-agent | stable/suse-observability/values.yaml | $.kubernetes-rbac-agent.containers.rbacAgent.image.tag | **Disabled:** tag key must be merged to master first (updatecli clones from remote) |
 | kubernetes-rbac-agent | stable/suse-observability-agent/values.yaml | $.kubernetes-rbac-agent.containers.rbacAgent.image.tag | When values change, Chart.yaml version is bumped via shell target |
-| nginx-prometheus-exporter | stable/suse-observability/values.yaml | $.stackstate.components.nginxPrometheusExporter.image.tag | |
+| nginx-prometheus-exporter | stable/suse-observability/values.yaml | $.stackstate.components.nginxPrometheusExporter.image.tag | Tag format: `1.5.1-61e00a86-main-2`; standard `main` tags only |
 | suse-observability-mcp | stable/suse-observability/values.yaml | $.stackstate.components.mcp.image.tag | Tag format: `YYYYMMDDHHMMSS-hash`; sorted by timestamp |
 | suse-observability-borg | stable/suse-observability/values.yaml | $.stackstate.components.aiAssistant.image.tag | Charted as `aiAssistant`; tag format: `YYYYMMDDHHMMSS-hash`; sorted by timestamp |
 | victoria-metrics | stable/suse-observability/values.yaml | $.victoria-metrics-0.server.image.tag, $.victoria-metrics-1.server.image.tag | Victoria-metrics-single subchart (aliased as victoria-metrics-0/1) |
@@ -32,7 +32,8 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 | vmrestore | stable/suse-observability/values.yaml | $.victoria-metrics.restore.image.tag | |
 | wait | stable/suse-observability/values.yaml | $.global.wait.image.tag | |
 | workload-observer | stable/suse-observability/values.yaml | $.stackstate.components.workloadObserver.image.tag | Tag format: `hash-buildId` only |
-| zookeeper | stable/suse-observability/values.yaml | $.zookeeper.image.tag | |
+| zookeeper | stable/suse-observability/values.yaml | $.zookeeper.image.tag | Tag format: `3.9.5_3.2-af2b6748-main-1`; standard `main` tags only, AppCo source version separator normalized to `_` |
+| zookeeper | stable/zookeeper/values.yaml | $.image.tag | Standalone chart default image; same docker-images tag stream |
 | spotlight | stable/suse-observability/values.yaml | $.anomaly-detection.image.tag | Tag format: `X.Y.Z-snapshot.N` (master snapshots only, semver with pre-release) |
 | promtail | stable/suse-observability-agent/values.yaml | $.logsAgent.image.tag | Agent chart — not a subchart of suse-observability |
 | s3proxy | stable/suse-observability/values.yaml | $.s3proxy.image.tag | Tag format: `3.1.0-hash-release-buildId` |
@@ -45,6 +46,7 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 - **GitHub main:** `version-hash-main-run` (e.g. `2.6.43-4ac12b1a-main-13`), tagfilter `^[0-9]+\.[0-9]+\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$`
 - **container-tools:** same `main` tag format for customer-runtime tags; dev tags such as `1.8.6_dev-*` are intentionally ignored
 - **kafka:** digest-preserved SUSE Application Collection retag; downstream updatecli still tracks the standard GitHub `main` tag format because the Quay tag is an alias to the preserved upstream digest
+- **zookeeper:** digest-preserved SUSE Application Collection retag; uses standard GitHub `main` tags, with `_` inside the AppCo version prefix so `-` remains the docker-images field separator
 - **suse-observability-mcp, suse-observability-borg:** `YYYYMMDDHHMMSS-hash` (e.g. `20260430073230-dc6221d7`), tagfilter `^[0-9]{14}-[0-9a-f]{8}$`; updatecli uses `regex/time` to select the newest timestamped tag
 
 ## Run Locally
