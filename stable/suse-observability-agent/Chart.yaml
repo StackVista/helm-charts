@@ -1,6 +1,6 @@
 apiVersion: v2
 appVersion: 3.71.2
-version: 1.3.6
+version: 1.3.7
 description: Helm chart for the SUSE observability Agent.
 keywords:
 - monitoring
@@ -28,7 +28,7 @@ dependencies:
   # repository: file:///home/bram/stackvista/agent/http-header-injector/charts/http-header-injector
   # version: "*"
   repository: https://helm.stackstate.io
-  version: 0.0.27
+  version: 0.0.28
   condition: httpHeaderInjectorWebhook.enabled
 - name: kubernetes-rbac-agent
   repository: file://../kubernetes-rbac-agent/

@@ -695,7 +695,7 @@ httpHeaderInjectorWebhook:
       # certificatePrehook.image.repository - Repository for the docker image.
       repository: stackstate/container-tools
       # certificatePrehook.image.tag
-      tag: 1.8.6-7703df37-main-21
+      tag: 1.8.6-ea7f41f9-main-40
 
 ########################
 # Rbac Agent variables #
