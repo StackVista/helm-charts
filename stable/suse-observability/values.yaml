@@ -1953,11 +1953,11 @@ s3proxy:
     # s3proxy.securityContext.runAsNonRoot -- Ensure that the user is not root (!= 0)
     runAsNonRoot: true
     # s3proxy.securityContext.runAsUser -- The UID (user ID) of the owning user of the process
-    runAsUser: 65534
+    runAsUser: 1001
     # s3proxy.securityContext.runAsGroup -- The GID (group ID) of the owning user of the process
-    runAsGroup: 65534
+    runAsGroup: 1001
     # s3proxy.securityContext.fsGroup -- The GID (group ID) used to mount volumes
-    fsGroup: 65534
+    fsGroup: 1001
   metrics:
     # s3proxy.metrics.enabled -- Enable / disable S3Proxy Prometheus metrics.
     enabled: true

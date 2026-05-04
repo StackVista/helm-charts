@@ -1386,9 +1386,9 @@ func TestS3ProxySecurityContextDefault(t *testing.T) {
 	// Verify pod-level securityContext defaults
 	podSecCtx := deployment.Spec.Template.Spec.SecurityContext
 	require.NotNil(t, podSecCtx, "Pod securityContext should be set")
-	assert.Equal(t, int64(65534), *podSecCtx.RunAsUser, "Pod runAsUser should be 65534")
-	assert.Equal(t, int64(65534), *podSecCtx.RunAsGroup, "Pod runAsGroup should be 65534")
-	assert.Equal(t, int64(65534), *podSecCtx.FSGroup, "Pod fsGroup should be 65534")
+	assert.Equal(t, int64(1001), *podSecCtx.RunAsUser, "Pod runAsUser should be 1001")
+	assert.Equal(t, int64(1001), *podSecCtx.RunAsGroup, "Pod runAsGroup should be 1001")
+	assert.Equal(t, int64(1001), *podSecCtx.FSGroup, "Pod fsGroup should be 1001")
 	assert.True(t, *podSecCtx.RunAsNonRoot, "Pod runAsNonRoot should be true")
 
 	// Verify main container securityContext (from common.container defaults - no runAsUser/runAsGroup)

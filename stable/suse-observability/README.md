@@ -2,7 +2,7 @@
 
 Helm chart for SUSE Observability
 
-Current chart version is `2.9.1-pre.173`
+Current chart version is `2.9.1-pre.174`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -591,10 +591,10 @@ If you encounter issues not covered here:
 | s3proxy.podAnnotations | object | `{}` | Annotations for S3Proxy pod |
 | s3proxy.resources | object | `{"limits":{"cpu":"1000m","ephemeral-storage":"1Gi","memory":"700Mi"},"requests":{"cpu":"200m","ephemeral-storage":"1Mi","memory":"700Mi"}}` | Resource limits and requests for S3Proxy container |
 | s3proxy.securityContext.enabled | bool | `true` | Whether or not to enable the securityContext |
-| s3proxy.securityContext.fsGroup | int | `65534` | The GID (group ID) used to mount volumes |
-| s3proxy.securityContext.runAsGroup | int | `65534` | The GID (group ID) of the owning user of the process |
+| s3proxy.securityContext.fsGroup | int | `1001` | The GID (group ID) used to mount volumes |
+| s3proxy.securityContext.runAsGroup | int | `1001` | The GID (group ID) of the owning user of the process |
 | s3proxy.securityContext.runAsNonRoot | bool | `true` | Ensure that the user is not root (!= 0) |
-| s3proxy.securityContext.runAsUser | int | `65534` | The UID (user ID) of the owning user of the process |
+| s3proxy.securityContext.runAsUser | int | `1001` | The UID (user ID) of the owning user of the process |
 | s3proxy.serviceAccount.annotations | object | `{}` | Annotations for the S3Proxy service account (e.g. for IAM roles). |
 | s3proxy.serviceAccount.create | bool | `true` | Whether to create the service account for S3Proxy. |
 | s3proxy.serviceAccount.name | string | `""` | Override the service account name. Defaults to "suse-observability-minio" for backward compatibility with the old Minio subchart (e.g. IAM role bindings). |
