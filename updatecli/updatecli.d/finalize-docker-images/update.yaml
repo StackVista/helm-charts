@@ -30,6 +30,47 @@ actions:
     title: '[{{ .scm.branch }}] Bump helm chart docker images'
 
 targets:
+  zookeeperChartVersion:
+    name: "zookeeper Chart.yaml version"
+    kind: shell
+    scmid: "default"
+    disablesourceinput: true
+    spec:
+      command: |
+        set -e
+
+        # Ensure PyYAML is available for bump_chart_version.py
+        python3.11 -m pip install --quiet pyyaml
+
+        VALUES_FILE="stable/zookeeper/values.yaml"
+        CHART_YAML="stable/zookeeper/Chart.yaml"
+
+        # Ensure we have an up-to-date view of master
+        git fetch origin master >/dev/null 2>&1 || true
+
+        # If neither the zookeeper values file nor Chart.yaml changed compared to master, skip
+        if git diff --quiet origin/master...HEAD -- "$VALUES_FILE" "$CHART_YAML"; then
+          echo "ZooKeeper values and Chart.yaml unchanged vs master; skipping chart bump"
+          exit 0
+        fi
+
+        echo "ZooKeeper chart files changed vs master; bumping zookeeper chart version"
+
+        # Helm repos required for bump_chart_version.py to regenerate Chart.lock
+        helm repo add stackstate https://helm.stackstate.io >/dev/null 2>&1 || true
+        helm repo update >/dev/null 2>&1 || true
+
+        python3.11 scripts/bump-chart-version/bump_chart_version.py zookeeper
+        echo "Bumped zookeeper chart version"
+      changedif:
+        kind: file/checksum
+        spec:
+          files:
+            - stable/zookeeper/Chart.yaml
+            - stable/zookeeper/Chart.lock
+            - stable/suse-observability/Chart.yaml
+            - stable/suse-observability/Chart.lock
+
   suseObservabilityAgentChartVersion:
     name: "suse-observability-agent Chart.yaml version"
     kind: shell
