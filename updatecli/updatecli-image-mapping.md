@@ -32,7 +32,7 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 | vmrestore | stable/suse-observability/values.yaml | $.victoria-metrics.restore.image.tag | |
 | wait | stable/suse-observability/values.yaml | $.global.wait.image.tag | |
 | workload-observer | stable/suse-observability/values.yaml | $.stackstate.components.workloadObserver.image.tag | Tag format: `hash-buildId` only |
-| zookeeper | stable/suse-observability/values.yaml | $.zookeeper.image.tag | Tag format: `3.9.5_3.2-af2b6748-main-1`; standard `main` tags only, AppCo source version separator normalized to `_` |
+| zookeeper | stable/suse-observability/values.yaml | $.zookeeper.image.tag | Tag format: `3.9.5-af2b6748-main-1`; standard `main` tags only |
 | zookeeper | stable/zookeeper/values.yaml | $.image.tag | Standalone chart default image; same docker-images tag stream |
 | spotlight | stable/suse-observability/values.yaml | $.anomaly-detection.image.tag | Tag format: `X.Y.Z-snapshot.N` (master snapshots only, semver with pre-release) |
 | promtail | stable/suse-observability-agent/values.yaml | $.logsAgent.image.tag | Agent chart — not a subchart of suse-observability |
@@ -46,7 +46,7 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 - **GitHub main:** `version-hash-main-run` (e.g. `2.6.43-4ac12b1a-main-13`), tagfilter `^[0-9]+\.[0-9]+\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$`
 - **container-tools:** same `main` tag format for customer-runtime tags; dev tags such as `1.8.6_dev-*` are intentionally ignored
 - **kafka:** digest-preserved SUSE Application Collection retag; downstream updatecli still tracks the standard GitHub `main` tag format because the Quay tag is an alias to the preserved upstream digest
-- **zookeeper:** digest-preserved SUSE Application Collection retag; uses standard GitHub `main` tags, with `_` inside the AppCo version prefix so `-` remains the docker-images field separator
+- **zookeeper:** digest-preserved SUSE Application Collection retag; uses the ZooKeeper application version as the generated tag prefix while the docker-images source metadata keeps the full AppCo source tag
 - **suse-observability-mcp, suse-observability-borg:** `YYYYMMDDHHMMSS-hash` (e.g. `20260430073230-dc6221d7`), tagfilter `^[0-9]{14}-[0-9a-f]{8}$`; updatecli uses `regex/time` to select the newest timestamped tag
 
 ## Run Locally
