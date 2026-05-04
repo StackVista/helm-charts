@@ -33,7 +33,6 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 | wait | stable/suse-observability/values.yaml | $.global.wait.image.tag | |
 | workload-observer | stable/suse-observability/values.yaml | $.stackstate.components.workloadObserver.image.tag | Tag format: `hash-buildId` only |
 | zookeeper | stable/suse-observability/values.yaml | $.zookeeper.image.tag | Tag format: `3.9.5-af2b6748-main-1`; standard `main` tags only |
-| zookeeper | stable/zookeeper/values.yaml | $.image.tag | Standalone chart default image; same docker-images tag stream |
 | spotlight | stable/suse-observability/values.yaml | $.anomaly-detection.image.tag | Tag format: `X.Y.Z-snapshot.N` (master snapshots only, semver with pre-release) |
 | promtail | stable/suse-observability-agent/values.yaml | $.logsAgent.image.tag | Agent chart — not a subchart of suse-observability |
 | s3proxy | stable/suse-observability/values.yaml | $.s3proxy.image.tag | Tag format: `3.1.0-hash-release-buildId` |

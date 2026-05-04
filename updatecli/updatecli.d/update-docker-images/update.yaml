@@ -495,14 +495,6 @@ targets:
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.zookeeper.image.tag"
-  zookeeperChart:
-    name: "zookeeper (standalone chart)"
-    kind: yaml
-    scmid: "default"
-    sourceid: zookeeper
-    spec:
-      file: "stable/zookeeper/values.yaml"
-      key: "$.image.tag"
   kafkaupOperator:
     name: "kafkaup-operator"
     kind: yaml
