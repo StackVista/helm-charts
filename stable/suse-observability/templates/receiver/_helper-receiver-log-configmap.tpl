@@ -2,7 +2,7 @@
 Receiver settings
 
 <logger name="org.apache.pekko.actor.ActorSystemImpl" level="ERROR"/>
-This is here to supress X-Forwarded-for spurious messages, see zendesk #1401
+This is here to supress X-Forwarded-for spurious messages
 */}}
 {{- define "stackstate.configmap.receiver-base-log" }}
 <logger name="com.stackstate.api" level="INFO"/>
