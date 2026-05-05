@@ -194,56 +194,6 @@ sources:
       versionfilter:
         kind: regex/semver
         regex: ".*-(\\d+)$"
-  quayRegistry:
-    name: "quay.io registry"
-    kind: shell
-    spec:
-      command: echo "quay.io"
-  vmselectRepository:
-    name: "vmselect repository"
-    kind: shell
-    spec:
-      command: echo "stackstate/vmselect"
-  vminsertRepository:
-    name: "vminsert repository"
-    kind: shell
-    spec:
-      command: echo "stackstate/vminsert"
-  vmstorageRepository:
-    name: "vmstorage repository"
-    kind: shell
-    spec:
-      command: echo "stackstate/vmstorage"
-  vmselect:
-    name: "vmselect"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/vmselect"
-      architecture: "linux/amd64"
-      tagfilter: "^v[0-9]+\\.[0-9]+\\.[0-9]+_cluster-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
-  vminsert:
-    name: "vminsert"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/vminsert"
-      architecture: "linux/amd64"
-      tagfilter: "^v[0-9]+\\.[0-9]+\\.[0-9]+_cluster-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
-  vmstorage:
-    name: "vmstorage"
-    kind: dockerimage
-    spec:
-      image: "quay.io/stackstate/vmstorage"
-      architecture: "linux/amd64"
-      tagfilter: "^v[0-9]+\\.[0-9]+\\.[0-9]+_cluster-[a-f0-9]{8}-main-[0-9]+$"
-      versionfilter:
-        kind: regex/semver
-        regex: ".*-(\\d+)$"
   wait:
     name: "wait"
     kind: dockerimage
@@ -521,78 +471,6 @@ targets:
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.victoria-metrics.restore.image.tag"
-  vmselect:
-    name: "vmselect (victoria-metrics-cluster)"
-    kind: yaml
-    scmid: "default"
-    sourceid: vmselect
-    spec:
-      file: "stable/victoria-metrics-cluster/values.yaml"
-      key: "$.vmselect.image.tag"
-  vmselectRegistry:
-    name: "vmselect registry (victoria-metrics-cluster)"
-    kind: yaml
-    scmid: "default"
-    sourceid: quayRegistry
-    spec:
-      file: "stable/victoria-metrics-cluster/values.yaml"
-      key: "$.vmselect.image.registry"
-  vmselectRepository:
-    name: "vmselect repository (victoria-metrics-cluster)"
-    kind: yaml
-    scmid: "default"
-    sourceid: vmselectRepository
-    spec:
-      file: "stable/victoria-metrics-cluster/values.yaml"
-      key: "$.vmselect.image.repository"
-  vminsert:
-    name: "vminsert (victoria-metrics-cluster)"
-    kind: yaml
-    scmid: "default"
-    sourceid: vminsert
-    spec:
-      file: "stable/victoria-metrics-cluster/values.yaml"
-      key: "$.vminsert.image.tag"
-  vminsertRegistry:
-    name: "vminsert registry (victoria-metrics-cluster)"
-    kind: yaml
-    scmid: "default"
-    sourceid: quayRegistry
-    spec:
-      file: "stable/victoria-metrics-cluster/values.yaml"
-      key: "$.vminsert.image.registry"
-  vminsertRepository:
-    name: "vminsert repository (victoria-metrics-cluster)"
-    kind: yaml
-    scmid: "default"
-    sourceid: vminsertRepository
-    spec:
-      file: "stable/victoria-metrics-cluster/values.yaml"
-      key: "$.vminsert.image.repository"
-  vmstorage:
-    name: "vmstorage (victoria-metrics-cluster)"
-    kind: yaml
-    scmid: "default"
-    sourceid: vmstorage
-    spec:
-      file: "stable/victoria-metrics-cluster/values.yaml"
-      key: "$.vmstorage.image.tag"
-  vmstorageRegistry:
-    name: "vmstorage registry (victoria-metrics-cluster)"
-    kind: yaml
-    scmid: "default"
-    sourceid: quayRegistry
-    spec:
-      file: "stable/victoria-metrics-cluster/values.yaml"
-      key: "$.vmstorage.image.registry"
-  vmstorageRepository:
-    name: "vmstorage repository (victoria-metrics-cluster)"
-    kind: yaml
-    scmid: "default"
-    sourceid: vmstorageRepository
-    spec:
-      file: "stable/victoria-metrics-cluster/values.yaml"
-      key: "$.vmstorage.image.repository"
   wait:
     name: "wait"
     kind: yaml
