@@ -78,10 +78,14 @@ sources:
     spec:
       image: "quay.io/stackstate/envoy"
       architecture: "linux/amd64"
-      tagfilter: ".*-[0-9]+\\.[0-9]+-release$"
+      # this regex support the format `1.38.0-1.1-release`
+      tagfilter: "^[0-9]+\\.[0-9]+\\.[0-9]+-[0-9]+\\.[0-9]+-release$"
       versionfilter:
         kind: regex/semver
-        regex: ".*-([0-9]+\\.[0-9]+)-release$"
+        # with `*` updatecli excludes pre-releases
+        pattern: ">=0.0.0-0"
+        # here the captured group is just `1.38.0-1.1`
+        regex: "^([0-9]+\\.[0-9]+\\.[0-9]+-[0-9]+\\.[0-9]+)-release$"
   hadoop:
     name: "hadoop"
     kind: dockerimage
