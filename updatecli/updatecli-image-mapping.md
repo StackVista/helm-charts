@@ -26,10 +26,13 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 | nginx-prometheus-exporter | stable/suse-observability/values.yaml | $.stackstate.components.nginxPrometheusExporter.image.tag | Tag format: `1.5.1-61e00a86-main-2`; standard `main` tags only |
 | suse-observability-mcp | stable/suse-observability/values.yaml | $.stackstate.components.mcp.image.tag | Tag format: `YYYYMMDDHHMMSS-hash`; sorted by timestamp |
 | suse-observability-borg | stable/suse-observability/values.yaml | $.stackstate.components.aiAssistant.image.tag | Charted as `aiAssistant`; tag format: `YYYYMMDDHHMMSS-hash`; sorted by timestamp |
-| victoria-metrics | stable/suse-observability/values.yaml | $.victoria-metrics-0.server.image.tag, $.victoria-metrics-1.server.image.tag | Victoria-metrics-single subchart (aliased as victoria-metrics-0/1) |
-| vmagent | stable/suse-observability/values.yaml | $.stackstate.components.vmagent.image.tag | |
-| vmbackup | stable/suse-observability/values.yaml | $.victoria-metrics-0.backup.vmbackup.image.tag, $.victoria-metrics-1.backup.vmbackup.image.tag | Victoria-metrics-single subchart (aliased as victoria-metrics-0/1) |
-| vmrestore | stable/suse-observability/values.yaml | $.victoria-metrics.restore.image.tag | |
+| victoria-metrics | stable/suse-observability/values.yaml | $.victoria-metrics-0.server.image.tag, $.victoria-metrics-1.server.image.tag | Victoria-metrics-single subchart (aliased as victoria-metrics-0/1); GitHub `main` tags only |
+| vmagent | stable/suse-observability/values.yaml | $.stackstate.components.vmagent.image.tag | GitHub `main` tags only |
+| vmbackup | stable/suse-observability/values.yaml | $.victoria-metrics-0.backup.vmbackup.image.tag, $.victoria-metrics-1.backup.vmbackup.image.tag | Victoria-metrics-single subchart (aliased as victoria-metrics-0/1); GitHub `main` tags only |
+| vmrestore | stable/suse-observability/values.yaml | $.victoria-metrics.restore.image.tag | GitHub `main` tags only |
+| vmselect | stable/victoria-metrics-cluster/values.yaml | $.vmselect.image.registry, $.vmselect.image.repository, $.vmselect.image.tag | Cluster tag format: `v1.142.0_cluster-hash-main-run`; registry/repository are pinned to `quay.io/stackstate/vmselect` |
+| vminsert | stable/victoria-metrics-cluster/values.yaml | $.vminsert.image.registry, $.vminsert.image.repository, $.vminsert.image.tag | Cluster tag format: `v1.142.0_cluster-hash-main-run`; registry/repository are pinned to `quay.io/stackstate/vminsert` |
+| vmstorage | stable/victoria-metrics-cluster/values.yaml | $.vmstorage.image.registry, $.vmstorage.image.repository, $.vmstorage.image.tag | Cluster tag format: `v1.142.0_cluster-hash-main-run`; registry/repository are pinned to `quay.io/stackstate/vmstorage` |
 | wait | stable/suse-observability/values.yaml | $.global.wait.image.tag | |
 | workload-observer | stable/suse-observability/values.yaml | $.stackstate.components.workloadObserver.image.tag | Tag format: `hash-buildId` only |
 | zookeeper | stable/suse-observability/values.yaml | $.zookeeper.image.tag | Tag format: `3.9.5-af2b6748-main-1`; standard `main` tags only |
@@ -41,6 +44,7 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 ## Tag Format Reference
 
 - **Standard:** `prefix-hash-release-buildId` (e.g. `v1.109.0-614527d8-release-138`), tagfilter `.*-[a-f0-9]{8}-release-[0-9]+$`
+- **VictoriaMetrics GitHub main:** `v<semver>-hash-main-run` for single-node components and `v<semver>_cluster-hash-main-run` for cluster components.
 - **workload-observer, kubernetes-rbac-agent:** `hash-buildId-release` (e.g. `f40221cf-76-release`), tagfilter `^[a-f0-9]{8}-[0-9]+-release$`
 - **GitHub main:** `version-hash-main-run` (e.g. `2.6.43-4ac12b1a-main-13`), tagfilter `^[0-9]+\.[0-9]+\.[0-9]+-[a-f0-9]{8}-main-[0-9]+$`
 - **container-tools:** same `main` tag format for customer-runtime tags; dev tags such as `1.8.6_dev-*` are intentionally ignored
