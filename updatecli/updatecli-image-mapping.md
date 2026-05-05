@@ -34,7 +34,7 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 | workload-observer | stable/suse-observability/values.yaml | $.stackstate.components.workloadObserver.image.tag | Tag format: `hash-buildId` only |
 | zookeeper | stable/suse-observability/values.yaml | $.zookeeper.image.tag | Tag format: `3.9.5-af2b6748-main-1`; standard `main` tags only |
 | spotlight | stable/suse-observability/values.yaml | $.anomaly-detection.image.tag | Tag format: `X.Y.Z-snapshot.N` (master snapshots only, semver with pre-release) |
-| promtail | stable/suse-observability-agent/values.yaml | $.logsAgent.image.tag | Agent chart — not a subchart of suse-observability |
+| promtail | stable/suse-observability-agent/values.yaml | $.logsAgent.image.tag | Agent chart — not a subchart of suse-observability; tag format: `3.6.10-bc99e3ee-main-8`; standard `main` tags only |
 | s3proxy | stable/suse-observability/values.yaml | $.s3proxy.image.tag | Tag format: `3.1.0-bc99e3ee-main-4`; standard `main` tags only |
 | http-header-injector (chart) | stable/suse-observability-agent/Chart.yaml | dependencies[].version | Helm chart version from helm.stackstate.io — shell target matches by name |
 
