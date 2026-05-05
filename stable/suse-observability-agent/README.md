@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.3.8`
+Current chart version is `1.3.9`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -11,7 +11,7 @@ Current chart version is `1.3.8`
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../kubernetes-rbac-agent/ | kubernetes-rbac-agent | 0.0.27 |
-| https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.28 |
+| https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.29 |
 
 ## Required Values
 
@@ -172,7 +172,7 @@ stackstate/suse-observability-agent
 | httpHeaderInjectorWebhook.proxy.image.repository | string | `"stackstate/http-header-injector-proxy"` |  |
 | httpHeaderInjectorWebhook.proxyInit.image.repository | string | `"stackstate/http-header-injector-proxy-init"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
-| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"638bbb3c-47-release"` |  |
+| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"1d6fa71c-50-release"` |  |
 | kubernetes-rbac-agent.clusterName.fromConfigMap | string | `"{{ include \"stackstate-k8s-agent.clusterName.configmap.internal.name\" . }}"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
@@ -192,7 +192,7 @@ stackstate/suse-observability-agent
 | logsAgent.enabled | bool | `true` | Enable / disable k8s pod log collection |
 | logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | logsAgent.image.repository | string | `"stackstate/promtail"` | Base container image repository. |
-| logsAgent.image.tag | string | `"3.6.10-f51a4334-release-136"` | Default container image tag. |
+| logsAgent.image.tag | string | `"3.6.10-bc99e3ee-main-8"` | Default container image tag. |
 | logsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | logsAgent.priorityClassName | string | `""` | Priority class for logsAgent pods. |
 | logsAgent.resources.limits.cpu | string | `"1300m"` | CPU resource limits. |

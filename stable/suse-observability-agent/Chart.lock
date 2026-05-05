@@ -1,9 +1,9 @@
 dependencies:
 - name: http-header-injector
   repository: https://helm.stackstate.io
-  version: 0.0.28
+  version: 0.0.29
 - name: kubernetes-rbac-agent
   repository: file://../kubernetes-rbac-agent/
   version: 0.0.27
-digest: sha256:42c510983db10f5a12783c1c6aca2472e771b2292c788facd8c4a31f46e99160
-generated: "2026-05-04T14:14:19.757990229Z"
+digest: sha256:b36d1f35e918e748ae7066a3f13119b9777b0668c17b87655a04256628412c5d
+generated: "2026-05-05T14:09:07.13271732Z"
