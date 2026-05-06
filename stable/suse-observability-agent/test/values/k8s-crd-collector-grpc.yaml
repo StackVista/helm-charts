@@ -1,0 +1,20 @@
+stackstate:
+  apiKey: test-api-key
+  cluster:
+    name: test-cluster
+  url: https://my-suse-observability-instance.com
+
+# Enable cluster collector with gRPC protocol via dedicated OTLP ingress
+k8sCrdCollector:
+  enabled: true
+  otlpProtocol: "grpc"
+  platformOtlpEndpoint: "otlp-my-suse-observability-instance.com:443"
+  crdDiscovery:
+    interval: 15m
+    discoveryMode: api_groups
+    apiGroupFilters:
+      include:
+        - "*"
+      exclude: []
+  rbac:
+    useWildcard: true

@@ -150,6 +150,52 @@ stackstate/suse-observability-agent
 | clusterAgent.skipSslValidation | bool | `false` | If true, ignores the server certificate being signed by an unknown authority. |
 | clusterAgent.strategy | object | `{"type":"RollingUpdate"}` | The strategy for the Deployment object. |
 | clusterAgent.tolerations | list | `[]` | Toleration labels for pod assignment. |
+| clusterCollector.affinity | object | `{}` | Affinity settings for pod assignment. |
+| clusterCollector.crdDiscovery.apiGroupFilters.exclude | list | `[]` | List of API group patterns to exclude |
+| clusterCollector.crdDiscovery.apiGroupFilters.include | list | `["*"]` | List of API group patterns to watch (supports wildcards like "*.suse.com") |
+| clusterCollector.crdDiscovery.discoveryMode | string | `"api_groups"` | CRD discovery mode: "api_groups" (filtered) or "all" (watch everything) |
+| clusterCollector.crdDiscovery.includeInitialState | bool | `true` | Emit all existing CRDs/CRs on startup before the first interval tick |
+| clusterCollector.crdDiscovery.snapshotInterval | string | `"5m"` | Interval for periodic snapshot emission from the informer cache (default: 5m, min: 1m) |
+| clusterCollector.enabled | bool | `false` | Enable / disable the OpenTelemetry cluster collector for CRD discovery |
+| clusterCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
+| clusterCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
+| clusterCollector.image.tag | string | `"v0.0.31"` | Container image tag for 'opentelemetry-collector' containers. |
+| clusterCollector.leaderElection.enabled | bool | `true` | Enable the k8s_leader_elector extension and peer-to-peer cache sync. When enabled, only the leader actively watches CRDs/CRs, and cache state is synced to replicas for fast failover. |
+| clusterCollector.leaderElection.leaseDuration | string | `"15s"` | Duration a leader holds the lease before it must renew. |
+| clusterCollector.leaderElection.leaseName | string | `"k8scrdreceiver"` | Name of the Lease object. Must be unique per collector deployment. |
+| clusterCollector.leaderElection.renewDeadline | string | `"10s"` | Deadline for the leader to renew the lease. Must be less than leaseDuration. |
+| clusterCollector.leaderElection.retryPeriod | string | `"2s"` | How often non-leaders retry acquiring the lease. Must be less than renewDeadline. |
+| clusterCollector.livenessProbe.enabled | bool | `true` | Enable use of livenessProbe check. |
+| clusterCollector.livenessProbe.failureThreshold | int | `3` | `failureThreshold` for the liveness probe. |
+| clusterCollector.livenessProbe.initialDelaySeconds | int | `10` | `initialDelaySeconds` for the liveness probe. |
+| clusterCollector.livenessProbe.periodSeconds | int | `10` | `periodSeconds` for the liveness probe. |
+| clusterCollector.livenessProbe.successThreshold | int | `1` | `successThreshold` for the liveness probe. |
+| clusterCollector.livenessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the liveness probe. |
+| clusterCollector.logLevel | string | `"info"` | Logging level for OpenTelemetry collector (debug, info, warn, error) |
+| clusterCollector.nodeSelector | object | `{}` | Node labels for pod assignment. |
+| clusterCollector.otlpProtocol | string | `"http"` | Protocol for OTLP export: "http" (default) or "grpc". Only takes effect when platformOtlpEndpoint is set. The default endpoint (derived from stackstate.url) always uses HTTP. |
+| clusterCollector.peerSync.port | int | `4319` | Port for peer-to-peer cache sync HTTP server. Each replica serves its cache on this port. |
+| clusterCollector.platformOtlpEndpoint | string | `""` | Override the OTLP endpoint for sending telemetry data. When empty (default), the endpoint is derived by appending /otel to stackstate.url (e.g., https://my-instance.stackstate.io/receiver -> https://my-instance.stackstate.io/receiver/otel). Set this to use a dedicated OTLP ingress (e.g., https://otlp-http-my-instance.stackstate.io for HTTP or otlp-my-instance.stackstate.io:443 for gRPC). |
+| clusterCollector.podAnnotations | object | `{}` | Additional annotations for cluster collector pods. |
+| clusterCollector.podLabels | object | `{}` | Additional labels for cluster collector pods. |
+| clusterCollector.priorityClassName | string | `""` | Priority class for cluster collector pods. |
+| clusterCollector.rbac.apiGroups | list | `[]` | List of specific API groups to grant permissions for (only used when useWildcard=false). Example: ["policies.kubewarden.io", "longhorn.io"] |
+| clusterCollector.rbac.useWildcard | bool | `true` | Use wildcard permissions for watching all custom resources. Set to false for restricted RBAC with specific API groups |
+| clusterCollector.readinessProbe.enabled | bool | `true` | Enable use of readinessProbe check. |
+| clusterCollector.readinessProbe.failureThreshold | int | `3` | `failureThreshold` for the readiness probe. |
+| clusterCollector.readinessProbe.initialDelaySeconds | int | `5` | `initialDelaySeconds` for the readiness probe. |
+| clusterCollector.readinessProbe.periodSeconds | int | `5` | `periodSeconds` for the readiness probe. |
+| clusterCollector.readinessProbe.successThreshold | int | `1` | `successThreshold` for the readiness probe. |
+| clusterCollector.readinessProbe.timeoutSeconds | int | `5` | `timeoutSeconds` for the readiness probe. |
+| clusterCollector.replicaCount | int | `2` | Number of cluster collector pods to schedule. Use 2+ with leaderElection for HA. |
+| clusterCollector.resources.limits.cpu | string | `"500m"` | CPU resource limits. |
+| clusterCollector.resources.limits.memory | string | `"512Mi"` | Memory resource limits. |
+| clusterCollector.resources.requests.cpu | string | `"100m"` | CPU resource requests. |
+| clusterCollector.resources.requests.memory | string | `"128Mi"` | Memory resource requests. |
+| clusterCollector.serviceaccount.annotations | object | `{}` | Annotations for the service account for the cluster collector pods |
+| clusterCollector.skipSslValidation | bool | `false` | If true, ignores the server certificate being signed by an unknown authority. |
+| clusterCollector.strategy | object | `{"rollingUpdate":{"maxSurge":1,"maxUnavailable":0},"type":"RollingUpdate"}` | The strategy for the Deployment object. |
+| clusterCollector.tolerations | list | `[]` | Toleration labels for pod assignment. |
 | fullnameOverride | string | `""` | Override the fullname of the chart. |
 | global.apiKey.fromSecret | string | `"{{ include \"stackstate-k8s-agent.secret.internal.name\" . }}"` | The secret from which the receiver api key is taken. Will execute as a template. Overriding this will allow setting the api key from an externally provided secret. The api key will be picked form the STS_API_KEY value |
 | global.clusterAgentAuthToken.fromSecret | string | `"{{ include \"stackstate-k8s-agent.secret.internal.name\" . }}"` | The secret from from which the token for authenticating between node and cluster agent will be taken. Overriding this will allow setting the api key from an externally provided secret. The api key will be picked form the STS_CLUSTER_AGENT_AUTH_TOKEN value |
@@ -161,6 +207,7 @@ stackstate/suse-observability-agent
 | global.extraEnv.open | object | `{}` | Extra open environment variables to inject into pods. |
 | global.extraEnv.secret | object | `{}` | Extra secret environment variables to inject into pods via a `Secret` object. |
 | global.extraLabels | object | `{}` | Extra labels added ta all resources created by the helm chart |
+| global.features.experimentalStackpacks | bool | `false` | Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec. When enabled, the cluster collector (CRD discovery) is automatically activated. |
 | global.imagePullCredentials | object | `{}` | Globally define credentials for pulling images. |
 | global.imagePullSecrets | list | `[]` | Secrets / credentials needed for container image registry. |
 | global.imageRegistry | string | `"quay.io"` | The image registry to use. |

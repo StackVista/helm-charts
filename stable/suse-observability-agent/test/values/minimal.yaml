@@ -4,4 +4,4 @@ stackstate:
     name: some-k8s-cluster
     token: some-token
 
-  url: https://stackstate:7000/receiver
+  url: https://my-suse-observability-instance.com/receiver

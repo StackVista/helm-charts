@@ -1,0 +1,88 @@
+{{- if include "stackstate-k8s-agent.k8sCrdCollector.enabled" . }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-k8s-crd-collector-config
+  labels:
+{{ include "stackstate-k8s-agent.labels" . | indent 4 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
+    app.kubernetes.io/component: k8s-crd-collector
+  annotations:
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
+data:
+  config.yaml: |
+    receivers:
+      # K8s CRD Receiver - dynamically discovers CRDs and watches custom resources
+      k8scrd:
+        auth_type: serviceAccount
+        cluster_name: {{ .Values.stackstate.cluster.name | quote }}
+        snapshot_interval: {{ .Values.k8sCrdCollector.crdDiscovery.snapshotInterval }}
+        discovery_mode: {{ .Values.k8sCrdCollector.crdDiscovery.discoveryMode }}
+{{- if eq .Values.k8sCrdCollector.crdDiscovery.discoveryMode "api_groups" }}
+{{- if not .Values.k8sCrdCollector.crdDiscovery.apiGroupFilters.include }}
+{{- fail "k8sCrdCollector.crdDiscovery.apiGroupFilters.include must be a non-empty list when discoveryMode is 'api_groups' (use [\"*\"] to match all)" }}
+{{- end }}
+        api_group_filters:
+          include:
+{{- range .Values.k8sCrdCollector.crdDiscovery.apiGroupFilters.include }}
+            - {{ . | quote }}
+{{- end }}
+{{- if .Values.k8sCrdCollector.crdDiscovery.apiGroupFilters.exclude }}
+          exclude:
+{{- range .Values.k8sCrdCollector.crdDiscovery.apiGroupFilters.exclude }}
+            - {{ . | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+        peer_sync_port: {{ .Values.k8sCrdCollector.peerSync.port }}
+{{- if .Values.k8sCrdCollector.leaderElection.enabled }}
+        peer_sync_dns: {{ include "stackstate-k8s-agent.k8sCrdCollector.peerSync.dns" . | quote }}
+        k8s_leader_elector: k8s_leader_elector
+{{- end }}
+
+{{- $useGrpc := and (ne (.Values.k8sCrdCollector.platformOtlpEndpoint | default "") "") (eq (.Values.k8sCrdCollector.otlpProtocol | default "http") "grpc") }}
+{{- $exporterName := ternary "otlp/suse-observability" "otlp_http/suse-observability" $useGrpc }}
+    exporters:
+      # Send to SUSE Observability platform
+      {{ $exporterName }}:
+        auth:
+          authenticator: bearertokenauth
+        endpoint: ${PLATFORM_OTLP_ENDPOINT}
+        tls:
+          insecure_skip_verify: ${SKIP_SSL_VALIDATION}
+        compression: snappy
+        timeout: 30s
+        retry_on_failure:
+          enabled: true
+          initial_interval: 5s
+          max_interval: 30s
+          max_elapsed_time: 300s
+
+    extensions:
+      health_check:
+        endpoint: 0.0.0.0:13133
+      bearertokenauth:
+        scheme: SUSEObservability
+        token: "${STS_API_KEY}"
+{{- if .Values.k8sCrdCollector.leaderElection.enabled }}
+      k8s_leader_elector:
+        auth_type: serviceAccount
+        lease_name: {{ .Values.k8sCrdCollector.leaderElection.leaseName | quote }}
+        lease_namespace: ${POD_NAMESPACE}
+        lease_duration: {{ .Values.k8sCrdCollector.leaderElection.leaseDuration }}
+        renew_deadline: {{ .Values.k8sCrdCollector.leaderElection.renewDeadline }}
+        retry_period: {{ .Values.k8sCrdCollector.leaderElection.retryPeriod }}
+{{- end }}
+
+    service:
+      telemetry:
+        logs:
+          level: {{ .Values.k8sCrdCollector.logLevel }}
+      extensions: [health_check, bearertokenauth{{ if .Values.k8sCrdCollector.leaderElection.enabled }}, k8s_leader_elector{{ end }}]
+      pipelines:
+        # CRD discovery - real-time watch of CRDs and custom resources
+        logs/crd-discovery:
+          receivers: [k8scrd]
+          processors: []
+          exporters: [{{ $exporterName }}]
+{{- end }}

@@ -33,6 +33,10 @@ global:
   # global.extraAnnotations -- Extra annotations added ta all resources created by the helm chart
   extraAnnotations: {}
 
+  features:
+    # global.features.experimentalStackpacks -- Enable StackPacks 2.0 to signal to all components that they should support the StackPacks 2.0 spec. When enabled, the cluster collector (CRD discovery) is automatically activated.
+    experimentalStackpacks: false
+
   # global.receiverApiKey -- This is deprecated and will be removed in a future version.
   # receiverApiKey:
 
@@ -659,6 +663,140 @@ checksAgent:
   tolerations: []
 
   # checksAgent.affinity -- Affinity settings for pod assignment.
+  affinity: {}
+
+###############################
+# K8s CRD collector variables #
+###############################
+
+k8sCrdCollector:
+  # k8sCrdCollector.enabled -- Enable / disable the OpenTelemetry cluster collector for CRD discovery
+  enabled: false
+
+  # k8sCrdCollector.skipSslValidation -- If true, ignores the server certificate being signed by an unknown authority.
+  skipSslValidation: false
+
+  # k8sCrdCollector.otlpProtocol -- Protocol for OTLP export: "http" (default) or "grpc". Only takes effect when platformOtlpEndpoint is set. The default endpoint (derived from stackstate.url) always uses HTTP.
+  otlpProtocol: "http"
+
+  # k8sCrdCollector.platformOtlpEndpoint -- Override the OTLP endpoint for sending telemetry data. When empty (default), the endpoint is derived by appending /otel to stackstate.url (e.g., https://my-instance.stackstate.io/receiver -> https://my-instance.stackstate.io/receiver/otel). Set this to use a dedicated OTLP ingress (e.g., https://otlp-http-my-instance.stackstate.io for HTTP or otlp-my-instance.stackstate.io:443 for gRPC).
+  platformOtlpEndpoint: ""
+
+  image:
+    # k8sCrdCollector.image.repository -- Base container image repository.
+    repository: stackstate/sts-opentelemetry-collector
+    # k8sCrdCollector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
+    tag: v0.0.32
+    # k8sCrdCollector.image.pullPolicy -- Default container image pull policy.
+    pullPolicy: IfNotPresent
+
+  crdDiscovery:
+    # k8sCrdCollector.crdDiscovery.snapshotInterval -- Interval for periodic snapshot emission from the informer cache (default: 5m, min: 1m)
+    snapshotInterval: 5m
+    # k8sCrdCollector.crdDiscovery.discoveryMode -- CRD discovery mode: "api_groups" (filtered) or "all" (watch everything)
+    discoveryMode: api_groups
+    apiGroupFilters:
+      # k8sCrdCollector.crdDiscovery.apiGroupFilters.include -- List of API group patterns to watch (supports wildcards like "*.suse.com")
+      include:
+        - "*"  # Watch all API groups by default
+      # k8sCrdCollector.crdDiscovery.apiGroupFilters.exclude -- List of API group patterns to exclude
+      exclude: []
+
+  rbac:
+    # k8sCrdCollector.rbac.useWildcard -- Use wildcard permissions for watching all custom resources. Set to false for restricted RBAC with specific API groups
+    useWildcard: true
+    # k8sCrdCollector.rbac.apiGroups -- List of specific API groups to grant permissions for (only used when useWildcard=false). Example: ["policies.kubewarden.io", "longhorn.io"]
+    apiGroups: []
+
+  peerSync:
+    # k8sCrdCollector.peerSync.port -- Port for peer-to-peer cache sync HTTP server. Each replica serves its cache on this port.
+    port: 4319
+
+  leaderElection:
+    # k8sCrdCollector.leaderElection.enabled -- Enable the k8s_leader_elector extension and peer-to-peer cache sync. When enabled, only the leader actively watches CRDs/CRs, and cache state is synced to replicas for fast failover.
+    enabled: true
+    # k8sCrdCollector.leaderElection.leaseName -- Name of the Lease object. Must be unique per collector deployment.
+    leaseName: "k8scrdreceiver"
+    # k8sCrdCollector.leaderElection.leaseDuration -- Duration a leader holds the lease before it must renew.
+    leaseDuration: 15s
+    # k8sCrdCollector.leaderElection.renewDeadline -- Deadline for the leader to renew the lease. Must be less than leaseDuration.
+    renewDeadline: 10s
+    # k8sCrdCollector.leaderElection.retryPeriod -- How often non-leaders retry acquiring the lease. Must be less than renewDeadline.
+    retryPeriod: 2s
+
+  livenessProbe:
+    # k8sCrdCollector.livenessProbe.enabled -- Enable use of livenessProbe check.
+    enabled: true
+    # k8sCrdCollector.livenessProbe.failureThreshold -- `failureThreshold` for the liveness probe.
+    failureThreshold: 3
+    # k8sCrdCollector.livenessProbe.initialDelaySeconds -- `initialDelaySeconds` for the liveness probe.
+    initialDelaySeconds: 10
+    # k8sCrdCollector.livenessProbe.periodSeconds -- `periodSeconds` for the liveness probe.
+    periodSeconds: 10
+    # k8sCrdCollector.livenessProbe.successThreshold -- `successThreshold` for the liveness probe.
+    successThreshold: 1
+    # k8sCrdCollector.livenessProbe.timeoutSeconds -- `timeoutSeconds` for the liveness probe.
+    timeoutSeconds: 5
+
+  # k8sCrdCollector.logLevel -- Logging level for OpenTelemetry collector (debug, info, warn, error)
+  logLevel: info
+
+  # k8sCrdCollector.priorityClassName -- Priority class for cluster collector pods.
+  priorityClassName: ""
+
+  readinessProbe:
+    # k8sCrdCollector.readinessProbe.enabled -- Enable use of readinessProbe check.
+    enabled: true
+    # k8sCrdCollector.readinessProbe.failureThreshold -- `failureThreshold` for the readiness probe.
+    failureThreshold: 3
+    # k8sCrdCollector.readinessProbe.initialDelaySeconds -- `initialDelaySeconds` for the readiness probe.
+    initialDelaySeconds: 5
+    # k8sCrdCollector.readinessProbe.periodSeconds -- `periodSeconds` for the readiness probe.
+    periodSeconds: 5
+    # k8sCrdCollector.readinessProbe.successThreshold -- `successThreshold` for the readiness probe.
+    successThreshold: 1
+    # k8sCrdCollector.readinessProbe.timeoutSeconds -- `timeoutSeconds` for the readiness probe.
+    timeoutSeconds: 5
+
+  # k8sCrdCollector.replicaCount -- Number of cluster collector pods to schedule. Use 2+ with leaderElection for HA.
+  replicaCount: 2
+
+  resources:
+    limits:
+      # k8sCrdCollector.resources.limits.cpu -- CPU resource limits.
+      cpu: "500m"
+      # k8sCrdCollector.resources.limits.memory -- Memory resource limits.
+      memory: "512Mi"
+    requests:
+      # k8sCrdCollector.resources.requests.cpu -- CPU resource requests.
+      cpu: "100m"
+      # k8sCrdCollector.resources.requests.memory -- Memory resource requests.
+      memory: "128Mi"
+
+  serviceaccount:
+    # k8sCrdCollector.serviceaccount.annotations -- Annotations for the service account for the cluster collector pods
+    annotations: {}
+
+  # k8sCrdCollector.strategy -- The strategy for the Deployment object.
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+
+  # k8sCrdCollector.podAnnotations -- Additional annotations for cluster collector pods.
+  podAnnotations: {}
+
+  # k8sCrdCollector.podLabels -- Additional labels for cluster collector pods.
+  podLabels: {}
+
+  # k8sCrdCollector.nodeSelector -- Node labels for pod assignment.
+  nodeSelector: {}
+
+  # k8sCrdCollector.tolerations -- Toleration labels for pod assignment.
+  tolerations: []
+
+  # k8sCrdCollector.affinity -- Affinity settings for pod assignment.
   affinity: {}
 
 ##################################

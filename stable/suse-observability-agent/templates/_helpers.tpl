@@ -68,6 +68,37 @@ StackState URL function
 {{ tpl .Values.stackstate.url . | quote }}
 {{- end }}
 
+{{/*
+Derive platform OTLP endpoint from StackState URL or use explicit override.
+Default: appends /otel to the configured stackstate.url (proxied via Envoy, HTTP only).
+Override: platformOtlpEndpoint allows pointing at a dedicated OTLP ingress (supports gRPC via otlpProtocol).
+*/}}
+{{- define "stackstate-k8s-agent.platform.otlp.endpoint" -}}
+{{- if .Values.k8sCrdCollector.platformOtlpEndpoint -}}
+  {{- $endpoint := .Values.k8sCrdCollector.platformOtlpEndpoint -}}
+  {{- $otlpProtocol := .Values.k8sCrdCollector.otlpProtocol | default "http" -}}
+  {{- if eq $otlpProtocol "grpc" -}}
+    {{- if hasPrefix "https://" $endpoint -}}
+      {{- fail "k8sCrdCollector.platformOtlpEndpoint for gRPC must not include https:// scheme (e.g. otlp-my-instance.example.com:443)" -}}
+    {{- end -}}
+    {{- if not (hasSuffix ":443" $endpoint) -}}
+      {{- fail "k8sCrdCollector.platformOtlpEndpoint for gRPC must include port :443 (e.g. otlp-my-instance.example.com:443)" -}}
+    {{- end -}}
+  {{- else -}}
+    {{- if not (hasPrefix "https://" $endpoint) -}}
+      {{- fail "k8sCrdCollector.platformOtlpEndpoint for HTTP must include https:// scheme (e.g. https://otlp-http-my-instance.example.com)" -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $endpoint -}}
+{{- else -}}
+  {{- $url := tpl .Values.stackstate.url . | trimSuffix "/" -}}
+  {{- if not (hasPrefix "https://" $url) -}}
+    {{- fail "SUSE Observability URL must start with https://" -}}
+  {{- end -}}
+  {{- printf "%s/otel" $url -}}
+{{- end -}}
+{{- end }}
+
 {{- define "stackstate-k8s-agent.configmap.override.checksum" -}}
 {{- if .Values.clusterAgent.config.override }}
 checksum/override-configmap: {{ include (print $.Template.BasePath "/cluster-agent-configmap.yaml") . | sha256sum }}
@@ -318,4 +349,21 @@ Helpers for remote kube cache service (used by process-agent pod-correlation)
 {{- if and .Values.nodeAgent.containers.processAgent.enabled .Values.processAgent.podCorrelation.enabled .Values.processAgent.podCorrelation.remoteCache }}
 true
 {{- end }}
+{{- end -}}
+
+{{/*
+Determine whether the cluster collector should be deployed.
+True when explicitly enabled OR when the experimentalStackpacks feature flag is set.
+*/}}
+{{- define "stackstate-k8s-agent.k8sCrdCollector.enabled" -}}
+{{- if or .Values.k8sCrdCollector.enabled (default false ((.Values.global).features).experimentalStackpacks) }}
+true
+{{- end }}
+{{- end -}}
+
+{{/*
+Headless Service DNS for peer-to-peer cache sync between cluster collector replicas.
+*/}}
+{{- define "stackstate-k8s-agent.k8sCrdCollector.peerSync.dns" -}}
+{{- printf "%s-k8s-crd-collector-headless.%s.svc.cluster.local" .Release.Name .Release.Namespace -}}
 {{- end -}}

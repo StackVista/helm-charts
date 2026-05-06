@@ -1,0 +1,152 @@
+{{- if include "stackstate-k8s-agent.k8sCrdCollector.enabled" . }}
+{{- if and (gt (.Values.k8sCrdCollector.replicaCount | int) 1) (not .Values.k8sCrdCollector.leaderElection.enabled) }}
+{{- fail "k8sCrdCollector.leaderElection.enabled must be true when k8sCrdCollector.replicaCount > 1 — otherwise every replica collects independently and the platform receives duplicate emissions" }}
+{{- end }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-k8s-crd-collector
+  labels:
+{{ include "stackstate-k8s-agent.labels" . | indent 4 }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 4 }}
+    app.kubernetes.io/component: k8s-crd-collector
+  annotations:
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 4 }}
+spec:
+  replicas: {{ .Values.k8sCrdCollector.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: k8s-crd-collector
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "stackstate-k8s-agent.name" . }}
+{{- with .Values.k8sCrdCollector.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+{{- end }}
+  template:
+    metadata:
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/k8s-crd-collector-configmap.yaml") . | sha256sum }}
+        {{- include "stackstate-k8s-agent.customCertificates.checksum" . | nindent 8 }}
+        ad.stackstate.com/k8s-crd-collector.check_names: '["openmetrics"]'
+        ad.stackstate.com/k8s-crd-collector.init_configs: '[{}]'
+        ad.stackstate.com/k8s-crd-collector.instances: '[{"prometheus_url":"http://%%host%%:8888/metrics","namespace":"stackstate","metrics":["*"]}]'
+{{ include "stackstate-k8s-agent.global.extraAnnotations" . | indent 8 }}
+      {{- with .Values.k8sCrdCollector.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app.kubernetes.io/component: k8s-crd-collector
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "stackstate-k8s-agent.name" . }}
+{{ include "stackstate-k8s-agent.global.extraLabels" . | indent 8 }}
+      {{- with .Values.k8sCrdCollector.podLabels }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- include "stackstate-k8s-agent.image.pullSecrets" (dict "images" (list .Values.k8sCrdCollector.image .Values.all.image) "context" $) | nindent 6 }}
+      {{- if .Values.k8sCrdCollector.priorityClassName }}
+      priorityClassName: {{ .Values.k8sCrdCollector.priorityClassName }}
+      {{- end }}
+      serviceAccountName: {{ .Release.Name }}-k8s-crd-collector
+      containers:
+        - name: k8s-crd-collector
+          image: "{{ include "stackstate-k8s-agent.imageRegistry" . }}/{{ .Values.k8sCrdCollector.image.repository }}:{{ .Values.k8sCrdCollector.image.tag }}"
+          imagePullPolicy: "{{ .Values.k8sCrdCollector.image.pullPolicy }}"
+          args:
+            - --config=/etc/otel/config.yaml
+          env:
+          {{ include "stackstate-k8s-agent.apiKeyEnv" . | nindent 10 }}
+          - name: PLATFORM_OTLP_ENDPOINT
+            value: {{ include "stackstate-k8s-agent.platform.otlp.endpoint" . | quote }}
+          - name: K8S_CLUSTER_NAME
+            value: {{ .Values.stackstate.cluster.name | quote }}
+          - name: SKIP_SSL_VALIDATION
+            value: {{ or .Values.global.skipSslValidation .Values.k8sCrdCollector.skipSslValidation | quote }}
+          {{- if .Values.k8sCrdCollector.leaderElection.enabled }}
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          {{- end }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/otel
+            {{- if .Values.global.customCertificates.enabled }}
+            - name: custom-certificates
+              mountPath: /etc/ssl/certs/custom
+              readOnly: true
+            {{- end }}
+          ports:
+            - containerPort: 13133
+              name: health
+              protocol: TCP
+            - containerPort: 8888
+              name: metrics
+              protocol: TCP
+            {{- if .Values.k8sCrdCollector.leaderElection.enabled }}
+            - containerPort: {{ .Values.k8sCrdCollector.peerSync.port }}
+              name: peer-sync
+              protocol: TCP
+            {{- end }}
+          {{- if .Values.k8sCrdCollector.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: health
+            failureThreshold: {{ .Values.k8sCrdCollector.livenessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.k8sCrdCollector.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.k8sCrdCollector.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.k8sCrdCollector.livenessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.k8sCrdCollector.livenessProbe.timeoutSeconds }}
+          {{- end }}
+          {{- if .Values.k8sCrdCollector.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: health
+            failureThreshold: {{ .Values.k8sCrdCollector.readinessProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.k8sCrdCollector.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.k8sCrdCollector.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.k8sCrdCollector.readinessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.k8sCrdCollector.readinessProbe.timeoutSeconds }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.k8sCrdCollector.resources | nindent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Release.Name }}-k8s-crd-collector-config
+        {{- if .Values.global.customCertificates.enabled }}
+        - name: custom-certificates
+          configMap:
+            name: {{ include "stackstate-k8s-agent.customCertificates.configmap.name" . }}
+        {{- end }}
+      {{- with .Values.k8sCrdCollector.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if or .Values.k8sCrdCollector.affinity .Values.k8sCrdCollector.leaderElection.enabled }}
+      affinity:
+        {{- if .Values.k8sCrdCollector.leaderElection.enabled }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/component: k8s-crd-collector
+                  app.kubernetes.io/instance: {{ .Release.Name }}
+              topologyKey: kubernetes.io/hostname
+        {{- end }}
+        {{- with .Values.k8sCrdCollector.affinity }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.k8sCrdCollector.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

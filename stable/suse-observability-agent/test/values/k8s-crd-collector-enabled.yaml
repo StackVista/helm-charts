@@ -1,0 +1,18 @@
+stackstate:
+  apiKey: test-api-key
+  cluster:
+    name: test-cluster
+  url: https://my-suse-observability-instance.com/receiver
+
+# Enable cluster collector with default settings (watch all CRDs)
+k8sCrdCollector:
+  enabled: true
+  crdDiscovery:
+    snapshotInterval: 5m
+    discoveryMode: api_groups
+    apiGroupFilters:
+      include:
+        - "*"
+      exclude: []
+  rbac:
+    useWildcard: true
