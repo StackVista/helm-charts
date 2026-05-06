@@ -725,10 +725,10 @@ kubernetes-rbac-agent:
       resources:
         requests:
           # kubernetes-rbac-agent.containers.rbacAgent.resources.requests.memory -- Memory resource requests.
-          memory: "25Mi"
+          memory: "128Mi"
         limits:
           # kubernetes-rbac-agent.containers.rbacAgent.resources.limits.memory -- Memory resource limits.
-          memory: "40Mi"
+          memory: "256Mi"
       # kubernetes-rbac-agent.containers.rbacAgent.env -- Additional environment variables
       env: {}
       # kubernetes-rbac-agent.containers.rbacAgent.podLabels -- Additional labels on the pod
