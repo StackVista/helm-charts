@@ -433,33 +433,6 @@ local updatecli_job = {
       'updatecli apply -c updatecli/updatecli.d/update-docker-images/ -v updatecli/values.d/values.yaml',
     ],
   },
-  finalize_helm_chart_docker_images: {
-    image: variables.images.container_tools_dev,
-    stage: 'update',
-    variables: {
-      UPDATE_CLI_EMAIL: '$STACKSTATE_SYSTEM_USER_EMAIL',
-      UPDATE_CLI_USER: '$STACKSTATE_SYSTEM_USER_NAME',
-    },
-    before_script: [
-      '.gitlab/configure_git.sh',
-      'export GITLAB_TOKEN="$gitlab_api_scope_token"',
-      'export UPDATE_CLI_PGP_KEY="$(cat $STACKSTATE_SYSTEM_USER_PGP_KEY)"',
-      'export UPDATE_CLI_PGP_PASSPHRASE="$STACKSTATE_SYSTEM_USER_PGP_PASS_PHRASE"',
-    ],
-    rules: [
-      {
-        @'if': '$RUN_UPDATECLI',
-        when: 'always',
-      },
-      {
-        when: 'never',
-      },
-    ],
-    needs: ['update_helm_chart_docker_images'],
-    script: [
-      'updatecli apply -c updatecli/updatecli.d/finalize-docker-images/ -v updatecli/values.d/values.yaml',
-    ],
-  },
   open_updatecli_docker_images_mr: {
     image: variables.images.container_tools_dev,
     stage: 'update',
@@ -476,7 +449,7 @@ local updatecli_job = {
         when: 'never',
       },
     ],
-    needs: ['finalize_helm_chart_docker_images'],
+    needs: ['update_helm_chart_docker_images'],
     script: [
       '.gitlab/open_updatecli_mr.sh updatecli-master-docker-images master "[master] Bump helm chart docker images"',
     ],

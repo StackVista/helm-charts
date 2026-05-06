@@ -563,3 +563,46 @@ targets:
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.s3proxy.image.tag"
+  suseObservabilityAgentChartVersion:
+    name: "suse-observability-agent Chart.yaml version"
+    kind: shell
+    scmid: "default"
+    disablesourceinput: true
+    dependson:
+      - "target#containerToolsSuseObservabilityAgent"
+      - "target#kubernetesRbacAgentSuseObservabilityAgent"
+      - "target#genericSidecarInjector"
+      - "target#promtail"
+      - "target#httpHeaderInjectorChartVersion"
+    spec:
+      command: |
+        set -e
+
+        # Ensure PyYAML is available for bump_chart_version.py
+        python3.11 -m pip install --quiet pyyaml
+
+        VALUES_FILE="stable/suse-observability-agent/values.yaml"
+        CHART_YAML="stable/suse-observability-agent/Chart.yaml"
+        BASE_REF="origin/{{ .scm.branch }}"
+
+        # If neither the agent values file nor Chart.yaml changed compared to
+        # the base ref updatecli started from, skip the chart bump.
+        if git diff --quiet "$BASE_REF" -- "$VALUES_FILE" "$CHART_YAML"; then
+          echo "Agent values and Chart.yaml unchanged vs $BASE_REF; skipping chart bump"
+          exit 0
+        fi
+
+        echo "Agent chart files changed vs $BASE_REF; bumping suse-observability-agent chart version"
+
+        # Helm repos required for bump_chart_version.py to regenerate Chart.lock
+        helm repo add stackstate https://helm.stackstate.io >/dev/null 2>&1 || true
+        helm repo update >/dev/null 2>&1 || true
+
+        python3.11 scripts/bump-chart-version/bump_chart_version.py suse-observability-agent
+        echo "Bumped suse-observability-agent chart version"
+      changedif:
+        kind: file/checksum
+        spec:
+          files:
+            - stable/suse-observability-agent/Chart.yaml
+            - stable/suse-observability-agent/Chart.lock

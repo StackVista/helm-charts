@@ -17,10 +17,19 @@ fi
 PROJECT_ID="${CI_PROJECT_ID:-stackvista%2Fdevops%2Fhelm-charts}"
 API_URL="https://gitlab.com/api/v4/projects/${PROJECT_ID}/merge_requests"
 
-# Check if source branch exists on remote
-git fetch origin "$SOURCE_BRANCH" --quiet 2>/dev/null || true
+# Check if source and target branches exist on remote
+git fetch origin "$SOURCE_BRANCH" "$TARGET_BRANCH" --quiet 2>/dev/null || true
 if ! git rev-parse "origin/$SOURCE_BRANCH" >/dev/null 2>&1; then
   echo "Branch origin/$SOURCE_BRANCH does not exist; skipping MR create"
+  exit 0
+fi
+if ! git rev-parse "origin/$TARGET_BRANCH" >/dev/null 2>&1; then
+  echo "ERROR: Branch origin/$TARGET_BRANCH does not exist" >&2
+  exit 1
+fi
+
+if git diff --quiet "origin/$TARGET_BRANCH...origin/$SOURCE_BRANCH" --; then
+  echo "Branch origin/$SOURCE_BRANCH has no diff against origin/$TARGET_BRANCH; skipping MR create"
   exit 0
 fi
 

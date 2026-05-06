@@ -1232,25 +1232,6 @@ check_zookeeper_version:
   script:
     - .gitlab/verify_versions_bumped.sh zookeeper
   stage: validate
-finalize_helm_chart_docker_images:
-  before_script:
-    - .gitlab/configure_git.sh
-    - export GITLAB_TOKEN="$gitlab_api_scope_token"
-    - export UPDATE_CLI_PGP_KEY="$(cat $STACKSTATE_SYSTEM_USER_PGP_KEY)"
-    - export UPDATE_CLI_PGP_PASSPHRASE="$STACKSTATE_SYSTEM_USER_PGP_PASS_PHRASE"
-  image: quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4
-  needs:
-    - update_helm_chart_docker_images
-  rules:
-    - if: $RUN_UPDATECLI
-      when: always
-    - when: never
-  script:
-    - updatecli apply -c updatecli/updatecli.d/finalize-docker-images/ -v updatecli/values.d/values.yaml
-  stage: update
-  variables:
-    UPDATE_CLI_EMAIL: $STACKSTATE_SYSTEM_USER_EMAIL
-    UPDATE_CLI_USER: $STACKSTATE_SYSTEM_USER_NAME
 image: quay.io/helmpack/chart-testing:v3.10.1
 open_updatecli_docker_images_mr:
   before_script:
@@ -1258,7 +1239,7 @@ open_updatecli_docker_images_mr:
     - export GITLAB_TOKEN="$gitlab_api_scope_token"
   image: quay.io/stackstate/container-tools:1.8.6_dev-fa52bb17-main-4
   needs:
-    - finalize_helm_chart_docker_images
+    - update_helm_chart_docker_images
   rules:
     - if: $RUN_UPDATECLI
       when: always
