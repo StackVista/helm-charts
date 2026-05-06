@@ -698,7 +698,8 @@ k8sCrdCollector:
     apiGroupFilters:
       # k8sCrdCollector.crdDiscovery.apiGroupFilters.include -- List of API group patterns to watch (supports wildcards like "*.suse.com")
       include:
-        - "*"  # Watch all API groups by default
+        # Watch all API groups by default
+        - "*"
       # k8sCrdCollector.crdDiscovery.apiGroupFilters.exclude -- List of API group patterns to exclude
       exclude: []
 
