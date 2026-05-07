@@ -255,7 +255,6 @@ defaultConfigurationOverrides: |
       <level>{{ .Values.logLevel }}</level>
     </logger>
     {{- $effectiveReplicaCount := include "common.sizing.clickhouse.effectiveReplicaCount" . | int -}}
-    {{- if or (ne (int .Values.shards) 1) (ne $effectiveReplicaCount 1)}}
     <!-- Cluster configuration - Any update of the shards and replicas requires helm upgrade -->
     <remote_servers>
       <default>
@@ -274,7 +273,6 @@ defaultConfigurationOverrides: |
         {{- end }}
       </default>
     </remote_servers>
-    {{- end }}
     {{- if .Values.keeper.enabled }}
     <!-- keeper configuration -->
     <keeper_server>
@@ -380,16 +378,8 @@ defaultConfigurationOverrides: |
     <merge_tree>
       <min_free_disk_ratio_to_perform_insert>{{ .Values.mergeTree.minFreeDiskRatioToPerformInsert }}</min_free_disk_ratio_to_perform_insert>
     </merge_tree>
-  </clickhouse>
 
-## @param existingOverridesConfigmap The name of an existing ConfigMap with your custom configuration for ClickHouse
-##
-existingOverridesConfigmap: ""
 
-## @param extraOverrides Extra configuration overrides (evaluated as a template) apart from the default
-##
-extraOverrides: |
-  <clickhouse>
     <!-- Recommended settings for low memory systems https://clickhouse.com/docs/operations/tips#ram -->
     <mark_cache_size>1073741824</mark_cache_size>
     <concurrent_threads_soft_limit_num>1</concurrent_threads_soft_limit_num>
@@ -448,28 +438,15 @@ extraOverrides: |
         TTL event_date + INTERVAL 3 DAY DELETE
       </engine>
     </aggregated_zookeeper_log>
-
-    {{- $effectiveReplicaCount := include "common.sizing.clickhouse.effectiveReplicaCount" . | int -}}
-    <!-- Cluster configuration - Any update of the shards and replicas requires helm upgrade -->
-    <remote_servers>
-      <default>
-        {{- $shards := $.Values.shards | int }}
-        {{- range $shard, $e := until $shards }}
-        <shard>
-            {{- range $i, $_e := until $effectiveReplicaCount }}
-            <replica>
-                <host>{{ printf "%s-shard%d-%d.%s.%s.svc.%s" (include "common.names.fullname" $ ) $shard $i (include "clickhouse.headlessServiceName" $) (include "common.names.namespace" $) $.Values.clusterDomain }}</host>
-                <port>{{ $.Values.service.ports.tcp }}</port>
-                <user from_env="CLICKHOUSE_ADMIN_USER"></user>
-                <password from_env="CLICKHOUSE_ADMIN_PASSWORD"></password>
-            </replica>
-            {{- end }}
-        </shard>
-        {{- end }}
-      </default>
-    </remote_servers>
   </clickhouse>
 
+## @param existingOverridesConfigmap The name of an existing ConfigMap with your custom configuration for ClickHouse
+##
+existingOverridesConfigmap: ""
+
+## @param extraOverrides Extra configuration overrides (evaluated as a template) apart from the default
+##
+extraOverrides: ""
 ## @param extraOverridesConfigmap The name of an existing ConfigMap with extra configuration for ClickHouse
 ##
 extraOverridesConfigmap: ""
