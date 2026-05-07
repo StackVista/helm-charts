@@ -1,6 +1,6 @@
 # kafka
 
-![Version: 19.1.3-suse-observability.26](https://img.shields.io/badge/Version-19.1.3--suse--observability.26-informational?style=flat-square) ![AppVersion: 3.3.1](https://img.shields.io/badge/AppVersion-3.3.1-informational?style=flat-square)
+![Version: 19.1.3-suse-observability.27](https://img.shields.io/badge/Version-19.1.3--suse--observability.27-informational?style=flat-square) ![AppVersion: 3.3.1](https://img.shields.io/badge/AppVersion-3.3.1-informational?style=flat-square)
 Apache Kafka is a distributed streaming platform designed to build real-time pipelines and can be used as a message broker or as a replacement for a log aggregation solution for big data applications.
 **Homepage:** <https://github.com/bitnami/charts/tree/main/bitnami/kafka>
 ## Maintainers
@@ -173,7 +173,7 @@ Apache Kafka is a distributed streaming platform designed to build real-time pip
 | logRetentionHours | int | `24` |  |
 | logSegmentBytes | string | `"_1073741824"` |  |
 | logsDirs | string | `"/data/kafka/data"` |  |
-| maxMessageBytes | string | `"_1000012"` |  |
+| maxMessageBytes | string | `"_1048588"` |  |
 | metrics.jmx.config | string | `"jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:5555/jmxrmi\nlowercaseOutputName: true\nlowercaseOutputLabelNames: true\nssl: false\n{{- if .Values.metrics.jmx.whitelistObjectNames }}\nwhitelistObjectNames: [\"{{ join \"\\\",\\\"\" .Values.metrics.jmx.whitelistObjectNames }}\"]\n{{- end }}"` |  |
 | metrics.jmx.containerPorts.metrics | int | `5556` |  |
 | metrics.jmx.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |

@@ -15,7 +15,7 @@ Current chart version is `2.9.1-pre.196`
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.22 |
 | file://../hbase/ | hbase | 0.2.147 |
-| file://../kafka/ | kafka | 19.1.3-suse-observability.26 |
+| file://../kafka/ | kafka | 19.1.3-suse-observability.27 |
 | file://../kafkaup-operator/ | kafkaup-operator | 0.1.29 |
 | file://../kubernetes-rbac-agent/ | kubernetes-rbac-agent | 0.0.27 |
 | file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.30 |

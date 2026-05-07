@@ -165,8 +165,8 @@ logSegmentBytes: _1073741824
 ## ref: https://kafka.apache.org/documentation/#brokerconfigs_log.dirs
 logsDirs: /data/kafka/data
 ## @param maxMessageBytes The largest record batch size allowed by Kafka
-##
-maxMessageBytes: _1000012
+## The default in kafka is 1MB + 12 bytes ( to be bigger than max.request.size )
+maxMessageBytes: _1048588
 ## @param defaultReplicationFactor Default replication factors for automatically created topics
 ##
 defaultReplicationFactor: 2
