@@ -2,7 +2,7 @@
 
 Helm chart for SUSE Observability
 
-Current chart version is `2.9.1-pre.197`
+Current chart version is `2.9.1-pre.198`
 
 **Homepage:** <https://gitlab.com/stackvista/stackstate.git>
 
@@ -18,7 +18,7 @@ Current chart version is `2.9.1-pre.197`
 | file://../kafka/ | kafka | 19.1.3-suse-observability.27 |
 | file://../kafkaup-operator/ | kafkaup-operator | 0.1.29 |
 | file://../kubernetes-rbac-agent/ | kubernetes-rbac-agent | 0.0.27 |
-| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.30 |
+| file://../opentelemetry-collector | opentelemetry-collector | 0.108.0-stackstate.31 |
 | file://../pull-secret/ | pull-secret | * |
 | file://../suse-observability-sizing/ | suse-observability-sizing | 0.1.16 |
 | file://../victoria-metrics-single/ | victoria-metrics-0(victoria-metrics-single) | 0.8.53-stackstate.52 |
