@@ -205,6 +205,7 @@ config:
         max_elapsed_time: 300s
     prometheusremotewrite/victoria-metrics:
       endpoint: 'http://suse-observability-vmagent:8429/api/v1/write'
+      timeout: 30s
       resource_to_telemetry_conversion:
         enabled: true
     ststopology:
@@ -255,6 +256,7 @@ config:
         processors:
           - stsusage
           - resource/removeStsApiKey
+          - batch
         exporters:
           - clickhousests
       metrics:
@@ -271,7 +273,9 @@ config:
         receivers:
           - prometheus/internal
         processors:
+          - memory_limiter
           - transform/internalMetricsPrefix
+          - batch
         exporters:
           - forward
       metrics/victoria-metrics:
@@ -281,12 +285,15 @@ config:
         processors:
           - resource/removeStsApiKey
           - attributes/removeStsApiKey
+          - batch
         exporters:
           - prometheusremotewrite/victoria-metrics
       metrics/topology:
         receivers:
           - forward
           - stsservicegraph
+        processors:
+          - batch
         exporters:
           - ststopology
 

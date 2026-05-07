@@ -81,6 +81,7 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | config.exporters.debug | object | `{}` |  |
 | config.exporters.prometheusremotewrite/victoria-metrics.endpoint | string | `"http://suse-observability-vmagent:8429/api/v1/write"` |  |
 | config.exporters.prometheusremotewrite/victoria-metrics.resource_to_telemetry_conversion.enabled | bool | `true` |  |
+| config.exporters.prometheusremotewrite/victoria-metrics.timeout | string | `"30s"` |  |
 | config.exporters.ststopology.endpoint | string | `"${env:INTAKE_URL}"` |  |
 | config.extensions.health_check.endpoint | string | `"${env:MY_POD_IP}:13133"` |  |
 | config.extensions.service_token_auth.cache.invalid_size | int | `100` |  |
@@ -125,14 +126,18 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | config.service.pipelines.metrics.processors[3] | string | `"batch"` |  |
 | config.service.pipelines.metrics.receivers[0] | string | `"otlp"` |  |
 | config.service.pipelines.metrics/internal.exporters[0] | string | `"forward"` |  |
-| config.service.pipelines.metrics/internal.processors[0] | string | `"transform/internalMetricsPrefix"` |  |
+| config.service.pipelines.metrics/internal.processors[0] | string | `"memory_limiter"` |  |
+| config.service.pipelines.metrics/internal.processors[1] | string | `"transform/internalMetricsPrefix"` |  |
+| config.service.pipelines.metrics/internal.processors[2] | string | `"batch"` |  |
 | config.service.pipelines.metrics/internal.receivers[0] | string | `"prometheus/internal"` |  |
 | config.service.pipelines.metrics/topology.exporters[0] | string | `"ststopology"` |  |
+| config.service.pipelines.metrics/topology.processors[0] | string | `"batch"` |  |
 | config.service.pipelines.metrics/topology.receivers[0] | string | `"forward"` |  |
 | config.service.pipelines.metrics/topology.receivers[1] | string | `"stsservicegraph"` |  |
 | config.service.pipelines.metrics/victoria-metrics.exporters[0] | string | `"prometheusremotewrite/victoria-metrics"` |  |
 | config.service.pipelines.metrics/victoria-metrics.processors[0] | string | `"resource/removeStsApiKey"` |  |
 | config.service.pipelines.metrics/victoria-metrics.processors[1] | string | `"attributes/removeStsApiKey"` |  |
+| config.service.pipelines.metrics/victoria-metrics.processors[2] | string | `"batch"` |  |
 | config.service.pipelines.metrics/victoria-metrics.receivers[0] | string | `"forward"` |  |
 | config.service.pipelines.metrics/victoria-metrics.receivers[1] | string | `"stsservicegraph"` |  |
 | config.service.pipelines.traces.exporters[0] | string | `"forward"` |  |
@@ -147,6 +152,7 @@ OpenTelemetry Collector Helm chart for Kubernetes
 | config.service.pipelines.traces/clickhouse.exporters[0] | string | `"clickhousests"` |  |
 | config.service.pipelines.traces/clickhouse.processors[0] | string | `"stsusage"` |  |
 | config.service.pipelines.traces/clickhouse.processors[1] | string | `"resource/removeStsApiKey"` |  |
+| config.service.pipelines.traces/clickhouse.processors[2] | string | `"batch"` |  |
 | config.service.pipelines.traces/clickhouse.receivers[0] | string | `"forward"` |  |
 | config.service.telemetry.metrics.readers[0].pull.exporter.prometheus.host | string | `"0.0.0.0"` |  |
 | config.service.telemetry.metrics.readers[0].pull.exporter.prometheus.port | int | `8888` |  |
