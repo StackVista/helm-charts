@@ -1765,7 +1765,7 @@ stackstate:
 ##############################
 elasticsearch:
   # elasticsearch.imageTag -- Elasticsearch image tag. Updated by updatecli.
-  imageTag: 8.19.15-f6a6e1a0-main-48
+  imageTag: 8.19.15-25dbc21d-main-54
   # elasticsearch.esJavaOpts -- JVM options
   esJavaOpts: null
   # elasticsearch.replicas -- Number of Elasticsearch replicas.
