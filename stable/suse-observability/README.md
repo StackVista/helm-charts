@@ -11,7 +11,7 @@ Current chart version is `2.9.1-pre.202`
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../anomaly-detection/ | anomaly-detection | 5.2.0-snapshot.183 |
-| file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.28 |
+| file://../clickhouse/ | clickhouse | 3.6.9-suse-observability.29 |
 | file://../common/ | common | * |
 | file://../elasticsearch/ | elasticsearch | 8.19.4-stackstate.22 |
 | file://../hbase/ | hbase | 0.2.149 |
