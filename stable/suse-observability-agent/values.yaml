@@ -686,7 +686,7 @@ k8sCrdCollector:
     # k8sCrdCollector.image.repository -- Base container image repository.
     repository: stackstate/sts-opentelemetry-collector
     # k8sCrdCollector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: v0.0.33
+    tag: v0.0.34
     # k8sCrdCollector.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -698,7 +698,7 @@ k8sCrdCollector:
     apiGroupFilters:
       # k8sCrdCollector.crdDiscovery.apiGroupFilters.include -- List of API group patterns to watch (supports wildcards like "*.suse.com")
       include:
-        # Watch all API groups by default
+      # Watch all API groups by default
       - "*"
       # k8sCrdCollector.crdDiscovery.apiGroupFilters.exclude -- List of API group patterns to exclude
       exclude: []
@@ -844,12 +844,10 @@ kubernetes-rbac-agent:
   # kubernetes-rbac-agent.enabled. Enables/disables the rbac agent.
   enabled: true
   url:
-    fromConfigMap: '{{ include "stackstate-k8s-agent.url.configmap.internal.name"
-      . }}'
+    fromConfigMap: '{{ include "stackstate-k8s-agent.url.configmap.internal.name" . }}'
 
   clusterName:
-    fromConfigMap: '{{ include "stackstate-k8s-agent.clusterName.configmap.internal.name"
-      . }}'
+    fromConfigMap: '{{ include "stackstate-k8s-agent.clusterName.configmap.internal.name" . }}'
 
   roleType: 'scope'
   containers:
