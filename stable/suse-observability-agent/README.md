@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.3.15`
+Current chart version is `1.3.16`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -168,7 +168,7 @@ stackstate/suse-observability-agent
 | global.proxy.url | string | `""` | Proxy for all traffic to stackstate |
 | global.skipSslValidation | bool | `false` | Enable tls validation from client |
 | httpHeaderInjectorWebhook.certificatePrehook.image.repository | string | `"stackstate/container-tools"` |  |
-| httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-f6a6e1a0-main-51"` |  |
+| httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-7c9dc1f5-main-55"` |  |
 | httpHeaderInjectorWebhook.enabled | bool | `false` | Enable the webhook for injection http header injection sidecar proxy |
 | httpHeaderInjectorWebhook.proxy.image.repository | string | `"stackstate/http-header-injector-proxy"` |  |
 | httpHeaderInjectorWebhook.proxyInit.image.repository | string | `"stackstate/http-header-injector-proxy-init"` |  |
@@ -182,7 +182,7 @@ stackstate/suse-observability-agent
 | k8sCrdCollector.enabled | bool | `false` | Enable / disable the OpenTelemetry cluster collector for CRD discovery |
 | k8sCrdCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | k8sCrdCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
-| k8sCrdCollector.image.tag | string | `"v0.0.33"` | Container image tag for 'opentelemetry-collector' containers. |
+| k8sCrdCollector.image.tag | string | `"v0.0.34"` | Container image tag for 'opentelemetry-collector' containers. |
 | k8sCrdCollector.leaderElection.enabled | bool | `true` | Enable the k8s_leader_elector extension and peer-to-peer cache sync. When enabled, only the leader actively watches CRDs/CRs, and cache state is synced to replicas for fast failover. |
 | k8sCrdCollector.leaderElection.leaseDuration | string | `"15s"` | Duration a leader holds the lease before it must renew. |
 | k8sCrdCollector.leaderElection.leaseName | string | `"k8scrdreceiver"` | Name of the Lease object. Must be unique per collector deployment. |
@@ -223,7 +223,7 @@ stackstate/suse-observability-agent
 | kubernetes-rbac-agent.containers.rbacAgent.affinity | object | `{}` | Set affinity |
 | kubernetes-rbac-agent.containers.rbacAgent.env | object | `{}` | Additional environment variables |
 | kubernetes-rbac-agent.containers.rbacAgent.image.repository | string | `"stackstate/kubernetes-rbac-agent"` |  |
-| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"e78c10a7-716-release"` |  |
+| kubernetes-rbac-agent.containers.rbacAgent.image.tag | string | `"e78c10a7-720-release"` |  |
 | kubernetes-rbac-agent.containers.rbacAgent.nodeSelector | object | `{}` | Set a nodeSelector |
 | kubernetes-rbac-agent.containers.rbacAgent.podAnnotations | object | `{}` | Additional annotations on the pod |
 | kubernetes-rbac-agent.containers.rbacAgent.podLabels | object | `{}` | Additional labels on the pod |
@@ -238,7 +238,7 @@ stackstate/suse-observability-agent
 | logsAgent.enabled | bool | `true` | Enable / disable k8s pod log collection |
 | logsAgent.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | logsAgent.image.repository | string | `"stackstate/promtail"` | Base container image repository. |
-| logsAgent.image.tag | string | `"3.6.10-bc99e3ee-main-8"` | Default container image tag. |
+| logsAgent.image.tag | string | `"3.6.10-e50dd5f7-main-16"` | Default container image tag. |
 | logsAgent.nodeSelector | object | `{}` | Node labels for pod assignment. |
 | logsAgent.priorityClassName | string | `""` | Priority class for logsAgent pods. |
 | logsAgent.resources.limits.cpu | string | `"1300m"` | CPU resource limits. |
