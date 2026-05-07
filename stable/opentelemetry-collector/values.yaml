@@ -146,14 +146,14 @@ config:
     # Default memory limiter configuration for the collector based on k8s resource limits.
     memory_limiter:
       # check_interval is the time between measurements of memory usage.
-      check_interval: 5s
+      check_interval: 1s
       # By default limit_mib is set to 80% of ".Values.resources.limits.memory"
       limit_percentage: 80
       # By default spike_limit_mib is set to 25% of ".Values.resources.limits.memory"
       spike_limit_percentage: 25
     batch:
       timeout: 2s
-      send_batch_size: 100000
+      send_batch_size: 10000
     resource/addDefaultNamespace:
       attributes:
         - key: service.namespace
@@ -240,6 +240,7 @@ config:
         receivers:
           - otlp
         processors:
+          - memory_limiter
           - transform/semconv
           - resource/addDefaultNamespace
           - resource/addStsApiKey
@@ -260,6 +261,7 @@ config:
         receivers:
           - otlp
         processors:
+          - memory_limiter
           - resource/addDefaultNamespace
           - resource/addStsApiKey
           - batch
