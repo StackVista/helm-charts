@@ -353,3 +353,53 @@ func TestK8sCrdCollectorHttpEndpointRequiresHttpsScheme(t *testing.T) {
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "HTTP must include https:// scheme")
 }
+
+// TestK8sCrdCollectorMultiNodeAffinityAndPDB asserts the default (replicaCount: 2)
+// renders preferred (not required) hostname-level pod anti-affinity and a PDB that
+// allows one pod down at a time. Preferred lets sub-3-node clusters still install
+// and roll upgrades; required would wedge them.
+func TestK8sCrdCollectorMultiNodeAffinityAndPDB(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-enabled.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	deployment, exists := resources.Deployments["suse-observability-agent-k8s-crd-collector"]
+	require.True(t, exists, "k8s-crd-collector deployment was not found")
+
+	require.NotNil(t, deployment.Spec.Template.Spec.Affinity, "deployment should have affinity (auto-injected when leaderElection enabled)")
+	require.NotNil(t, deployment.Spec.Template.Spec.Affinity.PodAntiAffinity, "deployment should have pod anti-affinity")
+
+	antiAffinity := deployment.Spec.Template.Spec.Affinity.PodAntiAffinity
+	assert.Empty(t, antiAffinity.RequiredDuringSchedulingIgnoredDuringExecution,
+		"anti-affinity must be preferred, not required, so 1- and 2-node clusters can install/upgrade")
+	require.Len(t, antiAffinity.PreferredDuringSchedulingIgnoredDuringExecution, 1,
+		"expected exactly one preferred anti-affinity term")
+
+	preferred := antiAffinity.PreferredDuringSchedulingIgnoredDuringExecution[0]
+	assert.Equal(t, int32(100), preferred.Weight, "weight 100 keeps spread behaviour effectively required on multi-node clusters")
+	assert.Equal(t, "kubernetes.io/hostname", preferred.PodAffinityTerm.TopologyKey)
+	require.NotNil(t, preferred.PodAffinityTerm.LabelSelector)
+	assert.Equal(t, "k8s-crd-collector", preferred.PodAffinityTerm.LabelSelector.MatchLabels["app.kubernetes.io/component"])
+
+	pdb, exists := resources.Pdbs["suse-observability-agent-k8s-crd-collector"]
+	require.True(t, exists, "k8s-crd-collector PDB should be rendered when replicaCount > 1")
+	require.NotNil(t, pdb.Spec.MaxUnavailable)
+	assert.Equal(t, int32(1), pdb.Spec.MaxUnavailable.IntVal,
+		"PDB allows one pod down at a time, keeping the other available during voluntary disruptions")
+	require.NotNil(t, pdb.Spec.Selector)
+	assert.Equal(t, "k8s-crd-collector", pdb.Spec.Selector.MatchLabels["app.kubernetes.io/component"])
+}
+
+// TestK8sCrdCollectorSingleReplicaSkipsPDB asserts that when replicaCount is 1
+// (e.g. operator-set on a single-node cluster) the PDB is NOT rendered. A PDB
+// with maxUnavailable: 1 over a single replica would still allow the only pod
+// to be evicted, providing no protection — better to omit it than mislead.
+func TestK8sCrdCollectorSingleReplicaSkipsPDB(t *testing.T) {
+	output := helmtestutil.RenderHelmTemplate(t, "suse-observability-agent", "values/minimal.yaml", "values/k8s-crd-collector-single-replica.yaml")
+	resources := helmtestutil.NewKubernetesResources(t, output)
+
+	_, exists := resources.Deployments["suse-observability-agent-k8s-crd-collector"]
+	require.True(t, exists, "k8s-crd-collector deployment was not found")
+
+	_, exists = resources.Pdbs["suse-observability-agent-k8s-crd-collector"]
+	assert.False(t, exists, "PDB should be skipped when replicaCount is 1")
+}

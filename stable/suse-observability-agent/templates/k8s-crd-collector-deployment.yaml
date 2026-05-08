@@ -133,13 +133,18 @@ spec:
       {{- if or .Values.k8sCrdCollector.affinity .Values.k8sCrdCollector.leaderElection.enabled }}
       affinity:
         {{- if .Values.k8sCrdCollector.leaderElection.enabled }}
+        # preferred (not required) so 1- and 2-node clusters can still install and roll
+        # upgrades. Multi-node clusters with capacity still spread normally; sub-3-node
+        # clusters fall back to colocation, giving upgrade-time HA via leader handoff.
         podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchLabels:
-                  app.kubernetes.io/component: k8s-crd-collector
-                  app.kubernetes.io/instance: {{ .Release.Name }}
-              topologyKey: kubernetes.io/hostname
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/component: k8s-crd-collector
+                    app.kubernetes.io/instance: {{ .Release.Name }}
+                topologyKey: kubernetes.io/hostname
         {{- end }}
         {{- with .Values.k8sCrdCollector.affinity }}
         {{- toYaml . | nindent 8 }}
