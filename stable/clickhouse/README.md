@@ -1,6 +1,6 @@
 # clickhouse
 
-![Version: 3.6.9-suse-observability.29](https://img.shields.io/badge/Version-3.6.9--suse--observability.29-informational?style=flat-square) ![AppVersion: 23.7.4](https://img.shields.io/badge/AppVersion-23.7.4-informational?style=flat-square)
+![Version: 3.6.9-suse-observability.30](https://img.shields.io/badge/Version-3.6.9--suse--observability.30-informational?style=flat-square) ![AppVersion: 23.7.4](https://img.shields.io/badge/AppVersion-23.7.4-informational?style=flat-square)
 ClickHouse is an open-source column-oriented OLAP database management system. Use it to boost your database performance while providing linear scalability and hardware efficiency.
 **Homepage:** <https://bitnami.com>
 ## Maintainers
@@ -255,51 +255,7 @@ ClickHouse is an open-source column-oriented OLAP database management system. Us
 | serviceAccount.create | bool | `true` |  |
 | serviceAccount.name | string | `""` |  |
 | shards | int | `1` |  |
-| sidecars[0].command[0] | string | `"/app/entrypoint.sh"` |  |
-| sidecars[0].env[0].name | string | `"BACKUP_CLICKHOUSE_ENABLED"` |  |
-| sidecars[0].env[0].valueFrom.configMapKeyRef.key | string | `"backup_enabled"` |  |
-| sidecars[0].env[0].valueFrom.configMapKeyRef.name | string | `"{{ include \"common.names.fullname\" . }}-backup"` |  |
-| sidecars[0].env[1].name | string | `"BACKUP_TABLES"` |  |
-| sidecars[0].env[1].value | string | `"{{ .Values.backup.config.tables }}"` |  |
-| sidecars[0].env[2].name | string | `"CLICKHOUSE_REPLICA_ID"` |  |
-| sidecars[0].env[2].valueFrom.fieldRef.apiVersion | string | `"v1"` |  |
-| sidecars[0].env[2].valueFrom.fieldRef.fieldPath | string | `"metadata.name"` |  |
-| sidecars[0].env[3].name | string | `"S3_ACCESS_KEY"` |  |
-| sidecars[0].env[3].valueFrom.secretKeyRef.key | string | `"accesskey"` |  |
-| sidecars[0].env[3].valueFrom.secretKeyRef.name | string | `"{{ tpl .Values.backup.s3.secretName $ }}"` |  |
-| sidecars[0].env[4].name | string | `"S3_SECRET_KEY"` |  |
-| sidecars[0].env[4].valueFrom.secretKeyRef.key | string | `"secretkey"` |  |
-| sidecars[0].env[4].valueFrom.secretKeyRef.name | string | `"{{ tpl .Values.backup.s3.secretName $ }}"` |  |
-| sidecars[0].image | string | `"{{ default .Values.backup.image.registry .Values.global.imageRegistry }}/{{ .Values.backup.image.repository }}:{{ .Values.backup.image.tag }}"` |  |
-| sidecars[0].imagePullPolicy | string | `"IfNotPresent"` |  |
-| sidecars[0].name | string | `"backup"` |  |
-| sidecars[0].ports[0].containerPort | int | `9746` |  |
-| sidecars[0].ports[0].name | string | `"supercronic"` |  |
-| sidecars[0].ports[1].containerPort | int | `7171` |  |
-| sidecars[0].ports[1].name | string | `"backup-api"` |  |
-| sidecars[0].resources.limits.cpu | string | `"{{ .Values.backup.resources.limit.cpu }}"` |  |
-| sidecars[0].resources.limits.memory | string | `"{{ .Values.backup.resources.limit.memory }}"` |  |
-| sidecars[0].resources.requests.cpu | string | `"{{ .Values.backup.resources.requests.cpu }}"` |  |
-| sidecars[0].resources.requests.memory | string | `"{{ .Values.backup.resources.requests.memory }}"` |  |
-| sidecars[0].securityContext.allowPrivilegeEscalation | bool | `false` |  |
-| sidecars[0].securityContext.capabilities.drop[0] | string | `"ALL"` |  |
-| sidecars[0].securityContext.runAsNonRoot | bool | `true` |  |
-| sidecars[0].securityContext.runAsUser | int | `1001` |  |
-| sidecars[0].securityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
-| sidecars[0].volumeMounts[0].mountPath | string | `"/bitnami/clickhouse"` |  |
-| sidecars[0].volumeMounts[0].name | string | `"data"` |  |
-| sidecars[0].volumeMounts[1].mountPath | string | `"/bitnami/clickhouse/etc/conf.d/default"` |  |
-| sidecars[0].volumeMounts[1].name | string | `"config"` |  |
-| sidecars[0].volumeMounts[2].mountPath | string | `"/bitnami/clickhouse/etc/conf.d/extra-configmap"` |  |
-| sidecars[0].volumeMounts[2].name | string | `"extra-config"` |  |
-| sidecars[0].volumeMounts[3].mountPath | string | `"/bitnami/clickhouse/etc/users.d/users-extra-configmap"` |  |
-| sidecars[0].volumeMounts[3].name | string | `"users-extra-config"` |  |
-| sidecars[0].volumeMounts[4].mountPath | string | `"/etc/clickhouse-backup.yaml"` |  |
-| sidecars[0].volumeMounts[4].name | string | `"clickhouse-backup-config"` |  |
-| sidecars[0].volumeMounts[4].subPath | string | `"config.yaml"` |  |
-| sidecars[0].volumeMounts[5].mountPath | string | `"/app/entrypoint.sh"` |  |
-| sidecars[0].volumeMounts[5].name | string | `"clickhouse-backup-scripts"` |  |
-| sidecars[0].volumeMounts[5].subPath | string | `"entrypoint.sh"` |  |
+| sidecars | list | `[]` |  |
 | startdbScripts | object | `{}` |  |
 | startdbScriptsSecret | string | `""` |  |
 | startupProbe.enabled | bool | `false` |  |

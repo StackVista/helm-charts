@@ -357,6 +357,72 @@ spec:
           {{- if $.Values.extraVolumeMounts }}
           {{- include "common.tplvalues.render" (dict "value" $.Values.extraVolumeMounts "context" $) | nindent 12 }}
           {{- end }}
+        - name: backup
+          image: '{{ default $.Values.backup.image.registry $.Values.global.imageRegistry }}/{{ $.Values.backup.image.repository }}:{{ $.Values.backup.image.tag }}'
+          imagePullPolicy: IfNotPresent
+          command:
+            - /app/entrypoint.sh
+          securityContext:
+            runAsUser: 1001
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          ports:
+            - containerPort: 9746
+              name: supercronic
+            - containerPort: 7171
+              name: backup-api
+          env:
+            - name: BACKUP_CLICKHOUSE_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: '{{ include "common.names.fullname" $ }}-backup'
+                  key: backup_enabled
+            - name: BACKUP_TABLES
+              value: "{{ $.Values.backup.config.tables }}"
+            - name: CLICKHOUSE_REPLICA_ID
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: '{{ tpl $.Values.backup.s3.secretName $ }}'
+                  key: accesskey
+            - name: S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: '{{ tpl $.Values.backup.s3.secretName $ }}'
+                  key: secretkey
+          resources:
+            requests:
+              memory: "{{ $.Values.backup.resources.requests.memory }}"
+              cpu: "{{ $.Values.backup.resources.requests.cpu }}"
+            limits:
+              memory: "{{ $.Values.backup.resources.limit.memory }}"
+              cpu: "{{ $.Values.backup.resources.limit.cpu }}"
+          volumeMounts:
+            - mountPath: /bitnami/clickhouse
+              name: data
+            - mountPath: /bitnami/clickhouse/etc/conf.d/default
+              name: config
+              {{- if or $.Values.extraOverridesConfigmap $.Values.extraOverrides }}
+            - mountPath: /bitnami/clickhouse/etc/conf.d/extra-configmap
+              name: extra-config
+              {{- end }}
+            - mountPath: /bitnami/clickhouse/etc/users.d/users-extra-configmap
+              name: users-extra-config
+            - mountPath: /etc/clickhouse-backup.yaml
+              name: clickhouse-backup-config
+              subPath: config.yaml
+            - mountPath: /app/entrypoint.sh
+              name: clickhouse-backup-scripts
+              subPath: entrypoint.sh
         {{- if $.Values.sidecars }}
         {{- include "common.tplvalues.render" ( dict "value" $.Values.sidecars "context" $) | nindent 8 }}
         {{- end }}
