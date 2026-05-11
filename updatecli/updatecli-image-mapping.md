@@ -16,7 +16,7 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 | container-tools | stable/suse-observability/values.yaml | $.victoria-metrics-0.backup.setupCron.image.tag, $.victoria-metrics-1.backup.setupCron.image.tag | Victoria-metrics-single subchart (aliased as victoria-metrics-0/1) |
 | container-tools | stable/suse-observability-agent/values.yaml | $.httpHeaderInjectorWebhook.certificatePrehook.image.tag | When values change, Chart.yaml version is bumped via shell target |
 | elasticsearch | stable/suse-observability/values.yaml | $.elasticsearch.imageTag | Tag format: `8.19.14-fdb72fef-main-9`; standard `main` tags only |
-| elasticsearch-exporter | stable/suse-observability/values.yaml | $.elasticsearch.prometheus-elasticsearch-exporter.image.tag | |
+| elasticsearch-exporter | stable/suse-observability/values.yaml | $.elasticsearch.prometheus-elasticsearch-exporter.image.tag | Tag format: `1.10.0-61e00a86-main-2`; standard `main` tags only |
 | envoy | stable/suse-observability/values.yaml | $.stackstate.components.router.image.tag | |
 | hadoop | stable/suse-observability/values.yaml | $.hbase.hdfs.version | **Note:** Values expect `java21-8-hash-build`; findsubmatch transformer strips semver prefix from docker tag |
 | jmx-exporter | stable/suse-observability/values.yaml | $.kafka.metrics.jmx.image.tag | Tag format: `0.20.0-58a72255-main-319`; standard `main` tags only |
