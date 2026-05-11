@@ -64,5 +64,5 @@ function update_chart_version_in_readme_file() {
 function get_secret_values() {
   # This function extracts credentials, etc and sets them as environment variables.
   secret_file=$1
-  eval "$(sops -d "$secret_file" | awk -F ": " '{print $1" "$2}' | while read -r key value; do echo export "${key}"="$value"; done)"
+  eval "$(sops -d "$secret_file" | awk -F ": " '{print $1" "$2}' | while read -r key value; do printf 'export %s=%q\n' "$key" "$value"; done)"
 }
