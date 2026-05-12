@@ -19,7 +19,7 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 | elasticsearch-exporter | stable/suse-observability/values.yaml | $.elasticsearch.prometheus-elasticsearch-exporter.image.tag | |
 | envoy | stable/suse-observability/values.yaml | $.stackstate.components.router.image.tag | |
 | hadoop | stable/suse-observability/values.yaml | $.hbase.hdfs.version | **Note:** Values expect `java21-8-hash-build`; findsubmatch transformer strips semver prefix from docker tag |
-| jmx-exporter | stable/suse-observability/values.yaml | $.kafka.metrics.jmx.image.tag | |
+| jmx-exporter | stable/suse-observability/values.yaml | $.kafka.metrics.jmx.image.tag | Tag format: `0.20.0-58a72255-main-319`; standard `main` tags only |
 | kafka | stable/suse-observability/values.yaml | $.kafka.image.tag, $.stackstate.components.kafkaTopicCreate.image.tag | Digest-preserved AppCo retag; standard `main` tags only |
 | kubernetes-rbac-agent | stable/suse-observability/values.yaml | $.kubernetes-rbac-agent.containers.rbacAgent.image.tag | **Disabled:** tag key must be merged to master first (updatecli clones from remote) |
 | kubernetes-rbac-agent | stable/suse-observability-agent/values.yaml | $.kubernetes-rbac-agent.containers.rbacAgent.image.tag | When values change, Chart.yaml version is bumped via shell target |
