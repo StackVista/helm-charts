@@ -86,6 +86,26 @@ sources:
         pattern: ">=0.0.0-0"
         # here the captured group is just `1.38.0-1.1`
         regex: "^([0-9]+\\.[0-9]+\\.[0-9]+-[0-9]+\\.[0-9]+)-release$"
+  httpHeaderInjectorProxy:
+    name: "http-header-injector-proxy"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/http-header-injector-proxy"
+      architecture: "linux/amd64"
+      tagfilter: "^[a-f0-9]{8}-[0-9]+-release$"
+      versionfilter:
+        kind: regex/semver
+        regex: "^[a-f0-9]{8}-([0-9]+)-release$"
+  httpHeaderInjectorProxyInit:
+    name: "http-header-injector-proxy-init"
+    kind: dockerimage
+    spec:
+      image: "quay.io/stackstate/http-header-injector-proxy-init"
+      architecture: "linux/amd64"
+      tagfilter: "^[a-f0-9]{8}-[0-9]+-release$"
+      versionfilter:
+        kind: regex/semver
+        regex: "^[a-f0-9]{8}-([0-9]+)-release$"
   hadoop:
     name: "hadoop"
     kind: dockerimage
@@ -369,6 +389,22 @@ targets:
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.stackstate.components.router.image.tag"
+  httpHeaderInjectorProxy:
+    name: "http-header-injector-proxy"
+    kind: yaml
+    scmid: "default"
+    sourceid: httpHeaderInjectorProxy
+    spec:
+      file: "stable/suse-observability-agent/values.yaml"
+      key: "$.httpHeaderInjectorWebhook.proxy.image.tag"
+  httpHeaderInjectorProxyInit:
+    name: "http-header-injector-proxy-init"
+    kind: yaml
+    scmid: "default"
+    sourceid: httpHeaderInjectorProxyInit
+    spec:
+      file: "stable/suse-observability-agent/values.yaml"
+      key: "$.httpHeaderInjectorWebhook.proxyInit.image.tag"
   hadoop:
     name: "hadoop"
     kind: yaml
@@ -569,6 +605,8 @@ targets:
     scmid: "default"
     disablesourceinput: true
     dependson:
+      - "target#httpHeaderInjectorProxy"
+      - "target#httpHeaderInjectorProxyInit"
       - "target#containerToolsSuseObservabilityAgent"
       - "target#kubernetesRbacAgentSuseObservabilityAgent"
       - "target#genericSidecarInjector"
