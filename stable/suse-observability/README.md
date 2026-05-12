@@ -527,7 +527,7 @@ If you encounter issues not covered here:
 | kafkaup-operator.image.pullPolicy | string | `""` |  |
 | kafkaup-operator.image.registry | string | `"quay.io"` |  |
 | kafkaup-operator.image.repository | string | `"stackstate/kafkaup-operator"` |  |
-| kafkaup-operator.image.tag | string | `"0.0.8"` |  |
+| kafkaup-operator.image.tag | string | `"0.0.9"` |  |
 | kafkaup-operator.kafkaSelectors.podLabel.key | string | `"app.kubernetes.io/component"` |  |
 | kafkaup-operator.kafkaSelectors.podLabel.value | string | `"kafka"` |  |
 | kafkaup-operator.kafkaSelectors.statefulSetName | string | `"suse-observability-kafka"` |  |
