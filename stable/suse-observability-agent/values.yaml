@@ -686,7 +686,7 @@ k8sCrdCollector:
     # k8sCrdCollector.image.repository -- Base container image repository.
     repository: stackstate/sts-opentelemetry-collector
     # k8sCrdCollector.image.tag -- Container image tag for 'opentelemetry-collector' containers.
-    tag: v0.0.34
+    tag: v0.0.35
     # k8sCrdCollector.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
