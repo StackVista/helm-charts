@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.3.24`
+Current chart version is `1.3.25`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -11,7 +11,7 @@ Current chart version is `1.3.24`
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../kubernetes-rbac-agent/ | kubernetes-rbac-agent | 0.0.27 |
-| https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.29 |
+| https://helm.stackstate.io | httpHeaderInjectorWebhook(http-header-injector) | 0.0.30 |
 
 ## Required Values
 
