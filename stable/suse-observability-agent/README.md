@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.3.26`
+Current chart version is `1.3.27`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -171,7 +171,9 @@ stackstate/suse-observability-agent
 | httpHeaderInjectorWebhook.certificatePrehook.image.tag | string | `"1.8.6-dc2b5d73-main-98"` |  |
 | httpHeaderInjectorWebhook.enabled | bool | `false` | Enable the webhook for injection http header injection sidecar proxy |
 | httpHeaderInjectorWebhook.proxy.image.repository | string | `"stackstate/http-header-injector-proxy"` |  |
+| httpHeaderInjectorWebhook.proxy.image.tag | string | `"7e145b52-482-release"` |  |
 | httpHeaderInjectorWebhook.proxyInit.image.repository | string | `"stackstate/http-header-injector-proxy-init"` |  |
+| httpHeaderInjectorWebhook.proxyInit.image.tag | string | `"7e145b52-482-release"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"38fa994f-53-release"` |  |
 | k8sCrdCollector.affinity | object | `{}` | Affinity settings for pod assignment. |
