@@ -826,7 +826,7 @@ httpHeaderInjectorWebhook:
       # sidecarInjector.image.repository - Repository for the docker image
       repository: "stackstate/generic-sidecar-injector"
       # sidecarInjector.image.tag - Tag for the docker image
-      tag: 1d6fa71c-51-release
+      tag: 38fa994f-53-release
 
   # certificatePrehook -- Helm prehook to setup/remove a certificate for the sidecarInjector mutationwebhook
   certificatePrehook:
