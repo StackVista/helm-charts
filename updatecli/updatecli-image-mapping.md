@@ -30,7 +30,7 @@ All images: `quay.io/stackstate/<image-name>` (no authentication required for pu
 | vmagent | stable/suse-observability/values.yaml | $.stackstate.components.vmagent.image.tag | GitHub `main` tags only |
 | vmbackup | stable/suse-observability/values.yaml | $.victoria-metrics-0.backup.vmbackup.image.tag, $.victoria-metrics-1.backup.vmbackup.image.tag | Victoria-metrics-single subchart (aliased as victoria-metrics-0/1); GitHub `main` tags only |
 | vmrestore | stable/suse-observability/values.yaml | $.victoria-metrics.restore.image.tag | GitHub `main` tags only |
-| wait | stable/suse-observability/values.yaml | $.global.wait.image.tag | |
+| wait | stable/suse-observability/values.yaml | $.global.wait.image.tag | Tag format: `1.0.12-61e00a86-main-2`; standard `main` tags only |
 | workload-observer | stable/suse-observability/values.yaml | $.stackstate.components.workloadObserver.image.tag | Tag format: `hash-buildId` only |
 | zookeeper | stable/suse-observability/values.yaml | $.zookeeper.image.tag | Tag format: `3.9.5-af2b6748-main-1`; standard `main` tags only |
 | spotlight | stable/suse-observability/values.yaml | $.anomaly-detection.image.tag | Tag format: `X.Y.Z-snapshot.N` (master snapshots only, semver with pre-release) |
