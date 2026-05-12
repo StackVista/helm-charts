@@ -599,6 +599,59 @@ targets:
     spec:
       file: "stable/suse-observability/values.yaml"
       key: "$.s3proxy.image.tag"
+  suseObservabilityHelmDocs:
+    name: "suse-observability README.md (helm-docs)"
+    kind: shell
+    scmid: "default"
+    disablesourceinput: true
+    dependson:
+      - "target#clickhouseBackup"
+      - "target#clickhouse"
+      - "target#containerToolsSuseObservability"
+      - "target#containerToolsVictoriaMetrics"
+      - "target#elasticsearch"
+      - "target#elasticsearchExporter"
+      - "target#envoy"
+      - "target#hadoop"
+      - "target#jmxExporter"
+      - "target#kafka"
+      - "target#kubernetesRbacAgent"
+      - "target#nginxPrometheusExporter"
+      - "target#suseObservabilityMcp"
+      - "target#suseObservabilityBorg"
+      - "target#victoriaMetrics"
+      - "target#vmagent"
+      - "target#vmbackup"
+      - "target#vmrestore"
+      - "target#wait"
+      - "target#workloadObserver"
+      - "target#zookeeper"
+      - "target#kafkaupOperator"
+      - "target#stsOpentelemetryCollector"
+      - "target#spotlight"
+      - "target#s3proxy"
+    spec:
+      command: |
+        set -e
+
+        VALUES_FILE="stable/suse-observability/values.yaml"
+        BASE_REF="origin/{{ .scm.branch }}"
+
+        # If the suse-observability values file did not change vs the base ref
+        # updatecli started from, skip the helm-docs regeneration.
+        if git diff --quiet "$BASE_REF" -- "$VALUES_FILE"; then
+          echo "suse-observability values unchanged vs $BASE_REF; skipping helm-docs"
+          exit 0
+        fi
+
+        echo "suse-observability values changed vs $BASE_REF; regenerating README.md with helm-docs"
+        helm-docs --chart-search-root stable/suse-observability
+        echo "Regenerated suse-observability README.md"
+      changedif:
+        kind: file/checksum
+        spec:
+          files:
+            - stable/suse-observability/README.md
   suseObservabilityAgentChartVersion:
     name: "suse-observability-agent Chart.yaml version"
     kind: shell
