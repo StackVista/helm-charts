@@ -540,7 +540,7 @@ logsAgent:
     # logsAgent.image.repository -- Base container image repository.
     repository: stackstate/promtail
     # logsAgent.image.tag -- Default container image tag.
-    tag: 3.6.10-dc2b5d73-main-63
+    tag: 3.6.10-fd1b75f1-main-65
     # logsAgent.image.pullPolicy -- Default container image pull policy.
     pullPolicy: IfNotPresent
 
@@ -844,12 +844,10 @@ kubernetes-rbac-agent:
   # kubernetes-rbac-agent.enabled. Enables/disables the rbac agent.
   enabled: true
   url:
-    fromConfigMap: '{{ include "stackstate-k8s-agent.url.configmap.internal.name"
-      . }}'
+    fromConfigMap: '{{ include "stackstate-k8s-agent.url.configmap.internal.name" . }}'
 
   clusterName:
-    fromConfigMap: '{{ include "stackstate-k8s-agent.clusterName.configmap.internal.name"
-      . }}'
+    fromConfigMap: '{{ include "stackstate-k8s-agent.clusterName.configmap.internal.name" . }}'
 
   roleType: 'scope'
   containers:
