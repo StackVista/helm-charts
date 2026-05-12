@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.3.22`
+Current chart version is `1.3.23`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -173,7 +173,7 @@ stackstate/suse-observability-agent
 | httpHeaderInjectorWebhook.proxy.image.repository | string | `"stackstate/http-header-injector-proxy"` |  |
 | httpHeaderInjectorWebhook.proxyInit.image.repository | string | `"stackstate/http-header-injector-proxy-init"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
-| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"1d6fa71c-51-release"` |  |
+| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"38fa994f-53-release"` |  |
 | k8sCrdCollector.affinity | object | `{}` | Affinity settings for pod assignment. |
 | k8sCrdCollector.crdDiscovery.apiGroupFilters.exclude | list | `[]` | List of API group patterns to exclude |
 | k8sCrdCollector.crdDiscovery.apiGroupFilters.include | list | `["*"]` | List of API group patterns to watch (supports wildcards like "*.suse.com") |
@@ -182,7 +182,7 @@ stackstate/suse-observability-agent
 | k8sCrdCollector.enabled | bool | `false` | Enable / disable the OpenTelemetry cluster collector for CRD discovery |
 | k8sCrdCollector.image.pullPolicy | string | `"IfNotPresent"` | Default container image pull policy. |
 | k8sCrdCollector.image.repository | string | `"stackstate/sts-opentelemetry-collector"` | Base container image repository. |
-| k8sCrdCollector.image.tag | string | `"v0.0.34"` | Container image tag for 'opentelemetry-collector' containers. |
+| k8sCrdCollector.image.tag | string | `"v0.0.35"` | Container image tag for 'opentelemetry-collector' containers. |
 | k8sCrdCollector.leaderElection.enabled | bool | `true` | Enable the k8s_leader_elector extension and peer-to-peer cache sync. When enabled, only the leader actively watches CRDs/CRs, and cache state is synced to replicas for fast failover. |
 | k8sCrdCollector.leaderElection.leaseDuration | string | `"15s"` | Duration a leader holds the lease before it must renew. |
 | k8sCrdCollector.leaderElection.leaseName | string | `"k8scrdreceiver"` | Name of the Lease object. Must be unique per collector deployment. |
