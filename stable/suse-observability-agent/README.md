@@ -2,7 +2,7 @@
 
 Helm chart for the SUSE observability Agent.
 
-Current chart version is `1.3.29`
+Current chart version is `1.3.30`
 
 **Homepage:** <https://github.com/StackVista/suse-observability-agent>
 
@@ -175,7 +175,7 @@ stackstate/suse-observability-agent
 | httpHeaderInjectorWebhook.proxyInit.image.repository | string | `"stackstate/http-header-injector-proxy-init"` |  |
 | httpHeaderInjectorWebhook.proxyInit.image.tag | string | `"7e145b52-482-release"` |  |
 | httpHeaderInjectorWebhook.sidecarInjector.image.repository | string | `"stackstate/generic-sidecar-injector"` |  |
-| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"38fa994f-53-release"` |  |
+| httpHeaderInjectorWebhook.sidecarInjector.image.tag | string | `"ddfbfbc4-57-release"` |  |
 | k8sCrdCollector.affinity | object | `{}` | Affinity settings for pod assignment. |
 | k8sCrdCollector.crdDiscovery.apiGroupFilters.exclude | list | `[]` | List of API group patterns to exclude |
 | k8sCrdCollector.crdDiscovery.apiGroupFilters.include | list | `["*"]` | List of API group patterns to watch (supports wildcards like "*.suse.com") |
